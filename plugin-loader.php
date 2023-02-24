@@ -8,6 +8,8 @@
 
 namespace SureForms;
 
+use SureForms\Inc\Post_Types;
+
 /**
  * Plugin_Loader
  *
@@ -78,13 +80,25 @@ class Plugin_Loader {
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
+		add_action( 'init', [ $this, 'load_classes' ] );
+		Post_Types::get_instance();
+	}
+
+	/**
+	 * Load Classes.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function load_classes() {
+
 	}
 
 	/**
 	 * Load Plugin Text Domain.
 	 * This will load the translation textdomain depending on the file priorities.
-	 *      1. Global Languages /wp-content/languages/wp-plugin-base/ folder
-	 *      2. Local directory /wp-content/plugins/wp-plugin-base/languages/ folder
+	 *      1. Global Languages /wp-content/languages/sureforms/ folder
+	 *      2. Local directory /wp-content/plugins/sureforms/languages/ folder
 	 *
 	 * @since X.X.X
 	 * @return void
@@ -116,22 +130,22 @@ class Plugin_Loader {
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
-		$locale = apply_filters( 'plugin_locale', $get_locale, 'wp-plugin-base' );
-		$mofile = sprintf( '%1$s-%2$s.mo', 'wp-plugin-base', $locale );
+		$locale = apply_filters( 'plugin_locale', $get_locale, 'sureforms' );
+		$mofile = sprintf( '%1$s-%2$s.mo', 'sureforms', $locale );
 
 		// Setup paths to current locale file.
 		$mofile_global = WP_LANG_DIR . '/plugins/' . $mofile;
 		$mofile_local  = $lang_dir . $mofile;
 
 		if ( file_exists( $mofile_global ) ) {
-			// Look in global /wp-content/languages/wp-plugin-base/ folder.
-			load_textdomain( 'wp-plugin-base', $mofile_global );
+			// Look in global /wp-content/languages/sureforms/ folder.
+			load_textdomain( 'sureforms', $mofile_global );
 		} elseif ( file_exists( $mofile_local ) ) {
-			// Look in local /wp-content/plugins/wp-plugin-base/languages/ folder.
-			load_textdomain( 'wp-plugin-base', $mofile_local );
+			// Look in local /wp-content/plugins/sureforms/languages/ folder.
+			load_textdomain( 'sureforms', $mofile_local );
 		} else {
 			// Load the default language files.
-			load_plugin_textdomain( 'wp-plugin-base', false, $lang_dir );
+			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}
 }

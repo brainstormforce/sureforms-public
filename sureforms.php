@@ -19,5 +19,7 @@ define( 'SUREFORMS_BASE', plugin_basename( SUREFORMS_FILE ) );
 define( 'SUREFORMS_DIR', plugin_dir_path( SUREFORMS_FILE ) );
 define( 'SUREFORMS_URL', plugins_url( '/', SUREFORMS_FILE ) );
 define( 'SUREFORMS_VER', 'X.X.X' );
+// ------ ADDITIONAL CONSTANTS ------- //
+define( 'SUREFORMS_FORMS_POST_TYPE', 'sureforms_form' );
 
 require_once 'plugin-loader.php';

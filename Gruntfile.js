@@ -33,24 +33,24 @@ module.exports = function ( grunt ) {
 					'!tests/**',
 					'!bin/**',
 				],
-				dest: 'wp-plugin-base/',
+				dest: 'sureforms/',
 			},
 		},
 		compress: {
 			main: {
 				options: {
-					archive: 'wp-plugin-base-<%= pkg.version %>.zip',
+					archive: 'sureforms-<%= pkg.version %>.zip',
 					mode: 'zip',
 				},
 				files: [
 					{
-						src: [ './wp-plugin-base/**' ],
+						src: [ './sureforms/**' ],
 					},
 				],
 			},
 		},
 		clean: {
-			main: [ 'wp-plugin-base' ],
+			main: [ 'sureforms' ],
 			zip: [ '*.zip' ],
 		},
 	} );
