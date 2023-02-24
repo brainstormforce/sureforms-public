@@ -41,28 +41,31 @@ class Plugin_Loader {
 	 * Autoload classes.
 	 *
 	 * @param string $class class name.
+	 * @return void
 	 */
 	public function autoload( $class ) {
 		if ( 0 !== strpos( $class, __NAMESPACE__ ) ) {
 			return;
 		}
 
-		$class_to_load = $class;
-
-		$filename = strtolower(
-			preg_replace(
-				[ '/^' . __NAMESPACE__ . '\\\/', '/([a-z])([A-Z])/', '/_/', '/\\\/' ],
-				[ '', '$1-$2', '-', DIRECTORY_SEPARATOR ],
-				$class_to_load
-			)
+		$filename = preg_replace(
+			[ '/^' . __NAMESPACE__ . '\\\/', '/([a-z])([A-Z])/', '/_/', '/\\\/' ],
+			[ '', '$1-$2', '-', DIRECTORY_SEPARATOR ],
+			$class
 		);
 
-		$file = SUREFORMS_DIR . $filename . '.php';
+		if ( is_string( $filename ) ) {
 
-		// if the file readable, include it.
-		if ( is_readable( $file ) ) {
-			require_once $file;
+			$filename = strtolower( $filename );
+
+			$file = SUREFORMS_DIR . $filename . '.php';
+
+			// if the file is readable, include it.
+			if ( is_readable( $file ) ) {
+				require_once $file;
+			}
 		}
+
 	}
 
 	/**
@@ -109,7 +112,7 @@ class Plugin_Loader {
 		/**
 		 * Language Locale for plugin
 		 *
-		 * @var $get_locale The locale to use.
+		 * @var string $get_locale The locale to use.
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */

@@ -5,7 +5,10 @@
     "squizlabs/php_codesniffer": "^3.5",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "phpcompatibility/php-compatibility": "^9.3",
-    "wp-coding-standards/wpcs": "^2.2"
+    "wp-coding-standards/wpcs": "^2.2",
+    "phpstan/phpstan": "^1.10",
+    "szepeviktor/phpstan-wordpress": "^1.1",
+    "php-stubs/generator": "^0.8.3"
   },
   "scripts": {
     "format": "vendor/bin/phpcbf",
