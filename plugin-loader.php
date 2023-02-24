@@ -2,11 +2,11 @@
 /**
  * Plugin Loader.
  *
- * @package {{package}}
- * @since {{since}}
+ * @package sureforms
+ * @since 0.0.1
  */
 
-namespace WPB;
+namespace SureForms;
 
 /**
  * Plugin_Loader
@@ -22,7 +22,7 @@ class Plugin_Loader {
 	 * @var object Class Instance.
 	 * @since X.X.X
 	 */
-	private static $instance;
+	private static $instance = null;
 
 	/**
 	 * Initiator
@@ -31,7 +31,7 @@ class Plugin_Loader {
 	 * @return object initialized object of class.
 	 */
 	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
@@ -57,9 +57,9 @@ class Plugin_Loader {
 			)
 		);
 
-		$file = WPB_DIR . $filename . '.php';
+		$file = SUREFORMS_DIR . $filename . '.php';
 
-		// if the file redable, include it.
+		// if the file readable, include it.
 		if ( is_readable( $file ) ) {
 			require_once $file;
 		}
@@ -81,21 +81,21 @@ class Plugin_Loader {
 	 * Load Plugin Text Domain.
 	 * This will load the translation textdomain depending on the file priorities.
 	 *      1. Global Languages /wp-content/languages/wp-plugin-base/ folder
-	 *      2. Local dorectory /wp-content/plugins/wp-plugin-base/languages/ folder
+	 *      2. Local directory /wp-content/plugins/wp-plugin-base/languages/ folder
 	 *
 	 * @since X.X.X
 	 * @return void
 	 */
 	public function load_textdomain() {
 		// Default languages directory.
-		$lang_dir = WPB_DIR . 'languages/';
+		$lang_dir = SUREFORMS_DIR . 'languages/';
 
 		/**
 		 * Filters the languages directory path to use for plugin.
 		 *
 		 * @param string $lang_dir The languages directory path.
 		 */
-		$lang_dir = apply_filters( 'wpb_languages_directory', $lang_dir );
+		$lang_dir = apply_filters( 'sureforms_languages_directory', $lang_dir );
 
 		// Traditional WordPress plugin locale filter.
 		global $wp_version;

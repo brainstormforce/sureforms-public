@@ -11,5 +11,10 @@
     "format": "vendor/bin/phpcbf",
     "lint": "vendor/bin/phpcs",
     "test": "vendor/bin/phpunit"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
