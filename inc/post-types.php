@@ -59,8 +59,43 @@ class Post_Types {
 				'has_archive'       => false,
 				'show_ui'           => true,
 				'supports'          => array( 'title', 'author', 'editor', 'custom-fields' ),
-				'show_in_menu'      => true,
+				'show_in_menu'      => 'sureforms_menu',
 				'show_in_nav_menus' => true,
+			)
+		);
+
+		$result_labels = array(
+			'name'               => _x( 'Entries', 'post type general name', 'sureforms' ),
+			'singular_name'      => _x( 'Entry', 'post type singular name', 'sureforms' ),
+			'menu_name'          => _x( 'Entries', 'admin menu', 'sureforms' ),
+			'name_admin_bar'     => _x( 'Entry', 'add new on admin bar', 'sureforms' ),
+			'add_new'            => _x( 'Add New', 'Entry', 'sureforms' ),
+			'add_new_item'       => __( 'Add New Entry', 'sureforms' ),
+			'new_item'           => __( 'New Entry', 'sureforms' ),
+			'edit_item'          => __( 'Edit Entry', 'sureforms' ),
+			'view_item'          => __( 'View Entry', 'sureforms' ),
+			'all_items'          => __( 'Entries', 'sureforms' ),
+			'search_items'       => __( 'Search Entries', 'sureforms' ),
+			'parent_item_colon'  => __( 'Parent Entries:', 'sureforms' ),
+			'not_found'          => __( 'No results found.', 'sureforms' ),
+			'not_found_in_trash' => __( 'No results found in Trash.', 'sureforms' ),
+		);
+		register_post_type(
+			SUREFORMS_ENTRIES_POST_TYPE,
+			array(
+				'labels'              => $result_labels,
+				'supports'            => array( 'title', 'author' ),
+				'public'              => false,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => false,
+				'has_archive'         => true,
+				'capability_type'     => 'post',
+				'capabilities'        => array(
+					'create_posts' => 'do_not_allow',
+				),
+				'map_meta_cap'        => true,
+				'show_ui'             => true,
+				'show_in_menu'        => 'sureforms_menu',
 			)
 		);
 	}

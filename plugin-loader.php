@@ -9,6 +9,7 @@
 namespace SureForms;
 
 use SureForms\Inc\Post_Types;
+use SureForms\Admin\Admin_Menu;
 
 /**
  * Plugin_Loader
@@ -91,7 +92,9 @@ class Plugin_Loader {
 	 * @since X.X.X
 	 */
 	public function load_classes() {
-
+		if ( is_admin() ) {
+			Admin_Menu::get_instance();
+		}
 	}
 
 	/**
