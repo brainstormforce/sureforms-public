@@ -18,7 +18,7 @@ define( 'SUREFORMS_FILE', __FILE__ );
 define( 'SUREFORMS_BASE', plugin_basename( SUREFORMS_FILE ) );
 define( 'SUREFORMS_DIR', plugin_dir_path( SUREFORMS_FILE ) );
 define( 'SUREFORMS_URL', plugins_url( '/', SUREFORMS_FILE ) );
-define( 'SUREFORMS_VER', 'X.X.X' );
+define( 'SUREFORMS_VER', '0.0.1' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SUREFORMS_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SUREFORMS_ENTRIES_POST_TYPE', 'sureforms_entry' );
