@@ -13,7 +13,10 @@
   "scripts": {
     "format": "vendor/bin/phpcbf",
     "lint": "vendor/bin/phpcs",
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit",
+    "phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
+    "gen-stubs": "vendor/bin/generate-stubs artifact/sureforms/ --out=tests/php/stubs/sf-stubs.php",
+    "update-stubs": "rm -f tests/php/stubs/sf-stubs.php && bash ./bin/build-zip.sh no-clean && composer gen-stubs"
   },
   "config": {
     "allow-plugins": {
