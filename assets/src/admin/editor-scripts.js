@@ -1,15 +1,21 @@
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { TabPanel } from '@wordpress/components';
+import '@Admin/editor.scss';
 
 const onSelect = ( tabName ) => {
     console.log( 'Selecting tab', tabName );
 };
 
 const PluginDocumentSettingPanelDemo = () => (
-    <>
-    <TabPanel
-        className="my-tab-panel"
+    <PluginDocumentSettingPanel
+        initialOpen
+        title='Form Options Panel'
+        name="sureforms-forms-panel"
+        className="sureforms--panel"
+    >
+        <TabPanel
+        className="testxql"
         activeClass="active-tab"
         onSelect={ onSelect }
         tabs={ [
@@ -26,15 +32,9 @@ const PluginDocumentSettingPanelDemo = () => (
         ] }
     >
         { ( tab ) => <p>{ tab.title }</p> }
-    </TabPanel>
-    <PluginDocumentSettingPanel
-        name="custom-panel"
-        title="Custom Panel"
-        className="custom-panel"
-    >
+        </TabPanel>
         Custom Panel Contents
     </PluginDocumentSettingPanel>
-    </>
 );
 
 registerPlugin( 'plugin-document-setting-panel-demo', {

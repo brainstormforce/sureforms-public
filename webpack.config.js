@@ -10,6 +10,7 @@ module.exports = {
 	},
 	entry: {
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
+		admin: path.resolve( __dirname, 'assets/src/admin/admin.scss' ),
 	},
 	resolve: {
 		alias: {

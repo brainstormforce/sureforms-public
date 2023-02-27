@@ -34,7 +34,15 @@ class Gutenberg_Hooks {
 	 * @since X.X.X
 	 */
 	public function add_editor_assets() {
-		$script_name       = 'editor';
+		$script_name = 'editor';
+
+		$screen     = get_current_screen();
+		$post_types = array( SUREFORMS_FORMS_POST_TYPE );
+
+		if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
+			return;
+		}
+
 		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
@@ -43,5 +51,7 @@ class Gutenberg_Hooks {
 				'version'      => SUREFORMS_VER,
 			);
 		wp_enqueue_script( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.js', $script_info['dependencies'], SUREFORMS_VER, true );
+
+		wp_enqueue_style( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
 	}
 }

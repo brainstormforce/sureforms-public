@@ -9,7 +9,7 @@
 namespace SureForms;
 
 use SureForms\Inc\Post_Types;
-use SureForms\Admin\Admin_Menu;
+use SureForms\Admin\Admin;
 use SureForms\Admin\Gutenberg_Hooks;
 
 /**
@@ -94,7 +94,7 @@ class Plugin_Loader {
 	 */
 	public function load_classes() {
 		if ( is_admin() ) {
-			Admin_Menu::get_instance();
+			Admin::get_instance();
 			Gutenberg_Hooks::get_instance();
 		}
 	}

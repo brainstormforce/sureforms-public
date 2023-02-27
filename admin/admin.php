@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Menu Class.
+ * Admin Class.
  *
  * @package sureforms.
  */
@@ -9,11 +9,11 @@ namespace SureForms\Admin;
 
 use SureForms\Inc\Traits\Get_Instance;
 /**
- * Admin Menu handler class.
+ * Admin handler class.
  *
  * @since X.X.X
  */
-class Admin_Menu {
+class Admin {
 
 	use Get_Instance;
 
@@ -25,6 +25,7 @@ class Admin_Menu {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 	}
 
 	/**
@@ -45,5 +46,15 @@ class Admin_Menu {
 			'dashicons-format-quote',
 			30
 		);
+	}
+
+	/**
+	 * Enqueue Admin Scripts.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_style( 'sureforms-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 	}
 }
