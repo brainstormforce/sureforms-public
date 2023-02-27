@@ -1,0 +1,47 @@
+{
+	"name": "sureforms/form",
+	"title": "Form",
+	"description": "Displays a form.",
+	"category": "sureforms",
+	"keywords": ["email", "mail"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"mode": {
+			"type": "string",
+			"enum": ["test", "live"],
+			"default": "live"
+		},
+		"success_url": {
+			"type": "string"
+		},
+		"prices": {
+			"type": "array"
+		},
+		"gap": {
+			"type": "string",
+			"default": "25px"
+		},
+		"currency": {
+			"type": "string"
+		},
+		"color": {
+			"type": "string"
+		},
+		"loading_text": {
+			"type": "object",
+			"default": {
+				"finalizing": "",
+				"paying": "",
+				"confirming": "",
+				"confirmed": ""
+			}
+		}
+	},
+	"providesContext": {
+		"sureforms/form/mode": "mode"
+	}
+}

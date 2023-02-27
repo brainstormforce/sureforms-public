@@ -1,6 +1,7 @@
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { TabPanel } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import '@Admin/editor.scss';
 
 const onSelect = ( tabName ) => {
@@ -15,7 +16,6 @@ const PluginDocumentSettingPanelDemo = () => (
         className="sureforms--panel"
     >
         <TabPanel
-        className="testxql"
         activeClass="active-tab"
         onSelect={ onSelect }
         tabs={ [

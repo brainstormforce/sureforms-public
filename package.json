@@ -41,5 +41,9 @@
 		"grunt-contrib-copy": "^1.0.0",
 		"wp-prettier": "^2.6.2"
 	},
-	"private": true
+	"private": true,
+	"dependencies": {
+		"@surecart/components-react": "^0.0.6",
+		"@wordpress/icons": "^9.18.0"
+	}
 }

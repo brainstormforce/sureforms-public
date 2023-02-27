@@ -53,5 +53,16 @@ class Gutenberg_Hooks {
 		wp_enqueue_script( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.js', $script_info['dependencies'], SUREFORMS_VER, true );
 
 		wp_enqueue_style( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
+
+		$block_scripts = 'blocks';
+
+		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
+		$blocks_info       = file_exists( $blocks_asset_path )
+			? include $blocks_asset_path
+			: array(
+				'dependencies' => [],
+				'version'      => SUREFORMS_VER,
+			);
+		wp_enqueue_script( 'sureforms-' . $block_scripts, SUREFORMS_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
 	}
 }
