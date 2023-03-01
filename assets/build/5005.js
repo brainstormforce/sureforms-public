@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunksureforms=self.webpackChunksureforms||[]).push([[5005],{5005:function(r,s,e){e.r(s),e.d(s,{sc_menu_divider:function(){return n}});var a=e(6046);const n=class{constructor(r){(0,a.r)(this,r)}render(){return(0,a.h)("div",{part:"base",class:"menu-divider",role:"separator","aria-hidden":"true"})}};n.style=":host{display:block}.menu-divider{border-top:solid 1px var(--sc-panel-border-color);margin:var(--sc-spacing-x-small) 0}"}}]);
+//# sourceMappingURL=5005.js.map

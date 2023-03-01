@@ -1,11 +1,10 @@
 {
-	"name": "surecart/email",
+	"name": "sureforms/email",
 	"title": "Email",
 	"description": "Displays an email form field.",
-	"category": "surecart",
+	"category": "sureforms",
 	"keywords": ["email", "mail"],
-  "textdomain": "surecart",
-	"ancestor": ["surecart/form"],
+    "textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
 		"html": false

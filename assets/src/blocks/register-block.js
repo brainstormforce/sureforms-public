@@ -23,7 +23,7 @@ const registerBlock = (block) => {
 	registerBlockType(
 		{
 			...metadata,
-			textdomain: 'SureForms', // set our text domain for everything.
+			textdomain: 'sureforms', // set our text domain for everything.
 		},
 		{
 			...settings,

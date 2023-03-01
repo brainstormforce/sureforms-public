@@ -2,6 +2,7 @@ import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import '@surecart/components/src/themes/base.css';
 import '@Admin/editor.scss';
 
 const onSelect = ( tabName ) => {

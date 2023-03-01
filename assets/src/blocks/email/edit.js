@@ -8,12 +8,15 @@ import { __ } from '@wordpress/i18n';
  */
 import { ScInput } from '@surecart/components-react';
 
+import Settings from './settings';
+
 export default ({ className, attributes, setAttributes }) => {
 	const { label, placeholder, help } = attributes;
 
 	return (
+		<>
+		<Settings attributes={attributes} setAttributes={setAttributes} />
 		<div className={className}>
-
 			<ScInput
 				type="email"
 				label={label}
@@ -22,5 +25,6 @@ export default ({ className, attributes, setAttributes }) => {
 				required
 			></ScInput>
 		</div>
+		</>
 	);
 };
