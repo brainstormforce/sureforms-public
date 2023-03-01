@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { css,jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
 import {
 	InnerBlocks,
@@ -101,6 +101,11 @@ export default function edit({ clientId, attributes, setAttributes }) {
 					clientId={clientId}
 				/>
 			) : (
+				<div
+				css={css`
+					padding: 32px;
+				`}
+				>
 				<InnerBlocks
 					templateLock={false}
 					renderAppender={
@@ -109,6 +114,7 @@ export default function edit({ clientId, attributes, setAttributes }) {
 							: InnerBlocks.ButtonBlockAppender
 					}
 				/>
+				</div>
 			)}
 		</Fragment>
 	);

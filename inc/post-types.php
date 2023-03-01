@@ -61,6 +61,14 @@ class Post_Types {
 				'supports'          => array( 'title', 'author', 'editor', 'custom-fields' ),
 				'show_in_menu'      => 'sureforms_menu',
 				'show_in_nav_menus' => true,
+				'template'          => [
+					[
+						'sureforms/form',
+						[],
+						[],
+					],
+				],
+				'template_lock'     => 'all',
 			)
 		);
 

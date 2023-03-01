@@ -44,4 +44,20 @@ body.post-type-sureforms_form {
 			width: auto;
 		}
 	}
+
+	.block-editor-inner-blocks {
+		.block-editor-block-list__layout {
+			.wp-block {
+				padding: 5px;
+				&:not(:last-child){
+					margin-bottom: 20px;
+				}
+			}
+		}
+	}
+
+	.wp-block {
+		max-width: 1000px;
+		width: 80%;
+	}
 }

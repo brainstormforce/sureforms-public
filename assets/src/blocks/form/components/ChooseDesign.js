@@ -17,15 +17,14 @@ export default ({ templates, template, setTemplate }) => {
 
 	return (
 		<PlaceholderTemplate
-			header={__('Choose A Starting Design', 'sureforms')}
+			header={__('Choose A Starting Template', 'sureforms')}
 			footerRight={
 				<ScButton
 					type="primary"
 					disabled={!choice}
 					onClick={() => setTemplate(choice)}
 				>
-					<sc-icon name="arrow-right" slot="suffix"></sc-icon>
-					{__('Next', 'sureforms')}
+					{__('Select Template', 'sureforms')}
 				</ScButton>
 			}
 			maxHeight={'300px'}
