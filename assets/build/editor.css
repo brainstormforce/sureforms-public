@@ -1132,18 +1132,28 @@ video {
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+}.visible {
+  visibility: visible;
 }.relative {
   position: relative;
+}.sticky {
+  position: sticky;
 }.\!block {
   display: block !important;
 }.block {
   display: block;
+}.flex {
+  display: flex;
+}.grid {
+  display: grid;
 }.hidden {
   display: none;
 }.transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }.border {
   border-width: 1px;
+}.outline {
+  outline-style: solid;
 }
 
 /*# sourceMappingURL=editor.css.map*/

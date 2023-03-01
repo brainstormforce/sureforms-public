@@ -2,13 +2,14 @@
 import { jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
 import {
+	InnerBlocks,
 	store as blockEditorStore
 } from '@wordpress/block-editor';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import Setup from './components/setup';
+import Setup from './components/Setup';
 
 export default function edit({ clientId, attributes, setAttributes }) {
 	const [patterns, setPatterns] = useState([]);
@@ -46,12 +47,12 @@ export default function edit({ clientId, attributes, setAttributes }) {
 	});
 
 	useEffect(() => {
-		// getPatterns();
+		getPatterns();
 	}, []);
 
 	const getPatterns = async () => {
 		const patterns = await apiFetch({
-			path: '/surecart/v1/form-patterns',
+			path: '/sureforms/v1/form-patterns',
 		});
 		setPatterns(patterns);
 	};
@@ -60,12 +61,10 @@ export default function edit({ clientId, attributes, setAttributes }) {
 	 * Maybe create the template for the form.
 	 */
 	const maybeCreateTemplate = async ({
-		template = 'default',
-		choices,
-		choice_type,
+		template = 'contact-form'
 	}) => {
 		const pattern = patterns.find(
-			(pattern) => pattern.name === `surecart/${template}`
+			(pattern) => pattern.name === `sureforms/${template}`
 		);
 
 		if (!pattern) {
@@ -79,22 +78,11 @@ export default function edit({ clientId, attributes, setAttributes }) {
 	};
 
 	const onCreate = async ({
-		choices,
-		choice_type,
-		template,
-		custom_success_url,
-		success_url,
+		template
 	}) => {
-		// form attributes.
-		setAttributes({
-			prices: choice_type === 'all' ? choices : [],
-			redirect: custom_success_url && success_url ? success_url : '',
-		});
 
 		const result = await maybeCreateTemplate({
-			template,
-			choices,
-			choice_type,
+			template
 		});
 
 		replaceInnerBlocks(
@@ -113,7 +101,14 @@ export default function edit({ clientId, attributes, setAttributes }) {
 					clientId={clientId}
 				/>
 			) : (
-				__( 'Form Should be here' )
+				<InnerBlocks
+					templateLock={false}
+					renderAppender={
+						blockCount
+							? undefined
+							: InnerBlocks.ButtonBlockAppender
+					}
+				/>
 			)}
 		</Fragment>
 	);

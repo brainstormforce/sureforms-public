@@ -113,6 +113,14 @@ class Gutenberg_Hooks {
 			);
 		wp_enqueue_script( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.js', $script_info['dependencies'], SUREFORMS_VER, true );
 
+		wp_localize_script(
+			'sureforms-' . $script_name,
+			'sfBlockData',
+			[
+				'plugin_url' => SUREFORMS_URL,
+			]
+		);
+
 		wp_enqueue_style( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
 
 		$block_scripts = 'blocks';
