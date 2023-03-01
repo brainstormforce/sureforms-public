@@ -1,18 +1,18 @@
 export default () => {
     return <InspectorControls>
-    <PanelBody title={__('Form Template', 'surecart')}>
+    <PanelBody title={__('Form Template', 'sureforms')}>
         <PanelRow>
             <div>
                 <Button isPrimary onClick={changeTemplate}>
-                    {__('Change Template', 'surecart')}
+                    {__('Change Template', 'sureforms')}
                 </Button>
             </div>
         </PanelRow>
     </PanelBody>
-    <PanelBody title={__('Style', 'surecart')}>
+    <PanelBody title={__('Style', 'sureforms')}>
         <PanelRow>
             <BaseControl.VisualLabel>
-                {__('Form Highlight Color', 'surecart')}
+                {__('Form Highlight Color', 'sureforms')}
             </BaseControl.VisualLabel>
             <ColorPopup
                 color={color}
@@ -28,7 +28,7 @@ export default () => {
                 value={gap}
                 help={__(
                     'The this is the space between the rows of form elements.',
-                    'surecart'
+                    'sureforms'
                 )}
                 units={[
                     { value: 'px', label: 'px', default: 0 },
@@ -37,10 +37,10 @@ export default () => {
             />
         </PanelRow>
     </PanelBody>
-    <PanelBody title={__('Thank You Page', 'surecart')}>
+    <PanelBody title={__('Thank You Page', 'sureforms')}>
         <PanelRow>
             <ToggleControl
-                label={__('Custom Thank You Page', 'surecart')}
+                label={__('Custom Thank You Page', 'sureforms')}
                 checked={custom_success_url}
                 onChange={(custom_success_url) =>
                     setCustomSuccessUrl(custom_success_url)
@@ -82,14 +82,14 @@ export default () => {
         )}
     </PanelBody>
     <PanelBody
-        title={__('Loading Text', 'surecart')}
+        title={__('Loading Text', 'sureforms')}
         initialOpen={false}
     >
         <PanelRow>
             <TextControl
-                label={__('Submitting Order', 'surecart')}
+                label={__('Submitting Order', 'sureforms')}
                 value={loading_text?.finalizing}
-                placeholder={__('Submitting Order...', 'surecart')}
+                placeholder={__('Submitting Order...', 'sureforms')}
                 onChange={(finalizing) =>
                     setAttributes({
                         loading_text: {
@@ -102,11 +102,11 @@ export default () => {
         </PanelRow>
         <PanelRow>
             <TextControl
-                label={__('Processing Payment', 'surecart')}
+                label={__('Processing Payment', 'sureforms')}
                 value={loading_text?.paying}
                 placeholder={__(
                     'Processing payment...',
-                    'surecart'
+                    'sureforms'
                 )}
                 onChange={(paying) =>
                     setAttributes({
@@ -120,9 +120,9 @@ export default () => {
         </PanelRow>
         <PanelRow>
             <TextControl
-                label={__('Confirming Payment', 'surecart')}
+                label={__('Confirming Payment', 'sureforms')}
                 value={loading_text?.confirming}
-                placeholder={__('Finalizing order...', 'surecart')}
+                placeholder={__('Finalizing order...', 'sureforms')}
                 onChange={(confirming) =>
                     setAttributes({
                         loading_text: {
@@ -135,11 +135,11 @@ export default () => {
         </PanelRow>
         <PanelRow>
             <TextControl
-                label={__('Success Text', 'surecart')}
+                label={__('Success Text', 'sureforms')}
                 value={loading_text?.confirmed}
                 placeholder={__(
                     'Success! Redirecting...',
-                    'surecart'
+                    'sureforms'
                 )}
                 onChange={(confirmed) =>
                     setAttributes({

@@ -17,7 +17,7 @@ export default ({ templates, template, setTemplate }) => {
 
 	return (
 		<PlaceholderTemplate
-			header={__('Choose A Starting Design', 'surecart')}
+			header={__('Choose A Starting Design', 'sureforms')}
 			footerRight={
 				<ScButton
 					type="primary"
@@ -25,7 +25,7 @@ export default ({ templates, template, setTemplate }) => {
 					onClick={() => setTemplate(choice)}
 				>
 					<sc-icon name="arrow-right" slot="suffix"></sc-icon>
-					{__('Next', 'surecart')}
+					{__('Next', 'sureforms')}
 				</ScButton>
 			}
 			maxHeight={'300px'}
@@ -49,7 +49,7 @@ export default ({ templates, template, setTemplate }) => {
 			>
 				{templates.map((template) => {
 					const url = sfBlockData?.plugin_url;
-					const name = template.name.replace('surecart/', '');
+					const name = template.name.replace('sureforms/', '');
 					return (
 						<Thumbnail
 							label={template?.title}
