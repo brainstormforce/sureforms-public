@@ -1,4 +1,5 @@
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, createBlock } from '@wordpress/blocks';
+import { getBlockTypes } from './util';
 
 /**
  * Function to register blocks provided by SureForms.
@@ -24,9 +25,17 @@ const registerBlock = (block) => {
 		{
 			...metadata,
 			textdomain: 'sureforms', // set our text domain for everything.
+			postTypes: [ 'sureforms_form' ], // Register Blocks for forms only.
 		},
 		{
 			...settings,
+			transforms: {
+				from: [{
+					type: 'block',
+					blocks: getBlockTypes(metadata.name),
+					transform: (attributes) => { return createBlock( metadata.name, attributes) },
+				}],
+			},
 		}
 	);
 };

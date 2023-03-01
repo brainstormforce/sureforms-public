@@ -1,0 +1,38 @@
+{
+	"name": "sureforms/switch",
+	"title": "Switch",
+	"description": "Display a toggle switch.",
+	"category": "sureforms",
+	"keywords": ["submit", "button"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"required": {
+			"type": "boolean"
+		},
+		"name": {
+			"type": "string",
+			"default": "switch"
+		},
+		"value": {
+			"type": "string",
+			"default": "on"
+		},
+		"label": {
+			"type": "string",
+			"default": "Switch"
+		},
+		"description": {
+			"type": "string"
+		},
+		"help": {
+			"type": "string"
+		},
+		"checked": {
+			"type": "boolean"
+		}
+	}
+}

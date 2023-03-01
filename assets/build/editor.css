@@ -1132,12 +1132,16 @@ video {
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+}.relative {
+  position: relative;
 }.\!block {
   display: block !important;
 }.block {
   display: block;
 }.hidden {
   display: none;
+}.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }.border {
   border-width: 1px;
 }

@@ -25,6 +25,26 @@ class Gutenberg_Hooks {
 	 */
 	public function __construct() {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'add_editor_assets' ] );
+		add_action( 'block_categories_all', [ $this, 'register_block_categories' ] );
+	}
+
+	/**
+	 * Register our custom block category.
+	 *
+	 * @param array $categories Array of categories.
+	 * @return array
+	 * @since X.X.X
+	 */
+	public function register_block_categories( $categories ) {
+		return [
+			...[
+				[
+					'slug'  => 'sureforms',
+					'title' => esc_html__( 'SureForms', 'sureforms' ),
+				],
+			],
+			...$categories,
+		];
 	}
 
 	/**
