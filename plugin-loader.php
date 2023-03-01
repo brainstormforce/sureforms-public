@@ -9,8 +9,9 @@
 namespace SureForms;
 
 use SureForms\Inc\Post_Types;
+use SureForms\Inc\Gutenberg_Hooks;
+use SureForms\API\Block_Patterns;
 use SureForms\Admin\Admin;
-use SureForms\Admin\Gutenberg_Hooks;
 
 /**
  * Plugin_Loader
@@ -84,6 +85,8 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		Post_Types::get_instance();
+		Block_Patterns::get_instance();
+		Gutenberg_Hooks::get_instance();
 	}
 
 	/**
@@ -95,7 +98,6 @@ class Plugin_Loader {
 	public function load_classes() {
 		if ( is_admin() ) {
 			Admin::get_instance();
-			Gutenberg_Hooks::get_instance();
 		}
 	}
 

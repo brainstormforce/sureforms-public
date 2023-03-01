@@ -5,7 +5,7 @@
  * @package sureforms.
  */
 
-namespace SureForms\Admin;
+namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
 /**
@@ -14,6 +14,13 @@ use SureForms\Inc\Traits\Get_Instance;
  * @since X.X.X
  */
 class Gutenberg_Hooks {
+
+	/**
+	 * Block patterns to register.
+	 *
+	 * @var array
+	 */
+	protected $patterns = [];
 
 	use Get_Instance;
 
@@ -24,8 +31,16 @@ class Gutenberg_Hooks {
 	 * @since X.X.X
 	 */
 	public function __construct() {
+		// Setting Form default patterns.
+		$this->patterns = [
+			'contact-form',
+			'newsletter-form',
+		];
+
+		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'add_editor_assets' ] );
 		add_action( 'block_categories_all', [ $this, 'register_block_categories' ] );
+		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 	}
 
 	/**
@@ -45,6 +60,32 @@ class Gutenberg_Hooks {
 			],
 			...$categories,
 		];
+	}
+
+	/**
+	 * Register our block patterns.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function register_block_patterns() {
+		/**
+		 * Filters the plugin block patterns.
+		 *
+		 * @param array $patterns List of block patterns by name.
+		 */
+		$this->patterns = apply_filters( 'sureforms_block_patterns', $this->patterns );
+
+		// loop through patterns and register.
+		foreach ( $this->patterns as $block_pattern ) {
+			$pattern_file = plugin_dir_path( SUREFORMS_FILE ) . 'templates/forms/' . $block_pattern . '.php';
+			if ( is_readable( $pattern_file ) ) {
+				register_block_pattern(
+					'sureforms/' . $block_pattern,
+					require $pattern_file
+				);
+			}
+		}
 	}
 
 	/**
