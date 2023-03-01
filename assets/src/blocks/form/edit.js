@@ -514,7 +514,7 @@ export default function edit({ clientId, attributes, setAttributes }) {
 										'--sc-color-primary-500': color,
 										'--sc-focus-ring-color-primary': color,
 										'--sc-input-border-color-focus': color,
-								  }
+								}
 								: {}),
 						}}
 						disableComponentsValidation={true}

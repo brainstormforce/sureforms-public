@@ -1,0 +1,50 @@
+{
+	"name": "surecart/email",
+	"title": "Email",
+	"description": "Displays an email form field.",
+	"category": "surecart",
+	"keywords": ["email", "mail"],
+  "textdomain": "surecart",
+	"ancestor": ["surecart/form"],
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"value": {
+			"type": "string",
+			"default": ""
+		},
+		"placeholder": {
+			"type": "string",
+			"default": ""
+		},
+		"disabled": {
+			"type": "boolean",
+			"default": false
+		},
+		"size": {
+			"type": "string",
+			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": "Email"
+		},
+		"help": {
+			"type": "string"
+		},
+		"inputmode": {
+			"type": "string"
+		},
+		"max": {
+			"type": ["string", "number"]
+		},
+		"maxlength": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		}
+	}
+}

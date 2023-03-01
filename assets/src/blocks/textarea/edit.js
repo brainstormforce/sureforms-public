@@ -11,6 +11,11 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
+/**
+ * Component Dependencies
+ */
+import { ScTextarea } from '@surecart/components-react';
+
 export default ({ className, attributes, setAttributes, isSelected }) => {
 	const { label, placeholder, help, name, required, maxlength } = attributes;
 
@@ -68,11 +73,14 @@ export default ({ className, attributes, setAttributes, isSelected }) => {
 			</InspectorControls>
 
 			{!isSelected && !name && <div>Please add a name</div>}
-			<textarea
-              placeholder={ placeholder ? placeholder : __('Type your answer here', 'formality') }
-              
-              value={ placeholder }
-            ></textarea>
+			<ScTextarea
+				className={className}
+				required={required}
+				name={name}
+				label={label}
+				placeholder={placeholder}
+				help={help}
+			></ScTextarea>
 		</Fragment>
 	);
 };

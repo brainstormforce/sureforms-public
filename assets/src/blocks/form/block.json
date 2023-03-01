@@ -10,38 +10,9 @@
 		"html": false
 	},
 	"attributes": {
-		"mode": {
+		"id": {
 			"type": "string",
-			"enum": ["test", "live"],
-			"default": "live"
-		},
-		"success_url": {
-			"type": "string"
-		},
-		"prices": {
-			"type": "array"
-		},
-		"gap": {
-			"type": "string",
-			"default": "25px"
-		},
-		"currency": {
-			"type": "string"
-		},
-		"color": {
-			"type": "string"
-		},
-		"loading_text": {
-			"type": "object",
-			"default": {
-				"finalizing": "",
-				"paying": "",
-				"confirming": "",
-				"confirmed": ""
-			}
+			"default": ""
 		}
-	},
-	"providesContext": {
-		"sureforms/form/mode": "mode"
 	}
 }
