@@ -38,7 +38,8 @@ class Gutenberg_Hooks {
 		];
 
 		// Initializing hooks.
-		add_action( 'enqueue_block_editor_assets', [ $this, 'add_editor_assets' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
 		add_action( 'block_categories_all', [ $this, 'register_block_categories' ] );
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 	}
@@ -89,20 +90,20 @@ class Gutenberg_Hooks {
 	}
 
 	/**
-	 * Add Editor Scripts.
+	 * Add Form Editor Scripts.
 	 *
 	 * @return void
 	 * @since X.X.X
 	 */
-	public function add_editor_assets() {
+	public function form_editor_screen_assets() {
 		$script_name = 'editor';
 
 		$screen     = get_current_screen();
 		$post_types = array( SUREFORMS_FORMS_POST_TYPE );
 
-		// if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
-		// 	return;
-		// }
+		if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
+			return;
+		}
 
 		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
@@ -122,16 +123,32 @@ class Gutenberg_Hooks {
 		);
 
 		wp_enqueue_style( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
+	}
 
-		$block_scripts = 'blocks';
+	/**
+	 * Register all editor scripts.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function block_editor_assets() {
+		$all_screen_blocks = 'blocks';
 
-		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
+		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
 			? include $blocks_asset_path
 			: array(
 				'dependencies' => [],
 				'version'      => SUREFORMS_VER,
 			);
-		wp_enqueue_script( 'sureforms-' . $block_scripts, SUREFORMS_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SUREFORMS_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
+
+		wp_localize_script(
+			'sureforms-' . $all_screen_blocks,
+			'sfBlockData',
+			[
+				'plugin_url' => SUREFORMS_URL,
+			]
+		);
 	}
 }

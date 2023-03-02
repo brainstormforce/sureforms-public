@@ -3,6 +3,7 @@
 	"title": "Switch",
 	"description": "Display a toggle switch.",
 	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
 	"keywords": ["submit", "button"],
     "textdomain": "sureforms",
 	"supports": {

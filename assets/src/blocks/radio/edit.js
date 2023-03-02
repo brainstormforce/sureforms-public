@@ -17,24 +17,24 @@ export default ({ className, attributes, setAttributes }) => {
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'surecart')}>
+				<PanelBody title={__('Attributes', 'sureforms')}>
 					<PanelRow>
 						<TextControl
-							label={__('Name', 'surecart')}
+							label={__('Name', 'sureforms')}
 							value={name}
 							onChange={(name) => setAttributes({ name })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Value', 'surecart')}
+							label={__('Value', 'sureforms')}
 							value={value}
 							onChange={(value) => setAttributes({ value })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Checked by default', 'surecart')}
+							label={__('Checked by default', 'sureforms')}
 							checked={checked}
 							onChange={(checked) => setAttributes({ checked })}
 						/>
@@ -54,10 +54,10 @@ export default ({ className, attributes, setAttributes }) => {
 				})}
 			>
 				<RichText
-					aria-label={__('Radio Text', 'surecart')}
+					aria-label={__('Radio Text', 'sureforms')}
 					placeholder={__(
 						'Click here to add some radio text...',
-						'surecart'
+						'sureforms'
 					)}
 					value={label}
 					onChange={(label) => setAttributes({ label })}

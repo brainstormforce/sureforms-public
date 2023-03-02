@@ -31,8 +31,6 @@ const registerBlock = (block) => {
 		}
 	} : {};
 
-	const postTypes = 'sureforms/sf-form' !== metadata.name ? { postTypes: ['sureforms_form'] } : {};
-
 	registerBlockType(
 		{
 			...metadata,

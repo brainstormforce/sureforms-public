@@ -3,6 +3,7 @@
 	"title": "Text Field",
 	"description": "Displays a form text input field. This is saved with the order as additional metadata.",
 	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
 	"keywords": ["text", "input", "custom", "field"],
     "textdomain": "sureforms",
 	"supports": {

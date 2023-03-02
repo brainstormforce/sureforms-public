@@ -25,31 +25,31 @@ export default ({ className, attributes, setAttributes }) => {
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'surecart')}>
+				<PanelBody title={__('Attributes', 'sureforms')}>
 					<PanelRow>
 						<ToggleControl
-							label={__('Required', 'surecart')}
+							label={__('Required', 'sureforms')}
 							checked={required}
 							onChange={(required) => setAttributes({ required })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Name', 'surecart')}
+							label={__('Name', 'sureforms')}
 							value={name}
 							onChange={(name) => setAttributes({ name })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Value', 'surecart')}
+							label={__('Value', 'sureforms')}
 							value={value}
 							onChange={(value) => setAttributes({ value })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Checked by default', 'surecart')}
+							label={__('Checked by default', 'sureforms')}
 							checked={checked}
 							onChange={(checked) => setAttributes({ checked })}
 						/>
@@ -65,8 +65,8 @@ export default ({ className, attributes, setAttributes }) => {
 				{...blockProps}
 			>
 				<RichText
-					aria-label={__('Checkbox Text', 'surecart')}
-					placeholder={__('Add some checkbox text...', 'surecart')}
+					aria-label={__('Checkbox Text', 'sureforms')}
+					placeholder={__('Add some checkbox text...', 'sureforms')}
 					value={label}
 					onChange={(label) => setAttributes({ label })}
 				/>

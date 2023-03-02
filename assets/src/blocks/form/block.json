@@ -4,6 +4,7 @@
 	"description": "Displays a form.",
 	"category": "sureforms",
 	"keywords": ["email", "mail"],
+	"parent": ["sureforms/sf-form"],
     "textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

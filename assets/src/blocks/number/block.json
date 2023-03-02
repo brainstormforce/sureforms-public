@@ -3,6 +3,7 @@
 	"title": "Number Field",
 	"description": "Displays a form number input field. This is saved with the order as additional metadata.",
 	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
 	"keywords": ["number", "input", "custom", "field"],
     "textdomain": "sureforms",
 	"supports": {

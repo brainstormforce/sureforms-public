@@ -4,6 +4,7 @@
 	"title": "Checkbox",
 	"description": "Display a checkbox input",
 	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
 	"keywords": ["checkbox", "toggle", "checkout", "engine"],
     "textdomain": "sureforms",
 	"supports": {

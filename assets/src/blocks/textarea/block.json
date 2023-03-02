@@ -3,6 +3,7 @@
 	"title": "Textarea",
 	"description": "Displays a form text textarea field. This is saved with the order as additional metadata.",
 	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
 	"keywords": ["textarea", "input", "custom", "field"],
     "textdomain": "sureforms",
 	"supports": {

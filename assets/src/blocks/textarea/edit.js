@@ -22,31 +22,31 @@ export default ({ className, attributes, setAttributes, isSelected }) => {
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'surecart')}>
+				<PanelBody title={__('Attributes', 'sureforms')}>
 					<PanelRow>
 						<ToggleControl
-							label={__('Required', 'surecart')}
+							label={__('Required', 'sureforms')}
 							checked={required}
 							onChange={(required) => setAttributes({ required })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Name', 'surecart')}
+							label={__('Name', 'sureforms')}
 							value={name}
 							onChange={(name) => setAttributes({ name })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Label', 'surecart')}
+							label={__('Label', 'sureforms')}
 							value={label}
 							onChange={(label) => setAttributes({ label })}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Placeholder', 'surecart')}
+							label={__('Placeholder', 'sureforms')}
 							value={placeholder}
 							onChange={(placeholder) =>
 								setAttributes({ placeholder })
@@ -55,7 +55,7 @@ export default ({ className, attributes, setAttributes, isSelected }) => {
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Max Length', 'surecart')}
+							label={__('Max Length', 'sureforms')}
 							value={maxlength}
 							onChange={(maxlength) =>
 								setAttributes({ maxlength })
@@ -64,7 +64,7 @@ export default ({ className, attributes, setAttributes, isSelected }) => {
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Help', 'surecart')}
+							label={__('Help', 'sureforms')}
 							value={help}
 							onChange={(help) => setAttributes({ help })}
 						/>
