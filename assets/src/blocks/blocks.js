@@ -1,3 +1,4 @@
+import * as sfForm from '@Blocks/sureforms-form';
 import * as form from '@Blocks/form';
 import * as text from '@Blocks/input';
 import * as number from '@Blocks/number';
@@ -19,5 +20,6 @@ registerBlocks([
 	radio,
 	toggle,
 	checkbox,
-	number
+	number,
+	sfForm,
 ]);

@@ -11,6 +11,7 @@
 return [
 	'title'      => __( 'Contact Form', 'sureforms' ),
 	'categories' => [ 'sureforms_form' ],
+	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
 	'content'    => '<!-- wp:sureforms/input {"label":"Name"} -->
 	<sc-input label="Name" name="input" placeholder="" size="medium" value="" class="wp-block-sureforms-input"></sc-input>
 	<!-- /wp:sureforms/input -->

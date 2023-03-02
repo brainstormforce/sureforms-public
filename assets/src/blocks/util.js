@@ -42,9 +42,9 @@ const getBlockTypes = (exclude = "") => {
 	]
 	if(exclude) {
 		for( var i = 0; i < types.length; i++){
-		if ( types[i] === exclude) {
-			types.splice(i, 1)
-		}
+			if ( types[i] === exclude) {
+				types.splice(i, 1)
+			}
 		}
 	}
 	return types

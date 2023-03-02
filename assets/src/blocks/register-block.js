@@ -21,21 +21,26 @@ const registerBlock = (block) => {
 
 	const { metadata, settings } = block;
 
+	const additionalSettings = 'sureforms/form' !== metadata.name ? {
+		transforms: {
+			from: [{
+				type: 'block',
+				blocks: getBlockTypes(metadata.name),
+				transform: (attributes) => { return createBlock( metadata.name, attributes) },
+			}],
+		}
+	} : {};
+
+	const postTypes = 'sureforms/sf-form' !== metadata.name ? { postTypes: ['sureforms_form'] } : {};
+
 	registerBlockType(
 		{
 			...metadata,
 			textdomain: 'sureforms', // set our text domain for everything.
-			postTypes: [ 'sureforms_form' ], // Register Blocks for forms only.
 		},
 		{
 			...settings,
-			transforms: {
-				from: [{
-					type: 'block',
-					blocks: getBlockTypes(metadata.name),
-					transform: (attributes) => { return createBlock( metadata.name, attributes) },
-				}],
-			},
+			...additionalSettings,
 		}
 	);
 };

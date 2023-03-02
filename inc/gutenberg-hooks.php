@@ -100,9 +100,9 @@ class Gutenberg_Hooks {
 		$screen     = get_current_screen();
 		$post_types = array( SUREFORMS_FORMS_POST_TYPE );
 
-		if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
-			return;
-		}
+		// if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
+		// 	return;
+		// }
 
 		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
