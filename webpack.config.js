@@ -9,6 +9,7 @@ module.exports = {
 		usedExports: true,
 	},
 	entry: {
+		formEditor: path.resolve( __dirname, 'assets/src/admin/form/editor.js' ),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
 		admin: path.resolve( __dirname, 'assets/src/admin/admin.scss' ),
 		blocks: path.resolve( __dirname, 'assets/src/blocks/blocks.js' ),

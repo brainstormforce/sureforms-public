@@ -96,7 +96,7 @@ class Gutenberg_Hooks {
 	 * @since X.X.X
 	 */
 	public function form_editor_screen_assets() {
-		$script_name = 'editor';
+		$form_editor_script = 'formEditor';
 
 		$screen     = get_current_screen();
 		$post_types = array( SUREFORMS_FORMS_POST_TYPE );
@@ -105,24 +105,22 @@ class Gutenberg_Hooks {
 			return;
 		}
 
-		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $script_name . '.asset.php';
+		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $form_editor_script . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: array(
 				'dependencies' => [],
 				'version'      => SUREFORMS_VER,
 			);
-		wp_enqueue_script( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.js', $script_info['dependencies'], SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-' . $form_editor_script, SUREFORMS_URL . 'assets/build/' . $form_editor_script . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
 
 		wp_localize_script(
-			'sureforms-' . $script_name,
+			'sureforms-' . $form_editor_script,
 			'sfBlockData',
 			[
 				'plugin_url' => SUREFORMS_URL,
 			]
 		);
-
-		wp_enqueue_style( 'sureforms-' . $script_name, SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
 	}
 
 	/**
@@ -150,5 +148,7 @@ class Gutenberg_Hooks {
 				'plugin_url' => SUREFORMS_URL,
 			]
 		);
+
+		wp_enqueue_style( 'sureforms-editor', SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
 	}
 }
