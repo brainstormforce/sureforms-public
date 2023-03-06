@@ -24,6 +24,7 @@ class Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
+		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
 	}
 
 	/**
@@ -106,5 +107,20 @@ class Post_Types {
 				'show_in_menu'        => 'sureforms_menu',
 			)
 		);
+	}
+
+	/**
+	 * Form Template filter.
+	 *
+	 * @param string $template Template.
+	 * @return string Template.
+	 */
+	public function page_template( $template ) {
+		if ( is_singular( SUREFORMS_FORMS_POST_TYPE ) ) {
+			$file_name = 'single-form.php';
+			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SUREFORMS_DIR . '/templates/' . $file_name;
+			$template  = apply_filters('sureforms_form_template', $template);
+		}
+		return $template;
 	}
 }

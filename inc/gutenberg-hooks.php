@@ -42,6 +42,28 @@ class Gutenberg_Hooks {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
 		add_action( 'block_categories_all', [ $this, 'register_block_categories' ] );
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
+		// TODO: Need to check this later.
+		// add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );.
+	}
+
+	/**
+	 * Disable forms wrapper block in Forms CPT.
+	 *
+	 * @param array  $allowed_block_types Allowed Block Types array.
+	 * @param object $editor_context Editor Context object.
+	 * @return array Array of allowed Block Types.
+	 */
+	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
+		// Get all the registered blocks.
+		$blocks = \WP_Block_Type_Registry::get_instance()->get_all_registered();
+
+		// Disable Forms main parent.
+		if ( SUREFORMS_FORMS_POST_TYPE === $editor_context->post->post_type ) {
+			unset( $blocks['sureforms/sf-form'] );
+		}
+
+		// Return the new list of allowed blocks.
+		return array_keys( $blocks );
 	}
 
 	/**
