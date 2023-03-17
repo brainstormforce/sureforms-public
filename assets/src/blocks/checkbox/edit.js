@@ -17,7 +17,7 @@ import {
 import { ScCheckbox } from '@surecart/components-react';
 import { useBlockProps } from '@wordpress/block-editor';
 
-export default ({ className, attributes, setAttributes }) => {
+export default ( { className, attributes, setAttributes } ) => {
 	const { label, value, checked, name, required } = attributes;
 
 	const blockProps = useBlockProps();
@@ -25,50 +25,50 @@ export default ({ className, attributes, setAttributes }) => {
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'sureforms')}>
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
-							label={__('Required', 'sureforms')}
-							checked={required}
-							onChange={(required) => setAttributes({ required })}
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( required ) => setAttributes( { required } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Name', 'sureforms')}
-							value={name}
-							onChange={(name) => setAttributes({ name })}
+							label={ __( 'Name', 'sureforms' ) }
+							value={ name }
+							onChange={ ( name ) => setAttributes( { name } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Value', 'sureforms')}
-							value={value}
-							onChange={(value) => setAttributes({ value })}
+							label={ __( 'Value', 'sureforms' ) }
+							value={ value }
+							onChange={ ( value ) => setAttributes( { value } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Checked by default', 'sureforms')}
-							checked={checked}
-							onChange={(checked) => setAttributes({ checked })}
+							label={ __( 'Checked by default', 'sureforms' ) }
+							checked={ checked }
+							onChange={ ( checked ) => setAttributes( { checked } ) }
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 
 			<ScCheckbox
-				className={className}
-				name={name}
-				required={required}
+				className={ className }
+				name={ name }
+				required={ required }
 				edit
-				{...blockProps}
+				{ ...blockProps }
 			>
 				<RichText
-					aria-label={__('Checkbox Text', 'sureforms')}
-					placeholder={__('Add some checkbox text...', 'sureforms')}
-					value={label}
-					onChange={(label) => setAttributes({ label })}
+					aria-label={ __( 'Checkbox Text', 'sureforms' ) }
+					placeholder={ __( 'Add some checkbox text…', 'sureforms' ) }
+					value={ label }
+					onChange={ ( label ) => setAttributes( { label } ) }
 				/>
 			</ScCheckbox>
 		</Fragment>

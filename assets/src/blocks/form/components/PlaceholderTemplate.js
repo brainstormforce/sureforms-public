@@ -1,17 +1,17 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
-export default ({
+export default ( {
 	header,
 	footerLeft,
 	footerRight,
 	children,
 	maxHeight,
 	minHeight,
-}) => {
+} ) => {
 	return (
 		<div
-			css={css`
+			css={ css`
 				background: #fff;
 				font-family: var(--sc-font-sans);
 				font-size: 14px;
@@ -28,22 +28,22 @@ export default ({
 				background-color: #fff;
 				border: 1px solid #ddd;
 				outline: 1px solid transparent;
-			`}
-			style={{
+			` }
+			style={ {
 				'--sc-color-primary-500': 'var(--wp-admin-theme-color)',
 				'--sc-focus-ring-color-primary': 'var(--wp-admin-theme-color)',
 				'--sc-input-border-color-focus': 'var(--wp-admin-theme-color)',
-			}}
+			} }
 		>
 			<div
-				css={css`
+				css={ css`
 					width: 100%;
 					position: relative;
-				`}
+				` }
 			>
 				<div
-					css={css`
-						position: ${maxHeight ? 'sticky' : 'relative'};
+					css={ css`
+						position: ${ maxHeight ? 'sticky' : 'relative' };
 						top: 0;
 						left: 0;
 						right: 0;
@@ -56,24 +56,24 @@ export default ({
 						height: 60px;
 						font-size: 1rem;
 						font-weight: 600;
-					`}
+					` }
 				>
-					{header}
+					{ header }
 				</div>
 				<div
-					css={css`
+					css={ css`
 						position: relative;
-						min-height: ${minHeight || 'none'};
-						max-height: ${maxHeight || 'none'};
-						overflow: ${maxHeight ? 'auto' : 'visible'};
-					`}
+						min-height: ${ minHeight || 'none' };
+						max-height: ${ maxHeight || 'none' };
+						overflow: ${ maxHeight ? 'auto' : 'visible' };
+					` }
 				>
-					{children}
+					{ children }
 				</div>
 				<div
-					css={css`
+					css={ css`
 						background: #fff;
-						position: ${maxHeight ? 'sticky' : 'relative'};
+						position: ${ maxHeight ? 'sticky' : 'relative' };
 						bottom: 0;
 						left: 0;
 						right: 0;
@@ -84,10 +84,10 @@ export default ({
 						justify-content: space-between;
 						align-items: center;
 						height: 60px;
-					`}
+					` }
 				>
-					<div>{footerLeft}</div>
-					<div>{footerRight}</div>
+					<div>{ footerLeft }</div>
+					<div>{ footerRight }</div>
 				</div>
 			</div>
 		</div>

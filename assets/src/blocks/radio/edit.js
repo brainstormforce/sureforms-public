@@ -11,56 +11,56 @@ import { Fragment } from '@wordpress/element';
  */
 import { __ } from '@wordpress/i18n';
 
-export default ({ className, attributes, setAttributes }) => {
+export default ( { className, attributes, setAttributes } ) => {
 	const { label, value, checked, name } = attributes;
 
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'sureforms')}>
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
-							label={__('Name', 'sureforms')}
-							value={name}
-							onChange={(name) => setAttributes({ name })}
+							label={ __( 'Name', 'sureforms' ) }
+							value={ name }
+							onChange={ ( name ) => setAttributes( { name } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('Value', 'sureforms')}
-							value={value}
-							onChange={(value) => setAttributes({ value })}
+							label={ __( 'Value', 'sureforms' ) }
+							value={ value }
+							onChange={ ( value ) => setAttributes( { value } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Checked by default', 'sureforms')}
-							checked={checked}
-							onChange={(checked) => setAttributes({ checked })}
+							label={ __( 'Checked by default', 'sureforms' ) }
+							checked={ checked }
+							onChange={ ( checked ) => setAttributes( { checked } ) }
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 
 			<ScRadio
-				name={name}
-				checked={checked}
+				name={ name }
+				checked={ checked }
 				edit
-				{...useBlockProps({
+				{ ...useBlockProps( {
 					className,
 					style: {
 						display: 'block',
 					},
-				})}
+				} ) }
 			>
 				<RichText
-					aria-label={__('Radio Text', 'sureforms')}
-					placeholder={__(
-						'Click here to add some radio text...',
+					aria-label={ __( 'Radio Text', 'sureforms' ) }
+					placeholder={ __(
+						'Click here to add some radio text…',
 						'sureforms'
-					)}
-					value={label}
-					onChange={(label) => setAttributes({ label })}
+					) }
+					value={ label }
+					onChange={ ( label ) => setAttributes( { label } ) }
 				/>
 			</ScRadio>
 		</Fragment>

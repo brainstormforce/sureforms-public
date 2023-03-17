@@ -3,9 +3,11 @@ import { getBlockTypes } from './util';
 
 /**
  * Function to register blocks provided by SureForms.
+ *
+ * @param blocks
  */
-export const registerBlocks = (blocks = []) => {
-	return (blocks || []).forEach(registerBlock);
+export const registerBlocks = ( blocks = [] ) => {
+	return ( blocks || [] ).forEach( registerBlock );
 };
 
 /**
@@ -14,8 +16,8 @@ export const registerBlocks = (blocks = []) => {
  * @param {Object} block The block to be registered.
  *
  */
-const registerBlock = (block) => {
-	if (!block) {
+const registerBlock = ( block ) => {
+	if ( ! block ) {
 		return;
 	}
 
@@ -23,12 +25,14 @@ const registerBlock = (block) => {
 
 	const additionalSettings = 'sureforms/form' !== metadata.name ? {
 		transforms: {
-			from: [{
+			from: [ {
 				type: 'block',
-				blocks: getBlockTypes(metadata.name),
-				transform: (attributes) => { return createBlock( metadata.name, attributes) },
-			}],
-		}
+				blocks: getBlockTypes( metadata.name ),
+				transform: ( attributes ) => {
+					return createBlock( metadata.name, attributes );
+				},
+			} ],
+		},
 	} : {};
 
 	registerBlockType(

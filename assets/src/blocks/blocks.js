@@ -12,7 +12,7 @@ import * as submit from '@Blocks/submit';
 
 import { registerBlocks } from './register-block';
 
-registerBlocks([
+registerBlocks( [
 	form,
 	text,
 	email,
@@ -23,5 +23,5 @@ registerBlocks([
 	checkbox,
 	number,
 	sfForm,
-	submit
-]);
+	submit,
+] );

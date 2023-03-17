@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
-export default ({ label, children, selected, onSelect }) => {
+export default ( { label, children, selected, onSelect } ) => {
 	const base = css`
 		flex: 1;
 		display: flex;
@@ -33,21 +33,21 @@ export default ({ label, children, selected, onSelect }) => {
 
 	return (
 		<div
-			css={css`
+			css={ css`
 				display: flex;
 				flex-direction: column;
-			`}
-			onClick={onSelect}
+			` }
+			onClick={ onSelect }
 		>
-			<div css={[base, selected && highlighted]}>{children}</div>
+			<div css={ [ base, selected && highlighted ] }>{ children }</div>
 			<div
-				css={css`
+				css={ css`
 					padding-top: 8px;
 					font-size: 16px;
 					text-align: center;
-				`}
+				` }
 			>
-				{label}
+				{ label }
 			</div>
 		</div>
 	);

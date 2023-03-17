@@ -27,6 +27,6 @@ module.exports = {
 		path: path.resolve( __dirname, 'assets/build' ),
 	},
 	plugins: [
-		...defaultConfig.plugins
+		...defaultConfig.plugins,
 	],
 };

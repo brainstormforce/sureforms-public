@@ -25,13 +25,13 @@ import { ScRadioGroup } from '@surecart/components-react';
 
 import { useSelect } from '@wordpress/data';
 
-export default ({ attributes, setAttributes, isSelected, clientId }) => {
+export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const { label, required } = attributes;
 	const useInnerBlocksProps = __stableUseInnerBlocksProps
 		? __stableUseInnerBlocksProps
 		: __experimentalUseInnerBlocksProps;
 
-	const blockProps = useBlockProps({
+	const blockProps = useBlockProps( {
 		css: css`
 			.block-list-appender {
 				position: relative;
@@ -40,47 +40,47 @@ export default ({ attributes, setAttributes, isSelected, clientId }) => {
 				margin-top: 0;
 			}
 		`,
-	});
+	} );
 
-	const childIsSelected = useSelect((select) =>
-		select(blockEditorStore).hasSelectedInnerBlock(clientId, true)
+	const childIsSelected = useSelect( ( select ) =>
+		select( blockEditorStore ).hasSelectedInnerBlock( clientId, true )
 	);
 
-	const innerBlocksProps = useInnerBlocksProps(blockProps, {
+	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		className: 'sc-radio',
-		allowedBlocks: ['sureforms/radio'],
-		template: [['sureforms/radio', {}]],
+		allowedBlocks: [ 'sureforms/radio' ],
+		template: [ [ 'sureforms/radio', {} ] ],
 		renderAppender:
 			isSelected || childIsSelected
 				? InnerBlocks.ButtonBlockAppender
 				: false,
-	});
+	} );
 
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'sureforms')}>
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
-							label={__('Label Name', 'sureforms')}
-							value={label}
-							onChange={(label) => setAttributes({ label })}
+							label={ __( 'Label Name', 'sureforms' ) }
+							value={ label }
+							onChange={ ( label ) => setAttributes( { label } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Required', 'sureforms')}
-							checked={required}
-							onChange={(required) => setAttributes({ required })}
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( required ) => setAttributes( { required } ) }
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 
 			<ScRadioGroup
-				label={label}
-				required={required}
-				{...innerBlocksProps}
+				label={ label }
+				required={ required }
+				{ ...innerBlocksProps }
 			></ScRadioGroup>
 		</Fragment>
 	);

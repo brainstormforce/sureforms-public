@@ -6,8 +6,8 @@ import { ScButton } from '@surecart/components-react';
 import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
 
-export default ({ templates, template, setTemplate }) => {
-	const [choice, setChoice] = useState(template);
+export default ( { templates, template, setTemplate } ) => {
+	const [ choice, setChoice ] = useState( template );
 
 	const imageCSS = css`
 		margin: auto;
@@ -17,21 +17,21 @@ export default ({ templates, template, setTemplate }) => {
 
 	return (
 		<PlaceholderTemplate
-			header={__('Choose A Starting Template', 'sureforms')}
+			header={ __( 'Choose A Starting Template', 'sureforms' ) }
 			footerRight={
 				<ScButton
 					type="primary"
-					disabled={!choice}
-					onClick={() => setTemplate(choice)}
+					disabled={ ! choice }
+					onClick={ () => setTemplate( choice ) }
 				>
-					{__('Select Template', 'sureforms')}
+					{ __( 'Select Template', 'sureforms' ) }
 				</ScButton>
 			}
-			maxHeight={'300px'}
-			minHeight={'32rem'}
+			maxHeight={ '300px' }
+			minHeight={ '32rem' }
 		>
 			<div
-				css={css`
+				css={ css`
 					display: grid;
 					padding: 32px;
 					flex: 1 1 0%;
@@ -44,24 +44,24 @@ export default ({ templates, template, setTemplate }) => {
 					}
 					overflow-y: scroll;
 					overflow-x: visible;
-				`}
+				` }
 			>
-				{templates.map((template) => {
+				{ templates.map( ( template ) => {
 					const url = sfBlockData?.plugin_url;
-					const name = template.name.replace('sureforms/', '');
+					const name = template.name.replace( 'sureforms/', '' );
 					return (
 						<Thumbnail
-							label={template?.title}
-							selected={choice === name}
-							onSelect={() => setChoice(name)}
+							label={ template?.title }
+							selected={ choice === name }
+							onSelect={ () => setChoice( name ) }
 						>
 							<img
-								css={imageCSS}
-								src={`${url}/templates/forms/${name}.png`}
+								css={ imageCSS }
+								src={ `${ url }/templates/forms/${ name }.png` }
 							/>
 						</Thumbnail>
 					);
-				})}
+				} ) }
 			</div>
 		</PlaceholderTemplate>
 	);

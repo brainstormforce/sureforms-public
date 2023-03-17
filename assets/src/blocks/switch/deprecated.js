@@ -30,19 +30,19 @@ export default [
 				type: 'boolean',
 			},
 		},
-		save({ attributes }) {
+		save( { attributes } ) {
 			const { name, checked, required, label, description, className } =
 				attributes;
 
 			return (
 				<sc-switch
-					class={className || false}
-					name={name || false}
-					checked={checked || false}
-					required={required || false}
+					class={ className || false }
+					name={ name || false }
+					checked={ checked || false }
+					required={ required || false }
 				>
-					{label}
-					<span slot="description">{description}</span>
+					{ label }
+					<span slot="description">{ description }</span>
 				</sc-switch>
 			);
 		},

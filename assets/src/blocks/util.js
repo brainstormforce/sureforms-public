@@ -1,5 +1,5 @@
-const stripHTML = (text) => {
-	const parsedLabel = new DOMParser().parseFromString(text, 'text/html');
+const stripHTML = ( text ) => {
+	const parsedLabel = new DOMParser().parseFromString( text, 'text/html' );
 	return parsedLabel?.body?.textContent || '';
 };
 
@@ -10,18 +10,18 @@ const stripHTML = (text) => {
  *
  * @return {string} CSS var string for given spacing preset value.
  */
-const getSpacingPresetCssVar = (value) => {
-	if (!value) {
+const getSpacingPresetCssVar = ( value ) => {
+	if ( ! value ) {
 		return;
 	}
 
-	const slug = value.match(/var:preset\|spacing\|(.+)/);
+	const slug = value.match( /var:preset\|spacing\|(.+)/ );
 
-	if (!slug) {
+	if ( ! slug ) {
 		return value;
 	}
 
-	return `var(--wp--preset--spacing--${slug[1]})`;
+	return `var(--wp--preset--spacing--${ slug[ 1 ] })`;
 };
 
 /**
@@ -29,25 +29,25 @@ const getSpacingPresetCssVar = (value) => {
  *
  * @param {string} exclude Block to exclude.
  *
- * @return {array} Block Types.
+ * @return {Array} Block Types.
  */
-const getBlockTypes = (exclude = "") => {
-	let types = [
+const getBlockTypes = ( exclude = '' ) => {
+	const types = [
 		'sureforms/input',
 		'sureforms/email',
 		'sureforms/textarea',
 		'sureforms/number',
 		'sureforms/switch',
-		'sureforms/checkbox'
-	]
-	if(exclude) {
-		for( var i = 0; i < types.length; i++){
-			if ( types[i] === exclude) {
-				types.splice(i, 1)
+		'sureforms/checkbox',
+	];
+	if ( exclude ) {
+		for ( let i = 0; i < types.length; i++ ) {
+			if ( types[ i ] === exclude ) {
+				types.splice( i, 1 );
 			}
 		}
 	}
-	return types
-}
+	return types;
+};
 
 export { stripHTML, getSpacingPresetCssVar, getBlockTypes };

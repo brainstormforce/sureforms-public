@@ -24,7 +24,7 @@ import {
 	Warning,
 } from '@wordpress/block-editor';
 
-export default ({ attributes, setAttributes }) => {
+export default ( { attributes, setAttributes } ) => {
 	const useInnerBlocksProps = __stableUseInnerBlocksProps
 		? __stableUseInnerBlocksProps
 		: __experimentalUseInnerBlocksProps;
@@ -34,13 +34,13 @@ export default ({ attributes, setAttributes }) => {
 
 	const blockProps = useBlockProps();
 
-	const [blocks, onInput, onChange] = useEntityBlockEditor(
+	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
 		'postType',
 		'sureforms_form',
 		{ id }
 	);
 
-	const [title, setTitle] = useEntityProp('postType', 'sureforms_form', 'title', id);
+	const [ title, setTitle ] = useEntityProp( 'postType', 'sureforms_form', 'title', id );
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{},
@@ -48,34 +48,34 @@ export default ({ attributes, setAttributes }) => {
 			value: blocks,
 			onInput,
 			onChange,
-			template: [['sureforms/form', {}]],
+			template: [ [ 'sureforms/form', {} ] ],
 			templateLock: 'all',
 		}
 	);
 
-	const { isMissing, hasResolved } = useSelect((select) => {
-		const hasResolved = select(coreStore).hasFinishedResolution(
+	const { isMissing, hasResolved } = useSelect( ( select ) => {
+		const hasResolved = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
-			['postType', 'sureforms_form', id]
+			[ 'postType', 'sureforms_form', id ]
 		);
-		const form = select(coreStore).getEntityRecord(
+		const form = select( coreStore ).getEntityRecord(
 			'postType',
 			'sureforms_form',
 			id
 		);
-		const canEdit = select(coreStore).canUserEditEntityRecord('sureforms_form');
+		const canEdit = select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
 		return {
 			canEdit,
-			isMissing: hasResolved && !form,
+			isMissing: hasResolved && ! form,
 			hasResolved,
 			form,
 		};
-	});
+	} );
 
 	// form has resolved
-	if (!hasResolved) {
+	if ( ! hasResolved ) {
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<Placeholder>
 					<Spinner />
 				</Placeholder>
@@ -84,14 +84,14 @@ export default ({ attributes, setAttributes }) => {
 	}
 
 	// form is missing
-	if (isMissing) {
+	if ( isMissing ) {
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<Warning>
-					{__(
+					{ __(
 						'This form has been deleted or is unavailable.',
 						'sureforms'
-					)}
+					) }
 				</Warning>
 			</div>
 		);
@@ -100,17 +100,17 @@ export default ({ attributes, setAttributes }) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={__('Form Title', 'sureforms')}>
+				<PanelBody title={ __( 'Form Title', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
-							label={__('Form Title', 'sureforms')}
-							value={title}
-							onChange={(title) => setTitle(title)}
+							label={ __( 'Form Title', 'sureforms' ) }
+							value={ title }
+							onChange={ ( title ) => setTitle( title ) }
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<div {...blockProps}>{<div {...innerBlocksProps} />}</div>
+			<div { ...blockProps }>{ <div { ...innerBlocksProps } /> }</div>
 		</>
 	);
 };

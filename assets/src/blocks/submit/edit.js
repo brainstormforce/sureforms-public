@@ -17,57 +17,57 @@ import {
  */
 import { ScButton } from '@surecart/components-react';
 
-export default ({ className, attributes, setAttributes }) => {
+export default ( { className, attributes, setAttributes } ) => {
 	const { type, text, submit, full, size, show_total, show_icon } =
 		attributes;
 
 	return (
-		<div className={className}>
+		<div className={ className }>
 			<InspectorControls>
-				<PanelBody title={__('Attributes', 'sureforms')}>
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
-							label={__('Button Text', 'sureforms')}
-							value={text}
-							onChange={(text) => setAttributes({ text })}
+							label={ __( 'Button Text', 'sureforms' ) }
+							value={ text }
+							onChange={ ( text ) => setAttributes( { text } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Full', 'sureforms')}
-							checked={full}
-							onChange={(full) => setAttributes({ full })}
+							label={ __( 'Full', 'sureforms' ) }
+							checked={ full }
+							onChange={ ( full ) => setAttributes( { full } ) }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__(
+							label={ __(
 								'Show total due in button text.',
 								'sureforms'
-							)}
-							checked={show_total}
-							onChange={(show_total) =>
-								setAttributes({ show_total })
+							) }
+							checked={ show_total }
+							onChange={ ( show_total ) =>
+								setAttributes( { show_total } )
 							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
-							label={__('Show a secure lock icon.', 'sureforms')}
-							checked={show_icon}
-							onChange={(show_icon) =>
-								setAttributes({ show_icon })
+							label={ __( 'Show a secure lock icon.', 'sureforms' ) }
+							checked={ show_icon }
+							onChange={ ( show_icon ) =>
+								setAttributes( { show_icon } )
 							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<SelectControl
-							label={__('Size', 'sureforms')}
-							value={size}
-							onChange={(size) => {
-								setAttributes({ size });
-							}}
-							options={[
+							label={ __( 'Size', 'sureforms' ) }
+							value={ size }
+							onChange={ ( size ) => {
+								setAttributes( { size } );
+							} }
+							options={ [
 								{
 									value: null,
 									label: 'Select a Size',
@@ -75,30 +75,30 @@ export default ({ className, attributes, setAttributes }) => {
 								},
 								{
 									value: 'small',
-									label: __('Small', 'sureforms'),
+									label: __( 'Small', 'sureforms' ),
 								},
 								{
 									value: 'medium',
-									label: __('Medium', 'sureforms'),
+									label: __( 'Medium', 'sureforms' ),
 								},
 								{
 									value: 'large',
-									label: __('Large', 'sureforms'),
+									label: __( 'Large', 'sureforms' ),
 								},
-							]}
+							] }
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 
 			<ScButton
-				type={type}
-				submit={submit}
-				icon={show_icon ? 'lock' : false}
-				{...(full ? { full: true } : {})}
-				size={size}
+				type={ type }
+				submit={ submit }
+				icon={ show_icon ? 'lock' : false }
+				{ ...( full ? { full: true } : {} ) }
+				size={ size }
 			>
-				{show_icon && (
+				{ show_icon && (
 					<svg
 						slot="prefix"
 						xmlns="http://www.w3.org/2000/svg"
@@ -111,25 +111,25 @@ export default ({ className, attributes, setAttributes }) => {
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
-							strokeWidth={2}
+							strokeWidth={ 2 }
 							d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 						/>
 					</svg>
-				)}
+				) }
 				<RichText
-					aria-label={__('Button text')}
-					placeholder={__('Add text…')}
-					value={text}
-					onChange={(value) => setAttributes({ text: value })}
+					aria-label={ __( 'Button text' ) }
+					placeholder={ __( 'Add text…' ) }
+					value={ text }
+					onChange={ ( value ) => setAttributes( { text: value } ) }
 					withoutInteractiveFormatting
-					allowedFormats={['core/bold', 'core/italic']}
+					allowedFormats={ [ 'core/bold', 'core/italic' ] }
 				/>
-				{show_total && (
+				{ show_total && (
 					<span>
-						{'\u00A0'}
+						{ '\u00A0' }
 						<sc-total></sc-total>
 					</span>
-				)}
+				) }
 			</ScButton>
 		</div>
 	);

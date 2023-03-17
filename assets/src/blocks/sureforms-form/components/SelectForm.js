@@ -10,18 +10,18 @@ import throttle from 'lodash/throttle';
 
 import { ScSelect } from '@surecart/components-react';
 
-export default ({ form, setForm }) => {
-	const [formsData, setFormsData] = useState([]);
-	const [query, setQuery] = useState('');
-	const [loading, setLoading] = useState(false);
+export default ( { form, setForm } ) => {
+	const [ formsData, setFormsData ] = useState( [] );
+	const [ query, setQuery ] = useState( '' );
+	const [ loading, setLoading ] = useState( false );
 
-	useEffect(() => {
+	useEffect( () => {
 		fetchForms();
-	}, [query]);
+	}, [ query ] );
 
 	const findForm = throttle(
-		(value) => {
-			setQuery(value);
+		( value ) => {
+			setQuery( value );
 		},
 		750,
 		{ leading: false }
@@ -30,38 +30,38 @@ export default ({ form, setForm }) => {
 	const fetchForms = async () => {
 		let response;
 		try {
-			setLoading(true);
-			response = await apiFetch({
-				path: addQueryArgs('wp/v2/sureforms_form', {
+			setLoading( true );
+			response = await apiFetch( {
+				path: addQueryArgs( 'wp/v2/sureforms_form', {
 					search: query,
-				}),
-			});
-			setFormsData(response);
+				} ),
+			} );
+			setFormsData( response );
 		} finally {
-			setLoading(false);
+			setLoading( false );
 		}
 	};
 
 	return (
 		<ScSelect
-			value={form?.id}
-			loading={loading}
-			placeholder={__('Choose a form', 'sureforms')}
-			searchPlaceholder={__('Search for a form...', 'sureforms')}
+			value={ form?.id }
+			loading={ loading }
+			placeholder={ __( 'Choose a form', 'sureforms' ) }
+			searchPlaceholder={ __( 'Search for a form…', 'sureforms' ) }
 			search
-			onScSearch={(e) => findForm(e.detail)}
-			onScChange={(e) => {
+			onScSearch={ ( e ) => findForm( e.detail ) }
+			onScChange={ ( e ) => {
 				const formData = formsData.find(
-					(form) => form.id === parseInt(e.target.value)
+					( form ) => form.id === parseInt( e.target.value )
 				);
-				setForm(formData);
-			}}
-			choices={(formsData || []).map((form) => {
+				setForm( formData );
+			} }
+			choices={ ( formsData || [] ).map( ( form ) => {
 				return {
 					value: form.id,
 					label: form.title.rendered,
 				};
-			})}
+			} ) }
 		/>
 	);
 };

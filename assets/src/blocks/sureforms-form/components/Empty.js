@@ -6,7 +6,7 @@ import { css, jsx } from '@emotion/react';
  */
 import { useBlockProps } from '@wordpress/block-editor';
 import {
-	createBlock, serialize
+	createBlock, serialize,
 } from '@wordpress/blocks';
 import { Placeholder } from '@wordpress/components';
 import { dispatch } from '@wordpress/data';
@@ -22,28 +22,28 @@ import { ScButton, ScInput } from '@surecart/components-react';
 import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
-export default ({ attributes, setAttributes }) => {
+export default ( { attributes, setAttributes } ) => {
 	const { title, step } = attributes;
-	const [form, setForm] = useState({});
+	const [ form, setForm ] = useState( {} );
 
-	const blockProps = useBlockProps({
+	const blockProps = useBlockProps( {
 		css: css`
 			.components-placeholder.components-placeholder {
 				padding: 2em;
 			}
 		`,
-	});
+	} );
 
 	// save the form block.
 	const saveFormBlock = async () => {
-		setAttributes({ loading: true });
+		setAttributes( { loading: true } );
 
 		try {
-			const updatedRecord = await dispatch('core').saveEntityRecord(
+			const updatedRecord = await dispatch( 'core' ).saveEntityRecord(
 				'postType',
 				'sureforms_form',
 				{
-					title: title || __('Untitled Form', 'sureforms'),
+					title: title || __( 'Untitled Form', 'sureforms' ),
 					content: serialize(
 						createBlock(
 							'sureforms/form', // name
@@ -54,50 +54,50 @@ export default ({ attributes, setAttributes }) => {
 					status: 'publish',
 				}
 			);
-			setAttributes({ id: updatedRecord.id });
-		} catch (e) {
+			setAttributes( { id: updatedRecord.id } );
+		} catch ( e ) {
 			// TODO: Add notice here.
-			console.error(e);
+			console.error( e );
 		} finally {
-			setAttributes({ loading: false });
+			setAttributes( { loading: false } );
 		}
 	};
 
-	if (step === 'new') {
+	if ( step === 'new' ) {
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<PlaceholderTemplate
-					header={__('Create a SureForms Form', 'sureforms')}
+					header={ __( 'Create a SureForms Form', 'sureforms' ) }
 				>
 					<div
-						css={css`
+						css={ css`
 							display: grid;
 							gap: 0.5em;
 							width: 100%;
-						`}
+						` }
 					>
-						<div>{__('Form Title', 'sureforms')}</div>
+						<div>{ __( 'Form Title', 'sureforms' ) }</div>
 						<ScInput
-							css={css`
+							css={ css`
 								max-width: 400px;
-							`}
-							value={title}
-							placeholder={__(
+							` }
+							value={ title }
+							placeholder={ __(
 								'Enter a title for your form',
 								'sureforms'
-							)}
-							onScChange={(e) =>
-								setAttributes({ title: e.target.value })
+							) }
+							onScChange={ ( e ) =>
+								setAttributes( { title: e.target.value } )
 							}
 						/>
 						<div>
 							<ScButton
 								type="primary"
-								onClick={() => {
+								onClick={ () => {
 									saveFormBlock();
-								}}
+								} }
 							>
-								{__('Next', 'sureforms')}
+								{ __( 'Next', 'sureforms' ) }
 								<sc-icon
 									name="arrow-right"
 									slot="suffix"
@@ -105,9 +105,9 @@ export default ({ attributes, setAttributes }) => {
 							</ScButton>
 							<ScButton
 								type="text"
-								onClick={() => setAttributes({ step: null })}
+								onClick={ () => setAttributes( { step: null } ) }
 							>
-								{__('Cancel', 'sureforms')}
+								{ __( 'Cancel', 'sureforms' ) }
 							</ScButton>
 						</div>
 					</div>
@@ -116,28 +116,28 @@ export default ({ attributes, setAttributes }) => {
 		);
 	}
 
-	if (step === 'select') {
+	if ( step === 'select' ) {
 		return (
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<PlaceholderTemplate
-					header={__('Select a SureForms form', 'sureforms')}
+					header={ __( 'Select a SureForms form', 'sureforms' ) }
 				>
 					<div
-						css={css`
+						css={ css`
 							display: grid;
 							gap: 0.5em;
 							width: 100%;
-						`}
+						` }
 					>
-						<SelectForm form={form} setForm={setForm} />
+						<SelectForm form={ form } setForm={ setForm } />
 						<div>
 							<ScButton
 								type="primary"
-								onClick={() => {
-									setAttributes({ id: form?.id });
-								}}
+								onClick={ () => {
+									setAttributes( { id: form?.id } );
+								} }
 							>
-								{__('Choose', 'sureforms')}
+								{ __( 'Choose', 'sureforms' ) }
 								<sc-icon
 									name="arrow-right"
 									slot="suffix"
@@ -145,9 +145,9 @@ export default ({ attributes, setAttributes }) => {
 							</ScButton>
 							<ScButton
 								type="text"
-								onClick={() => setAttributes({ step: null })}
+								onClick={ () => setAttributes( { step: null } ) }
 							>
-								{__('Cancel', 'sureforms')}
+								{ __( 'Cancel', 'sureforms' ) }
 							</ScButton>
 						</div>
 					</div>
@@ -157,32 +157,32 @@ export default ({ attributes, setAttributes }) => {
 	}
 
 	return (
-		<div {...blockProps}>
+		<div { ...blockProps }>
 			<Placeholder
-				icon={icon}
-				instructions={__(
+				icon={ icon }
+				instructions={ __(
 					'Get started by selecting a form or start build a new form.',
 					'sureforms'
-				)}
-				label={__('Add a sureforms form', 'sureforms')}
+				) }
+				label={ __( 'Add a sureforms form', 'sureforms' ) }
 			>
 				<div
-					css={css`
+					css={ css`
 						display: flex;
 						gap: 0.5em;
-					`}
+					` }
 				>
 					<ScButton
 						type="primary"
-						onClick={() => setAttributes({ step: 'new' })}
+						onClick={ () => setAttributes( { step: 'new' } ) }
 					>
-						{__('New Form', 'sureforms')}
+						{ __( 'New Form', 'sureforms' ) }
 					</ScButton>
 					<ScButton
 						type="default"
-						onClick={() => setAttributes({ step: 'select' })}
+						onClick={ () => setAttributes( { step: 'select' } ) }
 					>
-						{__('Select Form', 'sureforms')}
+						{ __( 'Select Form', 'sureforms' ) }
 					</ScButton>
 				</div>
 			</Placeholder>
