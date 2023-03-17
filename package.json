@@ -1,12 +1,12 @@
 {
-	"name": "wp-plugin-base",
+	"name": "sureforms",
 	"version": "0.0.1",
-	"description": "",
+	"description": "Forms Plugin",
 	"main": "index.js",
 	"scripts": {
 		"start": "wp-scripts start",
 		"build": "wp-scripts build",
-		"i18n": "grunt textdomain && wp i18n make-pot languages/wp-plugin-base.pot --domain=wp-plugin-base --debug",
+		"i18n": "grunt textdomain && wp i18n make-pot languages/sureforms.pot --domain=sureforms --debug",
 		"pretty": "prettier --check .",
 		"pretty:fix": "prettier --write .",
 		"lint-js": "wp-scripts lint-js",
@@ -25,23 +25,29 @@
 		"test:e2e": "wp-scripts test-e2e",
 		"test:unit": "wp-scripts test-unit-js"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/brainstormforce/wp-plugin-base.git"
-	},
-	"author": "",
-	"license": "ISC",
+	"repository": "git+https://github.com/brainstormforce/sureforms.git",
+	"author": "Brainstorm Force",
+	"license": "GPL",
 	"bugs": {
-		"url": "https://github.com/brainstormforce/wp-plugin-base/issues"
+		"url": "https://github.com/brainstormforce/sureforms/issues"
 	},
-	"homepage": "https://github.com/brainstormforce/wp-plugin-base#readme",
+	"homepage": "https://github.com/brainstormforce/sureforms#readme",
 	"devDependencies": {
-		"@wordpress/scripts": "^21.0.1",
+		"@emotion/core": "^11.0.0",
+		"@emotion/react": "^11.10.6",
+		"@wordpress/scripts": "^25.4.0",
 		"grunt": "^1.4.1",
 		"grunt-cli": "^1.4.3",
 		"grunt-contrib-clean": "^2.0.0",
 		"grunt-contrib-compress": "^2.0.0",
 		"grunt-contrib-copy": "^1.0.0",
+		"tailwindcss": "^3.2.7",
 		"wp-prettier": "^2.6.2"
+	},
+	"private": true,
+	"dependencies": {
+		"@surecart/components": "^0.0.9",
+		"@surecart/components-react": "^0.0.6",
+		"@wordpress/icons": "^9.18.0"
 	}
 }

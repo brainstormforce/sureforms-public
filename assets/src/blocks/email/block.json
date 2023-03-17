@@ -1,0 +1,50 @@
+{
+	"name": "sureforms/email",
+	"title": "Email",
+	"description": "Displays an email form field.",
+	"category": "sureforms",
+	"keywords": ["email", "mail"],
+	"ancestor": ["sureforms/form"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"value": {
+			"type": "string",
+			"default": ""
+		},
+		"placeholder": {
+			"type": "string",
+			"default": ""
+		},
+		"disabled": {
+			"type": "boolean",
+			"default": false
+		},
+		"size": {
+			"type": "string",
+			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": "Email"
+		},
+		"help": {
+			"type": "string"
+		},
+		"inputmode": {
+			"type": "string"
+		},
+		"max": {
+			"type": ["string", "number"]
+		},
+		"maxlength": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		}
+	}
+}

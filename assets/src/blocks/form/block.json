@@ -1,0 +1,19 @@
+{
+	"name": "sureforms/form",
+	"title": "Form",
+	"description": "Displays a form.",
+	"category": "sureforms",
+	"keywords": ["email", "mail"],
+	"parent": ["sureforms/sf-form"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"id": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}

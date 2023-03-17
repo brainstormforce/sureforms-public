@@ -1,0 +1,31 @@
+{
+	"apiVersion": 2,
+	"name": "sureforms/checkbox",
+	"title": "Checkbox",
+	"description": "Display a checkbox input",
+	"category": "sureforms",
+	"ancestor": ["sureforms/form"],
+	"keywords": ["checkbox", "toggle", "checkout", "engine"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": "Checkbox"
+		},
+		"value": {
+			"type": "string",
+			"default": "on"
+		},
+		"name": {
+			"type": "string",
+			"default": "checkbox"
+		},
+		"required": {
+			"type": "boolean"
+		}
+	}
+}

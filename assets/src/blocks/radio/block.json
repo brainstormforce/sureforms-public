@@ -1,0 +1,26 @@
+{
+	"apiVersion": 2,
+	"name": "sureforms/radio",
+	"title": "Radio",
+	"description": "Display a radio input",
+	"category": "sureforms",
+	"keywords": ["radio", "sureforms"],
+    "textdomain": "sureforms",
+	"ancestor": ["sureforms/radio-group"],
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"label": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string",
+			"default": "checked"
+		},
+		"name": {
+			"type": "string"
+		}
+	}
+}
