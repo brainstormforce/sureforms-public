@@ -2,9 +2,9 @@
 /**
  * Text info field type
  *
- * @package WP Travel Engine
+ * @package SureForms
  */
-class WP_Travel_Engine_Form_Field_Repeater {
+class Sureforms_Form_Field_Repeater {
 
 	/**
 	 * Field.
@@ -47,7 +47,7 @@ class WP_Travel_Engine_Form_Field_Repeater {
 
 		if ( isset( $this->field['fields'] ) && is_array( $this->field['fields'] ) && ! empty( $this->field['fields'] ) ) :
 
-			$form_fields = new WP_Travel_Engine_Form_Field();
+			$form_fields = new Sureforms_Form_Field();
 
 			$form_fields->init( $this->field['fields'] )->render();
 

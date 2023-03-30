@@ -3,10 +3,10 @@
  * Input field class for radio.
  *
  * @since 2.2.6
- * @package WP Travel Engine
+ * @package SureForms
  */
 
-class WP_Travel_Engine_Form_Field_Radio {
+class Sureforms_Form_Field_Radio {
 
 	/**
 	 * field object.

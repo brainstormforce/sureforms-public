@@ -2,9 +2,9 @@
 /**
  * Select field render
  *
- * @package WP Travel Engine
+ * @package SureForms
  */
-class WP_Travel_Engine_Form_Field_Select {
+class Sureforms_Form_Field_Select {
 
 	/**
 	 * Field object

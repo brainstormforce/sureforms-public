@@ -60,7 +60,7 @@ class Form_Field {
 	private function includes() {
 		$field_types = $this->register_field_types();
 		foreach ( $field_types as $type => $field ) :
-			$file_path_incl = WP_TRAVEL_ENGINE_ABSPATH . 'includes/lib/wte-form-framework/field-types/class-field-' . $type . '.php';
+			$file_path_incl = Sureforms_ABSPATH . 'includes/lib/wte-form-framework/field-types/class-field-' . $type . '.php';
 			if ( file_exists( $file_path_incl ) ) :
 				include_once $file_path_incl;
 			endif;
@@ -78,75 +78,75 @@ class Form_Field {
 		$field_types = array(
 			'text'             => array(
 				'field_label' => __( 'Text', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Text',
+				'field_class' => 'Sureforms_Form_Field_Text',
 			),
 			'email'            => array(
 				'field_label' => __( 'Email', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Email',
+				'field_class' => 'Sureforms_Form_Field_Email',
 			),
 			'number'           => array(
 				'field_label' => __( 'Number', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Number',
+				'field_class' => 'Sureforms_Form_Field_Number',
 			),
 			'hidden'           => array(
 				'field_label' => __( 'Hidden', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Hidden',
+				'field_class' => 'Sureforms_Form_Field_Hidden',
 			),
 			'select'           => array(
 				'field_label' => __( 'Select', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Select',
+				'field_class' => 'Sureforms_Form_Field_Select',
 			),
 			'textarea'         => array(
 				'field_label' => __( 'Textarea', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Textarea',
+				'field_class' => 'Sureforms_Form_Field_Textarea',
 			),
 			'datepicker'       => array(
 				'field_label' => __( 'Date', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Date',
+				'field_class' => 'Sureforms_Form_Field_Date',
 			),
 			'radio'            => array(
 				'field_label' => __( 'Radio', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Radio',
+				'field_class' => 'Sureforms_Form_Field_Radio',
 			),
 			'checkbox'         => array(
 				'field_label' => __( 'Checkbox', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Checkbox',
+				'field_class' => 'Sureforms_Form_Field_Checkbox',
 			),
 			'text_info'        => array(
 				'field_label' => __( 'Text Info', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Text_Info',
+				'field_class' => 'Sureforms_Form_Field_Text_Info',
 			),
 			'heading'          => array(
 				'field_label' => __( 'Heading', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Heading',
+				'field_class' => 'Sureforms_Form_Field_Heading',
 			),
 			'range'            => array(
 				'field_label' => __( 'Range', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Range',
+				'field_class' => 'Sureforms_Form_Field_Range',
 			),
 			'date_range'       => array(
 				'field_label' => __( 'Date Range', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Date_Range',
+				'field_class' => 'Sureforms_Form_Field_Date_Range',
 			),
 			'file'             => array(
 				'field_label' => __( 'File', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_File',
+				'field_class' => 'Sureforms_Form_Field_File',
 			),
 			'country_dropdown' => array(
 				'field_label' => __( 'Country Dropdown', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Country_Dropdown',
+				'field_class' => 'Sureforms_Form_Field_Country_Dropdown',
 			),
 			'tel'              => array(
 				'field_label' => __( 'Tel', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Tel',
+				'field_class' => 'Sureforms_Form_Field_Tel',
 			),
 			'trips_list'       => array(
 				'field_label' => __( 'Trips List', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Trips_List',
+				'field_class' => 'Sureforms_Form_Field_Trips_List',
 			),
 			'radio'            => array(
 				'field_label' => __( 'Trips List', 'sureforms' ),
-				'field_class' => 'WP_Travel_Engine_Form_Field_Radio',
+				'field_class' => 'Sureforms_Form_Field_Radio',
 			),
 		);
 

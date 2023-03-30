@@ -2,9 +2,9 @@
 /**
  * Tel field template.
  *
- * @package Wp Travel Engine
+ * @package SureForms
  */
-class WP_Travel_Engine_Form_Field_Tel extends WP_Travel_Engine_Form_Field_Text {
+class Sureforms_Form_Field_Tel extends Sureforms_Form_Field_Text {
 
 	// Defind field type.
 	protected $field_type = 'tel';

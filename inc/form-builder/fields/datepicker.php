@@ -2,9 +2,9 @@
 /**
  * Datepicker field.
  *
- * @package WP_Travel_Engine
+ * @package Sureforms
  */
-class WP_Travel_Engine_Form_Field_Date extends WP_Travel_Engine_Form_Field_Text {
+class Sureforms_Form_Field_Date extends Sureforms_Form_Field_Text {
 	protected $field;
 	protected $field_type = 'text';
 	function init( $field ) {

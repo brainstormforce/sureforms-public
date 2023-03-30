@@ -2,9 +2,9 @@
 /**
  * Textarea field render
  *
- * @package WP_Travel_Engine
+ * @package Sureforms
  */
-class WP_Travel_Engine_Form_Field_Textarea {
+class Sureforms_Form_Field_Textarea {
 
 	/**
 	 * Field object
