@@ -23,6 +23,8 @@ parameters:
 		- plugin-loader.php
 		- inc
 
+	excludePaths:
+		- inc/form-builder
 #    excludes_analyse:
 #    autoload_files:
 #        # Missing constants, function and class stubs
