@@ -11,10 +11,11 @@ import * as toggle from '@Blocks/switch';
 import * as submit from '@Blocks/submit';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
+import * as address from '@Blocks/address';
 
 import { registerBlocks } from './register-block';
 
-registerBlocks( [
+registerBlocks([
 	form,
 	text,
 	email,
@@ -27,5 +28,6 @@ registerBlocks( [
 	sfForm,
 	submit,
 	phone,
-	select
-] );
+	select,
+	address,
+]);

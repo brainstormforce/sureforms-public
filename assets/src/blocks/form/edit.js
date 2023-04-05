@@ -81,6 +81,7 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 	};
 
 	const onCreate = async ( template ) => {
+	const onCreate = async (template) => {
 		const result = await maybeCreateTemplate( {
 			template,
 		} );
