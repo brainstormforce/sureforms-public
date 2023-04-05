@@ -119,4 +119,4 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 			) }
 		</Fragment>
 	);
-}
+}}

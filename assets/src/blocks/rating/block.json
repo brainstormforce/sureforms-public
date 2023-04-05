@@ -1,0 +1,44 @@
+{
+	"name": "sureforms/rating",
+	"title": "Rating Field",
+	"description": "Displays a form Rating Field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "rating", "star rating", "review", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"ratingBoxLabel": {
+			"type": "string",
+			"default": "Field Name",
+			"selector": "input"
+		},
+		"ratingBoxMessage": {
+			"type": "string",
+			"selector": "input"
+		},
+		"width": {
+			"type": "string",
+			"default": "halfWidth",
+			"selector": "div"
+		},
+		"iconColor": {
+			"type": "string",
+			"default": "#000",
+			"selector": "select"
+		},
+		"iconShape": {
+			"type": "string",
+			"default": "star",
+			"selector": "select"
+		},
+		"maxValue": {
+			"type": "string",
+			"default": 5,
+			"selector": "input"
+		}
+	}
+}
