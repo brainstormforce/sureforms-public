@@ -1,0 +1,26 @@
+{
+	"name": "sureforms/phone",
+	"title": "Phone Number",
+	"description": "Displays a form Phone Number field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "telephone", "phone", "mobile", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"required": {
+			"type": "boolean"
+		},
+		"label": {
+			"type": "string",
+			"default": "Phone Number"
+		},
+		"help": {
+			"type": "string",
+			"default": "Input"
+		}
+	}
+}
