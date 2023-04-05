@@ -1,3 +1,11 @@
+<?php
+/**
+ * Form Single template.
+ *
+ * @package SureForms
+ */
+
+?>
 <!DOCTYPE html>
 <html class="sureforms-html" <?php language_attributes(); ?>>
 <head>
