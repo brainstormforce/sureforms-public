@@ -12,11 +12,8 @@ return [
 	'title'      => __( 'Blank Form', 'sureforms' ),
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '
-	<!-- wp:sureforms/form -->
-	<!-- wp:column -->
-	<div class="wp-block-column"></div>
-	<!-- /wp:column -->
-    ',
+	'content'    => '<!-- wp:column -->
+		<div class="wp-block-column"></div>
+	<!-- /wp:column -->',
 
 ];
