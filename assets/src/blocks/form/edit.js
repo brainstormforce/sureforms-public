@@ -80,7 +80,6 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 		return parsed;
 	};
 
-	const onCreate = async ( template ) => {
 	const onCreate = async (template) => {
 		const result = await maybeCreateTemplate( {
 			template,
@@ -119,4 +118,4 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 			) }
 		</Fragment>
 	);
-}}
+}
