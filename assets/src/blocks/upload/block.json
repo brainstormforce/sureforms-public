@@ -1,0 +1,33 @@
+{
+	"name": "sureforms/upload",
+	"title": "Upload Field",
+	"description": "Displays a form Upload Field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "upload", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"fileSizeLimit": {
+			"default": 10,
+			"type": "number"
+		},
+		"allowedFormats": {
+			"type": "string|array",
+			"default": [
+				{ "value": "jpg", "label": "jpg" },
+				{ "value": "jpeg", "label": "jpeg" },
+				{ "value": "gif", "label": "gif" },
+				{ "value": "png", "label": "png" },
+				{ "value": "pdf", "label": "pdf" }
+			]
+		},
+		"customFormats": {
+			"type": "string|array",
+			"default": []
+		}
+	}
+}
