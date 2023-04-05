@@ -48,6 +48,7 @@
 	"dependencies": {
 		"@surecart/components": "^0.0.9",
 		"@surecart/components-react": "^0.0.6",
-		"@wordpress/icons": "^9.18.0"
+		"@wordpress/icons": "^9.18.0",
+		"react-beautiful-dnd": "^13.1.1"
 	}
 }

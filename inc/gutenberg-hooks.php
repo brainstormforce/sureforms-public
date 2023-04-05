@@ -33,8 +33,10 @@ class Gutenberg_Hooks {
 	public function __construct() {
 		// Setting Form default patterns.
 		$this->patterns = [
+			'blank-form',
 			'contact-form',
 			'newsletter-form',
+			'user-feedback-form',
 		];
 
 		// Initializing hooks.

@@ -9,6 +9,8 @@ import * as radioGroup from '@Blocks/radio-group';
 import * as radio from '@Blocks/radio';
 import * as toggle from '@Blocks/switch';
 import * as submit from '@Blocks/submit';
+import * as phone from '@Blocks/phone';
+import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 
 import { registerBlocks } from './register-block';
@@ -25,5 +27,7 @@ registerBlocks([
 	number,
 	sfForm,
 	submit,
+	phone,
+	select,
 	address,
 ]);
