@@ -9,10 +9,11 @@ import * as radioGroup from '@Blocks/radio-group';
 import * as radio from '@Blocks/radio';
 import * as toggle from '@Blocks/switch';
 import * as submit from '@Blocks/submit';
+import * as address from '@Blocks/address';
 
 import { registerBlocks } from './register-block';
 
-registerBlocks( [
+registerBlocks([
 	form,
 	text,
 	email,
@@ -24,4 +25,5 @@ registerBlocks( [
 	number,
 	sfForm,
 	submit,
-] );
+	address,
+]);

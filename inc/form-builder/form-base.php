@@ -115,7 +115,7 @@ class Form_Base {
 							<?php
 							endif;
 
-								$form_fields = new WP_Travel_Engine_Form_Field();
+								$form_fields = new Sureforms_Form_Field();
 
 								$form_fields->init( $this->form_fields )->render();
 

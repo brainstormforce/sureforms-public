@@ -3,7 +3,7 @@
  * Input field class for checkbox.
  *
  * @since 2.2.6
- * @package WP Travel Engine
+ * @package SureForms
  */
 
 class Checkbox {

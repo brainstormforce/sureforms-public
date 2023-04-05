@@ -1,0 +1,22 @@
+{
+	"name": "sureforms/address",
+	"title": "Address Field",
+	"description": "Displays a form Address field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "address", "country", "location", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"required": {
+			"type": "boolean"
+		},
+		"label": {
+			"type": "string",
+			"default": "Address"
+		}
+	}
+}
