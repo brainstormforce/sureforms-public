@@ -1,30 +1,48 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-
-/**
- * Component Dependencies
- */
-import { ScInput } from '@surecart/components-react';
+import { useBlockProps } from '@wordpress/block-editor';
 
 import Settings from './settings';
 
 export default ( { className, attributes, setAttributes } ) => {
-	const { label, placeholder, help } = attributes;
-
+	const { label, placeholder, help, required } = attributes;
+	const blockID = useBlockProps().id;
 	return (
-		<>
-			<Settings attributes={ attributes } setAttributes={ setAttributes } />
-			<div className={ className }>
-				<ScInput
+		<div { ...useBlockProps() }>
+			<Settings
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+			/>
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '.5rem',
+				} }
+			>
+				<label htmlFor={ 'email-input-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<input
+					id={ 'email-input-' + blockID }
 					type="email"
-					label={ label }
+					className={ className }
 					placeholder={ placeholder }
-					help={ help }
-					required
-				></ScInput>
+					required={ required }
+				/>
+				{ help !== '' && (
+					<label
+						htmlFor={ 'email-input-help-' + blockID }
+						style={ { color: '#ddd' } }
+					>
+						{ help }
+					</label>
+				) }
 			</div>
-		</>
+		</div>
 	);
 };

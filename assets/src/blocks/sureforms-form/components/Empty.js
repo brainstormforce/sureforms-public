@@ -1,13 +1,12 @@
 /** @jsx jsx */
+/* eslint-disable react/no-unknown-property */
 import { css, jsx } from '@emotion/react';
 
 /**
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import {
-	createBlock, serialize,
-} from '@wordpress/blocks';
+import { createBlock, serialize } from '@wordpress/blocks';
 import { Placeholder } from '@wordpress/components';
 import { dispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
@@ -105,7 +104,9 @@ export default ( { attributes, setAttributes } ) => {
 							</ScButton>
 							<ScButton
 								type="text"
-								onClick={ () => setAttributes( { step: null } ) }
+								onClick={ () =>
+									setAttributes( { step: null } )
+								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
 							</ScButton>
@@ -145,7 +146,9 @@ export default ( { attributes, setAttributes } ) => {
 							</ScButton>
 							<ScButton
 								type="text"
-								onClick={ () => setAttributes( { step: null } ) }
+								onClick={ () =>
+									setAttributes( { step: null } )
+								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
 							</ScButton>

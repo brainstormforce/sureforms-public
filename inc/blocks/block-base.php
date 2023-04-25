@@ -58,7 +58,7 @@ abstract class Base {
 		}
 
 		$reflector = new \ReflectionClass( $this );
-		$fn        = $reflector->getFileName();
+		$fn        = (string) $reflector->getFileName();
 		return dirname( $fn );
 	}
 
@@ -66,15 +66,15 @@ abstract class Base {
 	/**
 	 * Optionally run a function to modify attributes before rendering.
 	 *
-	 * @param array  $attributes Block attributes.
-	 * @param string $content   Post content.
-	 * @param array  $block Block attributes.
+	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $content   Post content.
+	 * @param array<mixed> $block Block attributes.
 	 *
-	 * @return function
+	 * @return boolean|string
 	 * @since X.X.X
 	 */
 	public function pre_render( $attributes, $content, $block ) {
-		$this->block = $block;
+		$this->block = (object) $block;
 
 		// run middlware.
 		$render = $this->middleware( $attributes, $content );
@@ -87,17 +87,17 @@ abstract class Base {
 			return $render;
 		}
 
-		$attributes = $this->getAttributes( $attributes );
+		/** $attributes = $this->getAttributes( $attributes ); */
 
 		// render.
-		return $this->render( $attributes, $content, $block );
+		return $this->render( $attributes, $content );
 	}
 
 	/**
 	 * Run any block middleware before rendering.
 	 *
-	 * @param array  $attributes Block attributes.
-	 * @param string $content   Post content.
+	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $content   Post content.
 	 * @return boolean|\WP_Error;
 	 * @since X.X.X
 	 */
@@ -108,8 +108,8 @@ abstract class Base {
 	/**
 	 * Allows filtering of attributes before rendering.
 	 *
-	 * @param array $attributes Block attributes.
-	 * @return array $attributes
+	 * @param array<mixed> $attributes Block attributes.
+	 * @return array<mixed> $attributes
 	 * @since X.X.X
 	 */
 	public function get_attributes( $attributes ) {
@@ -119,8 +119,8 @@ abstract class Base {
 	/**
 	 * Render the block
 	 *
-	 * @param array  $attributes Block attributes.
-	 * @param string $content Post content.
+	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $content Post content.
 	 *
 	 * @return string
 	 * @since X.X.X

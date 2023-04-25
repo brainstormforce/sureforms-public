@@ -26,5 +26,3 @@ tests/
 *.lock
 *-rtl*
 *.md
-
-licensing

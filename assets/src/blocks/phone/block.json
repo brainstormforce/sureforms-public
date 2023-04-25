@@ -18,9 +18,13 @@
 			"type": "string",
 			"default": "Phone Number"
 		},
+		"placeholder": {
+			"type": "string",
+			"default": "9876543210"
+		},
 		"help": {
 			"type": "string",
-			"default": "Input"
+			"default": "Enter some help text here"
 		}
 	}
 }

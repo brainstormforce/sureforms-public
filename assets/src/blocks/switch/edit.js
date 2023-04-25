@@ -2,87 +2,116 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { Fragment } from '@wordpress/element';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	PanelRow,
 	TextControl,
 	ToggleControl,
-	Disabled,
 } from '@wordpress/components';
 
-/**
- * Component Dependencies
- */
-import { ScSwitch } from '@surecart/components-react';
+export default ( { attributes, setAttributes } ) => {
+	const { label, checked: isChecked, required, switchHelpText } = attributes;
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, value, checked, name, required, description } = attributes;
+	const blockID = useBlockProps().id;
+
+	const inputStyle = {
+		position: 'absolute',
+		opacity: 0,
+		width: 0,
+		height: 0,
+	};
+
+	const switchStyle = {
+		display: 'inline-block',
+		position: 'relative',
+		width: '50px',
+		height: '25px',
+		borderRadius: '25px',
+		backgroundColor: isChecked ? '#007CBA' : '#dcdcdc',
+		transition: 'background-color 0.2s',
+		cursor: 'pointer',
+	};
+
+	const thumbStyle = {
+		display: 'inline-block',
+		position: 'absolute',
+		width: '21px',
+		height: '21px',
+		borderRadius: '50%',
+		backgroundColor: '#fff',
+		top: '2px',
+		left: isChecked ? '27px' : '2px',
+		transition: 'left 0.2s',
+	};
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
-							onChange={ ( required ) => setAttributes( { required } ) }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={ __( 'Name', 'sureforms' ) }
-							value={ name }
-							onChange={ ( name ) => setAttributes( { name } ) }
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Value', 'sureforms' ) }
-							value={ value }
-							onChange={ ( value ) => setAttributes( { value } ) }
+							label={ __( 'Label', 'sureforms' ) }
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Checked by default', 'sureforms' ) }
-							checked={ checked }
-							onChange={ ( checked ) => setAttributes( { checked } ) }
+							checked={ isChecked }
+							onChange={ ( checked ) =>
+								setAttributes( { checked } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Help', 'sureforms' ) }
+							value={ switchHelpText }
+							onChange={ ( value ) =>
+								setAttributes( { switchHelpText: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			{ ! isSelected && ! name && <div>Please add a name</div> }
-
-			<ScSwitch
-				className={ className }
-				name={ name }
-				required={ required }
-				edit
+			<div
+				style={ {
+					display: 'flex',
+					alignItems: 'center',
+					gap: '.4rem',
+				} }
 			>
-				<RichText
-					tagName="span"
-					aria-label={ __( 'Switch label' ) }
-					placeholder={ __( 'Add some text…' ) }
-					value={ label }
-					onChange={ ( label ) => setAttributes( { label } ) }
-				/>
-				{ ( description || isSelected ) && (
-					<RichText
-						tagName="span"
-						slot="description"
-						aria-label={ __( 'Switch label' ) }
-						placeholder={ __( 'Enter a description…', 'sureforms' ) }
-						value={ description }
-						onChange={ ( description ) =>
-							setAttributes( { description } )
-						}
+				<div style={ switchStyle }>
+					<input
+						type="checkbox"
+						checked={ isChecked }
+						style={ inputStyle }
 					/>
-				) }
-			</ScSwitch>
-		</Fragment>
+					<div style={ thumbStyle }></div>
+				</div>
+				<label htmlFor={ 'switch-block-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+			</div>
+			{ switchHelpText !== '' && (
+				<div style={ { color: '#ddd' } }>{ switchHelpText }</div>
+			) }
+		</div>
 	);
 };

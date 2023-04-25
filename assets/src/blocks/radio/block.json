@@ -4,9 +4,9 @@
 	"title": "Radio",
 	"description": "Display a radio input",
 	"category": "sureforms",
-	"keywords": ["radio", "sureforms"],
-    "textdomain": "sureforms",
-	"ancestor": ["sureforms/radio-group"],
+	"keywords": [ "radio", "sureforms" ],
+	"textdomain": "sureforms",
+	"ancestor": [ "sureforms/radio-group" ],
 	"supports": {
 		"reusable": false,
 		"html": false
@@ -15,11 +15,14 @@
 		"label": {
 			"type": "string"
 		},
-		"value": {
-			"type": "string",
-			"default": "checked"
+		"required": {
+			"type": "boolean"
 		},
-		"name": {
+		"checked": {
+			"type": "boolean",
+			"default": false
+		},
+		"radioHelpText": {
 			"type": "string"
 		}
 	}

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
@@ -8,15 +9,10 @@ import {
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 import Setup from './components/Setup';
 
-export default function edit( { clientId, attributes, setAttributes } ) {
+export default function Edit( { clientId } ) {
 	const [ patterns, setPatterns ] = useState( [] );
-
-	const {
-		id,
-	} = attributes;
 
 	const blockCount = useSelect( ( select ) =>
 		select( blockEditorStore ).getBlockCount( clientId )
@@ -33,54 +29,54 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 		if ( postType === 'sureforms_form' ) {
 			setTemplateValidity( true );
 		}
-	}, [ postType ] );
+	}, [ postType, setTemplateValidity ] );
 
-	const formId = useSelect( ( select ) => {
-		// parent block id attribute.
-		const parents = select( blockEditorStore ).getBlockParents( clientId );
-		const parentBlock = select( blockEditorStore ).getBlocksByClientId(
-			parents?.[ 0 ]
-		);
-		// current post id.
-		const post_id = select( 'core/editor' ).getCurrentPostId();
-		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
-	} );
+	// Not sure can be used later.
+	// const formId = useSelect( ( select ) => {
+	// 	// parent block id attribute.
+	// 	const parents = select( blockEditorStore ).getBlockParents( clientId );
+	// 	const parentBlock = select( blockEditorStore ).getBlocksByClientId(
+	// 		parents?.[ 0 ]
+	// 	);
+	// 	// current post id.
+	// 	const post_id = select( 'core/editor' ).getCurrentPostId();
+	// 	return parentBlock?.[ 0 ]?.attributes?.id || post_id;
+	// } );
 
 	useEffect( () => {
 		getPatterns();
 	}, [] );
 
 	const getPatterns = async () => {
-		const patterns = await apiFetch( {
+		const newPatterns = await apiFetch( {
 			path: '/sureforms/v1/form-patterns',
 		} );
-		setPatterns( patterns );
+		setPatterns( newPatterns );
 	};
 
 	/**
 	 * Maybe create the template for the form.
 	 *
-	 * @param root0
-	 * @param root0.template
+	 * @param {Object} root0
+	 * @param {string} root0.template
 	 */
-	const maybeCreateTemplate = async ( {
-		template = 'contact-form',
-	} ) => {
-		const pattern = patterns.find(
-			( pattern ) => pattern.name === `sureforms/${ template }`
+	const maybeCreateTemplate = async ( { template = 'contact-form' } ) => {
+		const newPattern = patterns.find(
+			( singlePattern ) =>
+				singlePattern.name === `sureforms/${ template }`
 		);
 
-		if ( ! pattern ) {
+		if ( ! newPattern ) {
 			alert( 'Something went wrong' );
 			return;
 		}
 		// parse blocks.
-		const parsed = parse( pattern.content );
+		const parsed = parse( newPattern.content );
 
 		return parsed;
 	};
 
-	const onCreate = async (template) => {
+	const onCreate = async ( template ) => {
 		const result = await maybeCreateTemplate( {
 			template,
 		} );
@@ -103,8 +99,8 @@ export default function edit( { clientId, attributes, setAttributes } ) {
 			) : (
 				<div
 					css={ css`
-					padding: 32px;
-				` }
+						padding: 32px;
+					` }
 				>
 					<InnerBlocks
 						templateLock={ false }

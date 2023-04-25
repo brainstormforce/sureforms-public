@@ -11,12 +11,15 @@
 		"html": false
 	},
 	"attributes": {
-		"ratingBoxLabel": {
+		"required": {
+			"type": "boolean"
+		},
+		"label": {
 			"type": "string",
 			"default": "Field Name",
 			"selector": "input"
 		},
-		"ratingBoxMessage": {
+		"ratingBoxHelpText": {
 			"type": "string",
 			"selector": "input"
 		},
@@ -29,6 +32,9 @@
 			"type": "string",
 			"default": "#000",
 			"selector": "select"
+		},
+		"showNumbers": {
+			"type": "boolean"
 		},
 		"iconShape": {
 			"type": "string",

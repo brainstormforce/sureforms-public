@@ -6,6 +6,9 @@ import { useState } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
+	PanelRow,
+	ToggleControl,
+	TextControl,
 	BaseControl,
 	RangeControl,
 	Icon,
@@ -17,10 +20,16 @@ import {
 import CreatableSelect from 'react-select/creatable';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { fileSizeLimit, allowedFormats, customFormats } = attributes;
-
-	const maxUploadFileSize = upload_field.upload_max_limit; //es-lint-disable no-undef
-	const uploadFormats = upload_field.upload_formats; //es-lint-disable no-undef
+	const {
+		required,
+		label,
+		fileSizeLimit,
+		allowedFormats,
+		customFormats,
+		help,
+	} = attributes;
+	const maxUploadFileSize = upload_field.upload_max_limit;
+	const uploadFormats = upload_field.upload_formats;
 
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
@@ -30,7 +39,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				icon="upload"
 				style={ { fontSize: '25px', marginBottom: '5px' } }
 			/>
-			Click to choose the file
+			{ __( 'Click to choose the file', 'sureforms' ) }
 		</>
 	);
 
@@ -91,154 +100,220 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<PanelBody title="Upload Field Settings">
-					<RangeControl
-						label={ __( 'File Size Limit', 'sureforms' ) }
-						help={ __(
-							'Select the maximum file size limit of the file that can be upload',
-							'sureforms'
-						) }
-						value={ fileSizeLimit }
-						min={ 1 }
-						max={ maxUploadFileSize }
-						step={ 1 }
-						onChange={ ( value ) =>
-							setAttributes( { fileSizeLimit: value } )
-						}
-					/>
-					<BaseControl
-						id="for-allowed-types"
-						label={ __( 'Allowed Types', 'sureforms' ) }
-						help={ __(
-							'Search for the File type or you can add your custom File types.',
-							'sureforms'
-						) }
-					>
-						<CreatableSelect
-							options={ wpUploadFormats.map( ( format ) => {
-								return { value: format, label: format };
-							} ) }
-							value={ allowedFormats }
-							isMulti
-							isClearable
-							onChange={ ( value ) => {
-								setAttributes( {
-									allowedFormats: [ ...value ],
-								} );
-							} }
+				<PanelBody title="Attributes">
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
-					</BaseControl>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Label', 'sureforms' ) }
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<RangeControl
+							label={ __( 'File Size Limit', 'sureforms' ) }
+							help={ __(
+								'Select the maximum file size limit of the file that can be upload',
+								'sureforms'
+							) }
+							value={ fileSizeLimit }
+							min={ 1 }
+							max={ maxUploadFileSize }
+							step={ 1 }
+							onChange={ ( value ) =>
+								setAttributes( { fileSizeLimit: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<BaseControl
+							id="for-allowed-types"
+							label={ __( 'Allowed Types', 'sureforms' ) }
+							help={ __(
+								'Search for the File type or you can add your custom File types.',
+								'sureforms'
+							) }
+						>
+							<CreatableSelect
+								options={ wpUploadFormats.map( ( format ) => {
+									return { value: format, label: format };
+								} ) }
+								value={ allowedFormats }
+								isMulti
+								isClearable
+								onChange={ ( value ) => {
+									setAttributes( {
+										allowedFormats: [ ...value ],
+									} );
+								} }
+							/>
+						</BaseControl>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Help', 'sureforms' ) }
+							value={ help }
+							onChange={ ( value ) =>
+								setAttributes( { help: value } )
+							}
+						/>
+					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<input
-				type="file"
-				id={ 'upload-input-field-' + blockID }
-				hidden
-				onChange={ ( e ) => checkFileSizeLimit( e ) }
-				accept={ allowedFormats
-					.map( ( obj ) => `.${ obj.value }` )
-					.join( ',' ) }
-			/>
-			<div style={ { border: '1px solid black' } }>
-				<label
-					id={ 'upload-label-' + blockID }
-					htmlFor={ 'upload-input-field-' + blockID }
-				>
-					<div
-						style={ {
-							display: 'flex',
-							alignItems: 'center',
-							marginLeft: '12px',
-							marginTop: '12px',
-							fontSize: '25px',
-							gap: '10px',
-						} }
-					>
-						{ inputBoxHeading }
-						<Icon
-							id={ 'reset-upload-field-' + blockID }
-							hidden
-							icon="trash"
-							style={ { fontSize: '25px', marginBottom: '5px' } }
-							onClick={ () => {
-								document
-									.getElementById(
-										'upload-attributes-' + blockID
-									)
-									.removeAttribute( 'hidden' );
-								document
-									.getElementById(
-										'reset-upload-field-' + blockID
-									)
-									.setAttribute( 'hidden', true );
-								setInputBoxHeading(
-									<>
-										<Icon
-											icon="upload"
-											style={ {
-												fontSize: '25px',
-												marginBottom: '5px',
-											} }
-										/>
-										Click to choose the file
-									</>
-								);
-								document
-									.getElementById( 'upload-label-' + blockID )
-									.setAttribute(
-										'for',
-										'upload-input-field-' + blockID
-									);
-							} }
-						/>
-					</div>
-					<div
-						style={ {
-							display: 'flex',
-							justifyContent: 'space-between',
-							padding: '1rem',
-						} }
-						id={ 'upload-attributes-' + blockID }
-					>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-							} }
-						>
-							<span>Size Limit</span>
-							<span>
-								<strong>{ fileSizeLimit }MB</strong>
-							</span>
-						</div>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-							} }
-						>
-							<span>Allowed Types</span>
-							<span>
-								{ }
-								<strong>
-									{ firstFive.length !== 0
-										? firstFive.map(
-											( obj ) => obj.value + ', '
-										  ) + '...'
-										: 'All types' }
-								</strong>
-							</span>
-						</div>
-					</div>
-				</label>
-			</div>
-			<p
-				hidden
-				id={ 'upload-field-error-' + blockID }
-				style={ { color: 'red' } }
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '0.5rem',
+				} }
 			>
-				File Size Exceeded The Limit
-			</p>
+				<label htmlFor={ 'upload-input-field-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				{ help !== '' && (
+					<label
+						htmlFor={ 'upload-help-' + blockID }
+						style={ { color: '#ddd' } }
+					>
+						{ help }
+					</label>
+				) }
+				<input
+					required={ required }
+					type="file"
+					id={ 'upload-input-field-' + blockID }
+					hidden
+					onChange={ ( e ) => checkFileSizeLimit( e ) }
+					accept={ allowedFormats
+						.map( ( obj ) => `.${ obj.value }` )
+						.join( ',' ) }
+				/>
+				<div style={ { border: '1px solid black' } }>
+					<label
+						id={ 'upload-label-' + blockID }
+						htmlFor={ 'upload-input-field-' + blockID }
+					>
+						<div
+							style={ {
+								display: 'flex',
+								alignItems: 'center',
+								marginLeft: '12px',
+								marginTop: '12px',
+								fontSize: '25px',
+								gap: '10px',
+							} }
+						>
+							{ inputBoxHeading }
+							<Icon
+								id={ 'reset-upload-field-' + blockID }
+								hidden
+								icon="trash"
+								style={ {
+									fontSize: '25px',
+									marginBottom: '5px',
+								} }
+								onClick={ () => {
+									document
+										.getElementById(
+											'upload-attributes-' + blockID
+										)
+										.removeAttribute( 'hidden' );
+									document
+										.getElementById(
+											'reset-upload-field-' + blockID
+										)
+										.setAttribute( 'hidden', true );
+									setInputBoxHeading(
+										<>
+											<Icon
+												icon="upload"
+												style={ {
+													fontSize: '25px',
+													marginBottom: '5px',
+												} }
+											/>
+											{ __(
+												'Click to choose the file',
+												'sureforms'
+											) }
+										</>
+									);
+									document
+										.getElementById(
+											'upload-label-' + blockID
+										)
+										.setAttribute(
+											'for',
+											'upload-input-field-' + blockID
+										);
+								} }
+							/>
+						</div>
+						<div
+							style={ {
+								display: 'flex',
+								justifyContent: 'space-between',
+								padding: '1rem',
+							} }
+							id={ 'upload-attributes-' + blockID }
+						>
+							<div
+								style={ {
+									display: 'flex',
+									flexDirection: 'column',
+								} }
+							>
+								<span>{ __( 'Size Limit', 'sureforms' ) }</span>
+								<span>
+									<strong>
+										{ fileSizeLimit }
+										{ __( 'MB', 'sureforms' ) }
+									</strong>
+								</span>
+							</div>
+							<div
+								style={ {
+									display: 'flex',
+									flexDirection: 'column',
+								} }
+							>
+								<span>
+									{ __( 'Allowed Types', 'sureforms' ) }
+								</span>
+								<span>
+									<strong>
+										{ firstFive.length !== 0
+											? firstFive.map(
+													( obj ) => obj.value + ', '
+											  ) + '...'
+											: 'All types' }
+									</strong>
+								</span>
+							</div>
+						</div>
+					</label>
+				</div>
+				<p
+					hidden
+					id={ 'upload-field-error-' + blockID }
+					style={ { color: 'red' } }
+				>
+					{ __( 'File Size Exceeded The Limit', 'sureforms' ) }
+				</p>
+			</div>
 		</div>
 	);
 }

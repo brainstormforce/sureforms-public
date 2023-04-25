@@ -17,6 +17,7 @@ import {
 } from '@wordpress/core-data';
 import {
 	useInnerBlocksProps as __stableUseInnerBlocksProps,
+	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUseInnerBlocksProps,
 	// __experimentalBlockContentOverlay as BlockContentOverlay, // TODO when gutenberg releases it: https://github.com/WordPress/gutenberg/blob/afee31ee020b8965e811f5d68a5ca8001780af9d/packages/block-editor/src/components/block-content-overlay/index.js#L17
 	InspectorControls,
@@ -24,7 +25,7 @@ import {
 	Warning,
 } from '@wordpress/block-editor';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( { attributes } ) => {
 	const useInnerBlocksProps = __stableUseInnerBlocksProps
 		? __stableUseInnerBlocksProps
 		: __experimentalUseInnerBlocksProps;
@@ -40,7 +41,12 @@ export default ( { attributes, setAttributes } ) => {
 		{ id }
 	);
 
-	const [ title, setTitle ] = useEntityProp( 'postType', 'sureforms_form', 'title', id );
+	const [ title, setTitle ] = useEntityProp(
+		'postType',
+		'sureforms_form',
+		'title',
+		id
+	);
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{},
@@ -54,7 +60,7 @@ export default ( { attributes, setAttributes } ) => {
 	);
 
 	const { isMissing, hasResolved } = useSelect( ( select ) => {
-		const hasResolved = select( coreStore ).hasFinishedResolution(
+		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
 			[ 'postType', 'sureforms_form', id ]
 		);
@@ -63,11 +69,12 @@ export default ( { attributes, setAttributes } ) => {
 			'sureforms_form',
 			id
 		);
-		const canEdit = select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
+		const canEdit =
+			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
 		return {
 			canEdit,
-			isMissing: hasResolved && ! form,
-			hasResolved,
+			isMissing: hasResolvedValue && ! form,
+			hasResolved: hasResolvedValue,
 			form,
 		};
 	} );
@@ -105,7 +112,9 @@ export default ( { attributes, setAttributes } ) => {
 						<TextControl
 							label={ __( 'Form Title', 'sureforms' ) }
 							value={ title }
-							onChange={ ( title ) => setTitle( title ) }
+							onChange={ ( value ) =>
+								setTitle( { title: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>

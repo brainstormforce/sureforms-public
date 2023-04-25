@@ -11,6 +11,7 @@ includes:
 parameters:
 	level: 9
 	inferPrivatePropertyTypeFromConstructor: true
+	checkGenericClassInNonGenericObjectType: false
 	stubFiles:
 		#- tests/php/stubs/wordpress-override.php
 	scanFiles:
@@ -22,6 +23,7 @@ parameters:
 		- sureforms.php
 		- plugin-loader.php
 		- inc
+		- api
 
 	excludePaths:
 		- inc/form-builder

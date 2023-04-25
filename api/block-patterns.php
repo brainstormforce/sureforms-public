@@ -9,13 +9,21 @@
 namespace SureForms\API;
 
 use SureForms\Inc\Traits\Get_Instance;
+use WP_Error;
+use WP_Post_Type;
+use WP_REST_Controller;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
+use WP_Block_Patterns_Registry;
+
 /**
  * Core class used to access block patterns via the REST API.
  *
  * @see WP_REST_Controller
  * @since X.X.X
  */
-class Block_Patterns extends \WP_REST_Controller {
+class Block_Patterns extends WP_REST_Controller {
 
 	use Get_Instance;
 
@@ -35,6 +43,7 @@ class Block_Patterns extends \WP_REST_Controller {
 	 * Registers the routes for the objects of the controller.
 	 *
 	 * @since X.X.X
+	 * @return void
 	 */
 	public function register_routes() {
 		register_rest_route(
@@ -62,8 +71,12 @@ class Block_Patterns extends \WP_REST_Controller {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
-
-		foreach ( get_post_types( array( 'show_in_rest' => true ), 'objects' ) as $post_type ) {
+		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
+			/**
+			 * The post type.
+			 *
+			 * @var WP_Post_Type $post_type
+			 */
 			if ( current_user_can( $post_type->cap->edit_posts ) ) {
 				return true;
 			}
@@ -72,7 +85,7 @@ class Block_Patterns extends \WP_REST_Controller {
 		return new \WP_Error(
 			'rest_cannot_view',
 			__( 'Sorry, you are not allowed to view the registered form patterns.', 'sureforms' ),
-			array( 'status' => rest_authorization_required_code() )
+			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
 
@@ -84,17 +97,19 @@ class Block_Patterns extends \WP_REST_Controller {
 	 * @since X.X.X
 	 */
 	public function get_items( $request ) {
-		$response = array();
-		$patterns = \WP_Block_Patterns_Registry::get_instance()->get_all_registered();
+		$response = [];
+		$patterns = WP_Block_Patterns_Registry::get_instance()->get_all_registered();
 		$filtered = array_filter(
 			$patterns,
-			function( $pattern ) {
+			static function( $pattern ) {
 				return in_array( 'sureforms_form', $pattern['categories'] ?? [], true );
 			}
 		);
 		foreach ( $filtered as $pattern ) {
 			$prepared_pattern = $this->prepare_item_for_response( $pattern, $request );
-			$response[]       = $this->prepare_response_for_collection( $prepared_pattern );
+			if ( ! is_wp_error( $prepared_pattern ) ) {
+				$response[] = $this->prepare_response_for_collection( $prepared_pattern );
+			}
 		}
 		return rest_ensure_response( $response );
 	}
@@ -102,7 +117,7 @@ class Block_Patterns extends \WP_REST_Controller {
 	/**
 	 * Prepare a raw block pattern before it gets output in a REST API response.
 	 *
-	 * @param array           $item    Raw pattern as registered, before any changes.
+	 * @param array<mixed>    $item    Raw pattern as registered, before any changes.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since X.X.X
@@ -136,7 +151,7 @@ class Block_Patterns extends \WP_REST_Controller {
 	/**
 	 * Retrieves the block pattern schema, conforming to JSON Schema.
 	 *
-	 * @return array Item schema data.
+	 * @return array<mixed>  Item schema data.
 	 * @since X.X.X
 	 */
 	public function get_item_schema() {

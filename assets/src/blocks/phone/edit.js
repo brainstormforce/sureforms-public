@@ -11,15 +11,10 @@ import {
 	TextControl,
 } from '@wordpress/components';
 
-/**
- * Components dependencies
- */
-import { ScInput, ScSelect } from '@surecart/components-react';
-
 import data from './phoneCodes.json';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { required, label, help } = attributes;
+	const { required, label, help, placeholder } = attributes;
 	const blockID = useBlockProps().id;
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
@@ -53,6 +48,15 @@ export default function Edit( { attributes, setAttributes } ) {
 					</PanelRow>
 					<PanelRow>
 						<TextControl
+							label={ __( 'Placeholder', 'sureforms' ) }
+							value={ placeholder }
+							onChange={ ( value ) =>
+								setAttributes( { placeholder: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
 							onChange={ ( value ) =>
@@ -62,37 +66,68 @@ export default function Edit( { attributes, setAttributes } ) {
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<div style={ { display: 'flex', gap: '1rem' } }>
-				{ data && (
-					<ScSelect
-						label={ label }
-						required={ required }
-						id={ 'phone-field-' + blockID }
-						placeholder="US +1"
-						search
-						onScChange={ ( e ) => handleChange( e ) }
-						choices={ data.map( ( country ) => {
-							return {
-								value: country.dial_code,
-								label: country.code + ' ' + country.dial_code,
-							};
-						} ) }
-					/>
-				) }
-
-				<ScInput
-					label="&nbsp;"
-					type="tel"
-					placeholder="9876543210"
-					pattern="[0-9]{10}"
-					id={ 'phone-field-' + blockID }
-					value={ phoneNumber }
-					onScChange={ ( e ) => {
-						setPhoneNumber( e.target.value );
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '.5rem',
+				} }
+			>
+				<label htmlFor={ 'phone-field-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<div
+					style={ {
+						display: 'flex',
+						gap: '.5rem',
 					} }
-					help={ help }
-				/>
+				>
+					{ data && (
+						<select
+							style={ { width: 'fit-content' } }
+							required={ required }
+							id={ 'phone-field-' + blockID }
+							placeholder="US +1"
+							onChange={ ( e ) => handleChange( e ) }
+						>
+							{ data.map( ( country, i ) => {
+								return (
+									<option
+										key={ i }
+										value={ country.dial_code }
+									>
+										{ country.code +
+											' ' +
+											country.dial_code }
+									</option>
+								);
+							} ) }
+						</select>
+					) }
+					<input
+						label="&nbsp;"
+						type="tel"
+						placeholder={ placeholder }
+						pattern="[0-9]{10}"
+						id={ 'phone-field-' + blockID }
+						value={ phoneNumber }
+						onChange={ ( e ) => {
+							setPhoneNumber( e.target.value );
+						} }
+					/>
+				</div>
 			</div>
+			{ help !== '' && (
+				<label
+					htmlFor={ 'phone-help-' + blockID }
+					style={ { color: '#ddd' } }
+				>
+					{ help }
+				</label>
+			) }
 		</div>
 	);
 }

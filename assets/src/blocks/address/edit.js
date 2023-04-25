@@ -23,13 +23,13 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const inputStyles = {
 		marginTop: '14px',
-		height: '43px',
+		// height: '43px',
 	};
 
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<PanelBody title="Attributes">
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
@@ -52,14 +52,16 @@ export default function Edit( { attributes, setAttributes } ) {
 			</InspectorControls>
 			<label htmlFor={ 'address-field-' + blockID }>
 				{ label }
-				{ required && <span style={ { color: 'red' } }> *</span> }
+				{ required && label && (
+					<span style={ { color: 'red' } }> *</span>
+				) }
 			</label>
 			<div
 				id={ 'address-field-' + blockID }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: '4px',
+					gap: '.5px',
 				} }
 			>
 				<input
@@ -72,14 +74,14 @@ export default function Edit( { attributes, setAttributes } ) {
 					style={ labelStyles }
 					htmlFor={ 'address-line-1-' + blockID }
 				>
-					Address Line 1
+					{ __( 'Address Line 1', 'sureforms' ) }
 				</label>
 			</div>
 			<div
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: '4px',
+					gap: '.5px',
 				} }
 			>
 				<input
@@ -92,15 +94,15 @@ export default function Edit( { attributes, setAttributes } ) {
 					style={ labelStyles }
 					htmlFor={ 'address-line-2-' + blockID }
 				>
-					Address Line 2
+					{ __( 'Address Line 2', 'sureforms' ) }
 				</label>
 			</div>
-			<div style={ { display: 'flex', gap: '4px' } }>
+			<div style={ { display: 'flex', gap: '1rem' } }>
 				<div
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',
-						gap: '4px',
+						gap: '.5px',
 						width: '100%',
 					} }
 				>
@@ -114,14 +116,14 @@ export default function Edit( { attributes, setAttributes } ) {
 						style={ labelStyles }
 						htmlFor={ 'address-city-' + blockID }
 					>
-						City
+						{ __( 'City', 'sureforms' ) }
 					</label>
 				</div>
 				<div
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',
-						gap: '4px',
+						gap: '.5px',
 						width: '100%',
 					} }
 				>
@@ -135,16 +137,16 @@ export default function Edit( { attributes, setAttributes } ) {
 						style={ labelStyles }
 						htmlFor={ 'address-state-' + blockID }
 					>
-						State / Province / Region
+						{ __( 'State / Province / Region', 'sureforms' ) }
 					</label>
 				</div>
 			</div>
-			<div style={ { display: 'flex', gap: '4px' } }>
+			<div style={ { display: 'flex', gap: '1rem' } }>
 				<div
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',
-						gap: '4px',
+						gap: '.5px',
 						width: '100%',
 					} }
 				>
@@ -158,19 +160,19 @@ export default function Edit( { attributes, setAttributes } ) {
 						style={ labelStyles }
 						htmlFor={ 'address-city-' + blockID }
 					>
-						Postal Code
+						{ __( 'Postal Code', 'sureforms' ) }
 					</label>
 				</div>
 				<div
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',
-						gap: '4px',
+						gap: '.5px',
 						width: '100%',
 					} }
 				>
 					<select
-						style={ inputStyles }
+						style={ { ...inputStyles, width: '100%' } }
 						id={ 'address-country-' + blockID }
 						required={ required }
 					>
@@ -186,7 +188,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						style={ labelStyles }
 						htmlFor={ 'address-country-' + blockID }
 					>
-						Country
+						{ __( 'Country', 'sureforms' ) }
 					</label>
 				</div>
 			</div>

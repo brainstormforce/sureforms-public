@@ -15,22 +15,26 @@ export default ( { attributes, setAttributes } ) => {
 					<TextControl
 						label={ __( 'Name', 'sureforms' ) }
 						value={ name }
-						onChange={ ( name ) => setAttributes( { name } ) }
+						onChange={ ( value ) =>
+							setAttributes( { name: value } )
+						}
 					/>
 				</PanelRow>
 				<PanelRow>
 					<TextControl
 						label={ __( 'Label', 'sureforms' ) }
 						value={ label }
-						onChange={ ( label ) => setAttributes( { label } ) }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
 					/>
 				</PanelRow>
 				<PanelRow>
 					<TextControl
 						label={ __( 'Placeholder', 'sureforms' ) }
 						value={ placeholder }
-						onChange={ ( placeholder ) =>
-							setAttributes( { placeholder } )
+						onChange={ ( value ) =>
+							setAttributes( { placeholder: value } )
 						}
 					/>
 				</PanelRow>
@@ -38,7 +42,9 @@ export default ( { attributes, setAttributes } ) => {
 					<TextControl
 						label={ __( 'Help', 'sureforms' ) }
 						value={ help }
-						onChange={ ( help ) => setAttributes( { help } ) }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 					/>
 				</PanelRow>
 			</PanelBody>

@@ -8,6 +8,7 @@ import {
 	PanelBody,
 	PanelRow,
 	SelectControl,
+	ToggleControl,
 	TextControl,
 	BaseControl,
 	ButtonGroup,
@@ -25,10 +26,12 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [ hover, setHover ] = useState( null );
 
 	const {
-		ratingBoxLabel,
-		ratingBoxMessage,
+		required,
+		label,
+		ratingBoxHelpText,
 		width,
 		iconColor,
+		showNumbers,
 		iconShape,
 		maxValue,
 	} = attributes;
@@ -44,30 +47,39 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<PanelBody>
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
+						/>
+					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label', 'sureforms' ) }
-							value={ ratingBoxLabel }
+							value={ label }
 							onChange={ ( value ) =>
-								setAttributes( { ratingBoxLabel: value } )
+								setAttributes( { label: value } )
 							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={ __( 'Message', 'sureforms' ) }
-							value={ ratingBoxMessage }
+							label={ __( 'Help', 'sureforms' ) }
+							value={ ratingBoxHelpText }
 							onChange={ ( value ) =>
-								setAttributes( { ratingBoxMessage: value } )
+								setAttributes( { ratingBoxHelpText: value } )
 							}
 						/>
 					</PanelRow>
-					<BaseControl
-						id="for-width-control"
-						label={ __( 'Width', 'sureforms' ) }
-					>
-						<PanelRow>
+					<PanelRow>
+						<BaseControl
+							id="for-width-control"
+							label={ __( 'Width', 'sureforms' ) }
+						>
 							<ButtonGroup>
 								<Button
 									isPressed={ width === 'halfWidth' }
@@ -86,8 +98,8 @@ export default function Edit( { attributes, setAttributes } ) {
 									{ __( 'Full Width', 'sureforms' ) }
 								</Button>
 							</ButtonGroup>
-						</PanelRow>
-					</BaseControl>
+						</BaseControl>
+					</PanelRow>
 					<PanelRow>
 						<div>
 							<BaseControl
@@ -99,6 +111,16 @@ export default function Edit( { attributes, setAttributes } ) {
 							value={ iconColor }
 							onChange={ ( color ) =>
 								setAttributes( { iconColor: color } )
+							}
+							clearable={ false }
+						/>
+					</PanelRow>
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Show Numbers', 'sureforms' ) }
+							checked={ showNumbers }
+							onChange={ ( checked ) =>
+								setAttributes( { showNumbers: checked } )
 							}
 						/>
 					</PanelRow>
@@ -159,10 +181,13 @@ export default function Edit( { attributes, setAttributes } ) {
 				} }
 			>
 				<label htmlFor={ 'rating-block-' + blockID }>
-					{ ratingBoxLabel }
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
 				</label>
-				{ ratingBoxMessage !== '' && (
-					<div style={ { color: '#ddd' } }>{ ratingBoxMessage }</div>
+				{ ratingBoxHelpText !== '' && (
+					<div style={ { color: '#ddd' } }>{ ratingBoxHelpText }</div>
 				) }
 				<div
 					id={ 'rating-block-' + blockID }
@@ -205,8 +230,9 @@ export default function Edit( { attributes, setAttributes } ) {
 											iconProps={ iconProps }
 										/>
 									</label>
-									<div>{ index }</div>
+									<div>{ showNumbers && index }</div>
 									<input
+										required={ index === 1 && required }
 										type="radio"
 										id={ blockID + 'i-' + index }
 										style={ { display: 'none' } }

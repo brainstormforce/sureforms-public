@@ -4,9 +4,9 @@
 	"title": "Checkbox",
 	"description": "Display a checkbox input",
 	"category": "sureforms",
-	"ancestor": ["sureforms/form"],
-	"keywords": ["checkbox", "toggle", "checkout", "engine"],
-    "textdomain": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
+	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
 		"html": false
@@ -16,16 +16,19 @@
 			"type": "string",
 			"default": "Checkbox"
 		},
-		"value": {
+		"labelUrl": {
 			"type": "string",
-			"default": "on"
-		},
-		"name": {
-			"type": "string",
-			"default": "checkbox"
+			"default": ""
 		},
 		"required": {
 			"type": "boolean"
+		},
+		"checked": {
+			"type": "boolean",
+			"default": false
+		},
+		"checkboxHelpText": {
+			"type": "string"
 		}
 	}
 }

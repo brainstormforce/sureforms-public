@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
@@ -14,20 +15,21 @@ export default ( { label, children, selected, onSelect } ) => {
 		max-height: 700px;
 		cursor: pointer;
 		&:hover {
-			border-color: var(--wp-admin-theme-color);
+			border-color: var( --wp-admin-theme-color );
 		}
 		&:focus,
 		&:active {
 			box-shadow: inset 0 0 0 1px #fff,
-				0 0 0 var(--wp-admin-border-width-focus)
-					var(--wp-admin-theme-color);
+				0 0 0 var( --wp-admin-border-width-focus )
+					var( --wp-admin-theme-color );
 			outline: 2px solid transparent;
 		}
 	`;
 
 	const highlighted = css`
 		box-shadow: inset 0 0 0 1px #fff,
-			0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+			0 0 0 var( --wp-admin-border-width-focus )
+				var( --wp-admin-theme-color );
 		outline: 2px solid transparent;
 	`;
 

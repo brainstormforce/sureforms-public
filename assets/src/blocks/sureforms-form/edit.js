@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Spinner, Placeholder } from '@wordpress/components';
 
 import Empty from './components/Empty';
@@ -20,7 +19,9 @@ export default ( { attributes, setAttributes } ) => {
 	}
 
 	if ( ! id ) {
-		return <Empty attributes={ attributes } setAttributes={ setAttributes } />;
+		return (
+			<Empty attributes={ attributes } setAttributes={ setAttributes } />
+		);
 	}
 
 	return <Edit attributes={ attributes } setAttributes={ setAttributes } />;

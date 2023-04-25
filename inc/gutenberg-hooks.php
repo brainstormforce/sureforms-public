@@ -18,7 +18,7 @@ class Gutenberg_Hooks {
 	/**
 	 * Block patterns to register.
 	 *
-	 * @var array
+	 * @var array<mixed>
 	 */
 	protected $patterns = [];
 
@@ -37,42 +37,23 @@ class Gutenberg_Hooks {
 			'contact-form',
 			'newsletter-form',
 			'user-feedback-form',
+			'request-quote-form',
 		];
 
 		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
-		add_action( 'block_categories_all', [ $this, 'register_block_categories' ] );
+		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		// TODO: Need to check this later.
 		// add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );.
 	}
 
 	/**
-	 * Disable forms wrapper block in Forms CPT.
-	 *
-	 * @param array  $allowed_block_types Allowed Block Types array.
-	 * @param object $editor_context Editor Context object.
-	 * @return array Array of allowed Block Types.
-	 */
-	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
-		// Get all the registered blocks.
-		$blocks = \WP_Block_Type_Registry::get_instance()->get_all_registered();
-
-		// Disable Forms main parent.
-		if ( SUREFORMS_FORMS_POST_TYPE === $editor_context->post->post_type ) {
-			unset( $blocks['sureforms/sf-form'] );
-		}
-
-		// Return the new list of allowed blocks.
-		return array_keys( $blocks );
-	}
-
-	/**
 	 * Register our custom block category.
 	 *
-	 * @param array $categories Array of categories.
-	 * @return array
+	 * @param array<mixed> $categories Array of categories.
+	 * @return array<mixed>
 	 * @since X.X.X
 	 */
 	public function register_block_categories( $categories ) {
@@ -97,7 +78,7 @@ class Gutenberg_Hooks {
 		/**
 		 * Filters the plugin block patterns.
 		 *
-		 * @param array $patterns List of block patterns by name.
+		 * @param array<mixed> $patterns List of block patterns by name.
 		 */
 		$this->patterns = apply_filters( 'sureforms_block_patterns', $this->patterns );
 
@@ -185,10 +166,8 @@ class Gutenberg_Hooks {
 			}
 		}
 
-		wp_enqueue_script( 'sureforms-upload-field', plugin_dir_url( __DIR__ ) . 'assets/src/blocks/upload/edit.js', [], SUREFORMS_VER, true );
-
 		wp_localize_script(
-			'sureforms-upload-field',
+			'sureforms-' . $all_screen_blocks,
 			'upload_field',
 			array(
 				'upload_formats'   => $formats,

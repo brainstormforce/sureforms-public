@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/editor';
 import { PanelBody, PanelRow, TextControl } from '@wordpress/components';
 
-export default ( { attributes, setAttributes } ) => {
+const MyInspectorControls = ( { attributes, setAttributes } ) => {
 	const { label, placeholder, help, name } = attributes;
 
 	return (
@@ -15,22 +15,26 @@ export default ( { attributes, setAttributes } ) => {
 					<TextControl
 						label={ __( 'Name', 'sureforms' ) }
 						value={ name }
-						onChange={ ( name ) => setAttributes( { name } ) }
+						onChange={ ( newName ) =>
+							setAttributes( { name: newName } )
+						}
 					/>
 				</PanelRow>
 				<PanelRow>
 					<TextControl
 						label={ __( 'Label', 'sureforms' ) }
 						value={ label }
-						onChange={ ( label ) => setAttributes( { label } ) }
+						onChange={ ( newLabel ) =>
+							setAttributes( { label: newLabel } )
+						}
 					/>
 				</PanelRow>
 				<PanelRow>
 					<TextControl
 						label={ __( 'Placeholder', 'sureforms' ) }
 						value={ placeholder }
-						onChange={ ( placeholder ) =>
-							setAttributes( { placeholder } )
+						onChange={ ( newPlaceholder ) =>
+							setAttributes( { placeholder: newPlaceholder } )
 						}
 					/>
 				</PanelRow>
@@ -38,10 +42,14 @@ export default ( { attributes, setAttributes } ) => {
 					<TextControl
 						label={ __( 'Help', 'sureforms' ) }
 						value={ help }
-						onChange={ ( help ) => setAttributes( { help } ) }
+						onChange={ ( newHelp ) =>
+							setAttributes( { help: newHelp } )
+						}
 					/>
 				</PanelRow>
 			</PanelBody>
 		</InspectorControls>
 	);
 };
+
+export default MyInspectorControls;

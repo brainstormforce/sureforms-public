@@ -10,7 +10,7 @@ const onSelect = ( tabName ) => {
 const PluginDocumentSettingPanelDemo = () => (
 	<PluginDocumentSettingPanel
 		initialOpen
-		title="Form Options Panel"
+		title={ __( 'Form Options Panel', 'sureforms' ) }
 		name="sureforms-forms-panel"
 		className="sureforms--panel"
 	>

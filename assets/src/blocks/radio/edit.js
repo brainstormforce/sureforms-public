@@ -1,68 +1,85 @@
 /**
  * Component Dependencies
  */
-import { ScRadio } from '@surecart/components-react';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, PanelRow, TextControl, ToggleControl } from '@wordpress/components';
-import { Fragment } from '@wordpress/element';
-/**
- * WordPress dependencies
- */
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
+import {
+	PanelBody,
+	PanelRow,
+	TextControl,
+	ToggleControl,
+} from '@wordpress/components';
 
-export default ( { className, attributes, setAttributes } ) => {
-	const { label, value, checked, name } = attributes;
+export default ( { attributes, setAttributes } ) => {
+	const { required, label, checked: isChecked, radioHelpText } = attributes;
+	const blockID = useBlockProps().id;
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
-						<TextControl
-							label={ __( 'Name', 'sureforms' ) }
-							value={ name }
-							onChange={ ( name ) => setAttributes( { name } ) }
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={ __( 'Value', 'sureforms' ) }
-							value={ value }
-							onChange={ ( value ) => setAttributes( { value } ) }
+							label={ __( 'Label', 'sureforms' ) }
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Checked by default', 'sureforms' ) }
-							checked={ checked }
-							onChange={ ( checked ) => setAttributes( { checked } ) }
+							checked={ isChecked }
+							onChange={ ( checked ) =>
+								setAttributes( { checked } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Help', 'sureforms' ) }
+							value={ radioHelpText }
+							onChange={ ( value ) =>
+								setAttributes( { radioHelpText: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			<ScRadio
-				name={ name }
-				checked={ checked }
-				edit
-				{ ...useBlockProps( {
-					className,
-					style: {
-						display: 'block',
-					},
-				} ) }
+			<div
+				style={ {
+					display: 'flex',
+					gap: '.4rem',
+					alignItems: 'center',
+				} }
 			>
-				<RichText
-					aria-label={ __( 'Radio Text', 'sureforms' ) }
-					placeholder={ __(
-						'Click here to add some radio text…',
-						'sureforms'
+				<input
+					type="radio"
+					id={ 'radio-block-' + blockID }
+					checked={ isChecked }
+					required={ required }
+					style={ { marginTop: '1px' } }
+				></input>
+				<label htmlFor={ 'radio-block-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
 					) }
-					value={ label }
-					onChange={ ( label ) => setAttributes( { label } ) }
-				/>
-			</ScRadio>
-		</Fragment>
+				</label>
+			</div>
+			{ radioHelpText !== '' && (
+				<div style={ { color: '#ddd' } }>{ radioHelpText }</div>
+			) }
+		</div>
 	);
 };

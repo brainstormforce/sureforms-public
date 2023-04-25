@@ -2,8 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
-import { Fragment } from '@wordpress/element';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	PanelRow,
@@ -11,45 +10,40 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
-/**
- * Component Dependencies
- */
-import { ScTextarea } from '@surecart/components-react';
+export default ( { attributes, setAttributes } ) => {
+	const { label, placeholder, textAreaHelpText, required, maxlength } =
+		attributes;
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, name, required, maxlength } = attributes;
+	const blockID = useBlockProps().id;
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
-							onChange={ ( required ) => setAttributes( { required } ) }
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Name', 'sureforms' ) }
-							value={ name }
-							onChange={ ( name ) => setAttributes( { name } ) }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }
-							onChange={ ( label ) => setAttributes( { label } ) }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Placeholder', 'sureforms' ) }
 							value={ placeholder }
-							onChange={ ( placeholder ) =>
-								setAttributes( { placeholder } )
+							onChange={ ( value ) =>
+								setAttributes( { placeholder: value } )
 							}
 						/>
 					</PanelRow>
@@ -57,30 +51,45 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 						<TextControl
 							label={ __( 'Max Length', 'sureforms' ) }
 							value={ maxlength }
-							onChange={ ( maxlength ) =>
-								setAttributes( { maxlength } )
+							onChange={ ( value ) =>
+								setAttributes( { maxlength: value } )
 							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Help', 'sureforms' ) }
-							value={ help }
-							onChange={ ( help ) => setAttributes( { help } ) }
+							value={ textAreaHelpText }
+							onChange={ ( value ) =>
+								setAttributes( { textAreaHelpText: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			{ ! isSelected && ! name && <div>Please add a name</div> }
-			<ScTextarea
-				className={ className }
-				required={ required }
-				name={ name }
-				label={ label }
-				placeholder={ placeholder }
-				help={ help }
-			></ScTextarea>
-		</Fragment>
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '.5rem',
+				} }
+			>
+				<label htmlFor={ 'text-area-block-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<textarea
+					required={ required }
+					label={ label }
+					placeholder={ placeholder }
+					rows={ maxlength }
+				></textarea>
+				{ textAreaHelpText !== '' && (
+					<div style={ { color: '#ddd' } }>{ textAreaHelpText }</div>
+				) }
+			</div>
+		</div>
 	);
 };

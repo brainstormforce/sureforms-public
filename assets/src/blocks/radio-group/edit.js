@@ -5,12 +5,12 @@ import {
 	InspectorControls,
 	InnerBlocks,
 	useInnerBlocksProps as __stableUseInnerBlocksProps,
+	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUseInnerBlocksProps,
 	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { css, jsx } from '@emotion/react';
-import { Fragment } from '@wordpress/element';
 import {
 	PanelBody,
 	PanelRow,
@@ -27,6 +27,8 @@ import { useSelect } from '@wordpress/data';
 
 export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const { label, required } = attributes;
+	const blockID = useBlockProps().id;
+
 	const useInnerBlocksProps = __stableUseInnerBlocksProps
 		? __stableUseInnerBlocksProps
 		: __experimentalUseInnerBlocksProps;
@@ -57,31 +59,42 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	} );
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label Name', 'sureforms' ) }
 							value={ label }
-							onChange={ ( label ) => setAttributes( { label } ) }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
-							onChange={ ( required ) => setAttributes( { required } ) }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			<ScRadioGroup
-				label={ label }
-				required={ required }
-				{ ...innerBlocksProps }
-			></ScRadioGroup>
-		</Fragment>
+			<div>
+				<label htmlFor={ 'multi-choice-block-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<ScRadioGroup
+					id={ 'multi-choice-block-' + blockID }
+					required={ required }
+					{ ...innerBlocksProps }
+				></ScRadioGroup>
+			</div>
+		</div>
 	);
 };

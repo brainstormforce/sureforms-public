@@ -1,4 +1,5 @@
 const stripHTML = ( text ) => {
+	const { DOMParser } = window;
 	const parsedLabel = new DOMParser().parseFromString( text, 'text/html' );
 	return parsedLabel?.body?.textContent || '';
 };
@@ -12,7 +13,7 @@ const stripHTML = ( text ) => {
  */
 const getSpacingPresetCssVar = ( value ) => {
 	if ( ! value ) {
-		return;
+		return '';
 	}
 
 	const slug = value.match( /var:preset\|spacing\|(.+)/ );

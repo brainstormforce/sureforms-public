@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
@@ -13,7 +14,7 @@ export default ( {
 		<div
 			css={ css`
 				background: #fff;
-				font-family: var(--sc-font-sans);
+				font-family: var( --sc-font-sans );
 				font-size: 14px;
 				box-sizing: border-box;
 				position: relative;

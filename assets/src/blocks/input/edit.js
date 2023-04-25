@@ -2,8 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
-import { Fragment } from '@wordpress/element';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	PanelRow,
@@ -11,45 +10,39 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
-/**
- * Component Dependencies
- */
-import { ScInput } from '@surecart/components-react';
+export default ( { className, attributes, setAttributes } ) => {
+	const { label, placeholder, help, required } = attributes;
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, name, required } = attributes;
+	const blockID = useBlockProps().id;
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
-							onChange={ ( required ) => setAttributes( { required } ) }
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Name', 'sureforms' ) }
-							value={ name }
-							onChange={ ( name ) => setAttributes( { name } ) }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }
-							onChange={ ( label ) => setAttributes( { label } ) }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Placeholder', 'sureforms' ) }
 							value={ placeholder }
-							onChange={ ( placeholder ) =>
-								setAttributes( { placeholder } )
+							onChange={ ( value ) =>
+								setAttributes( { placeholder: value } )
 							}
 						/>
 					</PanelRow>
@@ -57,21 +50,42 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 						<TextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
-							onChange={ ( help ) => setAttributes( { help } ) }
+							onChange={ ( value ) =>
+								setAttributes( { help: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			{ ! isSelected && ! name && <div>Please add a name</div> }
-			<ScInput
-				className={ className }
-				required={ required }
-				name={ name }
-				label={ label }
-				placeholder={ placeholder }
-				help={ help }
-			></ScInput>
-		</Fragment>
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '.5rem',
+				} }
+			>
+				<label htmlFor={ 'text-input-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<input
+					id={ 'text-input-' + blockID }
+					type="text"
+					className={ className }
+					placeholder={ placeholder }
+					required={ required }
+				/>
+				{ help !== '' && (
+					<label
+						htmlFor={ 'text-input-help-' + blockID }
+						style={ { color: '#ddd' } }
+					>
+						{ help }
+					</label>
+				) }
+			</div>
+		</div>
 	);
 };

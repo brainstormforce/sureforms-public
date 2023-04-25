@@ -1,12 +1,12 @@
 {
 	"apiVersion": 2,
 	"name": "sureforms/radio-group",
-	"title": "Radio Select",
-	"description": "Display a radio select input. This is saved with the order as additional metadata.",
+	"title": "Multiple Choice",
+	"description": "Display a multiple choice input. This is saved with the order as additional metadata.",
 	"category": "sureforms",
-	"ancestor": ["sureforms/form"],
-	"keywords": ["radio", "select", "radio-group", "sureforms"],
-    "textdomain": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "radio", "select", "radio-group", "sureforms" ],
+	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
 		"html": false

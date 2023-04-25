@@ -6,7 +6,7 @@ export default ( { onCreate, templates } ) => {
 		if ( template ) {
 			onCreate( template );
 		}
-	}, [ template ] );
+	}, [ template, onCreate ] );
 	if ( ! template ) {
 		return (
 			<ChooseDesign

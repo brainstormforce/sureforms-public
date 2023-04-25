@@ -16,6 +16,6 @@ return [
 	<div class="wp-block-column"><!-- wp:sureforms/email /--></div>
 	<!-- /wp:column -->
 	
-	<!-- wp:sureforms/rating {"ratingBoxLabel":"Rating","ratingBoxMessage":"Please leave a rating for our team","width":"fullWidth","iconColor":"#ffdd19"} /-->',
+	<!-- wp:sureforms/rating {"width":"fullWidth","iconColor":"#ffdd19"} /-->',
 
 ];

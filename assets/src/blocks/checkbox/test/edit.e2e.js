@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 /**
  * WordPress dependencies
  */
@@ -18,7 +20,9 @@ describe( 'surecart/checkout-form', () => {
 
 	it( 'Should render', async () => {
 		await insertBlock( 'Checkout Button' );
-		expect( await page.$( `[data-type="surecart/button"]` ) ).not.toBeNull();
+		expect(
+			await page.$( `[data-type="surecart/button"]` )
+		).not.toBeNull();
 		expect( await getEditedPostContent() ).toMatchSnapshot();
 	} );
 } );

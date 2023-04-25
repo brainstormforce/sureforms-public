@@ -11,6 +11,9 @@
 		"html": false
 	},
 	"attributes": {
+		"required": {
+			"type": "boolean"
+		},
 		"options": {
 			"default": [],
 			"type": "array"
@@ -19,6 +22,9 @@
 			"default": "Select",
 			"type": "string",
 			"selector": "input"
+		},
+		"help": {
+			"type": "string"
 		}
 	}
 }

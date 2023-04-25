@@ -2,8 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { Fragment } from '@wordpress/element';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	PanelRow,
@@ -11,66 +10,102 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
-/**
- * Component Dependencies
- */
-import { ScCheckbox } from '@surecart/components-react';
-import { useBlockProps } from '@wordpress/block-editor';
+export default ( { attributes, setAttributes } ) => {
+	const {
+		label,
+		checked: isChecked,
+		required,
+		labelUrl,
+		checkboxHelpText,
+	} = attributes;
 
-export default ( { className, attributes, setAttributes } ) => {
-	const { label, value, checked, name, required } = attributes;
-
-	const blockProps = useBlockProps();
+	const blockID = useBlockProps().id;
 
 	return (
-		<Fragment>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Required', 'sureforms' ) }
 							checked={ required }
-							onChange={ ( required ) => setAttributes( { required } ) }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={ __( 'Name', 'sureforms' ) }
-							value={ name }
-							onChange={ ( name ) => setAttributes( { name } ) }
+							label={ __( 'Label', 'sureforms' ) }
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={ __( 'Value', 'sureforms' ) }
-							value={ value }
-							onChange={ ( value ) => setAttributes( { value } ) }
+							type="url"
+							label={ __( 'Label Url', 'sureforms' ) }
+							placeholder="https://example.com/"
+							value={ labelUrl }
+							onChange={ ( value ) =>
+								setAttributes( { labelUrl: value } )
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Checked by default', 'sureforms' ) }
-							checked={ checked }
-							onChange={ ( checked ) => setAttributes( { checked } ) }
+							checked={ isChecked }
+							onChange={ ( checked ) =>
+								setAttributes( { checked } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Help', 'sureforms' ) }
+							value={ checkboxHelpText }
+							onChange={ ( value ) =>
+								setAttributes( { checkboxHelpText: value } )
+							}
 						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-
-			<ScCheckbox
-				className={ className }
-				name={ name }
-				required={ required }
-				edit
-				{ ...blockProps }
+			<div
+				style={ {
+					display: 'flex',
+					alignItems: 'center',
+					gap: '.4rem',
+				} }
 			>
-				<RichText
-					aria-label={ __( 'Checkbox Text', 'sureforms' ) }
-					placeholder={ __( 'Add some checkbox text…', 'sureforms' ) }
-					value={ label }
-					onChange={ ( label ) => setAttributes( { label } ) }
-				/>
-			</ScCheckbox>
-		</Fragment>
+				<input
+					type="checkbox"
+					id={ 'checkbox-block-' + blockID }
+					checked={ isChecked }
+					required={ required }
+				></input>
+				<label htmlFor={ 'checkbox-block-' + blockID }>
+					{ labelUrl !== '' ? (
+						<a
+							href={ labelUrl }
+							style={ { textDecoration: 'none' } }
+						>
+							{ label }
+						</a>
+					) : (
+						label
+					) }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+			</div>
+			{ checkboxHelpText !== '' && (
+				<div style={ { color: '#ddd' } }>{ checkboxHelpText }</div>
+			) }
+		</div>
 	);
 };

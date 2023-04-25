@@ -6,7 +6,7 @@ import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	PanelRow,
-	SelectControl,
+	ToggleControl,
 	Button,
 	TextControl,
 	Icon,
@@ -24,7 +24,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { options, label } = attributes;
+	const { required, options, label, help } = attributes;
+	const blockID = useBlockProps().id;
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -45,12 +46,21 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<PanelBody title="Dropdown Settings">
+				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Required', 'sureforms' ) }
+							checked={ required }
+							onChange={ ( checked ) =>
+								setAttributes( { required: checked } )
+							}
+						/>
+					</PanelRow>
 					<PanelRow>
 						<div>
 							<BaseControl
 								id="for-dropdown-label"
-								label={ __( 'Edit Title', 'sureforms' ) }
+								label={ __( 'Label', 'sureforms' ) }
 							>
 								<TextControl
 									id="dropdown-label"
@@ -197,38 +207,64 @@ export default function Edit( { attributes, setAttributes } ) {
 												],
 											} );
 											e.target.addOption.value = '';
+										} else {
+											console.log( 'error' );
 										}
 									} }
 									style={ { display: 'flex' } }
 								>
 									<div>
-										<TextControl
+										<input
 											id="add-option"
 											required
 											autoComplete="off"
 											name="addOption"
 										/>
 									</div>
-									<Button className="btn" type="submit">
-										<div>
-											<BaseControl
-												id="for-btn"
-												label={ __(
-													'ADD',
-													'sureforms'
-												) }
-											/>
-										</div>
-									</Button>
+									<button
+										className="btn"
+										type="submit"
+										style={ {
+											background: 'none',
+											border: 'none',
+											cursor: 'pointer',
+										} }
+									>
+										ADD
+									</button>
 								</form>
 							</BaseControl>
 						</div>
 					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Help', 'sureforms' ) }
+							value={ help }
+							onChange={ ( value ) =>
+								setAttributes( { help: value } )
+							}
+						/>
+					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<div>
-				<label htmlFor="dropdown">{ label }</label>
-				<SelectControl id="dropdown">
+			<div
+				style={ {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: '.5rem',
+				} }
+			>
+				<label htmlFor={ 'dropdown-' + blockID }>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
+				<select
+					id={ 'dropdown-' + blockID }
+					style={ { width: 'fit-content' } }
+					required={ required }
+				>
 					{ options.map( ( option, i ) => {
 						return (
 							<option label={ option } key={ i }>
@@ -236,7 +272,15 @@ export default function Edit( { attributes, setAttributes } ) {
 							</option>
 						);
 					} ) }
-				</SelectControl>
+				</select>
+				{ help !== '' && (
+					<label
+						htmlFor={ 'dropdown-help-' + blockID }
+						style={ { color: '#ddd' } }
+					>
+						{ help }
+					</label>
+				) }
 			</div>
 		</div>
 	);

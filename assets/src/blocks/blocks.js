@@ -17,7 +17,7 @@ import * as address from '@Blocks/address';
 
 import { registerBlocks } from './register-block';
 
-registerBlocks([
+registerBlocks( [
 	form,
 	text,
 	email,
@@ -34,4 +34,4 @@ registerBlocks([
 	phone,
 	select,
 	address,
-]);
+] );

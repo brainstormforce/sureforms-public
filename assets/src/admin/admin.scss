@@ -2,20 +2,20 @@ body.post-type-sureforms_form {
 
 	.edit-post-sidebar {
 
-		>.components-panel {
+		> .components-panel {
 
-			>.components-panel__body {
+			> .components-panel__body {
 				display: none;
 				order: 3;
 			}
 
-			>.sureforms--panel {
+			> .sureforms--panel {
 				border-bottom: none;
 				display: block;
 				order: 1;
 				padding: 0;
 
-				>.components-panel__body-title {
+				> .components-panel__body-title {
 					display: none;
 				}
 			}
@@ -33,7 +33,7 @@ body.post-type-sureforms_form {
 				border-left: 1px solid hsla(0, 0%, 100%, 0.3);
 				content: "\f122";
 				display: inline-block;
-				font-family: dashicons;
+				font-family: dashicons, sans-serif;
 				font-size: 2.1em;
 				font-style: normal;
 				font-variant: normal;

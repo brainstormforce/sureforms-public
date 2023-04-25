@@ -3,22 +3,19 @@
 	"title": "Submit Button",
 	"description": "Display a submit button.",
 	"category": "sureforms",
-	"keywords": ["submit", "button"],
-    "textdomain": "sureforms",
-	"ancestor": ["sureforms/form"],
+	"keywords": [ "submit", "button" ],
+	"textdomain": "sureforms",
+	"ancestor": [ "sureforms/form" ],
 	"supports": {
 		"reusable": false,
 		"html": false,
-		"multiple": false
+		"multiple": false,
+		"align": true
 	},
 	"attributes": {
 		"text": {
 			"type": "string",
 			"default": "Purchase"
-		},
-		"type": {
-			"type": "string",
-			"default": "primary"
 		},
 		"show_total": {
 			"type": "boolean",
@@ -35,6 +32,9 @@
 		"size": {
 			"type": "string",
 			"default": "large"
+		},
+		"buttonAlignment": {
+			"type": "string"
 		}
 	}
 }

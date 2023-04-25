@@ -17,6 +17,7 @@ export default ( { form, setForm } ) => {
 
 	useEffect( () => {
 		fetchForms();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ query ] );
 
 	const findForm = throttle(
@@ -52,14 +53,14 @@ export default ( { form, setForm } ) => {
 			onScSearch={ ( e ) => findForm( e.detail ) }
 			onScChange={ ( e ) => {
 				const formData = formsData.find(
-					( form ) => form.id === parseInt( e.target.value )
+					( formEntry ) => formEntry.id === parseInt( e.target.value )
 				);
 				setForm( formData );
 			} }
-			choices={ ( formsData || [] ).map( ( form ) => {
+			choices={ ( formsData || [] ).map( ( formEntry ) => {
 				return {
-					value: form.id,
-					label: form.title.rendered,
+					value: formEntry.id,
+					label: formEntry.title.rendered,
 				};
 			} ) }
 		/>

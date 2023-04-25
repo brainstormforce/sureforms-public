@@ -49,8 +49,12 @@
 		"@surecart/components": "^0.0.9",
 		"@surecart/components-react": "^0.0.6",
 		"@wordpress/icons": "^9.18.0",
+		"lodash": "^4.17.21",
 		"react-beautiful-dnd": "^13.1.1",
 		"react-icons": "^4.8.0",
 		"react-select": "^5.7.2"
+	},
+	"volta": {
+		"node": "18.15.0"
 	}
 }

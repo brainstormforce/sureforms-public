@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 /**
  * External dependencies
  */
@@ -28,7 +30,7 @@ describe( 'surecart/buttons', () => {
 	it( 'Should render with defaults', () => {
 		serializedBlock = serialize( block );
 		expect( serializedBlock ).toBeDefined();
-		expect( serializedBlock ).toContain( `wp:surecart/input` );
+		expect( serializedBlock ).toContain( 'wp:surecart/input' );
 	} );
 
 	it( 'should render with custom class name', () => {

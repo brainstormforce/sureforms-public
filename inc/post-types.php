@@ -132,10 +132,10 @@ class Post_Types {
 	/**
 	 * Custom Shortcode.
 	 *
-	 * @param array $atts Attributes.
-	 * @return $content Post Content.
+	 * @param array<mixed> $atts Attributes.
+	 * @return string|void $content Post Content.
 	 */
-	public function sureforms_shortcode( $atts ) {
+	public function sureforms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
 			array(
 				'id'    => '',
@@ -147,20 +147,19 @@ class Post_Types {
 		$id    = $atts['id'];
 		$title = $atts['title'];
 
-		$post = get_post( $id );
+		$post = get_post( (int) $id );
 
 		if ( $post ) {
-			$content = $post->post_content;
+			$content = (string) $post->post_content;
 			return $content;
 		}
-
 	}
 
 	/**
 	 * Add custom column header.
 	 *
-	 * @param array $columns Attributes.
-	 * @return array $columns Post Content.
+	 * @param array<mixed> $columns Attributes.
+	 * @return array<mixed> $columns Post Content.
 	 */
 	public function custom_sureforms_form_columns( $columns ) {
 		$columns = array(
@@ -178,13 +177,15 @@ class Post_Types {
 	 *
 	 * @param string  $column Attributes.
 	 * @param integer $post_id Attributes.
+	 * @return void
 	 */
 	public function custom_sureforms_form_column_data( $column, $post_id ) {
-		$post_title = esc_html( get_the_title( $post_id ) );
+		$post_title        = get_the_title( $post_id );
+		$post_id_formatted = sprintf( '%d', $post_id );
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
-			<input type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id ); ?>' title='<?php echo esc_html( $post_title ); ?>']" onClick="this.select();" style="cursor: pointer; width: -webkit-fill-available; border: none; background: transparent; font-family: Consolas,Monaco,monospace;
+			<input type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>' title='<?php echo esc_html( $post_title ); ?>']" onClick="this.select();" style="cursor: pointer; width: -webkit-fill-available; border: none; background: transparent; font-family: Consolas,Monaco,monospace;
 			" />
 			<?php
 			ob_end_flush();

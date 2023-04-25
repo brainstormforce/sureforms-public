@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { receipt as icon } from '@wordpress/icons';
 
 /**
