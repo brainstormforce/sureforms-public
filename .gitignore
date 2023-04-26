@@ -19,6 +19,8 @@ node_modules/
 
 artifact/
 
+assets/build
+
 # Other
 *.zip
 

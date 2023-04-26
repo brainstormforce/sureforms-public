@@ -6,7 +6,6 @@
 	"category": "sureforms",
 	"keywords": [ "radio", "sureforms" ],
 	"textdomain": "sureforms",
-	"ancestor": [ "sureforms/radio-group" ],
 	"supports": {
 		"reusable": false,
 		"html": false

@@ -26,20 +26,20 @@ const registerBlock = ( block ) => {
 	const additionalSettings =
 		'sureforms/form' !== metadata.name
 			? {
-					transforms: {
-						from: [
-							{
-								type: 'block',
-								blocks: getBlockTypes( metadata.name ),
-								transform: ( attributes ) => {
-									return createBlock(
-										metadata.name,
-										attributes
-									);
-								},
+				transforms: {
+					from: [
+						{
+							type: 'block',
+							blocks: getBlockTypes( metadata.name ),
+							transform: ( attributes ) => {
+								return createBlock(
+									metadata.name,
+									attributes
+								);
 							},
-						],
-					},
+						},
+					],
+				},
 			  }
 			: {};
 

@@ -5,7 +5,7 @@ import * as number from '@Blocks/number';
 import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
-import * as radioGroup from '@Blocks/radio-group';
+import * as multiChoice from '@Blocks/multi-choice';
 import * as radio from '@Blocks/radio';
 import * as toggle from '@Blocks/switch';
 import * as submit from '@Blocks/submit';
@@ -22,7 +22,7 @@ registerBlocks( [
 	text,
 	email,
 	textarea,
-	radioGroup,
+	multiChoice,
 	radio,
 	toggle,
 	checkbox,
