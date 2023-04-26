@@ -18,6 +18,9 @@ import { receipt as icon } from '@wordpress/icons';
  * Components
  */
 import { ScButton, ScInput } from '@surecart/components-react';
+import {
+	Button,
+} from '@wordpress/components';
 import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
@@ -90,7 +93,7 @@ export default ( { attributes, setAttributes } ) => {
 							}
 						/>
 						<div>
-							<ScButton
+							<Button
 								type="primary"
 								onClick={ () => {
 									saveFormBlock();
@@ -101,15 +104,15 @@ export default ( { attributes, setAttributes } ) => {
 									name="arrow-right"
 									slot="suffix"
 								></sc-icon>
-							</ScButton>
-							<ScButton
+							</Button>
+							<Button
 								type="text"
 								onClick={ () =>
 									setAttributes( { step: null } )
 								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
-							</ScButton>
+							</Button>
 						</div>
 					</div>
 				</PlaceholderTemplate>

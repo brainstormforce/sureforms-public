@@ -33,9 +33,7 @@
 	},
 	"homepage": "https://github.com/brainstormforce/sureforms#readme",
 	"devDependencies": {
-		"@emotion/core": "^11.0.0",
-		"@emotion/react": "^11.10.6",
-		"@wordpress/scripts": "^25.4.0",
+		"@wordpress/scripts": "^26.2.0",
 		"grunt": "^1.4.1",
 		"grunt-cli": "^1.4.3",
 		"grunt-contrib-clean": "^2.0.0",
@@ -46,8 +44,6 @@
 	},
 	"private": true,
 	"dependencies": {
-		"@surecart/components": "^0.0.9",
-		"@surecart/components-react": "^0.0.6",
 		"@wordpress/icons": "^9.18.0",
 		"lodash": "^4.17.21",
 		"react-beautiful-dnd": "^13.1.1",

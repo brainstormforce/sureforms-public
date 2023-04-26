@@ -3,7 +3,9 @@
 import { css, jsx } from '@emotion/react';
 import { __ } from '@wordpress/i18n';
 import Thumbnail from './Thumbnail';
-import { ScButton } from '@surecart/components-react';
+import {
+	Button
+} from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
 
@@ -20,13 +22,13 @@ export default ( { templates, template, setTemplate } ) => {
 		<PlaceholderTemplate
 			header={ __( 'Choose A Starting Template', 'sureforms' ) }
 			footerRight={
-				<ScButton
-					type="primary"
+				<Button
+					variant='primary'
 					disabled={ ! choice }
 					onClick={ () => setTemplate( choice ) }
 				>
 					{ __( 'Select Template', 'sureforms' ) }
-				</ScButton>
+				</Button>
 			}
 			maxHeight={ '300px' }
 			minHeight={ '32rem' }

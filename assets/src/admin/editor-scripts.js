@@ -1,1 +1,1 @@
-import '@surecart/components/src/themes/base.css';
+// import '@surecart/components/src/themes/base.css';
