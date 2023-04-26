@@ -297,7 +297,7 @@ export default function Edit( { attributes, setAttributes } ) {
 									<strong>
 										{ firstFive.length !== 0
 											? firstFive.map(
-													( obj ) => obj.value + ', '
+												( obj ) => obj.value + ', '
 											  ) + '...'
 											: 'All types' }
 									</strong>
