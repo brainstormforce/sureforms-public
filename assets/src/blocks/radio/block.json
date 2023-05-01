@@ -4,6 +4,7 @@
 	"title": "Radio",
 	"description": "Display a radio input",
 	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "radio", "sureforms" ],
 	"textdomain": "sureforms",
 	"supports": {

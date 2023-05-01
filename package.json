@@ -44,6 +44,7 @@
 	},
 	"private": true,
 	"dependencies": {
+		"@emotion/react": "^11.10.6",
 		"@wordpress/icons": "^9.18.0",
 		"lodash": "^4.17.21",
 		"react-beautiful-dnd": "^13.1.1",

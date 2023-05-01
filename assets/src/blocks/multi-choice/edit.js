@@ -20,11 +20,6 @@ import { useState } from '@wordpress/element';
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-/**
- * Editor stylesheet
- */
-import './editor.scss';
-
 export default ( { attributes, setAttributes } ) => {
 	const { required, options, label, singleSelection, style, help } =
 		attributes;
@@ -318,7 +313,12 @@ export default ( { attributes, setAttributes } ) => {
 							style={ { display: 'flex', alignItems: 'center' } }
 						>
 							<input
-								hidden={ style === 'buttons' && true }
+								style={ {
+									display:
+										style === 'buttons'
+											? 'none'
+											: 'inherit',
+								} }
 								id={ 'multi-choice-' + blockID + '-i-' + i }
 								type={ singleSelection ? 'radio' : 'checkbox' }
 								key={ i }

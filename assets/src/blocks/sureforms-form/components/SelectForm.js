@@ -5,14 +5,12 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
+// import throttle from 'lodash/throttle';
+import Select from 'react-select';
 
-import throttle from 'lodash/throttle';
-
-import { ScSelect } from '@surecart/components-react';
-
-export default ( { form, setForm } ) => {
+export default ( { setForm } ) => {
 	const [ formsData, setFormsData ] = useState( [] );
-	const [ query, setQuery ] = useState( '' );
+	const query = '';
 	const [ loading, setLoading ] = useState( false );
 
 	useEffect( () => {
@@ -20,13 +18,13 @@ export default ( { form, setForm } ) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ query ] );
 
-	const findForm = throttle(
-		( value ) => {
-			setQuery( value );
-		},
-		750,
-		{ leading: false }
-	);
+	// const findForm = throttle(
+	// 	( value ) => {
+	// 		setQuery( value );
+	// 	},
+	// 	750,
+	// 	{ leading: false }
+	// );
 
 	const fetchForms = async () => {
 		let response;
@@ -43,26 +41,42 @@ export default ( { form, setForm } ) => {
 		}
 	};
 
+	const customStyles = {
+		control: ( provided ) => ( {
+			...provided,
+			width: 'fit-content',
+		} ),
+	};
+
 	return (
-		<ScSelect
-			value={ form?.id }
+		<Select
+			styles={ customStyles }
 			loading={ loading }
-			placeholder={ __( 'Choose a form', 'sureforms' ) }
-			searchPlaceholder={ __( 'Search for a form…', 'sureforms' ) }
-			search
-			onScSearch={ ( e ) => findForm( e.detail ) }
-			onScChange={ ( e ) => {
-				const formData = formsData.find(
-					( formEntry ) => formEntry.id === parseInt( e.target.value )
-				);
-				setForm( formData );
-			} }
-			choices={ ( formsData || [] ).map( ( formEntry ) => {
+			isSearchable
+			options={ ( formsData || [] ).map( ( formEntry ) => {
 				return {
 					value: formEntry.id,
 					label: formEntry.title.rendered,
 				};
 			} ) }
+			placeholder={ __( 'Choose a form', 'sureforms' ) }
+			// onSearch={ ( value ) => findForm( value.detail ) }
+			onChange={ ( value ) => {
+				const formData = formsData.find(
+					( formEntry ) => formEntry.id === parseInt( value.value )
+				);
+				setForm( formData );
+			} }
 		/>
+		// <ScSelect
+		// 	searchPlaceholder={ __( 'Search for a form…', 'sureforms' ) }
+		// 	onScSearch={ ( e ) => findForm( e.detail ) }
+		// 	onScChange={ ( e ) => {
+		// 		const formData = formsData.find(
+		// 			( formEntry ) => formEntry.id === parseInt( e.target.value )
+		// 		);
+		// 		setForm( formData );
+		// 	} }
+		// />
 	);
 };

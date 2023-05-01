@@ -3,9 +3,7 @@
 import { css, jsx } from '@emotion/react';
 import { __ } from '@wordpress/i18n';
 import Thumbnail from './Thumbnail';
-import {
-	Button
-} from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
 
@@ -23,7 +21,7 @@ export default ( { templates, template, setTemplate } ) => {
 			header={ __( 'Choose A Starting Template', 'sureforms' ) }
 			footerRight={
 				<Button
-					variant='primary'
+					variant="primary"
 					disabled={ ! choice }
 					onClick={ () => setTemplate( choice ) }
 				>

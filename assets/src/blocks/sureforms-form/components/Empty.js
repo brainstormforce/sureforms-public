@@ -1,13 +1,13 @@
 /** @jsx jsx */
 /* eslint-disable react/no-unknown-property */
-import { css, jsx } from '@emotion/react';
+import { jsx } from '@emotion/react';
 
 /**
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
 import { createBlock, serialize } from '@wordpress/blocks';
-import { Placeholder } from '@wordpress/components';
+import { Placeholder, Button, Icon, TextControl } from '@wordpress/components';
 import { dispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -17,24 +17,12 @@ import { receipt as icon } from '@wordpress/icons';
 /**
  * Components
  */
-import { ScButton, ScInput } from '@surecart/components-react';
-import {
-	Button,
-} from '@wordpress/components';
 import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
 export default ( { attributes, setAttributes } ) => {
 	const { title, step } = attributes;
 	const [ form, setForm ] = useState( {} );
-
-	const blockProps = useBlockProps( {
-		css: css`
-			.components-placeholder.components-placeholder {
-				padding: 2em;
-			}
-		`,
-	} );
 
 	// save the form block.
 	const saveFormBlock = async () => {
@@ -67,46 +55,42 @@ export default ( { attributes, setAttributes } ) => {
 
 	if ( step === 'new' ) {
 		return (
-			<div { ...blockProps }>
+			<div { ...useBlockProps() }>
 				<PlaceholderTemplate
 					header={ __( 'Create a SureForms Form', 'sureforms' ) }
 				>
 					<div
-						css={ css`
-							display: grid;
-							gap: 0.5em;
-							width: 100%;
-						` }
+						style={ {
+							display: 'grid',
+							gap: '0.5em',
+							width: '100%',
+							margin: '0.5em',
+						} }
 					>
 						<div>{ __( 'Form Title', 'sureforms' ) }</div>
-						<ScInput
-							css={ css`
-								max-width: 400px;
-							` }
+						<TextControl
+							style={ { maxWidth: '400px' } }
 							value={ title }
 							placeholder={ __(
 								'Enter a title for your form',
 								'sureforms'
 							) }
-							onScChange={ ( e ) =>
-								setAttributes( { title: e.target.value } )
+							onChange={ ( value ) =>
+								setAttributes( { title: value } )
 							}
 						/>
-						<div>
+						<div style={ { display: 'flex', gap: '0.5em' } }>
 							<Button
-								type="primary"
+								variant="primary"
 								onClick={ () => {
 									saveFormBlock();
 								} }
 							>
 								{ __( 'Next', 'sureforms' ) }
-								<sc-icon
-									name="arrow-right"
-									slot="suffix"
-								></sc-icon>
+								<Icon icon={ 'arrow-right' }></Icon>
 							</Button>
 							<Button
-								type="text"
+								variant="secondary"
 								onClick={ () =>
 									setAttributes( { step: null } )
 								}
@@ -122,39 +106,37 @@ export default ( { attributes, setAttributes } ) => {
 
 	if ( step === 'select' ) {
 		return (
-			<div { ...blockProps }>
+			<div { ...useBlockProps() }>
 				<PlaceholderTemplate
 					header={ __( 'Select a SureForms form', 'sureforms' ) }
 				>
 					<div
-						css={ css`
-							display: grid;
-							gap: 0.5em;
-							width: 100%;
-						` }
+						style={ {
+							display: 'grid',
+							gap: '0.5em',
+							width: '100%',
+							margin: '0.5em',
+						} }
 					>
 						<SelectForm form={ form } setForm={ setForm } />
-						<div>
-							<ScButton
-								type="primary"
+						<div style={ { display: 'flex', gap: '0.5em' } }>
+							<Button
+								variant="primary"
 								onClick={ () => {
 									setAttributes( { id: form?.id } );
 								} }
 							>
 								{ __( 'Choose', 'sureforms' ) }
-								<sc-icon
-									name="arrow-right"
-									slot="suffix"
-								></sc-icon>
-							</ScButton>
-							<ScButton
-								type="text"
+								<Icon icon={ 'arrow-right' }></Icon>
+							</Button>
+							<Button
+								variant="secondary"
 								onClick={ () =>
 									setAttributes( { step: null } )
 								}
 							>
 								{ __( 'Cancel', 'sureforms' ) }
-							</ScButton>
+							</Button>
 						</div>
 					</div>
 				</PlaceholderTemplate>
@@ -163,7 +145,7 @@ export default ( { attributes, setAttributes } ) => {
 	}
 
 	return (
-		<div { ...blockProps }>
+		<div { ...useBlockProps() }>
 			<Placeholder
 				icon={ icon }
 				instructions={ __(
@@ -172,24 +154,19 @@ export default ( { attributes, setAttributes } ) => {
 				) }
 				label={ __( 'Add a sureforms form', 'sureforms' ) }
 			>
-				<div
-					css={ css`
-						display: flex;
-						gap: 0.5em;
-					` }
-				>
-					<ScButton
-						type="primary"
+				<div style={ { display: 'flex', gap: '0.5em' } }>
+					<Button
+						variant="primary"
 						onClick={ () => setAttributes( { step: 'new' } ) }
 					>
 						{ __( 'New Form', 'sureforms' ) }
-					</ScButton>
-					<ScButton
-						type="default"
+					</Button>
+					<Button
+						variant="primary"
 						onClick={ () => setAttributes( { step: 'select' } ) }
 					>
 						{ __( 'Select Form', 'sureforms' ) }
-					</ScButton>
+					</Button>
 				</div>
 			</Placeholder>
 		</div>

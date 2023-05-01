@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`surecart/buttons should render with custom class name 1`] = `"<!-- wp:surecart/input {\\"className\\":\\"my-custom-class\\"} /-->"`;
