@@ -15,6 +15,10 @@ module.exports = {
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
 		admin: path.resolve( __dirname, 'assets/src/admin/admin.scss' ),
+		settings: path.resolve(
+			__dirname,
+			'assets/src/admin/settings/settings.js'
+		),
 		blocks: path.resolve( __dirname, 'assets/src/blocks/blocks.js' ),
 	},
 	resolve: {

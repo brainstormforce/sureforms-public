@@ -1,0 +1,30 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+	#wpcontent {
+		padding-left: 0;
+	}
+
+	#wpfooter {
+		display: none;
+	}
+
+	#wpbody,
+	#wpbody-content,
+	#wpcontent,
+	#wpwrap,
+	body,
+	html {
+		height: 100% !important;
+		overflow: hidden;
+	}
+
+	input:focus,
+	select:focus {
+		border-color: #94d4f5 !important;
+		box-shadow: 0 0 0 1px #94d4f5 !important;
+		outline: 2px solid transparent !important;
+	}
+}

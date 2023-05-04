@@ -1,0 +1,8 @@
+.cache
+build
+restriction-build
+licensing-sdk
+node_modules
+vendor
+*-rtl*
+*.min.css

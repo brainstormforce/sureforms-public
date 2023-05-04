@@ -33,13 +33,14 @@
 	},
 	"homepage": "https://github.com/brainstormforce/sureforms#readme",
 	"devDependencies": {
+		"@tailwindcss/forms": "^0.5.3",
 		"@wordpress/scripts": "^26.2.0",
 		"grunt": "^1.4.1",
 		"grunt-cli": "^1.4.3",
 		"grunt-contrib-clean": "^2.0.0",
 		"grunt-contrib-compress": "^2.0.0",
 		"grunt-contrib-copy": "^1.0.0",
-		"tailwindcss": "^3.2.7",
+		"tailwindcss": "^3.3.2",
 		"wp-prettier": "^2.6.2"
 	},
 	"private": true,
@@ -49,6 +50,7 @@
 		"lodash": "^4.17.21",
 		"react-beautiful-dnd": "^13.1.1",
 		"react-icons": "^4.8.0",
+		"react-router-dom": "^6.11.0",
 		"react-select": "^5.7.2"
 	},
 	"volta": {

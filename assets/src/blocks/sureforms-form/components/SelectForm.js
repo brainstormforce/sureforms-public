@@ -5,7 +5,6 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
-// import throttle from 'lodash/throttle';
 import Select from 'react-select';
 
 export default ( { setForm } ) => {
@@ -17,14 +16,6 @@ export default ( { setForm } ) => {
 		fetchForms();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ query ] );
-
-	// const findForm = throttle(
-	// 	( value ) => {
-	// 		setQuery( value );
-	// 	},
-	// 	750,
-	// 	{ leading: false }
-	// );
 
 	const fetchForms = async () => {
 		let response;
@@ -60,7 +51,6 @@ export default ( { setForm } ) => {
 				};
 			} ) }
 			placeholder={ __( 'Choose a form', 'sureforms' ) }
-			// onSearch={ ( value ) => findForm( value.detail ) }
 			onChange={ ( value ) => {
 				const formData = formsData.find(
 					( formEntry ) => formEntry.id === parseInt( value.value )
@@ -68,15 +58,5 @@ export default ( { setForm } ) => {
 				setForm( formData );
 			} }
 		/>
-		// <ScSelect
-		// 	searchPlaceholder={ __( 'Search for a form…', 'sureforms' ) }
-		// 	onScSearch={ ( e ) => findForm( e.detail ) }
-		// 	onScChange={ ( e ) => {
-		// 		const formData = formsData.find(
-		// 			( formEntry ) => formEntry.id === parseInt( e.target.value )
-		// 		);
-		// 		setForm( formData );
-		// 	} }
-		// />
 	);
 };

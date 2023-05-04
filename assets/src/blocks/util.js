@@ -40,6 +40,14 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/number',
 		'sureforms/switch',
 		'sureforms/checkbox',
+		'sureforms/phone',
+		'sureforms/address',
+		'sureforms/dropdown',
+		'sureforms/multi-choice',
+		'sureforms/radio',
+		'sureforms/rating',
+		'sureforms/submit',
+		'sureforms/upload',
 	];
 	if ( exclude ) {
 		for ( let i = 0; i < types.length; i++ ) {
