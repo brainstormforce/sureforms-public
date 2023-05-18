@@ -6,7 +6,6 @@ import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
 import * as multiChoice from '@Blocks/multi-choice';
-import * as radio from '@Blocks/radio';
 import * as toggle from '@Blocks/switch';
 import * as submit from '@Blocks/submit';
 import * as rating from '@Blocks/rating';
@@ -23,7 +22,6 @@ registerBlocks( [
 	email,
 	textarea,
 	multiChoice,
-	radio,
 	toggle,
 	checkbox,
 	number,

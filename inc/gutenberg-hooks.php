@@ -174,7 +174,5 @@ class Gutenberg_Hooks {
 				'upload_max_limit' => $maxsize,
 			)
 		);
-
-		wp_enqueue_style( 'sureforms-editor', SUREFORMS_URL . 'assets/build/editor.css', [], SUREFORMS_VER, 'all' );
 	}
 }

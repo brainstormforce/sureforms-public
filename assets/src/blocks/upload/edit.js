@@ -70,9 +70,6 @@ export default function Edit( { attributes, setAttributes } ) {
 				document
 					.getElementById( 'upload-attributes-' + blockID )
 					.setAttribute( 'hidden', true );
-				document
-					.getElementById( 'reset-upload-field-' + blockID )
-					.removeAttribute( 'hidden' );
 				const fileName =
 					file.name.length > 20
 						? file.name.substring( 0, 17 ) +
@@ -100,6 +97,52 @@ export default function Edit( { attributes, setAttributes } ) {
 								' ' +
 								( file.size / 1000000 ).toFixed( 2 ) +
 								'MB' }
+							<FontAwesomeIcon
+								icon={ faTrashCan }
+								id={ 'reset-upload-field-' + blockID }
+								style={ {
+									fontSize: '25px',
+									marginBottom: '5px',
+								} }
+								onClick={ () => {
+									document.getElementById(
+										'upload-input-field-' + blockID
+									).value = '';
+									document
+										.getElementById(
+											'upload-attributes-' + blockID
+										)
+										.removeAttribute( 'hidden' );
+									document
+										.getElementById(
+											'reset-upload-field-' + blockID
+										)
+										.setAttribute( 'hidden', true );
+									setInputBoxHeading(
+										<>
+											<FontAwesomeIcon
+												icon={ faCloudArrowUp }
+												style={ {
+													fontSize: '25px',
+													marginBottom: '5px',
+												} }
+											/>
+											{ __(
+												'Click to choose the file',
+												'sureforms'
+											) }
+										</>
+									);
+									document
+										.getElementById(
+											'upload-label-' + blockID
+										)
+										.setAttribute(
+											'for',
+											'upload-input-field-' + blockID
+										);
+								} }
+							/>
 						</div>
 					</>
 				);
@@ -229,50 +272,6 @@ export default function Edit( { attributes, setAttributes } ) {
 							} }
 						>
 							{ inputBoxHeading }
-							<FontAwesomeIcon
-								icon={ faTrashCan }
-								id={ 'reset-upload-field-' + blockID }
-								hidden
-								style={ {
-									fontSize: '25px',
-									marginBottom: '5px',
-								} }
-								onClick={ () => {
-									document
-										.getElementById(
-											'upload-attributes-' + blockID
-										)
-										.removeAttribute( 'hidden' );
-									document
-										.getElementById(
-											'reset-upload-field-' + blockID
-										)
-										.setAttribute( 'hidden', true );
-									setInputBoxHeading(
-										<>
-											<FontAwesomeIcon
-												icon={ faCloudArrowUp }
-												style={ {
-													fontSize: '25px',
-													marginBottom: '5px',
-												} }
-											/>
-											{ __(
-												'Click to choose the file',
-												'sureforms'
-											) }
-										</>
-									);
-									document
-										.getElementById(
-											'upload-label-' + blockID
-										)
-										.setAttribute(
-											'for',
-											'upload-input-field-' + blockID
-										);
-								} }
-							/>
 						</div>
 						<div
 							style={ {

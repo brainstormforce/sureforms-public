@@ -34,9 +34,9 @@ class Block extends Base {
 
 			ob_start();
 			?>
-			<div id="sureform-submit-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+			<div id="sureforms-submit-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
 				<div style="text-align: <?php echo esc_attr( $button_alignment ); ?>">
-				<button type="submit" value="" id="sureform-submit-btn" style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>">
+				<button style="display: flex; gap: 0.4rem; align-items: center; justify-content: center; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" type="submit" value="" id="sureforms-submit-btn">
 					<?php if ( $show_icon ) : ?>
 						<i class="fa-solid fa-lock"></i>
 					<?php endif; ?>
@@ -44,6 +44,7 @@ class Block extends Base {
 					<?php if ( $show_total ) : ?>
 						<span>$100</span>
 					<?php endif; ?>
+					<div style="display: none" class="sureforms-loader"></div>
 				</button>
 				</div>
 			</div>

@@ -40,12 +40,12 @@ class Block extends Base {
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start();
 			?>
-			<div class="sureform-input-phone-container" style="display:flex; flex-direction:column; gap:0.5rem;">
-				<label for="sureform-input-phone"><?php echo esc_attr( $label ); ?>
+			<div class="sureforms-input-phone-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+				<label for="sureforms-input-phone"><?php echo esc_attr( $label ); ?>
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div style="display:flex; gap:.5rem">
-					<select id="sureform-phone-code" style="width:fit-content;">
+					<select name="<?php echo esc_attr( 'Country Code' ); ?>" style="width:fit-content;" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
 						<?php
 						if ( is_array( $data ) ) {
 							foreach ( $data as $country ) {
@@ -58,7 +58,7 @@ class Block extends Base {
 						}
 						?>
 					</select>
-					<input id="sureform-input-phone" type="tel" required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"
+					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>"
 						style="padding: 0 8px;
 							line-height: 2;
 							min-height: 30px;
@@ -69,7 +69,7 @@ class Block extends Base {
 							color: #2c3338;
 						">
 				</div>
-			<?php echo '' !== $help ? '<label for="sureform-input-phone" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-input-phone" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

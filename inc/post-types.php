@@ -29,7 +29,6 @@ class Post_Types {
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_sureforms_form_columns' ] );
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_sureforms_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'sureforms_shortcode' ] );
-
 	}
 
 	/**
@@ -172,15 +171,18 @@ class Post_Types {
 			$atts
 		);
 
-		$id    = $atts['id'];
+		$id    = intval( $atts['id'] );
 		$title = $atts['title'];
 
-		$post = get_post( (int) $id );
+		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = (string) $post->post_content;
+			$content = $post->post_content;
+			$content = apply_filters( 'the_content', $content );
 			return $content;
 		}
+
+		return '';
 	}
 
 	/**

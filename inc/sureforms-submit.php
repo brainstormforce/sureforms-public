@@ -98,6 +98,19 @@ class Sureforms_Submit {
 					'name' => $name,
 				),
 			);
+
+			$admin_email = strval( get_option( 'admin_email' ) );
+			$subject     = 'Notification from Sureforms Form ID:' . $id;
+
+			$message = $html;
+
+			$sent = wp_mail( $admin_email, $subject, $message );
+
+			if ( $sent ) {
+				wp_send_json_success( 'Email sent successfully.' );
+			} else {
+				wp_send_json_error( 'Failed to send form data.' );
+			}
 		} else {
 			$response = array(
 				'success' => false,

@@ -28,7 +28,7 @@ class SF_Public {
 	public function __construct() {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
 		add_filter( 'the_content', [ $this, 'print_form' ], PHP_INT_MAX );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], PHP_INT_MAX );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 	}
 
 	/**
@@ -38,7 +38,9 @@ class SF_Public {
 	 * @since X.X.X
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '5.15.3' );
+		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( 'submit-loader', plugin_dir_url( __FILE__ ) . 'submit-loader.css', array(), SUREFORMS_VER );
+		wp_enqueue_script( 'sureform-frontend-script', plugin_dir_url( __FILE__ ) . 'frontend.js', array(), SUREFORMS_VER, true );
 	}
 
 	/**

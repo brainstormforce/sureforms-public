@@ -28,9 +28,10 @@ class Block extends Base {
 			$help     = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
 			$checked  = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 			ob_start(); ?>
-		<div class="sureform-switch-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
-			<div style="display:flex; align-items:center; gap:0.5rem;">
-				<div style="display: inline-block;
+		<div class="sureforms-switch-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
+		<label for="sureforms-switch">
+		<div style="display:flex; align-items:center; gap:0.5rem;">
+				<div class="switch-background" style="display: inline-block;
 						position: relative;
 						width: 50px;
 						height: 25px;
@@ -38,11 +39,13 @@ class Block extends Base {
 						background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>;
 						transition: background-color 0.2s;
 						cursor: pointer;">
-					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureform-switch" checked="<?php echo $checked ? 'true' : 'false'; ?>" type="checkbox" required="<?php echo $required ? 'true' : 'false'; ?>" style="position: absolute;
+					<input class="sureforms-switch" name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureforms-switch" 
+					<?php echo esc_attr( $checked ? 'checked' : '' ); ?>
+					type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> style="position: absolute;
 					opacity: 0;
 					width: 0;
 					height: 0;">
-					<div style="display: inline-block;
+					<div class="switch-toggle" style="display: inline-block;
 						position: absolute;
 						width: 21px;
 						height: 21px;
@@ -53,11 +56,10 @@ class Block extends Base {
 						transition: left 0.2s;">
 					</div>
 				</div>
-				<label for="sureform-switch">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 			</div>
-			<?php echo '' !== $help ? '<label for="sureform-switch" style="color:#ddd;">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-switch" style="color:#ddd;">' . esc_html( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

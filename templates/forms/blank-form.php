@@ -14,6 +14,7 @@ return [
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
 	'content'    => '<!-- wp:column -->
 		<div class="wp-block-column"></div>
+		<!-- wp:sureforms/submit /-->
 	<!-- /wp:column -->',
 
 ];

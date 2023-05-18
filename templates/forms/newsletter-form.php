@@ -22,6 +22,8 @@ return [
     <!-- /wp:column --></div>
     <!-- /wp:columns -->
     
-    <!-- wp:sureforms/email {"name":"input"} /-->',
+    <!-- wp:sureforms/email {"name":"input"} /-->
+    
+    <!-- wp:sureforms/submit /-->',
 
 ];

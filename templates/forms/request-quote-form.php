@@ -28,5 +28,7 @@ return [
     
     <!-- wp:sureforms/phone {"required":true,"label":"Phone","help":""} /-->
     
-    <!-- wp:sureforms/textarea {"required":true,"label":"Request","className":"wp-block-sureforms-textarea"} /-->',
+    <!-- wp:sureforms/textarea {"required":true,"label":"Request","className":"wp-block-sureforms-textarea"} /-->
+    
+    <!-- wp:sureforms/submit /-->',
 ];

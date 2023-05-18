@@ -39,14 +39,15 @@ class Block extends Base {
 			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help     = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
-			<div id="sureform-address-container">
-				<label for="sureform-address"><?php echo esc_attr( $label ); ?> 
+			<div id="sureforms-address-container">
+				<label><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div
-					id="sureform-address"
+					class="sureforms-sureforms-address"
 					style="display: flex; flex-direction: column; gap: .5px;"
 				>
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" type="hidden" id="fullAddress" />
 					<input
 						style="padding: 0 8px; 
 						line-height: 2; 
@@ -58,12 +59,11 @@ class Block extends Base {
 						color: #2c3338;
 						"
 						type="text"
-						id="address-line-1"
-						required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>"
+						class="sureforms-address-line-1"
+						<?php echo esc_attr( $required ? 'required' : '' ); ?>
 					/>
 					<label
 						style="color: #737373; font-size: 14px;"
-						for="address-line-1"
 					>
 						Address Line 1
 					</label>
@@ -82,12 +82,10 @@ class Block extends Base {
 						color: #2c3338;
 						"
 						type="text"
-						id="address-line-2" 
-						required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>"
+						class="sureforms-address-line-2"
 					/>
 					<label
 						style="color: #737373; font-size: 14px;"
-						for="address-line-2"
 					>
 						Address Line 2
 					</label>
@@ -107,12 +105,11 @@ class Block extends Base {
 								color: #2c3338;
 							"
 							type="text"
-							id="address-city"
-							required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>"
+							class="sureforms-address-city"
+							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
 							style="color: #737373; font-size: 14px;"
-							for="address-city"
 						>
 							City
 						</label>
@@ -130,12 +127,11 @@ class Block extends Base {
 							background-color: #fff;
 							color: #2c3338;
 							"
-							id="address-state"
-							required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>"
+							class="sureforms-address-state"
+							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
 							style="color: #737373; font-size: 14px;"
-							for="address-state"
 						>
 							State / Province / Region
 						</label>
@@ -156,12 +152,11 @@ class Block extends Base {
 							color: #2c3338;
 							"
 							type="text"
-							id="address-city"
-							required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>"
+							class="sureforms-address-postal"
+							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
 							style="color: #737373; font-size: 14px;"
-							for="address-city"
 						>
 							Postal Code
 						</label>
@@ -179,7 +174,7 @@ class Block extends Base {
 								background-color: #fff;
 								color: #2c3338;
 							"
-							id="sureform-phone-code">
+							class="sureforms-address-country">
 							<?php foreach ( $data as $country ) { ?>
 								<?php if ( is_array( $country ) && isset( $country['name'] ) ) { ?>
 									<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>">
@@ -190,7 +185,6 @@ class Block extends Base {
 						</select>
 						<label
 							style="color: #737373; font-size: 14px;"
-							htmlFor="address-country"
 						>
 							Country
 						</label>

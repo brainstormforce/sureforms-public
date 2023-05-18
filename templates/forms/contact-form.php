@@ -19,5 +19,7 @@ return [
 	<!-- wp:sureforms/textarea {"required":true,"label":"Message","className":"wp-block-sureforms-textarea"} /-->
 	
 	<!-- wp:sureforms/textarea {"label":"Additional Notes","className":"wp-block-sureforms-textarea"} /-->
+
+	<!-- wp:sureforms/submit /-->
 	',
 ];
