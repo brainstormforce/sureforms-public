@@ -12,9 +12,11 @@ import {
 	ToggleControl,
 	BaseControl,
 } from '@wordpress/components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 
 export default ( { attributes, setAttributes } ) => {
-	const { text, full, buttonAlignment, show_total, show_icon } = attributes;
+	const { text, full, buttonAlignment, showTotal, showIcon } = attributes;
 
 	const buttonStyles = {
 		width: full && '100%',
@@ -48,9 +50,9 @@ export default ( { attributes, setAttributes } ) => {
 								'Show total due in button text.',
 								'sureforms'
 							) }
-							checked={ show_total }
+							checked={ showTotal }
 							onChange={ ( checked ) =>
-								setAttributes( { show_total: checked } )
+								setAttributes( { showTotal: checked } )
 							}
 						/>
 					</PanelRow>
@@ -60,41 +62,12 @@ export default ( { attributes, setAttributes } ) => {
 								'Show a secure lock icon.',
 								'sureforms'
 							) }
-							checked={ show_icon }
+							checked={ showIcon }
 							onChange={ ( checked ) =>
-								setAttributes( { show_icon: checked } )
+								setAttributes( { showIcon: checked } )
 							}
 						/>
 					</PanelRow>
-					{ /* Might be used later
-					<PanelRow>
-						<SelectControl
-							label={ __( 'Size', 'sureforms' ) }
-							value={ size }
-							onChange={ ( value ) => {
-								setAttributes( { size: value } );
-							} }
-							options={ [
-								{
-									value: null,
-									label: 'Select a Size',
-									disabled: true,
-								},
-								{
-									value: 'small',
-									label: __( 'Small', 'sureforms' ),
-								},
-								{
-									value: 'medium',
-									label: __( 'Medium', 'sureforms' ),
-								},
-								{
-									value: 'large',
-									label: __( 'Large', 'sureforms' ),
-								},
-							] }
-						/>
-					</PanelRow> */ }
 					{ full === false && (
 						<BaseControl
 							label={ __( 'Button Alignment', 'sureforms' ) }
@@ -141,29 +114,11 @@ export default ( { attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div style={ { textAlign: buttonAlignment } }>
 				<button style={ buttonStyles }>
-					{ show_icon && (
-						<svg
-							slot="prefix"
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={ 2 }
-								d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-							/>
-						</svg>
-					) }
-					{ text }
-					{ show_total && (
+					{ showIcon && <FontAwesomeIcon icon={ faLock } /> }
+					{ ' ' + text }
+					{ showTotal && (
 						<span>
-							{ '\u00A0' }
-							<sc-total></sc-total>
+							<span> $100</span>
 						</span>
 					) }
 				</button>

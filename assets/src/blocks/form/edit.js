@@ -11,7 +11,8 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 
-export default function Edit( { clientId } ) {
+export default function Edit( { clientId, attributes, setAttributes } ) {
+	const { id } = attributes;
 	const [ patterns, setPatterns ] = useState( [] );
 
 	const blockCount = useSelect( ( select ) =>
@@ -32,16 +33,22 @@ export default function Edit( { clientId } ) {
 	}, [ postType, setTemplateValidity ] );
 
 	// Not sure can be used later.
-	// const formId = useSelect( ( select ) => {
-	// 	// parent block id attribute.
-	// 	const parents = select( blockEditorStore ).getBlockParents( clientId );
-	// 	const parentBlock = select( blockEditorStore ).getBlocksByClientId(
-	// 		parents?.[ 0 ]
-	// 	);
-	// 	// current post id.
-	// 	const post_id = select( 'core/editor' ).getCurrentPostId();
-	// 	return parentBlock?.[ 0 ]?.attributes?.id || post_id;
-	// } );
+	const formId = useSelect( ( select ) => {
+		// parent block id attribute.
+		const parents = select( blockEditorStore ).getBlockParents( clientId );
+		const parentBlock = select( blockEditorStore ).getBlocksByClientId(
+			parents?.[ 0 ]
+		);
+		// current post id.
+		const post_id = select( 'core/editor' ).getCurrentPostId();
+		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
+	} );
+
+	useEffect( () => {
+		if ( id !== formId ) {
+			setAttributes( { id: formId } );
+		}
+	}, [ formId, id, setAttributes ] );
 
 	useEffect( () => {
 		getPatterns();

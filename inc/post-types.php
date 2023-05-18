@@ -98,7 +98,7 @@ class Post_Types {
 			SUREFORMS_ENTRIES_POST_TYPE,
 			array(
 				'labels'              => $result_labels,
-				'supports'            => array( 'title', 'author' ),
+				'supports'            => array( 'title', 'author', 'editor' ),
 				'public'              => false,
 				'exclude_from_search' => true,
 				'publicly_queryable'  => false,
@@ -110,6 +110,34 @@ class Post_Types {
 				'map_meta_cap'        => true,
 				'show_ui'             => true,
 				'show_in_menu'        => 'sureforms_menu',
+			)
+		);
+		register_taxonomy(
+			'sureforms_tax',
+			'sureforms_entry',
+			array(
+				'label'             => __( 'Form ID', 'sureforms' ),
+				'hierarchical'      => true,
+				'capabilities'      => array(
+					'assign_terms' => 'god',
+					'edit_terms'   => 'god',
+					'manage_terms' => 'god',
+				),
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'show_in_nav_menus' => false,
+			)
+		);
+		register_post_status(
+			'unread',
+			array(
+				'label'                     => _x( 'Unread', 'sureforms', 'sureforms' ),
+				'public'                    => true,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				// Translators: %s is the number of unread items.
+				'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
 			)
 		);
 	}

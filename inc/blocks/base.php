@@ -37,6 +37,7 @@ abstract class Base {
 	 * @since X.X.X
 	 */
 	public function register() {
+		$dir = $this->get_dir();
 		register_block_type_from_metadata(
 			$this->get_dir(),
 			apply_filters(

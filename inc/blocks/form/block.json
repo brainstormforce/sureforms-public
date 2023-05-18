@@ -12,7 +12,7 @@
 	},
 	"attributes": {
 		"id": {
-			"type": "string",
+			"type": "integer",
 			"default": ""
 		}
 	}

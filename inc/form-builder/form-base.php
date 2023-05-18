@@ -4,7 +4,7 @@
  *
  * @package sureforms.
  */
-
+namespace SureForms\Inc\Form_Builder;
 /**
  * WP Travel Engine Form.
  *

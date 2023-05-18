@@ -9,9 +9,12 @@
 namespace SureForms;
 
 use SureForms\Inc\Post_Types;
+use SureForms\Inc\Sureforms_Submit;
 use SureForms\Inc\Gutenberg_Hooks;
 use SureForms\API\Block_Patterns;
 use SureForms\Admin\Admin;
+use SureForms\Inc\Blocks\Register;
+use SureForms\Inc\SF_Public;
 
 /**
  * Plugin_Loader
@@ -85,8 +88,11 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		Post_Types::get_instance();
+		Sureforms_Submit::get_instance();
 		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
+		Register::get_instance();
+		SF_Public::get_instance();
 	}
 
 	/**

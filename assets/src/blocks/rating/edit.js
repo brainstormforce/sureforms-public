@@ -207,7 +207,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								ratingValue <= ( hover || rating )
 									? iconColor
 									: '#ddd',
-							size: ratingValue === rating ? 30 : null,
+							fontSize: ratingValue === rating ? '30px' : null,
 							onMouseEnter: () => setHover( ratingValue ),
 							onMouseLeave: () => setHover( null ),
 						};

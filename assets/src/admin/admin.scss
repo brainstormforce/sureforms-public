@@ -1,9 +1,6 @@
 body.post-type-sureforms_form {
-
 	.edit-post-sidebar {
-
 		> .components-panel {
-
 			> .components-panel__body {
 				display: none;
 				order: 3;
@@ -23,14 +20,12 @@ body.post-type-sureforms_form {
 	}
 
 	.edit-post-header {
-
 		.edit-post-fullscreen-mode-close {
-
 			&::after {
 				speak: none;
 				-webkit-font-smoothing: antialiased;
 				-moz-osx-font-smoothing: grayscale;
-				border-left: 1px solid hsla(0, 0%, 100%, 0.3);
+				border-left: 1px solid hsla( 0, 0%, 100%, 0.3 );
 				content: "\f122";
 				display: inline-block;
 				font-family: dashicons, sans-serif;
@@ -60,15 +55,12 @@ body.post-type-sureforms_form {
 }
 
 [data-type="sureforms/form"] {
-
 	.block-editor-inner-blocks {
-
 		.block-editor-block-list__layout {
-
 			.wp-block {
 				padding: 5px;
 
-				&:not(:last-child) {
+				&:not( :last-child ) {
 					margin-bottom: 20px;
 				}
 			}

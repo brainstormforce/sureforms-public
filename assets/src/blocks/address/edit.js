@@ -23,7 +23,6 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const inputStyles = {
 		marginTop: '14px',
-		// height: '43px',
 	};
 
 	return (

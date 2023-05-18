@@ -1,10 +1,10 @@
 {
-	"name": "sureforms/textarea",
-	"title": "Textarea",
-	"description": "Displays a form text textarea field. This is saved with the order as additional metadata.",
+	"name": "sureforms/number",
+	"title": "Number Field",
+	"description": "Displays a form number input field. This is saved with the order as additional metadata.",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
-	"keywords": [ "textarea", "input", "custom", "field" ],
+	"keywords": [ "number", "input", "custom", "field" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
@@ -20,14 +20,10 @@
 		},
 		"label": {
 			"type": "string",
-			"default": "Textarea"
+			"default": "Input"
 		},
-		"textAreaHelpText": {
+		"help": {
 			"type": "string"
-		},
-		"maxLength": {
-			"type": "number",
-			"default": 5
 		}
 	}
 }

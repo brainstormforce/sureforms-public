@@ -11,13 +11,18 @@ import {
 	TextControl,
 	BaseControl,
 	RangeControl,
-	Icon,
 } from '@wordpress/components';
 
 /**
  * Components dependencies
  */
 import CreatableSelect from 'react-select/creatable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+	faCloudArrowUp,
+	faTrashCan,
+	faFileLines,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const {
@@ -35,8 +40,8 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const [ inputBoxHeading, setInputBoxHeading ] = useState(
 		<>
-			<Icon
-				icon="upload"
+			<FontAwesomeIcon
+				icon={ faCloudArrowUp }
 				style={ { fontSize: '25px', marginBottom: '5px' } }
 			/>
 			{ __( 'Click to choose the file', 'sureforms' ) }
@@ -68,6 +73,12 @@ export default function Edit( { attributes, setAttributes } ) {
 				document
 					.getElementById( 'reset-upload-field-' + blockID )
 					.removeAttribute( 'hidden' );
+				const fileName =
+					file.name.length > 20
+						? file.name.substring( 0, 17 ) +
+						  '...' +
+						  file.name.split( '.' ).pop()
+						: file.name;
 				setInputBoxHeading(
 					<>
 						<div
@@ -77,14 +88,15 @@ export default function Edit( { attributes, setAttributes } ) {
 								alignItems: 'center',
 							} }
 						>
-							<Icon
-								icon="text-page"
+							<FontAwesomeIcon
+								icon={ faFileLines }
 								style={ {
 									fontSize: '25px',
 									marginBottom: '5px',
 								} }
 							/>
-							{ file.name +
+
+							{ fileName +
 								' ' +
 								( file.size / 1000000 ).toFixed( 2 ) +
 								'MB' }
@@ -217,10 +229,10 @@ export default function Edit( { attributes, setAttributes } ) {
 							} }
 						>
 							{ inputBoxHeading }
-							<Icon
+							<FontAwesomeIcon
+								icon={ faTrashCan }
 								id={ 'reset-upload-field-' + blockID }
 								hidden
-								icon="trash"
 								style={ {
 									fontSize: '25px',
 									marginBottom: '5px',
@@ -238,8 +250,8 @@ export default function Edit( { attributes, setAttributes } ) {
 										.setAttribute( 'hidden', true );
 									setInputBoxHeading(
 										<>
-											<Icon
-												icon="upload"
+											<FontAwesomeIcon
+												icon={ faCloudArrowUp }
 												style={ {
 													fontSize: '25px',
 													marginBottom: '5px',

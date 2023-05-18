@@ -1,0 +1,30 @@
+{
+	"name": "sureforms/dropdown",
+	"title": "Dropdown",
+	"description": "Displays a form dropdown/select field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"ancestor": [ "sureforms/form" ],
+	"keywords": [ "select", "dropdown", "options", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"required": {
+			"type": "boolean"
+		},
+		"options": {
+			"default": [],
+			"type": "array"
+		},
+		"label": {
+			"default": "Select",
+			"type": "string",
+			"selector": "input"
+		},
+		"help": {
+			"type": "string"
+		}
+	}
+}

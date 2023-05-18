@@ -11,7 +11,7 @@ import {
 } from '@wordpress/components';
 
 export default ( { attributes, setAttributes } ) => {
-	const { label, placeholder, textAreaHelpText, required, maxlength } =
+	const { label, placeholder, textAreaHelpText, required, maxLength } =
 		attributes;
 
 	const blockID = useBlockProps().id;
@@ -50,9 +50,9 @@ export default ( { attributes, setAttributes } ) => {
 					<PanelRow>
 						<TextControl
 							label={ __( 'Max Length', 'sureforms' ) }
-							value={ maxlength }
+							value={ maxLength }
 							onChange={ ( value ) =>
-								setAttributes( { maxlength: value } )
+								setAttributes( { maxLength: value } )
 							}
 						/>
 					</PanelRow>
@@ -84,7 +84,7 @@ export default ( { attributes, setAttributes } ) => {
 					required={ required }
 					label={ label }
 					placeholder={ placeholder }
-					rows={ maxlength }
+					rows={ maxLength }
 				></textarea>
 				{ textAreaHelpText !== '' && (
 					<div style={ { color: '#ddd' } }>{ textAreaHelpText }</div>
