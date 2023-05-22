@@ -1,0 +1,35 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 2,
+	"name": "sureforms/sf-form",
+	"title": "SureForms Form",
+	"description": "Display a SureForms form",
+	"category": "sureforms",
+	"keywords": ["form", "sureforms", "form"],
+    "textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false,
+		"multiple": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"id": {
+			"type": "number"
+		},
+		"title": {
+			"type": "string"
+		},
+		"choices": {
+			"type": "array"
+		},
+		"template": {
+			"type": "string"
+		},
+		"choice_type": {
+			"type": "string",
+			"enum": ["all", "checkbox", "radio"],
+			"default": "all"
+		}
+	}
+}

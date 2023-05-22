@@ -18,6 +18,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const blockCount = useSelect( ( select ) =>
 		select( blockEditorStore ).getBlockCount( clientId )
 	);
+
 	const { replaceInnerBlocks, setTemplateValidity } =
 		useDispatch( blockEditorStore );
 
