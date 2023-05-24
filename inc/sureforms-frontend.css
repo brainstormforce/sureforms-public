@@ -1,3 +1,9 @@
+.sureforms-form {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
 .sureforms-loader {
 	border: 2px solid #f3f3f3;
 	border-radius: 50%;

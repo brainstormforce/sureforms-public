@@ -25,10 +25,11 @@ class Post_Types {
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
-
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_sureforms_form_columns' ] );
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_sureforms_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'sureforms_shortcode' ] );
+		add_action( 'add_meta_boxes', [ $this, 'sureform_entries_meta_box' ] );
+
 	}
 
 	/**
@@ -97,7 +98,7 @@ class Post_Types {
 			SUREFORMS_ENTRIES_POST_TYPE,
 			array(
 				'labels'              => $result_labels,
-				'supports'            => array( 'title', 'author', 'editor' ),
+				'supports'            => array( 'title', 'author' ),
 				'public'              => false,
 				'exclude_from_search' => true,
 				'publicly_queryable'  => false,
@@ -140,6 +141,50 @@ class Post_Types {
 			)
 		);
 	}
+
+	/**
+	 * Sureforms entries meta box callback.
+	 *
+	 * @param \WP_Post $post Template.
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function sureforms_meta_box_callback( \WP_Post $post ) {
+		$meta_data = get_post_meta( $post->ID, 'sureforms_entry_meta', true );
+
+		if ( ! is_array( $meta_data ) ) {
+			return;
+		}
+		?>
+	<table>
+		<?php foreach ( $meta_data as $field_name => $value ) : ?>
+			<tr>
+				<td><b><?php echo esc_html( $field_name ); ?></b></td>
+				<td><?php echo wp_kses_post( $value ); ?></td>
+			</tr>
+		<?php endforeach; ?>
+	</table>
+		<?php
+	}
+
+
+	/**
+	 * Add Sureforms entries meta box.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function sureform_entries_meta_box() {
+		add_meta_box(
+			'sureform_entry_meta',
+			'Form Data',
+			array( $this, 'sureforms_meta_box_callback' ),
+			'sureforms_entry',
+			'normal',
+			'default'
+		);
+	}
+
 
 	/**
 	 * Form Template filter.

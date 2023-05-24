@@ -2,7 +2,7 @@
 /**
  * Input field class for radio.
  *
- * @since 2.2.6
+ * @since X.X.X
  * @package SureForms
  */
 

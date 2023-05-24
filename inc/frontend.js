@@ -158,7 +158,6 @@ if ( multiChoices ) {
 					'sureforms-multi-choice-selection'
 				).value;
 				if ( singleSelection ) {
-					console.log( singleSelection );
 					// Reset background color and text color for all labels
 					for (
 						let j = 0;

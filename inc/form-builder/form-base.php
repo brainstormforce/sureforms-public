@@ -8,7 +8,7 @@ namespace SureForms\Inc\Form_Builder;
 /**
  * WP Travel Engine Form.
  *
- * @since 2.2.6
+ * @since X.X.X
  */
 class Form_Base {
 
@@ -16,7 +16,7 @@ class Form_Base {
 	 * Form Option.
 	 *
 	 * @var array
-	 * @since 2.2.6
+	 * @since X.X.X
 	 */
 	private $form_attributes;
 
@@ -24,7 +24,7 @@ class Form_Base {
 	 * Form form_fields
 	 *
 	 * @var array
-	 * @since 2.2.6
+	 * @since X.X.X
 	 */
 	private $form_fields;
 
@@ -32,7 +32,7 @@ class Form_Base {
 	 * Init Function.
 	 *
 	 * @param array $form_attributes Attributes of form.
-	 * @since 2.2.6
+	 * @since X.X.X
 	 * @return Obj
 	 */
 	public function init( $form_attributes = array() ) {
@@ -62,7 +62,7 @@ class Form_Base {
 	 * Array list of all form form_fields.
 	 *
 	 * @param array $form_fields form form_fields.
-	 * @since 2.2.6
+	 * @since X.X.X
 	 * @return obj
 	 */
 	public function form_fields( $form_fields ) {

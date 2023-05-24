@@ -10,7 +10,6 @@
 namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Form_Builder\Form_Base;
 /**
  * Public Class
  *
@@ -39,8 +38,9 @@ class SF_Public {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), SUREFORMS_VER );
-		wp_enqueue_style( 'submit-loader', plugin_dir_url( __FILE__ ) . 'submit-loader.css', array(), SUREFORMS_VER );
-		wp_enqueue_script( 'sureform-frontend-script', plugin_dir_url( __FILE__ ) . 'frontend.js', array(), SUREFORMS_VER, true );
+		wp_enqueue_style( 'sureforms-frontend', plugin_dir_url( __FILE__ ) . 'sureforms-frontend.css', array(), SUREFORMS_VER );
+		wp_enqueue_script( 'sureforms-frontend-script', plugin_dir_url( __FILE__ ) . 'frontend.js', array(), SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), SUREFORMS_VER, true );
 	}
 
 	/**

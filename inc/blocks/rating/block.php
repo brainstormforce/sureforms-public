@@ -60,13 +60,18 @@ class Block extends Base {
 
 							break;
 					}
+					?>
+					<?php
 					for ( $i = 0; $i < $max_value; $i++ ) {
 						?>
 						<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" class="sureforms-rating-field" value="<?php echo esc_attr( strval( $i + 1 ) ); ?>" id="sureforms-rating-<?php echo esc_attr( $random_id . '-' . $i ); ?>" 
 						type="radio" <?php echo esc_attr( $required && 0 === $i ? 'required' : '' ); ?> />
-						<label style="color:#ddd; font-size:25px;" class="sureforms-rating-<?php echo esc_attr( $random_id ); ?>" for="sureforms-rating-<?php echo esc_attr( $random_id . '-' . $i ); ?>">
-							<?php echo wp_kses_post( $icon ); ?>
-						</label>
+						<div style="display:flex; flex-direction:column; align-items: center;">
+							<label style="color:#ddd; font-size:25px;" class="sureforms-rating-<?php echo esc_attr( $random_id ); ?>" for="sureforms-rating-<?php echo esc_attr( $random_id . '-' . $i ); ?>">
+								<?php echo wp_kses_post( $icon ); ?>
+							</label>
+							<div><?php echo esc_html( strval( $show_numbers ? $i : '' ) ); ?></div>
+						</div>
 					<?php } ?>
 				</div>
 			</div>

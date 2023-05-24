@@ -19,26 +19,29 @@ class Block extends Base {
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content Post content.
 	 *
+	 * @since X.X.X
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
 		$id = '';
-
 		if ( ! empty( $attributes ) && ! empty( $content ) ) {
-			$id = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-
+			$id              = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+			$success_message = isset( $attributes['successMessage'] ) ? strval( $attributes['successMessage'] ) : '';
 			ob_start();
 			?>
-			<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form" style="display:flex; flex-direction:column; gap:2rem">
-			<input type="hidden" value="<?php echo esc_attr( $id ); ?>" name="form-id">
+			<form method="post" action="sureform-submit.php"  id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form" class="sureforms-form">
+				<?php
+				wp_nonce_field( 'sureforms-form-submit', 'sureforms_form_submit' );
+				?>
+				<input type="hidden" value="<?php echo esc_attr( $id ); ?>" name="form-id">
 				<?php
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
 				?>
 			</form>
-			<h2 id="sureforms-success-message" hidden="true" style="text-align:center">Form Submitted Successfully</h2>
-			<h2 id="sureforms-error-message" hidden="true" style="text-align:center">Error Submiting Successfully</h2>
+			<h2 id="sureforms-success-message" hidden="true" style="text-align:center"><?php echo esc_html( $success_message ); ?></h2>
+			<h2 id="sureforms-error-message" hidden="true" style="text-align:center"><?php echo esc_attr__( 'Error Submiting Form', 'sureforms' ); ?></h2>
 			<?php
 		}
 

@@ -25,27 +25,22 @@ class Block extends Base {
 
 		if ( ! empty( $attributes ) ) {
 			$text             = isset( $attributes['text'] ) ? strval( $attributes['text'] ) : 'Submit';
-			$show_total       = isset( $attributes['showTotal'] ) ? $attributes['showTotal'] : '';
-			$show_icon        = isset( $attributes['showIcon'] ) ? $attributes['showIcon'] : '';
 			$full             = isset( $attributes['full'] ) ? $attributes['full'] : '';
 			$button_alignment = isset( $attributes['buttonAlignment'] ) ? $attributes['buttonAlignment'] : '';
-			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
+
+			$google_captcha_site_key = ! empty( get_option( 'recaptcha_site_key' ) ) ? get_option( 'recaptcha_site_key' ) : '';
 
 			ob_start();
 			?>
+			<?php if ( '' !== $google_captcha_site_key && ! empty( get_option( 'recaptcha_secret_key' ) ) ) : ?>
+				<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>"></div>
+			<?php endif; ?>
 			<div id="sureforms-submit-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
-				<div style="text-align: <?php echo esc_attr( $button_alignment ); ?>">
-				<button style="display: flex; gap: 0.4rem; align-items: center; justify-content: center; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" type="submit" value="" id="sureforms-submit-btn">
-					<?php if ( $show_icon ) : ?>
-						<i class="fa-solid fa-lock"></i>
-					<?php endif; ?>
-					<?php echo esc_html( $text ); ?>
-					<?php if ( $show_total ) : ?>
-						<span>$100</span>
-					<?php endif; ?>
-					<div style="display: none" class="sureforms-loader"></div>
-				</button>
+				<div style="align-self: <?php echo esc_attr( 'right' === $button_alignment ? 'end' : $button_alignment ); ?>">
+					<button style="display: flex; gap: 0.4rem; align-items: center; justify-content: center; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" type="submit" value="" id="sureforms-submit-btn">
+						<?php echo esc_html( $text ); ?>
+						<div style="display: none" class="sureforms-loader"></div>
+					</button>
 				</div>
 			</div>
 			<?php

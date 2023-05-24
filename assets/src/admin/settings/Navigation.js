@@ -10,24 +10,8 @@ const Navigation = () => {
 
 	const navigation = [
 		{
-			name: __( 'General', 'suremembers' ),
+			name: __( 'General', 'sureforms' ),
 			slug: 'general-settings',
-		},
-		{
-			name: __( 'Menu Option 2', 'suremembers' ),
-			slug: 'menu-option-2',
-		},
-		{
-			name: __( 'Menu Option 3', 'suremembers' ),
-			slug: 'menu-option-3',
-		},
-		{
-			name: __( 'Menu Option 4', 'suremembers' ),
-			slug: 'menu-option-4',
-		},
-		{
-			name: __( 'Menu Option 5', 'suremembers' ),
-			slug: 'menu-option-5',
 		},
 	];
 	return (

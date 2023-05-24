@@ -16,21 +16,9 @@
 			"type": "string",
 			"default": "Submit"
 		},
-		"showTotal": {
-			"type": "boolean",
-			"default": false
-		},
-		"showIcon": {
-			"type": "boolean",
-			"default": true
-		},
 		"full": {
 			"type": "boolean",
 			"default": false
-		},
-		"size": {
-			"type": "string",
-			"default": "large"
 		},
 		"buttonAlignment": {
 			"type": "string"
