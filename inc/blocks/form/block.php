@@ -68,7 +68,9 @@ class Block extends Base {
 					document.querySelector(".sureforms-loader").setAttribute("style","display: none");
 						var response = JSON.parse(xhr.responseText);
 						document.querySelector("#sureforms-success-message").removeAttribute("hidden");
-						// console.log('API response:', response);
+						setTimeout(() => {
+							document.querySelector("#sureforms-success-message").setAttribute("hidden","true");
+						}, 2000);
 						// You can perform additional actions here, such as showing a success message or redirecting the user
 					} else {
 						// Handle the error response

@@ -35,9 +35,11 @@ class Gutenberg_Hooks {
 		$this->patterns = [
 			'blank-form',
 			'contact-form',
-			'newsletter-form',
-			'user-feedback-form',
-			'request-quote-form',
+			'it-service-ticket',
+			'rsvp-form',
+			'information-request-form',
+			'seo-request-form',
+			'medical-history-form',
 		];
 
 		// Initializing hooks.

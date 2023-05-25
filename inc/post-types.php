@@ -156,14 +156,17 @@ class Post_Types {
 			return;
 		}
 		?>
-	<table>
-		<?php foreach ( $meta_data as $field_name => $value ) : ?>
-			<tr>
-				<td><b><?php echo esc_html( $field_name ); ?></b></td>
-				<td><?php echo wp_kses_post( $value ); ?></td>
-			</tr>
-		<?php endforeach; ?>
-	</table>
+		<table class="widefat striped">
+			<tbody>
+				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
+				<?php foreach ( $meta_data as $field_name => $value ) : ?>
+					<tr class="">
+						<td><b><?php echo esc_html( $field_name ); ?></b></td>
+						<td><?php echo wp_kses_post( $value ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
 		<?php
 	}
 
@@ -181,7 +184,7 @@ class Post_Types {
 			array( $this, 'sureforms_meta_box_callback' ),
 			'sureforms_entry',
 			'normal',
-			'default'
+			'high'
 		);
 	}
 
@@ -191,6 +194,7 @@ class Post_Types {
 	 *
 	 * @param string $template Template.
 	 * @return string Template.
+	 * @since X.X.X
 	 */
 	public function page_template( $template ) {
 		if ( is_singular( SUREFORMS_FORMS_POST_TYPE ) ) {
@@ -206,6 +210,7 @@ class Post_Types {
 	 *
 	 * @param array<mixed> $atts Attributes.
 	 * @return string|void $content Post Content.
+	 * @since X.X.X
 	 */
 	public function sureforms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
@@ -235,6 +240,7 @@ class Post_Types {
 	 *
 	 * @param array<mixed> $columns Attributes.
 	 * @return array<mixed> $columns Post Content.
+	 * @since X.X.X
 	 */
 	public function custom_sureforms_form_columns( $columns ) {
 		$columns = array(
@@ -253,6 +259,7 @@ class Post_Types {
 	 * @param string  $column Attributes.
 	 * @param integer $post_id Attributes.
 	 * @return void
+	 * @since X.X.X
 	 */
 	public function custom_sureforms_form_column_data( $column, $post_id ) {
 		$post_title        = get_the_title( $post_id );

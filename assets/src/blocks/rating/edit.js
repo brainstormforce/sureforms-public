@@ -23,6 +23,7 @@ import RatingIcon from './components/RatingIcon.jsx';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const [ rating, setRating ] = useState( null );
+	// eslint-disable-next-line no-unused-vars
 	const [ hover, setHover ] = useState( null );
 
 	const {
@@ -208,8 +209,9 @@ export default function Edit( { attributes, setAttributes } ) {
 									? iconColor
 									: '#ddd',
 							fontSize: ratingValue === rating ? '30px' : null,
-							onMouseEnter: () => setHover( ratingValue ),
-							onMouseLeave: () => setHover( null ),
+							// Might be used later.
+							// onMouseEnter: () => setHover( ratingValue ),
+							// onMouseLeave: () => setHover( null ),
 						};
 
 						return (

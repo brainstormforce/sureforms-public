@@ -187,8 +187,7 @@ class Sureforms_Submit {
 
 			$form_data_keys  = array_keys( $form_data );
 			$form_data_count = count( $form_data );
-
-			for ( $i = 3; $i < $form_data_count - 1; $i++ ) {
+			for ( $i = 3; $i < $form_data_count; $i++ ) {
 				$key   = strval( $form_data_keys[ $i ] );
 				$value = $form_data[ $key ];
 
