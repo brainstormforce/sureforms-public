@@ -31,9 +31,13 @@ class Block extends Base {
 			?>
 			<form method="post" action="sureform-submit.php"  id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form" class="sureforms-form">
 				<?php
-				wp_nonce_field( 'sureforms-form-submit', 'sureforms_form_submit' );
+					wp_nonce_field( 'sureforms-form-submit', 'sureforms_form_submit' );
+					$honeypot_spam = get_option( 'honeypot' );
 				?>
 				<input type="hidden" value="<?php echo esc_attr( $id ); ?>" name="form-id">
+				<?php if ( '1' === $honeypot_spam ) : ?>
+					<input type="hidden" value="" name="sureforms-honeypot-field">
+				<?php endif; ?>
 				<?php
 					// phpcs:ignore
 					echo $content;

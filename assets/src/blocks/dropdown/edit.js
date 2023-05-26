@@ -262,7 +262,12 @@ export default function Edit( { attributes, setAttributes } ) {
 				</label>
 				<select
 					id={ 'dropdown-' + blockID }
-					style={ { width: 'fit-content' } }
+					style={ {
+						maxWidth: '100%',
+						padding: '0 8px',
+						lineHeight: '2',
+						minHeight: '30px',
+					} }
 					required={ required }
 				>
 					{ options.map( ( option, i ) => {

@@ -32,7 +32,7 @@ class Block extends Base {
 			ob_start(); ?>
 		<div class="sureforms-checkbox-container" style="display:flex; flex-direction:column; gap:0.5rem;">
 			<div>
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureforms-checkbox" checked="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" type="checkbox" required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureforms-checkbox" checked="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>">
 				<label for="sureforms-checkbox">
 					<?php
 						echo $label_url

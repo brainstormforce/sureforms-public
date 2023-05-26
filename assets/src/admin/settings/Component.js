@@ -11,6 +11,7 @@ const Component = ( { path } ) => {
 	const [ googleCaptchaKey, setGoogleCaptchaKey ] = useState( '' );
 
 	const [ formData, setFormData ] = useState( {} );
+	const [ honeyPot, setHoneyPot ] = useState( false );
 
 	const handleChange = ( e ) => {
 		const { name, value, type, checked } = e.target;
@@ -20,11 +21,20 @@ const Component = ( { path } ) => {
 			setGoogleCaptchaSecret( newValue );
 			setFormData( () => ( {
 				google_captcha_site_key: googleCaptchaKey,
+				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'google_captcha_site_key' ) {
 			setGoogleCaptchaKey( newValue );
 			setFormData( () => ( {
+				google_captcha_secret_key: googleCaptchaSecret,
+				honeypot_toggle: honeyPot,
+				[ name ]: newValue,
+			} ) );
+		} else if ( name === 'honeypot_toggle' ) {
+			setHoneyPot( ! honeyPot );
+			setFormData( () => ( {
+				google_captcha_site_key: googleCaptchaKey,
 				google_captcha_secret_key: googleCaptchaSecret,
 				[ name ]: newValue,
 			} ) );
@@ -59,6 +69,7 @@ const Component = ( { path } ) => {
 						data.secret_key && data.secret_key
 					);
 					setGoogleCaptchaKey( data.sitekey && data.sitekey );
+					setHoneyPot( data.honeypot && data.honeypot );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -144,8 +155,8 @@ const Component = ( { path } ) => {
 									</Fragment>
 								</div>
 							</div>
-							{ /* Honeypot Spam Protection Settings Might be used later*/ }
-							{ /* <div className="mb-4 flex items-start gap-10">
+							{ /* Honeypot Spam Protection Settings */ }
+							<div className="mb-4 flex items-start gap-10">
 								<div className="max-w-[250px]">
 									<BaseControl
 										help={ __( 'Enable SPAM Protection' ) }
@@ -161,11 +172,15 @@ const Component = ( { path } ) => {
 								<div className="w-[600px] mt-4">
 									<Fragment>
 										<div className="mb-4 ">
-											<label className="toggle-button">
+											<label
+												htmlFor="honeypot-checkbox-input"
+												className="toggle-button"
+											>
 												<input
+													id="honeypot-checkbox-input"
 													type="checkbox"
 													name="honeypot_toggle"
-													checked={ honeypot }
+													checked={ honeyPot }
 													onChange={ handleChange }
 												/>
 												<span className="slider"></span>
@@ -173,7 +188,7 @@ const Component = ( { path } ) => {
 										</div>
 									</Fragment>
 								</div>
-							</div> */ }
+							</div>
 						</div>
 						<button
 							type="submit"
@@ -268,35 +283,39 @@ const Component = ( { path } ) => {
 							</div>
 						</div>
 						{ /* Honeypot Spam Protection Settings might be used later*/ }
-						{ /* <div className="mb-4 flex items-start gap-10">
-					<div className="max-w-[250px]">
-						<BaseControl
-							help={ __( 'Enable SPAM Protection' ) }
-						>
-							<h3 className="text-base font-semibold text-gray-90">
-								{ __(
-									'Honeypot Spam Protection Settings',
-									'sureforms'
-								) }
-							</h3>
-						</BaseControl>
-					</div>
-					<div className="w-[600px] mt-4">
-						<Fragment>
-							<div className="mb-4 ">
-								<label className="toggle-button">
-									<input
-										type="checkbox"
-										name="honeypot_toggle"
-										checked={ honeypot }
-										onChange={ handleChange }
-									/>
-									<span className="slider"></span>
-								</label>
+						<div className="mb-4 flex items-start gap-10">
+							<div className="max-w-[250px]">
+								<BaseControl
+									help={ __( 'Enable SPAM Protection' ) }
+								>
+									<h3 className="text-base font-semibold text-gray-90">
+										{ __(
+											'Honeypot Spam Protection Settings',
+											'sureforms'
+										) }
+									</h3>
+								</BaseControl>
 							</div>
-						</Fragment>
-					</div>
-				</div> */ }
+							<div className="w-[600px] mt-4">
+								<Fragment>
+									<div className="mb-4 ">
+										<label
+											htmlFor="honeypot-checkbox-input"
+											className="toggle-button"
+										>
+											<input
+												id="honeypot-checkbox-input"
+												type="checkbox"
+												name="honeypot_toggle"
+												checked={ honeyPot }
+												onChange={ handleChange }
+											/>
+											<span className="slider"></span>
+										</label>
+									</div>
+								</Fragment>
+							</div>
+						</div>
 					</div>
 					<button
 						type="submit"
