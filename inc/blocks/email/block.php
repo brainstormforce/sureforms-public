@@ -33,15 +33,8 @@ class Block extends Base {
 			<label for="sureforms-input-email"><?php echo esc_attr( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
-			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-email" name="sureforms-email" type="email" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" 
-			style="padding: 0 8px; 
-				line-height: 2; 
-				min-height: 30px;
-				box-shadow: 0 0 0 transparent;
-				border-radius: 4px;
-				border: 1px solid #8c8f94;
-				background-color: #fff;
-				color: #2c3338;
+			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-email" type="email" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" 
+			style="padding: 0 8px; line-height: 2; min-height: 30px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338;
 			">
 			<?php echo '' !== $help ? '<label for="sureforms-input-email" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>

@@ -94,7 +94,7 @@ export default ( { attributes, setAttributes } ) => {
 					rows={ maxLength }
 				></textarea>
 				{ textAreaHelpText !== '' && (
-					<div style={ { color: '#ddd' } }>{ textAreaHelpText }</div>
+					<div className="text-secondary">{ textAreaHelpText }</div>
 				) }
 			</div>
 		</div>

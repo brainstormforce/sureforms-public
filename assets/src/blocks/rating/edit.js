@@ -194,9 +194,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				{ ratingBoxHelpText !== '' && (
-					<div style={ { color: '#ddd' } }>{ ratingBoxHelpText }</div>
-				) }
+
 				<div
 					id={ 'rating-block-' + blockID }
 					style={ {
@@ -239,7 +237,10 @@ export default function Edit( { attributes, setAttributes } ) {
 											iconProps={ iconProps }
 										/>
 									</label>
-									<div>{ showNumbers && index }</div>
+									<div style={ { color: 'black' } }>
+										{ showNumbers && index }
+									</div>
+
 									<input
 										required={ index === 1 && required }
 										type="radio"
@@ -255,6 +256,9 @@ export default function Edit( { attributes, setAttributes } ) {
 						);
 					} ) }
 				</div>
+				{ ratingBoxHelpText !== '' && (
+					<div className="text-secondary">{ ratingBoxHelpText }</div>
+				) }
 			</div>
 		</div>
 	);

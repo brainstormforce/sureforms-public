@@ -17,11 +17,6 @@ export default function Edit( { attributes, setAttributes } ) {
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const { required, label, id } = attributes;
 
-	const labelStyles = {
-		color: '#737373',
-		fontSize: '14px',
-	};
-
 	const inputStyles = {
 		marginTop: '14px',
 	};
@@ -85,7 +80,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							required={ required }
 						/>
 						<label
-							style={ labelStyles }
+							className="text-secondary text-size"
 							htmlFor={ 'address-line-1-' + blockID }
 						>
 							{ __( 'Address Line 1', 'sureforms' ) }
@@ -105,7 +100,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							required={ required }
 						/>
 						<label
-							style={ labelStyles }
+							className="text-secondary text-size"
 							htmlFor={ 'address-line-2-' + blockID }
 						>
 							{ __( 'Address Line 2', 'sureforms' ) }
@@ -127,7 +122,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								required={ required }
 							/>
 							<label
-								style={ labelStyles }
+								className="text-secondary text-size"
 								htmlFor={ 'address-city-' + blockID }
 							>
 								{ __( 'City', 'sureforms' ) }
@@ -148,7 +143,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								required={ required }
 							/>
 							<label
-								style={ labelStyles }
+								className="text-secondary text-size"
 								htmlFor={ 'address-state-' + blockID }
 							>
 								{ __(
@@ -180,7 +175,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								required={ required }
 							/>
 							<label
-								style={ labelStyles }
+								className="text-secondary text-size"
 								htmlFor={ 'address-city-postal-' + blockID }
 							>
 								{ __( 'Postal Code', 'sureforms' ) }
@@ -211,7 +206,7 @@ export default function Edit( { attributes, setAttributes } ) {
 								} ) }
 							</select>
 							<label
-								style={ labelStyles }
+								className="text-secondary text-size"
 								htmlFor={ 'address-country-' + blockID }
 							>
 								{ __( 'Country', 'sureforms' ) }

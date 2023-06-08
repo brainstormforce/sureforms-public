@@ -28,6 +28,7 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'sureforms_settings_page' ] );
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'sureforms_enqueue_styles' ] );
 	}
 
 	/**
@@ -92,6 +93,18 @@ class Admin {
 			array_push( $links, $settings_link );
 		}
 		return $links;
+	}
+
+	/**
+	 * Sureforms block editor styles.
+	 *
+	 * @since X.X.X
+	 */
+	public function sureforms_enqueue_styles() {
+		$current_screen = get_current_screen();
+		if ( 'sureforms_form' === $current_screen->post_type ) {
+			wp_enqueue_style( 'sureforms-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
+		}
 	}
 
 

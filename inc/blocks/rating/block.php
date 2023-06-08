@@ -41,7 +41,6 @@ class Block extends Base {
 				</label>
 				<input type="hidden" class="sureforms-rating-random-id" value="<?php echo esc_attr( $id ); ?>" />
 				<input type="hidden" class="sureforms-rating-icon-color-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $icon_color ); ?>" />
-				<?php echo '' !== $help ? '<label for="sureforms-rating" style="color:#ddd;">' . esc_html( $help ) . '</label>' : ''; ?>
 				<div style="justify-content: <?php echo 'fullWidth' === $width ? 'space-between' : 'space-evenly'; ?>; display: flex; align-items: center;">
 					<?php
 					$icon = '';
@@ -74,6 +73,7 @@ class Block extends Base {
 						</div>
 					<?php } ?>
 				</div>
+				<?php echo '' !== $help ? '<label>' . esc_html( $help ) . '</label>' : ''; ?>
 			</div>
 			<?php
 		}

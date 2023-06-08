@@ -130,7 +130,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			{ help !== '' && (
 				<label
 					htmlFor={ 'phone-help-' + blockID }
-					style={ { color: '#ddd' } }
+					className="text-secondary"
 				>
 					{ help }
 				</label>

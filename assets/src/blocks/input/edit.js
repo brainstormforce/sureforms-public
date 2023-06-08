@@ -87,7 +87,7 @@ export default ( { className, attributes, setAttributes } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'text-input-help-' + blockID }
-						style={ { color: '#ddd' } }
+						className="text-secondary"
 					>
 						{ help }
 					</label>

@@ -3,34 +3,45 @@ import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-const onSelect = ( tabName ) => {
-	console.log( 'Selecting tab', tabName );
-};
+import AppearanceSettings from './appearanceSettings';
+import Settings from './settings';
+
+const onSelect = () => {};
 
 const PluginDocumentSettingPanelDemo = () => (
 	<PluginDocumentSettingPanel
-		initialOpen
-		title={ __( 'Form Options Panel', 'sureforms' ) }
-		name="sureforms-forms-panel"
 		className="sureforms--panel"
+		name="formality-sidebar"
+		title={ __( 'Form Options', 'sureforms' ) }
+		icon={ '' }
 	>
 		<TabPanel
-			activeClass="active-tab"
+			activeClass="active"
 			onSelect={ onSelect }
 			tabs={ [
 				{
-					name: 'tab1',
-					title: 'Tab 1',
-					className: 'tab-one',
+					name: 'sureforms-appearance',
+					title: 'Appearance',
+					className: 'components-panel__body-toggle',
 				},
 				{
-					name: 'tab2',
-					title: 'Tab 2',
-					className: 'tab-two',
+					name: 'sureforms-settings',
+					title: 'Settings',
+					className:
+						'components-panel__body-toggle sureforms-toggle-settings',
 				},
 			] }
 		>
-			{ ( tab ) => <p>{ tab.title }</p> }
+			{ ( tab ) => {
+				switch ( tab.title ) {
+					case 'Appearance':
+						return <AppearanceSettings />;
+					case 'Settings':
+						return <Settings />;
+					default:
+						return <AppearanceSettings />;
+				}
+			} }
 		</TabPanel>
 	</PluginDocumentSettingPanel>
 );

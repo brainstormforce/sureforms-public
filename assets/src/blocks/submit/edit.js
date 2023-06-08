@@ -87,7 +87,9 @@ export default ( { attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div style={ { textAlign: buttonAlignment } }>
-				<button style={ buttonStyles }>{ text }</button>
+				<button className="sureforms-button" style={ buttonStyles }>
+					{ text }
+				</button>
 			</div>
 		</div>
 	);

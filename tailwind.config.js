@@ -3,6 +3,7 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				wpprimary: 'var(--wp-admin-theme-color)',
 				wpcolor: '#2271b1',
 				wphovercolor: '#135e96',
 				wphoverbgcolor: '#2271b117',

@@ -379,7 +379,7 @@ export default ( { attributes, setAttributes } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'multi-choice-help-' + blockID }
-						style={ { color: '#ddd' } }
+						className="text-secondary"
 					>
 						{ help }
 					</label>

@@ -98,7 +98,13 @@ const Component = ( { path } ) => {
 					<form onSubmit={ handleSubmit }>
 						<div className="mt-4">
 							{ /* Google ReCaptcha Settings */ }
-							<div className="mb-4 flex items-start gap-10">
+							<div
+								className="mb-4 flex items-start gap-10"
+								style={ {
+									borderBottom:
+										'1px solid rgba(229, 231, 235, 1)',
+								} }
+							>
 								<div className="max-w-[250px]">
 									<BaseControl
 										help={ __(
@@ -155,7 +161,7 @@ const Component = ( { path } ) => {
 									</Fragment>
 								</div>
 							</div>
-							{ /* Honeypot Spam Protection Settings */ }
+							{ /* Honeypot Spam Protection Settings might be used later*/ }
 							<div className="mb-4 flex items-start gap-10">
 								<div className="max-w-[250px]">
 									<BaseControl
@@ -190,10 +196,7 @@ const Component = ( { path } ) => {
 								</div>
 							</div>
 						</div>
-						<button
-							type="submit"
-							className="cursor-pointer bg-transparent  text-[#575E68] font-semibold hover:text-[#333333] py-2 px-4 border border-[#575E68] hover:border-[#333333] rounded transition-colors duration-300 ease-in-out"
-						>
+						<button type="submit" className="button-primary">
 							{ __( ' Save', 'sureforms' ) }
 						</button>
 					</form>
@@ -317,10 +320,7 @@ const Component = ( { path } ) => {
 							</div>
 						</div>
 					</div>
-					<button
-						type="submit"
-						className="cursor-pointer bg-transparent  text-[#575E68] font-semibold hover:text-[#333333] py-2 px-4 border border-[#575E68] hover:border-[#333333] rounded transition-colors duration-300 ease-in-out"
-					>
+					<button type="submit" className="button-primary">
 						{ __( ' Save', 'sureforms' ) }
 					</button>
 				</form>

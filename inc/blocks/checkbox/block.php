@@ -33,17 +33,19 @@ class Block extends Base {
 			ob_start(); ?>
 		<div class="sureforms-checkbox-container" style="display:flex; flex-direction:column; gap:0.5rem;">
 			<div>
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox" checked="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>">
-				<label for="sureforms-checkbox">
-					<?php
-						echo $label_url
-						? '<a target="_blank" href="' . esc_attr( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
-						: esc_html( $label );
-					?>
-					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
-				</label>
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>">
+				<span class="text-primary">
+					<label for="sureforms-checkbox">
+						<?php
+							echo $label_url
+							? '<a target="_blank" href="' . esc_attr( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
+							: esc_html( $label );
+						?>
+						<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
+					</label>
+				</span>
 			</div>
-			<?php echo '' !== $help ? '<label for="sureforms-checkbox" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-checkbox">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

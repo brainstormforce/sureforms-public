@@ -2,6 +2,64 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+.sureforms-single-form {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+
+form.sureforms-form label {
+	color: var( --primary-color );
+}
+
+form.sureforms-form input::placeholder,
+textarea::placeholder {
+	color: var( --secondary-color );
+}
+
+form.sureforms-form .text-primary {
+	color: var( --primary-color );
+}
+
+form.sureforms-form .text-secondary {
+	color: var( --secondary-color );
+}
+
+form.sureforms-form span a:hover {
+	cursor: pointer;
+}
+
+form.sureforms-form input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+form.sureforms-form textarea,
+form.sureforms-form select,
+form.sureforms-form {
+	border-color: var( --primary-color ) !important;
+}
+
+form.sureforms-form button {
+	background-color: var( --primary-color ) !important;
+	color: var( --secondary-color ) !important;
+}
+
+form.sureforms-form label:last-child {
+	color: var( --secondary-color ) !important;
+}
+
+.sureforms-form-background {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.sureforms-single-form-page {
+	margin-left: 10rem;
+	margin-right: 10rem;
 }
 
 .sureforms-loader {

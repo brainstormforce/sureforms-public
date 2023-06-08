@@ -24,12 +24,11 @@ class Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
-		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
+		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_sureforms_form_columns' ] );
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_sureforms_form_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'sureforms_shortcode' ] );
 		add_action( 'add_meta_boxes', [ $this, 'sureform_entries_meta_box' ] );
-
 	}
 
 	/**
@@ -59,7 +58,7 @@ class Post_Types {
 			SUREFORMS_FORMS_POST_TYPE,
 			array(
 				'labels'            => $form_labels,
-				'rewrite'           => array( 'slug' => 'form' ),
+				'rewrite'           => array( 'slug' => 'sf-form' ),
 				'public'            => true,
 				'show_in_rest'      => true,
 				'has_archive'       => false,
@@ -143,6 +142,40 @@ class Post_Types {
 	}
 
 	/**
+	 * Registers the sureforms metas.
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function register_post_metas() {
+		$metas = array(
+			'_sureforms_color1'           => 'string',
+			'_sureforms_color2'           => 'string',
+			'_sureforms_fontsize'         => 'integer',
+			'_sureforms_bg'               => 'string',
+			'_sureforms_bg_id'            => 'integer',
+			'_sureforms_thankyou_message' => 'string',
+			'_sureforms_email'            => 'string',
+		);
+		foreach ( $metas as $meta => $type ) {
+			register_meta(
+				'post',
+				$meta,
+				array(
+					'object_subtype'    => 'sureforms_form',
+					'show_in_rest'      => true,
+					'single'            => true,
+					'type'              => $type,
+					'sanitize_callback' => 'sanitize_text_field',
+					'auth_callback'     => function() {
+						return current_user_can( 'edit_posts' );
+					},
+				)
+			);
+		}
+	}
+
+	/**
 	 * Sureforms entries meta box callback.
 	 *
 	 * @param \WP_Post $post Template.
@@ -192,23 +225,6 @@ class Post_Types {
 		);
 	}
 
-
-	/**
-	 * Form Template filter.
-	 *
-	 * @param string $template Template.
-	 * @return string Template.
-	 * @since X.X.X
-	 */
-	public function page_template( $template ) {
-		if ( is_singular( SUREFORMS_FORMS_POST_TYPE ) ) {
-			$file_name = 'single-form.php';
-			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SUREFORMS_DIR . '/templates/' . $file_name;
-			$template  = apply_filters( 'sureforms_form_template', $template );
-		}
-		return $template;
-	}
-
 	/**
 	 * Custom Shortcode.
 	 *
@@ -219,15 +235,12 @@ class Post_Types {
 	public function sureforms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
 			array(
-				'id'    => '',
-				'title' => '',
+				'id' => '',
 			),
 			$atts
 		);
 
-		$id    = intval( $atts['id'] );
-		$title = $atts['title'];
-
+		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
 		if ( $post ) {
@@ -266,12 +279,11 @@ class Post_Types {
 	 * @since X.X.X
 	 */
 	public function custom_sureforms_form_column_data( $column, $post_id ) {
-		$post_title        = get_the_title( $post_id );
 		$post_id_formatted = sprintf( '%d', $post_id );
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
-			<input type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>' title='<?php echo esc_html( $post_title ); ?>']" onClick="this.select();" style="cursor: pointer; width: -webkit-fill-available; border: none; background: transparent; font-family: Consolas,Monaco,monospace;
+			<input type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" onClick="this.select();" style="cursor: pointer; width: -webkit-fill-available; border: none; background: transparent; font-family: Consolas,Monaco,monospace;
 			" />
 			<?php
 			ob_end_flush();

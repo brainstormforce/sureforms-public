@@ -86,7 +86,7 @@ const SureformInput = ( { className, attributes, setAttributes } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'number-input-help-' + blockID }
-						style={ { color: '#ddd' } }
+						className="text-secondary"
 					>
 						{ help }
 					</label>

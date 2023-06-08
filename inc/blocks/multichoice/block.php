@@ -53,8 +53,7 @@ class Block extends Base {
 							for="sureforms-multi-choice-<?php echo esc_attr( $id . '-' . $i ); ?>"
 							style="
 							<?php
-							echo esc_attr( 'buttons' === $style ? 'cursor: pointer; border: 1px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; ' : '' );
-
+							echo esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 1px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' );
 							?>
 							"
 						>
@@ -65,9 +64,11 @@ class Block extends Base {
 								<?php echo esc_html( $option ); ?>
 							</span>
 						</label>
+						<!-- added to avoid color issue might change later -->
+						<span></span>
 					</div>
 				<?php endforeach; ?>
-				<?php echo '' !== $help ? '<label for="sureforms-multi-choice" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label>' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

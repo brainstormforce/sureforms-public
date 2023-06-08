@@ -118,7 +118,7 @@ export default ( { attributes, setAttributes } ) => {
 				</label>
 			</div>
 			{ switchHelpText !== '' && (
-				<div style={ { color: '#ddd' } }>{ switchHelpText }</div>
+				<div className="text-secondary">{ switchHelpText }</div>
 			) }
 		</div>
 	);

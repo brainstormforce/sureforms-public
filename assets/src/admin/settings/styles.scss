@@ -41,7 +41,7 @@
 	}
 
 	input:checked + .slider {
-		background-color: #99d9fa;
+		background-color: var( --wp-admin-theme-color );
 	}
 
 	input:checked + .slider:before {

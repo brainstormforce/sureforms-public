@@ -95,10 +95,14 @@ export default ( { attributes, setAttributes } ) => {
 					checked={ isChecked }
 					required={ required }
 				></input>
-				<label htmlFor={ 'checkbox-block-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'checkbox-block-' + blockID }
+				>
 					{ labelUrl !== '' ? (
 						<a
 							href={ labelUrl }
+							className="text-primary"
 							style={ { textDecoration: 'none' } }
 						>
 							{ label }
@@ -112,7 +116,7 @@ export default ( { attributes, setAttributes } ) => {
 				</label>
 			</div>
 			{ checkboxHelpText !== '' && (
-				<div style={ { color: '#ddd' } }>{ checkboxHelpText }</div>
+				<div className="text-secondary">{ checkboxHelpText }</div>
 			) }
 		</div>
 	);

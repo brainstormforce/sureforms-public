@@ -238,14 +238,6 @@ export default function Edit( { attributes, setAttributes } ) {
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				{ help !== '' && (
-					<label
-						htmlFor={ 'upload-help-' + blockID }
-						style={ { color: '#ddd' } }
-					>
-						{ help }
-					</label>
-				) }
 				<input
 					required={ required }
 					type="file"
@@ -324,6 +316,14 @@ export default function Edit( { attributes, setAttributes } ) {
 				>
 					{ __( 'File Size Exceeded The Limit', 'sureforms' ) }
 				</p>
+				{ help !== '' && (
+					<label
+						htmlFor={ 'upload-help-' + blockID }
+						className="text-secondary"
+					>
+						{ help }
+					</label>
+				) }
 			</div>
 		</div>
 	);

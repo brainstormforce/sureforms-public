@@ -126,7 +126,7 @@ class Sureforms_Submit {
 					}
 
 					$first_input = str_replace( ' ', '_', $labels[0] );
-					$name        = isset( $form_data[ $first_input ] ) ? sanitize_text_field( $form_data[ $first_input ] ) : '';
+					$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 					$new_post = array(
 						'post_title'  => $name,
@@ -148,13 +148,15 @@ class Sureforms_Submit {
 							),
 						);
 
-						$admin_email = strval( get_option( 'admin_email' ) );
-						$subject     = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
+						$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+						$admin_email = explode( ', ', $email );
+
+						$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
 
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
-							$message .= '<b>' . $field_name . '</b>: ' . $value . "\n";
+							$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
 						}
 
 						$sent = wp_mail( $admin_email, $subject, $message );
@@ -199,7 +201,7 @@ class Sureforms_Submit {
 				}
 
 				$first_input = str_replace( ' ', '_', $labels[0] );
-				$name        = isset( $form_data[ $first_input ] ) ? sanitize_text_field( $form_data[ $first_input ] ) : '';
+				$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 				$new_post = array(
 					'post_title'  => $name,
@@ -221,13 +223,15 @@ class Sureforms_Submit {
 						),
 					);
 
-					$admin_email = strval( get_option( 'admin_email' ) );
-					$subject     = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
+					$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+					$admin_email = explode( ', ', $email );
+
+					$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
 
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
-						$message .= '<b>' . $field_name . '</b>: ' . $value . "\n";
+						$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
 					}
 
 					$sent = wp_mail( $admin_email, $subject, $message );
@@ -292,7 +296,7 @@ class Sureforms_Submit {
 					}
 
 					$first_input = str_replace( ' ', '_', $labels[0] );
-					$name        = isset( $form_data[ $first_input ] ) ? sanitize_text_field( $form_data[ $first_input ] ) : '';
+					$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 					$new_post = array(
 						'post_title'  => $name,
@@ -314,13 +318,15 @@ class Sureforms_Submit {
 							),
 						);
 
-						$admin_email = strval( get_option( 'admin_email' ) );
-						$subject     = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
+						$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+						$admin_email = explode( ', ', $email );
+
+						$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
 
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
-							$message .= '<b>' . $field_name . '</b>: ' . $value . "\n";
+							$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
 						}
 
 						$sent = wp_mail( $admin_email, $subject, $message );
@@ -365,7 +371,7 @@ class Sureforms_Submit {
 				}
 
 				$first_input = str_replace( ' ', '_', $labels[0] );
-				$name        = isset( $form_data[ $first_input ] ) ? sanitize_text_field( $form_data[ $first_input ] ) : '';
+				$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 				$new_post = array(
 					'post_title'  => $name,
@@ -387,13 +393,16 @@ class Sureforms_Submit {
 						),
 					);
 
-					$admin_email = strval( get_option( 'admin_email' ) );
-					$subject     = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
+					$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+					$admin_email = explode( ', ', $email );
+
+					$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
 
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
-						$message .= '<b>' . $field_name . '</b>: ' . $value . "\n";
+						$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
+
 					}
 
 					$sent = wp_mail( $admin_email, $subject, $message );

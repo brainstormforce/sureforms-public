@@ -45,7 +45,7 @@ export default ( { className, attributes, setAttributes } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'email-input-help-' + blockID }
-						style={ { color: '#ddd' } }
+						className="text-secondary"
 					>
 						{ help }
 					</label>
