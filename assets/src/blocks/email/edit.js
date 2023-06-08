@@ -2,12 +2,20 @@
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-
+import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 
 export default ( { className, attributes, setAttributes } ) => {
-	const { label, placeholder, help, required } = attributes;
-	const blockID = useBlockProps().id;
+	const { label, placeholder, help, required, id } = attributes;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
+
 	return (
 		<div { ...useBlockProps() }>
 			<Settings

@@ -9,11 +9,18 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 export default ( { className, attributes, setAttributes } ) => {
-	const { label, placeholder, help, required } = attributes;
+	const { label, placeholder, help, required, id } = attributes;
 
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

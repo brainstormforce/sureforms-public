@@ -23,6 +23,7 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
+			$id       = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$options  = isset( $attributes['options'] ) ? $attributes['options'] : '';
 			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -33,7 +34,7 @@ class Block extends Base {
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<select 
-			name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>"
+			name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
 			style="padding: 0 8px; 
 				line-height: 2; 
 				min-height: 30px;

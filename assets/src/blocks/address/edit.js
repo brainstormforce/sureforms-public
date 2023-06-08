@@ -9,12 +9,13 @@ import {
 	ToggleControl,
 	TextControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 import countries from './countries.json';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const blockID = useBlockProps().id;
-	const { required, label } = attributes;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const { required, label, id } = attributes;
 
 	const labelStyles = {
 		color: '#737373',
@@ -24,6 +25,13 @@ export default function Edit( { attributes, setAttributes } ) {
 	const inputStyles = {
 		marginTop: '14px',
 	};
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

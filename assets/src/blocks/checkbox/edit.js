@@ -9,6 +9,7 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -17,9 +18,16 @@ export default ( { attributes, setAttributes } ) => {
 		required,
 		labelUrl,
 		checkboxHelpText,
+		id,
 	} = attributes;
 
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

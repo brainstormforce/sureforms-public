@@ -23,6 +23,7 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
+			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -32,7 +33,7 @@ class Block extends Base {
 			<label for="sureforms-input-number"><?php echo esc_attr( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
-			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureforms-input-number" type="number" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" 
+			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-number" type="number" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" 
 			style="padding: 0 8px; 
 				line-height: 2; 
 				min-height: 30px;

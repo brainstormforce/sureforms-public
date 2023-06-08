@@ -12,6 +12,7 @@ import {
 	Icon,
 	BaseControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Component Dependencies
@@ -24,8 +25,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { required, options, label, help } = attributes;
-	const blockID = useBlockProps().id;
+	const { required, options, label, help, id } = attributes;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -42,6 +43,13 @@ export default function Edit( { attributes, setAttributes } ) {
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
 	}
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

@@ -223,60 +223,68 @@ if ( multiChoices ) {
 
 // Address Field
 
-const addressElement = document.getElementById( 'sureforms-address-container' );
+const addressElement = document.getElementsByClassName(
+	'sureforms-address-container'
+);
 
 if ( addressElement ) {
-	const addressLine1 = document.getElementsByClassName(
-		'sureforms-address-line-1'
-	)[ 0 ];
-	const addressLine2 = document.getElementsByClassName(
-		'sureforms-address-line-2'
-	)[ 0 ];
-	const addressCity = document.getElementsByClassName(
-		'sureforms-address-city'
-	)[ 0 ];
-	const addressState = document.getElementsByClassName(
-		'sureforms-address-state'
-	)[ 0 ];
-	const addressPostal = document.getElementsByClassName(
-		'sureforms-address-postal'
-	)[ 0 ];
-	const addressCountry = document.getElementsByClassName(
-		'sureforms-address-country'
-	)[ 0 ];
+	for ( let i = 0; i < addressElement.length; i++ ) {
+		const blockID = addressElement[ i ].id.split( '-' )[ 3 ];
+		const addressLine1 = document.getElementById(
+			`sureforms-address-line-1-${ blockID }`
+		);
+		const addressLine2 = document.getElementById(
+			`sureforms-address-line-2-${ blockID }`
+		);
+		const addressCity = document.getElementById(
+			`sureforms-address-city-${ blockID }`
+		);
+		const addressState = document.getElementById(
+			`sureforms-address-state-${ blockID }`
+		);
+		const addressPostal = document.getElementById(
+			`sureforms-address-postal-${ blockID }`
+		);
+		const addressCountry = document.getElementById(
+			`sureforms-address-country-${ blockID }`
+		);
 
-	const fullAddressInput = document.getElementById( 'fullAddress' );
+		const fullAddressInput = document.getElementById(
+			`fullAddress-${ blockID }`
+		);
 
-	const updateFullAddress = () => {
-		const addressLine1Value = addressLine1.value.trim();
-		const addressLine2Value = addressLine2.value.trim();
-		const addressCityValue = addressCity.value.trim();
-		const addressStateValue = addressState.value.trim();
-		const addressPostalValue = addressPostal.value.trim();
-		const addressCountryValue = addressCountry.value.trim();
+		const updateFullAddress = () => {
+			const addressLine1Value = addressLine1.value.trim();
+			const addressLine2Value = addressLine2.value.trim();
+			const addressCityValue = addressCity.value.trim();
+			const addressStateValue = addressState.value.trim();
+			const addressPostalValue = addressPostal.value.trim();
+			const addressCountryValue = addressCountry.value.trim();
 
-		const addressParts = [
-			addressLine1Value,
-			addressLine2Value,
-			addressCityValue,
-			addressStateValue,
-			addressPostalValue,
-			addressCountryValue,
-		];
+			const addressParts = [
+				addressLine1Value,
+				addressLine2Value,
+				addressCityValue,
+				addressStateValue,
+				addressPostalValue,
+				addressCountryValue,
+			];
 
-		const fullAddress = addressParts
-			.filter( ( part ) => part !== '' )
-			.join( ', ' );
+			const fullAddress = addressParts
+				.filter( ( part ) => part !== '' )
+				.join( ', ' );
 
-		fullAddressInput.value = fullAddress;
-	};
+			fullAddressInput.value = fullAddress;
+			//console.log('fullAdd',fullAddress)
+		};
 
-	addressLine1.addEventListener( 'change', updateFullAddress );
-	addressLine2.addEventListener( 'change', updateFullAddress );
-	addressCity.addEventListener( 'change', updateFullAddress );
-	addressState.addEventListener( 'change', updateFullAddress );
-	addressPostal.addEventListener( 'change', updateFullAddress );
-	addressCountry.addEventListener( 'change', updateFullAddress );
+		addressLine1.addEventListener( 'change', updateFullAddress );
+		addressLine2.addEventListener( 'change', updateFullAddress );
+		addressCity.addEventListener( 'change', updateFullAddress );
+		addressState.addEventListener( 'change', updateFullAddress );
+		addressPostal.addEventListener( 'change', updateFullAddress );
+		addressCountry.addEventListener( 'change', updateFullAddress );
+	}
 }
 
 // Phone Field
