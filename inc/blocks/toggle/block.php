@@ -23,13 +23,14 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
+			$id       = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help     = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
 			$checked  = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 			ob_start(); ?>
 		<div class="sureforms-switch-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
-		<label for="sureforms-switch">
+		<label for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
 		<div style="display:flex; align-items:center; gap:0.5rem;">
 				<div class="switch-background" style="display: inline-block;
 						position: relative;
@@ -39,7 +40,7 @@ class Block extends Base {
 						background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>;
 						transition: background-color 0.2s;
 						cursor: pointer;">
-					<input class="sureforms-switch" name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" id="sureforms-switch" 
+					<input class="sureforms-switch" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-switch-<?php echo esc_attr( $id ); ?>" 
 					<?php echo esc_attr( $checked ? 'checked' : '' ); ?>
 					type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> style="position: absolute;
 					opacity: 0;

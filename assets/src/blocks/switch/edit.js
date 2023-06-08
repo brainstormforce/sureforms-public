@@ -9,11 +9,12 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 export default ( { attributes, setAttributes } ) => {
-	const { label, checked: isChecked, required, switchHelpText } = attributes;
+	const { label, checked: isChecked, required, switchHelpText, id } = attributes;
 
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
 	const inputStyle = {
 		position: 'absolute',
@@ -44,6 +45,13 @@ export default ( { attributes, setAttributes } ) => {
 		left: isChecked ? '27px' : '2px',
 		transition: 'left 0.2s',
 	};
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

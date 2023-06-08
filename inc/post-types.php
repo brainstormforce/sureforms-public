@@ -160,6 +160,10 @@ class Post_Types {
 			<tbody>
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
 				<?php foreach ( $meta_data as $field_name => $value ) : ?>
+					<?php
+					if ( strpos( $field_name, 'radio' ) !== false ) {
+						continue;}
+					?>
 					<tr class="">
 						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>

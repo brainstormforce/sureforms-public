@@ -18,31 +18,53 @@ if ( ratingElements ) {
 			inputLabels.push( inputLabel );
 		}
 	}
-
-	let selectedRatingIndex = -1;
+	const selectedRatingIndex = new Map();
+	for ( let x = 0; x < inputLabels.length; x++ ) {
+		selectedRatingIndex.set( inputLabels[ x ][ 0 ].className, -1 );
+	}
 
 	for ( let i = 0; i < ratingElements.length; i++ ) {
-		ratingElements[ i ].addEventListener( 'click', () => {
-			const clickedRatingIndex = i.toString();
-			if ( selectedRatingIndex === clickedRatingIndex ) {
-				selectedRatingIndex = -1;
+		ratingElements[ i ].addEventListener( 'click', ( e ) => {
+			const clickArr = e.target.id.split( '-' );
+			const clickedStarId = clickArr[ 2 ];
+			const clickIndexId = Number( clickArr[ 3 ] );
+			const selectedBlock = `sureforms-rating-${ clickedStarId }`;
+			// const clickedRatingIndex = i.toString();
+			if ( selectedRatingIndex.get( selectedBlock ) === clickIndexId ) {
+				selectedRatingIndex.set( selectedBlock, -1 );
 			} else {
-				selectedRatingIndex = clickedRatingIndex;
+				selectedRatingIndex.set( selectedBlock, clickIndexId );
 			}
 			for ( let j = 0; j < inputLabels.length; j++ ) {
 				for ( let k = 0; k < inputLabels[ j ].length; k++ ) {
+					const hasClassName = inputLabels[ j ][
+						k
+					].classList.contains(
+						`sureforms-rating-${ clickedStarId }`
+					);
+
 					if (
-						k <= parseInt( selectedRatingIndex ) &&
-						inputLabels[ j ][ k ]
+						k <=
+							parseInt(
+								selectedRatingIndex.get( selectedBlock )
+							) &&
+						inputLabels[ j ][ k ] &&
+						hasClassName
 					) {
 						inputLabels[ j ][ k ].style.color =
 							document.getElementsByClassName(
-								'sureforms-rating-icon-color'
+								`sureforms-rating-icon-color-${ clickedStarId }`
 							)[ 0 ].value;
-					} else if ( inputLabels[ j ][ k ] ) {
+					} else if ( inputLabels[ j ][ k ] && hasClassName ) {
 						inputLabels[ j ][ k ].style.color = '#ddd';
 					}
-					if ( k === parseInt( selectedRatingIndex ) ) {
+					if (
+						k ===
+							parseInt(
+								selectedRatingIndex.get( selectedBlock )
+							) &&
+						hasClassName
+					) {
 						inputLabels[ j ][ k ].style.fontSize = '30px';
 					} else {
 						inputLabels[ j ][ k ].style.fontSize = '25px';
@@ -142,20 +164,25 @@ const multiChoices = document.getElementsByClassName(
 );
 
 if ( multiChoices ) {
-	let selectedOptions = [];
-
+	const selectedOptions = new Map();
 	for ( let i = 0; i < multiChoices.length; i++ ) {
-		multiChoices[ i ].addEventListener( 'click', () => {
+		multiChoices[ i ].addEventListener( 'click', ( e ) => {
+			const clickArr = e.target.id.split( '-' );
+			const clickedId = clickArr[ 3 ];
+			const selectedInd = Number( clickArr[ 4 ] );
+
 			const sureformsMultiChoiceLabel = document.getElementsByClassName(
-				'sureforms-multi-choice-label'
+				`sureforms-multi-choice-label-${ clickedId }`
 			);
 
 			if (
 				'buttons' ===
-				document.getElementById( 'sureforms-multi-choice-style' ).value
+				document.getElementById(
+					`sureforms-multi-choice-style-${ clickedId }`
+				).value
 			) {
 				const singleSelection = document.getElementById(
-					'sureforms-multi-choice-selection'
+					`sureforms-multi-choice-selection-${ clickedId }`
 				).value;
 				if ( singleSelection ) {
 					// Reset background color and text color for all labels
@@ -168,55 +195,59 @@ if ( multiChoices ) {
 							'white';
 						sureformsMultiChoiceLabel[ j ].style.color = 'black';
 					}
-
 					// Set background color and text color for the selected label
-					sureformsMultiChoiceLabel[ i - 1 ].style.backgroundColor =
-						'black';
-					sureformsMultiChoiceLabel[ i - 1 ].style.color = 'white';
+					sureformsMultiChoiceLabel[
+						selectedInd
+					].style.backgroundColor = 'black';
+					sureformsMultiChoiceLabel[ selectedInd ].style.color =
+						'white';
 				} else {
 					const backgroundColor =
-						sureformsMultiChoiceLabel[ i - 1 ].style
+						sureformsMultiChoiceLabel[ selectedInd ].style
 							.backgroundColor;
 					const color =
-						sureformsMultiChoiceLabel[ i - 1 ].style.color;
+						sureformsMultiChoiceLabel[ selectedInd ].style.color;
 					if ( backgroundColor === 'black' && color === 'white' ) {
 						sureformsMultiChoiceLabel[
-							i - 1
+							selectedInd
 						].style.backgroundColor = 'white';
-						sureformsMultiChoiceLabel[ i - 1 ].style.color =
+						sureformsMultiChoiceLabel[ selectedInd ].style.color =
 							'black';
 					} else {
 						sureformsMultiChoiceLabel[
-							i - 1
+							selectedInd
 						].style.backgroundColor = 'black';
-						sureformsMultiChoiceLabel[ i - 1 ].style.color =
+						sureformsMultiChoiceLabel[ selectedInd ].style.color =
 							'white';
 					}
 				}
 			}
 			const singleSelection = document.getElementById(
-				'sureforms-multi-choice-selection'
+				`sureforms-multi-choice-selection-${ clickedId }`
 			).value;
+			if ( ! selectedOptions.has( clickedId ) ) {
+				selectedOptions.set( clickedId, [] );
+			}
+			const curr_block = selectedOptions.get( clickedId );
 			if ( singleSelection ) {
-				if ( ! selectedOptions.includes( i ) ) {
-					selectedOptions = [ i ];
+				if ( ! curr_block.includes( selectedInd + 1 ) ) {
+					selectedOptions.set( clickedId, [ selectedInd + 1 ] );
 				} else {
-					selectedOptions = [];
+					selectedOptions.set( clickedId, [] );
 				}
-			} else if ( selectedOptions.includes( i ) ) {
-				const index = selectedOptions.indexOf( i );
+			} else if ( curr_block.includes( selectedInd + 1 ) ) {
+				const index = curr_block.indexOf( selectedInd + 1 );
 				if ( index !== -1 ) {
-					selectedOptions.splice( index, 1 );
+					curr_block.splice( index, 1 );
 				}
-				console.log( { index, selectedOptions } );
 			} else {
-				selectedOptions.push( i );
+				curr_block.push( selectedInd + 1 );
 			}
 
 			const multiChoiceValueField = document.getElementsByClassName(
-				'sureforms-multi-choice'
+				`sureforms-multi-choice-${ clickedId }`
 			);
-			multiChoiceValueField[ 0 ].value = selectedOptions;
+			multiChoiceValueField[ 0 ].value = selectedOptions.get( clickedId );
 		} );
 	}
 }

@@ -22,8 +22,8 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
-		$random_id = strval( wp_rand( 1, 100 ) );
 		if ( ! empty( $attributes ) ) {
+			$id           = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
@@ -39,8 +39,8 @@ class Block extends Base {
 				<label for="sureforms-rating">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
-				<input type="hidden" class="sureforms-rating-random-id" value="<?php echo esc_attr( $random_id ); ?>" />
-				<input type="hidden" class="sureforms-rating-icon-color" value="<?php echo esc_attr( $icon_color ); ?>" />
+				<input type="hidden" class="sureforms-rating-random-id" value="<?php echo esc_attr( $id ); ?>" />
+				<input type="hidden" class="sureforms-rating-icon-color-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $icon_color ); ?>" />
 				<?php echo '' !== $help ? '<label for="sureforms-rating" style="color:#ddd;">' . esc_html( $help ) . '</label>' : ''; ?>
 				<div style="justify-content: <?php echo 'fullWidth' === $width ? 'space-between' : 'space-evenly'; ?>; display: flex; align-items: center;">
 					<?php
@@ -64,10 +64,10 @@ class Block extends Base {
 					<?php
 					for ( $i = 0; $i < $max_value; $i++ ) {
 						?>
-						<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" class="sureforms-rating-field" value="<?php echo esc_attr( strval( $i + 1 ) ); ?>" id="sureforms-rating-<?php echo esc_attr( $random_id . '-' . $i ); ?>" 
+						<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" class="sureforms-rating-field" value="<?php echo esc_attr( strval( $i + 1 ) ); ?>" id="sureforms-rating-<?php echo esc_attr( $id . '-' . $i ); ?>" 
 						type="radio" <?php echo esc_attr( $required && 0 === $i ? 'required' : '' ); ?> />
 						<div style="display:flex; flex-direction:column; align-items: center;">
-							<label style="color:#ddd; font-size:25px;" class="sureforms-rating-<?php echo esc_attr( $random_id ); ?>" for="sureforms-rating-<?php echo esc_attr( $random_id . '-' . $i ); ?>">
+							<label style="color:#ddd; font-size:25px;" class="sureforms-rating-<?php echo esc_attr( $id ); ?>" for="sureforms-rating-<?php echo esc_attr( $id . '-' . $i ); ?>">
 								<?php echo wp_kses_post( $icon ); ?>
 							</label>
 							<div><?php echo esc_html( strval( $show_numbers ? $i : '' ) ); ?></div>

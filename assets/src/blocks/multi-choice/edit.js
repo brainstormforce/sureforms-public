@@ -13,7 +13,7 @@ import {
 	BaseControl,
 	RadioControl,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 /**
  * Component Dependencies
@@ -21,9 +21,9 @@ import { useState } from '@wordpress/element';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default ( { attributes, setAttributes } ) => {
-	const { required, options, label, singleSelection, style, help } =
+	const { required, options, label, singleSelection, style, help, id } =
 		attributes;
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const [ selected, setSelected ] = useState( [] );
 
 	function handleClick( index ) {
@@ -54,6 +54,13 @@ export default ( { attributes, setAttributes } ) => {
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
 	}
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

@@ -12,6 +12,10 @@
 		"html": false
 	},
 	"attributes": {
+		"id": {
+			"type": "string",
+			"default": ""
+		},
 		"required": {
 			"type": "boolean"
 		},

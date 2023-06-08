@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import {
 	PanelBody,
 	PanelRow,
@@ -27,6 +27,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [ hover, setHover ] = useState( null );
 
 	const {
+		id,
 		required,
 		label,
 		ratingBoxHelpText,
@@ -43,8 +44,14 @@ export default function Edit( { attributes, setAttributes } ) {
 		arrayRating.push( i );
 	}
 
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
