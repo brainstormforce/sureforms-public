@@ -96,6 +96,7 @@ class Block extends Base {
 					>
 						<input
 							style="padding: 0 8px; 
+								width: 96%;
 								line-height: 2; 
 								min-height: 30px;
 								box-shadow: 0 0 0 transparent;
@@ -119,7 +120,8 @@ class Block extends Base {
 						<input
 							type="text"
 							style="padding: 0 8px; 
-							line-height: 2; 
+							line-height: 2;
+							width: 96%;
 							min-height: 30px;
 							box-shadow: 0 0 0 transparent;
 							border-radius: 4px;
@@ -138,58 +140,43 @@ class Block extends Base {
 					</div>
 				</div>
 				<div style="display: flex; gap: 1rem;">
-					<div
-						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
-					>
-						<input
+					<div style="display: flex; flex-direction: column; gap: .5px; width: 100%;">
+						<input 
 							style="padding: 0 8px; 
+							width: 96%;
 							line-height: 2; 
-							min-height: 30px;
-							box-shadow: 0 0 0 transparent;
-							border-radius: 4px;
-							border: 1px solid #8c8f94;
-							background-color: #fff;
-							color: #2c3338;
-							"
-							type="text"
-							class="sureforms-address-postal"
-							<?php echo esc_attr( $required ? 'required' : '' ); ?>
-						/>
-						<label
-							style="color: #737373; font-size: 14px;"
-						>
-							Postal Code
-						</label>
+							min-height: 30px; 
+							box-shadow: 0 0 0 transparent; 
+							border-radius: 4px; 
+							border: 1px solid #8c8f94; 
+							background-color: #fff; 
+							color: #2c3338;" 
+							type="text" 
+							class="sureforms-address-postal" <?php echo esc_attr( $required ? 'required' : '' ); ?> />
+						<label style="color: #737373; font-size: 14px;">Postal Code</label>
 					</div>
-					<div
-						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
-					>
-						<select 			
-							style="padding: 0 8px; 
-								line-height: 2; 
-								min-height: 30px;
-								box-shadow: 0 0 0 transparent;
-								border-radius: 4px;
-								border: 1px solid #8c8f94;
-								background-color: #fff;
-								color: #2c3338;
-							"
+					<div style="display: flex; flex-direction: column; gap: .5px; width: 100%;">
+						<select 
+							style="width: 96%; 
+							padding: 0 8px; 
+							line-height: 2; 
+							min-height: 33px; 
+							box-shadow: 0 0 0 transparent; 
+							border-radius: 4px; 
+							border: 1px solid #8c8f94; 
+							background-color: #fff; 
+							color: #2c3338;" 
 							class="sureforms-address-country">
-							<?php foreach ( $data as $country ) { ?>
-								<?php if ( is_array( $country ) && isset( $country['name'] ) ) { ?>
-									<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>">
-										<?php echo esc_html( strval( $country['name'] ) ); ?>
-									</option>
+									<?php foreach ( $data as $country ) { ?>
+										<?php if ( is_array( $country ) && isset( $country['name'] ) ) { ?>
+									<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
 								<?php } ?>
-							<?php } ?>
+								<?php } ?>
 						</select>
-						<label
-							style="color: #737373; font-size: 14px;"
-						>
-							Country
-						</label>
-							</div>
-						</div>
+						<label style="color: #737373; font-size: 14px;">Country</label>
+					</div>
+				</div>
+
 				</div>
 			<?php
 		}
