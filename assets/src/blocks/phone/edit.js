@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -14,8 +14,8 @@ import {
 import data from './phoneCodes.json';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { required, label, help, placeholder } = attributes;
-	const blockID = useBlockProps().id;
+	const { required, label, help, placeholder, id } = attributes;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
 	const [ phoneNumber, setPhoneNumber ] = useState( '' );
@@ -23,6 +23,13 @@ export default function Edit( { attributes, setAttributes } ) {
 	function handleChange( e ) {
 		setCode( e.target.value );
 	}
+
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>

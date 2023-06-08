@@ -34,18 +34,20 @@ class Block extends Base {
 		}
 
 		if ( ! empty( $attributes ) ) {
+			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start();
 			?>
-			<div class="sureforms-input-phone-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+			<div class="sureforms-input-phone-container" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
 				<label for="sureforms-input-phone"><?php echo esc_attr( $label ); ?>
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div style="display:flex; gap:.5rem">
-					<select name="<?php echo esc_attr( 'Country Code' ); ?>" style="width:fit-content;" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" />
+					<select id="sureforms-country-code-<?php echo esc_attr( $id ); ?>" style="width:fit-content;" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
 						<?php
 						if ( is_array( $data ) ) {
 							foreach ( $data as $country ) {
@@ -58,7 +60,8 @@ class Block extends Base {
 						}
 						?>
 					</select>
-					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>" type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>"
+					<input type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>"
+						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
 						style="padding: 0 8px;
 							line-height: 2;
 							min-height: 30px;

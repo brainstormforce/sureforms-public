@@ -161,7 +161,7 @@ class Post_Types {
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
 				<?php foreach ( $meta_data as $field_name => $value ) : ?>
 					<tr class="">
-						<td><b><?php echo esc_html( $field_name ); ?></b></td>
+						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
 					</tr>
 				<?php endforeach; ?>

@@ -278,3 +278,32 @@ if ( addressElement ) {
 	addressPostal.addEventListener( 'change', updateFullAddress );
 	addressCountry.addEventListener( 'change', updateFullAddress );
 }
+
+// Phone Field
+
+const phoneElement = document.getElementsByClassName(
+	'sureforms-input-phone-container'
+);
+
+if ( phoneElement ) {
+	for ( let i = 0; i < phoneElement.length; i++ ) {
+		const blockID = phoneElement[ i ].id.split( '-' )[ 3 ];
+		const countryCode = document.getElementById(
+			`sureforms-country-code-${ blockID }`
+		);
+		const phoneNumber = document.getElementById(
+			`sureforms-phone-number-${ blockID }`
+		);
+		const fullPhoneNumberInput = document.getElementById(
+			`fullPhoneNumber-${ blockID }`
+		);
+		const updateFullPhoneNumber = () => {
+			const countryCodeValue = countryCode.value.trim();
+			const phoneNumberValue = phoneNumber.value.trim();
+			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+		};
+
+		countryCode.addEventListener( 'change', updateFullPhoneNumber );
+		phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+	}
+}
