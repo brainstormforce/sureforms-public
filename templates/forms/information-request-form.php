@@ -13,13 +13,9 @@ return [
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
 	'content'    => '<!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:heading {"textAlign":"center"} -->
-    <h2 class="wp-block-heading has-text-align-center">Information Request Form</h2>
+    <div class="wp-block-column"><!-- wp:heading {"textAlign":"left"} -->
+    <h2 class="wp-block-heading has-text-align-left">Information Request Form</h2>
     <!-- /wp:heading -->
-    
-    <!-- wp:separator {"backgroundColor":"cyan-bluish-gray","className":"is-style-wide"} -->
-    <hr class="wp-block-separator has-text-color has-cyan-bluish-gray-color has-alpha-channel-opacity has-cyan-bluish-gray-background-color has-background is-style-wide"/>
-    <!-- /wp:separator -->
     
     <!-- wp:columns -->
     <div class="wp-block-columns"><!-- wp:column -->

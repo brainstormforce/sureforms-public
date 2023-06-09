@@ -12,7 +12,13 @@ import {
 import { useEffect } from '@wordpress/element';
 
 export default ( { attributes, setAttributes } ) => {
-	const { label, checked: isChecked, required, switchHelpText, id } = attributes;
+	const {
+		label,
+		checked: isChecked,
+		required,
+		switchHelpText,
+		id,
+	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 

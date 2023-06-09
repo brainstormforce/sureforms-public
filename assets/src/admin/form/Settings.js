@@ -7,7 +7,7 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
@@ -26,19 +26,24 @@ function Settings() {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
 
-	if ( ! sureforms_keys ) {
-		sureforms_keys = default_keys;
-		editPost( {
-			meta: sureforms_keys,
-		} );
-	} else if ( '_sureforms_email' in sureforms_keys ) {
-		if ( ! sureforms_keys._sureforms_email ) {
+	useEffect( () => {
+		if ( ! sureforms_keys ) {
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 			sureforms_keys = default_keys;
 			editPost( {
 				meta: sureforms_keys,
 			} );
+		} else if ( '_sureforms_email' in sureforms_keys ) {
+			if ( '' === sureforms_keys._sureforms_email ) {
+				sureforms_keys = default_keys;
+				editPost( {
+					meta: sureforms_keys,
+				} );
+			}
 		}
-	}
+	}, [] );
+
+	console.log( sureforms_keys );
 
 	function updateMeta( option, value ) {
 		const option_array = {};
@@ -82,7 +87,7 @@ function Settings() {
 					<TextareaControl
 						placeholder={ __(
 							'Form submitted successfully.',
-							'formality'
+							'sureforms'
 						) }
 						value={ sureforms_keys._sureforms_thankyou_message }
 						onChange={ ( value ) => {

@@ -1,7 +1,7 @@
 :root {
 	--sureforms_col1: #000000;
 	--sureforms_col2: #ffffff;
-	--sureforms_bg: #ffffff;
+	--sureforms_bg: "";
 	--sureforms_fontsize: 16px;
 }
 
@@ -47,4 +47,7 @@
 
 .sureforms-button {
 	font-size: 16px !important;
+	background: var( --sureforms_col1 );
+	color: var( --sureforms_col2 );
+	border: none;
 }

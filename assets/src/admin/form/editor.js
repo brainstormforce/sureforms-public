@@ -4,14 +4,14 @@ import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import AppearanceSettings from './appearanceSettings';
-import Settings from './settings';
+import Settings from './Settings';
 
 const onSelect = () => {};
 
 const PluginDocumentSettingPanelDemo = () => (
 	<PluginDocumentSettingPanel
 		className="sureforms--panel"
-		name="formality-sidebar"
+		name="sureforms-sidebar"
 		title={ __( 'Form Options', 'sureforms' ) }
 		icon={ '' }
 	>

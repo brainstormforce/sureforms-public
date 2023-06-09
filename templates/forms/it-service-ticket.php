@@ -12,39 +12,37 @@ return [
 	'title'      => __( 'IT Service Ticket Form', 'sureforms' ),
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '<!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:heading {"textAlign":"center"} -->
-    <h2 class="wp-block-heading has-text-align-center">IT Service Ticket</h2>
+	'content'    => '<!-- wp:columns -->
+    <div class="wp-block-columns"><!-- wp:column -->
+    <div class="wp-block-column"><!-- wp:columns -->
+    <div class="wp-block-columns"><!-- wp:column -->
+    <div class="wp-block-column"><!-- wp:heading -->
+    <h2 class="wp-block-heading">IT Service Ticket</h2>
     <!-- /wp:heading -->
     
-    <!-- wp:separator {"style":{"color":{"background":"#00d184b5"}},"className":"is-style-wide"} -->
-    <hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background is-style-wide" style="background-color:#00d184b5;color:#00d184b5"/>
-    <!-- /wp:separator -->
-    
     <!-- wp:columns -->
     <div class="wp-block-columns"><!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/input {"required":true,"label":"Full Name"} /--></div>
+    <div class="wp-block-column"><!-- wp:sureforms/input {"required":true,"label":"First Name"} /--></div>
     <!-- /wp:column -->
     
     <!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/email {"required":true} /--></div>
+    <div class="wp-block-column"><!-- wp:sureforms/input {"required":true,"label":"Last Name"} /--></div>
     <!-- /wp:column --></div>
     <!-- /wp:columns -->
     
-    <!-- wp:columns -->
-    <div class="wp-block-columns"><!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/input {"required":true,"label":"Department"} /--></div>
-    <!-- /wp:column -->
+    <!-- wp:sureforms/email {"required":true} /-->
+    
+    <!-- wp:sureforms/input {"required":true,"label":"Computer ID"} /-->
+    
+    <!-- wp:sureforms/textarea {"label":"Probelm description"} /-->
+    
+    <!-- wp:sureforms/upload {"label":"Upload Screenshots"} /--></div>
+    <!-- /wp:column --></div>
+    <!-- /wp:columns --></div>
+    <!-- /wp:column --></div>
+    <!-- /wp:columns -->
     
     <!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/input {"required":true,"label":"Computer ID"} /--></div>
-    <!-- /wp:column --></div>
-    <!-- /wp:columns -->
-    
-    <!-- wp:sureforms/textarea {"required":true,"label":"Explain your issue"} /-->
-    
-    <!-- wp:sureforms/upload {"label":"Attach Screenshots"} /-->
-    
-    <!-- wp:sureforms/submit {"text":"Send Request","buttonAlignment":"right"} /--></div>
+    <div class="wp-block-column"><!-- wp:sureforms/submit /--></div>
     <!-- /wp:column -->',
 ];

@@ -13,13 +13,9 @@ return [
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
 	'content'    => '<!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:heading {"textAlign":"center"} -->
-    <h2 class="wp-block-heading has-text-align-center">RSVP Forms</h2>
+    <div class="wp-block-column"><!-- wp:heading {"textAlign":"left"} -->
+    <h2 class="wp-block-heading has-text-align-left">RSVP Form</h2>
     <!-- /wp:heading -->
-    
-    <!-- wp:separator {"backgroundColor":"vivid-cyan-blue","className":"is-style-wide"} -->
-    <hr class="wp-block-separator has-text-color has-vivid-cyan-blue-color has-alpha-channel-opacity has-vivid-cyan-blue-background-color has-background is-style-wide"/>
-    <!-- /wp:separator -->
     
     <!-- wp:columns -->
     <div class="wp-block-columns"><!-- wp:column -->
@@ -37,6 +33,6 @@ return [
     
     <!-- wp:sureforms/textarea {"label":"List their names"} /-->
     
-    <!-- wp:sureforms/submit {"text":"Register","buttonAlignment":"center"} /--></div>
+    <!-- wp:sureforms/submit {"text":"Register","buttonAlignment":"left"} /--></div>
     <!-- /wp:column -->',
 ];

@@ -40,6 +40,7 @@ class Gutenberg_Hooks {
 			'information-request-form',
 			'seo-request-form',
 			'medical-history-form',
+			'customer-satisfaction-survey',
 		];
 
 		// Initializing hooks.

@@ -18,7 +18,7 @@ const default_keys = {
 	_sureforms_color1: '#000000',
 	_sureforms_color2: '#dddddd',
 	_sureforms_fontsize: 20,
-	_sureforms_bg: '#ffffff',
+	_sureforms_bg: '',
 };
 
 function AppearanceSettings() {
@@ -213,12 +213,12 @@ function AppearanceSettings() {
 									) : (
 										''
 									) }
-									{ sureforms_keys._sureforms_bg
-										? ''
-										: __(
+									{ ! sureforms_keys._sureforms_bg
+										? __(
 											'Set a background image',
 											'sureforms'
-										  ) }
+										  )
+										: '' }
 								</Button>
 								{ sureforms_keys._sureforms_bg ? (
 									<Button
