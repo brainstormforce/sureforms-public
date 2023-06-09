@@ -225,23 +225,26 @@ if ( multiChoices ) {
 			const singleSelection = document.getElementById(
 				`sureforms-multi-choice-selection-${ clickedId }`
 			).value;
+			const selectedValue = document.getElementById(
+				`multi-choice-option-${ clickedId }-${ selectedInd }`
+			).innerText;
 			if ( ! selectedOptions.has( clickedId ) ) {
 				selectedOptions.set( clickedId, [] );
 			}
 			const curr_block = selectedOptions.get( clickedId );
 			if ( singleSelection ) {
 				if ( ! curr_block.includes( selectedInd + 1 ) ) {
-					selectedOptions.set( clickedId, [ selectedInd + 1 ] );
+					selectedOptions.set( clickedId, [ selectedValue ] );
 				} else {
 					selectedOptions.set( clickedId, [] );
 				}
-			} else if ( curr_block.includes( selectedInd + 1 ) ) {
-				const index = curr_block.indexOf( selectedInd + 1 );
+			} else if ( curr_block.includes( selectedValue ) ) {
+				const index = curr_block.indexOf( selectedValue );
 				if ( index !== -1 ) {
 					curr_block.splice( index, 1 );
 				}
 			} else {
-				curr_block.push( selectedInd + 1 );
+				curr_block.push( selectedValue );
 			}
 
 			const multiChoiceValueField = document.getElementsByClassName(

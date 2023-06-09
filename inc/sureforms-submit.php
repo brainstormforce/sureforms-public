@@ -156,6 +156,8 @@ class Sureforms_Submit {
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
+							if ( strpos( $field_name, 'radio' ) !== false ) {
+								continue;}
 							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 						}
 
@@ -231,6 +233,8 @@ class Sureforms_Submit {
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
+						if ( strpos( $field_name, 'radio' ) !== false ) {
+							continue;}
 						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 					}
 
@@ -326,6 +330,8 @@ class Sureforms_Submit {
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
+							if ( strpos( $field_name, 'radio' ) !== false ) {
+								continue;}
 							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 						}
 
@@ -401,6 +407,8 @@ class Sureforms_Submit {
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
+						if ( strpos( $field_name, 'radio' ) !== false ) {
+							continue;}
 						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 
 					}
