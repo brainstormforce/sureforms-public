@@ -156,7 +156,7 @@ class Sureforms_Submit {
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
-							$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
+							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 						}
 
 						$sent = wp_mail( $admin_email, $subject, $message );
@@ -231,7 +231,7 @@ class Sureforms_Submit {
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
-						$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
+						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 					}
 
 					$sent = wp_mail( $admin_email, $subject, $message );
@@ -326,7 +326,7 @@ class Sureforms_Submit {
 						$message = '';
 
 						foreach ( $meta_data as $field_name => $value ) {
-							$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
+							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 						}
 
 						$sent = wp_mail( $admin_email, $subject, $message );
@@ -401,7 +401,7 @@ class Sureforms_Submit {
 					$message = '';
 
 					foreach ( $meta_data as $field_name => $value ) {
-						$message .= strtoupper( $field_name ) . ': ' . $value . "\n";
+						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
 
 					}
 
