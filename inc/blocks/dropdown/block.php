@@ -34,20 +34,14 @@ class Block extends Base {
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<select 
-<<<<<<< HEAD
-			name="<?php echo esc_attr( str_replace( ' ', '_', $label ) ); ?>"
-			style="padding: 0 8px; min-height: 35px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338;">
-=======
 			name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
 			style="padding: 0 8px; 
-				line-height: 2; 
-				min-height: 30px;
-				box-shadow: 0 0 0 transparent;
-				border-radius: 4px;
-				border: 1px solid #8c8f94;
-				background-color: #fff;
-				color: #2c3338;">
->>>>>>> a2aaa82e03e1e1e522b7446fb924f6f07d54468b
+			min-height: 35px; 
+			box-shadow: 0 0 0 transparent; 
+			border-radius: 4px; 
+			border: 1px solid #8c8f94; 
+			background-color: #fff; 
+			color: #2c3338;">
 			<?php foreach ( $options as $option ) : ?>
 				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
 			<?php endforeach; ?>
