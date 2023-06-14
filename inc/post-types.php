@@ -184,7 +184,6 @@ class Post_Types {
 	 */
 	public function sureforms_meta_box_callback( \WP_Post $post ) {
 		$meta_data = get_post_meta( $post->ID, 'sureforms_entry_meta', true );
-
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
@@ -192,15 +191,25 @@ class Post_Types {
 		<table class="widefat striped">
 			<tbody>
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
-				<?php foreach ( $meta_data as $field_name => $value ) : ?>
-					<?php
+				<?php
+				foreach ( $meta_data as $field_name => $value ) :
 					if ( strpos( $field_name, 'radio' ) !== false ) {
-						continue;}
+						continue;
+					}
 					?>
-					<tr class="">
+				<tr class="">
+					<?php if ( strpos( $field_name, 'SF-upload' ) !== false ) : ?>
+						<td><b><?php echo esc_html( explode( 'SF-upload', $field_name )[0] ); ?></b></td>
+						<?php if ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
+							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><img style="max-width:100px; height:auto;" src="<?php echo esc_url( $value ); ?>" alt="img" /></a></td>
+						<?php else : ?>
+							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>">Download</a></td>
+						<?php endif; ?>
+					<?php else : ?>
 						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
-					</tr>
+					<?php endif; ?>
+				</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>

@@ -89,6 +89,7 @@ if ( uploadFields ) {
 	);
 	for ( let i = 0; i < uploadFields.length; i++ ) {
 		uploadFields[ i ].addEventListener( 'change', ( e ) => {
+			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
 			const maxFileSize =
 				parseInt( fileSizeField[ 0 ].value ) * 1024 * 1024;
@@ -100,7 +101,7 @@ if ( uploadFields ) {
 						.removeAttribute( 'hidden' );
 				} else {
 					document
-						.getElementById( 'upload-field-error' )
+						.getElementById( `upload-field-error-${ id }` )
 						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
@@ -109,7 +110,7 @@ if ( uploadFields ) {
 							  file.name.split( '.' ).pop()
 							: file.name;
 					document.getElementById(
-						'sureforms-upload-title'
+						`sureforms-upload-title-${ id }`
 					).innerHTML =
 						`<div style="display:flex; gap:0.4rem; align-items:center">
                         <i class="fa-solid fa-file-lines"></i> ` +
@@ -122,7 +123,7 @@ if ( uploadFields ) {
 						.addEventListener( 'click', () => {
 							uploadFields.value = '';
 							document.getElementById(
-								'sureforms-upload-title'
+								`sureforms-upload-title-${ id }`
 							).innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i>
                                 <span>Click to choose the file</span>`;
 						} );
@@ -309,7 +310,6 @@ if ( addressElement ) {
 				.join( ', ' );
 
 			fullAddressInput.value = fullAddress;
-			//console.log('fullAdd',fullAddress)
 		};
 
 		addressLine1.addEventListener( 'change', updateFullAddress );

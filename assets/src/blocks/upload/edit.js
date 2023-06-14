@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -32,6 +32,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		allowedFormats,
 		customFormats,
 		help,
+		id,
 	} = attributes;
 	const maxUploadFileSize = upload_field.upload_max_limit;
 	const uploadFormats = upload_field.upload_formats;
@@ -48,7 +49,13 @@ export default function Edit( { attributes, setAttributes } ) {
 		</>
 	);
 
-	const blockID = useBlockProps().id;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	useEffect( () => {
+		if ( id !== '' ) {
+			return;
+		}
+		setAttributes( { id: blockID } );
+	}, [ blockID, id, setAttributes ] );
 
 	function checkFileSizeLimit( e ) {
 		const maxFileSize = fileSizeLimit * 1024 * 1024;

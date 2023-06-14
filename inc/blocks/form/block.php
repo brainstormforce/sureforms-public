@@ -82,37 +82,34 @@ class Block extends Base {
 					var form = document.querySelector('#sureforms-form-<?php echo esc_attr( $id ); ?>');
 					form.addEventListener('submit', function(e) {
 						e.preventDefault(); // Prevent the default form submission
-
-						// Get the form data
-						var formData = new FormData(form);
-						var serializedData = new URLSearchParams(formData).toString();
-
-						// Make an AJAX request to the API endpoint
-						var xhr = new XMLHttpRequest();
-						xhr.open('POST', '/wp-json/sureforms/v1/submit-form', true);
-						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 						document.querySelector(".sureforms-loader").removeAttribute("style");
-						xhr.onload = function() {
-						if (xhr.status >= 200 && xhr.status < 400) {
+
+						var formData = new FormData(form);
+						fetch('/wp-json/sureforms/v1/submit-form', {
+							method: 'POST',
+							body: formData
+							})
+							.then(response => {
+							if (response.ok) {
 							// Handle the successful response
-						document.querySelector(".sureforms-loader").setAttribute("style","display: none");
-							var response = JSON.parse(xhr.responseText);
-							document.querySelector("#sureforms-success-message").removeAttribute("hidden");
+							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
+							document.querySelector('#sureforms-success-message').removeAttribute('hidden');
 							setTimeout(() => {
-								document.querySelector("#sureforms-success-message").setAttribute("hidden","true");
+								document.querySelector('#sureforms-success-message').setAttribute('hidden', 'true');
 							}, 2000);
-						} else {
+							} else {
 							// Handle the error response
-							document.querySelector("#sureforms-error-message").removeAttribute("hidden");
-							console.error('Error:', xhr.statusText);
-						}
-						};
-						xhr.onerror = function() {
-						// Handle the network error
-						document.querySelector("#sureforms-error-message").removeAttribute("hidden");
-						console.error('Network Error');
-						};
-						xhr.send(serializedData);
+							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
+							document.querySelector('#sureforms-error-message').removeAttribute('hidden');
+							console.error('Error:', response.statusText);
+							}
+							})
+							.catch(error => {
+							// Handle the network error
+							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
+							document.querySelector('#sureforms-error-message').removeAttribute('hidden');
+							console.error('Network Error:', error);
+							});
 					});
 					});
 				<?php } ?>

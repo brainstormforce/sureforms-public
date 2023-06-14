@@ -23,6 +23,7 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
+			$id               = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 			$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
@@ -42,13 +43,13 @@ class Block extends Base {
 				<label for="sureforms-upload"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
-				<input name="sureforms-upload-field" class="sureforms-upload-field" <?php echo esc_attr( $required ? 'required' : '' ); ?> type="file" hidden id="sureforms-upload" 
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" <?php echo esc_attr( $required ? 'required' : '' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
 				accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>"
 				/>
 				<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
 				<div style="border: 1px solid black;">
-					<label id="sureforms-upload-label" for="sureforms-upload">
-						<div id="sureforms-upload-title" style="display: flex; align-items: center; margin-left: 12px; margin-top: 12px; font-size: 25px; gap: 10px;">
+					<label id="sureforms-upload-label" for="sureforms-upload-<?php echo esc_attr( $id ); ?>">
+						<div id="sureforms-upload-title-<?php echo esc_attr( $id ); ?>" style="display: flex; align-items: center; margin-left: 12px; margin-top: 12px; font-size: 25px; gap: 10px;">
 							<i class="fa-solid fa-cloud-arrow-up text-primary"></i>
 							<span class="text-primary">Click to choose the file</span>
 						</div>
@@ -64,7 +65,7 @@ class Block extends Base {
 						</div>
 					</label>
 				</div>
-				<span id="upload-field-error" hidden style="color: red;">File Size Exceeded The Limit</span>
+				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
 				<?php echo '' !== $help ? '<label>' . esc_attr( $help ) . '</label>' : ''; ?>
 			</div>
 			<?php

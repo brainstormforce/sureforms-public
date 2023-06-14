@@ -43,8 +43,6 @@ function Settings() {
 		}
 	}, [] );
 
-	console.log( sureforms_keys );
-
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;

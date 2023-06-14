@@ -73,13 +73,30 @@ class Sureforms_Submit {
 	 * @phpstan-ignore-next-line
 	 */
 	public function handle_form_submission( $request ) {
-
+		$upload_field_result = array();
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
+			// Access the uploaded file.
+			foreach ( $_FILES as $field => $file ) {
+				// Access the uploaded file properties.
+				$filename  = $file['name'];
+				$temp_path = $file['tmp_name'];
+				$file_size = $file['size'];
+				$file_type = $file['type'];
+				// Handle each file.
+				$upload_dir  = wp_upload_dir();
+				$destination = $upload_dir['basedir'] . '/sure-forms/' . $filename;
+				if ( ! is_dir( dirname( $destination ) ) ) {
+					mkdir( dirname( $destination ), 0755, true );
+				}
+				move_uploaded_file( $temp_path, $destination );
+				$file_url                      = $upload_dir['baseurl'] . '/sure-forms/' . $filename;
+				$upload_field_result[ $field ] = $file_url;
+			}
+		}
 		// @phpstan-ignore-next-line
-		$form_data = $request->get_params();
-
+		$form_data                 = $request->get_params();
 		$google_captcha_secret_key = get_option( 'recaptcha_secret_key' );
 		$honeypot_spam             = get_option( 'honeypot' );
-
 		if ( isset( $form_data['sureforms-honeypot-field'] ) && empty( $form_data['sureforms-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
@@ -104,155 +121,13 @@ class Sureforms_Submit {
 				}
 				// @phpstan-ignore-next-line
 				if ( true === $sureforms_captcha_data['success'] ) {
-					$id          = wp_kses_post( $form_data['form-id'] );
-					$form_markup = get_the_content( null, false, $form_data['form-id'] );
-
-					$pattern = '/"label":"(.*?)"/';
-					preg_match_all( $pattern, $form_markup, $matches );
-					$labels = $matches[1];
-
-					$meta_data = array();
-
-					$form_data_keys  = array_keys( $form_data );
-					$form_data_count = count( $form_data );
-
-					for ( $i = 4; $i < $form_data_count - 1; $i++ ) {
-						$key   = strval( $form_data_keys[ $i ] );
-						$value = $form_data[ $key ];
-
-						$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-						$meta_data[ $field_name ] = htmlspecialchars( $value );
-					}
-
-					$first_input = str_replace( ' ', '_', $labels[0] );
-					$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
-
-					$new_post = array(
-						'post_title'  => $name,
-						'post_status' => 'unread',
-						'post_type'   => 'sureforms_entry',
-					);
-
-					$post_id = wp_insert_post( $new_post );
-
-					update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-
-					if ( $post_id ) {
-						wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-						$response = array(
-							'success' => true,
-							'message' => __( 'Form submitted successfully', 'sureforms' ),
-							'data'    => array(
-								'name' => $name,
-							),
-						);
-
-						$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
-						$admin_email = explode( ', ', $email );
-
-						$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
-
-						$message = '';
-
-						foreach ( $meta_data as $field_name => $value ) {
-							if ( strpos( $field_name, 'radio' ) !== false ) {
-								continue;}
-							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
-						}
-
-						$sent = wp_mail( $admin_email, $subject, $message );
-
-						if ( $sent ) {
-							wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-						} else {
-							wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-						}
-					} else {
-						$response = array(
-							'success' => false,
-							'message' => __( 'Error submitting form', 'sureforms' ),
-						);
-					}
-
-					return $response;
-
+					return $this->handle_form_entry( $form_data, $upload_field_result );
 				} else {
 					// @phpstan-ignore-next-line
 					return new WP_Error( 'recaptcha_error', 'ReCaptcha error.', array( 'status' => 403 ) );
 				}
 			} else {
-				$id          = wp_kses_post( $form_data['form-id'] );
-				$form_markup = get_the_content( null, false, $form_data['form-id'] );
-
-				$pattern = '/"label":"(.*?)"/';
-				preg_match_all( $pattern, $form_markup, $matches );
-				$labels = $matches[1];
-
-				$meta_data = array();
-
-				$form_data_keys  = array_keys( $form_data );
-				$form_data_count = count( $form_data );
-				for ( $i = 4; $i < $form_data_count; $i++ ) {
-					$key   = strval( $form_data_keys[ $i ] );
-					$value = $form_data[ $key ];
-
-					$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-					$meta_data[ $field_name ] = htmlspecialchars( $value );
-				}
-
-				$first_input = str_replace( ' ', '_', $labels[0] );
-				$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
-
-				$new_post = array(
-					'post_title'  => $name,
-					'post_status' => 'unread',
-					'post_type'   => 'sureforms_entry',
-				);
-
-				$post_id = wp_insert_post( $new_post );
-
-				update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-
-				if ( $post_id ) {
-					wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-					$response = array(
-						'success' => true,
-						'message' => __( 'Form submitted successfully', 'sureforms' ),
-						'data'    => array(
-							'name' => $name,
-						),
-					);
-
-					$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
-					$admin_email = explode( ', ', $email );
-
-					$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
-
-					$message = '';
-
-					foreach ( $meta_data as $field_name => $value ) {
-						if ( strpos( $field_name, 'radio' ) !== false ) {
-							continue;}
-						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
-					}
-
-					$sent = wp_mail( $admin_email, $subject, $message );
-
-					if ( $sent ) {
-						wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-					} else {
-						wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-					}
-				} else {
-					$response = array(
-						'success' => false,
-						'message' => __( 'Error submitting form', 'sureforms' ),
-					);
-				}
-
-				return $response;
+				return $this->handle_form_entry( $form_data, $upload_field_result );
 			}
 		} elseif ( ! isset( $form_data['sureforms-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -278,156 +153,13 @@ class Sureforms_Submit {
 				}
 				// @phpstan-ignore-next-line
 				if ( true === $sureforms_captcha_data['success'] ) {
-					$id          = wp_kses_post( $form_data['form-id'] );
-					$form_markup = get_the_content( null, false, $form_data['form-id'] );
-
-					$pattern = '/"label":"(.*?)"/';
-					preg_match_all( $pattern, $form_markup, $matches );
-					$labels = $matches[1];
-
-					$meta_data = array();
-
-					$form_data_keys  = array_keys( $form_data );
-					$form_data_count = count( $form_data );
-
-					for ( $i = 3; $i < $form_data_count - 1; $i++ ) {
-						$key   = strval( $form_data_keys[ $i ] );
-						$value = $form_data[ $key ];
-
-						$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-						$meta_data[ $field_name ] = htmlspecialchars( $value );
-					}
-
-					$first_input = str_replace( ' ', '_', $labels[0] );
-					$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
-
-					$new_post = array(
-						'post_title'  => $name,
-						'post_status' => 'unread',
-						'post_type'   => 'sureforms_entry',
-					);
-
-					$post_id = wp_insert_post( $new_post );
-
-					update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-
-					if ( $post_id ) {
-						wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-						$response = array(
-							'success' => true,
-							'message' => __( 'Form submitted successfully', 'sureforms' ),
-							'data'    => array(
-								'name' => $name,
-							),
-						);
-
-						$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
-						$admin_email = explode( ', ', $email );
-
-						$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
-
-						$message = '';
-
-						foreach ( $meta_data as $field_name => $value ) {
-							if ( strpos( $field_name, 'radio' ) !== false ) {
-								continue;}
-							$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
-						}
-
-						$sent = wp_mail( $admin_email, $subject, $message );
-
-						if ( $sent ) {
-							wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-						} else {
-							wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-						}
-					} else {
-						$response = array(
-							'success' => false,
-							'message' => __( 'Error submitting form', 'sureforms' ),
-						);
-					}
-
-					return $response;
-
+					return $this->handle_form_entry( $form_data, $upload_field_result );
 				} else {
 					// @phpstan-ignore-next-line
 					return new WP_Error( 'recaptcha_error', 'ReCaptcha error.', array( 'status' => 403 ) );
 				}
 			} else {
-				$id          = wp_kses_post( $form_data['form-id'] );
-				$form_markup = get_the_content( null, false, $form_data['form-id'] );
-
-				$pattern = '/"label":"(.*?)"/';
-				preg_match_all( $pattern, $form_markup, $matches );
-				$labels = $matches[1];
-
-				$meta_data = array();
-
-				$form_data_keys  = array_keys( $form_data );
-				$form_data_count = count( $form_data );
-				for ( $i = 3; $i < $form_data_count; $i++ ) {
-					$key   = strval( $form_data_keys[ $i ] );
-					$value = $form_data[ $key ];
-
-					$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-					$meta_data[ $field_name ] = htmlspecialchars( $value );
-				}
-
-				$first_input = str_replace( ' ', '_', $labels[0] );
-				$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
-
-				$new_post = array(
-					'post_title'  => $name,
-					'post_status' => 'unread',
-					'post_type'   => 'sureforms_entry',
-				);
-
-				$post_id = wp_insert_post( $new_post );
-
-				update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-
-				if ( $post_id ) {
-					wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-					$response = array(
-						'success' => true,
-						'message' => __( 'Form submitted successfully', 'sureforms' ),
-						'data'    => array(
-							'name' => $name,
-						),
-					);
-
-					$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
-					$admin_email = explode( ', ', $email );
-
-					$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
-
-					$message = '';
-
-					foreach ( $meta_data as $field_name => $value ) {
-						if ( strpos( $field_name, 'radio' ) !== false ) {
-							continue;}
-						$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
-
-					}
-
-					$sent = wp_mail( $admin_email, $subject, $message );
-
-					if ( $sent ) {
-						wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-					} else {
-						wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-					}
-				} else {
-					$response = array(
-						'success' => false,
-						'message' => __( 'Error submitting form', 'sureforms' ),
-					);
-				}
-
-				return $response;
+				return $this->handle_form_entry( $form_data, $upload_field_result );
 			}
 		} else {
 			// @phpstan-ignore-next-line
@@ -469,5 +201,95 @@ class Sureforms_Submit {
 		);
 
 		wp_send_json( $results );
+	}
+
+	/**
+	 * Send Email and Create Entry.
+	 *
+	 * @param array $form_data Request object or array containing form data.
+	 * @param array $upload_field_result containing upload fields data.
+	 * @since X.X.X
+	 * @return array Array containing the response data.
+	 * @phpstan-ignore-next-line
+	 */
+	public function handle_form_entry( $form_data, $upload_field_result ) {
+		$id          = wp_kses_post( $form_data['form-id'] );
+		$form_markup = get_the_content( null, false, $form_data['form-id'] );
+
+		$pattern = '/"label":"(.*?)"/';
+		preg_match_all( $pattern, $form_markup, $matches );
+		$labels = $matches[1];
+
+		$meta_data = array();
+
+		$form_data_keys  = array_keys( $form_data );
+		$form_data_count = count( $form_data );
+		for ( $i = 3; $i < $form_data_count; $i++ ) {
+			$key   = strval( $form_data_keys[ $i ] );
+			$value = $form_data[ $key ];
+
+			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
+
+			$meta_data[ $field_name ] = htmlspecialchars( $value );
+		}
+
+		if ( ! empty( $upload_field_result ) ) {
+			$meta_data += $upload_field_result;
+		}
+
+		$first_input = str_replace( ' ', '_', $labels[0] );
+		$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
+
+		$new_post = array(
+			'post_title'  => $name,
+			'post_status' => 'unread',
+			'post_type'   => 'sureforms_entry',
+		);
+
+		$post_id = wp_insert_post( $new_post );
+
+		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
+		if ( $post_id ) {
+			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
+			$response = array(
+				'success' => true,
+				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'data'    => array(
+					'name' => $name,
+				),
+			);
+
+			$email       = strval( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+			$admin_email = explode( ', ', $email );
+
+			$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
+
+			$message = '';
+
+			foreach ( $meta_data as $field_name => $value ) {
+				if ( strpos( $field_name, 'radio' ) !== false ) {
+					continue;}
+				if ( strpos( $field_name, 'SF-upload' ) !== false ) {
+					$message .= strtoupper( explode( 'SF-upload', $field_name )[0] ) . ': ' . $value . "\n";
+				} else {
+					$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . "\n";
+				}
+			}
+
+			$sent = wp_mail( $admin_email, $subject, $message );
+
+			if ( $sent ) {
+				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
+			} else {
+				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+			}
+		} else {
+			$response = array(
+				'success' => false,
+				'message' => __( 'Error submitting form', 'sureforms' ),
+			);
+		}
+
+		return $response;
 	}
 }
