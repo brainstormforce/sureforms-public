@@ -17,8 +17,7 @@
 			"default": "Submit"
 		},
 		"full": {
-			"type": "boolean",
-			"default": false
+			"type": "boolean"
 		},
 		"buttonAlignment": {
 			"type": "string"

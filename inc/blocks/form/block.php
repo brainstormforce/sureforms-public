@@ -59,7 +59,6 @@ class Block extends Base {
 			$segments  = explode( '/', $path );
 			$form_path = isset( $segments[1] ) ? $segments[1] : '';
 		}
-
 		?>
 			<style>
 				:root {

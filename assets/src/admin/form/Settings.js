@@ -14,6 +14,7 @@ import { store as editorStore } from '@wordpress/editor';
 
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
+
 	const { default_keys } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
