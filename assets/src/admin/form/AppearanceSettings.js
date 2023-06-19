@@ -14,15 +14,9 @@ import { store as editorStore } from '@wordpress/editor';
 
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
-const default_keys = {
-	_sureforms_color1: '#000000',
-	_sureforms_color2: '#dddddd',
-	_sureforms_fontsize: 20,
-	_sureforms_bg: '',
-};
-
-function AppearanceSettings() {
+function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
+	const { default_keys } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )

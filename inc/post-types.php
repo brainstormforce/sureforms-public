@@ -156,6 +156,8 @@ class Post_Types {
 			'_sureforms_bg_id'            => 'integer',
 			'_sureforms_thankyou_message' => 'string',
 			'_sureforms_email'            => 'string',
+			'_sureforms_submit_type'      => 'string',
+			'_sureforms_submit_url'       => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

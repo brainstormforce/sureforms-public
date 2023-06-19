@@ -5,19 +5,16 @@ import {
 	BaseControl,
 	ClipboardButton,
 	PanelRow,
+	ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
-function Settings() {
+function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
-
-	const default_keys = {
-		_sureforms_thankyou_message: 'Form submitted successfully!',
-		_sureforms_email: sfBlockData.admin_email,
-	};
+	const { default_keys } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -26,22 +23,19 @@ function Settings() {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
 
-	useEffect( () => {
-		if ( ! sureforms_keys ) {
-			// eslint-disable-next-line react-hooks/exhaustive-deps
+	if ( ! sureforms_keys ) {
+		sureforms_keys = default_keys;
+		editPost( {
+			meta: sureforms_keys,
+		} );
+	} else if ( '_sureforms_email' in sureforms_keys ) {
+		if ( ! sureforms_keys._sureforms_email ) {
 			sureforms_keys = default_keys;
 			editPost( {
 				meta: sureforms_keys,
 			} );
-		} else if ( '_sureforms_email' in sureforms_keys ) {
-			if ( '' === sureforms_keys._sureforms_email ) {
-				sureforms_keys = default_keys;
-				editPost( {
-					meta: sureforms_keys,
-				} );
-			}
 		}
-	}, [] );
+	}
 
 	function updateMeta( option, value ) {
 		const option_array = {};
@@ -76,23 +70,69 @@ function Settings() {
 			</PanelRow>
 			<PanelRow>
 				<BaseControl
-					id="sureforms-success-message"
+					id="sureforms-submit-type"
 					label={ __(
-						'Customize the Successfull Form Submission message',
+						'Turn toggle on to redirect to a URL',
 						'sureforms'
 					) }
 				>
-					<TextareaControl
-						placeholder={ __(
-							'Form submitted successfully.',
-							'sureforms'
-						) }
-						value={ sureforms_keys._sureforms_thankyou_message }
+					<ToggleControl
+						label={
+							'url' === sureforms_keys._sureforms_submit_type
+								? __( 'Redirect', 'sureforms' )
+								: __( 'Message', 'sureforms' )
+						}
+						checked={
+							'url' === sureforms_keys._sureforms_submit_type
+						}
 						onChange={ ( value ) => {
-							updateMeta( '_sureforms_thankyou_message', value );
+							updateMeta(
+								'_sureforms_submit_type',
+								value ? 'url' : 'message'
+							);
 						} }
 					/>
 				</BaseControl>
+			</PanelRow>
+			<PanelRow>
+				{ 'message' === sureforms_keys._sureforms_submit_type ? (
+					<BaseControl
+						id="sureforms-success-message"
+						label={ __(
+							'Customize the Successfull Form Submission message',
+							'sureforms'
+						) }
+					>
+						<TextareaControl
+							placeholder={ __(
+								'Form submitted successfully.',
+								'sureforms'
+							) }
+							value={ sureforms_keys._sureforms_thankyou_message }
+							onChange={ ( value ) => {
+								updateMeta(
+									'_sureforms_thankyou_message',
+									value
+								);
+							} }
+						/>
+					</BaseControl>
+				) : (
+					<BaseControl
+						id="sureforms-redirect"
+						label={ __(
+							'Customize the Thankyou page URL',
+							'sureforms'
+						) }
+					>
+						<TextControl
+							value={ sureforms_keys._sureforms_submit_url }
+							onChange={ ( value ) => {
+								updateMeta( '_sureforms_submit_url', value );
+							} }
+						/>
+					</BaseControl>
+				) }
 			</PanelRow>
 			<PanelRow>
 				<BaseControl

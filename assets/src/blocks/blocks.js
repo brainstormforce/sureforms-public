@@ -13,6 +13,7 @@ import * as upload from '@Blocks/upload';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
+import * as password from '@Blocks/password';
 
 import { registerBlocks } from './register-block';
 
@@ -32,4 +33,5 @@ registerBlocks( [
 	phone,
 	select,
 	address,
+	password,
 ] );

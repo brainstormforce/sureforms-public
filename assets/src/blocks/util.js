@@ -48,6 +48,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/rating',
 		'sureforms/submit',
 		'sureforms/upload',
+		'sureforms/password',
 	];
 	if ( exclude ) {
 		for ( let i = 0; i < types.length; i++ ) {

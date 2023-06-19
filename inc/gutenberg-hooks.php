@@ -126,7 +126,8 @@ class Gutenberg_Hooks {
 			'sureforms-' . $form_editor_script,
 			'sfBlockData',
 			[
-				'plugin_url' => SUREFORMS_URL,
+				'plugin_url'  => SUREFORMS_URL,
+				'admin_email' => get_option( 'admin_email' ),
 			]
 		);
 	}

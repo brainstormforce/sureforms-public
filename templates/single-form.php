@@ -25,7 +25,7 @@
 		$success_message      = get_post_meta( intval( $custom_post_id ), '_sureforms_thankyou_message', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_sureforms_thankyou_message', true ) ) : '';
 		$success_url          = get_post_meta( intval( $custom_post_id ), '_sureforms_submit_url', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_sureforms_submit_url', true ) ) : '';
 	?>
-	<form method="post" action="../../sureforms-submit.php" id="sureforms-form-<?php echo esc_attr( $custom_post_id ); ?>" class="sureforms-form sureforms-single-form <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>" style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
+	<form method="post" id="sureforms-form-<?php echo esc_attr( $custom_post_id ); ?>" class="sureforms-form sureforms-single-form <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>" style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 		<?php
 			wp_nonce_field( 'sureforms-form-submit', 'sureforms_form_submit' );
 			$honeypot_spam = get_option( 'honeypot' );
