@@ -1,0 +1,34 @@
+{
+	"name": "sureforms/url",
+	"title": "URL",
+	"description": "Displays a form url field. This is saved with the order as additional metadata.",
+	"category": "sureforms",
+	"keywords": [ "url", "link", "website" ],
+	"ancestor": [ "sureforms/form" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"attributes": {
+		"id": {
+			"type": "string",
+			"default": ""
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"placeholder": {
+			"type": "string",
+			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": "URL"
+		},
+		"help": {
+			"type": "string"
+		}
+	}
+}
