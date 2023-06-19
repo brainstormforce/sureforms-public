@@ -187,13 +187,14 @@ class Post_Types {
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
+		$excluded_fields = [ 'radio', 'sureforms-honeypot-field', 'g-recaptcha-response' ];
 		?>
 		<table class="widefat striped">
 			<tbody>
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
 				<?php
 				foreach ( $meta_data as $field_name => $value ) :
-					if ( strpos( $field_name, 'radio' ) !== false ) {
+					if ( in_array( $field_name, $excluded_fields, true ) ) {
 						continue;
 					}
 					?>

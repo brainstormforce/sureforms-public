@@ -266,9 +266,11 @@ class Sureforms_Submit {
 
 			$message = '';
 
+			$excluded_fields = [ 'radio', 'sureforms-honeypot-field', 'g-recaptcha-response' ];
 			foreach ( $meta_data as $field_name => $value ) {
-				if ( strpos( $field_name, 'radio' ) !== false ) {
-					continue;}
+				if ( in_array( $field_name, $excluded_fields, true ) ) {
+					continue;
+				}
 				if ( strpos( $field_name, 'SF-upload' ) !== false ) {
 					$message .= strtoupper( explode( 'SF-upload', $field_name )[0] ) . ': ' . $value . "\n";
 				} else {
