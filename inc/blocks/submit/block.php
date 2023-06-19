@@ -39,7 +39,7 @@ class Block extends Base {
 					<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?>" type="submit" id="sureforms-submit-btn" class="sureforms-button">
 						<div style="display: flex; gap: 6px; align-items: center;">
 							<?php echo esc_html( $text ); ?>
-							<div style="" class="sureforms-loader"></div>
+							<div style="display: none;" class="sureforms-loader"></div>
 						</div>
 					</button>
 				</div>
