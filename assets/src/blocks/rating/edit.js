@@ -21,7 +21,7 @@ import {
  */
 import RatingIcon from './components/RatingIcon.jsx';
 
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const [ rating, setRating ] = useState( null );
 	// eslint-disable-next-line no-unused-vars
 	const [ hover, setHover ] = useState( null );
@@ -182,6 +182,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

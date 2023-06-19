@@ -39,7 +39,7 @@ class Block extends Base {
 			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
-			<div id="sureforms-upload-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+			<div id="sureforms-upload-container" class="main-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
 				<label for="sureforms-upload"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
@@ -47,7 +47,7 @@ class Block extends Base {
 				accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>"
 				/>
 				<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
-				<div style="border: 1px solid black;">
+				<div class="sureforms-upload-inner-div" style="border: 2px solid black;">
 					<label id="sureforms-upload-label" for="sureforms-upload-<?php echo esc_attr( $id ); ?>">
 						<div id="sureforms-upload-title-<?php echo esc_attr( $id ); ?>" style="display: flex; align-items: center; margin-left: 12px; margin-top: 12px; font-size: 25px; gap: 10px;">
 							<i class="fa-solid fa-cloud-arrow-up text-primary"></i>

@@ -13,7 +13,7 @@ import {
 
 import data from './phoneCodes.json';
 
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const { required, label, help, placeholder, id } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	// eslint-disable-next-line no-unused-vars
@@ -74,6 +74,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

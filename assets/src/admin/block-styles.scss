@@ -18,6 +18,17 @@
 	span a {
 		cursor: pointer;
 	}
+
+	input[type="text"],
+	input[type="email"],
+	input[type="number"],
+	input[type="tel"],
+	textarea,
+	select {
+		border: 2px solid;
+		padding: 5px;
+	}
+
 	input[type="text"],
 	input[type="email"],
 	input[type="number"],
@@ -30,6 +41,20 @@
 	input::placeholder,
 	textarea::placeholder {
 		color: var( --sureforms_col2 );
+	}
+
+	.main-container > label:first-child{
+		font-weight: 600;
+	}
+
+	.main-container {
+		opacity: 0.5;
+	}
+	
+	.main-container.sf--focus {
+		opacity: 1;
+		z-index: 1;
+		transition: opacity 0.15s linear;
 	}
 }
 

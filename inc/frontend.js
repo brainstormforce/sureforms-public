@@ -182,6 +182,10 @@ if ( multiChoices ) {
 					`sureforms-multi-choice-style-${ clickedId }`
 				).value
 			) {
+				const selectContainer = document.getElementById(
+					`sureforms-multi-choice-container-${ clickedId }`
+				);
+				selectContainer.classList.add( 'sf--focus' );
 				const singleSelection = document.getElementById(
 					`sureforms-multi-choice-selection-${ clickedId }`
 				).value;
@@ -349,3 +353,40 @@ if ( phoneElement ) {
 		phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
 	}
 }
+
+const inputContainers = document.querySelectorAll( '.main-container' );
+
+inputContainers.forEach( ( container ) => {
+	const inputs = container.querySelectorAll( 'input, textarea, select' );
+
+	inputs.forEach( ( input ) => {
+		const isRatingInput = input.classList.contains(
+			'sureforms-rating-field'
+		);
+		const isMultiInput = input.classList.contains(
+			'sureforms-multi-choice-container'
+		);
+		const isFileInput = input.type === 'file';
+		if ( isRatingInput || isFileInput || isMultiInput ) {
+			input.addEventListener( 'click', () => {
+				const focusedDivs = document.querySelector( '.sf--focus' );
+				if ( focusedDivs ) {
+					focusedDivs.classList.remove( 'sf--focus' );
+				}
+				container.classList.add( 'sf--focus' );
+			} );
+		} else {
+			input.addEventListener( 'focus', () => {
+				const focusedDivs = document.querySelector( '.sf--focus' );
+				if ( focusedDivs ) {
+					focusedDivs.classList.remove( 'sf--focus' );
+				}
+				container.classList.add( 'sf--focus' );
+			} );
+
+			input.addEventListener( 'blur', () => {
+				container.classList.remove( 'sf--focus' );
+			} );
+		}
+	} );
+} );

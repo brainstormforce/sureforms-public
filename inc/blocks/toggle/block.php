@@ -29,7 +29,7 @@ class Block extends Base {
 			$help     = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
 			$checked  = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 			ob_start(); ?>
-		<div class="sureforms-switch-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
+		<div class="sureforms-switch-container main-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
 		<label for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
 		<div style="display:flex; align-items:center; gap:0.5rem;">
 				<div class="switch-background" style="display: inline-block; position: relative; width: 50px; height: 25px; border-radius: 25px; background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>; transition: background-color 0.2s; cursor: pointer;">

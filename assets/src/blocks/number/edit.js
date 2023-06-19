@@ -11,7 +11,12 @@ import {
 } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 
-const SureformInput = ( { className, attributes, setAttributes } ) => {
+const SureformInput = ( {
+	className,
+	attributes,
+	setAttributes,
+	isSelected,
+} ) => {
 	const { label, placeholder, help, required, id } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
@@ -64,6 +69,9 @@ const SureformInput = ( { className, attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

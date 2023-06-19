@@ -32,7 +32,7 @@ class Block extends Base {
 			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
 			ob_start();
 			?>
-		<div class="sureforms-multi-choice-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+		<div class="sureforms-multi-choice-container main-container" id="sureforms-multi-choice-container-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
 			<label for="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>"><?php echo esc_attr( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
@@ -49,11 +49,11 @@ class Block extends Base {
 							<?php echo esc_attr( $single_selection ? 'name="' . esc_attr( "radio-$id" ) . '"' : '' ); ?>
 						/>
 						<label
-							class="sureforms-multi-choice-label-<?php echo esc_attr( $id ); ?>"
+							class="sureforms-multi-choice-label-<?php echo esc_attr( $id ); ?> sureforms-multi-choice-label-button"
 							for="sureforms-multi-choice-<?php echo esc_attr( $id . '-' . $i ); ?>"
 							style="
 							<?php
-							echo esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 1px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' );
+							echo esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 2px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' );
 							?>
 							"
 						>

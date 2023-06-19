@@ -11,7 +11,7 @@ import {
 } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( { attributes, setAttributes, isSelected } ) => {
 	const {
 		label,
 		checked: isChecked,
@@ -102,6 +102,9 @@ export default ( { attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					alignItems: 'center',

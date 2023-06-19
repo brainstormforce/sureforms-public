@@ -35,7 +35,7 @@ class Block extends Base {
 
 			ob_start();
 			?>
-			<div class="sureforms-rating-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+			<div class="sureforms-rating-container main-container" style="display:flex; flex-direction:column; gap:0.5rem;">
 				<label for="sureforms-rating">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>

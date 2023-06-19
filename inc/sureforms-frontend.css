@@ -38,8 +38,28 @@ input[type="number"],
 input[type="tel"],
 form.sureforms-form textarea,
 form.sureforms-form select,
-form.sureforms-form {
+form.sureforms-form,
+.sureforms-upload-inner-div,
+.sureforms-multi-choice-label-button {
 	border-color: var( --primary-color ) !important;
+}
+
+form.sureforms-form .main-container{
+	opacity: 0.5;
+}
+
+form.sureforms-form .main-container > label:first-child{
+	font-weight: 600;
+}
+
+form.sureforms-form .main-container.sf--focus{
+	opacity: 1;
+	z-index: 1;
+	transition: opacity 0.15s linear;
+}
+
+form.sureforms-form input:focus {
+outline-color: var( --primary-color );
 }
 
 form.sureforms-form button {

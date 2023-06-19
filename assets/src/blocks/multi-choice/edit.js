@@ -20,7 +20,7 @@ import { useState, useEffect } from '@wordpress/element';
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( { attributes, setAttributes, isSelected } ) => {
 	const { required, options, label, singleSelection, style, help, id } =
 		attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
@@ -301,6 +301,9 @@ export default ( { attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

@@ -11,9 +11,8 @@ import {
 } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 
-export default ( { className, attributes, setAttributes } ) => {
+export default ( { className, attributes, setAttributes, isSelected } ) => {
 	const { label, placeholder, help, required, id } = attributes;
-
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -65,6 +64,9 @@ export default ( { className, attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

@@ -40,7 +40,7 @@ class Block extends Base {
 			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help     = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
-			<div class="sureforms-address-container" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>" style="display: flex; flex-direction: column; gap: .5rem;">
+			<div class="sureforms-address-container main-container" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>" style="display: flex; flex-direction: column; gap: .5rem;">
 				<label for="sureforms-address-<?php echo esc_attr( $id ); ?>"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
@@ -50,12 +50,12 @@ class Block extends Base {
 				>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullAddress-<?php echo esc_attr( $id ); ?>" />
 					<input
-						style="padding: 0 8px; 
+						style="padding: 5px; 
 						line-height: 2; 
 						min-height: 30px;
 						box-shadow: 0 0 0 transparent;
 						border-radius: 4px;
-						border: 1px solid #8c8f94;
+						border: 2px solid #8c8f94;
 						background-color: #fff;
 						color: #2c3338;
 						"
@@ -73,12 +73,12 @@ class Block extends Base {
 					style="display: flex; flex-direction: column; gap: .5px;"
 				>
 					<input
-						style="padding: 0 8px; 
+						style="padding: 5px; 
 						line-height: 2; 
 						min-height: 30px;
 						box-shadow: 0 0 0 transparent;
 						border-radius: 4px;
-						border: 1px solid #8c8f94;
+						border: 2px solid #8c8f94;
 						background-color: #fff;
 						color: #2c3338;
 						"
@@ -96,13 +96,13 @@ class Block extends Base {
 						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
 					>
 						<input
-							style="padding: 0 8px; 
+							style="padding: 5px; 
 								width:96%;
 								line-height: 2; 
 								min-height: 30px;
 								box-shadow: 0 0 0 transparent;
 								border-radius: 4px;
-								border: 1px solid #8c8f94;
+								border: 2px solid #8c8f94;
 								background-color: #fff;
 								color: #2c3338;
 							"
@@ -120,13 +120,13 @@ class Block extends Base {
 					>
 						<input
 							type="text"
-							style="padding: 0 8px; 
+							style="padding: 5px; 
 							line-height: 2;
 							width:96%; 
 							min-height: 30px;
 							box-shadow: 0 0 0 transparent;
 							border-radius: 4px;
-							border: 1px solid #8c8f94;
+							border: 2px solid #8c8f94;
 							background-color: #fff;
 							color: #2c3338;
 							"
@@ -145,13 +145,13 @@ class Block extends Base {
 						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
 					>
 						<input
-							style="padding: 0 8px; 
+							style="padding: 5px; 
 							width:96%; 
 							line-height: 2; 
 							min-height: 30px;
 							box-shadow: 0 0 0 transparent;
 							border-radius: 4px;
-							border: 1px solid #8c8f94;
+							border: 2px solid #8c8f94;
 							background-color: #fff;
 							color: #2c3338;
 							"
@@ -169,13 +169,13 @@ class Block extends Base {
 						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
 					>
 						<select 			
-							style="padding: 0 8px;
+							style="padding: 5px;
 								width:96%;  
 								line-height: 2; 
-								min-height: 33px;
+								min-height: 43px;
 								box-shadow: 0 0 0 transparent;
 								border-radius: 4px;
-								border: 1px solid #8c8f94;
+								border: 2px solid #8c8f94;
 								background-color: #fff;
 								color: #2c3338;
 							"

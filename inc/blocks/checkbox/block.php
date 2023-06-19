@@ -31,7 +31,7 @@ class Block extends Base {
 			$label_url   = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
 			$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 			ob_start(); ?>
-		<div class="sureforms-checkbox-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+		<div class="sureforms-checkbox-container main-container" style="display:flex; flex-direction:column; gap:0.5rem;">
 			<div>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>">
 				<span class="text-primary">

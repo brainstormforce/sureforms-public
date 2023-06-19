@@ -13,7 +13,7 @@ import { useEffect } from '@wordpress/element';
 
 import countries from './countries.json';
 
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const { required, label, id } = attributes;
 
@@ -53,6 +53,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

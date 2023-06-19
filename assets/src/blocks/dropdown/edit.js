@@ -24,7 +24,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
  */
 import './editor.scss';
 
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const { required, options, label, help, id } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
@@ -256,6 +256,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -274,7 +277,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						maxWidth: '100%',
 						padding: '0 8px',
 						lineHeight: '2',
-						minHeight: '30px',
+						minHeight: '43px',
 					} }
 					required={ required }
 				>
