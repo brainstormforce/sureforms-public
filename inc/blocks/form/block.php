@@ -30,10 +30,12 @@ class Block extends Base {
 			$color_secondary      = get_post_meta( intval( $id ), '_sureforms_color2', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_color2', true ) ) : '';
 			$background_image_url = get_post_meta( intval( $id ), '_sureforms_bg', true ) ? rawurldecode( strval( get_post_meta( intval( $id ), '_sureforms_bg', true ) ) ) : '';
 			$form_font_size       = get_post_meta( intval( $id ), '_sureforms_fontsize', true ) ? get_post_meta( intval( $id ), '_sureforms_fontsize', true ) : '';
+			$success_submit_type  = get_post_meta( intval( $id ), '_sureforms_submit_type', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_submit_type', true ) ) : '';
 			$success_message      = get_post_meta( intval( $id ), '_sureforms_thankyou_message', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_thankyou_message', true ) ) : '';
+			$success_url          = get_post_meta( intval( $id ), '_sureforms_submit_url', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_submit_url', true ) ) : '';
 			ob_start();
 			?>
-				<form method="post" action="../../sureforms-submit.php" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
+				<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
 				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 				<?php
 					wp_nonce_field( 'sureforms-form-submit', 'sureforms_form_submit' );
@@ -75,45 +77,22 @@ class Block extends Base {
 					;
 				}
 			</style>
-			<script type="text/javascript">
-				<?php if ( isset( $form_path ) && 'form' !== $form_path ) { ?>
-					document.addEventListener('DOMContentLoaded', function() {
-					// Capture the form submission event
-					var form = document.querySelector('#sureforms-form-<?php echo esc_attr( $id ); ?>');
-					form.addEventListener('submit', function(e) {
-						e.preventDefault(); // Prevent the default form submission
-						document.querySelector(".sureforms-loader").removeAttribute("style");
-
-						var formData = new FormData(form);
-						fetch('/wp-json/sureforms/v1/submit-form', {
-							method: 'POST',
-							body: formData
-							})
-							.then(response => {
-							if (response.ok) {
-							// Handle the successful response
-							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
-							document.querySelector('#sureforms-success-message').removeAttribute('hidden');
-							setTimeout(() => {
-								document.querySelector('#sureforms-success-message').setAttribute('hidden', 'true');
-							}, 2000);
-							} else {
-							// Handle the error response
-							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
-							document.querySelector('#sureforms-error-message').removeAttribute('hidden');
-							console.error('Error:', response.statusText);
-							}
-							})
-							.catch(error => {
-							// Handle the network error
-							document.querySelector('.sureforms-loader').setAttribute('style', 'display: none');
-							document.querySelector('#sureforms-error-message').removeAttribute('hidden');
-							console.error('Network Error:', error);
-							});
-					});
-					});
-				<?php } ?>
-			</script>
+			<?php
+			if ( isset( $form_path ) && 'form' !== $form_path ) {
+					wp_enqueue_script( 'form-submit', SUREFORMS_URL . 'inc/form-submit.js', [], SUREFORMS_VER, true );
+					$success_submit_type = isset( $success_submit_type ) ? $success_submit_type : 'message';
+					$success_url         = isset( $success_url ) ? $success_url : '/';
+					wp_localize_script(
+						'form-submit',
+						'formSubmitData',
+						array(
+							'successSubmitType' => $success_submit_type,
+							'successUrl'        => $success_url,
+							'formID'            => $id,
+						)
+					);
+			}
+			?>
 		<?php
 		return ob_get_clean();
 	}

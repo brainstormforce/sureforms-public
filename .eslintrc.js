@@ -30,5 +30,6 @@ module.exports = {
 		ajaxurl: true,
 		navigator: true,
 		upload_field: true,
+		formSubmitData: true,
 	},
 };
