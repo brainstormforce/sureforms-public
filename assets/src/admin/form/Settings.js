@@ -46,6 +46,8 @@ function Settings( props ) {
 		} );
 	}
 
+	console.log( sureforms_keys );
+
 	return (
 		<PanelBody style={ { display: 'flex', flexDirection: 'column' } }>
 			<PanelRow>
