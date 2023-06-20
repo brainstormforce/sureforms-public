@@ -5,7 +5,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 
-export default ( { className, attributes, setAttributes } ) => {
+export default ( { className, attributes, setAttributes, isSelected } ) => {
 	const { label, placeholder, help, required, id } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
@@ -23,6 +23,9 @@ export default ( { className, attributes, setAttributes } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
+				className={
+					'main-container' + ( isSelected ? ' sf--focus' : '' )
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

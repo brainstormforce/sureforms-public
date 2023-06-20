@@ -21,6 +21,8 @@
 
 	input[type="text"],
 	input[type="email"],
+	input[type="password"],
+	input[type="url"],
 	input[type="number"],
 	input[type="tel"],
 	textarea,
@@ -31,12 +33,15 @@
 
 	input[type="text"],
 	input[type="email"],
+	input[type="password"],
+	input[type="url"],
 	input[type="number"],
 	input[type="tel"],
 	textarea,
 	select,
-	.sureforms-multi-choice-label {
-		border-color: var( --sureforms_col1 );
+	.sureforms-upload-inner-div,
+	.sureforms-multi-choice-label-button {
+		border-color: var( --sureforms_col1 ) !important;
 	}
 	input::placeholder,
 	textarea::placeholder {

@@ -343,10 +343,11 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 								htmlFor={
 									'multi-choice-' + blockID + '-i-' + i
 								}
+								className={ 'sureforms-multi-choice-label-button' }
 								style={
 									style === 'buttons'
 										? {
-											border: '1px solid black',
+											border: '2px solid',
 											borderRadius: '10px',
 											padding:
 													'.5rem 1rem .5rem 1rem',

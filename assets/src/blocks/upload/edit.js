@@ -258,7 +258,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						.map( ( obj ) => `.${ obj.value }` )
 						.join( ',' ) }
 				/>
-				<div style={ { border: '1px solid black' } }>
+				<div className={ 'sureforms-upload-inner-div' }style={ { border: '2px solid' } }>
 					<label
 						id={ 'upload-label-' + blockID }
 						htmlFor={ 'upload-input-field-' + blockID }
