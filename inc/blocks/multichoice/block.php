@@ -46,7 +46,7 @@ class Block extends Base {
 							class="sureforms-multi-choice"
 							id="sureforms-multi-choice-<?php echo esc_attr( $id . '-' . $i ); ?>"
 							type="<?php echo esc_attr( $single_selection ? 'radio' : 'checkbox' ); ?>"
-							<?php echo esc_attr( $single_selection ? 'name="' . esc_attr( "radio-$id" ) . '"' : '' ); ?>
+							<?php echo esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$id" ) . '"' : '' ); ?>
 						/>
 						<label
 							class="sureforms-multi-choice-label-<?php echo esc_attr( $id ); ?> sureforms-multi-choice-label-button"

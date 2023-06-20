@@ -189,21 +189,23 @@ class Post_Types {
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
-		$excluded_fields = [ 'radio', 'sureforms-honeypot-field', 'g-recaptcha-response' ];
+		$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response' ];
 		?>
 		<table class="widefat striped">
 			<tbody>
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
 				<?php
 				foreach ( $meta_data as $field_name => $value ) :
-					if ( in_array( $field_name, $excluded_fields, true ) ) {
+					if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
 						continue;
 					}
 					?>
 				<tr class="">
 					<?php if ( strpos( $field_name, 'SF-upload' ) !== false ) : ?>
 						<td><b><?php echo esc_html( explode( 'SF-upload', $field_name )[0] ); ?></b></td>
-						<?php if ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
+						<?php if ( ! $value ) : ?>
+							<td><?php echo ''; ?></td>
+						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><img style="max-width:100px; height:auto;" src="<?php echo esc_url( $value ); ?>" alt="img" /></a></td>
 						<?php else : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>">Download</a></td>

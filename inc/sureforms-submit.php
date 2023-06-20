@@ -66,14 +66,14 @@ class Sureforms_Submit {
 	/**
 	 * Handle Form Submission
 	 *
-	 * @param object $request Request object or array containing form data.
+	 * @param \WP_REST_Request $request Request object or array containing form data.
 	 *
 	 * @since X.X.X
 	 * @return array Array containing the response data.
 	 * @phpstan-ignore-next-line
 	 */
 	public function handle_form_submission( $request ) {
-		$upload_field_result = array();
+		$form_data = $request->get_params();
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
 			// Access the uploaded file.
 			foreach ( $_FILES as $field => $file ) {
@@ -82,6 +82,10 @@ class Sureforms_Submit {
 				$temp_path = $file['tmp_name'];
 				$file_size = $file['size'];
 				$file_type = $file['type'];
+
+				if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
+					continue;
+				}
 				// Handle each file.
 				$upload_dir  = wp_upload_dir();
 				$destination = $upload_dir['basedir'] . '/sure-forms/' . $filename;
@@ -89,12 +93,11 @@ class Sureforms_Submit {
 					mkdir( dirname( $destination ), 0755, true );
 				}
 				move_uploaded_file( $temp_path, $destination );
-				$file_url                      = $upload_dir['baseurl'] . '/sure-forms/' . $filename;
-				$upload_field_result[ $field ] = $file_url;
+				$file_url            = $upload_dir['baseurl'] . '/sure-forms/' . $filename;
+				$form_data[ $field ] = $file_url;
 			}
 		}
-		// @phpstan-ignore-next-line
-		$form_data                 = $request->get_params();
+
 		$google_captcha_secret_key = get_option( 'recaptcha_secret_key' );
 		$honeypot_spam             = get_option( 'honeypot' );
 		if ( isset( $form_data['sureforms-honeypot-field'] ) && empty( $form_data['sureforms-honeypot-field'] ) ) {
@@ -121,13 +124,13 @@ class Sureforms_Submit {
 				}
 				// @phpstan-ignore-next-line
 				if ( true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data, $upload_field_result );
+					return $this->handle_form_entry( $form_data );
 				} else {
 					// @phpstan-ignore-next-line
 					return new WP_Error( 'recaptcha_error', 'ReCaptcha error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data, $upload_field_result );
+				return $this->handle_form_entry( $form_data );
 			}
 		} elseif ( ! isset( $form_data['sureforms-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -153,13 +156,13 @@ class Sureforms_Submit {
 				}
 				// @phpstan-ignore-next-line
 				if ( true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data, $upload_field_result );
+					return $this->handle_form_entry( $form_data );
 				} else {
 					// @phpstan-ignore-next-line
 					return new WP_Error( 'recaptcha_error', 'ReCaptcha error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data, $upload_field_result );
+				return $this->handle_form_entry( $form_data );
 			}
 		} else {
 			// @phpstan-ignore-next-line
@@ -207,12 +210,11 @@ class Sureforms_Submit {
 	 * Send Email and Create Entry.
 	 *
 	 * @param array $form_data Request object or array containing form data.
-	 * @param array $upload_field_result containing upload fields data.
 	 * @since X.X.X
 	 * @return array Array containing the response data.
 	 * @phpstan-ignore-next-line
 	 */
-	public function handle_form_entry( $form_data, $upload_field_result ) {
+	public function handle_form_entry( $form_data ) {
 		$id          = wp_kses_post( $form_data['form-id'] );
 		$form_markup = get_the_content( null, false, $form_data['form-id'] );
 
@@ -231,10 +233,6 @@ class Sureforms_Submit {
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
 			$meta_data[ $field_name ] = htmlspecialchars( $value );
-		}
-
-		if ( ! empty( $upload_field_result ) ) {
-			$meta_data += $upload_field_result;
 		}
 
 		$first_input = str_replace( ' ', '_', $labels[0] );
@@ -266,9 +264,9 @@ class Sureforms_Submit {
 
 			$message = '';
 
-			$excluded_fields = [ 'radio', 'sureforms-honeypot-field', 'g-recaptcha-response' ];
+			$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response' ];
 			foreach ( $meta_data as $field_name => $value ) {
-				if ( in_array( $field_name, $excluded_fields, true ) ) {
+				if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
 					continue;
 				}
 				if ( strpos( $field_name, 'SF-upload' ) !== false ) {

@@ -43,6 +43,7 @@ class Block extends Base {
 				<label for="sureforms-upload"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" id="sureforms-upload-index-<?php echo esc_attr( $id ); ?>" value="" type="hidden" />
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" <?php echo esc_attr( $required ? 'required' : '' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
 				accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>"
 				/>
