@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -20,8 +20,6 @@ import CreatableSelect from 'react-select/creatable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faCloudArrowUp,
-	faTrashCan,
-	faFileLines,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function Edit( { attributes, setAttributes, isSelected } ) {
@@ -39,16 +37,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
-	const [ inputBoxHeading, setInputBoxHeading ] = useState(
-		<>
-			<FontAwesomeIcon
-				icon={ faCloudArrowUp }
-				style={ { fontSize: '25px', marginBottom: '5px' } }
-			/>
-			{ __( 'Click to choose the file', 'sureforms' ) }
-		</>
-	);
-
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -56,106 +44,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
-
-	function checkFileSizeLimit( e ) {
-		const maxFileSize = fileSizeLimit * 1024 * 1024;
-
-		const file = e.target.files[ 0 ];
-		if ( file ) {
-			if ( file.size > maxFileSize ) {
-				e.target.value = '';
-				document
-					.getElementById( 'upload-field-error-' + blockID )
-					.removeAttribute( 'hidden' );
-			} else {
-				document
-					.getElementById( 'upload-field-error-' + blockID )
-					.setAttribute( 'hidden', true );
-				document
-					.getElementById( 'upload-label-' + blockID )
-					.removeAttribute( 'for' );
-				document
-					.getElementById( 'upload-attributes-' + blockID )
-					.setAttribute( 'hidden', true );
-				const fileName =
-					file.name.length > 20
-						? file.name.substring( 0, 17 ) +
-						  '...' +
-						  file.name.split( '.' ).pop()
-						: file.name;
-				setInputBoxHeading(
-					<>
-						<div
-							style={ {
-								display: 'flex',
-								gap: '0.4rem',
-								alignItems: 'center',
-							} }
-						>
-							<FontAwesomeIcon
-								icon={ faFileLines }
-								style={ {
-									fontSize: '25px',
-									marginBottom: '5px',
-								} }
-							/>
-
-							{ fileName +
-								' ' +
-								( file.size / 1000000 ).toFixed( 2 ) +
-								'MB' }
-							<FontAwesomeIcon
-								icon={ faTrashCan }
-								id={ 'reset-upload-field-' + blockID }
-								style={ {
-									fontSize: '25px',
-									marginBottom: '5px',
-								} }
-								onClick={ () => {
-									document.getElementById(
-										'upload-input-field-' + blockID
-									).value = '';
-									document
-										.getElementById(
-											'upload-attributes-' + blockID
-										)
-										.removeAttribute( 'hidden' );
-									document
-										.getElementById(
-											'reset-upload-field-' + blockID
-										)
-										.setAttribute( 'hidden', true );
-									setInputBoxHeading(
-										<>
-											<FontAwesomeIcon
-												icon={ faCloudArrowUp }
-												style={ {
-													fontSize: '25px',
-													marginBottom: '5px',
-												} }
-											/>
-											{ __(
-												'Click to choose the file',
-												'sureforms'
-											) }
-										</>
-									);
-									document
-										.getElementById(
-											'upload-label-' + blockID
-										)
-										.setAttribute(
-											'for',
-											'upload-input-field-' + blockID
-										);
-								} }
-							/>
-						</div>
-					</>
-				);
-			}
-		}
-	}
 
 	const firstFive = allowedFormats.slice( 0, 5 );
 
@@ -253,7 +141,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					type="file"
 					id={ 'upload-input-field-' + blockID }
 					hidden
-					onChange={ ( e ) => checkFileSizeLimit( e ) }
+					onClick={ ( e ) => e.preventDefault() }
 					accept={ allowedFormats
 						.map( ( obj ) => `.${ obj.value }` )
 						.join( ',' ) }
@@ -273,7 +161,13 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 								gap: '10px',
 							} }
 						>
-							{ inputBoxHeading }
+							<>
+								<FontAwesomeIcon
+									icon={ faCloudArrowUp }
+									style={ { fontSize: '25px', marginBottom: '5px' } }
+								/>
+								{ __( 'Click to choose the file', 'sureforms' ) }
+							</>
 						</div>
 						<div
 							style={ {
