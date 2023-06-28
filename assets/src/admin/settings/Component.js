@@ -81,7 +81,7 @@ const Component = ( { path } ) => {
 
 	if ( 'general-settings' === path ) {
 		return (
-			<div className="flex justify-center w-[100%]">
+			<div className="flex justify-center lg:w-[100%] md:w-[80%] w-[70%]">
 				<ToastContainer />
 				<div className="w-full p-8 bg-[#FBFBFC] rounded-md m-4 h-3/4 overflow-scroll shadow-md mb-8">
 					<div
@@ -205,7 +205,7 @@ const Component = ( { path } ) => {
 		);
 	}
 	return (
-		<div className="flex justify-center w-[100%]">
+		<div className="flex justify-center lg:w-[100%] md:w-[80%] w-[70%]">
 			<ToastContainer />
 			<div className="w-full p-8 bg-[#FBFBFC] rounded-md m-4 h-3/4 overflow-scroll shadow-md mb-8">
 				<div

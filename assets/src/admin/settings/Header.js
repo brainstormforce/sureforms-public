@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { GoLinkExternal } from 'react-icons/go';
 
 const Header = () => {
@@ -9,9 +8,6 @@ const Header = () => {
 			style={ { borderBottom: '1px solid #E4E7EB' } }
 		>
 			<div className="flex items-center gap-1">
-				<button className="cursor-pointer bg-transparent border-0">
-					<AiOutlineArrowLeft class="text-[#666666]" />
-				</button>
 				<span className="text-2xl text-[#333333] font-semibold">
 					{ __( ' Settings', 'sureforms' ) }
 				</span>
