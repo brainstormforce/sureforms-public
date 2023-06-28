@@ -33,7 +33,7 @@ class Block extends Base {
 			ob_start();
 			?>
 		<div class="sureforms-multi-choice-container main-container" id="sureforms-multi-choice-container-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
-			<label for="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>"><?php echo esc_attr( $label ); ?> 
+			<label class="text-primary"><?php echo esc_attr( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input type="hidden" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
@@ -68,7 +68,7 @@ class Block extends Base {
 						<span></span>
 					</div>
 				<?php endforeach; ?>
-				<?php echo '' !== $help ? '<label>' . esc_attr( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

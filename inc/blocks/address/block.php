@@ -41,7 +41,7 @@ class Block extends Base {
 			$help     = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
 			<div class="sureforms-address-container main-container" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>" style="display: flex; flex-direction: column; gap: .5rem;">
-				<label for="sureforms-address-<?php echo esc_attr( $id ); ?>"><?php echo esc_attr( $label ); ?> 
+				<label class="text-primary"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div
@@ -64,7 +64,8 @@ class Block extends Base {
 						<?php echo esc_attr( $required ? 'required' : '' ); ?>
 					/>
 					<label
-						style="color: #737373; font-size: 14px;"
+						class="text-secondary"
+						style="font-size: 14px;"
 					>
 						Address Line 1
 					</label>
@@ -86,7 +87,8 @@ class Block extends Base {
 						id="sureforms-address-line-2-<?php echo esc_attr( $id ); ?>"
 					/>
 					<label
-						style="color: #737373; font-size: 14px;"
+						class="text-secondary"
+						style="font-size: 14px;"
 					>
 						Address Line 2
 					</label>
@@ -111,7 +113,8 @@ class Block extends Base {
 							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
-							style="color: #737373; font-size: 14px;"
+							class="text-secondary"
+							style="font-size: 14px;"
 						>
 							City
 						</label>
@@ -134,7 +137,8 @@ class Block extends Base {
 							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
-							style="color: #737373; font-size: 14px;"
+							class="text-secondary"
+							style="font-size: 14px;"
 						>
 							State / Province / Region
 						</label>
@@ -160,7 +164,8 @@ class Block extends Base {
 							<?php echo esc_attr( $required ? 'required' : '' ); ?>
 						/>
 						<label
-							style="color: #737373; font-size: 14px;"
+							class="text-secondary"
+							style="font-size: 14px;"
 						>
 							Postal Code
 						</label>
@@ -189,7 +194,8 @@ class Block extends Base {
 							<?php } ?>
 						</select>
 						<label
-							style="color: #737373; font-size: 14px;"
+							class="text-secondary"		
+							style="font-size: 14px;"
 						>
 							Country
 						</label>

@@ -31,7 +31,7 @@ class Block extends Base {
 			ob_start(); ?>
 		<div class="sureforms-switch-container main-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
 		<label for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
-		<div style="display:flex; align-items:center; gap:0.5rem;">
+		<div style="display:flex; align-items:center; gap:0.5rem;" class="text-primary">
 				<div class="switch-background" style="display: inline-block; position: relative; width: 50px; height: 25px; border-radius: 25px; background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>; transition: background-color 0.2s; cursor: pointer;">
 					<input class="sureforms-switch" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
 					<?php echo esc_attr( $checked ? 'checked' : '' ); ?>
@@ -42,7 +42,7 @@ class Block extends Base {
 				</label>
 				<span style="color: var(--primary-color)"><?php echo esc_html( $label ); ?></span><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</div>
-			<?php echo '' !== $help ? '<label>' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="text-secondary">' . esc_html( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

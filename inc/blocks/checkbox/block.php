@@ -35,7 +35,7 @@ class Block extends Base {
 			<div>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>">
 				<span class="text-primary">
-					<label for="sureforms-checkbox">
+					<label for="sureforms-checkbox" class="text-primary">
 						<?php
 							echo $label_url
 							? '<a target="_blank" href="' . esc_attr( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
@@ -45,7 +45,7 @@ class Block extends Base {
 					</label>
 				</span>
 			</div>
-			<?php echo '' !== $help ? '<label for="sureforms-checkbox">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-checkbox" class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

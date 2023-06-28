@@ -42,7 +42,7 @@ class Block extends Base {
 			ob_start();
 			?>
 			<div class="sureforms-input-phone-container main-container" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
-				<label for="sureforms-input-phone"><?php echo esc_attr( $label ); ?>
+				<label class="text-primary"><?php echo esc_attr( $label ); ?>
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div style="display:flex; gap:.5rem">
@@ -64,7 +64,7 @@ class Block extends Base {
 						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
 						style="padding: 5px; line-height: 2; min-height: 30px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 2px solid #8c8f94; background-color: #fff; color: #2c3338;">
 				</div>
-			<?php echo '' !== $help ? '<label for="sureforms-input-phone" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

@@ -36,7 +36,7 @@ class Block extends Base {
 			ob_start();
 			?>
 			<div class="sureforms-rating-container main-container" style="display:flex; flex-direction:column; gap:0.5rem;">
-				<label for="sureforms-rating">
+				<label class="text-primary">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input type="hidden" class="sureforms-rating-random-id" value="<?php echo esc_attr( $id ); ?>" />
@@ -73,7 +73,7 @@ class Block extends Base {
 						</div>
 					<?php } ?>
 				</div>
-				<?php echo '' !== $help ? '<label>' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="text-secondary">' . esc_html( $help ) . '</label>' : ''; ?>
 			</div>
 			<?php
 		}

@@ -30,7 +30,7 @@ class Block extends Base {
 			$help     = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
 		<div class="sureforms-dropdown-container main-container" style="display:flex; flex-direction:column; gap:0.5rem;">
-			<label for="sureforms-dropdown"><?php echo esc_html( $label ); ?> 
+			<label class="text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<select 
@@ -46,7 +46,7 @@ class Block extends Base {
 				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
 			<?php endforeach; ?>
 			</select>
-			<?php echo '' !== $help ? '<label for="sureforms-dropdown" style="color:#ddd;">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php
 		}

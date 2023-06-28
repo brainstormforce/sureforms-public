@@ -40,7 +40,7 @@ class Block extends Base {
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start(); ?>
 			<div id="sureforms-upload-container" class="main-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
-				<label for="sureforms-upload"><?php echo esc_attr( $label ); ?> 
+				<label class="text-primary"><?php echo esc_attr( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" id="sureforms-upload-index-<?php echo esc_attr( $id ); ?>" value="" type="hidden" />
@@ -67,7 +67,7 @@ class Block extends Base {
 					</label>
 				</div>
 				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
-				<?php echo '' !== $help ? '<label>' . esc_attr( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 			</div>
 			<?php
 		}
