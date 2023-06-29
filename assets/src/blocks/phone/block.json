@@ -15,6 +15,12 @@
 			"type": "string",
 			"default": ""
 		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"defaultCountryCode": {
+			"type": "string"
+		},
 		"required": {
 			"type": "boolean"
 		},

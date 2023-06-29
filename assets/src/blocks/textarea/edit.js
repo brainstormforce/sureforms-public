@@ -12,7 +12,7 @@ import {
 import { useEffect } from '@wordpress/element';
 
 export default ( { attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, textAreaHelpText, required, maxLength, id } =
+	const { label, placeholder, textAreaHelpText, required, maxLength, id, defaultValue } =
 		attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
@@ -42,6 +42,16 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 							value={ label }
 							onChange={ ( value ) =>
 								setAttributes( { label: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							as="textarea"
+							label={ __( 'Default Value', 'sureforms' ) }
+							value={ defaultValue }
+							onChange={ ( value ) =>
+								setAttributes( { defaultValue: value } )
 							}
 						/>
 					</PanelRow>
@@ -95,6 +105,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					label={ label }
 					placeholder={ placeholder }
 					rows={ maxLength }
+					value={ defaultValue }
 				></textarea>
 				{ textAreaHelpText !== '' && (
 					<div className="text-secondary">{ textAreaHelpText }</div>

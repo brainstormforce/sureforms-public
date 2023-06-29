@@ -12,7 +12,7 @@ import {
 import { useEffect } from '@wordpress/element';
 
 export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id } = attributes;
+	const { label, placeholder, help, required, id, defaultValue } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -40,6 +40,15 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 							value={ label }
 							onChange={ ( value ) =>
 								setAttributes( { label: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Default Value', 'sureforms' ) }
+							value={ defaultValue }
+							onChange={ ( value ) =>
+								setAttributes( { defaultValue: value } )
 							}
 						/>
 					</PanelRow>
@@ -82,6 +91,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				<input
 					id={ 'text-input-' + blockID }
 					type="text"
+					value={ defaultValue }
 					className={ className }
 					placeholder={ placeholder }
 					required={ required }

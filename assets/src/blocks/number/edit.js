@@ -17,7 +17,7 @@ const SureformInput = ( {
 	setAttributes,
 	isSelected,
 } ) => {
-	const { label, placeholder, help, required, id } = attributes;
+	const { label, placeholder, help, required, id, defaultValue } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -45,6 +45,15 @@ const SureformInput = ( {
 							value={ label }
 							onChange={ ( newValue ) =>
 								setAttributes( { label: newValue } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Default Value', 'sureforms' ) }
+							value={ defaultValue }
+							onChange={ ( value ) =>
+								setAttributes( { defaultValue: value } )
 							}
 						/>
 					</PanelRow>
@@ -87,6 +96,7 @@ const SureformInput = ( {
 				<input
 					id={ 'number-input-' + blockID }
 					type="number"
+					value={ defaultValue }
 					className={ className }
 					placeholder={ placeholder }
 					required={ required }

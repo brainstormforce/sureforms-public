@@ -10,7 +10,7 @@ namespace SureForms\Inc\Blocks\Phone;
 use SureForms\Inc\Blocks\Base;
 
 /**
- * Address Block.
+ * Phone Block.
  */
 class Block extends Base {
 	/**
@@ -32,13 +32,14 @@ class Block extends Base {
 		} else {
 			$data = array();
 		}
-
 		if ( ! empty( $attributes ) ) {
-			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$id              = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+			$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
+			$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
+			$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
+			$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+			$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
+			$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			ob_start();
 			?>
 			<div class="sureforms-input-phone-container main-container" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
@@ -46,8 +47,11 @@ class Block extends Base {
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div style="display:flex; gap:.5rem">
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" />
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( "($default_country) $default" ); ?>" />
 					<select id="sureforms-country-code-<?php echo esc_attr( $id ); ?>" style="width:fit-content; padding: 5px; min-height: 35px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 2px solid #8c8f94; background-color: #fff; color: #2c3338;" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
+					<?php if ( $default_country ) : ?>
+					<option value="<?php echo esc_attr( $default_country ); ?>"><?php echo esc_attr( $default_country ); ?></option>
+					<?php endif; ?>
 						<?php
 						if ( is_array( $data ) ) {
 							foreach ( $data as $country ) {
@@ -60,7 +64,7 @@ class Block extends Base {
 						}
 						?>
 					</select>
-					<input type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> placeholder="<?php echo esc_attr( $placeholder ); ?>"
+					<input type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"
 						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
 						style="padding: 5px; line-height: 2; min-height: 30px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 2px solid #8c8f94; background-color: #fff; color: #2c3338;">
 				</div>

@@ -11,7 +11,7 @@ import {
 } from '@wordpress/components';
 
 export default ( { attributes, setAttributes } ) => {
-	const { label, placeholder, help, required } = attributes;
+	const { label, placeholder, help, required, defaultValue } = attributes;
 
 	return (
 		<InspectorControls>
@@ -31,6 +31,15 @@ export default ( { attributes, setAttributes } ) => {
 						value={ label }
 						onChange={ ( value ) =>
 							setAttributes( { label: value } )
+						}
+					/>
+				</PanelRow>
+				<PanelRow>
+					<TextControl
+						label={ __( 'Default Value', 'sureforms' ) }
+						value={ defaultValue }
+						onChange={ ( value ) =>
+							setAttributes( { defaultValue: value } )
 						}
 					/>
 				</PanelRow>

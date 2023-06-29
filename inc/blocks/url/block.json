@@ -15,6 +15,9 @@
 			"type": "string",
 			"default": ""
 		},
+		"defaultValue": {
+			"type": "string"
+		},
 		"required": {
 			"type": "boolean",
 			"default": false

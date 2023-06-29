@@ -9,16 +9,16 @@ import {
 	PanelRow,
 	ToggleControl,
 	TextControl,
+	Panel,
 } from '@wordpress/components';
 
 import data from './phoneCodes.json';
 
 export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const { required, label, help, placeholder, id } = attributes;
+	const { required, label, help, placeholder, id, defaultValue, defaultCountryCode } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
-	const [ phoneNumber, setPhoneNumber ] = useState( '' );
 
 	function handleChange( e ) {
 		setCode( e.target.value );
@@ -30,7 +30,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
-
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
@@ -53,6 +52,42 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							}
 						/>
 					</PanelRow>
+					<Panel>
+						<lable style={ { fontSize: '11px', fontWeight: '500', lineHeight: '1.4' } }>DEFAULT VALUE</lable>
+						<div style={ { display: 'flex', alignItems: 'baseline' } }>
+							{ data && (
+								<select
+									style={ { minHeight: '32px' } }
+									required={ required }
+									placeholder="US +1"
+									value={ defaultCountryCode }
+									onChange={ ( e ) => {
+										const value = e.target.value;
+										setAttributes( { defaultCountryCode: value } );
+									} }
+								>
+									{ data.map( ( country, i ) => {
+										return (
+											<option
+												key={ i }
+												value={ country.dial_code }
+											>
+												{ country.code +
+													' ' +
+													country.dial_code }
+											</option>
+										);
+									} ) }
+								</select>
+							) }
+							<TextControl
+								value={ defaultValue }
+								onChange={ ( value ) =>
+									setAttributes( { defaultValue: value } )
+								}
+							/>
+						</div>
+					</Panel>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Placeholder', 'sureforms' ) }
@@ -99,6 +134,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						<select
 							style={ { width: 'fit-content' } }
 							required={ required }
+							value={ defaultCountryCode }
 							id={ 'phone-field-' + blockID }
 							placeholder="US +1"
 							onChange={ ( e ) => handleChange( e ) }
@@ -123,10 +159,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						placeholder={ placeholder }
 						pattern="[0-9]{10}"
 						id={ 'phone-field-' + blockID }
-						value={ phoneNumber }
-						onChange={ ( e ) => {
-							setPhoneNumber( e.target.value );
-						} }
+						value={ defaultValue }
 					/>
 				</div>
 			</div>

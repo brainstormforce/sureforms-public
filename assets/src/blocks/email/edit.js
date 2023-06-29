@@ -6,7 +6,7 @@ import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 
 export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id } = attributes;
+	const { label, placeholder, help, required, id, defaultValue } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
 	useEffect( () => {
@@ -41,6 +41,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				<input
 					id={ 'email-input-' + blockID }
 					type="email"
+					value={ defaultValue }
 					className={ className }
 					placeholder={ placeholder }
 					required={ required }
