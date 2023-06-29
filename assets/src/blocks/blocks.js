@@ -15,6 +15,7 @@ import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
 import * as password from '@Blocks/password';
+import * as numberSlider from '@Blocks/number-slider';
 
 import { registerBlocks } from './register-block';
 
@@ -36,4 +37,5 @@ registerBlocks( [
 	select,
 	address,
 	password,
+	numberSlider,
 ] );

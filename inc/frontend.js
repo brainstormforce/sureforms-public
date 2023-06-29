@@ -354,6 +354,27 @@ if ( phoneElement ) {
 	}
 }
 
+//input range field
+
+const sliderElement = document.getElementsByClassName(
+	'sureforms-number-slider-input'
+);
+
+if ( sliderElement ) {
+	for ( let i = 0; i < sliderElement.length; i++ ) {
+		const blockID = sliderElement[ i ].id.split( '-' )[ 3 ];
+		const sliderInput = document.getElementById(
+			`sureforms-number-slider-${ blockID }`
+		);
+		sliderInput.addEventListener( 'input', ( e ) => {
+			const slideValue = e.target.value;
+			document.getElementById(
+				`sureforms-number-slider-value-${ blockID }`
+			).innerText = slideValue;
+		} );
+	}
+}
+
 const inputContainers = document.querySelectorAll( '.main-container' );
 
 inputContainers.forEach( ( container ) => {

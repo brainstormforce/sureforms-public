@@ -343,7 +343,9 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 								htmlFor={
 									'multi-choice-' + blockID + '-i-' + i
 								}
-								className={ 'sureforms-multi-choice-label-button' }
+								className={
+									'sureforms-multi-choice-label-button'
+								}
 								style={
 									style === 'buttons'
 										? {
