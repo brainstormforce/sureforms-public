@@ -121,5 +121,7 @@ class Admin {
 			wp_enqueue_style( 'sureforms-setting-styles', SUREFORMS_URL . 'assets/build/settings.css', [ 'wp-components' ], SUREFORMS_VER, 'all' );
 		}
 		wp_enqueue_style( 'sureforms-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'sureforms-form-archive-styles', SUREFORMS_URL . 'assets/build/form_archive_styles.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'inc/form-archive-script.js', [], SUREFORMS_VER, true );
 	}
 }

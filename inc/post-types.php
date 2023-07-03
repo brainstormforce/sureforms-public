@@ -275,11 +275,12 @@ class Post_Types {
 	 */
 	public function custom_sureforms_form_columns( $columns ) {
 		$columns = array(
-			'cb'        => $columns['cb'],
-			'title'     => $columns['title'],
-			'sureforms' => __( 'Shortcode', 'sureforms' ),
-			'author'    => $columns['author'],
-			'date'      => $columns['date'],
+			'cb'          => $columns['cb'],
+			'title'       => $columns['title'],
+			'form-status' => __( 'Form Status', 'sureforms' ),
+			'sureforms'   => __( 'Shortcode', 'sureforms' ),
+			'author'      => $columns['author'],
+			'date'        => $columns['date'],
 		);
 		return $columns;
 	}
@@ -302,5 +303,17 @@ class Post_Types {
 			<?php
 			ob_end_flush();
 		}
+
+		if ( 'form-status' === $column ) {
+			ob_start();
+			?>
+			<label class="switch">
+				<input type="checkbox" data-postid="<?php echo esc_attr( strval( $post_id ) ); ?>" <?php echo '' === get_post_meta( intval( $post_id ), 'sureforms_form_visibility', true ) ? '' : 'checked'; ?> onchange="toggleStatus(<?php echo esc_attr( strval( $post_id ) ); ?>)">
+				<span class="slider round"></span>
+			</label>
+			<?php
+			ob_end_flush();
+		}
+
 	}
 }

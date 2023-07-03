@@ -10,6 +10,7 @@ namespace SureForms;
 
 use SureForms\Inc\Post_Types;
 use SureForms\Inc\Sureforms_Submit;
+use SureForms\Inc\Update_Form_Status;
 use SureForms\Inc\Gutenberg_Hooks;
 use SureForms\API\Block_Patterns;
 use SureForms\Admin\Admin;
@@ -89,6 +90,7 @@ class Plugin_Loader {
 		add_action( 'init', [ $this, 'load_classes' ] );
 		Post_Types::get_instance();
 		Sureforms_Submit::get_instance();
+		Update_Form_Status::get_instance();
 		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Register::get_instance();

@@ -23,9 +23,9 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
-		$id = '';
-		if ( ! empty( $attributes ) && ! empty( $content ) ) {
-			$id                   = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+		$id     = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+		$status = intval( get_post_meta( intval( $id ), 'sureforms_form_visibility', true ) );
+		if ( ! empty( $attributes ) && ! empty( $content ) && 1 === $status ) {
 			$color_primary        = get_post_meta( intval( $id ), '_sureforms_color1', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_color1', true ) ) : '';
 			$color_secondary      = get_post_meta( intval( $id ), '_sureforms_color2', true ) ? strval( get_post_meta( intval( $id ), '_sureforms_color2', true ) ) : '';
 			$background_image_url = get_post_meta( intval( $id ), '_sureforms_bg', true ) ? rawurldecode( strval( get_post_meta( intval( $id ), '_sureforms_bg', true ) ) ) : '';

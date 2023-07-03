@@ -15,6 +15,10 @@ module.exports = {
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
 		admin: path.resolve( __dirname, 'assets/src/admin/admin.scss' ),
+		form_archive_styles: path.resolve(
+			__dirname,
+			'inc/form-archive-styles.scss'
+		),
 		block_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/block-styles.scss'
