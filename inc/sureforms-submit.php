@@ -25,6 +25,7 @@ class Sureforms_Submit {
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+		add_action( 'wp_ajax_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 	}
 
 	/**
@@ -61,6 +62,7 @@ class Sureforms_Submit {
 				'permission_callback' => '__return_true',
 			)
 		);
+
 	}
 
 	/**
@@ -247,6 +249,7 @@ class Sureforms_Submit {
 		$post_id = wp_insert_post( $new_post );
 
 		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
+		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response = array(
@@ -291,5 +294,54 @@ class Sureforms_Submit {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Retrieve all entries data for a specific form ID to check for unique values.
+	 *
+	 * @since X.X.X
+	 * @return void
+	 */
+	public function field_unique_validation() {
+		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'unique_validation_nonce' ) ) {
+			$error_message = 'Nonce verification failed.';
+
+			$error_data = array(
+				'error' => $error_message,
+			);
+			wp_send_json_error( $error_data );
+		}
+		global $wpdb;
+		$id         = isset( $_POST['id'] ) ? $_POST['id'] : '';
+		$meta_value = $id;
+
+		if ( ! $meta_value ) {
+			$error_message = 'Invalid form ID.';
+			$error_data    = array(
+				'error' => $error_message,
+			);
+			wp_send_json_error( $error_data );
+		}
+
+		$post_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT post_id
+			FROM {$wpdb->postmeta}
+			WHERE meta_value = %s",
+				$meta_value
+			)
+		);
+
+		$all_form_entries = array();
+		foreach ( $post_ids as $post_id ) {
+			$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
+			array_push( $all_form_entries, $meta_values );
+		}
+
+		$results = array(
+			'data' => $all_form_entries,
+		);
+
+		wp_send_json( $results );
 	}
 }

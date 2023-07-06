@@ -88,6 +88,8 @@ class Block extends Base {
 							'successSubmitType' => $success_submit_type,
 							'successUrl'        => $success_url,
 							'formID'            => $id,
+							'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+							'nonce'             => wp_create_nonce( 'unique_validation_nonce' ),
 						)
 					);
 			}

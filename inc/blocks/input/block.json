@@ -19,7 +19,16 @@
 			"type": "string"
 		},
 		"required": {
-			"type": "boolean"
+			"type": "boolean",
+			"default": false
+		},
+		"isUnique": {
+			"type": "boolean",
+			"default": false
+		},
+		"duplicateMsg": {
+			"type": "string",
+			"default": "Value need to be unique."
 		},
 		"placeholder": {
 			"type": "string",
@@ -31,6 +40,14 @@
 		},
 		"help": {
 			"type": "string"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "this field is required."
+		},
+		"textLength": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

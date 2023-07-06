@@ -12,7 +12,8 @@ import {
 import { useEffect } from '@wordpress/element';
 
 export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id, defaultValue } = attributes;
+	const { label, placeholder, help, required, id, defaultValue, errorMsg, textLength, isUnique, duplicateMsg } =
+		attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -34,6 +35,37 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 							}
 						/>
 					</PanelRow>
+					{ required && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Error message', 'sureforms' ) }
+								value={ errorMsg }
+								onChange={ ( value ) =>
+									setAttributes( { errorMsg: value } )
+								}
+							/>
+						</PanelRow>
+					) }
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Validate as unique', 'sureforms' ) }
+							checked={ isUnique }
+							onChange={ ( checked ) =>
+								setAttributes( { isUnique: checked } )
+							}
+						/>
+					</PanelRow>
+					{ isUnique && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Validation Message for Duplicate ', 'sureforms' ) }
+								value={ duplicateMsg }
+								onChange={ ( value ) =>
+									setAttributes( { duplicateMsg: value } )
+								}
+							/>
+						</PanelRow>
+					) }
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label', 'sureforms' ) }
@@ -67,6 +99,16 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 							value={ help }
 							onChange={ ( value ) =>
 								setAttributes( { help: value } )
+							}
+						/>
+					</PanelRow>
+					<PanelRow>
+						<TextControl
+							as="number"
+							label={ __( 'Max text length', 'sureforms' ) }
+							value={ textLength }
+							onChange={ ( value ) =>
+								setAttributes( { textLength: Number( value ) } )
 							}
 						/>
 					</PanelRow>

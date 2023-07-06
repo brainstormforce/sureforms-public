@@ -25,6 +25,12 @@ form.sureforms-form .text-secondary {
 	color: var( --secondary-color );
 }
 
+form.sureforms-form .error-message {
+	color: #eb0707e0;
+	font-size: 12px;
+	line-height: 0.5;
+}
+
 form.sureforms-form span a:hover {
 	cursor: pointer;
 }
