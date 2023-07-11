@@ -40,6 +40,9 @@ class Block extends Base {
 			$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 			$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
+			$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 			ob_start();
 			?>
 			<div class="sureforms-input-phone-container main-container" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>" style="display:flex; flex-direction:column; gap:0.5rem;">
@@ -47,7 +50,7 @@ class Block extends Base {
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div style="display:flex; gap:.5rem">
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( "($default_country) $default" ); ?>" />
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ); ?>" />
 					<select id="sureforms-country-code-<?php echo esc_attr( $id ); ?>" style="width:fit-content; padding: 5px; min-height: 35px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 2px solid #8c8f94; background-color: #fff; color: #2c3338;" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
 					<?php if ( $default_country ) : ?>
 					<option value="<?php echo esc_attr( $default_country ); ?>"><?php echo esc_attr( $default_country ); ?></option>
@@ -64,10 +67,12 @@ class Block extends Base {
 						}
 						?>
 					</select>
-					<input type="tel" <?php echo esc_attr( $required ? 'required' : '' ); ?> value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"
+					<input type="tel" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"
 						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
 						style="padding: 5px; line-height: 2; min-height: 30px; box-shadow: 0 0 0 transparent; border-radius: 4px; border: 2px solid #8c8f94; background-color: #fff; color: #2c3338;">
 				</div>
+				<span style="display:none" class="error-message"><?php echo esc_attr( $error_msg ); ?></span>
+				<span style="display:none" class="error-message duplicate-message"><?php echo esc_attr( $dulicate_msg ); ?></span>
 			<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
 		</div>
 			<?php

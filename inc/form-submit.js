@@ -42,7 +42,7 @@ function fieldValidation() {
 		const inputField = container.querySelector( 'input, textarea' );
 		const isRequired = inputField.getAttribute( 'area-required' );
 		const isUnique = inputField.getAttribute( 'area-unique' );
-		const fieldName = inputField.getAttribute( 'name' );
+		const fieldName = inputField.getAttribute( 'name' ).replace( /_/g, ' ' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.error-message' );
 		const duplicateMessage = container.querySelector( '.duplicate-message' );
@@ -69,6 +69,21 @@ function fieldValidation() {
 				  }
 			} else {
 				duplicateMessage.style.display = 'none';
+			}
+		}
+
+		//phone field
+		if ( container.classList.contains( 'sureforms-input-phone-container' ) ) {
+			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
+			const isPhoneRequired = phoneInput.getAttribute( 'area-required' );
+			if ( isPhoneRequired === 'true' && ! inputValue ) {
+				errorMessage.style.display = 'block';
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = inputField;
+				  }
+			} else {
+				errorMessage.style.display = 'none';
 			}
 		}
 	}

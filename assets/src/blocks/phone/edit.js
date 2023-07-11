@@ -15,7 +15,7 @@ import {
 import data from './phoneCodes.json';
 
 export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const { required, label, help, placeholder, id, defaultValue, defaultCountryCode } = attributes;
+	const { required, label, help, placeholder, id, defaultValue, defaultCountryCode, isUnique, duplicateMsg, errorMsg } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
@@ -43,6 +43,37 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							}
 						/>
 					</PanelRow>
+					{ required && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Error message', 'sureforms' ) }
+								value={ errorMsg }
+								onChange={ ( value ) =>
+									setAttributes( { errorMsg: value } )
+								}
+							/>
+						</PanelRow>
+					) }
+					<PanelRow>
+						<ToggleControl
+							label={ __( 'Validate as unique', 'sureforms' ) }
+							checked={ isUnique }
+							onChange={ ( checked ) =>
+								setAttributes( { isUnique: checked } )
+							}
+						/>
+					</PanelRow>
+					{ isUnique && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Validation Message for Duplicate ', 'sureforms' ) }
+								value={ duplicateMsg }
+								onChange={ ( value ) =>
+									setAttributes( { duplicateMsg: value } )
+								}
+							/>
+						</PanelRow>
+					) }
 					<PanelRow>
 						<TextControl
 							label={ __( 'Label', 'sureforms' ) }

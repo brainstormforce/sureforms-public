@@ -36,5 +36,18 @@
 			"type": "string",
 			"default": "Enter some help text here"
 		}
+		,
+		"isUnique": {
+			"type": "boolean",
+			"default": false
+		},
+		"duplicateMsg": {
+			"type": "string",
+			"default": "Value need to be unique."
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "this field is required."
+		}
 	}
 }
