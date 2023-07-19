@@ -298,8 +298,8 @@ class Post_Types {
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
-			<input type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" onClick="this.select();" style="cursor: pointer; width: -webkit-fill-available; border: none; background: transparent; font-family: Consolas,Monaco,monospace;
-			" />
+				<div id="notification" hidden></div>
+				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" onclick="handleFormShortcode(this)"/>
 			<?php
 			ob_end_flush();
 		}
@@ -308,7 +308,7 @@ class Post_Types {
 			ob_start();
 			?>
 			<label class="switch">
-				<input type="checkbox" data-postid="<?php echo esc_attr( strval( $post_id ) ); ?>" <?php echo '' === get_post_meta( intval( $post_id ), 'sureforms_form_visibility', true ) ? '' : 'checked'; ?> onchange="toggleStatus(<?php echo esc_attr( strval( $post_id ) ); ?>)">
+				<input id="sureforms-form-toggle-<?php echo esc_attr( strval( $post_id ) ); ?>" type="checkbox" data-postid="<?php echo esc_attr( strval( $post_id ) ); ?>" <?php echo '' === get_post_meta( intval( $post_id ), 'sureforms_form_visibility', true ) ? '' : 'checked'; ?> onchange="toggleStatus(<?php echo esc_attr( strval( $post_id ) ); ?>)">
 				<span class="slider round"></span>
 			</label>
 			<?php
