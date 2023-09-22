@@ -36,6 +36,13 @@ module.exports = function ( grunt ) {
 				dest: 'sureforms/',
 			},
 		},
+		wp_readme_to_markdown: {
+			your_target: {
+				files: {
+					'README.md': 'readme.txt',
+				},
+			},
+		},
 		compress: {
 			main: {
 				options: {
@@ -59,6 +66,11 @@ module.exports = function ( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks( 'grunt-contrib-compress' );
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	/* Read File Generation task */
+	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
+
+	// Generate Read me file
+	grunt.registerTask( 'readme', [ 'wp_readme_to_markdown' ] );
 
 	/* Register task started */
 	grunt.registerTask( 'release', [
