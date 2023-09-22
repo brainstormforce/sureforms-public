@@ -34,7 +34,19 @@
 		},
 		"maxLength": {
 			"type": "number",
+			"default": 1000
+		},
+		"rows": {
+			"type": "number",
 			"default": 5
+		},
+		"cols": {
+			"type": "number",
+			"default": 3
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
 		}
 	}
 }

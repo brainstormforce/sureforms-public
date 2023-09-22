@@ -3,7 +3,7 @@
  * Contact Form pattern.
  *
  * @link       https://sureforms.com
- * @since      X.X.X
+ * @since      0.0.1
  * @package    SureForms/Templates/Forms
  * @author     Sureforms <https://sureforms.com/>
  */
@@ -12,23 +12,12 @@ return [
 	'title'      => __( 'Contact Form', 'sureforms' ),
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '<!-- wp:columns -->
-    <div class="wp-block-columns"><!-- wp:column {"layout":{"type":"default"}} -->
-    <div class="wp-block-column"><!-- wp:heading {"textAlign":"left"} -->
-    <h2 class="wp-block-heading has-text-align-left">Contact Form</h2>
-    <!-- /wp:heading -->
+	'content'    => '
+    <!-- wp:sureforms/input {"id":"block1e339f805adb42acadb2ab77ddd7c5b3","required":true,"label":"Full Name"} /-->
     
-    <!-- wp:sureforms/input {"required":true,"label":"Full Name"} /-->
+    <!-- wp:sureforms/email {"id":"blockdbc94679f6ea4491a174ed78666f3ddc","required":true} /-->
     
-    <!-- wp:sureforms/input {"required":true,"label":"Email"} /-->
+    <!-- wp:sureforms/phone {"id":"block36db0d7999b44bd788aaed4cab09cf80","placeholder":"","help":""} /-->
     
-    <!-- wp:sureforms/phone {"placeholder":"","help":""} /-->
-    
-    <!-- wp:sureforms/textarea {"label":"Message:"} /--></div>
-    <!-- /wp:column --></div>
-    <!-- /wp:columns -->
-    
-    <!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/submit /--></div>
-    <!-- /wp:column -->',
+    <!-- wp:sureforms/textarea {"id":"block0c2968c28c1e4e08bed54209feb757b4","label":"Message:"} /-->',
 ];

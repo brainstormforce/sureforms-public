@@ -26,9 +26,9 @@ const Navigation = () => {
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }
-					className={ `no-underline group p-2 cursor-pointer rounded-md transition-colors duration-300 ease-in-out hover:bg-wpprimary focus:bg-wpprimary focus:text-[#FBFBFC] focus:ring-0 ${
+					className={ `no-underline group p-2 cursor-pointer rounded-md transition-colors duration-300 ease-in-out hover:bg-wpcolor focus:bg-wpcolor focus:text-[#FBFBFC] focus:ring-0 ${
 						activatedTab.get( 'tab' ) === item.slug
-							? 'bg-wpprimary text-[#FBFBFC]'
+							? 'bg-wpcolor text-[#FBFBFC]'
 							: 'text-[#111827]'
 					}` }
 				>

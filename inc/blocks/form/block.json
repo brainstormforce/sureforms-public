@@ -1,9 +1,9 @@
 {
 	"name": "sureforms/form",
 	"title": "Form",
-	"description": "Displays a form.",
+	"description": "Streamline interactions with a Gutenberg Form Block on your WordPress site.",
 	"category": "sureforms",
-	"keywords": [ "email", "mail" ],
+	"keywords": [ "form", "sureform" ],
 	"parent": [ "sureforms/sf-form" ],
 	"textdomain": "sureforms",
 	"supports": {
@@ -15,9 +15,12 @@
 			"type": "integer",
 			"default": ""
 		},
-		"successMessage": {
+		"block_count": {
+			"type": "integer"
+		},
+		"submitButtonText": {
 			"type": "string",
-			"default": "Form Submitted Successfully"
+			"default": "Submit"
 		}
 	}
 }

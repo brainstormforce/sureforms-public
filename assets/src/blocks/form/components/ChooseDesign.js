@@ -29,7 +29,6 @@ export default ( { templates, template, setTemplate } ) => {
 				</Button>
 			}
 			maxHeight={ '300px' }
-			minHeight={ '32rem' }
 		>
 			<div
 				css={ css`

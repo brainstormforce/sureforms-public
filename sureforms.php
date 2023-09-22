@@ -2,8 +2,8 @@
 /**
  * Plugin Name: SureForms
  * Description: A simple yet powerful way to create modern forms for your website.
- * Author: SureCart
- * Author URI: https://surecart.com
+ * Author: SureForms
+ * Author URI: https://sureforms.com
  * Version: 0.0.1
  * License: GPL v2
  * Text Domain: sureforms

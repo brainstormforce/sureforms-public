@@ -8,6 +8,7 @@
 namespace SureForms\Inc\Blocks\Toggle;
 
 use SureForms\Inc\Blocks\Base;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Address Block.
@@ -22,28 +23,35 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
+		$sureforms_helper_instance = new Sureforms_Helper();
+
 		if ( ! empty( $attributes ) ) {
-			$id       = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-			$required = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help     = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
-			$checked  = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
+			$id        = isset( $attributes['id'] ) ? $sureforms_helper_instance->get_string_value( $attributes['id'] ) : '';
+			$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
+			$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
+			$help      = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
+			$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
+			$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-		<div class="sureforms-switch-container main-container" style="display:flex; flex-direction:column; gap:0.5rem; ">
-		<label for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
+<div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
+	<label style="width:max-content" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
 		<div style="display:flex; align-items:center; gap:0.5rem;" class="text-primary">
-				<div class="switch-background" style="display: inline-block; position: relative; width: 50px; height: 25px; border-radius: 25px; background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>; transition: background-color 0.2s; cursor: pointer;">
-					<input class="sureforms-switch" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
-					<?php echo esc_attr( $checked ? 'checked' : '' ); ?>
-					type="checkbox" <?php echo esc_attr( $required ? 'required' : '' ); ?> style="position: absolute; opacity: 0; width: 0; height: 0;">
-					<div class="switch-toggle" style="display: inline-block; position: absolute; width: 21px; height: 21px; border-radius: 50%; background-color: #fff; top: 2px; left: <?php echo $checked ? '27px' : '2px'; ?>; transition: left 0.2s;">
-					</div>
-				</div>
-				</label>
-				<span style="color: var(--primary-color)"><?php echo esc_html( $label ); ?></span><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
+			<div class="switch-background" style="background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>;">
+				<input class="sureforms-switch"
+					name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
+					id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
+					<?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox"
+					area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
+				<div class="switch-toggle" style="left: <?php echo $checked ? '27px' : '2px'; ?>;"></div>
 			</div>
-			<?php echo '' !== $help ? '<label class="text-secondary">' . esc_html( $help ) . '</label>' : ''; ?>
+			<span style="color: var(--primary-color)"><?php echo esc_html( $label ); ?></span>
+			<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 		</div>
+	</label>
+			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+	<span style="margin-top:5px;display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
+</div>
 			<?php
 		}
 			return ob_get_clean();

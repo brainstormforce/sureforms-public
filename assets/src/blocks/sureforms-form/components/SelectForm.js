@@ -57,6 +57,8 @@ export default ( { setForm } ) => {
 				);
 				setForm( formData );
 			} }
+			className="sureforms-select-form"
+			classNamePrefix="sureforms-select"
 		/>
 	);
 };

@@ -12,6 +12,9 @@
 		"multiple": false
 	},
 	"attributes": {
+		"id": {
+			"type": "number"
+		},
 		"text": {
 			"type": "string",
 			"default": "Submit"
@@ -21,7 +24,8 @@
 			"default": false
 		},
 		"buttonAlignment": {
-			"type": "string"
+			"type": "string",
+			"default": "left"
 		}
 	}
 }

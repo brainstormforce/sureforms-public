@@ -16,7 +16,12 @@
     "test": "vendor/bin/phpunit",
     "phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
     "gen-stubs": "vendor/bin/generate-stubs artifact/sureforms/ --out=tests/php/stubs/sf-stubs.php",
-    "update-stubs": "rm -f tests/php/stubs/sf-stubs.php && bash ./bin/build-zip.sh no-clean && composer gen-stubs"
+    "update-stubs": "rm -f tests/php/stubs/sf-stubs.php && bash ./bin/build-zip.sh no-clean && composer gen-stubs",
+    "commit:hook:pre": [
+      "cp .scripts/git-hooks/pre-commit .git/hooks/",
+      "chmod +x .git/hooks/pre-commit",
+      "echo 'pre-commit hook copied'"
+    ]
   },
   "config": {
     "allow-plugins": {

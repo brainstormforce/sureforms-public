@@ -8,6 +8,7 @@
 namespace SureForms\Inc\Blocks\Upload;
 
 use SureForms\Inc\Blocks\Base;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Address Block.
@@ -22,8 +23,10 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
+		$sureforms_helper_instance = new Sureforms_Helper();
+
 		if ( ! empty( $attributes ) ) {
-			$id               = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+			$id               = isset( $attributes['id'] ) ? $sureforms_helper_instance->get_string_value( $attributes['id'] ) : '';
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 			$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
@@ -38,19 +41,21 @@ class Block extends Base {
 			$accepted_formats = str_replace( '...', '', $allowed_formats );
 			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-			<div id="sureforms-upload-container" class="main-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
-				<label class="text-primary"><?php echo esc_attr( $label ); ?> 
+			<div id="sureforms-upload-container" class="sureforms-upload-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
+				<label class="text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" id="sureforms-upload-index-<?php echo esc_attr( $id ); ?>" value="" type="hidden" />
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" <?php echo esc_attr( $required ? 'required' : '' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
 				accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>"
 				/>
 				<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
-				<div class="sureforms-upload-inner-div" style="border: 2px solid black;">
+				<div class="sureforms-upload-inner-div" style="border: 1px solid #d1d5db; border-radius:4px;">
 					<label id="sureforms-upload-label" for="sureforms-upload-<?php echo esc_attr( $id ); ?>">
-						<div id="sureforms-upload-title-<?php echo esc_attr( $id ); ?>" style="display: flex; align-items: center; margin-left: 12px; margin-top: 12px; font-size: 25px; gap: 10px;">
+						<div id="sureforms-upload-title-<?php echo esc_attr( $id ); ?>" class="sureforms-upload-title">
 							<i class="fa-solid fa-cloud-arrow-up text-primary"></i>
 							<span class="text-primary">Click to choose the file</span>
 						</div>
@@ -66,8 +71,9 @@ class Block extends Base {
 						</div>
 					</label>
 				</div>
+				<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
-				<?php echo '' !== $help ? '<label class="text-secondary">' . esc_attr( $help ) . '</label>' : ''; ?>
+				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div>
 			<?php
 		}

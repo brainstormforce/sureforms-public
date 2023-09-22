@@ -36,14 +36,14 @@
 		},
 		"label": {
 			"type": "string",
-			"default": "Input"
+			"default": "Text Field"
 		},
 		"help": {
 			"type": "string"
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "this field is required."
+			"default": "This field is required."
 		},
 		"textLength": {
 			"type": "number",

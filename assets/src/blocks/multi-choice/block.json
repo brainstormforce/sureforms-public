@@ -36,7 +36,11 @@
 		},
 		"style": {
 			"type": "string",
-			"default": "default"
+			"default": "buttons"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
 		}
 	}
 }

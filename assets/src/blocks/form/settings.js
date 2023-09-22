@@ -48,7 +48,7 @@ export default ( { attributes, setAttributes } ) => {
 				</PanelRow>
 				<PanelRow>
 					<UnitControl
-						label={ __( 'Row Gap' ) }
+						label={ __( 'Row Gap', 'sureforms' ) }
 						onChange={ ( value ) =>
 							setAttributes( { gap: value } )
 						}

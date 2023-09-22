@@ -8,6 +8,7 @@
 namespace SureForms\Inc\Blocks\Address;
 
 use SureForms\Inc\Blocks\Base;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Address Block.
@@ -22,6 +23,8 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
+		$sureforms_helper_instance = new Sureforms_Helper();
+
 		$upload_dir = wp_upload_dir();
 		$file_path  = plugin_dir_url( __FILE__ ) . '/country.json';
 		$response   = wp_remote_get( $file_path );
@@ -34,173 +37,141 @@ class Block extends Base {
 		}
 
 		if ( ! empty( $attributes ) ) {
-			$id       = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-			$required = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$options  = isset( $attributes['options'] ) ? $attributes['options'] : '';
-			$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help     = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$id                   = isset( $attributes['id'] ) ? $sureforms_helper_instance->get_string_value( $attributes['id'] ) : '';
+			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
+			$options              = isset( $attributes['options'] ) ? $attributes['options'] : '';
+			$label                = isset( $attributes['label'] ) ? $attributes['label'] : '';
+			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$error_msg            = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$line_one_placeholder = isset( $attributes['lineOnePlaceholder'] ) ? $attributes['lineOnePlaceholder'] : '';
+			$line_two_placeholder = isset( $attributes['lineTwoPlaceholder'] ) ? $attributes['lineTwoPlaceholder'] : '';
+			$city_placeholder     = isset( $attributes['cityPlaceholder'] ) ? $attributes['cityPlaceholder'] : '';
+			$state_placeholder    = isset( $attributes['statePlaceholder'] ) ? $attributes['statePlaceholder'] : '';
+			$postal_placeholder   = isset( $attributes['postalPlaceholder'] ) ? $attributes['postalPlaceholder'] : '';
+			$line_one_label       = isset( $attributes['lineOneLabel'] ) ? $attributes['lineOneLabel'] : '';
+			$line_two_label       = isset( $attributes['lineTwoLabel'] ) ? $attributes['lineTwoLabel'] : '';
+			$city_label           = isset( $attributes['cityLabel'] ) ? $attributes['cityLabel'] : '';
+			$state_label          = isset( $attributes['stateLabel'] ) ? $attributes['stateLabel'] : '';
+			$postal_label         = isset( $attributes['postalLabel'] ) ? $attributes['postalLabel'] : '';
+			$country_label        = isset( $attributes['countryLabel'] ) ? $attributes['countryLabel'] : '';
+			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
+			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-			<div class="sureforms-address-container main-container" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>" style="display: flex; flex-direction: column; gap: .5rem;">
-				<label class="text-primary"><?php echo esc_attr( $label ); ?> 
+			<div class="sureforms-address-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>">
+				<label class="text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div
 					class="sureforms-sureforms-address"
-					style="display: flex; flex-direction: column; gap: .5px;"
 				>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullAddress-<?php echo esc_attr( $id ); ?>" />
+					<label
+						class="text-primary"
+						style="font-size: 14px;"
+					>
+					<?php echo esc_html( $line_one_label ); ?> 
+					</label>
 					<input
-						style="padding: 5px; 
-						line-height: 2; 
-						min-height: 30px;
-						box-shadow: 0 0 0 transparent;
-						border-radius: 4px;
-						border: 2px solid #8c8f94;
-						background-color: #fff;
-						color: #2c3338;
-						"
+						class="sureforms-input-field"
 						type="text"
 						id="sureforms-address-line-1-<?php echo esc_attr( $id ); ?>"
-						<?php echo esc_attr( $required ? 'required' : '' ); ?>
+						area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+						placeholder="<?php echo esc_attr( $line_one_placeholder ); ?>"
 					/>
-					<label
-						class="text-secondary"
-						style="font-size: 14px;"
-					>
-						Address Line 1
-					</label>
 				</div>
 				<div
-					style="display: flex; flex-direction: column; gap: .5px;"
+					class="sureforms-sureforms-address"
 				>
-					<input
-						style="padding: 5px; 
-						line-height: 2; 
-						min-height: 30px;
-						box-shadow: 0 0 0 transparent;
-						border-radius: 4px;
-						border: 2px solid #8c8f94;
-						background-color: #fff;
-						color: #2c3338;
-						"
-						type="text"
-						id="sureforms-address-line-2-<?php echo esc_attr( $id ); ?>"
-					/>
 					<label
-						class="text-secondary"
+						class="text-primary"
 						style="font-size: 14px;"
 					>
-						Address Line 2
+					<?php echo esc_html( $line_two_label ); ?> 
 					</label>
+					<input
+						class="sureforms-input-field"
+						type="text"
+						id="sureforms-address-line-2-<?php echo esc_attr( $id ); ?>"
+						placeholder="<?php echo esc_attr( $line_two_placeholder ); ?>"
+					/>
 				</div>
-				<div style="display: flex; gap: 1rem;">
+				<div class="sureforms-adrs-select-holder">
 					<div
-						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
+						class="sureforms-sureforms-address"
 					>
+						<label
+							class="text-primary"
+						>
+						<?php echo esc_html( $city_label ); ?> 
+						</label>
 						<input
-							style="padding: 5px; 
-								width:96%;
-								line-height: 2; 
-								min-height: 30px;
-								box-shadow: 0 0 0 transparent;
-								border-radius: 4px;
-								border: 2px solid #8c8f94;
-								background-color: #fff;
-								color: #2c3338;
-							"
+							class="sureforms-input-field"
 							type="text"
 							id="sureforms-address-city-<?php echo esc_attr( $id ); ?>"
-							<?php echo esc_attr( $required ? 'required' : '' ); ?>
+							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							placeholder="<?php echo esc_attr( $city_placeholder ); ?>"
 						/>
-						<label
-							class="text-secondary"
-							style="font-size: 14px;"
-						>
-							City
-						</label>
 					</div>
-					<div style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
+					<div class="sureforms-sureforms-address"
 					>
+						<label
+							class="text-primary"
+						>
+						<?php echo esc_html( $state_label ); ?> 
+						</label>
 						<input
 							type="text"
-							style="padding: 5px; 
-							line-height: 2;
-							width:96%; 
-							min-height: 30px;
-							box-shadow: 0 0 0 transparent;
-							border-radius: 4px;
-							border: 2px solid #8c8f94;
-							background-color: #fff;
-							color: #2c3338;
-							"
+							class="sureforms-input-field"
 							id="sureforms-address-state-<?php echo esc_attr( $id ); ?>"
-							<?php echo esc_attr( $required ? 'required' : '' ); ?>
+							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							placeholder="<?php echo esc_attr( $state_placeholder ); ?>"
 						/>
-						<label
-							class="text-secondary"
-							style="font-size: 14px;"
-						>
-							State / Province / Region
-						</label>
 					</div>
 				</div>
-				<div style="display: flex; gap: 1rem;">
+				<div class="sureforms-adrs-select-holder">
 					<div
-						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
+						class="sureforms-sureforms-address"
 					>
-						<input
-							style="padding: 5px; 
-							width:96%; 
-							line-height: 2; 
-							min-height: 30px;
-							box-shadow: 0 0 0 transparent;
-							border-radius: 4px;
-							border: 2px solid #8c8f94;
-							background-color: #fff;
-							color: #2c3338;
-							"
-							type="text"
-							id="sureforms-address-postal-<?php echo esc_attr( $id ); ?>"
-							<?php echo esc_attr( $required ? 'required' : '' ); ?>
-						/>
 						<label
-							class="text-secondary"
+							class="text-primary"
 							style="font-size: 14px;"
 						>
-							Postal Code
+						<?php echo esc_html( $postal_label ); ?> 
 						</label>
+						<input
+							class="sureforms-input-field"
+							type="text"
+							id="sureforms-address-postal-<?php echo esc_attr( $id ); ?>"
+							area-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
+							placeholder="<?php echo esc_attr( $postal_placeholder ); ?>"
+						/>
 					</div>
 					<div
-						style="display: flex; flex-direction: column; gap: .5px; width: 100%;"
+						class="sureforms-sureforms-address"
 					>
+						<label
+							class="text-primary"		
+							style="font-size: 14px;"
+						>
+						<?php echo esc_html( $country_label ); ?>
+						</label>
 						<select 			
-							style="padding: 5px;
-								width:96%;  
-								line-height: 2; 
-								min-height: 43px;
-								box-shadow: 0 0 0 transparent;
-								border-radius: 4px;
-								border: 2px solid #8c8f94;
-								background-color: #fff;
-								color: #2c3338;
-							"
+							class="sureforms-input-field"
 							id="sureforms-address-country-<?php echo esc_attr( $id ); ?>">
+							<?php if ( ! empty( $country_placeholder ) ) : ?>
+								<option value="" selected disabled hidden><?php echo esc_html( $country_placeholder ); ?></option>
+							<?php endif; ?>
 							<?php foreach ( $data as $country ) { ?>
 								<?php if ( is_array( $country ) && isset( $country['name'] ) ) { ?>
-									<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>">
-										<?php echo esc_html( strval( $country['name'] ) ); ?>
+									<option value="<?php echo esc_attr( $sureforms_helper_instance->get_string_value( $country['name'] ) ); ?>">
+										<?php echo esc_html( $sureforms_helper_instance->get_string_value( $country['name'] ) ); ?>
 									</option>
 								<?php } ?>
 							<?php } ?>
 						</select>
-						<label
-							class="text-secondary"		
-							style="font-size: 14px;"
-						>
-							Country
-						</label>
-							</div>
 						</div>
+					</div>
+					<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 				</div>
 			<?php
 		}

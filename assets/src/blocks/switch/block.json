@@ -27,6 +27,10 @@
 		},
 		"checked": {
 			"type": "boolean"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
 		}
 	}
 }

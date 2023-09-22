@@ -12,12 +12,16 @@
 		"multiple": false
 	},
 	"attributes": {
+		"id": {
+			"type": "number"
+		},
 		"text": {
 			"type": "string",
 			"default": "Submit"
 		},
 		"full": {
-			"type": "boolean"
+			"type": "boolean",
+			"default": false
 		},
 		"buttonAlignment": {
 			"type": "string"

@@ -32,7 +32,12 @@
 			"default": false
 		},
 		"checkboxHelpText": {
-			"type": "string"
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
 		}
 	}
 }

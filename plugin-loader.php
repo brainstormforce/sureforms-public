@@ -3,24 +3,27 @@
  * Plugin Loader.
  *
  * @package sureforms
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms;
 
 use SureForms\Inc\Post_Types;
 use SureForms\Inc\Sureforms_Submit;
-use SureForms\Inc\Update_Form_Status;
 use SureForms\Inc\Gutenberg_Hooks;
 use SureForms\API\Block_Patterns;
 use SureForms\Admin\Admin;
 use SureForms\Inc\Blocks\Register;
 use SureForms\Inc\SF_Public;
+use SureForms\Inc\Sureforms_Helper;
+use SureForms\Inc\Load_Form_Defaults;
+use SureForms\Inc\Activator;
+use SureForms\Inc\SF_Admin_Ajax;
 
 /**
  * Plugin_Loader
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Plugin_Loader {
 
@@ -29,14 +32,14 @@ class Plugin_Loader {
 	 *
 	 * @access private
 	 * @var object Class Instance.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	private static $instance = null;
 
 	/**
 	 * Initiator
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return object initialized object of class.
 	 */
 	public static function get_instance() {
@@ -80,7 +83,7 @@ class Plugin_Loader {
 	/**
 	 * Constructor
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function __construct() {
 
@@ -88,20 +91,70 @@ class Plugin_Loader {
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'init', [ $this, 'load_classes' ] );
+		add_action( 'admin_init', [ $this, 'sureforms_activation_redirect' ] );
 		Post_Types::get_instance();
 		Sureforms_Submit::get_instance();
-		Update_Form_Status::get_instance();
 		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Register::get_instance();
 		SF_Public::get_instance();
+		Sureforms_Helper::get_instance();
+		Load_Form_Defaults::get_instance();
+		Activator::get_instance();
+		SF_Admin_Ajax::get_instance();
+
+		/**
+		 * The code that runs during plugin activation
+		 */
+		register_activation_hook(
+			SUREFORMS_FILE,
+			function () {
+				Activator::activate();
+			}
+		);
+
+		register_deactivation_hook(
+			SUREFORMS_FILE,
+			function () {
+				update_option( '__sureforms_do_redirect', false );
+			}
+		);
+	}
+
+	/**
+	 * Activation Reset
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function sureforms_activation_redirect() {
+
+		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__sureforms_do_redirect' ) );
+
+		if ( $do_redirect ) {
+
+			update_option( '__sureforms_do_redirect', false );
+
+			if ( ! is_multisite() ) {
+				wp_safe_redirect(
+					add_query_arg(
+						array(
+							'page' => 'sureforms_menu',
+							'sureforms-activation-redirect' => true,
+						),
+						admin_url( 'admin.php' )
+					)
+				);
+				exit();
+			}
+		}
 	}
 
 	/**
 	 * Load Classes.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function load_classes() {
 		if ( is_admin() ) {
@@ -115,7 +168,7 @@ class Plugin_Loader {
 	 *      1. Global Languages /wp-content/languages/sureforms/ folder
 	 *      2. Local directory /wp-content/plugins/sureforms/languages/ folder
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function load_textdomain() {

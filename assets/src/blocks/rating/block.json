@@ -20,8 +20,7 @@
 		},
 		"label": {
 			"type": "string",
-			"default": "Field Name",
-			"selector": "input"
+			"default": "Rate Us"
 		},
 		"ratingBoxHelpText": {
 			"type": "string",
@@ -29,26 +28,26 @@
 		},
 		"width": {
 			"type": "string",
-			"default": "halfWidth",
-			"selector": "div"
+			"default": "fullWidth"
 		},
 		"iconColor": {
 			"type": "string",
-			"default": "#000",
-			"selector": "select"
+			"default": "#000"
 		},
 		"showNumbers": {
 			"type": "boolean"
 		},
 		"iconShape": {
 			"type": "string",
-			"default": "star",
-			"selector": "select"
+			"default": "star"
 		},
 		"maxValue": {
+			"type": "number",
+			"default": 5
+		},
+		"errorMsg": {
 			"type": "string",
-			"default": 5,
-			"selector": "input"
+			"default": "This field is required."
 		}
 	}
 }

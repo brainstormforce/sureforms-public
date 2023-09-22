@@ -3,30 +3,24 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	PanelRow,
-	ToggleControl,
-	Button,
-	TextControl,
-	Icon,
-	BaseControl,
-} from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
+import { ToggleControl, Button, Icon } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
+import UAGTextControl from '@Components/text-control';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 
 /**
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-/**
- * Editor stylesheet
- */
-import './editor.scss';
-
 export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const { required, options, label, help, id } = attributes;
+	const { required, options, label, help, id, errorMsg } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const [ newOption, setNewOption ] = useState( '' );
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -52,208 +46,229 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	}, [ blockID, id, setAttributes ] );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<div>
-							<BaseControl
-								id="for-dropdown-label"
+				<InspectorTabs
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
+						>
+							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
-							>
-								<TextControl
-									id="dropdown-label"
-									value={ label }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
+								value={ label }
+								onChange={ ( value ) => {
+									setAttributes( { label: value } );
+								} }
+							/>
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									label={ __( 'Error message', 'sureforms' ) }
+									value={ errorMsg }
 									onChange={ ( value ) =>
-										setAttributes( { label: value } )
+										setAttributes( { errorMsg: value } )
 									}
 								/>
-							</BaseControl>
-						</div>
-					</PanelRow>
-					<PanelRow>
-						<div style={ { marginBottom: '8px' } }>
-							{ options.length > 0 && (
-								<DragDropContext
-									onDragEnd={ ( param ) => {
-										const srcI = param.source.index;
-										const destI = param.destination.index;
-										if ( srcI !== destI ) {
-											const newOptions = [ ...options ];
-											newOptions.splice(
-												destI,
-												0,
+							) }
+							<div style={ { marginBottom: '8px' } }>
+								{ options.length > 0 && (
+									<DragDropContext
+										onDragEnd={ ( param ) => {
+											const srcI = param.source.index;
+											const destI =
+												param.destination.index;
+											if ( srcI !== destI ) {
+												const newOptions = [
+													...options,
+												];
 												newOptions.splice(
-													srcI,
-													1
-												)[ 0 ]
-											);
-											setAttributes( {
-												options: newOptions,
-											} );
-										}
-									} }
-								>
-									<BaseControl
-										id="for-edit-options"
-										label={ __(
-											'Edit Options',
-											'sureforms'
-										) }
+													destI,
+													0,
+													newOptions.splice(
+														srcI,
+														1
+													)[ 0 ]
+												);
+												setAttributes( {
+													options: newOptions,
+												} );
+											}
+										} }
 									>
-										<Droppable droppableId="droppable-1">
-											{ ( provided ) => (
-												<div
-													ref={ provided.innerRef }
-													{ ...provided.droppableProps }
-												>
-													{ options.map(
-														( option, i ) => (
-															<Draggable
-																key={ i }
-																draggableId={
-																	'draggable-' +
-																	i
-																}
-																index={ i }
-															>
-																{ ( param ) => (
-																	<div
-																		ref={
-																			param.innerRef
-																		}
-																		{ ...param.draggableProps }
-																	>
+										<span className="uag-control-label uagb-control__header">
+											{ __(
+												'Edit Options',
+												'sureforms'
+											) }
+										</span>
+										<>
+											<Droppable droppableId="droppable-1">
+												{ ( provided ) => (
+													<div
+														ref={
+															provided.innerRef
+														}
+														{ ...provided.droppableProps }
+													>
+														{ options.map(
+															( option, i ) => (
+																<Draggable
+																	key={ i }
+																	draggableId={
+																		'draggable-' +
+																		i
+																	}
+																	index={ i }
+																>
+																	{ (
+																		param
+																	) => (
 																		<div
-																			style={ {
-																				display:
-																					'flex',
-																				alignItems:
-																					'center',
-																				gap: '10px',
-																			} }
+																			ref={
+																				param.innerRef
+																			}
+																			{ ...param.draggableProps }
 																		>
-																			<>
-																				<Icon
-																					icon={
-																						'move'
-																					}
-																					{ ...param.dragHandleProps }
-																				/>
-																			</>
 																			<div
 																				style={ {
-																					marginBottom:
-																						'0',
+																					display:
+																						'flex',
+																					alignItems:
+																						'center',
+																					gap: '10px',
 																				} }
 																			>
-																				<TextControl
-																					key={
-																						i
-																					}
-																					value={
-																						option
-																					}
-																					onChange={ (
-																						value
-																					) =>
-																						editOption(
-																							value,
+																				<>
+																					<Icon
+																						icon={
+																							'move'
+																						}
+																						{ ...param.dragHandleProps }
+																					/>
+																				</>
+																				<div
+																					style={ {
+																						marginBottom:
+																							'0',
+																					} }
+																				>
+																					<UAGTextControl
+																						showHeaderControls={
+																							false
+																						}
+																						key={
 																							i
-																						)
-																					}
-																				/>
+																						}
+																						value={
+																							option
+																						}
+																						data={ {
+																							value: option,
+																							label: 'option',
+																						} }
+																						onChange={ (
+																							value
+																						) =>
+																							editOption(
+																								value,
+																								i
+																							)
+																						}
+																					/>
+																				</div>
+																				<>
+																					<Button
+																						icon="trash"
+																						onClick={ () =>
+																							handleDelete(
+																								i
+																							)
+																						}
+																					/>
+																				</>
 																			</div>
-																			<>
-																				<Button
-																					icon="trash"
-																					onClick={ () =>
-																						handleDelete(
-																							i
-																						)
-																					}
-																				/>
-																			</>
 																		</div>
-																	</div>
-																) }
-															</Draggable>
-														)
-													) }
-													{ provided.placeholder }
-												</div>
-											) }
-										</Droppable>
-									</BaseControl>
-								</DragDropContext>
-							) }
-						</div>
-					</PanelRow>
-					<PanelRow>
-						<div>
-							<BaseControl
-								id="for-add-option"
-								label={ __( 'Add New Option', 'sureforms' ) }
-							>
-								<form
-									onSubmit={ ( e ) => {
-										e.preventDefault();
-										if ( e.target.addOption.value !== '' ) {
+																	) }
+																</Draggable>
+															)
+														) }
+														{ provided.placeholder }
+													</div>
+												) }
+											</Droppable>
+										</>
+									</DragDropContext>
+								) }
+							</div>
+							<span className="uag-control-label uagb-control__header">
+								{ __( 'Add New Option', 'sureforms' ) }
+							</span>
+							<div className="sureform-add-option-container">
+								<UAGTextControl
+									data={ {
+										value: newOption,
+										label: 'option',
+									} }
+									showHeaderControls={ false }
+									value={ newOption }
+									onChange={ ( value ) =>
+										setNewOption( value )
+									}
+								/>
+								<Button
+									className="sureform-add-option-button"
+									variant="secondary"
+									onClick={ () => {
+										if ( newOption !== '' ) {
 											setAttributes( {
 												options: [
 													...options,
-													e.target.addOption.value,
+													newOption,
 												],
 											} );
-											e.target.addOption.value = '';
+											setNewOption( '' );
 										} else {
-											console.log( 'error' );
+											// TODO: May be add a tooltip here
 										}
 									} }
-									style={ { display: 'flex' } }
 								>
-									<div>
-										<input
-											id="add-option"
-											required
-											autoComplete="off"
-											name="addOption"
-										/>
-									</div>
-									<button
-										className="btn"
-										type="submit"
-										style={ {
-											background: 'none',
-											border: 'none',
-											cursor: 'pointer',
-										} }
-									>
-										ADD
-									</button>
-								</form>
-							</BaseControl>
-						</div>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ help }
-							onChange={ ( value ) =>
-								setAttributes( { help: value } )
-							}
-						/>
-					</PanelRow>
-				</PanelBody>
+									{ __( 'ADD', 'sureforms' ) }
+								</Button>
+							</div>
+							<span className="uag-control-label uagb-control__header" />
+							<UAGTextControl
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={
@@ -265,22 +280,16 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'dropdown-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'dropdown-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				<select
-					id={ 'dropdown-' + blockID }
-					style={ {
-						maxWidth: '100%',
-						padding: '0 8px',
-						lineHeight: '2',
-						minHeight: '43px',
-					} }
-					required={ required }
-				>
+				<select id={ 'dropdown-' + blockID } required={ required }>
 					{ options.map( ( option, i ) => {
 						return (
 							<option label={ option } key={ i }>
@@ -298,6 +307,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					</label>
 				) }
 			</div>
-		</div>
+		</>
 	);
 }

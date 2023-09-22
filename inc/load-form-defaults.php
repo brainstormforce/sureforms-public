@@ -1,0 +1,104 @@
+<?php
+/**
+ * Sureforms Load Defaults Class file.
+ *
+ * @package sureforms.
+ * @since X.X.X
+ */
+
+namespace SureForms\Inc;
+
+use WP_REST_Response;
+use WP_Error;
+use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
+
+/**
+ * Load Defaults Class.
+ *
+ * @since X.X.X
+ */
+class Load_Form_Defaults {
+	use Get_Instance;
+
+	/**
+	 * Constructor
+	 *
+	 * @since  X.X.X
+	 */
+	public function __construct() {
+		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+	}
+
+	/**
+	 * Add custom API Route load-form-defaults
+	 *
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function register_custom_endpoint() {
+		register_rest_route(
+			'sureforms/v1',
+			'/load-form-defaults',
+			array(
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'handle_sureforms_form_defaults' ],
+				'permission_callback' => [ $this, 'get_form_permissions_check' ],
+			)
+		);
+	}
+
+	/**
+	 * Checks whether a given request has permission to read the form.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since X.X.X
+	 */
+	public function get_form_permissions_check( $request ) {
+		if ( current_user_can( 'edit_posts' ) ) {
+			return true;
+		}
+
+		return new \WP_Error(
+			'rest_cannot_view',
+			__( 'Sorry, you are not allowed to view the form.', 'sureforms' ),
+			[ 'status' => \rest_authorization_required_code() ]
+		);
+	}
+
+	/**
+	 * Handle Form status
+	 *
+	 * @param \WP_REST_Request $request Request object or array containing form data.
+	 *
+	 * @return WP_REST_Response
+	 * @since X.X.X
+	 */
+	public function handle_sureforms_form_defaults( $request ) {
+		$data            = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
+		$current_post_id = isset( $data['post_id'] ) ? Sureforms_Helper::get_integer_value( $data['post_id'] ) : '';
+
+		$meta_values = array(
+			'_sureforms_color1',
+			'_sureforms_textcolor1',
+			'_sureforms_color2',
+			'_sureforms_fontsize',
+			'_sureforms_bg',
+			'_sureforms_thankyou_message',
+			'_sureforms_email',
+			'_sureforms_submit_type',
+			'_sureforms_submit_url',
+			'sureforms_form_visibility',
+			'_sureforms_sender_notification',
+			'_sureforms_form_recaptcha',
+		);
+
+		foreach ( $meta_values as $meta_key ) {
+			$meta_value = isset( $data[ $meta_key ] ) ? $data[ $meta_key ] : '';
+			update_post_meta( Sureforms_Helper::get_integer_value( $current_post_id ), $meta_key, $meta_value );
+		}
+
+		return new WP_REST_Response( [ 'success' => $data ] );
+	}
+}

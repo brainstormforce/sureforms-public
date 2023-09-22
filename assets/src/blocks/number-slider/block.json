@@ -41,6 +41,10 @@
         "step":{
            "type":"number",
            "default":1
-        }
+        },
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		}
 	}
 }

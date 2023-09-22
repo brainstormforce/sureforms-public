@@ -2,8 +2,6 @@
 @tailwind utilities;
 
 @layer components {
-	/* ToggleButton might be used later*/
-
 	.toggle-button {
 		position: relative;
 		display: inline-block;
@@ -41,7 +39,7 @@
 	}
 
 	input:checked + .slider {
-		background-color: var( --wp-admin-theme-color );
+		background-color: #2271b1;
 	}
 
 	input:checked + .slider:before {
@@ -66,10 +64,15 @@
 		overflow: hidden;
 	}
 
-	input:focus,
-	select:focus {
-		border-color: #94d4f5 !important;
-		box-shadow: 0 0 0 1px #94d4f5 !important;
-		outline: 2px solid transparent !important;
+	.active-recaptcha {
+		background: #2271b1;
+		color: #ffffff;
+	}
+	.active-recaptcha:hover {
+		color: #ffffff !important;
+	}
+
+	.recaptcha-tab:hover {
+		color: #2271b1;
 	}
 }

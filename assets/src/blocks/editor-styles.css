@@ -1,0 +1,17 @@
+.sureform-add-option-container {
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.sureform-add-option-button {
+	height: 30px;
+}
+
+.sureform-add-option-container .components-base-control__field {
+	padding-top: 0px !important;
+}
+.sureforms-select__input:focus{
+	box-shadow: none !important;
+}

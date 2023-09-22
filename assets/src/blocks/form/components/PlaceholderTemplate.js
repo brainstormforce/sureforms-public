@@ -2,14 +2,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
-export default ( {
-	header,
-	footerLeft,
-	footerRight,
-	children,
-	maxHeight,
-	minHeight,
-} ) => {
+export default ( { header, footerLeft, footerRight, children, maxHeight } ) => {
 	return (
 		<div
 			css={ css`
@@ -64,8 +57,6 @@ export default ( {
 				<div
 					css={ css`
 						position: relative;
-						min-height: ${ minHeight || 'none' };
-						max-height: ${ maxHeight || 'none' };
 						overflow: ${ maxHeight ? 'auto' : 'visible' };
 					` }
 				>

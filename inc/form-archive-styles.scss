@@ -64,11 +64,31 @@ input:checked + .slider:before {
 }
 
 .sureforms-shortcode-input {
-	width: fit-content;
+	width: fit-content !important;
 	cursor: pointer;
-	border: none;
-	background: transparent;
-	font-family: Consolas, Monaco, monospace;
+	border: none !important;
+	background: transparent !important;
+	color: #50575e !important;
+	font-size: 13px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 19.5px;
+	padding: 0 !important;
+	margin-top: -8px !important;
+}
+
+.sureforms-shortcode-input:focus {
+	border: none !important;
+	background: transparent !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.sureforms-entries-number {
+	padding: 0 !important;
+	width: 40px !important;
+	cursor: pointer;
+	text-align: right;
 }
 
 #notification {

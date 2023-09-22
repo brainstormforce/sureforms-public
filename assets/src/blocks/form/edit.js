@@ -2,17 +2,38 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	InnerBlocks,
+	RichText,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
+import { store as editorStore } from '@wordpress/editor';
 
 export default function Edit( { clientId, attributes, setAttributes } ) {
-	const { id } = attributes;
+	const { id, submitButtonText, block_count } = attributes;
+	const { editPost } = useDispatch( editorStore );
+	// Get all registered block types
+	const allBlocks = wp.blocks.getBlockTypes();
+	const ALLOWED_BLOCKS = allBlocks
+		.filter(
+			( block ) =>
+				block.name.includes( 'sureforms/' ) &&
+				block.name !== 'sureforms/form' &&
+				block.name !== 'sureforms/sf-form'
+		)
+		.map( ( block ) => block.name );
+
+	const filteredAllowedBlocks = applyFilters(
+		'sureforms/form/allowedBlocks',
+		ALLOWED_BLOCKS
+	);
+
 	const [ patterns, setPatterns ] = useState( [] );
 
 	const blockCount = useSelect( ( select ) =>
@@ -49,7 +70,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		if ( id !== formId ) {
 			setAttributes( { id: formId } );
 		}
-	}, [ formId, id, setAttributes ] );
+		if ( block_count !== blockCount ) {
+			setAttributes( { block_count: blockCount } );
+		}
+	}, [ formId, id, setAttributes, blockCount ] );
 
 	useEffect( () => {
 		getPatterns();
@@ -61,7 +85,17 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		} );
 		setPatterns( newPatterns );
 	};
+	function updateMeta( option, value ) {
+		const option_array = {};
+		option_array[ option ] = value;
+		editPost( {
+			meta: option_array,
+		} );
+	}
 
+	useEffect( () => {
+		updateMeta( '_sureforms_form_class_name', attributes.className );
+	}, [ attributes ] );
 	/**
 	 * Maybe create the template for the form.
 	 *
@@ -96,6 +130,42 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
+	const sureforms_keys = useSelect( ( select ) =>
+		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
+	);
+
+	const renderButtonHtml = () => {
+		return (
+			<button
+				className={
+					'sureform-submit-button ' +
+					( sureforms_keys._sureforms_submit_styling_inherit_from_theme
+						? 'wp-block-button__link'
+						: 'sureforms-button' ) +
+					( ! sureforms_keys._sureforms_color1
+						? ' sureforms-default-colors'
+						: '' )
+				}
+			>
+				<RichText
+					tagName="div"
+					placeholder={ __( 'Submit', 'sureforms' ) }
+					value={ submitButtonText?.replace(
+						/<(?!br\s*V?)[^>]+>/g,
+						''
+					) }
+					onChange={ ( value ) =>
+						setAttributes( {
+							submitButtonText: value,
+						} )
+					}
+					multiline={ false }
+					style={ { textAlign: 'center' } }
+				/>
+			</button>
+		);
+	};
+
 	return (
 		<Fragment>
 			{ blockCount === 0 ? (
@@ -111,6 +181,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					` }
 				>
 					<InnerBlocks
+						allowedBlocks={ filteredAllowedBlocks }
 						templateLock={ false }
 						renderAppender={
 							blockCount
@@ -118,6 +189,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 								: InnerBlocks.ButtonBlockAppender
 						}
 					/>
+					<div
+						className={
+							'sureform-submit-button' +
+							( sureforms_keys._sureforms_submit_styling_inherit_from_theme
+								? ' wp-block-button'
+								: '' )
+						}
+					>
+						{ renderButtonHtml() }
+					</div>
 				</div>
 			) }
 		</Fragment>

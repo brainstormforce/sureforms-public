@@ -3,7 +3,7 @@
  * The blocks base file.
  *
  * @link       https://surecart.com
- * @since      X.X.X
+ * @since      0.0.1
  * @package    SureForms
  * @author     SureCart <https://surecart.com/>
  */
@@ -18,7 +18,7 @@ abstract class Base {
 	 * Optional directory to .json block data files.
 	 *
 	 * @var string
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	protected $directory = '';
 
@@ -26,7 +26,7 @@ abstract class Base {
 	 * Holds the block.
 	 *
 	 * @var object
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	protected $block;
 
@@ -34,7 +34,7 @@ abstract class Base {
 	 * Register the block for dynamic output
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register() {
 		$dir = $this->get_dir();
@@ -51,7 +51,7 @@ abstract class Base {
 	 * Get the called class directory path
 	 *
 	 * @return string
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_dir() {
 		if ( $this->directory ) {
@@ -72,7 +72,7 @@ abstract class Base {
 	 * @param array<mixed> $block Block attributes.
 	 *
 	 * @return boolean|string
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function pre_render( $attributes, $content, $block ) {
 		$this->block = (object) $block;
@@ -100,7 +100,7 @@ abstract class Base {
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content   Post content.
 	 * @return boolean|\WP_Error;
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	protected function middleware( $attributes, $content ) {
 		return true;
@@ -111,7 +111,7 @@ abstract class Base {
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @return array<mixed> $attributes
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_attributes( $attributes ) {
 		return $attributes;
@@ -124,7 +124,7 @@ abstract class Base {
 	 * @param string       $content Post content.
 	 *
 	 * @return string
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function render( $attributes, $content ) {
 		return '';

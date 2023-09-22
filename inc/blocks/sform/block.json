@@ -2,16 +2,15 @@
 	"$schema": "https://json.schemastore.org/block.json",
 	"apiVersion": 2,
 	"name": "sureforms/sf-form",
-	"title": "SureForms Form",
-	"description": "Display a SureForms form",
+	"title": "Form",
+	"description": "Streamline interactions with a Gutenberg Form Block on your WordPress site.",
 	"category": "sureforms",
-	"keywords": ["form", "sureforms", "form"],
-    "textdomain": "sureforms",
+	"keywords": [ "form", "sureforms", "form" ],
+	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
 		"html": false,
-		"multiple": false,
-		"align": ["wide", "full"]
+		"align": [ "wide", "full" ]
 	},
 	"attributes": {
 		"id": {
@@ -28,7 +27,7 @@
 		},
 		"choice_type": {
 			"type": "string",
-			"enum": ["all", "checkbox", "radio"],
+			"enum": [ "all", "checkbox", "radio" ],
 			"default": "all"
 		}
 	}

@@ -12,7 +12,7 @@ use SureForms\Inc\Traits\Get_Instance;
 /**
  * Manage Blocks registrations.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Register {
 	use Get_Instance;
@@ -20,7 +20,7 @@ class Register {
 	/**
 	 * Constructor
 	 *
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function __construct() {
 		$blocks_dir = glob( SUREFORMS_DIR . 'inc/blocks/**/*.php' );

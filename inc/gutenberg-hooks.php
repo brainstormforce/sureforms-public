@@ -11,7 +11,7 @@ use SureForms\Inc\Traits\Get_Instance;
 /**
  * Gutenberg hooks handler class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Gutenberg_Hooks {
 
@@ -28,19 +28,13 @@ class Gutenberg_Hooks {
 	 * Class constructor.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function __construct() {
 		// Setting Form default patterns.
 		$this->patterns = [
 			'blank-form',
 			'contact-form',
-			'it-service-ticket',
-			'rsvp-form',
-			'information-request-form',
-			'seo-request-form',
-			'medical-history-form',
-			'customer-satisfaction-survey',
 		];
 
 		// Initializing hooks.
@@ -48,8 +42,43 @@ class Gutenberg_Hooks {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_editor_assets' ] );
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
-		// TODO: Need to check this later.
-		// add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );.
+		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
+	}
+
+	/**
+	 * Disable Sureforms_Form Block and allowed only sureforms block inside Sureform CPT editor.
+	 *
+	 * @param bool|string[]            $allowed_block_types Array of block types.
+	 * @param \WP_Block_Editor_Context $editor_context The current block editor context.
+	 * @return array<mixed>|void
+	 * @since 0.0.1
+	 */
+	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
+		if ( ! empty( $editor_context->post->post_type ) && 'sureforms_form' === $editor_context->post->post_type ) {
+			$allow_block_types = array(
+				'sureforms/input',
+				'sureforms/email',
+				'sureforms/textarea',
+				'sureforms/number',
+				'sureforms/switch',
+				'sureforms/checkbox',
+				'sureforms/phone',
+				'sureforms/address',
+				'sureforms/dropdown',
+				'sureforms/multi-choice',
+				'sureforms/radio',
+				'sureforms/rating',
+				'sureforms/submit',
+				'sureforms/upload',
+				'sureforms/url',
+				'sureforms/password',
+				'sureforms/date-time-picker',
+				'sureforms/number-slider',
+			);
+			// Apply a filter to the $allow_block_types types array.
+			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
+			return $allow_block_types;
+		}
 	}
 
 	/**
@@ -57,7 +86,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param array<mixed> $categories Array of categories.
 	 * @return array<mixed>
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_block_categories( $categories ) {
 		return [
@@ -75,7 +104,7 @@ class Gutenberg_Hooks {
 	 * Register our block patterns.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_block_patterns() {
 		/**
@@ -101,7 +130,7 @@ class Gutenberg_Hooks {
 	 * Add Form Editor Scripts.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function form_editor_screen_assets() {
 		$form_editor_script = 'formEditor';
@@ -136,7 +165,7 @@ class Gutenberg_Hooks {
 	 * Register all editor scripts.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function block_editor_assets() {
 		$all_screen_blocks = 'blocks';
@@ -171,6 +200,14 @@ class Gutenberg_Hooks {
 				}
 			}
 		}
+
+		wp_localize_script(
+			'sureforms-' . $all_screen_blocks,
+			'uagb_blocks_info',
+			[
+				'font_awesome_5_polyfill' => array(),
+			]
+		);
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,

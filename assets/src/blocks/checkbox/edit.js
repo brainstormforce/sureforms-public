@@ -3,13 +3,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	PanelRow,
-	TextControl,
-	ToggleControl,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
+import UAGTextControl from '@Components/text-control';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 
 export default ( { attributes, setAttributes, isSelected } ) => {
 	const {
@@ -19,6 +20,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		labelUrl,
 		checkboxHelpText,
 		id,
+		errorMsg,
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
@@ -32,55 +34,84 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Label', 'sureforms' ) }
-							value={ label }
-							onChange={ ( value ) =>
-								setAttributes( { label: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							type="url"
-							label={ __( 'Label Url', 'sureforms' ) }
-							placeholder="https://example.com/"
-							value={ labelUrl }
-							onChange={ ( value ) =>
-								setAttributes( { labelUrl: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Checked by default', 'sureforms' ) }
-							checked={ isChecked }
-							onChange={ ( checked ) =>
-								setAttributes( { checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ checkboxHelpText }
-							onChange={ ( value ) =>
-								setAttributes( { checkboxHelpText: value } )
-							}
-						/>
-					</PanelRow>
-				</PanelBody>
+				<InspectorTabs
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
+						>
+							<UAGTextControl
+								label={ __( 'Label', 'sureforms' ) }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
+								value={ label }
+								onChange={ ( value ) => {
+									setAttributes( { label: value } );
+								} }
+							/>
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									label={ __( 'Error message', 'sureforms' ) }
+									value={ errorMsg }
+									onChange={ ( value ) =>
+										setAttributes( { errorMsg: value } )
+									}
+								/>
+							) }
+							<UAGTextControl
+								data={ {
+									value: labelUrl,
+									label: 'labelUrl',
+								} }
+								type="url"
+								label={ __( 'Label Url', 'sureforms' ) }
+								placeholder="https://example.com/"
+								value={ labelUrl }
+								onChange={ ( value ) =>
+									setAttributes( { labelUrl: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __(
+									'Checked by default',
+									'sureforms'
+								) }
+								checked={ isChecked }
+								onChange={ ( checked ) =>
+									setAttributes( { checked } )
+								}
+							/>
+							<UAGTextControl
+								data={ {
+									value: checkboxHelpText,
+									label: 'checkboxHelpText',
+								} }
+								label={ __( 'Help', 'sureforms' ) }
+								value={ checkboxHelpText }
+								onChange={ ( value ) =>
+									setAttributes( { checkboxHelpText: value } )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={

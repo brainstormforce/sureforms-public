@@ -3,13 +3,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	PanelRow,
-	TextControl,
-	ToggleControl,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import UAGTextControl from '@Components/text-control';
 
 export default ( { attributes, setAttributes, isSelected } ) => {
 	const {
@@ -18,6 +19,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		required,
 		switchHelpText,
 		id,
+		errorMsg,
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
@@ -60,46 +62,73 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 	}, [ blockID, id, setAttributes ] );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Label', 'sureforms' ) }
-							value={ label }
-							onChange={ ( value ) =>
-								setAttributes( { label: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Checked by default', 'sureforms' ) }
-							checked={ isChecked }
-							onChange={ ( checked ) =>
-								setAttributes( { checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ switchHelpText }
-							onChange={ ( value ) =>
-								setAttributes( { switchHelpText: value } )
-							}
-						/>
-					</PanelRow>
-				</PanelBody>
+				<InspectorTabs
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
+						>
+							<UAGTextControl
+								label={ __( 'Label', 'sureforms' ) }
+								value={ label }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { label: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									label={ __( 'Error message', 'sureforms' ) }
+									value={ errorMsg }
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( { errorMsg: value } )
+									}
+								/>
+							) }
+							<ToggleControl
+								label={ __(
+									'Checked by default',
+									'sureforms'
+								) }
+								checked={ isChecked }
+								onChange={ ( checked ) =>
+									setAttributes( { checked } )
+								}
+							/>
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ switchHelpText }
+								data={ {
+									value: switchHelpText,
+									label: 'switchHelpText',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { switchHelpText: value } )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={
@@ -119,7 +148,10 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					/>
 					<div style={ thumbStyle }></div>
 				</div>
-				<label htmlFor={ 'switch-block-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'switch-block-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
@@ -129,6 +161,6 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 			{ switchHelpText !== '' && (
 				<div className="text-secondary">{ switchHelpText }</div>
 			) }
-		</div>
+		</>
 	);
 };

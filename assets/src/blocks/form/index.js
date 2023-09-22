@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { receipt as icon } from '@wordpress/icons';
+import icon from '../../../../images/Logo.js';
 
 /**
  * Internal dependencies

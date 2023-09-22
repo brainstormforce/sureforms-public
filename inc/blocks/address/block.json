@@ -21,6 +21,58 @@
 		"label": {
 			"type": "string",
 			"default": "Address"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		},
+		"lineOnePlaceholder": {
+			"type": "string",
+			"default": "Address Line 1"
+		},
+		"lineTwoPlaceholder": {
+			"type": "string",
+			"default": "Address Line 2"
+		},
+		"cityPlaceholder": {
+			"type": "string",
+			"default": "City"
+		},
+		"statePlaceholder": {
+			"type": "string",
+			"default": "State / Province / Region"
+		},
+		"postalPlaceholder": {
+			"type": "string",
+			"default": "Postal Code"
+		},
+		"lineOneLabel": {
+			"type": "string",
+			"default": "Address Line 1"
+		},
+		"lineTwoLabel": {
+			"type": "string",
+			"default": "Address Line 2"
+		},
+		"cityLabel": {
+			"type": "string",
+			"default": "City"
+		},
+		"stateLabel": {
+			"type": "string",
+			"default": "State / Province / Region"
+		},
+		"postalLabel": {
+			"type": "string",
+			"default": "Postal Code"
+		},
+		"countryLabel": {
+			"type": "string",
+			"default": "Country"
+		},
+		"countryPlaceholder": {
+			"type": "string",
+			"default": "Select Country"
 		}
 	}
 }

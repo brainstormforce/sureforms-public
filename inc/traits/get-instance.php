@@ -22,7 +22,7 @@ trait Get_Instance {
 	/**
 	 * Initiator
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return object initialized object of class.
 	 */
 	public static function get_instance() {

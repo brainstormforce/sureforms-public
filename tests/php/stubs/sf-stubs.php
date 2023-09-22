@@ -4,14 +4,14 @@ namespace SureForms {
 	/**
 	 * Plugin_Loader
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	class Plugin_Loader {
 
 		/**
 		 * Initiator
 		 *
-		 * @since X.X.X
+		 * @since 0.0.1
 		 * @return object initialized object of class.
 		 */
 		public static function get_instance() {
@@ -27,7 +27,7 @@ namespace SureForms {
 		/**
 		 * Constructor
 		 *
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function __construct() {
 		}
@@ -35,7 +35,7 @@ namespace SureForms {
 		 * Load Classes.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function load_classes() {
 		}
@@ -45,7 +45,7 @@ namespace SureForms {
 		 *      1. Global Languages /wp-content/languages/sureforms/ folder
 		 *      2. Local directory /wp-content/plugins/sureforms/languages/ folder
 		 *
-		 * @since X.X.X
+		 * @since 0.0.1
 		 * @return void
 		 */
 		public function load_textdomain() {
@@ -63,21 +63,21 @@ namespace SureForms\Inc\Blocks {
 		 * Optional directory to .json block data files.
 		 *
 		 * @var string
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		protected $directory = '';
 		/**
 		 * Holds the block.
 		 *
 		 * @var object
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		protected $block;
 		/**
 		 * Register the block for dynamic output
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function register() {
 		}
@@ -85,7 +85,7 @@ namespace SureForms\Inc\Blocks {
 		 * Get the called class directory path
 		 *
 		 * @return string
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function get_dir() {
 		}
@@ -97,7 +97,7 @@ namespace SureForms\Inc\Blocks {
 		 * @param array  $block Block attributes.
 		 *
 		 * @return function
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function pre_render( $attributes, $content, $block ) {
 		}
@@ -107,7 +107,7 @@ namespace SureForms\Inc\Blocks {
 		 * @param array  $attributes Block attributes.
 		 * @param string $content   Post content.
 		 * @return boolean|\WP_Error;
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		protected function middleware( $attributes, $content ) {
 		}
@@ -116,7 +116,7 @@ namespace SureForms\Inc\Blocks {
 		 *
 		 * @param array $attributes Block attributes.
 		 * @return array $attributes
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function get_attributes( $attributes ) {
 		}
@@ -127,7 +127,7 @@ namespace SureForms\Inc\Blocks {
 		 * @param string $content Post content.
 		 *
 		 * @return string
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function render( $attributes, $content ) {
 		}
@@ -149,7 +149,7 @@ namespace SureForms\Inc\Traits {
 		/**
 		 * Initiator
 		 *
-		 * @since X.X.X
+		 * @since 0.0.1
 		 * @return object initialized object of class.
 		 */
 		public static function get_instance() {
@@ -161,7 +161,7 @@ namespace SureForms\Inc {
 	/**
 	 * Post Types Main Class.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	class Post_Types {
 
@@ -169,7 +169,7 @@ namespace SureForms\Inc {
 		/**
 		 * Constructor
 		 *
-		 * @since  X.X.X
+		 * @since  0.0.1
 		 */
 		public function __construct() {
 		}
@@ -177,7 +177,7 @@ namespace SureForms\Inc {
 		 * Registers the forms and submissions post types.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function register_post_types() {
 		}
@@ -188,7 +188,7 @@ namespace SureForms\Admin {
 	/**
 	 * Gutenberg hooks handler class.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	class Gutenberg_Hooks {
 
@@ -197,7 +197,7 @@ namespace SureForms\Admin {
 		 * Class constructor.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function __construct() {
 		}
@@ -205,7 +205,7 @@ namespace SureForms\Admin {
 		 * Add Editor Scripts.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function add_editor_assets() {
 		}
@@ -213,7 +213,7 @@ namespace SureForms\Admin {
 	/**
 	 * Admin handler class.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	class Admin {
 
@@ -222,7 +222,7 @@ namespace SureForms\Admin {
 		 * Class constructor.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function __construct() {
 		}
@@ -230,7 +230,7 @@ namespace SureForms\Admin {
 		 * Add menu page.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function add_menu_page() {
 		}
@@ -238,7 +238,7 @@ namespace SureForms\Admin {
 		 * Enqueue Admin Scripts.
 		 *
 		 * @return void
-		 * @since X.X.X
+		 * @since 0.0.1
 		 */
 		public function enqueue_scripts() {
 		}

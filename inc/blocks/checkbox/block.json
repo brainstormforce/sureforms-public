@@ -33,6 +33,10 @@
 		},
 		"checkboxHelpText": {
 			"type": "string"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
 		}
 	}
 }

@@ -47,7 +47,7 @@
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "this field is required."
+			"default": "This field is required."
 		}
 	}
 }

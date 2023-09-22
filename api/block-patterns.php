@@ -3,7 +3,7 @@
  * Register API for Block Patterns.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\API;
@@ -21,7 +21,7 @@ use WP_Block_Patterns_Registry;
  * Core class used to access block patterns via the REST API.
  *
  * @see WP_REST_Controller
- * @since X.X.X
+ * @since 0.0.1
  */
 class Block_Patterns extends WP_REST_Controller {
 
@@ -42,7 +42,7 @@ class Block_Patterns extends WP_REST_Controller {
 	/**
 	 * Registers the routes for the objects of the controller.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function register_routes() {
@@ -65,7 +65,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -94,7 +94,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_items( $request ) {
 		$response = [];
@@ -120,7 +120,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @param array<mixed>    $item    Raw pattern as registered, before any changes.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$fields = $this->get_fields_for_response( $request );
@@ -152,7 +152,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 * Retrieves the block pattern schema, conforming to JSON Schema.
 	 *
 	 * @return array<mixed>  Item schema data.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_item_schema() {
 		$schema = array(

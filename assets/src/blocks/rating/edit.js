@@ -4,17 +4,16 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
-import {
-	PanelBody,
-	PanelRow,
-	SelectControl,
-	ToggleControl,
-	TextControl,
-	BaseControl,
-	ButtonGroup,
-	Button,
-	ColorPalette,
-} from '@wordpress/components';
+import { SelectControl, ToggleControl } from '@wordpress/components';
+import UAGTextControl from '@Components/text-control';
+import UAGNumberControl from '@Components/number-control';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import MultiButtonsControl from '@Components/multi-buttons-control';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
+import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 
 /**
  * Component Dependencies
@@ -36,6 +35,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		showNumbers,
 		iconShape,
 		maxValue,
+		errorMsg,
 	} = attributes;
 
 	const arrayRating = [];
@@ -53,133 +53,151 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Label', 'sureforms' ) }
-							value={ label }
-							onChange={ ( value ) =>
-								setAttributes( { label: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ ratingBoxHelpText }
-							onChange={ ( value ) =>
-								setAttributes( { ratingBoxHelpText: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<BaseControl
-							id="for-width-control"
-							label={ __( 'Width', 'sureforms' ) }
+				<InspectorTabs>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
 						>
-							<ButtonGroup>
-								<Button
-									isPressed={ width === 'halfWidth' }
-									onClick={ () =>
-										setAttributes( { width: 'halfWidth' } )
-									}
-								>
-									{ __( 'Half Width', 'sureforms' ) }
-								</Button>
-								<Button
-									isPressed={ width === 'fullWidth' }
-									onClick={ () =>
-										setAttributes( { width: 'fullWidth' } )
-									}
-								>
-									{ __( 'Full Width', 'sureforms' ) }
-								</Button>
-							</ButtonGroup>
-						</BaseControl>
-					</PanelRow>
-					<PanelRow>
-						<div>
-							<BaseControl
-								id="for-icon-color"
-								label={ __( 'Icon Color', 'sureforms' ) }
+							<UAGTextControl
+								label={ __( 'Label', 'sureforms' ) }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
+								value={ label }
+								onChange={ ( value ) => {
+									setAttributes( { label: value } );
+								} }
 							/>
-						</div>
-						<ColorPalette
-							value={ iconColor }
-							onChange={ ( color ) =>
-								setAttributes( { iconColor: color } )
-							}
-							clearable={ false }
-						/>
-					</PanelRow>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Show Numbers', 'sureforms' ) }
-							checked={ showNumbers }
-							onChange={ ( checked ) =>
-								setAttributes( { showNumbers: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<div
-							style={ {
-								display: 'flex',
-								gap: '10px',
-								alignItems: 'center',
-							} }
-						>
-							<div>
-								<SelectControl
-									value={ iconShape }
-									label={ __( 'Icon', 'sureforms' ) }
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									label={ __( 'Error message', 'sureforms' ) }
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									value={ errorMsg }
 									onChange={ ( value ) =>
-										setAttributes( { iconShape: value } )
-									}
-								>
-									<option value="star">
-										{ __( 'Star', 'sureforms' ) }
-									</option>
-									<option value="heart">
-										{ __( 'Heart', 'sureforms' ) }
-									</option>
-									<option value="smiley">
-										{ __( 'Smiley', 'sureforms' ) }
-									</option>
-								</SelectControl>
-							</div>
-							<div style={ { width: '10rem' } }>
-								<TextControl
-									label={ __(
-										'Number of Icons',
-										'sureforms'
-									) }
-									type="number"
-									step={ 1 }
-									min={ 1 }
-									max={ 10 }
-									value={ maxValue }
-									onChange={ ( value ) =>
-										setAttributes( {
-											maxValue: value,
-										} )
+										setAttributes( { errorMsg: value } )
 									}
 								/>
-							</div>
-						</div>
-					</PanelRow>
-				</PanelBody>
+							) }
+							<UAGNumberControl
+								label={ __( 'Number of Icons', 'sureforms' ) }
+								displayUnit={ false }
+								step={ 1 }
+								min={ 1 }
+								max={ 10 }
+								data={ {
+									value: maxValue,
+									label: 'maxValue',
+								} }
+								value={ maxValue }
+								onChange={ ( value ) =>
+									setAttributes( {
+										maxValue: value,
+									} )
+								}
+							/>
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ ratingBoxHelpText }
+								data={ {
+									value: ratingBoxHelpText,
+									label: 'ratingBoxHelpText',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( {
+										ratingBoxHelpText: value,
+									} )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Icon Styles', 'sureforms' ) }
+							initialOpen={ true }
+						>
+							<MultiButtonsControl
+								label={ __( 'Width', 'sureforms' ) }
+								data={ {
+									value: width,
+									label: 'width',
+								} }
+								options={ [
+									{
+										value: 'halfWidth',
+										icon: 'Half Width',
+									},
+									{
+										value: 'fullWidth',
+										icon: 'Full Width',
+									},
+								] }
+								showIcons={ true }
+								onChange={ ( value ) => {
+									if ( width !== value ) {
+										setAttributes( {
+											width: value,
+										} );
+									} else {
+										setAttributes( {
+											width: 'fullWidth',
+										} );
+									}
+								} }
+							/>
+							<AdvancedPopColorControl
+								label={ __( 'Icon Color', 'sureforms' ) }
+								setAttributes={ setAttributes }
+								colorValue={ iconColor }
+								data={ {
+									value: iconColor,
+									label: 'iconColor',
+								} }
+								onColorChange={ ( value ) =>
+									setAttributes( { iconColor: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Show Numbers', 'sureforms' ) }
+								checked={ showNumbers }
+								onChange={ ( checked ) =>
+									setAttributes( { showNumbers: checked } )
+								}
+							/>
+
+							<SelectControl
+								value={ iconShape }
+								label={ __( 'Icon', 'sureforms' ) }
+								onChange={ ( value ) =>
+									setAttributes( {
+										iconShape: value,
+									} )
+								}
+								options={ [
+									{ label: 'Star', value: 'star' },
+									{ label: 'Heart', value: 'heart' },
+									{
+										label: 'Smiley',
+										value: 'smiley',
+									},
+								] }
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={
@@ -191,13 +209,15 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'rating-block-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'rating-block-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-
 				<div
 					id={ 'rating-block-' + blockID }
 					style={ {
@@ -263,6 +283,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					<div className="text-secondary">{ ratingBoxHelpText }</div>
 				) }
 			</div>
-		</div>
+		</>
 	);
 }

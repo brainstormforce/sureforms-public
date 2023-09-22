@@ -29,7 +29,19 @@ if ( ratingElements ) {
 			const clickedStarId = clickArr[ 2 ];
 			const clickIndexId = Number( clickArr[ 3 ] );
 			const selectedBlock = `sureforms-rating-${ clickedStarId }`;
-			// const clickedRatingIndex = i.toString();
+			const isSelected = e.target;
+			const label =
+				ratingElements[ i ].nextElementSibling.querySelector( 'label' );
+			const colorDataValue = label.getAttribute( 'color-data' );
+			const iconColor = document.querySelector(
+				`.sureforms-rating-icon-color-${ clickedStarId }`
+			).value;
+
+			if ( colorDataValue === iconColor ) {
+				isSelected.value = '';
+			} else {
+				isSelected.value = clickIndexId + 1;
+			}
 			if ( selectedRatingIndex.get( selectedBlock ) === clickIndexId ) {
 				selectedRatingIndex.set( selectedBlock, -1 );
 			} else {
@@ -51,12 +63,17 @@ if ( ratingElements ) {
 						inputLabels[ j ][ k ] &&
 						hasClassName
 					) {
-						inputLabels[ j ][ k ].style.color =
-							document.getElementsByClassName(
-								`sureforms-rating-icon-color-${ clickedStarId }`
-							)[ 0 ].value;
+						inputLabels[ j ][ k ].style.color = iconColor;
+						inputLabels[ j ][ k ].setAttribute(
+							'color-data',
+							iconColor
+						);
 					} else if ( inputLabels[ j ][ k ] && hasClassName ) {
 						inputLabels[ j ][ k ].style.color = '#ddd';
+						inputLabels[ j ][ k ].setAttribute(
+							'color-data',
+							'#ddd'
+						);
 					}
 					if (
 						k ===
@@ -75,6 +92,22 @@ if ( ratingElements ) {
 
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
+}
+
+// Sender's Email.
+
+const emailElements = document.getElementsByClassName(
+	'sureforms-input-email-container'
+);
+
+if ( emailElements.length > 0 ) {
+	const emailAddress = document.getElementsByClassName(
+		'sureforms-input-email'
+	);
+	emailAddress[ 0 ].addEventListener( 'input', ( e ) => {
+		document.querySelector( '#sureforms-sender-email' ).value =
+			e.target.value;
+	} );
 }
 
 // Upload Field.
@@ -97,7 +130,7 @@ if ( uploadFields ) {
 				if ( file.size > maxFileSize ) {
 					e.target.value = '';
 					document
-						.getElementById( 'upload-field-error' )
+						.getElementById( `upload-field-error-${ id }` )
 						.removeAttribute( 'hidden' );
 				} else {
 					document
@@ -112,12 +145,12 @@ if ( uploadFields ) {
 					document.getElementById(
 						`sureforms-upload-title-${ id }`
 					).innerHTML =
-						`<div style="display:flex; gap:0.4rem; align-items:center">
-                        <i class="fa-solid fa-file-lines"></i> ` +
+						`<div class="text-primary" style="display:flex; gap:0.4rem; align-items:center">
+                        <i class="fa-solid fa-file-lines text-primary"></i> ` +
 						fileName +
 						' ' +
 						( file.size / 1000000 ).toFixed( 2 ) +
-						`MB <i class="fa-sharp fa-solid fa-trash-can" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+						`MB <i class="fa-sharp fa-solid fa-trash-can text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
 					document
 						.getElementById( 'reset-upload-field' )
 						.addEventListener( 'click', () => {
@@ -322,6 +355,60 @@ if ( addressElement ) {
 		addressState.addEventListener( 'change', updateFullAddress );
 		addressPostal.addEventListener( 'change', updateFullAddress );
 		addressCountry.addEventListener( 'change', updateFullAddress );
+		addressCountry.addEventListener( 'click', () => {
+			addressCountry.style.color = '#2c3338';
+		} );
+	}
+}
+
+// Date & Time Picker
+
+const dateTimeElement = document.getElementsByClassName(
+	'sureforms-input-date-container'
+);
+
+if ( dateTimeElement ) {
+	for ( let i = 0; i < dateTimeElement.length; i++ ) {
+		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
+		const dateInput = document.getElementById(
+			`sureforms-input-date-${ blockID }`
+		);
+		const timeInput = document.getElementById(
+			`sureforms-input-time-${ blockID }`
+		);
+
+		const fullDateTimeInput = document.getElementById(
+			`sureforms-full-date-time-${ blockID }`
+		);
+
+		const updateFullDateTime = () => {
+			let date = '';
+			if ( dateInput ) {
+				date = dateInput.value
+					.trim()
+					.split( /[\/-]/ )
+					.reverse()
+					.join( '-' );
+			}
+			let time = '';
+			if ( timeInput ) {
+				time = timeInput.value.trim();
+			}
+			const dateTimeParts = [ date, time ];
+
+			const fullDateTime = dateTimeParts
+				.filter( ( part ) => part !== '' )
+				.join( ', ' );
+
+			fullDateTimeInput.value = fullDateTime;
+		};
+
+		if ( dateInput ) {
+			dateInput.addEventListener( 'change', updateFullDateTime );
+		}
+		if ( timeInput ) {
+			timeInput.addEventListener( 'change', updateFullDateTime );
+		}
 	}
 }
 
@@ -344,7 +431,9 @@ if ( phoneElement ) {
 			`fullPhoneNumber-${ blockID }`
 		);
 		const updateFullPhoneNumber = () => {
-			const countryCodeValue = countryCode.value.trim();
+			const countryCodeValue = countryCode.value
+				.trim()
+				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
 			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
 		};
@@ -371,6 +460,34 @@ if ( sliderElement ) {
 			document.getElementById(
 				`sureforms-number-slider-value-${ blockID }`
 			).innerText = slideValue;
+		} );
+	}
+}
+
+//Number field
+const numberElements = Array.from(
+	document.getElementsByClassName( 'sureforms-input-number-container' )
+);
+
+if ( numberElements ) {
+	for ( const numberContainer of numberElements ) {
+		const numberInput = numberContainer.querySelector( 'input' );
+		numberInput.addEventListener( 'input', ( e ) => {
+			const formatType = numberInput.getAttribute( 'format-type' );
+			let inputValue = e.target.value;
+			if ( formatType === 'none' ) {
+				return;
+			}
+			if ( formatType === 'non-decimal' ) {
+				inputValue = inputValue.replace( /[^0-9]/g, '' );
+			} else {
+				inputValue = inputValue.replace( /[^0-9.]/g, '' );
+				const dotCount = inputValue.split( '.' ).length - 1;
+				if ( dotCount > 1 ) {
+					inputValue = inputValue.replace( /\.+$/g, '' );
+				}
+			}
+			numberInput.value = inputValue;
 		} );
 	}
 }
@@ -411,3 +528,118 @@ inputContainers.forEach( ( container ) => {
 		}
 	} );
 } );
+
+//text-area field
+const textAreaContainer = Array.from(
+	document.getElementsByClassName( 'sureforms-textarea-container' )
+);
+if ( textAreaContainer ) {
+	for ( const areaInput of textAreaContainer ) {
+		const areaField = areaInput.querySelector( 'textarea' );
+		areaField.addEventListener( 'input', function () {
+			const textAreaValue = areaField.value;
+			const maxLength = areaField.getAttribute( 'maxLength' );
+			if ( maxLength !== '' ) {
+				const counterDiv = areaInput.querySelector(
+					'.sureforms-text-area-counter'
+				);
+				const remainingLength = maxLength - textAreaValue.length;
+				counterDiv.innerText = remainingLength + '/' + maxLength;
+			}
+		} );
+	}
+}
+//password strength
+const passwordContainer = Array.from(
+	document.getElementsByClassName( 'sureforms-input-password-container' )
+);
+if ( passwordContainer ) {
+	for ( const passwordInput of passwordContainer ) {
+		const inputField = passwordInput.querySelector( 'input' );
+		inputField.addEventListener( 'input', function () {
+			const password = inputField.value;
+			const passwordStrength = passwordInput.querySelector(
+				'.password-strength-message'
+			);
+			passwordInput.querySelector( '.error-message' ).style.display =
+				'none';
+			passwordInput.querySelector( '.info-icon' ).style.display =
+				'inline-block';
+			const strength = calculatePasswordStrength( password );
+			updatePasswordStrength( strength, passwordStrength );
+		} );
+	}
+}
+
+function calculatePasswordStrength( password ) {
+	let strength = 0;
+
+	// Evaluate the strength based on your desired criteria
+	if ( password.length >= 8 ) {
+		strength += 1;
+	}
+	if ( /[a-z]/.test( password ) ) {
+		strength += 1;
+	}
+	if ( /[A-Z]/.test( password ) ) {
+		strength += 1;
+	}
+	if ( /\d/.test( password ) ) {
+		strength += 1;
+	}
+	if ( /[!@#$%^&*]/.test( password ) ) {
+		strength += 1;
+	}
+
+	return strength;
+}
+
+function updatePasswordStrength( strength, passwordStrength ) {
+	// Update the UI to reflect the password strength
+	switch ( strength ) {
+		case 0:
+			passwordStrength.textContent = '';
+			break;
+		case 1:
+			passwordStrength.style.color = '#FF0000';
+			passwordStrength.textContent = 'Your password strength is weak';
+			break;
+		case 2:
+			passwordStrength.style.color = '#FFBF00';
+			passwordStrength.textContent = 'Your password strength is moderate';
+			break;
+		case 4:
+			passwordStrength.style.color = '#00FF7F';
+			passwordStrength.textContent = 'Your password strength is strong';
+			break;
+		case 5:
+			passwordStrength.style.color = '#008000';
+			passwordStrength.textContent =
+				'Your password strength is very strong';
+			break;
+		default:
+			break;
+	}
+}
+
+//submit-button CSS
+
+const submitButton = document.getElementsByClassName( 'sureforms-button' );
+if ( submitButton ) {
+	// eslint-disable-next-line
+	const rootStyles = getComputedStyle( document.documentElement );
+	const primaryColorValue = rootStyles.getPropertyValue( '--primary-color' );
+	const secondaryColorValue =
+		rootStyles.getPropertyValue( '--secondary-color' );
+
+	if ( primaryColorValue !== '' ) {
+		for ( let i = 0; i < submitButton.length; i++ ) {
+			submitButton[ i ].style.backgroundColor = primaryColorValue;
+		}
+	}
+	if ( secondaryColorValue !== '' ) {
+		for ( let i = 0; i < submitButton.length; i++ ) {
+			submitButton[ i ].style.color = secondaryColorValue;
+		}
+	}
+}

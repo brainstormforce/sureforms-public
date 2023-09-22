@@ -3,17 +3,29 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	PanelRow,
-	TextControl,
-	ToggleControl,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import UAGTextControl from '@Components/text-control';
+import UAGNumberControl from '@Components/number-control';
 
 export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id, defaultValue, errorMsg, textLength, isUnique, duplicateMsg } =
-		attributes;
+	const {
+		label,
+		placeholder,
+		help,
+		required,
+		id,
+		defaultValue,
+		errorMsg,
+		textLength,
+		isUnique,
+		duplicateMsg,
+	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -23,96 +35,126 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 	}, [ blockID, id, setAttributes ] );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Attributes', 'sureforms' ) }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					{ required && (
-						<PanelRow>
-							<TextControl
-								label={ __( 'Error message', 'sureforms' ) }
-								value={ errorMsg }
+				<InspectorTabs
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
+						>
+							<UAGTextControl
+								label={ __( 'Label', 'sureforms' ) }
+								value={ label }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
 								onChange={ ( value ) =>
-									setAttributes( { errorMsg: value } )
+									setAttributes( { label: value } )
 								}
 							/>
-						</PanelRow>
-					) }
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Validate as unique', 'sureforms' ) }
-							checked={ isUnique }
-							onChange={ ( checked ) =>
-								setAttributes( { isUnique: checked } )
-							}
-						/>
-					</PanelRow>
-					{ isUnique && (
-						<PanelRow>
-							<TextControl
-								label={ __( 'Validation Message for Duplicate ', 'sureforms' ) }
-								value={ duplicateMsg }
+							<UAGTextControl
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ placeholder }
+								data={ {
+									value: placeholder,
+									label: 'placeholder',
+								} }
 								onChange={ ( value ) =>
-									setAttributes( { duplicateMsg: value } )
+									setAttributes( { placeholder: value } )
 								}
 							/>
-						</PanelRow>
-					) }
-					<PanelRow>
-						<TextControl
-							label={ __( 'Label', 'sureforms' ) }
-							value={ label }
-							onChange={ ( value ) =>
-								setAttributes( { label: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Default Value', 'sureforms' ) }
-							value={ defaultValue }
-							onChange={ ( value ) =>
-								setAttributes( { defaultValue: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Placeholder', 'sureforms' ) }
-							value={ placeholder }
-							onChange={ ( value ) =>
-								setAttributes( { placeholder: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ help }
-							onChange={ ( value ) =>
-								setAttributes( { help: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							as="number"
-							label={ __( 'Max text length', 'sureforms' ) }
-							value={ textLength }
-							onChange={ ( value ) =>
-								setAttributes( { textLength: Number( value ) } )
-							}
-						/>
-					</PanelRow>
-				</PanelBody>
+							<UAGTextControl
+								label={ __( 'Default Value', 'sureforms' ) }
+								value={ defaultValue }
+								data={ {
+									value: defaultValue,
+									label: 'defaultValue',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { defaultValue: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									label={ __( 'Error message', 'sureforms' ) }
+									value={ errorMsg }
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( { errorMsg: value } )
+									}
+								/>
+							) }
+							<ToggleControl
+								label={ __(
+									'Validate as unique',
+									'sureforms'
+								) }
+								checked={ isUnique }
+								onChange={ ( checked ) =>
+									setAttributes( { isUnique: checked } )
+								}
+							/>
+							{ isUnique && (
+								<UAGTextControl
+									label={ __(
+										'Validation Message for Duplicate ',
+										'sureforms'
+									) }
+									value={ duplicateMsg }
+									data={ {
+										value: duplicateMsg,
+										label: 'duplicateMsg',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( { duplicateMsg: value } )
+									}
+								/>
+							) }
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
+							<UAGNumberControl
+								label={ __( 'Max text length', 'sureforms' ) }
+								displayUnit={ false }
+								value={ textLength }
+								min={ 0 }
+								data={ {
+									value: textLength,
+									label: 'textLength',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( {
+										textLength: Number( value ),
+									} )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={
@@ -124,7 +166,10 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'text-input-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'text-input-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
@@ -147,6 +192,6 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					</label>
 				) }
 			</div>
-		</div>
+		</>
 	);
 };

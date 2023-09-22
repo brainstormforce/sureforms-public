@@ -1,14 +1,10 @@
 .sureforms-form {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 24px;
 	margin-top: 2rem;
 	margin-bottom: 2rem;
-}
-
-.sureforms-single-form {
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
+	background-attachment: fixed;
 }
 
 form.sureforms-form input::placeholder,
@@ -18,65 +14,40 @@ textarea::placeholder {
 
 form.sureforms-form .text-primary {
 	color: var( --primary-color );
-	font-weight: 600;
 }
 
 form.sureforms-form .text-secondary {
 	color: var( --secondary-color );
 }
 
-form.sureforms-form .error-message {
-	color: #eb0707e0;
-	font-size: 12px;
-	line-height: 0.5;
+form.sureforms-form .error-message,
+.password-strength-message {
+	color: #dc2626;
+	font-size: 14px;
+	margin-top: 2px;
 }
 
 form.sureforms-form span a:hover {
 	cursor: pointer;
 }
 
-form.sureforms-form input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="tel"],
-input[type="url"],
-input[type="password"],
-form.sureforms-form textarea,
-form.sureforms-form select,
-form.sureforms-form,
-.sureforms-upload-inner-div,
-.sureforms-multi-choice-label-button {
-	border-color: var( --primary-color ) !important;
+form.sureforms-form .main-container,
+.sureforms-sureforms-address {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }
 
-form.sureforms-form .main-container {
-	opacity: 0.5;
-}
-
-form.sureforms-form .main-container > label:first-child {
-	font-weight: 600;
-}
-
-form.sureforms-form .main-container.sf--focus {
-	opacity: 1;
-	z-index: 1;
-	transition: opacity 0.15s linear;
-}
-
-form.sureforms-form input:focus,
-textarea:focus {
-	outline-color: var( --primary-color );
-}
-
-form.sureforms-form button {
-	background-color: var( --primary-color ) !important;
-	color: var( --secondary-color ) !important;
+.sureforms-sureforms-address {
+	font-size: 14px;
+	width: 100%;
 }
 
 .sureforms-form-background {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	padding: 2em;
 }
 
 .sureforms-single-form-page {
@@ -84,6 +55,11 @@ form.sureforms-form button {
 	margin-right: 10rem;
 }
 
+.sureforms-error-message {
+	border: 2px solid #dc3232;
+	color: #dc3232;
+	padding: 10px;
+}
 .sureforms-loader {
 	border: 2px solid #f3f3f3;
 	border-radius: 50%;
@@ -94,6 +70,14 @@ form.sureforms-form button {
 	animation: spin 2s linear infinite;
 }
 
+.sureforms-success-message {
+	background: #e0ffc7;
+	border: 1px solid #b4d39b;
+	box-sizing: border-box;
+	color: #333;
+	padding: 15px 15px;
+	overflow-wrap: break-word;
+}
 /* Customize range input */
 input[type="range"] {
 	/* -webkit-appearance: none;
@@ -101,7 +85,7 @@ input[type="range"] {
     appearance: none; */
 	width: 100%;
 	height: 10px;
-	border: 2px solid var( --primary-color ) !important;
+	border: 2px solid var( --primary-color );
 	border-radius: 4px;
 	background-color: white;
 	outline: none;
@@ -112,11 +96,14 @@ input[type="range"]::-webkit-slider-thumb {
     appearance: none; */
 	width: 20px;
 	height: 20px;
-	background-color: var( --primary-color ) !important;
+	background-color: var( --primary-color );
 	border-radius: 50%;
 	cursor: pointer;
 }
 
+.sureforms-country-field {
+	color: var( --secondary-color );
+}
 /* Safari */
 @-webkit-keyframes spin {
 	0% {
@@ -136,10 +123,81 @@ input[type="range"]::-webkit-slider-thumb {
 	}
 }
 
-.sureforms-button {
-	font-size: 16px !important;
-	background: var( --sureforms_col1 );
-	color: var( --sureforms_col2 );
-	border: none;
-	padding: 15px 30px 15px 30px;
+/* CSS for text-area counter */
+.sureforms-text-area-counter {
+	bottom: 0;
+	font-size: 0.8em;
+	padding: 0.5em 0.7em;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+	transition: opacity 0.18s linear;
+	z-index: 2;
+}
+.info-icon {
+	position: relative;
+	display: none;
+	font-size: 1.2rem;
+	cursor: pointer;
+}
+
+.info-icon::before {
+	content: attr( data-tooltip );
+	position: absolute;
+	left: 17rem;
+	transform: translateX( -50% );
+	padding: 2px;
+	background-color: #333;
+	color: #fff;
+	font-size: 0.8rem;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.2s, visibility 0.2s;
+	width: 500px;
+}
+
+.info-icon:hover::before {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* Switch Field CSS */
+
+.switch-background {
+	display: inline-block;
+	position: relative;
+	width: 50px;
+	height: 25px;
+	border-radius: 25px;
+	transition: background-color 0.2s;
+	cursor: pointer;
+}
+
+.switch-toggle {
+	display: inline-block;
+	position: absolute;
+	width: 21px;
+	height: 21px;
+	border-radius: 50%;
+	background-color: #fff;
+	top: 2px;
+	transition: left 0.2s;
+}
+
+.sureforms-switch {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* Upload Field CSS */
+
+.sureforms-upload-title {
+	display: flex;
+	align-items: center;
+	margin-left: 12px;
+	margin-top: 12px;
+	font-size: 25px;
+	gap: 10px;
 }

@@ -4,23 +4,21 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	PanelRow,
-	ToggleControl,
-	TextControl,
-	BaseControl,
-	RangeControl,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
+import UAGTextControl from '@Components/text-control';
+import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
+import Range from '@Components/range/Range.js';
 
 /**
  * Components dependencies
  */
 import CreatableSelect from 'react-select/creatable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faCloudArrowUp,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const {
@@ -31,6 +29,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		customFormats,
 		help,
 		id,
+		errorMsg,
 	} = attributes;
 	const maxUploadFileSize = upload_field.upload_max_limit;
 	const uploadFormats = upload_field.upload_formats;
@@ -48,55 +47,73 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const firstFive = allowedFormats.slice( 0, 5 );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<InspectorControls>
-				<PanelBody title="Attributes">
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Label', 'sureforms' ) }
-							value={ label }
-							onChange={ ( value ) =>
-								setAttributes( { label: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<RangeControl
-							label={ __( 'File Size Limit', 'sureforms' ) }
-							help={ __(
-								'Select the maximum file size limit of the file that can be upload',
-								'sureforms'
-							) }
-							value={ fileSizeLimit }
-							min={ 1 }
-							max={ maxUploadFileSize }
-							step={ 1 }
-							onChange={ ( value ) =>
-								setAttributes( { fileSizeLimit: value } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<BaseControl
-							id="for-allowed-types"
-							label={ __( 'Allowed Types', 'sureforms' ) }
-							help={ __(
-								'Search for the File type or you can add your custom File types.',
-								'sureforms'
-							) }
+				<InspectorTabs
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...UAGTabs.general }>
+						<UAGAdvancedPanelBody
+							title={ __( 'Attributes', 'sureforms' ) }
+							initialOpen={ true }
 						>
+							<UAGTextControl
+								label={ __( 'Label', 'sureforms' ) }
+								value={ label }
+								data={ {
+									value: label,
+									label: 'label',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { label: value } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Required', 'sureforms' ) }
+								checked={ required }
+								onChange={ ( checked ) =>
+									setAttributes( { required: checked } )
+								}
+							/>
+							{ required && (
+								<UAGTextControl
+									label={ __( 'Error message', 'sureforms' ) }
+									value={ errorMsg }
+									data={ {
+										value: errorMsg,
+										label: 'errorMsg',
+									} }
+									onChange={ ( value ) =>
+										setAttributes( { errorMsg: value } )
+									}
+								/>
+							) }
+							<Range
+								label={ __( 'File Size Limit', 'sureforms' ) }
+								value={ fileSizeLimit }
+								help={ __(
+									'Select the maximum file size limit of the file that can be upload',
+									'sureforms'
+								) }
+								min={ 1 }
+								max={ maxUploadFileSize }
+								displayUnit={ false }
+								setAttributes={ setAttributes }
+								data={ {
+									value: fileSizeLimit,
+									label: 'fileSizeLimit',
+								} }
+							/>
+							<span className="uag-control-label uagb-control__header">
+								{ __( 'Allowed Types', 'sureforms' ) }
+							</span>
 							<CreatableSelect
 								options={ wpUploadFormats.map( ( format ) => {
-									return { value: format, label: format };
+									return {
+										value: format,
+										label: format,
+									};
 								} ) }
 								value={ allowedFormats }
 								isMulti
@@ -107,18 +124,28 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 									} );
 								} }
 							/>
-						</BaseControl>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Help', 'sureforms' ) }
-							value={ help }
-							onChange={ ( value ) =>
-								setAttributes( { help: value } )
-							}
-						/>
-					</PanelRow>
-				</PanelBody>
+							<p className="components-base-control__help">
+								{ __(
+									'Search for the File type or you can add your custom File types.',
+									'sureforms'
+								) }
+							</p>
+
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
+						</UAGAdvancedPanelBody>
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				</InspectorTabs>
 			</InspectorControls>
 			<div
 				className={
@@ -130,7 +157,10 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '0.5rem',
 				} }
 			>
-				<label htmlFor={ 'upload-input-field-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'upload-input-field-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
@@ -167,9 +197,15 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							<>
 								<FontAwesomeIcon
 									icon={ faCloudArrowUp }
-									style={ { fontSize: '25px', marginBottom: '5px' } }
+									style={ {
+										fontSize: '25px',
+										marginBottom: '5px',
+									} }
 								/>
-								{ __( 'Click to choose the file', 'sureforms' ) }
+								{ __(
+									'Click to choose the file',
+									'sureforms'
+								) }
 							</>
 						</div>
 						<div
@@ -232,6 +268,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					</label>
 				) }
 			</div>
-		</div>
+		</>
 	);
 }

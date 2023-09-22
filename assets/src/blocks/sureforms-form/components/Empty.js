@@ -11,8 +11,9 @@ import { Placeholder, Button, Icon, TextControl } from '@wordpress/components';
 import { dispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 
-import { receipt as icon } from '@wordpress/icons';
+import icon from '../../../../../images/Logo.js';
 
 /**
  * Components
@@ -44,6 +45,34 @@ export default ( { attributes, setAttributes } ) => {
 					status: 'publish',
 				}
 			);
+			const formStatusData = {
+				post_id: updatedRecord.id,
+				_sureforms_color1: '',
+				_sureforms_textcolor1: '',
+				_sureforms_color2: '',
+				_sureforms_fontsize: 16,
+				_sureforms_bg: '',
+				_sureforms_thankyou_message: 'Form submitted successfully!',
+				_sureforms_email: sfBlockData.admin_email,
+				_sureforms_submit_type: 'message',
+				_sureforms_submit_url: '',
+				_sureforms_sender_notification: 'off',
+				_sureforms_form_recaptcha: 'none',
+				_sureforms_submit_alignment: 'left',
+				_sureforms_submit_width: '',
+				_sureforms_submit_styling_inherit_from_theme: false,
+			};
+
+			try {
+				await apiFetch( {
+					path: '/sureforms/v1/load-form-defaults',
+					method: 'POST',
+					data: formStatusData,
+				} );
+			} catch ( error ) {
+				console.error( error );
+			}
+
 			setAttributes( { id: updatedRecord.id } );
 		} catch ( e ) {
 			// TODO: Add notice here.
@@ -152,7 +181,7 @@ export default ( { attributes, setAttributes } ) => {
 					'Get started by selecting a form or start build a new form.',
 					'sureforms'
 				) }
-				label={ __( 'Add a sureforms form', 'sureforms' ) }
+				label={ __( 'Add a SureForms form', 'sureforms' ) }
 			>
 				<div style={ { display: 'flex', gap: '0.5em' } }>
 					<Button

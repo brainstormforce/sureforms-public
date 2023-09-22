@@ -6,7 +6,16 @@ import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 
 export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id, defaultValue } = attributes;
+	const {
+		label,
+		placeholder,
+		help,
+		required,
+		id,
+		defaultValue,
+		isConfirmEmail,
+		confirmLabel,
+	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
 	useEffect( () => {
@@ -17,7 +26,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 	}, [ blockID, id, setAttributes ] );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
@@ -32,7 +41,10 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'email-input-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'email-input-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
@@ -46,6 +58,24 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					placeholder={ placeholder }
 					required={ required }
 				/>
+				{ isConfirmEmail && (
+					<>
+						<label htmlFor={ 'confirm-email-input-' + blockID }>
+							{ confirmLabel }
+							{ required && confirmLabel && (
+								<span style={ { color: 'red' } }> *</span>
+							) }
+						</label>
+						<input
+							id={ 'confirm-email-input-' + blockID }
+							type="email"
+							value={ defaultValue }
+							className={ className }
+							placeholder={ placeholder }
+							required={ required }
+						/>
+					</>
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'email-input-help-' + blockID }
@@ -55,6 +85,6 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					</label>
 				) }
 			</div>
-		</div>
+		</>
 	);
 };

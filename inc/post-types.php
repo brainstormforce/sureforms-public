@@ -3,16 +3,19 @@
  * Post Types Class file.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc;
 
+use WP_Screen;
+use WP_Query;
 use SureForms\Inc\Traits\Get_Instance;
+
 /**
  * Post Types Main Class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Post_Types {
 	use Get_Instance;
@@ -20,29 +23,100 @@ class Post_Types {
 	/**
 	 * Constructor
 	 *
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_sureforms_form_columns' ] );
 		add_action( 'manage_sureforms_form_posts_custom_column', [ $this, 'custom_sureforms_form_column_data' ], 10, 2 );
+		add_filter( 'manage_sureforms_entry_posts_columns', [ $this, 'custom_sureforms_entry_columns' ] );
+		add_action( 'manage_sureforms_entry_posts_custom_column', [ $this, 'custom_sureforms_entry_column_data' ], 10, 2 );
 		add_shortcode( 'sureforms', [ $this, 'sureforms_shortcode' ] );
 		add_action( 'add_meta_boxes', [ $this, 'sureform_entries_meta_box' ] );
+		add_action( 'restrict_manage_posts', [ $this, 'add_sureforms_tax_filter' ] );
+		add_action( 'manage_posts_extra_tablenav', [ $this, 'maybe_render_blank_form_state' ] );
+		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
+		add_action( 'admin_head', [ $this, 'sureforms_remove_entries_publishing_actions' ] );
+		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
+	}
+
+	/**
+	 * Add SureForms menu.
+	 *
+	 * @param string $title Parent slug.
+	 * @param string $subtitle Parent slug.
+	 * @param string $image Parent slug.
+	 * @param string $button_text Parent slug.
+	 * @param string $button_url Parent slug.
+	 * @return void
+	 * @since X.X.X
+	 */
+	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '' ) {
+		echo '<div class="sureform-add-new-form">';
+
+		echo '<p class="sureform-blank-page-title">' . esc_html( $title ) . '</p>';
+
+		echo '<p class="sureform-blank-page-subtitle">' . esc_html( $subtitle ) . '</p>';
+
+		echo '<img src="' . esc_url( SUREFORMS_URL . '/images/' . $image . '.svg' ) . '">';
+
+		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
+			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
+		}
+
+		echo '</div>';
+	}
+
+	/**
+	 * Render blank state for add new form screen.
+	 *
+	 * @param string $post_type Post type.
+	 * @return void
+	 * @since  X.X.X
+	 */
+	public function sureforms_render_blank_state( $post_type ) {
+
+		if ( SUREFORMS_FORMS_POST_TYPE === $post_type ) {
+			$new_form_url = admin_url( 'post-new.php?post_type=' . SUREFORMS_FORMS_POST_TYPE );
+
+			$this->get_blank_page_markup(
+				esc_html__( 'Let’s build your first form', 'sureforms' ),
+				esc_html__(
+					'Craft beautiful and functional forms in minutes',
+					'sureforms'
+				),
+				'add-new-form',
+				esc_html__( 'Add New Form', 'sureforms' ),
+				$new_form_url
+			);
+		}
+
+		if ( SUREFORMS_ENTRIES_POST_TYPE === $post_type ) {
+
+			$this->get_blank_page_markup(
+				esc_html__( 'No records found', 'sureforms' ),
+				esc_html__(
+					'This is where your form entries will appear',
+					'sureforms'
+				),
+				'blank-entries'
+			);
+		}
 	}
 
 	/**
 	 * Registers the forms and submissions post types.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_post_types() {
 		$form_labels = array(
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'Form', 'add new on admin bar', 'sureforms' ),
+			'name_admin_bar'     => _x( 'SureForms Form', 'add new on admin bar', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
 			'new_item'           => __( 'New Form', 'sureforms' ),
@@ -58,7 +132,7 @@ class Post_Types {
 			SUREFORMS_FORMS_POST_TYPE,
 			array(
 				'labels'            => $form_labels,
-				'rewrite'           => array( 'slug' => 'sf-form' ),
+				'rewrite'           => array( 'slug' => 'form' ),
 				'public'            => true,
 				'show_in_rest'      => true,
 				'has_archive'       => false,
@@ -85,7 +159,7 @@ class Post_Types {
 			'add_new'            => _x( 'Add New', 'Entry', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Entry', 'sureforms' ),
 			'new_item'           => __( 'New Entry', 'sureforms' ),
-			'edit_item'          => __( 'Edit Entry', 'sureforms' ),
+			'edit_item'          => __( 'View Entry', 'sureforms' ),
 			'view_item'          => __( 'View Entry', 'sureforms' ),
 			'all_items'          => __( 'Entries', 'sureforms' ),
 			'search_items'       => __( 'Search Entries', 'sureforms' ),
@@ -97,8 +171,9 @@ class Post_Types {
 			SUREFORMS_ENTRIES_POST_TYPE,
 			array(
 				'labels'              => $result_labels,
-				'supports'            => array( 'title', 'author' ),
+				'supports'            => array( 'title' ),
 				'public'              => false,
+				'show_in_rest'        => true,
 				'exclude_from_search' => true,
 				'publicly_queryable'  => false,
 				'has_archive'         => true,
@@ -123,48 +198,166 @@ class Post_Types {
 					'manage_terms' => 'god',
 				),
 				'show_in_rest'      => true,
-				'show_admin_column' => true,
+				'show_admin_column' => false,
 				'show_in_nav_menus' => false,
+				'show_ui'           => false,
 			)
 		);
-		register_post_status(
-			'unread',
-			array(
-				'label'                     => _x( 'Unread', 'sureforms', 'sureforms' ),
-				'public'                    => true,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				// Translators: %s is the number of unread items.
-				'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
-			)
-		);
+		// will be used later.
+		// register_post_status(
+		// 'unread',
+		// array(
+		// 'label'                     => _x( 'Unread', 'sureforms', 'sureforms' ),
+		// 'public'                    => true,
+		// 'exclude_from_search'       => false,
+		// 'show_in_admin_all_list'    => true,
+		// 'show_in_admin_status_list' => true,
+		// Translators: %s is the number of unread items.
+		// 'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
+		// )
+		// );.
+	}
+
+	/**
+	 * Remove publishing actions from single entries page.
+	 *
+	 * @return void
+	 * @since  X.X.X
+	 */
+	public function sureforms_remove_entries_publishing_actions() {
+		global $typenow;
+		if ( 'sureforms_entry' === $typenow ) { ?>
+			<style>
+				.misc-pub-post-status {
+					display: none !important;
+				}
+				.misc-pub-visibility {
+					display: none !important;
+				}
+			</style> 
+			<?php
+		}
+	}
+
+	/**
+	 * Modify list row actions.
+	 *
+	 * @param array<Mixed> $actions An array of row action links.
+	 * @param \WP_Post     $post  The current WP_Post object.
+	 *
+	 * @return array<Mixed> $actions Modified row action links.
+	 * @since  X.X.X
+	 */
+	public function sureforms_modify_entries_list_row_actions( $actions, $post ) {
+		if ( 'sureforms_entry' === $post->post_type ) {
+			$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '">View</a>';
+		}
+
+		return $actions;
+	}
+
+	/**
+	 * Show blank slate styles.
+	 *
+	 * @return void
+	 * @since  X.X.X
+	 */
+	public function get_blank_state_styles() {
+		echo '<style type="text/css">.sf-add-new-form-button:focus { box-shadow:none !important; outline:none !important; } #posts-filter .wp-list-table, #posts-filter .tablenav.top, .tablenav.bottom .actions, .wrap .subsubsub  { display: none; } #posts-filter .tablenav.bottom { height: auto; } .sureform-add-new-form{ display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: center; padding: 24px 0 24px 0; } .sureform-blank-page-title { color: var(--dashboard-heading); font-family: Inter; font-size: 22px; font-style: normal; font-weight: 600; line-height: 28px; margin: 0; } .sureform-blank-page-subtitle { color: var(--dashboard-text); margin: 0; font-family: Inter; font-size: 14px; font-style: normal; font-weight: 400; line-height: 16px; }</style>';
+	}
+
+	/**
+	 * Show blank slate.
+	 *
+	 * @param string $which String which tablenav is being shown.
+	 * @return void
+	 * @since  X.X.X
+	 */
+	public function maybe_render_blank_form_state( $which ) {
+		$screen    = get_current_screen();
+		$post_type = $screen ? $screen->post_type : '';
+
+		if ( SUREFORMS_FORMS_POST_TYPE === $post_type && 'bottom' === $which ) {
+
+			$counts = (array) wp_count_posts( SUREFORMS_FORMS_POST_TYPE );
+			unset( $counts['auto-draft'] );
+			$count = array_sum( $counts );
+
+			if ( 0 < $count ) {
+				return;
+			}
+
+			$this->sureforms_render_blank_state( $post_type );
+
+			$this->get_blank_state_styles();
+
+		}
+
+		if ( SUREFORMS_ENTRIES_POST_TYPE === $post_type && 'bottom' === $which ) {
+
+			$counts = (array) wp_count_posts( SUREFORMS_ENTRIES_POST_TYPE );
+			unset( $counts['auto-draft'] );
+			$count = array_sum( $counts );
+
+			if ( 0 < $count ) {
+				return;
+			}
+
+			$this->sureforms_render_blank_state( $post_type );
+
+			$this->get_blank_state_styles();
+
+		}
+	}
+
+	/**
+	 * Set up a div for the header to render into it.
+	 *
+	 * @return void
+	 * @since  X.X.X
+	 */
+	public static function embed_page_header() {
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+
+		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $screen_id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $screen_id ) {
+			?>
+		<div id="sureforms-page-header"></div>
+			<?php
+		}
 	}
 
 	/**
 	 * Registers the sureforms metas.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_post_metas() {
 		$metas = array(
-			'_sureforms_color1'           => 'string',
-			'_sureforms_color2'           => 'string',
-			'_sureforms_fontsize'         => 'integer',
-			'_sureforms_bg'               => 'string',
-			'_sureforms_bg_id'            => 'integer',
-			'_sureforms_thankyou_message' => 'string',
-			'_sureforms_email'            => 'string',
-			'_sureforms_submit_type'      => 'string',
-			'_sureforms_submit_url'       => 'string',
+			'_sureforms_color1'                            => 'string',
+			'_sureforms_textcolor1'                        => 'string',
+			'_sureforms_color2'                            => 'string',
+			'_sureforms_fontsize'                          => 'integer',
+			'_sureforms_bg'                                => 'string',
+			'_sureforms_bg_id'                             => 'integer',
+			'_sureforms_thankyou_message'                  => 'string',
+			'_sureforms_email'                             => 'string',
+			'_sureforms_submit_type'                       => 'string',
+			'_sureforms_submit_url'                        => 'string',
+			'_sureforms_sender_notification'               => 'string',
+			'_sureforms_form_recaptcha'                    => 'string',
+			'_sureforms_submit_alignment'                  => 'string',
+			'_sureforms_submit_width'                      => 'string',
+			'_sureforms_submit_styling_inherit_from_theme' => 'boolean',
+			'_sureforms_form_class_name'                   => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
 				'post',
 				$meta,
 				array(
-					'object_subtype'    => 'sureforms_form',
+					'object_subtype'    => SUREFORMS_FORMS_POST_TYPE,
 					'show_in_rest'      => true,
 					'single'            => true,
 					'type'              => $type,
@@ -182,33 +375,33 @@ class Post_Types {
 	 *
 	 * @param \WP_Post $post Template.
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function sureforms_meta_box_callback( \WP_Post $post ) {
 		$meta_data = get_post_meta( $post->ID, 'sureforms_entry_meta', true );
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
-		$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response' ];
+		$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response', 'sureforms-sender-email-field' ];
 		?>
 		<table class="widefat striped">
 			<tbody>
 				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
-				<?php
-				foreach ( $meta_data as $field_name => $value ) :
-					if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
-						continue;
-					}
-					?>
+			<?php
+			foreach ( $meta_data as $field_name => $value ) :
+				if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
+					continue;
+				}
+				?>
 				<tr class="">
-					<?php if ( strpos( $field_name, 'SF-upload' ) !== false ) : ?>
+				<?php if ( strpos( $field_name, 'SF-upload' ) !== false ) : ?>
 						<td><b><?php echo esc_html( explode( 'SF-upload', $field_name )[0] ); ?></b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><img style="max-width:100px; height:auto;" src="<?php echo esc_url( $value ); ?>" alt="img" /></a></td>
 						<?php else : ?>
-							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>">Download</a></td>
+							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
 						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
@@ -218,7 +411,7 @@ class Post_Types {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php
+			<?php
 	}
 
 
@@ -226,7 +419,7 @@ class Post_Types {
 	 * Add Sureforms entries meta box.
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function sureform_entries_meta_box() {
 		add_meta_box(
@@ -237,6 +430,38 @@ class Post_Types {
 			'normal',
 			'high'
 		);
+		add_meta_box(
+			'sureform_form_name_meta',
+			'Form Name',
+			array( $this, 'sureforms_form_name_meta_callback' ),
+			'sureforms_entry',
+			'side',
+			'low'
+		);
+	}
+
+	/**
+	 * Sureforms box Form Name meta box callback.
+	 *
+	 * @param \WP_Post $post Template.
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public function sureforms_form_name_meta_callback( \WP_Post $post ) {
+		$post_id  = $post->ID;
+		$taxonomy = 'sureforms_tax';
+		$terms    = wp_get_post_terms( $post_id, $taxonomy );
+		if ( is_array( $terms ) && count( $terms ) > 0 ) {
+			$form_id   = intval( $terms[0]->slug );
+			$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+			?>
+		<p><?php echo esc_html( $form_name ); ?></p>
+			<?php
+		} else {
+			?>
+			<p><?php echo esc_html__( 'SureForms Form', 'sureforms' ); ?></p>
+			<?php
+		}
 	}
 
 	/**
@@ -244,7 +469,7 @@ class Post_Types {
 	 *
 	 * @param array<mixed> $atts Attributes.
 	 * @return string|void $content Post Content.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function sureforms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
@@ -271,16 +496,16 @@ class Post_Types {
 	 *
 	 * @param array<mixed> $columns Attributes.
 	 * @return array<mixed> $columns Post Content.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function custom_sureforms_form_columns( $columns ) {
 		$columns = array(
-			'cb'          => $columns['cb'],
-			'title'       => $columns['title'],
-			'form-status' => __( 'Form Status', 'sureforms' ),
-			'sureforms'   => __( 'Shortcode', 'sureforms' ),
-			'author'      => $columns['author'],
-			'date'        => $columns['date'],
+			'cb'        => $columns['cb'],
+			'title'     => $columns['title'],
+			'sureforms' => __( 'Shortcode', 'sureforms' ),
+			'entries'   => __( 'Entries', 'sureforms' ),
+			'author'    => $columns['author'],
+			'date'      => $columns['date'],
 		);
 		return $columns;
 	}
@@ -291,10 +516,10 @@ class Post_Types {
 	 * @param string  $column Attributes.
 	 * @param integer $post_id Attributes.
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function custom_sureforms_form_column_data( $column, $post_id ) {
-		$post_id_formatted = sprintf( '%d', $post_id );
+		$post_id_formatted = strval( $post_id );
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
@@ -303,17 +528,126 @@ class Post_Types {
 			<?php
 			ob_end_flush();
 		}
+		if ( 'entries' === $column ) {
+			$entries_url = admin_url( 'edit.php?post_status=all&post_type=' . SUREFORMS_ENTRIES_POST_TYPE . '&sureforms_tax=' . $post_id_formatted . '&filter_action=Filter&paged=1' );
 
-		if ( 'form-status' === $column ) {
-			ob_start();
-			?>
-			<label class="switch">
-				<input id="sureforms-form-toggle-<?php echo esc_attr( strval( $post_id ) ); ?>" type="checkbox" data-postid="<?php echo esc_attr( strval( $post_id ) ); ?>" <?php echo '' === get_post_meta( intval( $post_id ), 'sureforms_form_visibility', true ) ? '' : 'checked'; ?> onchange="toggleStatus(<?php echo esc_attr( strval( $post_id ) ); ?>)">
-				<span class="slider round"></span>
-			</label>
-			<?php
-			ob_end_flush();
+			$taxonomy = 'sureforms_tax';
+
+			$args = array(
+				'post_type' => SUREFORMS_ENTRIES_POST_TYPE,
+				'tax_query' => array(
+					array(
+						'taxonomy' => $taxonomy,
+						'field'    => 'slug',
+						'terms'    => $post_id_formatted,
+					),
+				),
+			);
+
+			$key   = 'sureforms_entries_count_' . $post_id_formatted;
+			$query = wp_cache_get( $key );
+
+			if ( ! $query ) {
+				$query = new WP_Query( $args );
+				wp_cache_set( $key, $query, '', 3600 );
+			}
+
+			if ( $query instanceof WP_Query ) {
+				$post_count = $query->post_count;
+
+				$post_count = strval( $post_count );
+
+				ob_start();
+				?>
+					<p class="sureforms-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>" target="_blank"><?php echo esc_html( $post_count ); ?></a></p>
+				<?php
+				ob_end_flush();
+			}
 		}
-
 	}
+
+	/**
+	 * Add custom column header.
+	 *
+	 * @param array<mixed> $columns Attributes.
+	 * @return array<mixed> $columns Post Content.
+	 * @since 0.0.1
+	 */
+	public function custom_sureforms_entry_columns( $columns ) {
+		$columns = array(
+			'cb'        => $columns['cb'],
+			'title'     => __( 'First Field', 'sureforms' ),
+			'form_name' => __( 'Form Name', 'sureforms' ),
+			'entry_id'  => __( 'ID', 'sureforms' ),
+			'date'      => __( 'Submitted On', 'sureforms' ),
+		);
+		return $columns;
+	}
+
+	/**
+	 * Populate custom column with data.
+	 *
+	 * @param string  $column Attributes.
+	 * @param integer $post_id Attributes.
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public function custom_sureforms_entry_column_data( $column, $post_id ) {
+		if ( 'entry_id' === $column ) {
+			$entry_id = strval( $post_id );
+			echo '<p>#' . esc_html( $entry_id ) . '</p>';
+		}
+		if ( 'form_name' === $column ) {
+			$taxonomy = 'sureforms_tax';
+			$terms    = wp_get_post_terms( $post_id, $taxonomy );
+
+			if ( is_array( $terms ) && count( $terms ) > 0 ) {
+				$form_id   = intval( $terms[0]->slug );
+				$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+				echo '<p>' . esc_html( $form_name ) . '</p>';
+			} else {
+				?>
+				<p><?php echo esc_html__( 'SureForms Form', 'sureforms' ); ?></p>
+				<?php
+			}
+		}
+	}
+
+	/**
+	 * Add SureForms taxonomy filter.
+	 *
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public function add_sureforms_tax_filter() {
+		$screen = get_current_screen();
+
+		if ( ! is_null( $screen ) && 'edit-sureforms_entry' === $screen->id ) {
+			$forms = get_posts(
+				array(
+					'post_type'      => SUREFORMS_FORMS_POST_TYPE,
+					'posts_per_page' => -1,
+					'orderby'        => 'title',
+					'order'          => 'ASC',
+				)
+			);
+
+			if ( ! empty( $forms ) ) {
+				// Nonce Verification is not needed in this case.
+				$selected = isset( $_GET['sureforms_tax'] ) ? $_GET['sureforms_tax'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+				echo '<select name="sureforms_tax" id="sureforms-tax-filter">';
+				echo '<option value="">All Form Entries</option>';
+
+				foreach ( $forms as $form ) {
+					$selected_attr = selected( $selected, $form->ID, false );
+					echo '<option value="' . esc_attr( strval( $form->ID ) ) . '" ' . esc_attr( $selected_attr ) . '>' . esc_html( $form->post_title ) . '</option>';
+				}
+
+				echo '</select>';
+
+			}
+		}
+	}
+
 }

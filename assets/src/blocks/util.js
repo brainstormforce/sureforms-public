@@ -50,6 +50,8 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/upload',
 		'sureforms/url',
 		'sureforms/password',
+		'sureforms/date-time-picker',
+		'sureforms/number-slider',
 	];
 	if ( exclude ) {
 		for ( let i = 0; i < types.length; i++ ) {

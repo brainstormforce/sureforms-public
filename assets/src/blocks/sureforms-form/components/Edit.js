@@ -112,9 +112,9 @@ export default ( { attributes } ) => {
 						<TextControl
 							label={ __( 'Form Title', 'sureforms' ) }
 							value={ title }
-							onChange={ ( value ) =>
-								setTitle( { title: value } )
-							}
+							onChange={ ( value ) => {
+								setTitle( value );
+							} }
 						/>
 					</PanelRow>
 				</PanelBody>

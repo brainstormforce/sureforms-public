@@ -17,7 +17,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 	}, [ blockID, id, setAttributes ] );
 
 	return (
-		<div { ...useBlockProps() }>
+		<>
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
@@ -32,7 +32,10 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'url-input-' + blockID }>
+				<label
+					className="text-primary"
+					htmlFor={ 'url-input-' + blockID }
+				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
@@ -55,6 +58,6 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					</label>
 				) }
 			</div>
-		</div>
+		</>
 	);
 };

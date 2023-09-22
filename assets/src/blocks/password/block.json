@@ -29,6 +29,18 @@
 		},
 		"help": {
 			"type": "string"
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		},
+		"confirmLabel": {
+			"type": "string",
+			"default": "Confirm Password"
+		},
+		"isConfirmPassword": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

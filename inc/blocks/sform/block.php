@@ -35,7 +35,7 @@ class Block extends Base {
 		if ( 'publish' !== $form->post_status || ! empty( $form->post_password ) ) {
 			return '';
 		}
-
+		wp_enqueue_script( 'tailwind' );
 		$result = do_blocks( $form->post_content );
 
 		return '<div>' . $result . '</div>';
