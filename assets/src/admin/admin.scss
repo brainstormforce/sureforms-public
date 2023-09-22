@@ -1,4 +1,5 @@
 body.post-type-sureforms_form {
+
 	.edit-post-sidebar {
 		> .components-panel {
 			.components-panel__row label {
@@ -125,6 +126,7 @@ body.post-type-sureforms_form {
 	}
 
 	.edit-post-header {
+
 		.edit-post-fullscreen-mode-close {
 			&::after {
 				speak: none;
@@ -158,8 +160,11 @@ body.post-type-sureforms_form {
 }
 
 [data-type="sureforms/form"] {
+
 	.block-editor-inner-blocks {
+
 		.block-editor-block-list__layout {
+
 			.wp-block {
 				padding: 5px;
 
