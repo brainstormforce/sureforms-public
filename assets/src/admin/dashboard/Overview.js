@@ -35,6 +35,7 @@ export default ( { } ) => {
 					href="/wp-admin/post-new.php?post_type=sureforms_form"
 					style={ {
 						'--primary-background': '#125D9F',
+						'--sc-focus-ring-color-primary': '#125D9F',
 					} }
 				>
 					{ __( 'Create New Form', 'sureforms' ) } &#8594;

@@ -51,6 +51,7 @@ export default ( {
 				style={ {
 					'--primary-background': btnFilled ? '#125D9F' : '#F5F3FF',
 					'--primary-color': btnFilled ? '#fff' : '#125D9F',
+					'--sc-focus-ring-color-primary': '#125D9F',
 				} }
 			>
 				{ buttonLabel } &#8594;
