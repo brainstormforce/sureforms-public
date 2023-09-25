@@ -39,6 +39,8 @@ class Post_Types {
 		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
 		add_action( 'admin_head', [ $this, 'sureforms_remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
+		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
+
 	}
 
 	/**
@@ -216,6 +218,24 @@ class Post_Types {
 		// 'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
 		// )
 		// );.
+	}
+
+	/**
+	 * Default Form CPT Form title.
+	 *
+	 * @param string   $title Post title.
+	 * @param \WP_Post $post The current WP_Post object.
+	 * @return string
+	 * @since  X.X.X
+	 */
+	public function sureforms_default_cpt_title_filter( $title, $post ) {
+		$post_type = $post->post_type;
+
+		if ( SUREFORMS_FORMS_POST_TYPE === $post_type && empty( $title ) ) {
+			$title = __( 'Untitled Form', 'sureforms' );
+		}
+
+		return $title;
 	}
 
 	/**
