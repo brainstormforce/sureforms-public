@@ -19,7 +19,6 @@ export default ( { templates, template, setTemplate } ) => {
 
 	// Force Form panel open.
 	const forcePanel = () => {
-		console.log();
 		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
 	};
 
