@@ -93,12 +93,11 @@ export default ( { attributes, setAttributes } ) => {
 							display: 'grid',
 							gap: '0.5em',
 							width: '100%',
-							margin: '0.5em',
+							padding: '0.5em',
 						} }
 					>
 						<div>{ __( 'Form Title', 'sureforms' ) }</div>
 						<TextControl
-							style={ { maxWidth: '400px' } }
 							value={ title }
 							placeholder={ __(
 								'Enter a title for your form',
@@ -183,7 +182,13 @@ export default ( { attributes, setAttributes } ) => {
 				) }
 				label={ __( 'Add a SureForms form', 'sureforms' ) }
 			>
-				<div style={ { display: 'flex', gap: '0.5em' } }>
+				<div
+					style={ {
+						display: 'flex',
+						gap: '0.5em',
+						flexWrap: 'wrap',
+					} }
+				>
 					<Button
 						variant="primary"
 						onClick={ () => setAttributes( { step: 'new' } ) }

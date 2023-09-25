@@ -47,7 +47,10 @@ export default ( { setForm } ) => {
 			options={ ( formsData || [] ).map( ( formEntry ) => {
 				return {
 					value: formEntry.id,
-					label: formEntry.title.rendered,
+					label:
+						formEntry.title.rendered === ''
+							? 'Untitled Form'
+							: formEntry.title.rendered,
 				};
 			} ) }
 			placeholder={ __( 'Choose a form', 'sureforms' ) }
