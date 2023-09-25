@@ -6,6 +6,7 @@ import Thumbnail from './Thumbnail';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
+const { dispatch } = wp.data;
 
 export default ( { templates, template, setTemplate } ) => {
 	const [ choice, setChoice ] = useState( template );
@@ -16,6 +17,12 @@ export default ( { templates, template, setTemplate } ) => {
 		object-fit: contain;
 	`;
 
+	// Force Form panel open.
+	const forcePanel = () => {
+		console.log();
+		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
+	};
+
 	return (
 		<PlaceholderTemplate
 			header={ __( 'Choose A Starting Template', 'sureforms' ) }
@@ -23,7 +30,10 @@ export default ( { templates, template, setTemplate } ) => {
 				<Button
 					variant="primary"
 					disabled={ ! choice }
-					onClick={ () => setTemplate( choice ) }
+					onClick={ () => {
+						forcePanel();
+						setTemplate( choice );
+					} }
 				>
 					{ __( 'Select Template', 'sureforms' ) }
 				</Button>
