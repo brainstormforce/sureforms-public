@@ -27,7 +27,7 @@
 			"type": "number"
 		},
 		"allowedFormats": {
-			"type": "string|array",
+			"type": "array",
 			"default": [
 				{ "value": "jpg", "label": "jpg" },
 				{ "value": "jpeg", "label": "jpeg" },
@@ -37,7 +37,7 @@
 			]
 		},
 		"customFormats": {
-			"type": "string|array",
+			"type": "array",
 			"default": []
 		},
 		"help": {
