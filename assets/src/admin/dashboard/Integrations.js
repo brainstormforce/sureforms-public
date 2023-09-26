@@ -74,12 +74,16 @@ export default () => {
 	return (
 		<ScDashboardModule
 			css={ css`
-				width: 33%;
-				@media screen and ( max-width: 782px ) {
-					width: 100%;
-				}
-			` }
-			style={ { '--sc-dashboard-module-spacing': '2em' } }
+		width: 33%;
+		margin-top:2em;
+		@media screen and ( max-width: 782px ) {
+			width: 100%;
+		}
+		.dashboard-module{
+			display:none;
+		}
+	` }
+			style={ { '--sc-flex-column-gap': '1em' } }
 		>
 			<ScCard noPadding>
 				<ScStackedList>

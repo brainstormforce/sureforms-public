@@ -129,11 +129,11 @@ class SF_Admin_Ajax {
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'plugin_activating_text' => __( 'Activating', 'sureforms' ),
+				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
 				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
 				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
 				'integrations'           => self::sureforms_get_integration(),
-				'plugin_installing_text' => __( 'Installing', 'sureforms' ),
+				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 			)
 		);
