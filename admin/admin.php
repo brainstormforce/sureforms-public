@@ -28,7 +28,7 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_menu', [ $this, 'sureforms_settings_page' ] );
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
-		add_action( 'enqueue_block_editor_assets', [ $this, 'sureforms_enqueue_styles' ] );
+		add_action( 'enqueue_block_assets', [ $this, 'sureforms_enqueue_styles' ] );
 	}
 
 	/**
@@ -131,9 +131,10 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function sureforms_enqueue_styles() {
-		$current_screen = get_current_screen();
 		wp_enqueue_style( 'sureforms-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'sureforms-editor-styles', SUREFORMS_URL . 'assets/src/blocks/editor-styles.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'sureforms-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'sureforms-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 	}
 
 	/**
@@ -243,12 +244,10 @@ class Admin {
 			wp_enqueue_script( 'settings', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
 			wp_enqueue_style( 'sureforms-setting-styles', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SUREFORMS_VER, 'all' );
 		}
-		wp_enqueue_style( 'sureforms-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'sureforms-form-archive-styles', SUREFORMS_URL . 'assets/build/form_archive_styles.css', [], SUREFORMS_VER, 'all' );
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
-			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'inc/form-archive-script.js', [], SUREFORMS_VER, true );
+			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
 		}
-		wp_enqueue_style( 'sureforms-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 
 	}
 }

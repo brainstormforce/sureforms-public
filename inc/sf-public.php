@@ -38,14 +38,32 @@ class SF_Public {
 	 */
 	public function enqueue_scripts() {
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
-		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), SUREFORMS_VER );
-		wp_enqueue_style( 'sureforms-frontend', plugin_dir_url( __FILE__ ) . 'sureforms-frontend.css', array(), SUREFORMS_VER );
-		wp_enqueue_script( 'sureforms-frontend-script', plugin_dir_url( __FILE__ ) . 'frontend.js', array(), SUREFORMS_VER, true );
-		wp_enqueue_style( 'sureforms-form-frontend-ui-styles', SUREFORMS_URL . 'assets/build/form_frontend_ui_styles.css', [], SUREFORMS_VER, 'all' );
-		wp_enqueue_script( 'sureforms-google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );
-		wp_enqueue_script( 'form-submit', plugin_dir_url( __FILE__ ) . 'form-submit.js', [], SUREFORMS_VER, true );
+
+		// Font Awesome icons.
+		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
+
+		// SureForms frontend CSS.
+		wp_enqueue_style( 'sureforms-frontend', SUREFORMS_URL . 'assets/src/public/styles/sureforms-frontend.css', [], SUREFORMS_VER );
+
+		if ( has_block( 'sureforms/sf-form' ) || has_block( 'sureforms/form' ) || has_shortcode( get_the_content(), 'sureforms' ) || wp_is_block_theme() ) {
+			wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+			// Tailwind Elements JS.(need to load if datetime picker or rating fields are present).
+			if ( has_block( 'sureforms/rating' ) || has_block( 'sureforms/date-time-picker' ) ) {
+				wp_enqueue_script( 'tailwind-elements', SUREFORMS_URL . 'assets/build/tailwindElements.js', [], SUREFORMS_VER, true );
+			}
+		}
+
+		// SureForms frontend JS.
+		wp_enqueue_script( 'sureforms-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
+
+		// Tailwind Elements JS.
+		wp_enqueue_script( 'tailwind-elements', SUREFORMS_URL . 'assets/build/tailwindElements.js', [], SUREFORMS_VER, true );
+
+		// Google reCaptcha.
+		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );
 		if ( ! empty( $is_set_v2_site_key ) ) {
-			wp_enqueue_script( 'sureforms-google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', array(), SUREFORMS_VER, true );
+			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [], SUREFORMS_VER, true );
 		}
 	}
 

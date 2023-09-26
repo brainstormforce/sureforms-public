@@ -57,7 +57,7 @@ class Block extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-			<div class="sureforms-address-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>">
+			<!-- <div class="sureforms-address-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>">
 				<label class="text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
@@ -172,6 +172,55 @@ class Block extends Base {
 						</div>
 					</div>
 					<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
+				</div> -->
+				<div class="sureforms-address-container main-container sf-classic-inputs-holder  <?php echo esc_attr( $classname ); ?>" id="sfclassic-address-container-<?php echo esc_attr( $id ); ?>"> 
+					<label for="text" class="block text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
+					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullAddress-<?php echo esc_attr( $id ); ?>" />
+					<div class="mt-2">
+						<input type="text" class="!top-[3px] !relative !block !w-full !rounded-none !rounded-t-md !border-0 !bg-white !py-1.5 !text-gray-900 !ring-1 !ring-inset !border-[#d1d5db] !ring-gray-300 placeholder:!text-gray-400 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6" id="sureforms-address-line-1-<?php echo esc_attr( $id ); ?>"
+						area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+						placeholder="<?php echo esc_attr( $line_one_placeholder ); ?>">
+					</div>
+					<div class="">
+						<input type="text" class="!top-[2px] !relative !block !w-full !rounded-none !border-0 !bg-white !py-1.5 !text-gray-900 !ring-1 !ring-inset !border-[#d1d5db] !ring-gray-300 placeholder:!text-gray-400 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6" id="sureforms-address-line-2-<?php echo esc_attr( $id ); ?>"
+						placeholder="<?php echo esc_attr( $line_two_placeholder ); ?>">
+					</div>
+					<div class="flex -space-x-px">
+						<div class="w-1/2 min-w-0 flex-1">
+						<input type="text" class="!top-[1px] !relative !block !w-full !rounded-none !bg-white !border-0 !bg-transparent !py-1.5 !text-gray-900 !ring-1 !ring-inset !ring-gray-300 placeholder:!text-gray-400 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6" id="sureforms-address-city-<?php echo esc_attr( $id ); ?>"
+							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							placeholder="<?php echo esc_attr( $city_placeholder ); ?>">
+						</div>
+						<div class="min-w-0 flex-1">
+						<input type="text" class="!top-[1px] !relative !block !w-full !rounded-none !bg-white !border-0 !bg-transparent !py-1.5 !text-gray-900 !ring-1 !ring-inset !ring-gray-300 placeholder:!text-gray-400 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6" id="sureforms-address-state-<?php echo esc_attr( $id ); ?>"
+							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							placeholder="<?php echo esc_attr( $state_placeholder ); ?>">
+						</div>
+					</div>
+					<div class="-space-y-px rounded-md shadow-sm">
+						<div>
+							<label for="country" class="sr-only">Country</label>
+							<select id="sureforms-address-country-<?php echo esc_attr( $id ); ?>" autocomplete="country-name" class="!relative !bg-white !block !w-full !rounded-none !border-0 !bg-transparent !py-1.5 !text-gray-900 !ring-1 !ring-inset !ring-gray-300 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6">
+							<?php if ( ! empty( $country_placeholder ) ) : ?>
+								<option value="" selected disabled hidden><?php echo esc_html( $country_placeholder ); ?></option>
+							<?php endif; ?>
+							<?php foreach ( $data as $country ) { ?>
+								<?php if ( is_array( $country ) && isset( $country['name'] ) ) { ?>
+									<option value="<?php echo esc_attr( $sureforms_helper_instance->get_string_value( $country['name'] ) ); ?>">
+										<?php echo esc_html( $sureforms_helper_instance->get_string_value( $country['name'] ) ); ?>
+									</option>
+								<?php } ?>
+							<?php } ?>
+							</select>
+						</div>
+						<div>
+							<label for="postal-code" class="sr-only">ZIP / Postal code</label>
+							<input type="text" autocomplete="postal-code" class="!relative !block !w-full !bg-white !rounded-none !rounded-b-md !border-0 !bg-transparent !py-1.5 !text-gray-900 !ring-1 !ring-inset !ring-gray-300 placeholder:!text-gray-400 focus:!z-10 focus:!ring-2 focus:!ring-primary_color focus:!outline-0 sm:!text-sm sm:!leading-6" id="sureforms-address-postal-<?php echo esc_attr( $id ); ?>"
+							area-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
+							placeholder="<?php echo esc_attr( $postal_placeholder ); ?>">
+						</div>
+					</div>
+					<p style="display:none" class="error-message !mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
 				</div>
 			<?php
 		}

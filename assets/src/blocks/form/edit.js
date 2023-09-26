@@ -85,17 +85,28 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		} );
 		setPatterns( newPatterns );
 	};
-	function updateMeta( option, value ) {
-		const option_array = {};
-		option_array[ option ] = value;
-		editPost( {
-			meta: option_array,
-		} );
-	}
+
+	const sureforms_keys = useSelect( ( select ) =>
+		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
+	);
+
+	// Used to detect the FSE Theme
+	const siteEditor = document.querySelector( '.site-editor-php' );
 
 	useEffect( () => {
-		updateMeta( '_sureforms_form_class_name', attributes.className );
-	}, [ attributes ] );
+		if ( ! siteEditor ) {
+			function updateMeta( option, value ) {
+				const option_array = {};
+				option_array[ option ] = value;
+				editPost( {
+					meta: option_array,
+				} );
+			}
+
+			updateMeta( '_sureforms_form_class_name', attributes.className );
+		}
+	}, [ siteEditor, attributes ] );
+
 	/**
 	 * Maybe create the template for the form.
 	 *
@@ -130,19 +141,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
-	const sureforms_keys = useSelect( ( select ) =>
-		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
-	);
-
 	const renderButtonHtml = () => {
 		return (
 			<button
 				className={
 					'sureform-submit-button ' +
-					( sureforms_keys._sureforms_submit_styling_inherit_from_theme
+					( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+					'' === sureforms_keys?._sureforms_color1
 						? 'wp-block-button__link'
 						: 'sureforms-button' ) +
-					( ! sureforms_keys._sureforms_color1
+					( ! sureforms_keys?._sureforms_color1
 						? ' sureforms-default-colors'
 						: '' )
 				}
@@ -192,7 +200,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					<div
 						className={
 							'sureform-submit-button' +
-							( sureforms_keys._sureforms_submit_styling_inherit_from_theme
+							( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+							'' === sureforms_keys?._sureforms_color1
 								? ' wp-block-button'
 								: '' )
 						}

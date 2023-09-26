@@ -42,9 +42,17 @@ module.exports = {
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
+		tailwindElements: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/elements.js'
+		),
 		form_archive_styles: path.resolve(
 			__dirname,
-			'inc/form-archive-styles.scss'
+			'assets/src/public/styles/form-archive-styles.scss'
+		),
+		sureforms_frontend_styles: path.resolve(
+			__dirname,
+			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
 		),
 		form_frontend_ui_styles: path.resolve(
 			__dirname,

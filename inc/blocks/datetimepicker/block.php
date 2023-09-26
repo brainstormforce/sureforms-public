@@ -33,7 +33,7 @@ class Block extends Base {
 			$error_msg  = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname  = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-		<div class="sureforms-input-date-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-date-container-<?php echo esc_attr( $id ); ?>">
+		<!-- <div class="sureforms-input-date-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-date-container-<?php echo esc_attr( $id ); ?>">
 			<label class="text-primary" for="sureforms-input-date-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
@@ -60,6 +60,35 @@ class Block extends Base {
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-date" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
+		</div> -->
+		<div class="sf-classic-inputs-holder main-container sf-classic-date-time-container <?php echo esc_attr( $classname ); ?>">
+			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
+				<?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?>
+			</label>
+			<input type="hidden" class="sf-min-max-holder" min="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>" >
+			<input type="hidden" field-type="<?php echo esc_attr( $field_type ); ?>" class="sf-classic-date-time-result" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="">
+			<div class="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init
+			<?php
+			switch ( $field_type ) {
+				case 'dateTime':
+					echo esc_attr( 'data-te-date-timepicker-init' );
+					break;
+				case 'date':
+					echo esc_attr( 'data-te-datepicker-init' );
+					break;
+				case 'time':
+					echo esc_attr( 'data-te-timepicker-init' );
+					break;
+				default:
+					echo esc_attr( 'data-te-date-timepicker-init' );
+					break;
+			}
+			?>
+				>
+				<input type="text" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" class="sureforms-input-data-time !block !w-full !border-solid !border-0 !border-[#D1D5DB] !rounded-md !py-1.5 !pr-10 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus-visible:!border-primary_color focus:!ring-primary_color focus-visible:!ring-primary_color focus:!outline-0 focus-visible:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" id="sureforms-input-time-'<?php esc_attr( $id ); ?>'" />
+			</div>
+			<?php echo '' !== $help ? '<label for="sureforms-input-password" class="!mt-2 text-sm text-gray-500">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<p style="display:none" class="error-message !mt-2 text-sm text-red-600" id="email-error"><?php echo esc_html( $error_msg ); ?></p>
 		</div>
 			<?php
 		}

@@ -88,20 +88,32 @@ class Block extends Base {
 				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="sureforms-submit-container <?php echo '' !== $color_primary ? 'frontend-inputs-holder' : ''; ?>">
-					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="<?php echo '1' === $button_styling_from_theme ? 'wp-block-button' : ''; ?>">
+					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="<?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button' : ''; ?>">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-							<button style="margin-top: 24px; width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" id="sureforms-submit-btn" class="<?php echo '1' === $button_styling_from_theme ? 'wp-block-button__link' : 'sureforms-button '; ?>">
-							<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-								<?php echo esc_html( $button_text ); ?>
-								<div style="display: none;" class="sureforms-loader"></div>
-							</div>
-						</button>
+							<!-- <button style="margin-top: 24px; width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" id="sureforms-submit-btn" class="sureforms-button <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : ''; ?>">
+								<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
+									<?php echo esc_html( $button_text ); ?>
+									<div style="display: none;" class="sureforms-loader"></div>
+								</div>
+							</button> -->
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>">
+								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
+									<?php echo esc_html( $button_text ); ?>
+									<div style="display: none;" class="sureforms-loader"></div>
+								</div>
+							</button>
 						<?php endif; ?>
 							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-								<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" class="<?php echo '1' === $button_styling_from_theme ? 'wp-block-button__link' : 'sureforms-button'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+								<!-- <button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" class="sureforms-button <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : ''; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
 									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
+										<?php echo esc_html( $button_text ); ?>
+										<div style="display: none;" class="sureforms-loader"></div>
+									</div>
+								</button> -->
+								<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+									<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 										<?php echo esc_html( $button_text ); ?>
 										<div style="display: none;" class="sureforms-loader"></div>
 									</div>
@@ -109,8 +121,14 @@ class Block extends Base {
 							<?php endif; ?>
 							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 								<?php wp_enqueue_script( 'sureforms-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), array(), SUREFORMS_VER, true ); ?>
-							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" class="g-recaptcha <?php echo '1' === $button_styling_from_theme ? 'wp-block-button__link' : 'sureforms-button '; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+							<!-- <button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" class="g-recaptcha sureforms-button <?php echo '1' === $button_styling_from_theme ? 'wp-block-button__link' : ''; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
 								<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
+									<?php echo esc_html( $button_text ); ?>
+									<div style="display: none;" class="sureforms-loader"></div>
+								</div>
+							</button> -->
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="g-recaptcha sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 									<?php echo esc_html( $button_text ); ?>
 									<div style="display: none;" class="sureforms-loader"></div>
 								</div>
@@ -118,8 +136,14 @@ class Block extends Base {
 						<?php endif; ?>
 						<?php endif; ?>
 						<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" id="sureforms-submit-btn" class="<?php echo '1' === $button_styling_from_theme ? 'wp-block-button__link' : 'sureforms-button'; ?>">
+							<!-- <button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" type="submit" id="sureforms-submit-btn" class="sureforms-button <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : ''; ?>">
 								<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
+									<?php echo esc_html( $button_text ); ?>
+									<div style="display: none;" class="sureforms-loader"></div>
+								</div>
+							</button> -->
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>">
+								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 									<?php echo esc_html( $button_text ); ?>
 									<div style="display: none;" class="sureforms-loader"></div>
 								</div>
@@ -129,7 +153,7 @@ class Block extends Base {
 					</div>
 				<?php endif; ?>
 			</form>
-			<div id="sureforms-success-message-page-<?php echo esc_attr( $id ); ?>" style="display:none" class="sureforms-single-form sureforms-success-box in-page"> 
+			<div id="sureforms-success-message-page-<?php echo esc_attr( $id ); ?>" style="height:0;" class="sureforms-single-form sureforms-success-box in-page"> 
 				<i class="fa-regular fa-circle-check"></i>
 				<article class="sureforms-success-box-header">
 					Thank you

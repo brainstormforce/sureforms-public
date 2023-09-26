@@ -423,6 +423,13 @@ class Post_Types {
 						<?php else : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
 						<?php endif; ?>
+					<?php elseif ( strpos( $field_name, 'SF-url' ) !== false ) : ?>
+						<td><b><?php echo esc_html( explode( 'SF-url', $field_name )[0] ); ?></b></td>
+						<?php if ( ! $value ) : ?>
+							<td><?php echo ''; ?></td>
+						<?php else : ?>
+							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
+						<?php endif; ?>
 					<?php else : ?>
 						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>

@@ -38,7 +38,7 @@ class Block extends Base {
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
-		<div class="sureforms-input-number-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
+		<!-- <div class="sureforms-input-number-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 			<label for="sureforms-input-number-<?php echo esc_attr( $id ); ?>" class="text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
@@ -47,6 +47,16 @@ class Block extends Base {
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			<span class="min-max-validation-message error-message"></span>
 			<?php echo '' !== $help ? '<label for="sureforms-input-number" class="text-secondary">' . esc_html( $help ) . '</label>' : ''; ?>
+		</div> -->
+		<div class="sureforms-input-number-container main-container sf-classic-inputs-holder  <?php echo esc_attr( $classname ); ?>">
+			<label for="sureforms-input-number-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
+			<div class="mt-2">
+				<input type="text" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-number-<?php echo esc_attr( $id ); ?>" class="block !w-full !border-solid !border-0 !border-[#d1d5db] !rounded-md !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset  !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" 
+				placeholder="<?php echo esc_attr( $placeholder ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" format-type="<?php echo esc_attr( $format_type ); ?>" min="<?php echo esc_attr( $min_value ); ?>" max="<?php echo esc_attr( $max_value ); ?>">
+			</div>
+			<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
+			<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+			<p class="min-max-validation-message error-message"></p>
 		</div>
 			<?php
 		}

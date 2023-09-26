@@ -224,7 +224,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						<select
 							style={ { width: '124px' } }
 							required={ required }
-							value={ defaultCountryCode }
 							id={ 'phone-field-' + blockID }
 							placeholder="US +1"
 							onChange={ ( e ) => handleChange( e ) }
@@ -237,6 +236,10 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 											country.code +
 											' ' +
 											country.dial_code
+										}
+										selected={
+											country.dial_code ===
+												defaultCountryCode && true
 										}
 									>
 										{ country.code +
