@@ -106,6 +106,9 @@ export default ( { attributes, setAttributes } ) => {
 							onChange={ ( value ) =>
 								setAttributes( { title: value } )
 							}
+							style={ {
+								width: '95%',
+							} }
 						/>
 						<div style={ { display: 'flex', gap: '0.5em' } }>
 							<Button
