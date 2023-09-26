@@ -46,9 +46,9 @@ class Block extends Base {
 			<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
 		</div> -->
 		<div class="main-container sf-classic-inputs-holder  <?php echo esc_attr( $classname ); ?>">
-			<label for="text" class="block text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
+			<label for="sureforms-input-text-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
 			<div class="mt-2">
-				<input type="text" name="text" id="text" class="block !w-full !border-0 !border-[#d1d5db] !rounded-md !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" 
+				<input type="text" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-text-<?php echo esc_attr( $id ); ?>" class="block !w-full !border-0 !border-[#d1d5db] !rounded-md !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" 
 				placeholder="<?php echo esc_attr( $placeholder ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 			</div>
 			<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>

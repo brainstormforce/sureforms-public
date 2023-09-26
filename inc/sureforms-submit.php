@@ -319,27 +319,6 @@ class Sureforms_Submit {
 			$email_template = new Email_Template();
 			$message        = $email_template->render( $meta_data );
 
-			$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response', 'sureforms-sender-email-field' ];
-			foreach ( $meta_data as $field_name => $value ) {
-				if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
-					continue;
-				}
-				if ( strpos( $field_name, 'SF-upload' ) !== false ) {
-					$message .= strtoupper( explode( 'SF-upload', $field_name )[0] ) . ':';
-					if ( ! empty( $value ) ) {
-						$message .= ' <a href="' . esc_url( $value ) . '">' . __( 'View', 'sureforms' ) . '</a>';
-					}
-					$message .= '<br/>';
-				} elseif ( strpos( $field_name, 'SF-url' ) !== false ) {
-					$message .= strtoupper( explode( 'SF-url', $field_name )[0] ) . ':';
-					if ( ! empty( $value ) ) {
-						$message .= esc_url( $value );
-					}
-					$message .= '<br/>';
-				} else {
-					$message .= strtoupper( explode( 'SF-divider', $field_name )[0] ) . ': ' . $value . '<br/>';
-				}
-			}
 			$headers = "From: $email\r\n" .
 				"Reply-To: $email\r\n" .
 				'X-Mailer: PHP/' . phpversion() . "\r\n" .
