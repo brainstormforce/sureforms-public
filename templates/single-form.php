@@ -88,7 +88,7 @@
 					<article class="sureforms-success-box-header">
 						<?php esc_html_e( 'Thank you', 'sureforms' ); ?>
 					</article>
-					<article class="sureforms-success-box-subtxt">
+					<article class="sureforms-success-box-subtxt text-gray-900">
 						<?php echo esc_html( $success_message ); ?>
 					</article>
 				</div>
