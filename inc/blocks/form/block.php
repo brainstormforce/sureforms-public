@@ -158,7 +158,7 @@ class Block extends Base {
 				<article class="sureforms-success-box-header">
 					Thank you
 				</article>
-				<article class="sureforms-success-box-subtxt">
+				<article class="sureforms-success-box-subtxt text-gray-900">
 					<?php echo esc_html( $success_message ); ?>
 				</article>
 			</div>
