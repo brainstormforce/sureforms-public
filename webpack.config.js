@@ -54,10 +54,6 @@ module.exports = {
 			__dirname,
 			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
 		),
-		form_frontend_ui_styles: path.resolve(
-			__dirname,
-			'inc/sureforms-frontend-ui-styles.scss'
-		),
 		block_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/block-styles.scss'
