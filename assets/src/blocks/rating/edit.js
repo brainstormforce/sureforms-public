@@ -103,16 +103,13 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 									label: 'maxValue',
 								} }
 								value={ maxValue }
-								onChange={ ( value ) =>{
-									if ( value<=10 ) {
+								onChange={ ( value ) => {
+									if ( value <= 10 ) {
 										setAttributes( {
 											maxValue: value,
 										} );
 									}
-								}
-									
-									
-								}
+								} }
 							/>
 							<UAGTextControl
 								label={ __( 'Help', 'sureforms' ) }
