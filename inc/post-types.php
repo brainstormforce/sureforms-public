@@ -124,6 +124,7 @@ class Post_Types {
 			'new_item'           => __( 'New Form', 'sureforms' ),
 			'edit_item'          => __( 'Edit Form', 'sureforms' ),
 			'view_item'          => __( 'View Form', 'sureforms' ),
+			'view_items'         => __( 'View Forms', 'sureforms' ),
 			'all_items'          => __( 'Forms', 'sureforms' ),
 			'search_items'       => __( 'Search Forms', 'sureforms' ),
 			'parent_item_colon'  => __( 'Parent Forms:', 'sureforms' ),
