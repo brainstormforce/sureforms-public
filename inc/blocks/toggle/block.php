@@ -56,7 +56,7 @@ class Block extends Base {
 	<span style="margin-top:5px;display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 </div> -->
 			<div class="sureforms-switch-container main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
-				<label class="sureforms-switch-label !flex !gap-2 !items-start" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
+				<label class="sureforms-switch-label !flex !gap-2 !items-start !max-w-fit" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
 					<div class="!flex !items-center !gap-2 !text-primary_color !w-max !mt-1">
 						<div style="background-color: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="switch-background !inline-block !relative !w-[40px] !h-[14px] !rounded-[25px] !cursor-pointer !transition-colors !duration-200">
 							<input class="sureforms-switch sf-classic-switch-input !p-0"
