@@ -8,7 +8,7 @@ import {
 } from '@surecart/components-react';
 import { __ } from '@wordpress/i18n';
 import IntegrationsBox from './templates/IntegrationsBox';
-import TrainingTextBox from './templates/TrainingTextBox';
+// import TrainingTextBox from './templates/TrainingTextBox';
 import apiFetch from '@wordpress/api-fetch';
 
 export default () => {
@@ -128,7 +128,7 @@ export default () => {
 					}
 				</ScStackedList>
 			</ScCard>
-			{/* <TrainingTextBox
+			{ /* <TrainingTextBox
 				title={ __( 'Training & Help', 'sureforms' ) }
 				description={ __(
 					'Learn everything you need to know about the form builder with our comprehensive video based training and knowledge base.',
@@ -143,7 +143,7 @@ export default () => {
 					'sureforms'
 				) }
 				urlText={ __( 'Submit a Review', 'sureforms' ) }
-			/> */}
+			/> */ }
 		</ScDashboardModule>
 	);
 };
