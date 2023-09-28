@@ -130,6 +130,7 @@ class Post_Types {
 			'parent_item_colon'  => __( 'Parent Forms:', 'sureforms' ),
 			'not_found'          => __( 'No forms found.', 'sureforms' ),
 			'not_found_in_trash' => __( 'No forms found in Trash.', 'sureforms' ),
+			'item_updated'       => __( 'Form updated.', 'sureforms' ),
 		);
 		register_post_type(
 			SUREFORMS_FORMS_POST_TYPE,
