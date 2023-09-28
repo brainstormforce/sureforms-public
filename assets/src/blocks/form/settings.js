@@ -24,6 +24,7 @@ export default ( { attributes, setAttributes } ) => {
 	const { gap, loading_text, custom_success_url, success_url, color } =
 		attributes;
 	return (
+		// TODO: Confirm if this is needed or not.
 		<InspectorControls>
 			<PanelBody title={ __( 'Form Template', 'sureforms' ) }>
 				<PanelRow>
