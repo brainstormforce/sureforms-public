@@ -176,6 +176,30 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	return (
 		<Fragment>
+			<InspectorControls>
+				<PanelBody title={ __( 'Form Title', 'sureforms' ) }>
+					<PanelRow>
+						<TextControl
+							label={ __( 'Form Title', 'sureforms' ) }
+							value={ title }
+							onChange={ ( value ) => {
+								setTitle( value );
+							} }
+						/>
+					</PanelRow>
+					{ 'sureforms_form' !== postType && (
+						<PanelRow>
+							<a
+								href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
+								target="_blank"
+								rel="noreferrer"
+							>
+								{ __( 'Edit Form', 'sureforms' ) }
+							</a>
+						</PanelRow>
+					) }
+				</PanelBody>
+			</InspectorControls>
 			{ blockCount === 0 ? (
 				<Setup
 					templates={ patterns }
