@@ -77,8 +77,6 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	console.log( formId );
-
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;

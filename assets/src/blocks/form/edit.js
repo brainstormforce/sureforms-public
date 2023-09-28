@@ -7,6 +7,7 @@ import {
 	InnerBlocks,
 	RichText,
 	store as blockEditorStore,
+	InspectorControls,
 } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
@@ -14,6 +15,8 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
+import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
+import { useEntityProp } from '@wordpress/core-data';
 
 export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
@@ -42,6 +45,13 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const { replaceInnerBlocks, setTemplateValidity } =
 		useDispatch( blockEditorStore );
+
+	const [ title, setTitle ] = useEntityProp(
+		'postType',
+		'sureforms_form',
+		'title',
+		id
+	);
 
 	// set template to valid for our post type.
 	// prevents template changed warnings.
