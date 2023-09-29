@@ -40,7 +40,7 @@ class Post_Types {
 		add_action( 'admin_head', [ $this, 'sureforms_remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
-
+		add_filter( 'post_updated_messages', [ $this, 'custom_updated_messages' ] );
 	}
 
 	/**
@@ -130,6 +130,7 @@ class Post_Types {
 			'parent_item_colon'  => __( 'Parent Forms:', 'sureforms' ),
 			'not_found'          => __( 'No forms found.', 'sureforms' ),
 			'not_found_in_trash' => __( 'No forms found in Trash.', 'sureforms' ),
+			'item_published'     => __( 'Form published.', 'sureforms' ),
 			'item_updated'       => __( 'Form updated.', 'sureforms' ),
 		);
 		register_post_type(
@@ -220,6 +221,25 @@ class Post_Types {
 		// 'label_count'               => _n_noop( 'Unread (%s)', 'Unread (%s)', 'sureforms' ),
 		// )
 		// );.
+	}
+
+	/**
+	 * Modify post update message for Entry post type.
+	 *
+	 * @param string $messages Post type.
+	 * @return string
+	 * @since  X.X.X
+	 */
+	public function custom_updated_messages( $messages ) {
+		global $post, $post_ID;
+
+		$post_type = get_post_type( $post_ID );
+
+		if ( SUREFORMS_ENTRIES_POST_TYPE === $post_type ) {
+			$messages['post'][1] = __( 'Entry updated.', 'sureforms' );
+		}
+
+		return $messages;
 	}
 
 	/**
