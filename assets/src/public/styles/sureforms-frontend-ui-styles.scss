@@ -266,10 +266,20 @@ form.sureforms-form .main-container.sureforms-address-container {
 					@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6
 				}
 				.sf-classic-adress-select{
-					@apply relative bg-white  w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6
+					@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6
 				}
-				.error-message, 
-				.duplicate-message, 
+				.sf-classic-dropdown-btn{
+					@apply border-solid border-0 border-[#D1D5DB] placeholder:text-gray-500 relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary_color sm:text-sm sm:leading-6
+				}
+				.sf-classic-dropdown-li{
+					@apply text-gray-900 relative select-none py-2 pl-3 pr-9 hover:bg-primary_color hover:text-white cursor-pointer
+				}
+				.sf-classic-dropdown-ul{
+					@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0
+				}
+				.sf-classic-dropdown-element
+				.error-message,
+				.duplicate-message,
 				.confirm-email-error {
 					@apply mt-2 text-sm text-red-600;
 				}
