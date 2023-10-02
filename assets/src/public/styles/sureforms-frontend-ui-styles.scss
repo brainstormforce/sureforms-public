@@ -254,13 +254,19 @@ form.sureforms-form .main-container.sureforms-address-container {
 					@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-primary_color focus-within:outline-0;
 				}
 				.sf-classic-phone-element{
-					@apply block w-full rounded-md py-1.5 pl-16 text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
+					@apply w-full rounded-md py-1.5 pl-16 text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
 				}
 				.sf-classic-phone-select{
-					@apply h-full rounded-md border-0 bg-transparent py-0 pl-3 pr-7 text-gray-900 focus:outline-none ring-0 focus:ring-inset focus:ring-0 focus:outline-0 focus:border-0 sm:text-sm;
+					@apply h-full rounded-md border-0 bg-white py-0 pl-3 pr-7 text-gray-900 focus:outline-none ring-0 focus:ring-inset focus:ring-0 focus:outline-0 focus:border-0 sm:text-sm;
 				}
 				.sf-classic-pwd-element{
 					@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset  ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6
+				}
+				.sf-classic-adress-element{
+					@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6
+				}
+				.sf-classic-adress-select{
+					@apply relative bg-white  w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6
 				}
 				.error-message, 
 				.duplicate-message, 
