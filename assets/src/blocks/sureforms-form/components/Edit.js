@@ -117,6 +117,15 @@ export default ( { attributes } ) => {
 							} }
 						/>
 					</PanelRow>
+					<PanelRow>
+						<a
+							href={ '?post=' + id + '&action=edit' }
+							target="_blank"
+							rel="noreferrer"
+						>
+							{ __( 'Edit Form', 'sureforms' ) }
+						</a>
+					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>{ <div { ...innerBlocksProps } /> }</div>

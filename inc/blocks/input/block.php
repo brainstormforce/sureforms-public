@@ -45,7 +45,7 @@ class Block extends Base {
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
 		</div> -->
-		<div class="main-container sf-classic-inputs-holder  <?php echo esc_attr( $classname ); ?>">
+		<div class="main-container frontend-inputs-holder  <?php echo esc_attr( $classname ); ?>">
 			<label for="text" class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
 			<div class="mt-2">
 				<input type="text" name="text" id="text" class="sf-classic-input-element" 
