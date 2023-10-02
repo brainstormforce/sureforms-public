@@ -385,7 +385,7 @@ const Component = ( { path } ) => {
 										) }
 										<a
 											target="_blank"
-											href="https://www.google.com/recaptcha/admin/create"
+											href="https://www.google.com/recaptcha/admin/create" rel="noreferrer"
 										>
 											here
 										</a>

@@ -39,4 +39,4 @@ export default Settings;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );
