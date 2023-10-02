@@ -635,7 +635,7 @@ function extractFormAttributesAndElements( form ) {
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.sureforms-loader' );
 	const successMessage = form.nextElementSibling;
-	const errorMessage = successMessage.nextElementSibling;
+	const errorMessage = form.querySelector( '.sureforms-error-message' );
 	const submitBtn = form.querySelector( '#sureforms-submit-btn' );
 	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
 	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
