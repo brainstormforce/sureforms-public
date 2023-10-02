@@ -56,6 +56,7 @@ class Block extends Base {
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="mt-2 text-sm text-gray-500">' . esc_html( $help ) . '</label>' : ''; ?>
 			<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+			<p style="display:none" class="validation-url-message mt-2 text-sm text-red-600"><?php echo esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ); ?></p>
 		</div>
 			<?php
 		}

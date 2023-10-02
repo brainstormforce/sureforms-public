@@ -1115,30 +1115,50 @@ if ( datePickerContainers ) {
 	}
 }
 
-const urlFiledContainers = document.getElementsByClassName('sureforms-input-url-container');
-if( urlFiledContainers ){
-	for( const urlFiledContainer of urlFiledContainers ){
-		const urlInput = urlFiledContainer.querySelector('.sureforms-url-input');
-		urlInput.addEventListener('change',(e)=>{
+const urlFiledContainers = document.getElementsByClassName(
+	'sureforms-input-url-container'
+);
+if ( urlFiledContainers ) {
+	for ( const urlFiledContainer of urlFiledContainers ) {
+		const urlInput = urlFiledContainer.querySelector(
+			'.sureforms-url-input'
+		);
+		const validUrlMessage = urlFiledContainer.querySelector(
+			'.validation-url-message'
+		);
+		urlInput.addEventListener( 'change', ( e ) => {
 			const urlValue = e.target.value;
 			const pattern = new RegExp(
 				'^(https?:\\/\\/)?' + // protocol
-				  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-				  '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
-				  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-				  '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-				  '(\\#[-a-z\\d_]*)?$', // fragment locator
+					'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+					'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+					'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+					'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+					'(\\#[-a-z\\d_]*)?$', // fragment locator
 				'i'
-			  );
-			if ( urlValue.substr( 0, 7 ) !== 'http://' && urlValue.substr( 0, 8 ) !== 'https://' ) {
+			);
+			if (
+				urlValue.substr( 0, 7 ) !== 'http://' &&
+				urlValue.substr( 0, 8 ) !== 'https://'
+			) {
 				urlInput.value = 'https://' + urlValue;
 			}
-			const isValidUrl = pattern.test(urlInput.value);
-			if(isValidUrl){
-				console.log('valid')
-			}else{
-				console.log('not valid')
+			const isValidUrl = pattern.test( urlInput.value );
+			if ( isValidUrl ) {
+				validUrlMessage.style.display = 'none';
+				urlInput.classList.remove(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
+			} else {
+				validUrlMessage.style.display = 'block';
+				urlInput.classList.add(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
 			}
-		})
+		} );
 	}
 }
