@@ -110,6 +110,17 @@ class Email_Template {
 					$field_label,
 					$value
 				);
+			} elseif ( strpos( $field_name, 'SF-url' ) !== false ) {
+				$field_label = ucfirst( explode( 'SF-url', $field_name )[0] );
+				$message    .= sprintf(
+					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
+						<td style="padding: 10px;">%s</td>
+						<td style="padding: 10px;max-width: 200px;"><a href="%s">%s</a></td>
+					</tr>',
+					$field_label,
+					$value,
+					$value
+				);
 			} else {
 				$field_label = ucfirst( explode( 'SF-divider', $field_name )[0] );
 				$message    .= sprintf(

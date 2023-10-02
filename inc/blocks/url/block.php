@@ -51,7 +51,7 @@ class Block extends Base {
 			</label>
 			<div class="mt-2 flex rounded-md shadow-sm">
 				<span class="inline-flex !min-w-[67px] items-center !bg-white rounded-l-md !border !border-r-0 !border-[#D1D5DB] !ring-0 px-3 text-gray-900 sm:text-sm">https://</span>
-				<input type="url" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>"
+				<input type="text" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>"
 				class="sureforms-url-input block !w-full !rounded-none !rounded-r-md !border-0 !border-[#D1D5DB] !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!ring-inset focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="mt-2 text-sm text-gray-500">' . esc_html( $help ) . '</label>' : ''; ?>

@@ -1126,8 +1126,7 @@ if ( urlFiledContainers ) {
 		const validUrlMessage = urlFiledContainer.querySelector(
 			'.validation-url-message'
 		);
-		urlInput.addEventListener( 'change', ( e ) => {
-			const urlValue = e.target.value;
+		urlInput.addEventListener( 'change', () => {
 			const pattern = new RegExp(
 				'^(https?:\\/\\/)?' + // protocol
 					'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -1137,12 +1136,7 @@ if ( urlFiledContainers ) {
 					'(\\#[-a-z\\d_]*)?$', // fragment locator
 				'i'
 			);
-			if (
-				urlValue.substr( 0, 7 ) !== 'http://' &&
-				urlValue.substr( 0, 8 ) !== 'https://'
-			) {
-				urlInput.value = 'https://' + urlValue;
-			}
+
 			const isValidUrl = pattern.test( urlInput.value );
 			if ( isValidUrl ) {
 				validUrlMessage.style.display = 'none';
