@@ -116,9 +116,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( hasDuplicate ) {
 				duplicateMessage.style.display = 'block';
 				inputField.classList.add(
-					'!border-red-500',
-					'!ring-red-500',
-					'placeholder:!text-red-300'
+					'sf-classic-input-error'
 				);
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -238,9 +236,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmFieldError.style.display = 'block';
 					confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -253,9 +249,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					).style.display = 'block';
 					confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -264,9 +258,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				} else {
 					confirmFieldError.style.display = 'none';
 					confirmPassword.classList.remove(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					container.querySelector(
 						'.confirm-password-error'
@@ -291,9 +283,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmFieldError.style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
@@ -306,9 +296,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					).style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
@@ -318,9 +306,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmFieldError.style.display = 'none';
 					confirmEmail.style.borderColor = '#d1d5db';
 					confirmEmail.classList.remove(
-						'!ring-red-500',
-						'!border-red-500',
-						'placeholder:!text-red-300'
+						'sf-classic-input-error'
 					);
 					container.querySelector(
 						'.confirm-email-error'
