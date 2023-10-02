@@ -1002,6 +1002,9 @@ if ( numberSliderContainer ) {
 		// Slider Range Change or Input
 		const rangeSliders =
 			sliderContainer.querySelector( '#range-slider-sf' );
+		const numberInput = sliderContainer.querySelector(
+			'.number-input-slider-sf'
+		);
 		rangeSliders.addEventListener( 'input', function ( e ) {
 			// Prevent Default
 			e.preventDefault();
@@ -1013,47 +1016,38 @@ if ( numberSliderContainer ) {
 			bgInit( rangeSliders, val, min, max, primaryColor );
 
 			// Assign value to slider input
-			rangeSliders.nextElementSibling.value = rangeSliders.value;
-			// Input Slider Input
-			rangeSliders.nextElementSibling.addEventListener(
-				'input',
-				function ( event ) {
-					// Prevent Default
-					event.preventDefault();
-					event.stopPropagation();
+			numberInput.value = rangeSliders.value;
+		} );
+		// Input Slider Input
+		numberInput.addEventListener( 'input', function ( event ) {
+			// Prevent Default
+			event.preventDefault();
+			event.stopPropagation();
 
-					// Background Change
-					const thisInput = this;
-					let inputVal = Number( thisInput.value );
-					const inputMin = Number( thisInput.getAttribute( 'min' ) );
-					const inputMax = Number( thisInput.getAttribute( 'max' ) );
+			// Background Change
+			const thisInput = this;
+			let inputVal = Number( thisInput.value );
+			const inputMin = Number( thisInput.getAttribute( 'min' ) );
+			const inputMax = Number( thisInput.getAttribute( 'max' ) );
 
-					// Max Validation
-					if ( inputVal > inputMax ) {
-						inputVal = inputMax;
-						thisInput.value = inputVal;
-					}
+			// Max Validation
+			if ( inputVal > inputMax ) {
+				inputVal = inputMax;
+				thisInput.value = inputVal;
+			}
 
-					// Min Validation
-					if ( inputVal < inputMin ) {
-						inputVal = inputMin;
-						thisInput.value = inputVal;
-					}
+			// Min Validation
+			if ( inputVal < inputMin ) {
+				inputVal = inputMin;
+				thisInput.value = inputVal;
+			}
 
-					// Background Change
-					const sliderEle = thisInput.previousElementSibling;
-					bgInit(
-						sliderEle,
-						inputVal,
-						inputMin,
-						inputMax,
-						primaryColor
-					);
+			// Background Change
+			const sliderEle = rangeSliders;
+			bgInit( sliderEle, inputVal, inputMin, inputMax, primaryColor );
 
-					// Assign value to slider range.
-					sliderEle.value = inputVal;
-				}
-			);
+			// Assign value to slider range.
+			sliderEle.value = inputVal;
 		} );
 	};
 	for ( const numberSlider of numberSliderContainer ) {
