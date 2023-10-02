@@ -40,7 +40,7 @@ class Post_Types {
 		add_action( 'admin_head', [ $this, 'sureforms_remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
-		add_filter( 'post_updated_messages', [ $this, 'custom_updated_messages' ] );
+		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Post_Types {
 	 * @return string
 	 * @since  X.X.X
 	 */
-	public function custom_updated_messages( $messages ) {
+	public function sureforms_entries_updated_message( $messages ) {
 		global $post, $post_ID;
 
 		$post_type = get_post_type( $post_ID );
