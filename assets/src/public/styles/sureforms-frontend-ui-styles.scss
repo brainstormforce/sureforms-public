@@ -241,6 +241,9 @@ form.sureforms-form .main-container.sureforms-address-container {
 				.sf-classic-input-element{
 					@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
 				}
+				.sf-classic-textarea-element{
+					@apply w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				}
 				.error-message, 
 				.duplicate-message {
 					@apply mt-2 text-sm text-red-600;

@@ -47,16 +47,16 @@ class Block extends Base {
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div> -->
 			<!-- classic layout -->
-			<div class="sf-classic-inputs-holder main-container sureforms-textarea-container <?php echo esc_attr( $classname ); ?>">
-				<label for="sureforms-textarea" class="block text-sm font-medium leading-6 text-primary_color">
+			<div class="frontend-inputs-holder main-container sureforms-textarea-container <?php echo esc_attr( $classname ); ?>">
+				<label for="sureforms-textarea" class="sf-classic-label-text">
 					<?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span class="text-required_icon_color"> *</span>' : ''; ?></label>
 				<div class="mt-2 relative">
 					<div class="sureforms-text-area-counter"><?php echo esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ); ?></div>
-					<textarea name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxLength="<?php echo 0 === $max_length ? '' : esc_attr( $max_length ); ?>" cols="<?php echo esc_attr( $cols ); ?>" rows="<?php echo esc_attr( $rows ); ?>" id="sureforms-textarea" class="sureforms-textarea-field block !w-full !border-solid !border-0 !border-[#d1d5db] !rounded-md !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6"><?php echo esc_attr( $default ); ?></textarea>
+					<textarea name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxLength="<?php echo 0 === $max_length ? '' : esc_attr( $max_length ); ?>" cols="<?php echo esc_attr( $cols ); ?>" rows="<?php echo esc_attr( $rows ); ?>" id="sureforms-textarea" class="sf-classic-textarea-element"><?php echo esc_attr( $default ); ?></textarea>
 				</div>
-				<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-				<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+				<?php echo '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
+				<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
 			</div>
 			<?php
 		}
