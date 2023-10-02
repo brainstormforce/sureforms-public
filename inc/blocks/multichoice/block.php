@@ -85,7 +85,7 @@ class Block extends Base {
 					<label class="classic-sf-radio">
 					<input type="<?php echo esc_attr( $single_selection ? 'radio' : 'checkbox' ); ?>" <?php echo esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$id" ) . '"' : '' ); ?> id="sureforms-multi-choice-<?php echo esc_attr( $id . '-' . $i ); ?>" class="sureforms-multi-choice">
 					<div class="flex items-center classic-radio-btn cursor-pointer rounded-lg !ring-1 !ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2">
-						<div class="pr-[5px] relative">
+						<div class="pr-[5px] relative flex">
 							<i class="fa fa-check-circle text-base" aria-hidden="true"></i>
 							<i class="fa-regular fa-circle text-sm absolute text-gray-300" aria-hidden="true"></i>
 						</div>
