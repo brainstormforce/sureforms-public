@@ -62,7 +62,7 @@
 				<h2 class="sureforms-page-banner-title" ><?php echo esc_attr( get_the_Title() ); ?> </h2>
 			</div>
 			<div>
-				<form method="post" id="sureforms-form-<?php echo esc_attr( $custom_post_id ); ?>" class="sureforms-form sureforms-single-form <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>" 
+				<form method="post" id="sureforms-form-<?php echo esc_attr( $custom_post_id ); ?>" class="sureforms-form sureforms-single-form sf-form-style-classic <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>" 
 				form-id="<?php echo esc_attr( $custom_post_id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ); ?>" success-url="<?php echo esc_attr( $success_url ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 				<?php

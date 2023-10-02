@@ -87,9 +87,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				errorMessage.style.display = 'block';
 				// inputField.style.borderColor = '#FCA5A5';
 				inputField.classList.add(
-					'!ring-red-500',
-					'!border-red-500',
-					'placeholder:!text-red-300'
+					'sf-classic-input-error'
 				);
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -100,9 +98,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} else {
 				inputField.classList.remove(
-					'!ring-red-500',
-					'!border-red-500',
-					'placeholder:!text-red-300'
+					'sf-classic-input-error'
 				);
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
@@ -134,9 +130,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				duplicateMessage.style.display = 'none';
 				inputField.classList.remove(
-					'!ring-red-500',
-					'!border-red-500',
-					'placeholder:!text-red-300'
+					'sf-classic-input-error'
 				);
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';

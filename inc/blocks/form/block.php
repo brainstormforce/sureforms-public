@@ -69,7 +69,7 @@ class Block extends Base {
 					break;
 			}
 			?>
-				<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form <?php echo esc_attr( $classname ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
+				<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form sf-form-style-classic <?php echo esc_attr( $classname ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
 				form-id="<?php echo esc_attr( $id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
