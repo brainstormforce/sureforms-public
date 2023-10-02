@@ -45,12 +45,13 @@ export default ( { setForm } ) => {
 			loading={ loading }
 			isSearchable
 			options={ ( formsData || [] ).map( ( formEntry ) => {
+				const originalTitle = formEntry.title.rendered;
+				const replacedTitle = originalTitle.replace( /&#8211;/g, '-' ); // Replace "&#8211;" with "-"
+
 				return {
 					value: formEntry.id,
 					label:
-						formEntry.title.rendered === ''
-							? 'Untitled Form'
-							: formEntry.title.rendered,
+						originalTitle === '' ? 'Untitled Form' : replacedTitle,
 				};
 			} ) }
 			placeholder={ __( 'Choose a form', 'sureforms' ) }
