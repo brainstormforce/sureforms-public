@@ -231,7 +231,7 @@ class Post_Types {
 	 * @since  X.X.X
 	 */
 	public function sureforms_entries_updated_message( $messages ) {
-		global $post, $post_ID;
+		global $post_ID;
 
 		$post_type = get_post_type( $post_ID );
 
