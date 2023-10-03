@@ -491,12 +491,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const validUrlMessage = container.querySelector(
 				'.validation-url-message'
 			);
-			if (
-				urlInput.value.substr( 0, 7 ) !== 'http://' &&
-				urlInput.value.substr( 0, 8 ) !== 'https://'
-			) {
-				urlInput.value = 'https://' + urlInput.value;
-			}
+
 			if ( validUrlMessage.style.display === 'block' ) {
 				validateResult = true;
 				if ( ! firstErrorInput ) {

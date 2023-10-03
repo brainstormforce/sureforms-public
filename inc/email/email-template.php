@@ -112,7 +112,13 @@ class Email_Template {
 				);
 			} elseif ( strpos( $field_name, 'SF-url' ) !== false ) {
 				$field_label = ucfirst( explode( 'SF-url', $field_name )[0] );
-				$message    .= sprintf(
+				if (
+					substr( $value, 0, 7 ) !== 'http://' &&
+					substr( $value, 0, 8 ) !== 'https://'
+				) {
+					$value = 'https://' . $value;
+				}
+				$message .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>
 						<td style="padding: 10px;max-width: 200px;"><a href="%s">%s</a></td>
