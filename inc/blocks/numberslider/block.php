@@ -49,7 +49,7 @@ class Block extends Base {
 			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt" for="sureforms-number-slider-' . esc_attr( $id ) . '">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
-		<div class="sureforms-number-slider-container sf-classic-number-slider">
+		<div class="sureforms-number-slider-container sf-classic-number-slider sf-classic-inputs-holder">
 			<div class="range-slider-container">
 				<div class="range-slider-block">
 					<div id="range-sliders" class="range-sliders w-full">

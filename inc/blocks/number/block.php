@@ -50,7 +50,7 @@ class Block extends Base {
 		</div> -->
 		<div class="sureforms-input-number-container main-container frontend-inputs-holder  <?php echo esc_attr( $classname ); ?>">
 			<label for="sureforms-input-number-<?php echo esc_attr( $id ); ?>" class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
-			<div class="mt-2">
+			<div class="">
 				<input type="<?php echo 'none' === $format_type ? 'number' : 'text'; ?>" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-number-<?php echo esc_attr( $id ); ?>" class="sf-classic-number-element" 
 				placeholder="<?php echo esc_attr( $placeholder ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" format-type="<?php echo esc_attr( $format_type ); ?>" min="<?php echo esc_attr( $min_value ); ?>" max="<?php echo esc_attr( $max_value ); ?>">
 			</div>

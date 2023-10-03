@@ -86,9 +86,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( isRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				// inputField.style.borderColor = '#FCA5A5';
-				inputField.classList.add(
-					'sf-classic-input-error'
-				);
+				inputField.classList.add( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -97,9 +95,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				inputField.classList.remove(
-					'sf-classic-input-error'
-				);
+				inputField.classList.remove( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
@@ -115,9 +111,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 			if ( hasDuplicate ) {
 				duplicateMessage.style.display = 'block';
-				inputField.classList.add(
-					'sf-classic-input-error'
-				);
+				inputField.classList.add( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -127,9 +121,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} else {
 				duplicateMessage.style.display = 'none';
-				inputField.classList.remove(
-					'sf-classic-input-error'
-				);
+				inputField.classList.remove( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
@@ -235,9 +227,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
 					confirmPassword.style.borderColor = '#FCA5A5';
-					confirmPassword.classList.add(
-						'sf-classic-input-error'
-					);
+					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
@@ -248,9 +238,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						'.confirm-password-error'
 					).style.display = 'block';
 					confirmPassword.style.borderColor = '#FCA5A5';
-					confirmPassword.classList.add(
-						'sf-classic-input-error'
-					);
+					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
@@ -282,9 +270,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
 					confirmFieldError.style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
-					confirmEmail.classList.add(
-						'sf-classic-input-error'
-					);
+					confirmEmail.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
@@ -295,9 +281,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						'.confirm-email-error'
 					).style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
-					confirmEmail.classList.add(
-						'sf-classic-input-error'
-					);
+					confirmEmail.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
@@ -305,9 +289,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				} else {
 					confirmFieldError.style.display = 'none';
 					confirmEmail.style.borderColor = '#d1d5db';
-					confirmEmail.classList.remove(
-						'sf-classic-input-error'
-					);
+					confirmEmail.classList.remove( 'sf-classic-input-error' );
 					container.querySelector(
 						'.confirm-email-error'
 					).style.display = 'none';

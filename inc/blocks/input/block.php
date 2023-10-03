@@ -47,7 +47,7 @@ class Block extends Base {
 		</div> -->
 		<div class="main-container frontend-inputs-holder  <?php echo esc_attr( $classname ); ?>">
 			<label for="text" class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
-			<div class="mt-2">
+			<div class="">
 				<input type="text" name="text" id="text" class="sf-classic-input-element" 
 				placeholder="<?php echo esc_attr( $placeholder ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 			</div>
