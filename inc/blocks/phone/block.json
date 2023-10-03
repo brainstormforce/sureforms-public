@@ -29,8 +29,7 @@
 			"default": "Phone Number"
 		},
 		"placeholder": {
-			"type": "string",
-			"default": "9876543210"
+			"type": "string"
 		},
 		"help": {
 			"type": "string"
