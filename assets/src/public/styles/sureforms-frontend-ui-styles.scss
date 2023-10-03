@@ -235,9 +235,6 @@ form.sureforms-form .main-container.sureforms-address-container {
 	.sf-form-style-classic {
 			.frontend-inputs-holder {
 				gap: 0 !important;
-				.sf-classic-label-text{
-					@apply text-sm font-medium leading-6 text-primary_color;
-				}
 				.sf-classic-input-element{
 					@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
 				}
@@ -285,6 +282,26 @@ form.sureforms-form .main-container.sureforms-address-container {
 				}
 				.sf-classic-url-prefix{
 					@apply inline-flex min-w-[67px] items-center bg-white rounded-l-md border border-r-0 border-[#D1D5DB] ring-0 px-3 text-gray-900 sm:text-sm
+				}
+				.sf-classic-upload-result{
+					@apply mt-2 flex bg-white rounded-lg border border-solid border-gray-900/25
+				}
+				.sf-classic-upload-div{
+					@apply mt-2 flex justify-center rounded-lg bg-white border border-dashed border-gray-900/25 px-4 py-6
+				}
+				.sf-classic-upload-label{
+					@apply relative w-full cursor-pointer rounded-md bg-white font-semibold text-primary_color focus-within:outline-none  focus-within:ring-indigo-600 focus-within:ring-offset-2
+				}
+				.sf-classic-toggle-icon{
+					@apply duration-100 ease-out absolute flex h-full w-full items-center justify-center transition-opacity
+				}
+				.sf-classic-toggle-bg{
+					@apply inline-block relative w-[40px] h-[14px] rounded-[25px] cursor-pointer transition-colors duration-200
+				}
+
+				
+				.sf-classic-label-text{
+					@apply text-sm font-medium leading-6 text-primary_color;
 				}
 				.error-message,
 				.duplicate-message,
