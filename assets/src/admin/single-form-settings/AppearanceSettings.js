@@ -4,7 +4,7 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import UAGMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -160,6 +160,24 @@ function AppearanceSettings( props ) {
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
+				<SelectControl
+					label={ __( 'Form Styling', 'sureforms' ) }
+					value={ sureforms_keys._sureforms_form_styling }
+					options={ [
+						{ label: 'Theme Inherited', value: 'inherit' },
+						{
+							label: 'Classic Styling',
+							value: 'classic',
+						},
+					] }
+					onChange={ ( value ) => {
+						updateMeta( '_sureforms_form_styling', value );
+					} }
+					__nextHasNoMarginBottom
+				/>
+				<p className="components-base-control__help">
+					{ __( 'Select the styling for SureForm.', 'sureforms' ) }
+				</p>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }

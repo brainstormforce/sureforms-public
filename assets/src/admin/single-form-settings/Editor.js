@@ -39,6 +39,7 @@ const default_keys = {
 	_sureforms_submit_alignment: 'left',
 	_sureforms_submit_width: '',
 	_sureforms_submit_styling_inherit_from_theme: false,
+	_sureforms_form_styling: 'classic',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
