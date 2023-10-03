@@ -1093,18 +1093,35 @@ if ( datePickerContainers ) {
 		const dateTimeInput = datePickerContainer.querySelector(
 			'.sureforms-input-data-time'
 		);
-
+		let buttonAttribute = '';
 		let eventType = '';
 		if ( fieldType === 'date' ) {
 			eventType = 'dateChange.te.datepicker';
+			buttonAttribute = 'data-te-datepicker-toggle-ref';
 		} else if ( fieldType === 'dateTime' ) {
 			eventType = 'close.te.datetimepicker';
+			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
 		} else {
 			eventType = 'input.te.timepicker';
+			buttonAttribute = 'data-te-timepicker-icon';
 		}
-		datePicker.addEventListener( eventType, () => {
-			formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-			resultInput.value = formattedDate;
+
+		const button = datePickerContainer.querySelector(
+			`button[${ buttonAttribute }]`
+		);
+		dateTimeInput.addEventListener( 'click', () => {
+			const clickEvent = new Event( 'click' );
+			if ( button ) {
+				button.dispatchEvent( clickEvent );
+			}
 		} );
+		if ( button ) {
+			button.addEventListener( 'click', () => {
+				datePicker.addEventListener( eventType, () => {
+					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+					resultInput.value = formattedDate;
+				} );
+			} );
+		}
 	}
 }
