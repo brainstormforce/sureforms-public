@@ -9,7 +9,6 @@ import {
 	store as blockEditorStore,
 	InspectorControls,
 } from '@wordpress/block-editor';
-import { store as coreStore } from '@wordpress/core-data';
 import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -17,7 +16,7 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
 import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
-import { useEntityProp } from '@wordpress/core-data';
+import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 
 export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
@@ -97,23 +96,19 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		setPatterns( newPatterns );
 	};
 
-	let sureforms_keys;
-
-	if ( 'sureforms_form' === postType ) {
-		sureforms_keys = useSelect( ( select ) =>
-			select( 'core/editor' ).getEditedPostAttribute( 'meta' )
+	const sureforms_keys = useSelect( ( select ) => {
+		if ( 'sureforms_form' === postType ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		}
+		const form = select( coreStore ).getEntityRecord(
+			'postType',
+			'sureforms_form',
+			formId
 		);
-	} else {
-		sureforms_keys = useSelect( ( select ) => {
-			const form = select( coreStore ).getEntityRecord(
-				'postType',
-				'sureforms_form',
-				formId
-			);
-			const postMeta = form?.meta;
-			return postMeta;
-		} );
-	}
+		const postMeta = form?.meta;
+		return postMeta;
+	} );
+
 	// Used to detect the FSE Theme
 	const siteEditor = document.querySelector( '.site-editor-php' );
 
