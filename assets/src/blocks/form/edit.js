@@ -9,6 +9,7 @@ import {
 	store as blockEditorStore,
 	InspectorControls,
 } from '@wordpress/block-editor';
+import { store as coreStore } from '@wordpress/core-data';
 import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -96,10 +97,23 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		setPatterns( newPatterns );
 	};
 
-	const sureforms_keys = useSelect( ( select ) =>
-		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
-	);
+	let sureforms_keys;
 
+	if ( 'sureforms_form' === postType ) {
+		sureforms_keys = useSelect( ( select ) =>
+			select( 'core/editor' ).getEditedPostAttribute( 'meta' )
+		);
+	} else {
+		sureforms_keys = useSelect( ( select ) => {
+			const form = select( coreStore ).getEntityRecord(
+				'postType',
+				'sureforms_form',
+				formId
+			);
+			const postMeta = form?.meta;
+			return postMeta;
+		} );
+	}
 	// Used to detect the FSE Theme
 	const siteEditor = document.querySelector( '.site-editor-php' );
 
@@ -221,6 +235,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					css={ css`
 						padding: 32px;
 					` }
+					className={
+						'classic' === sureforms_keys?._sureforms_form_styling &&
+						'sf-form-style-classic'
+					}
 				>
 					<InnerBlocks
 						allowedBlocks={ filteredAllowedBlocks }
