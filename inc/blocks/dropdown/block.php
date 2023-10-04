@@ -66,7 +66,7 @@ class Block extends Base {
 						<i class="fa-solid fa-angle-down !h-5 !w-5 !text-gray-400 !mt-[10px]"></i>
 					</span>
 				</button>
-				<ul class="sf-classic-dropdown-box !opacity-0 !absolute !mt-1 !max-h-60 !w-full !overflow-auto !rounded-md !bg-white !py-1 !text-base !shadow-lg !ring-1 !ring-black !ring-opacity-5 focus:!outline-none sm:!text-sm" tabindex="-1" value="value" style="display: none;">
+				<ul class="sf-classic-dropdown-box !opacity-0 !absolute !mt-1 !max-h-60 !w-full !overflow-auto !rounded-md !bg-white !py-1 !text-base !shadow-lg !ring-1 !ring-black !ring-opacity-5 focus:!outline-none sm:!text-sm !mx-0 !list-none !pl-0" tabindex="-1" value="value" style="display: none;">
 					<?php echo 0 === count( $options ) ? '<div class="text-gray-500 !relative !select-none !py-2 !pl-3 !pr-9">' . esc_html__( 'No Options Found', 'sureforms' ) . '</div>' : ''; ?>
 					<?php foreach ( $options as $option ) : ?>
 						<li class="sf-classic-dropdown-option !text-gray-900 !relative !select-none !py-2 !pl-3 !pr-9 hover:!bg-primary_color hover:!text-white !cursor-pointer" id="listbox-option-0" role="option">
