@@ -52,11 +52,11 @@ class Block extends Base {
 			<div class="mt-2 flex rounded-md shadow-sm">
 				<span class="sf-classic-url-prefix">https://</span>
 				<input type="text" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>"
-				class="sf-classic-url-element sureforms-url-input"placeholder="<?php echo esc_attr( $placeholder ); ?>">
+				class="sf-classic-url-element sureforms-url-input" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
-      <p style="display:none" class="validation-url-message mt-2 text-sm text-red-600"><?php echo esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ); ?></p>
+			<p style="display:none" class="validation-url-message mt-2 text-sm text-red-600"><?php echo esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ); ?></p>
 		</div>
 			<?php
 		}
