@@ -484,6 +484,21 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				errorMessage.style.display = 'none';
 			}
 		}
+
+		//classic field url
+		if ( container.classList.contains( 'sureforms-input-url-container' ) ) {
+			const urlInput = container.querySelector( '.sureforms-url-input' );
+			const validUrlMessage = container.querySelector(
+				'.validation-url-message'
+			);
+
+			if ( validUrlMessage.style.display === 'block' ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = urlInput;
+				}
+			}
+		}
 	}
 
 	if ( firstErrorInput ) {

@@ -185,6 +185,7 @@ class Gutenberg_Hooks {
 			[
 				'plugin_url'  => SUREFORMS_URL,
 				'admin_email' => get_option( 'admin_email' ),
+				'post_url'    => admin_url( 'post.php' ),
 
 			]
 		);

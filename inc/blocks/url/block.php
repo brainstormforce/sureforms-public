@@ -40,22 +40,23 @@ class Block extends Base {
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" type="url" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" 
-			class="sureforms-input-field
+			class="sureforms-url-input
 			">
 			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
-		<div class="main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
+		<div class="main-container sureforms-input-url-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
 			<label for="sureforms-input-url-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
 				<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<div class="mt-2 flex rounded-md shadow-sm">
 				<span class="inline-flex !min-w-[67px] items-center !bg-white rounded-l-md !border !border-r-0 !border-[#D1D5DB] !ring-0 px-3 text-gray-900 sm:text-sm">https://</span>
 				<input type="text" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>"
-				class="block !w-full !rounded-none !rounded-r-md !border-0 !border-[#D1D5DB] !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!ring-inset focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" placeholder="<?php echo esc_attr( $placeholder ); ?>">
+				class="sureforms-url-input block !w-full !rounded-none !rounded-r-md !border-0 !border-[#D1D5DB] !py-1.5 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!ring-inset focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="mt-2 text-sm text-gray-500">' . esc_html( $help ) . '</label>' : ''; ?>
 			<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+			<p style="display:none" class="validation-url-message mt-2 text-sm text-red-600"><?php echo esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ); ?></p>
 		</div>
 			<?php
 		}
