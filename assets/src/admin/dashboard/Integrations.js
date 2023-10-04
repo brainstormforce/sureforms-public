@@ -128,6 +128,7 @@ export default () => {
 					}
 				</ScStackedList>
 			</ScCard>
+			{/* Training & Help, Rate Us TrainingTextBoxes will be used in the future */}
 			{ /* <TrainingTextBox
 				title={ __( 'Training & Help', 'sureforms' ) }
 				description={ __(
