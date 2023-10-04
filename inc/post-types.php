@@ -451,6 +451,14 @@ class Post_Types {
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
+							<?php
+							if (
+									substr( $value, 0, 7 ) !== 'http://' &&
+									substr( $value, 0, 8 ) !== 'https://'
+								) {
+								$value = 'https://' . $value;
+							}
+							?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>

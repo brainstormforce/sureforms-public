@@ -91,7 +91,7 @@ class Block extends Base {
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5"
+									class="h-8 w-8"
 									>
 									<path
 									stroke-linecap="round"
@@ -106,7 +106,7 @@ class Block extends Base {
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5" >
+									class="h-8 w-8" >
 									<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -121,7 +121,7 @@ class Block extends Base {
 										fill="none"
 										stroke-width="1.5"
 										stroke="currentColor"
-										class="h-5 w-5"
+										class="h-8 w-8"
 										x="0px" y="0px" 
 										viewBox="0 0 122.88 122.88" 
 										xml:space="preserve">
@@ -138,7 +138,7 @@ class Block extends Base {
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5"
+									class="h-8 w-8"
 									>
 									<path
 									stroke-linecap="round"
@@ -153,11 +153,11 @@ class Block extends Base {
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input type="hidden" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" id="sf-classic-rating-field-<?php echo esc_attr( $id ); ?>" class="sf-rating-field-result"/>
-				<ul class="sf-classic-event mt-2 flex list-none gap-2 p-0" data-te-rating-init>
+				<ul class="sf-classic-event mt-2 flex list-none gap-3 p-0" data-te-rating-init>
 				<?php
 				for ( $i = 0; $i < $max_value; $i++ ) {
 					?>
-						<li class="flex items-center" >
+						<li class="flex items-center flex-col-reverse" >
 						<span class="text-primary"><?php echo esc_html( $sureforms_helper_instance->get_string_value( $show_numbers ? $i + 1 : '' ) ); ?></span>
 							<span
 							class="text-primary"

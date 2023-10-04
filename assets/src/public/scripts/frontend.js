@@ -1093,18 +1093,77 @@ if ( datePickerContainers ) {
 		const dateTimeInput = datePickerContainer.querySelector(
 			'.sureforms-input-data-time'
 		);
-
+		let buttonAttribute = '';
 		let eventType = '';
 		if ( fieldType === 'date' ) {
 			eventType = 'dateChange.te.datepicker';
+			buttonAttribute = 'data-te-datepicker-toggle-ref';
 		} else if ( fieldType === 'dateTime' ) {
 			eventType = 'close.te.datetimepicker';
+			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
 		} else {
 			eventType = 'input.te.timepicker';
+			buttonAttribute = 'data-te-timepicker-icon';
 		}
-		datePicker.addEventListener( eventType, () => {
-			formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-			resultInput.value = formattedDate;
+
+		const button = datePickerContainer.querySelector(
+			`button[${ buttonAttribute }]`
+		);
+		dateTimeInput.addEventListener( 'click', () => {
+			const clickEvent = new Event( 'click' );
+			if ( button ) {
+				button.dispatchEvent( clickEvent );
+			}
+		} );
+		if ( button ) {
+			button.addEventListener( 'click', () => {
+				datePicker.addEventListener( eventType, () => {
+					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+					resultInput.value = formattedDate;
+				} );
+			} );
+		}
+	}
+}
+
+const urlFiledContainers = document.getElementsByClassName(
+	'sureforms-input-url-container'
+);
+if ( urlFiledContainers ) {
+	for ( const urlFiledContainer of urlFiledContainers ) {
+		const urlInput = urlFiledContainer.querySelector(
+			'.sureforms-url-input'
+		);
+		const validUrlMessage = urlFiledContainer.querySelector(
+			'.validation-url-message'
+		);
+		urlInput.addEventListener( 'change', () => {
+			const pattern = new RegExp(
+				'^(https?:\\/\\/)?' + // protocol
+					'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+					'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+					'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+					'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+					'(\\#[-a-z\\d_]*)?$', // fragment locator
+				'i'
+			);
+
+			const isValidUrl = pattern.test( urlInput.value );
+			if ( isValidUrl ) {
+				validUrlMessage.style.display = 'none';
+				urlInput.classList.remove(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
+			} else {
+				validUrlMessage.style.display = 'block';
+				urlInput.classList.add(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
+			}
 		} );
 	}
 }

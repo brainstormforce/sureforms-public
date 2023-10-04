@@ -153,6 +153,7 @@ class Block extends Base {
 					</div>
 					</div>
 				<?php endif; ?>
+				<p id="sureforms-error-message" class="sureforms-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div id="sureforms-success-message-page-<?php echo esc_attr( $id ); ?>" style="height:0;" class="sureforms-single-form sureforms-success-box in-page"> 
 				<i class="fa-regular fa-circle-check"></i>
@@ -163,7 +164,6 @@ class Block extends Base {
 					<?php echo esc_html( $success_message ); ?>
 				</article>
 			</div>
-			<p id="sureforms-error-message" class="sureforms-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			<?php
 			$page_url  = $_SERVER['REQUEST_URI'];
 			$path      = Sureforms_Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );

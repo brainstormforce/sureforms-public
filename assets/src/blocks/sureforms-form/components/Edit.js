@@ -107,7 +107,7 @@ export default ( { attributes } ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Form Title', 'sureforms' ) }>
+				<PanelBody title={ __( 'Form Settings', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Form Title', 'sureforms' ) }
@@ -118,13 +118,19 @@ export default ( { attributes } ) => {
 						/>
 					</PanelRow>
 					<PanelRow>
-						<a
-							href={ '?post=' + id + '&action=edit' }
-							target="_blank"
-							rel="noreferrer"
-						>
-							{ __( 'Edit Form', 'sureforms' ) }
-						</a>
+						<p className="sureform-form-notice">
+							{ __(
+								'Note: For Editing the stylings, please check the SureForms styling - ',
+								'sureforms'
+							) }
+							<a
+								href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
+								target="_blank"
+								rel="noreferrer"
+							>
+								{ __( 'Edit Form Settings', 'sureforms' ) }
+							</a>
+						</p>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>

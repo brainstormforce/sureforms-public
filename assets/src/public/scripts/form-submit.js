@@ -446,6 +446,21 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				errorMessage.style.display = 'none';
 			}
 		}
+
+		//classic field url
+		if ( container.classList.contains( 'sureforms-input-url-container' ) ) {
+			const urlInput = container.querySelector( '.sureforms-url-input' );
+			const validUrlMessage = container.querySelector(
+				'.validation-url-message'
+			);
+
+			if ( validUrlMessage.style.display === 'block' ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = urlInput;
+				}
+			}
+		}
 	}
 
 	if ( firstErrorInput ) {
@@ -597,7 +612,7 @@ function extractFormAttributesAndElements( form ) {
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.sureforms-loader' );
 	const successMessage = form.nextElementSibling;
-	const errorMessage = successMessage.nextElementSibling;
+	const errorMessage = form.querySelector( '.sureforms-error-message' );
 	const submitBtn = form.querySelector( '#sureforms-submit-btn' );
 	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
 	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
