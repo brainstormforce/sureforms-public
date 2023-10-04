@@ -22,6 +22,7 @@ function AppearanceSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
 	const root = document.documentElement;
 
 	if ( sureforms_keys && '_sureforms_color1' in sureforms_keys ) {

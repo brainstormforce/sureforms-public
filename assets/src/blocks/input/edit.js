@@ -7,6 +7,7 @@ import {
 	InspectorControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { store as coreStore } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
@@ -50,6 +51,23 @@ export default ( {
 		// current post id.
 		const post_id = select( 'core/editor' ).getCurrentPostId();
 		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
+	} );
+
+	const postType = useSelect( ( select ) =>
+		select( 'core/editor' ).getCurrentPostType()
+	);
+
+	const sureforms_keys = useSelect( ( select ) => {
+		if ( 'sureforms_form' === postType ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		}
+		const form = select( coreStore ).getEntityRecord(
+			'postType',
+			'sureforms_form',
+			formId
+		);
+		const postMeta = form?.meta;
+		return postMeta;
 	} );
 
 	useEffect( () => {
@@ -197,23 +215,52 @@ export default ( {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary underline"
-					htmlFor={ 'text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'text-input-' + blockID }
-					type="text"
-					value={ defaultValue }
-					className={ className }
-					placeholder={ placeholder }
-					required={ required }
-				/>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<div className="sf-classic-inputs-holder">
+						<label
+							className="text-primary"
+							htmlFor={ 'text-input-' + blockID }
+						>
+							{ label }
+							{ required && label && (
+								<span style={ { color: 'red' } }> *</span>
+							) }
+						</label>
+						<input
+							id={ 'text-input-' + blockID }
+							type="text"
+							value={ defaultValue }
+							className={
+								className + ' sf-classic-input-element'
+							}
+							placeholder={ placeholder }
+							required={ required }
+						/>
+					</div>
+				) : (
+					<>
+						<label
+							className="text-primary"
+							htmlFor={ 'text-input-' + blockID }
+						>
+							{ label }
+							{ required && label && (
+								<span style={ { color: 'red' } }> *</span>
+							) }
+						</label>
+						<input
+							id={ 'text-input-' + blockID }
+							type="text"
+							value={ defaultValue }
+							className={
+								className + ' sf-classic-input-element'
+							}
+							placeholder={ placeholder }
+							required={ required }
+						/>
+					</>
+				) }
+
 				{ help !== '' && (
 					<label
 						htmlFor={ 'text-input-help-' + blockID }

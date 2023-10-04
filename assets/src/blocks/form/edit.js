@@ -16,7 +16,7 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
 import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
-import { useEntityProp } from '@wordpress/core-data';
+import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 
 export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
@@ -96,9 +96,18 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		setPatterns( newPatterns );
 	};
 
-	const sureforms_keys = useSelect( ( select ) =>
-		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
-	);
+	const sureforms_keys = useSelect( ( select ) => {
+		if ( 'sureforms_form' === postType ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		}
+		const form = select( coreStore ).getEntityRecord(
+			'postType',
+			'sureforms_form',
+			formId
+		);
+		const postMeta = form?.meta;
+		return postMeta;
+	} );
 
 	// Used to detect the FSE Theme
 	const siteEditor = document.querySelector( '.site-editor-php' );
@@ -221,6 +230,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					css={ css`
 						padding: 32px;
 					` }
+					className={
+						'classic' === sureforms_keys?._sureforms_form_styling &&
+						'sf-form-style-classic'
+					}
 				>
 					<InnerBlocks
 						allowedBlocks={ filteredAllowedBlocks }
