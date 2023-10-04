@@ -41,6 +41,7 @@ class Block extends Base {
 			$success_message      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_thankyou_message', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_thankyou_message', true ) ) : '';
 			$success_url          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_submit_url', true ) ) : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$styling              = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_form_styling', true ) ) : '';
 
 			// Submit button.
 			$button_text               = isset( $attributes['submitButtonText'] ) ? Sureforms_Helper::get_string_value( $attributes['submitButtonText'] ) : '';
@@ -69,7 +70,7 @@ class Block extends Base {
 					break;
 			}
 			?>
-				<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form sf-form-style-classic <?php echo esc_attr( $classname ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
+				<form method="post" id="sureforms-form-<?php echo esc_attr( $id ); ?>" class="sureforms-form <?php echo esc_attr( 'classic' === $styling ? 'sf-form-style-classic ' : '' ); ?> <?php echo esc_attr( $classname ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'sureforms-form-background' : '' ); ?>"
 				form-id="<?php echo esc_attr( $id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
