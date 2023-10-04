@@ -241,7 +241,7 @@ if ( toggleSwitchesContainer ) {
 			) {
 				const computedStyle = getComputedStyle( formElement );
 				const primaryColor =
-					computedStyle.getPropertyValue( '--primary-color' );
+					computedStyle.getPropertyValue( '--sf-primary-color' );
 				const currentValue = toggleSwitch.value;
 
 				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
@@ -260,16 +260,16 @@ if ( toggleSwitchesContainer ) {
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor =
 						primaryColor !== ''
-							? 'var(--primary-color)'
+							? 'var(--sf-primary-color)'
 							: '#0284c7';
 					switchTickIcon.style.fill =
 						primaryColor !== ''
-							? 'var(--primary-color)'
+							? 'var(--sf-primary-color)'
 							: '#0284c7';
 					// will be used later
 
 					// switchBackground[ i ].style.backgroundColor =
-					// 	primaryColor !== '' ? 'var(--primary-color)' : '#0284c7';
+					// 	primaryColor !== '' ? 'var(--sf-primary-color)' : '#0284c7';
 					// switchBackground[ i ].classList.remove( '!bg-[#E4E7EB]' );
 					if (
 						switchBackground
@@ -355,11 +355,11 @@ if ( toggleSwitchesContainer ) {
 						switchToggle.style.left = '24px';
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
-								? 'var(--primary-color)'
+								? 'var(--sf-primary-color)'
 								: '#0284c7';
 						switchTickIcon.style.fill =
 							primaryColor !== ''
-								? 'var(--primary-color)'
+								? 'var(--sf-primary-color)'
 								: '#0284c7';
 						toggleSwitch.value = 'true';
 					}
@@ -739,7 +739,7 @@ if ( checkboxContainers ) {
 			// eslint-disable-next-line no-undef
 			const computedStyle = getComputedStyle( formElement );
 			const primaryColor =
-				computedStyle.getPropertyValue( '--primary-color' );
+				computedStyle.getPropertyValue( '--sf-primary-color' );
 			const checkboxInputs = checkboxContainers[ i ].querySelectorAll(
 				'.sureforms-classic-checkbox-input'
 			);
@@ -752,9 +752,9 @@ if ( checkboxContainers ) {
 				);
 			} else {
 				checkboxInputs[ i ].classList.add(
-					'!text-primary_color',
-					'focus:!ring-primary_color',
-					'checked:!bg-primary_color',
+					'!text-sf_primary_color',
+					'focus:!ring-sf_primary_color',
+					'checked:!bg-sf_primary_color',
 					'checked:!border-none'
 				);
 			}
@@ -874,7 +874,7 @@ if ( selectFieldContainer ) {
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
 		const primaryColor =
-			computedStyle.getPropertyValue( '--primary-color' );
+			computedStyle.getPropertyValue( '--sf-primary-color' );
 		i++;
 		const selectFieldButton = selectField.querySelector(
 			'.sureforms-classic-dropdown-button'
@@ -892,7 +892,7 @@ if ( selectFieldContainer ) {
 			if ( '' === primaryColor ) {
 				for ( let index = 0; index < options.length; index++ ) {
 					options[ index ].classList.remove(
-						'hover:!bg-primary_color'
+						'hover:!bg-sf_primary_color'
 					);
 					options[ index ].classList.add( 'hover:!bg-[#0084C7]' );
 				}
@@ -958,9 +958,9 @@ const submitButton = document.getElementsByClassName( 'sureforms-button' );
 if ( submitButton ) {
 	// eslint-disable-next-line
 	const rootStyles = getComputedStyle( document.documentElement );
-	const primaryColorValue = rootStyles.getPropertyValue( '--primary-color' );
+	const primaryColorValue = rootStyles.getPropertyValue( '--sf-primary-color' );
 	const secondaryColorValue =
-		rootStyles.getPropertyValue( '--secondary-color' );
+		rootStyles.getPropertyValue( '--sf-secondary-color' );
 
 	if ( primaryColorValue !== '' ) {
 		for ( let i = 0; i < submitButton.length; i++ ) {
@@ -1055,7 +1055,7 @@ if ( numberSliderContainer ) {
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
 		const primaryColor =
-			computedStyle.getPropertyValue( '--primary-color' );
+			computedStyle.getPropertyValue( '--sf-primary-color' );
 		preInit( numberSlider, primaryColor );
 		init( numberSlider, primaryColor );
 	}

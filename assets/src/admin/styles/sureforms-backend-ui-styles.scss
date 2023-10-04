@@ -5,23 +5,22 @@
 @layer components {
 	// Classic field styles.
 	.sf-form-style-classic {
-		.frontend-inputs-holder,
 		.sf-classic-inputs-holder {
 			gap: 0 !important;
 			.sf-classic-input-element {
-				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-number-element {
-				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-textarea-element {
-				@apply w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-email-element {
-				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-phone-parent {
-				@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-primary_color focus-within:outline-0;
+				@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-sf_primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-sf_primary_color focus-within:outline-0;
 			}
 			.sf-classic-phone-element {
 				@apply w-full rounded-md py-1.5 pl-16 text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
@@ -30,19 +29,19 @@
 				@apply h-full rounded-md border-0 bg-white py-0 pl-3 pr-7 text-gray-900 focus:outline-none ring-0 focus:ring-inset focus:ring-0 focus:outline-0 focus:border-0 sm:text-sm;
 			}
 			.sf-classic-pwd-element {
-				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset  ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset  ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-adress-element {
-				@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-adress-select {
-				@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-dropdown-btn {
-				@apply border-solid border-0 border-[#D1D5DB] placeholder:text-gray-500 relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary_color sm:text-sm sm:leading-6;
+				@apply border-solid border-0 border-[#D1D5DB] placeholder:text-gray-500 relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-sf_primary_color sm:text-sm sm:leading-6;
 			}
 			.sf-classic-dropdown-li {
-				@apply text-gray-900 relative select-none py-2 pl-3 pr-9 hover:bg-primary_color hover:text-white cursor-pointer;
+				@apply text-gray-900 relative select-none py-2 pl-3 pr-9 hover:bg-sf_primary_color hover:text-white cursor-pointer;
 			}
 			.sf-classic-dropdown-ul {
 				@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0;
@@ -51,7 +50,7 @@
 				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2;
 			}
 			.sf-classic-url-element {
-				@apply block w-full rounded-none rounded-r-md border-0 border-[#D1D5DB] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:border-solid focus:border-primary_color focus:ring-primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply block w-full rounded-none rounded-r-md border-0 border-[#D1D5DB] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-url-prefix {
 				@apply inline-flex min-w-[67px] items-center bg-white rounded-l-md border border-r-0 border-[#D1D5DB] ring-0 px-3 text-gray-900 sm:text-sm;
@@ -63,7 +62,7 @@
 				@apply mt-2 flex justify-center rounded-lg bg-white border border-dashed border-gray-900/25 px-4 py-6;
 			}
 			.sf-classic-upload-label {
-				@apply relative w-full cursor-pointer rounded-md bg-white font-semibold text-primary_color focus-within:outline-none  focus-within:ring-indigo-600 focus-within:ring-offset-2;
+				@apply relative w-full cursor-pointer rounded-md bg-white font-semibold text-sf_primary_color focus-within:outline-none  focus-within:ring-indigo-600 focus-within:ring-offset-2;
 			}
 			.sf-classic-toggle-icon {
 				@apply duration-100 ease-out absolute flex h-full w-full items-center justify-center transition-opacity;
@@ -72,11 +71,11 @@
 				@apply inline-block relative w-[40px] h-[14px] rounded-[25px] cursor-pointer transition-colors duration-200;
 			}
 			.sf-classic-datetime-picker {
-				@apply block w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-primary_color focus-visible:border-primary_color focus:ring-primary_color focus-visible:ring-primary_color focus:outline-0 focus-visible:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply block w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus-visible:border-sf_primary_color focus:ring-sf_primary_color focus-visible:ring-sf_primary_color focus:outline-0 focus-visible:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 
 			.sf-classic-label-text {
-				@apply text-sm font-medium leading-6 text-primary_color;
+				@apply text-sm font-medium leading-6 text-sf_primary_color;
 			}
 			.error-message,
 			.duplicate-message,

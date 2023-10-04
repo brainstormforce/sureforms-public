@@ -41,17 +41,17 @@
 	?>
 		<style>
 			#sforms-single-form-page {
-				--secondary-color: 
+				--sf-secondary-color: 
 				<?php
 					echo esc_attr( $color_secondary );
 				?>
 					;
-				--primary-color: 
+				--sf-primary-color: 
 				<?php
 					echo empty( $color_primary ) && '' === $button_styling_from_theme ? '#0284C7' : esc_attr( $color_primary );
 				?>
 				;
-				--primary-textcolor: 
+				--sf-primary-text-color: 
 					<?php
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
 					?>

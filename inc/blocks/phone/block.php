@@ -81,7 +81,7 @@ class Block extends Base {
 			</div> -->
 			<!-- class layout -->
 			<div class="sureforms-input-phone-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
-				<label for="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
+				<label for="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-sf_primary_color">
 					<?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span class="text-required_icon_color"> *</span>' : ''; ?></label>
 					<div class="relative mt-2">

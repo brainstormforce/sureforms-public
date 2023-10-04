@@ -1,7 +1,7 @@
 :root {
-	--sureforms_col1: "";
-	--sureforms_textcol1: "";
-	--sureforms_col2: "";
+	--sf-primary-color: "";
+	--sf-primary-text-color: "";
+	--sf-secondary-color: "";
 	--sureforms_bg: "";
 	--sureforms_fontsize: 16px;
 	--sureforms_submit_alignment: "left";
@@ -32,7 +32,7 @@
 }
 
 .block-editor-block-list__block {
-	color: var( --sureforms_col1 );
+	color: var( --sf-primary-color );
 	font-size: var( --sureforms_fontsize );
 	span a {
 		cursor: pointer;
@@ -40,23 +40,23 @@
 
 	input::placeholder,
 	textarea::placeholder {
-		color: var( --sureforms_col2 );
+		color: var( --sf-secondary-color );
 	}
 }
 
 .text-primary {
-	color: var( --sureforms_col1 );
+	color: var( --sf-primary-color );
 	font-size: var( --sureforms_fontsize );
 }
 
 .text-secondary {
-	color: var( --sureforms_col2 );
+	color: var( --sf-secondary-color );
 	font-size: var( --sureforms_fontsize );
 }
 
 .sureforms-button {
-	background-color: var( --sureforms_col1 );
-	color: var( --sureforms_textcol1 );
+	background-color: var( --sf-primary-color );
+	color: var( --sf-primary-text-color );
 	border: none;
 	padding: 13px 25px;
 	border-radius: 4px;
@@ -70,7 +70,7 @@
 /* Customize range input */
 input[type="range"] {
 	width: 100%;
-	border: 2px solid var( --sureforms_col1 ) !important;
+	border: 2px solid var( --sf-primary-color ) !important;
 	border-radius: 4px;
 	background-color: white;
 	outline: none;
@@ -79,7 +79,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
 	width: 20px;
 	height: 20px;
-	background-color: var( --sureforms_col1 ) !important;
+	background-color: var( --sf-primary-color ) !important;
 	border-radius: 50%;
 	cursor: pointer;
 }

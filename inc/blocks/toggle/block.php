@@ -48,7 +48,7 @@ class Block extends Base {
 					area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
 				<div class="switch-toggle" style="left: <?php echo $checked ? '27px' : '2px'; ?>;"></div>
 			</div>
-			<span style="color: var(--primary-color)"><?php echo esc_html( $label ); ?></span>
+			<span style="color: var(--sf-primary-color)"><?php echo esc_html( $label ); ?></span>
 			<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 		</div>
 	</label>
@@ -57,7 +57,7 @@ class Block extends Base {
 </div> -->
 			<div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 				<label class="sureforms-switch-label !flex !gap-2 !items-start !max-w-fit" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
-					<div class="!flex !items-center !gap-2 !text-primary_color !w-max !mt-1">
+					<div class="!flex !items-center !gap-2 !text-sf_primary_color !w-max !mt-1">
 						<div style="background-color: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="switch-background sf-classic-toggle-bg">
 							<input class="sureforms-switch sf-classic-switch-input !p-0"
 								name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"

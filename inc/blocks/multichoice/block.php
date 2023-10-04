@@ -90,7 +90,7 @@ class Block extends Base {
 							<i class="fa-regular fa-circle text-sm absolute text-gray-300" aria-hidden="true"></i>
 						</div>
 						<div>
-							<article id="multi-choice-option-<?php echo esc_attr( $id . '-' . $i ); ?>" class="text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $option ); ?></article>
+							<article id="multi-choice-option-<?php echo esc_attr( $id . '-' . $i ); ?>" class="text-sm font-medium leading-6 text-sf_primary_color"><?php echo esc_html( $option ); ?></article>
 						</div>
 					</div>
 					</label>

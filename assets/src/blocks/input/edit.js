@@ -172,13 +172,27 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container' + className }
+				className={ 'main-container sf-classic-inputs-holder ' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
+				<label
+					className={
+						'classic' ===
+						sureforms_keys?._sureforms_form_styling
+							? 'sf-classic-label-text'
+							: 'text-primary'
+					}
+					htmlFor={ 'text-input-' + blockID }
+				>
+					{ label }
+					{ required && label && (
+						<span style={ { color: 'red' } }> *</span>
+					) }
+				</label>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<InputClassicStyle attributes={ attributes } />
 				) : (
