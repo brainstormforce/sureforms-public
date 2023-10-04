@@ -13,12 +13,16 @@ import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGSelectControl from '@Components/select-control';
 import UAGNumberControl from '@Components/number-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { NumberClassicStyle } from './components/numberClassicStyle';
+import { NumberThemeStyle } from './components/numberThemeStyle';
 
 const SureformInput = ( {
 	className,
 	attributes,
 	setAttributes,
-	isSelected,
+	clientId,
 } ) => {
 	const {
 		label,
@@ -31,12 +35,14 @@ const SureformInput = ( {
 		maxValue,
 		errorMsg,
 		formatType,
+		formId,
 	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	const handleInput = ( e ) => {
 		let inputValue = e.target.value;
-
 		if ( formatType === 'none' ) {
 			inputValue = inputValue.replace( /[^-.\d]/g, '' );
 		} else if ( formatType === 'non-decimal' ) {
@@ -57,6 +63,12 @@ const SureformInput = ( {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	return (
 		<>
@@ -196,39 +208,35 @@ const SureformInput = ( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ className + 'main-container' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'number-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'number-input-' + blockID }
-					type={ formatType === 'none' ? 'number' : 'text' }
-					value={ defaultValue }
-					className={ className }
-					onChange={ handleInput }
-					placeholder={ placeholder }
-					required={ required }
-					min={ minValue }
-					max={ maxValue }
-				/>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<NumberClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+						handleInput={ handleInput }
+					/>
+				) : (
+					<NumberThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+						handleInput={ handleInput }
+					/>
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'number-input-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'text-secondary'
+						}
 					>
 						{ help }
 					</label>
