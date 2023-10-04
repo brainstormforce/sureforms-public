@@ -53,11 +53,18 @@ export default ( {
 		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
 	} );
 
+	const postType = useSelect( ( select ) =>
+		select( 'core/editor' ).getCurrentPostType()
+	);
+
 	const sureforms_keys = useSelect( ( select ) => {
+		if ( 'sureforms_form' === postType ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		}
 		const form = select( coreStore ).getEntityRecord(
 			'postType',
 			'sureforms_form',
-			currentFormId
+			formId
 		);
 		const postMeta = form?.meta;
 		return postMeta;
