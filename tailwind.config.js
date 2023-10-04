@@ -2,7 +2,8 @@ module.exports = {
 	content: [
 		'./assets/src/**/*.@(js|jsx)',
 		'./inc/blocks/**/*.php',
-		'./templates/single-form.php',,
+		'./templates/single-form.php',
+		,
 		'./node_modules/tw-elements/dist/js/**/*.js',
 	],
 	theme: {
