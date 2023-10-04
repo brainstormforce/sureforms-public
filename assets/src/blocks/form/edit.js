@@ -206,21 +206,23 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 							} }
 						/>
 					</PanelRow>
-					<PanelRow>
-						<p className="sureform-form-notice">
-							{ __(
-								'Note: For Editing the stylings, please check the SureForms styling - ',
-								'sureforms'
-							) }
-							<a
-								href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
-								target="_blank"
-								rel="noreferrer"
-							>
-								{ __( 'Edit Form Settings', 'sureforms' ) }
-							</a>
-						</p>
-					</PanelRow>
+					{ 'sureforms_form' !== postType && (
+						<PanelRow>
+							<p className="sureform-form-notice">
+								{ __(
+									'Note: For Editing the stylings, please check the SureForms styling - ',
+									'sureforms'
+								) }
+								<a
+									href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
+									target="_blank"
+									rel="noreferrer"
+								>
+									{ __( 'Edit Form Settings', 'sureforms' ) }
+								</a>
+							</p>
+						</PanelRow>
+					) }
 				</PanelBody>
 			</InspectorControls>
 			{ blockCount === 0 ? (
