@@ -29,14 +29,11 @@
 			"default": "Phone Number"
 		},
 		"placeholder": {
-			"type": "string",
-			"default": "9876543210"
+			"type": "string"
 		},
 		"help": {
-			"type": "string",
-			"default": "Enter some help text here"
-		}
-		,
+			"type": "string"
+		},
 		"isUnique": {
 			"type": "boolean",
 			"default": false
