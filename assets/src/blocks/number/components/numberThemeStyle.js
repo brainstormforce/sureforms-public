@@ -1,4 +1,4 @@
-export const NumberThemeStyle = ( { attributes, blockID, handleInput }) => {
+export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
 	const {
 		label,
 		placeholder,
@@ -8,7 +8,7 @@ export const NumberThemeStyle = ( { attributes, blockID, handleInput }) => {
 		maxValue,
 		formatType,
 	} = attributes;
-    
+
 	return (
 		<>
 			<label

@@ -14,14 +14,10 @@ import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { InputClassicStyle } from './components/InputClassicStyle';
+import { InputThemeStyle } from './components/inputThemeStyle';
 
-export default ( {
-	clientId,
-	className,
-	attributes,
-	setAttributes,
-	isSelected,
-} ) => {
+export default ( { clientId, className, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -176,9 +172,7 @@ export default ( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ 'main-container' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -186,55 +180,20 @@ export default ( {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<div className="sf-classic-inputs-holder">
-						<label
-							className="sf-classic-label-text"
-							htmlFor={ 'text-input-' + blockID }
-						>
-							{ label }
-							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
-							) }
-						</label>
-						<input
-							id={ 'text-input-' + blockID }
-							type="text"
-							value={ defaultValue }
-							className={
-								className + ' sf-classic-input-element'
-							}
-							placeholder={ placeholder }
-							required={ required }
-						/>
-					</div>
+					<InputClassicStyle attributes={ attributes } />
 				) : (
-					<>
-						<label
-							className="text-primary"
-							htmlFor={ 'text-input-' + blockID }
-						>
-							{ label }
-							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
-							) }
-						</label>
-						<input
-							id={ 'text-input-' + blockID }
-							type="text"
-							value={ defaultValue }
-							className={
-								className + ' sf-classic-input-element'
-							}
-							placeholder={ placeholder }
-							required={ required }
-						/>
-					</>
+					<InputThemeStyle attributes={ attributes } />
 				) }
 
 				{ help !== '' && (
 					<label
 						htmlFor={ 'text-input-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'text-secondary'
+						}
 					>
 						{ help }
 					</label>
