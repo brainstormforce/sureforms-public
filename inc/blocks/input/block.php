@@ -9,7 +9,7 @@ namespace SureForms\Inc\Blocks\Input;
 
 use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Sureforms_Input_Markup;
+use SureForms\Inc\SureForms_Input_Markup;
 
 /**
  * Address Block.
@@ -32,15 +32,15 @@ class Block extends Base {
 			switch ( $styling ) {
 				case 'inherit':
 					// phpcs:ignore
-					echo Sureforms_Input_Markup::sureforms_input_default_styling( $attributes );
+					echo SureForms_Input_Markup::input_default_styling( $attributes );
 					break;
 				case 'classic':
 					// phpcs:ignore
-					echo Sureforms_Input_Markup::sureforms_input_classic_styling( $attributes );
+					echo SureForms_Input_Markup::input_classic_styling( $attributes );
 					break;
 				default:
 					// phpcs:ignore
-					echo Sureforms_Input_Markup::sureforms_input_default_styling( $attributes );
+					echo SureForms_Input_Markup::input_default_styling( $attributes );
 					break;
 			}
 		}

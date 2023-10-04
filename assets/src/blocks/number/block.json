@@ -46,6 +46,10 @@
 		"formatType": {
 			"type": "string",
 			"default": "none"
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Sureforms Submit Class file.
+ * Sureforms Input Markup Class file.
  *
  * @package sureforms.
  * @since 0.0.1
@@ -11,11 +11,11 @@ namespace SureForms\Inc;
 use SureForms\Inc\Traits\Get_Instance;
 
 /**
- * Sureforms Helper Class.
+ * Sureforms_Input_Markup Class.
  *
  * @since 0.0.1
  */
-class Sureforms_Input_Markup {
+class SureForms_Input_Markup {
 	use Get_Instance;
 
 	/**
@@ -25,7 +25,7 @@ class Sureforms_Input_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function sureforms_input_default_styling( $attributes ) {
+	public static function input_default_styling( $attributes ) {
 		$id            = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -55,7 +55,7 @@ class Sureforms_Input_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function sureforms_input_classic_styling( $attributes ) {
+	public static function input_classic_styling( $attributes ) {
 		$id            = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;

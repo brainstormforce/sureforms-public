@@ -2,13 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
-import { store as coreStore } from '@wordpress/core-data';
-import { useSelect } from '@wordpress/data';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -18,14 +12,12 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { InputClassicStyle } from './components/InputClassicStyle';
+import { InputThemeStyle } from './components/inputThemeStyle';
 
-export default ( {
-	clientId,
-	className,
-	attributes,
-	setAttributes,
-	isSelected,
-} ) => {
+export default ( { clientId, className, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -41,34 +33,8 @@ export default ( {
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
-	const currentFormId = useSelect( ( select ) => {
-		// parent block id attribute.
-		const parents = select( blockEditorStore ).getBlockParents( clientId );
-		const parentBlock = select( blockEditorStore ).getBlocksByClientId(
-			parents?.[ 0 ]
-		);
-		// current post id.
-		const post_id = select( 'core/editor' ).getCurrentPostId();
-		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
-	} );
-
-	const postType = useSelect( ( select ) =>
-		select( 'core/editor' ).getCurrentPostType()
-	);
-
-	const sureforms_keys = useSelect( ( select ) => {
-		if ( 'sureforms_form' === postType ) {
-			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
-		}
-		const form = select( coreStore ).getEntityRecord(
-			'postType',
-			'sureforms_form',
-			formId
-		);
-		const postMeta = form?.meta;
-		return postMeta;
-	} );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -206,9 +172,7 @@ export default ( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ 'main-container' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -216,55 +180,20 @@ export default ( {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<div className="sf-classic-inputs-holder">
-						<label
-							className="text-primary"
-							htmlFor={ 'text-input-' + blockID }
-						>
-							{ label }
-							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
-							) }
-						</label>
-						<input
-							id={ 'text-input-' + blockID }
-							type="text"
-							value={ defaultValue }
-							className={
-								className + ' sf-classic-input-element'
-							}
-							placeholder={ placeholder }
-							required={ required }
-						/>
-					</div>
+					<InputClassicStyle attributes={ attributes } />
 				) : (
-					<>
-						<label
-							className="text-primary"
-							htmlFor={ 'text-input-' + blockID }
-						>
-							{ label }
-							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
-							) }
-						</label>
-						<input
-							id={ 'text-input-' + blockID }
-							type="text"
-							value={ defaultValue }
-							className={
-								className + ' sf-classic-input-element'
-							}
-							placeholder={ placeholder }
-							required={ required }
-						/>
-					</>
+					<InputThemeStyle attributes={ attributes } />
 				) }
 
 				{ help !== '' && (
 					<label
 						htmlFor={ 'text-input-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'text-secondary'
+						}
 					>
 						{ help }
 					</label>
