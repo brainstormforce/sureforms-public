@@ -75,20 +75,20 @@ class Block extends Base {
 				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div> -->
-			<div id="sureforms-upload-container" class="sureforms-upload-container main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
+			<div id="sureforms-upload-container" class="sureforms-upload-container main-container sf-classic-inputs-holder frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 				<div class="col-span-full">
-					<label class="block text-sm font-medium leading-6 text-primary_color">
+					<label class="sf-classic-label-text">
 						<?php echo esc_html( $label ); ?> 
 						<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 					</label>
-					<div class="sureforms-upload-inner-div mt-2 flex justify-center rounded-lg !bg-white border border-dashed border-gray-900/25 px-4 py-6">
+					<div class="sureforms-upload-inner-div sf-classic-upload-div">
 						<div class="text-center">
 							<div style="font-size:35px" class="text-center text-gray-300">
 								<i class="fa fa-cloud-upload" aria-hidden="true"></i>
 							</div>
 							<div class="mt-2 flex text-sm leading-6 text-gray-600">
 								<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
-								<label for="sureforms-upload-<?php echo esc_attr( $id ); ?>" class="relative w-full cursor-pointer rounded-md bg-white font-semibold text-primary_color focus-within:outline-none  focus-within:ring-indigo-600 focus-within:ring-offset-2">
+								<label for="sureforms-upload-<?php echo esc_attr( $id ); ?>" class="sf-classic-upload-label">
 									<span>Click to upload the file</span>
 									<input id="sureforms-upload-<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" type="file" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="sureforms-upload-field sr-only" accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
 								</label>
@@ -98,8 +98,8 @@ class Block extends Base {
 					</div>
 				</div>
 				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
-				<p style="display:none" class="error-message !mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
-				<div style="display:none" id="sureforms-upload-field-result-<?php echo esc_attr( $id ); ?>"class="mt-2 flex !bg-white rounded-lg border border-solid border-gray-900/25">
+				<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
+				<div style="display:none" id="sureforms-upload-field-result-<?php echo esc_attr( $id ); ?>"class="sf-classic-upload-result">
 				</div>
 			</div>
 			<?php

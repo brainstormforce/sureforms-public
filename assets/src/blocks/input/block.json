@@ -49,6 +49,10 @@
 		"textLength": {
 			"type": "number",
 			"default": 30
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

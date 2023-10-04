@@ -56,8 +56,8 @@ class Block extends Base {
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			<span style="display:none" class="error-message confirm-email-error"><?php echo 'Field values do not match.'; ?></span>
 		</div> -->
-		<div class="main-container sureforms-input-email-container sf-classic-inputs-holder  <?php echo esc_attr( $classname ); ?>">
-			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
+		<div class="main-container sureforms-input-email-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
+			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="sf-classic-label-text">
 				<?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?>
 			</label>
 			<div class="relative mt-2 rounded-md shadow-sm">
@@ -67,15 +67,15 @@ class Block extends Base {
 					<path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
 				</svg>
 				</div>
-				<input type="email" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="sureforms-input-email block !w-full !border-solid !border-0 !border-[#D1D5DB] !rounded-md !py-1.5 !pr-10 !text-gray-900 !shadow-sm !ring-1 !ring-inset  !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>">
+				<input type="email" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="sureforms-input-email  sf-classic-email-element" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>">
 			</div>
-			<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-			<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
-			<p style="display:none" class="error-message duplicate-message mt-2 text-sm text-red-600"><?php echo esc_html( $dulicate_msg ); ?></p>
+			<?php echo '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
+			<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
+			<p style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></p>
 			<?php
 			if ( true === $is_confirm_email ) {
 				echo '
-					<label for="sureforms-input-email-' . esc_attr( $id ) . '" class="block text-sm font-medium leading-6 text-primary_color !mt-[24px]">
+					<label for="sureforms-input-email-' . esc_attr( $id ) . '" class="sf-classic-label-text !mt-[24px]">
 						' . esc_html( $confirm_label ) . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
 					</label>
 					<div class="relative mt-2 rounded-md shadow-sm">
@@ -85,12 +85,12 @@ class Block extends Base {
 								<path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
 							</svg>
 						</div>
-						<input type="email" id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sureforms-input-confirm-email block !w-full !border-solid !border-0 !border-[#D1D5DB] !rounded-md !py-1.5 !pr-10 !text-gray-900 !shadow-sm !ring-1 !ring-inset  !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus:!ring-primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
+						<input type="email" id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sureforms-input-confirm-email  sf-classic-email-element" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
 					</div>';
 			}
 			?>
-			<p style="display:none" class="error-message !mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
-			<p style="display:none" class="error-message confirm-email-error !mt-2 text-sm text-red-600"><?php echo esc_html( __( 'Email does not match', 'sureforms' ) ); ?></p>
+			<p style="display:none" class="error-message "><?php echo esc_html( $error_msg ); ?></p>
+			<p style="display:none" class="error-message confirm-email-error "><?php echo esc_html( __( 'Email does not match', 'sureforms' ) ); ?></p>
 		</div>
 			<?php
 		}

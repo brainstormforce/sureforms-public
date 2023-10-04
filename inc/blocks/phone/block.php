@@ -80,16 +80,15 @@ class Block extends Base {
 				<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
 			</div> -->
 			<!-- class layout -->
-			<div class="sureforms-input-phone-container main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
+			<div class="sureforms-input-phone-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
 				<label for="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
 					<?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span class="text-required_icon_color"> *</span>' : ''; ?></label>
 					<div class="relative mt-2">
-						<div id="sureforms-phone-parent" class="group relative !ring-1 !ring-gray-300 !border-[#D1D5DB] rounded-md !border-0 !outline-0 focus-within:!ring-primary_color focus-within:!ring-2 focus-within:!border-solid focus-within:!border-0 focus-within:!border-primary_color focus-within:!outline-0">
+						<div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
 							<div class="absolute inset-y-0 left-0 flex items-center">
 								<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ); ?>" />
-								<select class="h-full !rounded-md !border-0 !bg-transparent !py-0 !pl-3 !pr-7 !text-gray-900 focus:outline-none !ring-0 focus:ring-inset focus:ring-0 focus:!outline-0 focus:!border-0 sm:text-sm
-								" id="sureforms-country-code-<?php echo esc_attr( $id ); ?>">
+								<select class="sf-classic-phone-select" id="sureforms-country-code-<?php echo esc_attr( $id ); ?>">
 								<?php
 								if ( is_array( $data ) ) {
 									foreach ( $data as $country ) {
@@ -103,12 +102,12 @@ class Block extends Base {
 								?>
 								</select>
 							</div>
-							<input type="tel" id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="block !w-full !rounded-md !py-1.5 !pl-16 text-gray-900 !shadow-sm !ring-0 !border-0 !bg-white !outline-0 placeholder:!text-gray-500 sm:!text-sm sm:!leading-6 focus:!ring-0 focus:!border-0" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
+							<input type="tel" id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="sf-classic-phone-element" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
 						</div>
 					</div>
-				<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-				<p style="display:none;" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
-				<p style="display:none" class="duplicate-message mt-2 text-sm text-red-600"><?php echo esc_html( $dulicate_msg ); ?></p>
+				<?php echo '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
+				<p style="display:none;" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
+				<p style="display:none" class="duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></p>
 			</div>
 			<?php
 		}

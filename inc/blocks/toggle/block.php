@@ -55,17 +55,17 @@ class Block extends Base {
 			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 	<span style="margin-top:5px;display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 </div> -->
-			<div class="sureforms-switch-container main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
+			<div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 				<label class="sureforms-switch-label !flex !gap-2 !items-start !max-w-fit" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
 					<div class="!flex !items-center !gap-2 !text-primary_color !w-max !mt-1">
-						<div style="background-color: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="switch-background !inline-block !relative !w-[40px] !h-[14px] !rounded-[25px] !cursor-pointer !transition-colors !duration-200">
+						<div style="background-color: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="switch-background sf-classic-toggle-bg">
 							<input class="sureforms-switch sf-classic-switch-input !p-0"
 								name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
 								id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
 								<?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox"
 								area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
 							<div class="switch-toggle !-top-[3px] !shadow !border !border-gray-200 !h-5 !w-5" style="left: <?php echo $checked ? '24px' : '0'; ?>;"> 
-								<span class="sf-classic-toggle-icon-container !duration-100 !ease-out !absolute !inset-0 !flex !h-full !w-full !items-center !justify-center !transition-opacity <?php echo esc_attr( $checked ? '!opacity-100' : '!opacity-0' ); ?>" aria-hidden="true">
+								<span class="sf-classic-toggle-icon-container sf-classic-toggle-icon <?php echo esc_attr( $checked ? '!opacity-100' : '!opacity-0' ); ?>" aria-hidden="true">
 									<svg style="fill: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="!h-3 !w-3 sf-classic-toggle-icon" viewBox="0 0 12 12">
 										<path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
 									</svg>
@@ -73,10 +73,10 @@ class Block extends Base {
 							</div>
 						</div>
 					</div>
-					<span class="!text-primary_color text-sm font-medium leading-6"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="!text-required_icon_color"> *</span>' : ''; ?></span>
+					<span class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="!text-required_icon_color"> *</span>' : ''; ?></span>
 				</label>
-				<?php echo '' !== $help ? '<p for="sureforms-checkbox" class="mt-2 text-sm text-gray-500">' . esc_html( $help ) . '</p>' : ''; ?>
-				<span style="display:none;" class="error-message mt-2"><?php echo esc_html( $error_msg ); ?></span>
+				<?php echo '' !== $help ? '<p for="sureforms-checkbox" class="sforms-helper-txt">' . esc_html( $help ) . '</p>' : ''; ?>
+				<span style="display:none;" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div>
 			<?php
 		}

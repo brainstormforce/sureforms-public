@@ -16,7 +16,8 @@
 			"default": ""
 		},
 		"defaultValue": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"required": {
 			"type": "boolean",
@@ -39,13 +40,18 @@
 			"default": "Text Field"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
 		},
 		"textLength": {
+			"type": "number",
+			"default": 30
+		},
+		"formId": {
 			"type": "number",
 			"default": ""
 		}

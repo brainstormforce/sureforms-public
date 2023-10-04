@@ -149,7 +149,7 @@ class Block extends Base {
 						break;
 				}
 				?>
-				<label class="text-sm font-medium leading-6 text-primary_color">
+				<label class="sf-classic-label-text">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input type="hidden" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" id="sf-classic-rating-field-<?php echo esc_attr( $id ); ?>" class="sf-rating-field-result"/>
@@ -167,8 +167,8 @@ class Block extends Base {
 						</li>
 				<?php } ?>
 				</ul>
-				<?php echo '' !== $help ? '<p class="mt-2 text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-				<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+				<?php echo '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
+				<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
 			</div>
 			<?php
 		}

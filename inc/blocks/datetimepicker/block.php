@@ -62,7 +62,7 @@ class Block extends Base {
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<div class="sf-classic-inputs-holder main-container sf-classic-date-time-container <?php echo esc_attr( $classname ); ?>">
-			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-primary_color">
+			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="sf-classic-label-text">
 				<?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?>
 			</label>
 			<input type="hidden" class="sf-min-max-holder" min="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>" >
@@ -85,10 +85,10 @@ class Block extends Base {
 			}
 			?>
 				>
-				<input type="text" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" class="sureforms-input-data-time !block !w-full !border-solid !border-0 !border-[#D1D5DB] !rounded-md !py-1.5 !pr-10 !text-gray-900 !shadow-sm !ring-1 !ring-inset !ring-gray-300 !bg-white placeholder:!text-gray-500 focus:!ring-2 focus:!border-solid focus:!border-primary_color focus-visible:!border-primary_color focus:!ring-primary_color focus-visible:!ring-primary_color focus:!outline-0 focus-visible:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" id="sureforms-input-time-'<?php esc_attr( $id ); ?>'" />
+				<input type="text" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" class="sureforms-input-data-time sf-classic-datetime-picker" id="sureforms-input-time-'<?php esc_attr( $id ); ?>'" />
 			</div>
-			<?php echo '' !== $help ? '<label for="sureforms-input-password" class="!mt-2 text-sm text-gray-500">' . esc_attr( $help ) . '</label>' : ''; ?>
-			<p style="display:none" class="error-message !mt-2 text-sm text-red-600" id="email-error"><?php echo esc_html( $error_msg ); ?></p>
+			<?php echo '' !== $help ? '<label for="sureforms-input-password" class="sforms-helper-txt">' . esc_attr( $help ) . '</label>' : ''; ?>
+			<p style="display:none" class="error-message " id="email-error"><?php echo esc_html( $error_msg ); ?></p>
 		</div>
 			<?php
 		}

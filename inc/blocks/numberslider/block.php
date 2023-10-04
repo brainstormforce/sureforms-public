@@ -49,12 +49,12 @@ class Block extends Base {
 			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt" for="sureforms-number-slider-' . esc_attr( $id ) . '">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
-		<div class="sureforms-number-slider-container sf-classic-number-slider">
+		<div class="sureforms-number-slider-container sf-classic-number-slider sf-classic-inputs-holder">
 			<div class="range-slider-container">
 				<div class="range-slider-block">
 					<div id="range-sliders" class="range-sliders w-full">
 						<div class="range-slider-group range-slider-group-sf">
-						<label for="range-slider-sf" class="block text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
+						<label for="range-slider-sf" class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
 							<div class="flex justify-between items-center">
 							<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="range" min="<?php echo ( intval( $min ) ); ?>" max="<?php echo ( intval( $max ) ); ?>" value="<?php echo ( intval( $min ) ); ?>" data-color="#0284c7"
 							step="<?php echo ( intval( $step ) ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="range-slider range-slider-sf !border-solid !border !border-[#d1d5db]" id="range-slider-sf" />
@@ -65,7 +65,7 @@ class Block extends Base {
 				</div>
 			</div>
 			<?php echo '' !== $help ? '<p class="text-sm text-gray-500" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-			<p style="display:none" class="error-message mt-2 text-sm text-red-600"><?php echo esc_html( $error_msg ); ?></p>
+			<p style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
 		</div>
 			<?php
 		}
