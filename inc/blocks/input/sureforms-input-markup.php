@@ -11,7 +11,7 @@ namespace SureForms\Inc;
 use SureForms\Inc\Traits\Get_Instance;
 
 /**
- * Sureforms_Input_Markup Class.
+ * Sureforms Input Markup Class.
  *
  * @since 0.0.1
  */
