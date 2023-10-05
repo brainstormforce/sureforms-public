@@ -40,16 +40,16 @@ class Block extends Base {
 			ob_start();
 			switch ( $styling ) {
 				case 'inherit':
-					// phpcs:ignore
-					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data );
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
 					break;
 				case 'classic':
-					// phpcs:ignore
-					echo SureForms_Phone_Markup::phone_classic_styling( $attributes, $data );
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_classic_styling( $attributes, $data ); // phpcs:ignore
 					break;
 				default:
-					// phpcs:ignore
-					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data );
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
 					break;
 			}
 		}
