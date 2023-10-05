@@ -84,13 +84,13 @@ class Block extends Base {
 				<?php foreach ( $options as $i => $option ) : ?>
 					<label class="classic-sf-radio">
 					<input type="<?php echo esc_attr( $single_selection ? 'radio' : 'checkbox' ); ?>" <?php echo esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$id" ) . '"' : '' ); ?> id="sureforms-multi-choice-<?php echo esc_attr( $id . '-' . $i ); ?>" class="sureforms-multi-choice">
-					<div class="flex items-center classic-radio-btn sf-classic-multi-choice">
+					<div class="flex items-start classic-radio-btn sf-classic-multi-choice">
 						<div class="pr-[5px] relative flex">
 							<i class="fa fa-check-circle text-base" aria-hidden="true"></i>
 							<i class="fa-regular fa-circle text-sm absolute text-gray-300" aria-hidden="true"></i>
 						</div>
 						<div>
-							<article id="multi-choice-option-<?php echo esc_attr( $id . '-' . $i ); ?>" class="text-sm font-medium leading-6 text-primary_color"><?php echo esc_html( $option ); ?></article>
+							<article id="multi-choice-option-<?php echo esc_attr( $id . '-' . $i ); ?>" class="text-sm font-medium leading-6 text-primary_color mt-[-0.5px]"><?php echo esc_html( $option ); ?></article>
 						</div>
 					</div>
 					</label>
