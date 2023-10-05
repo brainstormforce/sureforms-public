@@ -4,10 +4,16 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
+import { UrlThemeStyle } from './components/UrlThemeStyle';
+import { UrlClassicStyle } from './components/UrlClassicStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, placeholder, help, required, id, defaultValue } = attributes;
+export default ( { className, attributes, setAttributes, clientId } ) => {
+	const { help, id, formId } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -16,6 +22,12 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	return (
 		<>
 			<Settings
@@ -23,32 +35,18 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ 'main-container' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'url-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'url-input-' + blockID }
-					type="url"
-					value={ defaultValue }
-					className={ className }
-					placeholder={ placeholder }
-					required={ required }
-				/>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<UrlClassicStyle attributes={ attributes } />
+				) : (
+					<UrlThemeStyle attributes={ attributes } />
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'url-input-help-' + blockID }
