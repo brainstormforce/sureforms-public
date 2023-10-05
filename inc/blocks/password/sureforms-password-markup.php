@@ -45,7 +45,7 @@ class SureForms_Password_Markup {
 			'<label for="sureforms-confirm-input-password-' . esc_attr( $id ) . '" class="sf-text-primary sureforms-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 			'<input id="sureforms-confirm-input-password-' . esc_attr( $id ) . '" type="password" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field sureforms-confirm-input-password">' : ''
 		) .
-		( '' !== $help ? '<label for="sureforms-input-password" class="sf-text-secondary sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
+		( '' !== $help ? '<label for="sureforms-input-password" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_attr( $error_msg ) . '</span>' .
 			'<span style="display:none" class="error-message confirm-password-error">Field values do not match.</span>
         </div>';
