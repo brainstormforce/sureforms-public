@@ -12,8 +12,17 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import data from './phoneCodes.json';
+import { PhoneClassicStyle } from './components/PhoneClassicStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { PhoneThemeStyle } from './components/PhoneThemeStyle';
 
-export default function Edit( { attributes, setAttributes, isSelected } ) {
+export default function Edit( {
+	attributes,
+	setAttributes,
+	clientId,
+	className,
+} ) {
 	const {
 		required,
 		label,
@@ -25,8 +34,11 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		isUnique,
 		duplicateMsg,
 		errorMsg,
+		formId,
 	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
 
@@ -40,6 +52,13 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	return (
 		<>
 			<InspectorControls>
@@ -195,70 +214,26 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ 'main-container' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'phone-field-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<div
-					style={ {
-						display: 'flex',
-						gap: '.5rem',
-					} }
-					className="phonufield-with-country-code"
-				>
-					{ data && (
-						<select
-							style={ { width: '124px' } }
-							required={ required }
-							id={ 'phone-field-' + blockID }
-							placeholder="US +1"
-							onChange={ ( e ) => handleChange( e ) }
-						>
-							{ data.map( ( country, i ) => {
-								return (
-									<option
-										key={ i }
-										value={
-											country.code +
-											' ' +
-											country.dial_code
-										}
-										selected={
-											country.dial_code ===
-												defaultCountryCode && true
-										}
-									>
-										{ country.code +
-											' ' +
-											country.dial_code }
-									</option>
-								);
-							} ) }
-						</select>
-					) }
-					<input
-						label="&nbsp;"
-						type="tel"
-						placeholder={ placeholder }
-						pattern="[0-9]{10}"
-						id={ 'phone-field-' + blockID }
-						value={ defaultValue }
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<PhoneClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+						handleChange={ handleChange }
 					/>
-				</div>
+				) : (
+					<PhoneThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+						handleChange={ handleChange }
+					/>
+				) }
 			</div>
 			{ help !== '' && (
 				<label
