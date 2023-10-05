@@ -9,6 +9,7 @@ namespace SureForms\Inc\Blocks\Phone;
 
 use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
+use SureForms\Inc\SureForms_Phone_Markup;
 
 /**
  * Phone Block.
@@ -23,8 +24,6 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
-		$sureforms_helper_instance = new Sureforms_Helper();
-
 		$upload_dir = wp_upload_dir();
 		$file_path  = plugin_dir_url( __FILE__ ) . '/phone_codes.json';
 		$response   = wp_remote_get( $file_path );
@@ -36,81 +35,24 @@ class Block extends Base {
 			$data = array();
 		}
 		if ( ! empty( $attributes ) ) {
-			$id              = isset( $attributes['id'] ) ? $sureforms_helper_instance->get_string_value( $attributes['id'] ) : '';
-			$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-			$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
-			$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-			$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-			$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-			$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$form_id = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$styling = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
 			ob_start();
-			?>
-			<!-- <div class="sureforms-input-phone-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
-				<label class="sf-text-primary"><?php echo esc_html( $label ); ?>
-					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
-				</label>
-				<div class="sureforms-input-phone-holder">
-					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ); ?>" />
-					<select id="sureforms-country-code-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $required ? 'required' : '' ); ?>>
-					<?php if ( $default_country ) : ?>
-					<option value="<?php echo esc_attr( $default_country ); ?>"><?php echo esc_html( $default_country ); ?></option>
-					<?php endif; ?>
-						<?php
-						if ( is_array( $data ) ) {
-							foreach ( $data as $country ) {
-								if ( isset( $country['code'] ) && isset( $country['dial_code'] ) ) {
-									?>
-						<option value="<?php echo esc_attr( $country['dial_code'] ); ?>"><?php echo esc_html( $country['code'] . ' ' . $country['dial_code'] ); ?></option>
-									<?php
-								}
-							}
-						}
-						?>
-					</select>
-					<input type="tel" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"
-						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
-						class="sureforms-input-field" />
-				</div>
-				<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
-				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
-				<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
-			</div> -->
-			<!-- class layout -->
-			<div class="sureforms-input-phone-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
-				<label for="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="block text-sm font-medium leading-6 text-sf_primary_color">
-					<?php echo esc_html( $label ); ?> 
-					<?php echo $required && $label ? '<span class="text-required_icon_color"> *</span>' : ''; ?></label>
-					<div class="relative mt-2">
-						<div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
-							<div class="absolute inset-y-0 left-0 flex items-center">
-								<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" area-unique="<?php echo esc_attr( $is_unique ? 'true' : 'false' ); ?>" id="fullPhoneNumber-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ); ?>" />
-								<select class="sf-classic-phone-select" id="sureforms-country-code-<?php echo esc_attr( $id ); ?>">
-								<?php
-								if ( is_array( $data ) ) {
-									foreach ( $data as $country ) {
-										if ( isset( $country['code'] ) && isset( $country['dial_code'] ) ) {
-											?>
-											<option value="<?php echo esc_attr( $country['dial_code'] ); ?>" <?php echo esc_html( $country['dial_code'] === $default_country ? 'selected' : '' ); ?>><?php echo esc_html( $country['code'] ); ?></option>
-											<?php
-										}
-									}
-								}
-								?>
-								</select>
-							</div>
-							<input type="tel" id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>" class="sf-classic-phone-element" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>">
-						</div>
-					</div>
-				<?php echo '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : ''; ?>
-				<p style="display:none;" class="error-message"><?php echo esc_html( $error_msg ); ?></p>
-				<p style="display:none" class="duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></p>
-			</div>
-			<?php
+			switch ( $styling ) {
+				case 'inherit':
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
+					break;
+				case 'classic':
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_classic_styling( $attributes, $data ); // phpcs:ignore
+					break;
+				default:
+					// @phpstan-ignore-next-line
+					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
+					break;
+			}
 		}
-			return ob_get_clean();
+		return ob_get_clean();
 	}
 }
