@@ -12,8 +12,12 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { TextareaClassicStyle } from './components/TextareaClassicStyle';
+import { TextareaThemeStyle } from './components/TextareaThemeStyle';
 
-export default ( { attributes, setAttributes, isSelected } ) => {
+export default ( { clientId, className, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -25,9 +29,21 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		errorMsg,
 		rows,
 		cols,
+		formId,
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+	const stylingType = sureforms_keys?._sureforms_form_styling;
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -161,7 +177,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container  sf-classic-inputs-holder ' + className
 				}
 				style={ {
 					display: 'flex',
@@ -169,28 +185,22 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'text-area-block-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<textarea
-					required={ required }
-					label={ label }
-					placeholder={ placeholder }
-					value={ defaultValue }
-					rows={ rows }
-					cols={ cols }
-					maxLength={ maxLength }
-				></textarea>
+				{ 'classic' === stylingType ? (
+					<TextareaClassicStyle attributes={ attributes } />
+				) : (
+					<TextareaThemeStyle attributes={ attributes } />
+				) }
 				{ textAreaHelpText !== '' && (
-					<div className="sf-text-secondary">
+					<label
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
 						{ textAreaHelpText }
-					</div>
+					</label>
 				) }
 			</div>
 		</>
