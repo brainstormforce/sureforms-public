@@ -15,7 +15,7 @@ import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
-import { InputThemeStyle } from './components/inputThemeStyle';
+import { InputThemeStyle } from './components/InputThemeStyle';
 
 export default ( { clientId, className, attributes, setAttributes } ) => {
 	const {
