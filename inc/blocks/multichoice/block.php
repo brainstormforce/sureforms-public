@@ -38,7 +38,7 @@ class Block extends Base {
 			ob_start();
 			?>
 		<!-- <div class="sureforms-multi-choice-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-multi-choice-container-<?php echo esc_attr( $id ); ?>">
-			<label class="text-primary"><?php echo esc_html( $label ); ?> 
+			<label class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input type="hidden" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
@@ -72,7 +72,7 @@ class Block extends Base {
 						<span></span>
 					</div>
 				<?php endforeach; ?>
-				<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 			<div class="sureforms-multi-choice-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-multi-choice-container-<?php echo esc_attr( $id ); ?>">
@@ -89,7 +89,7 @@ class Block extends Base {
 							<i class="fa fa-check-circle text-base" aria-hidden="true"></i>
 							<i class="fa-regular fa-circle text-sm absolute text-gray-300" aria-hidden="true"></i>
 						</div>
-						<div>
+						<div> 
 							<article id="multi-choice-option-<?php echo esc_attr( $id . '-' . $i ); ?>" class="text-sm font-medium leading-6 text-primary_color mt-[-0.5px]"><?php echo esc_html( $option ); ?></article>
 						</div>
 					</div>

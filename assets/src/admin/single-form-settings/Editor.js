@@ -71,16 +71,16 @@ const SureformsFormSpecificSettings = ( props ) => {
 								: 'none',
 						},
 						{
-							property: '--sureforms_col1',
-							value: sureforms_keys._sureforms_color1 || 'none',
+							property: '--sf-primary-color',
+							value: sureforms_keys._sureforms_color1 || '#0284C7',
 						},
 						{
-							property: '--sureforms_textcol1',
+							property: '--sf-primary-text-color',
 							value:
 								sureforms_keys._sureforms_textcolor1 || 'none',
 						},
 						{
-							property: '--sureforms_col2',
+							property: '--sf-secondary-color',
 							value: sureforms_keys._sureforms_color2 || 'none',
 						},
 						{

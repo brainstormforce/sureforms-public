@@ -41,7 +41,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'password-input-' + blockID }
 				>
 					{ label }
@@ -59,7 +59,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				{ isConfirmPassword && (
 					<>
 						<label
-							className="text-primary"
+							className="sf-text-primary"
 							htmlFor={ 'confirm-email-input-' + blockID }
 						>
 							{ confirmLabel }
@@ -79,7 +79,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'password-input-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>

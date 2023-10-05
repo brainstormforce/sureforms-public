@@ -36,13 +36,13 @@ class Block extends Base {
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 		<!-- <div class="sureforms-input-url-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-			<label for="sureforms-input-url-<?php echo esc_attr( $id ); ?>" class="text-primary"><?php echo esc_html( $label ); ?> 
+			<label for="sureforms-input-url-<?php echo esc_attr( $id ); ?>" class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-url-<?php echo esc_attr( $id ); ?>" type="url" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" 
 			class="sureforms-url-input
 			">
-			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<div class="main-container frontend-inputs-holder sureforms-input-url-container <?php echo esc_attr( $classname ); ?>">

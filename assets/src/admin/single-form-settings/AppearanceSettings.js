@@ -33,19 +33,19 @@ function AppearanceSettings( props ) {
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_col1',
+			'--sf-primary-color',
 			sureforms_keys._sureforms_color1
 				? sureforms_keys._sureforms_color1
-				: 'none'
+				: '#0284C7'
 		);
 		root.style.setProperty(
-			'--sureforms_textcol1',
+			'--sf-primary-text-color',
 			sureforms_keys._sureforms_textcolor1
 				? sureforms_keys._sureforms_textcolor1
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_col2',
+			'--sf-secondary-color',
 			sureforms_keys._sureforms_color2
 				? sureforms_keys._sureforms_color2
 				: 'none'
@@ -92,18 +92,18 @@ function AppearanceSettings( props ) {
 		}
 
 		if ( option === '_sureforms_color1' ) {
-			root.style.setProperty( '--sureforms_col1', value ? value : '' );
+			root.style.setProperty( '--sf-primary-color', value ? value : '' );
 		}
 
 		if ( option === '_sureforms_textcolor1' ) {
 			root.style.setProperty(
-				'--sureforms_textcol1',
+				'--sf-primary-text-color',
 				value ? value : ''
 			);
 		}
 
 		if ( option === '_sureforms_color2' ) {
-			root.style.setProperty( '--sureforms_col2', value ? value : '' );
+			root.style.setProperty( '--sf-secondary-color', value ? value : '' );
 		}
 
 		if ( option === '_sureforms_fontsize' ) {
