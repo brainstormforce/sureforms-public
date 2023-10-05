@@ -40,7 +40,7 @@ class Block extends Base {
 			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 		<!-- <div class="sureforms-input-email-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="text-primary"><?php echo esc_html( $label ); ?> 
+			<label for="sureforms-input-email-<?php echo esc_attr( $id ); ?>" class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-input-email-<?php echo esc_attr( $id ); ?>" type="email" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $default ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" 
@@ -49,10 +49,10 @@ class Block extends Base {
 			<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
 			<?php
 			echo true === $is_confirm_email ?
-			'<label for="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="text-primary sureforms-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+			'<label for="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sf-text-primary sureforms-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 			'<input id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" type="email" data-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field sureforms-input-confirm-email">' : '';
 			?>
-			<?php echo '' !== $help ? '<label for="sureforms-input-email" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			<span style="display:none" class="error-message confirm-email-error"><?php echo 'Field values do not match.'; ?></span>
 		</div> -->

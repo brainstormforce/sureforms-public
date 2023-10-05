@@ -205,7 +205,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'phone-field-' + blockID }
 				>
 					{ label }
@@ -263,7 +263,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			{ help !== '' && (
 				<label
 					htmlFor={ 'phone-help-' + blockID }
-					className="text-secondary"
+					className="sf-text-secondary"
 				>
 					{ help }
 				</label>

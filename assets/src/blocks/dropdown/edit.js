@@ -281,7 +281,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'dropdown-' + blockID }
 				>
 					{ label }
@@ -301,7 +301,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'dropdown-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>

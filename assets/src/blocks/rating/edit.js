@@ -212,7 +212,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'rating-block-' + blockID }
 				>
 					{ label }
@@ -282,7 +282,9 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					} ) }
 				</div>
 				{ ratingBoxHelpText !== '' && (
-					<div className="text-secondary">{ ratingBoxHelpText }</div>
+					<div className="sf-text-secondary">
+						{ ratingBoxHelpText }
+					</div>
 				) }
 			</div>
 		</>
