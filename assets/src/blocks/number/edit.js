@@ -235,7 +235,7 @@ const SureformInput = ( {
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
-								: 'text-secondary'
+								: 'sf-text-secondary'
 						}
 					>
 						{ help }

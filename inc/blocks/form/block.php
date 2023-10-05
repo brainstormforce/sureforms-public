@@ -26,13 +26,13 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		$id                 = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$block_count        = isset( $attributes['block_count'] ) ? Sureforms_Helper::get_integer_value( $attributes['block_count'] ) : '';
-		$color_primary      = '';
+		$color_primary      = '#0284c7';
 		$color_secondary    = '';
 		$color_text_primary = '';
 
 		ob_start();
 		if ( ! empty( $attributes ) && ! empty( $content ) ) {
-			$color_primary        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ) : '';
+			$color_primary        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ) : '#0284c7';
 			$color_secondary      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color2', true ) ) : '';
 			$color_text_primary   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_textcolor1', true ) ) : '';
 			$background_image_url = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_bg', true ) ) ) : '';
@@ -99,7 +99,7 @@ class Block extends Base {
 									<div style="display: none;" class="sureforms-loader"></div>
 								</div>
 							</button> -->
-							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>">
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-sf_primary_color'; ?>">
 								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 									<?php echo esc_html( $button_text ); ?>
 									<div style="display: none;" class="sureforms-loader"></div>
@@ -113,7 +113,7 @@ class Block extends Base {
 										<div style="display: none;" class="sureforms-loader"></div>
 									</div>
 								</button> -->
-								<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+								<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-sf_primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
 									<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 										<?php echo esc_html( $button_text ); ?>
 										<div style="display: none;" class="sureforms-loader"></div>
@@ -128,7 +128,7 @@ class Block extends Base {
 									<div style="display: none;" class="sureforms-loader"></div>
 								</div>
 							</button> -->
-							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="g-recaptcha sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" class="g-recaptcha sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-sf_primary_color'; ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="sureforms-submit-btn">
 								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 									<?php echo esc_html( $button_text ); ?>
 									<div style="display: none;" class="sureforms-loader"></div>
@@ -143,7 +143,7 @@ class Block extends Base {
 									<div style="display: none;" class="sureforms-loader"></div>
 								</div>
 							</button> -->
-							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-primary_color'; ?>">
+							<button style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> <?php echo empty( $color_primary ) && '' === $button_styling_from_theme ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : ''; ?>" id="sureforms-submit-btn" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 <?php echo '1' === $button_styling_from_theme && '' === $color_primary ? 'wp-block-button__link' : 'bg-sf_primary_color'; ?>">
 								<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 									<?php echo esc_html( $button_text ); ?>
 									<div style="display: none;" class="sureforms-loader"></div>
@@ -173,17 +173,17 @@ class Block extends Base {
 		?>
 			<style>
 				<?php echo esc_attr( '#sureforms-form-' . $id ); ?> {
-					--secondary-color: 
+					--sf-secondary-color: 
 					<?php
 						echo esc_attr( $color_secondary );
 					?>
 						;
-					--primary-color: 
+					--sf-primary-color: 
 					<?php
 						echo esc_attr( $color_primary );
 					?>
 						;
-					--primary-textcolor:
+					--sf-primary-text-color:
 					<?php
 						echo esc_attr( $color_text_primary );
 					?>

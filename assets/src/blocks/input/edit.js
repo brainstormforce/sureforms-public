@@ -172,7 +172,9 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container' + className }
+				className={
+					'main-container sf-classic-inputs-holder ' + className
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -192,7 +194,7 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
-								: 'text-secondary'
+								: 'sf-text-secondary'
 						}
 					>
 						{ help }

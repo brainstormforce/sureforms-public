@@ -349,7 +349,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'multi-choice-block-' + blockID }
 				>
 					{ label }
@@ -426,7 +426,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'multi-choice-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>

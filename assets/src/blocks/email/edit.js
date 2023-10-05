@@ -183,7 +183,7 @@ export default ( { className, attributes, setAttributes, clientId } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'email-input-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>

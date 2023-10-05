@@ -40,7 +40,7 @@ class Block extends Base {
 			ob_start();
 			?>
 			<!-- <div class="sureforms-rating-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-				<label class="text-primary">
+				<label class="sf-text-primary">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input type="hidden" class="sureforms-rating-random-id" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $id ); ?>" />
@@ -77,7 +77,7 @@ class Block extends Base {
 						</div>
 					<?php } ?>
 				</div>
-				<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div> -->
 			<div class="sureforms-classic-rating-container main-container sf-classic-inputs-holder <?php echo esc_attr( $classname ); ?>">
@@ -158,9 +158,9 @@ class Block extends Base {
 				for ( $i = 0; $i < $max_value; $i++ ) {
 					?>
 						<li class="flex items-center flex-col-reverse" >
-						<span class="text-primary"><?php echo esc_html( $sureforms_helper_instance->get_string_value( $show_numbers ? $i + 1 : '' ) ); ?></span>
+						<span class="sf-text-primary"><?php echo esc_html( $sureforms_helper_instance->get_string_value( $show_numbers ? $i + 1 : '' ) ); ?></span>
 							<span
-							class="text-primary"
+							class="sf-text-primary"
 							data-te-rating-icon-ref>
 							<?php echo $svg; // phpcs:ignore ?>
 							</span>

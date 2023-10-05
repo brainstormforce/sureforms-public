@@ -58,7 +58,7 @@ class Block extends Base {
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 			<!-- <div class="sureforms-address-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-address-container-<?php echo esc_attr( $id ); ?>">
-				<label class="text-primary"><?php echo esc_html( $label ); ?> 
+				<label class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div
@@ -66,7 +66,7 @@ class Block extends Base {
 				>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullAddress-<?php echo esc_attr( $id ); ?>" />
 					<label
-						class="text-primary"
+						class="sf-text-primary"
 						style="font-size: 14px;"
 					>
 					<?php echo esc_html( $line_one_label ); ?> 
@@ -83,7 +83,7 @@ class Block extends Base {
 					class="sureforms-sureforms-address"
 				>
 					<label
-						class="text-primary"
+						class="sf-text-primary"
 						style="font-size: 14px;"
 					>
 					<?php echo esc_html( $line_two_label ); ?> 
@@ -100,7 +100,7 @@ class Block extends Base {
 						class="sureforms-sureforms-address"
 					>
 						<label
-							class="text-primary"
+							class="sf-text-primary"
 						>
 						<?php echo esc_html( $city_label ); ?> 
 						</label>
@@ -115,7 +115,7 @@ class Block extends Base {
 					<div class="sureforms-sureforms-address"
 					>
 						<label
-							class="text-primary"
+							class="sf-text-primary"
 						>
 						<?php echo esc_html( $state_label ); ?> 
 						</label>
@@ -133,7 +133,7 @@ class Block extends Base {
 						class="sureforms-sureforms-address"
 					>
 						<label
-							class="text-primary"
+							class="sf-text-primary"
 							style="font-size: 14px;"
 						>
 						<?php echo esc_html( $postal_label ); ?> 
@@ -150,7 +150,7 @@ class Block extends Base {
 						class="sureforms-sureforms-address"
 					>
 						<label
-							class="text-primary"		
+							class="sf-text-primary"		
 							style="font-size: 14px;"
 						>
 						<?php echo esc_html( $country_label ); ?>
