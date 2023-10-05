@@ -50,7 +50,7 @@ export default ( {
 				href={ buttonUrl }
 				style={ {
 					'--primary-background': btnFilled ? '#125D9F' : '#F5F3FF',
-					'--sf-primary-color': btnFilled ? '#fff' : '#125D9F',
+					'--primary-color': btnFilled ? '#fff' : '#125D9F',
 					'--sc-focus-ring-color-primary': '#125D9F',
 				} }
 			>
