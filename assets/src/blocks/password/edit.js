@@ -43,9 +43,15 @@ export default ( { className, attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<PasswordClassicStyle attributes={ attributes } />
+					<PasswordClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
 				) : (
-					<PasswordThemeStyle attributes={ attributes } />
+					<PasswordThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
 				) }
 				{ help !== '' && (
 					<label

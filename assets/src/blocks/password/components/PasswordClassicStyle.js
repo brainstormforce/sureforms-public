@@ -34,7 +34,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 					</div>
 				</div>
 				{ isConfirmPassword && (
-					<>
+					<div className="!mt-[24px]">
 						<label
 							className="sf-classic-label-text"
 							htmlFor={ 'confirm-text-input-' + blockID }
@@ -63,7 +63,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 								</svg>
 							</div>
 						</div>
-					</>
+					</div>
 				) }
 			</div>
 		</>
