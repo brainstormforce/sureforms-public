@@ -306,7 +306,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						} }
 					>
 						<label
-							className="text-secondary text-size"
+							className="sf-text-secondary text-size"
 							htmlFor={ 'address-line-1-' + blockID }
 						>
 							{ lineOneLabel }
@@ -326,7 +326,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 						} }
 					>
 						<label
-							className="text-secondary text-size"
+							className="sf-text-secondary text-size"
 							htmlFor={ 'address-line-2-' + blockID }
 							style={ inputStyles }
 						>
@@ -349,7 +349,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							} }
 						>
 							<label
-								className="text-secondary text-size"
+								className="sf-text-secondary text-size"
 								htmlFor={ 'address-city-' + blockID }
 								style={ inputStyles }
 							>
@@ -371,7 +371,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							} }
 						>
 							<label
-								className="text-secondary text-size"
+								className="sf-text-secondary text-size"
 								htmlFor={ 'address-state-' + blockID }
 								style={ inputStyles }
 							>
@@ -401,7 +401,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							} }
 						>
 							<label
-								className="text-secondary text-size"
+								className="sf-text-secondary text-size"
 								htmlFor={ 'address-city-postal-' + blockID }
 								style={ inputStyles }
 							>
@@ -423,7 +423,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 							} }
 						>
 							<label
-								className="text-secondary text-size"
+								className="sf-text-secondary text-size"
 								htmlFor={ 'address-country-' + blockID }
 								style={ inputStyles }
 							>

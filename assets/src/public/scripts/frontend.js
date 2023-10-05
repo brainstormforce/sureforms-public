@@ -152,12 +152,12 @@ if ( uploadFieldsContainer ) {
 						uploadField.querySelector(
 							`#sureforms-upload-title-${ id }`
 						).innerHTML =
-							`<div class="text-primary" style="display:flex; gap:0.4rem; align-items:center">
-                        <i class="fa-solid fa-file-lines text-primary"></i> ` +
+							`<div class="sf-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+                        <i class="fa-solid fa-file-lines sf-text-primary"></i> ` +
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can sf-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -182,7 +182,7 @@ if ( uploadFieldsContainer ) {
 								uploadField.querySelector(
 									`#sureforms-upload-field-result-${ id }`
 								);
-							uploadResultContainer.innerHTML = `<div class="text-primary w-full flex gap-2 p-[10px]">
+							uploadResultContainer.innerHTML = `<div class="sf-text-primary w-full flex gap-2 p-[10px]">
 								${ icon }
 								<div class="w-full flex justify-between">
 									<div>

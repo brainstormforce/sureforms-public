@@ -50,7 +50,7 @@ class Block extends Base {
 			ob_start();
 			?>
 			<!-- <div class="sureforms-input-phone-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-phone-<?php echo esc_attr( $id ); ?>">
-				<label class="text-primary"><?php echo esc_html( $label ); ?>
+				<label class="sf-text-primary"><?php echo esc_html( $label ); ?>
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div class="sureforms-input-phone-holder">
@@ -75,7 +75,7 @@ class Block extends Base {
 						id="sureforms-phone-number-<?php echo esc_attr( $id ); ?>"
 						class="sureforms-input-field" />
 				</div>
-				<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 				<span style="display:none" class="error-message duplicate-message"><?php echo esc_html( $dulicate_msg ); ?></span>
 			</div> -->

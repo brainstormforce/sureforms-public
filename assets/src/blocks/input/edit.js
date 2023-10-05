@@ -184,7 +184,7 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 						'classic' ===
 						sureforms_keys?._sureforms_form_styling
 							? 'sf-classic-label-text'
-							: 'text-primary'
+							: 'sf-text-primary'
 					}
 					htmlFor={ 'text-input-' + blockID }
 				>
@@ -206,7 +206,7 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
-								: 'text-secondary'
+								: 'sf-text-secondary'
 						}
 					>
 						{ help }

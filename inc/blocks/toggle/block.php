@@ -39,7 +39,7 @@ class Block extends Base {
 			ob_start(); ?>
 <!-- <div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 	<label style="width:max-content" class="sureforms-switch-label" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
-		<div style="display:flex; align-items:center; gap:0.5rem;" class="text-primary">
+		<div style="display:flex; align-items:center; gap:0.5rem;" class="sf-text-primary">
 			<div class="switch-background" style="background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>;">
 				<input class="sureforms-switch"
 					name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
@@ -52,7 +52,7 @@ class Block extends Base {
 			<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 		</div>
 	</label>
-			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 	<span style="margin-top:5px;display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 </div> -->
 			<div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">

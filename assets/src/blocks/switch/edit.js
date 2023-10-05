@@ -172,7 +172,7 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 					<div style={ thumbStyle }></div>
 				</div>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'switch-block-' + blockID }
 				>
 					{ label }
@@ -182,7 +182,7 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 				</label>
 			</div>
 			{ switchHelpText !== '' && (
-				<div className="text-secondary">{ switchHelpText }</div>
+				<div className="sf-text-secondary">{ switchHelpText }</div>
 			) }
 		</>
 	);

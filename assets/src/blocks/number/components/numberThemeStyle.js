@@ -12,7 +12,7 @@ export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
 	return (
 		<>
 			<label
-				className="text-primary"
+				className="sf-text-primary"
 				htmlFor={ 'number-input-' + blockID }
 			>
 				{ label }

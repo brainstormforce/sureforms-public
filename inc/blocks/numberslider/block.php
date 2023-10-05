@@ -38,7 +38,7 @@ class Block extends Base {
 			$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 		<!-- <div class="sureforms-number-slider-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-			<label class="text-primary" for="sureforms-number-slider-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?> 
+			<label class="sf-text-primary" for="sureforms-number-slider-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-number-slider-<?php echo esc_attr( $id ); ?>" type="range" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> 
@@ -46,7 +46,7 @@ class Block extends Base {
 			class="sureforms-number-slider-input"
 			>
 			<div style="font-size:14px; font-weight:600;"><?php echo esc_html( $value_display_text ); ?><span id="sureforms-number-slider-value-<?php echo esc_attr( $id ); ?>">0</span></div>
-			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt" for="sureforms-number-slider-' . esc_attr( $id ) . '">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt" for="sureforms-number-slider-' . esc_attr( $id ) . '">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<div class="sureforms-number-slider-container sf-classic-number-slider sf-classic-inputs-holder">

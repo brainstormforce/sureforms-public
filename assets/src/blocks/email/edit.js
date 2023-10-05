@@ -42,7 +42,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'email-input-' + blockID }
 				>
 					{ label }
@@ -79,7 +79,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'email-input-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>

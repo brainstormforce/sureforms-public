@@ -12,11 +12,11 @@ textarea::placeholder {
 	color: var( --sf-secondary-color );
 }
 
-form.sureforms-form .text-primary {
+form.sureforms-form .sf-text-primary{
 	color: var( --sf-primary-color );
 }
 
-form.sureforms-form .text-secondary {
+form.sureforms-form .sf-text-secondary {
 	color: var( --sf-secondary-color );
 }
 

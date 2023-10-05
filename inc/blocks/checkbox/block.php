@@ -38,8 +38,8 @@ class Block extends Base {
 		<!-- <div class="sureforms-checkbox-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 			<div>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> >
-				<span class="text-primary">
-					<label for="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" class="text-primary">
+				<span class="sf-text-primary">
+					<label for="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" class="sf-text-primary">
 						<?php
 							echo $label_url
 							? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
@@ -49,7 +49,7 @@ class Block extends Base {
 					</label>
 				</span>
 			</div>
-			<?php echo '' !== $help ? '<label for="sureforms-checkbox" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-checkbox" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<!-- classic layout -->
