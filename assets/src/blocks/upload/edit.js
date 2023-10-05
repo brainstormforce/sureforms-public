@@ -159,7 +159,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'upload-input-field-' + blockID }
 				>
 					{ label }
@@ -263,7 +263,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'upload-help-' + blockID }
-						className="text-secondary"
+						className="sf-text-secondary"
 					>
 						{ help }
 					</label>
