@@ -37,15 +37,15 @@ class SureForms_Password_Markup {
 		$classname           = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '<div class="sureforms-input-password-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">' .
-		'<label for="sureforms-input-password-' . esc_attr( $id ) . '" class="text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+		'<label for="sureforms-input-password-' . esc_attr( $id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 		'<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-password-' . esc_attr( $id ) . '" type="password" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field">' .
 		'<span class="info-icon" data-tooltip="A stronger password is required minimum 8 characters using upper and lower case letters, numbers, and symbols.">&#9432; <span class="password-strength-message"></span></span>' .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>' .
 		( true === $is_confirm_password ?
-			'<label for="sureforms-confirm-input-password-' . esc_attr( $id ) . '" class="text-primary sureforms-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+			'<label for="sureforms-confirm-input-password-' . esc_attr( $id ) . '" class="sf-text-primary sureforms-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 			'<input id="sureforms-confirm-input-password-' . esc_attr( $id ) . '" type="password" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field sureforms-confirm-input-password">' : ''
 		) .
-		( '' !== $help ? '<label for="sureforms-input-password" class="text-secondary sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
+		( '' !== $help ? '<label for="sureforms-input-password" class="sf-text-secondary sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_attr( $error_msg ) . '</span>' .
 			'<span style="display:none" class="error-message confirm-password-error">Field values do not match.</span>
         </div>';

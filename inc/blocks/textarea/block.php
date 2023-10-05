@@ -38,12 +38,12 @@ class Block extends Base {
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 			<!-- <div class="sureforms-textarea-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" style="position:relative">
-				<label for="sureforms-textarea" class="text-primary"><?php echo esc_html( $label ); ?> 
+				<label for="sureforms-textarea" class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<div class="sureforms-text-area-counter"><?php echo esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ); ?></div>
 				<textarea name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-textarea" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxLength="<?php echo 0 === $max_length ? '' : esc_attr( $max_length ); ?>" cols="<?php echo esc_attr( $cols ); ?>" rows="<?php echo esc_attr( $rows ); ?>" class="sureforms-textarea-field"><?php echo esc_attr( $default ); ?></textarea>
-				<?php echo '' !== $help ? '<label for="sureforms-textarea" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label for="sureforms-textarea" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div> -->
 			<!-- classic layout -->

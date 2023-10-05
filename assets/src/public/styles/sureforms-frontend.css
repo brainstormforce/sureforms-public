@@ -9,15 +9,15 @@
 
 form.sureforms-form input::placeholder,
 textarea::placeholder {
-	color: var( --secondary-color );
+	color: var( --sf-secondary-color );
 }
 
-form.sureforms-form .text-primary {
-	color: var( --primary-color );
+form.sureforms-form .sf-text-primary{
+	color: var( --sf-primary-color );
 }
 
-form.sureforms-form .text-secondary {
-	color: var( --secondary-color );
+form.sureforms-form .sf-text-secondary {
+	color: var( --sf-secondary-color );
 }
 
 form.sureforms-form .error-message,
@@ -85,7 +85,7 @@ input[type="range"] {
     appearance: none; */
 	width: 100%;
 	height: 10px;
-	border: 2px solid var( --primary-color );
+	border: 2px solid var( --sf-primary-color );
 	border-radius: 4px;
 	background-color: white;
 	outline: none;
@@ -96,13 +96,13 @@ input[type="range"]::-webkit-slider-thumb {
     appearance: none; */
 	width: 20px;
 	height: 20px;
-	background-color: var( --primary-color );
+	background-color: var( --sf-primary-color );
 	border-radius: 50%;
 	cursor: pointer;
 }
 
 .sureforms-country-field {
-	color: var( --secondary-color );
+	color: var( --sf-secondary-color );
 }
 /* Safari */
 @-webkit-keyframes spin {
@@ -330,7 +330,7 @@ div[data-te-input-notch-leading-ref]:focus-visible,
 div[data-te-input-notch-middle-ref]:focus-visible,
 div[data-te-input-notch-trailing-ref]:focus-visible,
 .sf-classic-date-time-picker {
-	border-color: var( --primary-color ) !important;
+	border-color: var( --sf-primary-color ) !important;
 	outline: none !important;
 }
 button[data-te-date-timepicker-toggle-ref]:hover,

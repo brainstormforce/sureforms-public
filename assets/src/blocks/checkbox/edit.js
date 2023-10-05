@@ -130,13 +130,13 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					required={ required }
 				></input>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'checkbox-block-' + blockID }
 				>
 					{ labelUrl !== '' ? (
 						<a
 							href={ labelUrl }
-							className="text-primary"
+							className="sf-text-primary"
 							style={ { textDecoration: 'none' } }
 						>
 							{ label }
@@ -150,7 +150,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 				</label>
 			</div>
 			{ checkboxHelpText !== '' && (
-				<div className="text-secondary">{ checkboxHelpText }</div>
+				<div className="sf-text-secondary">{ checkboxHelpText }</div>
 			) }
 		</div>
 	);

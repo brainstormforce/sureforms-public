@@ -35,7 +35,7 @@ class Block extends Base {
 			$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 		<!-- <div class="sureforms-dropdown-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-			<label class="text-primary"><?php echo esc_html( $label ); ?> 
+			<label class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<select 
@@ -47,7 +47,7 @@ class Block extends Base {
 				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
 			<?php endforeach; ?>
 			</select>
-			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<!-- classic layout -->

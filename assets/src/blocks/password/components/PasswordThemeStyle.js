@@ -5,7 +5,7 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="text-primary"
+				className="sf-text-primary"
 				htmlFor={ 'password-input-' + blockID }
 			>
 				{ label }

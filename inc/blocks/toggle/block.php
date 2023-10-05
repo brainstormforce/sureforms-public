@@ -39,7 +39,7 @@ class Block extends Base {
 			ob_start(); ?>
 <!-- <div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 	<label style="width:max-content" class="sureforms-switch-label" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
-		<div style="display:flex; align-items:center; gap:0.5rem;" class="text-primary">
+		<div style="display:flex; align-items:center; gap:0.5rem;" class="sf-text-primary">
 			<div class="switch-background" style="background-color: <?php echo $checked ? '#007CBA' : '#dcdcdc'; ?>;">
 				<input class="sureforms-switch"
 					name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
@@ -48,16 +48,16 @@ class Block extends Base {
 					area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
 				<div class="switch-toggle" style="left: <?php echo $checked ? '27px' : '2px'; ?>;"></div>
 			</div>
-			<span style="color: var(--primary-color)"><?php echo esc_html( $label ); ?></span>
+			<span style="color: var(--sf-primary-color)"><?php echo esc_html( $label ); ?></span>
 			<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 		</div>
 	</label>
-			<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 	<span style="margin-top:5px;display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 </div> -->
 			<div class="sureforms-switch-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 				<label class="sureforms-switch-label !flex !gap-2 !items-start !max-w-fit" for="sureforms-switch-<?php echo esc_attr( $id ); ?>">
-					<div class="!flex !items-center !gap-2 !text-primary_color !w-max !mt-1">
+					<div class="!flex !items-center !gap-2 !text-sf_primary_color !w-max !mt-1">
 						<div style="background-color: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="switch-background sf-classic-toggle-bg">
 							<input class="sureforms-switch sf-classic-switch-input !p-0"
 								name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
