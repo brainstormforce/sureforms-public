@@ -49,8 +49,6 @@ class SureForms_Password_Markup {
 		'<span style="display:none" class="error-message">' . esc_attr( $error_msg ) . '</span>' .
 			'<span style="display:none" class="error-message confirm-password-error">Field values do not match.</span>
         </div>';
-
-		return $output;
 	}
 
 	/**
@@ -81,7 +79,6 @@ class SureForms_Password_Markup {
             </svg>
         </div>
     </div>' .
-		( '' !== $help ? '<label for="sureforms-input-password" class="sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
 		'<p style="display:none" class="error-message" id="email-error">' . esc_html( $error_msg ) . '</p>' .
 		( true === $is_confirm_password
 		? '<label for="sureforms-input-password-' . esc_attr( $id ) . '" class="sf-classic-label-text !mt-[24px]">' . esc_html( $confirm_label ) . ( $required && $confirm_label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
@@ -94,6 +91,7 @@ class SureForms_Password_Markup {
             </div>
         </div>'
 		: '' ) .
+		( '' !== $help ? '<label for="sureforms-input-password" class="sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
 		'<p style="display:none" class="error-message " id="email-error">' . esc_html( $error_msg ) . '</p>
     <p style="display:none" class="error-message confirm-password-error ">' . esc_html( __( 'Password does not match', 'sureforms' ) ) . '</p>
 </div>';

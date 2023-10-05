@@ -35,11 +35,11 @@ class Block extends Base {
 					break;
 				case 'classic':
 					// phpcs:ignore
-					echo SureForms_Password_Markup::password_styling( $attributes );
+					echo SureForms_Password_Markup::password_classic_styling( $attributes );
 					break;
 				default:
 					// phpcs:ignore
-					echo SureForms_Password_Markup::password_styling( $attributes );
+					echo SureForms_Password_Markup::password_default_styling( $attributes );
 					break;
 			}
 		}
