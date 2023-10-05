@@ -15,7 +15,7 @@ import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
-import { InputThemeStyle } from './components/inputThemeStyle';
+import { InputThemeStyle } from './components/InputThemeStyle';
 
 export default ( { clientId, className, attributes, setAttributes } ) => {
 	const {
@@ -173,7 +173,8 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder ' + className
+					'main-container sf-classic-inputs-holder frontend-inputs-holder' +
+					className
 				}
 				style={ {
 					display: 'flex',
