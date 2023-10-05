@@ -3,7 +3,7 @@
 	"title": "URL",
 	"description": "Displays a form url field. This is saved with the order as additional metadata.",
 	"category": "sureforms",
-	"keywords": [ "url", "link" ],
+	"keywords": [ "url", "link", "website" ],
 	"ancestor": [ "sureforms/form" ],
 	"textdomain": "sureforms",
 	"supports": {
@@ -36,6 +36,10 @@
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

@@ -53,6 +53,10 @@
 		"isConfirmEmail": {
 			"type": "boolean",
 			"default": false
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }
