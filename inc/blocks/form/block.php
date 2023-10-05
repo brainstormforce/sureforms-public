@@ -26,13 +26,13 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		$id                 = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$block_count        = isset( $attributes['block_count'] ) ? Sureforms_Helper::get_integer_value( $attributes['block_count'] ) : '';
-		$color_primary      = '';
+		$color_primary      = '#0284c7';
 		$color_secondary    = '';
 		$color_text_primary = '';
 
 		ob_start();
 		if ( ! empty( $attributes ) && ! empty( $content ) ) {
-			$color_primary        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ) : '';
+			$color_primary        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color1', true ) ) : '#0284c7';
 			$color_secondary      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_color2', true ) ) : '';
 			$color_text_primary   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_textcolor1', true ) ) : '';
 			$background_image_url = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_sureforms_bg', true ) ) ) : '';

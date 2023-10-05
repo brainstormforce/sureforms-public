@@ -36,7 +36,7 @@ function AppearanceSettings( props ) {
 			'--sf-primary-color',
 			sureforms_keys._sureforms_color1
 				? sureforms_keys._sureforms_color1
-				: 'none'
+				: '#0284C7'
 		);
 		root.style.setProperty(
 			'--sf-primary-text-color',

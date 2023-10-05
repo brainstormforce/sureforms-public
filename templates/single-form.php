@@ -29,7 +29,7 @@
 		$sureforms_form_class_name      = get_post_meta( intval( $custom_post_id ), '_sureforms_form_class_name', true );
 		$styling                        = get_post_meta( intval( $custom_post_id ), '_sureforms_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_sureforms_form_styling', true ) ) : '';
 
-		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '';
+		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
 		$color_textprimary         = $sureforms_textcolor1_val ? strval( $sureforms_textcolor1_val ) : '';
 		$color_secondary           = $sureforms_color2_val ? strval( $sureforms_color2_val ) : '';
 		$background_image_url      = $sureforms_bg_val ? rawurldecode( strval( $sureforms_bg_val ) ) : '';
