@@ -2,7 +2,6 @@ export const EmailThemeStyle = ( { attributes, blockID, className } ) => {
 	const {
 		label,
 		placeholder,
-		help,
 		required,
 		defaultValue,
 		isConfirmEmail,

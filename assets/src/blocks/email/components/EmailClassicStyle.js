@@ -2,7 +2,6 @@ export const EmailClassicStyle = ( { attributes, blockID, className } ) => {
 	const {
 		label,
 		placeholder,
-		help,
 		required,
 		defaultValue,
 		isConfirmEmail,

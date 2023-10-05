@@ -1,9 +1,8 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
-import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -32,7 +31,8 @@ export default ( {
 		id,
 		defaultValue,
 		isConfirmEmail,
-		confirmLabel,
+		// mighr be used.
+		// confirmLabel,
 		formId,
 		errorMsg,
 		isUnique,
