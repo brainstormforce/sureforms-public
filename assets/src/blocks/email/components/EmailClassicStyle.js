@@ -9,7 +9,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 	} = attributes;
 	return (
 		<>
-			<div className="frontend-inputs-holder">
+			<div className="frontend-inputs-holder sf-classic-inputs-holder">
 				<label
 					className="sf-classic-label-text"
 					htmlFor={ 'text-input-' + blockID }
