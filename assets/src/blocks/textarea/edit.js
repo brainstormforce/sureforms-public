@@ -188,7 +188,9 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					maxLength={ maxLength }
 				></textarea>
 				{ textAreaHelpText !== '' && (
-					<div className="sf-text-secondary">{ textAreaHelpText }</div>
+					<div className="sf-text-secondary">
+						{ textAreaHelpText }
+					</div>
 				) }
 			</div>
 		</>

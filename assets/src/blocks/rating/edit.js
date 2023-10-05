@@ -282,7 +282,9 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					} ) }
 				</div>
 				{ ratingBoxHelpText !== '' && (
-					<div className="sf-text-secondary">{ ratingBoxHelpText }</div>
+					<div className="sf-text-secondary">
+						{ ratingBoxHelpText }
+					</div>
 				) }
 			</div>
 		</>

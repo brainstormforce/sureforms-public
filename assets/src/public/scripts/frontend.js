@@ -958,9 +958,11 @@ const submitButton = document.getElementsByClassName( 'sureforms-button' );
 if ( submitButton ) {
 	// eslint-disable-next-line
 	const rootStyles = getComputedStyle( document.documentElement );
-	const primaryColorValue = rootStyles.getPropertyValue( '--sf-primary-color' );
-	const secondaryColorValue =
-		rootStyles.getPropertyValue( '--sf-secondary-color' );
+	const primaryColorValue =
+		rootStyles.getPropertyValue( '--sf-primary-color' );
+	const secondaryColorValue = rootStyles.getPropertyValue(
+		'--sf-secondary-color'
+	);
 
 	if ( primaryColorValue !== '' ) {
 		for ( let i = 0; i < submitButton.length; i++ ) {

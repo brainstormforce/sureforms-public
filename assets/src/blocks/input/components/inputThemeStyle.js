@@ -3,6 +3,13 @@ export const InputThemeStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
+			{ ' ' }
+			<label className="text-primary" htmlFor={ 'text-input-' + blockID }>
+				{ label }
+				{ required && label && (
+					<span style={ { color: 'red' } }> *</span>
+				) }
+			</label>
 			<input
 				id={ 'text-input-' + blockID }
 				type="text"
