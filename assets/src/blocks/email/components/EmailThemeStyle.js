@@ -1,4 +1,4 @@
-export const EmailThemeStyle = ( { attributes, blockID, className } ) => {
+export const EmailThemeStyle = ( { attributes, blockID } ) => {
 	const {
 		label,
 		placeholder,
@@ -22,7 +22,6 @@ export const EmailThemeStyle = ( { attributes, blockID, className } ) => {
 				id={ 'email-input-' + blockID }
 				type="email"
 				value={ defaultValue }
-				className={ className }
 				placeholder={ placeholder }
 				required={ required }
 			/>
@@ -38,7 +37,6 @@ export const EmailThemeStyle = ( { attributes, blockID, className } ) => {
 						id={ 'confirm-email-input-' + blockID }
 						type="email"
 						value={ defaultValue }
-						className={ className }
 						placeholder={ placeholder }
 						required={ required }
 					/>

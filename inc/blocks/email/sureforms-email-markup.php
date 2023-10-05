@@ -90,7 +90,6 @@ class SureForms_Email_Markup {
             </div>
             <input type="email" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-email-' . esc_attr( $id ) . '" class="sureforms-input-email  sf-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '">
         </div>
-        ' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
         <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
         <p style="display:none" class="error-message duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
         ' . ( true === $is_confirm_email ? '
@@ -108,6 +107,7 @@ class SureForms_Email_Markup {
         </div>' : '' ) . '
         <p style="display:none" class="error-message ">' . esc_html( $error_msg ) . '</p>
         <p style="display:none" class="error-message confirm-email-error ">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</p>
+		' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
     </div>';
 
 	}

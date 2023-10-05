@@ -16,13 +16,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { EmailThemeStyle } from './components/EmailThemeStyle';
 import { EmailClassicStyle } from './components/EmailClassicStyle';
 
-export default ( {
-	className,
-	attributes,
-	setAttributes,
-	isSelected,
-	clientId,
-} ) => {
+export default ( { className, attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		placeholder,
@@ -174,11 +168,7 @@ export default ( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container' +
-					( isSelected ? ' sf--focus' : '' ) +
-					className
-				}
+				className={ 'main-container' + className }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
