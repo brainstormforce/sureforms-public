@@ -4,7 +4,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
-			<div className="frontend-inputs-holder">
+			<div className="sf-classic-inputs-holder frontend-inputs-holder">
 				<label
 					className="sf-classic-label-text"
 					htmlFor={ 'text-input-' + blockID }
