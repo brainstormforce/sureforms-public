@@ -54,6 +54,10 @@ module.exports = {
 			__dirname,
 			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
 		),
+		sureforms_backend_styles: path.resolve(
+			__dirname,
+			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
+		),
 		block_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/block-styles.scss'

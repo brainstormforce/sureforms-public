@@ -238,7 +238,7 @@ export default function Edit( {
 			{ help !== '' && (
 				<label
 					htmlFor={ 'phone-help-' + blockID }
-					className="text-secondary"
+					className="sf-text-secondary"
 				>
 					{ help }
 				</label>

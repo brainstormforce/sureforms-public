@@ -189,7 +189,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				} }
 			>
 				<label
-					className="text-primary"
+					className="sf-text-primary"
 					htmlFor={ 'date-picker-' + blockID }
 				>
 					{ label }
@@ -261,7 +261,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'date-picker-help-' + blockID }
-						className="date-secondary text-secondary"
+						className="date-secondary sf-text-secondary"
 					>
 						{ help }
 					</label>

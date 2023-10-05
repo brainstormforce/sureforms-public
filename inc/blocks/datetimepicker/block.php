@@ -34,7 +34,7 @@ class Block extends Base {
 			$classname  = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 		<!-- <div class="sureforms-input-date-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-input-date-container-<?php echo esc_attr( $id ); ?>">
-			<label class="text-primary" for="sureforms-input-date-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?> 
+			<label class="sf-text-primary" for="sureforms-input-date-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
 			<input type="hidden" id="sureforms-full-date-time-<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="">
@@ -58,7 +58,7 @@ class Block extends Base {
 			}
 			?>
 			</div>
-			<?php echo '' !== $help ? '<label for="sureforms-input-date" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+			<?php echo '' !== $help ? '<label for="sureforms-input-date" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 			<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 		<div class="sf-classic-inputs-holder main-container sf-classic-date-time-container <?php echo esc_attr( $classname ); ?>">

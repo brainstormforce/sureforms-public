@@ -41,7 +41,7 @@ class SureForms_Phone_Markup {
 
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
-                <label class="text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+                <label class="sf-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
                 <div class="sureforms-input-phone-holder">
                     <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                     <select id="sureforms-country-code-' . esc_attr( $id ) . '" ' . esc_attr( $required ? 'required' : '' ) . '>';
@@ -60,7 +60,7 @@ class SureForms_Phone_Markup {
                         id="sureforms-phone-number-' . esc_attr( $id ) . '"
                         class="sureforms-input-field" />
                 </div>' .
-			( '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+			( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 			'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
             <span style="display:none" class="error-message duplicate-message">' . esc_html( $dulicate_msg ) . '</span>
             </div>';
@@ -92,7 +92,7 @@ class SureForms_Phone_Markup {
 
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
-            <label for="sureforms-phone-number-' . esc_attr( $id ) . '" class="block text-sm font-medium leading-6 text-primary_color">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '</label>
+            <label for="sureforms-phone-number-' . esc_attr( $id ) . '" class="block text-sm font-medium leading-6 sf-text-sf_primary_color">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '</label>
             <div class="relative mt-2">
                 <div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
                     <div class="absolute inset-y-0 left-0 flex items-center">

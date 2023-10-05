@@ -45,7 +45,7 @@ class Block extends Base {
 			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			ob_start(); ?>
 			<!-- <div id="sureforms-upload-container" class="sureforms-upload-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
-				<label class="text-primary"><?php echo esc_html( $label ); ?> 
+				<label class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" id="sureforms-upload-index-<?php echo esc_attr( $id ); ?>" value="" type="hidden" />
@@ -56,22 +56,22 @@ class Block extends Base {
 				<div class="sureforms-upload-inner-div" style="border: 1px solid #d1d5db; border-radius:4px;">
 					<label id="sureforms-upload-label" for="sureforms-upload-<?php echo esc_attr( $id ); ?>">
 						<div id="sureforms-upload-title-<?php echo esc_attr( $id ); ?>" class="sureforms-upload-title">
-							<i class="fa-solid fa-cloud-arrow-up text-primary"></i>
-							<span class="text-primary">Click to choose the file</span>
+							<i class="fa-solid fa-cloud-arrow-up sf-text-primary"></i>
+							<span class="sf-text-primary">Click to choose the file</span>
 						</div>
 						<div style="display: flex; justify-content: space-between; padding: 1rem;">
 							<div style="display: flex; flex-direction: column;">
-								<span class="text-primary">Size Limit</span>
-								<span class="text-primary"><strong><?php echo esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ); ?></strong></span>
+								<span class="sf-text-primary">Size Limit</span>
+								<span class="sf-text-primary"><strong><?php echo esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ); ?></strong></span>
 							</div>
-							<div style="display: flex; flex-direction: column;" class="text-primary">
+							<div style="display: flex; flex-direction: column;" class="sf-text-primary">
 								<span>Allowed Types</span>
 								<span><strong><?php echo esc_attr( $allowed_formats ); ?></strong></span>
 							</div>
 						</div>
 					</label>
 				</div>
-				<?php echo '' !== $help ? '<label class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
+				<?php echo '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : ''; ?>
 				<span id="upload-field-error-<?php echo esc_attr( $id ); ?>" hidden style="color: red;">File Size Exceeded The Limit</span>
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 			</div> -->
