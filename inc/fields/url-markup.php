@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
 
@@ -15,7 +15,7 @@ use SureForms\Inc\Traits\Get_Instance;
  *
  * @since 0.0.1
  */
-class SureForms_Url_Field_Markup {
+class Url_Markup extends Base {
 	use Get_Instance;
 
 	/**
@@ -25,7 +25,7 @@ class SureForms_Url_Field_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function url_field_default_styling( $attributes ) {
+	public function default_styling( $attributes ) {
 			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -50,7 +50,7 @@ class SureForms_Url_Field_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function url_field_classic_styling( $attributes ) {
+	public function classic_styling( $attributes ) {
 			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;

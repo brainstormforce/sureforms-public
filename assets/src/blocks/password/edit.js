@@ -56,7 +56,12 @@ export default ( { className, attributes, setAttributes, clientId } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'password-input-help-' + blockID }
-						className="sf-text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

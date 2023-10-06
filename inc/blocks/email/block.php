@@ -9,7 +9,7 @@ namespace SureForms\Inc\Blocks\Email;
 
 use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\SureForms_Email_Markup;
+use SureForms\Inc\Fields\Email_Markup;
 
 /**
  * Address Block.
@@ -25,21 +25,22 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$form_id = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$styling = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$styling      = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
+			$markup_class = new Email_Markup();
 			ob_start();
 			switch ( $styling ) {
 				case 'inherit':
 					// phpcs:ignore
-					echo SureForms_Email_Markup::email_default_styling( $attributes );
+					echo $markup_class->default_styling( $attributes );
 					break;
 				case 'classic':
 					// phpcs:ignore
-					echo SureForms_Email_Markup::email_classic_styling( $attributes );
+					echo $markup_class->classic_styling( $attributes );
 					break;
 				default:
 					// phpcs:ignore
-					echo SureForms_Email_Markup::email_default_styling( $attributes );
+					echo $markup_class->default_styling( $attributes );
 					break;
 			}
 		}

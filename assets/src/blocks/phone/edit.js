@@ -238,7 +238,11 @@ export default function Edit( {
 			{ help !== '' && (
 				<label
 					htmlFor={ 'phone-help-' + blockID }
-					className="sf-text-secondary"
+					className={
+						'classic' === sureforms_keys?._sureforms_form_styling
+							? 'sforms-helper-txt'
+							: 'sf-text-secondary'
+					}
 				>
 					{ help }
 				</label>
