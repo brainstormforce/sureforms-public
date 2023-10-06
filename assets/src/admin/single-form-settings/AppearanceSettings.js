@@ -177,7 +177,7 @@ function AppearanceSettings( props ) {
 					__nextHasNoMarginBottom
 				/>
 				<p className="components-base-control__help">
-					{ __( 'Select the styling for SureForm.', 'sureforms' ) }
+					{ __( 'Update settings to view changes on page', 'sureforms' ) }
 				</p>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
