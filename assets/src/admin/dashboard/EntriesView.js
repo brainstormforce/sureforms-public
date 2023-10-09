@@ -6,7 +6,7 @@ export default ( {} ) => {
 	return (
 		<ScDashboardModule
 			css={ css`
-				width: 67%;
+				width: 65%;
 				margin-top:2em;
 				@media screen and ( max-width: 782px ) {
 					width: 100%;
