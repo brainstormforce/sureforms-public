@@ -51,7 +51,7 @@ class Phone_Markup extends Base {
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
                 <label class="sf-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
                 <div class="sureforms-input-phone-holder">
-                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
+                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                     <select id="sureforms-country-code-' . esc_attr( $id ) . '" ' . esc_attr( $required ? 'required' : '' ) . '>';
 		if ( $default_country ) {
 			$output .= '<option value="' . esc_attr( $default_country ) . '">' . esc_html( $default_country ) . '</option>';
@@ -64,7 +64,7 @@ class Phone_Markup extends Base {
 			}
 		}
 			$output .= '</select>
-                    <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
+                    <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
                         id="sureforms-phone-number-' . esc_attr( $id ) . '"
                         class="sureforms-input-field" />
                 </div>' .
@@ -112,7 +112,7 @@ class Phone_Markup extends Base {
             <div class="relative mt-2">
                 <div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
                     <div class="absolute inset-y-0 left-0 flex items-center">
-                        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
+                        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                         <select class="sf-classic-phone-select" id="sureforms-country-code-' . esc_attr( $id ) . '">';
 		if ( is_array( $data ) ) {
 			foreach ( $data as $country ) {
