@@ -11,11 +11,19 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { AddressThemeStyle } from './components/addressThemeStyle';
+import { AddressClassicStyle } from './components/addressClassicStyle';
 
 import countries from './countries.json';
 
-export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
+export default function Edit( {
+	clientId,
+	attributes,
+	setAttributes,
+	isSelected,
+} ) {
 	const {
 		required,
 		label,
@@ -33,12 +41,17 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		countryLabel,
 		countryPlaceholder,
 		postalLabel,
+		formId,
 	} = attributes;
+	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
-	const inputStyles = {
-		marginTop: '14px',
-	};
-
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -282,7 +295,8 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder ' +
+					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
 					display: 'flex',
@@ -290,166 +304,17 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '.5rem',
 				} }
 			>
-				<label htmlFor={ 'address-field-' + blockID }>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<div>
-					<div
-						id={ 'address-field-' + blockID }
-						style={ {
-							display: 'flex',
-							flexDirection: 'column',
-							gap: '.5px',
-						} }
-					>
-						<label
-							className="sf-text-secondary text-size"
-							htmlFor={ 'address-line-1-' + blockID }
-						>
-							{ lineOneLabel }
-						</label>
-						<input
-							type="text"
-							id={ 'address-line-1-' + blockID }
-							required={ required }
-							placeholder={ lineOnePlaceholder }
-						/>
-					</div>
-					<div
-						style={ {
-							display: 'flex',
-							flexDirection: 'column',
-							gap: '.5px',
-						} }
-					>
-						<label
-							className="sf-text-secondary text-size"
-							htmlFor={ 'address-line-2-' + blockID }
-							style={ inputStyles }
-						>
-							{ lineTwoLabel }
-						</label>
-						<input
-							type="text"
-							id={ 'address-line-2-' + blockID }
-							required={ required }
-							placeholder={ lineTwoPlaceholder }
-						/>
-					</div>
-					<div style={ { display: 'flex', gap: '1rem' } }>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '.5px',
-								width: '100%',
-							} }
-						>
-							<label
-								className="sf-text-secondary text-size"
-								htmlFor={ 'address-city-' + blockID }
-								style={ inputStyles }
-							>
-								{ cityLabel }
-							</label>
-							<input
-								type="text"
-								id={ 'address-city-' + blockID }
-								required={ required }
-								placeholder={ cityPlaceholder }
-							/>
-						</div>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '.5px',
-								width: '100%',
-							} }
-						>
-							<label
-								className="sf-text-secondary text-size"
-								htmlFor={ 'address-state-' + blockID }
-								style={ inputStyles }
-							>
-								{ stateLabel }
-							</label>
-							<input
-								type="text"
-								id={ 'address-state-' + blockID }
-								required={ required }
-								placeholder={ statePlaceholder }
-							/>
-						</div>
-					</div>
-					<div
-						style={ {
-							display: 'flex',
-							gap: '1rem',
-							width: '100%',
-						} }
-					>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '.5px',
-								width: '50%',
-							} }
-						>
-							<label
-								className="sf-text-secondary text-size"
-								htmlFor={ 'address-city-postal-' + blockID }
-								style={ inputStyles }
-							>
-								{ postalLabel }
-							</label>
-							<input
-								type="text"
-								id={ 'address-city-postal-' + blockID }
-								required={ required }
-								placeholder={ postalPlaceholder }
-							/>
-						</div>
-						<div
-							style={ {
-								display: 'flex',
-								flexDirection: 'column',
-								gap: '.5px',
-								width: '50%',
-							} }
-						>
-							<label
-								className="sf-text-secondary text-size"
-								htmlFor={ 'address-country-' + blockID }
-								style={ inputStyles }
-							>
-								{ countryLabel }
-							</label>
-							<select
-								id={ 'address-country-' + blockID }
-								required={ required }
-							>
-								{ countryPlaceholder && (
-									<option> { countryPlaceholder }</option>
-								) }
-								{ countries.map( ( country, i ) => {
-									return (
-										<option
-											key={ i }
-											value={ country.name }
-										>
-											{ country.name }
-										</option>
-									);
-								} ) }
-							</select>
-						</div>
-					</div>
-				</div>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<AddressClassicStyle
+						countries={ countries }
+						attributes={ attributes }
+					/>
+				) : (
+					<AddressThemeStyle
+						countries={ countries }
+						attributes={ attributes }
+					/>
+				) }
 			</div>
 		</>
 	);
