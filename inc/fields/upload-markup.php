@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
@@ -16,7 +16,7 @@ use SureForms\Inc\Sureforms_Helper;
  *
  * @since 0.0.1
  */
-class SureForms_Upload_Markup {
+class Upload_Markup extends Base {
 	use Get_Instance;
 
 	/**
@@ -26,7 +26,7 @@ class SureForms_Upload_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function upload_default_styling( $attributes ) {
+	public function default_styling( $attributes ) {
 		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
@@ -85,7 +85,7 @@ class SureForms_Upload_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function upload_classic_styling( $attributes ) {
+	public function classic_styling( $attributes ) {
 		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';

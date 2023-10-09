@@ -9,7 +9,7 @@ namespace SureForms\Inc\Blocks\Phone;
 
 use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\SureForms_Phone_Markup;
+use SureForms\Inc\Fields\Phone_Markup;
 
 /**
  * Phone Block.
@@ -35,21 +35,22 @@ class Block extends Base {
 			$data = array();
 		}
 		if ( ! empty( $attributes ) ) {
-			$form_id = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$styling = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$styling      = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
+			$markup_class = new Phone_Markup();
 			ob_start();
 			switch ( $styling ) {
 				case 'inherit':
-					// @phpstan-ignore-next-line
-					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
+					// phpcs:ignore
+					echo $markup_class->default_styling( $attributes );
 					break;
 				case 'classic':
-					// @phpstan-ignore-next-line
-					echo SureForms_Phone_Markup::phone_classic_styling( $attributes, $data ); // phpcs:ignore
+					// phpcs:ignore
+					echo $markup_class->classic_styling( $attributes );
 					break;
 				default:
-					// @phpstan-ignore-next-line
-					echo SureForms_Phone_Markup::phone_default_styling( $attributes, $data ); // phpcs:ignore
+					// phpcs:ignore
+					echo $markup_class->default_styling( $attributes );
 					break;
 			}
 		}
