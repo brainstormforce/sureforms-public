@@ -63,9 +63,16 @@ input:checked + .slider:before {
 	border-radius: 50%;
 }
 
+.sf-shortcode-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 .sureforms-shortcode-input {
 	width: fit-content !important;
-	cursor: pointer;
 	border: none !important;
 	background: transparent !important;
 	color: #50575e !important;
@@ -74,7 +81,6 @@ input:checked + .slider:before {
 	font-weight: 400;
 	line-height: 19.5px;
 	padding: 0 !important;
-	margin-top: -8px !important;
 }
 
 .sureforms-shortcode-input:focus {
@@ -82,6 +88,13 @@ input:checked + .slider:before {
 	background: transparent !important;
 	outline: none !important;
 	box-shadow: none !important;
+}
+
+.sf-shortcode {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0;
 }
 
 .sureforms-entries-number {
