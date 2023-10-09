@@ -41,7 +41,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 					/>
 				</div>
 				{ isConfirmEmail && (
-					<>
+					<div className="!mt-[24px]">
 						<label
 							className="sf-classic-label-text"
 							htmlFor={ 'text-input-' + blockID }
@@ -72,7 +72,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 								required={ required }
 							/>
 						</div>
-					</>
+					</div>
 				) }
 			</div>
 		</>

@@ -9,7 +9,7 @@ import { UrlClassicStyle } from './components/UrlClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default ( { className, attributes, setAttributes, clientId } ) => {
+export default ( { attributes, setAttributes, clientId } ) => {
 	const { help, id, formId } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -35,9 +35,7 @@ export default ( { className, attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
-				className={
-					'main-container sf-classic-inputs-holder ' + className
-				}
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

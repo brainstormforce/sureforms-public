@@ -16,7 +16,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { EmailThemeStyle } from './components/EmailThemeStyle';
 import { EmailClassicStyle } from './components/EmailClassicStyle';
 
-export default ( { className, attributes, setAttributes, clientId } ) => {
+export default ( { attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		placeholder,
@@ -168,9 +168,7 @@ export default ( { className, attributes, setAttributes, clientId } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container sf-classic-inputs-holder ' + className
-				}
+				className={ 'main-container sf-classic-inputs-holder ' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

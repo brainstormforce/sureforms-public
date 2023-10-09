@@ -17,7 +17,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
 import { InputThemeStyle } from './components/InputThemeStyle';
 
-export default ( { clientId, className, attributes, setAttributes } ) => {
+export default ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -173,8 +173,7 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder' +
-					className
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
