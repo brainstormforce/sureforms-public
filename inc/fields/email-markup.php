@@ -42,7 +42,7 @@ class Email_Markup extends Base {
 
 		return '<div class="sureforms-input-email-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label for="sureforms-input-email-' . esc_attr( $id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-email-' . esc_attr( $id ) . '" type="email" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" class="sureforms-input-email sureforms-input-field">
+        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-email-' . esc_attr( $id ) . '" type="email" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" class="sureforms-input-email sureforms-input-field">
         <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
         <span style="display:none" class="error-message duplicate-message">' . esc_html( $dulicate_msg ) . '</span>' .
 		( true === $is_confirm_email ?
@@ -103,11 +103,11 @@ class Email_Markup extends Base {
                     <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
                 </svg>
             </div>
-            <input type="email" id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sureforms-input-confirm-email  sf-classic-email-element" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
+            <input type="email" id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sureforms-input-confirm-email  sf-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
         </div>' : '' ) . '
+		' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
         <p style="display:none" class="error-message ">' . esc_html( $error_msg ) . '</p>
         <p style="display:none" class="error-message confirm-email-error ">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</p>
-		' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
     </div>';
 
 	}

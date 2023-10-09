@@ -67,7 +67,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			continue;
 		}
 		const inputField = container.querySelector( 'input, textarea,select' );
-		const isRequired = inputField.getAttribute( 'area-required' );
+		const isRequired = inputField.getAttribute( 'aria-required' );
 		const isUnique = inputField.getAttribute( 'area-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
@@ -81,8 +81,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
-
+		console.log( inputField.getAttribute( 'aria-required' ) );
 		if ( isRequired && inputField.type !== 'hidden' ) {
+			console.log( { inputField, inputValue } );
 			if ( isRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				// inputField.style.borderColor = '#FCA5A5';
@@ -139,7 +140,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const ischeckedRequired =
-				checkedInput[ 0 ].getAttribute( 'area-required' );
+				checkedInput[ 0 ].getAttribute( 'aria-required' );
 			let checkedSelected = false;
 			let visibleInput = null;
 			for ( let i = 0; i < checkedInput.length; i++ ) {
@@ -169,7 +170,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
 
-			const isPhoneRequired = phoneInput.getAttribute( 'area-required' );
+			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
 			if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				validateResult = true;
@@ -301,7 +302,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( container.classList.contains( 'sureforms-address-container' ) ) {
 			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
-				addressInput[ 1 ].getAttribute( 'area-required' );
+				addressInput[ 1 ].getAttribute( 'aria-required' );
 			let errCounter = 0;
 			for (
 				let i = 1;
@@ -336,7 +337,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			)[ 0 ];
 
 			const isUploadRequired =
-				uploadInput.getAttribute( 'area-required' );
+				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
 				errorMessage.style.display = 'block';
 				uploadInputInnerDiv.style.borderColor = '#FCA5A5';
@@ -357,7 +358,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		) {
 			const dateInput = container.querySelectorAll( 'input' );
 			const isDateRequired =
-				dateInput[ 1 ].getAttribute( 'area-required' );
+				dateInput[ 1 ].getAttribute( 'aria-required' );
 			let dateErrCounter = 0;
 
 			for (
@@ -418,7 +419,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'.sf-rating-field-result'
 			);
 			const ratingRequired =
-				classicRatingField.getAttribute( 'area-required' );
+				classicRatingField.getAttribute( 'aria-required' );
 			if ( ratingRequired === 'true' && ! classicRatingField.value ) {
 				errorMessage.style.display = 'block';
 				validateResult = true;
@@ -435,7 +436,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'.sureforms-input-data-time'
 			);
 			const dateTimeRequired =
-				classicDateTimeField.getAttribute( 'area-required' );
+				classicDateTimeField.getAttribute( 'aria-required' );
 			if ( dateTimeRequired === 'true' && ! classicDateTimeField.value ) {
 				errorMessage.style.display = 'block';
 				validateResult = true;

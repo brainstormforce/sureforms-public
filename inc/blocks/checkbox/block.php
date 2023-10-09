@@ -37,7 +37,7 @@ class Block extends Base {
 			ob_start(); ?>
 		<!-- <div class="sureforms-checkbox-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>">
 			<div>
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> >
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> >
 				<span class="sf-text-primary">
 					<label for="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" class="sf-text-primary">
 						<?php
@@ -56,7 +56,7 @@ class Block extends Base {
 		<div class="sureforms-checkbox-container main-container sf-classic-inputs-holder">
 			<div class="!relative !flex !items-start !flex-row !gap-2">
 				<div class="!flex !h-6 !items-center">
-					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="!h-4 !w-4 !rounded !border-[#d1d5db] sureforms-classic-checkbox-input">
+					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" id="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" <?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox" aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="!h-4 !w-4 !rounded !border-[#d1d5db] sureforms-classic-checkbox-input">
 				</div>
 				<div class="text-sm leading-6">
 					<label for="sureforms-checkbox-<?php echo esc_attr( $id ); ?>" class="sf-classic-label-text">

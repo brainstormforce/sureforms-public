@@ -18,12 +18,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
 
-const SureformInput = ( {
-	className,
-	attributes,
-	setAttributes,
-	clientId,
-} ) => {
+const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		placeholder,
@@ -208,9 +203,7 @@ const SureformInput = ( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					className + 'main-container sf-classic-inputs-holder'
-				}
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

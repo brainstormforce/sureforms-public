@@ -42,18 +42,18 @@ class Block extends Base {
 			<?php
 			switch ( $field_type ) {
 				case 'dateTime':
-					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
-					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
+					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
 					break;
 				case 'date':
-					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
+					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
 					break;
 				case 'time':
-					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
 					break;
 				default:
-					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
-					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+					echo '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
+					echo '<input id="sureforms-input-time-' . esc_attr( $id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
 					break;
 			}
 			?>
@@ -85,7 +85,7 @@ class Block extends Base {
 			}
 			?>
 				>
-				<input type="text" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" class="sureforms-input-data-time sf-classic-datetime-picker" id="sureforms-input-time-'<?php esc_attr( $id ); ?>'" />
+				<input type="text" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" class="sureforms-input-data-time sf-classic-datetime-picker" id="sureforms-input-time-'<?php esc_attr( $id ); ?>'" />
 			</div>
 			<?php echo '' !== $help ? '<label for="sureforms-input-password" class="sforms-helper-txt">' . esc_attr( $help ) . '</label>' : ''; ?>
 			<p style="display:none" class="error-message " id="email-error"><?php echo esc_html( $error_msg ); ?></p>

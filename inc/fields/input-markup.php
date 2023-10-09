@@ -40,7 +40,7 @@ class Input_Markup extends Base {
 
 		return '<div class="sureforms-input-text-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
 			<label class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-			<input id="sureforms-input-text-' . esc_attr( $id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="text" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" 
+			<input id="sureforms-input-text-' . esc_attr( $id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" 
 			area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" maxlength="' . esc_attr( $max_text_len ) . '" class="sureforms-input-field">
 			' . ( '' !== $help ? '<label for="sureforms-input-text" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
 			<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
@@ -72,7 +72,7 @@ class Input_Markup extends Base {
 			<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
 			<div class="">
 				<input type="text" name="text" id="text" class="sf-classic-input-element" 
-				placeholder="' . esc_attr( $placeholder ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
+				placeholder="' . esc_attr( $placeholder ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
 			</div>
 			' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
 			<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>

@@ -45,7 +45,7 @@ class Block extends Base {
 					name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
 					id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
 					<?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox"
-					area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
+					aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
 				<div class="switch-toggle" style="left: <?php echo $checked ? '27px' : '2px'; ?>;"></div>
 			</div>
 			<span style="color: var(--sf-primary-color)"><?php echo esc_html( $label ); ?></span>
@@ -63,7 +63,7 @@ class Block extends Base {
 								name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
 								id="sureforms-switch-<?php echo esc_attr( $id ); ?>"
 								<?php echo esc_attr( $checked ? 'checked' : '' ); ?> type="checkbox"
-								area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
+								aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> />
 							<div class="switch-toggle !-top-[3px] !shadow !border !border-gray-200 !h-5 !w-5" style="left: <?php echo $checked ? '24px' : '0'; ?>;"> 
 								<span class="sf-classic-toggle-icon-container sf-classic-toggle-icon <?php echo esc_attr( $checked ? '!opacity-100' : '!opacity-0' ); ?>" aria-hidden="true">
 									<svg style="fill: <?php echo esc_attr( $checked ? $checked_color : '#dcdcdc;' ); ?>" class="!h-3 !w-3 sf-classic-toggle-icon" viewBox="0 0 12 12">
