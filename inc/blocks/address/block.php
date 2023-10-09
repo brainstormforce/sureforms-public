@@ -75,7 +75,7 @@ class Block extends Base {
 						class="sureforms-input-field"
 						type="text"
 						id="sureforms-address-line-1-<?php echo esc_attr( $id ); ?>"
-						area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+						aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 						placeholder="<?php echo esc_attr( $line_one_placeholder ); ?>"
 					/>
 				</div>
@@ -108,7 +108,7 @@ class Block extends Base {
 							class="sureforms-input-field"
 							type="text"
 							id="sureforms-address-city-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 							placeholder="<?php echo esc_attr( $city_placeholder ); ?>"
 						/>
 					</div>
@@ -123,7 +123,7 @@ class Block extends Base {
 							type="text"
 							class="sureforms-input-field"
 							id="sureforms-address-state-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 							placeholder="<?php echo esc_attr( $state_placeholder ); ?>"
 						/>
 					</div>
@@ -142,7 +142,7 @@ class Block extends Base {
 							class="sureforms-input-field"
 							type="text"
 							id="sureforms-address-postal-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
 							placeholder="<?php echo esc_attr( $postal_placeholder ); ?>"
 						/>
 					</div>
@@ -178,7 +178,7 @@ class Block extends Base {
 					<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" id="fullAddress-<?php echo esc_attr( $id ); ?>" />
 					<div class="mt-2">
 						<input type="text" class=" sf-classic-adress-element !top-[3px] !rounded-t-md " id="sureforms-address-line-1-<?php echo esc_attr( $id ); ?>"
-						area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+						aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 						placeholder="<?php echo esc_attr( $line_one_placeholder ); ?>">
 					</div>
 					<div class="">
@@ -188,12 +188,12 @@ class Block extends Base {
 					<div class="flex -space-x-px">
 						<div class="w-1/2 min-w-0 flex-1">
 						<input type="text" class=" sf-classic-adress-element !top-[1px] " id="sureforms-address-city-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 							placeholder="<?php echo esc_attr( $city_placeholder ); ?>">
 						</div>
 						<div class="min-w-0 flex-1">
 						<input type="text" class=" sf-classic-adress-element !top-[1px] " id="sureforms-address-state-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 							placeholder="<?php echo esc_attr( $state_placeholder ); ?>">
 						</div>
 					</div>
@@ -216,7 +216,7 @@ class Block extends Base {
 						<div>
 							<label for="postal-code" class="sr-only">ZIP / Postal code</label>
 							<input type="text" autocomplete="postal-code" class=" sf-classic-adress-element !rounded-b-md  " id="sureforms-address-postal-<?php echo esc_attr( $id ); ?>"
-							area-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
+							aria-required=<?php echo esc_attr( $required ? 'true' : 'fasle' ); ?>
 							placeholder="<?php echo esc_attr( $postal_placeholder ); ?>">
 						</div>
 					</div>

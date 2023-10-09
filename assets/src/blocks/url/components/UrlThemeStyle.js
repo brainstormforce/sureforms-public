@@ -3,7 +3,10 @@ export const UrlThemeStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
-			<label className="sf-text-primary" htmlFor={ 'url-input-' + blockID }>
+			<label
+				className="sf-text-primary"
+				htmlFor={ 'url-input-' + blockID }
+			>
 				{ label }
 				{ required && label && (
 					<span style={ { color: 'red' } }> *</span>

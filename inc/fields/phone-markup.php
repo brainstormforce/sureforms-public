@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
 
@@ -15,18 +15,17 @@ use SureForms\Inc\Traits\Get_Instance;
  *
  * @since 0.0.1
  */
-class SureForms_Phone_Markup {
+class Phone_Markup extends Base {
 	use Get_Instance;
 
 	/**
 	 * Render the sureforms phone default styling block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param array<mixed> $data Block attributes.
 	 *
 	 * @return string|boolean
 	 */
-	public static function phone_default_styling( $attributes, $data ) {
+	public function default_styling( $attributes ) {
 		$id              = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
@@ -39,11 +38,20 @@ class SureForms_Phone_Markup {
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
+		$file_path = plugin_dir_url( __FILE__ ) . '/phone_codes.json';
+		$response  = wp_remote_get( $file_path );
+		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+			$json_string = wp_remote_retrieve_body( $response );
+			$data        = json_decode( $json_string, true );
+		} else {
+			$data = array();
+		}
+
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
                 <label class="sf-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
                 <div class="sureforms-input-phone-holder">
-                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
+                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                     <select id="sureforms-country-code-' . esc_attr( $id ) . '" ' . esc_attr( $required ? 'required' : '' ) . '>';
 		if ( $default_country ) {
 			$output .= '<option value="' . esc_attr( $default_country ) . '">' . esc_html( $default_country ) . '</option>';
@@ -56,7 +64,7 @@ class SureForms_Phone_Markup {
 			}
 		}
 			$output .= '</select>
-                    <input type="tel" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
+                    <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
                         id="sureforms-phone-number-' . esc_attr( $id ) . '"
                         class="sureforms-input-field" />
                 </div>' .
@@ -73,11 +81,10 @@ class SureForms_Phone_Markup {
 	 * Render the sureforms phone classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param array<mixed> $data Block attributes.
 	 *
 	 * @return string|boolean
 	 */
-	public static function phone_classic_styling( $attributes, $data ) {
+	public function classic_styling( $attributes ) {
 		$id              = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
@@ -90,13 +97,22 @@ class SureForms_Phone_Markup {
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
+		$file_path = plugin_dir_url( __FILE__ ) . '/phone_codes.json';
+		$response  = wp_remote_get( $file_path );
+		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+			$json_string = wp_remote_retrieve_body( $response );
+			$data        = json_decode( $json_string, true );
+		} else {
+			$data = array();
+		}
+
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
-            <label for="sureforms-phone-number-' . esc_attr( $id ) . '" class="block text-sm font-medium leading-6 sf-text-sf_primary_color">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '</label>
+            <label for="sureforms-phone-number-' . esc_attr( $id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
             <div class="relative mt-2">
                 <div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
                     <div class="absolute inset-y-0 left-0 flex items-center">
-                        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" area-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
+                        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                         <select class="sf-classic-phone-select" id="sureforms-country-code-' . esc_attr( $id ) . '">';
 		if ( is_array( $data ) ) {
 			foreach ( $data as $country ) {
@@ -107,7 +123,7 @@ class SureForms_Phone_Markup {
 		}
 			$output .= '</select>
                         </div>
-                        <input type="tel" id="sureforms-phone-number-' . esc_attr( $id ) . '" class="sf-classic-phone-element" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
+                        <input type="tel" id="sureforms-phone-number-' . esc_attr( $id ) . '" class="sf-classic-phone-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
                     </div>
                 </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '<p style="display:none;" class="error-message">' . esc_html( $error_msg ) . '</p> <p style="display:none" class="duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
             </div>';

@@ -43,7 +43,7 @@ class Block extends Base {
 				<label class="sf-text-primary">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
-				<input type="hidden" class="sureforms-rating-random-id" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $id ); ?>" />
+				<input type="hidden" class="sureforms-rating-random-id" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $id ); ?>" />
 				<input type="hidden" class="sureforms-rating-icon-color-<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $icon_color ); ?>" />
 				<div style="justify-content: <?php echo 'fullWidth' === $width ? 'space-between' : 'space-evenly'; ?>; display: flex; align-items: center;">
 					<?php
@@ -68,7 +68,7 @@ class Block extends Base {
 					for ( $i = 0; $i < $max_value; $i++ ) {
 						?>
 						<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" class="sureforms-rating-field" value="<?php echo esc_attr( $sureforms_helper_instance->get_string_value( $i + 1 ) ); ?>" id="sureforms-rating-<?php echo esc_attr( $id . '-' . $i ); ?>" 
-						type="radio" area-required=<?php echo esc_attr( $required && 0 === $i ? 'true' : 'false' ); ?> />
+						type="radio" aria-required=<?php echo esc_attr( $required && 0 === $i ? 'true' : 'false' ); ?> />
 						<div style="display:flex; flex-direction:column; align-items: center;">
 							<label color-data="#ddd" style="color:#ddd; font-size:25px;" class="sureforms-rating-<?php echo esc_attr( $id ); ?>" for="sureforms-rating-<?php echo esc_attr( $id . '-' . $i ); ?>">
 								<?php echo wp_kses_post( $icon ); ?>
@@ -152,7 +152,7 @@ class Block extends Base {
 				<label class="sf-classic-label-text">
 					<?php echo esc_html( $label ); ?><?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
-				<input type="hidden" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" id="sf-classic-rating-field-<?php echo esc_attr( $id ); ?>" class="sf-rating-field-result"/>
+				<input type="hidden" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" value="" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" id="sf-classic-rating-field-<?php echo esc_attr( $id ); ?>" class="sf-rating-field-result"/>
 				<ul class="sf-classic-event mt-2 flex list-none gap-3 p-0" data-te-rating-init>
 				<?php
 				for ( $i = 0; $i < $max_value; $i++ ) {

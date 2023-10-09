@@ -17,12 +17,7 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { PhoneThemeStyle } from './components/PhoneThemeStyle';
 
-export default function Edit( {
-	attributes,
-	setAttributes,
-	clientId,
-	className,
-} ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		required,
 		label,
@@ -214,7 +209,7 @@ export default function Edit( {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container' + className }
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -234,15 +229,20 @@ export default function Edit( {
 						handleChange={ handleChange }
 					/>
 				) }
+				{ help !== '' && (
+					<label
+						htmlFor={ 'phone-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ help }
+					</label>
+				) }
 			</div>
-			{ help !== '' && (
-				<label
-					htmlFor={ 'phone-help-' + blockID }
-					className="sf-text-secondary"
-				>
-					{ help }
-				</label>
-			) }
 		</>
 	);
 }

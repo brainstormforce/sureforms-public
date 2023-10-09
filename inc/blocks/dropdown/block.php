@@ -40,7 +40,7 @@ class Block extends Base {
 			</label>
 			<select 
 			name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>"
-			area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
+			aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?>
 			class="sureforms-input-field"
 			>
 			<?php foreach ( $options as $option ) : ?>
@@ -57,7 +57,7 @@ class Block extends Base {
 				<?php echo $required && $label ? '<span class="!text-required_icon_color"> *</span>' : ''; ?>
 			</label>
 			<div class="relative mt-2">
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> type="hidden" class="sf-classic-dropdown-result" value="<?php echo esc_attr( 0 < count( $options ) ? $options[0] : '' ); ?>" />
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> type="hidden" class="sf-classic-dropdown-result" value="<?php echo esc_attr( 0 < count( $options ) ? $options[0] : '' ); ?>" />
 				<button type="button" class="sureforms-classic-dropdown-button sf-classic-dropdown-btn" id="sureforms-classic-dropdown-button-<?php echo esc_attr( $id ); ?>">
 					<span class="sf-dropdown-value !block !truncate">
 						<?php echo esc_attr( 0 < count( $options ) ? $options[0] : '&nbsp;' ); ?>

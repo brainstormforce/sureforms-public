@@ -17,7 +17,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
 
-export default ( { clientId, className, attributes, setAttributes } ) => {
+export default ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -176,9 +176,7 @@ export default ( { clientId, className, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container  sf-classic-inputs-holder ' + className
-				}
+				className={ 'main-container  sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
