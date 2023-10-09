@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
 
@@ -15,7 +15,7 @@ use SureForms\Inc\Traits\Get_Instance;
  *
  * @since 0.0.1
  */
-class SureForms_Url_Field_Markup {
+class Url_Markup extends Base {
 	use Get_Instance;
 
 	/**
@@ -25,7 +25,7 @@ class SureForms_Url_Field_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function url_field_default_styling( $attributes ) {
+	public function default_styling( $attributes ) {
 			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -37,7 +37,7 @@ class SureForms_Url_Field_Markup {
 
 			return '<div class="sureforms-input-url-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
     <label for="sureforms-input-url-' . esc_attr( $id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-url-' . esc_attr( $id ) . '" type="url" area-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-url-input">
+    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-url-' . esc_attr( $id ) . '" type="url" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-url-input">
     ' . ( '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
     <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
 </div>';
@@ -50,7 +50,7 @@ class SureForms_Url_Field_Markup {
 	 *
 	 * @return string|boolean
 	 */
-	public static function url_field_classic_styling( $attributes ) {
+	public function classic_styling( $attributes ) {
 			$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;

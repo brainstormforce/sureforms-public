@@ -49,7 +49,7 @@ class Block extends Base {
 					<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 				</label>
 				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" id="sureforms-upload-index-<?php echo esc_attr( $id ); ?>" value="" type="hidden" />
-				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
+				<input name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" class="sureforms-upload-field" aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> type="file" hidden id="sureforms-upload-<?php echo esc_attr( $id ); ?>" 
 				accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>"
 				/>
 				<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
@@ -90,7 +90,7 @@ class Block extends Base {
 								<input class="sureforms-upload-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
 								<label for="sureforms-upload-<?php echo esc_attr( $id ); ?>" class="sf-classic-upload-label">
 									<span>Click to upload the file</span>
-									<input id="sureforms-upload-<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" type="file" area-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="sureforms-upload-field sr-only" accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
+									<input id="sureforms-upload-<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ); ?>" type="file" aria-required=<?php echo esc_attr( $required ? 'true' : 'false' ); ?> class="sureforms-upload-field sr-only" accept=".<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
 								</label>
 							</div>
 							<p class="mb-1 text-xs leading-5 text-gray-600"><?php echo esc_attr( $allowed_formats ); ?> up to <?php echo esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ); ?></p>

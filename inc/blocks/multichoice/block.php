@@ -41,9 +41,9 @@ class Block extends Base {
 			<label class="sf-text-primary"><?php echo esc_html( $label ); ?> 
 				<?php echo $required && $label ? '<span style="color:red;"> *</span>' : ''; ?>
 			</label>
-			<input type="hidden" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
+			<input type="hidden" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
 			<input type="hidden" value="<?php echo esc_attr( $style ); ?>" id="sureforms-multi-choice-style-<?php echo esc_attr( $id ); ?>" />
-			<input class="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" name="<?php echo esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" value="">
+			<input class="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" name="<?php echo esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" value="">
 				<?php foreach ( $options as $i => $option ) : ?>
 					<div style="display: flex; align-items: center;">
 						<input
@@ -76,9 +76,9 @@ class Block extends Base {
 				<span style="display:none" class="error-message"><?php echo esc_html( $error_msg ); ?></span>
 		</div> -->
 			<div class="sureforms-multi-choice-container main-container frontend-inputs-holder <?php echo esc_attr( $classname ); ?>" id="sureforms-multi-choice-container-<?php echo esc_attr( $id ); ?>">
-			<input type="hidden" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
+			<input type="hidden" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" value="<?php echo esc_attr( $single_selection ); ?>" id="sureforms-multi-choice-selection-<?php echo esc_attr( $id ); ?>" />
 			<input type="hidden" value="<?php echo esc_attr( $style ); ?>" id="sureforms-multi-choice-style-<?php echo esc_attr( $id ); ?>" />
-			<input class="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>" area-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" name="<?php echo esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" value="">
+			<input class="sureforms-multi-choice-<?php echo esc_attr( $id ); ?>" aria-required="<?php echo esc_attr( $required ? 'true' : 'false' ); ?>" name="<?php echo esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ); ?>" type="hidden" value="">
 			<label for="text" class="sf-classic-label-text"><?php echo esc_html( $label ); ?> <?php echo $required && $label ? '<span class="text-red-500"> *</span>' : ''; ?></label>
 				<div class="radio-buttons flex flex-wrap mt-2">
 				<?php foreach ( $options as $i => $option ) : ?>
