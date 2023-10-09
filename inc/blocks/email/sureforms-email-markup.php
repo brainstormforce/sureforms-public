@@ -49,7 +49,7 @@ class SureForms_Email_Markup {
 			'<label for="sureforms-input-confirm-email-' . esc_attr( $id ) . '" class="sf-text-primary sureforms-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 			'<input id="sureforms-input-confirm-email-' . esc_attr( $id ) . '" type="email" data-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field sureforms-input-confirm-email">'
 		: '' ) .
-		( '' !== $help ? '<label for="sureforms-input-email" class="text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+		( '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
         <span style="display:none" class="error-message confirm-email-error">Field values do not match.</span>
     </div>';
