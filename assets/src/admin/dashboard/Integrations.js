@@ -76,8 +76,12 @@ export default () => {
 			css={ css`
 		width: 35%;
 		margin-top:2em;
+		max-width: 450px;
 		@media screen and ( max-width: 782px ) {
 			width: 100%;
+		}
+		@media screen and ( max-width: 1260px ) {
+			margin-top:0;
 		}
 		.dashboard-module{
 			display:none;

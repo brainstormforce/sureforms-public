@@ -54,6 +54,9 @@ export default ( {
 							color: #AAA;
 							width: max-content;
 							margin: 0;
+							@media screen and ( max-width: 480px ) {
+								width: 100%;
+							}
 						` }
 						>
 							{ descriptions }

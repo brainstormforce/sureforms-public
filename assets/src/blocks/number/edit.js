@@ -204,9 +204,8 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					className + 'main-container sf-classic-inputs-holder'
+					'main-container sf-classic-inputs-holder'
 				}
- 
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
