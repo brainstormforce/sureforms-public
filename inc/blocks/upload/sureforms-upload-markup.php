@@ -27,23 +27,23 @@ class SureForms_Upload_Markup {
 	 * @return string|boolean
 	 */
 	public static function upload_default_styling( $attributes ) {
-		$id          = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-        $file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
-        $allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
-            ', ',
-            array_map(
-                function( $obj ) {
-                    return $obj['value'];
-                },
-                $attributes['allowedFormats']
-            )
-        ) . '...' : 'All types';
-        $accepted_formats = str_replace( '...', '', $allowed_formats );
-        $label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-        $help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-        $error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-        $classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
+		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
+			', ',
+			array_map(
+				function( $obj ) {
+					return $obj['value'];
+				},
+				$attributes['allowedFormats']
+			)
+		) . '...' : 'All types';
+		$accepted_formats = str_replace( '...', '', $allowed_formats );
+		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '<div id="sureforms-upload-container" class="sureforms-upload-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
     <label class="sf-text-primary">' . esc_html( $label ) . ' 
@@ -86,23 +86,23 @@ class SureForms_Upload_Markup {
 	 * @return string|boolean
 	 */
 	public static function upload_classic_styling( $attributes ) {
-		$id          = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-        $file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
-        $allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
-            ', ',
-            array_map(
-                function( $obj ) {
-                    return $obj['value'];
-                },
-                $attributes['allowedFormats']
-            )
-        ) . '...' : 'All types';
-        $accepted_formats = str_replace( '...', '', $allowed_formats );
-        $label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-        $help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-        $error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-        $classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
+		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
+			', ',
+			array_map(
+				function( $obj ) {
+					return $obj['value'];
+				},
+				$attributes['allowedFormats']
+			)
+		) . '...' : 'All types';
+		$accepted_formats = str_replace( '...', '', $allowed_formats );
+		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '<div id="sureforms-upload-container" class="sureforms-upload-container main-container sf-classic-inputs-holder frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <div class="col-span-full">

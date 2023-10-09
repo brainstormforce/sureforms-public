@@ -17,8 +17,17 @@ import Range from '@Components/range/Range.js';
  * Components dependencies
  */
 import CreatableSelect from 'react-select/creatable';
+import { UploadClassicStyle } from './components/UploadClassicStyle';
+import { UploadThemeStyle } from './components/UploadThemeStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default function Edit( { attributes, setAttributes, isSelected } ) {
+export default function Edit( {
+	attributes,
+	setAttributes,
+	clientId,
+	className,
+} ) {
 	const {
 		required,
 		label,
@@ -28,6 +37,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		help,
 		id,
 		errorMsg,
+		formId,
 	} = attributes;
 	const maxUploadFileSize = upload_field.upload_max_limit;
 	const uploadFormats = upload_field.upload_formats;
@@ -35,6 +45,9 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -42,7 +55,11 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 
-	const firstFive = allowedFormats.slice( 0, 5 );
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	return (
 		<>
@@ -148,7 +165,8 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder' +
+					className
 				}
 				style={ {
 					display: 'flex',
@@ -156,7 +174,17 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '0.5rem',
 				} }
 			>
-			
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<UploadClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) : (
+					<UploadThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'upload-help-' + blockID }
