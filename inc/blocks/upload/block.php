@@ -28,7 +28,7 @@ class Block extends Base {
 			$form_id = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
 			$styling = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
 			ob_start();
-			switch ( 'classic' ) {
+			switch ( $styling ) {
 				case 'inherit':
 					// phpcs:ignore
 					echo SureForms_Upload_Markup::upload_default_styling( $attributes );
