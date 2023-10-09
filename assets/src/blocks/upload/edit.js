@@ -22,12 +22,7 @@ import { UploadThemeStyle } from './components/UploadThemeStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default function Edit( {
-	attributes,
-	setAttributes,
-	clientId,
-	className,
-} ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		required,
 		label,
@@ -165,8 +160,7 @@ export default function Edit( {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder' +
-					className
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -188,7 +182,12 @@ export default function Edit( {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'upload-help-' + blockID }
-						className="sf-text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>
