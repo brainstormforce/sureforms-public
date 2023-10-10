@@ -23,7 +23,12 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 							style={ { fontSize: '35px' } }
 							className="text-center text-gray-300"
 						>
-							<FontAwesomeIcon icon={ faCloudArrowUp } />
+							<FontAwesomeIcon
+								style={ { margin: 'auto' } }
+								height={ '45px' }
+								width={ '35px' }
+								icon={ faCloudArrowUp }
+							/>
 						</div>
 						<div className="mt-2 flex text-sm leading-6 text-gray-600">
 							<label className="sf-classic-upload-label">

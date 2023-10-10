@@ -49,9 +49,10 @@ export const UploadThemeStyle = ( { attributes, blockID } ) => {
 							<FontAwesomeIcon
 								icon={ faCloudArrowUp }
 								style={ {
-									fontSize: '25px',
 									marginBottom: '5px',
 								} }
+								height={ '45px' }
+								width={ '35px' }
 							/>
 							{ __( 'Click to choose the file', 'sureforms' ) }
 						</>
