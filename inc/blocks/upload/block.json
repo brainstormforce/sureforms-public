@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/upload",
 	"title": "Upload Field",
-	"description": "Displays a form Upload Field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Upload Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "upload", "field" ],
@@ -41,7 +41,8 @@
 			"default": []
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

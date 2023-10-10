@@ -7,7 +7,6 @@ import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
 import * as multiChoice from '@Blocks/multi-choice';
 import * as toggle from '@Blocks/switch';
-// import * as submit from '@Blocks/submit';
 import * as rating from '@Blocks/rating';
 import * as upload from '@Blocks/upload';
 import * as phone from '@Blocks/phone';
@@ -31,7 +30,6 @@ registerBlocks( [
 	checkbox,
 	number,
 	sfForm,
-	// submit,
 	rating,
 	upload,
 	phone,

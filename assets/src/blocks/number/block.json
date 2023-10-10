@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/number",
 	"title": "Number Field",
-	"description": "Displays a form number input field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Number Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "number", "input", "custom", "field" ],
@@ -41,7 +41,8 @@
 			"default": "Number"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"formatType": {
 			"type": "string",

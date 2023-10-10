@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/input",
 	"title": "Text Field",
-	"description": "Displays a form text input field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "text", "input", "custom", "field" ],
@@ -40,7 +40,8 @@
 			"default": "Text Field"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

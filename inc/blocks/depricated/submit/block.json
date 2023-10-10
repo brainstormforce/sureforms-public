@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/submit",
 	"title": "Submit Button",
-	"description": "Display a submit button.",
+	"description": "Displays a SureForm Submit Field",
 	"category": "sureforms",
 	"keywords": [ "submit", "button" ],
 	"textdomain": "sureforms",

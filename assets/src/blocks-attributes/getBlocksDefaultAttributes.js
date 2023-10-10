@@ -8,7 +8,6 @@ import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
 import passwordAttributes from '@Blocks/password/block.json';
 import ratingAttributes from '@Blocks/rating/block.json';
-import submitAttributes from '@Blocks/submit/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
 import dateTimeAttributes from '@Blocks/date-time-picker/block.json';
 import addressAttributes from '@Blocks/address/block.json';
@@ -30,7 +29,6 @@ export const blocksAttributes = {
 	input: inputAttributes.attributes,
 	email: emailAttributes.attributes,
 	rating: ratingAttributes.attributes,
-	submit: submitAttributes.attributes,
 	checkbox: checkboxAttributes.attributes,
 	'date-time-picker': dateTimeAttributes.attributes,
 	address: addressAttributes.attributes,

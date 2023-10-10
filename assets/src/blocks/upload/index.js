@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { upload as icon } from '@wordpress/icons';
+import { MdOutlineCloudUpload as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

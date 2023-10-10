@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/switch",
 	"title": "Switch",
-	"description": "Display a toggle switch.",
+	"description": "Displays a SureForm Switch Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "submit", "button" ],
@@ -27,7 +27,8 @@
 			"default": "Switch"
 		},
 		"switchHelpText": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"checked": {
 			"type": "boolean"
