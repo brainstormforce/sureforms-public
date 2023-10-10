@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
@@ -14,17 +14,12 @@ import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { RatingClassicStyle } from './components/RatingClassicStyle';
+import { RatingThemeStyle } from './components/RatingThemeStyle';
 
-/**
- * Component Dependencies
- */
-import RatingIcon from './components/RatingIcon.jsx';
-
-export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const [ rating, setRating ] = useState( null );
-	// eslint-disable-next-line no-unused-vars
-	const [ hover, setHover ] = useState( null );
-
+export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		id,
 		required,
@@ -36,15 +31,12 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		iconShape,
 		maxValue,
 		errorMsg,
+		formId,
 	} = attributes;
 
-	const arrayRating = [];
-
-	for ( let i = 1; i <= maxValue; i++ ) {
-		arrayRating.push( i );
-	}
-
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -52,6 +44,13 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	return (
 		<>
 			<InspectorControls>
@@ -203,7 +202,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -211,76 +210,11 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'rating-block-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<div
-					id={ 'rating-block-' + blockID }
-					style={ {
-						justifyContent:
-							width === 'fullWidth'
-								? 'space-between'
-								: 'space-evenly',
-						display: 'flex',
-						alignItems: 'center',
-					} }
-				>
-					{ arrayRating.map( ( index ) => {
-						const ratingValue = index;
-						const iconProps = {
-							color:
-								ratingValue <= ( hover || rating )
-									? iconColor
-									: '#ddd',
-							fontSize: ratingValue === rating ? '30px' : null,
-							// Might be used later.
-							// onMouseEnter: () => setHover( ratingValue ),
-							// onMouseLeave: () => setHover( null ),
-						};
-
-						return (
-							<div key={ index }>
-								<div
-									style={ {
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-									} }
-								>
-									<label
-										style={ { fontSize: '25px' } }
-										htmlFor={ blockID + 'i-' + index }
-									>
-										<RatingIcon
-											iconShape={ iconShape }
-											iconProps={ iconProps }
-										/>
-									</label>
-									<div style={ { color: 'black' } }>
-										{ showNumbers && index }
-									</div>
-
-									<input
-										required={ index === 1 && required }
-										type="radio"
-										id={ blockID + 'i-' + index }
-										style={ { display: 'none' } }
-										value={ ratingValue }
-										onClick={ () => {
-											setRating( ratingValue );
-										} }
-									/>
-								</div>
-							</div>
-						);
-					} ) }
-				</div>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<RatingClassicStyle attributes={ attributes } />
+				) : (
+					<RatingThemeStyle attributes={ attributes } />
+				) }
 				{ ratingBoxHelpText !== '' && (
 					<div className="sf-text-secondary">
 						{ ratingBoxHelpText }
