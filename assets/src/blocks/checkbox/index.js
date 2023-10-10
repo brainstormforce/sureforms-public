@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { edit as icon } from '@wordpress/icons';
+import { MdOutlineCheckBox as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

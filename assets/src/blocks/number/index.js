@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { overlayText as icon } from '@wordpress/icons';
+import { Bs123 as icon } from 'react-icons/bs';
 
 /**
  * Internal dependencies

@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/dropdown",
 	"title": "Dropdown",
-	"description": "Displays a form dropdown/select field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Dropdown Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "select", "dropdown", "options", "field" ],
@@ -27,7 +27,8 @@
 			"type": "string"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

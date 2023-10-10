@@ -1,8 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { list as icon } from '@wordpress/icons';
-
+import { MdOutlineChecklist as icon } from 'react-icons/md';
 /**
  * Internal dependencies
  */
