@@ -29,7 +29,7 @@ class Block extends Base {
 			$styling      = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
 			$markup_class = new Number_Slider_Markup();
 			ob_start();
-			switch ( 'classic' ) {
+			switch ( $styling ) {
 				case 'inherit':
 					// phpcs:ignore
 					echo $markup_class->default_styling( $attributes );

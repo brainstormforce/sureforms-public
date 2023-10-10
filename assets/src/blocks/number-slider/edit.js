@@ -33,6 +33,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
+				sureforms_keys={ sureforms_keys }
 			/>
 			<div
 				className={ 'main-container' }
@@ -46,6 +47,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 					<SliderClassicStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						sureforms_keys={ sureforms_keys }
 					/>
 				) : (
 					<SliderThemeStyle
