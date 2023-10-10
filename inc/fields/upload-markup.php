@@ -63,11 +63,11 @@ class Upload_Markup extends Base {
             <div style="display: flex; justify-content: space-between; padding: 1rem;">
                 <div style="display: flex; flex-direction: column;">
                     <span class="sf-text-primary">Size Limit</span>
-                    <span class="sf-text-primary"><strong>' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</strong></span>
+                    <span class="sf-text-primary"><strong>' . esc_html( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</strong></span>
                 </div>
                 <div style="display: flex; flex-direction: column;" class="sf-text-primary">
                     <span>Allowed Types</span>
-                    <span><strong>' . esc_attr( $allowed_formats ) . '</strong></span>
+                    <span><strong>' . esc_html( $allowed_formats ) . '</strong></span>
                 </div>
             </div>
         </label>
@@ -122,7 +122,7 @@ class Upload_Markup extends Base {
                             <input id="sureforms-upload-' . esc_attr( $id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
                         </label>
                     </div>
-                    <p class="mb-1 text-xs leading-5 text-gray-600">' . esc_attr( $allowed_formats ) . ' up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
+                    <p class="mb-1 text-xs leading-5 text-gray-600">' . esc_html( $allowed_formats ) . ' up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
                 </div>
             </div>
         </div>
