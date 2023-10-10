@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/password",
 	"title": "Password",
-	"description": "Displays a form password field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Password Field",
 	"category": "sureforms",
 	"keywords": [ "password", "secure" ],
 	"ancestor": [ "sureforms/form" ],
@@ -28,7 +28,8 @@
 			"default": "Password"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

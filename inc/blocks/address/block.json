@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/address",
 	"title": "Address Field",
-	"description": "Displays a form Address field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Address Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "address", "country", "location", "field" ],

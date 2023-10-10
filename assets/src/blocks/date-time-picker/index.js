@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { calendar as icon } from '@wordpress/icons';
+import { MdOutlineCalendarMonth as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

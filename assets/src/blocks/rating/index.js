@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { starFilled as icon } from '@wordpress/icons';
+import { MdOutlineStarBorder as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { globe as icon } from '@wordpress/icons';
+import { MdOutlineLocationOn as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/form",
 	"title": "Form",
-	"description": "Streamline interactions with a Gutenberg Form Block on your WordPress site.",
+	"description": "Collect and Manage data effortlessly with customizable SureForm.",
 	"category": "sureforms",
 	"keywords": [ "form", "sureform" ],
 	"parent": [ "sureforms/sf-form" ],

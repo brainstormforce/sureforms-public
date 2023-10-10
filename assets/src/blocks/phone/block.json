@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/phone",
 	"title": "Phone Number",
-	"description": "Displays a form Phone Number field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Phone Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "telephone", "phone", "mobile", "field" ],
@@ -32,7 +32,8 @@
 			"type": "string"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"isUnique": {
 			"type": "boolean",
