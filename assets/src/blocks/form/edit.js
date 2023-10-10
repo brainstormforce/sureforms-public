@@ -121,7 +121,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					meta: option_array,
 				} );
 			}
-			console.log( 'cls', attributes.className );
 			updateMeta( '_sureforms_form_class_name', attributes.className );
 		}
 	}, [ siteEditor, attributes ] );
