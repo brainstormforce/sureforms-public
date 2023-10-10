@@ -69,14 +69,14 @@ class Rating_Markup extends Base {
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
                 <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" class="sureforms-rating-field" value="' .
-					esc_attr( $i + 1 ) . '" id="sureforms-rating-' .
+					esc_attr( strval( $i + 1 ) ) . '" id="sureforms-rating-' .
 					esc_attr( $id . '-' . $i ) . '" type="radio" aria-required=' . esc_attr( $required && 0 === $i ? 'true' : 'false' ) . ' />
                 <div style="display:flex; flex-direction:column; align-items: center;">
                     <label color-data="#ddd" style="color:#ddd; font-size:25px;" class="sureforms-rating-' .
 						esc_attr( $id ) . '" for="sureforms-rating-' . esc_attr( $id . '-' . $i ) . '">' .
 						wp_kses_post( $icon ) . '
                     </label>
-                    <div>' . esc_html( $show_numbers ? $i + 1 : '' ) . '</div>
+                    <div>' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</div>
                 </div>';
 		}
 
@@ -186,7 +186,7 @@ class Rating_Markup extends Base {
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
                 <li class="flex items-center flex-col-reverse" >
-                <span class="sf-text-primary">' . esc_html( $show_numbers ? $i + 1 : '' ) . '</span>
+                <span class="sf-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
                     <span
                     class="sf-text-primary"
                     data-te-rating-icon-ref>
