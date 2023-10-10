@@ -36,7 +36,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				sureforms_keys={ sureforms_keys }
 			/>
 			<div
-				className={ 'main-container' }
+				className={ 'main-container sf-classic-inputs-holder frontend-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -58,7 +58,12 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				{ help !== '' && (
 					<label
 						htmlFor={ 'number-slider-input-help-' + blockID }
-						className="sf-text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>
