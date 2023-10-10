@@ -172,7 +172,7 @@ class Block extends Base {
 		}
 		?>
 			<style>
-				<?php echo esc_attr( '#sureforms-form-' . $id ); ?> {
+				<?php echo esc_attr( '#sureforms-form-' . $id . ', #sureforms-success-message-page-' . $id ); ?> {
 					--sf-secondary-color: 
 					<?php
 						echo esc_attr( $color_secondary );
