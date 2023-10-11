@@ -158,11 +158,13 @@ class Address_Markup extends Base {
 		if ( ! empty( $country_placeholder ) ) :
 			$output .= '<option value="" selected disabled hidden>' . esc_html( $country_placeholder ) . '</option>';
 							endif;
-		foreach ( $data as $country ) {
-			if ( is_array( $country ) && isset( $country['name'] ) ) {
-				$output .= '<option value="' . esc_attr( strval( $country['name'] ) ) . '">
+		if ( is_array( $data ) ) {
+			foreach ( $data as $country ) {
+				if ( is_array( $country ) && isset( $country['name'] ) ) {
+					$output .= '<option value="' . esc_attr( strval( $country['name'] ) ) . '">
 										' . esc_html( strval( $country['name'] ) ) . '
 									</option>';
+				}
 			}
 		}
 						$output .= '</select>
@@ -202,6 +204,7 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
+			$data      = [];
 			$file_path = plugin_dir_url( __FILE__ ) . '/countries.json';
 			$response  = wp_remote_get( $file_path );
 		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
@@ -244,13 +247,16 @@ class Address_Markup extends Base {
 		if ( ! empty( $country_placeholder ) ) :
 			$output .= '<option value="" selected disabled hidden>' . esc_html( $country_placeholder ) . '</option>';
 							endif;
-		foreach ( $data as $country ) {
-			if ( is_array( $country ) && isset( $country['name'] ) ) {
-				$output .= '<option value="' . esc_attr( strval( $country['name'] ) ) . '">
+		if ( is_array( $data ) ) {
+			foreach ( $data as $country ) {
+				if ( is_array( $country ) && isset( $country['name'] ) ) {
+					$output .= '<option value="' . esc_attr( strval( $country['name'] ) ) . '">
 										' . esc_html( strval( $country['name'] ) ) . '
 									</option>';
+				}
 			}
 		}
+
 							$output .= '
 							</select>
 						</div>
