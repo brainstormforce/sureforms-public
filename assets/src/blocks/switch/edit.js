@@ -2,13 +2,8 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	InspectorControls,
-	useBlockProps,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -16,6 +11,8 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
 export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 	const {
@@ -60,16 +57,14 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 		transition: 'left 0.2s',
 	};
 
-	const currentFormId = useSelect( ( select ) => {
-		// parent block id attribute.
-		const parents = select( blockEditorStore ).getBlockParents( clientId );
-		const parentBlock = select( blockEditorStore ).getBlocksByClientId(
-			parents?.[ 0 ]
-		);
-		// current post id.
-		const post_id = select( 'core/editor' ).getCurrentPostId();
-		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
-	} );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

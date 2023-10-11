@@ -11,8 +11,10 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default ( { attributes, setAttributes, isSelected } ) => {
+export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		label,
 		checked: isChecked,
@@ -21,9 +23,19 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		checkboxHelpText,
 		id,
 		errorMsg,
+		formId,
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
