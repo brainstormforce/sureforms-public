@@ -13,8 +13,10 @@ import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { SwitchClassicStyle } from './components/SwitchClassicStyle';
+import { SwitchThemeStyle } from './components/SwitchThemeStyle';
 
-export default ( { clientId, attributes, setAttributes, isSelected } ) => {
+export default ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		checked: isChecked,
@@ -26,36 +28,6 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
-	const inputStyle = {
-		position: 'absolute',
-		opacity: 0,
-		width: 0,
-		height: 0,
-	};
-
-	const switchStyle = {
-		display: 'inline-block',
-		position: 'relative',
-		width: '50px',
-		height: '25px',
-		borderRadius: '25px',
-		backgroundColor: isChecked ? '#007CBA' : '#dcdcdc',
-		transition: 'background-color 0.2s',
-		cursor: 'pointer',
-	};
-
-	const thumbStyle = {
-		display: 'inline-block',
-		position: 'absolute',
-		width: '21px',
-		height: '21px',
-		borderRadius: '50%',
-		backgroundColor: '#fff',
-		top: '2px',
-		left: isChecked ? '27px' : '2px',
-		transition: 'left 0.2s',
-	};
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -150,7 +122,7 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -158,23 +130,11 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 					gap: '.4rem',
 				} }
 			>
-				<div style={ switchStyle }>
-					<input
-						type="checkbox"
-						checked={ isChecked }
-						style={ inputStyle }
-					/>
-					<div style={ thumbStyle }></div>
-				</div>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'switch-block-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<SwitchClassicStyle attributes={ attributes } />
+				) : (
+					<SwitchThemeStyle attributes={ attributes } />
+				) }
 			</div>
 			{ switchHelpText !== '' && (
 				<div className="sf-text-secondary">{ switchHelpText }</div>

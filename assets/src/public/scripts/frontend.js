@@ -188,8 +188,8 @@ if ( uploadFieldsContainer ) {
 									<div>
 										<div class="text-base">${ fileName }</div>
 										<div class="text-sm text-gray-500"> ${ ( file.size / 1000000 ).toFixed(
-											2
-										) }MB</div>
+		2
+	) }MB</div>
 									</div>
 									<div>
   										<i class="fa-sharp fa-solid fa-trash-can text-gray-400" id="reset-upload-field" style="cursor:pointer"></i>
@@ -740,7 +740,7 @@ if ( checkboxContainers ) {
 			const computedStyle = getComputedStyle( formElement );
 			const primaryColor =
 				computedStyle.getPropertyValue( '--sf-primary-color' );
-			let checkboxInputs = checkboxContainers[ i ].querySelectorAll(
+			const checkboxInputs = checkboxContainers[ i ].querySelectorAll(
 				'.sureforms-classic-checkbox-input'
 			);
 			checkboxInputs.forEach( ( checkboxInput ) => {
