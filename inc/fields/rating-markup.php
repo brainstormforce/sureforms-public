@@ -68,8 +68,8 @@ class Rating_Markup extends Base {
 
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
-                <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" class="sureforms-rating-field" value="' .
-					esc_attr( strval( $i + 1 ) ) . '" id="sureforms-rating-' .
+                <input style="display:contents;" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" class="sureforms-rating-field" value="' .
+					esc_attr( strval( $i + 1 ) ) . '" id="sureforms-rating-' . 
 					esc_attr( $id . '-' . $i ) . '" type="radio" aria-required=' . esc_attr( $required && 0 === $i ? 'true' : 'false' ) . ' />
                 <div style="display:flex; flex-direction:column; align-items: center;">
                     <label color-data="#ddd" style="color:#ddd; font-size:25px;" class="sureforms-rating-' .
