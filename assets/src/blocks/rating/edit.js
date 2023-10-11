@@ -216,9 +216,17 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<RatingThemeStyle attributes={ attributes } />
 				) }
 				{ ratingBoxHelpText !== '' && (
-					<div className="sf-text-secondary">
+					<label
+						htmlFor={ 'text-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
 						{ ratingBoxHelpText }
-					</div>
+					</label>
 				) }
 			</div>
 		</>
