@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { settings as icon } from '@wordpress/icons';
+import { RxSlider as icon } from 'react-icons/rx';
 
 /**
  * Internal dependencies

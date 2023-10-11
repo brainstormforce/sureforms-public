@@ -48,7 +48,7 @@ module.exports = {
 		),
 		form_archive_styles: path.resolve(
 			__dirname,
-			'assets/src/public/styles/form-archive-styles.scss'
+			'assets/src/admin/styles/form-archive-styles.scss'
 		),
 		sureforms_frontend_styles: path.resolve(
 			__dirname,

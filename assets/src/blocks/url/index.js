@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { link as icon } from '@wordpress/icons';
+import { MdOutlineLink as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies
