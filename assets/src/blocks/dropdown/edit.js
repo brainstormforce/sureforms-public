@@ -305,8 +305,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'dropdown-help-' + blockID }
-						className="sf-text-secondary"
+						htmlFor={ 'text-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

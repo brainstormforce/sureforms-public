@@ -99,7 +99,7 @@ class Dropdown_Markup extends Base {
 
 		$output .= '</ul>
                 </div>
-                <p for="sureforms-checkbox" class="sforms-helper-txt">' . ( '' !== $help ? esc_html( $help ) : '' ) . '</p>
+                ' . ( '' !== $help ? '<label for="sureforms-input-text" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
                 <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
             </div>';
 		return $output;

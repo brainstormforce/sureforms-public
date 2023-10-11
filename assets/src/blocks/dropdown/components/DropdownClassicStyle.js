@@ -40,8 +40,8 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 						{ options.length > 0 ? options[ 0 ] : '\u00A0' }
 					</span>
 					<span
-						className={ `sf-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all ${
-							open ? 'rotate-180 pl-4' : ''
+						className={ `sf-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all rotate-0 ${
+							open ? 'rotate-180 pl-2' : ''
 						}` }
 					>
 						<FontAwesomeIcon
