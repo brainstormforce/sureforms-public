@@ -1,8 +1,16 @@
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
-export const SwitchClassicStyle = ( { attributes } ) => {
+export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
 	const { label, checked: isChecked, required } = attributes;
-    const [toggle,setToggle]=useState(false)
+	const [ toggle, setToggle ] = useState( isChecked );
+	let color = sureforms_keys._sureforms_color1;
+	if ( color === '' ) {
+		color = '#0284C7';
+	}
+	useEffect( () => {
+		setToggle( isChecked );
+	}, [ isChecked ] );
+
 	return (
 		<>
 			<label className="sureforms-switch-label">
@@ -10,7 +18,7 @@ export const SwitchClassicStyle = ( { attributes } ) => {
 					<div
 						className="switch-background sf-classic-toggle-bg"
 						style={ {
-							backgroundColor: toggle ? 'blue' : '#dcdcdc',
+							backgroundColor: toggle ? color : '#dcdcdc',
 						} }
 					>
 						<input
@@ -18,7 +26,7 @@ export const SwitchClassicStyle = ( { attributes } ) => {
 							type="checkbox"
 							checked={ toggle }
 							aria-required={ required ? 'true' : 'false' }
-                            onClick={()=>setToggle(!toggle)}
+							onClick={ () => setToggle( ! toggle ) }
 						/>
 						<div
 							className="switch-toggle !-top-[3px] !shadow !border !border-gray-200 !h-5 !w-5"
@@ -31,7 +39,7 @@ export const SwitchClassicStyle = ( { attributes } ) => {
 								aria-hidden="true"
 							>
 								<svg
-									style={ { fill: 'red' } }
+									style={ { fill: color } }
 									className="!h-3 !w-3 sf-classic-toggle-icon"
 									viewBox="0 0 12 12"
 								>

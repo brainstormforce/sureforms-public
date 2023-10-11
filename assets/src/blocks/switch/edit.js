@@ -131,7 +131,10 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<SwitchClassicStyle attributes={ attributes } />
+					<SwitchClassicStyle
+						attributes={ attributes }
+						sureforms_keys={ sureforms_keys }
+					/>
 				) : (
 					<SwitchThemeStyle attributes={ attributes } />
 				) }
