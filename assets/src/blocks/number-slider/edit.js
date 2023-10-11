@@ -36,7 +36,9 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				sureforms_keys={ sureforms_keys }
 			/>
 			<div
-				className={ 'main-container sf-classic-inputs-holder frontend-inputs-holder' }
+				className={
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+				}
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

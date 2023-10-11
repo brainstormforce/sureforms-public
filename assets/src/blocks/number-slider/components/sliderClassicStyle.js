@@ -1,4 +1,4 @@
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 export const SliderClassicStyle = ( {
 	attributes,
@@ -18,6 +18,10 @@ export const SliderClassicStyle = ( {
 		setBgValue( valBg );
 		setSlideValue( e.target.value );
 	};
+
+	useEffect( () => {
+		setSlideValue( min );
+	}, [ min ] );
 
 	return (
 		<div
