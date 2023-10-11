@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { verse as icon } from '@wordpress/icons';
+import { MdOutlineMail as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

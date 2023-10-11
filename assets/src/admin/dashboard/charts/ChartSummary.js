@@ -67,8 +67,6 @@ export default ( { loading, className } ) => {
 		return parseInt( value );
 	};
 
-	console.log( postCounts );
-
 	return (
 		<>
 			{ Object.keys( postCounts ).length !== 0 ? (

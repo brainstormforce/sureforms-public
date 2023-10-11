@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { mobile as icon } from '@wordpress/icons';
+import { MdOutlinePhoneIphone as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

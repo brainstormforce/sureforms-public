@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { lock as icon } from '@wordpress/icons';
+import { MdOutlinePassword as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

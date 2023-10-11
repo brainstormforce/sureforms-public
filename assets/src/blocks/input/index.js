@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { overlayText as icon } from '@wordpress/icons';
+import { MdOutlineTextFields as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies
