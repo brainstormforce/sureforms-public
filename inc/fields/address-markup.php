@@ -181,7 +181,6 @@ class Address_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-
 	public function classic_styling( $attributes ) {
 			$id                   = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
