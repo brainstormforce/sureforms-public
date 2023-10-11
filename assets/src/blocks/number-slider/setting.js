@@ -139,23 +139,23 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						/>
 						{ 'classic' ===
 						sureforms_keys?._sureforms_form_styling ? (
-							''
-						) : (
-							<UAGTextControl
-								label={ __(
-									'Value Display label',
-									'sureforms'
-								) }
-								data={ {
-									value: valueDisplayText,
-									label: 'valueDisplayText',
-								} }
-								value={ valueDisplayText }
-								onChange={ ( value ) =>
-									setAttributes( { valueDisplayText: value } )
-								}
-							/>
-						) }
+								''
+							) : (
+								<UAGTextControl
+									label={ __(
+										'Value Display label',
+										'sureforms'
+									) }
+									data={ {
+										value: valueDisplayText,
+										label: 'valueDisplayText',
+									} }
+									value={ valueDisplayText }
+									onChange={ ( value ) =>
+										setAttributes( { valueDisplayText: value } )
+									}
+								/>
+							) }
 						<UAGTextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
