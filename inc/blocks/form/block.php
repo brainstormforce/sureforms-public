@@ -188,9 +188,11 @@ class Block extends Base {
 						echo esc_attr( $color_text_primary );
 					?>
 						;
-					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>')
-					;
 					font-size: <?php echo esc_attr( isset( $form_font_size ) ? $form_font_size . 'px;' : '' ); ?>
+
+				}
+				<?php echo esc_attr( '#sureforms-form-' . $id ); ?> {
+					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>'); 
 
 				}
 			</style>
