@@ -390,18 +390,18 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 								style={
 									style === 'buttons'
 										? {
-											border: '2px solid',
-											borderRadius: '10px',
-											padding:
+												border: '2px solid',
+												borderRadius: '10px',
+												padding:
 													'.5rem 1rem .5rem 1rem',
-											width: '100%',
-											backgroundColor:
+												width: '100%',
+												backgroundColor:
 													selected.includes( i )
 														? 'black'
 														: 'white',
-											color: selected.includes( i )
-												? 'white'
-												: 'black',
+												color: selected.includes( i )
+													? 'white'
+													: 'black',
 										  }
 										: null
 								}

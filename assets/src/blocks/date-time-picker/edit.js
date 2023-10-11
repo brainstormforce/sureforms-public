@@ -87,80 +87,80 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 							</SelectControl>
 							{ 'dateTime' === fieldType ||
 							'date' === fieldType ? (
-									<UAGAdvancedPanelBody
-										title={ __( 'Date Settings', 'sureforms' ) }
-										initialOpen={ false }
-									>
-										<span className="uag-control-label uagb-control__header">
-											{ __( 'Minimum Date', 'sureforms' ) }
-										</span>
-										<input
-											className="sureforms-date-time-picker"
-											type="date"
-											id="for-min-date"
-											value={ min }
-											onChange={ ( e ) => {
-												if ( '' !== max ) {
-													if ( e.target.value < max ) {
-														setShowErr( false );
-														setAttributes( {
-															min: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
-												} else {
+								<UAGAdvancedPanelBody
+									title={ __( 'Date Settings', 'sureforms' ) }
+									initialOpen={ false }
+								>
+									<span className="uag-control-label uagb-control__header">
+										{ __( 'Minimum Date', 'sureforms' ) }
+									</span>
+									<input
+										className="sureforms-date-time-picker"
+										type="date"
+										id="for-min-date"
+										value={ min }
+										onChange={ ( e ) => {
+											if ( '' !== max ) {
+												if ( e.target.value < max ) {
 													setShowErr( false );
 													setAttributes( {
 														min: e.target.value,
 													} );
-												}
-											} }
-										/>
-										<span className="uag-control-label uagb-control__header">
-											{ __( 'Maximum Date', 'sureforms' ) }
-										</span>
-										<input
-											className="sureforms-date-time-picker"
-											type="date"
-											id="for-max-date"
-											value={ max }
-											onChange={ ( e ) => {
-												if ( '' !== min ) {
-													if ( min < e.target.value ) {
-														setShowErr( false );
-														setAttributes( {
-															max: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
 												} else {
+													setShowErr( true );
+												}
+											} else {
+												setShowErr( false );
+												setAttributes( {
+													min: e.target.value,
+												} );
+											}
+										} }
+									/>
+									<span className="uag-control-label uagb-control__header">
+										{ __( 'Maximum Date', 'sureforms' ) }
+									</span>
+									<input
+										className="sureforms-date-time-picker"
+										type="date"
+										id="for-max-date"
+										value={ max }
+										onChange={ ( e ) => {
+											if ( '' !== min ) {
+												if ( min < e.target.value ) {
 													setShowErr( false );
 													setAttributes( {
 														max: e.target.value,
 													} );
+												} else {
+													setShowErr( true );
 												}
-											} }
-										/>
-										{ showErr && (
-											<p style={ { color: 'red' } }>
-												{ __(
-													'Please enter a lower Minimum Date!',
-													'sureforms'
-												) }
-											</p>
-										) }
-										<p className="components-base-control__help">
+											} else {
+												setShowErr( false );
+												setAttributes( {
+													max: e.target.value,
+												} );
+											}
+										} }
+									/>
+									{ showErr && (
+										<p style={ { color: 'red' } }>
 											{ __(
-												'Minimum Date should always be less than the Maximum Date',
+												'Please enter a lower Minimum Date!',
 												'sureforms'
 											) }
 										</p>
-									</UAGAdvancedPanelBody>
-								) : (
-									''
-								) }
+									) }
+									<p className="components-base-control__help">
+										{ __(
+											'Minimum Date should always be less than the Maximum Date',
+											'sureforms'
+										) }
+									</p>
+								</UAGAdvancedPanelBody>
+							) : (
+								''
+							) }
 							<span className="uag-control-label uagb-control__header" />
 							<UAGTextControl
 								data={ {

@@ -70,19 +70,19 @@ const UAGMediaPicker = ( props ) => {
 	const registerImageExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageExtender',
-			'',
-			selectedBlock?.name,
-			onSelectImage
+				'uagb.registerImageExtender',
+				'',
+				selectedBlock?.name,
+				onSelectImage
 		  );
 	const registerImageLinkExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageLinkExtender',
-			'',
-			selectedBlock?.name,
-			'bgImageLink',
-			'url'
+				'uagb.registerImageLinkExtender',
+				'',
+				selectedBlock?.name,
+				'bgImageLink',
+				'url'
 		  );
 
 	const isShowImageUploader = () => {
