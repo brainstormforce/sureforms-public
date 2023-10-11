@@ -91,7 +91,12 @@
 	font-size: 13px;
 	line-height: 20px;
 	a {
-		color: #135e96 !important;
+		display: flex;
+		align-items: center;
+		color: #135e96;
+		text-decoration: underline;
+		box-shadow: none;
+		width: fit-content;
 	}
 }
 
