@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "sureforms/checkbox",
 	"title": "Checkbox",
-	"description": "Display a checkbox input",
+	"description": "Displays a SureForm Checkbox Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
@@ -32,7 +32,8 @@
 			"default": false
 		},
 		"checkboxHelpText": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

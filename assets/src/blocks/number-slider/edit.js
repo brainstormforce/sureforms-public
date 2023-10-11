@@ -2,23 +2,19 @@
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import Settings from './setting';
+import { SliderClassicStyle } from './components/sliderClassicStyle';
+import { SliderThemeStyle } from './components/sliderThemeStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const {
-		label,
-		placeholder,
-		help,
-		required,
-		id,
-		valueDisplayText,
-		min,
-		max,
-		step,
-	} = attributes;
+export default ( { clientId, attributes, setAttributes } ) => {
+	const { help, id, formId } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
-	const [ slideValue, setSlideValue ] = useState( 0 );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -26,15 +22,22 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	return (
 		<>
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
+				sureforms_keys={ sureforms_keys }
 			/>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -42,40 +45,27 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'number-slider-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'number-slider-input-' + blockID }
-					type="range"
-					min={ min }
-					max={ max }
-					step={ step }
-					value={ slideValue }
-					onChange={ ( e ) => setSlideValue( e.target.value ) }
-					className={ className }
-					placeholder={ placeholder }
-					required={ required }
-				/>
-				<div
-					style={ {
-						fontSize: '14px',
-						fontWeight: 600,
-						color: 'black',
-					} }
-				>
-					{ valueDisplayText + slideValue }
-				</div>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<SliderClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+						sureforms_keys={ sureforms_keys }
+					/>
+				) : (
+					<SliderThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'number-slider-input-help-' + blockID }
-						className="sf-text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

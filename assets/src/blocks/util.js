@@ -33,6 +33,7 @@ const getSpacingPresetCssVar = ( value ) => {
  * @return {Array} Block Types.
  */
 const getBlockTypes = ( exclude = '' ) => {
+	// Field Transform option.
 	const types = [
 		'sureforms/input',
 		'sureforms/email',
@@ -44,9 +45,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/address',
 		'sureforms/dropdown',
 		'sureforms/multi-choice',
-		'sureforms/radio',
 		'sureforms/rating',
-		'sureforms/submit',
 		'sureforms/upload',
 		'sureforms/url',
 		'sureforms/password',

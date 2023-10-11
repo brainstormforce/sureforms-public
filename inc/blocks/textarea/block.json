@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/textarea",
 	"title": "Textarea",
-	"description": "Displays a form text textarea field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Textarea Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "textarea", "input", "custom", "field" ],
@@ -30,7 +30,8 @@
 			"default": "Textarea"
 		},
 		"textAreaHelpText": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"maxLength": {
 			"type": "number",

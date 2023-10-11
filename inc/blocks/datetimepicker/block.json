@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/date-time-picker",
 	"title": "Date & Time Picker",
-	"description": "Displays a form Date & Time Picker. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Date & Time Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "date", "time", "day", "date picker", "time picker" ],
@@ -35,7 +35,8 @@
 			"default": "Date & Time"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",

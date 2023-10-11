@@ -81,9 +81,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
-		console.log( inputField.getAttribute( 'aria-required' ) );
 		if ( isRequired && inputField.type !== 'hidden' ) {
-			console.log( { inputField, inputValue } );
 			if ( isRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				// inputField.style.borderColor = '#FCA5A5';
