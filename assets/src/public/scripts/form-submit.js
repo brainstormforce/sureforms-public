@@ -478,6 +478,34 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			}
 		}
+
+		//classic dropdown field
+		if (
+			container.classList.contains(
+				'sureforms-classic-dropdown-container'
+			)
+		) {
+			const dropdownInput = container.querySelector(
+				'.sf-classic-dropdown-result'
+			);
+			const dropdownValue = dropdownInput.value;
+			const isDropDownRequired =
+				dropdownInput.getAttribute( 'aria-required' );
+			const dropdownBtn = container.querySelector(
+				'.sf-classic-dropdown-btn'
+			);
+			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
+				errorMessage.style.display = 'block';
+				dropdownBtn.classList.add( 'sf-classic-input-error' );
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = dropdownBtn;
+				}
+			} else {
+				errorMessage.style.display = 'none';
+				dropdownBtn.classList.remove( 'sf-classic-input-error' );
+			}
+		}
 	}
 
 	if ( firstErrorInput ) {
