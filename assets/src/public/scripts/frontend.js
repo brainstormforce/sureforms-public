@@ -904,17 +904,9 @@ if ( selectFieldContainer ) {
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
-				if (
-					nextSibling.classList.contains( '!opacity-0', '!-z-10' )
-				) {
-					nextSibling.classList.remove( '!opacity-0' );
-					nextSibling.classList.add( '!opacity-100' );
-					nextSibling.classList.add( '!z-10' );
-				} else {
-					nextSibling.classList.remove( '!opacity-100' );
-					nextSibling.classList.remove( '!z-10' );
-					nextSibling.classList.add( '!opacity-0' );
-				}
+				nextSibling.classList.add( '!opacity-100' );
+				nextSibling.classList.add( '!z-10' );
+				nextSibling.classList.remove( '!opacity-0' );
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {
