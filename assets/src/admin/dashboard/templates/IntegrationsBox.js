@@ -19,15 +19,13 @@ export default ( {
 			style={ {
 				'--columns': '1',
 				overflow: 'hidden',
+				padding: '3px',
 			} }
 		>
 			<ScFlex
 				justify-content="space-between"
-				alignItems="center"
-				css={ css`
-					padding: var( --sc-spacing-small );
-				` }
-				style={ { '--sc-flex-column-gap': '1em' } }
+				alignItems="flex-start"
+				style={ { '--sc-flex-column-gap': '1em', alignItems: 'flex-start' } }
 			>
 				<ScFlex
 					alignItems="center"
@@ -39,10 +37,10 @@ export default ( {
 					<div>
 						<p
 							css={ css`
-							font-weight: 700;
-							font-size: 16px;
-							line-height: 28px;
-							color: #334155;
+							font-weight: 500;
+							font-size: 14px;
+							line-height: 22px;
+							color: #1E293B;
 							margin: 0;
 						` }
 						>
@@ -51,10 +49,14 @@ export default ( {
 						<p
 							css={ css`
 							font-weight: 400;
-							font-size: 16px;
-							line-height: 28px;
-							color: #334155;
+							font-size: 14px;
+							line-height: 20px;
+							color: #AAA;
+							width: max-content;
 							margin: 0;
+							@media screen and ( max-width: 480px ) {
+								width: 100%;
+							}
 						` }
 						>
 							{ descriptions }
@@ -66,9 +68,9 @@ export default ( {
 						webkit-appearance: button;
 						background-color: transparent;
 						border:none;
-						font-weight: 400;
-						font-size: 16px;
-						line-height: 28px;
+						font-weight: 500;
+						font-size: 14px;
+						line-height: 20px;
 						cursor: pointer;
 						color: ${ statusColor };
 						margin: 0;
