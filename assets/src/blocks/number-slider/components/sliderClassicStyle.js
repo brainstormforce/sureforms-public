@@ -5,7 +5,7 @@ export const SliderClassicStyle = ( {
 	blockID,
 	sureforms_keys,
 } ) => {
-	const { label, placeholder, required, min, max, step } = attributes;
+	const { label, placeholder, min, max, step } = attributes;
 	const [ slideValue, setSlideValue ] = useState( 0 );
 	const [ bgValue, setBgValue ] = useState( 0 );
 	let color = sureforms_keys._sureforms_color1;
@@ -36,9 +36,6 @@ export const SliderClassicStyle = ( {
 								className="sf-classic-label-text"
 							>
 								{ label }
-								{ required && label && (
-									<span className="text-red-500"> *</span>
-								) }
 							</label>
 							<div className="flex justify-between items-center">
 								<input
@@ -53,7 +50,6 @@ export const SliderClassicStyle = ( {
 									} }
 									onChange={ handleChange }
 									placeholder={ placeholder }
-									required={ required }
 									className="range-slider range-slider-sf !border-solid !border !border-[#d1d5db]"
 								/>
 								<input
