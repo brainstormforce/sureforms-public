@@ -186,6 +186,12 @@ form.sureforms-form .main-container.sureforms-address-container {
 	gap: 12px;
 }
 
+.sureforms-form {
+	.wp-block-columns {
+		margin: 0 !important;
+	}
+}
+
 .classic-sf-radio {
 	flex: 49% 0 0;
 }

@@ -133,8 +133,8 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				}
 				style={ {
 					display: 'flex',
-					alignItems: 'center',
-					gap: '.4rem',
+					flexDirection: 'column',
+					gap: '.5rem',
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
@@ -142,19 +142,20 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				) : (
 					<CheckboxThemeStyle attributes={ attributes } />
 				) }
+				{ checkboxHelpText !== '' && (
+					<label
+						htmlFor={ 'checkbox-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ checkboxHelpText }
+					</label>
+				) }
 			</div>
-			{ checkboxHelpText !== '' && (
-				<label
-					htmlFor={ 'text-input-help-' + blockID }
-					className={
-						'classic' === sureforms_keys?._sureforms_form_styling
-							? 'sforms-helper-txt'
-							: 'sf-text-secondary'
-					}
-				>
-					{ checkboxHelpText }
-				</label>
-			) }
 		</div>
 	);
 };

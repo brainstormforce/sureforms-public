@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.sf-form-style-classic {
+	.block-editor-inner-blocks .block-editor-block-list__layout .wp-block:not( :last-child ) {
+		margin: 0 !important;
+	}
+}
 
 .classic-sf-radio {
 	flex: 49% 0 0;
