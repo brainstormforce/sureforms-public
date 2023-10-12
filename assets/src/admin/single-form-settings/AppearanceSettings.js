@@ -4,7 +4,10 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import UAGMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import {
+	// ToggleControl,
+	SelectControl,
+} from '@wordpress/components';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
