@@ -110,7 +110,7 @@ const TextShadowControl = ( props ) => {
 							attributeName
 						]?.default
 							? blocksAttributes[ selectedBlockName ][
-								attributeName
+									attributeName
 							  ]?.default
 							: '';
 					defaultValues = {
