@@ -71,7 +71,7 @@ class Input_Markup extends Base {
 		return '<div class="main-container frontend-inputs-holder  ' . esc_attr( $classname ) . '">
 			<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
 			<div class="">
-				<input type="text" name="text" id="text" class="sf-classic-input-element" 
+				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="text" class="sf-classic-input-element" 
 				placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
 			</div>
 			' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '

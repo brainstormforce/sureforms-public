@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
-import { applyFilters } from '@wordpress/hooks';
+// import { applyFilters } from '@wordpress/hooks';
 import {
 	InnerBlocks,
 	RichText,
@@ -22,20 +22,20 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
 	const { editPost } = useDispatch( editorStore );
 	// Get all registered block types
-	const allBlocks = wp.blocks.getBlockTypes();
-	const ALLOWED_BLOCKS = allBlocks
-		.filter(
-			( block ) =>
-				block.name.includes( 'sureforms/' ) &&
-				block.name !== 'sureforms/form' &&
-				block.name !== 'sureforms/sf-form'
-		)
-		.map( ( block ) => block.name );
+	// const allBlocks = wp.blocks.getBlockTypes();
+	// const ALLOWED_BLOCKS = allBlocks
+	// 	.filter(
+	// 		( block ) =>
+	// 			block.name.includes( 'sureforms/' ) &&
+	// 			block.name !== 'sureforms/form' &&
+	// 			block.name !== 'sureforms/sf-form'
+	// 	)
+	// 	.map( ( block ) => block.name );
 
-	const filteredAllowedBlocks = applyFilters(
-		'sureforms/form/allowedBlocks',
-		ALLOWED_BLOCKS
-	);
+	// const filteredAllowedBlocks = applyFilters(
+	// 	'sureforms/form/allowedBlocks',
+	// 	ALLOWED_BLOCKS
+	// );
 
 	const [ patterns, setPatterns ] = useState( [] );
 
@@ -159,12 +159,14 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
+	console.log( sureforms_keys?._sureforms_form_styling );
+
 	const renderButtonHtml = () => {
 		return (
 			<button
 				className={
 					'sureform-submit-button ' +
-					( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+					( 'inherit' === sureforms_keys?._sureforms_form_styling &&
 					'' === sureforms_keys?._sureforms_color1
 						? 'wp-block-button__link'
 						: 'sureforms-button' ) +
@@ -207,7 +209,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					</PanelRow>
 					{ 'sureforms_form' !== postType && (
 						<PanelRow>
-							<p className="sureform-form-notice">
+							<p className="sureforms-form-notice">
 								{ __(
 									'Note: For Editing the stylings, please check the SureForms styling - ',
 									'sureforms'
@@ -251,7 +253,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					}
 				>
 					<InnerBlocks
-						allowedBlocks={ filteredAllowedBlocks }
+						// allowedBlocks={ filteredAllowedBlocks }
 						templateLock={ false }
 						renderAppender={
 							blockCount
@@ -262,7 +264,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					<div
 						className={
 							'sureform-submit-button' +
-							( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+							( 'inherit' ===
+								sureforms_keys?._sureforms_form_styling &&
 							'' === sureforms_keys?._sureforms_color1
 								? ' wp-block-button'
 								: '' )

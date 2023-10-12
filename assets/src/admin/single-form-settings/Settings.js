@@ -1,4 +1,4 @@
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl, SelectControl, PanelRow } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -211,6 +211,14 @@ function Settings( props ) {
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
+				<PanelRow>
+					<p className="sureforms-form-notice">
+						{ __(
+							'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+							'sureforms'
+						) }
+					</p>
+				</PanelRow>
 				<SelectControl
 					label={ __(
 						'Select the reCAPTCHA Version to use',

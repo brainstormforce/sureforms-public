@@ -44,7 +44,7 @@
 	}
 }
 
-.sf-text-primary{
+.sf-text-primary {
 	color: var( --sf-primary-color );
 	font-size: var( --sureforms_fontsize );
 }
@@ -58,15 +58,17 @@
 	background-color: var( --sf-primary-color );
 	color: var( --sf-primary-text-color );
 	border: none;
-	padding: 13px 25px;
+	padding: 8px 14px 8px 14px;
 	border-radius: 4px;
+	font-weight: 600;
+	font-size: 0.875rem;
 }
 
 .sureforms-upload-inner-div {
 	color: var( --sf-primary-color );
 }
 .sureforms-default-colors {
-	background-color: #0284C7;
+	background-color: #0284c7;
 	color: #ffffff;
 }
 
@@ -88,7 +90,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .sureform-submit-button {
-	margin-top: 1.3em;
+	margin-top: 12px;
 	text-align: var( --sureforms_submit_alignment );
 	width: var( --sureforms_submit_width );
 }
@@ -96,11 +98,11 @@ input[type="range"]::-webkit-slider-thumb {
 /**
  * Classic Range Sliders CSS
  */
- .range-sliders > *:not( :last-child ) {
+.range-sliders > *:not( :last-child ) {
 	margin-bottom: 1.5rem;
 }
 
-.range-sliders input[type=range] {
+.range-sliders input[type="range"] {
 	height: 10px !important;
 	outline: none !important;
 	border-radius: 4px !important;
@@ -112,7 +114,7 @@ input[type="range"]::-webkit-slider-thumb {
 	-moz-appearance: textfield; /* Reset the appearance property */
 }
 
-.range-sliders input[type=range]::-webkit-slider-runnable-track {
+.range-sliders input[type="range"]::-webkit-slider-runnable-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer;
@@ -120,7 +122,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #e6e6e6 !important;
 }
 
-.range-sliders input[type=range]::-moz-range-track {
+.range-sliders input[type="range"]::-moz-range-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer !important;
@@ -128,7 +130,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #ccc !important;
 }
 
-.range-sliders input[type=range]::-webkit-slider-thumb {
+.range-sliders input[type="range"]::-webkit-slider-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -140,7 +142,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -5.5px !important;
 }
 
-.range-sliders input[type=range]::-moz-range-thumb {
+.range-sliders input[type="range"]::-moz-range-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -152,35 +154,35 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -7px !important;
 }
 
-.range-sliders input[type=range]::-moz-range-progress {
+.range-sliders input[type="range"]::-moz-range-progress {
 	background: transparent !important;
 }
 
-.range-sliders input[type=range]::-webkit-range-progress {
+.range-sliders input[type="range"]::-webkit-range-progress {
 	background: transparent !important;
 }
 
-.range-sliders input[type=range]::-moz-focus-outer {
+.range-sliders input[type="range"]::-moz-focus-outer {
 	border: 0 !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-webkit-slider-runnable-track {
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-runnable-track {
 	background-color: transparent !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-moz-range-track {
+.range-sliders input[type="range"].range-slider-sf::-moz-range-track {
 	background-color: transparent !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-webkit-slider-thumb {
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-moz-range-thumb {
+.range-sliders input[type="range"].range-slider-sf::-moz-range-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
@@ -192,4 +194,40 @@ input[type="range"]::-webkit-slider-thumb {
 
 .range-sliders .range-slider-group .range-slider {
 	width: calc( 100% - 70px ) !important;
+}
+
+//classic switch field style
+/* Switch Field CSS */
+
+.switch-background {
+	display: inline-block;
+	position: relative;
+	width: 50px;
+	height: 25px;
+	border-radius: 25px;
+	transition: background-color 0.2s;
+	cursor: pointer;
+}
+
+.switch-toggle {
+	display: inline-block;
+	position: absolute;
+	width: 21px;
+	height: 21px;
+	border-radius: 50%;
+	background-color: #fff;
+	top: 2px;
+	transition: left 0.2s;
+}
+
+.sureforms-switch {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+//checkbox
+.sureforms-classic-checkbox-input::before{
+	content: none !important;
 }
