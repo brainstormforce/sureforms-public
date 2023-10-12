@@ -13,7 +13,7 @@ import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
 
-export default ( { attributes, setAttributes } ) => {
+export default ( { attributes, setAttributes, sureforms_keys } ) => {
 	const {
 		label,
 		help,
@@ -137,17 +137,25 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { step: value } );
 							} }
 						/>
-						<UAGTextControl
-							label={ __( 'Value Display label', 'sureforms' ) }
-							data={ {
-								value: valueDisplayText,
-								label: 'valueDisplayText',
-							} }
-							value={ valueDisplayText }
-							onChange={ ( value ) =>
-								setAttributes( { valueDisplayText: value } )
-							}
-						/>
+						{ 'classic' ===
+						sureforms_keys?._sureforms_form_styling ? (
+								''
+							) : (
+								<UAGTextControl
+									label={ __(
+										'Value Display label',
+										'sureforms'
+									) }
+									data={ {
+										value: valueDisplayText,
+										label: 'valueDisplayText',
+									} }
+									value={ valueDisplayText }
+									onChange={ ( value ) =>
+										setAttributes( { valueDisplayText: value } )
+									}
+								/>
+							) }
 						<UAGTextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
