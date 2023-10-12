@@ -1,6 +1,7 @@
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 export const DropdownClassicStyle = ( { attributes } ) => {
 	const { required, options, label } = attributes;
@@ -58,7 +59,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 				>
 					{ options.length === 0 ? (
 						<div className="text-gray-500 relative select-none py-2 pl-3 pr-9">
-							No Options Found
+							{ __( 'No Options Found', 'sureforms' ) }
 						</div>
 					) : null }
 					{ options.map( ( option, index ) => (
