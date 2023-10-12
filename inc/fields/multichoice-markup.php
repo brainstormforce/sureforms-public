@@ -39,7 +39,7 @@ class Multichoice_Markup extends Base {
 
 			$output  = '';
 			$output .= '
-		<div class="sureforms-multi-choice-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-multi-choice-container-' . esc_attr( $id ) . '">
+		<div class="sureforms-multi-choice-container main-container ' . esc_attr( $classname ) . '" id="sureforms-multi-choice-container-' . esc_attr( $id ) . '">
 		<label class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
 		<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="sureforms-multi-choice-selection-' . esc_attr( $id ) . '" />
 		<input type="hidden" value="' . esc_attr( $style ) . '" id="sureforms-multi-choice-style-' . esc_attr( $id ) . '" />
@@ -57,9 +57,7 @@ class Multichoice_Markup extends Base {
 					<label
 						class="sureforms-multi-choice-label-' . esc_attr( $id ) . ' sureforms-multi-choice-label-button"
 						for="sureforms-multi-choice-' . esc_attr( $id . '-' . $i ) . '"
-						style="
-						' . esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 2px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' ) . '
-						"
+						style="' . esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 2px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' ) . '"
 					>
 						<span
 							class="multi-choice-option"
