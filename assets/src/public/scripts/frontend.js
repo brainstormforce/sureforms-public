@@ -188,8 +188,8 @@ if ( uploadFieldsContainer ) {
 									<div>
 										<div class="text-base">${ fileName }</div>
 										<div class="text-sm text-gray-500"> ${ ( file.size / 1000000 ).toFixed(
-		2
-	) }MB</div>
+											2
+										) }MB</div>
 									</div>
 									<div>
   										<i class="fa-sharp fa-solid fa-trash-can text-gray-400" id="reset-upload-field" style="cursor:pointer"></i>
@@ -487,7 +487,9 @@ if ( multiChoices ) {
 			const multiChoiceValueField = document.getElementsByClassName(
 				`sureforms-multi-choice-${ clickedId }`
 			);
-			multiChoiceValueField[ 0 ].value = selectedOptions.get( clickedId );
+			multiChoiceValueField[ 0 ].value = selectedOptions
+				.get( clickedId )
+				.join( ', ' );
 		} );
 	}
 }
