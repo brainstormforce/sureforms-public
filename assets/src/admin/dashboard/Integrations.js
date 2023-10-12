@@ -74,10 +74,15 @@ export default () => {
 	return (
 		<ScDashboardModule
 			css={ css`
-		width: 33%;
+		width: 35%;
 		margin-top:2em;
 		@media screen and ( max-width: 782px ) {
 			width: 100%;
+		}
+		@media screen and ( max-width: 1260px ) {
+			margin-top:0;
+			max-width: 450px;
+
 		}
 		.dashboard-module{
 			display:none;
@@ -94,12 +99,12 @@ export default () => {
 							'--sc-flex-column-gap': '1em',
 						} }
 						css={ css`
-							padding: var( --sc-spacing-small );
+							padding: 8px;
 						` }
 					>
 						<p
 							css={ css`
-								color: #0f172a;
+								color: #0F172A;
 								font-size: 18px;
 								font-weight: 600;
 								line-height: 28px;
