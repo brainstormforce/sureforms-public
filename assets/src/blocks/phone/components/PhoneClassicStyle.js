@@ -37,9 +37,7 @@ export const PhoneClassicStyle = ( { attributes, blockID, handleChange } ) => {
 												defaultCountryCode && true
 										}
 									>
-										{ country.code +
-											' ' +
-											country.dial_code }
+										{ country.code }
 									</option>
 								);
 							} ) }
