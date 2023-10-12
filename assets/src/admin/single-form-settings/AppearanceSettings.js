@@ -103,7 +103,10 @@ function AppearanceSettings( props ) {
 		}
 
 		if ( option === '_sureforms_color2' ) {
-			root.style.setProperty( '--sf-secondary-color', value ? value : '' );
+			root.style.setProperty(
+				'--sf-secondary-color',
+				value ? value : ''
+			);
 		}
 
 		if ( option === '_sureforms_fontsize' ) {
@@ -177,7 +180,10 @@ function AppearanceSettings( props ) {
 					__nextHasNoMarginBottom
 				/>
 				<p className="components-base-control__help">
-					{ __( 'Update settings to view changes on page', 'sureforms' ) }
+					{ __(
+						'Update settings to view changes on page',
+						'sureforms'
+					) }
 				</p>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
@@ -231,28 +237,34 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
-				<Range
-					label={ __( 'Font size', 'sureforms' ) }
-					help={ __( 'Customize the form font size.', 'sureforms' ) }
-					value={ sureforms_keys._sureforms_fontsize }
-					min={ 16 }
-					max={ 24 }
-					displayUnit={ false }
-					data={ {
-						value: sureforms_keys._sureforms_fontsize,
-						label: '_sureforms_fontsize',
-					} }
-					onChange={ ( value ) =>
-						updateMeta( '_sureforms_fontsize', value )
-					}
-					isFormSpecific={ true }
-				/>
+				{ 'inherit' === sureforms_keys._sureforms_form_styling && (
+					<Range
+						label={ __( 'Font size', 'sureforms' ) }
+						help={ __(
+							'Customize the form font size.',
+							'sureforms'
+						) }
+						value={ sureforms_keys._sureforms_fontsize }
+						min={ 16 }
+						max={ 24 }
+						displayUnit={ false }
+						data={ {
+							value: sureforms_keys._sureforms_fontsize,
+							label: '_sureforms_fontsize',
+						} }
+						onChange={ ( value ) =>
+							updateMeta( '_sureforms_fontsize', value )
+						}
+						isFormSpecific={ true }
+					/>
+				) }
 			</UAGAdvancedPanelBody>
 			<UAGAdvancedPanelBody
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<ToggleControl
+				{ /* Might be used later */ }
+				{ /* <ToggleControl
 					label={ __(
 						'Inherit button styling from the Theme',
 						'sureforms'
@@ -272,7 +284,7 @@ function AppearanceSettings( props ) {
 						'Turn toggle on to inherit the theme styling for button',
 						'sureforms'
 					) }
-				</p>
+				</p> */ }
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {

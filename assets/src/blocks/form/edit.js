@@ -159,12 +159,14 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
+	console.log( sureforms_keys?._sureforms_form_styling );
+
 	const renderButtonHtml = () => {
 		return (
 			<button
 				className={
 					'sureform-submit-button ' +
-					( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+					( 'inherit' === sureforms_keys?._sureforms_form_styling &&
 					'' === sureforms_keys?._sureforms_color1
 						? 'wp-block-button__link'
 						: 'sureforms-button' ) +
@@ -262,7 +264,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					<div
 						className={
 							'sureform-submit-button' +
-							( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
+							( 'inherit' ===
+								sureforms_keys?._sureforms_form_styling &&
 							'' === sureforms_keys?._sureforms_color1
 								? ' wp-block-button'
 								: '' )
