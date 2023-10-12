@@ -33,6 +33,7 @@ class Dropdown_Markup extends Base {
 		$help      = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-dropdown-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
@@ -44,7 +45,9 @@ class Dropdown_Markup extends Base {
         aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
         class="sureforms-input-field"
         >';
-
+		if ( ! empty( $placeholder ) ){
+			$output .= '<option value="">' . $placeholder .'</option>';
+		}
 		foreach ( $options as $option ) {
 			$option      = esc_attr( $option );
 			$option_text = esc_html( $option );

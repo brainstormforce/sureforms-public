@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export const DropdownClassicStyle = ( { attributes } ) => {
-	const { required, options, label } = attributes;
+	const { required, options, label, placeholder } = attributes;
 	const [ open, setOpen ] = useState( false );
 
 	const openStyles = {

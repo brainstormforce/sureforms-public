@@ -1,5 +1,5 @@
 export const DropdownThemeStyle = ( { attributes, blockID } ) => {
-	const { required, options, label } = attributes;
+	const { required, options, label, placeholder } = attributes;
 
 	return (
 		<>
@@ -13,6 +13,7 @@ export const DropdownThemeStyle = ( { attributes, blockID } ) => {
 				) }
 			</label>
 			<select id={ 'dropdown-' + blockID } required={ required }>
+				{ placeholder && <option>{ placeholder }</option> }
 				{ options.map( ( option, i ) => {
 					return (
 						<option label={ option } key={ i }>

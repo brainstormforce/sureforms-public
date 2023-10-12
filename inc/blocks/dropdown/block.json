@@ -37,6 +37,10 @@
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"placeholder": {
+			"type": "string",
+			"default":"Select Option"
 		}
 	}
 }
