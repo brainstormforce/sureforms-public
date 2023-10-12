@@ -2,6 +2,7 @@ module.exports = {
 	content: [
 		'./assets/src/**/*.@(js|jsx)',
 		'./inc/blocks/**/*.php',
+		'./inc/fields/**/*.php',
 		'./templates/single-form.php',
 		'./node_modules/tw-elements/dist/js/**/*.js',
 		'./inc/fields/**/*.php',
