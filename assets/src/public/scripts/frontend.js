@@ -217,7 +217,7 @@ if ( uploadFieldsContainer ) {
 // Toggle Switch
 
 const toggleSwitchesContainer = document.getElementsByClassName(
-	'sureforms-switch-container'
+	'sf-classic-switch-container'
 );
 
 if ( toggleSwitchesContainer ) {
@@ -382,6 +382,31 @@ if ( toggleSwitchesContainer ) {
 					switchBackground[ i ].style.backgroundColor = '#dcdcdc';
 					switchToggle.style.left = '2px';
 				}
+			}
+		} );
+	}
+}
+
+// default switch
+
+const toggleSwitches = document.getElementsByClassName( 'sf-default-switch' );
+
+if ( toggleSwitches ) {
+	for ( let i = 0; i < toggleSwitches.length; i++ ) {
+		toggleSwitches[ i ].addEventListener( 'click', () => {
+			const currentValue = toggleSwitches[ i ].value;
+			toggleSwitches[ i ].value =
+				currentValue === 'true' ? 'false' : 'true';
+			const switchBackground =
+				document.getElementsByClassName( 'switch-background' );
+			const switchToggle =
+				document.getElementsByClassName( 'switch-toggle' );
+			if ( toggleSwitches[ i ].value === 'true' ) {
+				switchBackground[ i ].style.backgroundColor = '#007CBA';
+				switchToggle[ i ].style.left = '27px';
+			} else {
+				switchBackground[ i ].style.backgroundColor = '#dcdcdc';
+				switchToggle[ i ].style.left = '2px';
 			}
 		} );
 	}

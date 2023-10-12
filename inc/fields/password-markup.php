@@ -69,7 +69,7 @@ class Password_Markup extends Base {
 		$confirm_label       = isset( $attributes['confirmLabel'] ) ? $attributes['confirmLabel'] : '';
 		$classname           = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="sureforms-input-password-container frontend-inputs-holder main-container ' . esc_attr( $classname ) . '">
+		return '<div class="sureforms-input-password-container frontend-inputs-holder main-container sf-classic-inputs-holder' . esc_attr( $classname ) . '">
     <label for="sureforms-input-password-' . esc_attr( $id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
     <div class="relative mt-2">
         <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-password-' . esc_attr( $id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sf-classic-pwd-element">
