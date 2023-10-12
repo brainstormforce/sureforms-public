@@ -131,17 +131,20 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				className={
 					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<CheckboxClassicStyle attributes={ attributes } />
-				) : (
-					<CheckboxThemeStyle attributes={ attributes } />
-				) }
+				<div
+					style={ {
+						display: 'flex',
+						gap: '.5rem',
+						alignItems: 'center',
+					} }
+				>
+					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+						<CheckboxClassicStyle attributes={ attributes } />
+					) : (
+						<CheckboxThemeStyle attributes={ attributes } />
+					) }
+				</div>
 				{ checkboxHelpText !== '' && (
 					<label
 						htmlFor={ 'checkbox-input-help-' + blockID }

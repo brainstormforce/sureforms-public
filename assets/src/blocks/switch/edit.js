@@ -124,24 +124,37 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				className={
 					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
-				style={ {
-					display: 'flex',
-					alignItems: 'center',
-					gap: '.4rem',
-				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<SwitchClassicStyle
-						attributes={ attributes }
-						sureforms_keys={ sureforms_keys }
-					/>
-				) : (
-					<SwitchThemeStyle attributes={ attributes } />
+				<div
+					style={ {
+						display: 'flex',
+						alignItems: 'center',
+						gap: '.4rem',
+					} }
+				>
+					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+						<SwitchClassicStyle
+							attributes={ attributes }
+							sureforms_keys={ sureforms_keys }
+						/>
+					) : (
+						<SwitchThemeStyle attributes={ attributes } />
+					) }
+				</div>
+				{ switchHelpText !== '' && (
+					<label
+						htmlFor={ 'switch-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ switchHelpText }
+					</label>
 				) }
 			</div>
-			{ switchHelpText !== '' && (
-				<div className="sf-text-secondary">{ switchHelpText }</div>
-			) }
 		</>
 	);
 };
