@@ -487,7 +487,9 @@ if ( multiChoices ) {
 			const multiChoiceValueField = document.getElementsByClassName(
 				`sureforms-multi-choice-${ clickedId }`
 			);
-			multiChoiceValueField[ 0 ].value = selectedOptions.get( clickedId );
+			multiChoiceValueField[ 0 ].value = selectedOptions
+				.get( clickedId )
+				.join( ', ' );
 		} );
 	}
 }
