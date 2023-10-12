@@ -209,7 +209,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					</PanelRow>
 					{ 'sureforms_form' !== postType && (
 						<PanelRow>
-							<p className="sureform-form-notice">
+							<p className="sureforms-form-notice">
 								{ __(
 									'Note: For Editing the stylings, please check the SureForms styling - ',
 									'sureforms'
