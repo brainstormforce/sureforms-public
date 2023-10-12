@@ -14,9 +14,9 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
 	return (
 		<>
 			<label className="sureforms-switch-label">
-				<div className="sf-text-primary !flex !items-center !gap-2 !w-max !mt-1">
+				<div className="sf-text-primary !flex !items-start !gap-2 !mt-1">
 					<div
-						className="switch-background sf-classic-toggle-bg"
+						className="switch-background sf-classic-toggle-bg mt-[5px] mr-[5px]"
 						style={ {
 							backgroundColor: toggle ? color : '#dcdcdc',
 						} }
