@@ -81,8 +81,8 @@ class Switch_Markup extends Base {
 
 		return '<div class="sureforms-switch-container main-container frontend-inputs-holder sf-classic-switch-container' . esc_attr( $classname ) . '">
 		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $id ) . '">
-			<div class="sf-text-primary !flex !items-center !gap-2 !w-max !mt-1">
-				<div class="switch-background sf-classic-toggle-bg" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">
+			<div class="sf-text-primary !flex !items-start !gap-2 !mt-1">
+				<div class="switch-background sf-classic-toggle-bg w-[60px] mr-[3px] mt-[5px]" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">
 					<input class="sureforms-switch sf-classic-switch-input !p-0"
 						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"
 						id="sureforms-switch-' . esc_attr( $id ) . '"
