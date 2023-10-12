@@ -351,7 +351,8 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder' +
+					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
 					display: 'flex',
@@ -371,8 +372,13 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 
 				{ help !== '' && (
 					<label
-						htmlFor={ 'multi-choice-help-' + blockID }
-						className="sf-text-secondary"
+						htmlFor={ 'text-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>
