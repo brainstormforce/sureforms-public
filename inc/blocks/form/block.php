@@ -172,7 +172,7 @@ class Block extends Base {
 		}
 		?>
 			<style>
-				<?php echo esc_attr( '#sureforms-form-' . $id ); ?> {
+				<?php echo esc_attr( '#sureforms-form-' . $id . ', #sureforms-success-message-page-' . $id ); ?> {
 					--sf-secondary-color: 
 					<?php
 						echo esc_attr( $color_secondary );
@@ -188,9 +188,11 @@ class Block extends Base {
 						echo esc_attr( $color_text_primary );
 					?>
 						;
-					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>')
-					;
 					font-size: <?php echo esc_attr( isset( $form_font_size ) ? $form_font_size . 'px;' : '' ); ?>
+
+				}
+				<?php echo esc_attr( '#sureforms-form-' . $id ); ?> {
+					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>'); 
 
 				}
 			</style>
