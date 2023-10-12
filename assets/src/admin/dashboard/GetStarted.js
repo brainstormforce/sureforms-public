@@ -13,6 +13,11 @@ export default () => {
 				.sc-getstarted-inner-wrap {
 					padding: 20px;
 				}
+				@media screen and ( max-width: 480px ) {
+					.sc-getstarted-inner-wrap {
+						padding: 5px;
+					}
+				}
 				.sc-get-started-main-title {
 					font-size: 28px;
 					font-weight: 600;
@@ -26,16 +31,13 @@ export default () => {
 					top: 30px;
 					cursor: pointer;
 				}
-				@media only screen and ( max-width: 768px ) {
-					display: none;
-				}
 			` }
 		>
 			<div className="sc-getstarted-inner-wrap">
 				<h3 className="sc-get-started-main-title">
 					{ __( 'Get started with SureForms', 'sureforms' ) }
 				</h3>
-				<ScFlex>
+				<ScFlex stack="mobile">
 					<GetStartedBox
 						infoType="info"
 						infoText={ __( 'Setup', 'sureforms' ) }
