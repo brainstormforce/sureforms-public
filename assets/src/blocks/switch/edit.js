@@ -2,13 +2,8 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	InspectorControls,
-	useBlockProps,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -16,8 +11,12 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { SwitchClassicStyle } from './components/SwitchClassicStyle';
+import { SwitchThemeStyle } from './components/SwitchThemeStyle';
 
-export default ( { clientId, attributes, setAttributes, isSelected } ) => {
+export default ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		checked: isChecked,
@@ -30,46 +29,14 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
-	const inputStyle = {
-		position: 'absolute',
-		opacity: 0,
-		width: 0,
-		height: 0,
-	};
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
-	const switchStyle = {
-		display: 'inline-block',
-		position: 'relative',
-		width: '50px',
-		height: '25px',
-		borderRadius: '25px',
-		backgroundColor: isChecked ? '#007CBA' : '#dcdcdc',
-		transition: 'background-color 0.2s',
-		cursor: 'pointer',
-	};
-
-	const thumbStyle = {
-		display: 'inline-block',
-		position: 'absolute',
-		width: '21px',
-		height: '21px',
-		borderRadius: '50%',
-		backgroundColor: '#fff',
-		top: '2px',
-		left: isChecked ? '27px' : '2px',
-		transition: 'left 0.2s',
-	};
-
-	const currentFormId = useSelect( ( select ) => {
-		// parent block id attribute.
-		const parents = select( blockEditorStore ).getBlockParents( clientId );
-		const parentBlock = select( blockEditorStore ).getBlocksByClientId(
-			parents?.[ 0 ]
-		);
-		// current post id.
-		const post_id = select( 'core/editor' ).getCurrentPostId();
-		return parentBlock?.[ 0 ]?.attributes?.id || post_id;
-	} );
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -155,7 +122,7 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -163,23 +130,14 @@ export default ( { clientId, attributes, setAttributes, isSelected } ) => {
 					gap: '.4rem',
 				} }
 			>
-				<div style={ switchStyle }>
-					<input
-						type="checkbox"
-						checked={ isChecked }
-						style={ inputStyle }
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<SwitchClassicStyle
+						attributes={ attributes }
+						sureforms_keys={ sureforms_keys }
 					/>
-					<div style={ thumbStyle }></div>
-				</div>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'switch-block-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				) : (
+					<SwitchThemeStyle attributes={ attributes } />
+				) }
 			</div>
 			{ switchHelpText !== '' && (
 				<div className="sf-text-secondary">{ switchHelpText }</div>
