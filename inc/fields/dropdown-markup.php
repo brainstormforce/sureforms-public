@@ -26,13 +26,14 @@ class Dropdown_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id        = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$options   = isset( $attributes['options'] ) ? $attributes['options'] : '';
-		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help      = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
+		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-dropdown-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
@@ -44,7 +45,9 @@ class Dropdown_Markup extends Base {
         aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
         class="sureforms-input-field"
         >';
-
+		if ( ! empty( $placeholder ) ) {
+			$output .= '<option value="">' . $placeholder . '</option>';
+		}
 		foreach ( $options as $option ) {
 			$option      = esc_attr( $option );
 			$option_text = esc_html( $option );
@@ -66,13 +69,14 @@ class Dropdown_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id        = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
-		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$options   = isset( $attributes['options'] ) ? $attributes['options'] : '';
-		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help      = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$id          = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
+		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
+		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-classic-dropdown-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
@@ -80,9 +84,9 @@ class Dropdown_Markup extends Base {
             ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '
         </label>
         <div class="relative mt-2">
-            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" class="sf-classic-dropdown-result" value="' . esc_attr( 0 < count( $options ) ? $options[0] : '' ) . '" />
+            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" class="sf-classic-dropdown-result" value="" />
             <button type="button" class="sureforms-classic-dropdown-button sf-classic-dropdown-btn" id="sureforms-classic-dropdown-button-' . esc_attr( $id ) . '">
-                <span class="sf-dropdown-value block truncate">' . esc_attr( 0 < count( $options ) ? $options[0] : '&nbsp;' ) . '</span>
+                <span class="sf-dropdown-value block truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
                 <span class="sf-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all">
                     <i class="fa-solid fa-angle-down h-5 w-5 text-gray-400 mt-[10px]"></i>
                 </span>

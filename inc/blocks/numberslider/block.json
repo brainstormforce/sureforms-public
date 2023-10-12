@@ -15,10 +15,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"required": {
-			"type": "boolean",
-			"default": false
-		},
 		"label": {
 			"type": "string",
 			"default": "Number Slider"

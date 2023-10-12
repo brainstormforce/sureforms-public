@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -14,16 +13,7 @@ import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
-	const {
-		label,
-		help,
-		required,
-		min,
-		max,
-		step,
-		valueDisplayText,
-		errorMsg,
-	} = attributes;
+	const { label, help, min, max, step, valueDisplayText } = attributes;
 	const [ error, setError ] = useState( false );
 	return (
 		<InspectorControls>
@@ -47,26 +37,6 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<ToggleControl
-							label={ __( 'Required', 'sureforms' ) }
-							checked={ required }
-							onChange={ ( checked ) =>
-								setAttributes( { required: checked } )
-							}
-						/>
-						{ required && (
-							<UAGTextControl
-								label={ __( 'Error message', 'sureforms' ) }
-								value={ errorMsg }
-								data={ {
-									value: errorMsg,
-									label: 'errorMsg',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { errorMsg: value } )
-								}
-							/>
-						) }
 						<UAGNumberControl
 							label={ __( 'Min', 'sureforms' ) }
 							value={ min }
