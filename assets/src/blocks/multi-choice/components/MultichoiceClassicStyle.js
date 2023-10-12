@@ -20,7 +20,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 								className="sureforms-multi-choice"
 							/>
 							<div className="flex items-start classic-radio-btn sf-classic-multi-choice">
-								<div className="pr-[5px] relative flex">
+								<div className="pr-[5px] mt-[3px] relative flex">
 									<i
 										className="fa fa-check-circle text-base"
 										aria-hidden="true"
