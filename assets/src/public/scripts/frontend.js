@@ -1125,7 +1125,7 @@ if ( datePickerContainers ) {
 }
 
 const urlFiledContainers = document.getElementsByClassName(
-	'sureforms-input-url-container'
+	'sureforms-classic-input-url-container'
 );
 if ( urlFiledContainers ) {
 	for ( const urlFiledContainer of urlFiledContainers ) {

@@ -410,20 +410,31 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const minMaxErrorMessage = container.querySelector(
 				'.min-max-validation-message'
 			);
-			if ( min !== '' && Number( inputValue ) < Number( min ) ) {
+			if (
+				inputValue &&
+				min !== '' &&
+				Number( inputValue ) < Number( min )
+			) {
 				minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
+				inputField.classList.add( 'sf-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else if ( max !== '' && Number( inputValue ) > Number( max ) ) {
+			} else if (
+				inputValue &&
+				max !== '' &&
+				Number( inputValue ) > Number( max )
+			) {
 				minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
+				inputField.classList.add( 'sf-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else {
+			} else if ( inputValue ) {
 				minMaxErrorMessage.innerText = '';
+				inputField.classList.remove( 'sf-classic-input-error' );
 			}
 		}
 
@@ -465,7 +476,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//classic field url
-		if ( container.classList.contains( 'sureforms-input-url-container' ) ) {
+		if (
+			container.classList.contains(
+				'sureforms-classic-input-url-container'
+			)
+		) {
 			const urlInput = container.querySelector( '.sureforms-url-input' );
 			const validUrlMessage = container.querySelector(
 				'.validation-url-message'
