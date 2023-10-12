@@ -60,7 +60,7 @@ class Url_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="main-container frontend-inputs-holder sureforms-input-url-container ' . esc_attr( $classname ) . '">
+		return '<div class="main-container frontend-inputs-holder sureforms-input-url-container sureforms-classic-input-url-container' . esc_attr( $classname ) . '">
 			<label for="sureforms-input-url-' . esc_attr( $id ) . '" class="sf-classic-label-text">
 				' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
 			</label>
