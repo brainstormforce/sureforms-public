@@ -84,8 +84,8 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<InspectorTabs
-				tabs={ [ 'general', 'advance' ] }
-				defaultTab={ 'general' }
+					tabs={ [ 'general', 'advance' ] }
+					defaultTab={ 'general' }
 				>
 					<InspectorTab { ...UAGTabs.general }>
 						<UAGAdvancedPanelBody
@@ -312,35 +312,38 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 									} )
 								}
 							/>
-							{'classic' === sureforms_keys?._sureforms_form_styling ? null: <MultiButtonsControl
-								label={ __( 'Appearance', 'sureforms' ) }
-								data={ {
-									value: style,
-									label: 'style',
-								} }
-								options={ [
-									{
-										value: 'default',
-										icon: 'Radio',
-									},
-									{
-										value: 'buttons',
-										icon: 'Buttons',
-									},
-								] }
-								showIcons={ true }
-								onChange={ ( value ) => {
-									if ( style !== value ) {
-										setAttributes( {
-											style: value,
-										} );
-									} else {
-										setAttributes( {
-											style: 'buttons',
-										} );
-									}
-								} }
-							/>}
+							{ 'classic' ===
+							sureforms_keys?._sureforms_form_styling ? null : (
+									<MultiButtonsControl
+										label={ __( 'Appearance', 'sureforms' ) }
+										data={ {
+											value: style,
+											label: 'style',
+										} }
+										options={ [
+											{
+												value: 'default',
+												icon: 'Radio',
+											},
+											{
+												value: 'buttons',
+												icon: 'Buttons',
+											},
+										] }
+										showIcons={ true }
+										onChange={ ( value ) => {
+											if ( style !== value ) {
+												setAttributes( {
+													style: value,
+												} );
+											} else {
+												setAttributes( {
+													style: 'buttons',
+												} );
+											}
+										} }
+									/>
+								) }
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
@@ -358,10 +361,14 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<MultichoiceClassicStyle blockID={blockID} attributes={ attributes } />
+					<MultichoiceClassicStyle
+						blockID={ blockID }
+						attributes={ attributes }
+					/>
 				) : (
 					<MultichoiceThemeStyle
-					 blockID={blockID}	attributes={ attributes }
+						blockID={ blockID }
+						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
 					/>
