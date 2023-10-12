@@ -19,26 +19,26 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 					/>
 				</div>
 				<div className="text-sm leading-6">
-					<label className="sf-classic-label-text">
-						{ labelUrl ? (
-							<a
-								target="_blank"
-								href={ labelUrl }
-								style={ { textDecoration: 'none' } }
-								className="underline"
-								rel="noreferrer"
-							>
+					{ labelUrl ? (
+						<a
+							target="_blank"
+							href={ labelUrl }
+							style={ { textDecoration: 'none' } }
+							className="underline"
+							rel="noreferrer"
+						>
+							<label className="sf-classic-label-text">
 								{ label }
-							</a>
-						) : (
-							label
-						) }
-						{ required && label ? (
-							<span style={ { color: 'red' } }> *</span>
-						) : (
-							''
-						) }
-					</label>
+							</label>
+						</a>
+					) : (
+						label
+					) }
+					{ required && label ? (
+						<span style={ { color: 'red' } }> *</span>
+					) : (
+						''
+					) }
 				</div>
 			</div>
 		</>
