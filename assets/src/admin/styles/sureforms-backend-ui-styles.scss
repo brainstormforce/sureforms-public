@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.classic-sf-radio {
+	flex: 49% 0 0;
+}
+.radio-buttons {
+	gap: 2%;
+}
+.classic-sf-radio input {
+	display: none;
+}
+
+.classic-radio-btn {
+	cursor: pointer;
+	border: 2px solid transparent;
+	border-color: transparent;
+}
+
+.classic-radio-btn .fa-check-circle {
+	transition: 0.5s;
+	pointer-events: none;
+	opacity: 0;
+	color: var( --sf-primary-color );
+}
+.classic-radio-btn .fa-circle {
+	transition: 0.5s;
+	pointer-events: none;
+	opacity: 1;
+	top: 2px;
+	right: 0px;
+	bottom: 0;
+	left: 1px;
+	position: absolute;
+}
+
+.classic-sf-radio input:checked + .classic-radio-btn {
+	border: 2px solid var( --sf-primary-color );
+	border-color: ( --sf-primary-color );
+}
+
+.classic-sf-radio input:checked + .classic-radio-btn .fa-check-circle {
+	opacity: 1;
+}
+.classic-sf-radio input:checked + .classic-radio-btn .fa-circle {
+	opacity: 0;
+}
+
 @layer components {
 	// Classic field styles.
 	.sf-form-style-classic {

@@ -12,13 +12,17 @@ import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
-
 /**
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-export default ( { attributes, setAttributes, isSelected } ) => {
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
+import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
+
+export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		required,
 		options,
@@ -28,8 +32,11 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		help,
 		id,
 		errorMsg,
+		formId,
 	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
 	const [ newOption, setNewOption ] = useState( '' );
 
@@ -61,7 +68,11 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
 	}
-
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -340,7 +351,7 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder' + ( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
 					display: 'flex',
@@ -348,81 +359,16 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'multi-choice-block-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				{ options.map( ( option, i ) => {
-					return (
-						<div
-							key={ i }
-							style={ { display: 'flex', alignItems: 'center' } }
-						>
-							<input
-								style={ {
-									display:
-										style === 'buttons'
-											? 'none'
-											: 'inherit',
-								} }
-								id={ 'multi-choice-' + blockID + '-i-' + i }
-								type={ singleSelection ? 'radio' : 'checkbox' }
-								key={ i }
-								name={
-									singleSelection
-										? 'radio' + blockID
-										: 'checkbox-' + blockID + '-' + i
-								}
-								onClick={ () => handleClick( i ) }
-							/>
-							<label
-								htmlFor={
-									'multi-choice-' + blockID + '-i-' + i
-								}
-								className={
-									'sureforms-multi-choice-label-button'
-								}
-								style={
-									style === 'buttons'
-										? {
-											border: '2px solid',
-											borderRadius: '10px',
-											padding:
-													'.5rem 1rem .5rem 1rem',
-											width: '100%',
-											backgroundColor:
-													selected.includes( i )
-														? 'black'
-														: 'white',
-											color: selected.includes( i )
-												? 'white'
-												: 'black',
-										  }
-										: null
-								}
-							>
-								<span
-									className={
-										'multi-choice-option' + blockID
-									}
-									id={
-										'multi-choice-option' +
-										blockID +
-										'-i-' +
-										i
-									}
-								>
-									{ option }
-								</span>
-							</label>
-						</div>
-					);
-				} ) }
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<MultichoiceClassicStyle attributes={ attributes } />
+				) : (
+					<MultichoiceThemeStyle
+						attributes={ attributes }
+						handleClick={ handleClick }
+						selected={ selected }
+					/>
+				) }
+
 				{ help !== '' && (
 					<label
 						htmlFor={ 'multi-choice-help-' + blockID }

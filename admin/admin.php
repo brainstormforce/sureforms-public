@@ -136,6 +136,8 @@ class Admin {
 		wp_enqueue_style( 'sureforms-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'sureforms-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_backend_styles.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
+
 	}
 
 	/**
