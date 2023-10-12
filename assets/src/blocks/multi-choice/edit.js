@@ -83,7 +83,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
-				<InspectorTabs>
+				<InspectorTabs
+				tabs={ [ 'general', 'advance' ] }
+				defaultTab={ 'general' }
+				>
 					<InspectorTab { ...UAGTabs.general }>
 						<UAGAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
@@ -297,13 +300,6 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
-					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }>
-						<UAGAdvancedPanelBody
-							title={ __( 'Radio Appearance', 'sureforms' ) }
-							initialOpen={ true }
-						>
 							<ToggleControl
 								label={ __(
 									'Allow only single selection',
@@ -347,6 +343,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
+					<InspectorTab { ...UAGTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -361,10 +358,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<MultichoiceClassicStyle attributes={ attributes } />
+					<MultichoiceClassicStyle blockID={blockID} attributes={ attributes } />
 				) : (
 					<MultichoiceThemeStyle
-						attributes={ attributes }
+					 blockID={blockID}	attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
 					/>
