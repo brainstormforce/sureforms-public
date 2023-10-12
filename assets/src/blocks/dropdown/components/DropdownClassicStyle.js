@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export const DropdownClassicStyle = ( { attributes } ) => {
-	const { required, options, label } = attributes;
+	const { required, options, label, placeholder } = attributes;
 	const [ open, setOpen ] = useState( false );
 
 	const openStyles = {
@@ -38,7 +38,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					onBlur={ () => setOpen( false ) }
 				>
 					<span className="sf-dropdown-value block truncate">
-						{ options.length > 0 ? options[ 0 ] : '\u00A0' }
+						{ placeholder ? placeholder : '\u00A0' }
 					</span>
 					<span
 						className={ `sf-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all rotate-0 ${

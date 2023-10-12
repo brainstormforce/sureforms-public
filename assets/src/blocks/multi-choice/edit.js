@@ -312,7 +312,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 									} )
 								}
 							/>
-							<MultiButtonsControl
+							{'classic' === sureforms_keys?._sureforms_form_styling ? null: <MultiButtonsControl
 								label={ __( 'Appearance', 'sureforms' ) }
 								data={ {
 									value: style,
@@ -340,7 +340,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 										} );
 									}
 								} }
-							/>
+							/>}
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>

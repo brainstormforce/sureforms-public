@@ -22,7 +22,16 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
-	const { required, options, label, help, id, errorMsg, formId } = attributes;
+	const {
+		required,
+		options,
+		label,
+		help,
+		id,
+		errorMsg,
+		formId,
+		placeholder,
+	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -78,6 +87,17 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								value={ label }
 								onChange={ ( value ) => {
 									setAttributes( { label: value } );
+								} }
+							/>
+							<UAGTextControl
+								label={ __( 'Placeholder', 'sureforms' ) }
+								data={ {
+									value: placeholder,
+									label: 'placeholder',
+								} }
+								value={ placeholder }
+								onChange={ ( value ) => {
+									setAttributes( { placeholder: value } );
 								} }
 							/>
 							<ToggleControl
