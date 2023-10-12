@@ -98,8 +98,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'Time', 'sureforms' ) }
 								</option>
 							</SelectControl>
-							{ 'dateTime' === fieldType ||
-							'date' === fieldType ? (
+							{ 'classic' !==
+								sureforms_keys?._sureforms_form_styling &&
+							( 'dateTime' === fieldType ||
+								'date' === fieldType ) ? (
 									<UAGAdvancedPanelBody
 										title={ __( 'Date Settings', 'sureforms' ) }
 										initialOpen={ false }
