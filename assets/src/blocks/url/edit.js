@@ -35,9 +35,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
-				className={
-					'main-container sf-classic-inputs-holder'
-				}
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

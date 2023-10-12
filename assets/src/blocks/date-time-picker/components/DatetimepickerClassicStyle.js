@@ -1,26 +1,45 @@
 export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
-	const {
-		label,
-		required,
-		fieldType, min, max
-	} = attributes;
+	const { label, required, fieldType, min, max } = attributes;
 	return (
 		<>
 			<label
 				className="sf-classic-label-text"
-				for={ 'ureforms-input-date-' + blockID }
+				htmlFor={ 'ureforms-input-date-' + blockID }
 			>
 				{ label }
 				{ required && label && (
-					<span class="text-red-500"> *</span>
+					<span className="text-red-500"> *</span>
 				) }
 			</label>
-				<input type="hidden" class="sf-min-max-holder" min={min} max={max} />
-				<input type="hidden" field-type={fieldType} class="sf-classic-date-time-result" value="" />
-				<div class="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init  
-				{ ... "dateTime" === fieldType   ? "data-te-date-timepicker-init": fieldType === "date"? "data-te-datepicker-init": fieldType === "time"? "data-te-timepicker-init": "data-te-date-timepicker-init" }	>
-				<input type="text" aria-required={required ? 'true' : 'false' } class="sureforms-input-data-time sf-classic-datetime-picker" id={`sureforms-input-time-${blockID}`} />
-				</div>
+			<input
+				type="hidden"
+				className="sf-min-max-holder"
+				min={ min }
+				max={ max }
+			/>
+			<input
+				type="hidden"
+				className="sf-classic-date-time-result"
+				value=""
+			/>
+			<div
+				className="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits"
+				data-te-input-wrapper-init
+				{ ...( 'dateTime' === fieldType
+					? 'data-te-date-timepicker-init'
+					: fieldType === 'date'
+						? 'data-te-datepicker-init'
+						: fieldType === 'time'
+							? 'data-te-timepicker-init'
+							: 'data-te-date-timepicker-init' ) }
+			>
+				<input
+					type="text"
+					aria-required={ required ? 'true' : 'false' }
+					className="sureforms-input-data-time sf-classic-datetime-picker"
+					id={ `sureforms-input-time-${ blockID }` }
+				/>
+			</div>
 		</>
 	);
 };

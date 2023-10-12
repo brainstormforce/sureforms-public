@@ -12,19 +12,19 @@ export default function generateBorderRadius(
 		? ! Number.isNaN( bottomRight )
 			? ! Number.isNaN( bottomLeft )
 				? `${ generateCSSUnit( topLeft, unit ) } ${ generateCSSUnit(
-						topRight,
-						unit
-				  ) } ${ generateCSSUnit(
-						bottomRight,
-						unit
-				  ) } ${ generateCSSUnit( bottomLeft, unit ) }`
-				: `${ generateCSSUnit( topLeft, unit ) } ${ generateCSSUnit(
-						topRight,
-						unit
-				  ) } ${ generateCSSUnit( bottomRight, unit ) }`
-			: `${ generateCSSUnit( topLeft, unit ) } ${ generateCSSUnit(
 					topRight,
 					unit
+				  ) } ${ generateCSSUnit(
+					bottomRight,
+					unit
+				  ) } ${ generateCSSUnit( bottomLeft, unit ) }`
+				: `${ generateCSSUnit( topLeft, unit ) } ${ generateCSSUnit(
+					topRight,
+					unit
+				  ) } ${ generateCSSUnit( bottomRight, unit ) }`
+			: `${ generateCSSUnit( topLeft, unit ) } ${ generateCSSUnit(
+				topRight,
+				unit
 			  ) }`
 		: generateCSSUnit( topLeft, unit );
 }

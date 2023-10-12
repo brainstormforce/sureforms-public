@@ -187,7 +187,7 @@ const TypographyControl = ( props ) => {
 							attributeName
 						]?.default
 							? allBlocksAttributes[ selectedBlockName ][
-									attributeName
+								attributeName
 							  ]?.default
 							: '';
 					defaultValues = {

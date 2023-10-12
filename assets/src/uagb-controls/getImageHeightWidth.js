@@ -10,14 +10,14 @@ async function getImageHeightWidth( url, setAttributes, onlyHas = null ) {
 		const imgTagWidth =
 			'height' === onlyHas?.type
 				? parseInt(
-						( onlyHas.value * this?.naturalWidth ) /
+					( onlyHas.value * this?.naturalWidth ) /
 							this?.naturalHeight
 				  )
 				: this?.naturalWidth;
 		const imgTagHeight =
 			'width' === onlyHas?.type
 				? parseInt(
-						( onlyHas.value * this?.naturalHeight ) /
+					( onlyHas.value * this?.naturalHeight ) /
 							this?.naturalWidth
 				  )
 				: this?.naturalHeight;
