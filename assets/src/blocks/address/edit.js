@@ -106,7 +106,7 @@ export default function Edit( {
 								title={ __( 'Address Line 1', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: lineOneLabel,
 										label: 'lineOneLabel',
@@ -118,7 +118,7 @@ export default function Edit( {
 											lineOneLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: lineOnePlaceholder,
@@ -137,7 +137,7 @@ export default function Edit( {
 								title={ __( 'Address Line 2', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: lineTwoLabel,
 										label: 'lineTwoLabel',
@@ -149,7 +149,7 @@ export default function Edit( {
 											lineTwoLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: lineTwoPlaceholder,
@@ -168,7 +168,7 @@ export default function Edit( {
 								title={ __( 'City', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: cityLabel,
 										label: 'cityLabel',
@@ -180,7 +180,7 @@ export default function Edit( {
 											cityLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: cityPlaceholder,
@@ -199,7 +199,7 @@ export default function Edit( {
 								title={ __( 'State', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: stateLabel,
 										label: 'stateLabel',
@@ -211,7 +211,7 @@ export default function Edit( {
 											stateLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: statePlaceholder,
@@ -230,7 +230,7 @@ export default function Edit( {
 								title={ __( 'Postal Code', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: postalLabel,
 										label: 'postalLabel',
@@ -242,7 +242,7 @@ export default function Edit( {
 											postalLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: postalPlaceholder,
@@ -261,7 +261,7 @@ export default function Edit( {
 								title={ __( 'Country', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								<UAGTextControl
+								{'classic' === sureforms_keys?._sureforms_form_styling ? null: <UAGTextControl
 									data={ {
 										value: countryLabel,
 										label: 'countryLabel',
@@ -273,7 +273,7 @@ export default function Edit( {
 											countryLabel: value,
 										} )
 									}
-								/>
+								/>}
 								<UAGTextControl
 									data={ {
 										value: countryPlaceholder,
@@ -308,11 +308,13 @@ export default function Edit( {
 					<AddressClassicStyle
 						countries={ countries }
 						attributes={ attributes }
+						blockID={ blockID }
 					/>
 				) : (
 					<AddressThemeStyle
 						countries={ countries }
 						attributes={ attributes }
+						blockID={ blockID }
 					/>
 				) }
 			</div>

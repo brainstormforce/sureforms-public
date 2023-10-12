@@ -4,6 +4,7 @@ module.exports = {
 		'./inc/blocks/**/*.php',
 		'./templates/single-form.php',
 		'./node_modules/tw-elements/dist/js/**/*.js',
+		'./inc/fields/**/*.php',
 	],
 	theme: {
 		extend: {

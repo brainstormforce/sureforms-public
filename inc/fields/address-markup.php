@@ -19,6 +19,23 @@ class Address_Markup extends Base {
 	use Get_Instance;
 
 	/**
+	 * Loads the countries data
+	 *
+	 * @return sarray<mixed>
+	 */
+	public function getCountries() {
+		$file_path = plugin_dir_url( __FILE__ ) . 'countries.json';
+		$response  = wp_remote_get( $file_path );
+		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+			$json_string = wp_remote_retrieve_body( $response );
+			$data        = json_decode( $json_string, true );
+		} else {
+			$data = array();
+		}
+
+		return $data;
+	}
+	/**
 	 * Render the sureforms Address default styling block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -46,14 +63,7 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			$file_path = plugin_dir_url( __FILE__ ) . '/countries.json';
-			$response  = wp_remote_get( $file_path );
-		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-			$json_string = wp_remote_retrieve_body( $response );
-			$data        = json_decode( $json_string, true );
-		} else {
-			$data = array();
-		}
+			$data = $this->getCountries();
 
 		$output  = '';
 		$output .= '
@@ -198,17 +208,9 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			$data      = [];
-			$file_path = plugin_dir_url( __FILE__ ) . '/countries.json';
-			$response  = wp_remote_get( $file_path );
-		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-			$json_string = wp_remote_retrieve_body( $response );
-			$data        = json_decode( $json_string, true );
-		} else {
-			$data = array();
-		}
-		$output  = '';
-		$output .= '
+			$data = $this->getCountries();
+		$output   = '';
+		$output  .= '
 		<div class="sureforms-address-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sfclassic-address-container-' . esc_attr( $id ) . '"> 
 					<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
 					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" id="fullAddress-' . esc_attr( $id ) . '" />
