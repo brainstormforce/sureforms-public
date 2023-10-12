@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
-import { applyFilters } from '@wordpress/hooks';
+// import { applyFilters } from '@wordpress/hooks';
 import {
 	InnerBlocks,
 	RichText,
