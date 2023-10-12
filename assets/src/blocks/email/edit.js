@@ -168,9 +168,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={
-					'main-container sf-classic-inputs-holder'
-				}
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

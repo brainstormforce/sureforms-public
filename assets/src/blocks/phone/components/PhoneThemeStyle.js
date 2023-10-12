@@ -7,7 +7,7 @@ export const PhoneThemeStyle = ( { attributes, blockID, handleChange } ) => {
 	return (
 		<>
 			<label
-				className="text-primary"
+				className="sf-text-primary"
 				htmlFor={ 'phone-field-' + blockID }
 			>
 				{ label }

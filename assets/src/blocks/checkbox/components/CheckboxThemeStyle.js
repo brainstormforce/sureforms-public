@@ -17,7 +17,10 @@ export const CheckboxThemeStyle = ( { attributes, blockID } ) => {
 					<a
 						href={ labelUrl }
 						className="sf-text-primary"
-						style={ { textDecoration: 'none' } }
+						style={ {
+							textDecoration: 'none',
+							color: 'var(--sf-primary-color)',
+						} }
 					>
 						{ label }
 					</a>
