@@ -487,7 +487,9 @@ if ( multiChoices ) {
 			const multiChoiceValueField = document.getElementsByClassName(
 				`sureforms-multi-choice-${ clickedId }`
 			);
-			multiChoiceValueField[ 0 ].value = selectedOptions.get( clickedId );
+			multiChoiceValueField[ 0 ].value = selectedOptions
+				.get( clickedId )
+				.join( ', ' );
 		} );
 	}
 }
@@ -743,21 +745,23 @@ if ( checkboxContainers ) {
 			const checkboxInputs = checkboxContainers[ i ].querySelectorAll(
 				'.sureforms-classic-checkbox-input'
 			);
-			if ( '' === primaryColor ) {
-				checkboxInputs[ i ].classList.add(
-					'!text-[#0084C7]',
-					'focus:!ring-[#0084C7]',
-					'checked:!bg-[#0084C7]',
-					'checked:!border-none'
-				);
-			} else {
-				checkboxInputs[ i ].classList.add(
-					'!text-sf_primary_color',
-					'focus:!ring-sf_primary_color',
-					'checked:!bg-sf_primary_color',
-					'checked:!border-none'
-				);
-			}
+			checkboxInputs.forEach( ( checkboxInput ) => {
+				if ( '' === primaryColor ) {
+					checkboxInput.classList.add(
+						'!text-[#0084C7]',
+						'focus:!ring-[#0084C7]',
+						'checked:!bg-[#0084C7]',
+						'checked:!border-none'
+					);
+				} else {
+					checkboxInput.classList.add(
+						'!text-sf_primary_color',
+						'focus:!ring-sf_primary_color',
+						'checked:!bg-sf_primary_color',
+						'checked:!border-none'
+					);
+				}
+			} );
 		}
 	}
 }
@@ -902,17 +906,9 @@ if ( selectFieldContainer ) {
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
-				if (
-					nextSibling.classList.contains( '!opacity-0', '!-z-10' )
-				) {
-					nextSibling.classList.remove( '!opacity-0' );
-					nextSibling.classList.add( '!opacity-100' );
-					nextSibling.classList.add( '!z-10' );
-				} else {
-					nextSibling.classList.remove( '!opacity-100' );
-					nextSibling.classList.remove( '!z-10' );
-					nextSibling.classList.add( '!opacity-0' );
-				}
+				nextSibling.classList.add( '!opacity-100' );
+				nextSibling.classList.add( '!z-10' );
+				nextSibling.classList.remove( '!opacity-0' );
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {

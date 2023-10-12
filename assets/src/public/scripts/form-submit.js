@@ -107,12 +107,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const hasDuplicate = uniqueEntryData?.some(
 				( entry ) => entry[ fieldName ] === 'not unique'
 			);
-
+			const phoneParent = container.querySelector(
+				'#sureforms-phone-parent'
+			);
 			if ( hasDuplicate ) {
 				duplicateMessage.style.display = 'block';
 				inputField.classList.add( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
+				}
+				if ( phoneParent ) {
+					phoneParent.classList.add(
+						'!ring-red-500',
+						'!border-red-500'
+					);
 				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -123,6 +131,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				inputField.classList.remove( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
+				}
+				if ( phoneParent ) {
+					phoneParent.classList.remove(
+						'!ring-red-500',
+						'!border-red-500'
+					);
 				}
 			}
 		}
@@ -167,7 +181,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			container.classList.contains( 'sureforms-input-phone-container' )
 		) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
-
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
 			if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
@@ -177,8 +190,13 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				const phoneParent = container.querySelector(
 					'#sureforms-phone-parent'
 				);
-				phoneParent.classList.add( '!ring-red-500', '!border-red-500' );
-				phoneInput.classList.add( 'placeholder:!text-red-300' );
+				if ( phoneParent ) {
+					phoneParent.classList.add(
+						'!ring-red-500',
+						'!border-red-500'
+					);
+					phoneInput.classList.add( 'placeholder:!text-red-300' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -189,10 +207,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				errorMessage.style.display = 'none';
 				//for Tailwind phone field UI
-				if ( isUnique !== 'true' ) {
-					const phoneParent = container.querySelector(
-						'#sureforms-phone-parent'
-					);
+				const phoneParent = container.querySelector(
+					'#sureforms-phone-parent'
+				);
+				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
 						'!ring-red-500',
 						'!border-red-500'
@@ -458,6 +476,34 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( ! firstErrorInput ) {
 					firstErrorInput = urlInput;
 				}
+			}
+		}
+
+		//classic dropdown field
+		if (
+			container.classList.contains(
+				'sureforms-classic-dropdown-container'
+			)
+		) {
+			const dropdownInput = container.querySelector(
+				'.sf-classic-dropdown-result'
+			);
+			const dropdownValue = dropdownInput.value;
+			const isDropDownRequired =
+				dropdownInput.getAttribute( 'aria-required' );
+			const dropdownBtn = container.querySelector(
+				'.sf-classic-dropdown-btn'
+			);
+			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
+				errorMessage.style.display = 'block';
+				dropdownBtn.classList.add( 'sf-classic-input-error' );
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = dropdownBtn;
+				}
+			} else {
+				errorMessage.style.display = 'none';
+				dropdownBtn.classList.remove( 'sf-classic-input-error' );
 			}
 		}
 	}

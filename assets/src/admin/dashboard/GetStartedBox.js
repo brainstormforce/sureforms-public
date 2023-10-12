@@ -13,7 +13,12 @@ export default ( {
 } ) => {
 	return (
 
-		<div>
+		<div
+			css={ css`
+		@media screen and ( max-width: 480px ) {
+			margin-bottom: 20px;
+		}
+				` }>
 			<ScTag
 				type={ infoType }
 				style={ {

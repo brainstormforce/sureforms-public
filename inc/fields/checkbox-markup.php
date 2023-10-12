@@ -1,0 +1,97 @@
+<?php
+/**
+ * Sureforms Checkbox Markup Class file.
+ *
+ * @package sureforms.
+ * @since 0.0.1
+ */
+
+namespace SureForms\Inc\Fields;
+
+use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
+
+
+/**
+ * Sureforms Checkbox Markup Class.
+ *
+ * @since 0.0.1
+ */
+class Checkbox_Markup extends Base {
+	use Get_Instance;
+
+	/**
+	 * Render the sureforms checkbox default styling block
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 *
+	 * @return string|boolean
+	 */
+	public function default_styling( $attributes ) {
+		$id        = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
+		$label_url = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
+		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
+		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+
+		return '<div class="sureforms-checkbox-container main-container' . esc_attr( $classname ) . '">
+		<div>
+			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-checkbox-' . esc_attr( $id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
+			<span class="sf-text-primary">
+				<label for="sureforms-checkbox-' . esc_attr( $id ) . '" class="sf-text-primary">' .
+					( $label_url
+						? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
+						: esc_html( $label )
+					) .
+					( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
+				'</label>
+			</span>
+		</div>' .
+		( '' !== $help ? '<label for="sureforms-checkbox" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+	</div>';
+
+	}
+
+	/**
+	 * Render the sureforms checkbox classic styling
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 *
+	 * @return string|boolean
+	 */
+	public function classic_styling( $attributes ) {
+		$id        = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
+		$label_url = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
+		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
+		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+
+		return '<div class="sureforms-checkbox-container main-container sf-classic-inputs-holder">
+			<div class="relative flex items-start flex-row gap-2">
+				<div class="flex h-6 items-center">
+					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-checkbox-' . esc_attr( $id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input">
+				</div>
+				<div class="text-sm leading-6">
+					<label for="sureforms-checkbox-' . esc_attr( $id ) . '" class="sf-classic-label-text">' .
+						( $label_url
+							? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;" class="underline">' . esc_html( $label ) . '</a>'
+							: esc_html( $label )
+						) .
+						( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
+					'</label>
+				</div>
+			</div>
+			<p for="sureforms-checkbox" class="text-sm ' . ( '' !== $help ? 'mt-2' : '' ) . ' text-gray-500">' . ( '' !== $help ? esc_html( $help ) : '' ) . '</p>
+			<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+		</div>';
+
+	}
+
+}
