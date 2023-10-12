@@ -20,11 +20,6 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 					<span className="text-red-500"> *</span>
 				) }
 			</label>
-			<input
-				name={ `${ label }SF-divider${ blockID }` }
-				type="hidden"
-				id={ `fullAddress-${ blockID }` }
-			/>
 			<div className="mt-2">
 				<input
 					type="text"

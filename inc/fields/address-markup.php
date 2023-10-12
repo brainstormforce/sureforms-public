@@ -23,7 +23,7 @@ class Address_Markup extends Base {
 	 *
 	 * @return mixed|array<mixed|string> $data with phone codes
 	 */
-	public function getCountries() {
+	public function get_countries() {
 		$file_path = plugin_dir_url( __FILE__ ) . 'countries.json';
 		$response  = wp_remote_get( $file_path );
 		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
@@ -63,7 +63,7 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			$data = $this->getCountries();
+			$data = $this->get_countries();
 
 		$output  = '';
 		$output .= '
@@ -208,7 +208,7 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			$data = $this->getCountries();
+			$data = $this->get_countries();
 		$output   = '';
 		$output  .= '
 		<div class="sureforms-address-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sfclassic-address-container-' . esc_attr( $id ) . '"> 
