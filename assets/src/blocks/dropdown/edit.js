@@ -16,10 +16,16 @@ import InspectorTab, {
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DropdownClassicStyle } from './components/DropdownClassicStyle';
+import { DropdownThemeStyle } from './components/DropdownThemeStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const { required, options, label, help, id, errorMsg } = attributes;
+export default function Edit( { attributes, setAttributes, clientId } ) {
+	const { required, options, label, help, id, errorMsg, formId } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ newOption, setNewOption ] = useState( '' );
 
 	function editOption( value, i ) {
@@ -44,6 +50,12 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	return (
 		<>
@@ -272,7 +284,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -280,28 +292,26 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'dropdown-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<select id={ 'dropdown-' + blockID } required={ required }>
-					{ options.map( ( option, i ) => {
-						return (
-							<option label={ option } key={ i }>
-								{ option }
-							</option>
-						);
-					} ) }
-				</select>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<DropdownClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) : (
+					<DropdownThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'dropdown-help-' + blockID }
-						className="sf-text-secondary"
+						htmlFor={ 'text-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>
