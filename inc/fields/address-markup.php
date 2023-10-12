@@ -19,9 +19,9 @@ class Address_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Loads the countries data
+	 * Return Phone codes
 	 *
-	 * @return sarray<mixed>
+	 * @return mixed|array<mixed|string> $data with phone codes
 	 */
 	public function getCountries() {
 		$file_path = plugin_dir_url( __FILE__ ) . 'countries.json';

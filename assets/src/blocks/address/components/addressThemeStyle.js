@@ -1,5 +1,3 @@
-import { __ } from '@wordpress/i18n';
-
 export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 	const {
 		required,

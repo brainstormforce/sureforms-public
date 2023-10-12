@@ -65,7 +65,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div className="-space-y-px rounded-md shadow-sm">
 				<div>
 					<label htmlFor="country" className="sr-only">
-						 { __( 'Country', 'sureforms' ) }
+						{ __( 'Country', 'sureforms' ) }
 					</label>
 					<select
 						id={ `sureforms-address-country-${ blockID }` }
@@ -91,7 +91,6 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div>
 					<label htmlFor="postal-code" className="sr-only">
 						{ __( 'ZIP / Postal code', 'sureforms' ) }
-
 					</label>
 					<input
 						type="text"
