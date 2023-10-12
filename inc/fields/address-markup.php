@@ -195,12 +195,6 @@ class Address_Markup extends Base {
 			$city_placeholder     = isset( $attributes['cityPlaceholder'] ) ? $attributes['cityPlaceholder'] : '';
 			$state_placeholder    = isset( $attributes['statePlaceholder'] ) ? $attributes['statePlaceholder'] : '';
 			$postal_placeholder   = isset( $attributes['postalPlaceholder'] ) ? $attributes['postalPlaceholder'] : '';
-			$line_one_label       = isset( $attributes['lineOneLabel'] ) ? $attributes['lineOneLabel'] : '';
-			$line_two_label       = isset( $attributes['lineTwoLabel'] ) ? $attributes['lineTwoLabel'] : '';
-			$city_label           = isset( $attributes['cityLabel'] ) ? $attributes['cityLabel'] : '';
-			$state_label          = isset( $attributes['stateLabel'] ) ? $attributes['stateLabel'] : '';
-			$postal_label         = isset( $attributes['postalLabel'] ) ? $attributes['postalLabel'] : '';
-			$country_label        = isset( $attributes['countryLabel'] ) ? $attributes['countryLabel'] : '';
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
@@ -219,22 +213,22 @@ class Address_Markup extends Base {
 					<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
 					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" id="fullAddress-' . esc_attr( $id ) . '" />
 					<div class="mt-2">
-						<input type="text" class=" sf-classic-adress-element !top-[3px] !rounded-t-md " id="sureforms-address-line-1-' . esc_attr( $id ) . '"
+						<input type="text" class=" sf-classic-address-element !top-[3px] !rounded-t-md " id="sureforms-address-line-1-' . esc_attr( $id ) . '"
 						aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
 						placeholder="' . esc_attr( $line_one_placeholder ) . '">
 					</div>
 					<div class="">
-						<input type="text" class=" sf-classic-adress-element !top-[2px] " id="sureforms-address-line-2-' . esc_attr( $id ) . '"
+						<input type="text" class=" sf-classic-address-element !top-[2px] " id="sureforms-address-line-2-' . esc_attr( $id ) . '"
 						placeholder="' . esc_attr( $line_two_placeholder ) . '">
 					</div>
 					<div class="flex -space-x-px">
 						<div class="w-1/2 min-w-0 flex-1">
-						<input type="text" class=" sf-classic-adress-element !top-[1px] " id="sureforms-address-city-' . esc_attr( $id ) . '"
+						<input type="text" class=" sf-classic-address-element !top-[1px] " id="sureforms-address-city-' . esc_attr( $id ) . '"
 							aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
 							placeholder="' . esc_attr( $city_placeholder ) . '">
 						</div>
 						<div class="min-w-0 flex-1">
-						<input type="text" class=" sf-classic-adress-element !top-[1px] " id="sureforms-address-state-' . esc_attr( $id ) . '"
+						<input type="text" class=" sf-classic-address-element !top-[1px] " id="sureforms-address-state-' . esc_attr( $id ) . '"
 							aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
 							placeholder="' . esc_attr( $state_placeholder ) . '">
 						</div>
@@ -262,7 +256,7 @@ class Address_Markup extends Base {
 						</div>
 						<div>
 							<label for="postal-code" class="sr-only">ZIP / Postal code</label>
-							<input type="text" autocomplete="postal-code" class=" sf-classic-adress-element !rounded-b-md  " id="sureforms-address-postal-' . esc_attr( $id ) . '"
+							<input type="text" autocomplete="postal-code" class=" sf-classic-address-element !rounded-b-md  " id="sureforms-address-postal-' . esc_attr( $id ) . '"
 							aria-required=' . esc_attr( $required ? 'true' : 'fasle' ) . '
 							placeholder="' . esc_attr( $postal_placeholder ) . '">
 						</div>

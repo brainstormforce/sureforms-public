@@ -1,3 +1,5 @@
+import { __ } from '@wordpress/i18n';
+
 export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 	const {
 		required,
@@ -26,16 +28,16 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div className="mt-2">
 				<input
 					type="text"
-					className=" sf-classic-adress-element !top-[3px] !rounded-t-md "
+					className=" sf-classic-address-element !top-[3px] !rounded-t-md "
 					id={ `sureforms-address-line-1-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ lineOnePlaceholder }
 				/>
 			</div>
-			<div className="">
+			<div>
 				<input
 					type="text"
-					className=" sf-classic-adress-element !top-[2px] "
+					className=" sf-classic-address-element !top-[2px] "
 					id={ `sureforms-address-line-2-${ blockID }` }
 					placeholder={ lineTwoPlaceholder }
 				/>
@@ -44,7 +46,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div className="w-1/2 min-w-0 flex-1">
 					<input
 						type="text"
-						className=" sf-classic-adress-element !top-[1px] "
+						className=" sf-classic-address-element !top-[1px] "
 						id={ `sureforms-address-city-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ cityPlaceholder }
@@ -53,7 +55,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div className="min-w-0 flex-1">
 					<input
 						type="text"
-						className=" sf-classic-adress-element !top-[1px] "
+						className=" sf-classic-address-element !top-[1px] "
 						id={ `sureforms-address-state-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ statePlaceholder }
@@ -63,7 +65,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div className="-space-y-px rounded-md shadow-sm">
 				<div>
 					<label htmlFor="country" className="sr-only">
-						Country
+						 { __( 'Country', 'sureforms' ) }
 					</label>
 					<select
 						id={ `sureforms-address-country-${ blockID }` }
@@ -88,12 +90,13 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				</div>
 				<div>
 					<label htmlFor="postal-code" className="sr-only">
-						ZIP / Postal code
+						{ __( 'ZIP / Postal code', 'sureforms' ) }
+
 					</label>
 					<input
 						type="text"
 						autoComplete="postal-code"
-						className="sf-classic-adress-element !rounded-b-md"
+						className="sf-classic-address-element !rounded-b-md"
 						id={ `sureforms-address-postal-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ postalPlaceholder }
