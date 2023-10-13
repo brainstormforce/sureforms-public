@@ -61,6 +61,7 @@ export default ( { attributes, setAttributes } ) => {
 				_sureforms_submit_alignment: 'left',
 				_sureforms_submit_width: '',
 				_sureforms_submit_styling_inherit_from_theme: false,
+				_sureforms_form_container_width: 650,
 			};
 
 			try {

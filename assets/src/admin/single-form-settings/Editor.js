@@ -40,6 +40,7 @@ const default_keys = {
 	_sureforms_submit_width: '',
 	_sureforms_submit_styling_inherit_from_theme: false,
 	_sureforms_form_styling: 'classic',
+	_sureforms_form_container_width: 650,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -72,7 +73,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--sf-primary-color',
-							value: sureforms_keys._sureforms_color1 || '#0284C7',
+							value:
+								sureforms_keys._sureforms_color1 || '#0284C7',
 						},
 						{
 							property: '--sf-primary-text-color',

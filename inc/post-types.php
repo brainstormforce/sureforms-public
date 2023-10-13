@@ -394,6 +394,7 @@ class Post_Types {
 			'_sureforms_submit_styling_inherit_from_theme' => 'boolean',
 			'_sureforms_form_class_name'                   => 'string',
 			'_sureforms_form_styling'                      => 'string',
+			'_sureforms_form_container_width'              => 'integer',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
