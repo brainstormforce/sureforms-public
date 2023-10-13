@@ -1,5 +1,6 @@
-body.post-type-sureforms_form {
+// TODO: remove the unused CSS.
 
+body.post-type-sureforms_form {
 	.edit-post-sidebar {
 		> .components-panel {
 			.components-panel__row label {
@@ -64,14 +65,16 @@ body.post-type-sureforms_form {
 				padding: 0 !important;
 				width: 100%;
 			}
-			.components-range-control__number {
-				display: flex;
-				align-items: center;
-				width: 0px !important;
-				.components-input-control__input {
-					width: fit-content;
-				}
-			}
+
+			// might be used later
+			// .components-range-control__number {
+			// 	display: flex;
+			// 	align-items: center;
+			// 	width: 0px !important;
+			// 	.components-input-control__input {
+			// 		width: fit-content;
+			// 	}
+			// }
 
 			> div {
 				.components-tab-panel__tab-content {
@@ -126,7 +129,6 @@ body.post-type-sureforms_form {
 	}
 
 	.edit-post-header {
-
 		.edit-post-fullscreen-mode-close {
 			&::after {
 				speak: none;
@@ -160,11 +162,8 @@ body.post-type-sureforms_form {
 }
 
 [data-type="sureforms/form"] {
-
 	.block-editor-inner-blocks {
-
 		.block-editor-block-list__layout {
-
 			.wp-block {
 				padding: 5px;
 
@@ -176,6 +175,6 @@ body.post-type-sureforms_form {
 	}
 }
 
-p.components-base-control__help{
+p.components-base-control__help {
 	margin: 1em 0;
 }
