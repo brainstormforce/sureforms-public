@@ -19,6 +19,24 @@ class Phone_Markup extends Base {
 	use Get_Instance;
 
 	/**
+	 * Return Phone codes
+	 *
+	 * @return mixed|array<mixed|string> $data with phone codes
+	 */
+	public function getPhoneCodes() {
+		$file_path = plugin_dir_url( __FILE__ ) . 'phone_codes.json';
+		$response  = wp_remote_get( $file_path );
+		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+			$json_string = wp_remote_retrieve_body( $response );
+			$data        = json_decode( $json_string, true );
+		} else {
+			$data = array();
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Render the sureforms phone default styling block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -38,14 +56,7 @@ class Phone_Markup extends Base {
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		$file_path = plugin_dir_url( __FILE__ ) . '/phone_codes.json';
-		$response  = wp_remote_get( $file_path );
-		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-			$json_string = wp_remote_retrieve_body( $response );
-			$data        = json_decode( $json_string, true );
-		} else {
-			$data = array();
-		}
+		$data = $this->getPhoneCodes();
 
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">
@@ -53,13 +64,10 @@ class Phone_Markup extends Base {
                 <div class="sureforms-input-phone-holder">
                     <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                     <select id="sureforms-country-code-' . esc_attr( $id ) . '" ' . esc_attr( $required ? 'required' : '' ) . '>';
-		if ( $default_country ) {
-			$output .= '<option value="' . esc_attr( $default_country ) . '">' . esc_html( $default_country ) . '</option>';
-		}
 		if ( is_array( $data ) ) {
 			foreach ( $data as $country ) {
 				if ( isset( $country['code'] ) && isset( $country['dial_code'] ) ) {
-					$output .= '<option value="' . esc_attr( $country['dial_code'] ) . '">' . esc_html( $country['code'] . ' ' . $country['dial_code'] ) . '</option>';
+					$output .= '<option value="' . esc_attr( $country['dial_code'] ) . '" ' . ( $country['dial_code'] === $default_country ? 'selected' : '' ) . '>' . esc_html( $country['code'] . ' ' . $country['dial_code'] ) . '</option>';
 				}
 			}
 		}
@@ -97,14 +105,7 @@ class Phone_Markup extends Base {
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		$file_path = plugin_dir_url( __FILE__ ) . '/phone_codes.json';
-		$response  = wp_remote_get( $file_path );
-		if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-			$json_string = wp_remote_retrieve_body( $response );
-			$data        = json_decode( $json_string, true );
-		} else {
-			$data = array();
-		}
+		$data = $this->getPhoneCodes();
 
 		$output  = '';
 		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $id ) . '">

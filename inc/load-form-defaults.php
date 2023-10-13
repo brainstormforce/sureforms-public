@@ -89,9 +89,12 @@ class Load_Form_Defaults {
 			'_sureforms_email',
 			'_sureforms_submit_type',
 			'_sureforms_submit_url',
-			'sureforms_form_visibility',
 			'_sureforms_sender_notification',
 			'_sureforms_form_recaptcha',
+			'_sureforms_submit_alignment',
+			'_sureforms_submit_width',
+			'_sureforms_submit_styling_inherit_from_theme',
+			'_sureforms_form_container_width',
 		);
 
 		foreach ( $meta_values as $meta_key ) {

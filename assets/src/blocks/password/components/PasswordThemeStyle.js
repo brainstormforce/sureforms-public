@@ -22,7 +22,7 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 			{ isConfirmPassword && (
 				<>
 					<label
-						className="text-primary"
+						className="sf-text-primary"
 						htmlFor={ 'confirm-email-input-' + blockID }
 					>
 						{ confirmLabel }

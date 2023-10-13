@@ -11,13 +11,26 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
+import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const { label, help, required, id, fieldType, min, max, errorMsg } =
+export default ( { attributes, setAttributes, isSelected, clientId } ) => {
+	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
 		attributes;
 	const [ showErr, setShowErr ] = useState( false );
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -85,8 +98,10 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 									{ __( 'Time', 'sureforms' ) }
 								</option>
 							</SelectControl>
-							{ 'dateTime' === fieldType ||
-							'date' === fieldType ? (
+							{ 'classic' !==
+								sureforms_keys?._sureforms_form_styling &&
+							( 'dateTime' === fieldType ||
+								'date' === fieldType ) ? (
 									<UAGAdvancedPanelBody
 										title={ __( 'Date Settings', 'sureforms' ) }
 										initialOpen={ false }
@@ -180,7 +195,8 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder' +
+					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
 					display: 'flex',
@@ -188,80 +204,20 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="sf-text-primary"
-					htmlFor={ 'date-picker-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<div
-					style={ {
-						display: 'flex',
-						gap: '.5rem',
-					} }
-				>
-					{ ( () => {
-						switch ( fieldType ) {
-							case 'dateTime':
-								return (
-									<>
-										<input
-											id={ 'date-picker-' + blockID }
-											type="date"
-											className={ className }
-											required={ required }
-											min={ min }
-											max={ max }
-										/>
-										<input
-											id={ 'time-picker-' + blockID }
-											type="time"
-										/>
-									</>
-								);
-							case 'date':
-								return (
-									<input
-										id={ 'date-picker-' + blockID }
-										type="date"
-										className={ className }
-										required={ required }
-										min={ min }
-										max={ max }
-									/>
-								);
-							case 'time':
-								return (
-									<input
-										id={ 'time-picker-' + blockID }
-										type="time"
-									/>
-								);
-							default:
-								return (
-									<>
-										<input
-											id={ 'date-picker-' + blockID }
-											type="date"
-											className={ className }
-											required={ required }
-										/>
-										<input
-											id={ 'time-picker-' + blockID }
-											type="time"
-										/>
-									</>
-								);
-						}
-					} )() }
-				</div>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<DatetimepickerClassicStyle attributes={ attributes } />
+				) : (
+					<DatetimepickerThemeStyle attributes={ attributes } />
+				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'date-picker-help-' + blockID }
-						className="date-secondary sf-text-secondary"
+						htmlFor={ 'email-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

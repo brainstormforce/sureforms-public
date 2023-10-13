@@ -23,6 +23,7 @@ const default_keys = {
 	_sureforms_submit_url: { default: '' },
 	_sureforms_fontsize: { default: 16 },
 	_sureforms_thankyou_message: { default: 'Form submitted successfully!' },
+	_sureforms_form_container_width: { default: 650 },
 };
 
 export const blocksAttributes = {

@@ -4,7 +4,10 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import UAGMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import {
+	// ToggleControl,
+	SelectControl,
+} from '@wordpress/components';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,7 +45,7 @@ function AppearanceSettings( props ) {
 			'--sf-primary-text-color',
 			sureforms_keys._sureforms_textcolor1
 				? sureforms_keys._sureforms_textcolor1
-				: 'none'
+				: '#fff'
 		);
 		root.style.setProperty(
 			'--sf-secondary-color',
@@ -92,18 +95,24 @@ function AppearanceSettings( props ) {
 		}
 
 		if ( option === '_sureforms_color1' ) {
-			root.style.setProperty( '--sf-primary-color', value ? value : '' );
+			root.style.setProperty(
+				'--sf-primary-color',
+				value ? value : '#046bd2'
+			);
 		}
 
 		if ( option === '_sureforms_textcolor1' ) {
 			root.style.setProperty(
 				'--sf-primary-text-color',
-				value ? value : ''
+				value ? value : '#fff'
 			);
 		}
 
 		if ( option === '_sureforms_color2' ) {
-			root.style.setProperty( '--sf-secondary-color', value ? value : '' );
+			root.style.setProperty(
+				'--sf-secondary-color',
+				value ? value : ''
+			);
 		}
 
 		if ( option === '_sureforms_fontsize' ) {
@@ -177,7 +186,10 @@ function AppearanceSettings( props ) {
 					__nextHasNoMarginBottom
 				/>
 				<p className="components-base-control__help">
-					{ __( 'Update settings to view changes on page', 'sureforms' ) }
+					{ __(
+						'Update settings to view changes on page',
+						'sureforms'
+					) }
 				</p>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
@@ -231,19 +243,43 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
+				{ 'inherit' === sureforms_keys._sureforms_form_styling && (
+					<Range
+						label={ __( 'Font size', 'sureforms' ) }
+						help={ __(
+							'Customize the form font size.',
+							'sureforms'
+						) }
+						value={ sureforms_keys._sureforms_fontsize }
+						min={ 16 }
+						max={ 24 }
+						displayUnit={ false }
+						data={ {
+							value: sureforms_keys._sureforms_fontsize,
+							label: '_sureforms_fontsize',
+						} }
+						onChange={ ( value ) =>
+							updateMeta( '_sureforms_fontsize', value )
+						}
+						isFormSpecific={ true }
+					/>
+				) }
 				<Range
-					label={ __( 'Font size', 'sureforms' ) }
-					help={ __( 'Customize the form font size.', 'sureforms' ) }
-					value={ sureforms_keys._sureforms_fontsize }
-					min={ 16 }
-					max={ 24 }
+					label={ __( 'Form Container Width(px)', 'sureforms' ) }
+					help={ __(
+						'Customize the form Form Container width.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._sureforms_form_container_width }
+					min={ 650 }
+					max={ 1000 }
 					displayUnit={ false }
 					data={ {
-						value: sureforms_keys._sureforms_fontsize,
-						label: '_sureforms_fontsize',
+						value: sureforms_keys._sureforms_form_container_width,
+						label: '_sureforms_form_container_width',
 					} }
 					onChange={ ( value ) =>
-						updateMeta( '_sureforms_fontsize', value )
+						updateMeta( '_sureforms_form_container_width', value )
 					}
 					isFormSpecific={ true }
 				/>
@@ -252,7 +288,8 @@ function AppearanceSettings( props ) {
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<ToggleControl
+				{ /* Might be used later */ }
+				{ /* <ToggleControl
 					label={ __(
 						'Inherit button styling from the Theme',
 						'sureforms'
@@ -272,7 +309,7 @@ function AppearanceSettings( props ) {
 						'Turn toggle on to inherit the theme styling for button',
 						'sureforms'
 					) }
-				</p>
+				</p> */ }
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {

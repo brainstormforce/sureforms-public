@@ -28,6 +28,7 @@
 		$button_styling_from_theme_val  = get_post_meta( intval( $custom_post_id ), '_sureforms_submit_styling_inherit_from_theme', true );
 		$sureforms_form_class_name      = get_post_meta( intval( $custom_post_id ), '_sureforms_form_class_name', true );
 		$styling                        = get_post_meta( intval( $custom_post_id ), '_sureforms_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_sureforms_form_styling', true ) ) : '';
+		$form_container_width           = get_post_meta( intval( $custom_post_id ), '_sureforms_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_sureforms_form_container_width', true ) ) : 650;
 
 		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
 		$color_textprimary         = $sureforms_textcolor1_val ? strval( $sureforms_textcolor1_val ) : '';
@@ -55,7 +56,11 @@
 					<?php
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
 					?>
-
+				;
+				--sf-form-container-width: 
+					<?php
+					echo esc_attr( $form_container_width . 'px' );
+					?>
 			}
 		</style>
 		<div id="sforms-single-form-page">
