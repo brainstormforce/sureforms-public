@@ -159,8 +159,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
-	console.log( sureforms_keys?._sureforms_form_styling );
-
 	const renderButtonHtml = () => {
 		return (
 			<button
