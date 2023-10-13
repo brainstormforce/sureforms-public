@@ -95,7 +95,10 @@ function AppearanceSettings( props ) {
 		}
 
 		if ( option === '_sureforms_color1' ) {
-			root.style.setProperty( '--sf-primary-color', value ? value : '#046bd2' );
+			root.style.setProperty(
+				'--sf-primary-color',
+				value ? value : '#046bd2'
+			);
 		}
 
 		if ( option === '_sureforms_textcolor1' ) {
@@ -261,6 +264,25 @@ function AppearanceSettings( props ) {
 						isFormSpecific={ true }
 					/>
 				) }
+				<Range
+					label={ __( 'Form Container Width(px)', 'sureforms' ) }
+					help={ __(
+						'Customize the form Form Container width.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._sureforms_form_container_width }
+					min={ 650 }
+					max={ 1000 }
+					displayUnit={ false }
+					data={ {
+						value: sureforms_keys._sureforms_form_container_width,
+						label: '_sureforms_form_container_width',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_sureforms_form_container_width', value )
+					}
+					isFormSpecific={ true }
+				/>
 			</UAGAdvancedPanelBody>
 			<UAGAdvancedPanelBody
 				title={ __( 'Submit Button', 'sureforms' ) }
