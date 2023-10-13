@@ -162,6 +162,14 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const renderButtonHtml = () => {
 		return (
 			<button
+				style={
+					'sureforms_form' !== postType
+						? {
+							background: '#0084C7',
+							color: '#fff',
+						  }
+						: {}
+				}
 				className={
 					'sureform-submit-button ' +
 					( 'inherit' === sureforms_keys?._sureforms_form_styling &&
