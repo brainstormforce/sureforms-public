@@ -80,14 +80,14 @@ class Textarea_Markup extends Base {
 			</label>
 			<div class="mt-2 relative">
 				<div class="sureforms-text-area-counter">
-					' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '
+					' . esc_html( ( '' === $max_length ) ? '' : '0/' . esc_html( $max_length ) ) . '
 				</div>
 				<textarea name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"
 					aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
 					placeholder="' . esc_attr( $placeholder ) . '"
 					maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '"
 					cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '"
-					id="sureforms-textarea" class="sf-classic-textarea-element">' . esc_attr( $default ) . '</textarea>
+					id="sureforms-textarea" class="sf-classic-textarea-element">' . esc_html( $default ) . '</textarea>
 			</div>
 			' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
 			<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
