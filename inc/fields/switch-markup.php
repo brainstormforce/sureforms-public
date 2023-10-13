@@ -40,8 +40,8 @@ class Switch_Markup extends Base {
 		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
 
 		return '<div class="sureforms-switch-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
-		<label style="width: max-content;" class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $id ) . '">
-			<div style="display: flex; align-items: center; gap: 0.5rem;" class="sf-text-primary">
+		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $id ) . '">
+			<div style="display: flex; align-items: flex-start; gap: 0.5rem;" class="sf-text-primary">
 				<div class="switch-background" style="background-color: ' . ( $checked ? '#007CBA' : '#dcdcdc' ) . ';">
 					<input class="sureforms-switch sf-default-switch"
 						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"

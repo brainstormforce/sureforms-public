@@ -77,7 +77,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						{
 							property: '--sf-primary-text-color',
 							value:
-								sureforms_keys._sureforms_textcolor1 || 'none',
+								sureforms_keys._sureforms_textcolor1 || '#fff',
 						},
 						{
 							property: '--sf-secondary-color',

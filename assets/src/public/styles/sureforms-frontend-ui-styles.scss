@@ -281,6 +281,7 @@ form.sureforms-form .main-container.sureforms-address-container {
 			}
 			.sf-classic-dropdown-ul {
 				@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0;
+				z-index: 10;
 			}
 			.sf-classic-multi-choice {
 				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2;
@@ -304,7 +305,8 @@ form.sureforms-form .main-container.sureforms-address-container {
 				@apply duration-100 ease-out absolute flex h-full w-full items-center justify-center transition-opacity;
 			}
 			.sf-classic-toggle-bg {
-				@apply inline-block relative w-[80px] max-w-[40px] h-[14px] rounded-[25px] cursor-pointer transition-colors duration-200;
+				@apply inline-block relative h-[14px] rounded-[25px] cursor-pointer transition-colors duration-200;
+				flex: 0 0 40px;
 			}
 			.sf-classic-datetime-picker {
 				@apply block w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus-visible:border-sf_primary_color focus:ring-sf_primary_color focus-visible:ring-sf_primary_color focus:outline-0 focus-visible:outline-0 focus:bg-white sm:text-sm sm:leading-6;
