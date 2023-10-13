@@ -202,7 +202,7 @@ input[type="range"]::-webkit-slider-thumb {
 .switch-background {
 	display: inline-block;
 	position: relative;
-	width: 50px;
+	flex:0 0 50px;
 	height: 25px;
 	border-radius: 25px;
 	transition: background-color 0.2s;

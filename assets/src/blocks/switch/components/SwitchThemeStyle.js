@@ -11,7 +11,7 @@ export const SwitchThemeStyle = ( { attributes, blockID } ) => {
 	const switchStyle = {
 		display: 'inline-block',
 		position: 'relative',
-		width: '50px',
+		flex: '0 0 50px',
 		height: '25px',
 		borderRadius: '25px',
 		backgroundColor: isChecked ? '#007CBA' : '#dcdcdc',

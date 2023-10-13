@@ -128,7 +128,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				<div
 					style={ {
 						display: 'flex',
-						alignItems: 'center',
+						alignItems: 'flex-start',
 						gap: '.4rem',
 					} }
 				>
