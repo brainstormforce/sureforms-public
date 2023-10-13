@@ -97,7 +97,7 @@ function AppearanceSettings( props ) {
 		if ( option === '_sureforms_color1' ) {
 			root.style.setProperty(
 				'--sf-primary-color',
-				value ? value : '#046bd2'
+				value ? value : '#0284C7'
 			);
 		}
 
