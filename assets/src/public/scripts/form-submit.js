@@ -184,6 +184,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
 			if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
+				duplicateMessage.style.display = 'none';
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';

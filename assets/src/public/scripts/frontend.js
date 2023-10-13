@@ -662,6 +662,9 @@ if ( phoneElement ) {
 				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
 			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+			if ( ! phoneNumberValue ) {
+				fullPhoneNumberInput.value = '';
+			}
 		};
 
 		countryCode.addEventListener( 'change', updateFullPhoneNumber );
