@@ -47,8 +47,8 @@ export default ( { attributes, setAttributes } ) => {
 			);
 			const formStatusData = {
 				post_id: updatedRecord.id,
-				_sureforms_color1: '',
-				_sureforms_textcolor1: '',
+				_sureforms_color1: '#046bd2',
+				_sureforms_textcolor1: '#fff',
 				_sureforms_color2: '',
 				_sureforms_fontsize: 16,
 				_sureforms_bg: '',
