@@ -662,6 +662,9 @@ if ( phoneElement ) {
 				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
 			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+			if ( ! phoneNumberValue ) {
+				fullPhoneNumberInput.value = '';
+			}
 		};
 
 		countryCode.addEventListener( 'change', updateFullPhoneNumber );
@@ -1128,7 +1131,6 @@ if ( datePickerContainers ) {
 			eventType = 'input.te.timepicker';
 			buttonAttribute = 'data-te-timepicker-icon';
 		}
-
 		const button = datePickerContainer.querySelector(
 			`button[${ buttonAttribute }]`
 		);
@@ -1144,6 +1146,11 @@ if ( datePickerContainers ) {
 					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
 					resultInput.value = formattedDate;
 				} );
+			} );
+		} else {
+			datePicker.addEventListener( eventType, () => {
+				formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+				resultInput.value = formattedDate;
 			} );
 		}
 	}
