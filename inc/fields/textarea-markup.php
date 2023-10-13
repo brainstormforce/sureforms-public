@@ -39,12 +39,13 @@ class Textarea_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="sureforms-textarea-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" style="position:relative">' .
+		return '<div class="sureforms-textarea-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">' .
 		'<label for="sureforms-textarea" class="sf-text-primary">' . esc_html( $label ) . ' ' .
 		( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
 		'</label>' .
-		'<div class="sureforms-text-area-counter">' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '</div>' .
-		'<textarea name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="sureforms-textarea-field">' . esc_attr( $default ) . '</textarea>' .
+		'<div style="position:relative">
+		<div class="sureforms-text-area-counter">' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '</div>' .
+		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="sureforms-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
 		( '' !== $help ? '<label for="sureforms-textarea" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>' .
 		'</div>';

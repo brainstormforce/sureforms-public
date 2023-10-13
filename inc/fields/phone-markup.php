@@ -64,13 +64,10 @@ class Phone_Markup extends Base {
                 <div class="sureforms-input-phone-holder">
                     <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                     <select id="sureforms-country-code-' . esc_attr( $id ) . '" ' . esc_attr( $required ? 'required' : '' ) . '>';
-		if ( $default_country ) {
-			$output .= '<option value="' . esc_attr( $default_country ) . '">' . esc_html( $default_country ) . '</option>';
-		}
 		if ( is_array( $data ) ) {
 			foreach ( $data as $country ) {
 				if ( isset( $country['code'] ) && isset( $country['dial_code'] ) ) {
-					$output .= '<option value="' . esc_attr( $country['dial_code'] ) . '">' . esc_html( $country['code'] . ' ' . $country['dial_code'] ) . '</option>';
+					$output .= '<option value="' . esc_attr( $country['dial_code'] ) . '" ' . ( $country['dial_code'] === $default_country ? 'selected' : '' ) . '>' . esc_html( $country['code'] . ' ' . $country['dial_code'] ) . '</option>';
 				}
 			}
 		}

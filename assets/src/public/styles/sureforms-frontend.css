@@ -8,7 +8,7 @@
 }
 
 form.sureforms-form input::placeholder,
-textarea::placeholder {
+textarea.sureforms-textarea-field::placeholder {
 	color: var( --sf-secondary-color );
 }
 

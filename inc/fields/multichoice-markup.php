@@ -46,7 +46,7 @@ class Multichoice_Markup extends Base {
 		<input class="sureforms-multi-choice-' . esc_attr( $id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" value="">';
 		if ( is_array( $options ) ) {
 			foreach ( $options as $i => $option ) {
-				$output .= '	<div style="display: flex; align-items: center;">
+				$output .= '	<div style="display: flex; align-items: center; gap:4px">
 					<input
 						style="display: ' . esc_attr( 'buttons' === $style ? 'none' : 'inherit' ) . '"
 						class="sureforms-multi-choice"

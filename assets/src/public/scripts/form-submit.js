@@ -315,35 +315,36 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Address field
-		if ( container.classList.contains( 'sureforms-address-container' ) ) {
-			const addressInput = container.querySelectorAll( 'input' );
-			const isAddressRequired =
-				addressInput[ 1 ].getAttribute( 'aria-required' );
-			let errCounter = 0;
-			for (
-				let i = 1;
-				i < addressInput.length && isAddressRequired === 'true';
-				i++
-			) {
-				if ( ! addressInput[ i ].value ) {
-					errorMessage.style.display = 'block';
-					addressInput[ i ].style.borderColor = '#FCA5A5';
-					errCounter = 1;
-					validateResult = true;
-					if ( ! firstErrorInput ) {
-						firstErrorInput = addressInput[ i ];
-					}
-				} else {
-					errorMessage.style.display = 'none';
-					addressInput[ i ].style.borderColor = '#d1d5db';
-				}
-				if ( errCounter === 1 ) {
-					errorMessage.style.display = 'block';
-				} else {
-					errorMessage.style.display = 'none';
-				}
-			}
-		}
+		//Might be used later
+		// if ( container.classList.contains( 'sureforms-address-container' ) ) {
+		// 	const addressInput = container.querySelectorAll( 'input' );
+		// 	const isAddressRequired =
+		// 		addressInput[ 1 ].getAttribute( 'aria-required' );
+		// 	let errCounter = 0;
+		// 	for (
+		// 		let i = 1;
+		// 		i < addressInput.length && isAddressRequired === 'true';
+		// 		i++
+		// 	) {
+		// 		if ( ! addressInput[ i ].value ) {
+		// 			errorMessage.style.display = 'block';
+		// 			addressInput[ i ].style.borderColor = '#FCA5A5';
+		// 			errCounter = 1;
+		// 			validateResult = true;
+		// 			if ( ! firstErrorInput ) {
+		// 				firstErrorInput = addressInput[ i ];
+		// 			}
+		// 		} else {
+		// 			errorMessage.style.display = 'none';
+		// 			addressInput[ i ].style.borderColor = '#d1d5db';
+		// 		}
+		// 		if ( errCounter === 1 ) {
+		// 			errorMessage.style.display = 'block';
+		// 		} else {
+		// 			errorMessage.style.display = 'none';
+		// 		}
+		// 	}
+		// }
 
 		//Upload field
 		if ( container.classList.contains( 'sureforms-upload-container' ) ) {
