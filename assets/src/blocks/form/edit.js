@@ -165,8 +165,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 				style={
 					'sureforms_form' !== postType
 						? {
-								background: '#0084C7',
-								color: '#fff',
+							background: '#0084C7',
+							color: '#fff',
 						  }
 						: {}
 				}
