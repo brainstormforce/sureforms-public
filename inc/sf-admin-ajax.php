@@ -121,22 +121,30 @@ class SF_Admin_Ajax {
 	 * @since 1.0.0
 	 */
 	public function localize_script_integration() {
-		wp_enqueue_script( 'sureforms-integration', SUREFORMS_URL . 'assets/build', [], SUREFORMS_VER, true );
-		wp_localize_script(
-			'sureforms-integration',
-			'sf_admin',
-			array(
-				'ajax_url'               => admin_url( 'admin-ajax.php' ),
-				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
-				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
-				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
-				'integrations'           => self::sureforms_get_integration(),
-				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
-				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
-			)
-		);
+		$asset_handle      = 'dashboard';
+		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_info   = file_exists( $script_asset_path )
+			? include $script_asset_path
+			: [
+				'dependencies' => [],
+				'version'      => SUREFORMS_VER,
+			];
+			wp_enqueue_script( 'sureforms-integration', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
+			wp_localize_script(
+				'sureforms-integration',
+				'sf_admin',
+				array(
+					'ajax_url'               => admin_url( 'admin-ajax.php' ),
+					'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+					'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
+					'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
+					'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
+					'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
+					'integrations'           => self::sureforms_get_integration(),
+					'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
+					'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
+				)
+			);
 	}
 
 	/**
