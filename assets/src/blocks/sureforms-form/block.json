@@ -9,8 +9,7 @@
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
-		"html": false,
-		"transforms": false
+		"html": false
 	},
 	"attributes": {
 		"id": {
