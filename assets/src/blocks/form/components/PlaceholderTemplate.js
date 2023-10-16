@@ -50,6 +50,8 @@ export default ( { header, footerLeft, footerRight, children, maxHeight } ) => {
 						height: 60px;
 						font-size: 1rem;
 						font-weight: 600;
+						background: white;
+    					z-index: 2;
 					` }
 				>
 					{ header }
