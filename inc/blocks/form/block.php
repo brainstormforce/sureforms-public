@@ -265,6 +265,11 @@ class Block extends Base {
 
 				}
 			</style>
+			<?php
+			if ( 'classic' === $styling ) {
+				wp_enqueue_style( 'sureforms-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+			}
+			?>
 		<?php
 		return ob_get_clean();
 	}
