@@ -10,7 +10,7 @@
 	"supports": {
 		"reusable": false,
 		"html": false,
-		"align": [ "wide", "full" ]
+		"transforms": false
 	},
 	"attributes": {
 		"id": {
