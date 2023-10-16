@@ -8,7 +8,7 @@ import {
 } from '@surecart/components-react';
 import { __ } from '@wordpress/i18n';
 import IntegrationsBox from './templates/IntegrationsBox';
-// import TrainingTextBox from './templates/TrainingTextBox';
+import TrainingTextBox from './templates/TrainingTextBox';
 import apiFetch from '@wordpress/api-fetch';
 
 export default () => {
@@ -141,7 +141,7 @@ export default () => {
 					'sureforms'
 				) }
 				urlText={ __( 'Visit our training center', 'sureforms' ) }
-			/>
+			/> */ }
 			<TrainingTextBox
 				title={ __( 'Rate Us', 'sureforms' ) }
 				description={ __(
@@ -149,7 +149,7 @@ export default () => {
 					'sureforms'
 				) }
 				urlText={ __( 'Submit a Review', 'sureforms' ) }
-			/> */ }
+			/> 
 		</ScDashboardModule>
 	);
 };
