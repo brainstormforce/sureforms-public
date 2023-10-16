@@ -149,7 +149,7 @@ export default () => {
 					'sureforms'
 				) }
 				urlText={ __( 'Submit a Review', 'sureforms' ) }
-			/> 
+			/>
 		</ScDashboardModule>
 	);
 };
