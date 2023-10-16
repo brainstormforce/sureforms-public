@@ -608,7 +608,11 @@ function submitFormData( form ) {
 }
 
 function showSuccessMessage( element, form ) {
-	element.style.minHeight = '600px';
+	if ( window.innerWidth > 760 ) {
+		element.style.minHeight = '600px';
+	} else {
+		element.style.minHeight = '420px';
+	}
 	element.style.opacity = 1;
 	form.style.display = 'none';
 }
