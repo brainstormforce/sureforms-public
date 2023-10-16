@@ -222,6 +222,7 @@ function AppearanceSettings( props ) {
 					value={ sureforms_keys._sureforms_textcolor1 }
 					isFormSpecific={ true }
 				/>
+				{ 'inherit' === sureforms_keys._sureforms_form_styling &&
 				<AdvancedPopColorControl
 					label={ __( 'Secondary color', 'sureforms' ) }
 					help={ __( 'Help, Placeholders, etc.', 'sureforms' ) }
@@ -236,6 +237,7 @@ function AppearanceSettings( props ) {
 					value={ sureforms_keys._sureforms_color2 }
 					isFormSpecific={ true }
 				/>
+				}
 				<UAGMediaPicker
 					label={ __( 'Background Image', 'sureforms' ) }
 					onSelectImage={ onSelectRestImage }

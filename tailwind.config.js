@@ -37,4 +37,7 @@ module.exports = {
 		require( '@tailwindcss/forms' ),
 		require( 'tw-elements/dist/plugin.cjs' ),
 	],
+	corePlugins: {
+		preflight: false,
+	},
 };
