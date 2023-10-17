@@ -1,12 +1,10 @@
+/* Latest UI styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.sf-form-style-classic {
-	.block-editor-inner-blocks .block-editor-block-list__layout .wp-block:not( :last-child ) {
-		margin: 0 0 1em 0 !important;
-	}
-}
+$ui-border-radius: 4px;
+$ui-box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+$ui-padding: 12px 16px;
 
 .classic-sf-radio {
 	flex: 49% 0 0;
@@ -16,6 +14,15 @@
 }
 .classic-sf-radio input {
 	display: none;
+}
+
+.sureforms-button {
+	padding: 13px 25px;
+	border-radius: $ui-border-radius;
+	box-shadow: $ui-box-shadow;
+	border: none;
+	background-color: var( --sf-primary-color );
+	color: var( --sf-primary-text-color );
 }
 
 .classic-radio-btn {
@@ -56,6 +63,7 @@
 @layer components {
 	// Classic field styles.
 	.sf-form-style-classic {
+		.frontend-inputs-holder,
 		.sf-classic-inputs-holder {
 			gap: 0 !important;
 			.sf-classic-input-element {
@@ -65,7 +73,7 @@
 				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-textarea-element {
-				@apply mt-2 w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-email-element {
 				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
@@ -74,7 +82,7 @@
 				@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-sf_primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-sf_primary_color focus-within:outline-0;
 			}
 			.sf-classic-phone-element {
-				@apply w-full rounded-md py-1.5 pl-16 text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
+				@apply w-full rounded-md py-1.5 pl-[4.1rem] text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
 			}
 			.sf-classic-phone-select {
 				@apply h-full rounded-md border-0 bg-white py-0 pl-3 pr-7 text-gray-900 focus:outline-none ring-0 focus:ring-inset focus:ring-0 focus:outline-0 focus:border-0 sm:text-sm;
@@ -86,7 +94,7 @@
 				@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-adress-select {
-				@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 max-w-none focus:z-10 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-sf_primary_color focus:outline-0 sm:text-sm sm:leading-6;
 			}
 			.sf-classic-dropdown-btn {
 				@apply border-solid border-0 border-[#D1D5DB] placeholder:text-gray-500 relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-sf_primary_color sm:text-sm sm:leading-6;
@@ -96,6 +104,7 @@
 			}
 			.sf-classic-dropdown-ul {
 				@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0;
+				z-index: 10;
 			}
 			.sf-classic-multi-choice {
 				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2;
@@ -104,7 +113,7 @@
 				@apply block w-full rounded-none rounded-r-md border-0 border-[#D1D5DB] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
 			}
 			.sf-classic-url-prefix {
-				@apply inline-flex min-w-[70px] items-center bg-white rounded-l-md border border-r-0 border-[#D1D5DB] ring-0 px-3 text-gray-900 sm:text-sm;
+				@apply inline-flex min-w-[67px] items-center bg-white rounded-l-md border border-r-0 border-[#D1D5DB] ring-0 px-3 text-gray-900 sm:text-sm;
 			}
 			.sf-classic-upload-result {
 				@apply mt-2 flex bg-white rounded-lg border border-solid border-gray-900/25;
@@ -143,4 +152,3 @@
 		}
 	}
 }
-

@@ -23,6 +23,9 @@ export default () => {
 					@media screen and ( max-width: 782px ) {
 						top: 46px;
 					}
+					@media screen and ( max-width: 460px ) {
+						top: 0px;
+					}
 					border-bottom: 1px solid rgb( 229, 231, 235 );
 				` }
 			>
@@ -86,12 +89,13 @@ export default () => {
 							` }
 						>
 							{ ' ' }
-							{ 'V:' + sureforms_admin?.plugin_version } &nbsp;&nbsp;
+							{ 'V:' + sureforms_admin?.plugin_version }
 							<span
 								css={ css`
 									padding: 2px 5px 3px 6px;
 									border-radius: 4px;
 									border: 1px solid #e2e8f0;
+									margin-left: 12px;
 								` }
 							>
 								Core
