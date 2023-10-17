@@ -96,6 +96,7 @@ class Block extends Base {
 								<?php
 								switch ( $styling ) {
 									case 'inherit':
+										// @phpstan-ignore-next-line
 										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 										<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 											' . esc_html( $button_text ) . '
@@ -127,6 +128,7 @@ class Block extends Base {
 								<?php
 								switch ( $styling ) {
 									case 'inherit':
+										// @phpstan-ignore-next-line
 										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
 											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 												' . esc_html( $button_text ) . '
@@ -192,6 +194,7 @@ class Block extends Base {
 							<?php
 							switch ( $styling ) {
 								case 'inherit':
+									// @phpstan-ignore-next-line
 									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 										' . esc_html( $button_text ) . '
