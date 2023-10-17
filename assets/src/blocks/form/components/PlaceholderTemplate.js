@@ -51,7 +51,7 @@ export default ( { header, footerLeft, footerRight, children, maxHeight } ) => {
 						font-size: 1rem;
 						font-weight: 600;
 						background: white;
-    					z-index: 2;
+						z-index: 2;
 					` }
 				>
 					{ header }

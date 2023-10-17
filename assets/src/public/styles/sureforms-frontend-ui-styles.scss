@@ -146,6 +146,13 @@ $ui-padding: 12px 16px;
 // form page styles end
 
 // success message box styles
+
+.sureforms-success-box.in-page {
+	width: 650px;
+	@include mobile630 {
+		width: 320px;
+	}
+}
 .sureforms-success-box {
 	gap: 12px;
 	display: flex;
