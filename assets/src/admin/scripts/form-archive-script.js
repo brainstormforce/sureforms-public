@@ -10,9 +10,9 @@ function handleFormShortcode( button ) {
 	icon.style = 'color: green;';
 
 	setTimeout( () => {
+		icon.style = 'color: #9BA3AF;';
 		icon.classList.remove( 'dashicons-yes' );
 		icon.classList.add( 'dashicons-admin-page' );
-		icon.style = 'color: #4F575D;';
 	}, 2000 );
 
 	input.setSelectionRange( 0, 99999 ); // For mobile devices

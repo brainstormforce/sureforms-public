@@ -583,10 +583,10 @@ class Post_Types {
 			ob_start();
 			?>
 			<div class="sf-shortcode-container">
-				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
 				<button type="button" class="components-button components-clipboard-button has-icon sf-shortcode" onclick="handleFormShortcode(this)">
 					<span id="sf-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
 				</button>
+				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
 			<div>
 			<?php
 			ob_end_flush();
