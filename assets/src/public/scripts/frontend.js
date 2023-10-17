@@ -940,7 +940,7 @@ if ( selectFieldContainer ) {
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {
-					li.addEventListener( 'click', ( event ) => {
+					li.addEventListener( 'mousedown', ( event ) => {
 						selectFieldButton
 							.querySelector( '.sf-classic-select-icon ' )
 							.classList.remove( 'rotate-180', '!pl-4' );
@@ -969,10 +969,10 @@ if ( selectFieldContainer ) {
 				.querySelector( '.sf-classic-select-icon ' )
 				.classList.add( 'rotate-0' );
 			const nextSibling = selectFieldButton.nextElementSibling;
-			nextSibling.style.display = 'none';
 			nextSibling.classList.remove( '!opacity-100' );
 			nextSibling.classList.remove( '!z-10' );
 			nextSibling.classList.add( '!opacity-0' );
+			nextSibling.style.display = 'none';
 		} );
 	}
 }
