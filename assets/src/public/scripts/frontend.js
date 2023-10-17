@@ -969,6 +969,7 @@ if ( selectFieldContainer ) {
 				.querySelector( '.sf-classic-select-icon ' )
 				.classList.add( 'rotate-0' );
 			const nextSibling = selectFieldButton.nextElementSibling;
+			nextSibling.style.display = 'none';
 			nextSibling.classList.remove( '!opacity-100' );
 			nextSibling.classList.remove( '!z-10' );
 			nextSibling.classList.add( '!opacity-0' );
