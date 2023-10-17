@@ -169,21 +169,30 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
+	const isSureformsForm = 'sureforms_form' !== postType;
+	const shouldInheritStyle =
+		'inherit' === sureforms_keys?._sureforms_form_styling;
+
+	const buttonStyle = isSureformsForm
+		? {
+			background: '#0084C7',
+			color: '#fff',
+		  }
+		: {
+			backgroundColor: shouldInheritStyle
+				? sureforms_keys?._sureforms_color1 || ''
+				: '',
+			color: shouldInheritStyle
+				? sureforms_keys?._sureforms_textcolor1 || ''
+				: '',
+		  };
 	const renderButtonHtml = () => {
 		return (
 			<button
-				style={
-					'sureforms_form' !== postType
-						? {
-							background: '#0084C7',
-							color: '#fff',
-						  }
-						: {}
-				}
+				style={ buttonStyle }
 				className={
 					'sureform-submit-button ' +
-					( 'inherit' === sureforms_keys?._sureforms_form_styling &&
-					'' === sureforms_keys?._sureforms_color1
+					( 'inherit' === sureforms_keys?._sureforms_form_styling
 						? 'wp-block-button__link'
 						: 'sureforms-button' ) +
 					( ! sureforms_keys?._sureforms_color1
