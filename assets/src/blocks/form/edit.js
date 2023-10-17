@@ -290,8 +290,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 						className={
 							'sureform-submit-button' +
 							( 'inherit' ===
-								sureforms_keys?._sureforms_form_styling &&
-							'' === sureforms_keys?._sureforms_color1
+								sureforms_keys?._sureforms_form_styling
 								? ' wp-block-button'
 								: '' )
 						}
