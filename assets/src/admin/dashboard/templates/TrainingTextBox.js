@@ -4,10 +4,14 @@ import { ScCard } from '@surecart/components-react';
 
 export default ( { title, description, urlText } ) => {
 	return (
-		<ScCard>
+		<ScCard
+			css={ css`
+					margin-top: 1.5em;
+				` }
+		>
 			<div
 				css={ css`
-					padding: var( --sc-spacing-small );
+					padding: var( --sc-spacing-large );
 				` }
 			>
 				<h3

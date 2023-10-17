@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
-// import { applyFilters } from '@wordpress/hooks';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	InnerBlocks,
 	RichText,
@@ -22,20 +22,30 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
 	const { editPost } = useDispatch( editorStore );
 	// Get all registered block types
-	// const allBlocks = wp.blocks.getBlockTypes();
-	// const ALLOWED_BLOCKS = allBlocks
-	// 	.filter(
-	// 		( block ) =>
-	// 			block.name.includes( 'sureforms/' ) &&
-	// 			block.name !== 'sureforms/form' &&
-	// 			block.name !== 'sureforms/sf-form'
-	// 	)
-	// 	.map( ( block ) => block.name );
+	const allBlocks = wp.blocks.getBlockTypes();
 
-	// const filteredAllowedBlocks = applyFilters(
-	// 	'sureforms/form/allowedBlocks',
-	// 	ALLOWED_BLOCKS
-	// );
+	const SUREFORMS_BLOCKS = allBlocks
+		.filter(
+			( block ) =>
+				block.name.includes( 'sureforms/' ) &&
+				block.name !== 'sureforms/form' &&
+				block.name !== 'sureforms/sf-form'
+		)
+		.map( ( block ) => block.name );
+
+	const CORE_BLOCKS = [
+		'core/image',
+		'core/columns',
+		'core/column',
+		'core/heading',
+	];
+
+	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
+
+	const filteredAllowedBlocks = applyFilters(
+		'sureforms/form/allowedBlocks',
+		ALLOWED_BLOCKS
+	);
 
 	const [ patterns, setPatterns ] = useState( [] );
 
@@ -268,7 +278,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					}
 				>
 					<InnerBlocks
-						// allowedBlocks={ filteredAllowedBlocks }
+						allowedBlocks={ filteredAllowedBlocks }
 						templateLock={ false }
 						renderAppender={
 							blockCount
