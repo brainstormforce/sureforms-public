@@ -1,6 +1,6 @@
 :root {
-	--sf-primary-color: "#0284C7";
-	--sf-primary-text-color: "#fff";
+	--sf-primary-color: #0284C7;
+	--sf-primary-text-color: #fff;
 	--sf-secondary-color: "";
 	--sureforms_bg: "";
 	--sureforms_fontsize: 16px;
@@ -32,8 +32,8 @@
 }
 
 .block-editor-block-list__block {
-	color: var( --sf-primary-color );
-	font-size: var( --sureforms_fontsize );
+	// color: var( --sf-primary-color );
+	// font-size: var( --sureforms_fontsize );
 	span a {
 		cursor: pointer;
 	}
