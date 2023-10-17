@@ -95,8 +95,17 @@ input:checked + .slider:before {
 	border: none;
 	cursor: pointer;
 	padding: 0;
+	margin-right: 3px;
+	margin-left: -23px;
+	visibility: hidden;
 }
+.type-sureforms_form:hover {
 
+.sf-shortcode {
+	visibility: visible;
+
+}
+}
 .sureforms-entries-number {
 	padding: 0 !important;
 	width: 40px !important;
@@ -117,7 +126,10 @@ input:checked + .slider:before {
 }
 
 #sf-copy-icon {
-	color: #4f575d;
+	color: #9BA3AF !important;
+}
+#sf-copy-icon.dashicons-yes{
+		color: green !important;
 }
 
 .uagb-advanced-color-settings-container {
