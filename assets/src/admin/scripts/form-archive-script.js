@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 function handleFormShortcode( button ) {
-	const input = button.previousElementSibling;
+	const input = button.nextElementSibling;
 
 	const icon = button.parentElement.querySelector( '#sf-copy-icon' );
 
