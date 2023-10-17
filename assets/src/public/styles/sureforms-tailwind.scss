@@ -141,10 +141,10 @@ $ui-padding: 12px 16px;
 			.error-message,
 			.duplicate-message,
 			.confirm-email-error {
-				@apply mt-2 text-sm text-red-600;
+				@apply mt-2 text-sm text-red-600 mb-0;
 			}
 			.sforms-helper-txt {
-				@apply mt-2 text-sm text-gray-500;
+				@apply mt-2 text-sm text-gray-500 mb-0;
 			}
 			.sf-classic-input-error {
 				@apply ring-red-500 border-red-500 placeholder:text-red-300;

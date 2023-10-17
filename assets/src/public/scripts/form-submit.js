@@ -418,6 +418,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				Number( inputValue ) < Number( min )
 			) {
 				minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
+				minMaxErrorMessage.style.display = `block`;
 				inputField.classList.add( 'sf-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -429,6 +430,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				Number( inputValue ) > Number( max )
 			) {
 				minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
+				minMaxErrorMessage.style.display = `block`;
 				inputField.classList.add( 'sf-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -436,6 +438,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} else if ( inputValue ) {
 				minMaxErrorMessage.innerText = '';
+				minMaxErrorMessage.style.display = `none`;
 				inputField.classList.remove( 'sf-classic-input-error' );
 			}
 		}
