@@ -89,14 +89,14 @@ class Block extends Base {
 				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="sureforms-submit-container <?php echo '#0284c7' !== $color_primary ? 'frontend-inputs-holder' : ''; ?>">
-					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="<?php echo 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button' : ''; ?>">
+					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="<?php echo 'inherit' === $styling ? 'wp-block-button' : ''; ?>">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
 								<?php
 								switch ( $styling ) {
 									case 'inherit':
-										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '">
+										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 										<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 											' . esc_html( $button_text ) . '
 											<div style="display: none;" class="sureforms-loader"></div>
@@ -105,7 +105,7 @@ class Block extends Base {
 										break;
 									case 'classic':
 										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( '#0284c7' === $color_primary && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="sureforms-submit-btn" class="sureforms-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '">
+										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( '#0284c7' === $color_primary && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="sureforms-submit-btn" class="sureforms-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '">
 										<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 											' . esc_html( $button_text ) . '
 											<div style="display: none;" class="sureforms-loader"></div>
@@ -113,7 +113,7 @@ class Block extends Base {
 										</button>';
 										break;
 									default:
-										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '">
+										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 										' . esc_html( $button_text ) . '
 										<div style="display: none;" class="sureforms-loader"></div>
@@ -127,7 +127,7 @@ class Block extends Base {
 								<?php
 								switch ( $styling ) {
 									case 'inherit':
-										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
+										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
 											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="sureforms-loader"></div>
@@ -136,7 +136,7 @@ class Block extends Base {
 										break;
 									case 'classic':
 										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
+										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
 											<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="sureforms-loader"></div>
@@ -144,7 +144,7 @@ class Block extends Base {
 										</button>';
 										break;
 									default:
-										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
+										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
 											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="sureforms-loader"></div>
@@ -169,7 +169,7 @@ class Block extends Base {
 											break;
 										case 'classic':
 											// @phpstan-ignore-next-line
-											echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="g-recaptcha sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
+											echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="g-recaptcha sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="sureforms-submit-btn">
 											<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="sureforms-loader"></div>
@@ -192,7 +192,7 @@ class Block extends Base {
 							<?php
 							switch ( $styling ) {
 								case 'inherit':
-									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '">
+									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 										' . esc_html( $button_text ) . '
 										<div style="display: none;" class="sureforms-loader"></div>
@@ -201,7 +201,7 @@ class Block extends Base {
 									break;
 								case 'classic':
 									// @phpstan-ignore-next-line
-									echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="sureforms-submit-btn" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '">
+									echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="sureforms-submit-btn" class="sureforms-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-sf_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-sf_primary_color' ) . '">
 									<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
 										' . esc_html( $button_text ) . '
 										<div style="display: none;" class="sureforms-loader"></div>
@@ -209,7 +209,7 @@ class Block extends Base {
 								</button>';
 									break;
 								default:
-									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling && '#0284c7' === $color_primary ? 'wp-block-button__link' : '' ) . '">
+									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="sureforms-submit-btn" class="sureforms-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
 									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
 										' . esc_html( $button_text ) . '
 										<div style="display: none;" class="sureforms-loader"></div>

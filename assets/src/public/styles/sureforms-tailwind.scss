@@ -16,6 +16,15 @@ $ui-padding: 12px 16px;
 	display: none;
 }
 
+.sureforms-button {
+	padding: 13px 25px;
+	border-radius: $ui-border-radius;
+	box-shadow: $ui-box-shadow;
+	border: none;
+	background-color: var( --sf-primary-color );
+	color: var( --sf-primary-text-color );
+}
+
 .classic-radio-btn {
 	cursor: pointer;
 	border: 2px solid transparent;
