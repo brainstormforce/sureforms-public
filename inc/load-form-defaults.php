@@ -95,6 +95,7 @@ class Load_Form_Defaults {
 			'_sureforms_submit_width',
 			'_sureforms_submit_styling_inherit_from_theme',
 			'_sureforms_form_container_width',
+			'_sureforms_form_styling',
 		);
 
 		foreach ( $meta_values as $meta_key ) {
