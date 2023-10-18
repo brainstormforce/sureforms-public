@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/email",
 	"title": "Email",
-	"description": "Displays a form email field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Email Field",
 	"category": "sureforms",
 	"keywords": [ "email", "mail" ],
 	"ancestor": [ "sureforms/form" ],
@@ -54,6 +54,10 @@
 		"isConfirmEmail": {
 			"type": "boolean",
 			"default": false
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

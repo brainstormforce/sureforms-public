@@ -63,9 +63,16 @@ input:checked + .slider:before {
 	border-radius: 50%;
 }
 
+.sf-shortcode-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 .sureforms-shortcode-input {
 	width: fit-content !important;
-	cursor: pointer;
 	border: none !important;
 	background: transparent !important;
 	color: #50575e !important;
@@ -74,7 +81,6 @@ input:checked + .slider:before {
 	font-weight: 400;
 	line-height: 19.5px;
 	padding: 0 !important;
-	margin-top: -8px !important;
 }
 
 .sureforms-shortcode-input:focus {
@@ -84,6 +90,22 @@ input:checked + .slider:before {
 	box-shadow: none !important;
 }
 
+.sf-shortcode {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	margin-right: 3px;
+	margin-left: -23px;
+	visibility: hidden;
+}
+.type-sureforms_form:hover {
+
+.sf-shortcode {
+	visibility: visible;
+
+}
+}
 .sureforms-entries-number {
 	padding: 0 !important;
 	width: 40px !important;
@@ -101,4 +123,17 @@ input:checked + .slider:before {
 	border-radius: 4px;
 	box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.2 );
 	z-index: 9999;
+}
+
+#sf-copy-icon {
+	color: #9BA3AF !important;
+}
+#sf-copy-icon.dashicons-yes{
+		color: green !important;
+}
+
+.uagb-advanced-color-settings-container {
+	.uagb-advanced-color-indicate.uag-global-indicator::before {
+		top: 3px!important;
+	}
 }

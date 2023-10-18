@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/phone",
 	"title": "Phone Number",
-	"description": "Displays a form Phone Number field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Phone Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "telephone", "phone", "mobile", "field" ],
@@ -29,14 +29,12 @@
 			"default": "Phone Number"
 		},
 		"placeholder": {
-			"type": "string",
-			"default": "9876543210"
+			"type": "string"
 		},
 		"help": {
 			"type": "string",
-			"default": "Enter some help text here"
-		}
-		,
+			"default": ""
+		},
 		"isUnique": {
 			"type": "boolean",
 			"default": false
@@ -48,6 +46,10 @@
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

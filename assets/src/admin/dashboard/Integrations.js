@@ -21,8 +21,14 @@ export default () => {
 				break;
 
 			case 'sureforms_recommended_plugin_install':
-				formData.append( 'action', 'sureforms_recommended_plugin_install' );
-				formData.append( '_ajax_nonce', sf_admin.plugin_installer_nonce );
+				formData.append(
+					'action',
+					'sureforms_recommended_plugin_install'
+				);
+				formData.append(
+					'_ajax_nonce',
+					sf_admin.plugin_installer_nonce
+				);
 				formData.append( 'slug', e.target.dataset.slug );
 
 				e.target.innerText = sf_admin.plugin_installing_text;
@@ -74,15 +80,19 @@ export default () => {
 	return (
 		<ScDashboardModule
 			css={ css`
-		width: 33%;
-		margin-top:2em;
-		@media screen and ( max-width: 782px ) {
-			width: 100%;
-		}
-		.dashboard-module{
-			display:none;
-		}
-	` }
+				width: 35%;
+				margin-top: 2em;
+				@media screen and ( max-width: 782px ) {
+					width: 100%;
+				}
+				@media screen and ( max-width: 1260px ) {
+					margin-top: 0;
+					max-width: 450px;
+				}
+				.dashboard-module {
+					display: none;
+				}
+			` }
 			style={ { '--sc-flex-column-gap': '1em' } }
 		>
 			<ScCard noPadding>
@@ -94,7 +104,7 @@ export default () => {
 							'--sc-flex-column-gap': '1em',
 						} }
 						css={ css`
-							padding: var( --sc-spacing-small );
+							padding: 8px;
 						` }
 					>
 						<p
@@ -109,33 +119,45 @@ export default () => {
 							{ __( 'Integrations', 'sureforms' ) }
 						</p>
 					</ScStackedListRow>
-					{
-						sf_admin?.integrations
-							.map( ( plugin, index ) => {
-								return <IntegrationsBox
-									key={ index }
-									icon={ plugin.logo }
-									title={ plugin.title }
-									descriptions={ plugin.subtitle }
-									statusText={ 'Installed' === plugin.status ? sf_admin.plugin_activate_text : plugin.status }
-									statusColor={ ( plugin.status === 'Installed' || plugin.status === 'Activated' ) ? '#16A34A' : '#046BD2' }									dataSlug={ plugin.slug }
-									init={ plugin.path }
-									redirectURL={ plugin.redirection }
-									action={ getAction( plugin.status ) }
-									handlePluginActionTrigger={ handlePluginActionTrigger }
-								/>;
-							} )
-					}
+					{ sf_admin?.integrations.map( ( plugin, index ) => {
+						return (
+							<IntegrationsBox
+								key={ index }
+								icon={ plugin.logo }
+								title={ plugin.title }
+								descriptions={ plugin.subtitle }
+								statusText={
+									'Installed' === plugin.status
+										? sf_admin.plugin_activate_text
+										: plugin.status
+								}
+								statusColor={
+									plugin.status === 'Installed' ||
+									plugin.status === 'Activated'
+										? '#16A34A'
+										: '#046BD2'
+								}
+								dataSlug={ plugin.slug }
+								init={ plugin.path }
+								redirectURL={ plugin.redirection }
+								action={ getAction( plugin.status ) }
+								handlePluginActionTrigger={
+									handlePluginActionTrigger
+								}
+							/>
+						);
+					} ) }
 				</ScStackedList>
 			</ScCard>
-			<TrainingTextBox
+			{ /* Training & Help, Rate Us TrainingTextBoxes will be used in the future */ }
+			{ /* <TrainingTextBox
 				title={ __( 'Training & Help', 'sureforms' ) }
 				description={ __(
 					'Learn everything you need to know about the form builder with our comprehensive video based training and knowledge base.',
 					'sureforms'
 				) }
 				urlText={ __( 'Visit our training center', 'sureforms' ) }
-			/>
+			/> */ }
 			<TrainingTextBox
 				title={ __( 'Rate Us', 'sureforms' ) }
 				description={ __(

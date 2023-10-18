@@ -16,14 +16,15 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
 import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
-import { useEntityProp } from '@wordpress/core-data';
+import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 
 export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { id, submitButtonText, block_count } = attributes;
 	const { editPost } = useDispatch( editorStore );
 	// Get all registered block types
 	const allBlocks = wp.blocks.getBlockTypes();
-	const ALLOWED_BLOCKS = allBlocks
+
+	const SUREFORMS_BLOCKS = allBlocks
 		.filter(
 			( block ) =>
 				block.name.includes( 'sureforms/' ) &&
@@ -31,6 +32,15 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 				block.name !== 'sureforms/sf-form'
 		)
 		.map( ( block ) => block.name );
+
+	const CORE_BLOCKS = [
+		'core/image',
+		'core/columns',
+		'core/column',
+		'core/heading',
+	];
+
+	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
 
 	const filteredAllowedBlocks = applyFilters(
 		'sureforms/form/allowedBlocks',
@@ -96,9 +106,18 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		setPatterns( newPatterns );
 	};
 
-	const sureforms_keys = useSelect( ( select ) =>
-		select( 'core/editor' ).getEditedPostAttribute( 'meta' )
-	);
+	const sureforms_keys = useSelect( ( select ) => {
+		if ( 'sureforms_form' === postType ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+		}
+		const form = select( coreStore ).getEntityRecord(
+			'postType',
+			'sureforms_form',
+			formId
+		);
+		const postMeta = form?.meta;
+		return postMeta;
+	} );
 
 	// Used to detect the FSE Theme
 	const siteEditor = document.querySelector( '.site-editor-php' );
@@ -112,7 +131,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					meta: option_array,
 				} );
 			}
-
 			updateMeta( '_sureforms_form_class_name', attributes.className );
 		}
 	}, [ siteEditor, attributes ] );
@@ -151,13 +169,30 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
+	const isSureformsForm = 'sureforms_form' !== postType;
+	const shouldInheritStyle =
+		'inherit' === sureforms_keys?._sureforms_form_styling;
+
+	const buttonStyle = isSureformsForm
+		? {
+			background: '#0084C7',
+			color: '#fff',
+		  }
+		: {
+			backgroundColor: shouldInheritStyle
+				? sureforms_keys?._sureforms_color1 || ''
+				: '',
+			color: shouldInheritStyle
+				? sureforms_keys?._sureforms_textcolor1 || ''
+				: '',
+		  };
 	const renderButtonHtml = () => {
 		return (
 			<button
+				style={ buttonStyle }
 				className={
 					'sureform-submit-button ' +
-					( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
-					'' === sureforms_keys?._sureforms_color1
+					( 'inherit' === sureforms_keys?._sureforms_form_styling
 						? 'wp-block-button__link'
 						: 'sureforms-button' ) +
 					( ! sureforms_keys?._sureforms_color1
@@ -187,7 +222,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody title={ __( 'Form Title', 'sureforms' ) }>
+				<PanelBody title={ __( 'Form Settings', 'sureforms' ) }>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Form Title', 'sureforms' ) }
@@ -199,13 +234,29 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					</PanelRow>
 					{ 'sureforms_form' !== postType && (
 						<PanelRow>
-							<a
-								href={ '?post=' + id + '&action=edit' }
-								target="_blank"
-								rel="noreferrer"
-							>
-								{ __( 'Edit Form', 'sureforms' ) }
-							</a>
+							<p className="sureforms-form-notice">
+								{ __(
+									'Note: For Editing the stylings, please check the SureForms styling - ',
+									'sureforms'
+								) }
+								<a
+									href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
+									target="_blank"
+									rel="noreferrer"
+								>
+									{ __( 'Edit Form Settings ', 'sureforms' ) }
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										width="16"
+										height="16"
+										aria-hidden="true"
+										focusable="false"
+									>
+										<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
+									</svg>
+								</a>
+							</p>
 						</PanelRow>
 					) }
 				</PanelBody>
@@ -221,6 +272,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					css={ css`
 						padding: 32px;
 					` }
+					className={
+						'classic' === sureforms_keys?._sureforms_form_styling &&
+						'sf-form-style-classic'
+					}
 				>
 					<InnerBlocks
 						allowedBlocks={ filteredAllowedBlocks }
@@ -234,8 +289,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					<div
 						className={
 							'sureform-submit-button' +
-							( sureforms_keys?._sureforms_submit_styling_inherit_from_theme &&
-							'' === sureforms_keys?._sureforms_color1
+							( 'inherit' ===
+							sureforms_keys?._sureforms_form_styling
 								? ' wp-block-button'
 								: '' )
 						}

@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/number-slider",
 	"title": "Number Slider",
-	"description": "Displays a form number slider field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Number Slider Field",
 	"category": "sureforms",
 	"keywords": [ "number slider", "range slider", "range input" ],
 	"ancestor": [ "sureforms/form" ],
@@ -15,36 +15,37 @@
 			"type": "string",
 			"default": ""
 		},
-		"required": {
-			"type": "boolean",
-			"default": false
-		},
 		"label": {
 			"type": "string",
 			"default": "Number Slider"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"valueDisplayText": {
 			"type": "string",
-			"default":"Selected Value: "
+			"default": "Selected Value: "
 		},
-        "min":{
-           "type":"number",
-           "default":0 
-        },
-        "max":{
-           "type":"number",
-           "default":100
-        },
-        "step":{
-           "type":"number",
-           "default":1
-        },
+		"min": {
+			"type": "number",
+			"default": 0
+		},
+		"max": {
+			"type": "number",
+			"default": 100
+		},
+		"step": {
+			"type": "number",
+			"default": 1
+		},
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

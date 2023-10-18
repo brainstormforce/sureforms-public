@@ -393,6 +393,8 @@ class Post_Types {
 			'_sureforms_submit_width'                      => 'string',
 			'_sureforms_submit_styling_inherit_from_theme' => 'boolean',
 			'_sureforms_form_class_name'                   => 'string',
+			'_sureforms_form_styling'                      => 'string',
+			'_sureforms_form_container_width'              => 'integer',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -450,6 +452,14 @@ class Post_Types {
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
+							<?php
+							if (
+									substr( $value, 0, 7 ) !== 'http://' &&
+									substr( $value, 0, 8 ) !== 'https://'
+								) {
+								$value = 'https://' . $value;
+							}
+							?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
@@ -572,8 +582,12 @@ class Post_Types {
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
-				<div id="notification" hidden></div>
-				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" onclick="handleFormShortcode(this)"/>
+			<div class="sf-shortcode-container">
+				<button type="button" class="components-button components-clipboard-button has-icon sf-shortcode" onclick="handleFormShortcode(this)">
+					<span id="sf-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
+				</button>
+				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
+			<div>
 			<?php
 			ob_end_flush();
 		}

@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/input",
 	"title": "Text Field",
-	"description": "Displays a form text input field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Input Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "text", "input", "custom", "field" ],
@@ -16,7 +16,8 @@
 			"default": ""
 		},
 		"defaultValue": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"required": {
 			"type": "boolean",
@@ -39,13 +40,18 @@
 			"default": "Text Field"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
 		},
 		"textLength": {
+			"type": "number",
+			"default": 30
+		},
+		"formId": {
 			"type": "number",
 			"default": ""
 		}

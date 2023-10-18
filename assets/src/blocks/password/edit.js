@@ -4,18 +4,16 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
+import { PasswordClassicStyle } from './components/PasswordClassicStyle';
+import { PasswordThemeStyle } from './components/PasswordThemeStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
-	const {
-		label,
-		placeholder,
-		help,
-		required,
-		id,
-		isConfirmPassword,
-		confirmLabel,
-	} = attributes;
+export default ( { attributes, setAttributes, clientId } ) => {
+	const { help, id, formId } = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( id !== '' ) {
@@ -24,6 +22,12 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	return (
 		<>
 			<Settings
@@ -31,55 +35,33 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
-				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
-				}
+				className={ 'main-container sf-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'password-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'password-input-' + blockID }
-					type="password"
-					className={ className }
-					placeholder={ placeholder }
-					required={ required }
-				/>
-				{ isConfirmPassword && (
-					<>
-						<label
-							className="text-primary"
-							htmlFor={ 'confirm-email-input-' + blockID }
-						>
-							{ confirmLabel }
-							{ required && confirmLabel && (
-								<span style={ { color: 'red' } }> *</span>
-							) }
-						</label>
-						<input
-							id={ 'confirm-password-input-' + blockID }
-							type="password"
-							className={ className }
-							placeholder={ placeholder }
-							required={ required }
-						/>
-					</>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<PasswordClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) : (
+					<PasswordThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
 				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'password-input-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

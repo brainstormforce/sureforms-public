@@ -152,12 +152,12 @@ if ( uploadFieldsContainer ) {
 						uploadField.querySelector(
 							`#sureforms-upload-title-${ id }`
 						).innerHTML =
-							`<div class="text-primary" style="display:flex; gap:0.4rem; align-items:center">
-                        <i class="fa-solid fa-file-lines text-primary"></i> ` +
+							`<div class="sf-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+                        <i class="fa-solid fa-file-lines sf-text-primary"></i> ` +
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can sf-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -182,7 +182,7 @@ if ( uploadFieldsContainer ) {
 								uploadField.querySelector(
 									`#sureforms-upload-field-result-${ id }`
 								);
-							uploadResultContainer.innerHTML = `<div class="text-primary w-full flex gap-2 p-[10px]">
+							uploadResultContainer.innerHTML = `<div class="sf-text-primary w-full flex gap-2 p-[10px]">
 								${ icon }
 								<div class="w-full flex justify-between">
 									<div>
@@ -217,7 +217,7 @@ if ( uploadFieldsContainer ) {
 // Toggle Switch
 
 const toggleSwitchesContainer = document.getElementsByClassName(
-	'sureforms-switch-container'
+	'sf-classic-switch-container'
 );
 
 if ( toggleSwitchesContainer ) {
@@ -241,7 +241,7 @@ if ( toggleSwitchesContainer ) {
 			) {
 				const computedStyle = getComputedStyle( formElement );
 				const primaryColor =
-					computedStyle.getPropertyValue( '--primary-color' );
+					computedStyle.getPropertyValue( '--sf-primary-color' );
 				const currentValue = toggleSwitch.value;
 
 				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
@@ -260,16 +260,16 @@ if ( toggleSwitchesContainer ) {
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor =
 						primaryColor !== ''
-							? 'var(--primary-color)'
+							? 'var(--sf-primary-color)'
 							: '#0284c7';
 					switchTickIcon.style.fill =
 						primaryColor !== ''
-							? 'var(--primary-color)'
+							? 'var(--sf-primary-color)'
 							: '#0284c7';
 					// will be used later
 
 					// switchBackground[ i ].style.backgroundColor =
-					// 	primaryColor !== '' ? 'var(--primary-color)' : '#0284c7';
+					// 	primaryColor !== '' ? 'var(--sf-primary-color)' : '#0284c7';
 					// switchBackground[ i ].classList.remove( '!bg-[#E4E7EB]' );
 					if (
 						switchBackground
@@ -355,11 +355,11 @@ if ( toggleSwitchesContainer ) {
 						switchToggle.style.left = '24px';
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
-								? 'var(--primary-color)'
+								? 'var(--sf-primary-color)'
 								: '#0284c7';
 						switchTickIcon.style.fill =
 							primaryColor !== ''
-								? 'var(--primary-color)'
+								? 'var(--sf-primary-color)'
 								: '#0284c7';
 						toggleSwitch.value = 'true';
 					}
@@ -382,6 +382,31 @@ if ( toggleSwitchesContainer ) {
 					switchBackground[ i ].style.backgroundColor = '#dcdcdc';
 					switchToggle.style.left = '2px';
 				}
+			}
+		} );
+	}
+}
+
+// default switch
+
+const toggleSwitches = document.getElementsByClassName( 'sf-default-switch' );
+
+if ( toggleSwitches ) {
+	for ( let i = 0; i < toggleSwitches.length; i++ ) {
+		toggleSwitches[ i ].addEventListener( 'click', () => {
+			const currentValue = toggleSwitches[ i ].value;
+			toggleSwitches[ i ].value =
+				currentValue === 'true' ? 'false' : 'true';
+			const switchBackground =
+				document.getElementsByClassName( 'switch-background' );
+			const switchToggle =
+				document.getElementsByClassName( 'switch-toggle' );
+			if ( toggleSwitches[ i ].value === 'true' ) {
+				switchBackground[ i ].style.backgroundColor = '#007CBA';
+				switchToggle[ i ].style.left = '27px';
+			} else {
+				switchBackground[ i ].style.backgroundColor = '#dcdcdc';
+				switchToggle[ i ].style.left = '2px';
 			}
 		} );
 	}
@@ -487,7 +512,9 @@ if ( multiChoices ) {
 			const multiChoiceValueField = document.getElementsByClassName(
 				`sureforms-multi-choice-${ clickedId }`
 			);
-			multiChoiceValueField[ 0 ].value = selectedOptions.get( clickedId );
+			multiChoiceValueField[ 0 ].value = selectedOptions
+				.get( clickedId )
+				.join( ', ' );
 		} );
 	}
 }
@@ -635,6 +662,9 @@ if ( phoneElement ) {
 				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
 			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+			if ( ! phoneNumberValue ) {
+				fullPhoneNumberInput.value = '';
+			}
 		};
 
 		countryCode.addEventListener( 'change', updateFullPhoneNumber );
@@ -739,25 +769,27 @@ if ( checkboxContainers ) {
 			// eslint-disable-next-line no-undef
 			const computedStyle = getComputedStyle( formElement );
 			const primaryColor =
-				computedStyle.getPropertyValue( '--primary-color' );
+				computedStyle.getPropertyValue( '--sf-primary-color' );
 			const checkboxInputs = checkboxContainers[ i ].querySelectorAll(
 				'.sureforms-classic-checkbox-input'
 			);
-			if ( '' === primaryColor ) {
-				checkboxInputs[ i ].classList.add(
-					'!text-[#0084C7]',
-					'focus:!ring-[#0084C7]',
-					'checked:!bg-[#0084C7]',
-					'checked:!border-none'
-				);
-			} else {
-				checkboxInputs[ i ].classList.add(
-					'!text-primary_color',
-					'focus:!ring-primary_color',
-					'checked:!bg-primary_color',
-					'checked:!border-none'
-				);
-			}
+			checkboxInputs.forEach( ( checkboxInput ) => {
+				if ( '' === primaryColor ) {
+					checkboxInput.classList.add(
+						'!text-[#0084C7]',
+						'focus:!ring-[#0084C7]',
+						'checked:!bg-[#0084C7]',
+						'checked:!border-none'
+					);
+				} else {
+					checkboxInput.classList.add(
+						'!text-sf_primary_color',
+						'focus:!ring-sf_primary_color',
+						'checked:!bg-sf_primary_color',
+						'checked:!border-none'
+					);
+				}
+			} );
 		}
 	}
 }
@@ -874,7 +906,7 @@ if ( selectFieldContainer ) {
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
 		const primaryColor =
-			computedStyle.getPropertyValue( '--primary-color' );
+			computedStyle.getPropertyValue( '--sf-primary-color' );
 		i++;
 		const selectFieldButton = selectField.querySelector(
 			'.sureforms-classic-dropdown-button'
@@ -892,7 +924,7 @@ if ( selectFieldContainer ) {
 			if ( '' === primaryColor ) {
 				for ( let index = 0; index < options.length; index++ ) {
 					options[ index ].classList.remove(
-						'hover:!bg-primary_color'
+						'hover:!bg-sf_primary_color'
 					);
 					options[ index ].classList.add( 'hover:!bg-[#0084C7]' );
 				}
@@ -902,17 +934,9 @@ if ( selectFieldContainer ) {
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
-				if (
-					nextSibling.classList.contains( '!opacity-0', '!-z-10' )
-				) {
-					nextSibling.classList.remove( '!opacity-0' );
-					nextSibling.classList.add( '!opacity-100' );
-					nextSibling.classList.add( '!z-10' );
-				} else {
-					nextSibling.classList.remove( '!opacity-100' );
-					nextSibling.classList.remove( '!z-10' );
-					nextSibling.classList.add( '!opacity-0' );
-				}
+				nextSibling.classList.add( '!opacity-100' );
+				nextSibling.classList.add( '!z-10' );
+				nextSibling.classList.remove( '!opacity-0' );
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {
@@ -958,9 +982,11 @@ const submitButton = document.getElementsByClassName( 'sureforms-button' );
 if ( submitButton ) {
 	// eslint-disable-next-line
 	const rootStyles = getComputedStyle( document.documentElement );
-	const primaryColorValue = rootStyles.getPropertyValue( '--primary-color' );
-	const secondaryColorValue =
-		rootStyles.getPropertyValue( '--secondary-color' );
+	const primaryColorValue =
+		rootStyles.getPropertyValue( '--sf-primary-color' );
+	const secondaryColorValue = rootStyles.getPropertyValue(
+		'--sf-secondary-color'
+	);
 
 	if ( primaryColorValue !== '' ) {
 		for ( let i = 0; i < submitButton.length; i++ ) {
@@ -1055,7 +1081,7 @@ if ( numberSliderContainer ) {
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
 		const primaryColor =
-			computedStyle.getPropertyValue( '--primary-color' );
+			computedStyle.getPropertyValue( '--sf-primary-color' );
 		preInit( numberSlider, primaryColor );
 		init( numberSlider, primaryColor );
 	}
@@ -1093,18 +1119,81 @@ if ( datePickerContainers ) {
 		const dateTimeInput = datePickerContainer.querySelector(
 			'.sureforms-input-data-time'
 		);
-
+		let buttonAttribute = '';
 		let eventType = '';
 		if ( fieldType === 'date' ) {
 			eventType = 'dateChange.te.datepicker';
+			buttonAttribute = 'data-te-datepicker-toggle-ref';
 		} else if ( fieldType === 'dateTime' ) {
 			eventType = 'close.te.datetimepicker';
+			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
 		} else {
 			eventType = 'input.te.timepicker';
+			buttonAttribute = 'data-te-timepicker-icon';
 		}
-		datePicker.addEventListener( eventType, () => {
-			formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-			resultInput.value = formattedDate;
+		const button = datePickerContainer.querySelector(
+			`button[${ buttonAttribute }]`
+		);
+		dateTimeInput.addEventListener( 'click', () => {
+			const clickEvent = new Event( 'click' );
+			if ( button ) {
+				button.dispatchEvent( clickEvent );
+			}
+		} );
+		if ( button ) {
+			button.addEventListener( 'click', () => {
+				datePicker.addEventListener( eventType, () => {
+					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+					resultInput.value = formattedDate;
+				} );
+			} );
+		} else {
+			datePicker.addEventListener( eventType, () => {
+				formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+				resultInput.value = formattedDate;
+			} );
+		}
+	}
+}
+
+const urlFiledContainers = document.getElementsByClassName(
+	'sureforms-classic-input-url-container'
+);
+if ( urlFiledContainers ) {
+	for ( const urlFiledContainer of urlFiledContainers ) {
+		const urlInput = urlFiledContainer.querySelector(
+			'.sureforms-url-input'
+		);
+		const validUrlMessage = urlFiledContainer.querySelector(
+			'.validation-url-message'
+		);
+		urlInput.addEventListener( 'change', () => {
+			const pattern = new RegExp(
+				'^(https?:\\/\\/)?' + // protocol
+					'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+					'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+					'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+					'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+					'(\\#[-a-z\\d_]*)?$', // fragment locator
+				'i'
+			);
+
+			const isValidUrl = pattern.test( urlInput.value );
+			if ( isValidUrl ) {
+				validUrlMessage.style.display = 'none';
+				urlInput.classList.remove(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
+			} else {
+				validUrlMessage.style.display = 'block';
+				urlInput.classList.add(
+					'!ring-red-500',
+					'!border-red-500',
+					'placeholder:!text-red-300'
+				);
+			}
 		} );
 	}
 }

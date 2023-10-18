@@ -12,8 +12,12 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { InputClassicStyle } from './components/InputClassicStyle';
+import { InputThemeStyle } from './components/InputThemeStyle';
 
-export default ( { className, attributes, setAttributes, isSelected } ) => {
+export default ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -25,8 +29,19 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 		textLength,
 		isUnique,
 		duplicateMsg,
+		formId,
 	} = attributes;
+
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -158,7 +173,7 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -166,27 +181,21 @@ export default ( { className, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					id={ 'text-input-' + blockID }
-					type="text"
-					value={ defaultValue }
-					className={ className }
-					placeholder={ placeholder }
-					required={ required }
-				/>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<InputClassicStyle attributes={ attributes } />
+				) : (
+					<InputThemeStyle attributes={ attributes } />
+				) }
+
 				{ help !== '' && (
 					<label
 						htmlFor={ 'text-input-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

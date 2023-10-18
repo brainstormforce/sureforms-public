@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { arrowDown as icon } from '@wordpress/icons';
+import { MdOutlineExpandMore as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

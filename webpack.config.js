@@ -48,11 +48,19 @@ module.exports = {
 		),
 		form_archive_styles: path.resolve(
 			__dirname,
-			'assets/src/public/styles/form-archive-styles.scss'
+			'assets/src/admin/styles/form-archive-styles.scss'
 		),
 		sureforms_frontend_styles: path.resolve(
 			__dirname,
 			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
+		),
+		tailwind_frontend_styles: path.resolve(
+			__dirname,
+			'assets/src/public/styles/sureforms-tailwind.scss'
+		),
+		sureforms_backend_styles: path.resolve(
+			__dirname,
+			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
 		),
 		block_styles: path.resolve(
 			__dirname,

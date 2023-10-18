@@ -1,7 +1,7 @@
 :root {
-	--sureforms_col1: "";
-	--sureforms_textcol1: "";
-	--sureforms_col2: "";
+	--sf-primary-color: #0284C7;
+	--sf-primary-text-color: #fff;
+	--sf-secondary-color: "";
 	--sureforms_bg: "";
 	--sureforms_fontsize: 16px;
 	--sureforms_submit_alignment: "left";
@@ -32,45 +32,50 @@
 }
 
 .block-editor-block-list__block {
-	color: var( --sureforms_col1 );
-	font-size: var( --sureforms_fontsize );
+	// color: var( --sf-primary-color );
+	// font-size: var( --sureforms_fontsize );
 	span a {
 		cursor: pointer;
 	}
 
 	input::placeholder,
 	textarea::placeholder {
-		color: var( --sureforms_col2 );
+		color: var( --sf-secondary-color );
 	}
 }
 
-.text-primary {
-	color: var( --sureforms_col1 );
+.sf-text-primary {
+	color: var( --sf-primary-color );
 	font-size: var( --sureforms_fontsize );
 }
 
-.text-secondary {
-	color: var( --sureforms_col2 );
+.sf-text-secondary {
+	color: var( --sf-secondary-color );
 	font-size: var( --sureforms_fontsize );
 }
 
 .sureforms-button {
-	background-color: var( --sureforms_col1 );
-	color: var( --sureforms_textcol1 );
+	background-color: var( --sf-primary-color );
+	color: var( --sf-primary-text-color );
 	border: none;
-	padding: 13px 25px;
+	padding: 8px 14px 8px 14px;
 	border-radius: 4px;
+	font-weight: 600;
+	font-size: 0.875rem;
 }
 
+.sureforms-upload-inner-div {
+	color: var( --sf-primary-color );
+}
 .sureforms-default-colors {
-	background-color: #0284C7;
+	background-color: #0284c7;
 	color: #ffffff;
 }
 
 /* Customize range input */
 input[type="range"] {
 	width: 100%;
-	border: 2px solid var( --sureforms_col1 ) !important;
+	border: 2px solid;
 	border-radius: 4px;
 	background-color: white;
 	outline: none;
@@ -79,13 +84,150 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
 	width: 20px;
 	height: 20px;
-	background-color: var( --sureforms_col1 ) !important;
+	background-color: var( --sf-primary-color ) !important;
 	border-radius: 50%;
 	cursor: pointer;
 }
 
 .sureform-submit-button {
-	margin-top: 1.3em;
+	margin-top: 12px;
 	text-align: var( --sureforms_submit_alignment );
 	width: var( --sureforms_submit_width );
+}
+
+/**
+ * Classic Range Sliders CSS
+ */
+.range-sliders > *:not( :last-child ) {
+	margin-bottom: 1.5rem;
+}
+
+.range-sliders input[type="range"] {
+	height: 10px !important;
+	outline: none !important;
+	border-radius: 4px !important;
+	padding: 0 !important;
+	-webkit-appearance: none;
+}
+
+.range-sliders input[type="number"] {
+	-moz-appearance: textfield; /* Reset the appearance property */
+}
+
+.range-sliders input[type="range"]::-webkit-slider-runnable-track {
+	width: 100% !important;
+	height: 1px !important;
+	cursor: pointer;
+	box-shadow: none !important;
+	background-color: #e6e6e6 !important;
+}
+
+.range-sliders input[type="range"]::-moz-range-track {
+	width: 100% !important;
+	height: 1px !important;
+	cursor: pointer !important;
+	box-shadow: none !important;
+	background-color: #ccc !important;
+}
+
+.range-sliders input[type="range"]::-webkit-slider-thumb {
+	box-shadow: none !important;
+	height: 12px !important;
+	width: 12px !important;
+	border-color: transparent !important;
+	border-radius: 50% !important;
+	background-color: #999 !important;
+	cursor: ew-resize;
+	-webkit-appearance: none;
+	margin-top: -5.5px !important;
+}
+
+.range-sliders input[type="range"]::-moz-range-thumb {
+	box-shadow: none !important;
+	height: 12px !important;
+	width: 12px !important;
+	border-color: transparent !important;
+	border-radius: 50% !important;
+	background-color: #999 !important;
+	cursor: ew-resize !important;
+	-webkit-appearance: none;
+	margin-top: -7px !important;
+}
+
+.range-sliders input[type="range"]::-moz-range-progress {
+	background: transparent !important;
+}
+
+.range-sliders input[type="range"]::-webkit-range-progress {
+	background: transparent !important;
+}
+
+.range-sliders input[type="range"]::-moz-focus-outer {
+	border: 0 !important;
+}
+
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-runnable-track {
+	background-color: transparent !important;
+}
+
+.range-sliders input[type="range"].range-slider-sf::-moz-range-track {
+	background-color: transparent !important;
+}
+
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-thumb {
+	background-color: #fff !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
+	cursor: pointer !important;
+}
+
+.range-sliders input[type="range"].range-slider-sf::-moz-range-thumb {
+	background-color: #fff !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
+	cursor: pointer !important;
+}
+
+.range-sliders .input-slider::-webkit-outer-spin-button,
+.range-sliders .input-slider::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0 !important;
+}
+
+.range-sliders .range-slider-group .range-slider {
+	width: calc( 100% - 70px ) !important;
+}
+
+//classic switch field style
+/* Switch Field CSS */
+
+.switch-background {
+	display: inline-block;
+	position: relative;
+	flex:0 0 50px;
+	height: 25px;
+	border-radius: 25px;
+	transition: background-color 0.2s;
+	cursor: pointer;
+}
+
+.switch-toggle {
+	display: inline-block;
+	position: absolute;
+	width: 21px;
+	height: 21px;
+	border-radius: 50%;
+	background-color: #fff;
+	top: 2px;
+	transition: left 0.2s;
+}
+
+.sureforms-switch {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+//checkbox
+.sureforms-classic-checkbox-input::before{
+	content: none !important;
 }

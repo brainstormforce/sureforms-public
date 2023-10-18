@@ -47,8 +47,8 @@ export default ( { attributes, setAttributes } ) => {
 			);
 			const formStatusData = {
 				post_id: updatedRecord.id,
-				_sureforms_color1: '',
-				_sureforms_textcolor1: '',
+				_sureforms_color1: '#046bd2',
+				_sureforms_textcolor1: '#fff',
 				_sureforms_color2: '',
 				_sureforms_fontsize: 16,
 				_sureforms_bg: '',
@@ -61,6 +61,8 @@ export default ( { attributes, setAttributes } ) => {
 				_sureforms_submit_alignment: 'left',
 				_sureforms_submit_width: '',
 				_sureforms_submit_styling_inherit_from_theme: false,
+				_sureforms_form_container_width: 650,
+				_sureforms_form_styling: 'classic',
 			};
 
 			try {

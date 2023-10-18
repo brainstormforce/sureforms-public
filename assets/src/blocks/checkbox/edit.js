@@ -11,8 +11,12 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { CheckboxClassicStyle } from './components/CheckboxClassicStyle';
+import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
 
-export default ( { attributes, setAttributes, isSelected } ) => {
+export default ( { attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		checked: isChecked,
@@ -21,9 +25,19 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 		checkboxHelpText,
 		id,
 		errorMsg,
+		formId,
 	} = attributes;
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -115,43 +129,36 @@ export default ( { attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
-				style={ {
-					display: 'flex',
-					alignItems: 'center',
-					gap: '.4rem',
-				} }
 			>
-				<input
-					type="checkbox"
-					id={ 'checkbox-block-' + blockID }
-					checked={ isChecked }
-					required={ required }
-				></input>
-				<label
-					className="text-primary"
-					htmlFor={ 'checkbox-block-' + blockID }
+				<div
+					style={ {
+						display: 'flex',
+						gap: '.5rem',
+						alignItems: 'center',
+					} }
 				>
-					{ labelUrl !== '' ? (
-						<a
-							href={ labelUrl }
-							className="text-primary"
-							style={ { textDecoration: 'none' } }
-						>
-							{ label }
-						</a>
+					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+						<CheckboxClassicStyle attributes={ attributes } />
 					) : (
-						label
+						<CheckboxThemeStyle attributes={ attributes } />
 					) }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				</div>
+				{ checkboxHelpText !== '' && (
+					<label
+						htmlFor={ 'checkbox-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ checkboxHelpText }
+					</label>
+				) }
 			</div>
-			{ checkboxHelpText !== '' && (
-				<div className="text-secondary">{ checkboxHelpText }</div>
-			) }
 		</div>
 	);
 };

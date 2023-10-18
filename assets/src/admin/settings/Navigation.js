@@ -1,17 +1,20 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
 
+// settings icons.
+import GeneralIcon from './settingsIcon.js';
+
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
 
 const Navigation = () => {
 	const activatedTab = useQuery();
-
 	const navigation = [
 		{
 			name: __( 'General', 'sureforms' ),
 			slug: 'general-settings',
+			icon: <GeneralIcon />,
 		},
 	];
 	return (
@@ -32,7 +35,8 @@ const Navigation = () => {
 							: 'text-[#111827]'
 					}` }
 				>
-					<div className="">
+					<div className="flex justify-start gap-2">
+						{ item.icon }
 						<span className="truncate text-[16px] group-hover:text-[#FBFBFC] transition-colors duration-300 ease-in-out">
 							{ item.name }
 						</span>

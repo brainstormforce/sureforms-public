@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/rating",
 	"title": "Rating Field",
-	"description": "Displays a form Rating Field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Rating Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "rating", "star rating", "review", "field" ],
@@ -24,7 +24,7 @@
 		},
 		"ratingBoxHelpText": {
 			"type": "string",
-			"selector": "input"
+			"default": ""
 		},
 		"width": {
 			"type": "string",
@@ -48,6 +48,10 @@
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

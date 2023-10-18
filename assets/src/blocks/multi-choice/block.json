@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "sureforms/multi-choice",
 	"title": "Multiple Choice",
-	"description": "Display a multiple choice field. This is saved with the order as additional metadata.",
+	"description": "Displays a SureForm Multi-Choice Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "multi-choice", "quiz", "multi", "sureforms" ],
@@ -32,7 +32,8 @@
 			"selector": "input"
 		},
 		"help": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"style": {
 			"type": "string",
@@ -41,6 +42,10 @@
 		"errorMsg": {
 			"type": "string",
 			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
 		}
 	}
 }

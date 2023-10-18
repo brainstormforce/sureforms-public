@@ -1,7 +1,4 @@
 /* Latest UI styles */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 $ui-border-radius: 4px;
 $ui-box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 $ui-padding: 12px 16px;
@@ -17,9 +14,9 @@ $ui-padding: 12px 16px;
 	margin-top: 40px;
 	margin-bottom: 40px;
 	padding: 32px;
-	width: 500px;
+	width: var( --sf-form-container-width );
 	border-radius: 6px;
-	box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.05 ), 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
+	box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.05 ), 0px 10px 15px 2px rgba( 0, 0, 0, 0.1 );
 	@include mobile630 {
 		width: 280px;
 		padding: 22px;
@@ -60,12 +57,8 @@ $ui-padding: 12px 16px;
 		appearance: auto;
 	}
 	.sureforms-button {
-		padding: 13px 25px;
-		border-radius: $ui-border-radius;
-		box-shadow: $ui-box-shadow;
-		border: none;
-		background-color: var( --primary-color );
-		color: var( --primary-textcolor );
+		background-color: var( --sf-primary-color ) !important;
+		color: var( --sf-primary-text-color ) !important;
 	}
 
 	.sureforms-submit-text-container {
@@ -116,7 +109,7 @@ $ui-padding: 12px 16px;
 	.sforms-helper-txt {
 		font-size: 14px;
 	}
-	label.text-primary {
+	label.sf-text-primary {
 		font-weight: 500;
 	}
 }
@@ -128,7 +121,7 @@ $ui-padding: 12px 16px;
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
-	background-color: var( --primary-color, #0284c7 );
+	background-color: var( --sf-primary-color, #0284c7 );
 	font-size: 48px;
 	font-weight: 600;
 	line-height: 60px;
@@ -140,7 +133,7 @@ $ui-padding: 12px 16px;
 }
 .sureforms-page-banner-title {
 	text-align: center;
-	color: var( --primary-textcolor, #ffffff );
+	color: var( --sf-primary-text-color, #ffffff );
 	font-size: 48px;
 	font-weight: 600;
 	line-height: 60px;
@@ -153,6 +146,13 @@ $ui-padding: 12px 16px;
 // form page styles end
 
 // success message box styles
+
+.sureforms-success-box.in-page {
+	width: 650px;
+	@include mobile630 {
+		width: 320px;
+	}
+}
 .sureforms-success-box {
 	gap: 12px;
 	display: flex;
@@ -164,68 +164,30 @@ $ui-padding: 12px 16px;
 	transition: opacity 1.4s;
 	.fa-circle-check {
 		font-size: 36px;
-		color: var( --primary-color, #0284c7 );
+		color: var( --sf-primary-color, #0284c7 );
 	}
 }
 .sureforms-success-box-header {
-	color: var( --primary-color, #1f2937 );
+	color: var( --sf-primary-color, #1f2937 );
 	text-align: center;
 	font-size: 24px;
 	font-weight: 600;
 	line-height: 32px;
 }
 .sureforms-success-box-subtxt {
-	// color: var( --secondary-color, #374151 );
+	// color: var( --sf-secondary-color, #374151 );
 	font-size: 18px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: 26px;
+	text-align: center;
 }
 form.sureforms-form .main-container.sureforms-address-container {
 	gap: 12px;
 }
 
-.classic-sf-radio {
-	flex: 49% 0 0;
-}
-.radio-buttons {
-	gap: 2%;
-}
-.classic-sf-radio input {
-	display: none;
-}
-
-.classic-radio-btn {
-	cursor: pointer;
-	border: 2px solid transparent;
-	border-color: transparent;
-}
-
-.classic-radio-btn .fa-check-circle {
-	transition: 0.5s;
-	pointer-events: none;
-	opacity: 0;
-	color: var( --primary-color );
-}
-.classic-radio-btn .fa-circle {
-	transition: 0.5s;
-	pointer-events: none;
-	opacity: 1;
-	top: 2px;
-	right: 0px;
-	bottom: 0;
-	left: 1px;
-	position: absolute;
-}
-
-.classic-sf-radio input:checked + .classic-radio-btn {
-	border: 2px solid var( --primary-color );
-	border-color: ( --primary-color );
-}
-
-.classic-sf-radio input:checked + .classic-radio-btn .fa-check-circle {
-	opacity: 1;
-}
-.classic-sf-radio input:checked + .classic-radio-btn .fa-circle {
-	opacity: 0;
+.sureforms-form {
+	.wp-block-columns {
+		margin: 0 !important;
+	}
 }

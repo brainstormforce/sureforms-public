@@ -12,6 +12,7 @@ use SureForms\Inc\Post_Types;
 use SureForms\Inc\Sureforms_Submit;
 use SureForms\Inc\Gutenberg_Hooks;
 use SureForms\API\Block_Patterns;
+use SureForms\Inc\Forms_Data;
 use SureForms\Admin\Admin;
 use SureForms\Inc\Blocks\Register;
 use SureForms\Inc\SF_Public;
@@ -102,6 +103,7 @@ class Plugin_Loader {
 		Load_Form_Defaults::get_instance();
 		Activator::get_instance();
 		SF_Admin_Ajax::get_instance();
+		Forms_Data::get_instance();
 
 		/**
 		 * The code that runs during plugin activation

@@ -4,7 +4,10 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import UAGMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import { ToggleControl } from '@wordpress/components';
+import {
+	// ToggleControl,
+	SelectControl,
+} from '@wordpress/components';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,6 +25,7 @@ function AppearanceSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
 	const root = document.documentElement;
 
 	if ( sureforms_keys && '_sureforms_color1' in sureforms_keys ) {
@@ -32,19 +36,19 @@ function AppearanceSettings( props ) {
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_col1',
+			'--sf-primary-color',
 			sureforms_keys._sureforms_color1
 				? sureforms_keys._sureforms_color1
-				: 'none'
+				: '#0284C7'
 		);
 		root.style.setProperty(
-			'--sureforms_textcol1',
+			'--sf-primary-text-color',
 			sureforms_keys._sureforms_textcolor1
 				? sureforms_keys._sureforms_textcolor1
-				: 'none'
+				: '#fff'
 		);
 		root.style.setProperty(
-			'--sureforms_col2',
+			'--sf-secondary-color',
 			sureforms_keys._sureforms_color2
 				? sureforms_keys._sureforms_color2
 				: 'none'
@@ -91,18 +95,24 @@ function AppearanceSettings( props ) {
 		}
 
 		if ( option === '_sureforms_color1' ) {
-			root.style.setProperty( '--sureforms_col1', value ? value : '' );
+			root.style.setProperty(
+				'--sf-primary-color',
+				value ? value : '#0284C7'
+			);
 		}
 
 		if ( option === '_sureforms_textcolor1' ) {
 			root.style.setProperty(
-				'--sureforms_textcol1',
-				value ? value : ''
+				'--sf-primary-text-color',
+				value ? value : '#fff'
 			);
 		}
 
 		if ( option === '_sureforms_color2' ) {
-			root.style.setProperty( '--sureforms_col2', value ? value : '' );
+			root.style.setProperty(
+				'--sf-secondary-color',
+				value ? value : ''
+			);
 		}
 
 		if ( option === '_sureforms_fontsize' ) {
@@ -160,6 +170,27 @@ function AppearanceSettings( props ) {
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
+				<SelectControl
+					label={ __( 'Form Styling', 'sureforms' ) }
+					value={ sureforms_keys._sureforms_form_styling }
+					options={ [
+						{ label: 'Theme Inherited', value: 'inherit' },
+						{
+							label: 'Classic Styling',
+							value: 'classic',
+						},
+					] }
+					onChange={ ( value ) => {
+						updateMeta( '_sureforms_form_styling', value );
+					} }
+					__nextHasNoMarginBottom
+				/>
+				<p className="components-base-control__help">
+					{ __(
+						'Update settings to view changes on page',
+						'sureforms'
+					) }
+				</p>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }
@@ -191,6 +222,7 @@ function AppearanceSettings( props ) {
 					value={ sureforms_keys._sureforms_textcolor1 }
 					isFormSpecific={ true }
 				/>
+				{ 'inherit' === sureforms_keys._sureforms_form_styling &&
 				<AdvancedPopColorControl
 					label={ __( 'Secondary color', 'sureforms' ) }
 					help={ __( 'Help, Placeholders, etc.', 'sureforms' ) }
@@ -205,6 +237,7 @@ function AppearanceSettings( props ) {
 					value={ sureforms_keys._sureforms_color2 }
 					isFormSpecific={ true }
 				/>
+				}
 				<UAGMediaPicker
 					label={ __( 'Background Image', 'sureforms' ) }
 					onSelectImage={ onSelectRestImage }
@@ -212,19 +245,43 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
+				{ 'inherit' === sureforms_keys._sureforms_form_styling && (
+					<Range
+						label={ __( 'Font size', 'sureforms' ) }
+						help={ __(
+							'Customize the form font size.',
+							'sureforms'
+						) }
+						value={ sureforms_keys._sureforms_fontsize }
+						min={ 16 }
+						max={ 24 }
+						displayUnit={ false }
+						data={ {
+							value: sureforms_keys._sureforms_fontsize,
+							label: '_sureforms_fontsize',
+						} }
+						onChange={ ( value ) =>
+							updateMeta( '_sureforms_fontsize', value )
+						}
+						isFormSpecific={ true }
+					/>
+				) }
 				<Range
-					label={ __( 'Font size', 'sureforms' ) }
-					help={ __( 'Customize the form font size.', 'sureforms' ) }
-					value={ sureforms_keys._sureforms_fontsize }
-					min={ 16 }
-					max={ 24 }
+					label={ __( 'Form Container Width(px)', 'sureforms' ) }
+					help={ __(
+						'Customize the form Form Container width.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._sureforms_form_container_width }
+					min={ 650 }
+					max={ 1000 }
 					displayUnit={ false }
 					data={ {
-						value: sureforms_keys._sureforms_fontsize,
-						label: '_sureforms_fontsize',
+						value: sureforms_keys._sureforms_form_container_width,
+						label: '_sureforms_form_container_width',
 					} }
 					onChange={ ( value ) =>
-						updateMeta( '_sureforms_fontsize', value )
+						updateMeta( '_sureforms_form_container_width', value )
 					}
 					isFormSpecific={ true }
 				/>
@@ -233,7 +290,8 @@ function AppearanceSettings( props ) {
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<ToggleControl
+				{ /* Might be used later */ }
+				{ /* <ToggleControl
 					label={ __(
 						'Inherit button styling from the Theme',
 						'sureforms'
@@ -253,7 +311,7 @@ function AppearanceSettings( props ) {
 						'Turn toggle on to inherit the theme styling for button',
 						'sureforms'
 					) }
-				</p>
+				</p> */ }
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {

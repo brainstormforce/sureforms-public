@@ -8,7 +8,6 @@ import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
 import passwordAttributes from '@Blocks/password/block.json';
 import ratingAttributes from '@Blocks/rating/block.json';
-import submitAttributes from '@Blocks/submit/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
 import dateTimeAttributes from '@Blocks/date-time-picker/block.json';
 import addressAttributes from '@Blocks/address/block.json';
@@ -24,13 +23,13 @@ const default_keys = {
 	_sureforms_submit_url: { default: '' },
 	_sureforms_fontsize: { default: 16 },
 	_sureforms_thankyou_message: { default: 'Form submitted successfully!' },
+	_sureforms_form_container_width: { default: 650 },
 };
 
 export const blocksAttributes = {
 	input: inputAttributes.attributes,
 	email: emailAttributes.attributes,
 	rating: ratingAttributes.attributes,
-	submit: submitAttributes.attributes,
 	checkbox: checkboxAttributes.attributes,
 	'date-time-picker': dateTimeAttributes.attributes,
 	address: addressAttributes.attributes,

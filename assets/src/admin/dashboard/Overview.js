@@ -44,6 +44,7 @@ export default ( { } ) => {
 			<ScFlex
 				style={ { '--sc-flex-column-gap': '2em' } }
 				stack="tablet"
+				flexWrap="wrap"
 			>
 				<EntriesView />
 				<Integrations />

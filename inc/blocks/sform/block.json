@@ -3,14 +3,14 @@
 	"apiVersion": 2,
 	"name": "sureforms/sf-form",
 	"title": "Form",
-	"description": "Streamline interactions with a Gutenberg Form Block on your WordPress site.",
+	"description": "Collect and Manage data effortlessly with customizable SureForm.",
 	"category": "sureforms",
 	"keywords": [ "form", "sureforms", "form" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
 		"html": false,
-		"align": [ "wide", "full" ]
+		"transforms": false
 	},
 	"attributes": {
 		"id": {

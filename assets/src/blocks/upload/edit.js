@@ -17,10 +17,12 @@ import Range from '@Components/range/Range.js';
  * Components dependencies
  */
 import CreatableSelect from 'react-select/creatable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { UploadClassicStyle } from './components/UploadClassicStyle';
+import { UploadThemeStyle } from './components/UploadThemeStyle';
+import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
+import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 
-export default function Edit( { attributes, setAttributes, isSelected } ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		required,
 		label,
@@ -30,6 +32,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		help,
 		id,
 		errorMsg,
+		formId,
 	} = attributes;
 	const maxUploadFileSize = upload_field.upload_max_limit;
 	const uploadFormats = upload_field.upload_formats;
@@ -37,6 +40,9 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
+	const currentFormId = useGetCurrentFormId( clientId );
+	const sureforms_keys = useGetSureFormsKeys( formId );
+
 	useEffect( () => {
 		if ( id !== '' ) {
 			return;
@@ -44,7 +50,11 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 		setAttributes( { id: blockID } );
 	}, [ blockID, id, setAttributes ] );
 
-	const firstFive = allowedFormats.slice( 0, 5 );
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	return (
 		<>
@@ -150,7 +160,7 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container' + ( isSelected ? ' sf--focus' : '' )
+					'main-container sf-classic-inputs-holder frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -158,112 +168,26 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 					gap: '0.5rem',
 				} }
 			>
-				<label
-					className="text-primary"
-					htmlFor={ 'upload-input-field-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<input
-					required={ required }
-					type="file"
-					id={ 'upload-input-field-' + blockID }
-					hidden
-					onClick={ ( e ) => e.preventDefault() }
-					accept={ allowedFormats
-						.map( ( obj ) => `.${ obj.value }` )
-						.join( ',' ) }
-				/>
-				<div
-					className={ 'sureforms-upload-inner-div' }
-					style={ { border: '2px solid' } }
-				>
-					<label
-						id={ 'upload-label-' + blockID }
-						htmlFor={ 'upload-input-field-' + blockID }
-					>
-						<div
-							style={ {
-								display: 'flex',
-								alignItems: 'center',
-								marginLeft: '12px',
-								marginTop: '12px',
-								fontSize: '25px',
-								gap: '10px',
-							} }
-						>
-							<>
-								<FontAwesomeIcon
-									icon={ faCloudArrowUp }
-									style={ {
-										fontSize: '25px',
-										marginBottom: '5px',
-									} }
-								/>
-								{ __(
-									'Click to choose the file',
-									'sureforms'
-								) }
-							</>
-						</div>
-						<div
-							style={ {
-								display: 'flex',
-								justifyContent: 'space-between',
-								padding: '1rem',
-							} }
-							id={ 'upload-attributes-' + blockID }
-						>
-							<div
-								style={ {
-									display: 'flex',
-									flexDirection: 'column',
-								} }
-							>
-								<span>{ __( 'Size Limit', 'sureforms' ) }</span>
-								<span>
-									<strong>
-										{ fileSizeLimit }
-										{ __( 'MB', 'sureforms' ) }
-									</strong>
-								</span>
-							</div>
-							<div
-								style={ {
-									display: 'flex',
-									flexDirection: 'column',
-								} }
-							>
-								<span>
-									{ __( 'Allowed Types', 'sureforms' ) }
-								</span>
-								<span>
-									<strong>
-										{ firstFive.length !== 0
-											? firstFive.map(
-												( obj ) => obj.value + ', '
-											  ) + '...'
-											: 'All types' }
-									</strong>
-								</span>
-							</div>
-						</div>
-					</label>
-				</div>
-				<p
-					hidden
-					id={ 'upload-field-error-' + blockID }
-					style={ { color: 'red' } }
-				>
-					{ __( 'File Size Exceeded The Limit', 'sureforms' ) }
-				</p>
+				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					<UploadClassicStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) : (
+					<UploadThemeStyle
+						attributes={ attributes }
+						blockID={ blockID }
+					/>
+				) }
 				{ help !== '' && (
 					<label
 						htmlFor={ 'upload-help-' + blockID }
-						className="text-secondary"
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 					>
 						{ help }
 					</label>

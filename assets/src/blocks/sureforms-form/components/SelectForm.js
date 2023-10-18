@@ -4,27 +4,23 @@ import { jsx } from '@emotion/react';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { addQueryArgs } from '@wordpress/url';
 import Select from 'react-select';
 
 export default ( { setForm } ) => {
 	const [ formsData, setFormsData ] = useState( [] );
-	const query = '';
 	const [ loading, setLoading ] = useState( false );
 
 	useEffect( () => {
 		fetchForms();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ query ] );
+	}, [] );
 
 	const fetchForms = async () => {
 		let response;
 		try {
 			setLoading( true );
 			response = await apiFetch( {
-				path: addQueryArgs( 'wp/v2/sureforms_form', {
-					search: query,
-				} ),
+				path: 'sureforms/v1/forms-data',
 			} );
 			setFormsData( response );
 		} finally {
@@ -45,7 +41,7 @@ export default ( { setForm } ) => {
 			loading={ loading }
 			isSearchable
 			options={ ( formsData || [] ).map( ( formEntry ) => {
-				const originalTitle = formEntry.title.rendered;
+				const originalTitle = formEntry.title;
 				const replacedTitle = originalTitle.replace( /&#8211;/g, '-' ); // Replace "&#8211;" with "-"
 
 				return {
