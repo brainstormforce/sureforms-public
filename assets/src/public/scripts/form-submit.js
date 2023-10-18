@@ -83,11 +83,17 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				// might be used later
-				// duplicateMessage.style.display = 'none';
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'none';
+				}
 				// inputField.style.borderColor = '#FCA5A5';
-				inputField.classList.add( 'sf-classic-input-error' );
+				if ( inputField ) {
+					inputField.classList.add( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -96,11 +102,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				inputField.classList.remove( 'sf-classic-input-error' );
+				if ( inputField ) {
+					inputField.classList.remove( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				// inputField.style.borderColor = '#d1d5db';
 			}
 		}
@@ -113,8 +123,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'#sureforms-phone-parent'
 			);
 			if ( hasDuplicate ) {
-				duplicateMessage.style.display = 'block';
-				inputField.classList.add( 'sf-classic-input-error' );
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'block';
+				}
+				if ( inputField ) {
+					inputField.classList.add( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -129,8 +143,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				duplicateMessage.style.display = 'none';
-				inputField.classList.remove( 'sf-classic-input-error' );
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'none';
+				}
+				if ( inputField ) {
+					inputField.classList.remove( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
@@ -409,8 +427,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if (
 			container.classList.contains( 'sureforms-input-number-container' )
 		) {
-			const min = inputField.getAttribute( 'min' );
-			const max = inputField.getAttribute( 'max' );
+			const min = inputField.getAttribute( 'minimum' );
+			const max = inputField.getAttribute( 'maximum' );
 			const minMaxErrorMessage = container.querySelector(
 				'.min-max-validation-message'
 			);
