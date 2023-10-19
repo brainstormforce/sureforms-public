@@ -84,7 +84,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
-				duplicateMessage.style.display = 'none';
+				// might be used later
+				// duplicateMessage.style.display = 'none';
 				// inputField.style.borderColor = '#FCA5A5';
 				inputField.classList.add( 'sf-classic-input-error' );
 				if ( errorInputIcon ) {
