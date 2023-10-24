@@ -28,7 +28,6 @@ class Checkbox_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id        = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
@@ -36,12 +35,13 @@ class Checkbox_Markup extends Base {
 		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-checkbox-container main-container' . esc_attr( $classname ) . '">
 		<div>
-			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-checkbox-' . esc_attr( $id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
+			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
 			<span class="sf-text-primary">
-				<label for="sureforms-checkbox-' . esc_attr( $id ) . '" class="sf-text-primary">' .
+				<label for="sureforms-checkbox-' . esc_attr( $block_id ) . '" class="sf-text-primary">' .
 					( $label_url
 						? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
 						: esc_html( $label )
@@ -64,7 +64,6 @@ class Checkbox_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id        = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
 		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
@@ -72,14 +71,15 @@ class Checkbox_Markup extends Base {
 		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-checkbox-container main-container sf-classic-inputs-holder">
 			<div class="relative flex items-start flex-row gap-2">
 				<div class="flex h-6 items-center">
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-checkbox-' . esc_attr( $id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input">
+					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input">
 				</div>
 				<div class="text-sm leading-6">
-					<label for="sureforms-checkbox-' . esc_attr( $id ) . '" class="sf-classic-label-text">' .
+					<label for="sureforms-checkbox-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' .
 						( $label_url
 							? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;" class="underline">' . esc_html( $label ) . '</a>'
 							: esc_html( $label )
