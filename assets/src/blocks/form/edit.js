@@ -170,16 +170,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const buttonStyle = isSureformsForm
 		? {
-				background: '#0084C7',
-				color: '#fff',
+			background: '#0084C7',
+			color: '#fff',
 		  }
 		: {
-				backgroundColor: shouldInheritStyle
-					? sureforms_keys?._sureforms_color1 || ''
-					: '',
-				color: shouldInheritStyle
-					? sureforms_keys?._sureforms_textcolor1 || ''
-					: '',
+			backgroundColor: shouldInheritStyle
+				? sureforms_keys?._sureforms_color1 || ''
+				: '',
+			color: shouldInheritStyle
+				? sureforms_keys?._sureforms_textcolor1 || ''
+				: '',
 		  };
 	const renderButtonHtml = () => {
 		return (
