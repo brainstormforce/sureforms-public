@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 function handleFormShortcode( button ) {
-	const input = button.previousElementSibling;
+	const input = button.nextElementSibling;
 
 	const icon = button.parentElement.querySelector( '#sf-copy-icon' );
 
@@ -10,9 +10,9 @@ function handleFormShortcode( button ) {
 	icon.style = 'color: green;';
 
 	setTimeout( () => {
+		icon.style = 'color: #9BA3AF;';
 		icon.classList.remove( 'dashicons-yes' );
 		icon.classList.add( 'dashicons-admin-page' );
-		icon.style = 'color: #4F575D;';
 	}, 2000 );
 
 	input.setSelectionRange( 0, 99999 ); // For mobile devices
