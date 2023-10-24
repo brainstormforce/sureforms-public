@@ -33,7 +33,7 @@ class Dropdown_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-dropdown-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
@@ -76,7 +76,7 @@ class Dropdown_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-classic-dropdown-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">

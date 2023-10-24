@@ -35,7 +35,7 @@ class Checkbox_Markup extends Base {
 		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-checkbox-container main-container' . esc_attr( $classname ) . '">
 		<div>
@@ -71,7 +71,7 @@ class Checkbox_Markup extends Base {
 		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-checkbox-container main-container sf-classic-inputs-holder">
 			<div class="relative flex items-start flex-row gap-2">

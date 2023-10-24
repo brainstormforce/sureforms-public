@@ -27,7 +27,7 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
@@ -49,14 +49,14 @@ class Upload_Markup extends Base {
     <label class="sf-text-primary">' . esc_html( $label ) . ' 
         ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
     </label>
-    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ) . '" id="sureforms-upload-index-' . esc_attr( $id ) . '" value="" type="hidden" />
-    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ) . '" class="sureforms-upload-field" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="file" hidden id="sureforms-upload-' . esc_attr( $id ) . '" 
+    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" id="sureforms-upload-index-' . esc_attr( $block_id ) . '" value="" type="hidden" />
+    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" class="sureforms-upload-field" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="file" hidden id="sureforms-upload-' . esc_attr( $block_id ) . '" 
     accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '"
     />
     <input class="sureforms-upload-size" value="' . esc_attr( $file_size ) . '" type="hidden" />
     <div class="sureforms-upload-inner-div" style="border: 1px solid #d1d5db; border-radius:4px;">
-        <label id="sureforms-upload-label" for="sureforms-upload-' . esc_attr( $id ) . '">
-            <div id="sureforms-upload-title-' . esc_attr( $id ) . '" class="sureforms-upload-title">
+        <label id="sureforms-upload-label" for="sureforms-upload-' . esc_attr( $block_id ) . '">
+            <div id="sureforms-upload-title-' . esc_attr( $block_id ) . '" class="sureforms-upload-title">
                 <i class="fa-solid fa-cloud-arrow-up sf-text-primary"></i>
                 <span class="sf-text-primary">Click to choose the file</span>
             </div>
@@ -73,7 +73,7 @@ class Upload_Markup extends Base {
         </label>
     </div>
     ' . ( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-    <span id="upload-field-error-' . esc_attr( $id ) . '" hidden style="color: red;">File Size Exceeded The Limit</span>
+    <span id="upload-field-error-' . esc_attr( $block_id ) . '" hidden style="color: red;">File Size Exceeded The Limit</span>
     <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
 </div>';
 	}
@@ -86,7 +86,7 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
@@ -117,9 +117,9 @@ class Upload_Markup extends Base {
                     </div>
                     <div class="mt-2 flex text-sm leading-6 text-gray-600">
                         <input class="sureforms-upload-size" value="' . esc_attr( $file_size ) . '" type="hidden" />
-                        <label for="sureforms-upload-' . esc_attr( $id ) . '" class="sf-classic-upload-label">
+                        <label for="sureforms-upload-' . esc_attr( $block_id ) . '" class="sf-classic-upload-label">
                             <span>Click to upload the file</span>
-                            <input id="sureforms-upload-' . esc_attr( $id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
+                            <input id="sureforms-upload-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
                         </label>
                     </div>
                     <p class="mb-1 text-xs leading-5 text-gray-600">' . esc_html( $allowed_formats ) . ' up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
@@ -127,9 +127,9 @@ class Upload_Markup extends Base {
             </div>
         </div>
         ' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-        <span class="mt-2 text-sm text-red-600" id="upload-field-error-' . esc_attr( $id ) . '" hidden >File Size Exceeded The Limit</span>
+        <span class="mt-2 text-sm text-red-600" id="upload-field-error-' . esc_attr( $block_id ) . '" hidden >File Size Exceeded The Limit</span>
         <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-        <div style="display:none" id="sureforms-upload-field-result-' . esc_attr( $id ) . '" class="sf-classic-upload-result">
+        <div style="display:none" id="sureforms-upload-field-result-' . esc_attr( $block_id ) . '" class="sf-classic-upload-result">
         </div>
     </div>';
 	}

@@ -35,7 +35,7 @@ class Datetimepicker_Markup extends Base {
 			$max        = isset( $attributes['max'] ) ? $attributes['max'] : '';
 			$error_msg  = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname  = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$block_id   = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 			$output  = '';
 			$output .= '
@@ -83,7 +83,7 @@ class Datetimepicker_Markup extends Base {
 			$max        = isset( $attributes['max'] ) ? $attributes['max'] : '';
 			$error_msg  = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname  = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$block_id   = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 			$output  = '';
 			$output .= '

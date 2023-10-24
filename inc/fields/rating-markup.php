@@ -26,7 +26,6 @@ class Rating_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id           = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
@@ -37,6 +36,7 @@ class Rating_Markup extends Base {
 		$max_value    = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
 		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname    = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$block_id     = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-rating-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
@@ -45,9 +45,9 @@ class Rating_Markup extends Base {
         </label>
         <input type="hidden" class="sureforms-rating-random-id" aria-required="' .
 			esc_attr( $required ? 'true' : 'false' ) . '" value="' .
-			esc_attr( $id ) . '" />
+			esc_attr( $block_id ) . '" />
         <input type="hidden" class="sureforms-rating-icon-color-' .
-			esc_attr( $id ) . '" value="' . esc_attr( $icon_color ) . '" />
+			esc_attr( $block_id ) . '" value="' . esc_attr( $icon_color ) . '" />
         <div style="justify-content: ' . ( 'fullWidth' === $width ? 'space-between' : 'space-evenly' ) . '; display: flex; align-items: center;">';
 
 		$icon = '';
@@ -68,12 +68,12 @@ class Rating_Markup extends Base {
 
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
-                <input style="display:contents;" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" class="sureforms-rating-field" value="' .
+                <input style="display:contents;" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" class="sureforms-rating-field" value="' .
 					esc_attr( strval( $i + 1 ) ) . '" id="sureforms-rating-' .
-					esc_attr( $id . '-' . $i ) . '" type="radio" aria-required=' . esc_attr( $required && 0 === $i ? 'true' : 'false' ) . ' />
+					esc_attr( $block_id . '-' . $i ) . '" type="radio" aria-required=' . esc_attr( $required && 0 === $i ? 'true' : 'false' ) . ' />
                 <div style="display:flex; flex-direction:column; align-items: center;">
                     <label color-data="#ddd" style="color:#ddd; font-size:25px;" class="sureforms-rating-' .
-						esc_attr( $id ) . '" for="sureforms-rating-' . esc_attr( $id . '-' . $i ) . '">' .
+						esc_attr( $block_id ) . '" for="sureforms-rating-' . esc_attr( $block_id . '-' . $i ) . '">' .
 						wp_kses_post( $icon ) . '
                     </label>
                     <div>' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</div>
@@ -96,7 +96,6 @@ class Rating_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id           = isset( $attributes['id'] ) ? strval( $attributes['id'] ) : '';
 		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
@@ -107,6 +106,7 @@ class Rating_Markup extends Base {
 		$max_value    = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
 		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname    = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$block_id     = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
 		$output .= '<div class="sureforms-classic-rating-container main-container sf-classic-inputs-holder ' . esc_attr( $classname ) . '">';
@@ -180,7 +180,7 @@ class Rating_Markup extends Base {
             <label class="sf-classic-label-text">
                 ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
-            <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="sf-classic-rating-field-' . esc_attr( $id ) . '" class="sf-rating-field-result"/>
+            <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="sf-classic-rating-field-' . esc_attr( $block_id ) . '" class="sf-rating-field-result"/>
             <ul class="sf-classic-event mt-2 flex list-none gap-3 p-0" data-te-rating-init>';
 
 		for ( $i = 0; $i < $max_value; $i++ ) {
