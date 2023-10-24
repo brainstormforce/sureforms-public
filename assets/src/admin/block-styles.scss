@@ -54,22 +54,8 @@
 	font-size: var( --sureforms_fontsize );
 }
 
-.sureforms-button {
-	background-color: var( --sf-primary-color );
-	color: var( --sf-primary-text-color );
-	border: none;
-	padding: 8px 14px 8px 14px;
-	border-radius: 4px;
-	font-weight: 600;
-	font-size: 0.875rem;
-}
-
 .sureforms-upload-inner-div {
 	color: var( --sf-primary-color );
-}
-.sureforms-default-colors {
-	background-color: #0284c7;
-	color: #ffffff;
 }
 
 /* Customize range input */
@@ -93,6 +79,19 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: 12px;
 	text-align: var( --sureforms_submit_alignment );
 	width: var( --sureforms_submit_width );
+	.sureforms-button {
+		background-color: var( --sf-primary-color );
+		color: var( --sf-primary-text-color );
+		border: none;
+		padding: 8px 14px 8px 14px;
+		border-radius: 4px;
+		font-weight: 600;
+		font-size: 0.875rem;
+	}
+	.sureforms-default-colors {
+		background-color: #0284c7;
+		color: #ffffff;
+	}
 }
 
 /**
