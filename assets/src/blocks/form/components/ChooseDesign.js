@@ -4,9 +4,10 @@ import { css, jsx } from '@emotion/react';
 import { __ } from '@wordpress/i18n';
 import Thumbnail from './Thumbnail';
 import { Button } from '@wordpress/components';
-import { useState, useEffect } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
-const { dispatch } = wp.data;
+// Might be used later.
+// const { dispatch } = wp.data;
 
 export default ( { templates, template, setTemplate } ) => {
 	const [ choice, setChoice ] = useState( template );
