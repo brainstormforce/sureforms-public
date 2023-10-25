@@ -267,7 +267,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'none';
-					confirmPassword.style.borderColor = '#FCA5A5';
+					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -278,7 +278,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'block';
-					confirmPassword.style.borderColor = '#FCA5A5';
+					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -292,7 +292,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'none';
-					confirmPassword.style.borderColor = '#d1d5db';
+					// confirmPassword.style.borderColor = '#d1d5db';
 				}
 			}
 		}
@@ -304,9 +304,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const confirmEmail = container.querySelector(
 				'.sureforms-input-confirm-email'
 			);
-			const confirmFieldError = container.querySelector(
-				'.srfm-cnf-email-required-message'
-			);
+			const confirmFieldError =
+				container.querySelectorAll( '.error-message' )[ 2 ];
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
@@ -314,7 +313,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-email-error'
 					).style.display = 'none';
-					confirmEmail.style.borderColor = '#FCA5A5';
+					// confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
@@ -347,35 +346,35 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Address field
 		//Might be used later
-		// if ( container.classList.contains( 'sureforms-address-container' ) ) {
-		// 	const addressInput = container.querySelectorAll( 'input' );
-		// 	const isAddressRequired =
-		// 		addressInput[ 1 ].getAttribute( 'aria-required' );
-		// 	let errCounter = 0;
-		// 	for (
-		// 		let i = 1;
-		// 		i < addressInput.length && isAddressRequired === 'true';
-		// 		i++
-		// 	) {
-		// 		if ( ! addressInput[ i ].value ) {
-		// 			errorMessage.style.display = 'block';
-		// 			addressInput[ i ].style.borderColor = '#FCA5A5';
-		// 			errCounter = 1;
-		// 			validateResult = true;
-		// 			if ( ! firstErrorInput ) {
-		// 				firstErrorInput = addressInput[ i ];
-		// 			}
-		// 		} else {
-		// 			errorMessage.style.display = 'none';
-		// 			addressInput[ i ].style.borderColor = '#d1d5db';
-		// 		}
-		// 		if ( errCounter === 1 ) {
-		// 			errorMessage.style.display = 'block';
-		// 		} else {
-		// 			errorMessage.style.display = 'none';
-		// 		}
-		// 	}
-		// }
+		if ( container.classList.contains( 'sureforms-address-container' ) ) {
+			const addressInput = container.querySelectorAll( 'input' );
+			const isAddressRequired =
+				addressInput[ 1 ].getAttribute( 'aria-required' );
+			let errCounter = 0;
+			for (
+				let i = 1;
+				i < addressInput.length && isAddressRequired === 'true';
+				i++
+			) {
+				if ( ! addressInput[ i ].value ) {
+					errorMessage.style.display = 'block';
+					// addressInput[ i ].style.borderColor = '#FCA5A5';
+					errCounter = 1;
+					validateResult = true;
+					if ( ! firstErrorInput ) {
+						firstErrorInput = addressInput[ i ];
+					}
+				} else {
+					errorMessage.style.display = 'none';
+					// addressInput[ i ].style.borderColor = '#d1d5db';
+				}
+				if ( errCounter === 1 ) {
+					errorMessage.style.display = 'block';
+				} else {
+					errorMessage.style.display = 'none';
+				}
+			}
+		}
 
 		//Upload field
 		if ( container.classList.contains( 'sureforms-upload-container' ) ) {
@@ -394,7 +393,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
 				errorMessage.style.display = 'block';
-				uploadInputInnerDiv.style.borderColor = '#FCA5A5';
+				// uploadInputInnerDiv.style.borderColor = '#FCA5A5';
 
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -472,7 +471,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} else {
 				minMaxErrorMessage.innerText = '';
-				inputField.classList.remove( 'sf-classic-input-error' );
 			}
 		}
 
