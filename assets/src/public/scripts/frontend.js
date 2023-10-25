@@ -140,6 +140,9 @@ if ( uploadFieldsContainer ) {
 						.querySelector( `#upload-field-error-${ id }` )
 						.removeAttribute( 'hidden' );
 				} else {
+					uploadField
+						.querySelector( `#upload-field-error-${ id }` )
+						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
 							? file.name.substring( 0, 17 ) +
@@ -150,9 +153,6 @@ if ( uploadFieldsContainer ) {
 						'sf-classic-inputs-holder'
 					);
 					if ( ! isClassic ) {
-						uploadField
-							.querySelector( `#upload-field-error-${ id }` )
-							.setAttribute( 'hidden', true );
 						uploadField.querySelector(
 							`#sureforms-upload-title-${ id }`
 						).innerHTML =

@@ -127,8 +127,8 @@ class Upload_Markup extends Base {
             </div>
         </div>
         ' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-        <span class="srfm-upload-file-size-error mt-2 text-sm text-red-600" id="upload-field-error-' . esc_attr( $id ) . '" hidden >File Size Exceeded The Limit</span>
         <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
+        <span class="srfm-upload-file-size-error error-message" id="upload-field-error-' . esc_attr( $id ) . '" hidden >File Size Exceeded The Limit</span>
         <div style="display:none" id="sureforms-upload-field-result-' . esc_attr( $id ) . '" class="sf-classic-upload-result">
         </div>
     </div>';
