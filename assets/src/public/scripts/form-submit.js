@@ -264,6 +264,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelectorAll( '.error-message' )[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
+					container.querySelector(
+						'.confirm-password-error'
+					).style.display = 'none';
 					confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -301,19 +304,26 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const confirmEmail = container.querySelector(
 				'.sureforms-input-confirm-email'
 			);
-			const confirmFieldError =
-				container.querySelectorAll( '.error-message' )[ 2 ];
+			const confirmFieldError = container.querySelector(
+				'.srfm-cnf-email-required-message'
+			);
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
 					confirmFieldError.style.display = 'block';
+					container.querySelector(
+						'.confirm-email-error'
+					).style.display = 'none';
 					confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
 					validateResult = true;
-				} else if ( confirmEmailValue !== inputValue ) {
+				} else if (
+					confirmEmailValue &&
+					confirmEmailValue !== inputValue
+				) {
 					confirmFieldError.style.display = 'none';
 					container.querySelector(
 						'.confirm-email-error'
@@ -373,6 +383,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const uploadInputInnerDiv = container.getElementsByClassName(
 				'sureforms-upload-inner-div'
 			)[ 0 ];
+			const isSizeError = container.querySelector(
+				'.srfm-upload-file-size-error'
+			);
+			if ( isSizeError ) {
+				isSizeError.setAttribute( 'hidden', 'true' );
+			}
 
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
@@ -454,7 +470,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else if ( inputValue ) {
+			} else {
 				minMaxErrorMessage.innerText = '';
 				inputField.classList.remove( 'sf-classic-input-error' );
 			}

@@ -128,6 +128,10 @@ if ( uploadFieldsContainer ) {
 		uploadInput.addEventListener( 'change', ( e ) => {
 			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
+			const isError = uploadField.querySelector( '.error-message' );
+			if ( isError ) {
+				isError.style.display = 'none';
+			}
 			const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
 			if ( file ) {
 				if ( file.size > maxFileSize ) {
