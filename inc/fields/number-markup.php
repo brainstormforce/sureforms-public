@@ -43,7 +43,7 @@ class Number_Markup extends Base {
             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="sureforms-input-number-' . esc_attr( $id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field sf-number-field">
 			' . ( '' !== $help ? '<label for="sureforms-input-number" class="sf-text-secondary">' . esc_html( $help ) . '</label>' : '' ) . '
             <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
-            <span class="min-max-validation-message error-message"></span>
+            <span style="display:none" class="min-max-validation-message error-message"></span>
          </div>';
 	}
 
@@ -73,7 +73,7 @@ class Number_Markup extends Base {
                 <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-number-' . esc_attr( $id ) . '" class="sf-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
             </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
             <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-            <p class="min-max-validation-message error-message"></p>
+            <p style="display:none" class="min-max-validation-message error-message"></p>
         </div>';
 	}
 
