@@ -1,6 +1,6 @@
 const paths = require( './paths' );
 const fs = require( 'fs' );
-const sass = require( 'node-sass' );
+const sass = require( 'sass' );
 
 function generateAndWriteCSS( inputFile, outputFile, message ) {
 	sass.render(
