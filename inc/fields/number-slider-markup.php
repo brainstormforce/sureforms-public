@@ -26,6 +26,7 @@ class Number_Slider_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
+		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$min                = isset( $attributes['min'] ) ? $attributes['min'] : 0;
@@ -34,7 +35,6 @@ class Number_Slider_Markup extends Base {
 		$value_display_text = isset( $attributes['valueDisplayText'] ) ? $attributes['valueDisplayText'] : '';
 		$error_msg          = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id           = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-number-slider-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label class="sf-text-primary" for="sureforms-number-slider-' . esc_attr( $block_id ) . '">' . esc_html( $label ) . '</label>
@@ -56,6 +56,7 @@ class Number_Slider_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
+		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$required           = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
@@ -65,7 +66,6 @@ class Number_Slider_Markup extends Base {
 		$value_display_text = isset( $attributes['valueDisplayText'] ) ? $attributes['valueDisplayText'] : '';
 		$error_msg          = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id           = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-number-slider-container sf-classic-number-slider sf-classic-inputs-holder ' . esc_attr( $classname ) . '">
         <div class="range-slider-container">

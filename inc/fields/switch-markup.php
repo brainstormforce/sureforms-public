@@ -28,7 +28,7 @@ class Switch_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$block_id      = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -68,7 +68,7 @@ class Switch_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$block_id      = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';

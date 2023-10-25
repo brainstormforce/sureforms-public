@@ -26,7 +26,7 @@ class Url_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -51,7 +51,7 @@ class Url_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';

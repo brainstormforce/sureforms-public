@@ -27,7 +27,7 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id         = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
@@ -86,7 +86,7 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_id         = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
 		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(

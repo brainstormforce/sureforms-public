@@ -26,6 +26,7 @@ class Number_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
+			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
@@ -36,7 +37,6 @@ class Number_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . ' ">
             <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
@@ -55,6 +55,7 @@ class Number_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
+			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
@@ -65,7 +66,6 @@ class Number_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
             <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>

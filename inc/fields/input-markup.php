@@ -26,6 +26,7 @@ class Input_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
+		$block_id      = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
@@ -36,7 +37,6 @@ class Input_Markup extends Base {
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_len  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
 		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id      = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="sureforms-input-text-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
 			<label class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
@@ -56,6 +56,7 @@ class Input_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
+		$block_id      = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
@@ -66,7 +67,6 @@ class Input_Markup extends Base {
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_len  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
 		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id      = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="main-container frontend-inputs-holder  ' . esc_attr( $classname ) . '">
 			<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>

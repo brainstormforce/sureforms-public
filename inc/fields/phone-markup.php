@@ -44,6 +44,7 @@ class Phone_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
+		$block_id        = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -54,7 +55,6 @@ class Phone_Markup extends Base {
 		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id        = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$data = $this->getPhoneCodes();
 
@@ -93,6 +93,7 @@ class Phone_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
+		$block_id        = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -103,7 +104,6 @@ class Phone_Markup extends Base {
 		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
 		$dulicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname       = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id        = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$data = $this->getPhoneCodes();
 
