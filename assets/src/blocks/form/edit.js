@@ -33,7 +33,13 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		)
 		.map( ( block ) => block.name );
 
-	const CORE_BLOCKS = [ 'core/image', 'core/columns', 'core/heading' ];
+	const CORE_BLOCKS = [
+		'core/image',
+		'core/columns',
+		'core/column',
+		'core/heading',
+		'core/paragraph',
+	];
 
 	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
 
@@ -170,16 +176,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const buttonStyle = isSureformsForm
 		? {
-			background: '#0084C7',
-			color: '#fff',
+				background: '#0084C7',
+				color: '#fff',
 		  }
 		: {
-			backgroundColor: shouldInheritStyle
-				? sureforms_keys?._sureforms_color1 || ''
-				: '',
-			color: shouldInheritStyle
-				? sureforms_keys?._sureforms_textcolor1 || ''
-				: '',
+				backgroundColor: shouldInheritStyle
+					? sureforms_keys?._sureforms_color1 || ''
+					: '',
+				color: shouldInheritStyle
+					? sureforms_keys?._sureforms_textcolor1 || ''
+					: '',
 		  };
 	const renderButtonHtml = () => {
 		return (
