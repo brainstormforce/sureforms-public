@@ -33,12 +33,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		)
 		.map( ( block ) => block.name );
 
-	const CORE_BLOCKS = [
-		'core/image',
-		'core/columns',
-		'core/column',
-		'core/heading',
-	];
+	const CORE_BLOCKS = [ 'core/image', 'core/columns', 'core/heading' ];
 
 	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
 
