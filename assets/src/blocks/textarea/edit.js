@@ -11,11 +11,11 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import Range from '@Components/range/Range.js';
 
 export default ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -116,11 +116,12 @@ export default ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<Range
 								label={ __( 'Text Max Length', 'sureforms' ) }
 								value={ maxLength }
 								displayUnit={ false }
 								min={ 0 }
+								max={ 1000 }
 								data={ {
 									value: maxLength,
 									label: 'maxLength',
@@ -131,7 +132,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 									} );
 								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Rows', 'sureforms' ) }
 								value={ rows }
 								displayUnit={ false }
@@ -145,7 +146,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Columns', 'sureforms' ) }
 								displayUnit={ false }
 								value={ cols }

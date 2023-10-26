@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
@@ -12,11 +12,11 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGSelectControl from '@Components/select-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
+import Range from '@Components/range/Range.js';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -35,6 +35,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
+	const [ error, setError ] = useState( false );
 
 	const handleInput = ( e ) => {
 		let inputValue = e.target.value;
@@ -99,9 +100,11 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: newValue } )
 								}
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
+								min={ 0 }
+								max={ 1000 }
 								step={ 1 }
 								data={ {
 									value: defaultValue,
@@ -134,36 +137,70 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<Range
 								label={ __( 'Minimum Value', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
+								min={ 0 }
+								max={ 1000 }
 								data={ {
 									value: minValue,
 									label: 'minValue',
 								} }
 								value={ minValue }
-								onChange={ ( value ) =>
-									setAttributes( {
-										minValue: value,
-									} )
-								}
+								onChange={ ( value ) => {
+									if ( value >= maxValue ) {
+										setError( true );
+										setAttributes( { minValue: 0 } );
+									} else {
+										setError( false );
+										setAttributes( { minValue: value } );
+									}
+								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Maximum Value', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
+								min={ 0 }
+								max={ 1000 }
 								data={ {
 									value: maxValue,
 									label: 'maxValue',
 								} }
 								value={ maxValue }
-								onChange={ ( value ) =>
-									setAttributes( {
-										maxValue: value,
-									} )
-								}
+								onChange={ ( value ) => {
+									if ( value <= minValue ) {
+										setError( true );
+										setAttributes( {
+											maxValue: Number( minValue ) + 1,
+										} );
+									} else {
+										setError( false );
+										setAttributes( { maxValue: value } );
+									}
+								} }
 							/>
+							{ error && (
+								<p
+									style={ {
+										fontSize: '12px',
+										fontStyle: 'normal',
+										color: 'red',
+									} }
+								>
+									{ __(
+										'Please check the Minimum and Maximum value',
+										'sureforms'
+									) }
+								</p>
+							) }
+							<p className="components-base-control__help">
+								{ __(
+									'Note: Max value should always be greater than min value',
+									'sureforms'
+								) }
+							</p>
 							<UAGSelectControl
 								label={ __( 'Number Format', 'sureforms' ) }
 								data={ {

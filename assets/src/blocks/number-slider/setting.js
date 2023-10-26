@@ -10,7 +10,7 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
+import Range from '@Components/range/Range.js';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
 	const { label, help, min, max, step, valueDisplayText } = attributes;
@@ -37,9 +37,11 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<UAGNumberControl
-							label={ __( 'Min', 'sureforms' ) }
+						<Range
+							label={ __( 'Minimum Value', 'sureforms' ) }
 							value={ min }
+							min={ 0 }
+							max={ 1000 }
 							data={ {
 								value: min,
 								label: 'min',
@@ -55,9 +57,11 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								}
 							} }
 						/>
-						<UAGNumberControl
-							label={ __( 'Max', 'sureforms' ) }
+						<Range
+							label={ __( 'Maximum Value', 'sureforms' ) }
 							value={ max }
+							min={ 0 }
+							max={ 1000 }
 							data={ {
 								value: max,
 								label: 'max',
@@ -84,20 +88,22 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								} }
 							>
 								{ __(
-									'Please check the value of Min and Max',
+									'Please check the Minimum and Maximum value',
 									'sureforms'
 								) }
 							</p>
 						) }
 						<p className="components-base-control__help">
 							{ __(
-								'Note:Max value should always be greater than min value',
+								'Note: Max value should always be greater than min value',
 								'sureforms'
 							) }
 						</p>
-						<UAGNumberControl
+						<Range
 							label={ __( 'Step Increment', 'sureforms' ) }
 							value={ step }
+							min={ 0 }
+							max={ 1000 }
 							data={ {
 								value: step,
 								label: 'step',

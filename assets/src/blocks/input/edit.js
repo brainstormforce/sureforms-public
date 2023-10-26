@@ -11,11 +11,11 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
 import { InputThemeStyle } from './components/InputThemeStyle';
+import Range from '@Components/range/Range.js';
 
 export default ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -151,11 +151,12 @@ export default ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Max text length', 'sureforms' ) }
 								displayUnit={ false }
 								value={ textLength }
 								min={ 0 }
+								max={ 1000 }
 								data={ {
 									value: textLength,
 									label: 'textLength',
