@@ -75,7 +75,6 @@ class Gutenberg_Hooks {
 				'sureforms/date-time-picker',
 				'sureforms/number-slider',
 				'core/columns',
-				'core/column',
 				'core/image',
 				'core/heading',
 				'core/paragraph',
