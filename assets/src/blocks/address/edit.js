@@ -42,6 +42,7 @@ export default function Edit( {
 		countryPlaceholder,
 		postalLabel,
 		formId,
+		help,
 	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -108,20 +109,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: lineOneLabel,
-												label: 'lineOneLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineOneLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineOneLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: lineOneLabel,
+											label: 'lineOneLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ lineOneLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												lineOneLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: lineOnePlaceholder,
@@ -142,20 +143,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: lineTwoLabel,
-												label: 'lineTwoLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineTwoLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineTwoLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: lineTwoLabel,
+											label: 'lineTwoLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ lineTwoLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												lineTwoLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: lineTwoPlaceholder,
@@ -176,20 +177,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: cityLabel,
-												label: 'cityLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ cityLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													cityLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: cityLabel,
+											label: 'cityLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ cityLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												cityLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: cityPlaceholder,
@@ -210,20 +211,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: stateLabel,
-												label: 'stateLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ stateLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													stateLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: stateLabel,
+											label: 'stateLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ stateLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												stateLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: statePlaceholder,
@@ -244,20 +245,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: postalLabel,
-												label: 'postalLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ postalLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													postalLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: postalLabel,
+											label: 'postalLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ postalLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												postalLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: postalPlaceholder,
@@ -278,20 +279,20 @@ export default function Edit( {
 							>
 								{ 'classic' ===
 								sureforms_keys?._sureforms_form_styling ? null : (
-										<UAGTextControl
-											data={ {
-												value: countryLabel,
-												label: 'countryLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ countryLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													countryLabel: value,
-												} )
-											}
-										/>
-									) }
+									<UAGTextControl
+										data={ {
+											value: countryLabel,
+											label: 'countryLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ countryLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												countryLabel: value,
+											} )
+										}
+									/>
+								) }
 								<UAGTextControl
 									data={ {
 										value: countryPlaceholder,
@@ -306,6 +307,18 @@ export default function Edit( {
 									}
 								/>
 							</UAGAdvancedPanelBody>
+							<span className="uag-control-label uagb-control__header" />
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
@@ -334,6 +347,19 @@ export default function Edit( {
 						attributes={ attributes }
 						blockID={ blockID }
 					/>
+				) }
+				{ help !== '' && (
+					<label
+						htmlFor={ 'email-input-help-' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ help }
+					</label>
 				) }
 			</div>
 		</>
