@@ -619,6 +619,7 @@ function showSuccessMessage( element, form ) {
 		element.style.minHeight = '420px';
 	}
 	element.style.opacity = 1;
+	element.style.height = 'auto';
 	form.style.display = 'none';
 }
 
