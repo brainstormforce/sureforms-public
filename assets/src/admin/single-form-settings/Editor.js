@@ -10,7 +10,7 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, createRoot } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
@@ -21,6 +21,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import HeaderTitle from './HeaderTitle.js';
 
 const { select, dispatch } = wp.data;
 
@@ -46,6 +47,13 @@ const default_keys = {
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+
+	const headerCenter = document.querySelector( '.edit-post-header__center' );
+
+	if ( headerCenter ) {
+		const root = createRoot( headerCenter );
+		root.render( <HeaderTitle /> );
+	}
 
 	const { deviceType } = useSelect( () => {
 		return {
