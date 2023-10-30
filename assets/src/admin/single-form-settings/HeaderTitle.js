@@ -1,9 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { useEntityProp } from '@wordpress/core-data';
 import { TextControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
 const HeaderTitle = () => {
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const postStatus = useSelect( ( select ) => {
+		return select( 'core/editor' ).getEditedPostAttribute( 'status' );
+	}, [] );
 
 	const [ title, setTitle ] = useEntityProp(
 		'postType',
@@ -29,7 +33,7 @@ const HeaderTitle = () => {
 				setTitle( value );
 			} }
 			autoComplete="off"
-			autoFocus={ true }
+			{ ...( postStatus === 'draft' && { autoFocus: true } ) }
 		/>
 	);
 };
