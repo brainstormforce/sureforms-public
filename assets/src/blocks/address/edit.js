@@ -42,6 +42,7 @@ export default function Edit( {
 		countryPlaceholder,
 		postalLabel,
 		formId,
+		help,
 	} = attributes;
 	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -306,6 +307,18 @@ export default function Edit( {
 									}
 								/>
 							</UAGAdvancedPanelBody>
+							<span className="uag-control-label uagb-control__header" />
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
@@ -334,6 +347,19 @@ export default function Edit( {
 						attributes={ attributes }
 						blockID={ blockID }
 					/>
+				) }
+				{ help !== '' && (
+					<label
+						htmlFor={ 'sureforms-address-field' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ help }
+					</label>
 				) }
 			</div>
 		</>

@@ -62,6 +62,7 @@ class Address_Markup extends Base {
 			$country_label        = isset( $attributes['countryLabel'] ) ? $attributes['countryLabel'] : '';
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
 
 			$data = $this->get_countries();
 
@@ -179,8 +180,9 @@ class Address_Markup extends Base {
 		}
 						$output .= '</select>
 						</div>
-					</div>
-					<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+					</div>' .
+					( '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+					'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
 				</div>
 		';
 		return $output;
@@ -207,6 +209,7 @@ class Address_Markup extends Base {
 			$postal_placeholder   = isset( $attributes['postalPlaceholder'] ) ? $attributes['postalPlaceholder'] : '';
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
 
 			$data = $this->get_countries();
 		$output   = '';
@@ -262,8 +265,9 @@ class Address_Markup extends Base {
 							aria-required=' . esc_attr( $required ? 'true' : 'fasle' ) . '
 							placeholder="' . esc_attr( $postal_placeholder ) . '">
 						</div>
-					</div>
-					<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
+					</div>' .
+					( '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+					'<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
 				</div>
 		';
 		return $output;
