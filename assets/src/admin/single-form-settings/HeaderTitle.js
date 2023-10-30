@@ -19,7 +19,7 @@ const HeaderTitle = () => {
 	return (
 		<TextControl
 			style={ {
-				width: '311px',
+				width: '500px',
 				padding: '11px 16px',
 				marginTop: '12px',
 				borderRadius: '4px',
