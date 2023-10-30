@@ -350,7 +350,7 @@ export default function Edit( {
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'email-input-help-' + blockID }
+						htmlFor={ 'sureforms-address-field' + blockID }
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
