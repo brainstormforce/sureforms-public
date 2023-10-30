@@ -23,11 +23,11 @@
 			"type": "boolean"
 		},
 		"options": {
-			"default": [],
+			"default": [ "Option 1", "Option 2" ],
 			"type": "array"
 		},
 		"label": {
-			"default": "Select",
+			"default": "Multi Choice",
 			"type": "string",
 			"selector": "input"
 		},

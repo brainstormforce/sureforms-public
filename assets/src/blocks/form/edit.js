@@ -38,6 +38,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		'core/columns',
 		'core/column',
 		'core/heading',
+		'core/paragraph',
 	];
 
 	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
