@@ -199,8 +199,11 @@ function AppearanceSettings( props ) {
 						value: sureforms_keys._sureforms_color1,
 						label: '_sureforms_color1',
 					} }
-					onColorChange={ ( colorValue ) =>
-						updateMeta( '_sureforms_color1', colorValue )
+					onColorChange={ ( colorValue ) => {
+						if ( colorValue !== sureforms_keys._sureforms_color1 ) {
+							updateMeta( '_sureforms_color1', colorValue );
+						}
+					}
 					}
 					value={ sureforms_keys._sureforms_color1 }
 					isFormSpecific={ true }
@@ -216,8 +219,11 @@ function AppearanceSettings( props ) {
 						value: sureforms_keys._sureforms_textcolor1,
 						label: '_sureforms_textcolor1',
 					} }
-					onColorChange={ ( colorValue ) =>
-						updateMeta( '_sureforms_textcolor1', colorValue )
+					onColorChange={ ( colorValue ) => {
+						if ( colorValue !== sureforms_keys._sureforms_textcolor1 ) {
+							updateMeta( '_sureforms_textcolor1', colorValue );
+						}
+					}
 					}
 					value={ sureforms_keys._sureforms_textcolor1 }
 					isFormSpecific={ true }
@@ -231,8 +237,11 @@ function AppearanceSettings( props ) {
 						value: sureforms_keys._sureforms_color2,
 						label: '_sureforms_color2',
 					} }
-					onColorChange={ ( colorValue ) =>
-						updateMeta( '_sureforms_color2', colorValue )
+					onColorChange={ ( colorValue ) => {
+						if ( colorValue !== sureforms_keys._sureforms_color2 ) {
+							updateMeta( '_sureforms_color2', colorValue );
+						}
+					}
 					}
 					value={ sureforms_keys._sureforms_color2 }
 					isFormSpecific={ true }

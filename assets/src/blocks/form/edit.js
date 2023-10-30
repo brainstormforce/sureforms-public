@@ -125,6 +125,9 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	useEffect( () => {
 		if ( ! siteEditor ) {
+			if ( ! attributes.className ) {
+				return;
+			}
 			function updateMeta( option, value ) {
 				const option_array = {};
 				option_array[ option ] = value;
