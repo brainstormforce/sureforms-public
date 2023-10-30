@@ -6,7 +6,8 @@ import Thumbnail from './Thumbnail';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import PlaceholderTemplate from './PlaceholderTemplate';
-const { dispatch } = wp.data;
+// Might be used later.
+// const { dispatch } = wp.data;
 
 export default ( { templates, template, setTemplate } ) => {
 	const [ choice, setChoice ] = useState( template );
@@ -17,10 +18,14 @@ export default ( { templates, template, setTemplate } ) => {
 		object-fit: contain;
 	`;
 
+	// Might be used later.
+	// useEffect( () => {
+	// 	dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
+	// }, [ choice ] );
+
 	// Force Form panel open.
-	const forcePanel = () => {
-		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
-	};
+	// const forcePanel = () => {
+	// };
 
 	return (
 		<PlaceholderTemplate
@@ -30,7 +35,7 @@ export default ( { templates, template, setTemplate } ) => {
 					variant="primary"
 					disabled={ ! choice }
 					onClick={ () => {
-						forcePanel();
+						// forcePanel();
 						setTemplate( choice );
 					} }
 				>

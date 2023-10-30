@@ -86,10 +86,10 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id               = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
-		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
-		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
+		$id              = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$file_size       = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
+		$allowed_formats = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) && 0 !== count( $attributes['allowedFormats'] ) ? implode(
 			', ',
 			array_map(
 				function( $obj ) {
@@ -97,7 +97,12 @@ class Upload_Markup extends Base {
 				},
 				$attributes['allowedFormats']
 			)
-		) . '...' : 'All types';
+		) : 'All types';
+		if ( is_array( $attributes['allowedFormats'] ) && 5 <= count( $attributes['allowedFormats'] ) ) {
+			$many_types_symbol = '...';
+		} else {
+			$many_types_symbol = '';
+		}
 		$accepted_formats = str_replace( '...', '', $allowed_formats );
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
@@ -122,7 +127,7 @@ class Upload_Markup extends Base {
                             <input id="sureforms-upload-' . esc_attr( $id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
                         </label>
                     </div>
-                    <p class="mb-1 text-xs leading-5 text-gray-600">' . esc_html( $allowed_formats ) . ' up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
+                    <p class="mb-1 text-xs leading-5 text-gray-600"> <span class="font-semibold">' . ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ) . '</span> up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
                 </div>
             </div>
         </div>

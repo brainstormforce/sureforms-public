@@ -347,7 +347,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//Address field
 		//Might be used later
 		if ( container.classList.contains( 'sureforms-address-container' ) ) {
-			const addressInput = container.querySelectorAll( 'input' );
+			const addressInput = container.querySelectorAll( 'input,select' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
 			let errCounter = 0;
