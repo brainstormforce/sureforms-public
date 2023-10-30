@@ -29,6 +29,20 @@ class Admin {
 		add_action( 'admin_menu', [ $this, 'sureforms_settings_page' ] );
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'sureforms_enqueue_styles' ] );
+		add_action( 'admin_head', [ $this, 'sureforms_enqueue_header_styles' ] );
+	}
+
+	/**
+	 * Sureforms editor header styles.
+	 *
+	 * @since 0.0.1
+	 */
+	public function sureforms_enqueue_header_styles() {
+		$current_screen = get_current_screen();
+
+		if ( 'sureforms_form' === $current_screen->id ) {
+			wp_enqueue_style( 'sureforms-editor-header-styles', SUREFORMS_URL . 'assets/build/editor_header_styles.css', [], SUREFORMS_VER, 'all' );
+		}
 	}
 
 	/**

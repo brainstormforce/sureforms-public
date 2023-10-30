@@ -70,6 +70,10 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/settings/settings.js'
 		),
+		editor_header_styles: path.resolve(
+			__dirname,
+			'assets/src/admin/single-form-settings/header-styles.scss'
+		),
 		page_header: path.resolve(
 			__dirname,
 			'assets/src/admin/components/PageHeader.js'
