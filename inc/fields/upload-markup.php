@@ -73,7 +73,7 @@ class Upload_Markup extends Base {
         </label>
     </div>
     ' . ( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-    <span class="srfm-upload-file-size-error" id="upload-field-error-' . esc_attr( $id ) . '" hidden style="color: red;">' . esc_html__( 'File Size Exceeded The Limit', 'SureForms' ) . '</span>
+    <span class="srfm-upload-file-size-error" id="upload-field-error-' . esc_attr( $id ) . '" hidden style="color: red;">' . esc_html__( 'File Size Exceeded The Limit', 'sureforms' ) . '</span>
     <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
 </div>';
 	}
@@ -133,7 +133,7 @@ class Upload_Markup extends Base {
         </div>
         ' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
         <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-        <span class="srfm-upload-file-size-error error-message" id="upload-field-error-' . esc_attr( $id ) . '" hidden >' . esc_html__( 'File Size Exceeded The Limit', 'SureForms' ) . '</span>
+        <span class="srfm-upload-file-size-error error-message" id="upload-field-error-' . esc_attr( $id ) . '" hidden >' . esc_html__( 'File Size Exceeded The Limit', 'sureforms' ) . '</span>
         <div style="display:none" id="sureforms-upload-field-result-' . esc_attr( $id ) . '" class="sf-classic-upload-result">
         </div>
     </div>';

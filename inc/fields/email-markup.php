@@ -51,7 +51,7 @@ class Email_Markup extends Base {
 		: '' ) .
 		( '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
-        <span style="display:none" class="error-message confirm-email-error">Field values do not match.</span>
+        <span style="display:none" class="error-message confirm-email-error">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</span>
     </div>';
 
 	}
