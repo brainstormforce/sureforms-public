@@ -1,13 +1,47 @@
-export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
+import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+
+export const MultichoiceClassicStyle = ( { attributes, blockID, isSelected,addOption,changeOption } ) => {
 	const { label, required, options, single_selection } = attributes;
-	return (
-		<>
-			<label className="sf-classic-label-text" htmlFor="text">
-				{ label }
-				{ required && label && (
-					<span className="text-red-500"> *</span>
-				) }
-			</label>
+
+	const editView = options.map( ( option, index ) => {
+		return (
+			<div key={ index } className="uagb-form-radio-option">
+				<input
+					type="radio"
+					name={ `radio-${ blockID }` }
+					value={ option.optiontitle }
+					id={ option.optiontitle }
+				/>
+				<label // eslint-disable-line jsx-a11y/label-has-associated-control
+					htmlFor={ option.optiontitle }
+				></label>
+				<input
+					className="uagb-inner-input-view"
+					aria-label={ option.optiontitle }
+					onChange={ ( e ) =>
+						changeOption(
+							{
+								optiontitle: e.target.value,
+							},
+							index
+						)
+					}
+					type="text"
+					value={ option.optiontitle }
+				/>
+				<Button
+					className="uagb-form-radio-option-delete"
+					icon="trash"
+					label="Remove"
+					onClick={ () => deleteOption( index ) }
+				/>
+			</div>
+		);
+	} );
+
+	const OriginalView = ()=>{
+		return (
 			<div className="radio-buttons flex flex-wrap mt-2">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
@@ -35,7 +69,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 										id={ `multi-choice-option-${ blockID }-${ i }` }
 										className="text-sm font-medium leading-6 text-primary_color mt-[-0.5px]"
 									>
-										{ option }
+										{ option.optiontitle }
 									</article>
 								</div>
 							</div>
@@ -43,6 +77,31 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 					);
 				} ) }
 			</div>
+		)
+	}
+
+	return (
+		<>
+			<label className="sf-classic-label-text" htmlFor="text">
+				{ label }
+				{ required && label && (
+					<span className="text-red-500"> *</span>
+				) }
+			</label>
+			{ isSelected && (
+					<>
+						<div className="uagb-forms-radio-controls">
+							{ editView }
+							<div>
+								<Button isSecondary onClick={ addOption }>
+									{ __( ' + Add Option ', 'ultimate-addons-for-gutenberg' ) }
+								</Button>
+							</div>
+						</div>
+					</>
+				) }
+
+				{ ! isSelected && <OriginalView  /> }
 		</>
 	);
 };

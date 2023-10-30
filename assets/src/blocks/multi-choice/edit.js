@@ -53,21 +53,39 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}
 
-	function editOption( value, i ) {
-		if ( value === '' ) {
-			handleDelete( i );
-			return;
-		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
-		setAttributes( { options: updatedOptions } );
-	}
+	const addOption = () => {
+		const newOption = {
+			optiontitle: __( 'Option Name ', 'ultimate-addons-for-gutenberg' ) + `${ options.length + 1 }`,
+		};
+		options[ options.length ] = newOption;
+		const addnewOptions = options.map( ( item ) => item );
 
-	function handleDelete( i ) {
-		const newOptions = [ ...options ];
-		newOptions.splice( i, 1 );
-		setAttributes( { options: newOptions } );
-	}
+		setAttributes( { options: addnewOptions } );
+	};
+
+	const changeOption = ( e, index ) => {
+		const editOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...e };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: editOptions } );
+	};
+
+	const deleteOption = ( index ) => {
+		const deleteOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				options.splice( index, 1 );
+				item = { options };
+			}
+			return item;
+		} );
+
+		setAttributes( { deleteOptions } );
+	};
+
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -364,6 +382,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<MultichoiceClassicStyle
 						blockID={ blockID }
 						attributes={ attributes }
+						isSelected={isSelected}
+						addOption={ addOption }
+						deleteOption={deleteOption}
+						changeOption={changeOption}
 					/>
 				) : (
 					<MultichoiceThemeStyle
