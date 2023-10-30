@@ -149,10 +149,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			title={ __( 'Form Options', 'sureforms' ) }
 		>
 			<InspectorTabs
-				tabs={ [ 'style', 'advance' ] }
-				defaultTab={ 'style' }
+				tabs={ [ 'general', 'advance' ] }
+				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.style }>
+				<InspectorTab { ...UAGTabs.general }>
 					<AppearanceSettings default_keys={ default_keys } />
 				</InspectorTab>
 				<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
