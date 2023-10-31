@@ -340,7 +340,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'sureforms-address-field' + blockID }
+						htmlFor={ 'sureforms-address-field' + block_id }
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
