@@ -15,12 +15,11 @@ export const MultichoiceThemeStyle = ( {
 
 	const editView = options.map( ( option, index ) => {
 		return (
-			<div key={ index } className="uagb-form-radio-option">
+			<div key={ index }>
 				<label // eslint-disable-line jsx-a11y/label-has-associated-control
 					htmlFor={ option.optiontitle }
 				></label>
 				<input
-					className="uagb-inner-input-view"
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
 						changeOption(
@@ -34,7 +33,6 @@ export const MultichoiceThemeStyle = ( {
 					value={ option.optiontitle }
 				/>
 				<Button
-					className="uagb-form-radio-option-delete"
 					icon="trash"
 					label="Remove"
 					onClick={ () => deleteOption( index ) }
