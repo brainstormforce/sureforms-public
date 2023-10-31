@@ -73,7 +73,7 @@ class Upload_Markup extends Base {
         </label>
     </div>
     ' . ( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-    <span id="upload-field-error-' . esc_attr( $block_id ) . '" hidden style="color: red;">File Size Exceeded The Limit</span>
+    <span class="srfm-upload-file-size-error" id="upload-field-error-' . esc_attr( $block_id ) . '" hidden style="color: red;">' . esc_html__( 'File Size Exceeded The Limit', 'sureforms' ) . '</span>
     <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
 </div>';
 	}
@@ -86,10 +86,10 @@ class Upload_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$block_id         = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
-		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$file_size        = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
-		$allowed_formats  = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
+		$block_id        = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
+		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$file_size       = isset( $attributes['fileSizeLimit'] ) ? $attributes['fileSizeLimit'] : '';
+		$allowed_formats = isset( $attributes['allowedFormats'] ) && is_array( $attributes['allowedFormats'] ) ? implode(
 			', ',
 			array_map(
 				function( $obj ) {
@@ -97,7 +97,12 @@ class Upload_Markup extends Base {
 				},
 				$attributes['allowedFormats']
 			)
-		) . '...' : 'All types';
+		) : 'All types';
+		if ( is_array( $attributes['allowedFormats'] ) && 5 <= count( $attributes['allowedFormats'] ) ) {
+			$many_types_symbol = '...';
+		} else {
+			$many_types_symbol = '';
+		}
 		$accepted_formats = str_replace( '...', '', $allowed_formats );
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
@@ -122,13 +127,13 @@ class Upload_Markup extends Base {
                             <input id="sureforms-upload-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
                         </label>
                     </div>
-                    <p class="mb-1 text-xs leading-5 text-gray-600">' . esc_html( $allowed_formats ) . ' up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
+                    <p class="mb-1 text-xs leading-5 text-gray-600"> <span class="font-semibold">' . ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ) . '</span> up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
                 </div>
             </div>
         </div>
         ' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-        <span class="mt-2 text-sm text-red-600" id="upload-field-error-' . esc_attr( $block_id ) . '" hidden >File Size Exceeded The Limit</span>
         <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
+        <span class="srfm-upload-file-size-error error-message" id="upload-field-error-' . esc_attr( $block_id ) . '" hidden >' . esc_html__( 'File Size Exceeded The Limit', 'sureforms' ) . '</span>
         <div style="display:none" id="sureforms-upload-field-result-' . esc_attr( $block_id ) . '" class="sf-classic-upload-result">
         </div>
     </div>';

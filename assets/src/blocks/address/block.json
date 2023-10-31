@@ -76,6 +76,10 @@
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"help": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

@@ -51,7 +51,7 @@ class Email_Markup extends Base {
 		: '' ) .
 		( '' !== $help ? '<label for="sureforms-input-email" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
-        <span style="display:none" class="error-message confirm-email-error">Field values do not match.</span>
+        <span style="display:none" class="error-message confirm-email-error">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</span>
     </div>';
 
 	}
@@ -106,7 +106,7 @@ class Email_Markup extends Base {
             <input type="email" id="sureforms-input-confirm-email-' . esc_attr( $block_id ) . '" class="sureforms-input-confirm-email  sf-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
         </div>' : '' ) . '
 		' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-        <p style="display:none" class="error-message ">' . esc_html( $error_msg ) . '</p>
+        <p style="display:none" class="error-message srfm-cnf-email-required-message">' . esc_html( $error_msg ) . '</p>
         <p style="display:none" class="error-message confirm-email-error ">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</p>
     </div>';
 

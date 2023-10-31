@@ -39,8 +39,13 @@ class Number_Markup extends Base {
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . ' ">
+<<<<<<< HEAD
             <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="sureforms-input-number-' . esc_attr( $block_id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" min="' . esc_attr( $min_value ) . '" max="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field sf-number-field">
+=======
+            <label for="sureforms-input-number-' . esc_attr( $id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="sureforms-input-number-' . esc_attr( $id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field sf-number-field">
+>>>>>>> 278d271158491b35bb2d8e8137c8704dd9dd88e9
 			' . ( '' !== $help ? '<label for="sureforms-input-number" class="sf-text-secondary">' . esc_html( $help ) . '</label>' : '' ) . '
             <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
             <span style="display:none" class="min-max-validation-message error-message"></span>
@@ -70,7 +75,7 @@ class Number_Markup extends Base {
 			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
             <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
             <div>
-                <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" min="' . esc_attr( $min_value ) . '" max="' . esc_attr( $max_value ) . '">
+                <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
             </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
             <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
             <p style="display:none" class="min-max-validation-message error-message"></p>

@@ -16,7 +16,7 @@ import Range from '@Components/range/Range.js';
 /**
  * Components dependencies
  */
-import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { UploadClassicStyle } from './components/UploadClassicStyle';
 import { UploadThemeStyle } from './components/UploadThemeStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
@@ -112,7 +112,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							<span className="uag-control-label uagb-control__header">
 								{ __( 'Allowed Types', 'sureforms' ) }
 							</span>
-							<CreatableSelect
+							<Select
 								options={ wpUploadFormats.map( ( format ) => {
 									return {
 										value: format,
@@ -131,7 +131,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							/>
 							<p className="components-base-control__help">
 								{ __(
-									'Search for the File type or you can add your custom File types.',
+									'Search for the File type or you can add your custom File types. If no types are selected then all types will be allowed',
 									'sureforms'
 								) }
 							</p>

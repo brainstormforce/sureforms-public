@@ -39,6 +39,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 		countryPlaceholder,
 		postalLabel,
 		formId,
+		help,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -296,6 +297,18 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 									}
 								/>
 							</UAGAdvancedPanelBody>
+							<span className="uag-control-label uagb-control__header" />
+							<UAGTextControl
+								label={ __( 'Help', 'sureforms' ) }
+								value={ help }
+								data={ {
+									value: help,
+									label: 'help',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { help: value } )
+								}
+							/>
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
@@ -324,6 +337,19 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 						attributes={ attributes }
 						blockID={ block_id }
 					/>
+				) }
+				{ help !== '' && (
+					<label
+						htmlFor={ 'sureforms-address-field' + blockID }
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+					>
+						{ help }
+					</label>
 				) }
 			</div>
 		</>

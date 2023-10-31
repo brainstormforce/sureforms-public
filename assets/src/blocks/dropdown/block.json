@@ -18,7 +18,7 @@
 			"type": "boolean"
 		},
 		"options": {
-			"default": [],
+			"default": [ "Option 1", "Option 2" ],
 			"type": "array"
 		},
 		"label": {
@@ -39,7 +39,7 @@
 		},
 		"placeholder": {
 			"type": "string",
-			"default":"Select Option"
+			"default": "Select Option"
 		}
 	}
 }
