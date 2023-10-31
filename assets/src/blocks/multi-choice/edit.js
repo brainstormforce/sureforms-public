@@ -87,15 +87,15 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		setAttributes( { deleteOptions } );
 	};
 
-	// function editOption( value, i ) {
-	// 	if ( value === '' ) {
-	// 		handleDelete( i );
-	// 		return;
-	// 	}
-	// 	const updatedOptions = [ ...options ];
-	// 	updatedOptions[ i ] = value;
-	// 	setAttributes( { options: updatedOptions } );
-	// }
+	function editOption( value, i ) {
+		if ( value === '' ) {
+			deleteOption( i );
+			return;
+		}
+		const updatedOptions = [ ...options ];
+		updatedOptions[ i ].optiontitle = value;
+		setAttributes( { options: updatedOptions } );
+	}
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -251,7 +251,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 																						onChange={ (
 																							value
 																						) =>
-																							changeOption(
+																							editOption(
 																								value,
 																								i
 																							)
