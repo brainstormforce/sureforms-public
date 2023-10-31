@@ -103,7 +103,7 @@ class Multichoice_Markup extends Base {
 				<input type="hidden" value="' . esc_attr( $style ) . '" id="sureforms-multi-choice-style-' . esc_attr( $id ) . '" />
 				<input class="sureforms-multi-choice-' . esc_attr( $id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $id ) : str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" type="hidden" value="">
 				<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
-				<div class="radio-buttons flex flex-wrap mt-2">';
+				<div class="radio-buttons flex flex-wrap mt-2 justify-between">';
 		if ( is_array( $options ) ) {
 			foreach ( $options as $i => $option ) {
 						$output .= ' <label class="classic-sf-radio">

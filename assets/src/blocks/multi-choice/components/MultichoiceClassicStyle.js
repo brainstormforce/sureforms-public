@@ -1,5 +1,23 @@
+import { useEffect } from '@wordpress/element';
+
 export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 	const { label, required, options, single_selection } = attributes;
+	useEffect( () => {
+		const multichoiceOptions = document.getElementsByClassName(
+			'sf-classic-multi-choice'
+		);
+		for ( let mi = 0; mi < multichoiceOptions.length; mi++ ) {
+			const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
+			const eleHeight2 = multichoiceOptions[ mi++ ].offsetHeight;
+			if ( eleHeight1 > eleHeight2 ) {
+				multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
+				multichoiceOptions[ mi - 1 ].style.height = eleHeight1 + 'px';
+			} else {
+				multichoiceOptions[ mi ].style.height = eleHeight2 + 'px';
+				multichoiceOptions[ mi - 1 ].style.height = eleHeight2 + 'px';
+			}
+		}
+	}, [] );
 	return (
 		<>
 			<label className="sf-classic-label-text" htmlFor="text">
@@ -8,7 +26,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 					<span className="text-red-500"> *</span>
 				) }
 			</label>
-			<div className="radio-buttons flex flex-wrap mt-2">
+			<div className="radio-buttons flex flex-wrap mt-2 justify-between">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (

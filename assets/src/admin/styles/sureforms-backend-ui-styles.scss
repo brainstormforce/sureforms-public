@@ -9,10 +9,10 @@
 }
 
 .classic-sf-radio {
-	flex: 49% 0 0;
+	flex: calc(50% - 7px) 0 0;
 }
 .radio-buttons {
-	gap: 2%;
+	gap: 7px;
 }
 .classic-sf-radio input {
 	display: none;
@@ -98,7 +98,7 @@
 				@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0;
 			}
 			.sf-classic-multi-choice {
-				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2;
+				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-[7px];
 			}
 			.sf-classic-url-element {
 				@apply block w-full rounded-none rounded-r-md border-0 border-[#D1D5DB] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:border-solid focus:border-sf_primary_color focus:ring-sf_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
