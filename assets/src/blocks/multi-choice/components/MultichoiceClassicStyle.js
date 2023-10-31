@@ -1,18 +1,19 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-export const MultichoiceClassicStyle = ( { attributes, blockID, isSelected,addOption,changeOption } ) => {
+export const MultichoiceClassicStyle = ( {
+	attributes,
+	blockID,
+	isSelected,
+	addOption,
+	changeOption,
+	deleteOption,
+} ) => {
 	const { label, required, options, single_selection } = attributes;
 
 	const editView = options.map( ( option, index ) => {
 		return (
 			<div key={ index } className="uagb-form-radio-option">
-				<input
-					type="radio"
-					name={ `radio-${ blockID }` }
-					value={ option.optiontitle }
-					id={ option.optiontitle }
-				/>
 				<label // eslint-disable-line jsx-a11y/label-has-associated-control
 					htmlFor={ option.optiontitle }
 				></label>
@@ -40,7 +41,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID, isSelected,addOp
 		);
 	} );
 
-	const OriginalView = ()=>{
+	const OriginalView = () => {
 		return (
 			<div className="radio-buttons flex flex-wrap mt-2">
 				{ options.map( ( option, key, i = 0 ) => {
@@ -77,8 +78,8 @@ export const MultichoiceClassicStyle = ( { attributes, blockID, isSelected,addOp
 					);
 				} ) }
 			</div>
-		)
-	}
+		);
+	};
 
 	return (
 		<>
@@ -89,19 +90,19 @@ export const MultichoiceClassicStyle = ( { attributes, blockID, isSelected,addOp
 				) }
 			</label>
 			{ isSelected && (
-					<>
-						<div className="uagb-forms-radio-controls">
-							{ editView }
-							<div>
-								<Button isSecondary onClick={ addOption }>
-									{ __( ' + Add Option ', 'ultimate-addons-for-gutenberg' ) }
-								</Button>
-							</div>
+				<>
+					<div className="uagb-forms-radio-controls">
+						{ editView }
+						<div>
+							<Button isSecondary onClick={ addOption }>
+								{ __( ' + Add Option ', 'sureforms' ) }
+							</Button>
 						</div>
-					</>
-				) }
+					</div>
+				</>
+			) }
 
-				{ ! isSelected && <OriginalView  /> }
+			{ ! isSelected && <OriginalView /> }
 		</>
 	);
 };

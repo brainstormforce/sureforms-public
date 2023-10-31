@@ -38,7 +38,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
-	const [ newOption, setNewOption ] = useState( '' );
+	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
 
 	function handleClick( index ) {
 		if ( singleSelection === true ) {
@@ -54,24 +54,25 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	}
 
 	const addOption = () => {
-		const newOption = {
-			optiontitle: __( 'Option Name ', 'ultimate-addons-for-gutenberg' ) + `${ options.length + 1 }`,
+		const newOptions = {
+			optiontitle:
+				__( 'Option Name ', 'sureforms' ) + `${ options.length + 1 }`,
 		};
-		options[ options.length ] = newOption;
+		options[ options.length ] = newOptions;
 		const addnewOptions = options.map( ( item ) => item );
 
 		setAttributes( { options: addnewOptions } );
 	};
 
 	const changeOption = ( e, index ) => {
-		const editOptions = options.map( ( item, thisIndex ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...e };
 			}
 			return item;
 		} );
 
-		setAttributes( { options: editOptions } );
+		setAttributes( { options: newEditOptions } );
 	};
 
 	const deleteOption = ( index ) => {
@@ -85,6 +86,16 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 
 		setAttributes( { deleteOptions } );
 	};
+
+	// function editOption( value, i ) {
+	// 	if ( value === '' ) {
+	// 		handleDelete( i );
+	// 		return;
+	// 	}
+	// 	const updatedOptions = [ ...options ];
+	// 	updatedOptions[ i ] = value;
+	// 	setAttributes( { options: updatedOptions } );
+	// }
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -231,16 +242,16 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.optiontitle
 																						}
 																						data={ {
-																							value: option,
+																							value: option.optiontitle,
 																							label: 'option',
 																						} }
 																						onChange={ (
 																							value
 																						) =>
-																							editOption(
+																							changeOption(
 																								value,
 																								i
 																							)
@@ -251,7 +262,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
-																							handleDelete(
+																							deleteOption(
 																								i
 																							)
 																						}
@@ -277,13 +288,13 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 							<div className="sureform-add-option-container">
 								<UAGTextControl
 									data={ {
-										value: newOption,
+										value: newOption.optiontitle,
 										label: 'option',
 									} }
 									showHeaderControls={ false }
-									value={ newOption }
+									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
-										setNewOption( value )
+										setNewOption( { optiontitle: value } )
 									}
 								/>
 								<Button
@@ -382,10 +393,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<MultichoiceClassicStyle
 						blockID={ blockID }
 						attributes={ attributes }
-						isSelected={isSelected}
+						isSelected={ isSelected }
 						addOption={ addOption }
-						deleteOption={deleteOption}
-						changeOption={changeOption}
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
 					/>
 				) : (
 					<MultichoiceThemeStyle
@@ -393,6 +404,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
+						isSelected={ isSelected }
+						addOption={ addOption }
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
 					/>
 				) }
 
