@@ -102,10 +102,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 								sureforms_keys?._sureforms_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
-									<UAGAdvancedPanelBody
-										title={ __( 'Date Settings', 'sureforms' ) }
-										initialOpen={ false }
-									>
+									<>
 										<span className="uag-control-label uagb-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
@@ -172,7 +169,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 												'sureforms'
 											) }
 										</p>
-									</UAGAdvancedPanelBody>
+									</>
 								) : (
 									''
 								) }
