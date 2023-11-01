@@ -16,9 +16,7 @@ export const MultichoiceThemeStyle = ( {
 	const editView = options.map( ( option, index ) => {
 		return (
 			<div key={ index }>
-				<label // eslint-disable-line jsx-a11y/label-has-associated-control
-					htmlFor={ option.optiontitle }
-				></label>
+				<label htmlFor={ option.optiontitle }></label>
 				<input
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
