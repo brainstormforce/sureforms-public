@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import {
+	InspectorControls,
+	useBlockProps,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -136,25 +140,33 @@ export default ( { clientId, attributes, setAttributes } ) => {
 						<SwitchClassicStyle
 							attributes={ attributes }
 							sureforms_keys={ sureforms_keys }
-							blockID={blockID}
-							setAttributes={setAttributes}
+							blockID={ blockID }
+							setAttributes={ setAttributes }
 						/>
 					) : (
-						<SwitchThemeStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
+						<SwitchThemeStyle
+							blockID={ blockID }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) }
 				</div>
 				{ switchHelpText !== '' && (
-					<label
-						htmlFor={ 'switch-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ switchHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { switchHelpText: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ switchHelpText }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

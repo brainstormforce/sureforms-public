@@ -1,7 +1,12 @@
 import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 
-export const SwitchClassicStyle = ( { attributes, sureforms_keys,setAttributes,blockID } ) => {
+export const SwitchClassicStyle = ( {
+	attributes,
+	sureforms_keys,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, checked: isChecked, required } = attributes;
 	const [ toggle, setToggle ] = useState( isChecked );
 	let color = sureforms_keys._sureforms_color1;
@@ -15,7 +20,7 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys,setAttributes,b
 
 	return (
 		<>
-			<label className="sureforms-switch-label">
+			<div style={ { flex: 1 } } className="sureforms-switch-label">
 				<div className="sf-text-primary !flex !items-start !gap-2 !mt-1">
 					<div
 						className="switch-background sf-classic-toggle-bg mt-[5px] mr-[5px]"
@@ -50,27 +55,18 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys,setAttributes,b
 							</span>
 						</div>
 					</div>
-					{/* <RichText
-						tagName="label"
+					<RichText
+						tagName="span"
 						value={ label }
-						onChange={ ( value ) => setAttributes( { label: value } ) }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
 						className={ `sf-classic-label-text ${ isRequired }` }
 						multiline={ false }
 						id={ blockID }
-					/> */}
-					<span className="sf-classic-label-text">
-						{ label }{ ' ' }
-						{ required && label ? (
-							<span className="!text-required_icon_color">
-								{ ' ' }
-								*
-							</span>
-						) : (
-							''
-						) }
-					</span>
+					/>
 				</div>
-			</label>
+			</div>
 		</>
 	);
 };

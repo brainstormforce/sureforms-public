@@ -1,6 +1,12 @@
-export const CheckboxThemeStyle = ( { attributes, blockID } ) => {
-	const { label, checked: isChecked, required, labelUrl } = attributes;
+import { RichText } from '@wordpress/block-editor';
 
+export const CheckboxThemeStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
+	const { label, checked: isChecked, required, labelUrl } = attributes;
+	const isRequired = required ? 'required' : '';
 	return (
 		<>
 			<input
@@ -10,25 +16,31 @@ export const CheckboxThemeStyle = ( { attributes, blockID } ) => {
 				required={ required }
 			></input>
 			<label
-				className="sf-text-primary"
+				className={ `sf-text-primary ${ isRequired }` }
 				htmlFor={ 'checkbox-block-' + blockID }
 			>
 				{ labelUrl !== '' ? (
-					<a
-						href={ labelUrl }
-						className="sf-text-primary"
-						style={ {
-							textDecoration: 'none',
-							color: 'var(--sf-primary-color)',
-						} }
-					>
-						{ label }
-					</a>
+					<RichText
+						tagName="a"
+						value={ label }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
+						className={ `sf-text-primary ${ isRequired }` }
+						multiline={ false }
+						id={ blockID }
+					/>
 				) : (
-					label
-				) }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
+					<RichText
+						tagName="a"
+						value={ label }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
+						className={ `sf-text-primary ${ isRequired }` }
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</label>
 		</>

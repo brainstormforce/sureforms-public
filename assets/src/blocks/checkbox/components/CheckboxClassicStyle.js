@@ -1,8 +1,14 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const CheckboxClassicStyle = ( { attributes } ) => {
+export const CheckboxClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, checked: isChecked, required, labelUrl } = attributes;
 	const [ selected, setSelected ] = useState( isChecked );
+	const isRequired = required ? 'required' : '';
 	useEffect( () => {
 		setSelected( isChecked );
 	}, [ isChecked ] );
@@ -27,19 +33,28 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 							className="underline"
 							rel="noreferrer"
 						>
-							<label className="sf-classic-label-text">
-								{ label }
-							</label>
+							<RichText
+								tagName="label"
+								value={ label }
+								onChange={ ( value ) =>
+									setAttributes( { label: value } )
+								}
+								className={ `sf-classic-label-text ${ isRequired }` }
+								multiline={ false }
+								id={ blockID }
+							/>
 						</a>
 					) : (
-						<label className="sf-classic-label-text">
-							{ label }
-						</label>
-					) }
-					{ required && label ? (
-						<span style={ { color: 'red' } }> *</span>
-					) : (
-						''
+						<RichText
+							tagName="label"
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
+							className={ `sf-classic-label-text ${ isRequired }` }
+							multiline={ false }
+							id={ blockID }
+						/>
 					) }
 				</div>
 			</div>

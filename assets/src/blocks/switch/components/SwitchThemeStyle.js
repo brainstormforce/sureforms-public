@@ -1,4 +1,6 @@
-export const SwitchThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const SwitchThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, checked: isChecked, required } = attributes;
 
 	const inputStyle = {
@@ -30,6 +32,7 @@ export const SwitchThemeStyle = ( { attributes, blockID } ) => {
 		left: isChecked ? '27px' : '2px',
 		transition: 'left 0.2s',
 	};
+	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
@@ -41,15 +44,23 @@ export const SwitchThemeStyle = ( { attributes, blockID } ) => {
 				/>
 				<div style={ thumbStyle }></div>
 			</div>
-			<label
-				className="sf-text-primary"
+			<RichText
+				tagName="span"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
+			{ /* <label
+				className=""
 				htmlFor={ 'switch-block-' + blockID }
 			>
 				{ label }
 				{ required && label && (
 					<span style={ { color: 'red' } }> *</span>
 				) }
-			</label>
+			</label> */ }
 		</>
 	);
 };

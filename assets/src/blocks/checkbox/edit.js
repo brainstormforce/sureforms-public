@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import {
+	InspectorControls,
+	useBlockProps,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -140,23 +144,35 @@ export default ( { attributes, setAttributes, clientId } ) => {
 					} }
 				>
 					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-						<CheckboxClassicStyle attributes={ attributes } />
+						<CheckboxClassicStyle
+							blockID={ blockID }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) : (
-						<CheckboxThemeStyle attributes={ attributes } />
+						<CheckboxThemeStyle
+							blockID={ blockID }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) }
 				</div>
 				{ checkboxHelpText !== '' && (
-					<label
-						htmlFor={ 'checkbox-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ checkboxHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { checkboxHelpText: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ checkboxHelpText }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</div>
