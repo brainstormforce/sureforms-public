@@ -227,7 +227,7 @@ class Block extends Base {
 				<?php endif; ?>
 				<p id="sureforms-error-message" class="sureforms-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="sureforms-success-message-page-<?php echo esc_attr( $id ); ?>" style="height:0;" class="sureforms-single-form sureforms-success-box in-page"> 
+			<div id="sureforms-success-message-page-<?php echo esc_attr( $id ); ?>" style="height:0; opacity:0; min-height:0;" class="sureforms-single-form sureforms-success-box in-page"> 
 				<i class="fa-regular fa-circle-check"></i>
 				<article class="sureforms-success-box-header">
 					<?php echo esc_html__( 'Thank you', 'sureforms' ); ?>
