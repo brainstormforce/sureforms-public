@@ -3,7 +3,11 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -172,25 +176,31 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<UploadClassicStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<UploadThemeStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'upload-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

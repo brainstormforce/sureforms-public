@@ -1,18 +1,20 @@
-export const UrlClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const UrlClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
+	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
 			<div className="sf-classic-inputs-holder">
-				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `sf-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
 				<div className="mt-2 flex rounded-md shadow-sm">
 					<span className="sf-classic-url-prefix">https://</span>
 					<input

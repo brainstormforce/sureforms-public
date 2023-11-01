@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -15,8 +19,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { AddressThemeStyle } from './components/addressThemeStyle';
 import { AddressClassicStyle } from './components/addressClassicStyle';
-import { RichText } from '@wordpress/block-editor';
-
 import countries from './countries.json';
 
 export default function Edit( {
@@ -341,25 +343,29 @@ export default function Edit( {
 						countries={ countries }
 						attributes={ attributes }
 						blockID={ blockID }
-						setAttributes={setAttributes}
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<AddressThemeStyle
 						countries={ countries }
 						attributes={ attributes }
 						blockID={ blockID }
-						setAttributes={setAttributes}
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
 					<RichText
 						tagName="label"
 						value={ help }
-						onChange={ ( value ) => setAttributes( { help: value } ) }
-						className={ 'classic' ===
-						sureforms_keys?._sureforms_form_styling
-							? 'sforms-helper-txt'
-							: 'sf-text-secondary' }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
 						multiline={ false }
 						id={ blockID }
 					/>

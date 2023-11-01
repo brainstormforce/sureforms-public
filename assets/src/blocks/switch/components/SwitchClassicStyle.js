@@ -1,12 +1,14 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
+export const SwitchClassicStyle = ( { attributes, sureforms_keys,setAttributes,blockID } ) => {
 	const { label, checked: isChecked, required } = attributes;
 	const [ toggle, setToggle ] = useState( isChecked );
 	let color = sureforms_keys._sureforms_color1;
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+	const isRequired = required ? 'required' : '';
 	useEffect( () => {
 		setToggle( isChecked );
 	}, [ isChecked ] );
@@ -48,6 +50,14 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
 							</span>
 						</div>
 					</div>
+					{/* <RichText
+						tagName="label"
+						value={ label }
+						onChange={ ( value ) => setAttributes( { label: value } ) }
+						className={ `sf-classic-label-text ${ isRequired }` }
+						multiline={ false }
+						id={ blockID }
+					/> */}
 					<span className="sf-classic-label-text">
 						{ label }{ ' ' }
 						{ required && label ? (

@@ -3,7 +3,11 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -221,26 +225,32 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						attributes={ attributes }
 						blockID={ blockID }
 						handleChange={ handleChange }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<PhoneThemeStyle
 						attributes={ attributes }
 						blockID={ blockID }
 						handleChange={ handleChange }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'phone-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

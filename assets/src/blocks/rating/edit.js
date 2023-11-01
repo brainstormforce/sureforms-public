@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
@@ -220,22 +224,34 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<RatingClassicStyle attributes={ attributes } />
+					<RatingClassicStyle
+						setAttributes={ setAttributes }
+						blockID={ blockID }
+						attributes={ attributes }
+					/>
 				) : (
-					<RatingThemeStyle attributes={ attributes } />
+					<RatingThemeStyle
+						setAttributes={ setAttributes }
+						blockID={ blockID }
+						attributes={ attributes }
+					/>
 				) }
 				{ ratingBoxHelpText !== '' && (
-					<label
-						htmlFor={ 'text-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ ratingBoxHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { ratingBoxHelpText: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ ratingBoxHelpText }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

@@ -1,20 +1,27 @@
 import data from '../phoneCodes.json';
+import { RichText } from '@wordpress/block-editor';
 
-export const PhoneClassicStyle = ( { attributes, blockID, handleChange } ) => {
+export const PhoneClassicStyle = ( {
+	attributes,
+	blockID,
+	handleChange,
+	setAttributes,
+} ) => {
 	const { label, placeholder, required, defaultValue, defaultCountryCode } =
 		attributes;
 
+	const isRequired = required ? 'required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-classic-label-text"
-				htmlFor={ 'text-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="relative mt-2">
 				<div className="group sf-classic-phone-parent">
 					<div className="absolute inset-y-0 left-0 flex items-center">

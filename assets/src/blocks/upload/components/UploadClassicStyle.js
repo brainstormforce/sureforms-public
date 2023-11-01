@@ -1,23 +1,28 @@
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const UploadClassicStyle = ( { attributes, blockID } ) => {
+export const UploadClassicStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
+	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
 			<div className="col-span-full">
-				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `sf-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
 				<div className="sf-classic-upload-div">
 					<div className="text-center">
 						<div
@@ -59,9 +64,7 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 											) {
 												return ' ' + obj.value;
 											}
-											return (
-												' ' + obj.value + ','
-											);
+											return ' ' + obj.value + ',';
 										} else if ( index === 4 ) {
 											return ' ' + obj.value + '...';
 										}

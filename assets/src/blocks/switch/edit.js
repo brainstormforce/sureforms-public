@@ -136,9 +136,11 @@ export default ( { clientId, attributes, setAttributes } ) => {
 						<SwitchClassicStyle
 							attributes={ attributes }
 							sureforms_keys={ sureforms_keys }
+							blockID={blockID}
+							setAttributes={setAttributes}
 						/>
 					) : (
-						<SwitchThemeStyle attributes={ attributes } />
+						<SwitchThemeStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
 					) }
 				</div>
 				{ switchHelpText !== '' && (

@@ -15,14 +15,14 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 	return (
 		<>
 			<div className="frontend-inputs-holder sf-classic-inputs-holder">
-			<RichText
-				tagName="label"
-				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${isRequired}` }
-				multiline={ false }
-				id={ blockID }
-			/>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `sf-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
 				<div className="relative mt-2 rounded-md shadow-sm">
 					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 						<svg

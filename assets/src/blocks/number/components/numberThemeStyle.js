@@ -1,4 +1,11 @@
-export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const NumberThemeStyle = ( {
+	attributes,
+	blockID,
+	handleInput,
+	setAttributes,
+} ) => {
 	const {
 		label,
 		placeholder,
@@ -9,12 +16,19 @@ export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
 		formatType,
 	} = attributes;
 
+	const isRequired = required ? 'required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'number-input-' + blockID }
-			>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
+			<label className="" htmlFor={ 'number-input-' + blockID }>
 				{ label }
 				{ required && label && (
 					<span style={ { color: 'red' } }> *</span>

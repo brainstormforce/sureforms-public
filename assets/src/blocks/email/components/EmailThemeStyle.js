@@ -1,4 +1,6 @@
-export const EmailThemeStyle = ( { attributes, blockID,setAttributes } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const EmailThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -12,11 +14,11 @@ export const EmailThemeStyle = ( { attributes, blockID,setAttributes } ) => {
 
 	return (
 		<>
-		<RichText
+			<RichText
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary" ${isRequired}` }
+				className={ `sf-text-primary" ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>

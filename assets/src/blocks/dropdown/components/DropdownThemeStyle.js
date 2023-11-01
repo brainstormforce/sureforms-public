@@ -1,17 +1,21 @@
 import { RichText } from '@wordpress/block-editor';
 
-export const DropdownThemeStyle = ( { attributes, blockID, setAttributes } ) => {
+export const DropdownThemeStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { required, options, label, placeholder } = attributes;
 
 	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
-		<RichText
+			<RichText
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${isRequired}` }
+				className={ `sf-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>

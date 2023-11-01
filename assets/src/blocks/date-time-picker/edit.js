@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -15,7 +19,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
-import { RichText } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
@@ -206,22 +209,34 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<DatetimepickerClassicStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
+					<DatetimepickerClassicStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<DatetimepickerThemeStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
+					<DatetimepickerThemeStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ help !== '' && (
 					<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-					className={ 'classic' ===
-					sureforms_keys?._sureforms_form_styling
-						? 'sforms-helper-txt'
-						: 'sf-text-secondary' }
-					multiline={ false }
-					id={ blockID }
-				/>
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

@@ -4,7 +4,11 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
-export const DropdownClassicStyle = ( { attributes,setAttributes,blockID } ) => {
+export const DropdownClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const { required, options, label, placeholder } = attributes;
 	const [ open, setOpen ] = useState( false );
 
@@ -20,13 +24,13 @@ export const DropdownClassicStyle = ( { attributes,setAttributes,blockID } ) => 
 
 	return (
 		<>
-		<RichText
+			<RichText
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${isRequired}` }
+				className={ `sf-classic-label-text ${ isRequired }` }
 				multiline={ false }
-				id={ `listbox-label ${blockID}` }
+				id={ `listbox-label ${ blockID }` }
 			/>
 			<div className="relative mt-2">
 				<input

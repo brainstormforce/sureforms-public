@@ -1,6 +1,11 @@
 import { RichText } from '@wordpress/block-editor';
 
-export const AddressThemeStyle = ( { attributes, countries, blockID,setAttributes } ) => {
+export const AddressThemeStyle = ( {
+	attributes,
+	countries,
+	blockID,
+	setAttributes,
+} ) => {
 	const {
 		required,
 		label,
@@ -25,13 +30,13 @@ export const AddressThemeStyle = ( { attributes, countries, blockID,setAttribute
 	return (
 		<>
 			<RichText
-					tagName="label"
-					value={ label }
-					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ isRequired }
-					multiline={ false }
-					id={ blockID }
-				/>
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ isRequired }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div>
 				<div
 					id={ 'address-field-' + blockID }

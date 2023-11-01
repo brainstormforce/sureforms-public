@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import {
+	InspectorControls,
+	useBlockProps,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -184,21 +188,34 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				} }
 			>
 				{ 'classic' === stylingType ? (
-					<TextareaClassicStyle attributes={ attributes } />
+					<TextareaClassicStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<TextareaThemeStyle attributes={ attributes } />
+					<TextareaThemeStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ textAreaHelpText !== '' && (
-					<label
+					<RichText
+						tagName="label"
+						value={ textAreaHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { textAreaHelpText: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ textAreaHelpText }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

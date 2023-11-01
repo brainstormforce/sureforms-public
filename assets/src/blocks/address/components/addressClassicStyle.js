@@ -1,7 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
-export const AddressClassicStyle = ( { attributes,setAttributes, countries, blockID } ) => {
+export const AddressClassicStyle = ( {
+	attributes,
+	setAttributes,
+	countries,
+	blockID,
+} ) => {
 	const {
 		required,
 		label,
@@ -21,7 +26,7 @@ export const AddressClassicStyle = ( { attributes,setAttributes, countries, bloc
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${isRequired}` }
+				className={ `sf-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>

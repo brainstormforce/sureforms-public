@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { UrlThemeStyle } from './components/UrlThemeStyle';
@@ -43,22 +43,34 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<UrlClassicStyle attributes={ attributes } />
+					<UrlClassicStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<UrlThemeStyle attributes={ attributes } />
+					<UrlThemeStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'url-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

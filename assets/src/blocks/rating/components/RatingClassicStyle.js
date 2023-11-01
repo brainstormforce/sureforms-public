@@ -1,6 +1,12 @@
-export const RatingClassicStyle = ( { attributes } ) => {
-	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+import { RichText } from '@wordpress/block-editor';
 
+export const RatingClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
+	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+	const isRequired = required ? 'required' : '';
 	let svg = '';
 	switch ( iconShape ) {
 		case 'star':
@@ -105,14 +111,14 @@ export const RatingClassicStyle = ( { attributes } ) => {
 
 	return (
 		<>
-			<label className="sf-classic-label-text">
-				{ label }
-				{ required && label ? (
-					<span style={ { color: 'red' } }> *</span>
-				) : (
-					''
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<ul
 				className="sf-classic-event mt-2 flex list-none gap-3 p-0"
 				data-te-rating-init

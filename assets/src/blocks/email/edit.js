@@ -1,7 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -15,7 +19,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { EmailThemeStyle } from './components/EmailThemeStyle';
 import { EmailClassicStyle } from './components/EmailClassicStyle';
-import { RichText } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -177,22 +180,34 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<EmailClassicStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
+					<EmailClassicStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<EmailThemeStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
+					<EmailThemeStyle
+						blockID={ blockID }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ help !== '' && (
 					<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
-					className={ 'classic' ===
-					sureforms_keys?._sureforms_form_styling
-						? 'sforms-helper-txt'
-						: 'sf-text-secondary' }
-					multiline={ false }
-					id={ blockID }
-				/>
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
+						className={
+							'classic' ===
+							sureforms_keys?._sureforms_form_styling
+								? 'sforms-helper-txt'
+								: 'sf-text-secondary'
+						}
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

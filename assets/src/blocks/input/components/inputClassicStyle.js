@@ -1,17 +1,20 @@
-export const InputClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const InputClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
+
+	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
-			<label
-				className="sf-classic-label-text"
-				htmlFor={ 'text-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
 				id={ 'text-input-' + blockID }
 				type="text"

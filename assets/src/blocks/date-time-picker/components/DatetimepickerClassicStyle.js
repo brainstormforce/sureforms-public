@@ -1,17 +1,21 @@
 import { RichText } from '@wordpress/block-editor';
 
-export const DatetimepickerClassicStyle = ( { attributes,setAttributes, blockID } ) => {
+export const DatetimepickerClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, required, fieldType } = attributes;
 
 	const isRequired = required ? 'required' : '';
 
 	return (
 		<>
-		<RichText
+			<RichText
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${isRequired}` }
+				className={ `sf-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>

@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -364,6 +368,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<MultichoiceClassicStyle
 						blockID={ blockID }
 						attributes={ attributes }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<MultichoiceThemeStyle
@@ -371,21 +376,26 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
+						setAttributes={ setAttributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'text-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</div>

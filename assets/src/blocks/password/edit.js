@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { PasswordClassicStyle } from './components/PasswordClassicStyle';
@@ -46,25 +46,31 @@ export default ( { attributes, setAttributes, clientId } ) => {
 					<PasswordClassicStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<PasswordThemeStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'password-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>

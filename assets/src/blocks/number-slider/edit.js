@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './setting';
 import { SliderClassicStyle } from './components/sliderClassicStyle';
@@ -50,25 +50,31 @@ export default ( { clientId, attributes, setAttributes } ) => {
 						attributes={ attributes }
 						blockID={ blockID }
 						sureforms_keys={ sureforms_keys }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<SliderThemeStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'number-slider-input-help-' + blockID }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
 								? 'sforms-helper-txt'
 								: 'sf-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ blockID }
+					/>
 				) }
 			</div>
 		</>
