@@ -28,7 +28,7 @@ class Switch_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id            = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -40,12 +40,12 @@ class Switch_Markup extends Base {
 		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
 
 		return '<div class="sureforms-switch-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
-		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $id ) . '">
+		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $block_id ) . '">
 			<div style="display: flex; align-items: flex-start; gap: 0.5rem;" class="sf-text-primary">
 				<div class="switch-background" style="background-color: ' . ( $checked ? '#007CBA' : '#dcdcdc' ) . ';">
 					<input class="sureforms-switch sf-default-switch"
-						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"
-						id="sureforms-switch-' . esc_attr( $id ) . '"
+						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
+						id="sureforms-switch-' . esc_attr( $block_id ) . '"
 						' . ( $checked ? 'checked' : '' ) . ' type="checkbox"
 						aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" />
 					<div class="switch-toggle" style="left: ' . ( $checked ? '27px' : '2px' ) . ';"></div>
@@ -68,7 +68,7 @@ class Switch_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id            = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -80,12 +80,12 @@ class Switch_Markup extends Base {
 		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
 
 		return '<div class="sureforms-switch-container main-container frontend-inputs-holder sf-classic-switch-container' . esc_attr( $classname ) . '">
-		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $id ) . '">
+		<label class="sureforms-switch-label" for="sureforms-switch-' . esc_attr( $block_id ) . '">
 			<div class="sf-text-primary !flex !items-start !gap-2 !mt-1">
 				<div class="switch-background sf-classic-toggle-bg w-[60px] mr-[3px] mt-[5px]" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">
 					<input class="sureforms-switch sf-classic-switch-input !p-0"
-						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"
-						id="sureforms-switch-' . esc_attr( $id ) . '"
+						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
+						id="sureforms-switch-' . esc_attr( $block_id ) . '"
 						' . ( $checked ? 'checked' : '' ) . ' type="checkbox"
 						aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" />
 					<div class="switch-toggle !-top-[3px] !shadow !border !border-gray-200 !h-5 !w-5" style="left: ' . ( $checked ? '24px' : '0' ) . ';"> 

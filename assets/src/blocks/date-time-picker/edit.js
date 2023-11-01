@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -15,14 +15,22 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, isSelected, clientId } ) => {
-	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
-		attributes;
+const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
+	const {
+		label,
+		help,
+		required,
+		block_id,
+		fieldType,
+		min,
+		max,
+		errorMsg,
+		formId,
+	} = attributes;
 	const [ showErr, setShowErr ] = useState( false );
-
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -31,12 +39,6 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -208,7 +210,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'email-input-help-' + blockID }
+						htmlFor={ 'email-input-help-' + block_id }
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
@@ -223,3 +225,5 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

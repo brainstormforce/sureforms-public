@@ -27,7 +27,7 @@ class Textarea_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$id          = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -45,7 +45,7 @@ class Textarea_Markup extends Base {
 		'</label>' .
 		'<div style="position:relative">
 		<div class="sureforms-text-area-counter">' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '</div>' .
-		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="sureforms-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
+		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="sureforms-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
 		( '' !== $help ? '<label for="sureforms-textarea" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>' .
 		'</div>';
@@ -60,7 +60,7 @@ class Textarea_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-		$id          = isset( $attributes['id'] ) ? Sureforms_Helper::get_string_value( $attributes['id'] ) : '';
+		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -82,7 +82,7 @@ class Textarea_Markup extends Base {
 				<div class="sureforms-text-area-counter">
 					' . esc_html( ( '' === $max_length ) ? '' : '0/' . esc_html( $max_length ) ) . '
 				</div>
-				<textarea name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '"
+				<textarea name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
 					aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
 					placeholder="' . esc_attr( $placeholder ) . '"
 					maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '"
