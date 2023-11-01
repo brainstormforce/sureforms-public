@@ -523,17 +523,17 @@ const multichoiceOptions = document.getElementsByClassName(
 );
 // Loop over matching divs
 if ( window.innerWidth > 630 ) {
-for ( mi = 0; mi < multichoiceOptions.length; mi++ ) {
-	const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
-	const eleHeight2 = multichoiceOptions[ mi++ ].offsetHeight;
-	if ( eleHeight1 > eleHeight2 ) {
-		multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
-		multichoiceOptions[ mi - 1 ].style.height = eleHeight1 + 'px';
-	} else {
-		multichoiceOptions[ mi ].style.height = eleHeight2 + 'px';
-		multichoiceOptions[ mi - 1 ].style.height = eleHeight2 + 'px';
+	for ( mi = 0; mi < multichoiceOptions.length; mi++ ) {
+		const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
+		const eleHeight2 = multichoiceOptions[ mi++ ].offsetHeight;
+		if ( eleHeight1 > eleHeight2 ) {
+			multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
+			multichoiceOptions[ mi - 1 ].style.height = eleHeight1 + 'px';
+		} else {
+			multichoiceOptions[ mi ].style.height = eleHeight2 + 'px';
+			multichoiceOptions[ mi - 1 ].style.height = eleHeight2 + 'px';
+		}
 	}
-}
 }
 
 // Address Field
