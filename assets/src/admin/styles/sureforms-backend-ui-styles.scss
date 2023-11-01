@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@mixin mobile630 {
+	@media ( max-width: 630px ) {
+		@content;
+	}
+}
 
 .sf-form-style-classic {
 	.block-editor-inner-blocks .block-editor-block-list__layout .wp-block:not( :last-child ) {
@@ -10,6 +15,9 @@
 
 .classic-sf-radio {
 	flex: calc(50% - 7px) 0 0;
+	@include mobile630 {
+		flex: calc( 100% ) 0 0;
+	}
 }
 .radio-buttons {
 	gap: 7px;
