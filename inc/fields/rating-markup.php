@@ -188,8 +188,7 @@ class Rating_Markup extends Base {
                 <li class="flex items-center flex-col-reverse" >
                 <span class="sf-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
                     <span
-                    class="sf-text-primary"
-                    data-te-rating-icon-ref>
+                    class="sf-text-primary sf-rating-icon cursor-pointer">
                     ' . $svg . ' 
                     </span>
                 </li>';

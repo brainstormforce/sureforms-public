@@ -92,6 +92,29 @@ if ( ratingElements ) {
 
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
+
+
+
+	const ratingSingle = document.querySelectorAll('.sf-rating-icon');
+
+    for(let i = 0;i<ratingSingle.length;i++){ 
+        ratingSingle[i].onclick = ()=>{
+            for(let j = 0;j<=i;j++){
+                ratingSingle[j].querySelector('svg').classList.add("fill-current"); // this class should be added to whitelist while in production mode
+            }
+            for(let k = i + 1;k<ratingSingle.length;k++){
+                ratingSingle[k].querySelector('svg').classList.remove("fill-current"); // this class should be added to whitelist while in production mode
+            }
+        }
+		ratingSingle[i].onmouseover = ()=>{
+            for(let j = 0;j<=i;j++){
+                ratingSingle[j].querySelector('svg').classList.add("fill-current"); // this class should be added to whitelist while in production mode
+            }
+            for(let k = i + 1;k<ratingSingle.length;k++){
+                ratingSingle[k].querySelector('svg').classList.remove("fill-current"); // this class should be added to whitelist while in production mode
+            }
+        }
+    }
 }
 
 // Sender's Email.
@@ -598,6 +621,9 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
+
+	flatpickr(".sureforms-input-data-time");
+
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
 		const dateInput = document.getElementById(
