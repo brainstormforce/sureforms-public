@@ -2,8 +2,9 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const DropdownClassicStyle = ( { attributes } ) => {
+export const DropdownClassicStyle = ( { attributes,setAttributes,blockID } ) => {
 	const { required, options, label, placeholder } = attributes;
 	const [ open, setOpen ] = useState( false );
 
@@ -12,18 +13,21 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 		opacity: 100,
 		zIndex: 10,
 	};
+	const isRequired = required ? 'required' : '';
 	const closedStyles = {
 		display: 'none',
 	};
 
 	return (
 		<>
-			<label id="listbox-label" className="sf-classic-label-text">
-				{ label }
-				{ required && label && (
-					<span className="text-required_icon_color"> *</span>
-				) }
-			</label>
+		<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${isRequired}` }
+				multiline={ false }
+				id={ `listbox-label ${blockID}` }
+			/>
 			<div className="relative mt-2">
 				<input
 					aria-required={ required ? 'true' : 'false' }

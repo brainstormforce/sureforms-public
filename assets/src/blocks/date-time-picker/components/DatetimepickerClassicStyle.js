@@ -1,16 +1,20 @@
-export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const DatetimepickerClassicStyle = ( { attributes,setAttributes, blockID } ) => {
 	const { label, required, fieldType } = attributes;
+
+	const isRequired = required ? 'required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-classic-label-text"
-				htmlFor={ 'ureforms-input-date-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span className="text-red-500"> *</span>
-				) }
-			</label>
+		<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${isRequired}` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits">
 				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 					{ 'time' === fieldType ? (

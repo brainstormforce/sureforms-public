@@ -20,6 +20,7 @@ import { DropdownClassicStyle } from './components/DropdownClassicStyle';
 import { DropdownThemeStyle } from './components/DropdownThemeStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import { RichText } from '@wordpress/block-editor';
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
@@ -316,25 +317,27 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<DropdownClassicStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={setAttributes}
 					/>
 				) : (
 					<DropdownThemeStyle
 						attributes={ attributes }
 						blockID={ blockID }
+						setAttributes={setAttributes}
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'text-input-help-' + blockID }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
-						}
-					>
-						{ help }
-					</label>
+					<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className={ 'classic' ===
+					sureforms_keys?._sureforms_form_styling
+						? 'sforms-helper-txt'
+						: 'sf-text-secondary' }
+					multiline={ false }
+					id={ blockID }
+				/>
 				) }
 			</div>
 		</>

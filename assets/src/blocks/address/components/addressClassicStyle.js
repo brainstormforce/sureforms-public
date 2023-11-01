@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
+export const AddressClassicStyle = ( { attributes,setAttributes, countries, blockID } ) => {
 	const {
 		required,
 		label,
@@ -12,14 +13,18 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 		countryPlaceholder,
 	} = attributes;
 
+	const isRequired = required ? 'required' : '';
+
 	return (
 		<>
-			<label htmlFor="text" className="sf-classic-label-text">
-				{ label }
-				{ required && label && (
-					<span className="text-red-500"> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `sf-classic-label-text ${isRequired}` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="mt-2">
 				<input
 					type="text"

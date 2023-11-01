@@ -15,6 +15,7 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
+import { RichText } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
@@ -205,22 +206,22 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<DatetimepickerClassicStyle attributes={ attributes } />
+					<DatetimepickerClassicStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
 				) : (
-					<DatetimepickerThemeStyle attributes={ attributes } />
+					<DatetimepickerThemeStyle blockID={blockID} setAttributes={setAttributes} attributes={ attributes } />
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'email-input-help-' + blockID }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
-						}
-					>
-						{ help }
-					</label>
+					<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className={ 'classic' ===
+					sureforms_keys?._sureforms_form_styling
+						? 'sforms-helper-txt'
+						: 'sf-text-secondary' }
+					multiline={ false }
+					id={ blockID }
+				/>
 				) }
 			</div>
 		</>
