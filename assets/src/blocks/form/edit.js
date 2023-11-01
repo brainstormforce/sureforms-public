@@ -33,7 +33,13 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		)
 		.map( ( block ) => block.name );
 
-	const CORE_BLOCKS = [ 'core/image', 'core/columns', 'core/heading' ];
+	const CORE_BLOCKS = [
+		'core/image',
+		'core/columns',
+		'core/column',
+		'core/heading',
+		'core/paragraph',
+	];
 
 	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
 
@@ -119,6 +125,9 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	useEffect( () => {
 		if ( ! siteEditor ) {
+			if ( ! attributes.className ) {
+				return;
+			}
 			function updateMeta( option, value ) {
 				const option_array = {};
 				option_array[ option ] = value;

@@ -32,7 +32,9 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 							</label>
 						</a>
 					) : (
-						label
+						<label className="sf-classic-label-text">
+							{ label }
+						</label>
 					) }
 					{ required && label ? (
 						<span style={ { color: 'red' } }> *</span>
