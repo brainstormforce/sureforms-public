@@ -97,21 +97,29 @@ if ( ratingElements ) {
 
 	const ratingSingle = document.querySelectorAll('.sf-rating-icon');
 
-    for(let i = 0;i<ratingSingle.length;i++){ 
+    for(let i = 0;i<ratingSingle.length;i++){
         ratingSingle[i].onclick = ()=>{
             for(let j = 0;j<=i;j++){
-                ratingSingle[j].querySelector('svg').classList.add("fill-current"); // this class should be added to whitelist while in production mode
+                ratingSingle[j].querySelector('svg').classList.add("fill-current");
             }
             for(let k = i + 1;k<ratingSingle.length;k++){
-                ratingSingle[k].querySelector('svg').classList.remove("fill-current"); // this class should be added to whitelist while in production mode
+                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
             }
         }
 		ratingSingle[i].onmouseover = ()=>{
             for(let j = 0;j<=i;j++){
-                ratingSingle[j].querySelector('svg').classList.add("fill-current"); // this class should be added to whitelist while in production mode
+                ratingSingle[j].querySelector('svg').classList.add("fill-current");
             }
             for(let k = i + 1;k<ratingSingle.length;k++){
-                ratingSingle[k].querySelector('svg').classList.remove("fill-current"); // this class should be added to whitelist while in production mode
+                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
+            }
+        }
+		ratingSingle[i].ontouchstart = ()=>{
+            for(let j = 0;j<=i;j++){
+                ratingSingle[j].querySelector('svg').classList.add("fill-current");
+            }
+            for(let k = i + 1;k<ratingSingle.length;k++){
+                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
             }
         }
     }
