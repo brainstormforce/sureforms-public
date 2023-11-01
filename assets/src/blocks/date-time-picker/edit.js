@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -19,14 +15,22 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, isSelected, clientId } ) => {
-	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
-		attributes;
+const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
+	const {
+		label,
+		help,
+		required,
+		block_id,
+		fieldType,
+		min,
+		max,
+		errorMsg,
+		formId,
+	} = attributes;
 	const [ showErr, setShowErr ] = useState( false );
-
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -35,12 +39,6 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -106,10 +104,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 								sureforms_keys?._sureforms_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
-									<UAGAdvancedPanelBody
-										title={ __( 'Date Settings', 'sureforms' ) }
-										initialOpen={ false }
-									>
+									<>
 										<span className="uag-control-label uagb-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
@@ -176,7 +171,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 												'sureforms'
 											) }
 										</p>
-									</UAGAdvancedPanelBody>
+									</>
 								) : (
 									''
 								) }
@@ -210,13 +205,13 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<DatetimepickerClassicStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 						attributes={ attributes }
 					/>
 				) : (
 					<DatetimepickerThemeStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 						attributes={ attributes }
 					/>
@@ -235,10 +230,12 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

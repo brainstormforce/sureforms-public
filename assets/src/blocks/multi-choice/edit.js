@@ -25,8 +25,10 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
 import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, isSelected, clientId } ) => {
+const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		required,
 		options,
@@ -34,11 +36,10 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		singleSelection,
 		style,
 		help,
-		id,
+		block_id,
 		errorMsg,
 		formId,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
@@ -77,12 +78,6 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>
@@ -366,13 +361,13 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<MultichoiceClassicStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 					/>
 				) : (
 					<MultichoiceThemeStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
@@ -394,10 +389,12 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</div>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

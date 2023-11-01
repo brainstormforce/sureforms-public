@@ -1,26 +1,20 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps, RichText } from '@wordpress/block-editor';
+import { RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { UrlThemeStyle } from './components/UrlThemeStyle';
 import { UrlClassicStyle } from './components/UrlClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, clientId } ) => {
-	const { help, id, formId } = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
+const Edit = ( { attributes, setAttributes, clientId } ) => {
+	const { help, block_id, formId } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -44,13 +38,13 @@ export default ( { attributes, setAttributes, clientId } ) => {
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<UrlClassicStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 						attributes={ attributes }
 					/>
 				) : (
 					<UrlThemeStyle
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 						attributes={ attributes }
 					/>
@@ -69,10 +63,12 @@ export default ( { attributes, setAttributes, clientId } ) => {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

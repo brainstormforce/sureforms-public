@@ -3,11 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -25,8 +21,10 @@ import { UploadClassicStyle } from './components/UploadClassicStyle';
 import { UploadThemeStyle } from './components/UploadThemeStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default function Edit( { attributes, setAttributes, clientId } ) {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		label,
@@ -34,7 +32,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		allowedFormats,
 		customFormats,
 		help,
-		id,
+		block_id,
 		errorMsg,
 		formId,
 	} = attributes;
@@ -43,16 +41,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -175,13 +165,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<UploadClassicStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) : (
 					<UploadThemeStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) }
@@ -199,10 +189,12 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</>
 	);
-}
+};
+
+export default compose( AddInitialAttr )( Edit );

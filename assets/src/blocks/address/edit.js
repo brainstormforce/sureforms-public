@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -19,18 +15,16 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { AddressThemeStyle } from './components/addressThemeStyle';
 import { AddressClassicStyle } from './components/addressClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
+
 import countries from './countries.json';
 
-export default function Edit( {
-	clientId,
-	attributes,
-	setAttributes,
-	isSelected,
-} ) {
+const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 	const {
 		required,
 		label,
-		id,
+		block_id,
 		errorMsg,
 		lineOnePlaceholder,
 		lineTwoPlaceholder,
@@ -47,7 +41,6 @@ export default function Edit( {
 		formId,
 		help,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -56,12 +49,6 @@ export default function Edit( {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -342,14 +329,14 @@ export default function Edit( {
 					<AddressClassicStyle
 						countries={ countries }
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) : (
 					<AddressThemeStyle
 						countries={ countries }
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) }
@@ -367,10 +354,12 @@ export default function Edit( {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</>
 	);
-}
+};
+
+export default compose( AddInitialAttr )( Edit );

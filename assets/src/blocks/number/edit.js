@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	InspectorControls,
-	useBlockProps,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -21,6 +17,8 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -28,7 +26,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		placeholder,
 		help,
 		required,
-		id,
+		block_id,
 		defaultValue,
 		minValue,
 		maxValue,
@@ -36,7 +34,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		formatType,
 		formId,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -55,13 +52,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 		setAttributes( { defaultValue: inputValue } );
 	};
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -217,14 +207,14 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<NumberClassicStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleInput={ handleInput }
 						setAttributes={ setAttributes }
 					/>
 				) : (
 					<NumberThemeStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleInput={ handleInput }
 						setAttributes={ setAttributes }
 					/>
@@ -243,7 +233,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
@@ -251,4 +241,4 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	);
 };
 
-export default SureformInput;
+export default compose( AddInitialAttr )( SureformInput );

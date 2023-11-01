@@ -19,20 +19,21 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { CheckboxClassicStyle } from './components/CheckboxClassicStyle';
 import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, clientId } ) => {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		checked: isChecked,
 		required,
 		labelUrl,
 		checkboxHelpText,
-		id,
+		block_id,
 		errorMsg,
 		formId,
 	} = attributes;
 
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -41,13 +42,6 @@ export default ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<div { ...useBlockProps() }>
@@ -145,13 +139,13 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				>
 					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 						<CheckboxClassicStyle
-							blockID={ blockID }
+							blockID={ block_id }
 							setAttributes={ setAttributes }
 							attributes={ attributes }
 						/>
 					) : (
 						<CheckboxThemeStyle
-							blockID={ blockID }
+							blockID={ block_id }
 							setAttributes={ setAttributes }
 							attributes={ attributes }
 						/>
@@ -171,10 +165,12 @@ export default ( { attributes, setAttributes, clientId } ) => {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</div>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

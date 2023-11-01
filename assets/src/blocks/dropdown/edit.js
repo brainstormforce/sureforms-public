@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -24,19 +20,20 @@ import { DropdownClassicStyle } from './components/DropdownClassicStyle';
 import { DropdownThemeStyle } from './components/DropdownThemeStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default function Edit( { attributes, setAttributes, clientId } ) {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		options,
 		label,
 		help,
-		id,
+		block_id,
 		errorMsg,
 		formId,
 		placeholder,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -56,13 +53,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
 	}
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -319,13 +309,13 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
 					<DropdownClassicStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) : (
 					<DropdownThemeStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						setAttributes={ setAttributes }
 					/>
 				) }
@@ -343,10 +333,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								: 'sf-text-secondary'
 						}
 						multiline={ false }
-						id={ blockID }
+						id={ block_id }
 					/>
 				) }
 			</div>
 		</>
 	);
-}
+};
+export default compose( AddInitialAttr )( Edit );

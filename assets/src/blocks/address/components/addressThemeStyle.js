@@ -47,7 +47,7 @@ export const AddressThemeStyle = ( {
 					} }
 				>
 					<label
-						className="sf-text-secondary text-size"
+						className="sf-text-secondary  text-size"
 						htmlFor={ 'address-line-1-' + blockID }
 					>
 						{ lineOneLabel }
