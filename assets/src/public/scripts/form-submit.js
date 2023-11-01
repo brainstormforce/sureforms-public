@@ -83,11 +83,17 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				// might be used later
-				// duplicateMessage.style.display = 'none';
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'none';
+				}
 				// inputField.style.borderColor = '#FCA5A5';
-				inputField.classList.add( 'sf-classic-input-error' );
+				if ( inputField ) {
+					inputField.classList.add( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -96,11 +102,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				inputField.classList.remove( 'sf-classic-input-error' );
+				if ( inputField ) {
+					inputField.classList.remove( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				// inputField.style.borderColor = '#d1d5db';
 			}
 		}
@@ -113,8 +123,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'#sureforms-phone-parent'
 			);
 			if ( hasDuplicate ) {
-				duplicateMessage.style.display = 'block';
-				inputField.classList.add( 'sf-classic-input-error' );
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'block';
+				}
+				if ( inputField ) {
+					inputField.classList.add( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
@@ -129,8 +143,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				duplicateMessage.style.display = 'none';
-				inputField.classList.remove( 'sf-classic-input-error' );
+				if ( duplicateMessage ) {
+					duplicateMessage.style.display = 'none';
+				}
+				if ( inputField ) {
+					inputField.classList.remove( 'sf-classic-input-error' );
+				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
@@ -246,7 +264,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelectorAll( '.error-message' )[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
-					confirmPassword.style.borderColor = '#FCA5A5';
+					container.querySelector(
+						'.confirm-password-error'
+					).style.display = 'none';
+					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -257,7 +278,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'block';
-					confirmPassword.style.borderColor = '#FCA5A5';
+					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
@@ -271,7 +292,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'none';
-					confirmPassword.style.borderColor = '#d1d5db';
+					// confirmPassword.style.borderColor = '#d1d5db';
 				}
 			}
 		}
@@ -289,13 +310,19 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
 					confirmFieldError.style.display = 'block';
-					confirmEmail.style.borderColor = '#FCA5A5';
+					container.querySelector(
+						'.confirm-email-error'
+					).style.display = 'none';
+					// confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'sf-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
 					validateResult = true;
-				} else if ( confirmEmailValue !== inputValue ) {
+				} else if (
+					confirmEmailValue &&
+					confirmEmailValue !== inputValue
+				) {
 					confirmFieldError.style.display = 'none';
 					container.querySelector(
 						'.confirm-email-error'
@@ -355,12 +382,18 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const uploadInputInnerDiv = container.getElementsByClassName(
 				'sureforms-upload-inner-div'
 			)[ 0 ];
+			const isSizeError = container.querySelector(
+				'.srfm-upload-file-size-error'
+			);
+			if ( isSizeError ) {
+				isSizeError.setAttribute( 'hidden', 'true' );
+			}
 
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
 				errorMessage.style.display = 'block';
-				uploadInputInnerDiv.style.borderColor = '#FCA5A5';
+				// uploadInputInnerDiv.style.borderColor = '#FCA5A5';
 
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -409,8 +442,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if (
 			container.classList.contains( 'sureforms-input-number-container' )
 		) {
-			const min = inputField.getAttribute( 'min' );
-			const max = inputField.getAttribute( 'max' );
+			const min = inputField.getAttribute( 'minimum' );
+			const max = inputField.getAttribute( 'maximum' );
 			const minMaxErrorMessage = container.querySelector(
 				'.min-max-validation-message'
 			);
@@ -438,10 +471,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else if ( inputValue ) {
+			} else {
 				minMaxErrorMessage.innerText = '';
-				minMaxErrorMessage.style.display = `none`;
-				inputField.classList.remove( 'sf-classic-input-error' );
 			}
 		}
 

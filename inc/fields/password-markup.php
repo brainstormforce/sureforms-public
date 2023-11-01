@@ -74,9 +74,7 @@ class Password_Markup extends Base {
     <div class="relative mt-2">
         <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $id ) ) . '" id="sureforms-input-password-' . esc_attr( $id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sf-classic-pwd-element">
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg  class="h-5 w-5 text-gray-400" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
-                <path d="M 15 2 C 11.145666 2 8 5.1456661 8 9 L 8 11 L 6 11 C 4.895 11 4 11.895 4 13 L 4 25 C 4 26.105 4.895 27 6 27 L 24 27 C 25.105 27 26 26.105 26 25 L 26 13 C 26 11.895 25.105 11 24 11 L 22 11 L 22 9 C 22 5.2715823 19.036581 2.2685653 15.355469 2.0722656 A 1.0001 1.0001 0 0 0 15 2 z M 15 4 C 17.773666 4 20 6.2263339 20 9 L 20 11 L 10 11 L 10 9 C 10 6.2263339 12.226334 4 15 4 z"></path>
-            </svg>
+		<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
         </div>
     </div>' .
 		'<p style="display:none" class="error-message" id="email-error">' . esc_html( $error_msg ) . '</p>' .
@@ -85,9 +83,7 @@ class Password_Markup extends Base {
         <div class="relative mt-2 rounded-md shadow-sm">
             <input type="password" id="sureforms-confirm-input-password-' . esc_attr( $id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-confirm-input-password sf-classic-pwd-element">
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg  class="h-5 w-5 text-gray-400" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
-                    <path d="M 15 2 C 11.145666 2 8 5.1456661 8 9 L 8 11 L 6 11 C 4.895 11 4 11.895 4 13 L 4 25 C 4 26.105 4.895 27 6 27 L 24 27 C 25.105 27 26 26.105 26 25 L 26 13 C 26 11.895 25.105 11 24 11 L 22 11 L 22 9 C 22 5.2715823 19.036581 2.2685653 15.355469 2.0722656 A 1.0001 1.0001 0 0 0 15 2 z M 15 4 C 17.773666 4 20 6.2263339 20 9 L 20 11 L 10 11 L 10 9 C 10 6.2263339 12.226334 4 15 4 z"></path>
-                </svg>
+			<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
             </div>
         </div>'
 		: '' ) .
