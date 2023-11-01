@@ -128,6 +128,10 @@ if ( uploadFieldsContainer ) {
 		uploadInput.addEventListener( 'change', ( e ) => {
 			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
+			const isError = uploadField.querySelector( '.error-message' );
+			if ( isError ) {
+				isError.style.display = 'none';
+			}
 			const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
 			if ( file ) {
 				if ( file.size > maxFileSize ) {
@@ -136,6 +140,9 @@ if ( uploadFieldsContainer ) {
 						.querySelector( `#upload-field-error-${ id }` )
 						.removeAttribute( 'hidden' );
 				} else {
+					uploadField
+						.querySelector( `#upload-field-error-${ id }` )
+						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
 							? file.name.substring( 0, 17 ) +
@@ -146,9 +153,6 @@ if ( uploadFieldsContainer ) {
 						'sf-classic-inputs-holder'
 					);
 					if ( ! isClassic ) {
-						uploadField
-							.querySelector( `#upload-field-error-${ id }` )
-							.setAttribute( 'hidden', true );
 						uploadField.querySelector(
 							`#sureforms-upload-title-${ id }`
 						).innerHTML =
