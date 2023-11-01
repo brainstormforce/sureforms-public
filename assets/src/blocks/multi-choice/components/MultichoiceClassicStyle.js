@@ -6,9 +6,15 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 		const multichoiceOptions = document.getElementsByClassName(
 			'sf-classic-multi-choice'
 		);
-		for ( let mi = 0; mi < multichoiceOptions.length; mi++ ) {
+		for ( let mi = 0; mi < multichoiceOptions.length - 1; mi++ ) {
 			const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
 			const eleHeight2 = multichoiceOptions[ mi++ ].offsetHeight;
+			console.log(
+				eleHeight1,
+				eleHeight2,
+				'eleheight',
+				multichoiceOptions[ mi ]
+			);
 			if ( eleHeight1 > eleHeight2 ) {
 				multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
 				multichoiceOptions[ mi - 1 ].style.height = eleHeight1 + 'px';
