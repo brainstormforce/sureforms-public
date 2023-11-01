@@ -1,6 +1,9 @@
 // TODO: remove the unused CSS.
 
 body.post-type-sureforms_form {
+	.edit-post-visual-editor__post-title-wrapper h1.editor-post-title__input {
+		display: none;
+	}
 	.edit-post-sidebar {
 		> .components-panel {
 			.components-panel__row label {
