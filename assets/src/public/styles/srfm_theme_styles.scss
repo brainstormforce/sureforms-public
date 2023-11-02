@@ -12,7 +12,7 @@ textarea.sureforms-textarea-field::placeholder {
 	color: var( --sf-secondary-color );
 }
 
-form.sureforms-form .sf-text-primary{
+form.sureforms-form .sf-text-primary {
 	color: var( --sf-primary-color );
 }
 
@@ -166,7 +166,7 @@ input[type="range"]::-webkit-slider-thumb {
 .switch-background {
 	display: inline-block;
 	position: relative;
-	flex:0 0 50px;
+	flex: 0 0 50px;
 	height: 25px;
 	border-radius: 25px;
 	transition: background-color 0.2s;
@@ -213,7 +213,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-bottom: 1.5rem;
 }
 
-.range-sliders input[type=range] {
+.range-sliders input[type="range"] {
 	height: 10px !important;
 	outline: none !important;
 	border-radius: 4px !important;
@@ -225,7 +225,7 @@ input[type="range"]::-webkit-slider-thumb {
 	-moz-appearance: textfield; /* Reset the appearance property */
 }
 
-.range-sliders input[type=range]::-webkit-slider-runnable-track {
+.range-sliders input[type="range"]::-webkit-slider-runnable-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer;
@@ -233,7 +233,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #e6e6e6 !important;
 }
 
-.range-sliders input[type=range]::-moz-range-track {
+.range-sliders input[type="range"]::-moz-range-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer !important;
@@ -241,7 +241,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #ccc !important;
 }
 
-.range-sliders input[type=range]::-webkit-slider-thumb {
+.range-sliders input[type="range"]::-webkit-slider-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -253,7 +253,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -5.5px !important;
 }
 
-.range-sliders input[type=range]::-moz-range-thumb {
+.range-sliders input[type="range"]::-moz-range-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -265,35 +265,35 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -7px !important;
 }
 
-.range-sliders input[type=range]::-moz-range-progress {
+.range-sliders input[type="range"]::-moz-range-progress {
 	background: transparent !important;
 }
 
-.range-sliders input[type=range]::-webkit-range-progress {
+.range-sliders input[type="range"]::-webkit-range-progress {
 	background: transparent !important;
 }
 
-.range-sliders input[type=range]::-moz-focus-outer {
+.range-sliders input[type="range"]::-moz-focus-outer {
 	border: 0 !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-webkit-slider-runnable-track {
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-runnable-track {
 	background-color: transparent !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-moz-range-track {
+.range-sliders input[type="range"].range-slider-sf::-moz-range-track {
 	background-color: transparent !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-webkit-slider-thumb {
+.range-sliders input[type="range"].range-slider-sf::-webkit-slider-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
-.range-sliders input[type=range].range-slider-sf::-moz-range-thumb {
+.range-sliders input[type="range"].range-slider-sf::-moz-range-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
@@ -339,7 +339,7 @@ button[data-te-datepicker-toggle-button-ref]:hover {
 	background-color: unset !important;
 }
 button[data-te-timepicker-toggle-button],
-	button[data-te-timepicker-toggle-button]:hover {
+button[data-te-timepicker-toggle-button]:hover {
 	border: none !important;
 	color: rgb( 156 163 175 ) !important;
 }
@@ -349,7 +349,6 @@ button[data-te-timepicker-toggle-button] svg {
 	width: 1.25rem !important;
 }
 div[data-te-input-focused],
-div[data-te-input-notch-ref]{
+div[data-te-input-notch-ref] {
 	visibility: hidden !important;
-
 }

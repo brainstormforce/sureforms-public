@@ -54,6 +54,14 @@ module.exports = {
 			__dirname,
 			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
 		),
+		srfm_theme_styles: path.resolve(
+			__dirname,
+			'assets/src/public/styles/srfm_theme_styles.scss'
+		),
+		flatpickr_css: path.resolve(
+			__dirname,
+			'assets/src/public/styles/dependencies/flatpickr.min.css'
+		),
 		tailwind_frontend_styles: path.resolve(
 			__dirname,
 			'assets/src/public/styles/sureforms-tailwind.scss'
@@ -73,6 +81,10 @@ module.exports = {
 		editor_header_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/single-form-settings/header-styles.scss'
+		),
+		flatpickr_js: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/dependencies/flatpickr.min.js'
 		),
 		page_header: path.resolve(
 			__dirname,
