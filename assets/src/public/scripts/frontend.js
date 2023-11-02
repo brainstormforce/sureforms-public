@@ -660,19 +660,40 @@ if ( phoneElement ) {
 		const fullPhoneNumberInput = document.getElementById(
 			`fullPhoneNumber-${ blockID }`
 		);
+		const iti = window.intlTelInput(phoneNumber, {
+			utilsScript: '../scripts/int-tel-input/utils.js',
+			initialCountry: "auto",
+			geoIpLookup: function(callback) {
+				fetch("https://ipapi.co/json")
+				.then(function(res) { return res.json(); })
+				.then(function(data) { callback(data.country_code); })
+				.catch(function() { callback("us"); });
+			}
+		});
 		const updateFullPhoneNumber = () => {
-			const countryCodeValue = countryCode.value
-				.trim()
-				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
-			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+			fullPhoneNumberInput.value = iti.getNumber();
 			if ( ! phoneNumberValue ) {
 				fullPhoneNumberInput.value = '';
 			}
+			const intTelError = phoneElement[i].querySelector('.int-tel-error');
+			if (phoneNumberValue && ! iti.isValidNumber()) {
+				if(intTelError){
+					intTelError.style.display = 'block';
+					intTelError.innerText = 'Invalid number - please try again';
+				}
+			} else{
+				intTelError.style.display='none';
+			}
 		};
 
-		countryCode.addEventListener( 'change', updateFullPhoneNumber );
-		phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+		if( countryCode ){
+			countryCode.addEventListener( 'change', updateFullPhoneNumber );
+		}
+		if( phoneNumber ){
+			phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+			phoneNumber.addEventListener( 'countrychange', updateFullPhoneNumber );
+		}
 	}
 }
 

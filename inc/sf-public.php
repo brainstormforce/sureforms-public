@@ -53,6 +53,13 @@ class SF_Public {
 			}
 		}
 
+		// Int-tel-input CSS.
+		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/intlTelInput.css', [], SUREFORMS_VER );
+
+		// Int-tel-input JS.
+		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/int-tel-input/intTellnput.min.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/int-tel-input/utils.js', [], SUREFORMS_VER, true );
+
 		// SureForms frontend JS.
 		wp_enqueue_script( 'sureforms-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'sureforms-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );

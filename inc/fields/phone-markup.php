@@ -79,7 +79,7 @@ class Phone_Markup extends Base {
 			( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 			'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
             <span style="display:none" class="error-message duplicate-message">' . esc_html( $dulicate_msg ) . '</span>
-            </div>';
+            <p style="display:none" class="int-tel-error error-message"></p></div>';
 
 		return $output;
 
@@ -114,20 +114,11 @@ class Phone_Markup extends Base {
                 <div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
                     <div class="absolute inset-y-0 left-0 flex items-center">
                         <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $block_id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
-                        <select class="sf-classic-phone-select" id="sureforms-country-code-' . esc_attr( $block_id ) . '">';
-		if ( is_array( $data ) ) {
-			foreach ( $data as $country ) {
-				if ( isset( $country['code'] ) && isset( $country['dial_code'] ) ) {
-					$output .= '<option value="' . esc_attr( $country['dial_code'] ) . '" ' . ( $country['dial_code'] === $default_country ? 'selected' : '' ) . '>' . esc_html( $country['code'] ) . '</option>';
-				}
-			}
-		}
-			$output .= '</select>
                         </div>
                         <input type="tel" id="sureforms-phone-number-' . esc_attr( $block_id ) . '" class="sf-classic-phone-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
                     </div>
                 </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '<p style="display:none;" class="error-message">' . esc_html( $error_msg ) . '</p> <p style="display:none" class="duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
-            </div>';
+            <p style="display:none" class="int-tel-error error-message"></p></div>';
 		return $output;
 	}
 
