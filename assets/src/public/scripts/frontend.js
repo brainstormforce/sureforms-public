@@ -1,5 +1,4 @@
 // Rating Field.
-
 const ratingElements = document.getElementsByClassName(
 	'sureforms-rating-field'
 );
@@ -93,33 +92,40 @@ if ( ratingElements ) {
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
 
-	const ratingSingle = document.querySelectorAll( '.sf-rating-icon' );
+	const singleRating = document.querySelectorAll( '.sf-rating-icon svg' );
 
-	for ( let i = 0; i < ratingSingle.length; i++ ) {
-		ratingSingle[ i ].onclick = () => {
-			for ( let j = 0; j <= i; j++ ) {
-				ratingSingle[ j ]
-					.querySelector( 'svg' )
-					.classList.add( 'fill-current' );
-			}
-			for ( let k = i + 1; k < ratingSingle.length; k++ ) {
-				ratingSingle[ k ]
-					.querySelector( 'svg' )
-					.classList.remove( 'fill-current' );
-			}
-		};
-		ratingSingle[ i ].ontouchstart = () => {
-			for ( let j = 0; j <= i; j++ ) {
-				ratingSingle[ j ]
-					.querySelector( 'svg' )
-					.classList.add( 'fill-current' );
-			}
-			for ( let k = i + 1; k < ratingSingle.length; k++ ) {
-				ratingSingle[ k ]
-					.querySelector( 'svg' )
-					.classList.remove( 'fill-current' );
-			}
-		};
+	if ( singleRating ) {
+		singleRating.forEach( ( element ) => {
+			element.addEventListener( 'click', function ( e ) {
+				// Gets the value of the star clicked.
+				const onStar = parseInt(
+					e.target
+						.closest( '.sf-rating-icon' )
+						.getAttribute( 'data-value' )
+				);
+				const stars = e.target.closest(
+					'.sf-rating-icon-wrapper'
+				).children;
+
+				// Set the value of the field.
+				e.target
+					.closest( '.sureforms-classic-rating-container' )
+					.querySelector( '.sf-rating-field-result' )
+					.setAttribute( 'value', parseInt( onStar ) );
+
+				for ( let i = 0; i < stars.length; i++ ) {
+					stars[ i ]
+						.querySelector( 'svg' )
+						.classList.remove( 'fill-current' );
+				}
+
+				for ( let j = 0; j < onStar; j++ ) {
+					stars[ j ]
+						.querySelector( 'svg' )
+						.classList.add( 'fill-current' );
+				}
+			} );
+		} );
 	}
 }
 

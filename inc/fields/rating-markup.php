@@ -181,14 +181,14 @@ class Rating_Markup extends Base {
                 ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
             <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="sf-classic-rating-field-' . esc_attr( $block_id ) . '" class="sf-rating-field-result"/>
-            <ul class="sf-classic-event mt-2 flex flex-wrap list-none gap-3 p-0" data-te-rating-init>';
+            <ul class="sf-classic-event sf-rating-icon-wrapper mt-2 flex flex-wrap list-none gap-3 p-0" data-te-rating-init>';
 
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
                 <li class="flex items-center flex-col-reverse" >
                 <span class="sf-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
                     <span
-                    class="sf-text-primary sf-rating-icon cursor-pointer">
+                    class="sf-text-primary sf-rating-icon cursor-pointer" data-value="' . esc_attr( $i + 1 ) . '">
                     ' . $svg . ' 
                     </span>
                 </li>';
