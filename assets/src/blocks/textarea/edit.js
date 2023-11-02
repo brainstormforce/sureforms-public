@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -16,23 +16,23 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { clientId, attributes, setAttributes } ) => {
+const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
 		textAreaHelpText,
 		required,
 		maxLength,
-		id,
+		block_id,
 		defaultValue,
 		errorMsg,
 		rows,
 		cols,
 		formId,
 	} = attributes;
-
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -44,12 +44,6 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 	return (
 		<>
 			<InspectorControls>
@@ -176,7 +170,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container  sf-classic-inputs-holder' }
+				className={ `main-container  sf-classic-inputs-holder sureforms-block-${ block_id }` }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -204,3 +198,5 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

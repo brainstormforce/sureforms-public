@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -15,25 +15,25 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { EmailThemeStyle } from './components/EmailThemeStyle';
 import { EmailClassicStyle } from './components/EmailClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, clientId } ) => {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		label,
 		placeholder,
 		help,
 		required,
-		id,
 		defaultValue,
 		isConfirmEmail,
 		// mighr be used.
 		// confirmLabel,
 		formId,
+		block_id,
 		errorMsg,
 		isUnique,
 		duplicateMsg,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -42,13 +42,6 @@ export default ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -168,7 +161,7 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container sf-classic-inputs-holder' }
+				className={ `main-container sf-classic-inputs-holder sureforms-block-${ block_id }` }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -176,13 +169,19 @@ export default ( { attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<EmailClassicStyle attributes={ attributes } />
+					<EmailClassicStyle
+						attributes={ attributes }
+						blockID={ block_id }
+					/>
 				) : (
-					<EmailThemeStyle attributes={ attributes } />
+					<EmailThemeStyle
+						attributes={ attributes }
+						blockID={ block_id }
+					/>
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'email-input-help-' + blockID }
+						htmlFor={ 'email-input-help-' + block_id }
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
@@ -197,3 +196,5 @@ export default ( { attributes, setAttributes, clientId } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

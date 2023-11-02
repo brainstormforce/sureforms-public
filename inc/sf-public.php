@@ -51,11 +51,6 @@ class SF_Public {
 		// Flatpickr CSS.
 		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/src/public/styles/vendor/flatpickr.min.css', [], SUREFORMS_VER );
 
-	//	wp_enqueue_script( 'tailwind-elements', SUREFORMS_URL . 'assets/build/tailwindElements.js', [], SUREFORMS_VER, true );
-
-
-
-
 		// Flatpickr JS.
 		wp_enqueue_script( 'flatpickr', SUREFORMS_URL . 'assets/src/public/scripts/vendor/flatpickr.min.js', [], SUREFORMS_VER, true );
 

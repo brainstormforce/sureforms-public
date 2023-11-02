@@ -59,9 +59,7 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 											) {
 												return ' ' + obj.value;
 											}
-											return (
-												' ' + obj.value + ','
-											);
+											return ' ' + obj.value + ',';
 										} else if ( index === 4 ) {
 											return ' ' + obj.value + '...';
 										}
