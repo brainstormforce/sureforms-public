@@ -9,16 +9,18 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 		if ( window.innerWidth > 630 ) {
 			for ( let mi = 0; mi < multichoiceOptions.length - 1; mi++ ) {
 				const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
-				const eleHeight2 = multichoiceOptions[ mi++ ].offsetHeight;
+				const eleHeight2 = multichoiceOptions[ mi+1 ].offsetHeight;
+				console.log('heihts', eleHeight1, eleHeight2)
 				if ( eleHeight1 > eleHeight2 ) {
 					multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
-					multichoiceOptions[ mi - 1 ].style.height =
+					multichoiceOptions[ mi + 1 ].style.height =
 						eleHeight1 + 'px';
 				} else {
 					multichoiceOptions[ mi ].style.height = eleHeight2 + 'px';
-					multichoiceOptions[ mi - 1 ].style.height =
+					multichoiceOptions[ mi + 1 ].style.height =
 						eleHeight2 + 'px';
 				}
+				mi++;
 			}
 		}
 	}, [] );
