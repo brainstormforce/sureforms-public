@@ -63,12 +63,13 @@ class Input_Markup extends Base {
 		$duplicate_msg = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$placeholder   = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_len  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
 		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="srfm-main-container srfm-frontend-inputs-holder  ' . esc_attr( $classname ) . '">
+		return '<div class="srfm-main-container srfm-frontend-inputs-holder  ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
 			<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
 			<div class="">
 				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="text" class="srfm-classic-input-element" 

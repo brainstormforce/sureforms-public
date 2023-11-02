@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -22,6 +22,7 @@ import { compose } from '@wordpress/compose';
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
+		fieldWidth,
 		placeholder,
 		help,
 		required,
@@ -55,6 +56,57 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<UAGTextControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								data={ {
+									value: fieldWidth,
+									label: 'fieldWidth',
+								} }
+								onChange={ ( value ) =>
+									setAttributes( { fieldWidth: value } )
+								}
+							/>
+							<SelectControl
+								label={ __( 'Column Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ [
+									{
+										label: '25%',
+										value: 25,
+									},
+									{
+										label: '30%',
+										value: 30,
+									},
+									{
+										label: '50%',
+										value: 50,
+									},
+									{
+										label: '70%',
+										value: 70,
+									},
+									{
+										label: '75%',
+										value: 75,
+									},
+									{
+										label: '100%',
+										value: 100,
+									},
+								] }
+								onChange={ ( value ) =>
+									setAttributes( { fieldWidth: value } )
+								}
+								__nextHasNoMarginBottom
+							/>
+							<p className="components-base-control__help">
+								{ __(
+									'Update settings to view changes on page',
+									'sureforms'
+								) }
+							</p>
 							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
