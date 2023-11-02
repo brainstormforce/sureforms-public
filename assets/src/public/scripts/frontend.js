@@ -529,7 +529,7 @@ const multichoiceOptions = document.getElementsByClassName(
 if ( window.innerWidth > 630 ) {
 	for ( mi = 0; mi < multichoiceOptions.length; mi++ ) {
 		const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
-		const eleHeight2 = multichoiceOptions[ mi+1 ].offsetHeight;
+		const eleHeight2 = multichoiceOptions[ mi + 1 ].offsetHeight;
 		if ( eleHeight1 > eleHeight2 ) {
 			multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
 			multichoiceOptions[ mi + 1 ].style.height = eleHeight1 + 'px';
