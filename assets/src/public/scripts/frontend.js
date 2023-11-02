@@ -93,36 +93,34 @@ if ( ratingElements ) {
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
 
+	const ratingSingle = document.querySelectorAll( '.sf-rating-icon' );
 
-
-	const ratingSingle = document.querySelectorAll('.sf-rating-icon');
-
-    for(let i = 0;i<ratingSingle.length;i++){
-        ratingSingle[i].onclick = ()=>{
-            for(let j = 0;j<=i;j++){
-                ratingSingle[j].querySelector('svg').classList.add("fill-current");
-            }
-            for(let k = i + 1;k<ratingSingle.length;k++){
-                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
-            }
-        }
-		ratingSingle[i].onmouseover = ()=>{
-            for(let j = 0;j<=i;j++){
-                ratingSingle[j].querySelector('svg').classList.add("fill-current");
-            }
-            for(let k = i + 1;k<ratingSingle.length;k++){
-                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
-            }
-        }
-		ratingSingle[i].ontouchstart = ()=>{
-            for(let j = 0;j<=i;j++){
-                ratingSingle[j].querySelector('svg').classList.add("fill-current");
-            }
-            for(let k = i + 1;k<ratingSingle.length;k++){
-                ratingSingle[k].querySelector('svg').classList.remove("fill-current");
-            }
-        }
-    }
+	for ( let i = 0; i < ratingSingle.length; i++ ) {
+		ratingSingle[ i ].onclick = () => {
+			for ( let j = 0; j <= i; j++ ) {
+				ratingSingle[ j ]
+					.querySelector( 'svg' )
+					.classList.add( 'fill-current' );
+			}
+			for ( let k = i + 1; k < ratingSingle.length; k++ ) {
+				ratingSingle[ k ]
+					.querySelector( 'svg' )
+					.classList.remove( 'fill-current' );
+			}
+		};
+		ratingSingle[ i ].ontouchstart = () => {
+			for ( let j = 0; j <= i; j++ ) {
+				ratingSingle[ j ]
+					.querySelector( 'svg' )
+					.classList.add( 'fill-current' );
+			}
+			for ( let k = i + 1; k < ratingSingle.length; k++ ) {
+				ratingSingle[ k ]
+					.querySelector( 'svg' )
+					.classList.remove( 'fill-current' );
+			}
+		};
+	}
 }
 
 // Sender's Email.
@@ -629,8 +627,7 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
-
-	flatpickr(".sureforms-input-data-time");
+	flatpickr( '.sureforms-input-data-time' );
 
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];

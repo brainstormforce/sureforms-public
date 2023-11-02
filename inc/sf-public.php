@@ -45,7 +45,7 @@ class SF_Public {
 		// SureForms frontend CSS.
 		wp_enqueue_style( 'sureforms-frontend', SUREFORMS_URL . 'assets/src/public/styles/sureforms-frontend.css', [], SUREFORMS_VER );
 
-		// Extra
+		// Extra.
 		wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
 
 		// Flatpickr CSS.
@@ -57,8 +57,6 @@ class SF_Public {
 		// SureForms frontend JS.
 		wp_enqueue_script( 'sureforms-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'sureforms-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
-
-
 
 		// Google reCaptcha.
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );
