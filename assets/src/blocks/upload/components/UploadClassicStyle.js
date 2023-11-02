@@ -10,15 +10,15 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 		<>
 			<div className="col-span-full">
 				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
+					className="srfm-classic-label-text"
+					htmlFor={ 'srfm-text-input-' + blockID }
 				>
 					{ label }
 					{ required && label && (
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				<div className="sf-classic-upload-div">
+				<div className="srfm-classic-upload-div">
 					<div className="text-center">
 						<div
 							style={ { fontSize: '35px' } }
@@ -32,7 +32,7 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 							/>
 						</div>
 						<div className="mt-2 flex text-sm leading-6 text-gray-600">
-							<label className="sf-classic-upload-label">
+							<label className="srfm-classic-upload-label">
 								<span>
 									{ __(
 										'Click to upload the file',
@@ -44,7 +44,7 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 									aria-required={
 										required ? 'true' : 'false'
 									}
-									className="sureforms-upload-field sr-only"
+									className="srfm-upload-field sr-only"
 								/>
 							</label>
 						</div>

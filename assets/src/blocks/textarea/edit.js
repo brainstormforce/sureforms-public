@@ -36,7 +36,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const stylingType = sureforms_keys?._sureforms_form_styling;
+	const stylingType = sureforms_keys?._srfm_form_styling;
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -170,7 +170,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ `main-container  sf-classic-inputs-holder sureforms-block-${ block_id }` }
+				className={ `srfm-main-container  srfm-classic-inputs-holder srfm-block-${ block_id }` }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -185,10 +185,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				{ textAreaHelpText !== '' && (
 					<label
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ textAreaHelpText }

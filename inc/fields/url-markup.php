@@ -35,11 +35,11 @@ class Url_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			return '<div class="sureforms-input-url-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
-    <label for="sureforms-input-url-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-url-' . esc_attr( $block_id ) . '" type="url" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-url-input">
-    ' . ( '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $block_id ) . '" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-    <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+			return '<div class="srfm-input-url-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+    <label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-url-' . esc_attr( $block_id ) . '" type="url" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-url-input">
+    ' . ( '' !== $help ? '<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
+    <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 </div>';
 	}
 
@@ -60,18 +60,18 @@ class Url_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="main-container frontend-inputs-holder sureforms-input-url-container sureforms-classic-input-url-container' . esc_attr( $classname ) . '">
-			<label for="sureforms-input-url-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">
+		return '<div class="srfm-main-container srfm-frontend-inputs-holder srfm-input-url-container srfm-classic-input-url-container' . esc_attr( $classname ) . '">
+			<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
 			</label>
 			<div class="mt-2 flex rounded-md shadow-sm">
-				<span class="sf-classic-url-prefix">https://</span>
-				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $block_id ) ) . '" id="sureforms-input-url-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '"
-				class="sf-classic-url-element sureforms-url-input" placeholder="' . esc_attr( $placeholder ) . '">
+				<span class="srfm-classic-url-prefix">https://</span>
+				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $block_id ) ) . '" id="srfm-input-url-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '"
+				class="srfm-classic-url-element srfm-url-input" placeholder="' . esc_attr( $placeholder ) . '">
 			</div>
-			' . ( '' !== $help ? '<label for="sureforms-input-url-' . esc_attr( $block_id ) . '" class="sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-			<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-			<p style="display:none" class="validation-url-message mt-2 text-sm text-red-600">' . esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ) . '</p>
+			' . ( '' !== $help ? '<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
+			<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
+			<p style="display:none" class="srfm-validation-url-message mt-2 text-sm text-red-600">' . esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ) . '</p>
 		</div>';
 
 	}

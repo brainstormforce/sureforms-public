@@ -49,7 +49,7 @@ class Sureforms_Submit {
 		);
 		register_rest_route(
 			'sureforms/v1',
-			'/sureforms-settings',
+			'/srfm-settings',
 			array(
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
@@ -58,7 +58,7 @@ class Sureforms_Submit {
 		);
 		register_rest_route(
 			'sureforms/v1',
-			'/sureforms-settings',
+			'/srfm-settings',
 			array(
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'get_settings_form_data' ],
@@ -108,7 +108,7 @@ class Sureforms_Submit {
 			return wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
-		$selected_captcha_type = get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_sureforms_form_recaptcha', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_sureforms_form_recaptcha', true ) ) : '';
+		$selected_captcha_type = get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
 			$google_captcha_secret_key = get_option( 'sureforms_v2_checkbox_secret' );
@@ -120,7 +120,7 @@ class Sureforms_Submit {
 			$google_captcha_secret_key = get_option( 'sureforms_v3_secret' );
 		}
 		$honeypot_spam = get_option( 'honeypot' );
-		if ( isset( $form_data['sureforms-honeypot-field'] ) && empty( $form_data['sureforms-honeypot-field'] ) ) {
+		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
@@ -149,7 +149,7 @@ class Sureforms_Submit {
 			} else {
 				return $this->handle_form_entry( $form_data );
 			}
-		} elseif ( ! isset( $form_data['sureforms-honeypot-field'] ) ) {
+		} elseif ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
@@ -311,7 +311,7 @@ class Sureforms_Submit {
 				),
 			);
 
-			$email       = Sureforms_Helper::get_string_value( get_post_meta( intval( $id ), '_sureforms_email', true ) );
+			$email       = Sureforms_Helper::get_string_value( get_post_meta( intval( $id ), '_srfm_email', true ) );
 			$admin_email = explode( ', ', $email );
 
 			$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
@@ -325,10 +325,10 @@ class Sureforms_Submit {
 				'Content-Type: text/html; charset=utf-8';
 			$sent    = wp_mail( $admin_email, $subject, $message, $headers );
 
-			$sender_notification = get_post_meta( intval( $id ), '_sureforms_sender_notification', true );
+			$sender_notification = get_post_meta( intval( $id ), '_srfm_sender_notification', true );
 
-			if ( 'on' === $sender_notification && isset( $form_data['sureforms-sender-email-field'] ) ) {
-				$sender_email = strval( $form_data['sureforms-sender-email-field'] );
+			if ( 'on' === $sender_notification && isset( $form_data['srfm-sender-email-field'] ) ) {
+				$sender_email = strval( $form_data['srfm-sender-email-field'] );
 				wp_mail( $sender_email, $subject, $message, $headers );
 			}
 

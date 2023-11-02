@@ -9,10 +9,10 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 	} = attributes;
 	return (
 		<>
-			<div className="frontend-inputs-holder sf-classic-inputs-holder">
+			<div className="srfm-frontend-inputs-holder srfm-classic-inputs-holder">
 				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
+					className="srfm-classic-label-text"
+					htmlFor={ 'srfm-text-input-' + blockID }
 				>
 					{ label }
 					{ required && label && (
@@ -32,10 +32,10 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 						</svg>
 					</div>
 					<input
-						id={ 'text-input-' + blockID }
+						id={ 'srfm-text-input-' + blockID }
 						type="email"
 						value={ defaultValue }
-						className={ 'sf-classic-email-element' }
+						className={ 'srfm-classic-email-element' }
 						placeholder={ placeholder }
 						required={ required }
 					/>
@@ -43,8 +43,8 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 				{ isConfirmEmail && (
 					<div className="!mt-[24px]">
 						<label
-							className="sf-classic-label-text"
-							htmlFor={ 'text-input-' + blockID }
+							className="srfm-classic-label-text"
+							htmlFor={ 'srfm-text-input-' + blockID }
 						>
 							{ confirmLabel }
 							{ required && label && (
@@ -64,10 +64,10 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 								</svg>
 							</div>
 							<input
-								id={ 'text-input-' + blockID }
+								id={ 'srfm-text-input-' + blockID }
 								type="email"
 								value={ defaultValue }
-								className={ 'sf-classic-email-element' }
+								className={ 'srfm-classic-email-element' }
 								placeholder={ placeholder }
 								required={ required }
 							/>

@@ -5,8 +5,8 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'password-input-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-password-input-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -14,7 +14,7 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 				) }
 			</label>
 			<input
-				id={ 'password-input-' + blockID }
+				id={ 'srfm-password-input-' + blockID }
 				type="password"
 				placeholder={ placeholder }
 				required={ required }
@@ -22,7 +22,7 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 			{ isConfirmPassword && (
 				<>
 					<label
-						className="sf-text-primary"
+						className="srfm-text-primary"
 						htmlFor={ 'confirm-email-input-' + blockID }
 					>
 						{ confirmLabel }
@@ -31,7 +31,7 @@ export const PasswordThemeStyle = ( { attributes, blockID } ) => {
 						) }
 					</label>
 					<input
-						id={ 'confirm-password-input-' + blockID }
+						id={ 'srfm-confirm-password-input-' + blockID }
 						type="password"
 						placeholder={ placeholder }
 						required={ required }

@@ -123,7 +123,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 			>
 				<div
@@ -133,7 +133,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						alignItems: 'center',
 					} }
 				>
-					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 						<CheckboxClassicStyle attributes={ attributes } />
 					) : (
 						<CheckboxThemeStyle attributes={ attributes } />
@@ -143,10 +143,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<label
 						htmlFor={ 'checkbox-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ checkboxHelpText }

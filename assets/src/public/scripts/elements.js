@@ -1,18 +1,18 @@
-import {
-	Datetimepicker,
-	Datepicker,
-	Timepicker,
-	Input,
-	initTE,
-	Rating,
-} from 'tw-elements';
+// import {
+// 	Datetimepicker,
+// 	Datepicker,
+// 	Timepicker,
+// 	Input,
+// 	initTE,
+// 	Rating,
+// } from 'tw-elements';
 
-initTE( { Datetimepicker, Input, Rating, Datepicker, Timepicker } );
+// initTE( { Datetimepicker, Input, Rating, Datepicker, Timepicker } );
 
 // Might be used Later.
 
 // const dateTimeContainers = document.getElementsByClassName(
-// 	'sf-classic-date-time-container'
+// 	'srfm-classic-date-time-container'
 // );
 
 // for ( const dateTimeContainer of dateTimeContainers ) {

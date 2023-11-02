@@ -38,12 +38,12 @@ class Number_Markup extends Base {
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . ' ">
-            <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="sureforms-input-number-' . esc_attr( $block_id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field sf-number-field">
-			' . ( '' !== $help ? '<label for="sureforms-input-number" class="sf-text-secondary">' . esc_html( $help ) . '</label>' : '' ) . '
-            <span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
-            <span style="display:none" class="min-max-validation-message error-message"></span>
+			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . ' ">
+            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="srfm-input-number-' . esc_attr( $block_id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field srfm-number-field">
+			' . ( '' !== $help ? '<label for="srfm-input-number" class="srfm-text-secondary">' . esc_html( $help ) . '</label>' : '' ) . '
+            <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
+            <span style="display:none" class="srfm-min-max-validation-message srfm-error-message"></span>
          </div>';
 	}
 
@@ -67,13 +67,13 @@ class Number_Markup extends Base {
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			return '<div class="sureforms-input-number-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">
-            <label for="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
+			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
             <div>
-                <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-number-' . esc_attr( $block_id ) . '" class="sf-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
-            </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-            <p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-            <p style="display:none" class="min-max-validation-message error-message"></p>
+                <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
+            </div>' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
+            <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
+            <p style="display:none" class="srfm-min-max-validation-message srfm-error-message"></p>
         </div>';
 	}
 
