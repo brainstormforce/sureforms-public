@@ -95,22 +95,23 @@ class Datetimepicker_Markup extends Base {
 				<input type="hidden" field-type="' . esc_attr( $field_type ) . '" class="sf-classic-date-time-result" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
 				<div class="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
 
+		$input_type = '';
 		switch ( $field_type ) {
 			case 'dateTime':
-				$output .= esc_attr( 'data-te-date-timepicker-init' );
+				$input_type = ' sf-input-date-time';
 				break;
 			case 'date':
-				$output .= esc_attr( 'data-te-datepicker-init' );
+				$input_type = ' sf-input-date';
 				break;
 			case 'time':
-				$output .= esc_attr( 'data-te-timepicker-init' );
+				$input_type = ' sf-input-time';
 				break;
 			default:
-				$output .= esc_attr( 'data-te-date-timepicker-init' );
+				$input_type = ' sf-input-time';
 				break;
 		}
 				$output .= '>
-				<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-data-time sf-classic-datetime-picker" id="sureforms-input-time-' . esc_attr( $block_id ) . '" />
+				<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-data-time sf-classic-datetime-picker' . $input_type . '" id="sureforms-input-time-' . esc_attr( $block_id ) . '" />
 				</div>
 				' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
 				<p style="display:none" class="error-message ">' . esc_html( $error_msg ) . '</p>

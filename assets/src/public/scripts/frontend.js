@@ -633,7 +633,18 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
-	flatpickr( '.sureforms-input-data-time' );
+	flatpickr( '.sf-input-date-time', {
+		enableTime: true,
+		dateFormat: 'Y-m-d H:i',
+	} );
+
+	flatpickr( '.sf-input-date' );
+
+	flatpickr( '.sf-input-time', {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: 'H:i',
+	} );
 
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
