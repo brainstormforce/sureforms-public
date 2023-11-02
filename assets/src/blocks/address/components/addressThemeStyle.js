@@ -20,7 +20,10 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 	};
 	return (
 		<>
-			<label htmlFor={ 'address-field-' + blockID }>
+			<label
+				className="sf-text-primary"
+				htmlFor={ 'address-field-' + blockID }
+			>
 				{ label }
 				{ required && label && (
 					<span style={ { color: 'red' } }> *</span>
@@ -36,7 +39,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 					} }
 				>
 					<label
-						className="sf-text-secondary text-size"
+						className="sf-text-secondary  text-size"
 						htmlFor={ 'address-line-1-' + blockID }
 					>
 						{ lineOneLabel }

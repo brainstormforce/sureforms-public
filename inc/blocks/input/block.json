@@ -1,7 +1,7 @@
 {
 	"name": "sureforms/input",
 	"title": "Text Field",
-	"description": "Displays a SureForm Input Field",
+	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
 	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "text", "input", "custom", "field" ],
@@ -11,9 +11,8 @@
 		"html": false
 	},
 	"attributes": {
-		"id": {
-			"type": "string",
-			"default": ""
+		"block_id": {
+			"type": "string"
 		},
 		"defaultValue": {
 			"type": "string",
