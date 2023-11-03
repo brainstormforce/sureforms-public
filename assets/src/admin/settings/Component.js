@@ -5,6 +5,7 @@ import { BaseControl, TabPanel } from '@wordpress/components';
 import { useState, useEffect, Fragment } from '@wordpress/element';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import apiFetch from '@wordpress/api-fetch';
 
 const Component = ( { path } ) => {
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
@@ -109,13 +110,13 @@ const Component = ( { path } ) => {
 
 	const handleSubmit = async ( e ) => {
 		e.preventDefault();
-
 		try {
-			await fetch( '/wp-json/sureforms/v1/srfm-settings', {
+			await apiFetch( {
+				path: 'sureforms/v1/srfm-settings',
 				method: 'POST',
 				body: JSON.stringify( formData ),
 				headers: {
-					'Content-Type': 'application/json',
+					'content-type': 'application/json',
 				},
 			} );
 			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
@@ -134,10 +135,13 @@ const Component = ( { path } ) => {
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					'/wp-json/sureforms/v1/srfm-settings'
-				);
-				const data = await response.json();
+				const data = await apiFetch( {
+					path: 'sureforms/v1/srfm-settings',
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+					},
+				} );
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
@@ -165,7 +169,7 @@ const Component = ( { path } ) => {
 					setHoneyPot( data.honeypot && data.honeypot );
 				}
 			} catch ( error ) {
-				console.error( 'Error fetching data:', error );
+				console.error( 'Error fetching datates:', error );
 			}
 		};
 
@@ -248,7 +252,7 @@ const Component = ( { path } ) => {
 																		id="srfm_v2_checkbox_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
-																			'Site Key v2 Checkbox',
+																			'Site Key v2 checkbox',
 																			'sureforms'
 																		) }
 																		onChange={
@@ -268,7 +272,7 @@ const Component = ( { path } ) => {
 																		id="srfm_v2_checkbox_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
-																			'Secret Key v2 Checkbox',
+																			'Secret Key v2 checkbox',
 																			'sureforms'
 																		) }
 																		onChange={

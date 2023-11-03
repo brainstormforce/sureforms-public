@@ -59,6 +59,7 @@
 		"@fortawesome/react-fontawesome": "^0.2.0",
 		"@surecart/components": "^1.0.0",
 		"@surecart/components-react": "^1.0.1",
+		"@wordpress/api-fetch": "^6.42.0",
 		"@wordpress/icons": "^9.18.0",
 		"classnames": "^2.3.2",
 		"lodash": "^4.17.21",

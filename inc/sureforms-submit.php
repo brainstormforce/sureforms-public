@@ -81,7 +81,7 @@ class Sureforms_Submit {
 	 * @param \WP_REST_Request $request Request object or array containing form data.
 	 *
 	 * @since 0.0.1
-	 * @return array<int, string>|\WP_Error Array containing the response data or error.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
 		$form_data = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
@@ -189,13 +189,14 @@ class Sureforms_Submit {
 		} else {
 			return new \WP_Error( 'spam_detected', 'Spam Detected', array( 'status' => 403 ) );
 		}
+
+		return rest_ensure_response( 'success' );
 	}
 
 	/**
 	 * Handle Settings Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 *
 	 * @return void|\WP_Error Array containing the response data or error.
 	 * @since 0.0.1
 	 */
@@ -224,6 +225,8 @@ class Sureforms_Submit {
 				}
 			}
 		}
+
+		return rest_ensure_response( 'success' );
 	}
 
 	/**
