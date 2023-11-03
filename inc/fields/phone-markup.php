@@ -118,7 +118,7 @@ class Phone_Markup extends Base {
                         <input type="tel" id="sureforms-phone-number-' . esc_attr( $block_id ) . '" class="sf-classic-phone-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
                     </div>
                 </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '<p style="display:none;" class="error-message">' . esc_html( $error_msg ) . '</p> <p style="display:none" class="duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
-            <p style="display:none" class="int-tel-error error-message"></p></div>';
+            <p style="display:none" class="int-tel-error error-message">' . esc_html( __( 'Please enter a valid phone number.', 'sureforms' ) ) . '</p></div>';
 		return $output;
 	}
 

@@ -677,13 +677,15 @@ if ( phoneElement ) {
 				fullPhoneNumberInput.value = '';
 			}
 			const intTelError = phoneElement[i].querySelector('.int-tel-error');
+			const phoneParent = phoneElement[i].querySelector('.sf-classic-phone-parent');
 			if (phoneNumberValue && ! iti.isValidNumber()) {
 				if(intTelError){
 					intTelError.style.display = 'block';
-					intTelError.innerText = 'Invalid number - please try again';
+					phoneParent.classList.add( 'sf-classic-input-error' );
 				}
 			} else{
 				intTelError.style.display='none';
+				phoneParent.classList.remove( 'sf-classic-input-error' );
 			}
 		};
 
