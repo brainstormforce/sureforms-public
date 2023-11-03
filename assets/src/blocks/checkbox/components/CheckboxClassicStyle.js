@@ -21,7 +21,7 @@ export const CheckboxClassicStyle = ( {
 						checked={ selected }
 						required={ required }
 						onClick={ () => setSelected( ! selected ) }
-						className="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input checked:!bg-sf_primary_color checked:!border-none"
+						className="h-4 w-4 rounded border-[#d1d5db] srfm-classic-checkbox-input checked:!bg-srfm_primary_color checked:!border-none"
 					/>
 				</div>
 				<div className="text-sm leading-6">
@@ -39,7 +39,7 @@ export const CheckboxClassicStyle = ( {
 								onChange={ ( value ) =>
 									setAttributes( { label: value } )
 								}
-								className={ `sf-classic-label-text ${ isRequired }` }
+								className={ `srfm-classic-label-text ${ isRequired }` }
 								multiline={ false }
 								id={ blockID }
 							/>
@@ -51,7 +51,7 @@ export const CheckboxClassicStyle = ( {
 							onChange={ ( value ) =>
 								setAttributes( { label: value } )
 							}
-							className={ `sf-classic-label-text ${ isRequired }` }
+							className={ `srfm-classic-label-text ${ isRequired }` }
 							multiline={ false }
 							id={ blockID }
 						/>

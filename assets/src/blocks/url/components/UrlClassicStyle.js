@@ -6,22 +6,22 @@ export const UrlClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 
 	return (
 		<>
-			<div className="sf-classic-inputs-holder">
+			<div className="srfm-classic-inputs-holder">
 				<RichText
 					tagName="label"
 					value={ label }
 					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ `sf-classic-label-text ${ isRequired }` }
+					className={ `srfm-classic-label-text ${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
 				/>
 				<div className="mt-2 flex rounded-md shadow-sm">
-					<span className="sf-classic-url-prefix">https://</span>
+					<span className="srfm-classic-url-prefix">https://</span>
 					<input
-						id={ 'text-input-' + blockID }
+						id={ 'srfm-text-input-' + blockID }
 						type="text"
 						value={ defaultValue }
-						className={ 'sf-classic-url-element' }
+						className={ 'srfm-classic-url-element' }
 						placeholder={ placeholder }
 						required={ required }
 					/>

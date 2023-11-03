@@ -99,10 +99,10 @@ export const RatingClassicStyle = ( {
 	for ( let i = 0; i < maxValue; i++ ) {
 		ratingItems.push(
 			<li className="flex items-center flex-col-reverse" key={ i }>
-				<span className="sf-text-primary">
+				<span className="srfm-text-primary">
 					{ showNumbers ? i + 1 : '' }
 				</span>
-				<span className="sf-text-primary" data-te-rating-icon-ref>
+				<span className="srfm-text-primary" data-te-rating-icon-ref>
 					{ svg }
 				</span>
 			</li>
@@ -115,12 +115,12 @@ export const RatingClassicStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${ isRequired }` }
+				className={ `srfm-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<ul
-				className="sf-classic-event mt-2 flex list-none gap-3 p-0"
+				className="srfm-classic-event mt-2 flex list-none gap-3 p-0"
 				data-te-rating-init
 			>
 				{ ratingItems }

@@ -20,18 +20,18 @@ export const NumberClassicStyle = ( {
 
 	return (
 		<>
-			<div className="sf-classic-inputs-holder">
+			<div className="srfm-classic-inputs-holder">
 				<RichText
 					tagName="label"
 					value={ label }
 					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ `sf-classic-label-text ${ isRequired }` }
+					className={ `srfm-classic-label-text ${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
 				/>
 				<input
-					className={ ' sf-classic-number-element' }
-					id={ 'number-input-' + blockID }
+					className={ ' srfm-classic-number-element' }
+					id={ 'srfm-number-input-' + blockID }
 					type={ formatType === 'none' ? 'number' : 'text' }
 					value={ defaultValue }
 					onChange={ handleInput }

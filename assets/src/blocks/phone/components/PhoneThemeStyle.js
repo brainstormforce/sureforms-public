@@ -18,7 +18,7 @@ export const PhoneThemeStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
@@ -33,7 +33,7 @@ export const PhoneThemeStyle = ( {
 					<select
 						style={ { width: '124px' } }
 						required={ required }
-						id={ 'phone-field-' + blockID }
+						id={ 'srfm-phone-field-' + blockID }
 						placeholder="US +1"
 						onChange={ ( e ) => handleChange( e ) }
 					>
@@ -60,7 +60,7 @@ export const PhoneThemeStyle = ( {
 					type="tel"
 					placeholder={ placeholder }
 					pattern="[0-9]{10}"
-					id={ 'phone-field-' + blockID }
+					id={ 'srfm-phone-field-' + blockID }
 					value={ defaultValue }
 				/>
 			</div>

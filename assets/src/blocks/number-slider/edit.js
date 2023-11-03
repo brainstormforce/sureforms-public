@@ -31,7 +31,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			/>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -39,7 +39,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<SliderClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
@@ -61,10 +61,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							setAttributes( { help: value } )
 						}
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 						multiline={ false }
 						id={ block_id }

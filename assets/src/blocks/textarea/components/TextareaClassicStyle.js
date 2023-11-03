@@ -22,7 +22,7 @@ export const TextareaClassicStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${ isRequired }` }
+				className={ `srfm-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
@@ -34,7 +34,7 @@ export const TextareaClassicStyle = ( {
 				rows={ rows }
 				cols={ cols }
 				maxLength={ maxLength }
-				className="sf-classic-textarea-element"
+				className="srfm-classic-textarea-element"
 			></textarea>
 		</>
 	);

@@ -29,7 +29,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 			/>
 			<div
-				className={ 'main-container sf-classic-inputs-holder' }
+				className={ 'srfm-main-container srfm-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -57,10 +57,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							setAttributes( { help: value } )
 						}
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 						multiline={ false }
 						id={ block_id }

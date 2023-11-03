@@ -16,14 +16,14 @@ import dropdownAttributes from '@Blocks/dropdown/block.json';
 import uploadAttributes from '@Blocks/upload/block.json';
 
 const default_keys = {
-	_sureforms_color1: { default: '' },
-	_sureforms_textcolor1: { default: '' },
-	_sureforms_color2: { default: '' },
-	_sureforms_email: { default: sfBlockData.admin_email },
-	_sureforms_submit_url: { default: '' },
-	_sureforms_fontsize: { default: 16 },
-	_sureforms_thankyou_message: { default: 'Form submitted successfully!' },
-	_sureforms_form_container_width: { default: 650 },
+	_srfm_color1: { default: '' },
+	_srfm_textcolor1: { default: '' },
+	_srfm_color2: { default: '' },
+	_srfm_email: { default: sfBlockData.admin_email },
+	_srfm_submit_url: { default: '' },
+	_srfm_fontsize: { default: 16 },
+	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
+	_srfm_form_container_width: { default: 650 },
 };
 
 export const blocksAttributes = {

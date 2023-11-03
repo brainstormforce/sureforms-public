@@ -19,11 +19,11 @@ export const UploadClassicStyle = ( {
 					tagName="label"
 					value={ label }
 					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ `sf-classic-label-text ${ isRequired }` }
+					className={ `srfm-classic-label-text ${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
 				/>
-				<div className="sf-classic-upload-div">
+				<div className="srfm-classic-upload-div">
 					<div className="text-center">
 						<div
 							style={ { fontSize: '35px' } }
@@ -37,7 +37,7 @@ export const UploadClassicStyle = ( {
 							/>
 						</div>
 						<div className="mt-2 flex text-sm leading-6 text-gray-600">
-							<label className="sf-classic-upload-label">
+							<label className="srfm-classic-upload-label">
 								<span>
 									{ __(
 										'Click to upload the file',
@@ -49,7 +49,7 @@ export const UploadClassicStyle = ( {
 									aria-required={
 										required ? 'true' : 'false'
 									}
-									className="sureforms-upload-field sr-only"
+									className="srfm-upload-field sr-only"
 								/>
 							</label>
 						</div>

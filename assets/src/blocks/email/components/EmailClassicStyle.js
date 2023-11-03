@@ -14,12 +14,12 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 
 	return (
 		<>
-			<div className="frontend-inputs-holder sf-classic-inputs-holder">
+			<div className="srfm-frontend-inputs-holder srfm-classic-inputs-holder">
 				<RichText
 					tagName="label"
 					value={ label }
 					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ `sf-classic-label-text ${ isRequired }` }
+					className={ `srfm-classic-label-text ${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
 				/>
@@ -36,10 +36,10 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 						</svg>
 					</div>
 					<input
-						id={ 'text-input-' + blockID }
+						id={ 'srfm-text-input-' + blockID }
 						type="email"
 						value={ defaultValue }
-						className={ 'sf-classic-email-element' }
+						className={ 'srfm-classic-email-element' }
 						placeholder={ placeholder }
 						required={ required }
 					/>
@@ -47,8 +47,8 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 				{ isConfirmEmail && (
 					<div className="!mt-[24px]">
 						<label
-							className="sf-classic-label-text"
-							htmlFor={ 'text-input-' + blockID }
+							className="srfm-classic-label-text"
+							htmlFor={ 'srfm-text-input-' + blockID }
 						>
 							{ confirmLabel }
 							{ required && label && (
@@ -68,10 +68,10 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 								</svg>
 							</div>
 							<input
-								id={ 'text-input-' + blockID }
+								id={ 'srfm-text-input-' + blockID }
 								type="email"
 								value={ defaultValue }
-								className={ 'sf-classic-email-element' }
+								className={ 'srfm-classic-email-element' }
 								placeholder={ placeholder }
 								required={ required }
 							/>

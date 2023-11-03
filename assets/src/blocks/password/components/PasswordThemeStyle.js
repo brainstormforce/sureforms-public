@@ -15,12 +15,12 @@ export const PasswordThemeStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<input
-				id={ 'password-input-' + blockID }
+				id={ 'srfm-password-input-' + blockID }
 				type="password"
 				placeholder={ placeholder }
 				required={ required }
@@ -28,7 +28,7 @@ export const PasswordThemeStyle = ( {
 			{ isConfirmPassword && (
 				<>
 					<label
-						className="sf-text-primary"
+						className="srfm-text-primary"
 						htmlFor={ 'confirm-email-input-' + blockID }
 					>
 						{ confirmLabel }
@@ -37,7 +37,7 @@ export const PasswordThemeStyle = ( {
 						) }
 					</label>
 					<input
-						id={ 'confirm-password-input-' + blockID }
+						id={ 'srfm-confirm-password-input-' + blockID }
 						type="password"
 						placeholder={ placeholder }
 						required={ required }

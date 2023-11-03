@@ -127,7 +127,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 			>
 				<div
@@ -159,10 +159,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							setAttributes( { checkboxHelpText: value } )
 						}
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 						multiline={ false }
 						id={ block_id }

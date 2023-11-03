@@ -11,7 +11,7 @@ export const SliderThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary` }
+				className={ `srfm-text-primary` }
 				multiline={ false }
 				id={ blockID }
 			/>

@@ -36,18 +36,18 @@ class Password_Markup extends Base {
 		$classname           = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id            = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="sureforms-input-password-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">' .
-		'<label for="sureforms-input-password-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
-		'<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-password-' . esc_attr( $block_id ) . '" type="password" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field">' .
-		'<span class="info-icon" data-tooltip="A stronger password is required minimum 8 characters using upper and lower case letters, numbers, and symbols.">&#9432; <span class="password-strength-message"></span></span>' .
-		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>' .
+		return '<div class="srfm-input-password-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">' .
+		'<label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+		'<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-password-' . esc_attr( $block_id ) . '" type="password" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field">' .
+		'<span class="srfm-info-icon" data-tooltip="A stronger password is required minimum 8 characters using upper and lower case letters, numbers, and symbols.">&#9432; <span class="srfm-password-strength-message"></span></span>' .
+		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>' .
 		( true === $is_confirm_password ?
-			'<label for="sureforms-confirm-input-password-' . esc_attr( $block_id ) . '" class="sf-text-primary sureforms-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
-			'<input id="sureforms-confirm-input-password-' . esc_attr( $block_id ) . '" type="password" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-input-field sureforms-confirm-input-password">' : ''
+			'<label for="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+			'<input id="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" type="password" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field srfm-confirm-input-password">' : ''
 		) .
-		( '' !== $help ? '<label for="sureforms-input-password" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="error-message">' . esc_attr( $error_msg ) . '</span>' .
-			'<span style="display:none" class="error-message confirm-password-error">Field values do not match.</span>
+		( '' !== $help ? '<label for="srfm-input-password" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+		'<span style="display:none" class="srfm-error-message">' . esc_attr( $error_msg ) . '</span>' .
+			'<span style="display:none" class="srfm-error-message srfm-confirm-password-error">Field values do not match.</span>
         </div>';
 	}
 
@@ -69,27 +69,27 @@ class Password_Markup extends Base {
 		$classname           = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id            = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="sureforms-input-password-container frontend-inputs-holder main-container sf-classic-inputs-holder' . esc_attr( $classname ) . '">
-    <label for="sureforms-input-password-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+		return '<div class="srfm-input-password-container srfm-frontend-inputs-holder srfm-main-container srfm-classic-inputs-holder' . esc_attr( $classname ) . '">
+    <label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
     <div class="relative mt-2">
-        <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sf-classic-pwd-element">
+        <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-classic-pwd-element">
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 		<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
         </div>
     </div>' .
-		'<p style="display:none" class="error-message" id="email-error">' . esc_html( $error_msg ) . '</p>' .
+		'<p style="display:none" class="srfm-error-message" id="srfm-email-error">' . esc_html( $error_msg ) . '</p>' .
 		( true === $is_confirm_password
-		? '<label for="sureforms-input-password-' . esc_attr( $block_id ) . '" class="sf-classic-label-text !mt-[24px]">' . esc_html( $confirm_label ) . ( $required && $confirm_label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+		? '<label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !mt-[24px]">' . esc_html( $confirm_label ) . ( $required && $confirm_label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
         <div class="relative mt-2 rounded-md shadow-sm">
-            <input type="password" id="sureforms-confirm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="sureforms-confirm-input-password sf-classic-pwd-element">
+            <input type="password" id="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-confirm-input-password srfm-classic-pwd-element">
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 			<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
             </div>
         </div>'
 		: '' ) .
-		( '' !== $help ? '<label for="sureforms-input-password" class="sforms-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
-		'<p style="display:none" class="error-message " id="email-error">' . esc_html( $error_msg ) . '</p>
-    <p style="display:none" class="error-message confirm-password-error ">' . esc_html( __( 'Password does not match', 'sureforms' ) ) . '</p>
+		( '' !== $help ? '<label for="srfm-input-password" class="srfm-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
+		'<p style="display:none" class="srfm-error-message " id="srfm-email-error">' . esc_html( $error_msg ) . '</p>
+    <p style="display:none" class="srfm-error-message srfm-confirm-password-error ">' . esc_html( __( 'Password does not match', 'sureforms' ) ) . '</p>
 </div>';
 	}
 

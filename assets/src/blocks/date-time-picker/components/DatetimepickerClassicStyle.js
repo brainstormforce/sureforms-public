@@ -15,11 +15,11 @@ export const DatetimepickerClassicStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${ isRequired }` }
+				className={ `srfm-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
-			<div className="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits">
+			<div className="srfm-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits">
 				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 					{ 'time' === fieldType ? (
 						<svg
@@ -50,9 +50,9 @@ export const DatetimepickerClassicStyle = ( {
 					) }
 				</div>
 				<input
-					id={ 'text-input-' + blockID }
+					id={ 'srfm-text-input-' + blockID }
 					type="text"
-					className={ 'sf-classic-email-element' }
+					className={ 'srfm-classic-email-element' }
 					required={ required }
 				/>
 			</div>

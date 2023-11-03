@@ -312,7 +312,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ 'classic' ===
-							sureforms_keys?._sureforms_form_styling ? null : (
+							sureforms_keys?._srfm_form_styling ? null : (
 									<MultiButtonsControl
 										label={ __( 'Appearance', 'sureforms' ) }
 										data={ {
@@ -350,7 +350,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -359,7 +359,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<MultichoiceClassicStyle
 						blockID={ block_id }
 						attributes={ attributes }
@@ -383,10 +383,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							setAttributes( { help: value } )
 						}
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 						multiline={ false }
 						id={ block_id }

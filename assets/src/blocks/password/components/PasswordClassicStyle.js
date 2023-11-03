@@ -16,15 +16,15 @@ export const PasswordClassicStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${ isRequired }` }
+				className={ `srfm-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<div className="relative mt-2">
 				<input
-					id={ 'text-input-' + blockID }
+					id={ 'srfm-text-input-' + blockID }
 					type="password"
-					className={ 'sf-classic-pwd-element' }
+					className={ 'srfm-classic-pwd-element' }
 					placeholder={ placeholder }
 					required={ required }
 				/>
@@ -42,8 +42,8 @@ export const PasswordClassicStyle = ( {
 			{ isConfirmPassword && (
 				<div className="!mt-[24px]">
 					<label
-						className="sf-classic-label-text"
-						htmlFor={ 'confirm-text-input-' + blockID }
+						className="srfm-classic-label-text"
+						htmlFor={ 'confirm-srfm-text-input-' + blockID }
 					>
 						{ confirmLabel }
 						{ required && confirmLabel && (
@@ -52,9 +52,9 @@ export const PasswordClassicStyle = ( {
 					</label>
 					<div className="relative mt-2">
 						<input
-							id={ 'confirm-text-input-' + blockID }
+							id={ 'confirm-srfm-text-input-' + blockID }
 							type="password"
-							className={ 'sf-classic-pwd-element' }
+							className={ 'srfm-classic-pwd-element' }
 							placeholder={ placeholder }
 							required={ required }
 						/>

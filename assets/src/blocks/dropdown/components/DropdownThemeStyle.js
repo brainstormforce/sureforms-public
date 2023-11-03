@@ -15,7 +15,7 @@ export const DropdownThemeStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>

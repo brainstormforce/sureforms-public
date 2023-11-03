@@ -11,15 +11,15 @@ export const InputThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<input
-				id={ 'text-input-' + blockID }
+				id={ 'srfm-text-input-' + blockID }
 				type="text"
 				value={ defaultValue }
-				className={ ' sf-classic-input-element' }
+				className={ 'srfm-classic-input-element' }
 				placeholder={ placeholder }
 				required={ required }
 			/>

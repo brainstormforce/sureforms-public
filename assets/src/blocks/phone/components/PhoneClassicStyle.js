@@ -18,17 +18,17 @@ export const PhoneClassicStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-classic-label-text ${ isRequired }` }
+				className={ `srfm-classic-label-text ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<div className="relative mt-2">
-				<div className="group sf-classic-phone-parent">
+				<div className="group srfm-classic-phone-parent">
 					<div className="absolute inset-y-0 left-0 flex items-center">
 						<select
 							placeholder="US +1"
 							onChange={ ( e ) => handleChange( e ) }
-							className="sf-classic-phone-select"
+							className="srfm-classic-phone-select"
 						>
 							{ data.map( ( country, i ) => {
 								return (
@@ -52,7 +52,7 @@ export const PhoneClassicStyle = ( {
 					</div>
 					<input
 						type="tel"
-						className="sf-classic-phone-element"
+						className="srfm-classic-phone-element"
 						placeholder={ placeholder }
 						pattern="[0-9]{10}"
 						value={ defaultValue }

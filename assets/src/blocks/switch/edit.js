@@ -115,17 +115,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 			>
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'flex-start',
-						gap: '.4rem',
-					} }
-				>
-					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				<div>
+					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 						<SwitchClassicStyle
 							attributes={ attributes }
 							sureforms_keys={ sureforms_keys }
@@ -148,10 +142,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							setAttributes( { switchHelpText: value } )
 						}
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 						multiline={ false }
 						id={ block_id }

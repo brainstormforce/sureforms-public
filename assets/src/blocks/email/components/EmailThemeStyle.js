@@ -18,12 +18,12 @@ export const EmailThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary" ${ isRequired }` }
+				className={ `srfm-text-primary" ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<input
-				id={ 'email-input-' + blockID }
+				id={ 'srfm-email-input-' + blockID }
 				type="email"
 				value={ defaultValue }
 				placeholder={ placeholder }
@@ -38,7 +38,7 @@ export const EmailThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 						) }
 					</label>
 					<input
-						id={ 'confirm-email-input-' + blockID }
+						id={ 'srfm-confirm-email-input-' + blockID }
 						type="email"
 						value={ defaultValue }
 						placeholder={ placeholder }

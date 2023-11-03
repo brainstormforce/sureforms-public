@@ -16,7 +16,7 @@ export const MultichoiceThemeStyle = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
@@ -43,7 +43,7 @@ export const MultichoiceThemeStyle = ( {
 						/>
 						<label
 							htmlFor={ 'multi-choice-' + blockID + '-i-' + i }
-							className={ 'sureforms-multi-choice-label-button' }
+							className={ 'srfm-multi-choice-label-button' }
 							style={
 								style === 'buttons'
 									? {

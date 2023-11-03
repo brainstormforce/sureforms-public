@@ -30,12 +30,12 @@ export const RatingThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `sf-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			<div
-				id={ 'rating-block-' + blockID }
+				id={ 'srfm-rating-block-' + blockID }
 				style={ {
 					justifyContent:
 						width === 'fullWidth'

@@ -98,7 +98,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: lineOneLabel,
@@ -132,7 +132,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: lineTwoLabel,
@@ -166,7 +166,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: cityLabel,
@@ -200,7 +200,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: stateLabel,
@@ -234,7 +234,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: postalLabel,
@@ -268,7 +268,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								initialOpen={ false }
 							>
 								{ 'classic' ===
-								sureforms_keys?._sureforms_form_styling ? null : (
+								sureforms_keys?._srfm_form_styling ? null : (
 										<UAGTextControl
 											data={ {
 												value: countryLabel,
@@ -316,7 +316,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder ' +
+					'srfm-main-container srfm-classic-inputs-holder ' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -325,7 +325,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<AddressClassicStyle
 						countries={ countries }
 						attributes={ attributes }
