@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -15,14 +15,22 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle';
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { attributes, setAttributes, isSelected, clientId } ) => {
-	const { label, help, required, id, fieldType, min, max, errorMsg, formId } =
-		attributes;
+const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
+	const {
+		label,
+		help,
+		required,
+		block_id,
+		fieldType,
+		min,
+		max,
+		errorMsg,
+		formId,
+	} = attributes;
 	const [ showErr, setShowErr ] = useState( false );
-
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -31,12 +39,6 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -99,7 +101,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 								</option>
 							</SelectControl>
 							{ 'classic' !==
-								sureforms_keys?._sureforms_form_styling &&
+								sureforms_keys?._srfm_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
@@ -107,9 +109,9 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-min-date"
+											id="srfm-for-min-date"
 											value={ min }
 											onChange={ ( e ) => {
 												if ( '' !== max ) {
@@ -133,9 +135,9 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-max-date"
+											id="srfm-for-max-date"
 											value={ max }
 											onChange={ ( e ) => {
 												if ( '' !== min ) {
@@ -192,7 +194,7 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -201,19 +203,18 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<DatetimepickerClassicStyle attributes={ attributes } />
 				) : (
 					<DatetimepickerThemeStyle attributes={ attributes } />
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'email-input-help-' + blockID }
+						htmlFor={ 'email-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
@@ -223,3 +224,5 @@ export default ( { attributes, setAttributes, isSelected, clientId } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

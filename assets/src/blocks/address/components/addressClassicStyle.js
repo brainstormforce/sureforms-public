@@ -14,7 +14,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 
 	return (
 		<>
-			<label htmlFor="text" className="sf-classic-label-text">
+			<label htmlFor="text" className="srfm-classic-label-text">
 				{ label }
 				{ required && label && (
 					<span className="text-red-500"> *</span>
@@ -23,8 +23,8 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div className="mt-2">
 				<input
 					type="text"
-					className=" sf-classic-address-element !top-[3px] !rounded-t-md "
-					id={ `sureforms-address-line-1-${ blockID }` }
+					className=" srfm-classic-address-element !top-[3px] !rounded-t-md "
+					id={ `srfm-address-line-1-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ lineOnePlaceholder }
 				/>
@@ -32,8 +32,8 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div>
 				<input
 					type="text"
-					className=" sf-classic-address-element !top-[2px] "
-					id={ `sureforms-address-line-2-${ blockID }` }
+					className=" srfm-classic-address-element !top-[2px] "
+					id={ `srfm-address-line-2-${ blockID }` }
 					placeholder={ lineTwoPlaceholder }
 				/>
 			</div>
@@ -41,8 +41,8 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div className="w-1/2 min-w-0 flex-1">
 					<input
 						type="text"
-						className=" sf-classic-address-element !top-[1px] "
-						id={ `sureforms-address-city-${ blockID }` }
+						className=" srfm-classic-address-element !top-[1px] "
+						id={ `srfm-address-city-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ cityPlaceholder }
 					/>
@@ -50,8 +50,8 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div className="min-w-0 flex-1">
 					<input
 						type="text"
-						className=" sf-classic-address-element !top-[1px] "
-						id={ `sureforms-address-state-${ blockID }` }
+						className=" srfm-classic-address-element !top-[1px] "
+						id={ `srfm-address-state-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ statePlaceholder }
 					/>
@@ -63,9 +63,9 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 						{ __( 'Country', 'sureforms' ) }
 					</label>
 					<select
-						id={ `sureforms-address-country-${ blockID }` }
+						id={ `srfm-address-country-${ blockID }` }
 						autoComplete="country-name"
-						className="sf-classic-adress-select"
+						className="srfm-classic-adress-select"
 					>
 						{ countryPlaceholder === '' ? (
 							''
@@ -90,8 +90,8 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 					<input
 						type="text"
 						autoComplete="postal-code"
-						className="sf-classic-address-element !rounded-b-md"
-						id={ `sureforms-address-postal-${ blockID }` }
+						className="srfm-classic-address-element !rounded-b-md"
+						id={ `srfm-address-postal-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ postalPlaceholder }
 					/>

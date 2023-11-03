@@ -25,8 +25,8 @@ export const RatingThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'rating-block-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-rating-block-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -34,7 +34,7 @@ export const RatingThemeStyle = ( { attributes, blockID } ) => {
 				) }
 			</label>
 			<div
-				id={ 'rating-block-' + blockID }
+				id={ 'srfm-rating-block-' + blockID }
 				style={ {
 					justifyContent:
 						width === 'fullWidth'

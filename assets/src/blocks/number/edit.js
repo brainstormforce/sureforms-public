@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -17,6 +17,8 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -24,7 +26,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		placeholder,
 		help,
 		required,
-		id,
+		block_id,
 		defaultValue,
 		minValue,
 		maxValue,
@@ -32,7 +34,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		formatType,
 		formId,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -51,13 +52,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 		setAttributes( { defaultValue: inputValue } );
 	};
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -203,34 +197,33 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container sf-classic-inputs-holder' }
+				className={ 'srfm-main-container srfm-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<NumberClassicStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleInput={ handleInput }
 					/>
 				) : (
 					<NumberThemeStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleInput={ handleInput }
 					/>
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'number-input-help-' + blockID }
+						htmlFor={ 'srfm-number-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
@@ -241,4 +234,4 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	);
 };
 
-export default SureformInput;
+export default compose( AddInitialAttr )( SureformInput );

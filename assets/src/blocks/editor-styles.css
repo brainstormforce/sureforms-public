@@ -12,6 +12,6 @@
 .sureform-add-option-container .components-base-control__field {
 	padding-top: 0px !important;
 }
-.sureforms-select__input:focus{
+.srfm-select__input:focus{
 	box-shadow: none !important;
 }

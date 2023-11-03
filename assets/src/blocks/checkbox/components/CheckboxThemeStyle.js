@@ -10,16 +10,16 @@ export const CheckboxThemeStyle = ( { attributes, blockID } ) => {
 				required={ required }
 			></input>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'checkbox-block-' + blockID }
 			>
 				{ labelUrl !== '' ? (
 					<a
 						href={ labelUrl }
-						className="sf-text-primary"
+						className="srfm-text-primary"
 						style={ {
 							textDecoration: 'none',
-							color: 'var(--sf-primary-color)',
+							color: 'var(--srfm-primary-color)',
 						} }
 					>
 						{ label }

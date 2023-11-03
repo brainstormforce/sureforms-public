@@ -26,24 +26,24 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 	}, [] );
 	return (
 		<>
-			<label className="sf-classic-label-text" htmlFor="text">
+			<label className="srfm-classic-label-text" htmlFor="text">
 				{ label }
 				{ required && label && (
 					<span className="text-red-500"> *</span>
 				) }
 			</label>
-			<div className="radio-buttons flex flex-wrap mt-2 justify-between">
+			<div className="srfm-radio-buttons flex flex-wrap mt-2 justify-between">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (
-						<label key={ key } className="classic-sf-radio">
+						<label key={ key } className="srfm-classic-radio">
 							<input
 								type={ single_selection ? 'radio' : 'checkbox' }
 								name={ single_selection ? 'sf-radio-$id' : '' }
-								id={ `sureforms-multi-choice-${ blockID }-${ i }` }
-								className="sureforms-multi-choice"
+								id={ `srfm-multi-choice-${ blockID }-${ i }` }
+								className="srfm-multi-choice"
 							/>
-							<div className="flex items-start classic-radio-btn sf-classic-multi-choice">
+							<div className="flex items-start srfm-classic-radio-btn srfm-classic-multi-choice">
 								<div className="pr-[5px] mt-[3px] relative flex">
 									<i
 										className="fa fa-check-circle text-base"
@@ -56,8 +56,8 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 								</div>
 								<div>
 									<article
-										id={ `multi-choice-option-${ blockID }-${ i }` }
-										className="text-sm font-medium leading-6 text-primary_color mt-[-0.5px]"
+										id={ `srfm-multi-choice-option-${ blockID }-${ i }` }
+										className="text-sm font-medium leading-6 text-gray-900 mt-[-0.5px]"
 									>
 										{ option }
 									</article>

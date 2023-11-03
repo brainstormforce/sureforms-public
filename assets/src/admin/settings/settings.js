@@ -30,7 +30,7 @@ const Settings = () => {
 export default Settings;
 
 ( function () {
-	const app = document.getElementById( 'sureforms-settings-container' );
+	const app = document.getElementById( 'srfm-settings-container' );
 
 	function renderApp() {
 		if ( null !== app ) {

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -16,15 +16,17 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { clientId, attributes, setAttributes } ) => {
+const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
 		textAreaHelpText,
 		required,
 		maxLength,
-		id,
+		block_id,
 		defaultValue,
 		errorMsg,
 		rows,
@@ -32,11 +34,9 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		formId,
 	} = attributes;
 
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
-
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const stylingType = sureforms_keys?._sureforms_form_styling;
+	const stylingType = sureforms_keys?._srfm_form_styling;
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -44,12 +44,6 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 	return (
 		<>
 			<InspectorControls>
@@ -176,7 +170,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container  sf-classic-inputs-holder' }
+				className={ `srfm-main-container  srfm-classic-inputs-holder srfm-block-${ block_id }` }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -191,10 +185,9 @@ export default ( { clientId, attributes, setAttributes } ) => {
 				{ textAreaHelpText !== '' && (
 					<label
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ textAreaHelpText }
@@ -204,3 +197,5 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

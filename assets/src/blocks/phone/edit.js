@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -16,14 +16,16 @@ import { PhoneClassicStyle } from './components/PhoneClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { PhoneThemeStyle } from './components/PhoneThemeStyle';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default function Edit( { attributes, setAttributes, clientId } ) {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		label,
 		help,
 		placeholder,
-		id,
+		block_id,
 		defaultValue,
 		defaultCountryCode,
 		isUnique,
@@ -31,7 +33,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		errorMsg,
 		formId,
 	} = attributes;
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	// eslint-disable-next-line no-unused-vars
@@ -40,13 +41,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	function handleChange( e ) {
 		setCode( e.target.value );
 	}
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -209,34 +203,33 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container sf-classic-inputs-holder' }
+				className={ 'srfm-main-container srfm-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<PhoneClassicStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleChange={ handleChange }
 					/>
 				) : (
 					<PhoneThemeStyle
 						attributes={ attributes }
-						blockID={ blockID }
+						blockID={ block_id }
 						handleChange={ handleChange }
 					/>
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'phone-help-' + blockID }
+						htmlFor={ 'phone-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
@@ -245,4 +238,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			</div>
 		</>
 	);
-}
+};
+
+export default compose( AddInitialAttr )( Edit );

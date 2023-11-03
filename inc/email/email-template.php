@@ -93,7 +93,7 @@ class Email_Template {
 	 */
 	public function render( $fields ) {
 		$message         = $this->get_header();
-		$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response', 'sureforms-sender-email-field' ];
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$field_index     = 1;
 		foreach ( $fields as $field_name => $value ) {
 			$bg_color = ( $field_index % 2 ) === 0 ? '#ffffff' : '#f2f2f2;';

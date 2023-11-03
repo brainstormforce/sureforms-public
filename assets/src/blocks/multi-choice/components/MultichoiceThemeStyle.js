@@ -8,7 +8,7 @@ export const MultichoiceThemeStyle = ( {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'multi-choice-block-' + blockID }
 			>
 				{ label }
@@ -39,7 +39,7 @@ export const MultichoiceThemeStyle = ( {
 						/>
 						<label
 							htmlFor={ 'multi-choice-' + blockID + '-i-' + i }
-							className={ 'sureforms-multi-choice-label-button' }
+							className={ 'srfm-multi-choice-label-button' }
 							style={
 								style === 'buttons'
 									? {
