@@ -65,6 +65,14 @@ class SF_Public {
 		if ( ! empty( $is_set_v2_site_key ) ) {
 			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [], SUREFORMS_VER, true );
 		}
+
+		wp_localize_script(
+			'srfm-form-submit',
+			'sureforms_submit',
+			array(
+				'site_url' => site_url(),
+			)
+		);
 	}
 
 	/**

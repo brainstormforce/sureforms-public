@@ -11,6 +11,7 @@ namespace SureForms\Inc;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Email\Email_Template;
+use WP_REST_Server;
 
 /**
  * Sureforms Submit Class.
@@ -19,6 +20,13 @@ use SureForms\Inc\Email\Email_Template;
  */
 class Sureforms_Submit {
 	use Get_Instance;
+
+	/**
+	 * Namespace.
+	 *
+	 * @var string
+	 */
+	protected $namespace = 'sureforms/v1';
 
 	/**
 	 * Constructor
@@ -39,28 +47,28 @@ class Sureforms_Submit {
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/submit-form',
 			array(
-				'methods'             => 'POST',
+				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
 				'permission_callback' => '__return_true',
 			)
 		);
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/srfm-settings',
 			array(
-				'methods'             => 'POST',
+				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
 				'permission_callback' => '__return_true',
 			)
 		);
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/srfm-settings',
 			array(
-				'methods'             => 'GET',
+				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
 				'permission_callback' => '__return_true',
 			)
