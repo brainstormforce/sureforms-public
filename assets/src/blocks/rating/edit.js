@@ -19,6 +19,7 @@ import { RatingClassicStyle } from './components/RatingClassicStyle';
 import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import Range from '@Components/range/Range.js';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
