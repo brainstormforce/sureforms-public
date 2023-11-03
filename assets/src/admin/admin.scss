@@ -1,6 +1,9 @@
 // TODO: remove the unused CSS.
 
 body.post-type-sureforms_form {
+	.edit-post-visual-editor__post-title-wrapper h1.editor-post-title__input {
+		display: none;
+	}
 	.edit-post-sidebar {
 		> .components-panel {
 			.components-panel__row label {
@@ -22,7 +25,7 @@ body.post-type-sureforms_form {
 						display: none;
 					}
 				}
-				.sureforms_colorpicker {
+				.srfm_colorpicker {
 					align-items: flex-start;
 					&.no-margin {
 						margin-top: 7px;
@@ -88,7 +91,7 @@ body.post-type-sureforms_form {
 				display: none;
 			}
 
-			> .sureforms--panel {
+			> .srfm--panel {
 				border-bottom: none;
 				display: block;
 				order: 1;
@@ -115,7 +118,7 @@ body.post-type-sureforms_form {
 					}
 				}
 			}
-			.sureforms-background-image__toggle {
+			.srfm-background-image__toggle {
 				display: block;
 				background-color: #f0f0f0;
 				border-radius: 2px;
@@ -156,7 +159,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.sureforms-shortcode {
+	.srfm-shortcode {
 		display: flex;
 	}
 }

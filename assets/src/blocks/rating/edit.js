@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
@@ -17,11 +17,12 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { RatingClassicStyle } from './components/RatingClassicStyle';
 import { RatingThemeStyle } from './components/RatingThemeStyle';
-import Range from '@Components/range/Range.js';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default function Edit( { attributes, setAttributes, clientId } ) {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
-		id,
+		block_id,
 		required,
 		label,
 		ratingBoxHelpText,
@@ -34,16 +35,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		formId,
 	} = attributes;
 
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -211,7 +204,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -219,19 +212,18 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<RatingClassicStyle attributes={ attributes } />
 				) : (
 					<RatingThemeStyle attributes={ attributes } />
 				) }
 				{ ratingBoxHelpText !== '' && (
 					<label
-						htmlFor={ 'text-input-help-' + blockID }
+						htmlFor={ 'srfm-text-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ ratingBoxHelpText }
@@ -240,4 +232,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			</div>
 		</>
 	);
-}
+};
+
+export default compose( AddInitialAttr )( Edit );

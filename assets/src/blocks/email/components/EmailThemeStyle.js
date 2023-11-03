@@ -10,7 +10,7 @@ export const EmailThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'email-input-' + blockID }
 			>
 				{ label }

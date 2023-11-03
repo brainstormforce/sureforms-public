@@ -1,18 +1,16 @@
 // Rating Field.
 
-const ratingElements = document.getElementsByClassName(
-	'sureforms-rating-field'
-);
+const ratingElements = document.getElementsByClassName( 'srfm-rating-field' );
 
 if ( ratingElements ) {
 	const randomIds = document.getElementsByClassName(
-		'sureforms-rating-random-id'
+		'srfm-rating-random-id'
 	);
 	const inputLabels = [];
 
 	for ( let i = 0; i < randomIds.length; i++ ) {
 		const inputLabel = document.getElementsByClassName(
-			'sureforms-rating-' + randomIds[ i ].value
+			'srfm-rating-' + randomIds[ i ].value
 		);
 		if ( inputLabel.length > 0 ) {
 			inputLabels.push( inputLabel );
@@ -28,13 +26,13 @@ if ( ratingElements ) {
 			const clickArr = e.target.id.split( '-' );
 			const clickedStarId = clickArr[ 2 ];
 			const clickIndexId = Number( clickArr[ 3 ] );
-			const selectedBlock = `sureforms-rating-${ clickedStarId }`;
+			const selectedBlock = `srfm-rating-${ clickedStarId }`;
 			const isSelected = e.target;
 			const label =
 				ratingElements[ i ].nextElementSibling.querySelector( 'label' );
 			const colorDataValue = label.getAttribute( 'color-data' );
 			const iconColor = document.querySelector(
-				`.sureforms-rating-icon-color-${ clickedStarId }`
+				`.srfm-rating-icon-color-${ clickedStarId }`
 			).value;
 
 			if ( colorDataValue === iconColor ) {
@@ -51,9 +49,7 @@ if ( ratingElements ) {
 				for ( let k = 0; k < inputLabels[ j ].length; k++ ) {
 					const hasClassName = inputLabels[ j ][
 						k
-					].classList.contains(
-						`sureforms-rating-${ clickedStarId }`
-					);
+					].classList.contains( `srfm-rating-${ clickedStarId }` );
 
 					if (
 						k <=
@@ -97,45 +93,45 @@ if ( ratingElements ) {
 // Sender's Email.
 
 const emailElements = document.getElementsByClassName(
-	'sureforms-input-email-container'
+	'srfm-input-email-container'
 );
 
 if ( emailElements.length > 0 ) {
-	const emailAddress = document.getElementsByClassName(
-		'sureforms-input-email'
-	);
+	const emailAddress = document.getElementsByClassName( 'srfm-input-email' );
 	emailAddress[ 0 ].addEventListener( 'input', ( e ) => {
-		document.querySelector( '#sureforms-sender-email' ).value =
-			e.target.value;
+		document.querySelector( '#srfm-sender-email' ).value = e.target.value;
 	} );
 }
 
 // Upload Field.
 
 const uploadFieldsContainer = document.getElementsByClassName(
-	'sureforms-upload-container'
+	'srfm-upload-container'
 );
 
 if ( uploadFieldsContainer ) {
 	for ( const uploadField of uploadFieldsContainer ) {
-		const fileSizeField = uploadField.querySelector(
-			'.sureforms-upload-size'
-		);
-		const uploadInput = uploadField.querySelector(
-			'.sureforms-upload-field'
-		);
+		const fileSizeField = uploadField.querySelector( '.srfm-upload-size' );
+		const uploadInput = uploadField.querySelector( '.srfm-upload-field' );
 
 		uploadInput.addEventListener( 'change', ( e ) => {
 			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
+			const isError = uploadField.querySelector( '.error-message' );
+			if ( isError ) {
+				isError.style.display = 'none';
+			}
 			const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
 			if ( file ) {
 				if ( file.size > maxFileSize ) {
 					e.target.value = '';
 					uploadField
-						.querySelector( `#upload-field-error-${ id }` )
+						.querySelector( `#srfm-upload-field-error-${ id }` )
 						.removeAttribute( 'hidden' );
 				} else {
+					uploadField
+						.querySelector( `#upload-field-error-${ id }` )
+						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
 							? file.name.substring( 0, 17 ) +
@@ -143,21 +139,18 @@ if ( uploadFieldsContainer ) {
 							  file.name.split( '.' ).pop()
 							: file.name;
 					const isClassic = uploadField.classList.contains(
-						'sf-classic-inputs-holder'
+						'srfm-classic-inputs-holder'
 					);
 					if ( ! isClassic ) {
-						uploadField
-							.querySelector( `#upload-field-error-${ id }` )
-							.setAttribute( 'hidden', true );
 						uploadField.querySelector(
-							`#sureforms-upload-title-${ id }`
+							`#srfm-upload-title-${ id }`
 						).innerHTML =
-							`<div class="sf-text-primary" style="display:flex; gap:0.4rem; align-items:center">
-                        <i class="fa-solid fa-file-lines sf-text-primary"></i> ` +
+							`<div class="srfm-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+                        <i class="fa-solid fa-file-lines srfm-text-primary"></i> ` +
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can sf-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -180,9 +173,9 @@ if ( uploadFieldsContainer ) {
 								: '<div style="font-size:35px" class="text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
 							const uploadResultContainer =
 								uploadField.querySelector(
-									`#sureforms-upload-field-result-${ id }`
+									`#srfm-upload-field-result-${ id }`
 								);
-							uploadResultContainer.innerHTML = `<div class="sf-text-primary w-full flex gap-2 p-[10px]">
+							uploadResultContainer.innerHTML = `<div class="srfm-text-primary w-full flex gap-2 p-[10px]">
 								${ icon }
 								<div class="w-full flex justify-between">
 									<div>
@@ -202,7 +195,7 @@ if ( uploadFieldsContainer ) {
 								.addEventListener( 'click', () => {
 									uploadInput.value = '';
 									uploadField.querySelector(
-										`#sureforms-upload-field-result-${ id }`
+										`#srfm-upload-field-result-${ id }`
 									).style.display = 'none';
 								} );
 						};
@@ -217,16 +210,15 @@ if ( uploadFieldsContainer ) {
 // Toggle Switch
 
 const toggleSwitchesContainer = document.getElementsByClassName(
-	'sf-classic-switch-container'
+	'srfm-classic-switch-container'
 );
 
 if ( toggleSwitchesContainer ) {
 	for ( let i = 0; i < toggleSwitchesContainer.length; i++ ) {
 		const toggleSwitch =
-			toggleSwitchesContainer[ i ].querySelector( '.sureforms-switch' );
-		const toggleLabel = toggleSwitchesContainer[ i ].querySelector(
-			'.sureforms-switch-label'
-		);
+			toggleSwitchesContainer[ i ].querySelector( '.srfm-switch' );
+		const toggleLabel =
+			toggleSwitchesContainer[ i ].querySelector( '.srfm-switch-label' );
 		const toggleSwitchCurrentId = toggleSwitch.getAttribute( 'id' );
 		if ( toggleSwitch && toggleLabel ) {
 			toggleSwitch.id = toggleSwitchCurrentId + i;
@@ -237,55 +229,54 @@ if ( toggleSwitchesContainer ) {
 			// eslint-disable-next-line no-undef
 
 			if (
-				toggleSwitch.classList.contains( 'sf-classic-switch-input' )
+				toggleSwitch.classList.contains( 'srfm-classic-switch-input' )
 			) {
 				const computedStyle = getComputedStyle( formElement );
-				const primaryColor =
-					computedStyle.getPropertyValue( '--sf-primary-color' );
+				const primaryColor = computedStyle.getPropertyValue(
+					'--srfm-primary-color'
+				);
 				const currentValue = toggleSwitch.value;
 
 				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-				const switchBackground =
-					toggleSwitchesContainer[ i ].querySelector(
-						'.switch-background'
-					);
-				const switchToggle =
-					toggleSwitchesContainer[ i ].querySelector(
-						'.switch-toggle'
-					);
+				const switchBackground = toggleSwitchesContainer[
+					i
+				].querySelector( '.srfm-switch-background' );
+				const switchToggle = toggleSwitchesContainer[ i ].querySelector(
+					'.srfm-switch-toggle'
+				);
 				const switchTickIcon = toggleSwitchesContainer[
 					i
-				].querySelector( '.sf-classic-toggle-icon' );
+				].querySelector( '.srfm-classic-toggle-icon' );
 
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor =
 						primaryColor !== ''
-							? 'var(--sf-primary-color)'
+							? 'var(--srfm-primary-color)'
 							: '#0284c7';
 					switchTickIcon.style.fill =
 						primaryColor !== ''
-							? 'var(--sf-primary-color)'
+							? 'var(--srfm-primary-color)'
 							: '#0284c7';
 					// will be used later
 
 					// switchBackground[ i ].style.backgroundColor =
-					// 	primaryColor !== '' ? 'var(--sf-primary-color)' : '#0284c7';
+					// 	primaryColor !== '' ? 'var(--srfm-primary-color)' : '#0284c7';
 					// switchBackground[ i ].classList.remove( '!bg-[#E4E7EB]' );
 					if (
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.contains( '!opacity-0' )
 					) {
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.remove( '!opacity-0' );
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!opacity-100' );
 						switchToggle.style.left = '24px';
@@ -295,12 +286,12 @@ if ( toggleSwitchesContainer ) {
 
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!opacity-0' );
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.remove( '!opacity-100' );
 						switchToggle.style.left = '0';
@@ -324,18 +315,18 @@ if ( toggleSwitchesContainer ) {
 					if (
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.contains( '!opacity-100' )
 					) {
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.remove( '!opacity-100' );
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!opacity-0' );
 						switchToggle.style.left = '0';
@@ -344,22 +335,22 @@ if ( toggleSwitchesContainer ) {
 					} else {
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.remove( '!opacity-0' );
 						switchBackground
 							.querySelector(
-								'.sf-classic-toggle-icon-container'
+								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!opacity-100' );
 						switchToggle.style.left = '24px';
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
-								? 'var(--sf-primary-color)'
+								? 'var(--srfm-primary-color)'
 								: '#0284c7';
 						switchTickIcon.style.fill =
 							primaryColor !== ''
-								? 'var(--sf-primary-color)'
+								? 'var(--srfm-primary-color)'
 								: '#0284c7';
 						toggleSwitch.value = 'true';
 					}
@@ -367,14 +358,12 @@ if ( toggleSwitchesContainer ) {
 			} else {
 				const currentValue = toggleSwitch.value;
 				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-				const switchBackground =
-					toggleSwitchesContainer[ i ].querySelector(
-						'.switch-background'
-					);
-				const switchToggle =
-					toggleSwitchesContainer[ i ].querySelector(
-						'.switch-toggle'
-					);
+				const switchBackground = toggleSwitchesContainer[
+					i
+				].querySelector( '.srfm-switch-background' );
+				const switchToggle = toggleSwitchesContainer[ i ].querySelector(
+					'.srfm-switch-toggle'
+				);
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor = '#007CBA';
 					switchToggle.style.left = '27px';
@@ -389,7 +378,7 @@ if ( toggleSwitchesContainer ) {
 
 // default switch
 
-const toggleSwitches = document.getElementsByClassName( 'sf-default-switch' );
+const toggleSwitches = document.getElementsByClassName( 'srfm-default-switch' );
 
 if ( toggleSwitches ) {
 	for ( let i = 0; i < toggleSwitches.length; i++ ) {
@@ -397,10 +386,11 @@ if ( toggleSwitches ) {
 			const currentValue = toggleSwitches[ i ].value;
 			toggleSwitches[ i ].value =
 				currentValue === 'true' ? 'false' : 'true';
-			const switchBackground =
-				document.getElementsByClassName( 'switch-background' );
+			const switchBackground = document.getElementsByClassName(
+				'srfm-switch-background'
+			);
 			const switchToggle =
-				document.getElementsByClassName( 'switch-toggle' );
+				document.getElementsByClassName( 'srfm-switch-toggle' );
 			if ( toggleSwitches[ i ].value === 'true' ) {
 				switchBackground[ i ].style.backgroundColor = '#007CBA';
 				switchToggle[ i ].style.left = '27px';
@@ -414,9 +404,7 @@ if ( toggleSwitches ) {
 
 // Multi Choice
 
-const multiChoices = document.getElementsByClassName(
-	'sureforms-multi-choice'
-);
+const multiChoices = document.getElementsByClassName( 'srfm-multi-choice' );
 
 if ( multiChoices ) {
 	const selectedOptions = new Map();
@@ -427,21 +415,21 @@ if ( multiChoices ) {
 			const selectedInd = Number( clickArr[ 4 ] );
 
 			const sureformsMultiChoiceLabel = document.getElementsByClassName(
-				`sureforms-multi-choice-label-${ clickedId }`
+				`srfm-multi-choice-label-${ clickedId }`
 			);
 
 			if (
 				'buttons' ===
 				document.getElementById(
-					`sureforms-multi-choice-style-${ clickedId }`
+					`srfm-multi-choice-style-${ clickedId }`
 				).value
 			) {
 				const selectContainer = document.getElementById(
-					`sureforms-multi-choice-container-${ clickedId }`
+					`srfm-multi-choice-container-${ clickedId }`
 				);
 				selectContainer.classList.add( 'sf--focus' );
 				const singleSelection = document.getElementById(
-					`sureforms-multi-choice-selection-${ clickedId }`
+					`srfm-multi-choice-selection-${ clickedId }`
 				).value;
 				if (
 					singleSelection &&
@@ -485,10 +473,10 @@ if ( multiChoices ) {
 				}
 			}
 			const singleSelection = document.getElementById(
-				`sureforms-multi-choice-selection-${ clickedId }`
+				`srfm-multi-choice-selection-${ clickedId }`
 			).value;
 			const selectedValue = document.getElementById(
-				`multi-choice-option-${ clickedId }-${ selectedInd }`
+				`srfm-multi-choice-option-${ clickedId }-${ selectedInd }`
 			).innerText;
 			if ( ! selectedOptions.has( clickedId ) ) {
 				selectedOptions.set( clickedId, [] );
@@ -510,7 +498,7 @@ if ( multiChoices ) {
 			}
 
 			const multiChoiceValueField = document.getElementsByClassName(
-				`sureforms-multi-choice-${ clickedId }`
+				`srfm-multi-choice-${ clickedId }`
 			);
 			multiChoiceValueField[ 0 ].value = selectedOptions
 				.get( clickedId )
@@ -522,33 +510,33 @@ if ( multiChoices ) {
 // Address Field
 
 const addressElement = document.getElementsByClassName(
-	'sureforms-address-container'
+	'srfm-address-container'
 );
 
 if ( addressElement ) {
 	for ( let i = 0; i < addressElement.length; i++ ) {
 		const blockID = addressElement[ i ].id.split( '-' )[ 3 ];
 		const addressLine1 = document.getElementById(
-			`sureforms-address-line-1-${ blockID }`
+			`srfm-address-line-1-${ blockID }`
 		);
 		const addressLine2 = document.getElementById(
-			`sureforms-address-line-2-${ blockID }`
+			`srfm-address-line-2-${ blockID }`
 		);
 		const addressCity = document.getElementById(
-			`sureforms-address-city-${ blockID }`
+			`srfm-address-city-${ blockID }`
 		);
 		const addressState = document.getElementById(
-			`sureforms-address-state-${ blockID }`
+			`srfm-address-state-${ blockID }`
 		);
 		const addressPostal = document.getElementById(
-			`sureforms-address-postal-${ blockID }`
+			`srfm-address-postal-${ blockID }`
 		);
 		const addressCountry = document.getElementById(
-			`sureforms-address-country-${ blockID }`
+			`srfm-address-country-${ blockID }`
 		);
 
 		const fullAddressInput = document.getElementById(
-			`fullAddress-${ blockID }`
+			`srfm-fullAddress-${ blockID }`
 		);
 
 		const updateFullAddress = () => {
@@ -590,21 +578,21 @@ if ( addressElement ) {
 // Date & Time Picker
 
 const dateTimeElement = document.getElementsByClassName(
-	'sureforms-input-date-container'
+	'srfm-input-date-container'
 );
 
 if ( dateTimeElement ) {
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
 		const dateInput = document.getElementById(
-			`sureforms-input-date-${ blockID }`
+			`srfm-input-date-${ blockID }`
 		);
 		const timeInput = document.getElementById(
-			`sureforms-input-time-${ blockID }`
+			`srfm-input-time-${ blockID }`
 		);
 
 		const fullDateTimeInput = document.getElementById(
-			`sureforms-full-date-time-${ blockID }`
+			`srfm-full-date-time-${ blockID }`
 		);
 
 		const updateFullDateTime = () => {
@@ -641,20 +629,20 @@ if ( dateTimeElement ) {
 // Phone Field
 
 const phoneElement = document.getElementsByClassName(
-	'sureforms-input-phone-container'
+	'srfm-input-phone-container'
 );
 
 if ( phoneElement ) {
 	for ( let i = 0; i < phoneElement.length; i++ ) {
 		const blockID = phoneElement[ i ].id.split( '-' )[ 3 ];
 		const countryCode = document.getElementById(
-			`sureforms-country-code-${ blockID }`
+			`srfm-country-code-${ blockID }`
 		);
 		const phoneNumber = document.getElementById(
-			`sureforms-phone-number-${ blockID }`
+			`srfm-phone-number-${ blockID }`
 		);
 		const fullPhoneNumberInput = document.getElementById(
-			`fullPhoneNumber-${ blockID }`
+			`srfm-fullPhoneNumber-${ blockID }`
 		);
 		const updateFullPhoneNumber = () => {
 			const countryCodeValue = countryCode.value
@@ -675,19 +663,19 @@ if ( phoneElement ) {
 //input range field
 
 const sliderElement = document.getElementsByClassName(
-	'sureforms-number-slider-input'
+	'srfm-number-slider-input'
 );
 
 if ( sliderElement ) {
 	for ( let i = 0; i < sliderElement.length; i++ ) {
 		const blockID = sliderElement[ i ].id.split( '-' )[ 3 ];
 		const sliderInput = document.getElementById(
-			`sureforms-number-slider-${ blockID }`
+			`srfm-number-slider-${ blockID }`
 		);
 		sliderInput.addEventListener( 'input', ( e ) => {
 			const slideValue = e.target.value;
 			document.getElementById(
-				`sureforms-number-slider-value-${ blockID }`
+				`srfm-number-slider-value-${ blockID }`
 			).innerText = slideValue;
 		} );
 	}
@@ -695,7 +683,7 @@ if ( sliderElement ) {
 
 //Number field
 const numberElements = Array.from(
-	document.getElementsByClassName( 'sureforms-input-number-container' )
+	document.getElementsByClassName( 'srfm-input-number-container' )
 );
 
 if ( numberElements ) {
@@ -721,17 +709,15 @@ if ( numberElements ) {
 	}
 }
 
-const inputContainers = document.querySelectorAll( '.main-container' );
+const inputContainers = document.querySelectorAll( '.srfm-main-container' );
 
 inputContainers.forEach( ( container ) => {
 	const inputs = container.querySelectorAll( 'input, textarea, select' );
 
 	inputs.forEach( ( input ) => {
-		const isRatingInput = input.classList.contains(
-			'sureforms-rating-field'
-		);
+		const isRatingInput = input.classList.contains( 'srfm-rating-field' );
 		const isMultiInput = input.classList.contains(
-			'sureforms-multi-choice-container'
+			'srfm-multi-choice-container'
 		);
 		const isFileInput = input.type === 'file';
 		if ( isRatingInput || isFileInput || isMultiInput ) {
@@ -759,7 +745,7 @@ inputContainers.forEach( ( container ) => {
 } );
 
 const checkboxContainers = document.querySelectorAll(
-	'.sureforms-checkbox-container'
+	'.srfm-checkbox-container'
 );
 
 if ( checkboxContainers ) {
@@ -768,10 +754,11 @@ if ( checkboxContainers ) {
 			const formElement = checkboxContainers[ i ].closest( 'form' );
 			// eslint-disable-next-line no-undef
 			const computedStyle = getComputedStyle( formElement );
-			const primaryColor =
-				computedStyle.getPropertyValue( '--sf-primary-color' );
+			const primaryColor = computedStyle.getPropertyValue(
+				'--srfm-primary-color'
+			);
 			const checkboxInputs = checkboxContainers[ i ].querySelectorAll(
-				'.sureforms-classic-checkbox-input'
+				'.srfm-classic-checkbox-input'
 			);
 			checkboxInputs.forEach( ( checkboxInput ) => {
 				if ( '' === primaryColor ) {
@@ -783,9 +770,9 @@ if ( checkboxContainers ) {
 					);
 				} else {
 					checkboxInput.classList.add(
-						'!text-sf_primary_color',
-						'focus:!ring-sf_primary_color',
-						'checked:!bg-sf_primary_color',
+						'!text-srfm_primary_color',
+						'focus:!ring-srfm_primary_color',
+						'checked:!bg-srfm_primary_color',
 						'checked:!border-none'
 					);
 				}
@@ -796,7 +783,7 @@ if ( checkboxContainers ) {
 
 //text-area field
 const textAreaContainer = Array.from(
-	document.getElementsByClassName( 'sureforms-textarea-container' )
+	document.getElementsByClassName( 'srfm-textarea-container' )
 );
 if ( textAreaContainer ) {
 	for ( const areaInput of textAreaContainer ) {
@@ -806,7 +793,7 @@ if ( textAreaContainer ) {
 			const maxLength = areaField.getAttribute( 'maxLength' );
 			if ( maxLength !== '' ) {
 				const counterDiv = areaInput.querySelector(
-					'.sureforms-text-area-counter'
+					'.srfm-text-area-counter'
 				);
 				const remainingLength = maxLength - textAreaValue.length;
 				counterDiv.innerText = remainingLength + '/' + maxLength;
@@ -816,12 +803,12 @@ if ( textAreaContainer ) {
 }
 //password strength
 const passwordContainer = Array.from(
-	document.getElementsByClassName( 'sureforms-input-password-container' )
+	document.getElementsByClassName( 'srfm-input-password-container' )
 );
 if ( passwordContainer ) {
 	for ( const passwordInput of passwordContainer ) {
 		const isClassic = passwordInput.classList.contains(
-			'sf-classic-inputs-holder'
+			'srfm-classic-inputs-holder'
 		);
 		if ( isClassic ) {
 			continue;
@@ -830,12 +817,12 @@ if ( passwordContainer ) {
 		inputField.addEventListener( 'input', function () {
 			const password = inputField.value;
 			const passwordStrength = passwordInput.querySelector(
-				'.password-strength-message'
+				'.srfm-password-strength-message'
 			);
-			passwordInput.querySelector( '.error-message' ).style.display =
+			passwordInput.querySelector( '.srfm-error-message' ).style.display =
 				'none';
-			if ( passwordInput.querySelector( '.info-icon' ) ) {
-				passwordInput.querySelector( '.info-icon' ).style.display =
+			if ( passwordInput.querySelector( '.srfm-info-icon' ) ) {
+				passwordInput.querySelector( '.srfm-info-icon' ).style.display =
 					'inline-block';
 			}
 			const strength = calculatePasswordStrength( password );
@@ -896,7 +883,7 @@ function updatePasswordStrength( strength, passwordStrength ) {
 }
 
 const selectFieldContainer = document.getElementsByClassName(
-	'sureforms-classic-dropdown-container'
+	'srfm-classic-dropdown-container'
 );
 
 if ( selectFieldContainer ) {
@@ -905,32 +892,33 @@ if ( selectFieldContainer ) {
 		const formElement = selectFieldContainer[ i ].closest( 'form' );
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
-		const primaryColor =
-			computedStyle.getPropertyValue( '--sf-primary-color' );
+		const primaryColor = computedStyle.getPropertyValue(
+			'--srfm-primary-color'
+		);
 		i++;
 		const selectFieldButton = selectField.querySelector(
-			'.sureforms-classic-dropdown-button'
+			'.srfm-classic-dropdown-button'
 		);
 
 		selectFieldButton.addEventListener( 'focus', () => {
 			selectFieldButton
-				.querySelector( '.sf-classic-select-icon ' )
+				.querySelector( '.srfm-classic-select-icon ' )
 				.classList.add( 'rotate-180', '!pl-4' );
 
 			const nextSibling = selectFieldButton.nextElementSibling;
 			const options = nextSibling.querySelectorAll(
-				'.sf-classic-dropdown-option'
+				'.srfm-classic-dropdown-option'
 			);
 			if ( '' === primaryColor ) {
 				for ( let index = 0; index < options.length; index++ ) {
 					options[ index ].classList.remove(
-						'hover:!bg-sf_primary_color'
+						'hover:!bg-srfm_primary_color'
 					);
 					options[ index ].classList.add( 'hover:!bg-[#0084C7]' );
 				}
 			}
 			const dropdownResultInput = selectField.querySelector(
-				'.sf-classic-dropdown-result'
+				'.srfm-classic-dropdown-result'
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
@@ -942,14 +930,14 @@ if ( selectFieldContainer ) {
 				liElements.forEach( ( li ) => {
 					li.addEventListener( 'mousedown', ( event ) => {
 						selectFieldButton
-							.querySelector( '.sf-classic-select-icon ' )
+							.querySelector( '.srfm-classic-select-icon ' )
 							.classList.remove( 'rotate-180', '!pl-4' );
 						selectFieldButton
-							.querySelector( '.sf-classic-select-icon ' )
+							.querySelector( '.srfm-classic-select-icon ' )
 							.classList.add( 'rotate-0' );
 						const selectedValue = event.target.textContent.trim();
 						selectFieldButton.querySelector(
-							'.sf-dropdown-value'
+							'.srfm-dropdown-value'
 						).textContent = selectedValue;
 						dropdownResultInput.value = selectedValue;
 
@@ -963,10 +951,10 @@ if ( selectFieldContainer ) {
 		} );
 		selectFieldButton.addEventListener( 'blur', () => {
 			selectFieldButton
-				.querySelector( '.sf-classic-select-icon ' )
+				.querySelector( '.srfm-classic-select-icon ' )
 				.classList.remove( 'rotate-180', '!pl-4' );
 			selectFieldButton
-				.querySelector( '.sf-classic-select-icon ' )
+				.querySelector( '.srfm-classic-select-icon ' )
 				.classList.add( 'rotate-0' );
 			const nextSibling = selectFieldButton.nextElementSibling;
 			nextSibling.classList.remove( '!opacity-100' );
@@ -979,14 +967,15 @@ if ( selectFieldContainer ) {
 
 //submit-button CSS
 
-const submitButton = document.getElementsByClassName( 'sureforms-button' );
+const submitButton = document.getElementsByClassName( 'srfm-button' );
 if ( submitButton ) {
 	// eslint-disable-next-line
 	const rootStyles = getComputedStyle( document.documentElement );
-	const primaryColorValue =
-		rootStyles.getPropertyValue( '--sf-primary-color' );
+	const primaryColorValue = rootStyles.getPropertyValue(
+		'--srfm-primary-color'
+	);
 	const secondaryColorValue = rootStyles.getPropertyValue(
-		'--sf-secondary-color'
+		'--srfm-secondary-color'
 	);
 
 	if ( primaryColorValue !== '' ) {
@@ -1002,7 +991,7 @@ if ( submitButton ) {
 }
 
 const numberSliderContainer = document.getElementsByClassName(
-	'sf-classic-number-slider'
+	'srfm-classic-number-slider'
 );
 
 if ( numberSliderContainer ) {
@@ -1017,7 +1006,7 @@ if ( numberSliderContainer ) {
 	// Pre Init
 	const preInit = ( sliderContainer, primaryColor ) => {
 		const rangeSliders =
-			sliderContainer.querySelector( '#range-slider-sf' );
+			sliderContainer.querySelector( '#srfm-range-slider' );
 		const val = Number( rangeSliders.value );
 		const min = Number( rangeSliders.getAttribute( 'min' ) );
 		const max = Number( rangeSliders.getAttribute( 'max' ) );
@@ -1028,9 +1017,9 @@ if ( numberSliderContainer ) {
 	const init = ( sliderContainer, primaryColor ) => {
 		// Slider Range Change or Input
 		const rangeSliders =
-			sliderContainer.querySelector( '#range-slider-sf' );
+			sliderContainer.querySelector( '#srfm-range-slider' );
 		const numberInput = sliderContainer.querySelector(
-			'.number-input-slider-sf'
+			'.srfm-number-input-slider'
 		);
 		rangeSliders.addEventListener( 'input', function ( e ) {
 			// Prevent Default
@@ -1081,21 +1070,22 @@ if ( numberSliderContainer ) {
 		const formElement = numberSlider.closest( 'form' );
 		// eslint-disable-next-line no-undef
 		const computedStyle = getComputedStyle( formElement );
-		const primaryColor =
-			computedStyle.getPropertyValue( '--sf-primary-color' );
+		const primaryColor = computedStyle.getPropertyValue(
+			'--srfm-primary-color'
+		);
 		preInit( numberSlider, primaryColor );
 		init( numberSlider, primaryColor );
 	}
 }
 const classicRatingContainers = document.getElementsByClassName(
-	'sureforms-classic-rating-container'
+	'srfm-classic-rating-container'
 );
 for ( const classicRating of classicRatingContainers ) {
 	const icon = classicRating.querySelectorAll(
-		'.sf-classic-event [data-te-rating-icon-ref]'
+		'.srfm-classic-event [data-te-rating-icon-ref]'
 	);
 	const ratingResult = classicRating.querySelector(
-		'.sf-rating-field-result'
+		'.srfm-rating-field-result'
 	);
 	icon.forEach( ( el ) => {
 		el.addEventListener( 'onSelect.te.rating', ( e ) => {
@@ -1106,19 +1096,19 @@ for ( const classicRating of classicRatingContainers ) {
 }
 
 const datePickerContainers = document.getElementsByClassName(
-	'sf-classic-date-time-container'
+	'srfm-classic-date-time-container'
 );
 if ( datePickerContainers ) {
 	for ( const datePickerContainer of datePickerContainers ) {
 		const datePicker = datePickerContainer.querySelector(
-			'.sf-classic-date-time-picker'
+			'.srfm-classic-date-time-picker'
 		);
 		const resultInput = datePickerContainer.querySelector(
-			'.sf-classic-date-time-result'
+			'.srfm-classic-date-time-result'
 		);
 		const fieldType = resultInput.getAttribute( 'field-type' );
 		const dateTimeInput = datePickerContainer.querySelector(
-			'.sureforms-input-data-time'
+			'.srfm-input-data-time'
 		);
 		let buttonAttribute = '';
 		let eventType = '';
@@ -1158,15 +1148,13 @@ if ( datePickerContainers ) {
 }
 
 const urlFiledContainers = document.getElementsByClassName(
-	'sureforms-classic-input-url-container'
+	'srfm-classic-input-url-container'
 );
 if ( urlFiledContainers ) {
 	for ( const urlFiledContainer of urlFiledContainers ) {
-		const urlInput = urlFiledContainer.querySelector(
-			'.sureforms-url-input'
-		);
+		const urlInput = urlFiledContainer.querySelector( '.srfm-url-input' );
 		const validUrlMessage = urlFiledContainer.querySelector(
-			'.validation-url-message'
+			'.srfm-validation-url-message'
 		);
 		urlInput.addEventListener( 'change', () => {
 			const pattern = new RegExp(

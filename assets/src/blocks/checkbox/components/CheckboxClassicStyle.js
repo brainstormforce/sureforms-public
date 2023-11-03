@@ -15,7 +15,7 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 						checked={ selected }
 						required={ required }
 						onClick={ () => setSelected( ! selected ) }
-						className="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input checked:!bg-sf_primary_color checked:!border-none"
+						className="h-4 w-4 rounded border-[#d1d5db] srfm-classic-checkbox-input checked:!bg-srfm_primary_color checked:!border-none"
 					/>
 				</div>
 				<div className="text-sm leading-6">
@@ -27,12 +27,14 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 							className="underline"
 							rel="noreferrer"
 						>
-							<label className="sf-classic-label-text">
+							<label className="srfm-classic-label-text">
 								{ label }
 							</label>
 						</a>
 					) : (
-						label
+						<label className="sf-classic-label-text">
+							{ label }
+						</label>
 					) }
 					{ required && label ? (
 						<span style={ { color: 'red' } }> *</span>

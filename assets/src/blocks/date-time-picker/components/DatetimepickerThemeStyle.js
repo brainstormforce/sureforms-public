@@ -3,7 +3,7 @@ export const DatetimepickerThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'date-picker-' + blockID }
 			>
 				{ label }

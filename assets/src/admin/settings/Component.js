@@ -111,7 +111,7 @@ const Component = ( { path } ) => {
 		e.preventDefault();
 
 		try {
-			await fetch( '/wp-json/sureforms/v1/sureforms-settings', {
+			await fetch( '/wp-json/sureforms/v1/srfm-settings', {
 				method: 'POST',
 				body: JSON.stringify( formData ),
 				headers: {
@@ -135,7 +135,7 @@ const Component = ( { path } ) => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					'/wp-json/sureforms/v1/sureforms-settings'
+					'/wp-json/sureforms/v1/srfm-settings'
 				);
 				const data = await response.json();
 
@@ -219,17 +219,17 @@ const Component = ( { path } ) => {
 										onSelect={ ( tab ) => onSelect( tab ) }
 										tabs={ [
 											{
-												name: 'sureforms-recaptcha-v2-checkbox',
+												name: 'srfm-recaptcha-v2-checkbox',
 												title: 'v2 Checkbox',
 												className: 'recaptcha-tab',
 											},
 											{
-												name: 'sureforms-recaptcha-v2-invisible',
+												name: 'srfm-recaptcha-v2-invisible',
 												title: 'v2 Invisible',
 												className: 'recaptcha-tab',
 											},
 											{
-												name: 'sureforms-recaptcha-v3',
+												name: 'srfm-recaptcha-v3',
 												title: 'v3 reCAPTCHA',
 												className: 'recaptcha-tab',
 											},
@@ -244,8 +244,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_site"
-																		id="sureforms_v2_checkbox_site"
+																		name="srfm_v2_checkbox_site"
+																		id="srfm_v2_checkbox_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Site Key v2 Checkbox',
@@ -264,8 +264,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_secret"
-																		id="sureforms_v2_checkbox_secret"
+																		name="srfm_v2_checkbox_secret"
+																		id="srfm_v2_checkbox_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Secret Key v2 Checkbox',
@@ -289,8 +289,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_site"
-																		id="sureforms_v2_invisible_site"
+																		name="srfm_v2_invisible_site"
+																		id="srfm_v2_invisible_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Site Key v2 Invisible',
@@ -309,8 +309,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_secret"
-																		id="sureforms_v2_invisible_secret"
+																		name="srfm_v2_invisible_secret"
+																		id="srfm_v2_invisible_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Secret Key v2 Invisible',
@@ -334,8 +334,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v3_site"
-																		id="sureforms_v3_site"
+																		name="srfm_v3_site"
+																		id="srfm_v3_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Site Key v3',
@@ -354,8 +354,8 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v3_secret"
-																		id="sureforms_v3_secret"
+																		name="srfm_v3_secret"
+																		id="srfm_v3_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
 																			'Secret Key v3',
@@ -415,11 +415,11 @@ const Component = ( { path } ) => {
 									<Fragment>
 										<div className="mb-4 ">
 											<label
-												htmlFor="honeypot-checkbox-input"
+												htmlFor="srfm-honeypot-checkbox-input"
 												className="toggle-button"
 											>
 												<input
-													id="honeypot-checkbox-input"
+													id="srfm-honeypot-checkbox-input"
 													type="checkbox"
 													name="honeypot_toggle"
 													checked={ honeyPot }

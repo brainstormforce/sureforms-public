@@ -11,12 +11,12 @@
 		"html": false
 	},
 	"attributes": {
-		"id": {
-			"type": "string",
-			"default": ""
+		"block_id": {
+			"type": "string"
 		},
 		"defaultValue": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"required": {
 			"type": "boolean",

@@ -12,9 +12,8 @@
 		"html": false
 	},
 	"attributes": {
-		"id": {
-			"type": "string",
-			"default": ""
+		"block_id": {
+			"type": "string"
 		},
 		"required": {
 			"type": "boolean"
@@ -37,7 +36,7 @@
 		},
 		"style": {
 			"type": "string",
-			"default": "default"
+			"default": "buttons"
 		},
 		"errorMsg": {
 			"type": "string",

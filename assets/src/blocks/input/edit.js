@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -16,14 +16,16 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
 import { InputThemeStyle } from './components/InputThemeStyle';
 import Range from '@Components/range/Range.js';
+import AddInitialAttr from '@Controls/addInitialAttr';
+import { compose } from '@wordpress/compose';
 
-export default ( { clientId, attributes, setAttributes } ) => {
+const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
 		help,
 		required,
-		id,
+		block_id,
 		defaultValue,
 		errorMsg,
 		textLength,
@@ -32,7 +34,6 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		formId,
 	} = attributes;
 
-	const blockID = useBlockProps().id.split( '-' ).join( '' );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -41,13 +42,6 @@ export default ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
-	useEffect( () => {
-		if ( id !== '' ) {
-			return;
-		}
-		setAttributes( { id: blockID } );
-	}, [ blockID, id, setAttributes ] );
 
 	return (
 		<>
@@ -174,7 +168,7 @@ export default ( { clientId, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -182,20 +176,25 @@ export default ( { clientId, attributes, setAttributes } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<InputClassicStyle attributes={ attributes } />
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
+					<InputClassicStyle
+						attributes={ attributes }
+						blockID={ block_id }
+					/>
 				) : (
-					<InputThemeStyle attributes={ attributes } />
+					<InputThemeStyle
+						attributes={ attributes }
+						blockID={ block_id }
+					/>
 				) }
 
 				{ help !== '' && (
 					<label
-						htmlFor={ 'text-input-help-' + blockID }
+						htmlFor={ 'srfm-text-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
@@ -205,3 +204,5 @@ export default ( { clientId, attributes, setAttributes } ) => {
 		</>
 	);
 };
+
+export default compose( AddInitialAttr )( Edit );

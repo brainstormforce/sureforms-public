@@ -7,8 +7,8 @@ export const PhoneThemeStyle = ( { attributes, blockID, handleChange } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'phone-field-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-phone-field-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -26,7 +26,7 @@ export const PhoneThemeStyle = ( { attributes, blockID, handleChange } ) => {
 					<select
 						style={ { width: '124px' } }
 						required={ required }
-						id={ 'phone-field-' + blockID }
+						id={ 'srfm-phone-field-' + blockID }
 						placeholder="US +1"
 						onChange={ ( e ) => handleChange( e ) }
 					>
@@ -53,7 +53,7 @@ export const PhoneThemeStyle = ( { attributes, blockID, handleChange } ) => {
 					type="tel"
 					placeholder={ placeholder }
 					pattern="[0-9]{10}"
-					id={ 'phone-field-' + blockID }
+					id={ 'srfm-phone-field-' + blockID }
 					value={ defaultValue }
 				/>
 			</div>

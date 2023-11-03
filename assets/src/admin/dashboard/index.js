@@ -9,7 +9,7 @@ const APP = () => {
 };
 
 ( function () {
-	const app = document.getElementById( 'sureforms-dashboard-container' );
+	const app = document.getElementById( 'srfm-dashboard-container' );
 
 	document.addEventListener( 'DOMContentLoaded', function () {
 		if ( null !== app ) {

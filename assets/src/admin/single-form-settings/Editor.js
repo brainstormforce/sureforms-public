@@ -10,7 +10,7 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, createRoot } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
@@ -21,31 +21,39 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import HeaderTitle from './HeaderTitle.js';
 
 const { select, dispatch } = wp.data;
 
 const default_keys = {
-	_sureforms_color1: '',
-	_sureforms_textcolor1: '',
-	_sureforms_color2: '',
-	_sureforms_fontsize: 16,
-	_sureforms_bg: '',
-	_sureforms_thankyou_message: 'Form submitted successfully!',
-	_sureforms_email: sfBlockData.admin_email,
-	_sureforms_submit_type: 'message',
-	_sureforms_submit_url: '',
-	_sureforms_sender_notification: 'off',
-	_sureforms_form_recaptcha: 'none',
-	_sureforms_submit_alignment: 'left',
-	_sureforms_submit_width: '',
-	_sureforms_submit_styling_inherit_from_theme: false,
-	_sureforms_form_styling: 'classic',
-	_sureforms_form_container_width: 650,
+	_srfm_color1: '',
+	_srfm_textcolor1: '',
+	_srfm_color2: '',
+	_srfm_fontsize: 16,
+	_srfm_bg: '',
+	_srfm_thankyou_message: 'Form submitted successfully!',
+	_srfm_email: sfBlockData.admin_email,
+	_srfm_submit_type: 'message',
+	_srfm_submit_url: '',
+	_srfm_sender_notification: 'off',
+	_srfm_form_recaptcha: 'none',
+	_srfm_submit_alignment: 'left',
+	_srfm_submit_width: '',
+	_srfm_submit_styling_inherit_from_theme: false,
+	_srfm_form_styling: 'classic',
+	_srfm_form_container_width: 650,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+
+	const headerCenter = document.querySelector( '.edit-post-header__center' );
+
+	if ( headerCenter ) {
+		const root = createRoot( headerCenter );
+		root.render( <HeaderTitle /> );
+	}
 
 	const { deviceType } = useSelect( () => {
 		return {
@@ -66,41 +74,41 @@ const SureformsFormSpecificSettings = ( props ) => {
 				if ( iframeBody ) {
 					const styleProperties = [
 						{
-							property: '--sureforms_bg',
-							value: sureforms_keys._sureforms_bg
-								? `url(${ sureforms_keys._sureforms_bg })`
+							property: '--srfm_bg',
+							value: sureforms_keys._srfm_bg
+								? `url(${ sureforms_keys._srfm_bg })`
 								: 'none',
 						},
 						{
-							property: '--sf-primary-color',
+							property: '--srfm-primary-color',
 							value:
-								sureforms_keys._sureforms_color1 || '#0284C7',
+								sureforms_keys._srfm_color1 || '#0284C7',
 						},
 						{
-							property: '--sf-primary-text-color',
+							property: '--srfm-primary-text-color',
 							value:
-								sureforms_keys._sureforms_textcolor1 || '#fff',
+								sureforms_keys._srfm_textcolor1 || '#fff',
 						},
 						{
-							property: '--sf-secondary-color',
-							value: sureforms_keys._sureforms_color2 || 'none',
+							property: '--srfm-secondary-color',
+							value: sureforms_keys._srfm_color2 || 'none',
 						},
 						{
-							property: '--sureforms_fontsize',
-							value: sureforms_keys._sureforms_fontsize
-								? `${ sureforms_keys._sureforms_fontsize }px`
+							property: '--srfm_fontsize',
+							value: sureforms_keys._srfm_fontsize
+								? `${ sureforms_keys._srfm_fontsize }px`
 								: 'none',
 						},
 						{
-							property: '--sureforms_submit_alignment',
-							value: sureforms_keys._sureforms_submit_alignment
-								? `${ sureforms_keys._sureforms_submit_alignment }`
+							property: '--srfm_submit_alignment',
+							value: sureforms_keys._srfm_submit_alignment
+								? `${ sureforms_keys._srfm_submit_alignment }`
 								: 'none',
 						},
 						{
-							property: '--sureforms_submit_width',
-							value: sureforms_keys._sureforms_submit_width
-								? `${ sureforms_keys._sureforms_submit_width }`
+							property: '--srfm_submit_width',
+							value: sureforms_keys._srfm_submit_width
+								? `${ sureforms_keys._srfm_submit_width }`
 								: '',
 						},
 					];
@@ -136,15 +144,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	return (
 		<PluginDocumentSettingPanel
-			className="sureforms--panel"
-			name="sureforms-sidebar"
+			className="srfm--panel"
+			name="srfm-sidebar"
 			title={ __( 'Form Options', 'sureforms' ) }
 		>
 			<InspectorTabs
-				tabs={ [ 'style', 'advance' ] }
-				defaultTab={ 'style' }
+				tabs={ [ 'general', 'advance' ] }
+				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.style }>
+				<InspectorTab { ...UAGTabs.general }>
 					<AppearanceSettings default_keys={ default_keys } />
 				</InspectorTab>
 				<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
@@ -154,14 +162,14 @@ const SureformsFormSpecificSettings = ( props ) => {
 			<PluginPostPublishPanel>
 				<PanelRow>
 					<BaseControl
-						id="sureforms-form-shortcode"
+						id="srfm-form-shortcode"
 						label={ __( 'Form Shortcode', 'sureforms' ) }
 						help={ __(
 							'Paste this shortcode on the page or post to render this form.',
 							'sureforms'
 						) }
 					>
-						<div className="sureforms-shortcode">
+						<div className="srfm-shortcode">
 							<TextControl
 								value={ `[sureforms id="${ postId }"]` }
 								disabled
@@ -180,7 +188,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 };
 
-registerPlugin( 'sureforms-form-specific-settings', {
+registerPlugin( 'srfm-form-specific-settings', {
 	render: SureformsFormSpecificSettings,
 	icon: 'palmtree',
 } );
@@ -194,20 +202,20 @@ const forcePanel = () => {
 	//force panel open
 	if (
 		! select( 'core/edit-post' ).isEditorPanelEnabled(
-			'sureforms-form-specific-settings/sureforms-sidebar'
+			'srfm-form-specific-settings/srfm-sidebar'
 		)
 	) {
 		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
-			'sureforms-form-specific-settings/sureforms-sidebar'
+			'srfm-form-specific-settings/srfm-sidebar'
 		);
 	}
 	if (
 		! select( 'core/edit-post' ).isEditorPanelOpened(
-			'sureforms-form-specific-settings/sureforms-sidebar'
+			'srfm-form-specific-settings/srfm-sidebar'
 		)
 	) {
 		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
-			'sureforms-form-specific-settings/sureforms-sidebar'
+			'srfm-form-specific-settings/srfm-sidebar'
 		);
 	}
 };
