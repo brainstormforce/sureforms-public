@@ -16,7 +16,7 @@ export const CheckboxThemeStyle = ( {
 				required={ required }
 			></input>
 			<label
-				className={ `srfm-text-primary ${ isRequired }` }
+				className={ `srfm-text-primary` }
 				htmlFor={ 'checkbox-block-' + blockID }
 			>
 				{ labelUrl !== '' ? (
