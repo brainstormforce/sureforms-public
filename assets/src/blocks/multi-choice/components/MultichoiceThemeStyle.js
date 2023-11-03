@@ -115,7 +115,7 @@ export const MultichoiceThemeStyle = ( {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'multi-choice-block-' + blockID }
 			>
 				{ label }

@@ -12,8 +12,8 @@ export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'number-input-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-number-input-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -21,7 +21,7 @@ export const NumberThemeStyle = ( { attributes, blockID, handleInput } ) => {
 				) }
 			</label>
 			<input
-				id={ 'number-input-' + blockID }
+				id={ 'srfm-number-input-' + blockID }
 				type={ formatType === 'none' ? 'number' : 'text' }
 				value={ defaultValue }
 				onChange={ handleInput }

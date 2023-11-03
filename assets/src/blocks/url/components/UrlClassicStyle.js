@@ -3,10 +3,10 @@ export const UrlClassicStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
-			<div className="sf-classic-inputs-holder">
+			<div className="srfm-classic-inputs-holder">
 				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
+					className="srfm-classic-label-text"
+					htmlFor={ 'srfm-text-input-' + blockID }
 				>
 					{ label }
 					{ required && label && (
@@ -14,12 +14,12 @@ export const UrlClassicStyle = ( { attributes, blockID } ) => {
 					) }
 				</label>
 				<div className="mt-2 flex rounded-md shadow-sm">
-					<span className="sf-classic-url-prefix">https://</span>
+					<span className="srfm-classic-url-prefix">https://</span>
 					<input
-						id={ 'text-input-' + blockID }
+						id={ 'srfm-text-input-' + blockID }
 						type="text"
 						value={ defaultValue }
-						className={ 'sf-classic-url-element' }
+						className={ 'srfm-classic-url-element' }
 						placeholder={ placeholder }
 						required={ required }
 					/>

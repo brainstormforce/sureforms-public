@@ -11,7 +11,7 @@ export const TextareaThemeStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
+				className="srfm-text-primary"
 				htmlFor={ 'text-area-block-' + blockID }
 			>
 				{ label }

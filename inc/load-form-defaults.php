@@ -80,22 +80,22 @@ class Load_Form_Defaults {
 		$current_post_id = isset( $data['post_id'] ) ? Sureforms_Helper::get_integer_value( $data['post_id'] ) : '';
 
 		$meta_values = array(
-			'_sureforms_color1',
-			'_sureforms_textcolor1',
-			'_sureforms_color2',
-			'_sureforms_fontsize',
-			'_sureforms_bg',
-			'_sureforms_thankyou_message',
-			'_sureforms_email',
-			'_sureforms_submit_type',
-			'_sureforms_submit_url',
-			'_sureforms_sender_notification',
-			'_sureforms_form_recaptcha',
-			'_sureforms_submit_alignment',
-			'_sureforms_submit_width',
-			'_sureforms_submit_styling_inherit_from_theme',
-			'_sureforms_form_container_width',
-			'_sureforms_form_styling',
+			'_srfm_color1',
+			'_srfm_textcolor1',
+			'_srfm_color2',
+			'_srfm_fontsize',
+			'_srfm_bg',
+			'_srfm_thankyou_message',
+			'_srfm_email',
+			'_srfm_submit_type',
+			'_srfm_submit_url',
+			'_srfm_sender_notification',
+			'_srfm_form_recaptcha',
+			'_srfm_submit_alignment',
+			'_srfm_submit_width',
+			'_srfm_submit_styling_inherit_from_theme',
+			'_srfm_form_container_width',
+			'_srfm_form_styling',
 		);
 
 		foreach ( $meta_values as $meta_key ) {

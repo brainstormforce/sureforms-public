@@ -11,7 +11,7 @@ export const TextareaClassicStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-classic-label-text"
+				className="srfm-classic-label-text"
 				htmlFor={ 'text-area-block-' + blockID }
 			>
 				{ label }
@@ -27,7 +27,7 @@ export const TextareaClassicStyle = ( { attributes, blockID } ) => {
 				rows={ rows }
 				cols={ cols }
 				maxLength={ maxLength }
-				className="sf-classic-textarea-element"
+				className="srfm-classic-textarea-element"
 			></textarea>
 		</>
 	);

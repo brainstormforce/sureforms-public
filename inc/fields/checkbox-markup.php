@@ -37,11 +37,11 @@ class Checkbox_Markup extends Base {
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="sureforms-checkbox-container main-container' . esc_attr( $classname ) . '">
+		return '<div class="srfm-checkbox-container srfm-main-container' . esc_attr( $classname ) . '">
 		<div>
-			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
-			<span class="sf-text-primary">
-				<label for="sureforms-checkbox-' . esc_attr( $block_id ) . '" class="sf-text-primary">' .
+			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
+			<span class="srfm-text-primary">
+				<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' .
 					( $label_url
 						? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
 						: esc_html( $label )
@@ -50,8 +50,8 @@ class Checkbox_Markup extends Base {
 				'</label>
 			</span>
 		</div>' .
-		( '' !== $help ? '<label for="sureforms-checkbox" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+		( '' !== $help ? '<label for="srfm-checkbox" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 	</div>';
 
 	}
@@ -73,13 +73,13 @@ class Checkbox_Markup extends Base {
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="sureforms-checkbox-container main-container sf-classic-inputs-holder">
+		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder">
 			<div class="relative flex items-start flex-row gap-2">
 				<div class="flex h-6 items-center">
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] sureforms-classic-checkbox-input">
+					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] srfm-classic-checkbox-input">
 				</div>
 				<div class="text-sm leading-6">
-					<label for="sureforms-checkbox-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' .
+					<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' .
 						( $label_url
 							? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;" class="underline">' . esc_html( $label ) . '</a>'
 							: esc_html( $label )
@@ -88,8 +88,8 @@ class Checkbox_Markup extends Base {
 					'</label>
 				</div>
 			</div>
-			<p for="sureforms-checkbox" class="text-sm ' . ( '' !== $help ? 'mt-2' : '' ) . ' text-gray-500">' . ( '' !== $help ? esc_html( $help ) : '' ) . '</p>
-			<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+			' . ( '' !== $help ? '<p for="srfm-checkbox" class="srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '
+			<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 		</div>';
 
 	}

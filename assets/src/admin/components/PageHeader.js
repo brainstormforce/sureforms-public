@@ -43,7 +43,7 @@ const FormPageHeader = () => {
 						.auto-fold #wpcontent {
 							padding-left: 0;
 						}
-						#sureforms-form-page-header {
+						#srfm-form-page-header {
 							padding-top: 46px;
 						}
 					}
@@ -60,7 +60,7 @@ const FormPageHeader = () => {
 export default FormPageHeader;
 
 ( function () {
-	const app = document.getElementById( 'sureforms-page-header' );
+	const app = document.getElementById( 'srfm-page-header' );
 
 	function renderApp() {
 		if ( null !== app ) {

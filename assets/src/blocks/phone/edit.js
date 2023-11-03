@@ -203,14 +203,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ 'main-container sf-classic-inputs-holder' }
+				className={ 'srfm-main-container srfm-classic-inputs-holder' }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<PhoneClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
@@ -227,10 +227,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<label
 						htmlFor={ 'phone-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
