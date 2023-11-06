@@ -98,16 +98,16 @@ class Datetimepicker_Markup extends Base {
 		$input_type = '';
 		switch ( $field_type ) {
 			case 'dateTime':
-				$input_type = ' sf-input-date-time';
+				$input_type = ' srfm-input-date-time';
 				break;
 			case 'date':
-				$input_type = ' sf-input-date';
+				$input_type = ' srfm-input-date';
 				break;
 			case 'time':
-				$input_type = ' sf-input-time';
+				$input_type = ' srfm-input-time';
 				break;
 			default:
-				$input_type = ' sf-input-time';
+				$input_type = ' srfm-input-time';
 				break;
 		}
 				$output .= '>

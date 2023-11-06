@@ -89,7 +89,7 @@ if ( ratingElements ) {
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
 
-	const singleRating = document.querySelectorAll( '.sf-rating-icon svg' );
+	const singleRating = document.querySelectorAll( '.srfm-rating-icon svg' );
 
 	if ( singleRating ) {
 		singleRating.forEach( ( element ) => {
@@ -97,16 +97,16 @@ if ( ratingElements ) {
 				// Gets the value of the star clicked.
 				const onStar = parseInt(
 					e.target
-						.closest( '.sf-rating-icon' )
+						.closest( '.srfm-rating-icon' )
 						.getAttribute( 'data-value' )
 				);
 				const stars = e.target.closest(
-					'.sf-rating-icon-wrapper'
+					'.srfm-rating-icon-wrapper'
 				).children;
 
 				// Set the value of the field.
 				e.target
-					.closest( '.sureforms-classic-rating-container' )
+					.closest( '.srfm-classic-rating-container' )
 					.querySelector( '.sf-rating-field-result' )
 					.setAttribute( 'value', parseInt( onStar ) );
 
@@ -618,14 +618,14 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
-	flatpickr( '.sf-input-date-time', {
+	flatpickr( '.srfm-input-date-time', {
 		enableTime: true,
 		dateFormat: 'Y-m-d H:i',
 	} );
 
-	flatpickr( '.sf-input-date' );
+	flatpickr( '.srfm-input-date' );
 
-	flatpickr( '.sf-input-time', {
+	flatpickr( '.srfm-input-time', {
 		enableTime: true,
 		noCalendar: true,
 		dateFormat: 'H:i',
