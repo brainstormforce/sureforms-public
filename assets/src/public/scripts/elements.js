@@ -27,7 +27,6 @@
 // 		.split( '-' )
 // 		.map( Number );
 // 	const max = minMaxHolder.getAttribute( 'max' ).split( '-' ).map( Number );
-// 	console.log( min, max );
 // 	new Datepicker( datepickerWithLimits, {
 // 		min: new Date( ...min ),
 // 		max: new Date( ...max ),

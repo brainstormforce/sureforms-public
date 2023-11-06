@@ -7,20 +7,21 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 			'sf-classic-multi-choice'
 		);
 		if ( window.innerWidth > 630 ) {
-			for ( let mi = 0; mi < multichoiceOptions.length - 1; mi++ ) {
-				const eleHeight1 = multichoiceOptions[ mi ].offsetHeight;
-				const eleHeight2 = multichoiceOptions[ mi + 1 ].offsetHeight;
-				console.log( 'heihts', eleHeight1, eleHeight2 );
-				if ( eleHeight1 > eleHeight2 ) {
-					multichoiceOptions[ mi ].style.height = eleHeight1 + 'px';
-					multichoiceOptions[ mi + 1 ].style.height =
-						eleHeight1 + 'px';
+			for ( let x = 0; x < multichoiceOptions.length - 1; x++ ) {
+				const optionHeight = multichoiceOptions[ x ].offsetHeight;
+				const adjacentOptionHeight =
+					multichoiceOptions[ x + 1 ].offsetHeight;
+				if ( optionHeight > adjacentOptionHeight ) {
+					multichoiceOptions[ x ].style.height = optionHeight + 'px';
+					multichoiceOptions[ x + 1 ].style.height =
+						optionHeight + 'px';
 				} else {
-					multichoiceOptions[ mi ].style.height = eleHeight2 + 'px';
-					multichoiceOptions[ mi + 1 ].style.height =
-						eleHeight2 + 'px';
+					multichoiceOptions[ x ].style.height =
+						adjacentOptionHeight + 'px';
+					multichoiceOptions[ x + 1 ].style.height =
+						adjacentOptionHeight + 'px';
 				}
-				mi++;
+				x++;
 			}
 		}
 	}, [] );
