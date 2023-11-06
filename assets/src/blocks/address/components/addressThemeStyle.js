@@ -21,8 +21,8 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'address-field-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-address-field-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -31,7 +31,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 			</label>
 			<div>
 				<div
-					id={ 'address-field-' + blockID }
+					id={ 'srfm-address-field-' + blockID }
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',

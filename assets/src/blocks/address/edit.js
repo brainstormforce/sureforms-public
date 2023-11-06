@@ -344,8 +344,8 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 						className={
 							'classic' ===
 							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }
