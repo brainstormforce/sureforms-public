@@ -133,8 +133,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 				validateResult = true;
@@ -153,8 +153,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 			}
@@ -207,10 +207,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.add( 'placeholder:!text-red-300' );
+					phoneInput.classList.add( 'placeholder:!srfm-text-red-300' );
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -226,10 +226,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.remove( 'placeholder:!text-red-300' );
+					phoneInput.classList.remove( 'placeholder:!srfm-text-red-300' );
 				}
 			}
 		}

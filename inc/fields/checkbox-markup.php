@@ -74,14 +74,14 @@ class Checkbox_Markup extends Base {
 		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder">
-			<div class="relative flex items-start flex-row gap-2">
-				<div class="flex h-6 items-center">
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="h-4 w-4 rounded border-[#d1d5db] srfm-classic-checkbox-input">
+			<div class= "srfm-relative srfm-flex srfm-items-start srfm-flex-row gap-2">
+				<div class="srfm-flex srfm-h-6 srfm-items-center">
+					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input">
 				</div>
-				<div class="text-sm leading-6">
+				<div class="srfm-text-sm srfm-leading-6">
 					<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' .
 						( $label_url
-							? '<a target="_blank" href="' . esc_url( $label_url ) . '" class="underline">' . esc_html( $label ) . '</a>'
+							? '<a target="_blank" href="' . esc_url( $label_url ) . '" class="srfm-underline">' . esc_html( $label ) . '</a>'
 							: esc_html( $label )
 						) .
 						( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .

@@ -94,7 +94,7 @@
 					<article class="srfm-success-box-header">
 						<?php esc_html_e( 'Thank you', 'sureforms' ); ?>
 					</article>
-					<article class="srfm-success-box-subtxt text-gray-900">
+					<article class="srfm-success-box-subtxt srfm-text-gray-900">
 						<?php echo esc_html( $success_message ); ?>
 					</article>
 				</div>

@@ -13,7 +13,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 					<span style={ { color: 'red' } }> *</span>
 				) }
 			</label>
-			<div className="relative mt-2">
+			<div className= "srfm-relative srfm-mt-2">
 				<input
 					id={ 'srfm-text-input-' + blockID }
 					type="password"
@@ -21,9 +21,9 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 					placeholder={ placeholder }
 					required={ required }
 				/>
-				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+				<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 					<svg
-						className="h-5 w-5 text-gray-400"
+						className="srfm-h-5 srfm-w-5 srfm-text-gray-400"
 						viewBox="0 0 30 30"
 						fill="currentColor"
 						aria-hidden="true"
@@ -33,7 +33,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 				</div>
 			</div>
 			{ isConfirmPassword && (
-				<div className="!mt-[24px]">
+				<div className="!srfm-mt-[24px]">
 					<label
 						className="srfm-classic-label-text"
 						htmlFor={ 'confirm-srfm-text-input-' + blockID }
@@ -43,7 +43,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 							<span style={ { color: 'red' } }> *</span>
 						) }
 					</label>
-					<div className="relative mt-2">
+					<div className= "srfm-relative srfm-mt-2">
 						<input
 							id={ 'confirm-srfm-text-input-' + blockID }
 							type="password"
@@ -51,9 +51,9 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 							placeholder={ placeholder }
 							required={ required }
 						/>
-						<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+						<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 							<svg
-								className="h-5 w-5 text-gray-400"
+								className="srfm-h-5 srfm-w-5 srfm-text-gray-400"
 								viewBox="0 0 30 30"
 								fill="currentColor"
 								aria-hidden="true"

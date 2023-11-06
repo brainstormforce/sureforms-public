@@ -19,10 +19,10 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				<div className="relative mt-2 rounded-md shadow-sm">
-					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+				<div className= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+					<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 						<svg
-							className="h-5 w-5 text-gray-400"
+							className="srfm-h-5 srfm-w-5 srfm-text-gray-400"
 							viewBox="0 0 20 20"
 							fill="currentColor"
 							aria-hidden="true"
@@ -41,7 +41,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 					/>
 				</div>
 				{ isConfirmEmail && (
-					<div className="!mt-[24px]">
+					<div className="!srfm-mt-[24px]">
 						<label
 							className="srfm-classic-label-text"
 							htmlFor={ 'srfm-text-input-' + blockID }
@@ -51,10 +51,10 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 								<span style={ { color: 'red' } }> *</span>
 							) }
 						</label>
-						<div className="relative mt-2 rounded-md shadow-sm">
-							<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+						<div className= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+							<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 								<svg
-									className="h-5 w-5 text-gray-400"
+									className="srfm-h-5 srfm-w-5 srfm-text-gray-400"
 									viewBox="0 0 20 20"
 									fill="currentColor"
 									aria-hidden="true"

@@ -29,7 +29,7 @@ const Navigation = () => {
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }
-					className={ `no-underline group p-2 cursor-pointer rounded-md transition-colors duration-300 ease-in-out hover:bg-wpcolor focus:bg-wpcolor focus:text-[#FBFBFC] focus:ring-0 ${
+					className={ `no-underline group p-2 cursor-pointer srfm-rounded-md srfm-transition-colors srfm-duration-300 ease-in-out hover:bg-wpcolor focus:bg-wpcolor focus:text-[#FBFBFC] focus:ring-0 ${
 						activatedTab.get( 'tab' ) === item.slug
 							? 'bg-wpcolor text-[#FBFBFC]'
 							: 'text-[#111827]'
@@ -37,7 +37,7 @@ const Navigation = () => {
 				>
 					<div className="flex justify-start gap-2">
 						{ item.icon }
-						<span className="truncate text-[16px] group-hover:text-[#FBFBFC] transition-colors duration-300 ease-in-out">
+						<span className="truncate text-[16px] group-hover:text-[#FBFBFC] srfm-transition-colors srfm-duration-300 ease-in-out">
 							{ item.name }
 						</span>
 					</div>

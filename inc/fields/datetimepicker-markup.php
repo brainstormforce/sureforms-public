@@ -89,11 +89,11 @@ class Datetimepicker_Markup extends Base {
 			$output .= '
 			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container ' . esc_attr( $classname ) . '">
 			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
-				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
 				<input type="hidden" class="sf-min-max-holder" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" >
 				<input type="hidden" field-type="' . esc_attr( $field_type ) . '" class="srfm-classic-date-time-result" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
-				<div class="srfm-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
+				<div class="srfm-classic-date-time-picker srfm-relative srfm-mt-[2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
 
 		switch ( $field_type ) {
 			case 'dateTime':

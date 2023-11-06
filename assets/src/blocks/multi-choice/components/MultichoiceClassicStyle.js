@@ -5,10 +5,10 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 			<label className="srfm-classic-label-text" htmlFor="text">
 				{ label }
 				{ required && label && (
-					<span className="text-red-500"> *</span>
+					<span className="srfm-text-red-500"> *</span>
 				) }
 			</label>
-			<div className="srfm-radio-buttons flex flex-wrap mt-2">
+			<div className="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-[2">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (
@@ -19,21 +19,21 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 								id={ `srfm-multi-choice-${ blockID }-${ i }` }
 								className="srfm-multi-choice"
 							/>
-							<div className="flex items-start srfm-classic-radio-btn srfm-classic-multi-choice">
-								<div className="pr-[5px] mt-[3px] relative flex">
+							<div className="srfm-flex srfm-items-start srfm-classic-radio-btn srfm-classic-multi-choice">
+								<div className="srfm-pr-[5px] srfm-mt-[3px] srfm-relative srfm-flex">
 									<i
-										className="fa fa-check-circle text-base"
+										className="fa fa-check-circle srfm-text-base"
 										aria-hidden="true"
 									></i>
 									<i
-										className="fa-regular fa-circle text-sm absolute text-gray-300"
+										className="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300"
 										aria-hidden="true"
 									></i>
 								</div>
 								<div>
 									<article
 										id={ `srfm-multi-choice-option-${ blockID }-${ i }` }
-										className="text-sm font-medium leading-6 text-gray-900 mt-[-0.5px]"
+										className="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-gray-900 srfm-mt-[-0.5px]"
 									>
 										{ option }
 									</article>

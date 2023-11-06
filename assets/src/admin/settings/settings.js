@@ -19,7 +19,7 @@ const Settings = () => {
 	return (
 		<Router>
 			<Header />
-			<div className="flex flex-row h-[100vh] bg-transparent]">
+			<div className="flex srfm-flex-rowh-[100vh] bg-transparent]">
 				<Navigation />
 				<QueryScreen />
 			</div>

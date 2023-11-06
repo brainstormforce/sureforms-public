@@ -79,23 +79,23 @@ class Email_Markup extends Base {
 
 		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
-            ' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+            ' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
         </label>
-        <div class="relative mt-2 rounded-md shadow-sm">
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <i class="fa fa-envelope text-gray-400 text-[20px]" aria-hidden="true"></i>
+        <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+            <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
+                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
             </div>
             <input type="email" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-input-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '">
         </div>
         <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
         <p style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
         ' . ( true === $is_confirm_email ? '
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !mt-[24px]">
-            ' . esc_html( $confirm_label ) . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !srfm-mt-[24px]">
+            ' . esc_html( $confirm_label ) . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
         </label>
-        <div class="relative mt-2 rounded-md shadow-sm">
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <i class="fa fa-envelope text-gray-400 text-[20px]" aria-hidden="true"></i>
+        <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+            <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
+                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
             </div>
             <input type="email" id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-input-confirm-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
         </div>' : '' ) . '
