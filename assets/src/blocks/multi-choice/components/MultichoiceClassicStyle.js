@@ -4,7 +4,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 	const { label, required, options, single_selection } = attributes;
 	useEffect( () => {
 		const multichoiceOptions = document.getElementsByClassName(
-			'sf-classic-multi-choice'
+			'srfm-classic-multi-choice'
 		);
 		if ( window.innerWidth > 630 ) {
 			for ( let x = 0; x < multichoiceOptions.length - 1; x++ ) {
