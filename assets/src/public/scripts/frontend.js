@@ -107,7 +107,7 @@ if ( ratingElements ) {
 				// Set the value of the field.
 				e.target
 					.closest( '.srfm-classic-rating-container' )
-					.querySelector( '.sf-rating-field-result' )
+					.querySelector( '.srfm-rating-field-result' )
 					.setAttribute( 'value', parseInt( onStar ) );
 
 				for ( let i = 0; i < stars.length; i++ ) {

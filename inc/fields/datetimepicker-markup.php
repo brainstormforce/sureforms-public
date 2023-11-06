@@ -110,12 +110,17 @@ class Datetimepicker_Markup extends Base {
 				$input_type = ' srfm-input-time';
 				break;
 		}
-				$output .= '>
-				<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-data-time srfm-classic-datetime-picker' . $input_type . '" id="srfm-input-time-' . esc_attr( $block_id ) . '" />
-				</div>
-				' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-				<p style="display:none" class="srfm-error-message ">' . esc_html( $error_msg ) . '</p>
-				</div>
+
+			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock text-gray-400 text-[20px]"></i>' : '<i class="fa-regular fa-calendar text-gray-400 text-[20px]"></i>';
+			$output    .= '>
+			<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+			' . $input_icon . '
+			</div>
+			<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-data-time srfm-classic-datetime-picker' . $input_type . '" id="srfm-input-time-' . esc_attr( $block_id ) . '" />
+			</div>
+			' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
+			<p style="display:none" class="srfm-error-message ">' . esc_html( $error_msg ) . '</p>
+			</div>
 			';
 		return $output;
 	}

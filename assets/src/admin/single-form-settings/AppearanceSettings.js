@@ -181,12 +181,12 @@ function AppearanceSettings( props ) {
 					} }
 					__nextHasNoMarginBottom
 				/> */ }
-				<p className="components-base-control__help">
+				{/* <p className="components-base-control__help">
 					{ __(
 						'Update settings to view changes on page',
 						'sureforms'
 					) }
-				</p>
+				</p> */}
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }
