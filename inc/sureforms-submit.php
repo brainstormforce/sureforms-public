@@ -79,7 +79,6 @@ class Sureforms_Submit {
 	 * Handle Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 *
 	 * @since 0.0.1
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
@@ -150,12 +149,12 @@ class Sureforms_Submit {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data );
+					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data );
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 			}
 		} elseif ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -179,25 +178,24 @@ class Sureforms_Submit {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data );
+					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data );
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 			}
 		} else {
 			return new \WP_Error( 'spam_detected', 'Spam Detected', array( 'status' => 403 ) );
 		}
 
-		return rest_ensure_response( 'success' );
 	}
 
 	/**
 	 * Handle Settings Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @return void|\WP_Error Array containing the response data or error.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 0.0.1
 	 */
 	public function handle_settings_form_submission( $request ) {
