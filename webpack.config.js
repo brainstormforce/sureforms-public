@@ -82,6 +82,18 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/dashboard/index.js'
 		),
+		int_tel_css: path.resolve(
+			__dirname,
+			'assets/src/public/styles/dependencies/intlTelInput.css'
+		),
+		int_tel_js: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/dependencies/intTellnput.min.js'
+		),
+		int_telUtils_js: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/dependencies/intTelUtils.min.js'
+		),
 		blocks: path.resolve( __dirname, 'assets/src/blocks/blocks.js' ),
 	},
 	resolve: {

@@ -72,6 +72,9 @@
 			}
 			.sf-classic-phone-parent {
 				@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-sf_primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-sf_primary_color focus-within:outline-0;
+				.iti {
+					@apply w-full;
+				}
 			}
 			.sf-classic-phone-element {
 				@apply w-full rounded-md py-1.5 pl-[4.1rem] text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;

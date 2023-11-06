@@ -1,4 +1,3 @@
-
 export const PhoneThemeStyle = ( { attributes, blockID } ) => {
 	const { label, placeholder, required } = attributes;
 

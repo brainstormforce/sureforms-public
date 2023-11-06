@@ -651,15 +651,14 @@ const phoneElement = document.getElementsByClassName(
 if ( phoneElement ) {
 	for ( let i = 0; i < phoneElement.length; i++ ) {
 		const blockID = phoneElement[ i ].id.split( '-' )[ 3 ];
-		const countryCode = document.getElementById(
-			`sureforms-country-code-${ blockID }`
-		);
 		const phoneNumber = document.getElementById(
 			`sureforms-phone-number-${ blockID }`
 		);
 		const fullPhoneNumberInput = document.getElementById(
 			`fullPhoneNumber-${ blockID }`
 		);
+		const errorMessage =
+			phoneElement[ i ].querySelector( '.error-message' );
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
@@ -696,6 +695,7 @@ if ( phoneElement ) {
 				if ( intTelError ) {
 					intTelError.style.display = 'block';
 					phoneParent.classList.add( 'sf-classic-input-error' );
+					errorMessage.style.display = 'none';
 				}
 			} else {
 				intTelError.style.display = 'none';
@@ -703,9 +703,6 @@ if ( phoneElement ) {
 			}
 		};
 
-		if ( countryCode ) {
-			countryCode.addEventListener( 'change', updateFullPhoneNumber );
-		}
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
 			phoneNumber.addEventListener(

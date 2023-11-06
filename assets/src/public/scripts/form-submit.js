@@ -211,7 +211,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( isIntelError ) {
 				validateResult = true;
 				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
+					firstErrorInput = phoneInput;
 				}
 			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';

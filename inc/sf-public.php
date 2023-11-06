@@ -54,11 +54,11 @@ class SF_Public {
 		}
 
 		// Int-tel-input CSS.
-		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/build/int_tel_css.css', [], SUREFORMS_VER );
 
 		// Int-tel-input JS.
-		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
-		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/build/int_tel_js.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/build/int_telUtils_js.js', [], SUREFORMS_VER, true );
 
 		// SureForms frontend JS.
 		wp_enqueue_script( 'sureforms-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
