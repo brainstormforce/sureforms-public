@@ -201,16 +201,24 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			container.classList.contains( 'sureforms-input-phone-container' )
 		) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
+			const phoneParent = container.querySelector(
+				'#sureforms-phone-parent'
+			);
+			const isIntelError = phoneParent.classList.contains(
+				'sf-classic-input-error'
+			);
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
-			if ( isPhoneRequired === 'true' && ! inputValue ) {
+			if ( isIntelError ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = inputField;
+				}
+			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				duplicateMessage.style.display = 'none';
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
-				const phoneParent = container.querySelector(
-					'#sureforms-phone-parent'
-				);
 				if ( phoneParent ) {
 					phoneParent.classList.add(
 						'!ring-red-500',
@@ -228,9 +236,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				errorMessage.style.display = 'none';
 				//for Tailwind phone field UI
-				const phoneParent = container.querySelector(
-					'#sureforms-phone-parent'
-				);
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
 						'!ring-red-500',

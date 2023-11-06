@@ -660,41 +660,58 @@ if ( phoneElement ) {
 		const fullPhoneNumberInput = document.getElementById(
 			`fullPhoneNumber-${ blockID }`
 		);
-		const iti = window.intlTelInput(phoneNumber, {
+		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
+		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
-			initialCountry: "auto",
-			geoIpLookup: function(callback) {
-				fetch("https://ipapi.co/json")
-				.then(function(res) { return res.json(); })
-				.then(function(data) { callback(data.country_code); })
-				.catch(function() { callback("us"); });
-			}
-		});
+		};
+		if ( isAutoCountry === 'true' ) {
+			itlOptions.initialCountry = 'auto';
+			itlOptions.geoIpLookup = function ( callback ) {
+				fetch( 'https://ipapi.co/json' )
+					.then( function ( res ) {
+						return res.json();
+					} )
+					.then( function ( data ) {
+						callback( data.country_code );
+					} )
+					.catch( function () {
+						callback( 'us' );
+					} );
+			};
+		}
+
+		const iti = window.intlTelInput( phoneNumber, itlOptions );
 		const updateFullPhoneNumber = () => {
 			const phoneNumberValue = phoneNumber.value.trim();
 			fullPhoneNumberInput.value = iti.getNumber();
 			if ( ! phoneNumberValue ) {
 				fullPhoneNumberInput.value = '';
 			}
-			const intTelError = phoneElement[i].querySelector('.int-tel-error');
-			const phoneParent = phoneElement[i].querySelector('.sf-classic-phone-parent');
-			if (phoneNumberValue && ! iti.isValidNumber()) {
-				if(intTelError){
+			const intTelError =
+				phoneElement[ i ].querySelector( '.int-tel-error' );
+			const phoneParent = phoneElement[ i ].querySelector(
+				'.sf-classic-phone-parent'
+			);
+			if ( phoneNumberValue && ! iti.isValidNumber() ) {
+				if ( intTelError ) {
 					intTelError.style.display = 'block';
 					phoneParent.classList.add( 'sf-classic-input-error' );
 				}
-			} else{
-				intTelError.style.display='none';
+			} else {
+				intTelError.style.display = 'none';
 				phoneParent.classList.remove( 'sf-classic-input-error' );
 			}
 		};
 
-		if( countryCode ){
+		if ( countryCode ) {
 			countryCode.addEventListener( 'change', updateFullPhoneNumber );
 		}
-		if( phoneNumber ){
+		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
-			phoneNumber.addEventListener( 'countrychange', updateFullPhoneNumber );
+			phoneNumber.addEventListener(
+				'countrychange',
+				updateFullPhoneNumber
+			);
 		}
 	}
 }

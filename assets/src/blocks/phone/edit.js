@@ -11,7 +11,6 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import data from './phoneCodes.json';
 import { PhoneClassicStyle } from './components/PhoneClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -26,12 +25,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		help,
 		placeholder,
 		block_id,
-		defaultValue,
-		defaultCountryCode,
 		isUnique,
 		duplicateMsg,
 		errorMsg,
 		formId,
+		autoCountry,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -82,64 +80,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: value } )
 								}
 							/>
-							<div className="components-base-control">
-								<lable>
-									{ __( 'Default Value', 'sureforms' ) }
-								</lable>
-								<div
-									style={ {
-										display: 'flex',
-										alignItems: 'center',
-										marginTop: '10px',
-									} }
-								>
-									{ data && (
-										<select
-											style={ {
-												minHeight: '32px',
-												color: '#50575e',
-												borderColor: '#e6e7e9',
-											} }
-											placeholder="US +1"
-											value={ defaultCountryCode }
-											onChange={ ( e ) => {
-												const value = e.target.value;
-												setAttributes( {
-													defaultCountryCode: value,
-												} );
-											} }
-										>
-											{ data.map( ( country, i ) => {
-												return (
-													<option
-														key={ i }
-														value={
-															country.dial_code
-														}
-													>
-														{ country.code +
-															' ' +
-															country.dial_code }
-													</option>
-												);
-											} ) }
-										</select>
-									) }
-									<UAGTextControl
-										value={ defaultValue }
-										data={ {
-											value: defaultValue,
-											label: 'defaultValue',
-										} }
-										showHeaderControls={ false }
-										onChange={ ( value ) =>
-											setAttributes( {
-												defaultValue: value,
-											} )
-										}
-									/>
-								</div>
-							</div>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -186,6 +126,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
+							<ToggleControl
+								label={ __(
+									'Enable Auto Country',
+									'sureforms'
+								) }
+								checked={ autoCountry }
+								onChange={ ( value ) =>
+									setAttributes( { autoCountry: value } )
+								}
+							/>
 							<UAGTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
