@@ -24,47 +24,47 @@ function AppearanceSettings( props ) {
 
 	const root = document.documentElement;
 
-	if ( sureforms_keys && '_sureforms_color1' in sureforms_keys ) {
+	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
 		root.style.setProperty(
-			'--sureforms_bg',
-			sureforms_keys._sureforms_bg
-				? 'url(' + sureforms_keys._sureforms_bg + ')'
+			'--srfm_bg',
+			sureforms_keys._srfm_bg
+				? 'url(' + sureforms_keys._srfm_bg + ')'
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sf-primary-color',
-			sureforms_keys._sureforms_color1
-				? sureforms_keys._sureforms_color1
+			'--srfm-primary-color',
+			sureforms_keys._srfm_color1
+				? sureforms_keys._srfm_color1
 				: '#0284C7'
 		);
 		root.style.setProperty(
-			'--sf-primary-text-color',
-			sureforms_keys._sureforms_textcolor1
-				? sureforms_keys._sureforms_textcolor1
+			'--srfm-primary-text-color',
+			sureforms_keys._srfm_textcolor1
+				? sureforms_keys._srfm_textcolor1
 				: '#fff'
 		);
 		root.style.setProperty(
-			'--sf-secondary-color',
-			sureforms_keys._sureforms_color2
-				? sureforms_keys._sureforms_color2
+			'--srfm-secondary-color',
+			sureforms_keys._srfm_color2
+				? sureforms_keys._srfm_color2
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_fontsize',
-			sureforms_keys._sureforms_fontsize
-				? sureforms_keys._sureforms_fontsize + 'px'
+			'--srfm_fontsize',
+			sureforms_keys._srfm_fontsize
+				? sureforms_keys._srfm_fontsize + 'px'
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_submit_alignment',
-			sureforms_keys._sureforms_submit_alignment
-				? sureforms_keys._sureforms_submit_alignment
+			'--srfm_submit_alignment',
+			sureforms_keys._srfm_submit_alignment
+				? sureforms_keys._srfm_submit_alignment
 				: 'none'
 		);
 		root.style.setProperty(
-			'--sureforms_submit_width',
-			sureforms_keys._sureforms_submit_width
-				? sureforms_keys._sureforms_submit_width
+			'--srfm_submit_width',
+			sureforms_keys._srfm_submit_width
+				? sureforms_keys._srfm_submit_width
 				: ''
 		);
 	} else {
@@ -78,53 +78,53 @@ function AppearanceSettings( props ) {
 		let value_id = 0;
 		let key_id = '';
 
-		if ( option === '_sureforms_bg' ) {
+		if ( option === '_srfm_bg' ) {
 			if ( value ) {
 				value_id = value.id;
 				value = value.sizes.full.url;
 			}
 			key_id = option + '_id';
 			root.style.setProperty(
-				'--sureforms_bg',
+				'--srfm_bg',
 				value ? 'url(' + value + ')' : 'none'
 			);
 		}
 
-		if ( option === '_sureforms_color1' ) {
+		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(
-				'--sf-primary-color',
+				'--srfm-primary-color',
 				value ? value : '#0284C7'
 			);
 		}
 
-		if ( option === '_sureforms_textcolor1' ) {
+		if ( option === '_srfm_textcolor1' ) {
 			root.style.setProperty(
-				'--sf-primary-text-color',
+				'--srfm-primary-text-color',
 				value ? value : '#fff'
 			);
 		}
 
-		if ( option === '_sureforms_color2' ) {
+		if ( option === '_srfm_color2' ) {
 			root.style.setProperty(
-				'--sf-secondary-color',
+				'--srfm-secondary-color',
 				value ? value : ''
 			);
 		}
 
-		if ( option === '_sureforms_fontsize' ) {
+		if ( option === '_srfm_fontsize' ) {
 			root.style.setProperty(
-				'--sureforms_fontsize',
+				'--srfm_fontsize',
 				value ? value + 'px' : 'none'
 			);
 		}
 
-		if ( option === '_sureforms_submit_alignment' ) {
+		if ( option === '_srfm_submit_alignment' ) {
 			root.style.setProperty(
-				'--sureforms_submit_alignment',
+				'--srfm_submit_alignment',
 				value ? value : 'left'
 			);
 			if ( value === 'justify' ) {
-				root.style.setProperty( '--sureforms_submit_width', '100%' );
+				root.style.setProperty( '--srfm_submit_width', '100%' );
 			}
 		}
 
@@ -150,14 +150,14 @@ function AppearanceSettings( props ) {
 		if ( ! media.type || 'image' !== media.type ) {
 			imageUrl = null;
 		}
-		updateMeta( '_sureforms_bg', imageUrl );
+		updateMeta( '_srfm_bg', imageUrl );
 	};
 
 	/*
 	 * Event to set Image as null while removing it.
 	 */
 	const onRemoveRestImage = () => {
-		updateMeta( '_sureforms_bg', '' );
+		updateMeta( '_srfm_bg', '' );
 	};
 
 	return (
@@ -168,7 +168,7 @@ function AppearanceSettings( props ) {
 			>
 				{ /* <SelectControl
 					label={ __( 'Form Styling', 'sureforms' ) }
-					value={ sureforms_keys._sureforms_form_styling }
+					value={ sureforms_keys._srfm_form_styling }
 					options={ [
 						{ label: 'Theme Inherited', value: 'inherit' },
 						{
@@ -177,7 +177,7 @@ function AppearanceSettings( props ) {
 						},
 					] }
 					onChange={ ( value ) => {
-						updateMeta( '_sureforms_form_styling', value );
+						updateMeta( '_srfm_form_styling', value );
 					} }
 					__nextHasNoMarginBottom
 				/> */ }
@@ -190,18 +190,18 @@ function AppearanceSettings( props ) {
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }
-					colorValue={ sureforms_keys._sureforms_color1 }
+					colorValue={ sureforms_keys._srfm_color1 }
 					data={ {
-						value: sureforms_keys._sureforms_color1,
-						label: '_sureforms_color1',
+						value: sureforms_keys._srfm_color1,
+						label: '_srfm_color1',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureforms_keys._sureforms_color1 ) {
-							updateMeta( '_sureforms_color1', colorValue );
+						if ( colorValue !== sureforms_keys._srfm_color1 ) {
+							updateMeta( '_srfm_color1', colorValue );
 						}
 					}
 					}
-					value={ sureforms_keys._sureforms_color1 }
+					value={ sureforms_keys._srfm_color1 }
 					isFormSpecific={ true }
 				/>
 				<AdvancedPopColorControl
@@ -210,63 +210,63 @@ function AppearanceSettings( props ) {
 						'Color when text background is primary',
 						'sureforms'
 					) }
-					colorValue={ sureforms_keys._sureforms_textcolor1 }
+					colorValue={ sureforms_keys._srfm_textcolor1 }
 					data={ {
-						value: sureforms_keys._sureforms_textcolor1,
-						label: '_sureforms_textcolor1',
+						value: sureforms_keys._srfm_textcolor1,
+						label: '_srfm_textcolor1',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureforms_keys._sureforms_textcolor1 ) {
-							updateMeta( '_sureforms_textcolor1', colorValue );
+						if ( colorValue !== sureforms_keys._srfm_textcolor1 ) {
+							updateMeta( '_srfm_textcolor1', colorValue );
 						}
 					}
 					}
-					value={ sureforms_keys._sureforms_textcolor1 }
+					value={ sureforms_keys._srfm_textcolor1 }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._sureforms_form_styling &&
+				{ 'inherit' === sureforms_keys._srfm_form_styling &&
 				<AdvancedPopColorControl
 					label={ __( 'Secondary color', 'sureforms' ) }
 					help={ __( 'Help, Placeholders, etc.', 'sureforms' ) }
-					colorValue={ sureforms_keys._sureforms_color2 }
+					colorValue={ sureforms_keys._srfm_color2 }
 					data={ {
-						value: sureforms_keys._sureforms_color2,
-						label: '_sureforms_color2',
+						value: sureforms_keys._srfm_color2,
+						label: '_srfm_color2',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureforms_keys._sureforms_color2 ) {
-							updateMeta( '_sureforms_color2', colorValue );
+						if ( colorValue !== sureforms_keys._srfm_color2 ) {
+							updateMeta( '_srfm_color2', colorValue );
 						}
 					}
 					}
-					value={ sureforms_keys._sureforms_color2 }
+					value={ sureforms_keys._srfm_color2 }
 					isFormSpecific={ true }
 				/>
 				}
 				<UAGMediaPicker
 					label={ __( 'Background Image', 'sureforms' ) }
 					onSelectImage={ onSelectRestImage }
-					backgroundImage={ sureforms_keys._sureforms_bg }
+					backgroundImage={ sureforms_keys._srfm_bg }
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._sureforms_form_styling && (
+				{ 'inherit' === sureforms_keys._srfm_form_styling && (
 					<Range
 						label={ __( 'Font size', 'sureforms' ) }
 						help={ __(
 							'Customize the form font size.',
 							'sureforms'
 						) }
-						value={ sureforms_keys._sureforms_fontsize }
+						value={ sureforms_keys._srfm_fontsize }
 						min={ 16 }
 						max={ 24 }
 						displayUnit={ false }
 						data={ {
-							value: sureforms_keys._sureforms_fontsize,
-							label: '_sureforms_fontsize',
+							value: sureforms_keys._srfm_fontsize,
+							label: '_srfm_fontsize',
 						} }
 						onChange={ ( value ) =>
-							updateMeta( '_sureforms_fontsize', value )
+							updateMeta( '_srfm_fontsize', value )
 						}
 						isFormSpecific={ true }
 					/>
@@ -277,16 +277,16 @@ function AppearanceSettings( props ) {
 						'Customize the form Form Container width.',
 						'sureforms'
 					) }
-					value={ sureforms_keys._sureforms_form_container_width }
+					value={ sureforms_keys._srfm_form_container_width }
 					min={ 650 }
 					max={ 1000 }
 					displayUnit={ false }
 					data={ {
-						value: sureforms_keys._sureforms_form_container_width,
-						label: '_sureforms_form_container_width',
+						value: sureforms_keys._srfm_form_container_width,
+						label: '_srfm_form_container_width',
 					} }
 					onChange={ ( value ) =>
-						updateMeta( '_sureforms_form_container_width', value )
+						updateMeta( '_srfm_form_container_width', value )
 					}
 					isFormSpecific={ true }
 				/>
@@ -302,11 +302,11 @@ function AppearanceSettings( props ) {
 						'sureforms'
 					) }
 					checked={
-						sureforms_keys._sureforms_submit_styling_inherit_from_theme
+						sureforms_keys._srfm_submit_styling_inherit_from_theme
 					}
 					onChange={ ( value ) => {
 						updateMeta(
-							'_sureforms_submit_styling_inherit_from_theme',
+							'_srfm_submit_styling_inherit_from_theme',
 							value ? true : false
 						);
 					} }
@@ -320,8 +320,8 @@ function AppearanceSettings( props ) {
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {
-						value: sureforms_keys._sureforms_submit_alignment,
-						label: '_sureforms_submit_alignment',
+						value: sureforms_keys._srfm_submit_alignment,
+						label: '_srfm_submit_alignment',
 					} }
 					options={ [
 						{
@@ -348,16 +348,16 @@ function AppearanceSettings( props ) {
 					showIcons={ true }
 					onChange={ ( value ) => {
 						if (
-							sureforms_keys._sureforms_submit_alignment === value
+							sureforms_keys._srfm_submit_alignment === value
 						) {
-							updateMeta( '_sureforms_submit_alignment', 'left' );
-							updateMeta( '_sureforms_submit_width', '' );
+							updateMeta( '_srfm_submit_alignment', 'left' );
+							updateMeta( '_srfm_submit_width', '' );
 						} else if ( 'justify' === value ) {
-							updateMeta( '_sureforms_submit_alignment', value );
-							updateMeta( '_sureforms_submit_width', '100%' );
+							updateMeta( '_srfm_submit_alignment', value );
+							updateMeta( '_srfm_submit_width', '100%' );
 						} else {
-							updateMeta( '_sureforms_submit_alignment', value );
-							updateMeta( '_sureforms_submit_width', '' );
+							updateMeta( '_srfm_submit_alignment', value );
+							updateMeta( '_srfm_submit_width', '' );
 						}
 					} }
 				/>

@@ -298,7 +298,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -306,7 +306,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<DropdownClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
@@ -319,12 +319,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				) }
 				{ help !== '' && (
 					<label
-						htmlFor={ 'text-input-help-' + block_id }
+						htmlFor={ 'srfm-text-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }

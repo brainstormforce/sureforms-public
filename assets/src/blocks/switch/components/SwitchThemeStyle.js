@@ -42,8 +42,8 @@ export const SwitchThemeStyle = ( { attributes, blockID } ) => {
 				<div style={ thumbStyle }></div>
 			</div>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'switch-block-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-switch-block-' + blockID }
 			>
 				{ label }
 				{ required && label && (

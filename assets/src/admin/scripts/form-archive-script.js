@@ -3,7 +3,7 @@
 function handleFormShortcode( button ) {
 	const input = button.nextElementSibling;
 
-	const icon = button.parentElement.querySelector( '#sf-copy-icon' );
+	const icon = button.parentElement.querySelector( '#srfm-copy-icon' );
 
 	icon.classList.remove( 'dashicons-admin-page' );
 	icon.classList.add( 'dashicons-yes' );

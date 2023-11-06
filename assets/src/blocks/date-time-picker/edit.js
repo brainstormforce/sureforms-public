@@ -101,7 +101,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								</option>
 							</SelectControl>
 							{ 'classic' !==
-								sureforms_keys?._sureforms_form_styling &&
+								sureforms_keys?._srfm_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
@@ -109,9 +109,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-min-date"
+											id="srfm-for-min-date"
 											value={ min }
 											onChange={ ( e ) => {
 												if ( '' !== max ) {
@@ -135,9 +135,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-max-date"
+											id="srfm-for-max-date"
 											value={ max }
 											onChange={ ( e ) => {
 												if ( '' !== min ) {
@@ -194,7 +194,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -203,7 +203,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<DatetimepickerClassicStyle attributes={ attributes } />
 				) : (
 					<DatetimepickerThemeStyle attributes={ attributes } />
@@ -212,10 +212,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<label
 						htmlFor={ 'email-input-help-' + block_id }
 						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
 						}
 					>
 						{ help }

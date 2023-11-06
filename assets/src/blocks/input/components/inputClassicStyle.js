@@ -4,8 +4,8 @@ export const InputClassicStyle = ( { attributes, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-classic-label-text"
-				htmlFor={ 'text-input-' + blockID }
+				className="srfm-classic-label-text"
+				htmlFor={ 'srfm-text-input-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -13,10 +13,10 @@ export const InputClassicStyle = ( { attributes, blockID } ) => {
 				) }
 			</label>
 			<input
-				id={ 'text-input-' + blockID }
+				id={ 'srfm-text-input-' + blockID }
 				type="text"
 				value={ defaultValue }
-				className={ ' sf-classic-input-element' }
+				className={ ' srfm-classic-input-element' }
 				placeholder={ placeholder }
 				required={ required }
 			/>

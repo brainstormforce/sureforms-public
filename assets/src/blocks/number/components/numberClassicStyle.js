@@ -11,10 +11,10 @@ export const NumberClassicStyle = ( { attributes, blockID, handleInput } ) => {
 
 	return (
 		<>
-			<div className="sf-classic-inputs-holder">
+			<div className="srfm-classic-inputs-holder">
 				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
+					className="srfm-classic-label-text"
+					htmlFor={ 'srfm-text-input-' + blockID }
 				>
 					{ label }
 					{ required && label && (
@@ -22,8 +22,8 @@ export const NumberClassicStyle = ( { attributes, blockID, handleInput } ) => {
 					) }
 				</label>
 				<input
-					className={ ' sf-classic-number-element' }
-					id={ 'number-input-' + blockID }
+					className={ ' srfm-classic-number-element' }
+					id={ 'srfm-number-input-' + blockID }
 					type={ formatType === 'none' ? 'number' : 'text' }
 					value={ defaultValue }
 					onChange={ handleInput }
