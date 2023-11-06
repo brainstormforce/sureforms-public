@@ -57,7 +57,7 @@
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
 					?>
 				;
-				--sf-form-container-width: 
+				--srfm-form-container-width: 
 					<?php
 					echo esc_attr( $form_container_width . 'px' );
 					?>

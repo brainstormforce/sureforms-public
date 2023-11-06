@@ -32,7 +32,7 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 							</label>
 						</a>
 					) : (
-						<label className="sf-classic-label-text">
+						<label className="srfm-classic-label-text">
 							{ label }
 						</label>
 					) }
