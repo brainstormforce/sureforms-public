@@ -17,6 +17,7 @@ import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle'
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -26,6 +27,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		fieldType,
 		min,
+		preview,
 		max,
 		errorMsg,
 		formId,
@@ -39,6 +41,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.date_time_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>
@@ -104,77 +112,77 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								sureforms_keys?._srfm_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
-									<>
-										<span className="uag-control-label uagb-control__header">
-											{ __( 'Minimum Date', 'sureforms' ) }
-										</span>
-										<input
-											className="srfm-date-time-picker"
-											type="date"
-											id="srfm-for-min-date"
-											value={ min }
-											onChange={ ( e ) => {
-												if ( '' !== max ) {
-													if ( e.target.value < max ) {
-														setShowErr( false );
-														setAttributes( {
-															min: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
-												} else {
+								<>
+									<span className="uag-control-label uagb-control__header">
+										{ __( 'Minimum Date', 'sureforms' ) }
+									</span>
+									<input
+										className="srfm-date-time-picker"
+										type="date"
+										id="srfm-for-min-date"
+										value={ min }
+										onChange={ ( e ) => {
+											if ( '' !== max ) {
+												if ( e.target.value < max ) {
 													setShowErr( false );
 													setAttributes( {
 														min: e.target.value,
 													} );
-												}
-											} }
-										/>
-										<span className="uag-control-label uagb-control__header">
-											{ __( 'Maximum Date', 'sureforms' ) }
-										</span>
-										<input
-											className="srfm-date-time-picker"
-											type="date"
-											id="srfm-for-max-date"
-											value={ max }
-											onChange={ ( e ) => {
-												if ( '' !== min ) {
-													if ( min < e.target.value ) {
-														setShowErr( false );
-														setAttributes( {
-															max: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
 												} else {
+													setShowErr( true );
+												}
+											} else {
+												setShowErr( false );
+												setAttributes( {
+													min: e.target.value,
+												} );
+											}
+										} }
+									/>
+									<span className="uag-control-label uagb-control__header">
+										{ __( 'Maximum Date', 'sureforms' ) }
+									</span>
+									<input
+										className="srfm-date-time-picker"
+										type="date"
+										id="srfm-for-max-date"
+										value={ max }
+										onChange={ ( e ) => {
+											if ( '' !== min ) {
+												if ( min < e.target.value ) {
 													setShowErr( false );
 													setAttributes( {
 														max: e.target.value,
 													} );
+												} else {
+													setShowErr( true );
 												}
-											} }
-										/>
-										{ showErr && (
-											<p style={ { color: 'red' } }>
-												{ __(
-													'Please enter a lower Minimum Date!',
-													'sureforms'
-												) }
-											</p>
-										) }
-										<p className="components-base-control__help">
+											} else {
+												setShowErr( false );
+												setAttributes( {
+													max: e.target.value,
+												} );
+											}
+										} }
+									/>
+									{ showErr && (
+										<p style={ { color: 'red' } }>
 											{ __(
-												'Minimum Date should always be less than the Maximum Date',
+												'Please enter a lower Minimum Date!',
 												'sureforms'
 											) }
 										</p>
-									</>
-								) : (
-									''
-								) }
+									) }
+									<p className="components-base-control__help">
+										{ __(
+											'Minimum Date should always be less than the Maximum Date',
+											'sureforms'
+										) }
+									</p>
+								</>
+							) : (
+								''
+							) }
 							<span className="uag-control-label uagb-control__header" />
 							<UAGTextControl
 								data={ {

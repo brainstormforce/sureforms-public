@@ -23,6 +23,7 @@ import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
 import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -35,6 +36,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		errorMsg,
 		formId,
+		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -74,6 +76,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.multi_choice_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<div { ...useBlockProps() }>
@@ -309,36 +317,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
+								<MultiButtonsControl
+									label={ __( 'Appearance', 'sureforms' ) }
+									data={ {
+										value: style,
+										label: 'style',
+									} }
+									options={ [
+										{
+											value: 'default',
+											icon: 'Radio',
+										},
+										{
+											value: 'buttons',
+											icon: 'Buttons',
+										},
+									] }
+									showIcons={ true }
+									onChange={ ( value ) => {
+										if ( style !== value ) {
+											setAttributes( {
+												style: value,
+											} );
+										} else {
+											setAttributes( {
+												style: 'buttons',
+											} );
+										}
+									} }
+								/>
+							) }
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
