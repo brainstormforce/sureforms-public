@@ -110,7 +110,6 @@ class Datetimepicker_Markup extends Base {
 				$input_type = ' srfm-input-time';
 				break;
 		}
-
 			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock text-gray-400 text-[20px]"></i>' : '<i class="fa-regular fa-calendar text-gray-400 text-[20px]"></i>';
 			$output    .= '>
 			<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
