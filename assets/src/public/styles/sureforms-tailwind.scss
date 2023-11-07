@@ -524,6 +524,15 @@ $ui-padding: 12px 16px;
 			.srfm-classic-input-error {
 				@apply ring-red-500 border-red-500 placeholder:text-red-300;
 			}
+			.srfm-classic-label-text {
+				a,
+				a:hover {
+					@apply text-srfm_primary_color no-underline;
+				}
+				a:hover {
+					text-decoration: underline !important;
+				}
+			}
 		}
 	}
 }

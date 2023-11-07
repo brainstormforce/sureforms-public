@@ -43,7 +43,7 @@ class Checkbox_Markup extends Base {
 			<span class="srfm-text-primary">
 				<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' .
 					( $label_url
-						? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
+						? '<a class="srfm-text-primary" target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
 						: esc_html( $label )
 					) .
 					( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
@@ -81,7 +81,7 @@ class Checkbox_Markup extends Base {
 				<div class="text-sm leading-6">
 					<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' .
 						( $label_url
-							? '<a target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;" class="underline">' . esc_html( $label ) . '</a>'
+							? '<a target="_blank" href="' . esc_url( $label_url ) . '" class="underline">' . esc_html( $label ) . '</a>'
 							: esc_html( $label )
 						) .
 						( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
