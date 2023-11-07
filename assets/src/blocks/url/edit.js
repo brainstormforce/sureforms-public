@@ -36,7 +36,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<UrlClassicStyle
 						blockID={ block_id }
 						setAttributes={ setAttributes }

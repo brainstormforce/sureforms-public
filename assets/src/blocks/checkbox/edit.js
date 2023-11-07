@@ -137,7 +137,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						alignItems: 'center',
 					} }
 				>
-					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 						<CheckboxClassicStyle
 							blockID={ block_id }
 							setAttributes={ setAttributes }
