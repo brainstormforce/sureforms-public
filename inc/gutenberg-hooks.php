@@ -194,6 +194,7 @@ class Gutenberg_Hooks {
 			]
 		);
 
+		// Localizing the field preview image links.
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
