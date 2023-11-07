@@ -77,7 +77,7 @@ class Number_Slider_Markup extends Base {
                             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="range" min="' .
 							intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" data-color="#0284c7"
                             step="' . intval( $step ) . '" class="range-slider srfm-range-slider !srfm-border-solid !srfm-border !srfm-border-[#d1d5db]" id="srfm-range-slider" />
-                            <input type="number" min="' . intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" class="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6" id="srfm-input-slider" />
+                            <input type="number" min="' . intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" class="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6" id="srfm-input-slider" />
                         </div>
                     </div>
                 </div>

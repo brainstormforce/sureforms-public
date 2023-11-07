@@ -19,7 +19,7 @@ const Navigation = () => {
 	];
 	return (
 		<nav
-			className="flex flex-col max-w-[300px] min-h-full p-[20px] gap-[2px] w-[20%] bg-[#FBFBFC] shadow-md"
+			className="srfm-flex srfm-flex-col srfm-max-w-[300px] srfm-min-h-full srfm-p-[20px] srfm-gap-[2px] srfm-w-[20%] srfm-bg-[#FBFBFC] srfm-shadow-md"
 			style={ { borderRight: '1px solid #E4E7EB' } }
 		>
 			{ navigation.map( ( item ) => (
@@ -29,15 +29,15 @@ const Navigation = () => {
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }
-					className={ `no-underline group p-2 cursor-pointer srfm-rounded-md srfm-transition-colors srfm-duration-300 ease-in-out hover:bg-wpcolor focus:bg-wpcolor focus:text-[#FBFBFC] focus:ring-0 ${
+					className={ `srfm-no-underline srfm-group srfm-p-2 srfm-cursor-pointer srfm-rounded-md srfm-transition-colors srfm-duration-300 srfm-ease-in-out hover:srfm-bg-wpcolor focus:srfm-bg-wpcolor focus:srfm-text-[#FBFBFC] focus:srfm-ring-0 ${
 						activatedTab.get( 'tab' ) === item.slug
-							? 'bg-wpcolor text-[#FBFBFC]'
-							: 'text-[#111827]'
+							? 'srfm-bg-wpcolor srfm-text-[#FBFBFC]'
+							: 'srfm-text-[#111827]'
 					}` }
 				>
-					<div className="flex justify-start gap-2">
+					<div className="srfm-flex srfm-justify-start srfm-gap-2">
 						{ item.icon }
-						<span className="truncate text-[16px] group-hover:text-[#FBFBFC] srfm-transition-colors srfm-duration-300 ease-in-out">
+						<span className="truncate srfm-text-[16px] group-hover:srfm-text-[#FBFBFC] srfm-transition-colors srfm-duration-300 srfm-ease-in-out">
 							{ item.name }
 						</span>
 					</div>

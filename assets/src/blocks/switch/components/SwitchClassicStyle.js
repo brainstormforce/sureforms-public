@@ -29,12 +29,14 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
 							onClick={ () => setToggle( ! toggle ) }
 						/>
 						<div
-							className="srfm-switch-toggle !srfm-top-[3px] !srfm-shadow !srfm-border !srfm-border-gray-200 !srfm-h-5 !srfm-w-5"
+							className="srfm-switch-toggle !srfm--top-[4px] !srfm-shadow !srfm-border !srfm-border-gray-200 !srfm-h-5 !srfm-w-5"
 							style={ { left: toggle ? '24px' : '0' } }
 						>
 							<span
 								className={ `srfm-classic-toggle-icon-container srfm-classic-toggle-icon ${
-									toggle ? '!srfm-opacity-100' : '!srfm-opacity-0'
+									toggle
+										? '!srfm-opacity-100'
+										: '!srfm-opacity-0'
 								}` }
 								aria-hidden="true"
 							>

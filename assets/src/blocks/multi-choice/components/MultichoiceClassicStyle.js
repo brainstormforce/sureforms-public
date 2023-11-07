@@ -8,7 +8,7 @@ export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
 					<span className="srfm-text-red-500"> *</span>
 				) }
 			</label>
-			<div className="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-[2">
+			<div className="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (

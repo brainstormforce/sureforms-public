@@ -13,7 +13,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 					<span style={ { color: 'red' } }> *</span>
 				) }
 			</label>
-			<div className= "srfm-relative srfm-mt-2">
+			<div className="srfm-relative srfm-mt-2">
 				<input
 					id={ 'srfm-text-input-' + blockID }
 					type="password"
@@ -43,7 +43,7 @@ export const PasswordClassicStyle = ( { attributes, blockID } ) => {
 							<span style={ { color: 'red' } }> *</span>
 						) }
 					</label>
-					<div className= "srfm-relative srfm-mt-2">
+					<div className="srfm-relative srfm-mt-2">
 						<input
 							id={ 'confirm-srfm-text-input-' + blockID }
 							type="password"

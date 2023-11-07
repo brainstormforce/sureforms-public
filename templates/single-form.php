@@ -101,7 +101,7 @@
 					<?php
 				}
 				?>
-				<p id="srfm-srfm-error-message" class="srfm-srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 					<?php
 					$page_url  = $_SERVER['REQUEST_URI'];
 					$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );

@@ -104,7 +104,7 @@ class Multichoice_Markup extends Base {
 				<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />
 				<input class="srfm-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">
 				<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
-				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-[2">';
+				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2">';
 		if ( is_array( $options ) ) {
 			foreach ( $options as $i => $option ) {
 						$output .= ' <label class="srfm-classic-radio">

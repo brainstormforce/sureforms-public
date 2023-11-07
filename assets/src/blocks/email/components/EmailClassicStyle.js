@@ -19,7 +19,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 						<span style={ { color: 'red' } }> *</span>
 					) }
 				</label>
-				<div className= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+				<div className="srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
 					<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 						<svg
 							className="srfm-h-5 srfm-w-5 srfm-text-gray-400"
@@ -51,7 +51,7 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 								<span style={ { color: 'red' } }> *</span>
 							) }
 						</label>
-						<div className= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
+						<div className="srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
 							<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 								<svg
 									className="srfm-h-5 srfm-w-5 srfm-text-gray-400"

@@ -23,7 +23,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div className="srfm-mt-2">
 				<input
 					type="text"
-					className=" srfm-classic-address-element !srfm-top-[3px] !srfm-rounded-t-md "
+					className="srfm-classic-address-element !srfm-top-[3px] !srfm-rounded-t-md "
 					id={ `srfm-address-line-1-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ lineOnePlaceholder }
@@ -32,16 +32,16 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 			<div>
 				<input
 					type="text"
-					className=" srfm-classic-address-element !srfm-top-[2px] "
+					className="srfm-classic-address-element !srfm-top-[2px] "
 					id={ `srfm-address-line-2-${ blockID }` }
 					placeholder={ lineTwoPlaceholder }
 				/>
 			</div>
-			<div className="flex -space-x-px">
+			<div className="srfm-flex -space-x-px">
 				<div className="srfm-w-1/2 srfm-min-w-0 srfm-flex-1">
 					<input
 						type="text"
-						className=" srfm-classic-address-element !srfm-top-[1px] "
+						className="srfm-classic-address-element !srfm-top-[1px] "
 						id={ `srfm-address-city-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ cityPlaceholder }
@@ -50,7 +50,7 @@ export const AddressClassicStyle = ( { attributes, countries, blockID } ) => {
 				<div className="srfm-min-w-0 srfm-flex-1">
 					<input
 						type="text"
-						className=" srfm-classic-address-element !srfm-top-[1px] "
+						className="srfm-classic-address-element !srfm-top-[1px] "
 						id={ `srfm-address-state-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ statePlaceholder }

@@ -61,7 +61,7 @@ export const SliderClassicStyle = ( {
 									max={ parseInt( max ) }
 									value={ slideValue }
 									onChange={ handleChange }
-									className="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6 !srfm-shadow-none"
+									className="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6 !srfm-shadow-none"
 								/>
 							</div>
 						</div>

@@ -15,7 +15,7 @@ export const PhoneClassicStyle = ( { attributes, blockID, handleChange } ) => {
 					<span style={ { color: 'red' } }> *</span>
 				) }
 			</label>
-			<div className= "srfm-relative srfm-mt-2">
+			<div className="srfm-relative srfm-mt-2">
 				<div className="group srfm-classic-phone-parent">
 					<div className="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
 						<select

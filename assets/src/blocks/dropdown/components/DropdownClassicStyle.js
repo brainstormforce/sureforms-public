@@ -24,7 +24,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					<span className="text-required_icon_color"> *</span>
 				) }
 			</label>
-			<div className= "srfm-relative srfm-mt-2">
+			<div className="srfm-relative srfm-mt-2">
 				<input
 					aria-required={ required ? 'true' : 'false' }
 					type="hidden"

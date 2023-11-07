@@ -117,7 +117,7 @@ if ( uploadFieldsContainer ) {
 		uploadInput.addEventListener( 'change', ( e ) => {
 			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
-			const isError = uploadField.querySelector( '.error-message' );
+			const isError = uploadField.querySelector( '.srfm-error-message' );
 			if ( isError ) {
 				isError.style.display = 'none';
 			}
@@ -130,7 +130,7 @@ if ( uploadFieldsContainer ) {
 						.removeAttribute( 'hidden' );
 				} else {
 					uploadField
-						.querySelector( `#upload-field-error-${ id }` )
+						.querySelector( `#srfm-upload-field-error-${ id }` )
 						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
@@ -150,7 +150,7 @@ if ( uploadFieldsContainer ) {
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -169,29 +169,29 @@ if ( uploadFieldsContainer ) {
 								'image/x-icon',
 							];
 							const icon = imageFormats.includes( file.type )
-								? `<img class="rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
+								? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
 								: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
 							const uploadResultContainer =
 								uploadField.querySelector(
 									`#srfm-upload-field-result-${ id }`
 								);
-							uploadResultContainer.innerHTML = `<div class="srfm-text-primary srfm-w-full flex gap-2 p-[10px]">
+							uploadResultContainer.innerHTML = `<div class="srfm-text-primary srfm-w-full srfm-flex srfm-gap-2 srfm-p-[10px]">
 								${ icon }
-								<div class="w-full srfm-flex srfm-justify-between">
+								<div class="srfm-w-full srfm-flex srfm-justify-between">
 									<div>
-										<div class="text-base">${ fileName }</div>
-										<div class="srfm-text-sm srfm-text-gray-500"> ${ ( file.size / 1000000 ).toFixed(
-		2
-	) }MB</div>
+										<div class="srfm-text-base">${ fileName }</div>
+										<div class="srfm-text-sm srfm-text-gray-500"> ${ (
+		file.size / 1000000
+	).toFixed( 2 ) }MB</div>
 									</div>
 									<div>
-  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="reset-upload-field" style="cursor:pointer"></i>
+  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
 									</div>
 								</div>
 							</div>`;
 							uploadResultContainer.style.display = 'flex';
 							uploadField
-								.querySelector( '#reset-upload-field' )
+								.querySelector( '#srfm-reset-upload-field' )
 								.addEventListener( 'click', () => {
 									uploadInput.value = '';
 									uploadField.querySelector(
@@ -267,18 +267,18 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.contains( '!opacity-0' )
+							.classList.contains( '!srfm-opacity-0' )
 					) {
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-0' );
+							.classList.remove( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-100' );
+							.classList.add( '!srfm-opacity-100' );
 						switchToggle.style.left = '24px';
 						toggleSwitch.value = 'true';
 					} else {
@@ -288,12 +288,12 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-0' );
+							.classList.add( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-100' );
+							.classList.remove( '!srfm-opacity-100' );
 						switchToggle.style.left = '0';
 						toggleSwitch.value = 'false';
 					}
@@ -317,18 +317,18 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.contains( '!opacity-100' )
+							.classList.contains( '!srfm-opacity-100' )
 					) {
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-100' );
+							.classList.remove( '!srfm-opacity-100' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-0' );
+							.classList.add( '!srfm-opacity-0' );
 						switchToggle.style.left = '0';
 						switchBackground.style.backgroundColor = '#dcdcdc';
 						toggleSwitch.value = 'false';
@@ -337,12 +337,12 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-0' );
+							.classList.remove( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-100' );
+							.classList.add( '!srfm-opacity-100' );
 						switchToggle.style.left = '24px';
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
@@ -903,7 +903,7 @@ if ( selectFieldContainer ) {
 		selectFieldButton.addEventListener( 'focus', () => {
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.add( 'srfm-rotate-180', '!pl-4' );
+				.classList.add( 'srfm-rotate-180', '!srfm-pl-4' );
 
 			const nextSibling = selectFieldButton.nextElementSibling;
 			const options = nextSibling.querySelectorAll(
@@ -914,7 +914,9 @@ if ( selectFieldContainer ) {
 					options[ index ].classList.remove(
 						'hover:!srfm-bg-srfm_primary_color'
 					);
-					options[ index ].classList.add( 'hover:!srfm-bg-[#0084C7]' );
+					options[ index ].classList.add(
+						'hover:!srfm-bg-[#0084C7]'
+					);
 				}
 			}
 			const dropdownResultInput = selectField.querySelector(
@@ -922,16 +924,19 @@ if ( selectFieldContainer ) {
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
-				nextSibling.classList.add( '!opacity-100' );
-				nextSibling.classList.add( '!z-10' );
-				nextSibling.classList.remove( '!opacity-0' );
+				nextSibling.classList.add( '!srfm-opacity-100' );
+				nextSibling.classList.add( '!srfm-z-10' );
+				nextSibling.classList.remove( '!srfm-opacity-0' );
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {
 					li.addEventListener( 'mousedown', ( event ) => {
 						selectFieldButton
 							.querySelector( '.srfm-classic-select-icon ' )
-							.classList.remove( 'srfm-rotate-180', '!pl-4' );
+							.classList.remove(
+								'srfm-rotate-180',
+								'!srfm-pl-4'
+							);
 						selectFieldButton
 							.querySelector( '.srfm-classic-select-icon ' )
 							.classList.add( 'srfm-rotate-0' );
@@ -941,9 +946,9 @@ if ( selectFieldContainer ) {
 						).textContent = selectedValue;
 						dropdownResultInput.value = selectedValue;
 
-						nextSibling.classList.remove( '!opacity-100' );
-						nextSibling.classList.remove( '!z-10' );
-						nextSibling.classList.add( '!opacity-0' );
+						nextSibling.classList.remove( '!srfm-opacity-100' );
+						nextSibling.classList.remove( '!srfm-z-10' );
+						nextSibling.classList.add( '!srfm-opacity-0' );
 						nextSibling.style.display = 'none';
 					} );
 				} );
@@ -952,14 +957,14 @@ if ( selectFieldContainer ) {
 		selectFieldButton.addEventListener( 'blur', () => {
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.remove( 'srfm-rotate-180', '!pl-4' );
+				.classList.remove( 'srfm-rotate-180', '!srfm-pl-4' );
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
 				.classList.add( 'srfm-rotate-0' );
 			const nextSibling = selectFieldButton.nextElementSibling;
-			nextSibling.classList.remove( '!opacity-100' );
-			nextSibling.classList.remove( '!z-10' );
-			nextSibling.classList.add( '!opacity-0' );
+			nextSibling.classList.remove( '!srfm-opacity-100' );
+			nextSibling.classList.remove( '!srfm-z-10' );
+			nextSibling.classList.add( '!srfm-opacity-0' );
 			nextSibling.style.display = 'none';
 		} );
 	}
