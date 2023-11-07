@@ -86,7 +86,7 @@ class Dropdown_Markup extends Base {
         <div class= "srfm-relative srfm-mt-2">
             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" class="srfm-classic-dropdown-result" value="" />
             <button type="button" class="srfm-classic-dropdown-button srfm-classic-dropdown-btn" id="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '">
-                <span class="srfm-dropdown-value srfm-font-normal srfm-text-gray-900 srfm-block truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
+                <span class="srfm-dropdown-value srfm-font-normal srfm-text-gray-900 srfm-block srfm-truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
                 <span class="srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-2 srfm-duration-300 srfm-transition-all">
                     <i class="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-400 srfm-mt-[10px]"></i>
                 </span>
@@ -97,7 +97,7 @@ class Dropdown_Markup extends Base {
 			$option_text = esc_html( $option );
 
 			$output .= '<li class="srfm-classic-dropdown-option srfm-classic-dropdown-li" id="srfm-listbox-option-0" role="option">
-                            <span class="srfm-font-normal srfm-block truncate">' . $option_text . '</span>
+                            <span class="srfm-font-normal srfm-block srfm-truncate">' . $option_text . '</span>
                         </li>';
 		}
 

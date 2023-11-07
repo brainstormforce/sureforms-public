@@ -15,7 +15,7 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 						checked={ selected }
 						required={ required }
 						onClick={ () => setSelected( ! selected ) }
-						className="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input checked:!srfm-bg-srfm_primary_color checked:!bsrfm-order-none"
+						className="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input checked:!srfm-bg-srfm_primary_color checked:!srfm-order-none"
 					/>
 				</div>
 				<div className="srfm-text-sm srfm-leading-6">

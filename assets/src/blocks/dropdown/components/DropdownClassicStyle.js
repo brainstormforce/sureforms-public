@@ -37,7 +37,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					onClick={ () => setOpen( ! open ) }
 					onBlur={ () => setOpen( false ) }
 				>
-					<span className="srfm-dropdown-value srfm-block truncate">
+					<span className="srfm-dropdown-value srfm-block srfm-truncate">
 						{ placeholder ? placeholder : '\u00A0' }
 					</span>
 					<span
@@ -68,7 +68,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 							className="srfm-classic-dropdown-option srfm-classic-dropdown-li"
 							role="option"
 						>
-							<span className="srfm-font-normal srfm-block truncate">
+							<span className="srfm-font-normal srfm-block srfm-truncate">
 								{ option }
 							</span>
 						</li>

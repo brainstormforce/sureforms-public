@@ -93,7 +93,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 	for ( let i = 0; i < maxValue; i++ ) {
 		ratingItems.push(
 			<li
-				className="srfm-flex srfm-items-center flex-col-reverse"
+				className="srfm-flex srfm-items-center srfm-flex-col-reverse"
 				key={ i }
 			>
 				<span className="srfm-text-primary">
