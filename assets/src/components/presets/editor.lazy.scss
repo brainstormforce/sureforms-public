@@ -1,4 +1,4 @@
-.uagb-presets-radio-image-wrap {
+.srfm-presets-radio-image-wrap {
 	display: grid;
 	grid-column-gap: 16px;
 	grid-template-columns: repeat( 2, 1fr );
@@ -40,16 +40,16 @@
 	}
 }
 
-.uagb-inspector-tab .components-panel__body .uag-presets-label {
+.srfm-inspector-tab .components-panel__body .uag-presets-label {
 	line-height: 2.4;
 }
 
-.uagb-presets-label-reset-wrap {
+.srfm-presets-label-reset-wrap {
 	display: flex;
 	justify-content: space-between;
 }
 
-.uagb-presets-main-wrap {
+.srfm-presets-main-wrap {
 	&.border-none svg {
 		border: none;
 	}

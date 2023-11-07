@@ -39,7 +39,7 @@ const UAGTextControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? applyFilters(
-				'uagb.registerTextExtender',
+				'srfm.registerTextExtender',
 				'',
 				selectedBlock?.name,
 				props.name,
@@ -82,9 +82,9 @@ const UAGTextControl = ( props ) => {
 
 	const HeaderControls = () => {
 		return (
-			<div className="uagb-control__header">
+			<div className="srfm-control__header">
 				<ResponsiveToggle label={ props?.label } />
-				<div className="uagb-number-control__actions uagb-control__actions">
+				<div className="srfm-number-control__actions srfm-control__actions">
 					<UAGReset
 						onReset={ resetValues }
 						value={ props?.value }
@@ -114,9 +114,9 @@ const UAGTextControl = ( props ) => {
 			{ controlBeforeDomElement }
 			<div
 				className={ classnames(
-					'components-base-control uagb-text-control uagb-size-type-field-tabs',
+					'components-base-control srfm-text-control srfm-size-type-field-tabs',
 					isEnableDynamicContent()
-						? ' uagb-text-control--open-dynamic-content'
+						? ' srfm-text-control--open-dynamic-content'
 						: '',
 					props.className
 				) }
@@ -126,8 +126,8 @@ const UAGTextControl = ( props ) => {
 				) }
 				<div
 					className={ classnames(
-						'uagb-text-control__controls',
-						'uagb-text-control__controls-' + props?.variant
+						'srfm-text-control__controls',
+						'srfm-text-control__controls-' + props?.variant
 					) }
 				>
 					{ ! isEnableDynamicContent() && (

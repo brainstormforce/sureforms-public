@@ -1,11 +1,11 @@
 /* --------- Overwriting All Gutenberg Components Inside Spectra Panels --------- */
 
 .block-editor-block-popover__dynamic-content,
-.components-panel .uagb-dynamic-content-wrap,
-.components-panel .uagb-inspector-tab,
+.components-panel .srfm-dynamic-content-wrap,
+.components-panel .srfm-inspector-tab,
 .components-panel,
 #customize-theme-controls {
-	.uagb-inspector-tab {
+	.srfm-inspector-tab {
 		&::-webkit-input-placeholder {
 			/* Edge */
 			color: #aaa;

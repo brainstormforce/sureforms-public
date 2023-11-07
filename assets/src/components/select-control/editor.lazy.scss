@@ -1,6 +1,6 @@
 @import "../../styles/variables";
 
-.uagb-select-control {
+.srfm-select-control {
 	&--layout-inline {
 		.components-select-control {
 			align-items: center;
@@ -11,7 +11,7 @@
 			gap: 0;
 		}
 
-		.uagb-control__header,
+		.srfm-control__header,
 		.uag-control-label,
 		.components-select-control label.components-input-control__label {
 			margin-bottom: 0;

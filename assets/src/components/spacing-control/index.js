@@ -353,7 +353,7 @@ const SpacingControl = ( props ) => {
 				>
 					<Button
 						key={ key.unitValue }
-						className={ 'uagb-range-control__units--' + key.name }
+						className={ 'srfm-range-control__units--' + key.name }
 						isSmall
 						isPrimary={
 							( 'Desktop' === deviceType &&
@@ -398,7 +398,7 @@ const SpacingControl = ( props ) => {
 	if ( link ) {
 		linkHtml = (
 			<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-				className="uagb-spacing-control__link uagb-spacing-control-connected dashicons dashicons-admin-links "
+				className="srfm-spacing-control__link srfm-spacing-control-connected dashicons dashicons-admin-links "
 				onClick={ () => {
 					changedUnLinkedValues( deviceType.toLowerCase() );
 					setAttributes( { [ link.label ]: false } );
@@ -409,7 +409,7 @@ const SpacingControl = ( props ) => {
 		if ( ! link.value ) {
 			linkHtml = (
 				<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-					className="uagb-spacing-control__link uagb-spacing-control-disconnected dashicons dashicons-editor-unlink"
+					className="srfm-spacing-control__link srfm-spacing-control-disconnected dashicons dashicons-editor-unlink"
 					onClick={ () => {
 						onLinkClickHandler();
 						setAttributes( { [ link.label ]: true } );
@@ -438,16 +438,16 @@ const SpacingControl = ( props ) => {
 	const output = {};
 	output.Desktop = (
 		<>
-			<div className="uagb-spacing-control__inputs">
+			<div className="srfm-spacing-control__inputs">
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeTopValue( e, 'desktop' ) }
 					value={ undefined !== valueTop.value ? valueTop.value : '' }
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeRightValue( e, 'desktop' ) }
@@ -456,7 +456,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeBottomValue( e, 'desktop' ) }
@@ -465,7 +465,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeLeftValue( e, 'desktop' ) }
@@ -479,9 +479,9 @@ const SpacingControl = ( props ) => {
 	);
 	output.Tablet = (
 		<>
-			<div className="uagb-spacing-control__inputs">
+			<div className="srfm-spacing-control__inputs">
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeTopValue( e, 'tablet' ) }
@@ -492,7 +492,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeRightValue( e, 'tablet' ) }
@@ -503,7 +503,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeBottomValue( e, 'tablet' ) }
@@ -514,7 +514,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeLeftValue( e, 'tablet' ) }
@@ -530,9 +530,9 @@ const SpacingControl = ( props ) => {
 	);
 	output.Mobile = (
 		<>
-			<div className="uagb-spacing-control__inputs">
+			<div className="srfm-spacing-control__inputs">
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeTopValue( e, 'mobile' ) }
@@ -543,7 +543,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeRightValue( e, 'mobile' ) }
@@ -554,7 +554,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeBottomValue( e, 'mobile' ) }
@@ -565,7 +565,7 @@ const SpacingControl = ( props ) => {
 					}
 				/>
 				<input
-					className="uagb-spacing-control__number"
+					className="srfm-spacing-control__number"
 					type="number"
 					min={ min }
 					onChange={ ( e ) => onChangeLeftValue( e, 'mobile' ) }
@@ -689,14 +689,14 @@ const SpacingControl = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-spacing-control">
-				<div className="uagb-size-type-field-tabs">
-					<div className="uagb-control__header">
+			<div className="srfm-spacing-control">
+				<div className="srfm-size-type-field-tabs">
+					<div className="srfm-control__header">
 						<ResponsiveToggle
 							label={ label }
 							responsive={ responsive }
 						/>
-						<div className="uagb-control__actions">
+						<div className="srfm-control__actions">
 							<UAGReset
 								onReset={ resetValues }
 								attributeNames={ [
@@ -718,7 +718,7 @@ const SpacingControl = ( props ) => {
 								] }
 							/>
 							<ButtonGroup
-								className="uagb-control__units"
+								className="srfm-control__units"
 								aria-label={ __( 'Select Units', 'sureforms' ) }
 							>
 								{ ! disableUnits &&
@@ -729,20 +729,20 @@ const SpacingControl = ( props ) => {
 					{ output[ deviceType ]
 						? output[ deviceType ]
 						: output.Desktop }
-					<div className="uagb-spacing-control__input-labels">
-						<span className="uagb-spacing-control__number-label">
+					<div className="srfm-spacing-control__input-labels">
+						<span className="srfm-spacing-control__number-label">
 							{ __( 'Top', 'sureforms' ) }
 						</span>
-						<span className="uagb-spacing-control__number-label">
+						<span className="srfm-spacing-control__number-label">
 							{ __( 'Right', 'sureforms' ) }
 						</span>
-						<span className="uagb-spacing-control__number-label">
+						<span className="srfm-spacing-control__number-label">
 							{ __( 'Bottom', 'sureforms' ) }
 						</span>
-						<span className="uagb-spacing-control__number-label">
+						<span className="srfm-spacing-control__number-label">
 							{ __( 'Left', 'sureforms' ) }
 						</span>
-						<span className="uagb-spacing-control__number-label uagb-spacing-control__link-label"></span>
+						<span className="srfm-spacing-control__number-label srfm-spacing-control__link-label"></span>
 					</div>
 				</div>
 				<UAGHelpText text={ help } />

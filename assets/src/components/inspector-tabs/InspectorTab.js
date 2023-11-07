@@ -103,7 +103,7 @@ const InspectorTab = ( props ) => {
 			style={ {
 				display: isActive ? 'block' : 'none',
 			} }
-			className={ `uagb-inspector-tab uagb-tab-content-${ type }` }
+			className={ `srfm-inspector-tab srfm-tab-content-${ type }` }
 			ref={ tabRef }
 		>
 			{ inspectorTabBefore }

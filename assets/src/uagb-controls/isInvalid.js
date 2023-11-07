@@ -1,7 +1,7 @@
 const isInvalid = ( block ) => {
 	const { name, isValid, validationIssues } = block;
 
-	if ( ! name || ! name.match( /^uagb\// ) ) {
+	if ( ! name || ! name.match( /^srfm\// ) ) {
 		return false;
 	}
 

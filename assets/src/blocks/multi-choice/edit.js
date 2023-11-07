@@ -143,7 +143,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
-										<span className="uag-control-label uagb-control__header">
+										<span className="uag-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
 												'sureforms'
@@ -248,7 +248,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="uag-control-label uagb-control__header">
+							<span className="uag-control-label srfm-control__header">
 								{ __( 'Add New Option', 'sureforms' ) }
 							</span>
 							<div className="sureform-add-option-container">
@@ -283,7 +283,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
 							</div>
-							<span className="uag-control-label uagb-control__header" />
+							<span className="uag-control-label srfm-control__header" />
 							<UAGTextControl
 								data={ {
 									value: help,

@@ -39,7 +39,7 @@ const UAGTabsControl = ( props ) => {
 	const tabs = props.tabs.map( ( tab, index ) => {
 		return {
 			...tab,
-			className: `uagb-tab-${ index + 1 } ${ tab?.name }`,
+			className: `srfm-tab-${ index + 1 } ${ tab?.name }`,
 		};
 	} );
 
@@ -70,7 +70,7 @@ const UAGTabsControl = ( props ) => {
 					let selectedTabClass = false;
 					if ( selectedTab && selectedTab?.classList ) {
 						selectedTab?.classList.forEach( ( className ) => {
-							if ( className.includes( 'uagb-tab' ) ) {
+							if ( className.includes( 'srfm-tab' ) ) {
 								selectedTabClass = `.${ className }`;
 							}
 						} );

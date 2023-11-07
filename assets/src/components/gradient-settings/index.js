@@ -92,7 +92,7 @@ const GradientSettings = ( props ) => {
 						__nextHasNoMargin={ true }
 						value={ backgroundGradient?.value || null }
 						onChange={ onGradientChange }
-						className="uagb-gradient-picker"
+						className="srfm-gradient-picker"
 						gradients={ [] } // Passing it an empty to resolve block encounters an error when gutenberg is activated.
 					/>
 				) }
@@ -133,7 +133,7 @@ const GradientSettings = ( props ) => {
 							value: backgroundGradientType.value,
 							label: backgroundGradientType.label,
 						} }
-						className="uagb-multi-button-alignment-control"
+						className="srfm-multi-button-alignment-control"
 						options={ [
 							{
 								value: 'linear',

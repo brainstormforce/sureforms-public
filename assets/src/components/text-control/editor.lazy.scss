@@ -1,6 +1,6 @@
 @import "../../styles/variables";
 
-.uagb-text-control {
+.srfm-text-control {
 	position: relative;
 
 	&--open-dynamic-content {
@@ -25,9 +25,9 @@
 		}
 	}
 
-	.uagb-control__header {
-		.uagb-number-control__actions {
-			.uagb-reset {
+	.srfm-control__header {
+		.srfm-number-control__actions {
+			.srfm-reset {
 				height: fit-content;
 			}
 		}

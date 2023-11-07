@@ -104,11 +104,11 @@
 }
 
 // Modal popup style.
-.components-modal__screen-overlay.uagb-ip-modal-wrapper-overlay {
+.components-modal__screen-overlay.srfm-ip-modal-wrapper-overlay {
 	background-color: rgba( 0, 0, 0, 0.7 );
 }
 
-.components-modal__frame.uagb-ip-modal-wrapper {
+.components-modal__frame.srfm-ip-modal-wrapper {
 	width: 1080px;
 	height: 796px;
 	max-height: 80%;
@@ -151,7 +151,7 @@
 			}
 		}
 
-		.uagb-ip-header {
+		.srfm-ip-header {
 			display: flex;
 			align-items: baseline;
 			height: 64px;
@@ -165,7 +165,7 @@
 			}
 		}
 
-		.uagb-ip-footer {
+		.srfm-ip-footer {
 			height: 68px;
 			text-align: right;
 			display: flex;
@@ -190,24 +190,24 @@
 		}
 	}
 
-	.uagb-ip-lr-container {
+	.srfm-ip-lr-container {
 		display: flex;
 		// Height 100% - height of footer and header
 		height: calc( 100% - 134px );
 		grid-gap: 24px;
 
-		.uagb-ip-left {
+		.srfm-ip-left {
 			width: 156px;
 			overflow: auto;
 		}
 
-		.uagb-ip-right {
+		.srfm-ip-right {
 			flex: 1;
 			padding: 14px;
 			padding-right: 0;
 			border: 1px solid #e6e7e9;
 			border-radius: $spectra-control-popup-border-radius;
-			.uagb-ip-modal-container {
+			.srfm-ip-modal-container {
 				height: 100%;
 				.ReactVirtualized__Grid__innerScrollContainer {
 					> div {
@@ -220,7 +220,7 @@
 		}
 	}
 
-	.uagb-ip-categories-list {
+	.srfm-ip-categories-list {
 		> div {
 			padding: 9px 10px;
 			cursor: pointer;
@@ -238,11 +238,11 @@
 	}
 
 	// Search bar.
-	.uagb-ip-search-container {
+	.srfm-ip-search-container {
 		flex: 1;
 		padding-left: 24px;
 
-		.uagb-ip-search-bar {
+		.srfm-ip-search-bar {
 			position: relative;
 
 			> svg,
@@ -282,7 +282,7 @@
 		}
 	}
 	// Icons container
-	.uagb-ip-icons {
+	.srfm-ip-icons {
 		.ReactVirtualized__Grid__innerScrollContainer {
 			overflow-x: hidden !important;
 			max-width: inherit !important;
@@ -292,7 +292,7 @@
 			align-items: center;
 			justify-content: center;
 		}
-		.uagb-icon-item {
+		.srfm-icon-item {
 			width: 80px;
 			height: 80px;
 			background-color: $spectra-color-plain-background;

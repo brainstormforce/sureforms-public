@@ -205,10 +205,10 @@ const AdvancedPopColorControl = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-color-popover-container new-uagb-advanced-colors">
-				<div className="uagb-advanced-color-settings-container">
+			<div className="srfm-color-popover-container new-srfm-advanced-colors">
+				<div className="srfm-advanced-color-settings-container">
 					{ label && (
-						<span className="uagb-beside-color-label uag-control-label">
+						<span className="srfm-beside-color-label uag-control-label">
 							{ label }
 						</span>
 					) }
@@ -219,11 +219,11 @@ const AdvancedPopColorControl = ( props ) => {
 						isFormSpecific={ isFormSpecific }
 						value={ props?.value }
 					/>
-					<div className="uagb-beside-color-click">
+					<div className="srfm-beside-color-click">
 						{ visible.isVisible && (
 							<Popover
 								position="top left"
-								className="uagb-popover-color new-uagb-advanced-colors-pop"
+								className="srfm-popover-color new-srfm-advanced-colors-pop"
 								onClose={ toggleClose }
 							>
 								{ value.refresh && (
@@ -266,7 +266,7 @@ const AdvancedPopColorControl = ( props ) => {
 									onClick={ () => {
 										onChangeComplete( '', true );
 									} }
-									className="uagb-clear-btn-inside-picker components-button components-circular-option-picker__clear is-secondary is-small"
+									className="srfm-clear-btn-inside-picker components-button components-circular-option-picker__clear is-secondary is-small"
 								>
 									{ __( 'Clear', 'sureforms' ) }
 								</button>
@@ -275,11 +275,11 @@ const AdvancedPopColorControl = ( props ) => {
 						{ visible.isVisible && (
 							<Tooltip text={ __( 'Select Color', 'sureforms' ) }>
 								<Button
-									className={ `uagb-color-icon-indicate uagb-has-alpha` }
+									className={ `srfm-color-icon-indicate srfm-has-alpha` }
 									onClick={ toggleClose }
 								>
 									<ColorIndicator
-										className={ `uagb-advanced-color-indicate ${ globalIndicator }` }
+										className={ `srfm-advanced-color-indicate ${ globalIndicator }` }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (
@@ -301,11 +301,11 @@ const AdvancedPopColorControl = ( props ) => {
 						{ ! visible.isVisible && (
 							<Tooltip text={ __( 'Select Color', 'sureforms' ) }>
 								<Button
-									className={ `uagb-color-icon-indicate uagb-has-alpha` }
+									className={ `srfm-color-icon-indicate srfm-has-alpha` }
 									onClick={ toggleVisible }
 								>
 									<ColorIndicator
-										className={ `uagb-advanced-color-indicate ${ globalIndicator }` }
+										className={ `srfm-advanced-color-indicate ${ globalIndicator }` }
 										colorValue={ colorVal }
 									/>
 									{ '' === colorVal && value.inherit && (

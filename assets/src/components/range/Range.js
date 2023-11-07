@@ -111,7 +111,7 @@ const Range = ( props ) => {
 				>
 					<Button
 						key={ key.unitValue }
-						className={ 'uagb-range-control__units--' + key.name }
+						className={ 'srfm-range-control__units--' + key.name }
 						isSmall
 						isPrimary={ props.unit.value === key.unitValue }
 						isSecondary={ props.unit.value !== key.unitValue }
@@ -147,13 +147,13 @@ const Range = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uag-range-control uagb-size-type-field-tabs">
-				<div className="uagb-control__header">
+			<div className="uag-range-control srfm-size-type-field-tabs">
+				<div className="srfm-control__header">
 					<ResponsiveToggle
 						label={ props.label }
 						responsive={ props.responsive }
 					/>
-					<div className="uagb-range-control__actions uagb-control__actions">
+					<div className="srfm-range-control__actions srfm-control__actions">
 						{ props?.allowReset && (
 							<UAGReset
 								onReset={ resetValues }
@@ -170,7 +170,7 @@ const Range = ( props ) => {
 						) }
 						{ props.displayUnit && (
 							<ButtonGroup
-								className="uagb-control__units"
+								className="srfm-control__units"
 								aria-label={ __( 'Select Units', 'sureforms' ) }
 							>
 								{ onUnitSizeClick( unitSizes ) }
@@ -178,7 +178,7 @@ const Range = ( props ) => {
 						) }
 					</div>
 				</div>
-				<div className="uagb-range-control__mobile-controls">
+				<div className="srfm-range-control__mobile-controls">
 					<RangeControl
 						value={ inputValue }
 						onChange={ handleOnChange }

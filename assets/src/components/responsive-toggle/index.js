@@ -71,20 +71,20 @@ const ResponsiveToggle = ( props ) => {
 			name: __( 'Desktop', 'sureforms' ),
 			staticName: 'Desktop',
 			title: devicesSvgs.desktop,
-			itemClass: 'uagb-desktop-tab uagb-responsive-tabs',
+			itemClass: 'srfm-desktop-tab srfm-responsive-tabs',
 		},
 		{
 			name: __( 'Tablet', 'sureforms' ),
 			staticName: 'Tablet',
 			title: devicesSvgs.tablet,
-			itemClass: 'uagb-tablet-tab uagb-responsive-tabs',
+			itemClass: 'srfm-tablet-tab srfm-responsive-tabs',
 		},
 		{
 			name: __( 'Mobile', 'sureforms' ),
 			staticName: 'Mobile',
 			key: 'mobile',
 			title: devicesSvgs.mobile,
-			itemClass: 'uagb-mobile-tab uagb-responsive-tabs',
+			itemClass: 'srfm-mobile-tab srfm-responsive-tabs',
 		},
 	];
 
@@ -115,7 +115,7 @@ const ResponsiveToggle = ( props ) => {
 			getUAGEditorStateLocalStorage( 'uagSettingState' );
 
 		const inspectorTab = eventTriggerElement.closest(
-			'.uagb-inspector-tab'
+			'.srfm-inspector-tab'
 		);
 		const panelBody = eventTriggerElement.closest(
 			'.components-panel__body.is-opened'
@@ -131,10 +131,10 @@ const ResponsiveToggle = ( props ) => {
 		}
 
 		let inspectorTabName = 'style';
-		if ( inspectorTab.classList.contains( 'uagb-tab-content-general' ) ) {
+		if ( inspectorTab.classList.contains( 'srfm-tab-content-general' ) ) {
 			inspectorTabName = 'general';
 		}
-		if ( inspectorTab.classList.contains( 'uagb-tab-content-advance' ) ) {
+		if ( inspectorTab.classList.contains( 'srfm-tab-content-advance' ) ) {
 			inspectorTabName = 'advance';
 		}
 
@@ -188,7 +188,7 @@ const ResponsiveToggle = ( props ) => {
 			) }
 			{ displayResponsive && responsive && (
 				<ButtonGroup
-					className="uagb-range-control-responsive components-tab-panel__tabs"
+					className="srfm-range-control-responsive components-tab-panel__tabs"
 					aria-label={ __( 'Device', 'sureforms' ) }
 				>
 					{ devices.map(

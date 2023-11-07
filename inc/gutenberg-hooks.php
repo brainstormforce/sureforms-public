@@ -208,7 +208,7 @@ class Gutenberg_Hooks {
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
-			'uagb_blocks_info',
+			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
 			]

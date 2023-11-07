@@ -8,7 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
 
 const getAttributeFallback = ( currentValue, key, blockName ) => {
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	);
 	return currentValue
@@ -18,7 +18,7 @@ const getAttributeFallback = ( currentValue, key, blockName ) => {
 
 export const getFallbackNumber = ( currentValue, key, blockName ) => {
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	);
 	return isNaN( currentValue )

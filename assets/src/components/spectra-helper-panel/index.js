@@ -28,7 +28,7 @@ const SpectraHelperPanel = ( props ) => {
 
 	const spectraLogo = (
 		<svg
-			className="uagb-helper-panel__element uagb-helper-panel__element--logo"
+			className="srfm-helper-panel__element srfm-helper-panel__element--logo"
 			width="30"
 			height="30"
 			viewBox="0 0 30 30"
@@ -56,10 +56,10 @@ const SpectraHelperPanel = ( props ) => {
 	);
 
 	return (
-		<div className="uagb-helper-panel">
+		<div className="srfm-helper-panel">
 			{ useLogo && spectraLogo }
 			{ message && (
-				<h3 className="uagb-helper-panel__element uagb-helper-panel__element--message">
+				<h3 className="srfm-helper-panel__element srfm-helper-panel__element--message">
 					{ message }
 				</h3>
 			) }

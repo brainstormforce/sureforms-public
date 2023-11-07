@@ -818,7 +818,7 @@ const Background = ( props ) => {
 										value: overlayType.value,
 										label: overlayType.label,
 									} }
-									className="uagb-multi-button-alignment-control"
+									className="srfm-multi-button-alignment-control"
 									options={ overlayOptions }
 									showIcons={ false }
 								/>
@@ -930,7 +930,7 @@ const Background = ( props ) => {
 										value: overlayType.value,
 										label: overlayType.label,
 									} }
-									className="uagb-multi-button-alignment-control"
+									className="srfm-multi-button-alignment-control"
 									options={ overlayOptions }
 									showIcons={ false }
 								/>

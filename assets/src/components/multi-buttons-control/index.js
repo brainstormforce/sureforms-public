@@ -59,7 +59,7 @@ const MultiButtonsControl = ( props ) => {
 
 	const selectedBlock = getSelectedBlock()?.name.split( '/' ).pop();
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	);
 	const [ buttonPrimaryStateDesktop, setbuttonPrimaryStateDesktop ] =
@@ -84,13 +84,13 @@ const MultiButtonsControl = ( props ) => {
 
 		output.Desktop = (
 			<ButtonGroup
-				className={ `uagb-multi-button-button-group` }
+				className={ `srfm-multi-button-button-group` }
 				aria-label={ label }
 			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
-						className={ `uagb-multi-button` }
+						className={ `srfm-multi-button` }
 						isLarge
 						isSecondary={
 							data.desktop.value !== option.value ||
@@ -135,13 +135,13 @@ const MultiButtonsControl = ( props ) => {
 		);
 		output.Tablet = (
 			<ButtonGroup
-				className={ `uagb-multi-button-button-group` }
+				className={ `srfm-multi-button-button-group` }
 				aria-label={ label }
 			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
-						className={ `uagb-multi-button` }
+						className={ `srfm-multi-button` }
 						isLarge
 						isSecondary={
 							data.tablet.value !== option.value ||
@@ -187,13 +187,13 @@ const MultiButtonsControl = ( props ) => {
 		);
 		output.Mobile = (
 			<ButtonGroup
-				className={ `uagb-multi-button-button-group` }
+				className={ `srfm-multi-button-button-group` }
 				aria-label={ label }
 			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
-						className={ `uagb-multi-button` }
+						className={ `srfm-multi-button` }
 						isLarge
 						isSecondary={
 							data.mobile.value !== option.value ||
@@ -239,9 +239,9 @@ const MultiButtonsControl = ( props ) => {
 		);
 		return (
 			<div
-				className={ `components-base-control uagb-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
+				className={ `components-base-control srfm-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
 			>
-				<div className="uagb-control__header uagb-size-type-field-tabs">
+				<div className="srfm-control__header srfm-size-type-field-tabs">
 					<ResponsiveToggle
 						label={ label }
 						responsive={ responsive }
@@ -298,19 +298,19 @@ const MultiButtonsControl = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ ` uagb-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
+				className={ ` srfm-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
 			>
-				<div className="uagb-multi-buttons-control__label uag-control-label">
+				<div className="srfm-multi-buttons-control__label uag-control-label">
 					{ label }
 				</div>
 				<ButtonGroup
-					className={ `uagb-multi-button-button-group` }
+					className={ `srfm-multi-button-button-group` }
 					aria-label={ label }
 				>
 					{ allOptions.map( ( option ) => (
 						<Button
 							key={ `option-${ option.value }` }
-							className={ `uagb-multi-button` }
+							className={ `srfm-multi-button` }
 							isLarge
 							isSecondary={
 								data.value !== option.value ||

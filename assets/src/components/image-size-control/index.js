@@ -251,8 +251,8 @@ export default function ImageSizeControl( {
 			) }
 			{ isResizable && (
 				<div className="block-editor-image-size-control">
-					<div className="uagb-size-type-field-tabs">
-						<div className="uagb-control__header">
+					<div className="srfm-size-type-field-tabs">
+						<div className="srfm-control__header">
 							<ResponsiveToggle
 								label={ __( 'Image Dimensions', 'sureforms' ) }
 								responsive={ responsive }

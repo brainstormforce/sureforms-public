@@ -16,7 +16,7 @@ const UAGIconPicker = ( props ) => {
 
 	const { label, value, onChange, help = false } = props;
 	const defaultIcons = [ ...wp.UAGBSvgIcons ];
-	const iconCategoryList = [ ...wp.uagb_icon_category_list ];
+	const iconCategoryList = [ ...wp.srfm_icon_category_list ];
 	// For modal.
 	const [ isOpen, setOpen ] = useState( false );
 

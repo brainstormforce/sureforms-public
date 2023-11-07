@@ -135,8 +135,8 @@ const ResponsiveSlider = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-responsive-range">
-				<div className="uagb-responsive-control-inner">
+			<div className="srfm-responsive-range">
+				<div className="srfm-responsive-control-inner">
 					{ output[ deviceType ]
 						? output[ deviceType ]
 						: output.Desktop }

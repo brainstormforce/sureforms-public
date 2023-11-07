@@ -18,14 +18,14 @@ const UAGAdvancedPanelBody = ( props ) => {
 		let inspectorTabName = 'style';
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-general'
+				'srfm-tab-content-general'
 			)
 		) {
 			inspectorTabName = 'general';
 		}
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-advance'
+				'srfm-tab-content-advance'
 			)
 		) {
 			inspectorTabName = 'advance';
@@ -39,7 +39,7 @@ const UAGAdvancedPanelBody = ( props ) => {
 	}, [ panelRef ] );
 
 	const onPanelToggle = () => {
-		if ( 'enabled' === uagb_blocks_info.collapse_panels ) {
+		if ( 'enabled' === srfm_blocks_info.collapse_panels ) {
 			const siblings = getSiblings( panelRef.current );
 
 			siblings.forEach( ( element ) => {
@@ -56,14 +56,14 @@ const UAGAdvancedPanelBody = ( props ) => {
 		let inspectorTabName = 'style';
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-general'
+				'srfm-tab-content-general'
 			)
 		) {
 			inspectorTabName = 'general';
 		}
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-advance'
+				'srfm-tab-content-advance'
 			)
 		) {
 			inspectorTabName = 'advance';

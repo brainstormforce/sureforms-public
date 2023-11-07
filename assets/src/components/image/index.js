@@ -70,7 +70,7 @@ const UAGMediaPicker = ( props ) => {
 	const registerImageExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageExtender',
+			'srfm.registerImageExtender',
 			'',
 			selectedBlock?.name,
 			onSelectImage
@@ -78,7 +78,7 @@ const UAGMediaPicker = ( props ) => {
 	const registerImageLinkExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageLinkExtender',
+			'srfm.registerImageLinkExtender',
 			'',
 			selectedBlock?.name,
 			'bgImageLink',
@@ -98,15 +98,15 @@ const UAGMediaPicker = ( props ) => {
 
 	const onConfirm = ( open ) => {
 		const formData = new window.FormData();
-		formData.append( 'action', 'uagb_svg_confirmation' );
+		formData.append( 'action', 'srfm_svg_confirmation' );
 		formData.append(
 			'svg_nonce',
-			uagb_blocks_info.uagb_svg_confirmation_nonce
+			srfm_blocks_info.srfm_svg_confirmation_nonce
 		);
 		formData.append( 'confirmation', 'yes' );
 
 		apiFetch( {
-			url: uagb_blocks_info.ajax_url,
+			url: srfm_blocks_info.ajax_url,
 			method: 'POST',
 			body: formData,
 		} ).then( ( response ) => {
@@ -222,7 +222,7 @@ const UAGMediaPicker = ( props ) => {
 			{ controlBeforeDomElement }
 			<BaseControl
 				className="spectra-media-control"
-				id={ `uagb-option-selector-${ slug }` }
+				id={ `srfm-option-selector-${ slug }` }
 				label={ label }
 				hideLabelFromVision={ disableLabel }
 			>

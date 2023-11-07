@@ -52,12 +52,12 @@ const TextShadowControl = ( props ) => {
 				popupButton &&
 				! popupButton?.contains( e.target ) &&
 				! e.target?.classList?.contains(
-					'uagb-advanced-color-indicate'
+					'srfm-advanced-color-indicate'
 				) &&
-				! e.target?.parentElement?.closest( '.uagb-popover-color' ) &&
+				! e.target?.parentElement?.closest( '.srfm-popover-color' ) &&
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
-				! e.target?.parentElement?.closest( '.uagb-reset' )
+				! e.target?.parentElement?.closest( '.srfm-reset' )
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
@@ -199,7 +199,7 @@ const TextShadowControl = ( props ) => {
 
 	if ( showAdvancedControls ) {
 		advancedControls = (
-			<div className="uagb-text-shadow-advanced spectra-control-popup">
+			<div className="srfm-text-shadow-advanced spectra-control-popup">
 				{ overallControls }
 			</div>
 		);

@@ -1,6 +1,6 @@
 /* --------- Common Heading Used for the Device Switcher, Reset, and Unit Selection --------- */
 
-.uagb-control__header {
+.srfm-control__header {
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
@@ -8,27 +8,27 @@
 	margin-bottom: $spectra-control-label-bottom-margin;
 
 	.uag-control-label,
-	.uagb-inspector-tab .components-base-control__label,
-	.uagb-inspector-tab .components-panel__body label,
-	.uagb-extention-tab label {
+	.srfm-inspector-tab .components-base-control__label,
+	.srfm-inspector-tab .components-panel__body label,
+	.srfm-extention-tab label {
 		margin-bottom: 0;
 	}
 
-	.uagb-control__inputs {
+	.srfm-control__inputs {
 		display: flex;
 	}
 
-	.uagb-control__label {
+	.srfm-control__label {
 		margin-bottom: 0;
 	}
 
-	.uagb-control__actions {
+	.srfm-control__actions {
 		position: relative;
 		top: 0;
 		display: flex;
 		direction: initial;
 
-		.uagb-reset {
+		.srfm-reset {
 			padding: 0;
 
 			&:only-child,
@@ -45,7 +45,7 @@
 			}
 		}
 
-		.uagb-control__units {
+		.srfm-control__units {
 			direction: initial;
 			display: flex;
 			align-items: center;

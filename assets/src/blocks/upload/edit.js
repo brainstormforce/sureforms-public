@@ -109,7 +109,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									label: 'fileSizeLimit',
 								} }
 							/>
-							<span className="uag-control-label uagb-control__header">
+							<span className="uag-control-label srfm-control__header">
 								{ __( 'Allowed Types', 'sureforms' ) }
 							</span>
 							<Select

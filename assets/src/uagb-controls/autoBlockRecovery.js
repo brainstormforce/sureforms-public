@@ -8,15 +8,15 @@ let recoveryDone = false;
 // Create Recovery CSS to Hide All Errornous Blocks.
 const createRecoveryCSS = () => {
 	const recoveryCSS = document.createElement( 'style' );
-	recoveryCSS.setAttribute( 'id', 'uagb-recovery-styles' );
+	recoveryCSS.setAttribute( 'id', 'srfm-recovery-styles' );
 	recoveryCSS.innerHTML =
-		'.has-warning[data-type^="uagb/"] { opacity: 0 !important; }';
+		'.has-warning[data-type^="srfm/"] { opacity: 0 !important; }';
 	document.body.appendChild( recoveryCSS );
 };
 
 // Destroy the Recovery CSS to Restore the Editor to its Original State.
 const destroyRecoveryCSS = () => {
-	const recoveryCSS = document.querySelector( '#uagb-recovery-styles' );
+	const recoveryCSS = document.querySelector( '#srfm-recovery-styles' );
 	if ( recoveryCSS ) {
 		document.body.removeChild( recoveryCSS );
 	}

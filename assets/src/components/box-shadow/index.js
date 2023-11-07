@@ -26,7 +26,7 @@ const BoxShadowControl = ( props ) => {
 	const [ showAdvancedControls, toggleAdvancedControls ] = useState( false );
 
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	); // eslint-disable-line @wordpress/no-unused-vars-before-return
 
@@ -47,10 +47,10 @@ const BoxShadowControl = ( props ) => {
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
 				! e.target?.classList?.contains(
-					'uagb-advanced-color-indicate'
+					'srfm-advanced-color-indicate'
 				) &&
-				! e.target?.parentElement?.closest( '.uagb-popover-color' ) &&
-				! e.target?.parentElement?.closest( '.uagb-reset' )
+				! e.target?.parentElement?.closest( '.srfm-popover-color' ) &&
+				! e.target?.parentElement?.closest( '.srfm-reset' )
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
@@ -246,7 +246,7 @@ const BoxShadowControl = ( props ) => {
 
 	if ( showAdvancedControls ) {
 		advancedControls = (
-			<div className="uagb-box-shadow-advanced spectra-control-popup">
+			<div className="srfm-box-shadow-advanced spectra-control-popup">
 				{ overallControls }
 			</div>
 		);

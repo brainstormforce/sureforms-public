@@ -88,7 +88,7 @@ export default function UAGSelectControl( {
 	return (
 		<div
 			ref={ panelRef }
-			className={ `uagb-select-control uagb-select-control--layout-${ layout }` }
+			className={ `srfm-select-control srfm-select-control--layout-${ layout }` }
 		>
 			{ controlBeforeDomElement }
 			{ children ? (

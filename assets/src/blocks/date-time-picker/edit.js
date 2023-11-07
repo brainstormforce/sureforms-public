@@ -105,7 +105,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
-										<span className="uag-control-label uagb-control__header">
+										<span className="uag-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -131,7 +131,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 												}
 											} }
 										/>
-										<span className="uag-control-label uagb-control__header">
+										<span className="uag-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -175,7 +175,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								) : (
 									''
 								) }
-							<span className="uag-control-label uagb-control__header" />
+							<span className="uag-control-label srfm-control__header" />
 							<UAGTextControl
 								data={ {
 									value: help,

@@ -22,7 +22,7 @@ const UAGReset = ( props ) => {
 	}, [ blockNameForHook ] );
 
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	);
 
@@ -130,7 +130,7 @@ const UAGReset = ( props ) => {
 		>
 			{ controlBeforeDomElement }
 			<Button
-				className="uagb-reset"
+				className="srfm-reset"
 				isSecondary
 				isSmall
 				onClick={ ( e ) => {

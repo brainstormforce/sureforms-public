@@ -85,11 +85,11 @@ const ResponsiveSelectControl = ( props ) => {
 	return (
 		<div
 			ref={ panelRef }
-			className="uagb-responsive-select-control components-base-control"
+			className="srfm-responsive-select-control components-base-control"
 		>
 			{ controlBeforeDomElement }
-			<div className="uagb-size-type-field-tabs">
-				<div className="uagb-control__header">
+			<div className="srfm-size-type-field-tabs">
+				<div className="srfm-control__header">
 					<ResponsiveToggle
 						label={ label }
 						responsive={ responsive }

@@ -229,7 +229,7 @@ const UAGPresets = ( props ) => {
 
 	const presetDropdown = (
 		<SelectControl
-			className="uagb-presets-dropdown"
+			className="srfm-presets-dropdown"
 			onChange={ updatePresets }
 			options={ presets }
 			label={ label }
@@ -238,7 +238,7 @@ const UAGPresets = ( props ) => {
 
 	const presetRadioImage = (
 		<>
-			<div className="uagb-presets-radio-image-wrap">
+			<div className="srfm-presets-radio-image-wrap">
 				{ presetRadioImageOptions }
 			</div>
 		</>
@@ -260,9 +260,9 @@ const UAGPresets = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ classnames( className, 'uagb-presets-main-wrap' ) }
+				className={ classnames( className, 'srfm-presets-main-wrap' ) }
 			>
-				<div className="uagb-presets-label-reset-wrap">
+				<div className="srfm-presets-label-reset-wrap">
 					<label
 						htmlFor="uag-presets-label"
 						className="uag-presets-label"

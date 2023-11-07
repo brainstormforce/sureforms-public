@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 
 .uag-number-control {
-	.uagb-number-control__mobile-controls {
+	.srfm-number-control__mobile-controls {
 		// Full-width Control.
 		&.uag-number-control__full-width {
 			position: relative;
@@ -44,7 +44,7 @@
 				width: 100%;
 			}
 
-			.uagb-dynamic-content-wrap {
+			.srfm-dynamic-content-wrap {
 				width: 245%;
 				margin-top: 20px;
 			}
@@ -64,7 +64,7 @@
 		}
 	}
 
-	.uagb-control__header {
+	.srfm-control__header {
 		display: grid;
 		grid-template-columns: 100%;
 		justify-items: end;
@@ -75,16 +75,16 @@
 		grid-column: 1 / span 2;
 	}
 
-	.uagb-dynamic-content-wrap {
+	.srfm-dynamic-content-wrap {
 		margin-top: 20px;
 	}
 
 	// To fix dynamic content layout for inline control variant.
-	&.uagb-text-control--open-dynamic-content {
+	&.srfm-text-control--open-dynamic-content {
 		.uag-number-control__inline {
 			display: block;
 
-			.uagb-dynamic-content-wrap {
+			.srfm-dynamic-content-wrap {
 				width: 100%;
 				margin-top: 20px;
 			}

@@ -64,7 +64,7 @@ const MultiMediaSelector = ( props ) => {
 	return (
 		<BaseControl
 			className="spectra-media-control"
-			id={ `uagb-option-selector-${ slug }` }
+			id={ `srfm-option-selector-${ slug }` }
 			label={ label }
 			hideLabelFromVision={ disableLabel }
 		>

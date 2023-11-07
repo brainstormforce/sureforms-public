@@ -95,9 +95,9 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-responsive-select-control">
-				<div className="uagb-size-type-field-tabs">
-					<div className="uagb-control__header">
+			<div className="srfm-responsive-select-control">
+				<div className="srfm-size-type-field-tabs">
+					<div className="srfm-control__header">
 						<ResponsiveToggle
 							label={ __( 'Position', 'sureforms' ) }
 							responsive={ responsive }

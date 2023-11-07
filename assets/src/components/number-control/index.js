@@ -49,7 +49,7 @@ const UAGNumberControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? wp.hooks.applyFilters(
-				'uagb.registerTextExtender',
+				'srfm.registerTextExtender',
 				'',
 				selectedBlock?.name,
 				props.name,
@@ -141,7 +141,7 @@ const UAGNumberControl = ( props ) => {
 				>
 					<Button
 						key={ key.unitValue }
-						className={ 'uagb-number-control__units--' + key.name }
+						className={ 'srfm-number-control__units--' + key.name }
 						isSmall
 						isPrimary={ props.unit.value === key.unitValue }
 						isSecondary={ props.unit.value !== key.unitValue }
@@ -164,8 +164,8 @@ const UAGNumberControl = ( props ) => {
 
 	const ControlHeader = () => {
 		return (
-			<div className="uagb-control__header">
-				<div className="uagb-number-control__actions uagb-control__actions">
+			<div className="srfm-control__header">
+				<div className="srfm-number-control__actions srfm-control__actions">
 					<UAGReset
 						onReset={ resetValues }
 						attributeNames={ [
@@ -176,7 +176,7 @@ const UAGNumberControl = ( props ) => {
 					/>
 					{ props.displayUnit && (
 						<ButtonGroup
-							className="uagb-control__units"
+							className="srfm-control__units"
 							aria-label={ __( 'Select Units', 'sureforms' ) }
 						>
 							{ onUnitSizeClick( unitSizes ) }
@@ -204,9 +204,9 @@ const UAGNumberControl = ( props ) => {
 	return (
 		<div
 			ref={ panelRef }
-			className={ `components-base-control uag-number-control uagb-size-type-field-tabs${
+			className={ `components-base-control uag-number-control srfm-size-type-field-tabs${
 				isEnableDynamicContent()
-					? ' uagb-text-control--open-dynamic-content'
+					? ' srfm-text-control--open-dynamic-content'
 					: ''
 			}` }
 		>
@@ -214,7 +214,7 @@ const UAGNumberControl = ( props ) => {
 			{ props.showControlHeader && <ControlHeader /> }
 			<div
 				className={ classnames(
-					'uagb-number-control__mobile-controls',
+					'srfm-number-control__mobile-controls',
 					'uag-number-control__' + variant
 				) }
 			>

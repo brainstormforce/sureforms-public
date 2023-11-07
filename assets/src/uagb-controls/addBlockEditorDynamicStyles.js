@@ -16,18 +16,18 @@ const addBlockEditorDynamicStyles = () => {
 		};
 
 		const dashiconsCss = cloneLinkTag( 'dashicons-css' );
-		const blockCssCss = cloneLinkTag( 'uagb-block-css-css' );
-		const slickStyle = cloneLinkTag( 'uagb-slick-css-css' );
-		const swiperStyle = cloneLinkTag( 'uagb-swiper-css-css' );
-		const aosStyle = cloneLinkTag( 'uagb-aos-css-css' );
+		const blockCssCss = cloneLinkTag( 'srfm-block-css-css' );
+		const slickStyle = cloneLinkTag( 'srfm-slick-css-css' );
+		const swiperStyle = cloneLinkTag( 'srfm-swiper-css-css' );
+		const aosStyle = cloneLinkTag( 'srfm-aos-css-css' );
 
-		const editorStyle = cloneStyleTag( 'uagb-editor-styles' );
+		const editorStyle = cloneStyleTag( 'srfm-editor-styles' );
 		const editorProStyle = cloneStyleTag( 'spectra-pro-editor-styles' );
 		const spacingStyle = cloneStyleTag(
-			'uagb-blocks-editor-spacing-style'
+			'srfm-blocks-editor-spacing-style'
 		);
 		const editorCustomStyle = cloneStyleTag(
-			'uagb-blocks-editor-custom-css'
+			'srfm-blocks-editor-custom-css'
 		);
 
 		for ( const iterateIFrames of getAllIFrames ) {
@@ -64,16 +64,16 @@ const addBlockEditorDynamicStyles = () => {
 				}
 			};
 
-			copyLinkTag( blockCssCss, 'uagb-block-css-css' );
+			copyLinkTag( blockCssCss, 'srfm-block-css-css' );
 			copyLinkTag( dashiconsCss, 'dashicons-css' );
-			copyLinkTag( slickStyle, 'uagb-slick-css-css' );
-			copyLinkTag( swiperStyle, 'uagb-swiper-css-css' );
-			copyLinkTag( aosStyle, 'uagb-aos-css-css' );
+			copyLinkTag( slickStyle, 'srfm-slick-css-css' );
+			copyLinkTag( swiperStyle, 'srfm-swiper-css-css' );
+			copyLinkTag( aosStyle, 'srfm-aos-css-css' );
 
-			copyStyleTag( editorStyle, 'uagb-editor-styles' );
+			copyStyleTag( editorStyle, 'srfm-editor-styles' );
 			copyStyleTag( editorProStyle, 'spectra-pro-editor-styles' );
-			copyStyleTag( spacingStyle, 'uagb-blocks-editor-spacing-style' );
-			copyStyleTag( editorCustomStyle, 'uagb-blocks-editor-custom-css' );
+			copyStyleTag( spacingStyle, 'srfm-blocks-editor-spacing-style' );
+			copyStyleTag( editorCustomStyle, 'srfm-blocks-editor-custom-css' );
 		} // Loop end.
 	} );
 };

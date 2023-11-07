@@ -297,7 +297,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 									}
 								/>
 							</UAGAdvancedPanelBody>
-							<span className="uag-control-label uagb-control__header" />
+							<span className="uag-control-label srfm-control__header" />
 							<UAGTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }

@@ -35,7 +35,7 @@ const TypographyControl = ( props ) => {
 
 	const [ showAdvancedControls, toggleAdvancedControls ] = useState( false );
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	); // eslint-disable-line @wordpress/no-unused-vars-before-return
 
@@ -68,7 +68,7 @@ const TypographyControl = ( props ) => {
 					'uag-responsive-common-button'
 				) &&
 				! e.target?.closest( '.uag-responsive-common-button' ) &&
-				! e.target?.parentElement?.closest( '.uagb-reset' )
+				! e.target?.parentElement?.closest( '.srfm-reset' )
 			) {
 				toggleAdvancedControls( false );
 
@@ -398,7 +398,7 @@ const TypographyControl = ( props ) => {
 
 	if ( showAdvancedControls === true ) {
 		showAdvancedFontControls = (
-			<div className="uagb-typography-advanced spectra-control-popup">
+			<div className="srfm-typography-advanced spectra-control-popup">
 				{ fontFamily }
 				{ transform }
 				{ decoration }

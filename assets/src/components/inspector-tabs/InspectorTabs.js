@@ -44,19 +44,19 @@ const InspectorTabs = ( props ) => {
 	const renderUAGTabsSettingsInOrder = () => {
 		// Inspector Tabs Priority Rendering Code. (Conflicts with 3rd Party plugin panels in Inspector Panel)
 		const tabsContainer = document.querySelector(
-			'.uagb-inspector-tabs-container'
+			'.srfm-inspector-tabs-container'
 		);
 		let dynamicContentContainer = document.querySelector(
-			'.components-panel__body.uagb-dynamic-content-wrap'
+			'.components-panel__body.srfm-dynamic-content-wrap'
 		);
 		let tabsGeneralContainer = document.querySelector(
-			'.uagb-tab-content-general'
+			'.srfm-tab-content-general'
 		);
 		let tabsStyleContainer = document.querySelector(
-			'.uagb-tab-content-style'
+			'.srfm-tab-content-style'
 		);
 		let tabsAdvanceContainer = document.querySelector(
-			'.uagb-tab-content-advance'
+			'.srfm-tab-content-advance'
 		);
 
 		if ( tabsContainer ) {
@@ -103,23 +103,23 @@ const InspectorTabs = ( props ) => {
 			);
 			if ( sidebarPanel ) {
 				sidebarPanel.setAttribute(
-					'data-uagb-tab',
+					'data-srfm-tab',
 					uagSettingState[ blockName ]?.selectedTab || 'general'
 				);
 			}
 		} else if ( sidebarPanel ) {
-			sidebarPanel.setAttribute( 'data-uagb-tab', 'general' );
+			sidebarPanel.setAttribute( 'data-srfm-tab', 'general' );
 		}
 		// Above Section Ends.
 		// component will unmount
 		return () => {
 			if ( sidebarPanel ) {
 				const inspectorTabs = sidebarPanel.querySelector(
-					'.uagb-inspector-tabs-container'
+					'.srfm-inspector-tabs-container'
 				);
 
 				if ( ! inspectorTabs || null === inspectorTabs ) {
-					sidebarPanel.removeAttribute( 'data-uagb-tab' );
+					sidebarPanel.removeAttribute( 'data-srfm-tab' );
 				}
 			}
 		};
@@ -130,7 +130,7 @@ const InspectorTabs = ( props ) => {
 		setCurrentTab( tab );
 		doAction( `uag_inspector_change_tab`, tab );
 		if ( sidebarPanel ) {
-			sidebarPanel.setAttribute( 'data-uagb-tab', tab );
+			sidebarPanel.setAttribute( 'data-srfm-tab', tab );
 		}
 		// Below code is to set the setting state of Tab for each block.
 		const { getSelectedBlock } = select( 'core/block-editor' );
@@ -153,22 +153,22 @@ const InspectorTabs = ( props ) => {
 
 	return (
 		<>
-			<div className={ 'uagb-inspector-tabs-container' }>
+			<div className={ 'srfm-inspector-tabs-container' }>
 				{ /*
 				 * The tabs is static, you must use layout, style & advance
 				 */ }
 				<div
 					ref={ tabContainer }
 					className={ classnames(
-						'uagb-inspector-tabs',
-						'uagb-inspector-tabs-count-' + tabs.length,
+						'srfm-inspector-tabs',
+						'srfm-inspector-tabs-count-' + tabs.length,
 						currentTab
 					) }
 				>
 					{ tabs.indexOf( LAYOUT ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === LAYOUT,
+								'srfm-active': currentTab === LAYOUT,
 							} ) }
 							onClick={ () => _onTabChange( LAYOUT ) }
 						>
@@ -189,7 +189,7 @@ const InspectorTabs = ( props ) => {
 					{ tabs.indexOf( STYLE ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === STYLE,
+								'srfm-active': currentTab === STYLE,
 							} ) }
 							onClick={ () => _onTabChange( STYLE ) }
 						>
@@ -209,7 +209,7 @@ const InspectorTabs = ( props ) => {
 					{ tabs.indexOf( ADVANCE ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === ADVANCE,
+								'srfm-active': currentTab === ADVANCE,
 							} ) }
 							onClick={ () => _onTabChange( ADVANCE ) }
 						>
