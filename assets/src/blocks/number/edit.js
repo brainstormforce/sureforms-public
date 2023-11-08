@@ -16,7 +16,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
-import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import UAGNumberControl from '@Components/number-control';
