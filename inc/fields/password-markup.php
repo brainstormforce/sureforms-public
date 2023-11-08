@@ -74,7 +74,7 @@ class Password_Markup extends Base {
     <div class= "srfm-relative srfm-mt-2">
         <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-classic-pwd-element">
         <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-		<i class="fa fa-lock srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
+		<i class="fa fa-lock srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
         </div>
     </div>' .
 		'<p style="display:none" class="srfm-error-message" id="srfm-email-error">' . esc_html( $error_msg ) . '</p>' .
@@ -83,7 +83,7 @@ class Password_Markup extends Base {
         <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
             <input type="password" id="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-confirm-input-password srfm-classic-pwd-element">
             <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-			<i class="fa fa-lock srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
+			<i class="fa fa-lock srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
             </div>
         </div>'
 		: '' ) .

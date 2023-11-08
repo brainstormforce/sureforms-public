@@ -88,7 +88,7 @@ class Dropdown_Markup extends Base {
             <button type="button" class="srfm-classic-dropdown-button srfm-classic-dropdown-btn" id="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '">
                 <span class="srfm-dropdown-value srfm-font-normal srfm-text-gray-900 srfm-block srfm-truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
                 <span class="srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-2 srfm-duration-300 srfm-transition-all">
-                    <i class="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-400 srfm-mt-[10px]"></i>
+                    <i class="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-500 srfm-mt-[10px]"></i>
                 </span>
             </button>
             <ul class="srfm-classic-dropdown-box srfm-classic-dropdown-ul" tabindex="-1" value="value" style="display: none;">' . ( 0 === count( $options ) ? '<div class="srfm-text-gray-500 srfm-relative srfm-select-none srfm-py-2 srfm-pl-3 srfm-pr-9">' . esc_html__( 'No Options Found', 'sureforms' ) . '</div>' : '' );

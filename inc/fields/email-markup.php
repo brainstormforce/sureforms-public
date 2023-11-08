@@ -83,7 +83,7 @@ class Email_Markup extends Base {
         </label>
         <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
             <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
+                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
             </div>
             <input type="email" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-input-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '">
         </div>
@@ -95,7 +95,7 @@ class Email_Markup extends Base {
         </label>
         <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
             <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[20px]" aria-hidden="true"></i>
+                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
             </div>
             <input type="email" id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-input-confirm-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
         </div>' : '' ) . '

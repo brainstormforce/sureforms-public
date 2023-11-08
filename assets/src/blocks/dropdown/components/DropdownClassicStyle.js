@@ -41,13 +41,13 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 						{ placeholder ? placeholder : '\u00A0' }
 					</span>
 					<span
-						className={ `srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-2 srfm-duration-300 srfm-transition-all srfm-rotate-0 ${
+						className={ `srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3 srfm-duration-300 srfm-transition-all srfm-rotate-0 ${
 							open ? 'srfm-rotate-180 srfm-pl-2' : ''
 						}` }
 					>
 						<FontAwesomeIcon
 							icon={ faAngleDown }
-							className="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-400 srfm-mt-[5px]"
+							className="fa-solid fa-angle-down srfm-h-3 srfm-w-3 srfm-text-gray-600 srfm-mt-[5px]"
 						/>
 					</span>
 				</button>
