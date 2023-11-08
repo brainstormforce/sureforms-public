@@ -19,6 +19,7 @@ import { NumberThemeStyle } from './components/numberThemeStyle';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import UAGNumberControl from '@Components/number-control';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -94,12 +95,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: newValue } )
 								}
 							/>
-							<Range
+							<UAGNumberControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
-								min={ 0 }
-								max={ 1000 }
-								step={ 1 }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',
@@ -110,6 +108,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 										defaultValue: value,
 									} )
 								}
+								showControlHeader={ false }
 							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
@@ -131,12 +130,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<Range
+							<UAGNumberControl
 								label={ __( 'Minimum Value', 'sureforms' ) }
 								displayUnit={ false }
-								step={ 1 }
-								min={ 0 }
-								max={ 1000 }
 								data={ {
 									value: minValue,
 									label: 'minValue',
@@ -151,13 +147,11 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 										setAttributes( { minValue: value } );
 									}
 								} }
+								showControlHeader={ false }
 							/>
-							<Range
+							<UAGNumberControl
 								label={ __( 'Maximum Value', 'sureforms' ) }
 								displayUnit={ false }
-								step={ 1 }
-								min={ 0 }
-								max={ 1000 }
 								data={ {
 									value: maxValue,
 									label: 'maxValue',
@@ -174,6 +168,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 										setAttributes( { maxValue: value } );
 									}
 								} }
+								showControlHeader={ false }
 							/>
 							{ error && (
 								<p

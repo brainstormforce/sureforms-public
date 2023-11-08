@@ -11,6 +11,7 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import Range from '@Components/range/Range.js';
+import UAGNumberControl from '@Components/number-control';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
 	const { label, help, min, max, step, valueDisplayText } = attributes;
@@ -37,16 +38,13 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<Range
+						<UAGNumberControl
 							label={ __( 'Minimum Value', 'sureforms' ) }
 							value={ min }
-							min={ 0 }
-							max={ 1000 }
 							data={ {
 								value: min,
 								label: 'min',
 							} }
-							displayUnit={ false }
 							onChange={ ( value ) => {
 								if ( value >= max ) {
 									setError( true );
@@ -56,17 +54,17 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 									setAttributes( { min: value } );
 								}
 							} }
+							min={ 0 }
+							displayUnit={ false }
+							showControlHeader={ false }
 						/>
-						<Range
+						<UAGNumberControl
 							label={ __( 'Maximum Value', 'sureforms' ) }
 							value={ max }
-							min={ 0 }
-							max={ 1000 }
 							data={ {
 								value: max,
 								label: 'max',
 							} }
-							displayUnit={ false }
 							onChange={ ( value ) => {
 								if ( value <= min ) {
 									setError( true );
@@ -78,6 +76,9 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 									setAttributes( { max: value } );
 								}
 							} }
+							min={ 0 }
+							displayUnit={ false }
+							showControlHeader={ false }
 						/>
 						{ error && (
 							<p
@@ -102,8 +103,8 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						<Range
 							label={ __( 'Step Increment', 'sureforms' ) }
 							value={ step }
-							min={ 0 }
-							max={ 1000 }
+							min={ 1 }
+							max={ max - 1 }
 							data={ {
 								value: step,
 								label: 'step',

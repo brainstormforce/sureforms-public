@@ -18,6 +18,7 @@ import { TextareaThemeStyle } from './components/TextareaThemeStyle';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import UAGNumberControl from '@Components/number-control';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -110,12 +111,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<Range
+							<UAGNumberControl
 								label={ __( 'Text Max Length', 'sureforms' ) }
 								value={ maxLength }
 								displayUnit={ false }
-								min={ 0 }
-								max={ 1000 }
 								data={ {
 									value: maxLength,
 									label: 'maxLength',
@@ -125,6 +124,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										maxLength: Number( value ),
 									} );
 								} }
+								min={ 0 }
+								showControlHeader={ false }
 							/>
 							<Range
 								label={ __( 'Rows', 'sureforms' ) }
