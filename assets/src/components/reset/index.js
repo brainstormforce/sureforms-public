@@ -6,7 +6,7 @@ import { Button, Tooltip, Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGReset = ( props ) => {
+const SRFMReset = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -146,4 +146,4 @@ const UAGReset = ( props ) => {
 	);
 };
 
-export default UAGReset;
+export default SRFMReset;

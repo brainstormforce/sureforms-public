@@ -5,11 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -46,12 +46,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -70,7 +70,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -82,7 +82,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGTextControl
+							<SRFMTextControl
 								data={ {
 									value: labelUrl,
 									label: 'labelUrl',
@@ -105,7 +105,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { checked } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								data={ {
 									value: checkboxHelpText,
 									label: 'checkboxHelpText',
@@ -116,9 +116,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { checkboxHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

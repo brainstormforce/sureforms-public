@@ -36,7 +36,7 @@
 		margin: 0;
 	}
 
-	.srfm-advanced-color-indicate.uag-global-indicator::before {
+	.srfm-advanced-color-indicate.srfm-global-indicator::before {
 		content: "\f11f";
 		font-family: dashicons; // stylelint-disable-line font-family-no-missing-generic-family-keyword
 		position: absolute;
@@ -49,11 +49,11 @@
 		// left: (($spectra-control-circle-indicator - ($spectra-control-circle-indicator / 1.75)) / 2);
 	}
 
-	.uag-global-icon-black::before {
+	.srfm-global-icon-black::before {
 		color: #000;
 	}
 
-	.uag-global-icon-white::before {
+	.srfm-global-icon-white::before {
 		color: #fff;
 	}
 }

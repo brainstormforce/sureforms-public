@@ -5,11 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import Range from '@Components/range/Range.js';
 
@@ -57,12 +57,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -81,7 +81,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -109,7 +109,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									label: 'fileSizeLimit',
 								} }
 							/>
-							<span className="uag-control-label srfm-control__header">
+							<span className="srfm-control-label srfm-control__header">
 								{ __( 'Allowed Types', 'sureforms' ) }
 							</span>
 							<Select
@@ -136,7 +136,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								) }
 							</p>
 
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -147,9 +147,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

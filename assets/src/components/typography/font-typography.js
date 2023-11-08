@@ -2,13 +2,13 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import UAGSelectControl from '@Components/select-control';
+import SRFMSelectControl from '@Components/select-control';
 import RangeTypographyControl from './range-typography';
 import googleFonts from '@Controls/fonts';
 import Select from 'react-select';
 
-const { uag_select_font_globally, uag_load_select_font_globally } =
-srfm_blocks_info;
+const { srfm_select_font_globally, srfm_load_select_font_globally } =
+	srfm_blocks_info;
 
 function FontFamilyControl( props ) {
 	const fonts = [
@@ -158,9 +158,9 @@ function FontFamilyControl( props ) {
 	};
 
 	const gFonts =
-		uag_load_select_font_globally === 'enabled' &&
-		uag_select_font_globally !== 0
-			? uag_select_font_globally
+		srfm_load_select_font_globally === 'enabled' &&
+		srfm_select_font_globally !== 0
+			? srfm_select_font_globally
 			: fonts;
 
 	const customSelectStyles = {
@@ -261,7 +261,7 @@ function FontFamilyControl( props ) {
 	return (
 		<>
 			{ /* Font Family */ }
-			<div className="components-base-control uag-font-family-searchable-select__wrapper">
+			<div className="components-base-control srfm-font-family-searchable-select__wrapper">
 				<label
 					className="components-input-control__label"
 					htmlFor="font-family"
@@ -276,14 +276,14 @@ function FontFamilyControl( props ) {
 					value={ fontFamilyValue }
 					defaultValue={ fontFamilyValue }
 					isSearchable={ true }
-					className="uag-font-family-searchable-select"
-					classNamePrefix="uag-font-family-select"
+					className="srfm-font-family-searchable-select"
+					classNamePrefix="srfm-font-family-select"
 				/>
 			</div>
 			{ /* Font Size*/ }
 			{ fontSize }
 			{ /* Font Weitght */ }
-			<UAGSelectControl
+			<SRFMSelectControl
 				label={ __( 'Weight', 'sureforms' ) }
 				data={ {
 					value: props.fontWeight.value,
@@ -294,7 +294,7 @@ function FontFamilyControl( props ) {
 			/>
 			{ /* Font Style */ }
 			{ props.fontStyle && (
-				<UAGSelectControl
+				<SRFMSelectControl
 					label={ __( 'Style', 'sureforms' ) }
 					data={ {
 						value: props.fontStyle.value,

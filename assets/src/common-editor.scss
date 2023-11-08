@@ -121,8 +121,8 @@
 	border-radius: 2px;
 }
 
-/* UAG Control Label CSS*/
-.uag-control-label,
+/* SRFM Control Label CSS*/
+.srfm-control-label,
 .srfm-inspector-tab .components-base-control__label,
 .srfm-inspector-tab .components-panel__body label,
 .srfm-extention-tab label {
@@ -185,7 +185,7 @@
 }
 
 .srfm-size-type-field-tabs .components-tab-panel__tabs button svg,
-.srfm-size-type-field-tabs .uag-responsive-label-wrap svg {
+.srfm-size-type-field-tabs .srfm-responsive-label-wrap svg {
 	width: auto;
 	height: 10px;
 }
@@ -284,7 +284,7 @@ hr.srfm-editor__separator {
 	text-align: left;
 }
 
-/* UAG Help Notice CSS*/
+/* SRFM Help Notice CSS*/
 .srfm-note,
 .components-base-control__help {
 	color: #a4afb7;
@@ -415,7 +415,7 @@ hr.srfm-editor__separator {
 	margin-bottom: -34px;
 }
 
-.uag-box-shadow-option-actions {
+.srfm-box-shadow-option-actions {
 	margin-top: 1.5em;
 	margin-bottom: 2em;
 }
@@ -513,13 +513,13 @@ label.wp-block-srfm-blockquote__via-label svg {
 	margin-bottom: 15px;
 }
 
-.uag-typography-range-options + .components-base-control {
+.srfm-typography-range-options + .components-base-control {
 	.components-base-control__field .css-unzpkb-Flex-Root {
 		position: inherit;
 	}
 }
 
-.uag-typography-range-options + .components-button-group.srfm-size-type-field {
+.srfm-typography-range-options + .components-button-group.srfm-size-type-field {
 	margin-bottom: -33px;
 }
 
@@ -574,11 +574,11 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	margin-bottom: 18px;
 }
 
-.uag-typography-range-options .components-base-control .components-flex.components-select-control {
+.srfm-typography-range-options .components-base-control .components-flex.components-select-control {
 	position: unset;
 }
 
-.uag-typography-option-actions .srfm-typography-control-btn.components-button:focus:not( :disabled ) {
+.srfm-typography-option-actions .srfm-typography-control-btn.components-button:focus:not( :disabled ) {
 	box-shadow: unset;
 	outline: none;
 	color: $spectra-color-secondary;
@@ -601,7 +601,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
-.uag-responsive-common-button {
+.srfm-responsive-common-button {
 	box-shadow: none;
 	color: $spectra-color-body;
 	border-radius: 100%;

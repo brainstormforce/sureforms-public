@@ -12,11 +12,11 @@ const addBlockEditorResponsiveStyles = (
 		null !== findResponsiveElement &&
 		undefined !== findResponsiveElement
 	) {
-		findResponsiveElement.classList.remove( 'uag-hide-desktop' ); // To remove uag-hide-desktop when toggle click.
+		findResponsiveElement.classList.remove( 'srfm-hide-desktop' ); // To remove srfm-hide-desktop when toggle click.
 		styling.map( ( item ) => {
 			if ( item ) {
 				findResponsiveElement.classList.remove( item, deviceTypeClass );
-				if ( 'uag-hide-desktop' === item ) {
+				if ( 'srfm-hide-desktop' === item ) {
 					findResponsiveElement.classList.add(
 						item,
 						deviceTypeClass
@@ -55,7 +55,10 @@ const addBlockEditorResponsiveStyles = (
 						item,
 						deviceTypeClass
 					);
-					if ( 'uag-hide-tab' === item || 'uag-hide-mob' === item ) {
+					if (
+						'srfm-hide-tab' === item ||
+						'srfm-hide-mob' === item
+					) {
 						findResponsiveElementInIframe.classList.add(
 							item,
 							deviceTypeClass

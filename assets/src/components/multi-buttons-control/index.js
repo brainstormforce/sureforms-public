@@ -21,7 +21,7 @@ import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { select } from '@wordpress/data';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
 const MultiButtonsControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
@@ -70,7 +70,7 @@ const MultiButtonsControl = ( props ) => {
 		useState( true );
 
 	const deviceType = useDeviceType();
-	const iconsClass = showIcons ? 'uag-multibutton-icons' : '';
+	const iconsClass = showIcons ? 'srfm-multibutton-icons' : '';
 
 	if ( ! options ) {
 		return __(
@@ -248,7 +248,7 @@ const MultiButtonsControl = ( props ) => {
 					/>
 				</div>
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 		);
 	}
@@ -300,7 +300,7 @@ const MultiButtonsControl = ( props ) => {
 			<div
 				className={ ` srfm-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
 			>
-				<div className="srfm-multi-buttons-control__label uag-control-label">
+				<div className="srfm-multi-buttons-control__label srfm-control-label">
 					{ label }
 				</div>
 				<ButtonGroup
@@ -330,7 +330,7 @@ const MultiButtonsControl = ( props ) => {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>

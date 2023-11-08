@@ -3,8 +3,8 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -95,11 +95,11 @@ function Settings( props ) {
 
 	return (
 		<>
-			<UAGAdvancedPanelBody
+			<SRFMAdvancedPanelBody
 				title={ __( 'Notification Settings', 'sureforms' ) }
 				initialOpen={ true }
 			>
-				<UAGTextControl
+				<SRFMTextControl
 					label={ __(
 						'Customize the email address on which you want to send the notifications',
 						'sureforms'
@@ -140,9 +140,9 @@ function Settings( props ) {
 						'sureforms'
 					) }
 				</p>
-			</UAGAdvancedPanelBody>
+			</SRFMAdvancedPanelBody>
 
-			<UAGAdvancedPanelBody
+			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -165,7 +165,7 @@ function Settings( props ) {
 						: __( 'Message', 'sureforms' ) }
 				</p>
 				{ 'message' === sureforms_keys._srfm_submit_type ? (
-					<UAGTextControl
+					<SRFMTextControl
 						variant="textarea"
 						data={ {
 							value: sureforms_keys._srfm_thankyou_message,
@@ -186,7 +186,7 @@ function Settings( props ) {
 						isFormSpecific={ true }
 					/>
 				) : (
-					<UAGTextControl
+					<SRFMTextControl
 						label={ __(
 							'Customize the Thankyou page URL',
 							'sureforms'
@@ -206,8 +206,8 @@ function Settings( props ) {
 						isFormSpecific={ true }
 					/>
 				) }
-			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -301,7 +301,7 @@ function Settings( props ) {
 						'sureforms'
 					) }
 				</p>
-			</UAGAdvancedPanelBody>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 }

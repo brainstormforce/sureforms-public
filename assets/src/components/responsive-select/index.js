@@ -13,7 +13,7 @@ import ResponsiveToggle from '../responsive-toggle';
 import { select } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import styles from './editor.lazy.scss';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const ResponsiveSelectControl = ( props ) => {
@@ -97,7 +97,7 @@ const ResponsiveSelectControl = ( props ) => {
 				</div>
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
 			</div>
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 			{ controlAfterDomElement }
 		</div>
 	);

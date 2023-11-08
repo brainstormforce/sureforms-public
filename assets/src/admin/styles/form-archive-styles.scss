@@ -133,7 +133,7 @@ input:checked + .slider:before {
 }
 
 .srfm-advanced-color-settings-container {
-	.srfm-advanced-color-indicate.uag-global-indicator::before {
+	.srfm-advanced-color-indicate.srfm-global-indicator::before {
 		top: 3px!important;
 	}
 }

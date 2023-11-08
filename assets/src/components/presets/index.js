@@ -12,10 +12,10 @@ import { applyFilters } from '@wordpress/hooks';
 import { select, dispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 
-const UAGPresets = ( props ) => {
+const SRFMPresets = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -206,7 +206,7 @@ const UAGPresets = ( props ) => {
 			<>
 				<input
 					key={ key }
-					className="uag-presets-radio-input"
+					className="srfm-presets-radio-input"
 					type="radio"
 					value={ key }
 					checked={ checked }
@@ -217,7 +217,7 @@ const UAGPresets = ( props ) => {
 				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control, jsx-a11y/no-noninteractive-element-interactions */ }
 				<label
 					htmlFor={ key }
-					className="uag-presets-radio-input-label"
+					className="srfm-presets-radio-input-label"
 					dangerouslySetInnerHTML={ {
 						__html: preset.icon,
 					} }
@@ -264,12 +264,12 @@ const UAGPresets = ( props ) => {
 			>
 				<div className="srfm-presets-label-reset-wrap">
 					<label
-						htmlFor="uag-presets-label"
-						className="uag-presets-label"
+						htmlFor="srfm-presets-label"
+						className="srfm-presets-label"
 					>
 						{ label }
 					</label>
-					<UAGReset
+					<SRFMReset
 						attributeNames={ resetAttributes }
 						setAttributes={ setAttributes }
 						onReset={ onReset }
@@ -277,16 +277,16 @@ const UAGPresets = ( props ) => {
 				</div>
 				{ 'dropdown' === presetInputType && presetDropdown }
 				{ 'radioImage' === presetInputType && presetRadioImage }
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-UAGPresets.defaultProps = {
+SRFMPresets.defaultProps = {
 	presetInputType: 'dropdown',
 	label: __( 'Select Preset', 'sureforms' ),
 };
 
-export default memo( UAGPresets );
+export default memo( SRFMPresets );

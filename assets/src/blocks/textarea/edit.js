@@ -7,11 +7,11 @@ import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
@@ -51,12 +51,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -67,7 +67,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -78,7 +78,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { placeholder: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								variant="textarea"
 								label={ __( 'Default Value', 'sureforms' ) }
 								value={ defaultValue }
@@ -98,7 +98,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -110,7 +110,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Text Max Length', 'sureforms' ) }
 								value={ maxLength }
 								displayUnit={ false }
@@ -125,7 +125,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} );
 								} }
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Rows', 'sureforms' ) }
 								value={ rows }
 								displayUnit={ false }
@@ -139,7 +139,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Columns', 'sureforms' ) }
 								displayUnit={ false }
 								value={ cols }
@@ -153,7 +153,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { cols: Number( value ) } );
 								} }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ textAreaHelpText }
 								data={ {
@@ -164,9 +164,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { textAreaHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

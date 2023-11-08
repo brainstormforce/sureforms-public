@@ -14,10 +14,10 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const BoxShadowControl = ( props ) => {
@@ -54,21 +54,21 @@ const BoxShadowControl = ( props ) => {
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState =
-					getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const srfmSettingState =
+					getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 				const data = {
-					...uagSettingState,
+					...srfmSettingState,
 					[ blockName ]: {
-						...uagSettingState?.[ blockName ],
+						...srfmSettingState?.[ blockName ],
 						selectedSetting: false,
 					},
 				};
 
-				const uagLocalStorage = getUAGEditorStateLocalStorage();
-				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem(
-						'uagSettingState',
+				const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+				if ( srfmLocalStorage ) {
+					srfmLocalStorage.setItem(
+						'srfmSettingState',
 						JSON.stringify( data )
 					);
 				}
@@ -254,14 +254,14 @@ const BoxShadowControl = ( props ) => {
 
 	const boxShadowAdvancedControls = (
 		<div className="spectra-control-popup__options--action-wrapper">
-			<span className="uag-control-label">
+			<span className="srfm-control-label">
 				{ label }
 				{ isBoxShadowUpdated && (
 					<div className="spectra__change-indicator--dot-right" />
 				) }
 			</span>
 			<Button
-				className="uag-box-shadow-button spectra-control-popup__options--action-button"
+				className="srfm-box-shadow-button spectra-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
@@ -278,29 +278,29 @@ const BoxShadowControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState =
-						getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const srfmSettingState =
+						getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 					let data = {
-						...uagSettingState,
+						...srfmSettingState,
 						[ blockName ]: {
-							...uagSettingState?.[ blockName ],
-							selectedSetting: '.uag-box-shadow-options',
+							...srfmSettingState?.[ blockName ],
+							selectedSetting: '.srfm-box-shadow-options',
 						},
 					};
 
 					if ( showAdvancedControls ) {
 						data = {
-							...uagSettingState,
+							...srfmSettingState,
 							[ blockName ]: {
-								...uagSettingState?.[ blockName ],
+								...srfmSettingState?.[ blockName ],
 								selectedSetting: false,
 							},
 						};
 					}
-					const uagLocalStorage = getUAGEditorStateLocalStorage();
-					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem(
-							'uagSettingState',
+					const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+					if ( srfmLocalStorage ) {
+						srfmLocalStorage.setItem(
+							'srfmSettingState',
 							JSON.stringify( data )
 						);
 					}
@@ -328,11 +328,11 @@ const BoxShadowControl = ( props ) => {
 			{ controlBeforeDomElement }
 			{ popup ? (
 				<div
-					className={ ` components-base-control uag-box-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
+					className={ ` components-base-control srfm-box-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
 				>
 					{ boxShadowAdvancedControls }
 					{ showAdvancedControls && advancedControls }
-					<UAGHelpText text={ help } />
+					<SRFMHelpText text={ help } />
 				</div>
 			) : (
 				<>{ overallControls }</>

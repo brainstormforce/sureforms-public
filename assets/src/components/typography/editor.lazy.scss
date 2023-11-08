@@ -3,7 +3,7 @@
 @import "../../styles/variables";
 
 .spectra-control-popup__options .spectra-control-popup {
-	.uag-font-family-searchable-select {
+	.srfm-font-family-searchable-select {
 		display: flex;
 		width: 100%;
 		flex-direction: column;
@@ -20,13 +20,13 @@
 			}
 		}
 
-		.uag-font-family-select__input input {
+		.srfm-font-family-select__input input {
 			box-shadow: none;
 			border: none;
 			min-height: $spectra-control-input-height;
 		}
 
-		.uag-font-family-select__control {
+		.srfm-font-family-select__control {
 			cursor: pointer;
 
 			&:hover {
@@ -34,15 +34,15 @@
 			}
 		}
 
-		.uag-font-family-select__menu {
+		.srfm-font-family-select__menu {
 			z-index: 99999;
 		}
 
-		.uag-font-family-select__indicators {
+		.srfm-font-family-select__indicators {
 			height: $spectra-control-input-height;
 		}
 
-		.uag-font-family-select__dropdown-indicator {
+		.srfm-font-family-select__dropdown-indicator {
 			padding-left: 6px;
 
 			svg {
@@ -52,11 +52,11 @@
 			}
 		}
 
-		.uag-font-family-select__dropdown-indicator:hover {
+		.srfm-font-family-select__dropdown-indicator:hover {
 			color: $spectra-color-body;
 		}
 
-		.uag-font-family-select__value-container {
+		.srfm-font-family-select__value-container {
 			top: 0;
 
 			> div {

@@ -1,14 +1,14 @@
 @import "../../styles/variables";
 
-.uag-number-control {
+.srfm-number-control {
 	.srfm-number-control__mobile-controls {
 		// Full-width Control.
-		&.uag-number-control__full-width {
+		&.srfm-number-control__full-width {
 			position: relative;
 
 			color: $spectra-color-body;
 
-			.uag-control-label {
+			.srfm-control-label {
 				margin-bottom: $spectra-control-label-bottom-margin;
 			}
 
@@ -26,13 +26,13 @@
 		}
 
 		// Inline Control.
-		&.uag-number-control__inline {
+		&.srfm-number-control__inline {
 			align-items: center;
 			display: grid;
 			grid-template-columns: repeat( 3, 1fr );
 			color: $spectra-color-body;
 
-			.uag-control-label {
+			.srfm-control-label {
 				margin-bottom: 0;
 			}
 
@@ -71,7 +71,7 @@
 		justify-content: end;
 	}
 
-	.uag-responsive-label-wrap {
+	.srfm-responsive-label-wrap {
 		grid-column: 1 / span 2;
 	}
 
@@ -81,7 +81,7 @@
 
 	// To fix dynamic content layout for inline control variant.
 	&.srfm-text-control--open-dynamic-content {
-		.uag-number-control__inline {
+		.srfm-number-control__inline {
 			display: block;
 
 			.srfm-dynamic-content-wrap {

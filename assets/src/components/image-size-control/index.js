@@ -11,7 +11,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { select } from '@wordpress/data';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import ResponsiveToggle from '../responsive-toggle';
-import UAGNumberControl from '@Components/number-control';
+import SRFMNumberControl from '@Components/number-control';
 import useDimensionHandler from './use-dimension-handler';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -81,7 +81,7 @@ export default function ImageSizeControl( {
 	const output = {};
 	output.Desktop = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -96,7 +96,7 @@ export default function ImageSizeControl( {
 				showControlHeader={ false }
 				onChange={ ( value ) => updateDimension( 'width', value ) }
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
@@ -123,7 +123,7 @@ export default function ImageSizeControl( {
 
 	output.Tablet = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -140,7 +140,7 @@ export default function ImageSizeControl( {
 					updateDimension( 'widthTablet', value )
 				}
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
@@ -167,7 +167,7 @@ export default function ImageSizeControl( {
 
 	output.Mobile = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -184,7 +184,7 @@ export default function ImageSizeControl( {
 					updateDimension( 'widthMobile', value )
 				}
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {

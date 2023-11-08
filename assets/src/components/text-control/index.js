@@ -11,11 +11,11 @@ import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGTextControl = ( props ) => {
+const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	// Add and remove the CSS on the drop and remove of the component.
@@ -85,7 +85,7 @@ const UAGTextControl = ( props ) => {
 			<div className="srfm-control__header">
 				<ResponsiveToggle label={ props?.label } />
 				<div className="srfm-number-control__actions srfm-control__actions">
-					<UAGReset
+					<SRFMReset
 						onReset={ resetValues }
 						value={ props?.value }
 						attributeNames={ [ props?.data?.label ] }
@@ -177,14 +177,14 @@ const UAGTextControl = ( props ) => {
 					{ registerTextExtender }
 				</div>
 
-				<UAGHelpText text={ props.help } />
+				<SRFMHelpText text={ props.help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-UAGTextControl.defaultProps = {
+SRFMTextControl.defaultProps = {
 	label: '',
 	type: 'text',
 	className: '',
@@ -200,4 +200,4 @@ UAGTextControl.defaultProps = {
 	isFormSpecific: false,
 };
 
-export default UAGTextControl;
+export default SRFMTextControl;

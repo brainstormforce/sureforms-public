@@ -9,17 +9,17 @@ import {
 	useRef,
 	useLayoutEffect,
 } from '@wordpress/element';
-import UAGMediaPicker from '@Components/image';
+import SRFMMediaPicker from '@Components/image';
 import ResponsiveSlider from '@Components/responsive-slider';
 import ResponsiveSelectControl from '@Components/responsive-select';
 import { useDeviceType } from '@Controls/getPreviewType';
-import ResponsiveUAGImage from '@Components/responsive-image';
-import ResponsiveUAGFocalPointPicker from '@Components/responsive-focal-point-picker';
+import ResponsiveSRFMImage from '@Components/responsive-image';
+import ResponsiveSRFMFocalPointPicker from '@Components/responsive-focal-point-picker';
 import MultiButtonsControl from '@Components/multi-buttons-control';
-import UAGB_Block_Icons from '@Controls/block-icons';
+import SRFM_Block_Icons from '@Controls/block-icons';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import { select } from '@wordpress/data';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const Background = ( props ) => {
@@ -133,17 +133,17 @@ const Background = ( props ) => {
 	const bgIconOptions = [
 		{
 			value: 'color',
-			icon: UAGB_Block_Icons.bg_color,
+			icon: SRFM_Block_Icons.bg_color,
 			tooltip: __( 'Color', 'sureforms' ),
 		},
 		{
 			value: 'gradient',
-			icon: UAGB_Block_Icons.bg_gradient,
+			icon: SRFM_Block_Icons.bg_gradient,
 			tooltip: __( 'Gradient', 'sureforms' ),
 		},
 		{
 			value: 'image',
-			icon: UAGB_Block_Icons.bg_image,
+			icon: SRFM_Block_Icons.bg_image,
 			tooltip: __( 'Image', 'sureforms' ),
 		},
 	];
@@ -187,7 +187,7 @@ const Background = ( props ) => {
 	if ( backgroundVideoType.value ) {
 		bgIconOptions.push( {
 			value: 'video',
-			icon: UAGB_Block_Icons.bg_video,
+			icon: SRFM_Block_Icons.bg_video,
 			tooltip: __( 'Video', 'sureforms' ),
 		} );
 	}
@@ -215,7 +215,7 @@ const Background = ( props ) => {
 				layoutVariant="inline"
 			/>
 			{ 'color' === backgroundType.value && (
-				<div className="uag-background-color">
+				<div className="srfm-background-color">
 					<AdvancedPopColorControl
 						label={ __( 'Color', 'sureforms' ) }
 						colorValue={
@@ -230,9 +230,9 @@ const Background = ( props ) => {
 				</div>
 			) }
 			{ 'image' === backgroundType.value && (
-				<div className="uag-background-image">
+				<div className="srfm-background-image">
 					{ ! imageResponsive && (
-						<UAGMediaPicker
+						<SRFMMediaPicker
 							onSelectImage={ onSelectImage }
 							backgroundImage={ backgroundImage.value }
 							onRemoveImage={ onRemoveImage }
@@ -241,7 +241,7 @@ const Background = ( props ) => {
 					) }
 					{ ! imageResponsive && backgroundImage.value && (
 						<>
-							<div className="uag-background-image-position">
+							<div className="srfm-background-image-position">
 								<SelectControl
 									label={ __(
 										'Image Position',
@@ -320,7 +320,7 @@ const Background = ( props ) => {
 									] }
 								/>
 							</div>
-							<div className="uag-background-image-attachment">
+							<div className="srfm-background-image-attachment">
 								<SelectControl
 									label={ __( 'Attachment', 'sureforms' ) }
 									value={ backgroundAttachment.value }
@@ -342,7 +342,7 @@ const Background = ( props ) => {
 									] }
 								/>
 							</div>
-							<div className="uag-background-image-repeat">
+							<div className="srfm-background-image-repeat">
 								<SelectControl
 									label={ __( 'Repeat', 'sureforms' ) }
 									value={ backgroundRepeat.value }
@@ -380,7 +380,7 @@ const Background = ( props ) => {
 									] }
 								/>
 							</div>
-							<div className="uag-background-image-size">
+							<div className="srfm-background-image-size">
 								<SelectControl
 									label={ __( 'Size', 'sureforms' ) }
 									value={ backgroundSize.value }
@@ -455,14 +455,14 @@ const Background = ( props ) => {
 						</>
 					) }
 					{ imageResponsive && backgroundImage && (
-						<ResponsiveUAGImage
+						<ResponsiveSRFMImage
 							backgroundImage={ backgroundImage }
 							setAttributes={ setAttributes }
 						/>
 					) }
 					{ imageResponsive && backgroundImage && setImage && (
 						<>
-							<div className="uag-background-image-position">
+							<div className="srfm-background-image-position">
 								<MultiButtonsControl
 									setAttributes={ setAttributes }
 									label={ __(
@@ -486,8 +486,8 @@ const Background = ( props ) => {
 								/>
 							</div>
 							{ 'custom' !== customPosition.value && (
-								<div className="uag-background-image-position">
-									<ResponsiveUAGFocalPointPicker
+								<div className="srfm-background-image-position">
+									<ResponsiveSRFMFocalPointPicker
 										backgroundPosition={
 											backgroundPosition
 										}
@@ -498,7 +498,7 @@ const Background = ( props ) => {
 							) }
 							{ 'custom' === customPosition.value && (
 								<>
-									<div className="uag-background-image-position">
+									<div className="srfm-background-image-position">
 										<ResponsiveSlider
 											label={ __(
 												'X Position',
@@ -575,7 +575,7 @@ const Background = ( props ) => {
 											setAttributes={ setAttributes }
 										/>
 									</div>
-									<div className="uag-background-image-position">
+									<div className="srfm-background-image-position">
 										<ResponsiveSlider
 											label={ __(
 												'Y Position',
@@ -654,7 +654,7 @@ const Background = ( props ) => {
 									</div>
 								</>
 							) }
-							<div className="uag-background-image-attachment">
+							<div className="srfm-background-image-attachment">
 								<ResponsiveSelectControl
 									label={ __( 'Attachment', 'sureforms' ) }
 									data={ backgroundAttachment }
@@ -679,7 +679,7 @@ const Background = ( props ) => {
 									setAttributes={ setAttributes }
 								/>
 							</div>
-							<div className="uag-background-image-repeat">
+							<div className="srfm-background-image-repeat">
 								<ResponsiveSelectControl
 									label={ __( 'Repeat', 'sureforms' ) }
 									data={ backgroundRepeat }
@@ -718,7 +718,7 @@ const Background = ( props ) => {
 									setAttributes={ setAttributes }
 								/>
 							</div>
-							<div className="uag-background-image-size">
+							<div className="srfm-background-image-size">
 								<ResponsiveSelectControl
 									label={ __( 'Size', 'sureforms' ) }
 									data={ backgroundSize }
@@ -807,7 +807,7 @@ const Background = ( props ) => {
 							( ! imageResponsive &&
 								backgroundImage?.value ) ) && (
 						<>
-							<div className="uag-background-image-overlay-type">
+							<div className="srfm-background-image-overlay-type">
 								<MultiButtonsControl
 									setAttributes={ setAttributes }
 									label={ __(
@@ -824,7 +824,7 @@ const Background = ( props ) => {
 								/>
 							</div>
 							{ 'color' === overlayType.value && (
-								<div className="uag-background-image-overlay-color">
+								<div className="srfm-background-image-overlay-color">
 									<AdvancedPopColorControl
 										label={ __(
 											'Image Overlay Color',
@@ -842,7 +842,7 @@ const Background = ( props ) => {
 								</div>
 							) }
 							{ 'gradient' === overlayType.value && (
-								<div className="uag-background-image-overlay-gradient">
+								<div className="srfm-background-image-overlay-gradient">
 									<GradientSettings
 										backgroundGradient={
 											props.backgroundGradient
@@ -875,7 +875,7 @@ const Background = ( props ) => {
 				</div>
 			) }
 			{ gradientOverlay.value && 'gradient' === backgroundType.value && (
-				<div className="uag-background-gradient">
+				<div className="srfm-background-gradient">
 					<GradientSettings
 						backgroundGradient={ props.backgroundGradient }
 						gradientType={ props.gradientType }
@@ -900,8 +900,8 @@ const Background = ( props ) => {
 				</div>
 			) }
 			{ 'video' === backgroundType.value && backgroundVideoType.value && (
-				<div className="uag-background-video">
-					<UAGMediaPicker
+				<div className="srfm-background-video">
+					<SRFMMediaPicker
 						onSelectImage={ onSelectVideo }
 						backgroundImage={ backgroundVideo.value }
 						onRemoveImage={ onRemoveVideo }
@@ -914,12 +914,12 @@ const Background = ( props ) => {
 			{ 'video' === backgroundType.value &&
 				backgroundVideo.value &&
 				backgroundVideoType.value && (
-				<div className="uag-background-video-overlay">
+				<div className="srfm-background-video-overlay">
 					{ overlayType &&
 							backgroundVideo &&
 							backgroundVideo.value && (
 						<>
-							<div className="uag-background-image-overlay-type">
+							<div className="srfm-background-image-overlay-type">
 								<MultiButtonsControl
 									setAttributes={ setAttributes }
 									label={ __(
@@ -936,7 +936,7 @@ const Background = ( props ) => {
 								/>
 							</div>
 							{ 'color' === overlayType.value && (
-								<div className="uag-background-image-overlay-color">
+								<div className="srfm-background-image-overlay-color">
 									<AdvancedPopColorControl
 										label={ __(
 											'Image Overlay Color',
@@ -962,7 +962,7 @@ const Background = ( props ) => {
 							) }
 							{ gradientOverlay.value &&
 										'gradient' === overlayType.value && (
-								<div className="uag-background-image-overlay-gradient">
+								<div className="srfm-background-image-overlay-gradient">
 									<GradientSettings
 										backgroundGradient={
 											props.backgroundGradient
@@ -1016,9 +1016,9 @@ const Background = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uag-bg-select-control">
+			<div className="srfm-bg-select-control">
 				{ advancedControls }
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>

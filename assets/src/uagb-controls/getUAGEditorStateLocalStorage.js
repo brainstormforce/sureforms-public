@@ -1,4 +1,4 @@
-const getUAGEditorStateLocalStorage = ( key = false ) => {
+const getSRFMEditorStateLocalStorage = ( key = false ) => {
 	if ( ! window.localStorage ) {
 		return null;
 	}
@@ -7,13 +7,13 @@ const getUAGEditorStateLocalStorage = ( key = false ) => {
 		return localStorage;
 	}
 
-	const uagLastOpenedSettingState = localStorage.getItem( key );
+	const srfmLastOpenedSettingState = localStorage.getItem( key );
 
-	if ( uagLastOpenedSettingState ) {
-		return JSON.parse( uagLastOpenedSettingState );
+	if ( srfmLastOpenedSettingState ) {
+		return JSON.parse( srfmLastOpenedSettingState );
 	}
 
 	return null;
 };
 
-export default getUAGEditorStateLocalStorage;
+export default getSRFMEditorStateLocalStorage;

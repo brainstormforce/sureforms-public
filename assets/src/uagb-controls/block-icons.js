@@ -12,7 +12,7 @@ const spectraDarkColor = '#1d2327';
 // Negative Space Color needs to be implemented for the property that doesn't use iconColor.
 const noColor = 'none';
 
-const UAGB_Block_Icons = {
+const SRFM_Block_Icons = {
 	// ------------------------.
 	// All Spectra Block Icons .
 	// ------------------------.
@@ -1999,9 +1999,9 @@ const UAGB_Block_Icons = {
 
 export const renderLegacyBlockEditorIcon = ( blockName ) => (
 	<>
-		{ UAGB_Block_Icons[ blockName ] }
+		{ SRFM_Block_Icons[ blockName ] }
 		<div className="spectra__legacy-icon--block-inserter-label">Legacy</div>
 	</>
 );
 
-export default UAGB_Block_Icons;
+export default SRFM_Block_Icons;

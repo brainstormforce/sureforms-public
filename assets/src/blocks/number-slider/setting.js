@@ -6,11 +6,11 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMNumberControl from '@Components/number-control';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
 	const { label, help, min, max, step, valueDisplayText } = attributes;
@@ -21,12 +21,12 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 				tabs={ [ 'general', 'advance' ] }
 				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.general }>
-					<UAGAdvancedPanelBody
+				<InspectorTab { ...SRFMTabs.general }>
+					<SRFMAdvancedPanelBody
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }
 							data={ {
@@ -37,7 +37,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<UAGNumberControl
+						<SRFMNumberControl
 							label={ __( 'Min', 'sureforms' ) }
 							value={ min }
 							data={ {
@@ -55,7 +55,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								}
 							} }
 						/>
-						<UAGNumberControl
+						<SRFMNumberControl
 							label={ __( 'Max', 'sureforms' ) }
 							value={ max }
 							data={ {
@@ -95,7 +95,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								'sureforms'
 							) }
 						</p>
-						<UAGNumberControl
+						<SRFMNumberControl
 							label={ __( 'Step Increment', 'sureforms' ) }
 							value={ step }
 							data={ {
@@ -110,7 +110,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 							''
 						) : (
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __(
 									'Value Display label',
 									'sureforms'
@@ -125,7 +125,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								}
 							/>
 						) }
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
 							data={ {
@@ -136,9 +136,9 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { help: value } )
 							}
 						/>
-					</UAGAdvancedPanelBody>
+					</SRFMAdvancedPanelBody>
 				</InspectorTab>
-				<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);

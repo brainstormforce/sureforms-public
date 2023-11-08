@@ -19,7 +19,7 @@ import Settings from './Settings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import HeaderTitle from './HeaderTitle.js';
 
@@ -152,10 +152,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 				tabs={ [ 'general', 'advance' ] }
 				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.general }>
+				<InspectorTab { ...SRFMTabs.general }>
 					<AppearanceSettings default_keys={ default_keys } />
 				</InspectorTab>
-				<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
+				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<Settings default_keys={ default_keys } />
 				</InspectorTab>
 			</InspectorTabs>

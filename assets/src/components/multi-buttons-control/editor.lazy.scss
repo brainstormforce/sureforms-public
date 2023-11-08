@@ -65,7 +65,7 @@
 }
 
 .srfm-multi-buttons-control {
-	&.uag-multibutton-icons .srfm-multi-button {
+	&.srfm-multibutton-icons .srfm-multi-button {
 		padding: 3px;
 	}
 }
@@ -109,7 +109,7 @@
 			grid-template-columns: 50% 50%;
 
 			.srfm-control__header,
-			.uag-control-label {
+			.srfm-control-label {
 				margin-bottom: 0;
 			}
 		}

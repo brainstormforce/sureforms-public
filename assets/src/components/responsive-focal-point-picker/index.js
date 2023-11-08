@@ -15,10 +15,10 @@ import { __ } from '@wordpress/i18n';
 import { FocalPointPicker } from '@wordpress/components';
 import { select } from '@wordpress/data';
 import styles from './editor.lazy.scss';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const ResponsiveUAGFocalPointPicker = ( props ) => {
+const ResponsiveSRFMFocalPointPicker = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -107,11 +107,11 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 						? output[ deviceType ]
 						: output.Desktop }
 				</div>
-				<UAGHelpText text={ props.help } />
+				<SRFMHelpText text={ props.help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-export default ResponsiveUAGFocalPointPicker;
+export default ResponsiveSRFMFocalPointPicker;

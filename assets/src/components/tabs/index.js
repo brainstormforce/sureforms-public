@@ -9,11 +9,11 @@ import {
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import Separator from '@Components/separator';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
-import UAGHelpText from '@Components/help-text';
+import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGTabsControl = ( props ) => {
+const SRFMTabsControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	// Add and remove the CSS on the drop and remove of the component.
@@ -34,7 +34,7 @@ const UAGTabsControl = ( props ) => {
 	const tabRef = useRef( null );
 
 	const tabsCountClass =
-		3 === props.tabs.length ? 'uag-control-tabs-three-tabs ' : '';
+		3 === props.tabs.length ? 'srfm-control-tabs-three-tabs ' : '';
 
 	const tabs = props.tabs.map( ( tab, index ) => {
 		return {
@@ -59,13 +59,13 @@ const UAGTabsControl = ( props ) => {
 		<div ref={ panelRef }>
 			{ controlBeforeDomElement }
 			<TabPanel
-				className={ `uag-control-tabs ${ tabsCountClass }` }
+				className={ `srfm-control-tabs ${ tabsCountClass }` }
 				activeClass="active-tab"
 				tabs={ tabs }
 				ref={ tabRef }
 				onSelect={ ( tabName ) => {
 					const selectedTab = document
-						.getElementsByClassName( 'uag-control-tabs' )[ 0 ]
+						.getElementsByClassName( 'srfm-control-tabs' )[ 0 ]
 						?.querySelector( `.${ tabName }` );
 					let selectedTabClass = false;
 					if ( selectedTab && selectedTab?.classList ) {
@@ -77,20 +77,20 @@ const UAGTabsControl = ( props ) => {
 					}
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState =
-						getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const srfmSettingState =
+						getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 					const data = {
-						...uagSettingState,
+						...srfmSettingState,
 						[ blockName ]: {
-							...uagSettingState?.[ blockName ],
+							...srfmSettingState?.[ blockName ],
 							selectedInnerTab: selectedTabClass,
 						},
 					};
 
-					const uagLocalStorage = getUAGEditorStateLocalStorage();
-					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem(
-							'uagSettingState',
+					const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+					if ( srfmLocalStorage ) {
+						srfmLocalStorage.setItem(
+							'srfmSettingState',
 							JSON.stringify( data )
 						);
 					}
@@ -98,16 +98,16 @@ const UAGTabsControl = ( props ) => {
 			>
 				{ ( tabName ) => {
 					return (
-						<div className="uag-control-tabs-output">
+						<div className="srfm-control-tabs-output">
 							{ props[ tabName.name ] }
 						</div>
 					);
 				} }
 			</TabPanel>
 			{ ! props?.disableBottomSeparator && <Separator /> }
-			<UAGHelpText text={ props.help } />
+			<SRFMHelpText text={ props.help } />
 			{ controlAfterDomElement }
 		</div>
 	);
 };
-export default UAGTabsControl;
+export default SRFMTabsControl;

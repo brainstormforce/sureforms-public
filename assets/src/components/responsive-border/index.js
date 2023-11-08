@@ -4,14 +4,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import UAGSelectControl from '@Components/select-control';
-import UAGTabsControl from '@Components/tabs';
+import SRFMSelectControl from '@Components/select-control';
+import SRFMTabsControl from '@Components/tabs';
 import SpacingControl from '@Components/spacing-control';
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import PropTypes from 'prop-types';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 import Separator from '@Components/separator';
 
@@ -112,7 +112,7 @@ const ResponsiveBorder = ( props ) => {
 			{ ! disabledBorderTitle && (
 				<p className="spectra-panel__body-sub-heading">{ label }</p>
 			) }
-			<UAGSelectControl
+			<SRFMSelectControl
 				label={ borderStyleLabel }
 				data={ {
 					value: borderStyle,
@@ -343,7 +343,7 @@ const ResponsiveBorder = ( props ) => {
 				/>
 			) }
 			{ 'none' !== borderStyle && 'default' !== borderStyle && (
-				<UAGTabsControl
+				<SRFMTabsControl
 					tabs={ tabsToUse }
 					normal={ tabOutputNormal }
 					hover={ tabOutputHover }
@@ -352,7 +352,7 @@ const ResponsiveBorder = ( props ) => {
 				/>
 			) }
 			{ ! disableBottomSeparator && <Separator /> }
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 		</>
 	);
 

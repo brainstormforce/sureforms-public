@@ -7,10 +7,10 @@ import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { SwitchClassicStyle } from './components/SwitchClassicStyle';
@@ -51,12 +51,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -75,7 +75,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -97,7 +97,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { checked } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ switchHelpText }
 								data={ {
@@ -108,9 +108,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { switchHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

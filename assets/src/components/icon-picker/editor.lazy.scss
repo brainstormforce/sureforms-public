@@ -1,13 +1,13 @@
 // Custom icon picker
 @import "../../styles/variables";
 
-.uag-custom-ip {
-	.uag-control-label {
+.srfm-custom-ip {
+	.srfm-control-label {
 		padding-bottom: 4px;
 		display: block;
 	}
 
-	.uag-ip-placeholder-wrap {
+	.srfm-ip-placeholder-wrap {
 		width: 256px;
 		max-width: 100%;
 		min-height: 96px;
@@ -19,13 +19,13 @@
 		overflow: hidden;
 		// On wrapper hover functionality.
 		&:hover {
-			.uag-ip-actions {
+			.srfm-ip-actions {
 				transform: translate( 0, 0 );
 			}
 		}
 
-		.uag-ip-remove-icon > svg,
-		.uag-ip-selected-icon-overlay > svg {
+		.srfm-ip-remove-icon > svg,
+		.srfm-ip-selected-icon-overlay > svg {
 			fill: $spectra-color-plain-background;
 			width: 18px;
 			height: 18px;
@@ -34,7 +34,7 @@
 			border-radius: 50%;
 		}
 
-		.uag-ip-remove-icon {
+		.srfm-ip-remove-icon {
 			position: absolute;
 			right: 5px;
 			top: 5px;
@@ -51,20 +51,20 @@
 			}
 		}
 
-		.uag-ip-selected-icon {
+		.srfm-ip-selected-icon {
 			width: 100%;
 			display: flex;
 			cursor: pointer;
 		}
 
-		.uag-ip-selected-icon-overlay {
+		.srfm-ip-selected-icon-overlay {
 			display: flex;
 			width: 100%;
 			justify-content: center;
 			align-items: center;
 		}
 
-		.uag-ip-selected-icon-value {
+		.srfm-ip-selected-icon-value {
 			position: absolute;
 			z-index: 1;
 			width: 100%;
@@ -80,7 +80,7 @@
 			}
 		}
 
-		.uag-ip-actions {
+		.srfm-ip-actions {
 			position: absolute;
 			bottom: 0;
 			width: 100%;

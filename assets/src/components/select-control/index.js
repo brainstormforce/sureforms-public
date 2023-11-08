@@ -29,7 +29,7 @@ const defaultProps = {
 	onChange: null,
 };
 
-export default function UAGSelectControl( {
+export default function SRFMSelectControl( {
 	layout,
 	label,
 	options,
@@ -122,5 +122,5 @@ export default function UAGSelectControl( {
 	);
 }
 
-UAGSelectControl.propTypes = propTypes;
-UAGSelectControl.defaultProps = defaultProps;
+SRFMSelectControl.propTypes = propTypes;
+SRFMSelectControl.defaultProps = defaultProps;

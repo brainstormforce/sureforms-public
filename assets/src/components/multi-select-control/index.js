@@ -24,7 +24,7 @@ const defaultProps = {
 	setAttributes: () => {},
 };
 
-export default function UAGMultiSelectControl( props ) {
+export default function SRFMMultiSelectControl( props ) {
 	const { label, options, data, isSearchable, setAttributes } = props;
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
@@ -84,5 +84,5 @@ export default function UAGMultiSelectControl( props ) {
 	);
 }
 
-UAGMultiSelectControl.propTypes = propTypes;
-UAGMultiSelectControl.defaultProps = defaultProps;
+SRFMMultiSelectControl.propTypes = propTypes;
+SRFMMultiSelectControl.defaultProps = defaultProps;

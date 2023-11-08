@@ -5,7 +5,7 @@ const responsiveConditionPreview = ( props ) => {
 	const desktopStyle = document.getElementById(
 		props.clientId + '-desktop-hide-block'
 	);
-	if ( props.attributes.UAGHideDesktop ) {
+	if ( props.attributes.SRFMHideDesktop ) {
 		if ( null !== element && undefined !== element ) {
 			if ( null === desktopStyle || undefined === desktopStyle ) {
 				const $style = document.createElement( 'style' );
@@ -53,7 +53,7 @@ const responsiveConditionPreview = ( props ) => {
 			props.clientId + '-tablet-hide-block'
 		);
 
-		if ( props.attributes.UAGHideTab ) {
+		if ( props.attributes.SRFMHideTab ) {
 			if (
 				null === iframeTabletElement ||
 				undefined === iframeTabletElement
@@ -86,7 +86,7 @@ const responsiveConditionPreview = ( props ) => {
 		const iframeMobileElement = iframeDocument.getElementById(
 			props.clientId + '-mobile-hide-block'
 		);
-		if ( props.attributes.UAGHideMob ) {
+		if ( props.attributes.SRFMHideMob ) {
 			if (
 				null === iframeMobileElement ||
 				undefined === iframeMobileElement

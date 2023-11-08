@@ -3,7 +3,7 @@ import styles from './editor.lazy.scss';
 import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import { __experimentalAlignmentMatrixControl as AlignmentMatrixControl } from '@wordpress/components';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
 // Set Prop Types for All Valid Props.
 const propTypes = {
@@ -44,7 +44,7 @@ const SpectraMatrixControl = ( props ) => {
 	return (
 		<>
 			<div className="components-base-control spectra__matrix-control">
-				<div className="uag-control-label">{ label }</div>
+				<div className="srfm-control-label">{ label }</div>
 				<AlignmentMatrixControl
 					className={ 'spectra__matrix-control--box' }
 					label={ label }
@@ -56,7 +56,7 @@ const SpectraMatrixControl = ( props ) => {
 					}
 				/>
 			</div>
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 		</>
 	);
 };

@@ -7,12 +7,12 @@ import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import UAGSelectControl from '@Components/select-control';
-import UAGNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMSelectControl from '@Components/select-control';
+import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
@@ -66,12 +66,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -82,7 +82,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { label: newValue } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -93,7 +93,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: newValue } )
 								}
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -116,7 +116,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -128,7 +128,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Minimum Value', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -143,7 +143,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Maximum Value', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -158,7 +158,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 							/>
-							<UAGSelectControl
+							<SRFMSelectControl
 								label={ __( 'Number Format', 'sureforms' ) }
 								data={ {
 									value: formatType,
@@ -180,7 +180,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									},
 								] }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -191,9 +191,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: newValue } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

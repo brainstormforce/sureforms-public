@@ -2,11 +2,11 @@
 
 @import "../../styles/variables";
 
-.uag-control-tabs {
+.srfm-control-tabs {
 	margin: 0 ( -$spectra-panel-body-padding );
 	padding: 0 $spectra-panel-body-padding;
 
-	&.uag-control-tabs-three-tabs {
+	&.srfm-control-tabs-three-tabs {
 		.components-tab-panel__tabs {
 			& > .components-button {
 				width: 31.3%;

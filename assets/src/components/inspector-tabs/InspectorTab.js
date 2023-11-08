@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { useRef, useEffect } from '@wordpress/element';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 import { select } from '@wordpress/data';
 
 const InspectorTab = ( props ) => {
@@ -11,22 +11,23 @@ const InspectorTab = ( props ) => {
 
 	const tabContent = function () {
 		return applyFilters(
-			`uag_${ type }_tab_content`,
+			`srfm_${ type }_tab_content`,
 			'',
 			props.parentProps
 		);
 	};
 
 	useEffect( () => {
-		const uagSettingState =
-			getUAGEditorStateLocalStorage( 'uagSettingState' );
+		const srfmSettingState =
+			getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
-		if ( uagSettingState ) {
-			const inspectorTabName = uagSettingState[ blockName ]?.selectedTab;
-			const panelBodyClass = uagSettingState[ blockName ]?.selectedPanel;
-			const settingsPopup = uagSettingState[ blockName ]?.selectedSetting;
+		if ( srfmSettingState ) {
+			const inspectorTabName = srfmSettingState[ blockName ]?.selectedTab;
+			const panelBodyClass = srfmSettingState[ blockName ]?.selectedPanel;
+			const settingsPopup =
+				srfmSettingState[ blockName ]?.selectedSetting;
 			const selectedInnerTab =
-				uagSettingState[ blockName ]?.selectedInnerTab;
+				srfmSettingState[ blockName ]?.selectedInnerTab;
 
 			// This code is to fix the side-effect of the editor responsive click settings panel refresh issue AND aldo for preserving state for better block editor experinence.
 			if ( inspectorTabName && type === inspectorTabName ) {
@@ -118,7 +119,7 @@ const InspectorTab = ( props ) => {
 
 export default InspectorTab;
 
-export const UAGTabs = {
+export const SRFMTabs = {
 	general: {
 		key: 'general',
 		type: 'general',

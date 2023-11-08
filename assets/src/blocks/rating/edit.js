@@ -5,13 +5,13 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
-import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
@@ -49,12 +49,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		<>
 			<InspectorControls>
 				<InspectorTabs>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -73,7 +73,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
@@ -85,7 +85,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Number of Icons', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -104,7 +104,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								} }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ ratingBoxHelpText }
 								data={ {
@@ -117,10 +117,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.style }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Icon Styles', 'sureforms' ) }
 							initialOpen={ true }
 						>
@@ -199,7 +199,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									},
 								] }
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

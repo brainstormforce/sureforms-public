@@ -14,8 +14,8 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import ResponsiveToggle from '../responsive-toggle';
 import { select } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const SpacingControl = ( props ) => {
@@ -697,7 +697,7 @@ const SpacingControl = ( props ) => {
 							responsive={ responsive }
 						/>
 						<div className="srfm-control__actions">
-							<UAGReset
+							<SRFMReset
 								onReset={ resetValues }
 								attributeNames={ [
 									valueTop?.label,
@@ -745,7 +745,7 @@ const SpacingControl = ( props ) => {
 						<span className="srfm-spacing-control__number-label srfm-spacing-control__link-label"></span>
 					</div>
 				</div>
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>

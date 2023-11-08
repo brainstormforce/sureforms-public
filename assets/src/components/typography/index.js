@@ -8,7 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import UAGSelectControl from '@Components/select-control';
+import SRFMSelectControl from '@Components/select-control';
 import FontFamilyControl from './font-typography';
 import RangeTypographyControl from './range-typography';
 import TypographyStyles from './inline-styles';
@@ -22,9 +22,9 @@ import {
 
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
 // Export for ease of importing in individual blocks.
 export { TypographyStyles };
@@ -62,32 +62,32 @@ const TypographyControl = ( props ) => {
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
 				! e.target?.parentElement?.parentElement?.classList?.contains(
-					'uag-font-family-select__menu'
+					'srfm-font-family-select__menu'
 				) &&
 				! e.target?.classList?.contains(
-					'uag-responsive-common-button'
+					'srfm-responsive-common-button'
 				) &&
-				! e.target?.closest( '.uag-responsive-common-button' ) &&
+				! e.target?.closest( '.srfm-responsive-common-button' ) &&
 				! e.target?.parentElement?.closest( '.srfm-reset' )
 			) {
 				toggleAdvancedControls( false );
 
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState =
-					getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const srfmSettingState =
+					getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 				const data = {
-					...uagSettingState,
+					...srfmSettingState,
 					[ blockName ]: {
-						...uagSettingState?.[ blockName ],
+						...srfmSettingState?.[ blockName ],
 						selectedSetting: false,
 					},
 				};
 
-				const uagLocalStorage = getUAGEditorStateLocalStorage();
-				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem(
-						'uagSettingState',
+				const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+				if ( srfmLocalStorage ) {
+					srfmLocalStorage.setItem(
+						'srfmSettingState',
 						JSON.stringify( data )
 					);
 				}
@@ -264,7 +264,7 @@ const TypographyControl = ( props ) => {
 
 	if ( ! disableTransform && props.transform ) {
 		transform = (
-			<UAGSelectControl
+			<SRFMSelectControl
 				label={ __( 'Transform', 'sureforms' ) }
 				data={ {
 					value: props.transform.value,
@@ -298,8 +298,8 @@ const TypographyControl = ( props ) => {
 	}
 	if ( ! disableDecoration && props.decoration ) {
 		decoration = (
-			<div className="uag-typography-decoration">
-				<UAGSelectControl
+			<div className="srfm-typography-decoration">
+				<SRFMSelectControl
 					label={ __( 'Decoration', 'sureforms' ) }
 					data={ {
 						value: props.decoration.value,
@@ -335,7 +335,7 @@ const TypographyControl = ( props ) => {
 	if ( true !== disableFontFamily && true !== disableFontSize ) {
 		fontAdvancedControls = (
 			<Button
-				className="uag-typography-button spectra-control-popup__options--action-button"
+				className="srfm-typography-button spectra-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
@@ -352,30 +352,30 @@ const TypographyControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState =
-						getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const srfmSettingState =
+						getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 					let data = {
-						...uagSettingState,
+						...srfmSettingState,
 						[ blockName ]: {
-							...uagSettingState?.[ blockName ],
-							selectedSetting: '.uag-typography-options',
+							...srfmSettingState?.[ blockName ],
+							selectedSetting: '.srfm-typography-options',
 						},
 					};
 
 					if ( showAdvancedControls ) {
 						data = {
-							...uagSettingState,
+							...srfmSettingState,
 							[ blockName ]: {
-								...uagSettingState?.[ blockName ],
+								...srfmSettingState?.[ blockName ],
 								selectedSetting: false,
 							},
 						};
 					}
 
-					const uagLocalStorage = getUAGEditorStateLocalStorage();
-					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem(
-							'uagSettingState',
+					const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+					if ( srfmLocalStorage ) {
+						srfmLocalStorage.setItem(
+							'srfmSettingState',
 							JSON.stringify( data )
 						);
 					}
@@ -411,7 +411,7 @@ const TypographyControl = ( props ) => {
 	if ( true !== disableFontFamily && true !== disableFontSize ) {
 		fontTypoAdvancedControls = (
 			<div className="spectra-control-popup__options--action-wrapper">
-				<span className="uag-control-label">
+				<span className="srfm-control-label">
 					{ props.label }
 					{ isTypographyUpdated && (
 						<div className="spectra__change-indicator--dot-right" />
@@ -438,7 +438,7 @@ const TypographyControl = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ ` uag-typography-options spectra-control-popup__options popup-${ props?.attributes?.block_id } ${ activeClass }` }
+				className={ ` srfm-typography-options spectra-control-popup__options popup-${ props?.attributes?.block_id } ${ activeClass }` }
 			>
 				{ ! disableAdvancedOptions && (
 					<>
@@ -446,7 +446,7 @@ const TypographyControl = ( props ) => {
 						{ showAdvancedFontControls }
 					</>
 				) }
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>

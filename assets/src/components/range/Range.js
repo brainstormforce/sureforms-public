@@ -18,8 +18,8 @@ import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
 import { limitMax, limitMin } from '@Controls/unitWiseMinMaxOption';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 
 const isNumberControlSupported = !! NumberControl;
 
@@ -147,7 +147,7 @@ const Range = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uag-range-control srfm-size-type-field-tabs">
+			<div className="srfm-range-control srfm-size-type-field-tabs">
 				<div className="srfm-control__header">
 					<ResponsiveToggle
 						label={ props.label }
@@ -155,7 +155,7 @@ const Range = ( props ) => {
 					/>
 					<div className="srfm-range-control__actions srfm-control__actions">
 						{ props?.allowReset && (
-							<UAGReset
+							<SRFMReset
 								onReset={ resetValues }
 								attributeNames={ [
 									props.data.label,
@@ -202,7 +202,7 @@ const Range = ( props ) => {
 						/>
 					) }
 				</div>
-				<UAGHelpText text={ props.help } />
+				<SRFMHelpText text={ props.help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>

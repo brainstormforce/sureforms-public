@@ -5,11 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -47,12 +47,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -71,7 +71,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -105,7 +105,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
-										<span className="uag-control-label srfm-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -131,7 +131,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 												}
 											} }
 										/>
-										<span className="uag-control-label srfm-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -175,8 +175,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								) : (
 									''
 								) }
-							<span className="uag-control-label srfm-control__header" />
-							<UAGTextControl
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								data={ {
 									value: help,
 									label: 'help',
@@ -187,9 +187,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

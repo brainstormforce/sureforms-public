@@ -25,7 +25,7 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
+import SRFMReset from '../reset';
 import { applyFilters } from '@wordpress/hooks';
 
 const AdvancedPopColorControl = ( props ) => {
@@ -187,7 +187,7 @@ const AdvancedPopColorControl = ( props ) => {
 
 	const globalIndicator =
 		colorVal && colorVal.includes( 'var' )
-			? `uag-global-indicator uag-global-icon-${ globalIconColor }`
+			? `srfm-global-indicator srfm-global-icon-${ globalIconColor }`
 			: '';
 
 	const controlName = getIdFromString( props.label );
@@ -208,11 +208,11 @@ const AdvancedPopColorControl = ( props ) => {
 			<div className="srfm-color-popover-container new-srfm-advanced-colors">
 				<div className="srfm-advanced-color-settings-container">
 					{ label && (
-						<span className="srfm-beside-color-label uag-control-label">
+						<span className="srfm-beside-color-label srfm-control-label">
 							{ label }
 						</span>
 					) }
-					<UAGReset
+					<SRFMReset
 						onReset={ resetValues }
 						attributeNames={ [ data?.label ] }
 						setAttributes={ setAttributes }

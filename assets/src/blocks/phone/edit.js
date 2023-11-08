@@ -7,10 +7,10 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import data from './phoneCodes.json';
 import { PhoneClassicStyle } from './components/PhoneClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
@@ -55,12 +55,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -71,7 +71,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -125,7 +125,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 											} ) }
 										</select>
 									) }
-									<UAGTextControl
+									<SRFMTextControl
 										value={ defaultValue }
 										data={ {
 											value: defaultValue,
@@ -148,7 +148,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -171,7 +171,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ isUnique && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __(
 										'Validation Message for Duplicate ',
 										'sureforms'
@@ -186,7 +186,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -197,9 +197,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

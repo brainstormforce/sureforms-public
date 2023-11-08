@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { BaseControl } from '@wordpress/components';
 import { MediaUpload } from '@wordpress/block-editor';
-import UAGB_Block_Icons from '@Controls/block-icons';
-import UAGHelpText from '@Components/help-text';
+import SRFM_Block_Icons from '@Controls/block-icons';
+import SRFMHelpText from '@Components/help-text';
 
 const MultiMediaSelector = ( props ) => {
 	const {
@@ -19,7 +19,7 @@ const MultiMediaSelector = ( props ) => {
 		help = false,
 	} = props;
 
-	const placeholderIcon = UAGB_Block_Icons.gallery_placeholder;
+	const placeholderIcon = SRFM_Block_Icons.gallery_placeholder;
 
 	let selectorLabel, replacerLabel;
 
@@ -47,7 +47,7 @@ const MultiMediaSelector = ( props ) => {
 				{ 'add' === uploadType ? (
 					renderButton( uploadType )
 				) : (
-					<div className="uag-control-label">{ replacerLabel }</div>
+					<div className="srfm-control-label">{ replacerLabel }</div>
 				) }
 			</button>
 		);
@@ -57,7 +57,7 @@ const MultiMediaSelector = ( props ) => {
 		<div
 			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
 		>
-			{ UAGB_Block_Icons[ buttonType ] }
+			{ SRFM_Block_Icons[ buttonType ] }
 		</div>
 	);
 
@@ -100,7 +100,7 @@ const MultiMediaSelector = ( props ) => {
 					</button>
 				) }
 			</div>
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 		</BaseControl>
 	);
 };

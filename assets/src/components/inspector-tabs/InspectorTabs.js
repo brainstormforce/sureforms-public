@@ -11,7 +11,7 @@ import {
 	useLayoutEffect,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 
 const LAYOUT = 'general',
 	STYLE = 'style',
@@ -26,7 +26,8 @@ const InspectorTabs = ( props ) => {
 		};
 	}, [] );
 
-	const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+	const srfmSettingState =
+		getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 	const { defaultTab, children, tabs } = props;
 	const [ currentTab, setCurrentTab ] = useState(
@@ -41,7 +42,7 @@ const InspectorTabs = ( props ) => {
 		sidebarPanel = tabContainer.current.closest( '.components-panel' );
 	} );
 
-	const renderUAGTabsSettingsInOrder = () => {
+	const renderSRFMTabsSettingsInOrder = () => {
 		// Inspector Tabs Priority Rendering Code. (Conflicts with 3rd Party plugin panels in Inspector Panel)
 		const tabsContainer = document.querySelector(
 			'.srfm-inspector-tabs-container'
@@ -88,23 +89,23 @@ const InspectorTabs = ( props ) => {
 
 	// component did mount
 	useEffect( () => {
-		renderUAGTabsSettingsInOrder();
+		renderSRFMTabsSettingsInOrder();
 
 		const { getSelectedBlock } = select( 'core/block-editor' );
 		const blockName = getSelectedBlock()?.name;
 		// This code is to fix the side-effect of the editor responsive click settings panel refresh issue.
 		if (
-			uagSettingState &&
-			uagSettingState[ blockName ] &&
-			currentTab !== uagSettingState[ blockName ]?.selectedTab
+			srfmSettingState &&
+			srfmSettingState[ blockName ] &&
+			currentTab !== srfmSettingState[ blockName ]?.selectedTab
 		) {
 			setCurrentTab(
-				uagSettingState[ blockName ]?.selectedTab || 'general'
+				srfmSettingState[ blockName ]?.selectedTab || 'general'
 			);
 			if ( sidebarPanel ) {
 				sidebarPanel.setAttribute(
 					'data-srfm-tab',
-					uagSettingState[ blockName ]?.selectedTab || 'general'
+					srfmSettingState[ blockName ]?.selectedTab || 'general'
 				);
 			}
 		} else if ( sidebarPanel ) {
@@ -126,9 +127,9 @@ const InspectorTabs = ( props ) => {
 	}, [] );
 
 	const _onTabChange = ( tab ) => {
-		renderUAGTabsSettingsInOrder();
+		renderSRFMTabsSettingsInOrder();
 		setCurrentTab( tab );
-		doAction( `uag_inspector_change_tab`, tab );
+		doAction( `srfm_inspector_change_tab`, tab );
 		if ( sidebarPanel ) {
 			sidebarPanel.setAttribute( 'data-srfm-tab', tab );
 		}
@@ -137,15 +138,15 @@ const InspectorTabs = ( props ) => {
 		const blockName = getSelectedBlock()?.name;
 
 		const data = {
-			...uagSettingState,
+			...srfmSettingState,
 			[ blockName ]: {
 				selectedTab: tab,
 			},
 		};
-		const uagLocalStorage = getUAGEditorStateLocalStorage();
-		if ( uagLocalStorage ) {
-			uagLocalStorage.setItem(
-				'uagSettingState',
+		const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+		if ( srfmLocalStorage ) {
+			srfmLocalStorage.setItem(
+				'srfmSettingState',
 				JSON.stringify( data )
 			);
 		}

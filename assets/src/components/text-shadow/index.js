@@ -13,10 +13,10 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const TextShadowControl = ( props ) => {
@@ -61,21 +61,21 @@ const TextShadowControl = ( props ) => {
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState =
-					getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const srfmSettingState =
+					getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 				const data = {
-					...uagSettingState,
+					...srfmSettingState,
 					[ blockName ]: {
-						...uagSettingState?.[ blockName ],
+						...srfmSettingState?.[ blockName ],
 						selectedSetting: false,
 					},
 				};
 
-				const uagLocalStorage = getUAGEditorStateLocalStorage();
-				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem(
-						'uagSettingState',
+				const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+				if ( srfmLocalStorage ) {
+					srfmLocalStorage.setItem(
+						'srfmSettingState',
 						JSON.stringify( data )
 					);
 				}
@@ -207,14 +207,14 @@ const TextShadowControl = ( props ) => {
 
 	const textShadowAdvancedControls = (
 		<div className="spectra-control-popup__options--action-wrapper">
-			<span className="uag-control-label">
+			<span className="srfm-control-label">
 				{ label }
 				{ isTextShadowUpdated && (
 					<div className="spectra__change-indicator--dot-right" />
 				) }
 			</span>
 			<Button
-				className="uag-text-shadow-button spectra-control-popup__options--action-button"
+				className="srfm-text-shadow-button spectra-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
@@ -231,29 +231,29 @@ const TextShadowControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState =
-						getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const srfmSettingState =
+						getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 					let data = {
-						...uagSettingState,
+						...srfmSettingState,
 						[ blockName ]: {
-							...uagSettingState?.[ blockName ],
-							selectedSetting: '.uag-text-shadow-options',
+							...srfmSettingState?.[ blockName ],
+							selectedSetting: '.srfm-text-shadow-options',
 						},
 					};
 
 					if ( showAdvancedControls ) {
 						data = {
-							...uagSettingState,
+							...srfmSettingState,
 							[ blockName ]: {
-								...uagSettingState?.[ blockName ],
+								...srfmSettingState?.[ blockName ],
 								selectedSetting: false,
 							},
 						};
 					}
-					const uagLocalStorage = getUAGEditorStateLocalStorage();
-					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem(
-							'uagSettingState',
+					const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+					if ( srfmLocalStorage ) {
+						srfmLocalStorage.setItem(
+							'srfmSettingState',
 							JSON.stringify( data )
 						);
 					}
@@ -284,7 +284,7 @@ const TextShadowControl = ( props ) => {
 			{ controlBeforeDomElement }
 			{ popup ? (
 				<div
-					className={ ` uag-text-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
+					className={ ` srfm-text-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
 				>
 					{ textShadowAdvancedControls }
 					{ showAdvancedControls && advancedControls }
@@ -292,7 +292,7 @@ const TextShadowControl = ( props ) => {
 			) : (
 				<>{ overallControls }</>
 			) }
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 			{ controlAfterDomElement }
 		</div>
 	);
