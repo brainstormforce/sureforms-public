@@ -15,9 +15,9 @@ export const PhoneClassicStyle = ( { attributes, blockID, handleChange } ) => {
 					<span style={ { color: 'red' } }> *</span>
 				) }
 			</label>
-			<div className="relative mt-2">
+			<div className="srfm-relative srfm-mt-2">
 				<div className="group srfm-classic-phone-parent">
-					<div className="absolute inset-y-0 left-0 flex items-center">
+					<div className="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
 						<select
 							placeholder="US +1"
 							onChange={ ( e ) => handleChange( e ) }
