@@ -6,7 +6,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { dispatch, select } from '@wordpress/data';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';

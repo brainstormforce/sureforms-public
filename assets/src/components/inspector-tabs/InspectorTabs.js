@@ -11,7 +11,7 @@ import {
 	useLayoutEffect,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 
 const LAYOUT = 'general',
 	STYLE = 'style',

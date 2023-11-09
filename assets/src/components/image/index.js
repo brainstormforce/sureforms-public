@@ -6,7 +6,7 @@ import { useSelect } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SRFM_Block_Icons from '@Controls/block-icons';
 import apiFetch from '@wordpress/api-fetch';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import SRFMConfirmPopup from '../popup-confirm';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';

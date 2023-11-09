@@ -9,7 +9,7 @@ import {
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import Separator from '@Components/separator';
 import { select } from '@wordpress/data';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 

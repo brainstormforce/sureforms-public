@@ -1,6 +1,6 @@
 import { PanelBody } from '@wordpress/components';
 import { useRef, memo, useState, useEffect } from '@wordpress/element';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 

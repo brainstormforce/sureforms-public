@@ -13,7 +13,7 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import SRFMHelpText from '@Components/help-text';

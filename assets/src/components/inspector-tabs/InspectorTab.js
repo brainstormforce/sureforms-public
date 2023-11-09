@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { useRef, useEffect } from '@wordpress/element';
-import getSRFMEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { select } from '@wordpress/data';
 
 const InspectorTab = ( props ) => {
