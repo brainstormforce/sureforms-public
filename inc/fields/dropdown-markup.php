@@ -83,21 +83,21 @@ class Dropdown_Markup extends Base {
         <label id="srfm-listbox-label" class="srfm-classic-label-text">' . esc_html( $label ) . ' 
             ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '
         </label>
-        <div class="relative mt-2">
+        <div class= "srfm-relative srfm-mt-2">
             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" class="srfm-classic-dropdown-result" value="" />
             <button type="button" class="srfm-classic-dropdown-button srfm-classic-dropdown-btn" id="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '">
-                <span class="srfm-dropdown-value block truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
-                <span class="srfm-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all">
-                    <i class="fa-solid fa-angle-down h-5 w-5 text-gray-400 mt-[10px]"></i>
+                <span class="srfm-dropdown-value srfm-font-normal srfm-text-gray-900 srfm-block srfm-truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
+                <span class="srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-2 srfm-duration-300 srfm-transition-all">
+                    <i class="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-500 srfm-mt-[10px]"></i>
                 </span>
             </button>
-            <ul class="srfm-classic-dropdown-box srfm-classic-dropdown-ul" tabindex="-1" value="value" style="display: none;">' . ( 0 === count( $options ) ? '<div class="text-gray-500 relative select-none py-2 pl-3 pr-9">' . esc_html__( 'No Options Found', 'sureforms' ) . '</div>' : '' );
+            <ul class="srfm-classic-dropdown-box srfm-classic-dropdown-ul" tabindex="-1" value="value" style="display: none;">' . ( 0 === count( $options ) ? '<div class="srfm-text-gray-500 srfm-relative srfm-select-none srfm-py-2 srfm-pl-3 srfm-pr-9">' . esc_html__( 'No Options Found', 'sureforms' ) . '</div>' : '' );
 
 		foreach ( $options as $option ) {
 			$option_text = esc_html( $option );
 
 			$output .= '<li class="srfm-classic-dropdown-option srfm-classic-dropdown-li" id="srfm-listbox-option-0" role="option">
-                            <span class="font-normal block truncate">' . $option_text . '</span>
+                            <span class="srfm-font-normal srfm-block srfm-truncate">' . $option_text . '</span>
                         </li>';
 		}
 

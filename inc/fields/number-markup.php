@@ -68,7 +68,7 @@ class Number_Markup extends Base {
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
+            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
             <div>
                 <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
             </div>' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '

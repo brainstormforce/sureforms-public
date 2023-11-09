@@ -181,11 +181,11 @@ class Rating_Markup extends Base {
                 ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
             <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="srfm-classic-rating-field-' . esc_attr( $block_id ) . '" class="srfm-rating-field-result"/>
-            <ul class="srfm-classic-event m-0 mt-2 flex list-none gap-3 p-0" data-te-rating-init>';
+            <ul class="srfm-classic-event srfm-m-0 srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0" data-te-rating-init>';
 
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
-                <li class="flex items-center flex-col-reverse" >
+                <li class="srfm-flex srfm-items-center srfm-flex-col-reverse" >
                 <span class="srfm-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
                     <span
                     class="srfm-text-primary"

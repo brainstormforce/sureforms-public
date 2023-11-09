@@ -70,20 +70,20 @@ class Number_Slider_Markup extends Base {
 		return '<div class="srfm-number-slider-container srfm-classic-number-slider srfm-classic-inputs-holder ' . esc_attr( $classname ) . '">
         <div class="range-slider-container">
             <div class="range-slider-block">
-                <div id="srfm-range-sliders" class="srfm-range-sliders w-full">
+                <div id="srfm-range-sliders" class="srfm-range-sliders srfm-w-full">
                     <div class="range-slider-group range-slider-group-sf">
                         <label for="srfm-range-slider" class="srfm-classic-label-text">' . esc_html( $label ) . '</label>
-                        <div class="flex justify-between items-center">
+                        <div class="srfm-flex srfm-justify-between srfm-items-center">
                             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="range" min="' .
 							intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" data-color="#0284c7"
-                            step="' . intval( $step ) . '" class="range-slider srfm-range-slider !border-solid !border !border-[#d1d5db]" id="srfm-range-slider" />
-                            <input type="number" min="' . intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" class="input-slider srfm-number-input-slider !w-[60px] !border-solid !border-[1px] !border-[#D1D5DB] !rounded-md !px-2 !py-1 !text-center !bg-white focus:!border-srfm_primary_color focus:!ring-srfm_primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6" id="srfm-input-slider" />
+                            step="' . intval( $step ) . '" class="range-slider srfm-range-slider !srfm-border-solid !srfm-border !srfm-border-[#d1d5db]" id="srfm-range-slider" />
+                            <input type="number" min="' . intval( $min ) . '" max="' . intval( $max ) . '" value="' . intval( $min ) . '" class="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6" id="srfm-input-slider" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>' .
-		( '' !== $help ? '<p class="text-sm text-gray-500" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) .
+		( '' !== $help ? '<p class="srfm-text-sm srfm-text-gray-500" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) .
 		'<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
     </div>';
 	}
