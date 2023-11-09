@@ -64,14 +64,14 @@ class Url_Markup extends Base {
 			<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
 			</label>
-			<div class="mt-2 flex rounded-md shadow-sm">
+			<div class="srfm-mt-2 srfm-flex srfm-rounded-md srfm-shadow-sm">
 				<span class="srfm-classic-url-prefix">https://</span>
 				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $block_id ) ) . '" id="srfm-input-url-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '"
 				class="srfm-classic-url-element srfm-url-input" placeholder="' . esc_attr( $placeholder ) . '">
 			</div>
 			' . ( '' !== $help ? '<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
 			<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-			<p style="display:none" class="srfm-validation-url-message mt-2 text-sm text-red-600">' . esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ) . '</p>
+			<p style="display:none" class="srfm-validation-url-message srfm-mt-2 srfm-text-sm srfm-text-red-600">' . esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ) . '</p>
 		</div>';
 
 	}
