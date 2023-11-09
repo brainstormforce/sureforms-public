@@ -3,8 +3,7 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
-const webpack = require('webpack');
-
+const webpack = require( 'webpack' );
 
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
@@ -36,9 +35,9 @@ module.exports = {
 				},
 			],
 		} ),
-		new webpack.optimize.LimitChunkCountPlugin({
+		new webpack.optimize.LimitChunkCountPlugin( {
 			maxChunks: 1,
-		  }),
+		} ),
 	],
 	entry: {
 		formEditor: path.resolve(
