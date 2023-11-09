@@ -618,18 +618,6 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
-	flatpickr( '.srfm-input-date-time', {
-		enableTime: true,
-		dateFormat: 'Y-m-d H:i',
-	} );
-
-	flatpickr( '.srfm-input-date' );
-
-	flatpickr( '.srfm-input-time', {
-		enableTime: true,
-		noCalendar: true,
-		dateFormat: 'H:i',
-	} );
 
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
@@ -1153,51 +1141,29 @@ const datePickerContainers = document.getElementsByClassName(
 	'srfm-classic-date-time-container'
 );
 if ( datePickerContainers ) {
+
+	flatpickr( '.srfm-input-date-time', {
+		enableTime: true,
+		dateFormat: 'Y-m-d H:i',
+	} );
+
+	flatpickr( '.srfm-input-date' );
+
+	flatpickr( '.srfm-input-time', {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: 'H:i',
+	} );
+
 	for ( const datePickerContainer of datePickerContainers ) {
-		const datePicker = datePickerContainer.querySelector(
-			'.srfm-classic-date-time-picker'
-		);
 		const resultInput = datePickerContainer.querySelector(
 			'.srfm-classic-date-time-result'
 		);
-		const fieldType = resultInput.getAttribute( 'field-type' );
-		const dateTimeInput = datePickerContainer.querySelector(
-			'.srfm-input-data-time'
-		);
-		let buttonAttribute = '';
-		let eventType = '';
-		if ( fieldType === 'date' ) {
-			eventType = 'dateChange.te.datepicker';
-			buttonAttribute = 'data-te-datepicker-toggle-ref';
-		} else if ( fieldType === 'dateTime' ) {
-			eventType = 'close.te.datetimepicker';
-			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
-		} else {
-			eventType = 'input.te.timepicker';
-			buttonAttribute = 'data-te-timepicker-icon';
-		}
-		const button = datePickerContainer.querySelector(
-			`button[${ buttonAttribute }]`
-		);
-		dateTimeInput.addEventListener( 'click', () => {
-			const clickEvent = new Event( 'click' );
-			if ( button ) {
-				button.dispatchEvent( clickEvent );
-			}
-		} );
-		if ( button ) {
-			button.addEventListener( 'click', () => {
-				datePicker.addEventListener( eventType, () => {
-					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-					resultInput.value = formattedDate;
-				} );
-			} );
-		} else {
-			datePicker.addEventListener( eventType, () => {
-				formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-				resultInput.value = formattedDate;
-			} );
-		}
+
+		datePickerContainer.querySelector(".srfm-input-data-time").onchange = function(e) {
+			formattedDate = e.target.value.replaceAll( '/', '-' );
+			resultInput.value = formattedDate;
+		};
 	}
 }
 
