@@ -6,206 +6,250 @@ import { jsx } from '@emotion/react';
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { createBlock, serialize } from '@wordpress/blocks';
+// import { createBlock, serialize } from '@wordpress/blocks';
 import { Placeholder, Button, Icon, TextControl } from '@wordpress/components';
-import { dispatch } from '@wordpress/data';
+// import { dispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
+// import apiFetch from '@wordpress/api-fetch';
 
 import icon from '../../../../../images/Logo.js';
 
 /**
  * Components
  */
-import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
+// import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
-export default ( { attributes, setAttributes } ) => {
-	const { title, step } = attributes;
+export default ( {
+	// attributes,
+	setAttributes,
+} ) => {
+	// const { title, step } = attributes;
 	const [ form, setForm ] = useState( {} );
 
+	// Not required.
 	// save the form block.
-	const saveFormBlock = async () => {
-		setAttributes( { loading: true } );
+	// const saveFormBlock = async () => {
+	// 	setAttributes( { loading: true } );
 
-		try {
-			const updatedRecord = await dispatch( 'core' ).saveEntityRecord(
-				'postType',
-				'sureforms_form',
-				{
-					title: title || __( 'Untitled Form', 'sureforms' ),
-					content: serialize(
-						createBlock(
-							'sureforms/form', // name
-							{},
-							[]
-						)
-					),
-					status: 'publish',
-				}
-			);
-			const formStatusData = {
-				post_id: updatedRecord.id,
-				_srfm_color1: '#046bd2',
-				_srfm_textcolor1: '#fff',
-				_srfm_color2: '',
-				_srfm_fontsize: 16,
-				_srfm_bg: '',
-				_srfm_thankyou_message: 'Form submitted successfully!',
-				_srfm_email: sfBlockData.admin_email,
-				_srfm_submit_type: 'message',
-				_srfm_submit_url: '',
-				_srfm_sender_notification: 'off',
-				_srfm_form_recaptcha: 'none',
-				_srfm_submit_alignment: 'left',
-				_srfm_submit_width: '',
-				_srfm_submit_styling_inherit_from_theme: false,
-				_srfm_form_container_width: 650,
-				_srfm_form_styling: 'classic',
-			};
+	// 	try {
+	// 		const updatedRecord = await dispatch( 'core' ).saveEntityRecord(
+	// 			'postType',
+	// 			'sureforms_form',
+	// 			{
+	// 				title: title || __( 'Untitled Form', 'sureforms' ),
+	// 				content: serialize(
+	// 					createBlock(
+	// 						'sureforms/form', // name
+	// 						{},
+	// 						[]
+	// 					)
+	// 				),
+	// 				status: 'publish',
+	// 			}
+	// 		);
+	// 		const formStatusData = {
+	// 			post_id: updatedRecord.id,
+	// 			_srfm_color1: '#046bd2',
+	// 			_srfm_textcolor1: '#fff',
+	// 			_srfm_color2: '',
+	// 			_srfm_fontsize: 16,
+	// 			_srfm_bg: '',
+	// 			_srfm_thankyou_message: 'Form submitted successfully!',
+	// 			_srfm_email: sfBlockData.admin_email,
+	// 			_srfm_submit_type: 'message',
+	// 			_srfm_submit_url: '',
+	// 			_srfm_sender_notification: 'off',
+	// 			_srfm_form_recaptcha: 'none',
+	// 			_srfm_submit_alignment: 'left',
+	// 			_srfm_submit_width: '',
+	// 			_srfm_submit_styling_inherit_from_theme: false,
+	// 			_srfm_form_container_width: 650,
+	// 			_srfm_form_styling: 'classic',
+	// 		};
 
-			try {
-				await apiFetch( {
-					path: '/sureforms/v1/load-form-defaults',
-					method: 'POST',
-					data: formStatusData,
-				} );
-			} catch ( error ) {
-				console.error( error );
-			}
+	// 		try {
+	// 			await apiFetch( {
+	// 				path: '/sureforms/v1/load-form-defaults',
+	// 				method: 'POST',
+	// 				data: formStatusData,
+	// 			} );
+	// 		} catch ( error ) {
+	// 			console.error( error );
+	// 		}
 
-			setAttributes( { id: updatedRecord.id } );
-		} catch ( e ) {
-			// TODO: Add notice here.
-			console.error( e );
-		} finally {
-			setAttributes( { loading: false } );
-		}
-	};
+	// 		setAttributes( { id: updatedRecord.id } );
+	// 	} catch ( e ) {
+	// 		// TODO: Add notice here.
+	// 		console.error( e );
+	// 	} finally {
+	// 		setAttributes( { loading: false } );
+	// 	}
+	// };
 
-	if ( step === 'new' ) {
-		return (
-			<div { ...useBlockProps() }>
-				<PlaceholderTemplate
-					header={ __( 'Create a SureForms Form', 'sureforms' ) }
-				>
-					<div
-						style={ {
-							display: 'grid',
-							gap: '0.5em',
-							width: '100%',
-							padding: '0.5em',
-						} }
-					>
-						<div>{ __( 'Form Title', 'sureforms' ) }</div>
-						<TextControl
-							value={ title }
-							placeholder={ __(
-								'Enter a title for your form',
-								'sureforms'
-							) }
-							onChange={ ( value ) =>
-								setAttributes( { title: value } )
-							}
-							style={ {
-								width: '95%',
-							} }
-						/>
-						<div style={ { display: 'flex', gap: '0.5em' } }>
-							<Button
-								variant="primary"
-								onClick={ () => {
-									saveFormBlock();
-								} }
-							>
-								{ __( 'Next', 'sureforms' ) }
-								<Icon icon={ 'arrow-right' }></Icon>
-							</Button>
-							<Button
-								variant="secondary"
-								onClick={ () =>
-									setAttributes( { step: null } )
-								}
-							>
-								{ __( 'Cancel', 'sureforms' ) }
-							</Button>
-						</div>
-					</div>
-				</PlaceholderTemplate>
-			</div>
-		);
-	}
-
-	if ( step === 'select' ) {
-		return (
-			<div { ...useBlockProps() }>
-				<PlaceholderTemplate
-					header={ __( 'Select a SureForms form', 'sureforms' ) }
-				>
-					<div
-						style={ {
-							display: 'grid',
-							gap: '0.5em',
-							width: '100%',
-							margin: '0.5em',
-						} }
-					>
-						<SelectForm form={ form } setForm={ setForm } />
-						<div style={ { display: 'flex', gap: '0.5em' } }>
-							<Button
-								variant="primary"
-								onClick={ () => {
-									setAttributes( { id: form?.id } );
-								} }
-							>
-								{ __( 'Choose', 'sureforms' ) }
-								<Icon icon={ 'arrow-right' }></Icon>
-							</Button>
-							<Button
-								variant="secondary"
-								onClick={ () =>
-									setAttributes( { step: null } )
-								}
-							>
-								{ __( 'Cancel', 'sureforms' ) }
-							</Button>
-						</div>
-					</div>
-				</PlaceholderTemplate>
-			</div>
-		);
-	}
+	// Not required.
+	// if ( step === 'new' ) {
+	// 	return (
+	// 		<div { ...useBlockProps() }>
+	// 			<PlaceholderTemplate
+	// 				header={ __( 'Create a SureForms Form', 'sureforms' ) }
+	// 			>
+	// 				<div
+	// 					style={ {
+	// 						display: 'grid',
+	// 						gap: '0.5em',
+	// 						width: '100%',
+	// 						padding: '0.5em',
+	// 					} }
+	// 				>
+	// 					<div>{ __( 'Form Title', 'sureforms' ) }</div>
+	// 					<TextControl
+	// 						value={ title }
+	// 						placeholder={ __(
+	// 							'Enter a title for your form',
+	// 							'sureforms'
+	// 						) }
+	// 						onChange={ ( value ) =>
+	// 							setAttributes( { title: value } )
+	// 						}
+	// 						style={ {
+	// 							width: '95%',
+	// 						} }
+	// 					/>
+	// 					<div style={ { display: 'flex', gap: '0.5em' } }>
+	// 						<Button
+	// 							variant="primary"
+	// 							onClick={ () => {
+	// 								saveFormBlock();
+	// 							} }
+	// 						>
+	// 							{ __( 'Next', 'sureforms' ) }
+	// 							<Icon icon={ 'arrow-right' }></Icon>
+	// 						</Button>
+	// 						<Button
+	// 							variant="secondary"
+	// 							onClick={ () =>
+	// 								setAttributes( { step: null } )
+	// 							}
+	// 						>
+	// 							{ __( 'Cancel', 'sureforms' ) }
+	// 						</Button>
+	// 					</div>
+	// 				</div>
+	// 			</PlaceholderTemplate>
+	// 		</div>
+	// 	);
+	// }
+	// Added the same code as default step.
+	// if ( step === 'select' ) {
+	// 	return (
+	// 		<div { ...useBlockProps() }>
+	// 			<Placeholder
+	// 				icon={ icon }
+	// 				label={ __(
+	// 					'Get started by selecting a SureForm.',
+	// 					'sureforms'
+	// 				) }
+	// 				style={ {
+	// 					display: 'flex',
+	// 					alignItems: 'center',
+	// 				} }
+	// 			>
+	// 				<div
+	// 					style={ {
+	// 						display: 'flex',
+	// 						margin: 'auto',
+	// 						flexDirection: 'column',
+	// 						gap: '16px',
+	// 					} }
+	// 				>
+	// 					<SelectForm form={ form } setForm={ setForm } />
+	// 					<div style={ { textAlign: 'center' } }>
+	// 						<Button
+	// 							variant="primary"
+	// 							onClick={ () => {
+	// 								setAttributes( { id: form?.id } );
+	// 							} }
+	// 						>
+	// 							{ __( 'Choose', 'sureforms' ) }
+	// 							<Icon icon={ 'arrow-right' }></Icon>
+	// 						</Button>
+	// 						<Button
+	// 							variant="secondary"
+	// 							onClick={ () =>
+	// 								setAttributes( { step: null } )
+	// 							}
+	// 						>
+	// 							{ __( 'Cancel', 'sureforms' ) }
+	// 						</Button>
+	// 					</div>
+	// 				</div>
+	// 			</Placeholder>
+	// 		</div>
+	// 	);
+	// }
 
 	return (
+		// Removed might be used later.
+		// <div { ...useBlockProps() }>
+		// 	<Placeholder
+		// 		icon={ icon }
+		// 		label={ __( 'Add a SureForms form', 'sureforms' ) }
+		// 		style={ {
+		// 			display: 'flex',
+		// 			alignItems: 'center',
+		// 		} }
+		// 	>
+		// 		<Button
+		// 			variant="primary"
+		// 			onClick={ () => setAttributes( { step: 'select' } ) }
+		// 			style={ {
+		// 				margin: 'auto',
+		// 			} }
+		// 		>
+		// 			{ __( 'Select Form', 'sureforms' ) }
+		// 		</Button>
+		// 	</Placeholder>
+		// </div>
 		<div { ...useBlockProps() }>
 			<Placeholder
 				icon={ icon }
-				instructions={ __(
-					'Get started by selecting a form or start build a new form.',
+				label={ __(
+					'Get started by selecting a SureForm.',
 					'sureforms'
 				) }
-				label={ __( 'Add a SureForms form', 'sureforms' ) }
+				style={ {
+					display: 'flex',
+					alignItems: 'center',
+				} }
 			>
 				<div
 					style={ {
 						display: 'flex',
-						gap: '0.5em',
-						flexWrap: 'wrap',
+						margin: 'auto',
+						flexDirection: 'column',
+						gap: '16px',
 					} }
 				>
-					<Button
-						variant="primary"
-						onClick={ () => setAttributes( { step: 'new' } ) }
-					>
-						{ __( 'New Form', 'sureforms' ) }
-					</Button>
-					<Button
-						variant="primary"
-						onClick={ () => setAttributes( { step: 'select' } ) }
-					>
-						{ __( 'Select Form', 'sureforms' ) }
-					</Button>
+					<SelectForm form={ form } setForm={ setForm } />
+					<div style={ { textAlign: 'center' } }>
+						<Button
+							variant="primary"
+							onClick={ () => {
+								setAttributes( { id: form?.id } );
+							} }
+						>
+							{ __( 'Choose', 'sureforms' ) }
+							<Icon icon={ 'arrow-right' }></Icon>
+						</Button>
+						<Button
+							variant="secondary"
+							onClick={ () => setAttributes( { step: null } ) }
+						>
+							{ __( 'Cancel', 'sureforms' ) }
+						</Button>
+					</div>
 				</div>
 			</Placeholder>
 		</div>

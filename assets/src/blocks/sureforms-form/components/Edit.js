@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
+import { useRef, useEffect } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
@@ -16,9 +17,9 @@ import {
 	store as coreStore,
 } from '@wordpress/core-data';
 import {
-	useInnerBlocksProps as __stableUseInnerBlocksProps,
+	// useInnerBlocksProps as __stableUseInnerBlocksProps,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
-	__experimentalUseInnerBlocksProps,
+	// __experimentalUseInnerBlocksProps,
 	// __experimentalBlockContentOverlay as BlockContentOverlay, // TODO when gutenberg releases it: https://github.com/WordPress/gutenberg/blob/afee31ee020b8965e811f5d68a5ca8001780af9d/packages/block-editor/src/components/block-content-overlay/index.js#L17
 	InspectorControls,
 	useBlockProps,
@@ -26,12 +27,21 @@ import {
 } from '@wordpress/block-editor';
 
 export default ( { attributes } ) => {
-	const useInnerBlocksProps = __stableUseInnerBlocksProps
-		? __stableUseInnerBlocksProps
-		: __experimentalUseInnerBlocksProps;
+	// const useInnerBlocksProps = __stableUseInnerBlocksProps
+	// 	? __stableUseInnerBlocksProps
+	// 	: __experimentalUseInnerBlocksProps;
 
 	// TODO: Let's store a unique hash in both meta and attribute to find.
 	const { id } = attributes;
+
+	const iframeRef = useRef( null );
+	// eslint-disable-next-line no-unused-vars
+	const [ formUrl, setFormUrl ] = useEntityProp(
+		'postType',
+		'sureforms_form',
+		'link',
+		id
+	);
 
 	const blockProps = useBlockProps();
 
@@ -48,16 +58,16 @@ export default ( { attributes } ) => {
 		id
 	);
 
-	const innerBlocksProps = useInnerBlocksProps(
-		{},
-		{
-			value: blocks,
-			onInput,
-			onChange,
-			template: [ [ 'sureforms/form', {} ] ],
-			templateLock: 'all',
-		}
-	);
+	// const innerBlocksProps = useInnerBlocksProps(
+	// 	{},
+	// 	{
+	// 		value: blocks,
+	// 		onInput,
+	// 		onChange,
+	// 		template: [ [ 'sureforms/form', {} ] ],
+	// 		templateLock: 'all',
+	// 	}
+	// );
 
 	const { isMissing, hasResolved } = useSelect( ( select ) => {
 		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
@@ -80,15 +90,15 @@ export default ( { attributes } ) => {
 	} );
 
 	// form has resolved
-	if ( ! hasResolved ) {
-		return (
-			<div { ...blockProps }>
-				<Placeholder>
-					<Spinner />
-				</Placeholder>
-			</div>
-		);
-	}
+	// if ( ! hasResolved ) {
+	// 	return (
+	// 		<div { ...blockProps }>
+	// 			<Placeholder>
+	// 				<Spinner />
+	// 			</Placeholder>
+	// 		</div>
+	// 	);
+	// }
 
 	// form is missing
 	if ( isMissing ) {
@@ -103,6 +113,72 @@ export default ( { attributes } ) => {
 			</div>
 		);
 	}
+
+	// Remove unwanted elements from the iframe and add styling for the form
+	useEffect( () => {
+		const removeContentFromIframe = () => {
+			const iframeDocument = iframeRef.current.contentDocument;
+
+			if ( iframeDocument ) {
+				const wpAdminBar =
+					iframeDocument.getElementById( 'wpadminbar' );
+				const siteDesktopHeader =
+					iframeDocument.querySelector( '.site-header' );
+				const srfmSinglePageBanner =
+					iframeDocument.querySelector( '.srfm-page-banner' );
+				const srfmSingleForm =
+					iframeDocument.querySelector( '.srfm-single-form' );
+				const srfmSuccessMsg =
+					iframeDocument.querySelector( '.srfm-success-box' );
+				const siteFooter = iframeDocument.getElementById( 'colophon' );
+
+				if ( iframeDocument && iframeDocument.body ) {
+					iframeDocument.querySelector(
+						'html'
+					).style.backgroundColor = 'transparent';
+					iframeDocument.body.style.pointerEvents = 'none';
+					iframeDocument.body.style.backgroundColor = 'transparent';
+					const iframeHalfScrollHeight =
+						iframeDocument.body.scrollHeight / 2;
+					iframeRef.current.height = iframeHalfScrollHeight + 'px';
+					if ( 300 > iframeHalfScrollHeight ) {
+						iframeDocument.body.style.overflow = 'hidden';
+					}
+				}
+				if ( wpAdminBar ) {
+					wpAdminBar.remove();
+				}
+				if ( siteFooter ) {
+					siteFooter.remove();
+				}
+				if ( siteDesktopHeader ) {
+					siteDesktopHeader.remove();
+				}
+				if ( srfmSinglePageBanner ) {
+					srfmSinglePageBanner.remove();
+				}
+				if ( srfmSuccessMsg ) {
+					srfmSuccessMsg.remove();
+				}
+				if ( srfmSingleForm ) {
+					srfmSingleForm.style.boxShadow = 'none';
+					srfmSingleForm.style.backgroundColor = 'transparent';
+					srfmSingleForm.style.width = '100%';
+				}
+			}
+		};
+
+		if ( iframeRef && iframeRef.current ) {
+			iframeRef.current.onload = () => {
+				removeContentFromIframe();
+				setTimeout( () => {
+					if ( iframeRef && iframeRef.current ) {
+						iframeRef.current.style.display = 'block';
+					}
+				}, 800 );
+			};
+		}
+	}, [ iframeRef ] );
 
 	return (
 		<>
@@ -144,7 +220,20 @@ export default ( { attributes } ) => {
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<div { ...blockProps }>{ <div { ...innerBlocksProps } /> }</div>
+			<div { ...blockProps }>
+				{ /* { <div { ...innerBlocksProps } /> } */ }
+				<iframe
+					loading={ 'eager' }
+					ref={ iframeRef }
+					className="srfm-iframe-preview"
+					title="srfm-iframe-preview"
+					src={ formUrl }
+					style={ {
+						minWidth: '-webkit-fill-available',
+					} }
+					width={ '100%' }
+				/>
+			</div>
 		</>
 	);
 };

@@ -12,7 +12,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Fragment, useEffect, useState } from '@wordpress/element';
+import { Fragment, useEffect, useState, useRef } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
 import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
@@ -23,6 +23,14 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { editPost } = useDispatch( editorStore );
 	// Get all registered block types
 	const allBlocks = wp.blocks.getBlockTypes();
+	const iframeRef = useRef( null );
+	// eslint-disable-next-line no-unused-vars
+	const [ formUrl, setFormUrl ] = useEntityProp(
+		'postType',
+		'sureforms_form',
+		'link',
+		id
+	);
 
 	const SUREFORMS_BLOCKS = allBlocks
 		.filter(
@@ -178,16 +186,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const buttonStyle = isSureformsForm
 		? {
-			background: '#0084C7',
-			color: '#fff',
+				background: '#0084C7',
+				color: '#fff',
 		  }
 		: {
-			backgroundColor: shouldInheritStyle
-				? sureforms_keys?._srfm_color1 || ''
-				: '',
-			color: shouldInheritStyle
-				? sureforms_keys?._srfm_textcolor1 || ''
-				: '',
+				backgroundColor: shouldInheritStyle
+					? sureforms_keys?._srfm_color1 || ''
+					: '',
+				color: shouldInheritStyle
+					? sureforms_keys?._srfm_textcolor1 || ''
+					: '',
 		  };
 	const renderButtonHtml = () => {
 		return (
@@ -221,6 +229,72 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 			</button>
 		);
 	};
+
+	// Remove unwanted elements from the iframe and add styling for the form
+	useEffect( () => {
+		const removeContentFromIframe = () => {
+			const iframeDocument = iframeRef.current.contentDocument;
+
+			if ( iframeDocument ) {
+				const wpAdminBar =
+					iframeDocument.getElementById( 'wpadminbar' );
+				const siteDesktopHeader =
+					iframeDocument.querySelector( '.site-header' );
+				const srfmSinglePageBanner =
+					iframeDocument.querySelector( '.srfm-page-banner' );
+				const srfmSingleForm =
+					iframeDocument.querySelector( '.srfm-single-form' );
+				const srfmSuccessMsg =
+					iframeDocument.querySelector( '.srfm-success-box' );
+				const siteFooter = iframeDocument.getElementById( 'colophon' );
+
+				if ( iframeDocument && iframeDocument.body ) {
+					iframeDocument.querySelector(
+						'html'
+					).style.backgroundColor = 'transparent';
+					iframeDocument.body.style.pointerEvents = 'none';
+					iframeDocument.body.style.backgroundColor = 'transparent';
+					const iframeHalfScrollHeight =
+						iframeDocument.body.scrollHeight / 2;
+					iframeRef.current.height = iframeHalfScrollHeight + 'px';
+					if ( 300 > iframeHalfScrollHeight ) {
+						iframeDocument.body.style.overflow = 'hidden';
+					}
+				}
+				if ( wpAdminBar ) {
+					wpAdminBar.remove();
+				}
+				if ( siteFooter ) {
+					siteFooter.remove();
+				}
+				if ( siteDesktopHeader ) {
+					siteDesktopHeader.remove();
+				}
+				if ( srfmSinglePageBanner ) {
+					srfmSinglePageBanner.remove();
+				}
+				if ( srfmSuccessMsg ) {
+					srfmSuccessMsg.remove();
+				}
+				if ( srfmSingleForm ) {
+					srfmSingleForm.style.boxShadow = 'none';
+					srfmSingleForm.style.backgroundColor = 'transparent';
+					srfmSingleForm.style.width = '100%';
+				}
+			}
+		};
+
+		if ( iframeRef && iframeRef.current ) {
+			iframeRef.current.onload = () => {
+				removeContentFromIframe();
+				setTimeout( () => {
+					if ( iframeRef && iframeRef.current ) {
+						iframeRef.current.style.display = 'block';
+					}
+				}, 800 );
+			};
+		}
+	}, [] );
 
 	return (
 		<Fragment>
@@ -280,25 +354,42 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 						'srfm-form-style-classic'
 					}
 				>
-					<InnerBlocks
-						allowedBlocks={ filteredAllowedBlocks }
-						templateLock={ false }
-						renderAppender={
-							blockCount
-								? undefined
-								: InnerBlocks.ButtonBlockAppender
-						}
-					/>
-					<div
-						className={
-							'srfm-submit-button' +
-							( 'inherit' === sureforms_keys?._srfm_form_styling
-								? ' wp-block-button'
-								: '' )
-						}
-					>
-						{ renderButtonHtml() }
-					</div>
+					{ 'sureforms_form' === postType ? (
+						<>
+							<InnerBlocks
+								allowedBlocks={ filteredAllowedBlocks }
+								templateLock={ false }
+								renderAppender={
+									blockCount
+										? undefined
+										: InnerBlocks.ButtonBlockAppender
+								}
+							/>
+							<div
+								className={
+									'srfm-submit-button' +
+									( 'inherit' ===
+									sureforms_keys?._srfm_form_styling
+										? ' wp-block-button'
+										: '' )
+								}
+							>
+								{ renderButtonHtml() }
+							</div>
+						</>
+					) : (
+						<iframe
+							loading={ 'eager' }
+							ref={ iframeRef }
+							className="srfm-iframe-preview"
+							title="srfm-iframe-preview"
+							src={ formUrl }
+							style={ {
+								minWidth: '-webkit-fill-available',
+							} }
+							width={ '100%' }
+						/>
+					) }
 				</div>
 			) }
 		</Fragment>
