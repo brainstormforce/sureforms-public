@@ -70,7 +70,7 @@ class Input_Markup extends Base {
 		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '<div class="srfm-main-container srfm-frontend-inputs-holder  ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
-			<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
+			<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
 			<div class="">
 				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="text" class="srfm-classic-input-element" 
 				placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxlength="' . esc_attr( $max_text_len ) . '">

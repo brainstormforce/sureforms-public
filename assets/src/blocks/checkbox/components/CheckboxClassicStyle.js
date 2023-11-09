@@ -8,23 +8,23 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 	}, [ isChecked ] );
 	return (
 		<>
-			<div className="relative flex items-start flex-row gap-2">
-				<div className="flex h-6 items-center">
+			<div className="srfm-relative srfm-flex srfm-items-start srfm-flex-row gap-2">
+				<div className="srfm-flex srfm-h-6 srfm-items-center">
 					<input
 						type="checkbox"
 						checked={ selected }
 						required={ required }
 						onClick={ () => setSelected( ! selected ) }
-						className="h-4 w-4 rounded border-[#d1d5db] srfm-classic-checkbox-input checked:!bg-srfm_primary_color checked:!border-none"
+						className="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input checked:!srfm-bg-srfm_primary_color checked:!srfm-order-none"
 					/>
 				</div>
-				<div className="text-sm leading-6">
+				<div className="srfm-text-sm srfm-leading-6">
 					{ labelUrl ? (
 						<a
 							target="_blank"
 							href={ labelUrl }
 							style={ { textDecoration: 'none' } }
-							className="underline"
+							className="srfm-underline"
 							rel="noreferrer"
 						>
 							<label className="srfm-classic-label-text">
@@ -32,7 +32,7 @@ export const CheckboxClassicStyle = ( { attributes } ) => {
 							</label>
 						</a>
 					) : (
-						<label className="sf-classic-label-text">
+						<label className="srfm-classic-label-text">
 							{ label }
 						</label>
 					) }

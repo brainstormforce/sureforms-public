@@ -24,7 +24,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					<span className="text-required_icon_color"> *</span>
 				) }
 			</label>
-			<div className="relative mt-2">
+			<div className="srfm-relative srfm-mt-2">
 				<input
 					aria-required={ required ? 'true' : 'false' }
 					type="hidden"
@@ -37,17 +37,17 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					onClick={ () => setOpen( ! open ) }
 					onBlur={ () => setOpen( false ) }
 				>
-					<span className="srfm-dropdown-value block truncate">
+					<span className="srfm-dropdown-value srfm-block srfm-truncate">
 						{ placeholder ? placeholder : '\u00A0' }
 					</span>
 					<span
-						className={ `srfm-classic-select-icon pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 duration-300 transition-all rotate-0 ${
-							open ? 'rotate-180 pl-2' : ''
+						className={ `srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3 srfm-duration-300 srfm-transition-all srfm-rotate-0 ${
+							open ? 'srfm-rotate-180 srfm-pl-2' : ''
 						}` }
 					>
 						<FontAwesomeIcon
 							icon={ faAngleDown }
-							className="fa-solid fa-angle-down h-5 w-5 text-gray-400 mt-[5px]"
+							className="fa-solid fa-angle-down srfm-h-3 srfm-w-3 srfm-text-gray-600 srfm-mt-[5px]"
 						/>
 					</span>
 				</button>
@@ -58,7 +58,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 					style={ open ? { ...openStyles } : { ...closedStyles } }
 				>
 					{ options.length === 0 ? (
-						<div className="text-gray-500 relative select-none py-2 pl-3 pr-9">
+						<div className="srfm-text-gray-500 srfm-relative srfm-select-none srfm-py-2 srfm-pl-3 srfm-pr-9">
 							{ __( 'No Options Found', 'sureforms' ) }
 						</div>
 					) : null }
@@ -68,7 +68,7 @@ export const DropdownClassicStyle = ( { attributes } ) => {
 							className="srfm-classic-dropdown-option srfm-classic-dropdown-li"
 							role="option"
 						>
-							<span className="font-normal block truncate">
+							<span className="srfm-font-normal srfm-block srfm-truncate">
 								{ option }
 							</span>
 						</li>

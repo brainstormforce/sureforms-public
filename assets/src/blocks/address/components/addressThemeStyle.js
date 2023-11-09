@@ -21,8 +21,8 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 	return (
 		<>
 			<label
-				className="sf-text-primary"
-				htmlFor={ 'address-field-' + blockID }
+				className="srfm-text-primary"
+				htmlFor={ 'srfm-address-field-' + blockID }
 			>
 				{ label }
 				{ required && label && (
@@ -31,7 +31,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 			</label>
 			<div>
 				<div
-					id={ 'address-field-' + blockID }
+					id={ 'srfm-address-field-' + blockID }
 					style={ {
 						display: 'flex',
 						flexDirection: 'column',
@@ -39,7 +39,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 					} }
 				>
 					<label
-						className="srfm-text-secondary text-size"
+						className="srfm-text-secondary  "
 						htmlFor={ 'address-line-1-' + blockID }
 					>
 						{ lineOneLabel }
@@ -59,7 +59,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 					} }
 				>
 					<label
-						className="srfm-text-secondary text-size"
+						className="srfm-text-secondary  "
 						htmlFor={ 'address-line-2-' + blockID }
 						style={ inputStyles }
 					>
@@ -82,7 +82,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-city-' + blockID }
 							style={ inputStyles }
 						>
@@ -104,7 +104,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-state-' + blockID }
 							style={ inputStyles }
 						>
@@ -134,7 +134,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-city-postal-' + blockID }
 							style={ inputStyles }
 						>
@@ -156,7 +156,7 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-country-' + blockID }
 							style={ inputStyles }
 						>
