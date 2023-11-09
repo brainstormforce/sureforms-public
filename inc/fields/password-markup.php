@@ -71,19 +71,19 @@ class Password_Markup extends Base {
 
 		return '<div class="srfm-input-password-container srfm-frontend-inputs-holder srfm-main-container srfm-classic-inputs-holder' . esc_attr( $classname ) . '">
     <label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-    <div class="relative mt-2">
+    <div class= "srfm-relative srfm-mt-2">
         <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-classic-pwd-element">
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-		<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
+        <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
+		<i class="fa fa-lock srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
         </div>
     </div>' .
 		'<p style="display:none" class="srfm-error-message" id="srfm-email-error">' . esc_html( $error_msg ) . '</p>' .
 		( true === $is_confirm_password
-		? '<label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !mt-[24px]">' . esc_html( $confirm_label ) . ( $required && $confirm_label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-        <div class="relative mt-2 rounded-md shadow-sm">
+		? '<label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !srfm-mt-[24px]">' . esc_html( $confirm_label ) . ( $required && $confirm_label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+        <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
             <input type="password" id="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-confirm-input-password srfm-classic-pwd-element">
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-			<i class="fa fa-lock text-gray-400 text-[20px]" aria-hidden="true"></i>
+            <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
+			<i class="fa fa-lock srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
             </div>
         </div>'
 		: '' ) .
