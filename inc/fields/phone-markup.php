@@ -109,10 +109,10 @@ class Phone_Markup extends Base {
 
 		$output  = '';
 		$output .= '<div class="srfm-input-phone-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-phone-' . esc_attr( $block_id ) . '">
-            <label for="srfm-phone-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
-            <div class="relative mt-2">
+            <label for="srfm-phone-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
+            <div class= "srfm-relative srfm-mt-2">
                 <div id="srfm-phone-parent" class="group srfm-classic-phone-parent">
-                    <div class="absolute inset-y-0 left-0 flex items-center">
+                    <div class="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
                         <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="srfm-fullPhoneNumber-' . esc_attr( $block_id ) . '" value="' . esc_attr( ! empty( $default ) ? "($default_country)$default" : '' ) . '" />
                         <select class="srfm-classic-phone-select" id="srfm-country-code-' . esc_attr( $block_id ) . '">';
 		if ( is_array( $data ) ) {

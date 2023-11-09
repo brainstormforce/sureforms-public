@@ -76,9 +76,9 @@ class Textarea_Markup extends Base {
 		<div class="srfm-frontend-inputs-holder srfm-main-container srfm-textarea-container ' . esc_attr( $classname ) . '">
 			<label for="srfm-textarea" class="srfm-classic-label-text">
 				' . esc_html( $label ) . '
-				' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+				' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
-			<div class="mt-2 relative">
+			<div class="srfm-mt-2 srfm-relative">
 				<div class="srfm-text-area-counter">
 					' . esc_html( ( '' === $max_length ) ? '' : '0/' . esc_html( $max_length ) ) . '
 				</div>
