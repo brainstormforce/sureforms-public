@@ -33,7 +33,7 @@ module.exports = {
 		},
 	},
 	plugins: [ require( '@tailwindcss/forms' ) ],
-	// prefix: 'srfm-',
+	prefix: 'srfm-',
 	corePlugins: {
 		preflight: false,
 	},

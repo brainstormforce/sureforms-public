@@ -113,13 +113,13 @@ if ( ratingElements ) {
 				for ( let i = 0; i < stars.length; i++ ) {
 					stars[ i ]
 						.querySelector( 'svg' )
-						.classList.remove( 'fill-current' );
+						.classList.remove( 'srfm-fill-current' );
 				}
 
 				for ( let j = 0; j < onStar; j++ ) {
 					stars[ j ]
 						.querySelector( 'svg' )
-						.classList.add( 'fill-current' );
+						.classList.add( 'srfm-fill-current' );
 				}
 			} );
 		} );
@@ -153,7 +153,7 @@ if ( uploadFieldsContainer ) {
 		uploadInput.addEventListener( 'change', ( e ) => {
 			const id = e.target.id.split( '-' )[ 2 ];
 			const file = e.target.files[ 0 ];
-			const isError = uploadField.querySelector( '.error-message' );
+			const isError = uploadField.querySelector( '.srfm-error-message' );
 			if ( isError ) {
 				isError.style.display = 'none';
 			}
@@ -166,7 +166,7 @@ if ( uploadFieldsContainer ) {
 						.removeAttribute( 'hidden' );
 				} else {
 					uploadField
-						.querySelector( `#upload-field-error-${ id }` )
+						.querySelector( `#srfm-upload-field-error-${ id }` )
 						.setAttribute( 'hidden', true );
 					const fileName =
 						file.name.length > 20
@@ -186,7 +186,7 @@ if ( uploadFieldsContainer ) {
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -205,29 +205,29 @@ if ( uploadFieldsContainer ) {
 								'image/x-icon',
 							];
 							const icon = imageFormats.includes( file.type )
-								? `<img class="rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
-								: '<div style="font-size:35px" class="text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
+								? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
+								: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
 							const uploadResultContainer =
 								uploadField.querySelector(
 									`#srfm-upload-field-result-${ id }`
 								);
-							uploadResultContainer.innerHTML = `<div class="srfm-text-primary w-full flex gap-2 p-[10px]">
+							uploadResultContainer.innerHTML = `<div class="srfm-text-primary srfm-w-full srfm-flex srfm-gap-2 srfm-p-[10px]">
 								${ icon }
-								<div class="w-full flex justify-between">
+								<div class="srfm-w-full srfm-flex srfm-justify-between">
 									<div>
-										<div class="text-base">${ fileName }</div>
-										<div class="text-sm text-gray-500"> ${ ( file.size / 1000000 ).toFixed(
-		2
-	) }MB</div>
+										<div class="srfm-text-base">${ fileName }</div>
+										<div class="srfm-text-sm srfm-text-gray-500"> ${ (
+		file.size / 1000000
+	).toFixed( 2 ) }MB</div>
 									</div>
 									<div>
-  										<i class="fa-sharp fa-solid fa-trash-can text-gray-400" id="reset-upload-field" style="cursor:pointer"></i>
+  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
 									</div>
 								</div>
 							</div>`;
 							uploadResultContainer.style.display = 'flex';
 							uploadField
-								.querySelector( '#reset-upload-field' )
+								.querySelector( '#srfm-reset-upload-field' )
 								.addEventListener( 'click', () => {
 									uploadInput.value = '';
 									uploadField.querySelector(
@@ -297,24 +297,24 @@ if ( toggleSwitchesContainer ) {
 
 					// switchBackground[ i ].style.backgroundColor =
 					// 	primaryColor !== '' ? 'var(--srfm-primary-color)' : '#0284c7';
-					// switchBackground[ i ].classList.remove( '!bg-[#E4E7EB]' );
+					// switchBackground[ i ].classList.remove( '!srfm-bg-[#E4E7EB]' );
 					if (
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.contains( '!opacity-0' )
+							.classList.contains( '!srfm-opacity-0' )
 					) {
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-0' );
+							.classList.remove( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-100' );
+							.classList.add( '!srfm-opacity-100' );
 						switchToggle.style.left = '24px';
 						toggleSwitch.value = 'true';
 					} else {
@@ -324,12 +324,12 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-0' );
+							.classList.add( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-100' );
+							.classList.remove( '!srfm-opacity-100' );
 						switchToggle.style.left = '0';
 						toggleSwitch.value = 'false';
 					}
@@ -344,7 +344,7 @@ if ( toggleSwitchesContainer ) {
 					// 	'sureform-toggle-background'
 					// );
 
-					// switchBackground[ i ].classList.add( '!bg-[#E4E7EB]' );
+					// switchBackground[ i ].classList.add( '!srfm-bg-[#E4E7EB]' );
 					// will be used later
 					// switchToggle[ i ].style.left = '2px';
 					// eslint-disable-next-line no-lonely-if
@@ -353,18 +353,18 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.contains( '!opacity-100' )
+							.classList.contains( '!srfm-opacity-100' )
 					) {
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-100' );
+							.classList.remove( '!srfm-opacity-100' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-0' );
+							.classList.add( '!srfm-opacity-0' );
 						switchToggle.style.left = '0';
 						switchBackground.style.backgroundColor = '#dcdcdc';
 						toggleSwitch.value = 'false';
@@ -373,12 +373,12 @@ if ( toggleSwitchesContainer ) {
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.remove( '!opacity-0' );
+							.classList.remove( '!srfm-opacity-0' );
 						switchBackground
 							.querySelector(
 								'.srfm-classic-toggle-icon-container'
 							)
-							.classList.add( '!opacity-100' );
+							.classList.add( '!srfm-opacity-100' );
 						switchToggle.style.left = '24px';
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
@@ -812,17 +812,17 @@ if ( checkboxContainers ) {
 			checkboxInputs.forEach( ( checkboxInput ) => {
 				if ( '' === primaryColor ) {
 					checkboxInput.classList.add(
-						'!text-[#0084C7]',
-						'focus:!ring-[#0084C7]',
-						'checked:!bg-[#0084C7]',
-						'checked:!border-none'
+						'!srfm-text-[#0084C7]',
+						'focus:!srfm-ring-[#0084C7]',
+						'checked:!srfm-bg-[#0084C7]',
+						'checked:!srfm-border-none'
 					);
 				} else {
 					checkboxInput.classList.add(
-						'!text-srfm_primary_color',
-						'focus:!ring-srfm_primary_color',
-						'checked:!bg-srfm_primary_color',
-						'checked:!border-none'
+						'!srfm-text-srfm_primary_color',
+						'focus:!srfm-ring-srfm_primary_color',
+						'checked:!srfm-bg-srfm_primary_color',
+						'checked:!srfm-border-none'
 					);
 				}
 			} );
@@ -952,7 +952,7 @@ if ( selectFieldContainer ) {
 		selectFieldButton.addEventListener( 'focus', () => {
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.add( 'rotate-180', '!pl-4' );
+				.classList.add( 'srfm-rotate-180', '!srfm-pl-4' );
 
 			const nextSibling = selectFieldButton.nextElementSibling;
 			const options = nextSibling.querySelectorAll(
@@ -961,9 +961,11 @@ if ( selectFieldContainer ) {
 			if ( '' === primaryColor ) {
 				for ( let index = 0; index < options.length; index++ ) {
 					options[ index ].classList.remove(
-						'hover:!bg-srfm_primary_color'
+						'hover:!srfm-bg-srfm_primary_color'
 					);
-					options[ index ].classList.add( 'hover:!bg-[#0084C7]' );
+					options[ index ].classList.add(
+						'hover:!srfm-bg-[#0084C7]'
+					);
 				}
 			}
 			const dropdownResultInput = selectField.querySelector(
@@ -971,28 +973,31 @@ if ( selectFieldContainer ) {
 			);
 			nextSibling.style.display = 'block';
 			if ( nextSibling ) {
-				nextSibling.classList.add( '!opacity-100' );
-				nextSibling.classList.add( '!z-10' );
-				nextSibling.classList.remove( '!opacity-0' );
+				nextSibling.classList.add( '!srfm-opacity-100' );
+				nextSibling.classList.add( '!srfm-z-10' );
+				nextSibling.classList.remove( '!srfm-opacity-0' );
 
 				const liElements = nextSibling.querySelectorAll( 'ul li' );
 				liElements.forEach( ( li ) => {
 					li.addEventListener( 'mousedown', ( event ) => {
 						selectFieldButton
 							.querySelector( '.srfm-classic-select-icon ' )
-							.classList.remove( 'rotate-180', '!pl-4' );
+							.classList.remove(
+								'srfm-rotate-180',
+								'!srfm-pl-4'
+							);
 						selectFieldButton
 							.querySelector( '.srfm-classic-select-icon ' )
-							.classList.add( 'rotate-0' );
+							.classList.add( 'srfm-rotate-0' );
 						const selectedValue = event.target.textContent.trim();
 						selectFieldButton.querySelector(
 							'.srfm-dropdown-value'
 						).textContent = selectedValue;
 						dropdownResultInput.value = selectedValue;
 
-						nextSibling.classList.remove( '!opacity-100' );
-						nextSibling.classList.remove( '!z-10' );
-						nextSibling.classList.add( '!opacity-0' );
+						nextSibling.classList.remove( '!srfm-opacity-100' );
+						nextSibling.classList.remove( '!srfm-z-10' );
+						nextSibling.classList.add( '!srfm-opacity-0' );
 						nextSibling.style.display = 'none';
 					} );
 				} );
@@ -1001,14 +1006,14 @@ if ( selectFieldContainer ) {
 		selectFieldButton.addEventListener( 'blur', () => {
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.remove( 'rotate-180', '!pl-4' );
+				.classList.remove( 'srfm-rotate-180', '!srfm-pl-4' );
 			selectFieldButton
 				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.add( 'rotate-0' );
+				.classList.add( 'srfm-rotate-0' );
 			const nextSibling = selectFieldButton.nextElementSibling;
-			nextSibling.classList.remove( '!opacity-100' );
-			nextSibling.classList.remove( '!z-10' );
-			nextSibling.classList.add( '!opacity-0' );
+			nextSibling.classList.remove( '!srfm-opacity-100' );
+			nextSibling.classList.remove( '!srfm-z-10' );
+			nextSibling.classList.add( '!srfm-opacity-0' );
 			nextSibling.style.display = 'none';
 		} );
 	}
@@ -1220,16 +1225,16 @@ if ( urlFiledContainers ) {
 			if ( isValidUrl ) {
 				validUrlMessage.style.display = 'none';
 				urlInput.classList.remove(
-					'!ring-red-500',
-					'!border-red-500',
-					'placeholder:!text-red-300'
+					'!srfm-ring-red-500',
+					'!srfm-border-red-500',
+					'placeholder:!srfm-text-red-300'
 				);
 			} else {
 				validUrlMessage.style.display = 'block';
 				urlInput.classList.add(
-					'!ring-red-500',
-					'!border-red-500',
-					'placeholder:!text-red-300'
+					'!srfm-ring-red-500',
+					'!srfm-border-red-500',
+					'placeholder:!srfm-text-red-300'
 				);
 			}
 		} );

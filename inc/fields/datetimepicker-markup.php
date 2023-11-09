@@ -89,11 +89,11 @@ class Datetimepicker_Markup extends Base {
 			$output .= '
 			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container ' . esc_attr( $classname ) . '">
 			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
-				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
 				<input type="hidden" class="sf-min-max-holder" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" >
 				<input type="hidden" field-type="' . esc_attr( $field_type ) . '" class="srfm-classic-date-time-result" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
-				<div class="srfm-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
+				<div class="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
 
 		$input_type = '';
 		switch ( $field_type ) {
@@ -110,9 +110,9 @@ class Datetimepicker_Markup extends Base {
 				$input_type = ' srfm-input-time';
 				break;
 		}
-			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock text-gray-400 text-[20px]"></i>' : '<i class="fa-regular fa-calendar text-gray-400 text-[20px]"></i>';
+			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock srfm-text-gray-400 srfm-text-[20px]"></i>' : '<i class="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[20px]"></i>';
 			$output    .= '>
-			<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+			<div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 			' . $input_icon . '
 			</div>
 			<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-data-time srfm-classic-datetime-picker' . $input_type . '" id="srfm-input-time-' . esc_attr( $block_id ) . '" />

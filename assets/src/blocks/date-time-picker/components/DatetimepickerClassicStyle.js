@@ -53,15 +53,15 @@ export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
 			>
 				{ label }
 				{ required && label && (
-					<span className="text-red-500"> *</span>
+					<span className="srfm-text-red-500"> *</span>
 				) }
 			</label>
-			<div className="srfm-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits">
-				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+			<div className="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits">
+				<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 					{ 'time' === fieldType ? (
-						<i className="fa-solid fa-clock text-gray-400 text-[20px]"></i>
+						<i className="fa-solid fa-clock srfm-text-gray-400 srfm-text-[20px]"></i>
 					) : (
-						<i className="fa-regular fa-calendar text-gray-400 text-[20px]"></i>
+						<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[20px]"></i>
 					) }
 				</div>
 				<input
