@@ -18,6 +18,7 @@ import { InputClassicStyle } from './components/InputClassicStyle';
 import { InputThemeStyle } from './components/InputThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -43,7 +44,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
 	return (
 		<>
 			<InspectorControls>
@@ -56,46 +56,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SelectControl
 								label={ __( 'Field Width', 'sureforms' ) }
 								value={ fieldWidth }
-								data={ {
-									value: fieldWidth,
-									label: 'fieldWidth',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { fieldWidth: value } )
-								}
-							/>
-							<SelectControl
-								label={ __( 'Column Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ [
-									{
-										label: '25%',
-										value: 25,
-									},
-									{
-										label: '30%',
-										value: 30,
-									},
-									{
-										label: '50%',
-										value: 50,
-									},
-									{
-										label: '70%',
-										value: 70,
-									},
-									{
-										label: '75%',
-										value: 75,
-									},
-									{
-										label: '100%',
-										value: 100,
-									},
-								] }
+								options={ widthOptions }
 								onChange={ ( value ) =>
 									setAttributes( { fieldWidth: value } )
 								}
