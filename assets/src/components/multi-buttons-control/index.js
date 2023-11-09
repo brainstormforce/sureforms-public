@@ -239,7 +239,7 @@ const MultiButtonsControl = ( props ) => {
 		);
 		return (
 			<div
-				className={ `components-base-control srfm-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
+				className={ `components-base-control srfm-multi-buttons-control ${ iconsClass } srfm-multi-buttons__color-scheme--${ colorVariant } srfm-multi-buttons__layout--${ layoutVariant }` }
 			>
 				<div className="srfm-control__header srfm-size-type-field-tabs">
 					<ResponsiveToggle
@@ -279,17 +279,17 @@ const MultiButtonsControl = ( props ) => {
 	};
 	const controlName = getIdFromString( label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		selectedBlock
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
 		'',
 		selectedBlock
 	);
 	const allOptions = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
 		options,
 		selectedBlock
 	);
@@ -298,7 +298,7 @@ const MultiButtonsControl = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ ` srfm-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
+				className={ ` srfm-multi-buttons-control ${ iconsClass } srfm-multi-buttons__color-scheme--${ colorVariant } srfm-multi-buttons__layout--${ layoutVariant }` }
 			>
 				<div className="srfm-multi-buttons-control__label srfm-control-label">
 					{ label }

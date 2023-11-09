@@ -1,17 +1,17 @@
 @import "../../styles/variables";
 
-.spectra-separator {
+.srfm-separator {
 	width: 100%;
 	height: 1px;
-	margin: $spectra-control-vertical-gap 0;
-	background-color: $spectra-color-border;
+	margin: $srfm-control-vertical-gap 0;
+	background-color: $srfm-color-border;
 
 	&--removed-top-space {
 		margin-top: 0 !important;
 	}
 }
 
-.srfm-inspector-tab .components-panel__body .spectra-separator {
+.srfm-inspector-tab .components-panel__body .srfm-separator {
 	width: auto;
-	margin: $spectra-control-vertical-gap ( -$spectra-panel-body-padding );
+	margin: $srfm-control-vertical-gap ( -$srfm-panel-body-padding );
 }

@@ -16,7 +16,7 @@
 	.srfm-background-image-overlay-color,
 	.srfm-background-image-overlay-gradient,
 	.srfm-responsive-select-control {
-		margin-top: $spectra-control-vertical-gap;
+		margin-top: $srfm-control-vertical-gap;
 
 		.srfm-size-type-field-tabs {
 			display: flex;
@@ -59,7 +59,7 @@
 	.srfm-background-image-size {
 		.srfm-responsive-control-inner > .components-base-control {
 			display: block;
-			margin-top: $spectra-control-vertical-gap;
+			margin-top: $srfm-control-vertical-gap;
 		}
 
 		.srfm-range-control.srfm-size-type-field-tabs {
@@ -80,11 +80,11 @@
 				width: 100%;
 
 				.components-focal-point-picker {
-					border-radius: $spectra-control-border-radius;
-					border-color: $spectra-color-border;
+					border-radius: $srfm-control-border-radius;
+					border-color: $srfm-color-border;
 
 					img {
-						border-radius: $spectra-control-border-radius;
+						border-radius: $srfm-control-border-radius;
 					}
 				}
 

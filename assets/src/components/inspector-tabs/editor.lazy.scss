@@ -111,8 +111,8 @@ $border-color: #d6d9dd;
 				&::after {
 					border-left: 0;
 					/* Below CSS used to show border at bottom of the tabs. */
-					box-shadow: inset 0 -3px 0 0 $spectra-color-primary;
-					color: $spectra-color-primary;
+					box-shadow: inset 0 -3px 0 0 $srfm-color-primary;
+					color: $srfm-color-primary;
 					/* End here. */
 				}
 			}
@@ -122,8 +122,8 @@ $border-color: #d6d9dd;
 				&::after {
 					border-right: 0;
 					/* Below CSS used to show border at bottom of the tabs. */
-					box-shadow: inset 0 -3px 0 0 $spectra-color-primary;
-					color: $spectra-color-primary;
+					box-shadow: inset 0 -3px 0 0 $srfm-color-primary;
+					color: $srfm-color-primary;
 					/* End here. */
 				}
 			}
@@ -136,8 +136,8 @@ $border-color: #d6d9dd;
 				border-bottom: 0;
 
 				/* Below CSS used to show border at bottom of the tabs. */
-				box-shadow: inset 0 -3px 0 0 $spectra-color-primary;
-				color: $spectra-color-primary;
+				box-shadow: inset 0 -3px 0 0 $srfm-color-primary;
+				color: $srfm-color-primary;
 				/* End here. */
 			}
 

@@ -16,8 +16,8 @@
 	.srfm-spacing-control__link {
 		border-left: 1px solid;
 		border-right: 1px solid;
-		border-color: $spectra-color-border;
-		color: $spectra-color-body;
+		border-color: $srfm-color-border;
+		color: $srfm-color-body;
 		border-radius: 0;
 		box-shadow: none !important;
 		height: 30px;
@@ -29,13 +29,13 @@
 	input[type="number"].srfm-spacing-control__number:focus {
 		z-index: 1;
 		outline-offset: -1px;
-		outline: 1px solid $spectra-color-icon-disabled;
+		outline: 1px solid $srfm-color-icon-disabled;
 	}
 
 	.srfm-spacing-control__link {
-		border: 1px solid $spectra-color-border-hover;
-		background-color: $spectra-color-border-hover;
-		color: $spectra-color-plain-background;
+		border: 1px solid $srfm-color-border-hover;
+		background-color: $srfm-color-border-hover;
+		color: $srfm-color-plain-background;
 		justify-content: center;
 		display: flex;
 		align-items: center;
@@ -46,9 +46,9 @@
 		transition: none;
 
 		&.srfm-spacing-control-disconnected {
-			border-color: $spectra-color-border;
-			background-color: $spectra-color-plain-background;
-			color: $spectra-color-border-hover;
+			border-color: $srfm-color-border;
+			background-color: $srfm-color-plain-background;
+			color: $srfm-color-border-hover;
 		}
 	}
 
@@ -60,15 +60,15 @@
 	}
 
 	.srfm-spacing-control__inputs > :first-child.srfm-spacing-control__number {
-		-webkit-border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
-		-moz-border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
-		border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
+		-webkit-border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
+		-moz-border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
+		border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
 	}
 
 	.srfm-spacing-control__inputs > :last-child {
-		-webkit-border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
-		-moz-border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
-		border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
+		-webkit-border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
+		-moz-border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
+		border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
 	}
 
 	.srfm-control__actions .components-tab-panel__tabs {
@@ -118,7 +118,7 @@
 		&.srfm-spacing-control__mobile-controls-item--spacing.components-button.is-secondary:active:not( :disabled ),
 		&.srfm-spacing-control__mobile-controls-item--spacing.components-button.is-tertiary:active:not( :disabled ) {
 			background: #fff;
-			color: $spectra-color-body;
+			color: $srfm-color-body;
 		}
 
 		&.components-button {
@@ -167,7 +167,7 @@
 	}
 
 	.srfm-spacing-control__number-label {
-		color: $spectra-color-icon-disabled;
+		color: $srfm-color-icon-disabled;
 		display: block;
 		font-size: 10px;
 		margin-top: 5px;

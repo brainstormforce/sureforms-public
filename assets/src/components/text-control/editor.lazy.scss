@@ -16,11 +16,11 @@
 		padding-right: 30px;
 		margin-left: 0;
 		margin-right: 0;
-		color: $spectra-color-body;
-		border-color: $spectra-color-border;
+		color: $srfm-color-body;
+		border-color: $srfm-color-border;
 
 		&:focus {
-			border-color: $spectra-color-border-hover;
+			border-color: $srfm-color-border-hover;
 			box-shadow: unset;
 		}
 	}
@@ -39,12 +39,12 @@
 			right: 0;
 			bottom: 0;
 			padding: 0 8px;
-			border-radius: $spectra-popup-border-radius;
-			height: $spectra-control-input-height;
+			border-radius: $srfm-popup-border-radius;
+			height: $srfm-control-input-height;
 
 			svg {
 				width: 18px;
-				stroke: $spectra-color-icon;
+				stroke: $srfm-color-icon;
 				stroke-width: 1.4;
 				fill: none;
 			}
@@ -75,11 +75,11 @@
 			}
 
 			textarea {
-				color: $spectra-color-body;
-				border-color: $spectra-color-border;
+				color: $srfm-color-body;
+				border-color: $srfm-color-border;
 
 				&:focus {
-					border-color: $spectra-color-border-hover;
+					border-color: $srfm-color-border-hover;
 					box-shadow: unset;
 				}
 			}
@@ -87,6 +87,6 @@
 	}
 
 	&.components-base-control > .components-base-control__help {
-		margin-top: $spectra-control-label-bottom-margin;
+		margin-top: $srfm-control-label-bottom-margin;
 	}
 }

@@ -101,7 +101,7 @@ function FontFamilyControl( props ) {
 
 	let fontWeight = '';
 
-	const customFonts = srfm_blocks_info.spectra_custom_fonts;
+	const customFonts = srfm_blocks_info.srfm_custom_fonts;
 
 	//Push Google Fonts into stytem fonts object
 	// eslint-disable-next-line array-callback-return

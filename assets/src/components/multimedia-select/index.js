@@ -41,7 +41,7 @@ const MultiMediaSelector = ( props ) => {
 		const uploadType = mediaGallery[ 0 ]?.url ? 'replace' : 'add';
 		return (
 			<button
-				className={ `spectra-media-control__clickable spectra-media-control__clickable--${ uploadType }` }
+				className={ `srfm-media-control__clickable srfm-media-control__clickable--${ uploadType }` }
 				onClick={ open }
 			>
 				{ 'add' === uploadType ? (
@@ -55,7 +55,7 @@ const MultiMediaSelector = ( props ) => {
 
 	const renderButton = ( buttonType ) => (
 		<div
-			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
+			className={ `srfm-media-control__button srfm-media-control__button--${ buttonType }` }
 		>
 			{ SRFM_Block_Icons[ buttonType ] }
 		</div>
@@ -63,16 +63,16 @@ const MultiMediaSelector = ( props ) => {
 
 	return (
 		<BaseControl
-			className="spectra-media-control"
+			className="srfm-media-control"
 			id={ `srfm-option-selector-${ slug }` }
 			label={ label }
 			hideLabelFromVision={ disableLabel }
 		>
-			<div className="spectra-media-control__wrapper">
+			<div className="srfm-media-control__wrapper">
 				{ mediaGallery[ 0 ]?.url && (
 					<div
 						className={
-							'spectra-media-control__icon spectra-media-control__icon--stroke'
+							'srfm-media-control__icon srfm-media-control__icon--stroke'
 						}
 					>
 						{ placeholderIcon }
@@ -93,7 +93,7 @@ const MultiMediaSelector = ( props ) => {
 				/>
 				{ onRemoveMedia && mediaGallery[ 0 ]?.url && (
 					<button
-						className="spectra-media-control__clickable spectra-media-control__clickable--close"
+						className="srfm-media-control__clickable srfm-media-control__clickable--close"
 						onClick={ onRemoveMedia }
 					>
 						{ renderButton( 'close' ) }

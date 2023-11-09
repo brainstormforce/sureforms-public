@@ -5,7 +5,7 @@
 	width: 100%;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: $spectra-control-label-bottom-margin;
+	margin-bottom: $srfm-control-label-bottom-margin;
 
 	.srfm-control-label,
 	.srfm-inspector-tab .components-base-control__label,
@@ -73,7 +73,7 @@
 				&.is-primary {
 					background: unset;
 					background-color: unset;
-					color: $spectra-color-primary;
+					color: $srfm-color-primary;
 					box-shadow: unset;
 				}
 
@@ -81,10 +81,10 @@
 				&.is-tertiary {
 					background: unset;
 					background-color: unset;
-					color: $spectra-color-body;
+					color: $srfm-color-body;
 
 					&:hover:not( :disabled ) {
-						color: $spectra-color-primary;
+						color: $srfm-color-primary;
 					}
 				}
 			}
@@ -105,11 +105,11 @@
 
 		.components-button.is-secondary:disabled {
 			background: 0 0;
-			color: $spectra-color-icon-disabled;
+			color: $srfm-color-icon-disabled;
 		}
 
 		.components-button.is-secondary {
-			color: $spectra-color-primary;
+			color: $srfm-color-primary;
 			box-shadow: 0 0;
 		}
 	}

@@ -89,12 +89,12 @@ const InspectorTab = ( props ) => {
 
 	const blockNameForHook = blockName?.split( '/' )?.pop();
 	const inspectorTabBefore = applyFilters(
-		`spectra.${ blockNameForHook }.tab_${ type }.before`,
+		`srfm.${ blockNameForHook }.tab_${ type }.before`,
 		'',
 		blockName
 	);
 	const inspectorTabAfter = applyFilters(
-		`spectra.${ blockNameForHook }.tab_${ type }`,
+		`srfm.${ blockNameForHook }.tab_${ type }`,
 		'',
 		blockName
 	);

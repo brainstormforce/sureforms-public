@@ -1,14 +1,14 @@
 @import "../../styles/variables";
 
-.srfm-inspector-tab .spectra {
+.srfm-inspector-tab .srfm {
 	&__matrix-control {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
 
 		&--box {
-			border: 1px solid $spectra-color-border;
-			border-radius: $spectra-control-border-radius;
+			border: 1px solid $srfm-color-border;
+			border-radius: $srfm-control-border-radius;
 		}
 
 		.srfm-control-label {

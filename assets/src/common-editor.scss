@@ -19,11 +19,11 @@
 
 		.components-panel__body {
 			> div:not( .components-panel__row ):not( .srfm-select-control ) > .components-base-control {
-				margin-bottom: $spectra-control-vertical-gap;
+				margin-bottom: $srfm-control-vertical-gap;
 			}
 
 			> .components-base-control {
-				margin-bottom: $spectra-control-vertical-gap;
+				margin-bottom: $srfm-control-vertical-gap;
 
 				.components-base-control,
 				.components-base-control__field {
@@ -36,8 +36,8 @@
 				margin-bottom: 0;
 			}
 
-			> .spectra-components-control .components-base-control {
-				margin-bottom: $spectra-control-vertical-gap;
+			> .srfm-components-control .components-base-control {
+				margin-bottom: $srfm-control-vertical-gap;
 
 				.components-base-control,
 				.components-base-control__field {
@@ -46,11 +46,11 @@
 				}
 			}
 
-			> .spectra-components-control:last-child .components-base-control {
+			> .srfm-components-control:last-child .components-base-control {
 				margin-bottom: 0;
 			}
 
-			.spectra-panel__body-sub-heading {
+			.srfm-panel__body-sub-heading {
 				font-size: 13px;
 				font-weight: 500;
 				line-height: 16px;
@@ -106,7 +106,7 @@
 	.block-editor-block-list__block:not( .remove-outline ).is-hovered::after,
 	.block-editor-block-list__block:hover::after,
 	.block-editor-block-list__block:not( [contenteditable] ):focus::after {
-		box-shadow: 0 0 0 1.5px $spectra-color-primary;
+		box-shadow: 0 0 0 1.5px $srfm-color-primary;
 		border-radius: 2px;
 	}
 
@@ -117,7 +117,7 @@
 
 .block-editor-block-list__layout .block-editor-block-list__block.is-selected {
 	// Added CSS for better clarity to the users to indicates which block is selected & being edited.
-	box-shadow: 0 0 0 1.5px $spectra-color-primary;
+	box-shadow: 0 0 0 1.5px $srfm-color-primary;
 	border-radius: 2px;
 }
 
@@ -126,12 +126,12 @@
 .srfm-inspector-tab .components-base-control__label,
 .srfm-inspector-tab .components-panel__body label,
 .srfm-extention-tab label {
-	color: $spectra-color-body;
-	font-size: $spectra-font-size-label !important;
-	line-height: $spectra-line-height-label !important;
-	margin-bottom: $spectra-control-label-bottom-margin;
-	text-transform: $spectra-text-transform-label !important;
-	font-weight: $spectra-font-weight-label !important;
+	color: $srfm-color-body;
+	font-size: $srfm-font-size-label !important;
+	line-height: $srfm-line-height-label !important;
+	margin-bottom: $srfm-control-label-bottom-margin;
+	text-transform: $srfm-text-transform-label !important;
+	font-weight: $srfm-font-weight-label !important;
 }
 
 .srfm-inspector-tab label.components-toggle-control__label {
@@ -155,7 +155,7 @@
 .srfm-inspector-tab,
 [data-srfm-tab] {
 	.components-panel__body-title .components-button {
-		font-size: $spectra-font-size-button;
+		font-size: $srfm-font-size-button;
 	}
 }
 
@@ -180,7 +180,7 @@
 
 	button.active-tab svg,
 	button.active-tab svg:focus {
-		color: $spectra-color-primary;
+		color: $srfm-color-primary;
 	}
 }
 
@@ -208,7 +208,7 @@
 .srfm-size-type-field-tabs .components-tab-panel__tabs button.active-tab,
 .srfm-size-type-field-tabs .components-tab-panel__tabs button.active-tab:focus {
 	box-shadow: none;
-	color: $spectra-color-primary;
+	color: $srfm-color-primary;
 	border-radius: 100%;
 	padding: 0;
 	margin: 0;
@@ -390,7 +390,7 @@ hr.srfm-editor__separator {
 	background: transparent;
 	border: none;
 	outline: none;
-	color: $spectra-color-heading;
+	color: $srfm-color-heading;
 	text-decoration: underline;
 	-webkit-box-shadow: none;
 }
@@ -402,7 +402,7 @@ hr.srfm-editor__separator {
 
 .srfm-size-type-field button.components-button.srfm-size-btn:hover,
 .srfm-size-type-field button.components-button.srfm-size-btn:hover:focus:not( :disabled ):not( [aria-disabled="true"] ) {
-	color: $spectra-color-heading;
+	color: $srfm-color-heading;
 	background: transparent;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -525,7 +525,7 @@ label.wp-block-srfm-blockquote__via-label svg {
 
 /* Common srfm reset CSS start here */
 button.components-button.srfm-reset.is-secondary.is-small:not( :disabled ) {
-	color: $spectra-color-primary;
+	color: $srfm-color-primary;
 }
 
 .srfm-reset .dashicons-image-rotate {
@@ -537,7 +537,7 @@ button.components-button.srfm-reset.is-secondary.is-small:not( :disabled ) {
 button.components-button.srfm-reset.is-secondary.is-small {
 	box-shadow: unset;
 	background: 0 0;
-	color: $spectra-color-icon-disabled;
+	color: $srfm-color-icon-disabled;
 }
 
 /* Common srfm reset CSS end here */
@@ -581,7 +581,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 .srfm-typography-option-actions .srfm-typography-control-btn.components-button:focus:not( :disabled ) {
 	box-shadow: unset;
 	outline: none;
-	color: $spectra-color-secondary;
+	color: $srfm-color-secondary;
 }
 
 .srfm-inspector-tab .components-panel__body.is-opened > .components-panel__body-title {
@@ -603,7 +603,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 
 .srfm-responsive-common-button {
 	box-shadow: none;
-	color: $spectra-color-body;
+	color: $srfm-color-body;
 	border-radius: 100%;
 	border: 0;
 	border-bottom: 0;
@@ -620,7 +620,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	margin-left: 10px;
 
 	svg {
-		color: $spectra-color-body;
+		color: $srfm-color-body;
 	}
 }
 
@@ -679,12 +679,12 @@ button.components-button.srfm-review-select-btn.is-secondary {
 		}
 
 		.components-base-control .components-base-control__label {
-			color: $spectra-color-body;
-			font-size: $spectra-font-size-label;
-			line-height: $spectra-line-height-label;
-			margin-bottom: $spectra-control-label-bottom-margin;
-			text-transform: $spectra-text-transform-label;
-			font-weight: $spectra-font-weight-label;
+			color: $srfm-color-body;
+			font-size: $srfm-font-size-label;
+			line-height: $srfm-line-height-label;
+			margin-bottom: $srfm-control-label-bottom-margin;
+			text-transform: $srfm-text-transform-label;
+			font-weight: $srfm-font-weight-label;
 		}
 	}
 }
@@ -712,18 +712,18 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	path,
 	rect,
 	circle {
-		stroke: $spectra-color-heading;
+		stroke: $srfm-color-heading;
 	}
 }
 
 /* Block Editor Block Icons Color*/
 .block-editor-block-icon.has-colors svg.srfm-editor-icons {
-	stroke: $spectra-color-secondary;
+	stroke: $srfm-color-secondary;
 
 	path,
 	rect,
 	circle {
-		stroke: $spectra-color-secondary;
+		stroke: $srfm-color-secondary;
 	}
 }
 
@@ -734,12 +734,12 @@ button.components-button.srfm-review-select-btn.is-secondary {
 
 	.block-editor-block-breadcrumb {
 		li {
-			color: $spectra-color-secondary;
+			color: $srfm-color-secondary;
 			font-weight: 600;
 			font-size: 14px;
 
 			button {
-				color: $spectra-color-secondary;
+				color: $srfm-color-secondary;
 				font-weight: 600;
 			}
 
@@ -789,17 +789,17 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
-/* Spectra Page Level Settings */
-.is-pressed .spectra-page-settings-button path {
+/* srfm Page Level Settings */
+.is-pressed .srfm-page-settings-button path {
 	fill: #fff;
 }
 
-.spectra-page-settings-button:hover path {
+.srfm-page-settings-button:hover path {
 	fill: #007cba;
 }
 
-/* Spectra Sidebar Settings Notice */
-.spectra-sidebar-settings-notice {
+/* srfm Sidebar Settings Notice */
+.srfm-sidebar-settings-notice {
 	margin: 0;
 
 	&.is-error {
@@ -807,21 +807,21 @@ button.components-button.srfm-review-select-btn.is-secondary {
 	}
 }
 
-/* Spectra Multiselect Control */
-.spectra-multi-select__control {
+/* srfm Multiselect Control */
+.srfm-multi-select__control {
 	box-shadow: none !important;
 	border-color: #e6e7e9 !important;
 	border-radius: 3px !important;
 
-	.spectra-multi-select__input input {
+	.srfm-multi-select__input input {
 		box-shadow: none !important;
 	}
 
-	.spectra-multi-select__multi-value__label {
+	.srfm-multi-select__multi-value__label {
 		font-size: 13px !important;
 	}
 
-	.spectra-multi-select__menu .spectra-multi-select__option {
+	.srfm-multi-select__menu .srfm-multi-select__option {
 		font-size: 13px !important;
 	}
 }
@@ -839,5 +839,5 @@ button.components-button.srfm-review-select-btn.is-secondary {
 @import "styles/control-popup";
 @import "styles/control-media-picker";
 @import "styles/control-variation-picker";
-@import "styles/spectra-change-indicators";
-@import "styles/spectra-legacy";
+@import "styles/srfm-change-indicators";
+@import "styles/srfm-legacy";

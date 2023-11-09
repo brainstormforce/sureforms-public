@@ -6,10 +6,10 @@
 		&.srfm-number-control__full-width {
 			position: relative;
 
-			color: $spectra-color-body;
+			color: $srfm-color-body;
 
 			.srfm-control-label {
-				margin-bottom: $spectra-control-label-bottom-margin;
+				margin-bottom: $srfm-control-label-bottom-margin;
 			}
 
 			.components-number-control .components-input-control__input {
@@ -20,7 +20,7 @@
 				position: absolute;
 				left: 75%;
 				bottom: 0%;
-				height: $spectra-control-input-height;
+				height: $srfm-control-input-height;
 				z-index: 1;
 			}
 		}
@@ -30,7 +30,7 @@
 			align-items: center;
 			display: grid;
 			grid-template-columns: repeat( 3, 1fr );
-			color: $spectra-color-body;
+			color: $srfm-color-body;
 
 			.srfm-control-label {
 				margin-bottom: 0;
@@ -57,7 +57,7 @@
 
 		> .components-button svg {
 			width: 18px;
-			stroke: $spectra-color-icon;
+			stroke: $srfm-color-icon;
 			stroke-width: 1.4;
 			fill: none;
 			z-index: 1;

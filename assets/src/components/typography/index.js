@@ -50,10 +50,10 @@ const TypographyControl = ( props ) => {
 	useLayoutEffect( () => {
 		window.addEventListener( 'click', function ( e ) {
 			const popupButton = document.querySelector(
-				`.active.popup-${ props?.attributes?.block_id } .spectra-control-popup__options--action-button`
+				`.active.popup-${ props?.attributes?.block_id } .srfm-control-popup__options--action-button`
 			);
 			const popupWrap = document.querySelector(
-				`.active.popup-${ props?.attributes?.block_id } .spectra-control-popup`
+				`.active.popup-${ props?.attributes?.block_id } .srfm-control-popup`
 			);
 
 			if (
@@ -335,16 +335,16 @@ const TypographyControl = ( props ) => {
 	if ( true !== disableFontFamily && true !== disableFontSize ) {
 		fontAdvancedControls = (
 			<Button
-				className="srfm-typography-button spectra-control-popup__options--action-button"
+				className="srfm-typography-button srfm-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
-						'.spectra-control-popup__options'
+						'.srfm-control-popup__options'
 					);
 					if ( allPopups && 0 < allPopups.length ) {
 						for ( let i = 0; i < allPopups.length; i++ ) {
 							const popupButton = allPopups[ i ]?.querySelector(
-								'.spectra-control-popup__options.active .spectra-control-popup__options--action-button'
+								'.srfm-control-popup__options.active .srfm-control-popup__options--action-button'
 							);
 							popupButton?.click();
 						}
@@ -398,7 +398,7 @@ const TypographyControl = ( props ) => {
 
 	if ( showAdvancedControls === true ) {
 		showAdvancedFontControls = (
-			<div className="srfm-typography-advanced spectra-control-popup">
+			<div className="srfm-typography-advanced srfm-control-popup">
 				{ fontFamily }
 				{ transform }
 				{ decoration }
@@ -410,11 +410,11 @@ const TypographyControl = ( props ) => {
 
 	if ( true !== disableFontFamily && true !== disableFontSize ) {
 		fontTypoAdvancedControls = (
-			<div className="spectra-control-popup__options--action-wrapper">
+			<div className="srfm-control-popup__options--action-wrapper">
 				<span className="srfm-control-label">
 					{ props.label }
 					{ isTypographyUpdated && (
-						<div className="spectra__change-indicator--dot-right" />
+						<div className="srfm__change-indicator--dot-right" />
 					) }
 				</span>
 				{ fontAdvancedControls }
@@ -424,12 +424,12 @@ const TypographyControl = ( props ) => {
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -438,7 +438,7 @@ const TypographyControl = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ ` srfm-typography-options spectra-control-popup__options popup-${ props?.attributes?.block_id } ${ activeClass }` }
+				className={ ` srfm-typography-options srfm-control-popup__options popup-${ props?.attributes?.block_id } ${ activeClass }` }
 			>
 				{ ! disableAdvancedOptions && (
 					<>

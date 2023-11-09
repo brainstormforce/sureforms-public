@@ -7,14 +7,14 @@ import { createElement as el } from '@wordpress/element';
 // This is the color that will be visible on the drag and drop of the blocks. Use this as the primary fill / stroke color.
 const iconColor = '#fff';
 // This is the color used for non-block icons.
-const spectraDarkColor = '#1d2327';
+const srfmDarkColor = '#1d2327';
 
 // Negative Space Color needs to be implemented for the property that doesn't use iconColor.
 const noColor = 'none';
 
 const SRFM_Block_Icons = {
 	// ------------------------.
-	// All Spectra Block Icons .
+	// All srfm Block Icons .
 	// ------------------------.
 
 	logo: el(
@@ -1366,7 +1366,7 @@ const SRFM_Block_Icons = {
 	),
 
 	// ----------------------------.
-	// All Spectra Pro Block Icons .
+	// All srfm Pro Block Icons .
 	// ----------------------------.
 
 	login: el(
@@ -1528,7 +1528,7 @@ const SRFM_Block_Icons = {
 		'svg',
 		{ width: 20, height: 20 },
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M19.31 0h-18.619c-0.381 0-0.691 0.309-0.691 0.691v18.619c0 0.382 0.309 0.691 0.691 0.691h18.619c0.382 0 0.691-0.309 0.691-0.691v-18.619c0-0.381-0.309-0.691-0.69-0.691v0zM18.62 6.206h-4.825v-4.825h4.825v4.825zM18.62 12.413h-4.825v-4.825h4.825v4.825zM1.381 7.588h4.825v4.825h-4.825v-4.825zM7.588 7.588h4.825v4.825h-4.825v-4.825zM12.413 1.381v4.825h-4.825v-4.825h4.825zM6.206 1.381v4.825h-4.825v-4.825h4.825zM1.381 13.794h4.825v4.826h-4.825v-4.826zM7.588 18.62v-4.826h4.825v4.826h-4.825zM13.794 18.62v-4.826h4.825v4.826h-4.825z',
 		} )
 	),
@@ -1730,32 +1730,32 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M41.5,2.1H7.8C4,2.1,1,5.2,1,8.9v40.5c0,3.7,3,6.8,6.8,6.8h18.6v-3.4H7.8c-1.9,0-3.4-1.5-3.4-3.4V8.9c0-1.9,1.5-3.4,3.4-3.4h33.8c1.9,0,3.4,1.5,3.4,3.4v19.8l3.4-3.4V8.9C48.3,5.2,45.2,2.1,41.5,2.1z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M38.1,15.6h-27v-3.4h27V15.6z',
 		} ),
-		el( 'path', { fill: spectraDarkColor, d: 'M38.1,23h-27v-3.4h27V23z' } ),
+		el( 'path', { fill: srfmDarkColor, d: 'M38.1,23h-27v-3.4h27V23z' } ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M35.2,29.6H13.5v-2.7h21.7V29.6z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M35.2,35.4H13.5v-2.7h21.7V35.4z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M35.2,27.8v6.3h-2.7v-6.3H35.2z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M16.2,27.9v6.3h-2.7v-6.3H16.2z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M43.4,31.9c-0.7,0.4-1.2,1-1.4,1.8c-0.9-0.3-1.9-0.1-2.7,0.3c-0.7,0.4-1.2,1-1.4,1.8c-0.9-0.3-1.9-0.1-2.7,0.3c-0.4,0.4-0.8,0.7-1.1,1.3L31,34c-1.1-1.3-3-1.5-4.4-0.7c-0.8,0.6-1.4,1.4-1.5,2.4c-0.1,1,0.1,2,0.8,2.8l4,4.5c-0.7,0.3-1.2,0.6-1.8,1.2c-0.4,0.5-0.9,1.2-1,1.9c0,0.3,0.1,0.6,0.3,0.9l5.8,6.5c4.3,4.8,11.6,5.5,16.5,1.6c0.2-0.1,0.3-0.2,0.4-0.4c0.1-0.1,0.3-0.2,0.3-0.3c5-4.7,5.2-12.9,0.4-18.3l-3-3.4C46.7,31.4,44.8,31.1,43.4,31.9z M49.1,37.5c4,4.5,3.8,11.2-0.3,15.2c-0.3,0.2-0.4,0.4-0.7,0.6c-3.8,3.1-9.9,2.4-13.3-1.4l-5.3-6c0-0.2,0.1-0.2,0.2-0.3c0.3-0.3,0.7-0.5,1.3-0.6c0.5,0,0.9,0.2,1.2,0.6l4.1,4.6c0.4,0.5,1.1,0.5,1.6,0.1s0.5-1.1,0.1-1.6l-4.1-4.6l-1.1-1.3l-5.2-5.9c-0.2-0.3-0.4-0.6-0.3-1c0-0.3,0.3-0.5,0.5-0.8c0.4-0.2,1.1-0.1,1.5,0.3l5.2,5.8l1.5,1.7c0.4,0.5,1.1,0.5,1.6,0.1c0.5-0.4,0.5-1.1,0.1-1.6l-1.5-1.7c-0.2-0.3-0.4-0.6-0.3-1c0-0.3,0.2-0.6,0.5-0.8c0.5-0.3,1.1-0.1,1.5,0.3l0.7,0.8l0.7,0.8c0.4,0.5,1.1,0.5,1.6,0.1c0.5-0.4,0.5-1.1,0.1-1.6l-0.7-0.8c-0.2-0.3-0.4-0.6-0.3-1c0-0.3,0.2-0.6,0.5-0.8c0.5-0.3,1.1-0.1,1.5,0.3l0.7,0.8l0.7,0.8c0.4,0.5,1.1,0.5,1.6,0.1c0.5-0.4,0.5-1.1,0.1-1.6l-0.7-0.8c-0.2-0.3-0.4-0.6-0.3-1c0-0.3,0.2-0.6,0.5-0.8l0,0c0.5-0.3,1.1-0.1,1.5,0.3L49.1,37.5L49.1,37.5z',
 		} )
 	),
@@ -1769,23 +1769,23 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M44.4,5.6H10.9c-4.1,0-7.4,3.3-7.4,7.4v33.5c0,4.1,3.3,7.4,7.4,7.4h15.4l3.7-1.9l-3.7-1.9H10.9c-2.1,0-3.7-1.7-3.7-3.7V13.1c0-2.1,1.7-3.7,3.7-3.7h33.5c2.1,0,3.7,1.7,3.7,3.7v30l0.1-0.1c0.4-2.3,1.7-4.4,3.6-5.7V13.1C51.9,9,48.5,5.6,44.4,5.6z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M14.7,19.6h26.1v-3.7H14.7V19.6z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M14.7,27h26.1v-3.7H14.7V27z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M14.7,34.5h26.1v-3.7H14.7V34.5z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M56.2,45l0-3.7c0-1-0.4-2-1.1-2.6c-0.7-0.7-1.6-1.1-2.6-1.1l-22.6,0.2c-1,0-4.6,0.5-5.3,1.1l-7.1,4.6l7.2,4.4c0,0,4.2,1,5.3,1l22.6-0.2C54.5,48.7,56.2,47,56.2,45z M29.9,47.1c-0.3,0-1.2-0.2-2.2-0.4l-0.1-6.8c0.8-0.1,1.7-0.2,2.2-0.2l17-0.2l0.1,7.4L29.9,47.1z',
 		} )
 	),
@@ -1799,19 +1799,19 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M41.5,46.1h-27v-3.4h27V46.1z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M20.7,26.3l10.1,10.1l21.2-21.2L41.8,5.1L20.7,26.3z M44.2,12.8c0.7,0.7,0.7,1.8,0,2.5L32,27.6c-0.3,0.4-0.8,0.5-1.3,0.5c-0.5,0-0.9-0.2-1.3-0.5c-0.7-0.7-0.7-1.8,0-2.5l12.3-12.3C42.4,12.1,43.5,12.1,44.2,12.8z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M56,5.8l-4.8-4.8c-1.4-1.4-3.9-1.4-5.3,0l-1.6,1.6l10.1,10.1l1.5-1.5C57.4,9.7,57.4,7.3,56,5.8z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M46.9,56.3H4.6c-1,0-1.8-0.8-1.8-1.8V9.7c0-1,0.8-1.8,1.8-1.8H33c1,0,1.8,0.8,1.8,1.8c0,1-0.8,1.8-1.8,1.8H6.5v41.1h40.4c1.4,0,2.6-1.2,2.6-2.6V26.9c0-1,0.8-1.8,1.8-1.8c1,0,1.8,0.8,1.8,1.8V50C53.2,53.5,50.4,56.3,46.9,56.3z',
 		} )
 	),
@@ -1824,7 +1824,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M5.91683 0.5875L5.32933 0L3.00016 2.32917L0.670996 0L0.0834961 0.5875L2.41266 2.91667L0.0834961 5.24583L0.670996 5.83333L3.00016 3.50417L5.32933 5.83333L5.91683 5.24583L3.58766 2.91667L5.91683 0.5875Z',
 		} )
 	),
@@ -1837,7 +1837,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M4.35613 0.231675L3.52528 0.231675V3.52561L0.231343 3.52561V4.35647L3.52528 4.35647V7.65041L4.35613 7.65041L4.35613 4.35647H7.65007V3.52561H4.35613L4.35613 0.231675Z',
 		} )
 	),
@@ -1852,14 +1852,14 @@ const SRFM_Block_Icons = {
 		},
 		el( 'path', {
 			d: 'M14.7519 11.1679L11.5547 9.03647C10.8901 8.59343 10 9.06982 10 9.86852V14.1315C10 14.9302 10.8901 15.4066 11.5547 14.9635L14.7519 12.8321C15.3457 12.4362 15.3457 11.5638 14.7519 11.1679Z',
-			stroke: spectraDarkColor,
+			stroke: srfmDarkColor,
 			strokeWidth: 1.4,
 			strokeLinecap: 'round',
 			strokeLinejoin: 'round',
 		} ),
 		el( 'path', {
 			d: 'M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z',
-			stroke: spectraDarkColor,
+			stroke: srfmDarkColor,
 			strokeWidth: 1.4,
 			strokeLinecap: 'round',
 			strokeLinejoin: 'round',
@@ -1876,7 +1876,7 @@ const SRFM_Block_Icons = {
 		el( 'path', {
 			d: 'M6 14.6667L9.68329 10.9834C10.3857 10.281 11.5427 10.345 12.1632 11.1207L13.3242 12.5719C13.8866 13.2749 14.9055 13.4042 15.6257 12.8641L16.5103 12.2006C17.1738 11.703 18.1023 11.769 18.6888 12.3554L21 14.6667M6 6H4.66667C3.74619 6 3 6.74619 3 7.66667V19.3333C3 20.2538 3.74619 21 4.66667 21H16.3333C17.2538 21 18 20.2538 18 19.3333V18M17.6667 7.16667C17.6667 7.6269 17.2936 8 16.8333 8C16.3731 8 16 7.6269 16 7.16667C16 6.70643 16.3731 6.33333 16.8333 6.33333C17.2936 6.33333 17.6667 6.70643 17.6667 7.16667ZM7.66667 18H19.3333C20.2538 18 21 17.2538 21 16.3333V4.66667C21 3.74619 20.2538 3 19.3333 3H7.66667C6.74619 3 6 3.74619 6 4.66667V16.3333C6 17.2538 6.74619 18 7.66667 18Z',
 			fill: noColor,
-			stroke: spectraDarkColor,
+			stroke: srfmDarkColor,
 			strokeWidth: 1.4,
 		} )
 	),
@@ -1889,7 +1889,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M10.6927 1.08247C10.6927 1.08247 10.8502 0.615805 10.5119 0.289139C10.2027 -0.0141947 9.80023 0.149139 9.80023 0.149139C9.4444 0.324139 6.44023 2.17331 5.32606 3.39831C4.8244 3.95831 4.12439 5.60914 4.69023 6.20997C5.2269 6.78164 7.00023 6.11081 7.4844 5.62664C8.68606 4.42497 10.5236 1.44414 10.6927 1.08247ZM0.816895 9.29581C2.19939 8.38581 1.66856 7.30664 2.70106 6.58914C3.24356 6.20997 3.99606 6.22747 4.49773 6.75831C4.86523 7.14914 4.9644 8.25747 4.4044 8.77664C3.48856 9.62247 2.07106 9.68081 0.816895 9.29581Z',
 		} )
 	),
@@ -1902,13 +1902,13 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			fillRule: 'evenodd',
 			clipRule: 'evenodd',
 			d: 'M1.11111 1.11111V8.88889H8.88889V1.11111H1.11111ZM0.555556 0C0.248731 0 0 0.248731 0 0.555556V9.44444C0 9.75127 0.248731 10 0.555556 10H9.44444C9.75127 10 10 9.75127 10 9.44444V0.555556C10 0.248731 9.75127 0 9.44444 0H0.555556Z',
 		} ),
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M1.66667 1.66667H7.77778L1.66667 7.77778V1.66667Z',
 		} )
 	),
@@ -1921,7 +1921,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M1.5752 0.699951H12.4252C12.9082 0.699951 13.3002 1.09195 13.3002 1.57495V12.425C13.3002 12.908 12.9082 13.3 12.4252 13.3H1.5752C1.0922 13.3 0.700195 12.908 0.700195 12.425V1.57495C0.700195 1.09195 1.0922 0.699951 1.5752 0.699951ZM11.9002 11.9V2.09995H2.1002V11.9H11.9002ZM7.0002 4.19995C7.0002 3.42995 6.3702 2.79995 5.6002 2.79995C4.8302 2.79995 4.2002 3.42995 4.2002 4.19995C4.2002 4.96995 4.8302 5.59995 5.6002 5.59995C6.3702 5.59995 7.0002 4.96995 7.0002 4.19995ZM9.1002 7.69995C9.1002 7.69995 9.1002 3.49995 11.2002 3.49995V10.5C11.2002 10.885 10.8852 11.2 10.5002 11.2H3.5002C3.1152 11.2 2.8002 10.885 2.8002 10.5V5.59995C4.2002 5.59995 4.9002 8.39995 4.9002 8.39995C4.9002 8.39995 5.6002 6.29995 7.0002 6.29995C8.4002 6.29995 9.1002 7.69995 9.1002 7.69995Z',
 		} )
 	),
@@ -1934,7 +1934,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			fill: spectraDarkColor,
+			fill: srfmDarkColor,
 			d: 'M8.4002 6.1V1.9C8.4002 1.13 7.7702 0.5 7.0002 0.5H2.1002C1.3302 0.5 0.700195 1.13 0.700195 1.9V6.1C0.700195 6.87 1.3302 7.5 2.1002 7.5H7.0002C7.7702 7.5 8.4002 6.87 8.4002 6.1ZM9.1002 4.35L13.3002 7.5V0.5L9.1002 3.65V4.35Z',
 		} )
 	),
@@ -1948,7 +1948,7 @@ const SRFM_Block_Icons = {
 			className: 'srfm-editor-icons',
 		},
 		el( 'path', {
-			stoke: spectraDarkColor,
+			stoke: srfmDarkColor,
 			strokeWidth: 1.4,
 			d: 'M4 7V17C4 19.2091 7.58172 21 12 21C16.4183 21 20 19.2091 20 17V7M4 7C4 9.20914 7.58172 11 12 11C16.4183 11 20 9.20914 20 7M4 7C4 4.79086 7.58172 3 12 3C16.4183 3 20 4.79086 20 7M20 12C20 14.2091 16.4183 16 12 16C7.58172 16 4 14.2091 4 12',
 		} )
@@ -2000,7 +2000,7 @@ const SRFM_Block_Icons = {
 export const renderLegacyBlockEditorIcon = ( blockName ) => (
 	<>
 		{ SRFM_Block_Icons[ blockName ] }
-		<div className="spectra__legacy-icon--block-inserter-label">Legacy</div>
+		<div className="srfm__legacy-icon--block-inserter-label">Legacy</div>
 	</>
 );
 

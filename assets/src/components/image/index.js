@@ -138,13 +138,13 @@ const SRFMMediaPicker = ( props ) => {
 			<>
 				{ 'add' === uploadType && (
 					<button
-						className={ `spectra-media-control__clickable spectra-media-control__clickable--${ uploadType }` }
+						className={ `srfm-media-control__clickable srfm-media-control__clickable--${ uploadType }` }
 						onClick={ () => OpenMediaUploader( open ) }
 					>
 						{ renderButton( uploadType ) }
 					</button>
 				) }
-				<div className="spectra-media-control__footer">
+				<div className="srfm-media-control__footer">
 					<button
 						className="srfm-control-label"
 						onClick={ () => OpenMediaUploader( open ) }
@@ -174,7 +174,7 @@ const SRFMMediaPicker = ( props ) => {
 
 	const renderButton = ( buttonType ) => (
 		<div
-			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
+			className={ `srfm-media-control__button srfm-media-control__button--${ buttonType }` }
 		>
 			{ SRFM_Block_Icons[ buttonType ] }
 		</div>
@@ -208,12 +208,12 @@ const SRFMMediaPicker = ( props ) => {
 
 	const controlName = getIdFromString( props?.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -222,7 +222,7 @@ const SRFMMediaPicker = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<BaseControl
-				className="spectra-media-control"
+				className="srfm-media-control"
 				id={ `srfm-option-selector-${ slug }` }
 				label={ label }
 				hideLabelFromVision={ disableLabel }
@@ -230,7 +230,7 @@ const SRFMMediaPicker = ( props ) => {
 				{ isShowImageUploader() ? (
 					<>
 						<div
-							className="spectra-media-control__wrapper"
+							className="srfm-media-control__wrapper"
 							style={ {
 								backgroundImage:
 									! placeholderIcon &&
@@ -242,13 +242,13 @@ const SRFMMediaPicker = ( props ) => {
 							} }
 						>
 							{ placeholderIcon && backgroundImage && (
-								<div className="spectra-media-control__icon spectra-media-control__icon--stroke">
+								<div className="srfm-media-control__icon srfm-media-control__icon--stroke">
 									{ placeholderIcon }
 								</div>
 							) }
 							{ backgroundImage?.svg && (
 								<div
-									className="spectra-media-control__icon spectra-media-control__icon--stroke"
+									className="srfm-media-control__icon srfm-media-control__icon--stroke"
 									dangerouslySetInnerHTML={ {
 										__html: backgroundImage.svg,
 									} }
@@ -265,7 +265,7 @@ const SRFMMediaPicker = ( props ) => {
 							/>
 							{ ! disableRemove && backgroundImage && (
 								<button
-									className="spectra-media-control__clickable spectra-media-control__clickable--close"
+									className="srfm-media-control__clickable srfm-media-control__clickable--close"
 									onClick={ onRemoveImage }
 								>
 									{ renderButton( 'close' ) }

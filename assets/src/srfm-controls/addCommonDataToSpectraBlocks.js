@@ -1,5 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
-function addCommonDataToSpectraBlocks( configData = {} ) {
+function addCommonDataToSRFMBlocks( configData = {} ) {
 	let data = {
 		example: {
 			attributes: {
@@ -12,9 +12,9 @@ function addCommonDataToSpectraBlocks( configData = {} ) {
 	if ( 'site-editor' === srfm_blocks_info.is_site_editor ) {
 		data = {};
 	}
-	return applyFilters( 'addCommonDataToSpectraBlocks', {
+	return applyFilters( 'addCommonDataToSRFMBlocks', {
 		...configData,
 		...data,
 	} );
 }
-export default addCommonDataToSpectraBlocks;
+export default addCommonDataToSRFMBlocks;

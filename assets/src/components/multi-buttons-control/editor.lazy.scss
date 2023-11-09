@@ -15,38 +15,38 @@
 		min-height: 30px;
 
 		&:first-child {
-			-webkit-border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
-			-moz-border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
-			border-radius: $spectra-control-border-radius 0 0 $spectra-control-border-radius;
+			-webkit-border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
+			-moz-border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
+			border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
 		}
 
 		&:last-child {
-			-webkit-border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
-			-moz-border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
-			border-radius: 0 $spectra-control-border-radius $spectra-control-border-radius 0;
+			-webkit-border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
+			-moz-border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
+			border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
 		}
 	}
 
 	button.srfm-multi-button.is-secondary {
-		color: $spectra-color-body;
-		box-shadow: inset 0 0 0 1px $spectra-color-border;
+		color: $srfm-color-body;
+		box-shadow: inset 0 0 0 1px $srfm-color-border;
 	}
 
 	.srfm-multi-button.is-secondary:hover:not( :disabled ),
 	.srfm-multi-button-grou[aria-label="Gap"] .srfm-multi-button.is-tertiary:hover:not( :disabled ) {
-		color: $spectra-color-heading;
-		box-shadow: inset 0 0 0 1px $spectra-color-border;
+		color: $srfm-color-heading;
+		box-shadow: inset 0 0 0 1px $srfm-color-border;
 	}
 
 	.srfm-multi-button.is-secondary,
 	.srfm-multi-button.is-tertiary {
-		color: $spectra-color-body;
+		color: $srfm-color-body;
 	}
 
 	.srfm-multi-button.is-secondary:active:not( :disabled ),
 	.srfm-multi-button-grou[aria-label="Gap"] .srfm-multi-button.is-tertiary:active:not( :disabled ) {
-		background: $spectra-color-plain-background;
-		box-shadow: inset 0 0 0 1px $spectra-color-border;
+		background: $srfm-color-plain-background;
+		box-shadow: inset 0 0 0 1px $srfm-color-border;
 	}
 
 	button.srfm-multi-button {
@@ -56,7 +56,7 @@
 
 	svg {
 		width: 18px;
-		fill: $spectra-color-body;
+		fill: $srfm-color-body;
 
 		path {
 			fill: inherit;
@@ -70,32 +70,32 @@
 	}
 }
 
-// Classes for Spectra Improvemnets (BEM Convention).
-.spectra-multi-buttons {
+// Classes for srfm Improvemnets (BEM Convention).
+.srfm-multi-buttons {
 	// Classes for Color Scheme.
 	&__color-scheme {
 		&--primary {
 			button.srfm-multi-button.is-primary.is-primary {
-				color: $spectra-color-primary;
-				background-color: $spectra-color-tab-background;
-				border-color: $spectra-color-tab-border;
-				box-shadow: inset 0 0 0 1px $spectra-color-tab-border;
+				color: $srfm-color-primary;
+				background-color: $srfm-color-tab-background;
+				border-color: $srfm-color-tab-border;
+				box-shadow: inset 0 0 0 1px $srfm-color-tab-border;
 
 				svg {
-					fill: $spectra-color-primary;
+					fill: $srfm-color-primary;
 				}
 			}
 		}
 
 		&--secondary {
 			button.srfm-multi-button.is-primary.is-primary {
-				color: $spectra-color-plain-background;
-				background-color: $spectra-color-border-hover;
-				border-color: $spectra-color-border-hover;
-				box-shadow: inset 0 0 0 1px $spectra-color-border-hover;
+				color: $srfm-color-plain-background;
+				background-color: $srfm-color-border-hover;
+				border-color: $srfm-color-border-hover;
+				box-shadow: inset 0 0 0 1px $srfm-color-border-hover;
 
 				svg {
-					fill: $spectra-color-plain-background;
+					fill: $srfm-color-plain-background;
 				}
 			}
 		}

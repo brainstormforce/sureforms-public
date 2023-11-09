@@ -115,12 +115,12 @@ const SRFMAdvancedPanelBody = ( props ) => {
 
 	const blockNameForHook = blockName?.split( '/' )?.pop();
 	const tabBodyBefore = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }.before`,
 		'',
 		blockName
 	);
 	const tabBodyAfter = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }`,
 		'',
 		blockName
 	);

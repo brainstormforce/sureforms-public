@@ -1,19 +1,19 @@
 /* --------- Common Popup Used In The Settings Panel --------- */
 
-.spectra-control-popup {
+.srfm-control-popup {
 	position: relative;
-	top: $spectra-control-popup-vertical-gap;
+	top: $srfm-control-popup-vertical-gap;
 	width: 100%;
-	border-radius: $spectra-control-popup-border-radius;
-	padding: $spectra-control-popup-padding;
-	margin-bottom: $spectra-control-popup-vertical-gap + $spectra-control-vertical-gap;
-	box-shadow: $spectra-control-popup-box-shadow;
-	background: $spectra-color-plain-background;
+	border-radius: $srfm-control-popup-border-radius;
+	padding: $srfm-control-popup-padding;
+	margin-bottom: $srfm-control-popup-vertical-gap + $srfm-control-vertical-gap;
+	box-shadow: $srfm-control-popup-box-shadow;
+	background: $srfm-color-plain-background;
 
 	// Important Required to override the common panel margins.
 
 	& > .components-base-control {
-		margin-bottom: $spectra-control-popup-vertical-gap !important;
+		margin-bottom: $srfm-control-popup-vertical-gap !important;
 
 		&:last-child {
 			margin-bottom: 0 !important;
@@ -21,7 +21,7 @@
 	}
 
 	& > .srfm-size-type-field-tabs {
-		margin-bottom: $spectra-control-popup-vertical-gap !important;
+		margin-bottom: $srfm-control-popup-vertical-gap !important;
 
 		.components-base-control {
 			margin-bottom: 0 !important;
@@ -33,12 +33,12 @@
 	}
 
 	& .srfm-select-control--layout-inline .components-select-control {
-		margin-bottom: $spectra-control-popup-vertical-gap !important;
+		margin-bottom: $srfm-control-popup-vertical-gap !important;
 	}
 
 	// The Popup Option
 	&__options {
-		margin-bottom: $spectra-control-popup-vertical-gap;
+		margin-bottom: $srfm-control-popup-vertical-gap;
 		position: relative;
 
 		&--action {
@@ -55,12 +55,12 @@
 
 			&-button {
 				margin: 0;
-				height: $spectra-control-circle-indicator;
-				width: $spectra-control-circle-indicator;
+				height: $srfm-control-circle-indicator;
+				width: $srfm-control-circle-indicator;
 				padding: 5px;
-				border: 1px solid $spectra-color-border;
+				border: 1px solid $srfm-color-border;
 				border-radius: 14px;
-				color: $spectra-color-body;
+				color: $srfm-color-body;
 
 				.dashicons-edit {
 					font-size: 15px;
@@ -73,21 +73,21 @@
 				}
 
 				&:hover {
-					color: $spectra-color-primary;
+					color: $srfm-color-primary;
 				}
 			}
 		}
 
 		&.active {
-			.spectra-control-popup__options--action-button {
-				color: $spectra-color-primary;
+			.srfm-control-popup__options--action-button {
+				color: $srfm-color-primary;
 			}
 		}
 	}
 }
 
 .components-base-control:last-child {
-	.spectra-control-popup {
-		margin-bottom: $spectra-panel-body-padding;
+	.srfm-control-popup {
+		margin-bottom: $srfm-panel-body-padding;
 	}
 }

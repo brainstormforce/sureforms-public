@@ -2,7 +2,7 @@
 
 @import "../../styles/variables";
 
-.spectra-control-popup__options .spectra-control-popup {
+.srfm-control-popup__options .srfm-control-popup {
 	.srfm-font-family-searchable-select {
 		display: flex;
 		width: 100%;
@@ -13,7 +13,7 @@
 			align-items: center;
 			display: grid;
 			grid-template-columns: 50% 50%;
-			height: $spectra-control-input-height;
+			height: $srfm-control-input-height;
 
 			label {
 				margin-bottom: 0;
@@ -23,14 +23,14 @@
 		.srfm-font-family-select__input input {
 			box-shadow: none;
 			border: none;
-			min-height: $spectra-control-input-height;
+			min-height: $srfm-control-input-height;
 		}
 
 		.srfm-font-family-select__control {
 			cursor: pointer;
 
 			&:hover {
-				border: 1px solid $spectra-color-border;
+				border: 1px solid $srfm-color-border;
 			}
 		}
 
@@ -39,21 +39,21 @@
 		}
 
 		.srfm-font-family-select__indicators {
-			height: $spectra-control-input-height;
+			height: $srfm-control-input-height;
 		}
 
 		.srfm-font-family-select__dropdown-indicator {
 			padding-left: 6px;
 
 			svg {
-				fill: $spectra-color-body;
+				fill: $srfm-color-body;
 				height: 14px;
 				width: 14px;
 			}
 		}
 
 		.srfm-font-family-select__dropdown-indicator:hover {
-			color: $spectra-color-body;
+			color: $srfm-color-body;
 		}
 
 		.srfm-font-family-select__value-container {

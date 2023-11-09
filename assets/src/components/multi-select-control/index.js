@@ -36,17 +36,17 @@ export default function SRFMMultiSelectControl( props ) {
 
 	const controlName = getIdFromString( label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		selectedBlock
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
 		'',
 		selectedBlock
 	);
 	const allOptions = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
 		options,
 		selectedBlock
 	);
@@ -74,8 +74,8 @@ export default function SRFMMultiSelectControl( props ) {
 						}, [] ),
 					} )
 				}
-				classNamePrefix={ 'spectra-multi-select' }
-				className={ 'spectra-multi-select' }
+				classNamePrefix={ 'srfm-multi-select' }
+				className={ 'srfm-multi-select' }
 				isSearchable={ isSearchable }
 				isMulti
 			/>

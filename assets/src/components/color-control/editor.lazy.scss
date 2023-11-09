@@ -30,8 +30,8 @@
 	}
 
 	.srfm-color-icon-indicate .component-color-indicator.srfm-advanced-color-indicate {
-		width: $spectra-control-circle-indicator;
-		height: $spectra-control-circle-indicator;
+		width: $srfm-control-circle-indicator;
+		height: $srfm-control-circle-indicator;
 		border-radius: 50%;
 		margin: 0;
 	}
@@ -44,9 +44,9 @@
 		top: 6px;
 		left: 7px;
 		// Suggested Formula for Indicator Icons...
-		// font-size: ($spectra-control-circle-indicator / 1.75);
-		// top: (($spectra-control-circle-indicator - ($spectra-control-circle-indicator / 1.75)) / 2);
-		// left: (($spectra-control-circle-indicator - ($spectra-control-circle-indicator / 1.75)) / 2);
+		// font-size: ($srfm-control-circle-indicator / 1.75);
+		// top: (($srfm-control-circle-indicator - ($srfm-control-circle-indicator / 1.75)) / 2);
+		// left: (($srfm-control-circle-indicator - ($srfm-control-circle-indicator / 1.75)) / 2);
 	}
 
 	.srfm-global-icon-black::before {

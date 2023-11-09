@@ -42,10 +42,10 @@ const TextShadowControl = ( props ) => {
 	useLayoutEffect( () => {
 		window.addEventListener( 'click', function ( e ) {
 			const popupButton = document.querySelector(
-				`.active.popup-${ blockId } .spectra-control-popup__options--action-button`
+				`.active.popup-${ blockId } .srfm-control-popup__options--action-button`
 			);
 			const popupWrap = document.querySelector(
-				`.active.popup-${ blockId } .spectra-control-popup`
+				`.active.popup-${ blockId } .srfm-control-popup`
 			);
 
 			if (
@@ -199,31 +199,31 @@ const TextShadowControl = ( props ) => {
 
 	if ( showAdvancedControls ) {
 		advancedControls = (
-			<div className="srfm-text-shadow-advanced spectra-control-popup">
+			<div className="srfm-text-shadow-advanced srfm-control-popup">
 				{ overallControls }
 			</div>
 		);
 	}
 
 	const textShadowAdvancedControls = (
-		<div className="spectra-control-popup__options--action-wrapper">
+		<div className="srfm-control-popup__options--action-wrapper">
 			<span className="srfm-control-label">
 				{ label }
 				{ isTextShadowUpdated && (
-					<div className="spectra__change-indicator--dot-right" />
+					<div className="srfm__change-indicator--dot-right" />
 				) }
 			</span>
 			<Button
-				className="srfm-text-shadow-button spectra-control-popup__options--action-button"
+				className="srfm-text-shadow-button srfm-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
-						'.spectra-control-popup__options'
+						'.srfm-control-popup__options'
 					);
 					if ( allPopups && 0 < allPopups.length ) {
 						for ( let i = 0; i < allPopups.length; i++ ) {
 							const popupButton = allPopups[ i ]?.querySelector(
-								'.spectra-control-popup__options.active .spectra-control-popup__options--action-button'
+								'.srfm-control-popup__options.active .srfm-control-popup__options--action-button'
 							);
 							popupButton?.click();
 						}
@@ -266,12 +266,12 @@ const TextShadowControl = ( props ) => {
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -284,7 +284,7 @@ const TextShadowControl = ( props ) => {
 			{ controlBeforeDomElement }
 			{ popup ? (
 				<div
-					className={ ` srfm-text-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
+					className={ ` srfm-text-shadow-options srfm-control-popup__options popup-${ blockId } ${ activeClass }` }
 				>
 					{ textShadowAdvancedControls }
 					{ showAdvancedControls && advancedControls }

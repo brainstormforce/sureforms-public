@@ -22,7 +22,7 @@ const addBlockEditorDynamicStyles = () => {
 		const aosStyle = cloneLinkTag( 'srfm-aos-css-css' );
 
 		const editorStyle = cloneStyleTag( 'srfm-editor-styles' );
-		const editorProStyle = cloneStyleTag( 'spectra-pro-editor-styles' );
+		const editorProStyle = cloneStyleTag( 'srfm-pro-editor-styles' );
 		const spacingStyle = cloneStyleTag(
 			'srfm-blocks-editor-spacing-style'
 		);
@@ -71,7 +71,7 @@ const addBlockEditorDynamicStyles = () => {
 			copyLinkTag( aosStyle, 'srfm-aos-css-css' );
 
 			copyStyleTag( editorStyle, 'srfm-editor-styles' );
-			copyStyleTag( editorProStyle, 'spectra-pro-editor-styles' );
+			copyStyleTag( editorProStyle, 'srfm-pro-editor-styles' );
 			copyStyleTag( spacingStyle, 'srfm-blocks-editor-spacing-style' );
 			copyStyleTag( editorCustomStyle, 'srfm-blocks-editor-custom-css' );
 		} // Loop end.
