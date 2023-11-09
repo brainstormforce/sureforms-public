@@ -3,6 +3,8 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
+const webpack = require('webpack');
+
 
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
@@ -18,7 +20,6 @@ const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 
 module.exports = {
 	...defaultConfig,
-	mode: 'production',
 	optimization: {
 		usedExports: true,
 	},
@@ -35,6 +36,9 @@ module.exports = {
 				},
 			],
 		} ),
+		new webpack.optimize.LimitChunkCountPlugin({
+			maxChunks: 1,
+		  }),
 	],
 	entry: {
 		formEditor: path.resolve(
@@ -42,10 +46,6 @@ module.exports = {
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		tailwindElements: path.resolve(
-			__dirname,
-			'assets/src/public/scripts/elements.js'
-		),
 		form_archive_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/styles/form-archive-styles.scss'
@@ -121,7 +121,6 @@ module.exports = {
 	},
 	output: {
 		...defaultConfig.output,
-		filename: '[name].js',
 		path: path.resolve( __dirname, 'assets/build' ),
 	},
 };
