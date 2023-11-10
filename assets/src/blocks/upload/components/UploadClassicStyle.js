@@ -1,23 +1,28 @@
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const UploadClassicStyle = ( { attributes, blockID } ) => {
+export const UploadClassicStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
 			<div className="srfm-col-span-full">
-				<label
-					className="srfm-classic-label-text"
-					htmlFor={ 'srfm-text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `srfm-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
 				<div className="srfm-classic-upload-div">
 					<div className="srfm-text-center">
 						<div

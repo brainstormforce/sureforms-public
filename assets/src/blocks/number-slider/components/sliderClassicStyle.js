@@ -1,9 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
 export const SliderClassicStyle = ( {
 	attributes,
 	blockID,
 	sureforms_keys,
+	setAttributes,
 } ) => {
 	const { label, placeholder, min, max, step } = attributes;
 	const [ slideValue, setSlideValue ] = useState( 0 );
@@ -12,6 +14,7 @@ export const SliderClassicStyle = ( {
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+
 	const handleChange = ( e ) => {
 		const currentValue = Number( e.target.value );
 		const valBg = ( ( currentValue - min ) / ( max - min ) ) * 100;
@@ -34,12 +37,16 @@ export const SliderClassicStyle = ( {
 						className="srfm-range-sliders srfm-w-full"
 					>
 						<div className="range-slider-group range-slider-group-sf">
-							<label
-								htmlFor="srfm-range-slider"
-								className="srfm-classic-label-text"
-							>
-								{ label }
-							</label>
+							<RichText
+								tagName="label"
+								value={ label }
+								onChange={ ( value ) =>
+									setAttributes( { label: value } )
+								}
+								className={ `srfm-classic-label-text` }
+								multiline={ false }
+								id={ blockID }
+							/>
 							<div className="srfm-flex srfm-justify-between srfm-items-center">
 								<input
 									id={ 'number-slider-input-' + blockID }
