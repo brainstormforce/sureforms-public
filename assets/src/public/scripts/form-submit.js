@@ -183,17 +183,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 
 			if ( ischeckedRequired === 'true' && ! checkedSelected ) {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
 				validateResult = true;
 				if ( ! firstErrorInput && visibleInput ) {
 					firstErrorInput = visibleInput;
 				}
-			} else {
-				if( errorMessage ){
-					errorMessage.style.display = 'none';
-				}
+			} else if ( errorMessage ) {
+				errorMessage.style.display = 'none';
 			}
 		}
 
@@ -202,10 +200,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
 			if ( isPhoneRequired === 'true' && ! inputValue ) {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
-				if(duplicateMessage){
+				if ( duplicateMessage ) {
 					duplicateMessage.style.display = 'none';
 				}
 				validateResult = true;
@@ -230,7 +228,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
 				//for Tailwind phone field UI
@@ -270,12 +268,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					'.srfm-error-message'
 				)[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'block';
 					}
 					container.querySelector(
 						'.confirm-password-error'
-					)?.style.display = 'none';
+					).style.display = 'none';
 					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -283,12 +281,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else if ( confirmPasswordValue !== inputValue ) {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'none';
 					}
 					container.querySelector(
 						'.srfm-confirm-password-error'
-					)?.style.display = 'block';
+					).style.display = 'block';
 					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -296,7 +294,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'none';
 					}
 					confirmPassword.classList.remove(
@@ -304,7 +302,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					);
 					container.querySelector(
 						'.srfm-confirm-password-error'
-					)?.style.display = 'none';
+					).style.display = 'none';
 					// confirmPassword.style.borderColor = '#d1d5db';
 				}
 			}
@@ -321,12 +319,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'block';
 					}
 					container.querySelector(
 						'.confirm-email-error'
-					)?.style.display = 'none';
+					).style.display = 'none';
 					// confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -337,12 +335,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmEmailValue &&
 					confirmEmailValue !== inputValue
 				) {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'none';
 					}
 					container.querySelector(
 						'.srfm-confirm-email-error'
-					)?.style.display = 'block';
+					).style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -350,7 +348,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else {
-					if( confirmFieldError ){
+					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'none';
 					}
 					confirmEmail.style.borderColor = '#d1d5db';
@@ -375,7 +373,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( ! addressInput[ i ].value ) {
-					if( errorMessage ){
+					if ( errorMessage ) {
 						errorMessage.style.display = 'block';
 					}
 					// addressInput[ i ].style.borderColor = '#FCA5A5';
@@ -385,19 +383,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						firstErrorInput = addressInput[ i ];
 					}
 				} else {
-					if( errorMessage ){
-						errorMessage.style.display = 'none';
-					}
+					errorMessage.style.display = 'none';
 					// addressInput[ i ].style.borderColor = '#d1d5db';
 				}
 				if ( errCounter === 1 ) {
-					if( errorMessage ){
+					if ( errorMessage ) {
 						errorMessage.style.display = 'block';
 					}
-				} else {
-					if( errorMessage ){
-						errorMessage.style.display = 'none';
-					}
+				} else if ( errorMessage ) {
+					errorMessage.style.display = 'none';
 				}
 			}
 		}
@@ -418,7 +412,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
 				// uploadInputInnerDiv.style.borderColor = '#FCA5A5';
@@ -428,10 +422,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = uploadInput;
 				}
 			} else {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
-				if( uploadInputInnerDiv ){
+				if ( uploadInputInnerDiv ) {
 					uploadInputInnerDiv.style.borderColor = '#d1d5db';
 				}
 			}
@@ -450,7 +444,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( isDateRequired === 'true' && ! dateInput[ i ].value ) {
-					if( errorMessage ){
+					if ( errorMessage ) {
 						errorMessage.style.display = 'block';
 					}
 					dateInput[ i ].style.borderColor = '#FCA5A5';
@@ -461,19 +455,17 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 				} else {
 					dateInput[ i ].style.borderColor = '#d1d5db';
-					if( errorMessage ){
+					if ( errorMessage ) {
 						errorMessage.style.display = 'none';
 					}
 				}
 			}
 			if ( dateErrCounter === 1 ) {
-				if( errorMessage ){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
-			} else {
-				if( errorMessage ){
-					errorMessage.style.display = 'none';
-				}
+			} else if ( errorMessage ) {
+				errorMessage.style.display = 'none';
 			}
 		}
 
@@ -488,7 +480,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				min !== '' &&
 				Number( inputValue ) < Number( min )
 			) {
-				if(minMaxErrorMessage){
+				if ( minMaxErrorMessage ) {
 					minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
 					minMaxErrorMessage.style.display = `block`;
 				}
@@ -502,7 +494,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				max !== '' &&
 				Number( inputValue ) > Number( max )
 			) {
-				if(minMaxErrorMessage){
+				if ( minMaxErrorMessage ) {
 					minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
 					minMaxErrorMessage.style.display = `block`;
 				}
@@ -511,10 +503,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else {
-				if(minMaxErrorMessage){
-					minMaxErrorMessage.innerText = '';
-				}
+			} else if ( minMaxErrorMessage ) {
+				minMaxErrorMessage.innerText = '';
 			}
 		}
 
@@ -526,14 +516,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const ratingRequired =
 				classicRatingField.getAttribute( 'aria-required' );
 			if ( ratingRequired === 'true' && ! classicRatingField.value ) {
-				if(errorMessage){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
 				validateResult = true;
-			} else {
-				if(errorMessage){
-					errorMessage.style.display = 'none';
-				}
+			} else if ( errorMessage ) {
+				errorMessage.style.display = 'none';
 			}
 		}
 
@@ -547,17 +535,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const dateTimeRequired =
 				classicDateTimeField.getAttribute( 'aria-required' );
 			if ( dateTimeRequired === 'true' && ! classicDateTimeField.value ) {
-				if(errorMessage){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = classicDateTimeField;
 				}
-			} else {
-				if(errorMessage){
-					errorMessage.style.display = 'none';
-				}
+			} else if ( errorMessage ) {
+				errorMessage.style.display = 'none';
 			}
 		}
 
@@ -592,7 +578,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'.srfm-classic-dropdown-btn'
 			);
 			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
-				if(errorMessage){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
 				dropdownBtn.classList.add( 'srfm-classic-input-error' );
@@ -601,7 +587,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = dropdownBtn;
 				}
 			} else {
-				if(errorMessage){
+				if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
 				dropdownBtn.classList.remove( 'srfm-classic-input-error' );
