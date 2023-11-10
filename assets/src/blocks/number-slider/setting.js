@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useState } from '@wordpress/element';
+import { SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	UAGTabs,
@@ -11,9 +12,10 @@ import InspectorTab, {
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
 import UAGNumberControl from '@Components/number-control';
+import widthOptions from '../width-options.json';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
-	const { label, help, min, max, step, valueDisplayText } = attributes;
+	const { fieldWidth, label, help, min, max, step, valueDisplayText } = attributes;
 	const [ error, setError ] = useState( false );
 	return (
 		<InspectorControls>
@@ -26,6 +28,15 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
+						<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+								setAttributes( { fieldWidth: value } )
+								}
+								__nextHasNoMarginBottom
+							/>
 						<UAGTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }

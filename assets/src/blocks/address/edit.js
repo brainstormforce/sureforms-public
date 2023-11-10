@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -17,12 +17,14 @@ import { AddressThemeStyle } from './components/addressThemeStyle';
 import { AddressClassicStyle } from './components/addressClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 
 import countries from './countries.json';
 
 const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 	const {
 		required,
+		fieldWidth,
 		label,
 		block_id,
 		errorMsg,
@@ -62,6 +64,15 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+								setAttributes( { fieldWidth: value } )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {

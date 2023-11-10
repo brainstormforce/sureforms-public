@@ -98,6 +98,7 @@ class Phone_Markup extends Base {
 		$default_country = isset( $attributes['defaultCountryCode'] ) ? $attributes['defaultCountryCode'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
@@ -108,7 +109,7 @@ class Phone_Markup extends Base {
 		$data = $this->getPhoneCodes();
 
 		$output  = '';
-		$output .= '<div class="srfm-input-phone-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-phone-' . esc_attr( $block_id ) . '">
+		$output .= '<div class="srfm-input-phone-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-phone-' . esc_attr( $block_id ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
             <label for="srfm-phone-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
             <div class= "srfm-relative srfm-mt-2">
                 <div id="srfm-phone-parent" class="group srfm-classic-phone-parent">

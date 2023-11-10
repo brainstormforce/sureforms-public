@@ -71,6 +71,7 @@ class Switch_Markup extends Base {
 		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help          = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
 		$checked       = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
@@ -79,7 +80,7 @@ class Switch_Markup extends Base {
 		$color_primary = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ) : '';
 		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
 
-		return '<div class="srfm-switch-container srfm-main-container srfm-frontend-inputs-holder srfm-classic-switch-container' . esc_attr( $classname ) . '">
+		return '<div class="srfm-switch-container srfm-main-container srfm-frontend-inputs-holder srfm-classic-switch-container' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
 		<label class="srfm-switch-label" for="srfm-switch-' . esc_attr( $block_id ) . '">
 			<div class="srfm-text-primary !srfm-flex !srfm-items-start !srfm-gap-2 !srfm-mt-1">
 				<div class="srfm-switch-background srfm-classic-toggle-bg srfm-w-[60px] srfm-mr-[3px] srfm-mt-[5px]" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">

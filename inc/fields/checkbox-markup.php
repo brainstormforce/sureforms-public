@@ -65,6 +65,7 @@ class Checkbox_Markup extends Base {
 	 */
 	public function classic_styling( $attributes ) {
 		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
 		$label_url = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
@@ -73,7 +74,7 @@ class Checkbox_Markup extends Base {
 		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder">
+		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 			<div class= "srfm-relative srfm-flex srfm-items-start srfm-flex-row srfm-gap-2">
 				<div class="srfm-flex srfm-h-6 srfm-items-center">
 					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input">

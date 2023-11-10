@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -17,9 +17,11 @@ import { CheckboxClassicStyle } from './components/CheckboxClassicStyle';
 import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
+		fieldWidth,
 		label,
 		checked: isChecked,
 		required,
@@ -51,6 +53,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+								setAttributes( { fieldWidth: value } )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {

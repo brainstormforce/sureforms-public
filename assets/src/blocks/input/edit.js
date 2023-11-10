@@ -65,12 +65,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<p className="components-base-control__help">
-								{ __(
-									'Update settings to view changes on page',
-									'sureforms'
-								) }
-							</p>
 							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }

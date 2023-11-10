@@ -58,6 +58,7 @@ class Number_Slider_Markup extends Base {
 	public function classic_styling( $attributes ) {
 		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$required           = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$field_width 		= isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$min                = isset( $attributes['min'] ) ? $attributes['min'] : 0;
@@ -67,7 +68,7 @@ class Number_Slider_Markup extends Base {
 		$error_msg          = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="srfm-number-slider-container srfm-classic-number-slider srfm-classic-inputs-holder ' . esc_attr( $classname ) . '">
+		return '<div class="srfm-number-slider-container srfm-classic-number-slider srfm-classic-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <div class="range-slider-container">
             <div class="range-slider-block">
                 <div id="srfm-range-sliders" class="srfm-range-sliders srfm-w-full">
