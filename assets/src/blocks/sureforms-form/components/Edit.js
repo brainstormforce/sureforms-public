@@ -172,9 +172,9 @@ export default ( { attributes } ) => {
 			iframeRef.current.onload = () => {
 				removeContentFromIframe();
 				setTimeout( () => {
-					if ( iframeRef && iframeRef.current ) {
-						iframeRef.current.style.display = 'block';
-					}
+					// if ( iframeRef && iframeRef.current ) {
+					// 	iframeRef.current.style.display = 'block';
+					// }
 				}, 800 );
 			};
 		}

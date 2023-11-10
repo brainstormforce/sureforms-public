@@ -6,10 +6,11 @@ import { jsx } from '@emotion/react';
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-// import { createBlock, serialize } from '@wordpress/blocks';
+import { createBlock, serialize } from '@wordpress/blocks';
 import { Placeholder, Button, Icon, TextControl } from '@wordpress/components';
-// import { dispatch } from '@wordpress/data';
-import { useState } from '@wordpress/element';
+import { dispatch, useSelect } from '@wordpress/data';
+// import { useDispatch, useSelect } from '@wordpress/data';
+import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 // import apiFetch from '@wordpress/api-fetch';
 
@@ -21,72 +22,82 @@ import icon from '../../../../../images/Logo.js';
 // import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
-export default ( {
-	// attributes,
-	setAttributes,
-} ) => {
-	// const { title, step } = attributes;
+export default ( { attributes, setAttributes } ) => {
+	const { title, step } = attributes;
 	const [ form, setForm ] = useState( {} );
+
+	// const postType = useSelect( ( select ) =>
+	// 	select( 'core/editor' ).getCurrentPostType()
+	// );
+
+	// console.log( postType );
+	// useEffect( () => {
+	// 	const saveFormBlock = async () => {
+	// 		setAttributes( { loading: true } );
+
+	// 		try {
+	// 			const updatedRecord = await dispatch( 'core' ).saveEntityRecord(
+	// 				'postType',
+	// 				'sureforms_form',
+	// 				{
+	// 					title: title || __( 'Untitled Form', 'sureforms' ),
+	// 					content: serialize(
+	// 						createBlock(
+	// 							'sureforms/form', // name
+	// 							{},
+	// 							[]
+	// 						)
+	// 					),
+	// 					status: 'publish',
+	// 				}
+	// 			);
+	// 			// const formStatusData = {
+	// 			// 	post_id: updatedRecord.id,
+	// 			// 	_srfm_color1: '#046bd2',
+	// 			// 	_srfm_textcolor1: '#fff',
+	// 			// 	_srfm_color2: '',
+	// 			// 	_srfm_fontsize: 16,
+	// 			// 	_srfm_bg: '',
+	// 			// 	_srfm_thankyou_message: 'Form submitted successfully!',
+	// 			// 	_srfm_email: sfBlockData.admin_email,
+	// 			// 	_srfm_submit_type: 'message',
+	// 			// 	_srfm_submit_url: '',
+	// 			// 	_srfm_sender_notification: 'off',
+	// 			// 	_srfm_form_recaptcha: 'none',
+	// 			// 	_srfm_submit_alignment: 'left',
+	// 			// 	_srfm_submit_width: '',
+	// 			// 	_srfm_submit_styling_inherit_from_theme: false,
+	// 			// 	_srfm_form_container_width: 650,
+	// 			// 	_srfm_form_styling: 'classic',
+	// 			// };
+
+	// 			// try {
+	// 			// 	await apiFetch( {
+	// 			// 		path: '/sureforms/v1/load-form-defaults',
+	// 			// 		method: 'POST',
+	// 			// 		data: formStatusData,
+	// 			// 	} );
+	// 			// } catch ( error ) {
+	// 			// 	console.error( error );
+	// 			// }
+
+	// 			setAttributes( { id: updatedRecord.id } );
+	// 		} catch ( e ) {
+	// 			// TODO: Add notice here.
+	// 			console.error( e );
+	// 		} finally {
+	// 			setAttributes( { loading: false } );
+	// 		}
+	// 	};
+
+	// 	if ( 'sureforms_form' === postType ) {
+	// 		saveFormBlock();
+	// 		return;
+	// 	}
+	// }, [ postType ] );
 
 	// Not required.
 	// save the form block.
-	// const saveFormBlock = async () => {
-	// 	setAttributes( { loading: true } );
-
-	// 	try {
-	// 		const updatedRecord = await dispatch( 'core' ).saveEntityRecord(
-	// 			'postType',
-	// 			'sureforms_form',
-	// 			{
-	// 				title: title || __( 'Untitled Form', 'sureforms' ),
-	// 				content: serialize(
-	// 					createBlock(
-	// 						'sureforms/form', // name
-	// 						{},
-	// 						[]
-	// 					)
-	// 				),
-	// 				status: 'publish',
-	// 			}
-	// 		);
-	// 		const formStatusData = {
-	// 			post_id: updatedRecord.id,
-	// 			_srfm_color1: '#046bd2',
-	// 			_srfm_textcolor1: '#fff',
-	// 			_srfm_color2: '',
-	// 			_srfm_fontsize: 16,
-	// 			_srfm_bg: '',
-	// 			_srfm_thankyou_message: 'Form submitted successfully!',
-	// 			_srfm_email: sfBlockData.admin_email,
-	// 			_srfm_submit_type: 'message',
-	// 			_srfm_submit_url: '',
-	// 			_srfm_sender_notification: 'off',
-	// 			_srfm_form_recaptcha: 'none',
-	// 			_srfm_submit_alignment: 'left',
-	// 			_srfm_submit_width: '',
-	// 			_srfm_submit_styling_inherit_from_theme: false,
-	// 			_srfm_form_container_width: 650,
-	// 			_srfm_form_styling: 'classic',
-	// 		};
-
-	// 		try {
-	// 			await apiFetch( {
-	// 				path: '/sureforms/v1/load-form-defaults',
-	// 				method: 'POST',
-	// 				data: formStatusData,
-	// 			} );
-	// 		} catch ( error ) {
-	// 			console.error( error );
-	// 		}
-
-	// 		setAttributes( { id: updatedRecord.id } );
-	// 	} catch ( e ) {
-	// 		// TODO: Add notice here.
-	// 		console.error( e );
-	// 	} finally {
-	// 		setAttributes( { loading: false } );
-	// 	}
-	// };
 
 	// Not required.
 	// if ( step === 'new' ) {

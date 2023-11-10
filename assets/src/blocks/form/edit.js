@@ -42,11 +42,12 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		.map( ( block ) => block.name );
 
 	const CORE_BLOCKS = [
-		'core/image',
-		'core/columns',
-		'core/column',
-		'core/heading',
-		'core/paragraph',
+		// 'core/image',
+		// 'core/columns',
+		// 'core/column',
+		// 'core/heading',
+		// 'core/paragraph',
+		// 'sureforms/form',
 	];
 
 	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];

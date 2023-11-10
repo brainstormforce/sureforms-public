@@ -19,23 +19,29 @@ import * as numberSlider from '@Blocks/number-slider';
 
 import { registerBlocks } from './register-block';
 
-registerBlocks( [
-	form,
-	text,
-	email,
-	url,
-	textarea,
-	multiChoice,
-	toggle,
-	checkbox,
-	number,
-	sfForm,
-	rating,
-	upload,
-	phone,
-	select,
-	address,
-	password,
-	dateTimePicker,
-	numberSlider,
-] );
+if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
+	registerBlocks( [
+		form,
+		text,
+		email,
+		url,
+		textarea,
+		multiChoice,
+		toggle,
+		checkbox,
+		number,
+		sfForm,
+		rating,
+		upload,
+		phone,
+		select,
+		address,
+		password,
+		dateTimePicker,
+		numberSlider,
+	] );
+}
+
+if ( 'sureforms_form' !== sfBlockData.current_screen.id ) {
+	registerBlocks( [ sfForm ] );
+}
