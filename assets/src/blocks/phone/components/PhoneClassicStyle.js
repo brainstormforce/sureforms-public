@@ -2,6 +2,7 @@ import { useEffect } from '@wordpress/element';
 
 export const PhoneClassicStyle = ( { attributes, blockID } ) => {
 	const { label, placeholder, required, autoCountry } = attributes;
+
 	useEffect( () => {
 		const phoneNumber = document.getElementById(
 			`sfrm-classic-phone-${ blockID }`
@@ -22,7 +23,15 @@ export const PhoneClassicStyle = ( { attributes, blockID } ) => {
 					} );
 			};
 		}
-		window.intlTelInput( phoneNumber, itlOptions );
+
+		const intlTelInputInstance = window.intlTelInput(
+			phoneNumber,
+			itlOptions
+		);
+		// Return a cleanup function to destroy the current instance
+		return () => {
+			intlTelInputInstance.destroy();
+		};
 	}, [ autoCountry ] );
 
 	return (
