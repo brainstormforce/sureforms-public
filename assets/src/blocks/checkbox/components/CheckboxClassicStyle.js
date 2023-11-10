@@ -26,24 +26,16 @@ export const CheckboxClassicStyle = ( {
 				</div>
 				<div className="srfm-text-sm srfm-leading-6">
 					{ labelUrl ? (
-						<a
-							target="_blank"
-							href={ labelUrl }
-							style={ { textDecoration: 'none' } }
-							className="srfm-underline"
-							rel="noreferrer"
-						>
-							<RichText
-								tagName="label"
-								value={ label }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
-								className={ `srfm-classic-label-text ${ isRequired }` }
-								multiline={ false }
-								id={ blockID }
-							/>
-						</a>
+						<RichText
+							tagName="label"
+							value={ label }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
+							className={ `srfm-classic-label-text ${ isRequired }` }
+							multiline={ false }
+							id={ blockID }
+						/>
 					) : (
 						<RichText
 							tagName="label"
