@@ -18,7 +18,7 @@ export const AddressClassicStyle = ( {
 		countryPlaceholder,
 	} = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

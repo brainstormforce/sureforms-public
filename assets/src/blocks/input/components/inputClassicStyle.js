@@ -3,7 +3,7 @@ import { RichText } from '@wordpress/block-editor';
 export const InputClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

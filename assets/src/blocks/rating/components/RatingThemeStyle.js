@@ -16,7 +16,7 @@ export const RatingThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const [ rating, setRating ] = useState( null );
 	// eslint-disable-next-line no-unused-vars
 	const [ hover, setHover ] = useState( null );
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	const arrayRating = [];
 

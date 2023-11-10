@@ -7,7 +7,7 @@ export const PasswordThemeStyle = ( {
 } ) => {
 	const { label, placeholder, required, confirmLabel, isConfirmPassword } =
 		attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

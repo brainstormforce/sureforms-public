@@ -245,7 +245,7 @@ input[type="range"]::-webkit-slider-thumb {
 	content: none !important;
 }
 
-.required::after {
+.srfm-required::after {
 	color: #f00;
 	content: " *";
 }

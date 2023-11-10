@@ -23,7 +23,7 @@ export const AddressThemeStyle = ( {
 		postalLabel,
 	} = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	const inputStyles = {
 		marginTop: '14px',
 	};

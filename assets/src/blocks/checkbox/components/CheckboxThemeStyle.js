@@ -6,7 +6,7 @@ export const CheckboxThemeStyle = ( {
 	setAttributes,
 } ) => {
 	const { label, checked: isChecked, required, labelUrl } = attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	return (
 		<>
 			<input

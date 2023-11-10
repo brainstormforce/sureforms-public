@@ -6,7 +6,7 @@ import { RichText } from '@wordpress/block-editor';
 export const UploadThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

@@ -8,7 +8,7 @@ export const PasswordClassicStyle = ( {
 	const { label, placeholder, required, confirmLabel, isConfirmPassword } =
 		attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

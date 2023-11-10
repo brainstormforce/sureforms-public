@@ -10,7 +10,7 @@ export const UploadClassicStyle = ( {
 } ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

@@ -6,7 +6,7 @@ export const RatingClassicStyle = ( {
 	blockID,
 } ) => {
 	const { required, label, showNumbers, iconShape, maxValue } = attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	let svg = '';
 	switch ( iconShape ) {
 		case 'star':

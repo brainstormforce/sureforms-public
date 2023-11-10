@@ -7,7 +7,7 @@ export const MultichoiceClassicStyle = ( {
 } ) => {
 	const { label, required, options, single_selection } = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

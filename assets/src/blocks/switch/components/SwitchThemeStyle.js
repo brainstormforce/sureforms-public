@@ -32,7 +32,7 @@ export const SwitchThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 		left: isChecked ? '27px' : '2px',
 		transition: 'left 0.2s',
 	};
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

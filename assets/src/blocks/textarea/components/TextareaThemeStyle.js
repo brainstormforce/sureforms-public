@@ -15,7 +15,7 @@ export const TextareaThemeStyle = ( {
 		cols,
 	} = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

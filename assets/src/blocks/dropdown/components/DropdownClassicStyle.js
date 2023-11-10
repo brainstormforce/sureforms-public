@@ -17,7 +17,7 @@ export const DropdownClassicStyle = ( {
 		opacity: 100,
 		zIndex: 10,
 	};
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	const closedStyles = {
 		display: 'none',
 	};

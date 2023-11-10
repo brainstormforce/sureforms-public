@@ -6,7 +6,7 @@ export const DatetimepickerThemeStyle = ( {
 	setAttributes,
 } ) => {
 	const { label, required, fieldType, min, max, className } = attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

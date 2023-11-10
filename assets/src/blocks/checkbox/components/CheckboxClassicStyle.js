@@ -8,7 +8,7 @@ export const CheckboxClassicStyle = ( {
 } ) => {
 	const { label, checked: isChecked, required, labelUrl } = attributes;
 	const [ selected, setSelected ] = useState( isChecked );
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
 		setSelected( isChecked );
 	}, [ isChecked ] );

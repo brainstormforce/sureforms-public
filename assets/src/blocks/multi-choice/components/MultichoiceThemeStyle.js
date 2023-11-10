@@ -8,7 +8,7 @@ export const MultichoiceThemeStyle = ( {
 	setAttributes,
 } ) => {
 	const { required, options, label, singleSelection, style } = attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

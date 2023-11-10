@@ -16,7 +16,7 @@ export const NumberThemeStyle = ( {
 		formatType,
 	} = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

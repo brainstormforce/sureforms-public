@@ -7,7 +7,7 @@ export const DropdownThemeStyle = ( {
 } ) => {
 	const { required, options, label, placeholder } = attributes;
 
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>

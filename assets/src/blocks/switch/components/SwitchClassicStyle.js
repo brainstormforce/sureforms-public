@@ -13,14 +13,14 @@ export const SwitchClassicStyle = ( {
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
 		setToggle( isChecked );
 	}, [ isChecked ] );
 
 	return (
 		<>
-			<div style={ { flex: 1 } } className="srfm-switch-label">
+			<div className="srfm-switch-label">
 				<div className="srfm-text-primary !srfm-flex !srfm-items-start !srfm-gap-2 !srfm-mt-1">
 					<div
 						className="srfm-switch-background srfm-classic-toggle-bg srfm-mt-[5px] srfm-mr-[5px]"

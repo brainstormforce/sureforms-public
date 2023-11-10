@@ -14,7 +14,7 @@ export const TextareaClassicStyle = ( {
 		rows,
 		cols,
 	} = attributes;
-	const isRequired = required ? 'required' : '';
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
