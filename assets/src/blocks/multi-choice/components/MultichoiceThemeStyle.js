@@ -43,18 +43,18 @@ export const MultichoiceThemeStyle = ( {
 							style={
 								style === 'buttons'
 									? {
-										border: '2px solid',
-										borderRadius: '10px',
-										padding: '.5rem 1rem .5rem 1rem',
-										width: '100%',
-										backgroundColor: selected.includes(
-											i
-										)
-											? 'black'
-											: 'white',
-										color: selected.includes( i )
-											? 'white'
-											: 'black',
+											border: '2px solid',
+											borderRadius: '10px',
+											padding: '.5rem 1rem .5rem 1rem',
+											width: '100%',
+											backgroundColor: selected.includes(
+												i
+											)
+												? 'black'
+												: 'white',
+											color: selected.includes( i )
+												? 'white'
+												: 'black',
 									  }
 									: null
 							}

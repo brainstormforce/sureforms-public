@@ -49,11 +49,11 @@ const UAGNumberControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? wp.hooks.applyFilters(
-				'uagb.registerTextExtender',
-				'',
-				selectedBlock?.name,
-				props.name,
-				props.dynamicContentType
+					'uagb.registerTextExtender',
+					'',
+					selectedBlock?.name,
+					props.name,
+					props.dynamicContentType
 			  )
 			: null;
 

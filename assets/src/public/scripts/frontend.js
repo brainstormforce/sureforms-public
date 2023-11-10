@@ -114,96 +114,104 @@ if ( uploadFieldsContainer ) {
 		const fileSizeField = uploadField.querySelector( '.srfm-upload-size' );
 		const uploadInput = uploadField.querySelector( '.srfm-upload-field' );
 
-		uploadInput.addEventListener( 'change', ( e ) => {
-			const id = e.target.id.split( '-' )[ 2 ];
-			const file = e.target.files[ 0 ];
-			const isError = uploadField.querySelector( '.srfm-error-message' );
-			if ( isError ) {
-				isError.style.display = 'none';
-			}
-			const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
-			if ( file ) {
-				if ( file.size > maxFileSize ) {
-					e.target.value = '';
-					uploadField
-						.querySelector( `#srfm-upload-field-error-${ id }` )
-						.removeAttribute( 'hidden' );
-				} else {
-					uploadField
-						.querySelector( `#srfm-upload-field-error-${ id }` )
-						.setAttribute( 'hidden', true );
-					const fileName =
-						file.name.length > 20
-							? file.name.substring( 0, 17 ) +
-							  '...' +
-							  file.name.split( '.' ).pop()
-							: file.name;
-					const isClassic = uploadField.classList.contains(
-						'srfm-classic-inputs-holder'
-					);
-					if ( ! isClassic ) {
-						uploadField.querySelector(
-							`#srfm-upload-title-${ id }`
-						).innerHTML =
-							`<div class="srfm-text-primary" style="display:flex; gap:0.4rem; align-items:center">
-                        <i class="fa-solid fa-file-lines srfm-text-primary"></i> ` +
-							fileName +
-							' ' +
-							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
-					}
-					if ( isClassic ) {
-						/* eslint-disable no-undef */
-						const reader = new FileReader();
-						reader.onload = function ( event ) {
-							const imgSrc = event.target.result;
-							const imageFormats = [
-								'image/jpeg',
-								'image/png',
-								'image/gif',
-								'image/bmp',
-								'image/tiff',
-								'image/webp',
-								'image/svg+xml',
-								'image/heif',
-								'image/x-icon',
-							];
-							const icon = imageFormats.includes( file.type )
-								? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
-								: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
-							const uploadResultContainer =
-								uploadField.querySelector(
-									`#srfm-upload-field-result-${ id }`
-								);
-							uploadResultContainer.innerHTML = `<div class="srfm-text-primary srfm-w-full srfm-flex srfm-gap-2 srfm-p-[10px]">
-								${ icon }
-								<div class="srfm-w-full srfm-flex srfm-justify-between">
-									<div>
-										<div class="srfm-text-base">${ fileName }</div>
-										<div class="srfm-text-sm srfm-text-gray-500"> ${ (
-		file.size / 1000000
-	).toFixed( 2 ) }MB</div>
-									</div>
-									<div>
-  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
-									</div>
-								</div>
-							</div>`;
-							uploadResultContainer.style.display = 'flex';
-							uploadField
-								.querySelector( '#srfm-reset-upload-field' )
-								.addEventListener( 'click', () => {
-									uploadInput.value = '';
+		if( uploadInput ){
+			uploadInput.addEventListener( 'change', ( e ) => {
+				const id = e.target.id.split( '-' )[ 2 ];
+				const file = e.target.files[ 0 ];
+				const isError = uploadField.querySelector( '.srfm-error-message' );
+				if ( isError ) {
+					isError.style.display = 'none';
+				}
+				const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
+				if ( file ) {
+					if ( file.size > maxFileSize ) {
+						e.target.value = '';
+						uploadField
+							.querySelector( `#srfm-upload-field-error-${ id }` )
+							.removeAttribute( 'hidden' );
+					} else {
+						uploadField
+							.querySelector( `#srfm-upload-field-error-${ id }` )
+							.setAttribute( 'hidden', true );
+						const fileName =
+							file.name.length > 20
+								? file.name.substring( 0, 17 ) +
+								  '...' +
+								  file.name.split( '.' ).pop()
+								: file.name;
+						const isClassic = uploadField.classList.contains(
+							'srfm-classic-inputs-holder'
+						);
+						if ( ! isClassic ) {
+							uploadField.querySelector(
+								`#srfm-upload-title-${ id }`
+							).innerHTML =
+								`<div class="srfm-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+							<i class="fa-solid fa-file-lines srfm-text-primary"></i> ` +
+								fileName +
+								' ' +
+								( file.size / 1000000 ).toFixed( 2 ) +
+								`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
+						}
+						if ( isClassic ) {
+							/* eslint-disable no-undef */
+							const reader = new FileReader();
+							reader.onload = function ( event ) {
+								const imgSrc = event.target.result;
+								const imageFormats = [
+									'image/jpeg',
+									'image/png',
+									'image/gif',
+									'image/bmp',
+									'image/tiff',
+									'image/webp',
+									'image/svg+xml',
+									'image/heif',
+									'image/x-icon',
+								];
+								const icon = imageFormats.includes( file.type )
+									? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
+									: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
+								const uploadResultContainer =
 									uploadField.querySelector(
 										`#srfm-upload-field-result-${ id }`
-									).style.display = 'none';
-								} );
-						};
-						reader.readAsDataURL( file );
+									);
+								uploadResultContainer.innerHTML = `<div class="srfm-text-primary srfm-w-full srfm-flex srfm-gap-2 srfm-p-[10px]">
+									${ icon }
+									<div class="srfm-w-full srfm-flex srfm-justify-between">
+										<div>
+											<div class="srfm-text-base">${ fileName }</div>
+											<div class="srfm-text-sm srfm-text-gray-500"> ${ (
+			file.size / 1000000
+		).toFixed( 2 ) }MB</div>
+										</div>
+										<div>
+											  <i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
+										</div>
+									</div>
+								</div>`;
+								if(uploadResultContainer){
+									uploadResultContainer.style.display = 'flex';
+								}
+								const resetButton = uploadField.querySelector('#srfm-reset-upload-field');
+								if(resetButton){
+									resetButton.addEventListener('click', () => {
+										uploadInput.value = '';
+								
+										const resultElement = uploadField.querySelector(`#srfm-upload-field-result-${id}`);
+								
+										if (resultElement) {
+											resultElement.style.display = 'none';
+										}
+									});
+								}
+							};
+							reader.readAsDataURL( file );
+						}
 					}
 				}
-			}
-		} );
+			} );
+		}
 	}
 }
 
@@ -224,155 +232,184 @@ if ( toggleSwitchesContainer ) {
 			toggleSwitch.id = toggleSwitchCurrentId + i;
 			toggleLabel.htmlFor = toggleSwitchCurrentId + i;
 		}
-		toggleSwitch.addEventListener( 'click', () => {
-			const formElement = toggleSwitch.closest( 'form' );
-			// eslint-disable-next-line no-undef
-
-			if (
-				toggleSwitch.classList.contains( 'srfm-classic-switch-input' )
-			) {
-				const computedStyle = getComputedStyle( formElement );
-				const primaryColor = computedStyle.getPropertyValue(
-					'--srfm-primary-color'
-				);
-				const currentValue = toggleSwitch.value;
-
-				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-				const switchBackground = toggleSwitchesContainer[
-					i
-				].querySelector( '.srfm-switch-background' );
-				const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-					'.srfm-switch-toggle'
-				);
-				const switchTickIcon = toggleSwitchesContainer[
-					i
-				].querySelector( '.srfm-classic-toggle-icon' );
-
-				if ( toggleSwitch.value === 'true' ) {
-					switchBackground.style.backgroundColor =
-						primaryColor !== ''
-							? 'var(--srfm-primary-color)'
-							: '#0284c7';
-					switchTickIcon.style.fill =
-						primaryColor !== ''
-							? 'var(--srfm-primary-color)'
-							: '#0284c7';
-					// will be used later
-
-					// switchBackground[ i ].style.backgroundColor =
-					// 	primaryColor !== '' ? 'var(--srfm-primary-color)' : '#0284c7';
-					// switchBackground[ i ].classList.remove( '!srfm-bg-[#E4E7EB]' );
-					if (
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.contains( '!srfm-opacity-0' )
-					) {
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.remove( '!srfm-opacity-0' );
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.add( '!srfm-opacity-100' );
-						switchToggle.style.left = '24px';
-						toggleSwitch.value = 'true';
-					} else {
-						switchBackground.style.backgroundColor = '#dcdcdc';
-
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.add( '!srfm-opacity-0' );
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.remove( '!srfm-opacity-100' );
-						switchToggle.style.left = '0';
-						toggleSwitch.value = 'false';
-					}
-					// will be used later
-
-					// switchBackground[ i ].classList.add(
-					// 	'sureform-toggle-background'
-					// );
-				} else {
-					// will be used later
-					// switchBackground[ i ].classList.remove(
-					// 	'sureform-toggle-background'
-					// );
-
-					// switchBackground[ i ].classList.add( '!srfm-bg-[#E4E7EB]' );
-					// will be used later
-					// switchToggle[ i ].style.left = '2px';
-					// eslint-disable-next-line no-lonely-if
-					if (
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.contains( '!srfm-opacity-100' )
-					) {
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.remove( '!srfm-opacity-100' );
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.add( '!srfm-opacity-0' );
-						switchToggle.style.left = '0';
-						switchBackground.style.backgroundColor = '#dcdcdc';
-						toggleSwitch.value = 'false';
-					} else {
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.remove( '!srfm-opacity-0' );
-						switchBackground
-							.querySelector(
-								'.srfm-classic-toggle-icon-container'
-							)
-							.classList.add( '!srfm-opacity-100' );
-						switchToggle.style.left = '24px';
-						switchBackground.style.backgroundColor =
+		if( toggleSwitch ){
+			toggleSwitch.addEventListener( 'click', () => {
+				const formElement = toggleSwitch.closest( 'form' );
+				// eslint-disable-next-line no-undef
+	
+				if (
+					toggleSwitch.classList.contains( 'srfm-classic-switch-input' )
+				) {
+					const computedStyle = getComputedStyle( formElement );
+					const primaryColor = computedStyle.getPropertyValue(
+						'--srfm-primary-color'
+					);
+					const currentValue = toggleSwitch.value;
+	
+					toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
+					const switchBackground = toggleSwitchesContainer[
+						i
+					].querySelector( '.srfm-switch-background' );
+					const switchToggle = toggleSwitchesContainer[ i ].querySelector(
+						'.srfm-switch-toggle'
+					);
+					const switchTickIcon = toggleSwitchesContainer[
+						i
+					].querySelector( '.srfm-classic-toggle-icon' );
+	
+					if ( toggleSwitch.value === 'true' ) {
+						if(switchBackground && switchTickIcon){
+							switchBackground.style.backgroundColor =
 							primaryColor !== ''
 								? 'var(--srfm-primary-color)'
 								: '#0284c7';
-						switchTickIcon.style.fill =
+							switchTickIcon.style.fill =
 							primaryColor !== ''
 								? 'var(--srfm-primary-color)'
 								: '#0284c7';
-						toggleSwitch.value = 'true';
+						}
+						// will be used later
+	
+						// switchBackground[ i ].style.backgroundColor =
+						// 	primaryColor !== '' ? 'var(--srfm-primary-color)' : '#0284c7';
+						// switchBackground[ i ].classList.remove( '!srfm-bg-[#E4E7EB]' );
+						if (
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.contains( '!srfm-opacity-0' )
+						) {
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.remove( '!srfm-opacity-0' );
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.add( '!srfm-opacity-100' );
+							if(switchToggle){
+								switchToggle.style.left = '24px';
+							}
+							if( toggleSwitch ){
+								toggleSwitch.value = 'true';
+							}
+						} else {
+							if(switchBackground){
+								switchBackground.style.backgroundColor = '#dcdcdc';
+								switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.add( '!srfm-opacity-0' );
+								switchBackground
+									.querySelector(
+										'.srfm-classic-toggle-icon-container'
+									)
+									.classList.remove( '!srfm-opacity-100' );
+								}
+							if(switchToggle){
+								switchToggle.style.left = '0';
+							}
+							if( toggleSwitch ){
+								toggleSwitch.value = 'false';
+							}
+						}
+						// will be used later
+	
+						// switchBackground[ i ].classList.add(
+						// 	'sureform-toggle-background'
+						// );
+					} else {
+						// will be used later
+						// switchBackground[ i ].classList.remove(
+						// 	'sureform-toggle-background'
+						// );
+	
+						// switchBackground[ i ].classList.add( '!srfm-bg-[#E4E7EB]' );
+						// will be used later
+						// switchToggle[ i ].style.left = '2px';
+						// eslint-disable-next-line no-lonely-if
+						if (
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.contains( '!srfm-opacity-100' )
+						) {
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.remove( '!srfm-opacity-100' );
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.add( '!srfm-opacity-0' );
+							if( switchToggle ){
+								switchToggle.style.left = '0';
+							}
+							if(switchBackground){
+								switchBackground.style.backgroundColor = '#dcdcdc';
+							}
+							if(toggleSwitch){
+								toggleSwitch.value = 'false';
+							}
+						} else {
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.remove( '!srfm-opacity-0' );
+							switchBackground
+								.querySelector(
+									'.srfm-classic-toggle-icon-container'
+								)
+								.classList.add( '!srfm-opacity-100' );
+							if(switchToggle){
+								switchToggle.style.left = '24px';
+							}
+							if(switchBackground && switchTickIcon){
+								switchBackground.style.backgroundColor =
+								primaryColor !== ''
+									? 'var(--srfm-primary-color)'
+									: '#0284c7';
+								switchTickIcon.style.fill =
+									primaryColor !== ''
+										? 'var(--srfm-primary-color)'
+										: '#0284c7';
+							}
+							if(toggleSwitch){
+								toggleSwitch.value = 'true';
+							}
+						}
+					}
+				} else {
+					const currentValue = toggleSwitch.value;
+					toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
+					const switchBackground = toggleSwitchesContainer[
+						i
+					].querySelector( '.srfm-switch-background' );
+					const switchToggle = toggleSwitchesContainer[ i ].querySelector(
+						'.srfm-switch-toggle'
+					);
+					if ( toggleSwitch.value === 'true' ) {
+						if(switchBackground && switchToggle){
+							switchBackground.style.backgroundColor = '#007CBA';
+							switchToggle.style.left = '27px';
+						}
+					} else {
+						if(switchBackground && switchToggle){
+							switchBackground[ i ].style.backgroundColor = '#dcdcdc';
+							switchToggle.style.left = '2px';
+						}
 					}
 				}
-			} else {
-				const currentValue = toggleSwitch.value;
-				toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-				const switchBackground = toggleSwitchesContainer[
-					i
-				].querySelector( '.srfm-switch-background' );
-				const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-					'.srfm-switch-toggle'
-				);
-				if ( toggleSwitch.value === 'true' ) {
-					switchBackground.style.backgroundColor = '#007CBA';
-					switchToggle.style.left = '27px';
-				} else {
-					switchBackground[ i ].style.backgroundColor = '#dcdcdc';
-					switchToggle.style.left = '2px';
-				}
-			}
-		} );
+			} );
+		}
 	}
 }
 
@@ -562,16 +599,17 @@ if ( addressElement ) {
 
 			fullAddressInput.value = fullAddress;
 		};
-
-		addressLine1.addEventListener( 'change', updateFullAddress );
-		addressLine2.addEventListener( 'change', updateFullAddress );
-		addressCity.addEventListener( 'change', updateFullAddress );
-		addressState.addEventListener( 'change', updateFullAddress );
-		addressPostal.addEventListener( 'change', updateFullAddress );
-		addressCountry.addEventListener( 'change', updateFullAddress );
-		addressCountry.addEventListener( 'click', () => {
-			addressCountry.style.color = '#2c3338';
-		} );
+		if(addressLine1 && addressLine2 && addressCity && addressState && addressPostal &&  addressCountry ) {
+			addressLine1.addEventListener( 'change', updateFullAddress );
+			addressLine2.addEventListener( 'change', updateFullAddress );
+			addressCity.addEventListener( 'change', updateFullAddress );
+			addressState.addEventListener( 'change', updateFullAddress );
+			addressPostal.addEventListener( 'change', updateFullAddress );
+			addressCountry.addEventListener( 'change', updateFullAddress );
+			addressCountry.addEventListener( 'click', () => {
+				addressCountry.style.color = '#2c3338';
+			} );
+		}
 	}
 }
 
@@ -655,8 +693,10 @@ if ( phoneElement ) {
 			}
 		};
 
-		countryCode.addEventListener( 'change', updateFullPhoneNumber );
-		phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+		if( countryCode && phoneNumber ){
+			countryCode.addEventListener( 'change', updateFullPhoneNumber );
+			phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+		}
 	}
 }
 
@@ -672,12 +712,14 @@ if ( sliderElement ) {
 		const sliderInput = document.getElementById(
 			`srfm-number-slider-${ blockID }`
 		);
-		sliderInput.addEventListener( 'input', ( e ) => {
-			const slideValue = e.target.value;
-			document.getElementById(
-				`srfm-number-slider-value-${ blockID }`
-			).innerText = slideValue;
-		} );
+		if(sliderInput){
+			sliderInput.addEventListener( 'input', ( e ) => {
+				const slideValue = e.target.value;
+				document.getElementById(
+					`srfm-number-slider-value-${ blockID }`
+				).innerText = slideValue;
+			} );
+		}
 	}
 }
 
@@ -689,60 +731,27 @@ const numberElements = Array.from(
 if ( numberElements ) {
 	for ( const numberContainer of numberElements ) {
 		const numberInput = numberContainer.querySelector( 'input' );
-		numberInput.addEventListener( 'input', ( e ) => {
-			const formatType = numberInput.getAttribute( 'format-type' );
-			let inputValue = e.target.value;
-			if ( formatType === 'none' ) {
-				return;
-			}
-			if ( formatType === 'non-decimal' ) {
-				inputValue = inputValue.replace( /[^0-9]/g, '' );
-			} else {
-				inputValue = inputValue.replace( /[^0-9.]/g, '' );
-				const dotCount = inputValue.split( '.' ).length - 1;
-				if ( dotCount > 1 ) {
-					inputValue = inputValue.replace( /\.+$/g, '' );
+		if( numberInput ){
+			numberInput.addEventListener( 'input', ( e ) => {
+				const formatType = numberInput.getAttribute( 'format-type' );
+				let inputValue = e.target.value;
+				if ( formatType === 'none' ) {
+					return;
 				}
-			}
-			numberInput.value = inputValue;
-		} );
-	}
-}
-
-const inputContainers = document.querySelectorAll( '.srfm-main-container' );
-
-inputContainers.forEach( ( container ) => {
-	const inputs = container.querySelectorAll( 'input, textarea, select' );
-
-	inputs.forEach( ( input ) => {
-		const isRatingInput = input.classList.contains( 'srfm-rating-field' );
-		const isMultiInput = input.classList.contains(
-			'srfm-multi-choice-container'
-		);
-		const isFileInput = input.type === 'file';
-		if ( isRatingInput || isFileInput || isMultiInput ) {
-			input.addEventListener( 'click', () => {
-				const focusedDivs = document.querySelector( '.sf--focus' );
-				if ( focusedDivs ) {
-					focusedDivs.classList.remove( 'sf--focus' );
+				if ( formatType === 'non-decimal' ) {
+					inputValue = inputValue.replace( /[^0-9]/g, '' );
+				} else {
+					inputValue = inputValue.replace( /[^0-9.]/g, '' );
+					const dotCount = inputValue.split( '.' ).length - 1;
+					if ( dotCount > 1 ) {
+						inputValue = inputValue.replace( /\.+$/g, '' );
+					}
 				}
-				container.classList.add( 'sf--focus' );
-			} );
-		} else {
-			input.addEventListener( 'focus', () => {
-				const focusedDivs = document.querySelector( '.sf--focus' );
-				if ( focusedDivs ) {
-					focusedDivs.classList.remove( 'sf--focus' );
-				}
-				container.classList.add( 'sf--focus' );
-			} );
-
-			input.addEventListener( 'blur', () => {
-				container.classList.remove( 'sf--focus' );
+				numberInput.value = inputValue;
 			} );
 		}
-	} );
-} );
+	}
+}
 
 const checkboxContainers = document.querySelectorAll(
 	'.srfm-checkbox-container'
@@ -788,17 +797,19 @@ const textAreaContainer = Array.from(
 if ( textAreaContainer ) {
 	for ( const areaInput of textAreaContainer ) {
 		const areaField = areaInput.querySelector( 'textarea' );
-		areaField.addEventListener( 'input', function () {
-			const textAreaValue = areaField.value;
-			const maxLength = areaField.getAttribute( 'maxLength' );
-			if ( maxLength !== '' ) {
-				const counterDiv = areaInput.querySelector(
-					'.srfm-text-area-counter'
-				);
-				const remainingLength = maxLength - textAreaValue.length;
-				counterDiv.innerText = remainingLength + '/' + maxLength;
-			}
-		} );
+		if(areaField){
+			areaField.addEventListener( 'input', function () {
+				const textAreaValue = areaField.value;
+				const maxLength = areaField.getAttribute( 'maxLength' );
+				if ( maxLength !== '' ) {
+					const counterDiv = areaInput.querySelector(
+						'.srfm-text-area-counter'
+					);
+					const remainingLength = maxLength - textAreaValue.length;
+					counterDiv.innerText = remainingLength + '/' + maxLength;
+				}
+			} );
+		}
 	}
 }
 //password strength
@@ -814,20 +825,22 @@ if ( passwordContainer ) {
 			continue;
 		}
 		const inputField = passwordInput.querySelector( 'input' );
-		inputField.addEventListener( 'input', function () {
-			const password = inputField.value;
-			const passwordStrength = passwordInput.querySelector(
-				'.srfm-password-strength-message'
-			);
-			passwordInput.querySelector( '.srfm-error-message' ).style.display =
-				'none';
-			if ( passwordInput.querySelector( '.srfm-info-icon' ) ) {
-				passwordInput.querySelector( '.srfm-info-icon' ).style.display =
-					'inline-block';
-			}
-			const strength = calculatePasswordStrength( password );
-			updatePasswordStrength( strength, passwordStrength );
-		} );
+		if(inputField){
+			inputField.addEventListener( 'input', function () {
+				const password = inputField.value;
+				const passwordStrength = passwordInput.querySelector(
+					'.srfm-password-strength-message'
+				);
+				passwordInput.querySelector( '.srfm-error-message' )?.style.display =
+					'none';
+				if ( passwordInput.querySelector( '.srfm-info-icon' ) ) {
+					passwordInput.querySelector( '.srfm-info-icon' )?.style.display =
+						'inline-block';
+				}
+				const strength = calculatePasswordStrength( password );
+				updatePasswordStrength( strength, passwordStrength );
+			} );
+		}
 	}
 }
 
@@ -900,73 +913,75 @@ if ( selectFieldContainer ) {
 			'.srfm-classic-dropdown-button'
 		);
 
-		selectFieldButton.addEventListener( 'focus', () => {
-			selectFieldButton
-				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.add( 'srfm-rotate-180', '!srfm-pl-4' );
-
-			const nextSibling = selectFieldButton.nextElementSibling;
-			const options = nextSibling.querySelectorAll(
-				'.srfm-classic-dropdown-option'
-			);
-			if ( '' === primaryColor ) {
-				for ( let index = 0; index < options.length; index++ ) {
-					options[ index ].classList.remove(
-						'hover:!srfm-bg-srfm_primary_color'
-					);
-					options[ index ].classList.add(
-						'hover:!srfm-bg-[#0084C7]'
-					);
+		if(selectFieldButton){
+			selectFieldButton.addEventListener( 'focus', () => {
+				selectFieldButton
+					.querySelector( '.srfm-classic-select-icon ' )
+					.classList.add( 'srfm-rotate-180', '!srfm-pl-4' );
+	
+				const nextSibling = selectFieldButton.nextElementSibling;
+				const options = nextSibling?.querySelectorAll(
+					'.srfm-classic-dropdown-option'
+				);
+				if ( '' === primaryColor ) {
+					for ( let index = 0; index < options.length; index++ ) {
+						options[ index ].classList.remove(
+							'hover:!srfm-bg-srfm_primary_color'
+						);
+						options[ index ].classList.add(
+							'hover:!srfm-bg-[#0084C7]'
+						);
+					}
 				}
-			}
-			const dropdownResultInput = selectField.querySelector(
-				'.srfm-classic-dropdown-result'
-			);
-			nextSibling.style.display = 'block';
-			if ( nextSibling ) {
-				nextSibling.classList.add( '!srfm-opacity-100' );
-				nextSibling.classList.add( '!srfm-z-10' );
-				nextSibling.classList.remove( '!srfm-opacity-0' );
-
-				const liElements = nextSibling.querySelectorAll( 'ul li' );
-				liElements.forEach( ( li ) => {
-					li.addEventListener( 'mousedown', ( event ) => {
-						selectFieldButton
-							.querySelector( '.srfm-classic-select-icon ' )
-							.classList.remove(
-								'srfm-rotate-180',
-								'!srfm-pl-4'
-							);
-						selectFieldButton
-							.querySelector( '.srfm-classic-select-icon ' )
-							.classList.add( 'srfm-rotate-0' );
-						const selectedValue = event.target.textContent.trim();
-						selectFieldButton.querySelector(
-							'.srfm-dropdown-value'
-						).textContent = selectedValue;
-						dropdownResultInput.value = selectedValue;
-
-						nextSibling.classList.remove( '!srfm-opacity-100' );
-						nextSibling.classList.remove( '!srfm-z-10' );
-						nextSibling.classList.add( '!srfm-opacity-0' );
-						nextSibling.style.display = 'none';
+				const dropdownResultInput = selectField.querySelector(
+					'.srfm-classic-dropdown-result'
+				);
+				nextSibling?.style.display = 'block';
+				if ( nextSibling ) {
+					nextSibling.classList.add( '!srfm-opacity-100' );
+					nextSibling.classList.add( '!srfm-z-10' );
+					nextSibling.classList.remove( '!srfm-opacity-0' );
+	
+					const liElements = nextSibling.querySelectorAll( 'ul li' );
+					liElements.forEach( ( li ) => {
+						li.addEventListener( 'mousedown', ( event ) => {
+							selectFieldButton
+								.querySelector( '.srfm-classic-select-icon ' )
+								.classList.remove(
+									'srfm-rotate-180',
+									'!srfm-pl-4'
+								);
+							selectFieldButton
+								.querySelector( '.srfm-classic-select-icon ' )
+								.classList.add( 'srfm-rotate-0' );
+							const selectedValue = event.target.textContent.trim();
+							selectFieldButton.querySelector(
+								'.srfm-dropdown-value'
+							).textContent = selectedValue;
+							dropdownResultInput.value = selectedValue;
+	
+							nextSibling.classList.remove( '!srfm-opacity-100' );
+							nextSibling.classList.remove( '!srfm-z-10' );
+							nextSibling.classList.add( '!srfm-opacity-0' );
+							nextSibling.style.display = 'none';
+						} );
 					} );
-				} );
-			}
-		} );
-		selectFieldButton.addEventListener( 'blur', () => {
-			selectFieldButton
-				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.remove( 'srfm-rotate-180', '!srfm-pl-4' );
-			selectFieldButton
-				.querySelector( '.srfm-classic-select-icon ' )
-				.classList.add( 'srfm-rotate-0' );
-			const nextSibling = selectFieldButton.nextElementSibling;
-			nextSibling.classList.remove( '!srfm-opacity-100' );
-			nextSibling.classList.remove( '!srfm-z-10' );
-			nextSibling.classList.add( '!srfm-opacity-0' );
-			nextSibling.style.display = 'none';
-		} );
+				}
+			} );
+			selectFieldButton.addEventListener( 'blur', () => {
+				selectFieldButton
+					.querySelector( '.srfm-classic-select-icon ' )
+					.classList.remove( 'srfm-rotate-180', '!srfm-pl-4' );
+				selectFieldButton
+					.querySelector( '.srfm-classic-select-icon ' )
+					.classList.add( 'srfm-rotate-0' );
+				const nextSibling = selectFieldButton.nextElementSibling;
+				nextSibling.classList.remove( '!srfm-opacity-100' );
+				nextSibling.classList.remove( '!srfm-z-10' );
+				nextSibling.classList.add( '!srfm-opacity-0' );
+				nextSibling.style.display = 'none';
+			} );
+		}
 	}
 }
 
@@ -1026,50 +1041,54 @@ if ( numberSliderContainer ) {
 		const numberInput = sliderContainer.querySelector(
 			'.srfm-number-input-slider'
 		);
-		rangeSliders.addEventListener( 'input', function ( e ) {
-			// Prevent Default
-			e.preventDefault();
-			e.stopPropagation();
-			// Background Change
-			const val = Number( rangeSliders.value );
-			const min = Number( rangeSliders.getAttribute( 'min' ) );
-			const max = Number( rangeSliders.getAttribute( 'max' ) );
-			bgInit( rangeSliders, val, min, max, primaryColor );
-
-			// Assign value to slider input
-			numberInput.value = rangeSliders.value;
-		} );
+		if( rangeSliders ){
+			rangeSliders.addEventListener( 'input', function ( e ) {
+				// Prevent Default
+				e.preventDefault();
+				e.stopPropagation();
+				// Background Change
+				const val = Number( rangeSliders.value );
+				const min = Number( rangeSliders.getAttribute( 'min' ) );
+				const max = Number( rangeSliders.getAttribute( 'max' ) );
+				bgInit( rangeSliders, val, min, max, primaryColor );
+	
+				// Assign value to slider input
+				numberInput.value = rangeSliders.value;
+			} );
+		}
 		// Input Slider Input
-		numberInput.addEventListener( 'input', function ( event ) {
-			// Prevent Default
-			event.preventDefault();
-			event.stopPropagation();
-
-			// Background Change
-			const thisInput = this;
-			let inputVal = Number( thisInput.value );
-			const inputMin = Number( thisInput.getAttribute( 'min' ) );
-			const inputMax = Number( thisInput.getAttribute( 'max' ) );
-
-			// Max Validation
-			if ( inputVal > inputMax ) {
-				inputVal = inputMax;
-				thisInput.value = inputVal;
-			}
-
-			// Min Validation
-			if ( inputVal < inputMin ) {
-				inputVal = inputMin;
-				thisInput.value = inputVal;
-			}
-
-			// Background Change
-			const sliderEle = rangeSliders;
-			bgInit( sliderEle, inputVal, inputMin, inputMax, primaryColor );
-
-			// Assign value to slider range.
-			sliderEle.value = inputVal;
-		} );
+		if(numberInput){
+			numberInput.addEventListener( 'input', function ( event ) {
+				// Prevent Default
+				event.preventDefault();
+				event.stopPropagation();
+	
+				// Background Change
+				const thisInput = this;
+				let inputVal = Number( thisInput.value );
+				const inputMin = Number( thisInput.getAttribute( 'min' ) );
+				const inputMax = Number( thisInput.getAttribute( 'max' ) );
+	
+				// Max Validation
+				if ( inputVal > inputMax ) {
+					inputVal = inputMax;
+					thisInput.value = inputVal;
+				}
+	
+				// Min Validation
+				if ( inputVal < inputMin ) {
+					inputVal = inputMin;
+					thisInput.value = inputVal;
+				}
+	
+				// Background Change
+				const sliderEle = rangeSliders;
+				bgInit( sliderEle, inputVal, inputMin, inputMax, primaryColor );
+	
+				// Assign value to slider range.
+				sliderEle.value = inputVal;
+			} );
+		}
 	};
 	for ( const numberSlider of numberSliderContainer ) {
 		const formElement = numberSlider.closest( 'form' );
@@ -1161,33 +1180,35 @@ if ( urlFiledContainers ) {
 		const validUrlMessage = urlFiledContainer.querySelector(
 			'.srfm-validation-url-message'
 		);
-		urlInput.addEventListener( 'change', () => {
-			const pattern = new RegExp(
-				'^(https?:\\/\\/)?' + // protocol
-					'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-					'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
-					'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-					'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-					'(\\#[-a-z\\d_]*)?$', // fragment locator
-				'i'
-			);
-
-			const isValidUrl = pattern.test( urlInput.value );
-			if ( isValidUrl ) {
-				validUrlMessage.style.display = 'none';
-				urlInput.classList.remove(
-					'!srfm-ring-red-500',
-					'!srfm-border-red-500',
-					'placeholder:!srfm-text-red-300'
+		if(urlInput){
+			urlInput.addEventListener( 'change', () => {
+				const pattern = new RegExp(
+					'^(https?:\\/\\/)?' + // protocol
+						'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+						'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP (v4) address
+						'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+						'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+						'(\\#[-a-z\\d_]*)?$', // fragment locator
+					'i'
 				);
-			} else {
-				validUrlMessage.style.display = 'block';
-				urlInput.classList.add(
-					'!srfm-ring-red-500',
-					'!srfm-border-red-500',
-					'placeholder:!srfm-text-red-300'
-				);
-			}
-		} );
+	
+				const isValidUrl = pattern.test( urlInput.value );
+				if ( isValidUrl ) {
+					validUrlMessage.style.display = 'none';
+					urlInput.classList.remove(
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500',
+						'placeholder:!srfm-text-red-300'
+					);
+				} else {
+					validUrlMessage.style.display = 'block';
+					urlInput.classList.add(
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500',
+						'placeholder:!srfm-text-red-300'
+					);
+				}
+			} );
+		}
 	}
 }
