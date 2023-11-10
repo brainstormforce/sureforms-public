@@ -112,7 +112,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								/>
 							) }
 							<UAGNumberControl
-								label={ __( 'Text Max Length', 'sureforms' ) }
+								label={ __(
+									'Text Maximum Length',
+									'sureforms'
+								) }
 								value={ maxLength }
 								displayUnit={ false }
 								data={ {

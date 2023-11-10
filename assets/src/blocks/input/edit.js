@@ -146,7 +146,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							<Range
-								label={ __( 'Max text length', 'sureforms' ) }
+								label={ __(
+									'Maximum text length',
+									'sureforms'
+								) }
 								displayUnit={ false }
 								value={ textLength }
 								min={ 0 }

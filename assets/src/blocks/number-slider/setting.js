@@ -81,13 +81,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 							showControlHeader={ false }
 						/>
 						{ error && (
-							<p
-								style={ {
-									fontSize: '12px',
-									fontStyle: 'normal',
-									color: 'red',
-								} }
-							>
+							<p className="srfm-min-max-error-styles">
 								{ __(
 									'Please check the Minimum and Maximum value',
 									'sureforms'
@@ -96,7 +90,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						) }
 						<p className="components-base-control__help">
 							{ __(
-								'Note: Max value should always be greater than min value',
+								'Note: Maximum value should always be greater than minimum value',
 								'sureforms'
 							) }
 						</p>
