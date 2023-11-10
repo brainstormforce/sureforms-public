@@ -1,17 +1,24 @@
-export const DropdownThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const DropdownThemeStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { required, options, label, placeholder } = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
-			<label
-				className="srfm-text-primary"
-				htmlFor={ 'dropdown-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<select id={ 'dropdown-' + blockID } required={ required }>
 				{ placeholder && <option>{ placeholder }</option> }
 				{ options.map( ( option, i ) => {

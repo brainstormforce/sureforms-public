@@ -1,19 +1,26 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
+export const SwitchClassicStyle = ( {
+	attributes,
+	sureforms_keys,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, checked: isChecked, required } = attributes;
 	const [ toggle, setToggle ] = useState( isChecked );
 	let color = sureforms_keys._srfm_color1;
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+	const isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
 		setToggle( isChecked );
 	}, [ isChecked ] );
 
 	return (
 		<>
-			<label className="srfm-switch-label">
+			<div className="srfm-switch-label">
 				<div className="srfm-text-primary !srfm-flex !srfm-items-start !srfm-gap-2 !srfm-mt-1">
 					<div
 						className="srfm-switch-background srfm-classic-toggle-bg srfm-mt-[5px] srfm-mr-[5px]"
@@ -50,19 +57,18 @@ export const SwitchClassicStyle = ( { attributes, sureforms_keys } ) => {
 							</span>
 						</div>
 					</div>
-					<span className="srfm-classic-label-text">
-						{ label }{ ' ' }
-						{ required && label ? (
-							<span className="!srfm-text-required_icon_color">
-								{ ' ' }
-								*
-							</span>
-						) : (
-							''
-						) }
-					</span>
+					<RichText
+						tagName="span"
+						value={ label }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
+						className={ `srfm-classic-label-text ${ isRequired }` }
+						multiline={ false }
+						id={ blockID }
+					/>
 				</div>
-			</label>
+			</div>
 		</>
 	);
 };
