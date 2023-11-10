@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -185,27 +185,33 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<InputClassicStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) : (
 					<InputThemeStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>
