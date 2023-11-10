@@ -106,8 +106,8 @@ class Block extends Base {
 										break;
 									case 'classic':
 										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( '#0284c7' === $color_primary && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !mt-[24px] !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-srfm_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-srfm_primary_color' ) . '">
-										<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
+										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( '#0284c7' === $color_primary && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !srfm-mt-[24px] !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '">
+										<div class="!srfm-flex !srfm-gap-[6px] !srfm-justify-center !srfm-items-center !srfm-min-h-[24px]">
 											' . esc_html( $button_text ) . '
 											<div style="display: none;" class="srfm-loader"></div>
 										</div>
@@ -138,8 +138,8 @@ class Block extends Base {
 										break;
 									case 'classic':
 										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="srfm-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-srfm_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
+										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
+											<div class="!srfm-flex !srfm-gap-[6px] !srfm-justify-center !srfm-items-center !srfm-min-h-[24px]">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="srfm-loader"></div>
 											</div>
@@ -171,8 +171,8 @@ class Block extends Base {
 											break;
 										case 'classic':
 											// @phpstan-ignore-next-line
-											echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="g-recaptcha srfm-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-srfm_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
+											echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="g-recaptcha srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
+											<div class="!srfm-flex !srfm-gap-[6px] !srfm-justify-center !srfm-items-center !srfm-min-h-[24px]">
 												' . esc_html( $button_text ) . '
 												<div style="display: none;" class="srfm-loader"></div>
 											</div>
@@ -204,8 +204,8 @@ class Block extends Base {
 									break;
 								case 'classic':
 									// @phpstan-ignore-next-line
-									echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !rounded-md !px-3.5 !py-2 !text-sm !font-semibold text-srfm_primary_text_color !shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!bg-srfm_primary_color' ) . '">
-									<div class="!flex !gap-[6px] !justify-center !items-center !min-h-[24px]">
+									echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '">
+									<div class="!srfm-flex !srfm-gap-[6px] !srfm-justify-center !srfm-items-center !srfm-min-h-[24px]">
 										' . esc_html( $button_text ) . '
 										<div style="display: none;" class="srfm-loader"></div>
 									</div>
@@ -225,14 +225,14 @@ class Block extends Base {
 					</div>
 					</div>
 				<?php endif; ?>
-				<p id="srfm-srfm-error-message" class="srfm-srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div id="srfm-success-message-page-<?php echo esc_attr( $id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
 				<i class="fa-regular fa-circle-check"></i>
 				<article class="srfm-success-box-header">
 					<?php echo esc_html__( 'Thank you', 'sureforms' ); ?>
 				</article>
-				<article class="srfm-success-box-subtxt text-gray-900">
+				<article class="srfm-success-box-subtxt srfm-text-gray-900">
 					<?php echo esc_html( $success_message ); ?>
 				</article>
 			</div>

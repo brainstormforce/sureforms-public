@@ -14,7 +14,7 @@ export const UploadClassicStyle = ( {
 
 	return (
 		<>
-			<div className="col-span-full">
+			<div className="srfm-col-span-full">
 				<RichText
 					tagName="label"
 					value={ label }
@@ -24,10 +24,10 @@ export const UploadClassicStyle = ( {
 					id={ blockID }
 				/>
 				<div className="srfm-classic-upload-div">
-					<div className="text-center">
+					<div className="srfm-text-center">
 						<div
 							style={ { fontSize: '35px' } }
-							className="text-center text-gray-300"
+							className="srfm-text-center srfm-text-gray-300"
 						>
 							<FontAwesomeIcon
 								style={ { margin: 'auto' } }
@@ -36,7 +36,7 @@ export const UploadClassicStyle = ( {
 								icon={ faCloudArrowUp }
 							/>
 						</div>
-						<div className="mt-2 flex text-sm leading-6 text-gray-600">
+						<div className="srfm-mt-2 srfm-flex srfm-text-sm srfm-leading-6 srfm-text-gray-600">
 							<label className="srfm-classic-upload-label">
 								<span>
 									{ __(
@@ -49,12 +49,12 @@ export const UploadClassicStyle = ( {
 									aria-required={
 										required ? 'true' : 'false'
 									}
-									className="srfm-upload-field sr-only"
+									className="srfm-upload-field srfm-sr-only"
 								/>
 							</label>
 						</div>
-						<p className="mb-1 text-xs leading-5 text-gray-600">
-							<span className="font-semibold">
+						<p className="srfm-mb-1 srfm-text-xs srfm-leading-5 srfm-text-gray-600">
+							<span className="srfm-font-semibold">
 								{ firstFive.length !== 0
 									? firstFive.map( ( obj, index ) => {
 										if ( index < 4 ) {

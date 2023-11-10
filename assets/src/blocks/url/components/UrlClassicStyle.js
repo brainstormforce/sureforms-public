@@ -15,7 +15,7 @@ export const UrlClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 					multiline={ false }
 					id={ blockID }
 				/>
-				<div className="mt-2 flex rounded-md shadow-sm">
+				<div className="srfm-mt-2 srfm-flex srfm-rounded-md srfm-shadow-sm">
 					<span className="srfm-classic-url-prefix">https://</span>
 					<input
 						id={ 'srfm-text-input-' + blockID }

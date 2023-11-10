@@ -81,22 +81,22 @@ class Switch_Markup extends Base {
 
 		return '<div class="srfm-switch-container srfm-main-container srfm-frontend-inputs-holder srfm-classic-switch-container' . esc_attr( $classname ) . '">
 		<label class="srfm-switch-label" for="srfm-switch-' . esc_attr( $block_id ) . '">
-			<div class="srfm-text-primary !flex !items-start !gap-2 !mt-1">
-				<div class="srfm-switch-background srfm-classic-toggle-bg w-[60px] mr-[3px] mt-[5px]" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">
-					<input class="srfm-switch srfm-classic-switch-input !p-0"
+			<div class="srfm-text-primary !srfm-flex !srfm-items-start !srfm-gap-2 !srfm-mt-1">
+				<div class="srfm-switch-background srfm-classic-toggle-bg srfm-w-[60px] srfm-mr-[3px] srfm-mt-[5px]" style="background-color: ' . ( $checked ? esc_attr( $checked_color ) : '#dcdcdc' ) . '">
+					<input class="srfm-switch srfm-classic-switch-input !srfm-p-0"
 						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
 						id="srfm-switch-' . esc_attr( $block_id ) . '"
 						' . ( $checked ? 'checked' : '' ) . ' type="checkbox"
 						aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" />
-					<div class="srfm-switch-toggle !-top-[3px] !shadow !border !border-gray-200 !h-5 !w-5" style="left: ' . ( $checked ? '24px' : '0' ) . ';"> 
-						<span class="srfm-classic-toggle-icon-container srfm-classic-toggle-icon ' . esc_attr( $checked ? '!opacity-100' : '!opacity-0' ) . '" aria-hidden="true">
-							<svg style="fill: ' . esc_attr( $checked_color ) . '" class="!h-3 !w-3 srfm-classic-toggle-icon" viewBox="0 0 12 12">
+					<div class="srfm-switch-toggle srfm--top-[4px] !srfm-shadow !srfm-border !srfm-border-gray-200 !srfm-h-5 !srfm-w-5" style="left: ' . ( $checked ? '24px' : '0' ) . ';"> 
+						<span class="srfm-classic-toggle-icon-container srfm-classic-toggle-icon ' . esc_attr( $checked ? '!srfm-opacity-100' : '!srfm-opacity-0' ) . '" aria-hidden="true">
+							<svg style="fill: ' . esc_attr( $checked_color ) . '" class="!srfm-h-3 !srfm-w-3 srfm-classic-toggle-icon" viewBox="0 0 12 12">
 								<path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
 							</svg>
 						</span>
 					</div>
 				</div>
-				<span class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="!text-required_icon_color"> *</span>' : '' ) . '</span>
+				<span class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</span>
 			</div>
 		</label>
 		' . ( '' !== $help ? '<p for="srfm-checkbox" class="srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '

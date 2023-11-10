@@ -47,7 +47,7 @@ export const AddressThemeStyle = ( {
 					} }
 				>
 					<label
-						className="srfm-text-secondary text-size"
+						className="srfm-text-secondary  "
 						htmlFor={ 'address-line-1-' + blockID }
 					>
 						{ lineOneLabel }
@@ -67,7 +67,7 @@ export const AddressThemeStyle = ( {
 					} }
 				>
 					<label
-						className="srfm-text-secondary text-size"
+						className="srfm-text-secondary  "
 						htmlFor={ 'address-line-2-' + blockID }
 						style={ inputStyles }
 					>
@@ -90,7 +90,7 @@ export const AddressThemeStyle = ( {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-city-' + blockID }
 							style={ inputStyles }
 						>
@@ -112,7 +112,7 @@ export const AddressThemeStyle = ( {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-state-' + blockID }
 							style={ inputStyles }
 						>
@@ -142,7 +142,7 @@ export const AddressThemeStyle = ( {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-city-postal-' + blockID }
 							style={ inputStyles }
 						>
@@ -164,7 +164,7 @@ export const AddressThemeStyle = ( {
 						} }
 					>
 						<label
-							className="srfm-text-secondary text-size"
+							className="srfm-text-secondary  "
 							htmlFor={ 'address-country-' + blockID }
 							style={ inputStyles }
 						>

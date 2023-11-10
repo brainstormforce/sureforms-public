@@ -98,7 +98,10 @@ export const RatingClassicStyle = ( {
 	const ratingItems = [];
 	for ( let i = 0; i < maxValue; i++ ) {
 		ratingItems.push(
-			<li className="flex items-center flex-col-reverse" key={ i }>
+			<li
+				className="srfm-flex srfm-items-center srfm-flex-col-reverse"
+				key={ i }
+			>
 				<span className="srfm-text-primary">
 					{ showNumbers ? i + 1 : '' }
 				</span>
@@ -120,7 +123,7 @@ export const RatingClassicStyle = ( {
 				id={ blockID }
 			/>
 			<ul
-				className="srfm-classic-event mt-2 flex list-none gap-3 p-0"
+				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0"
 				data-te-rating-init
 			>
 				{ ratingItems }

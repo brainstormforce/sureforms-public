@@ -22,9 +22,9 @@ export const PhoneClassicStyle = ( {
 				multiline={ false }
 				id={ blockID }
 			/>
-			<div className="relative mt-2">
-				<div className="group srfm-classic-phone-parent">
-					<div className="absolute inset-y-0 left-0 flex items-center">
+			<div className="srfm-relative srfm-mt-2">
+				<div className="srfm-group srfm-classic-phone-parent">
+					<div className="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
 						<select
 							placeholder="US +1"
 							onChange={ ( e ) => handleChange( e ) }
