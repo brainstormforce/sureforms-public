@@ -1,24 +1,32 @@
-export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const DatetimepickerClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, required, fieldType } = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="srfm-classic-label-text"
-				htmlFor={ 'srfm-input-date-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span className="text-red-500"> *</span>
-				) }
-			</label>
-			<div className="srfm-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits">
-				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
+			<div className="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits">
+				<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 					{ 'time' === fieldType ? (
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
 							fill="#9BA3AF"
-							className="w-5 h-5"
+							className="srfm-w-5 srfm-h-5"
 						>
 							<path
 								strokeLinecap="round"
@@ -31,7 +39,7 @@ export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
 							fill="#9BA3AF"
-							className="w-5 h-5"
+							className="srfm-w-5 srfm-h-5"
 						>
 							<path
 								fillRule="evenodd"

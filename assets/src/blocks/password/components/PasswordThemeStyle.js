@@ -1,18 +1,24 @@
-export const PasswordThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const PasswordThemeStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { label, placeholder, required, confirmLabel, isConfirmPassword } =
 		attributes;
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
-			<label
-				className="srfm-text-primary"
-				htmlFor={ 'srfm-password-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
 				id={ 'srfm-password-input-' + blockID }
 				type="password"

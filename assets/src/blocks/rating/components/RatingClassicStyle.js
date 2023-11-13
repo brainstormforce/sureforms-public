@@ -1,6 +1,12 @@
-export const RatingClassicStyle = ( { attributes } ) => {
-	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+import { RichText } from '@wordpress/block-editor';
 
+export const RatingClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
+	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
 	let svg = '';
 	switch ( iconShape ) {
 		case 'star':
@@ -92,7 +98,10 @@ export const RatingClassicStyle = ( { attributes } ) => {
 	const ratingItems = [];
 	for ( let i = 0; i < maxValue; i++ ) {
 		ratingItems.push(
-			<li className="flex items-center flex-col-reverse" key={ i }>
+			<li
+				className="srfm-flex srfm-items-center srfm-flex-col-reverse"
+				key={ i }
+			>
 				<span className="srfm-text-primary">
 					{ showNumbers ? i + 1 : '' }
 				</span>
@@ -105,16 +114,16 @@ export const RatingClassicStyle = ( { attributes } ) => {
 
 	return (
 		<>
-			<label className="srfm-classic-label-text">
-				{ label }
-				{ required && label ? (
-					<span style={ { color: 'red' } }> *</span>
-				) : (
-					''
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<ul
-				className="srfm-classic-event mt-2 flex list-none gap-3 p-0"
+				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0"
 				data-te-rating-init
 			>
 				{ ratingItems }

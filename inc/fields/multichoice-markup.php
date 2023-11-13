@@ -95,26 +95,27 @@ class Multichoice_Markup extends Base {
 			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
 			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-			$output           = '';
-			$output          .= '
-			<div class="sureforms-multi-choice-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-multi-choice-container-' . esc_attr( $block_id ) . '">
-				<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="sureforms-multi-choice-selection-' . esc_attr( $block_id ) . '" />
-				<input type="hidden" value="' . esc_attr( $style ) . '" id="sureforms-multi-choice-style-' . esc_attr( $block_id ) . '" />
-				<input class="sureforms-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">
-				<label for="text" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
-				<div class="radio-buttons flex flex-wrap mt-2 justify-between">';
+			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+
+			$output  = '';
+			$output .= '
+			<div class="srfm-multi-choice-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-multi-choice-container-' . esc_attr( $block_id ) . '">
+				<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
+				<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />
+				<input class="srfm-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">
+				<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
+				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2 srfm-justify-between">';
 		if ( is_array( $options ) ) {
 			foreach ( $options as $i => $option ) {
 						$output .= ' <label class="srfm-classic-radio">
 						<input type="' . esc_attr( $single_selection ? 'radio' : 'checkbox' ) . '" ' . esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$block_id" ) . '"' : '' ) . ' id="srfm-multi-choice-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-multi-choice">
-						<div class="flex items-start srfm-classic-radio-btn srfm-classic-multi-choice">
-							<div class="pr-[5px] relative flex">
-								<i class="fa fa-check-circle text-base" aria-hidden="true"></i>
-								<i class="fa-regular fa-circle text-sm absolute text-gray-300" aria-hidden="true"></i>
+						<div class="srfm-flex srfm-items-start srfm-classic-radio-btn srfm-classic-multi-choice">
+							<div class="srfm-pr-[5px] srfm-relative srfm-flex">
+								<i class="fa fa-check-circle srfm-text-base" aria-hidden="true"></i>
+								<i class="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300" aria-hidden="true"></i>
 							</div>
 							<div> 
-								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="text-sm font-medium leading-6 text-primary_color mt-[-0.5px]">' . esc_html( $option ) . '</article>
+								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option ) . '</article>
 							</div>
 						</div>
 						</label>';
