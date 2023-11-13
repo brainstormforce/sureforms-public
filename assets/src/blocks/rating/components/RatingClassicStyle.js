@@ -17,7 +17,7 @@ export const RatingClassicStyle = ( {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -35,7 +35,7 @@ export const RatingClassicStyle = ( {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -52,7 +52,7 @@ export const RatingClassicStyle = ( {
 					fill="none"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 					viewBox="0 0 122.88 122.88"
 				>
 					<g>
@@ -83,7 +83,7 @@ export const RatingClassicStyle = ( {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
