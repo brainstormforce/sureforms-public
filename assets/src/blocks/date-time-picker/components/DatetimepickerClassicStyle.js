@@ -1,7 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 
-export const DatetimepickerClassicStyle = ( { attributes, setAttributes, blockID } ) => {
+export const DatetimepickerClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const { label, required, fieldType } = attributes;
 	const [ dateTimeType, setDateTimeType ] = useState(
 		'srfm-input-date-time'

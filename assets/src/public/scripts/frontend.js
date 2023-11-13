@@ -618,7 +618,6 @@ const dateTimeElement = document.getElementsByClassName(
 );
 
 if ( dateTimeElement ) {
-
 	for ( let i = 0; i < dateTimeElement.length; i++ ) {
 		const blockID = dateTimeElement[ i ].id.split( '-' )[ 4 ];
 		const dateInput = document.getElementById(
@@ -1141,7 +1140,6 @@ const datePickerContainers = document.getElementsByClassName(
 	'srfm-classic-date-time-container'
 );
 if ( datePickerContainers ) {
-
 	flatpickr( '.srfm-input-date-time', {
 		enableTime: true,
 		dateFormat: 'Y-m-d H:i',
@@ -1160,10 +1158,11 @@ if ( datePickerContainers ) {
 			'.srfm-classic-date-time-result'
 		);
 
-		datePickerContainer.querySelector(".srfm-input-data-time").onchange = function(e) {
-			formattedDate = e.target.value.replaceAll( '/', '-' );
-			resultInput.value = formattedDate;
-		};
+		datePickerContainer.querySelector( '.srfm-input-data-time' ).onchange =
+			function ( e ) {
+				formattedDate = e.target.value.replaceAll( '/', '-' );
+				resultInput.value = formattedDate;
+			};
 	}
 }
 
