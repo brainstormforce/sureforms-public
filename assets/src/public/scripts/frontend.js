@@ -88,6 +88,42 @@ if ( ratingElements ) {
 
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
+
+	const singleRating = document.querySelectorAll( '.srfm-rating-icon svg' );
+
+	if ( singleRating ) {
+		singleRating.forEach( ( element ) => {
+			element.addEventListener( 'click', function ( e ) {
+				// Gets the value of the star clicked.
+				const onStar = parseInt(
+					e.target
+						.closest( '.srfm-rating-icon' )
+						.getAttribute( 'data-value' )
+				);
+				const stars = e.target.closest(
+					'.srfm-rating-icon-wrapper'
+				).children;
+
+				// Set the value of the field.
+				e.target
+					.closest( '.srfm-classic-rating-container' )
+					.querySelector( '.srfm-rating-field-result' )
+					.setAttribute( 'value', parseInt( onStar ) );
+
+				for ( let i = 0; i < stars.length; i++ ) {
+					stars[ i ]
+						.querySelector( 'svg' )
+						.classList.remove( 'srfm-fill-current' );
+				}
+
+				for ( let j = 0; j < onStar; j++ ) {
+					stars[ j ]
+						.querySelector( 'svg' )
+						.classList.add( 'srfm-fill-current' );
+				}
+			} );
+		} );
+	}
 }
 
 // Sender's Email.
@@ -1122,51 +1158,29 @@ const datePickerContainers = document.getElementsByClassName(
 	'srfm-classic-date-time-container'
 );
 if ( datePickerContainers ) {
+	flatpickr( '.srfm-input-date-time', {
+		enableTime: true,
+		dateFormat: 'Y-m-d H:i',
+	} );
+
+	flatpickr( '.srfm-input-date' );
+
+	flatpickr( '.srfm-input-time', {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: 'H:i',
+	} );
+
 	for ( const datePickerContainer of datePickerContainers ) {
-		const datePicker = datePickerContainer.querySelector(
-			'.srfm-classic-date-time-picker'
-		);
 		const resultInput = datePickerContainer.querySelector(
 			'.srfm-classic-date-time-result'
 		);
-		const fieldType = resultInput.getAttribute( 'field-type' );
-		const dateTimeInput = datePickerContainer.querySelector(
-			'.srfm-input-data-time'
-		);
-		let buttonAttribute = '';
-		let eventType = '';
-		if ( fieldType === 'date' ) {
-			eventType = 'dateChange.te.datepicker';
-			buttonAttribute = 'data-te-datepicker-toggle-ref';
-		} else if ( fieldType === 'dateTime' ) {
-			eventType = 'close.te.datetimepicker';
-			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
-		} else {
-			eventType = 'input.te.timepicker';
-			buttonAttribute = 'data-te-timepicker-icon';
-		}
-		const button = datePickerContainer.querySelector(
-			`button[${ buttonAttribute }]`
-		);
-		dateTimeInput.addEventListener( 'click', () => {
-			const clickEvent = new Event( 'click' );
-			if ( button ) {
-				button.dispatchEvent( clickEvent );
-			}
-		} );
-		if ( button ) {
-			button.addEventListener( 'click', () => {
-				datePicker.addEventListener( eventType, () => {
-					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-					resultInput.value = formattedDate;
-				} );
-			} );
-		} else {
-			datePicker.addEventListener( eventType, () => {
-				formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+
+		datePickerContainer.querySelector( '.srfm-input-data-time' ).onchange =
+			function ( e ) {
+				formattedDate = e.target.value.replaceAll( '/', '-' );
 				resultInput.value = formattedDate;
-			} );
-		}
+			};
 	}
 }
 

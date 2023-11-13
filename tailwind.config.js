@@ -4,7 +4,6 @@ module.exports = {
 		'./inc/blocks/**/*.php',
 		'./inc/fields/**/*.php',
 		'./templates/single-form.php',
-		'./node_modules/tw-elements/dist/js/**/*.js',
 		'./inc/fields/**/*.php',
 	],
 	theme: {
@@ -33,10 +32,7 @@ module.exports = {
 			borderWidth: [ 'last' ],
 		},
 	},
-	plugins: [
-		require( '@tailwindcss/forms' ),
-		require( 'tw-elements/dist/plugin.cjs' ),
-	],
+	plugins: [ require( '@tailwindcss/forms' ) ],
 	prefix: 'srfm-',
 	corePlugins: {
 		preflight: false,
