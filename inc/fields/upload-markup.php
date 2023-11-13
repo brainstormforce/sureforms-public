@@ -104,7 +104,7 @@ class Upload_Markup extends Base {
 			$many_types_symbol = '';
 		}
 		$accepted_formats = str_replace( '...', '', $allowed_formats );
-		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';

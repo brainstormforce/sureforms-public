@@ -52,6 +52,15 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-address-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
+
 	return (
 		<>
 			<InspectorControls>
@@ -110,20 +119,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: lineOneLabel,
-											label: 'lineOneLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ lineOneLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												lineOneLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: lineOneLabel,
+												label: 'lineOneLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ lineOneLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													lineOneLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: lineOnePlaceholder,
@@ -144,20 +153,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: lineTwoLabel,
-											label: 'lineTwoLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ lineTwoLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												lineTwoLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: lineTwoLabel,
+												label: 'lineTwoLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ lineTwoLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													lineTwoLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: lineTwoPlaceholder,
@@ -178,20 +187,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: cityLabel,
-											label: 'cityLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ cityLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												cityLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: cityLabel,
+												label: 'cityLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ cityLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													cityLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: cityPlaceholder,
@@ -212,20 +221,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: stateLabel,
-											label: 'stateLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ stateLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												stateLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: stateLabel,
+												label: 'stateLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ stateLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													stateLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: statePlaceholder,
@@ -246,20 +255,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: postalLabel,
-											label: 'postalLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ postalLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												postalLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: postalLabel,
+												label: 'postalLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ postalLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													postalLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: postalPlaceholder,
@@ -280,20 +289,20 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-									<UAGTextControl
-										data={ {
-											value: countryLabel,
-											label: 'countryLabel',
-										} }
-										label={ __( 'Label', 'sureforms' ) }
-										value={ countryLabel }
-										onChange={ ( value ) =>
-											setAttributes( {
-												countryLabel: value,
-											} )
-										}
-									/>
-								) }
+										<UAGTextControl
+											data={ {
+												value: countryLabel,
+												label: 'countryLabel',
+											} }
+											label={ __( 'Label', 'sureforms' ) }
+											value={ countryLabel }
+											onChange={ ( value ) =>
+												setAttributes( {
+													countryLabel: value,
+												} )
+											}
+										/>
+									) }
 								<UAGTextControl
 									data={ {
 										value: countryPlaceholder,
@@ -335,6 +344,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-address-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<AddressClassicStyle

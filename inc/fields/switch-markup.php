@@ -71,7 +71,7 @@ class Switch_Markup extends Base {
 		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help          = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
 		$checked       = isset( $attributes['checked'] ) ? $attributes['checked'] : '';

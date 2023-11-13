@@ -67,7 +67,7 @@ class Email_Markup extends Base {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$is_unique        = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;

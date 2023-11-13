@@ -11,7 +11,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { help, block_id, formId } = attributes;
+	const { help, block_id, formId, fieldWidth } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -21,6 +21,14 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-numberslider-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
 	return (
 		<>
 			<Settings
@@ -37,6 +45,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-numberslider-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<SliderClassicStyle

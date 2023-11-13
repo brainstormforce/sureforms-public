@@ -90,7 +90,7 @@ export const UploadThemeStyle = ( { attributes, blockID } ) => {
 								<strong>
 									{ firstFive.length !== 0
 										? firstFive.map(
-												( obj ) => obj.value + ', '
+											( obj ) => obj.value + ', '
 										  ) + '...'
 										: 'All types' }
 								</strong>

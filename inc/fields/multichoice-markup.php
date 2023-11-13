@@ -96,9 +96,9 @@ class Multichoice_Markup extends Base {
 			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-			$output  = '';
-			$output .= '
+			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+			$output           = '';
+			$output          .= '
 			<div class="srfm-multi-choice-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-multi-choice-container-' . esc_attr( $block_id ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 				<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
 				<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />

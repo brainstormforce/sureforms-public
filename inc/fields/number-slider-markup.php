@@ -58,7 +58,7 @@ class Number_Slider_Markup extends Base {
 	public function classic_styling( $attributes ) {
 		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$required           = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$field_width 		= isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$field_width        = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$min                = isset( $attributes['min'] ) ? $attributes['min'] : 0;

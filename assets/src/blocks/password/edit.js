@@ -11,7 +11,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
-	const { help, block_id, formId } = attributes;
+	const { help, block_id, formId, fieldWidth } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -21,6 +21,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-password-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
 	return (
 		<>
 			<Settings
@@ -34,6 +42,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-password-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<PasswordClassicStyle

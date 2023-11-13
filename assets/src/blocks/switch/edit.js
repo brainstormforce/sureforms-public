@@ -41,10 +41,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}, [ formId, setAttributes, currentFormId ] );
 
 	useEffect( () => {
-		if ( formId !== currentFormId ) {
-			setAttributes( { formId: currentFormId } );
-		}
-	}, [ formId, setAttributes, currentFormId ] );
+		const width_req_element = document.getElementById(
+			'srfm-switch-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
 
 	return (
 		<>
@@ -128,6 +131,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				className={
 					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
+				id={ 'srfm-switch-fieldwidth' + block_id }
 			>
 				<div>
 					{ 'classic' === sureforms_keys?._srfm_form_styling ? (

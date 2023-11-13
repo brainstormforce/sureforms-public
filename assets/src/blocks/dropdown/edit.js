@@ -67,6 +67,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-dropdown-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
 	return (
 		<>
 			<InspectorControls>
@@ -321,6 +329,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-dropdown-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<DropdownClassicStyle

@@ -41,6 +41,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-checkbox-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
+
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
@@ -136,6 +145,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				className={
 					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
+				id={ 'srfm-checkbox-fieldwidth' + block_id }
 			>
 				<div
 					style={ {

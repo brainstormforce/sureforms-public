@@ -61,7 +61,7 @@ class Password_Markup extends Base {
 	public function classic_styling( $attributes ) {
 		$required            = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder         = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$field_width         = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label               = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help                = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg           = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';

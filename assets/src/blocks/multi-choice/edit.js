@@ -82,6 +82,15 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-multichoice-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
+
 	return (
 		<div { ...useBlockProps() }>
 			<InspectorControls>
@@ -325,36 +334,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-								<MultiButtonsControl
-									label={ __( 'Appearance', 'sureforms' ) }
-									data={ {
-										value: style,
-										label: 'style',
-									} }
-									options={ [
-										{
-											value: 'default',
-											icon: 'Radio',
-										},
-										{
-											value: 'buttons',
-											icon: 'Buttons',
-										},
-									] }
-									showIcons={ true }
-									onChange={ ( value ) => {
-										if ( style !== value ) {
-											setAttributes( {
-												style: value,
-											} );
-										} else {
-											setAttributes( {
-												style: 'buttons',
-											} );
-										}
-									} }
-								/>
-							) }
+									<MultiButtonsControl
+										label={ __( 'Appearance', 'sureforms' ) }
+										data={ {
+											value: style,
+											label: 'style',
+										} }
+										options={ [
+											{
+												value: 'default',
+												icon: 'Radio',
+											},
+											{
+												value: 'buttons',
+												icon: 'Buttons',
+											},
+										] }
+										showIcons={ true }
+										onChange={ ( value ) => {
+											if ( style !== value ) {
+												setAttributes( {
+													style: value,
+												} );
+											} else {
+												setAttributes( {
+													style: 'buttons',
+												} );
+											}
+										} }
+									/>
+								) }
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>
@@ -370,6 +379,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-multichoice-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<MultichoiceClassicStyle
