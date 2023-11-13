@@ -13,8 +13,15 @@ import UAGTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
 
 export default ( { attributes, setAttributes } ) => {
-	const { fieldWidth, label, placeholder, help, required, errorMsg, isConfirmPassword } =
-		attributes;
+	const {
+		fieldWidth,
+		label,
+		placeholder,
+		help,
+		required,
+		errorMsg,
+		isConfirmPassword,
+	} = attributes;
 
 	return (
 		<InspectorControls>
@@ -28,14 +35,14 @@ export default ( { attributes, setAttributes } ) => {
 						initialOpen={ true }
 					>
 						<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
+							label={ __( 'Field Width', 'sureforms' ) }
+							value={ fieldWidth }
+							options={ widthOptions }
+							onChange={ ( value ) =>
 								setAttributes( { fieldWidth: value } )
-								}
-								__nextHasNoMarginBottom
-							/>
+							}
+							__nextHasNoMarginBottom
+						/>
 						<UAGTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }

@@ -107,9 +107,9 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 	const panelTitle = props?.title
 		? props?.title
-			.toLowerCase()
-			.replace( /[^a-zA-Z ]/g, '' )
-			.replace( /\s+/g, '-' )
+				.toLowerCase()
+				.replace( /[^a-zA-Z ]/g, '' )
+				.replace( /\s+/g, '-' )
 		: '';
 
 	const blockNameForHook = blockName?.split( '/' )?.pop();

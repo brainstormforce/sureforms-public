@@ -44,6 +44,14 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	useEffect( () => {
+		const input_element = document.getElementById(
+			'srfm-input-fieldwidth' + block_id
+		);
+		const parent_to_input = input_element.parentElement;
+		parent_to_input.style.width = 'calc( ' + fieldWidth + '% - 20px)';
+	}, [ fieldWidth ] );
 	return (
 		<>
 			<InspectorControls>
@@ -179,6 +187,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				className={
 					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
+				id={ 'srfm-input-fieldwidth' + block_id }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',

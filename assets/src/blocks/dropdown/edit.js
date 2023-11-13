@@ -3,7 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl, Button, Icon } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	Button,
+	Icon,
+} from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -79,7 +84,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
-								setAttributes( { fieldWidth: value } )
+									setAttributes( { fieldWidth: value } )
 								}
 								__nextHasNoMarginBottom
 							/>

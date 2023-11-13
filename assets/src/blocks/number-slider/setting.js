@@ -15,7 +15,8 @@ import UAGNumberControl from '@Components/number-control';
 import widthOptions from '../width-options.json';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
-	const { fieldWidth, label, help, min, max, step, valueDisplayText } = attributes;
+	const { fieldWidth, label, help, min, max, step, valueDisplayText } =
+		attributes;
 	const [ error, setError ] = useState( false );
 	return (
 		<InspectorControls>
@@ -29,14 +30,14 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						initialOpen={ true }
 					>
 						<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
+							label={ __( 'Field Width', 'sureforms' ) }
+							value={ fieldWidth }
+							options={ widthOptions }
+							onChange={ ( value ) =>
 								setAttributes( { fieldWidth: value } )
-								}
-								__nextHasNoMarginBottom
-							/>
+							}
+							__nextHasNoMarginBottom
+						/>
 						<UAGTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }

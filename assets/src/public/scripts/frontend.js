@@ -181,8 +181,8 @@ if ( uploadFieldsContainer ) {
 									<div>
 										<div class="srfm-text-base">${ fileName }</div>
 										<div class="srfm-text-sm srfm-text-gray-500"> ${ (
-		file.size / 1000000
-	).toFixed( 2 ) }MB</div>
+											file.size / 1000000
+										).toFixed( 2 ) }MB</div>
 									</div>
 									<div>
   										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>

@@ -38,7 +38,7 @@
 		},
 		"maxLength": {
 			"type": "number",
-			"default": 1000
+			"default": ""
 		},
 		"rows": {
 			"type": "number",

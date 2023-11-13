@@ -52,18 +52,18 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 							<span className="srfm-font-semibold">
 								{ firstFive.length !== 0
 									? firstFive.map( ( obj, index ) => {
-										if ( index < 4 ) {
-											if (
-												firstFive.length ===
+											if ( index < 4 ) {
+												if (
+													firstFive.length ===
 													index + 1
-											) {
-												return ' ' + obj.value;
+												) {
+													return ' ' + obj.value;
+												}
+												return ' ' + obj.value + ',';
+											} else if ( index === 4 ) {
+												return ' ' + obj.value + '...';
 											}
-											return ' ' + obj.value + ',';
-										} else if ( index === 4 ) {
-											return ' ' + obj.value + '...';
-										}
-										return '';
+											return '';
 									  } )
 									: 'All types' }
 							</span>

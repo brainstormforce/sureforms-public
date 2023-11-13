@@ -3,7 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl, Button, Icon } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	Button,
+	Icon,
+} from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -94,7 +99,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
-								setAttributes( { fieldWidth: value } )
+									setAttributes( { fieldWidth: value } )
 								}
 								__nextHasNoMarginBottom
 							/>
@@ -320,36 +325,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
+								<MultiButtonsControl
+									label={ __( 'Appearance', 'sureforms' ) }
+									data={ {
+										value: style,
+										label: 'style',
+									} }
+									options={ [
+										{
+											value: 'default',
+											icon: 'Radio',
+										},
+										{
+											value: 'buttons',
+											icon: 'Buttons',
+										},
+									] }
+									showIcons={ true }
+									onChange={ ( value ) => {
+										if ( style !== value ) {
+											setAttributes( {
+												style: value,
+											} );
+										} else {
+											setAttributes( {
+												style: 'buttons',
+											} );
+										}
+									} }
+								/>
+							) }
 						</UAGAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }></InspectorTab>

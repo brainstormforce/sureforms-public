@@ -36,7 +36,7 @@
 		},
 		"max": {
 			"type": "number",
-			"default": 100
+			"default": ""
 		},
 		"step": {
 			"type": "number",
