@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -209,25 +209,31 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 						attributes={ attributes }
 						blockID={ block_id }
 						handleInput={ handleInput }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<NumberThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
 						handleInput={ handleInput }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-number-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

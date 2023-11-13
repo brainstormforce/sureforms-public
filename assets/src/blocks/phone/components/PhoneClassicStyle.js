@@ -1,22 +1,29 @@
 import data from '../phoneCodes.json';
+import { RichText } from '@wordpress/block-editor';
 
-export const PhoneClassicStyle = ( { attributes, blockID, handleChange } ) => {
+export const PhoneClassicStyle = ( {
+	attributes,
+	blockID,
+	handleChange,
+	setAttributes,
+} ) => {
 	const { label, placeholder, required, defaultValue, defaultCountryCode } =
 		attributes;
 
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="srfm-classic-label-text"
-				htmlFor={ 'srfm-text-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="srfm-relative srfm-mt-2">
-				<div className="group srfm-classic-phone-parent">
+				<div className="srfm-group srfm-classic-phone-parent">
 					<div className="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
 						<select
 							placeholder="US +1"

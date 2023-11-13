@@ -1,10 +1,13 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
+export const DatetimepickerClassicStyle = ( { attributes, setAttributes, blockID } ) => {
 	const { label, required, fieldType } = attributes;
 	const [ dateTimeType, setDateTimeType ] = useState(
 		'srfm-input-date-time'
 	);
+
+	const isRequired = required ? 'srfm-required' : '';
 
 	function dateTimeSelected( type ) {
 		if ( 'time' === type ) {
@@ -47,15 +50,14 @@ export const DatetimepickerClassicStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
-			<label
-				className="srfm-classic-label-text"
-				htmlFor={ 'srfm-input-date-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span className="srfm-text-red-500"> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits">
 				<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 					{ 'time' === fieldType ? (
