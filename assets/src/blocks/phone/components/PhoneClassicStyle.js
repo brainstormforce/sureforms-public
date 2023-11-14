@@ -1,7 +1,7 @@
 import { useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 
-export const PhoneClassicStyle = ( { attributes, blockID } ) => {
+export const PhoneClassicStyle = ( { setAttributes, attributes, blockID } ) => {
 	const { label, placeholder, required, autoCountry } = attributes;
 
 	useEffect( () => {

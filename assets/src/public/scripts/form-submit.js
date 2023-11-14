@@ -214,8 +214,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
@@ -235,8 +233,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				errorMessage.style.display = 'none';
 				//for Tailwind phone field UI
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
 						'!srfm-ring-red-500',

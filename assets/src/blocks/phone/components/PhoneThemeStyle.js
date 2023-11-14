@@ -5,7 +5,7 @@ export const PhoneThemeStyle = ( {
 	blockID,
 	setAttributes,
 } ) => {
-	const { label, placeholder, required, defaultCountryCode } =
+	const { label, placeholder, required } =
 		attributes;
 
 	const isRequired = required ? 'srfm-required' : '';
