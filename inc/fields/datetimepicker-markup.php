@@ -75,19 +75,20 @@ class Datetimepicker_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes ) {
-			$required   = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$label      = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help       = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$field_type = isset( $attributes['fieldType'] ) ? $attributes['fieldType'] : '';
-			$min        = isset( $attributes['min'] ) ? $attributes['min'] : '';
-			$max        = isset( $attributes['max'] ) ? $attributes['max'] : '';
-			$error_msg  = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname  = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id   = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
+			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
+			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$field_type  = isset( $attributes['fieldType'] ) ? $attributes['fieldType'] : '';
+			$min         = isset( $attributes['min'] ) ? $attributes['min'] : '';
+			$max         = isset( $attributes['max'] ) ? $attributes['max'] : '';
+			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 			$output  = '';
 			$output .= '
-			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container ' . esc_attr( $classname ) . '">
+			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>

@@ -20,11 +20,13 @@ import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import Range from '@Components/range/Range.js';
+import widthOptions from '../width-options.json';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		block_id,
 		required,
+		fieldWidth,
 		label,
 		ratingBoxHelpText,
 		width,
@@ -45,6 +47,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	useEffect( () => {
+		const width_req_element = document.getElementById(
+			'srfm-rating-fieldwidth' + block_id
+		);
+		const parent_to_width_element = width_req_element.parentElement;
+		parent_to_width_element.style.width =
+			'calc( ' + fieldWidth + '% - 20px )';
+	}, [ fieldWidth ] );
+
 	return (
 		<>
 			<InspectorControls>
@@ -54,6 +65,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<UAGTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
@@ -212,6 +234,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
+				id={ 'srfm-rating-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<RatingClassicStyle

@@ -14,12 +14,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"defaultValue": {
-			"type": "string"
-		},
-		"defaultCountryCode": {
-			"type": "string"
-		},
 		"required": {
 			"type": "boolean"
 		},
@@ -53,6 +47,10 @@
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"autoCountry": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
