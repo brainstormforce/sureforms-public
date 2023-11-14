@@ -6,7 +6,6 @@ import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -21,6 +20,7 @@ import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import Range from '@Components/range/Range.js';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -93,7 +93,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<Range
 								label={ __( 'Number of Icons', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }

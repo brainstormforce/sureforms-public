@@ -11,14 +11,15 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import UAGNumberControl from '@Components/number-control';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -119,10 +120,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								/>
 							) }
 							<UAGNumberControl
-								label={ __( 'Text Max Length', 'sureforms' ) }
+								label={ __(
+									'Text Maximum Length',
+									'sureforms'
+								) }
 								value={ maxLength }
 								displayUnit={ false }
-								min={ 0 }
 								data={ {
 									value: maxLength,
 									label: 'maxLength',
@@ -132,8 +135,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										maxLength: Number( value ),
 									} );
 								} }
+								min={ 0 }
+								showControlHeader={ false }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Rows', 'sureforms' ) }
 								value={ rows }
 								displayUnit={ false }
@@ -147,7 +152,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Columns', 'sureforms' ) }
 								displayUnit={ false }
 								value={ cols }
