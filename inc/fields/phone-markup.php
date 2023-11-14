@@ -41,7 +41,7 @@ class Phone_Markup extends Base {
                 <label class="srfm-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
                 <div class="srfm-input-phone-holder">
                     <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="srfm-fullPhoneNumber-' . esc_attr( $block_id ) . '" value="" />
-                    <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
+                    <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="" placeholder="' . esc_attr( $placeholder ) . '"
                         id="srfm-phone-number-' . esc_attr( $block_id ) . '"
                         class="srfm-input-field" />
                 </div>' .
