@@ -39,7 +39,7 @@ export const MultichoiceClassicStyle = ( {
 
 	const OriginalView = () => {
 		return (
-			<div className="radio-buttons flex flex-wrap mt-2">
+			<div className="srfm-radio-buttons flex flex-wrap mt-2">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (
