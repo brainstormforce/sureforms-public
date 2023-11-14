@@ -1,13 +1,24 @@
-export const MultichoiceClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const MultichoiceClassicStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { label, required, options, single_selection } = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label className="srfm-classic-label-text" htmlFor="text">
-				{ label }
-				{ required && label && (
-					<span className="srfm-text-red-500"> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div className="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;

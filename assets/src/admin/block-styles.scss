@@ -1,5 +1,5 @@
 :root {
-	--srfm-primary-color: #0284C7;
+	--srfm-primary-color: #0284c7;
 	--srfm-primary-text-color: #fff;
 	--srfm-secondary-color: "";
 	--srfm_bg: "";
@@ -215,7 +215,7 @@ input[type="range"]::-webkit-slider-thumb {
 .srfm-switch-background {
 	display: inline-block;
 	position: relative;
-	flex:0 0 50px;
+	flex: 0 0 50px;
 	height: 25px;
 	border-radius: 25px;
 	transition: background-color 0.2s;
@@ -241,6 +241,17 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 //checkbox
-.srfm-classic-checkbox-input::before{
+.srfm-classic-checkbox-input::before {
 	content: none !important;
+}
+
+.srfm-min-max-error-styles {
+	font-size: 12px;
+	font-style: normal;
+	color: red;
+}
+
+.srfm-required::after {
+	color: #f00;
+	content: " *";
 }

@@ -2,8 +2,8 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -11,11 +11,11 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
 import { InputThemeStyle } from './components/InputThemeStyle';
+import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -167,11 +167,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							<UAGNumberControl
-								label={ __( 'Max text length', 'sureforms' ) }
+							<Range
+								label={ __(
+									'Maximum text length',
+									'sureforms'
+								) }
 								displayUnit={ false }
 								value={ textLength }
 								min={ 0 }
+								max={ 1000 }
 								data={ {
 									value: textLength,
 									label: 'textLength',
@@ -200,27 +204,33 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<InputClassicStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) : (
 					<InputThemeStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

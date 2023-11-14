@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -192,26 +192,32 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<EmailClassicStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) : (
 					<EmailThemeStyle
-						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'email-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>
