@@ -70,7 +70,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
-									setAttributes( { fieldWidth: value } )
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
 								}
 								__nextHasNoMarginBottom
 							/>

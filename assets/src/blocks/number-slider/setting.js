@@ -34,7 +34,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 							value={ fieldWidth }
 							options={ widthOptions }
 							onChange={ ( value ) =>
-								setAttributes( { fieldWidth: value } )
+								setAttributes( { fieldWidth: Number( value ) } )
 							}
 							__nextHasNoMarginBottom
 						/>

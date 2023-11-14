@@ -78,7 +78,9 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
-									setAttributes( { fieldWidth: value } )
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
 								}
 								__nextHasNoMarginBottom
 							/>
