@@ -678,7 +678,7 @@ if ( phoneElement ) {
 			`srfm-fullPhoneNumber-${ blockID }`
 		);
 		const errorMessage =
-			phoneElement[ i ].querySelector( '.error-message' );
+			phoneElement[ i ].querySelector( '.srfm-error-message' );
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
@@ -709,17 +709,17 @@ if ( phoneElement ) {
 			const intTelError =
 				phoneElement[ i ].querySelector( '.srfm-int-tel-error' );
 			const phoneParent = phoneElement[ i ].querySelector(
-				'.sf-classic-phone-parent'
+				'.srfm-classic-phone-parent'
 			);
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
 				if ( intTelError ) {
 					intTelError.style.display = 'block';
-					phoneParent.classList.add( 'sf-classic-input-error' );
+					phoneParent.classList.add( 'srfm-classic-input-error' );
 					errorMessage.style.display = 'none';
 				}
 			} else {
 				intTelError.style.display = 'none';
-				phoneParent.classList.remove( 'sf-classic-input-error' );
+				phoneParent.classList.remove( 'srfm-classic-input-error' );
 			}
 		};
 

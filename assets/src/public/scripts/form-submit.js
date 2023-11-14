@@ -197,10 +197,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
 			const phoneParent = container.querySelector(
-				'#sureforms-phone-parent'
+				'.srfm-classic-phone-parent'
 			);
 			const isIntelError = phoneParent.classList.contains(
-				'sf-classic-input-error'
+				'srfm-classic-input-error'
 			);
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
 			if ( isIntelError ) {
