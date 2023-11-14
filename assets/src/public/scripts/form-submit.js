@@ -56,7 +56,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		);
 	}
 	const fieldContainers = Array.from(
-		formContainer.querySelectorAll( '.main-container' )
+		formContainer.querySelectorAll( '.srfm-main-container' )
 	);
 
 	for ( const container of fieldContainers ) {
@@ -71,12 +71,13 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		const isUnique = inputField.getAttribute( 'aria-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
-		const errorMessage = container.querySelector( '.error-message' );
+		const errorMessage = container.querySelector( '.srfm-error-message' );
 		const errorInputIcon = container.querySelector(
 			'.sf-input-error-icon'
 		);
-		const duplicateMessage =
-			container.querySelector( '.duplicate-message' );
+		const duplicateMessage = container.querySelector(
+			'.srfm-duplicate-message'
+		);
 		const isAllowDecimal = inputField.getAttribute( 'format-type' );
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
@@ -92,7 +93,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				// inputField.style.borderColor = '#FCA5A5';
 				if ( inputField ) {
-					inputField.classList.add( 'sf-classic-input-error' );
+					inputField.classList.add( 'srfm-classic-input-error' );
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -103,7 +104,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} else {
 				if ( inputField ) {
-					inputField.classList.remove( 'sf-classic-input-error' );
+					inputField.classList.remove( 'srfm-classic-input-error' );
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
@@ -119,23 +120,21 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const hasDuplicate = uniqueEntryData?.some(
 				( entry ) => entry[ fieldName ] === 'not unique'
 			);
-			const phoneParent = container.querySelector(
-				'#sureforms-phone-parent'
-			);
+			const phoneParent = container.querySelector( '#srfm-phone-parent' );
 			if ( hasDuplicate ) {
 				if ( duplicateMessage ) {
 					duplicateMessage.style.display = 'block';
 				}
 				if ( inputField ) {
-					inputField.classList.add( 'sf-classic-input-error' );
+					inputField.classList.add( 'srfm-classic-input-error' );
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 				validateResult = true;
@@ -147,15 +146,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					duplicateMessage.style.display = 'none';
 				}
 				if ( inputField ) {
-					inputField.classList.remove( 'sf-classic-input-error' );
+					inputField.classList.remove( 'srfm-classic-input-error' );
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'none';
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 			}
@@ -163,12 +162,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Radio OR Chekcbox type field
 		if (
-			container.classList.contains( 'sureforms-rating-container' ) ||
-			container.classList.contains(
-				'sureforms-multi-choice-container'
-			) ||
-			container.classList.contains( 'sureforms-checkbox-container' ) ||
-			container.classList.contains( 'sureforms-switch-container' )
+			container.classList.contains( 'srfm-rating-container' ) ||
+			container.classList.contains( 'srfm-multi-choice-container' ) ||
+			container.classList.contains( 'srfm-checkbox-container' ) ||
+			container.classList.contains( 'srfm-switch-container' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const ischeckedRequired =
@@ -197,9 +194,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//phone field
-		if (
-			container.classList.contains( 'sureforms-input-phone-container' )
-		) {
+		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
 			const phoneParent = container.querySelector(
 				'#sureforms-phone-parent'
@@ -219,12 +214,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
+				const phoneParent =
+					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.add( 'placeholder:!text-red-300' );
+					phoneInput.classList.add(
+						'placeholder:!srfm-text-red-300'
+					);
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -236,12 +235,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				errorMessage.style.display = 'none';
 				//for Tailwind phone field UI
+				const phoneParent =
+					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.remove( 'placeholder:!text-red-300' );
+					phoneInput.classList.remove(
+						'placeholder:!srfm-text-red-300'
+					);
 				}
 			}
 		}
@@ -254,26 +257,26 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//check for password field
-		if (
-			container.classList.contains( 'sureforms-input-password-container' )
-		) {
+		if ( container.classList.contains( 'srfm-input-password-container' ) ) {
 			const confirmPassword = container.querySelector(
-				'.sureforms-confirm-input-password'
+				'.srfm-confirm-input-password'
 			);
-			if ( container.querySelector( '.info-icon' ) ) {
-				container.querySelector( '.info-icon' ).style.display = 'none';
+			if ( container.querySelector( '.srfm-info-icon' ) ) {
+				container.querySelector( '.srfm-info-icon' ).style.display =
+					'none';
 			}
 			if ( confirmPassword ) {
 				const confirmPasswordValue = confirmPassword.value;
-				const confirmFieldError =
-					container.querySelectorAll( '.error-message' )[ 1 ];
+				const confirmFieldError = container.querySelectorAll(
+					'.srfm-error-message'
+				)[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
 					container.querySelector(
 						'.confirm-password-error'
 					).style.display = 'none';
 					// confirmPassword.style.borderColor = '#FCA5A5';
-					confirmPassword.classList.add( 'sf-classic-input-error' );
+					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
@@ -281,10 +284,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				} else if ( confirmPasswordValue !== inputValue ) {
 					confirmFieldError.style.display = 'none';
 					container.querySelector(
-						'.confirm-password-error'
+						'.srfm-confirm-password-error'
 					).style.display = 'block';
 					// confirmPassword.style.borderColor = '#FCA5A5';
-					confirmPassword.classList.add( 'sf-classic-input-error' );
+					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
@@ -292,10 +295,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				} else {
 					confirmFieldError.style.display = 'none';
 					confirmPassword.classList.remove(
-						'sf-classic-input-error'
+						'srfm-classic-input-error'
 					);
 					container.querySelector(
-						'.confirm-password-error'
+						'.srfm-confirm-password-error'
 					).style.display = 'none';
 					// confirmPassword.style.borderColor = '#d1d5db';
 				}
@@ -303,14 +306,13 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Check for email
-		if (
-			container.classList.contains( 'sureforms-input-email-container' )
-		) {
+		if ( container.classList.contains( 'srfm-input-email-container' ) ) {
 			const confirmEmail = container.querySelector(
-				'.sureforms-input-confirm-email'
+				'.srfm-input-confirm-email'
 			);
-			const confirmFieldError =
-				container.querySelectorAll( '.error-message' )[ 2 ];
+			const confirmFieldError = container.querySelectorAll(
+				'.srfm-error-message'
+			)[ 2 ];
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
@@ -319,7 +321,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						'.confirm-email-error'
 					).style.display = 'none';
 					// confirmEmail.style.borderColor = '#FCA5A5';
-					confirmEmail.classList.add( 'sf-classic-input-error' );
+					confirmEmail.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
@@ -330,10 +332,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				) {
 					confirmFieldError.style.display = 'none';
 					container.querySelector(
-						'.confirm-email-error'
+						'.srfm-confirm-email-error'
 					).style.display = 'block';
 					confirmEmail.style.borderColor = '#FCA5A5';
-					confirmEmail.classList.add( 'sf-classic-input-error' );
+					confirmEmail.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
 					}
@@ -341,9 +343,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				} else {
 					confirmFieldError.style.display = 'none';
 					confirmEmail.style.borderColor = '#d1d5db';
-					confirmEmail.classList.remove( 'sf-classic-input-error' );
+					confirmEmail.classList.remove( 'srfm-classic-input-error' );
 					container.querySelector(
-						'.confirm-email-error'
+						'.srfm-confirm-email-error'
 					).style.display = 'none';
 				}
 			}
@@ -351,7 +353,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Address field
 		//Might be used later
-		if ( container.classList.contains( 'sureforms-address-container' ) ) {
+		if ( container.classList.contains( 'srfm-address-container' ) ) {
 			const addressInput = container.querySelectorAll( 'input,select' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
@@ -382,10 +384,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Upload field
-		if ( container.classList.contains( 'sureforms-upload-container' ) ) {
+		if ( container.classList.contains( 'srfm-upload-container' ) ) {
 			const uploadInput = container.querySelectorAll( 'input' )[ 1 ];
 			const uploadInputInnerDiv = container.getElementsByClassName(
-				'sureforms-upload-inner-div'
+				'srfm-upload-inner-div'
 			)[ 0 ];
 			const isSizeError = container.querySelector(
 				'.srfm-upload-file-size-error'
@@ -411,9 +413,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Date field
-		if (
-			container.classList.contains( 'sureforms-input-date-container' )
-		) {
+		if ( container.classList.contains( 'srfm-input-date-container' ) ) {
 			const dateInput = container.querySelectorAll( 'input' );
 			const isDateRequired =
 				dateInput[ 1 ].getAttribute( 'aria-required' );
@@ -444,13 +444,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		if (
-			container.classList.contains( 'sureforms-input-number-container' )
-		) {
+		if ( container.classList.contains( 'srfm-input-number-container' ) ) {
 			const min = inputField.getAttribute( 'minimum' );
 			const max = inputField.getAttribute( 'maximum' );
 			const minMaxErrorMessage = container.querySelector(
-				'.min-max-validation-message'
+				'.srfm-min-max-validation-message'
 			);
 			if (
 				inputValue &&
@@ -459,7 +457,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			) {
 				minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
 				minMaxErrorMessage.style.display = `block`;
-				inputField.classList.add( 'sf-classic-input-error' );
+				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
@@ -471,7 +469,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			) {
 				minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
 				minMaxErrorMessage.style.display = `block`;
-				inputField.classList.add( 'sf-classic-input-error' );
+				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
@@ -482,11 +480,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//classic rating field
-		if (
-			container.classList.contains( 'sureforms-classic-rating-container' )
-		) {
+		if ( container.classList.contains( 'srfm-classic-rating-container' ) ) {
 			const classicRatingField = container.querySelector(
-				'.sf-rating-field-result'
+				'.srfm-rating-field-result'
 			);
 			const ratingRequired =
 				classicRatingField.getAttribute( 'aria-required' );
@@ -500,10 +496,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//classic date time field
 		if (
-			container.classList.contains( 'sf-classic-date-time-container' )
+			container.classList.contains( 'srfm-classic-date-time-container' )
 		) {
 			const classicDateTimeField = container.querySelector(
-				'.sureforms-input-data-time'
+				'.srfm-input-data-time'
 			);
 			const dateTimeRequired =
 				classicDateTimeField.getAttribute( 'aria-required' );
@@ -520,13 +516,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//classic field url
 		if (
-			container.classList.contains(
-				'sureforms-classic-input-url-container'
-			)
+			container.classList.contains( 'srfm-classic-input-url-container' )
 		) {
-			const urlInput = container.querySelector( '.sureforms-url-input' );
+			const urlInput = container.querySelector( '.srfm-url-input' );
 			const validUrlMessage = container.querySelector(
-				'.validation-url-message'
+				'.srfm-validation-url-message'
 			);
 
 			if ( validUrlMessage.style.display === 'block' ) {
@@ -539,29 +533,27 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//classic dropdown field
 		if (
-			container.classList.contains(
-				'sureforms-classic-dropdown-container'
-			)
+			container.classList.contains( 'srfm-classic-dropdown-container' )
 		) {
 			const dropdownInput = container.querySelector(
-				'.sf-classic-dropdown-result'
+				'.srfm-classic-dropdown-result'
 			);
 			const dropdownValue = dropdownInput.value;
 			const isDropDownRequired =
 				dropdownInput.getAttribute( 'aria-required' );
 			const dropdownBtn = container.querySelector(
-				'.sf-classic-dropdown-btn'
+				'.srfm-classic-dropdown-btn'
 			);
 			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
 				errorMessage.style.display = 'block';
-				dropdownBtn.classList.add( 'sf-classic-input-error' );
+				dropdownBtn.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = dropdownBtn;
 				}
 			} else {
 				errorMessage.style.display = 'none';
-				dropdownBtn.classList.remove( 'sf-classic-input-error' );
+				dropdownBtn.classList.remove( 'srfm-classic-input-error' );
 			}
 		}
 	}
@@ -573,7 +565,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 }
 
 document.addEventListener( 'DOMContentLoaded', function () {
-	const forms = Array.from( document.querySelectorAll( '.sureforms-form' ) );
+	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
 		const {
 			formId,
@@ -717,10 +709,10 @@ function extractFormAttributesAndElements( form ) {
 	const successUrl = form.getAttribute( 'success-url' );
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
-	const loader = form.querySelector( '.sureforms-loader' );
+	const loader = form.querySelector( '.srfm-loader' );
 	const successMessage = form.nextElementSibling;
-	const errorMessage = form.querySelector( '.sureforms-error-message' );
-	const submitBtn = form.querySelector( '#sureforms-submit-btn' );
+	const errorMessage = form.querySelector( '.srfm-error-message' );
+	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
 	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
 
@@ -741,7 +733,7 @@ function extractFormAttributesAndElements( form ) {
 
 // eslint-disable-next-line no-unused-vars
 function onloadCallback() {
-	const forms = Array.from( document.querySelectorAll( '.sureforms-form' ) );
+	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 
 	forms.forEach( ( form ) => {
 		const {

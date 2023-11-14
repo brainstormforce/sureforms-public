@@ -1,6 +1,12 @@
-export const RatingClassicStyle = ( { attributes } ) => {
-	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+import { RichText } from '@wordpress/block-editor';
 
+export const RatingClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
+	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
 	let svg = '';
 	switch ( iconShape ) {
 		case 'star':
@@ -11,7 +17,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -29,7 +35,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -46,7 +52,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					fill="none"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 					viewBox="0 0 122.88 122.88"
 				>
 					<g>
@@ -77,7 +83,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -92,11 +98,14 @@ export const RatingClassicStyle = ( { attributes } ) => {
 	const ratingItems = [];
 	for ( let i = 0; i < maxValue; i++ ) {
 		ratingItems.push(
-			<li className="flex items-center flex-col-reverse" key={ i }>
-				<span className="sf-text-primary">
+			<li
+				className="srfm-flex srfm-items-center srfm-flex-col-reverse"
+				key={ i }
+			>
+				<span className="srfm-text-primary">
 					{ showNumbers ? i + 1 : '' }
 				</span>
-				<span className="sf-text-primary" data-te-rating-icon-ref>
+				<span className="srfm-text-primary" data-te-rating-icon-ref>
 					{ svg }
 				</span>
 			</li>
@@ -105,16 +114,16 @@ export const RatingClassicStyle = ( { attributes } ) => {
 
 	return (
 		<>
-			<label className="sf-classic-label-text">
-				{ label }
-				{ required && label ? (
-					<span style={ { color: 'red' } }> *</span>
-				) : (
-					''
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<ul
-				className="sf-classic-event mt-2 flex list-none gap-3 p-0"
+				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0"
 				data-te-rating-init
 			>
 				{ ratingItems }

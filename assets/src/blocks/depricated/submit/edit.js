@@ -145,7 +145,7 @@ export default ( { attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div style={ { textAlign: buttonAlignment } }>
 				<button
-					className="wp-block-button__link sureforms-button"
+					className="wp-block-button__link srfm-button"
 					style={ buttonStyles }
 				>
 					{ text }

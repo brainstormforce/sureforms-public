@@ -42,16 +42,17 @@ class SF_Public {
 		// Font Awesome icons.
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
 
-		// SureForms frontend CSS.
-		wp_enqueue_style( 'sureforms-frontend', SUREFORMS_URL . 'assets/src/public/styles/sureforms-frontend.css', [], SUREFORMS_VER );
+		// SureForms Theme styles CSS.
+		wp_enqueue_style( 'sureforms-frontend', SUREFORMS_URL . 'assets/build/srfm_theme_styles.css', [], SUREFORMS_VER );
 
-		if ( has_block( 'sureforms/sf-form' ) || has_block( 'sureforms/form' ) || has_shortcode( get_the_content(), 'sureforms' ) || wp_is_block_theme() ) {
-			wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
-			// Tailwind Elements JS.(need to load if datetime picker or rating fields are present).
-			if ( has_block( 'sureforms/rating' ) || has_block( 'sureforms/date-time-picker' ) ) {
-				wp_enqueue_script( 'tailwind-elements', SUREFORMS_URL . 'assets/build/tailwindElements.js', [], SUREFORMS_VER, true );
-			}
-		}
+		// Extra.
+		wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+
+		// Flatpickr CSS.
+		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER );
+
+		// Flatpickr JS.
+		wp_enqueue_script( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_js.js', [], SUREFORMS_VER, true );
 
 		// Int-tel-input CSS.
 		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.css', [], SUREFORMS_VER );
@@ -61,11 +62,8 @@ class SF_Public {
 		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
 
 		// SureForms frontend JS.
-		wp_enqueue_script( 'sureforms-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
-		wp_enqueue_script( 'sureforms-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
-
-		// Tailwind Elements JS.
-		wp_enqueue_script( 'tailwind-elements', SUREFORMS_URL . 'assets/build/tailwindElements.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
 
 		// Google reCaptcha.
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );

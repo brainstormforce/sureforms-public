@@ -1,7 +1,8 @@
 import RatingIcon from './RatingIcon.jsx';
 import { useState } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const RatingThemeStyle = ( { attributes, blockID } ) => {
+export const RatingThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		required,
 		label,
@@ -15,6 +16,7 @@ export const RatingThemeStyle = ( { attributes, blockID } ) => {
 	const [ rating, setRating ] = useState( null );
 	// eslint-disable-next-line no-unused-vars
 	const [ hover, setHover ] = useState( null );
+	const isRequired = required ? 'srfm-required' : '';
 
 	const arrayRating = [];
 
@@ -24,17 +26,16 @@ export const RatingThemeStyle = ( { attributes, blockID } ) => {
 
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'rating-block-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div
-				id={ 'rating-block-' + blockID }
+				id={ 'srfm-rating-block-' + blockID }
 				style={ {
 					justifyContent:
 						width === 'fullWidth'

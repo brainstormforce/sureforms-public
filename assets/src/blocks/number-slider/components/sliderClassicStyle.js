@@ -1,17 +1,20 @@
 import { useState, useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
 export const SliderClassicStyle = ( {
 	attributes,
 	blockID,
 	sureforms_keys,
+	setAttributes,
 } ) => {
 	const { label, placeholder, min, max, step } = attributes;
 	const [ slideValue, setSlideValue ] = useState( 0 );
 	const [ bgValue, setBgValue ] = useState( 0 );
-	let color = sureforms_keys._sureforms_color1;
+	let color = sureforms_keys._srfm_color1;
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+
 	const handleChange = ( e ) => {
 		const currentValue = Number( e.target.value );
 		const valBg = ( ( currentValue - min ) / ( max - min ) ) * 100;
@@ -25,19 +28,26 @@ export const SliderClassicStyle = ( {
 
 	return (
 		<div
-			className={ `sureforms-number-slider-container sf-classic-number-slider sf-classic-inputs-holder` }
+			className={ `srfm-number-slider-container srfm-classic-number-slider srfm-classic-inputs-holder` }
 		>
 			<div className="range-slider-container">
 				<div className="range-slider-block">
-					<div id="range-sliders" className="range-sliders w-full">
+					<div
+						id="srfm-range-sliders"
+						className="srfm-range-sliders srfm-w-full"
+					>
 						<div className="range-slider-group range-slider-group-sf">
-							<label
-								htmlFor="range-slider-sf"
-								className="sf-classic-label-text"
-							>
-								{ label }
-							</label>
-							<div className="flex justify-between items-center">
+							<RichText
+								tagName="label"
+								value={ label }
+								onChange={ ( value ) =>
+									setAttributes( { label: value } )
+								}
+								className={ `srfm-classic-label-text` }
+								multiline={ false }
+								id={ blockID }
+							/>
+							<div className="srfm-flex srfm-justify-between srfm-items-center">
 								<input
 									id={ 'number-slider-input-' + blockID }
 									type="range"
@@ -50,7 +60,7 @@ export const SliderClassicStyle = ( {
 									} }
 									onChange={ handleChange }
 									placeholder={ placeholder }
-									className="range-slider range-slider-sf !border-solid !border !border-[#d1d5db]"
+									className="range-slider srfm-range-slider !srfm-border-solid !srfm-border !srfm-border-[#d1d5db]"
 								/>
 								<input
 									type="number"
@@ -58,7 +68,7 @@ export const SliderClassicStyle = ( {
 									max={ parseInt( max ) }
 									value={ slideValue }
 									onChange={ handleChange }
-									className="input-slider number-input-slider-sf !w-[60px] !border-solid !border-[1px] !border-[#D1D5DB] !rounded-md !px-2 !py-1 !text-center !bg-white focus:!border-sf_primary_color focus:!ring-sf_primary_color focus:!outline-0 focus:!bg-white sm:text-sm sm:leading-6 !shadow-none"
+									className="input-slider srfm-number-input-slider !srfm-w-[60px] !srfm-border-solid !srfm-border-[1px] !srfm-border-[#D1D5DB] !srfm-rounded-md !srfm-px-2 !srfm-py-1 !srfm-text-center !srfm-bg-white focus:!srfm-border-srfm_primary_color focus:!srfm-ring-srfm_primary_color focus:!srfm-outline-0 focus:!srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6 !srfm-shadow-none"
 								/>
 							</div>
 						</div>

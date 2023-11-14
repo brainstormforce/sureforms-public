@@ -1,4 +1,6 @@
-export const EmailThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const EmailThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -7,19 +9,21 @@ export const EmailThemeStyle = ( { attributes, blockID } ) => {
 		isConfirmEmail,
 		confirmLabel,
 	} = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'email-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary" ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
-				id={ 'email-input-' + blockID }
+				id={ 'srfm-email-input-' + blockID }
 				type="email"
 				value={ defaultValue }
 				placeholder={ placeholder }
@@ -34,7 +38,7 @@ export const EmailThemeStyle = ( { attributes, blockID } ) => {
 						) }
 					</label>
 					<input
-						id={ 'confirm-email-input-' + blockID }
+						id={ 'srfm-confirm-email-input-' + blockID }
 						type="email"
 						value={ defaultValue }
 						placeholder={ placeholder }

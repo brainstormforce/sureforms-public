@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect } from '@wordpress/element';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -122,7 +122,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								value={ allowedFormats }
 								isMulti
 								isClearable
-								classNamePrefix="sureforms-select"
+								classNamePrefix="srfm-select"
 								onChange={ ( value ) => {
 									setAttributes( {
 										allowedFormats: [ ...value ],
@@ -154,7 +154,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -162,29 +162,34 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					gap: '0.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<UploadClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<UploadThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'upload-help-' + block_id }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
 						}
-					>
-						{ help }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

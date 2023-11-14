@@ -30,9 +30,9 @@ function Settings( props ) {
 
 	if (
 		sureforms_keys &&
-		'_sureforms_sender_notification' in sureforms_keys
+		'_srfm_sender_notification' in sureforms_keys
 	) {
-		if ( ! sureforms_keys._sureforms_sender_notification ) {
+		if ( ! sureforms_keys._srfm_sender_notification ) {
 			sureforms_keys = default_keys;
 			editPost( {
 				meta: sureforms_keys,
@@ -57,7 +57,7 @@ function Settings( props ) {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					'/wp-json/sureforms/v1/sureforms-settings'
+					'/wp-json/sureforms/v1/srfm-settings'
 				);
 				const data = await response.json();
 
@@ -110,13 +110,13 @@ function Settings( props ) {
 					) }
 					placeholder={ __( 'E-mail addres', 'sureforms' ) }
 					data={ {
-						value: sureforms_keys._sureforms_email,
-						label: '_sureforms_email',
+						value: sureforms_keys._srfm_email,
+						label: '_srfm_email',
 					} }
-					value={ sureforms_keys._sureforms_email }
+					value={ sureforms_keys._srfm_email }
 					isFormSpecific={ true }
 					onChange={ ( value ) => {
-						updateMeta( '_sureforms_email', value );
+						updateMeta( '_srfm_email', value );
 					} }
 				/>
 				<ToggleControl
@@ -125,11 +125,11 @@ function Settings( props ) {
 						'sureforms'
 					) }
 					checked={
-						'on' === sureforms_keys._sureforms_sender_notification
+						'on' === sureforms_keys._srfm_sender_notification
 					}
 					onChange={ ( value ) => {
 						updateMeta(
-							'_sureforms_sender_notification',
+							'_srfm_sender_notification',
 							value ? 'on' : 'off'
 						);
 					} }
@@ -151,25 +151,25 @@ function Settings( props ) {
 						'Turn toggle on to redirect to a URL',
 						'sureforms'
 					) }
-					checked={ 'url' === sureforms_keys._sureforms_submit_type }
+					checked={ 'url' === sureforms_keys._srfm_submit_type }
 					onChange={ ( value ) => {
 						updateMeta(
-							'_sureforms_submit_type',
+							'_srfm_submit_type',
 							value ? 'url' : 'message'
 						);
 					} }
 				/>
 				<p className="components-base-control__help">
-					{ 'url' === sureforms_keys._sureforms_submit_type
+					{ 'url' === sureforms_keys._srfm_submit_type
 						? __( 'Redirect', 'sureforms' )
 						: __( 'Message', 'sureforms' ) }
 				</p>
-				{ 'message' === sureforms_keys._sureforms_submit_type ? (
+				{ 'message' === sureforms_keys._srfm_submit_type ? (
 					<UAGTextControl
 						variant="textarea"
 						data={ {
-							value: sureforms_keys._sureforms_thankyou_message,
-							label: '_sureforms_thankyou_message',
+							value: sureforms_keys._srfm_thankyou_message,
+							label: '_srfm_thankyou_message',
 						} }
 						label={ __(
 							'Customize the Successfull Form Submission message',
@@ -179,9 +179,9 @@ function Settings( props ) {
 							'Form submitted successfully.',
 							'sureforms'
 						) }
-						value={ sureforms_keys._sureforms_thankyou_message }
+						value={ sureforms_keys._srfm_thankyou_message }
 						onChange={ ( value ) => {
-							updateMeta( '_sureforms_thankyou_message', value );
+							updateMeta( '_srfm_thankyou_message', value );
 						} }
 						isFormSpecific={ true }
 					/>
@@ -191,17 +191,17 @@ function Settings( props ) {
 							'Customize the Thankyou page URL',
 							'sureforms'
 						) }
-						value={ sureforms_keys._sureforms_submit_url }
+						value={ sureforms_keys._srfm_submit_url }
 						onChange={ ( value ) => {
-							updateMeta( '_sureforms_submit_url', value );
+							updateMeta( '_srfm_submit_url', value );
 						} }
 						placeholder={ __(
 							'https://example.com/',
 							'sureforms'
 						) }
 						data={ {
-							value: sureforms_keys._sureforms_submit_url,
-							label: '_sureforms_submit_url',
+							value: sureforms_keys._srfm_submit_url,
+							label: '_srfm_submit_url',
 						} }
 						isFormSpecific={ true }
 					/>
@@ -212,7 +212,7 @@ function Settings( props ) {
 				initialOpen={ false }
 			>
 				<PanelRow>
-					<p className="sureforms-form-notice">
+					<p className="srfm-form-notice">
 						{ __(
 							'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
 							'sureforms'
@@ -224,7 +224,7 @@ function Settings( props ) {
 						'Select the reCAPTCHA Version to use',
 						'sureforms'
 					) }
-					value={ sureforms_keys._sureforms_form_recaptcha }
+					value={ sureforms_keys._srfm_form_recaptcha }
 					options={ [
 						{ label: 'None', value: 'none' },
 						{
@@ -248,7 +248,7 @@ function Settings( props ) {
 							) {
 								setShowErr( false );
 								updateMeta(
-									'_sureforms_form_recaptcha',
+									'_srfm_form_recaptcha',
 									value
 								);
 							} else {
@@ -261,7 +261,7 @@ function Settings( props ) {
 							) {
 								setShowErr( false );
 								updateMeta(
-									'_sureforms_form_recaptcha',
+									'_srfm_form_recaptcha',
 									value
 								);
 							} else {
@@ -274,7 +274,7 @@ function Settings( props ) {
 							) {
 								setShowErr( false );
 								updateMeta(
-									'_sureforms_form_recaptcha',
+									'_srfm_form_recaptcha',
 									value
 								);
 							} else {
@@ -282,7 +282,7 @@ function Settings( props ) {
 							}
 						} else {
 							setShowErr( false );
-							updateMeta( '_sureforms_form_recaptcha', value );
+							updateMeta( '_srfm_form_recaptcha', value );
 						}
 					} }
 					__nextHasNoMarginBottom

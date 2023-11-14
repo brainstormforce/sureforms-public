@@ -1,19 +1,21 @@
-export const UrlThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const UrlThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'url-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
-				id={ 'url-input-' + blockID }
+				id={ 'srfm-url-input-' + blockID }
 				type="url"
 				value={ defaultValue }
 				placeholder={ placeholder }

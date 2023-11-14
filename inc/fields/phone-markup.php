@@ -37,18 +37,18 @@ class Phone_Markup extends Base {
 		$classname    = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		$output  = '';
-		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $block_id ) . '">
-                <label class="sf-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-                <div class="sureforms-input-phone-holder">
-                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $block_id ) . '" value="" />
+		$output .= '<div class="srfm-input-phone-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-phone-' . esc_attr( $block_id ) . '">
+                <label class="srfm-text-primary">' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+                <div class="srfm-input-phone-holder">
+                    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="srfm-fullPhoneNumber-' . esc_attr( $block_id ) . '" value="" />
                     <input type="tel" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '"
-                        id="sureforms-phone-number-' . esc_attr( $block_id ) . '"
-                        class="sureforms-input-field" />
+                        id="srfm-phone-number-' . esc_attr( $block_id ) . '"
+                        class="srfm-input-field" />
                 </div>' .
-			( '' !== $help ? '<label class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-			'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
-            <span style="display:none" class="error-message duplicate-message">' . esc_html( $dulicate_msg ) . '</span>
-            <p style="display:none" class="int-tel-error error-message"></p></div>';
+			( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
+			'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
+            <span style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</span>
+            <p style="display:none" class="srfm-int-tel-error srfm-error-message"></p></div>';
 
 		return $output;
 
@@ -74,15 +74,15 @@ class Phone_Markup extends Base {
 		$auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
 
 		$output  = '';
-		$output .= '<div class="sureforms-input-phone-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-phone-' . esc_attr( $block_id ) . '">
-            <label for="sureforms-phone-number-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '</label>
-            <div class="relative mt-2">
-                <div id="sureforms-phone-parent" class="group sf-classic-phone-parent">
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="fullPhoneNumber-' . esc_attr( $block_id ) . '" value="" />
-					<input type="tel" id="sureforms-phone-number-' . esc_attr( $block_id ) . '" class="sf-classic-phone-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" auto-country="' . esc_attr( $auto_country ? 'true' : 'false' ) . '" value="" placeholder="' . esc_attr( $placeholder ) . '">
+		$output .= '<div class="srfm-input-phone-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-phone-' . esc_attr( $block_id ) . '">
+            <label for="srfm-phone-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
+            <div class="srfm-relative srfm-mt-2">
+                <div id="srfm-phone-parent" class="srfm-group srfm-classic-phone-parent">
+					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" id="srfm-fullPhoneNumber-' . esc_attr( $block_id ) . '" value="" />
+					<input type="tel" id="srfm-phone-number-' . esc_attr( $block_id ) . '" class="srfm-classic-phone-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" auto-country="' . esc_attr( $auto_country ? 'true' : 'false' ) . '" value="" placeholder="' . esc_attr( $placeholder ) . '">
 				</div>
-                </div>' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '<p style="display:none;" class="error-message">' . esc_html( $error_msg ) . '</p> <p style="display:none" class="duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
-            <p style="display:none" class="int-tel-error error-message">' . esc_html( __( 'Please enter a valid phone number.', 'sureforms' ) ) . '</p></div>';
+                </div>' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '<p style="display:none;" class="srfm-error-message">' . esc_html( $error_msg ) . '</p> <p style="display:none" class="srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
+            <p style="display:none" class="srfm-int-tel-error srfm-error-message">' . esc_html( __( 'Please enter a valid phone number.', 'sureforms' ) ) . '</p></div>';
 		return $output;
 	}
 

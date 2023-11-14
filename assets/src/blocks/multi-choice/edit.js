@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -308,7 +312,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ 'classic' ===
-							sureforms_keys?._sureforms_form_styling ? null : (
+							sureforms_keys?._srfm_form_styling ? null : (
 									<MultiButtonsControl
 										label={ __( 'Appearance', 'sureforms' ) }
 										data={ {
@@ -346,7 +350,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -355,10 +359,11 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<MultichoiceClassicStyle
 						blockID={ block_id }
 						attributes={ attributes }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<MultichoiceThemeStyle
@@ -366,21 +371,25 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
+						setAttributes={ setAttributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'text-input-help-' + block_id }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
 						}
-					>
-						{ help }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</div>

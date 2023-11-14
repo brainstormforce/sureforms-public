@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './setting';
 import { SliderClassicStyle } from './components/sliderClassicStyle';
@@ -30,7 +31,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			/>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 				style={ {
 					display: 'flex',
@@ -38,30 +39,35 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<SliderClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
 						sureforms_keys={ sureforms_keys }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<SliderThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'number-slider-input-help-' + block_id }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
 						}
-					>
-						{ help }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

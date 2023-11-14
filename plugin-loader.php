@@ -141,8 +141,8 @@ class Plugin_Loader {
 				wp_safe_redirect(
 					add_query_arg(
 						array(
-							'page' => 'sureforms_menu',
-							'sureforms-activation-redirect' => true,
+							'page'                     => 'sureforms_menu',
+							'srfm-activation-redirect' => true,
 						),
 						admin_url( 'admin.php' )
 					)

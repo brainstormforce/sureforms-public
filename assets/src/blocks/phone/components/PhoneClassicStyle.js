@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
 export const PhoneClassicStyle = ( { attributes, blockID } ) => {
 	const { label, placeholder, required, autoCountry } = attributes;
@@ -34,22 +35,23 @@ export const PhoneClassicStyle = ( { attributes, blockID } ) => {
 		};
 	}, [ autoCountry ] );
 
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-classic-label-text"
-				htmlFor={ 'text-input-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
-			<div className="relative mt-2">
-				<div className="group sf-classic-phone-parent">
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
+			<div className="srfm-relative srfm-mt-2">
+				<div className="srfm-group srfm-classic-phone-parent">
 					<input
 						type="tel"
-						className="sf-classic-phone-element"
+						className="srfm-classic-phone-element"
 						id={ `sfrm-classic-phone-${ blockID }` }
 						placeholder={ placeholder }
 						pattern="[0-9]{10}"

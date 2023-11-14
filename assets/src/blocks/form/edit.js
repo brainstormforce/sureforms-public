@@ -135,7 +135,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					meta: option_array,
 				} );
 			}
-			updateMeta( '_sureforms_form_class_name', attributes.className );
+			updateMeta( '_srfm_form_class_name', attributes.className );
 		}
 	}, [ siteEditor, attributes ] );
 
@@ -174,8 +174,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	};
 
 	const isSureformsForm = 'sureforms_form' !== postType;
-	const shouldInheritStyle =
-		'inherit' === sureforms_keys?._sureforms_form_styling;
+	const shouldInheritStyle = 'inherit' === sureforms_keys?._srfm_form_styling;
 
 	const buttonStyle = isSureformsForm
 		? {
@@ -184,10 +183,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		  }
 		: {
 			backgroundColor: shouldInheritStyle
-				? sureforms_keys?._sureforms_color1 || ''
+				? sureforms_keys?._srfm_color1 || ''
 				: '',
 			color: shouldInheritStyle
-				? sureforms_keys?._sureforms_textcolor1 || ''
+				? sureforms_keys?._srfm_textcolor1 || ''
 				: '',
 		  };
 	const renderButtonHtml = () => {
@@ -195,12 +194,12 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 			<button
 				style={ buttonStyle }
 				className={
-					'sureform-submit-button ' +
-					( 'inherit' === sureforms_keys?._sureforms_form_styling
+					'srfm-submit-button ' +
+					( 'inherit' === sureforms_keys?._srfm_form_styling
 						? 'wp-block-button__link'
-						: 'sureforms-button' ) +
-					( ! sureforms_keys?._sureforms_color1
-						? ' sureforms-default-colors'
+						: 'srfm-button' ) +
+					( ! sureforms_keys?._srfm_color1
+						? ' srfm-default-colors'
 						: '' )
 				}
 			>
@@ -238,7 +237,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					</PanelRow>
 					{ 'sureforms_form' !== postType && (
 						<PanelRow>
-							<p className="sureforms-form-notice">
+							<p className="srfm-form-notice">
 								{ __(
 									'Note: For Editing the stylings, please check the SureForms styling - ',
 									'sureforms'
@@ -277,8 +276,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 						padding: 32px;
 					` }
 					className={
-						'classic' === sureforms_keys?._sureforms_form_styling &&
-						'sf-form-style-classic'
+						'classic' === sureforms_keys?._srfm_form_styling &&
+						'srfm-form-style-classic'
 					}
 				>
 					<InnerBlocks
@@ -292,9 +291,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 					/>
 					<div
 						className={
-							'sureform-submit-button' +
-							( 'inherit' ===
-							sureforms_keys?._sureforms_form_styling
+							'srfm-submit-button' +
+							( 'inherit' === sureforms_keys?._srfm_form_styling
 								? ' wp-block-button'
 								: '' )
 						}

@@ -364,7 +364,7 @@ class Post_Types {
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $screen_id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $screen_id ) {
 			?>
-		<div id="sureforms-page-header"></div>
+		<div id="srfm-page-header"></div>
 			<?php
 		}
 	}
@@ -377,24 +377,24 @@ class Post_Types {
 	 */
 	public function register_post_metas() {
 		$metas = array(
-			'_sureforms_color1'                            => 'string',
-			'_sureforms_textcolor1'                        => 'string',
-			'_sureforms_color2'                            => 'string',
-			'_sureforms_fontsize'                          => 'integer',
-			'_sureforms_bg'                                => 'string',
-			'_sureforms_bg_id'                             => 'integer',
-			'_sureforms_thankyou_message'                  => 'string',
-			'_sureforms_email'                             => 'string',
-			'_sureforms_submit_type'                       => 'string',
-			'_sureforms_submit_url'                        => 'string',
-			'_sureforms_sender_notification'               => 'string',
-			'_sureforms_form_recaptcha'                    => 'string',
-			'_sureforms_submit_alignment'                  => 'string',
-			'_sureforms_submit_width'                      => 'string',
-			'_sureforms_submit_styling_inherit_from_theme' => 'boolean',
-			'_sureforms_form_class_name'                   => 'string',
-			'_sureforms_form_styling'                      => 'string',
-			'_sureforms_form_container_width'              => 'integer',
+			'_srfm_color1'                            => 'string',
+			'_srfm_textcolor1'                        => 'string',
+			'_srfm_color2'                            => 'string',
+			'_srfm_fontsize'                          => 'integer',
+			'_srfm_bg'                                => 'string',
+			'_srfm_bg_id'                             => 'integer',
+			'_srfm_thankyou_message'                  => 'string',
+			'_srfm_email'                             => 'string',
+			'_srfm_submit_type'                       => 'string',
+			'_srfm_submit_url'                        => 'string',
+			'_srfm_sender_notification'               => 'string',
+			'_srfm_form_recaptcha'                    => 'string',
+			'_srfm_submit_alignment'                  => 'string',
+			'_srfm_submit_width'                      => 'string',
+			'_srfm_submit_styling_inherit_from_theme' => 'boolean',
+			'_srfm_form_class_name'                   => 'string',
+			'_srfm_form_styling'                      => 'string',
+			'_srfm_form_container_width'              => 'integer',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -426,7 +426,7 @@ class Post_Types {
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
-		$excluded_fields = [ 'sureforms-honeypot-field', 'g-recaptcha-response', 'sureforms-sender-email-field' ];
+		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		?>
 		<table class="widefat striped">
 			<tbody>
@@ -582,11 +582,11 @@ class Post_Types {
 		if ( 'sureforms' === $column ) {
 			ob_start();
 			?>
-			<div class="sf-shortcode-container">
-				<button type="button" class="components-button components-clipboard-button has-icon sf-shortcode" onclick="handleFormShortcode(this)">
-					<span id="sf-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
+			<div class="srfm-shortcode-container">
+				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
+					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
 				</button>
-				<input id="sureforms-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="sureforms-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
+				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
 			<div>
 			<?php
 			ob_end_flush();
@@ -622,7 +622,7 @@ class Post_Types {
 
 				ob_start();
 				?>
-					<p class="sureforms-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>" target="_blank"><?php echo esc_html( $post_count ); ?></a></p>
+					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>" target="_blank"><?php echo esc_html( $post_count ); ?></a></p>
 				<?php
 				ob_end_flush();
 			}
@@ -699,7 +699,7 @@ class Post_Types {
 				// Nonce Verification is not needed in this case.
 				$selected = isset( $_GET['sureforms_tax'] ) ? $_GET['sureforms_tax'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-				echo '<select name="sureforms_tax" id="sureforms-tax-filter">';
+				echo '<select name="sureforms_tax" id="srfm-tax-filter">';
 				echo '<option value="">All Form Entries</option>';
 
 				foreach ( $forms as $form ) {

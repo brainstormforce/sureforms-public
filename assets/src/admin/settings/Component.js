@@ -111,7 +111,7 @@ const Component = ( { path } ) => {
 		e.preventDefault();
 
 		try {
-			await fetch( '/wp-json/sureforms/v1/sureforms-settings', {
+			await fetch( '/wp-json/sureforms/v1/srfm-settings', {
 				method: 'POST',
 				body: JSON.stringify( formData ),
 				headers: {
@@ -135,7 +135,7 @@ const Component = ( { path } ) => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
-					'/wp-json/sureforms/v1/sureforms-settings'
+					'/wp-json/sureforms/v1/srfm-settings'
 				);
 				const data = await response.json();
 
@@ -174,38 +174,38 @@ const Component = ( { path } ) => {
 
 	if ( 'general-settings' === path ) {
 		return (
-			<div className="flex justify-center lg:w-[100%] md:w-[80%] w-[70%]">
+			<div className="srfm-flex srfm-justify-center lg:srfm-w-[100%] md:srfm-w-[80%] srfm-w-[70%]">
 				<ToastContainer />
-				<div className="w-full p-8 bg-[#FBFBFC] rounded-md m-4 h-3/4 overflow-scroll shadow-md mb-8">
+				<div className="srfm-w-full srfm-p-8 srfm-bg-[#FBFBFC] srfm-rounded-md srfm-m-4 srfm-h-3/4 srfm-overflow-scroll srfm-shadow-md srfm-mb-8">
 					<div
-						className="flex gap-2 text-left text-[17.6px] text-[#111827] pb-4"
+						className="srfm-flex srfm-gap-2 srfm-text-left srfm-text-[17.6px] srfm-text-[#111827] srfm-pb-4"
 						style={ {
 							borderBottom: '1px solid rgba(229, 231, 235, 1)',
 						} }
 					>
 						<GeneralIcon />
-						<span className="font-semibold">
+						<span className="srfm-font-semibold">
 							{ __( 'General Settings', 'sureforms' ) }
 						</span>
 					</div>
 					<form onSubmit={ handleSubmit }>
-						<div className="mt-4">
+						<div className="srfm-mt-4">
 							{ /* Google reCAPTCHA Settings */ }
 							<div
-								className="mb-4 flex items-start gap-10"
+								className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10"
 								style={ {
 									borderBottom:
 										'1px solid rgba(229, 231, 235, 1)',
 								} }
 							>
-								<div className="max-w-[250px]">
+								<div className="srfm-max-w-[250px]">
 									<BaseControl
 										help={ __(
 											'A CAPTCHA serves as an anti-spam measure, safeguarding your website against spam and misuse.',
 											'sureforms'
 										) }
 									>
-										<h3 className="text-base font-semibold text-gray-90">
+										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
 											{ __(
 												'Google reCAPTCHA Settings',
 												'sureforms'
@@ -219,17 +219,17 @@ const Component = ( { path } ) => {
 										onSelect={ ( tab ) => onSelect( tab ) }
 										tabs={ [
 											{
-												name: 'sureforms-recaptcha-v2-checkbox',
+												name: 'srfm-recaptcha-v2-checkbox',
 												title: 'v2 Checkbox',
 												className: 'recaptcha-tab',
 											},
 											{
-												name: 'sureforms-recaptcha-v2-invisible',
+												name: 'srfm-recaptcha-v2-invisible',
 												title: 'v2 Invisible',
 												className: 'recaptcha-tab',
 											},
 											{
-												name: 'sureforms-recaptcha-v3',
+												name: 'srfm-recaptcha-v3',
 												title: 'v3 reCAPTCHA',
 												className: 'recaptcha-tab',
 											},
@@ -239,14 +239,14 @@ const Component = ( { path } ) => {
 											switch ( tab.title ) {
 												case 'v2 Checkbox':
 													return (
-														<div className="w-[600px] mt-4">
+														<div className="srfm-w-[600px] srfm-mt-4">
 															<Fragment>
-																<div className="mb-4 ">
+																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_site"
-																		id="sureforms_v2_checkbox_site"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v2_checkbox_site"
+																		id="srfm_v2_checkbox_site"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Site Key v2 Checkbox',
 																			'sureforms'
@@ -261,12 +261,12 @@ const Component = ( { path } ) => {
 																</div>
 															</Fragment>
 															<Fragment>
-																<div className="mb-4">
+																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_secret"
-																		id="sureforms_v2_checkbox_secret"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v2_checkbox_secret"
+																		id="srfm_v2_checkbox_secret"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Secret Key v2 Checkbox',
 																			'sureforms'
@@ -284,14 +284,14 @@ const Component = ( { path } ) => {
 													);
 												case 'v2 Invisible':
 													return (
-														<div className="w-[600px] mt-4">
+														<div className="srfm-w-[600px] srfm-mt-4">
 															<Fragment>
-																<div className="mb-4 ">
+																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_site"
-																		id="sureforms_v2_invisible_site"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v2_invisible_site"
+																		id="srfm_v2_invisible_site"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Site Key v2 Invisible',
 																			'sureforms'
@@ -306,12 +306,12 @@ const Component = ( { path } ) => {
 																</div>
 															</Fragment>
 															<Fragment>
-																<div className="mb-4">
+																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_secret"
-																		id="sureforms_v2_invisible_secret"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v2_invisible_secret"
+																		id="srfm_v2_invisible_secret"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Secret Key v2 Invisible',
 																			'sureforms'
@@ -329,14 +329,14 @@ const Component = ( { path } ) => {
 													);
 												case 'v3 reCAPTCHA':
 													return (
-														<div className="w-[600px] mt-4">
+														<div className="srfm-w-[600px] srfm-mt-4">
 															<Fragment>
-																<div className="mb-4 ">
+																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v3_site"
-																		id="sureforms_v3_site"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v3_site"
+																		id="srfm_v3_site"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Site Key v3',
 																			'sureforms'
@@ -351,12 +351,12 @@ const Component = ( { path } ) => {
 																</div>
 															</Fragment>
 															<Fragment>
-																<div className="mb-4">
+																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v3_secret"
-																		id="sureforms_v3_secret"
-																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+																		name="srfm_v3_secret"
+																		id="srfm_v3_secret"
+																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
 																			'Secret Key v3',
 																			'sureforms'
@@ -378,7 +378,7 @@ const Component = ( { path } ) => {
 											}
 										} }
 									</TabPanel>
-									<h3 className="text-sm font-normal text-[#64748B]">
+									<h3 className="srfm-text-sm srfm-font-normal srfm-text-[#64748B]">
 										{ __(
 											'To enable reCAPTCHA for your form, please follow the steps mentioned ',
 											'sureforms'
@@ -395,15 +395,15 @@ const Component = ( { path } ) => {
 							</div>
 
 							{ /* Honeypot Spam Protection Settings might be used later*/ }
-							<div className="mb-4 flex items-start gap-10">
-								<div className="max-w-[250px]">
+							<div className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10">
+								<div className="srfm-max-w-[250px]">
 									<BaseControl
 										help={ __(
 											'This adds a hidden field that if filled out prevents the form from submitting.',
 											'sureforms'
 										) }
 									>
-										<h3 className="text-base font-semibold text-gray-90">
+										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
 											{ __(
 												'Honeypot Spam Protection',
 												'sureforms'
@@ -411,15 +411,15 @@ const Component = ( { path } ) => {
 										</h3>
 									</BaseControl>
 								</div>
-								<div className="w-[600px] mt-4">
+								<div className="srfm-w-[600px] srfm-mt-4">
 									<Fragment>
-										<div className="mb-4 ">
+										<div className="srfm-mb-4 ">
 											<label
-												htmlFor="honeypot-checkbox-input"
+												htmlFor="srfm-honeypot-checkbox-input"
 												className="toggle-button"
 											>
 												<input
-													id="honeypot-checkbox-input"
+													id="srfm-honeypot-checkbox-input"
 													type="checkbox"
 													name="honeypot_toggle"
 													checked={ honeyPot }

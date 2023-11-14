@@ -1,21 +1,25 @@
+import { RichText } from '@wordpress/block-editor';
+
 export const MultichoiceThemeStyle = ( {
 	attributes,
 	blockID,
 	handleClick,
 	selected,
+	setAttributes,
 } ) => {
 	const { required, options, label, singleSelection, style } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'multi-choice-block-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			{ options.map( ( option, i ) => {
 				return (
 					<div
@@ -39,7 +43,7 @@ export const MultichoiceThemeStyle = ( {
 						/>
 						<label
 							htmlFor={ 'multi-choice-' + blockID + '-i-' + i }
-							className={ 'sureforms-multi-choice-label-button' }
+							className={ 'srfm-multi-choice-label-button' }
 							style={
 								style === 'buttons'
 									? {

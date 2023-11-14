@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -115,37 +115,40 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder frontend-inputs-holder'
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
 				}
 			>
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'flex-start',
-						gap: '.4rem',
-					} }
-				>
-					{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
+				<div>
+					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 						<SwitchClassicStyle
 							attributes={ attributes }
 							sureforms_keys={ sureforms_keys }
+							blockID={ block_id }
+							setAttributes={ setAttributes }
 						/>
 					) : (
-						<SwitchThemeStyle attributes={ attributes } />
+						<SwitchThemeStyle
+							blockID={ block_id }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) }
 				</div>
 				{ switchHelpText !== '' && (
-					<label
-						htmlFor={ 'switch-input-help-' + block_id }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ switchHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { switchHelpText: value } )
 						}
-					>
-						{ switchHelpText }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

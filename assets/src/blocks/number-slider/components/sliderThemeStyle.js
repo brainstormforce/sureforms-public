@@ -1,17 +1,20 @@
 import { useState } from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
 
-export const SliderThemeStyle = ( { attributes, blockID } ) => {
+export const SliderThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, valueDisplayText, min, max, step } = attributes;
 	const [ slideValue, setSlideValue ] = useState( 0 );
 
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'number-slider-input-' + blockID }
-			>
-				{ label }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
 				id={ 'number-slider-input-' + blockID }
 				type="range"

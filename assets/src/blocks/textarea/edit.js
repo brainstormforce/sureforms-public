@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -11,13 +11,14 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import UAGNumberControl from '@Components/number-control';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -36,7 +37,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const stylingType = sureforms_keys?._sureforms_form_styling;
+	const stylingType = sureforms_keys?._srfm_form_styling;
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -111,10 +112,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								/>
 							) }
 							<UAGNumberControl
-								label={ __( 'Text Max Length', 'sureforms' ) }
+								label={ __(
+									'Text Maximum Length',
+									'sureforms'
+								) }
 								value={ maxLength }
 								displayUnit={ false }
-								min={ 0 }
 								data={ {
 									value: maxLength,
 									label: 'maxLength',
@@ -124,8 +127,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										maxLength: Number( value ),
 									} );
 								} }
+								min={ 0 }
+								showControlHeader={ false }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Rows', 'sureforms' ) }
 								value={ rows }
 								displayUnit={ false }
@@ -139,7 +144,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Columns', 'sureforms' ) }
 								displayUnit={ false }
 								value={ cols }
@@ -170,7 +175,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<div
-				className={ `main-container  sf-classic-inputs-holder sureforms-block-${ block_id }` }
+				className={ `srfm-main-container  srfm-classic-inputs-holder srfm-block-${ block_id }` }
 				style={ {
 					display: 'flex',
 					flexDirection: 'column',
@@ -178,21 +183,33 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				} }
 			>
 				{ 'classic' === stylingType ? (
-					<TextareaClassicStyle attributes={ attributes } />
+					<TextareaClassicStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<TextareaThemeStyle attributes={ attributes } />
+					<TextareaThemeStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ textAreaHelpText !== '' && (
-					<label
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ textAreaHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { textAreaHelpText: value } )
 						}
-					>
-						{ textAreaHelpText }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

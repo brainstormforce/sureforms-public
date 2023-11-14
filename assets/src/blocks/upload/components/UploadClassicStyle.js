@@ -1,28 +1,33 @@
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const UploadClassicStyle = ( { attributes, blockID } ) => {
+export const UploadClassicStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
-			<div className="col-span-full">
-				<label
-					className="sf-classic-label-text"
-					htmlFor={ 'text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
-				<div className="sf-classic-upload-div">
-					<div className="text-center">
+			<div className="srfm-col-span-full">
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `srfm-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
+				<div className="srfm-classic-upload-div">
+					<div className="srfm-text-center">
 						<div
 							style={ { fontSize: '35px' } }
-							className="text-center text-gray-300"
+							className="srfm-text-center srfm-text-gray-300"
 						>
 							<FontAwesomeIcon
 								style={ { margin: 'auto' } }
@@ -31,8 +36,8 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 								icon={ faCloudArrowUp }
 							/>
 						</div>
-						<div className="mt-2 flex text-sm leading-6 text-gray-600">
-							<label className="sf-classic-upload-label">
+						<div className="srfm-mt-2 srfm-flex srfm-text-sm srfm-leading-6 srfm-text-gray-600">
+							<label className="srfm-classic-upload-label">
 								<span>
 									{ __(
 										'Click to upload the file',
@@ -44,12 +49,12 @@ export const UploadClassicStyle = ( { attributes, blockID } ) => {
 									aria-required={
 										required ? 'true' : 'false'
 									}
-									className="sureforms-upload-field sr-only"
+									className="srfm-upload-field srfm-sr-only"
 								/>
 							</label>
 						</div>
-						<p className="mb-1 text-xs leading-5 text-gray-600">
-							<span className="font-semibold">
+						<p className="srfm-mb-1 srfm-text-xs srfm-leading-5 srfm-text-gray-600">
+							<span className="srfm-font-semibold">
 								{ firstFive.length !== 0
 									? firstFive.map( ( obj, index ) => {
 										if ( index < 4 ) {

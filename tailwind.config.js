@@ -4,7 +4,6 @@ module.exports = {
 		'./inc/blocks/**/*.php',
 		'./inc/fields/**/*.php',
 		'./templates/single-form.php',
-		'./node_modules/tw-elements/dist/js/**/*.js',
 		'./inc/fields/**/*.php',
 	],
 	theme: {
@@ -15,9 +14,9 @@ module.exports = {
 				wphovercolor: '#135e96',
 				wphoverbgcolor: '#2271b117',
 				wpcolorfaded: '#2271b120',
-				sf_primary_color: 'var(--sf-primary-color)',
-				sf_secondary_color: 'var(--sf-secondary-color)',
-				sf_primary_text_color: 'var(--sf-primary-text-color)',
+				srfm_primary_color: 'var(--srfm-primary-color)',
+				srfm_secondary_color: 'var(--srfm-secondary-color)',
+				srfm_primary_text_color: 'var(--srfm-primary-text-color)',
 				required_icon_color: '#EF4444',
 			},
 			fontFamily: {
@@ -33,8 +32,9 @@ module.exports = {
 			borderWidth: [ 'last' ],
 		},
 	},
-	plugins: [
-		require( '@tailwindcss/forms' ),
-		require( 'tw-elements/dist/plugin.cjs' ),
-	],
+	plugins: [ require( '@tailwindcss/forms' ) ],
+	prefix: 'srfm-',
+	corePlugins: {
+		preflight: false,
+	},
 };

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -101,7 +101,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								</option>
 							</SelectControl>
 							{ 'classic' !==
-								sureforms_keys?._sureforms_form_styling &&
+								sureforms_keys?._srfm_form_styling &&
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
@@ -109,9 +109,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-min-date"
+											id="srfm-for-min-date"
 											value={ min }
 											onChange={ ( e ) => {
 												if ( '' !== max ) {
@@ -135,9 +135,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
-											className="sureforms-date-time-picker"
+											className="srfm-date-time-picker"
 											type="date"
-											id="for-max-date"
+											id="srfm-for-max-date"
 											value={ max }
 											onChange={ ( e ) => {
 												if ( '' !== min ) {
@@ -194,7 +194,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'main-container sf-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {
@@ -203,23 +203,34 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					gap: '.5rem',
 				} }
 			>
-				{ 'classic' === sureforms_keys?._sureforms_form_styling ? (
-					<DatetimepickerClassicStyle attributes={ attributes } />
+				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
+					<DatetimepickerClassicStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<DatetimepickerThemeStyle attributes={ attributes } />
+					<DatetimepickerThemeStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'email-input-help-' + block_id }
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'sforms-helper-txt'
-								: 'sf-text-secondary'
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
 						}
-					>
-						{ help }
-					</label>
+						className={
+							'classic' === sureforms_keys?._srfm_form_styling
+								? 'srfm-helper-txt'
+								: 'srfm-text-secondary'
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

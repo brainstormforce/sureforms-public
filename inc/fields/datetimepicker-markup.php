@@ -39,30 +39,30 @@ class Datetimepicker_Markup extends Base {
 
 			$output  = '';
 			$output .= '
-			<div class="sureforms-input-date-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '" id="sureforms-input-date-container-' . esc_attr( $block_id ) . '">
-				<label for="sureforms-input-date-' . esc_attr( $block_id ) . '" class="sf-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-				<input type="hidden" id="sureforms-full-date-time-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
-				<div class="sureforms-date-time-picker-holder" >';
+			<div class="srfm-input-date-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-input-date-container-' . esc_attr( $block_id ) . '">
+				<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+				<input type="hidden" id="srfm-full-date-time-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
+				<div class="srfm-date-time-picker-holder" >';
 
 		switch ( $field_type ) {
 			case 'dateTime':
-				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
-				$output .= '<input id="sureforms-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="srfm-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field">';
+				$output .= '<input id="srfm-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field"/>';
 				break;
 			case 'date':
-				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
+				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="srfm-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field">';
 				break;
 			case 'time':
-				$output .= '<input id="sureforms-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+				$output .= '<input id="srfm-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field"/>';
 				break;
 			default:
-				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="sureforms-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field">';
-				$output .= '<input id="sureforms-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-field"/>';
+				$output .= '<input max="' . esc_attr( $max ) . '" min="' . esc_attr( $min ) . '" id="srfm-input-date-' . esc_attr( $block_id ) . '" type="date" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field">';
+				$output .= '<input id="srfm-input-time-' . esc_attr( $block_id ) . '" type="time" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field"/>';
 				break;
 		}
 			$output .= '</div>
-				' . ( '' !== $help ? '<label for="sureforms-input-date" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-				<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>
+				' . ( '' !== $help ? '<label for="srfm-input-date" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
+				<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 			</div>			';
 		return $output;
 	}
@@ -87,34 +87,39 @@ class Datetimepicker_Markup extends Base {
 
 			$output  = '';
 			$output .= '
-			<div class="sf-classic-inputs-holder main-container sf-classic-date-time-container ' . esc_attr( $classname ) . '">
-			<label for="sureforms-input-date-' . esc_attr( $block_id ) . '" class="sf-classic-label-text">
-				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
+			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container ' . esc_attr( $classname ) . '">
+			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
+				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
-				<input type="hidden" class="sf-min-max-holder" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" >
-				<input type="hidden" field-type="' . esc_attr( $field_type ) . '" class="sf-classic-date-time-result" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
-				<div class="sf-classic-date-time-picker relative mt-2 rounded-md shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
+				<input type="hidden" class="srfm-min-max-holder" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" >
+				<input type="hidden" field-type="' . esc_attr( $field_type ) . '" class="srfm-classic-date-time-result" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="">
+				<div class="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits" data-te-input-wrapper-init ';
 
+		$input_type = '';
 		switch ( $field_type ) {
 			case 'dateTime':
-				$output .= esc_attr( 'data-te-date-timepicker-init' );
+				$input_type = ' srfm-input-date-time';
 				break;
 			case 'date':
-				$output .= esc_attr( 'data-te-datepicker-init' );
+				$input_type = ' srfm-input-date';
 				break;
 			case 'time':
-				$output .= esc_attr( 'data-te-timepicker-init' );
+				$input_type = ' srfm-input-time';
 				break;
 			default:
-				$output .= esc_attr( 'data-te-date-timepicker-init' );
+				$input_type = ' srfm-input-time';
 				break;
 		}
-				$output .= '>
-				<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="sureforms-input-data-time sf-classic-datetime-picker" id="sureforms-input-time-' . esc_attr( $block_id ) . '" />
-				</div>
-				' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-				<p style="display:none" class="error-message ">' . esc_html( $error_msg ) . '</p>
-				</div>
+			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock srfm-text-gray-400 srfm-text-[20px]"></i>' : '<i class="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[20px]"></i>';
+			$output    .= '>
+			<div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
+			' . $input_icon . '
+			</div>
+			<input type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-data-time srfm-classic-datetime-picker' . $input_type . '" id="srfm-input-time-' . esc_attr( $block_id ) . '" />
+			</div>
+			' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
+			<p style="display:none" class="srfm-error-message ">' . esc_html( $error_msg ) . '</p>
+			</div>
 			';
 		return $output;
 	}

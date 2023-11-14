@@ -1,26 +1,27 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
-export const UploadThemeStyle = ( { attributes, blockID } ) => {
+export const UploadThemeStyle = ( { attributes, blockID, setAttributes } ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
+	const isRequired = required ? 'srfm-required' : '';
 
 	return (
 		<>
-			<label
-				className="sf-text-primary"
-				htmlFor={ 'upload-input-field-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<input
 				required={ required }
 				type="file"
-				id={ 'upload-input-field-' + blockID }
+				id={ 'srfm-upload-input-field-' + blockID }
 				hidden
 				onClick={ ( e ) => e.preventDefault() }
 				accept={ allowedFormats
@@ -28,12 +29,12 @@ export const UploadThemeStyle = ( { attributes, blockID } ) => {
 					.join( ',' ) }
 			/>
 			<div
-				className={ 'sureforms-upload-inner-div' }
+				className={ 'srfm-upload-inner-div' }
 				style={ { border: '2px solid' } }
 			>
 				<label
 					id={ 'upload-label-' + blockID }
-					htmlFor={ 'upload-input-field-' + blockID }
+					htmlFor={ 'srfm-upload-input-field-' + blockID }
 				>
 					<div
 						style={ {
@@ -101,7 +102,7 @@ export const UploadThemeStyle = ( { attributes, blockID } ) => {
 			</div>
 			<p
 				hidden
-				id={ 'upload-field-error-' + blockID }
+				id={ 'srfm-upload-field-error-' + blockID }
 				style={ { color: 'red' } }
 			>
 				{ __( 'File Size Exceeded The Limit', 'sureforms' ) }

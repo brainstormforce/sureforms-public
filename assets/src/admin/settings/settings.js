@@ -19,7 +19,7 @@ const Settings = () => {
 	return (
 		<Router>
 			<Header />
-			<div className="flex flex-row h-[100vh] bg-transparent]">
+			<div className="srfm-flex srfm-flex-row srfm-h-[100vh] srfm-bg-transparent">
 				<Navigation />
 				<QueryScreen />
 			</div>
@@ -30,7 +30,7 @@ const Settings = () => {
 export default Settings;
 
 ( function () {
-	const app = document.getElementById( 'sureforms-settings-container' );
+	const app = document.getElementById( 'srfm-settings-container' );
 
 	function renderApp() {
 		if ( null !== app ) {
