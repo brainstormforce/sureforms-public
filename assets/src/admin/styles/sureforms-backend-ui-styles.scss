@@ -443,6 +443,9 @@
 			}
 			.srfm-classic-phone-parent {
 				@apply srfm-relative srfm-ring-1 srfm-ring-gray-300 srfm-border-[#D1D5DB] srfm-rounded-md srfm-border-0 srfm-outline-0 focus-within:srfm-ring-srfm_primary_color focus-within:srfm-ring-2 focus-within:srfm-border-solid focus-within:srfm-border-0 focus-within:srfm-border-srfm_primary_color focus-within:srfm-outline-0;
+				.iti {
+					@apply srfm-w-full;
+				}
 			}
 			.srfm-classic-phone-element {
 				@apply srfm-w-full srfm-rounded-md srfm-py-1.5 srfm-pl-[4.1rem] srfm-text-gray-900 srfm-shadow-sm srfm-ring-0 srfm-border-0 srfm-bg-white srfm-outline-0 placeholder:srfm-text-gray-500 sm:srfm-text-sm sm:srfm-leading-6 focus:srfm-ring-0 focus:srfm-border-0;
