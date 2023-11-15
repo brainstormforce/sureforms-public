@@ -54,6 +54,13 @@ class SF_Public {
 		// Flatpickr JS.
 		wp_enqueue_script( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_js.js', [], SUREFORMS_VER, true );
 
+		// Int-tel-input CSS.
+		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.css', [], SUREFORMS_VER );
+
+		// Int-tel-input JS.
+		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
+
 		// SureForms frontend JS.
 		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
