@@ -673,7 +673,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 
 					),
 
-					'srfm/separator'        => array(
+					'sureforms/separator'        => array(
 						'slug'        => '',
 						'title'       => __( 'Separator', 'cartflows' ),
 						'description' => '',
@@ -766,7 +766,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 
 			if ( null === self::$block_assets_css ) {
 				self::$block_assets_css = array(
-					'srfm/separator'      => array(
+					'sureforms/separator'      => array(
 						'name' => 'separator',
 					),
 

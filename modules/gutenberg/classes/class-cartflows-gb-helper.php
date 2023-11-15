@@ -89,6 +89,22 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		public static $gfonts = array();
 
 		/**
+		 * As our svg icon is too long array so we will divide that into number of icon chunks.
+		 *
+		 * @var int
+		 * @since 2.7.0
+		 */
+		public static $number_of_icon_chunks = 4;
+
+		/**
+		 * Store Json variable
+		 *
+		 * @since 1.8.1
+		 * @var instance
+		 */
+		public static $icon_json;
+
+		/**
 		 *  Initiator
 		 *
 		 * @since 1.6.15
@@ -199,6 +215,34 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 					break;
 			}
 			return $align_css;
+		}
+
+				/**
+		 * Get Json Data.
+		 *
+		 * @since 1.8.1
+		 * @return array
+		 */
+		public static function backend_load_font_awesome_icons() {
+
+			if ( null !== self::$icon_json ) {
+				return self::$icon_json;
+			}
+
+			$icons_chunks = array();
+			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
+				$json_file = UAGB_DIR . "blocks-config/uagb-controls/spectra-icons-v6-{$i}.php";
+				if ( file_exists( $json_file ) ) {
+					$icons_chunks[] = include $json_file;
+				}
+			}
+
+			if ( empty( $icons_chunks ) ) {
+				return array();
+			}
+
+			self::$icon_json = $icons_chunks;
+			return self::$icon_json;
 		}
 
 		/**
@@ -669,7 +713,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 						Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
-					case 'srfm/separator':
+					case 'sureforms/separator':
 						$css = Cartflows_Block_Helper::get_separator_css( $blockattr, $block_id );
 						//Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;

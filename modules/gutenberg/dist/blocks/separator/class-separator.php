@@ -315,7 +315,7 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 			$attributes = apply_filters( 'cartflows_gutenberg_cf_attributes_filters', $attr );
 
 			register_block_type(
-				'srfm/separator',
+				'sureforms/separator',
 				array(
 					'attributes'      => $attributes,
 					'render_callback' => array( $this, 'render_html' ),

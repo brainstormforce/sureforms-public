@@ -16,44 +16,31 @@ const generateBorderCSS = ( attributes, prefix, deviceType = 'desktop' ) => {
 		const borderStyle = attributes[ prefix + 'BorderStyle' ];
 		const borderColor = attributes[ prefix + 'BorderColor' ];
 
-		const borderTopWidth = generateCSSUnit(
-			attributes[ prefix + 'BorderTopWidth' + deviceType ],
-			'px'
-		);
-		const borderRightWidth = generateCSSUnit(
-			attributes[ prefix + 'BorderRightWidth' + deviceType ],
-			'px'
-		);
-		const borderBottomWidth = generateCSSUnit(
-			attributes[ prefix + 'BorderBottomWidth' + deviceType ],
-			'px'
-		);
-		const borderLeftWidth = generateCSSUnit(
-			attributes[ prefix + 'BorderLeftWidth' + deviceType ],
-			'px'
-		);
+		const borderTopWidth = generateCSSUnit( attributes[ prefix + 'BorderTopWidth' + deviceType ], 'px' );
+		const borderRightWidth = generateCSSUnit( attributes[ prefix + 'BorderRightWidth' + deviceType ], 'px' );
+		const borderBottomWidth = generateCSSUnit( attributes[ prefix + 'BorderBottomWidth' + deviceType ], 'px' );
+		const borderLeftWidth = generateCSSUnit( attributes[ prefix + 'BorderLeftWidth' + deviceType ], 'px' );
+
+		const unitFallback = attributes[ prefix + 'BorderRadiusUnit' + deviceType ] || 'px';
 
 		const borderTopLeftRadius = generateCSSUnit(
 			attributes[ prefix + 'BorderTopLeftRadius' + deviceType ],
-			attributes[ prefix + 'BorderRadiusUnit' + deviceType ]
+			unitFallback
 		);
 		const borderTopRightRadius = generateCSSUnit(
 			attributes[ prefix + 'BorderTopRightRadius' + deviceType ],
-			attributes[ prefix + 'BorderRadiusUnit' + deviceType ]
+			unitFallback
 		);
 		const borderBottomRightRadius = generateCSSUnit(
 			attributes[ prefix + 'BorderBottomRightRadius' + deviceType ],
-			attributes[ prefix + 'BorderRadiusUnit' + deviceType ]
+			unitFallback
 		);
 		const borderBottomLeftRadius = generateCSSUnit(
 			attributes[ prefix + 'BorderBottomLeftRadius' + deviceType ],
-			attributes[ prefix + 'BorderRadiusUnit' + deviceType ]
+			unitFallback
 		);
 
-		if (
-			'none' !== attributes[ prefix + 'BorderStyle' ] &&
-			'' !== attributes[ prefix + 'BorderStyle' ]
-		) {
+		if ( 'none' !== attributes[ prefix + 'BorderStyle' ] && '' !== attributes[ prefix + 'BorderStyle' ] ) {
 			borderCSS[ 'border-top-width' ] = borderTopWidth;
 			borderCSS[ 'border-right-width' ] = borderRightWidth;
 			borderCSS[ 'border-bottom-width' ] = borderBottomWidth;

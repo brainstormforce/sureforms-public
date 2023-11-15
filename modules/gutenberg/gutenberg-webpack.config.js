@@ -27,6 +27,7 @@ module.exports = {
 			'@CFBlocks': path.resolve( __dirname, 'src/blocks/' ),
 			'@Utils': path.resolve( __dirname, 'src/utils/' ),
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
+			'@Store': path.resolve( __dirname, 'src/store/' ),
 		},
 	},
 	module: {

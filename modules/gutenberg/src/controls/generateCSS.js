@@ -34,19 +34,13 @@ function generateCSS(
 
 		if ( css.length !== 0 ) {
 			if ( responsiveType === 'tablet' ) {
-				gen_styling_css +=
-					'@media only screen and (max-width: ' +
-					uagb_blocks_info.tablet_breakpoint +
-					'px) {';
+				gen_styling_css += '@media only screen and (max-width: ' + uagb_blocks_info.tablet_breakpoint + 'px) {';
 				gen_styling_css += id;
 				gen_styling_css += selector + '{';
 				gen_styling_css += css;
 				gen_styling_css += '}}';
 			} else if ( responsiveType === 'mobile' ) {
-				gen_styling_css +=
-					'@media only screen and (max-width: ' +
-					uagb_blocks_info.mobile_breakpoint +
-					'px) {';
+				gen_styling_css += '@media only screen and (max-width: ' + uagb_blocks_info.mobile_breakpoint + 'px) {';
 				gen_styling_css += id;
 				gen_styling_css += selector + '{';
 				gen_styling_css += css;

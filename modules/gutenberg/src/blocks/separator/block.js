@@ -10,8 +10,8 @@ import { registerBlockType } from '@wordpress/blocks';
 import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
-const separatorCommonData = applyFilters( 'srfm/separator', addCommonDataToSpectraBlocks( {} ) );
-registerBlockType( 'srfm/separator', {
+const separatorCommonData = applyFilters( 'sureforms/separator', addCommonDataToSpectraBlocks( {} ) );
+registerBlockType( 'sureforms/separator', {
 	...separatorCommonData,
 	apiVersion: 2,
 	title: __( 'Separator', 'ultimate-addons-for-gutenberg' ),
@@ -19,8 +19,8 @@ registerBlockType( 'srfm/separator', {
 		'Add a modern separator to divide your page content with icon/text.',
 		'ultimate-addons-for-gutenberg'
 	),
-	icon: '',
-	category: '',
+	icon: UAGB_Block_Icons.separator,
+	category: uagb_blocks_info.category,
 	keywords: [ __( 'divider', 'ultimate-addons-for-gutenberg' ), __( 'separator', 'ultimate-addons-for-gutenberg' ) ],
 	attributes,
 	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="separator" /> : <Edit { ...props } /> ),

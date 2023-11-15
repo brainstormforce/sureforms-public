@@ -9,8 +9,7 @@ let recoveryDone = false;
 const createRecoveryCSS = () => {
 	const recoveryCSS = document.createElement( 'style' );
 	recoveryCSS.setAttribute( 'id', 'uagb-recovery-styles' );
-	recoveryCSS.innerHTML =
-		'.has-warning[data-type^="uagb/"] { opacity: 0 !important; }';
+	recoveryCSS.innerHTML = '.has-warning[data-type^="uagb/"] { opacity: 0 !important; }';
 	document.body.appendChild( recoveryCSS );
 };
 
@@ -56,10 +55,7 @@ const recoverBlocks = ( allBlocks ) =>
 			const {
 				attributes: { ref },
 			} = block;
-			const reusableBlockPosts = select( 'core' ).getEntityRecords(
-				'postType',
-				'wp_block'
-			);
+			const reusableBlockPosts = select( 'core' ).getEntityRecords( 'postType', 'wp_block' );
 
 			let reusableBlockPost = null;
 
@@ -77,8 +73,7 @@ const recoverBlocks = ( allBlocks ) =>
 
 			const parsedBlocks = parse( reusableBlockPost ) || [];
 
-			const [ recoveredBlocks, isRecovered ] =
-				initBlockRecovery( parsedBlocks );
+			const [ recoveredBlocks, isRecovered ] = initBlockRecovery( parsedBlocks );
 
 			if ( isRecovered ) {
 				recoveryDone = true;
@@ -92,9 +87,7 @@ const recoverBlocks = ( allBlocks ) =>
 
 		if ( curBlock.innerBlocks && curBlock.innerBlocks.length ) {
 			const newInnerBlocks = recoverBlocks( curBlock.innerBlocks );
-			if (
-				newInnerBlocks.some( ( innerBlock ) => innerBlock.recovered )
-			) {
+			if ( newInnerBlocks.some( ( innerBlock ) => innerBlock.recovered ) ) {
 				curBlock.innerBlocks = newInnerBlocks;
 				curBlock.replacedClientId = curBlock.clientId;
 				curBlock.recovered = true;
@@ -112,41 +105,27 @@ const recoverBlocks = ( allBlocks ) =>
 	} );
 
 // Recover Current Block.
-const recoverBlock = ( { name, attributes, innerBlocks } ) =>
-	createBlock( name, attributes, innerBlocks );
+const recoverBlock = ( { name, attributes, innerBlocks } ) => createBlock( name, attributes, innerBlocks );
 
 // Start with the Automatic Block Recovery Process.
 const autoBlockRecovery = () => {
 	createRecoveryCSS();
 	setTimeout( () => {
 		const unsubscribe = subscribe( () => {
-			if (
-				select( 'core' ).getEntityRecords( 'postType', 'wp_block' ) !==
-				null
-			) {
+			if ( select( 'core' ).getEntityRecords( 'postType', 'wp_block' ) !== null ) {
 				unsubscribe();
-				const recoveredBlocks = recoverBlocks(
-					select( 'core/block-editor' ).getBlocks()
-				);
+				const recoveredBlocks = recoverBlocks( select( 'core/block-editor' ).getBlocks() );
 				recoveredBlocks.forEach( ( block ) => {
 					if ( block.isReusable && block.ref ) {
 						dispatch( 'core' )
-							.editEntityRecord(
-								'postType',
-								'wp_block',
-								block.ref,
-								{
-									content: serialize( block.blocks ),
-								}
-							)
+							.editEntityRecord( 'postType', 'wp_block', block.ref, {
+								content: serialize( block.blocks ),
+							} )
 							.then();
 					}
 
 					if ( block.recovered && block.replacedClientId ) {
-						dispatch( 'core/block-editor' ).replaceBlock(
-							block.replacedClientId,
-							block
-						);
+						dispatch( 'core/block-editor' ).replaceBlock( block.replacedClientId, block );
 					}
 				} );
 				if ( recoveryDone ) {

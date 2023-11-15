@@ -833,7 +833,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			 */
 			public static function get_separator_css( $attr, $id ) {
 
-				$defaults = Cartflows_Gb_Helper::$block_list['srfm/separator']['attributes'];
+				$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
 	
 				$attr = array_merge( $defaults, $attr );
 	

@@ -7,23 +7,13 @@ import { applyFilters } from '@wordpress/hooks';
 // blockName    - The name of the block.
 
 const getAttributeFallback = ( currentValue, key, blockName ) => {
-	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
-		blocksAttributes
-	);
-	return currentValue
-		? currentValue
-		: allBlocksAttributes[ blockName ][ key ].default;
-};
+	const allBlocksAttributes = applyFilters( 'uagb.blocksAttributes', blocksAttributes );
+	return currentValue ? currentValue : allBlocksAttributes[ blockName ][ key ].default;
+}
 
 export const getFallbackNumber = ( currentValue, key, blockName ) => {
-	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
-		blocksAttributes
-	);
-	return isNaN( currentValue )
-		? allBlocksAttributes[ blockName ][ key ].default
-		: currentValue;
-};
+	const allBlocksAttributes = applyFilters( 'uagb.blocksAttributes', blocksAttributes );
+	return isNaN( currentValue ) ? allBlocksAttributes[ blockName ][ key ].default : currentValue;
+}
 
 export default getAttributeFallback;

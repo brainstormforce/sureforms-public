@@ -47,6 +47,7 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderTopWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopWidth${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-top-width' + item.copyPastePrefix,
 			},
@@ -54,6 +55,7 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderLeftWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderLeftWidth${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-left-width' + item.copyPastePrefix,
 			},
@@ -61,17 +63,17 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderRightWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderRightWidth${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix + '-border-right-width' + item.copyPastePrefix,
+				styleType: prefix + '-border-right-width' + item.copyPastePrefix,
 			},
 		};
 		attributes[ prefix + 'BorderBottomWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderBottomWidth${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix + '-border-bottom-width' + item.copyPastePrefix,
+				styleType: prefix + '-border-bottom-width' + item.copyPastePrefix,
 			},
 		};
 
@@ -79,38 +81,33 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderTopLeftRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopLeftRadius${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix + '-border-top-left-radius' + item.copyPastePrefix,
+				styleType: prefix + '-border-top-left-radius' + item.copyPastePrefix,
 			},
 		};
 		attributes[ prefix + 'BorderTopRightRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopRightRadius${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix + '-border-top-right-radius' + item.copyPastePrefix,
+				styleType: prefix + '-border-top-right-radius' + item.copyPastePrefix,
 			},
 		};
 		attributes[ prefix + 'BorderBottomLeftRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderBottomLeftRadius${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix +
-					'-border-bottom-left-radius' +
-					item.copyPastePrefix,
+				styleType: prefix + '-border-bottom-left-radius' + item.copyPastePrefix,
 			},
 		};
 		attributes[ prefix + 'BorderBottomRightRadius' + item.devicePrefix ] = {
 			type: 'number',
-			default:
-				defaults[ `borderBottomRightRadius${ item.devicePrefix }` ],
+			default: defaults[ `borderBottomRightRadius${ item.devicePrefix }` ],
+			isGBSStyle: true,
 			UAGCopyPaste: {
-				styleType:
-					prefix +
-					'-border-bottom-right-radius' +
-					item.copyPastePrefix,
+				styleType: prefix + '-border-bottom-right-radius' + item.copyPastePrefix,
 			},
 		};
 
@@ -119,8 +116,7 @@ export const getBorderAttributes = ( prefix ) => {
 			type: 'string',
 			default: defaults[ `borderRadiusUnit${ item.devicePrefix }` ],
 			UAGCopyPaste: {
-				styleType:
-					prefix + '-border-radius-unit' + item.copyPastePrefix,
+				styleType: prefix + '-border-radius-unit' + item.copyPastePrefix,
 			},
 		};
 	} );
@@ -144,6 +140,7 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderStyle' ] = {
 		type: 'string',
 		default: defaults.borderStyle,
+		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-style',
 		},
@@ -152,6 +149,7 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderColor' ] = {
 		type: 'string',
 		default: defaults.borderColor,
+		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-color',
 		},
@@ -160,6 +158,7 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderHColor' ] = {
 		type: 'string',
 		default: defaults.borderHColor,
+		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-hover-color',
 		},
@@ -181,24 +180,16 @@ export const migrateBorderAttributes = (
 	if ( 'default' !== attributes[ prefix + 'BorderStyle' ] ) {
 		if ( ! isNaN( borderWidth.value ) ) {
 			if ( '' === attributes[ prefix + 'BorderTopWidth' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderTopWidth' ]: borderWidth.value,
-				} );
+				setAttributes( { [ prefix + 'BorderTopWidth' ]: borderWidth.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderLeftWidth' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderLeftWidth' ]: borderWidth.value,
-				} );
+				setAttributes( { [ prefix + 'BorderLeftWidth' ]: borderWidth.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderRightWidth' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderRightWidth' ]: borderWidth.value,
-				} );
+				setAttributes( { [ prefix + 'BorderRightWidth' ]: borderWidth.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderBottomWidth' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderBottomWidth' ]: borderWidth.value,
-				} );
+				setAttributes( { [ prefix + 'BorderBottomWidth' ]: borderWidth.value } );
 			}
 			// reset
 			attributes[ borderWidth.label ] = '';
@@ -206,24 +197,16 @@ export const migrateBorderAttributes = (
 
 		if ( ! isNaN( borderRadius.value ) ) {
 			if ( '' === attributes[ prefix + 'BorderTopLeftRadius' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderTopLeftRadius' ]: borderRadius.value,
-				} );
+				setAttributes( { [ prefix + 'BorderTopLeftRadius' ]: borderRadius.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderTopRightRadius' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderTopRightRadius' ]: borderRadius.value,
-				} );
+				setAttributes( { [ prefix + 'BorderTopRightRadius' ]: borderRadius.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderBottomLeftRadius' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderBottomLeftRadius' ]: borderRadius.value,
-				} );
+				setAttributes( { [ prefix + 'BorderBottomLeftRadius' ]: borderRadius.value } );
 			}
 			if ( '' === attributes[ prefix + 'BorderBottomRightRadius' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderBottomRightRadius' ]: borderRadius.value,
-				} );
+				setAttributes( { [ prefix + 'BorderBottomRightRadius' ]: borderRadius.value } );
 			}
 			// reset
 			attributes[ borderRadius.label ] = '';
@@ -239,9 +222,7 @@ export const migrateBorderAttributes = (
 
 		if ( hoverColor.value ) {
 			if ( '' === attributes[ prefix + 'BorderHColor' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderHColor' ]: hoverColor.value,
-				} );
+				setAttributes( { [ prefix + 'BorderHColor' ]: hoverColor.value } );
 			}
 			// reset
 			attributes[ hoverColor.label ] = '';
@@ -249,9 +230,7 @@ export const migrateBorderAttributes = (
 
 		if ( borderStyle.value ) {
 			if ( '' === attributes[ prefix + 'BorderStyle' ] ) {
-				setAttributes( {
-					[ prefix + 'BorderStyle' ]: borderStyle.value,
-				} );
+				setAttributes( { [ prefix + 'BorderStyle' ]: borderStyle.value } );
 			}
 			// reset
 			attributes[ borderStyle.label ] = '';

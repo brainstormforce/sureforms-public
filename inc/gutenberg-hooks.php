@@ -7,6 +7,7 @@
 
 namespace SureForms\Inc;
 
+use Cartflows_Gb_Helper;
 use SureForms\Inc\Traits\Get_Instance;
 /**
  * Gutenberg hooks handler class.
@@ -73,7 +74,10 @@ class Gutenberg_Hooks {
 				'sureforms/url',
 				'sureforms/password',
 				'sureforms/date-time-picker',
-				'srfm/separator',
+				'sureforms/separator',
+				'sureforms/icon',
+				'sureforms/image',
+				'sureforms/advanced-heading',
 				'sureforms/number-slider',
 				'core/columns',
 				'core/image',
@@ -212,6 +216,8 @@ class Gutenberg_Hooks {
 			'uagb_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
+				'number_of_icon_chunks'                   => Cartflows_Gb_Helper::$number_of_icon_chunks,
+
 			]
 		);
 

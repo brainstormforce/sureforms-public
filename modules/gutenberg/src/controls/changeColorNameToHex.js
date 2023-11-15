@@ -2,9 +2,9 @@ import maybeGetColorForVariable from '@Controls/maybeGetColorForVariable';
 function colourNameToHex( colour ) {
 	let result;
 	const colours = {
-		black: '#000000',
+		'black': '#000000',
 		'cyan-bluish-gray': '#abb8c3',
-		white: '#ffffff',
+		'white': '#ffffff',
 		'pale-pink': '#f78da7',
 		'luminous-vivid-orange': '#ff6900',
 		'luminous-vivid-amber': '#fcb900',

@@ -27,12 +27,7 @@ function renderCustomIcon( svg ) {
 		// Flex Row
 		case 'flex-row-start':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -50,12 +45,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-end':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path d="M14 6L18 6C18.5303 6.00053 19.0387 6.21141 19.4136 6.58637C19.7886 6.96133 19.9995 7.46973 20 8L20 23C19.9995 23.5303 19.7886 24.0387 19.4136 24.4136C19.0387 24.7886 18.5303 24.9995 18 25H14C13.4697 24.9995 12.9613 24.7886 12.5864 24.4136C12.2114 24.0387 12.0005 23.5303 12 23L12 8C12.0005 7.46973 12.2114 6.96133 12.5864 6.58637C12.9613 6.21141 13.4697 6.00053 14 6Z" />
 					<path d="M23 6L27 6C27.5303 6.00053 28.0387 6.21141 28.4136 6.58637C28.7886 6.96133 28.9995 7.46973 29 8L29 23C28.9995 23.5303 28.7886 24.0387 28.4136 24.4136C28.0387 24.7886 27.5303 24.9995 27 25H23C22.4697 24.9995 21.9613 24.7886 21.5864 24.4136C21.2114 24.0387 21.0005 23.5303 21 23L21 8C21.0005 7.46973 21.2114 6.96133 21.5864 6.58637C21.9613 6.21141 22.4697 6.00053 23 6Z" />
 					<path
@@ -73,12 +63,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-center':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -96,12 +81,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-strech':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path d="M19 6L26.9988 6C27.5291 6.00053 28.0375 6.21141 28.4125 6.58637C28.7874 6.96133 28.9983 7.46973 28.9988 8L28.9988 23C28.9983 23.5303 28.7874 24.0387 28.4125 24.4136C28.0375 24.7886 27.5291 24.9995 26.9988 25L19 25C18.4698 24.9995 17.9614 24.7886 17.5864 24.4136C17.2114 24.0387 17.0006 23.5303 17 23L17 8C17.0006 7.46973 17.2114 6.96133 17.5864 6.58637C17.9614 6.21141 18.4698 6.00053 19 6Z" />
 					<path
 						fillRule="evenodd"
@@ -119,12 +99,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-space-between':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -142,12 +117,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-space-around':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -165,12 +135,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-row-space-evenly':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -189,12 +154,7 @@ function renderCustomIcon( svg ) {
 		// Flex Column
 		case 'flex-column-start':
 			customSVG = (
-				<svg
-					width="32"
-					height="33"
-					viewBox="0 0 32 33"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -212,12 +172,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-end':
 			customSVG = (
-				<svg
-					width="32"
-					height="33"
-					viewBox="0 0 32 33"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -228,12 +183,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-center':
 			customSVG = (
-				<svg
-					width="32"
-					height="33"
-					viewBox="0 0 32 33"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -251,12 +201,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-strech':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -267,12 +212,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-space-between':
 			customSVG = (
-				<svg
-					width="32"
-					height="33"
-					viewBox="0 0 32 33"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -290,12 +230,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-space-around':
 			customSVG = (
-				<svg
-					width="32"
-					height="33"
-					viewBox="0 0 32 33"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -313,12 +248,7 @@ function renderCustomIcon( svg ) {
 			break;
 		case 'flex-column-space-evenly':
 			customSVG = (
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 32 32"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+				<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
