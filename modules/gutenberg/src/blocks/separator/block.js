@@ -10,9 +10,8 @@ import { registerBlockType } from '@wordpress/blocks';
 import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
-const separatorCommonData = applyFilters( 'uagb/separator', addCommonDataToSpectraBlocks( {} ) );
-console.error('fuckkkkk');
-registerBlockType( 'uagb/separator', {
+const separatorCommonData = applyFilters( 'srfm/separator', addCommonDataToSpectraBlocks( {} ) );
+registerBlockType( 'srfm/separator', {
 	...separatorCommonData,
 	apiVersion: 2,
 	title: __( 'Separator', 'ultimate-addons-for-gutenberg' ),
@@ -29,6 +28,3 @@ registerBlockType( 'uagb/separator', {
 		return null;
 	},
 } );
-
-console.error('fuckkkkk');
-

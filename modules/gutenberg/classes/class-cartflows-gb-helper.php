@@ -669,7 +669,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 						Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
-					case 'uagb/separator':
+					case 'srfm/separator':
 						$css = Cartflows_Block_Helper::get_separator_css( $blockattr, $block_id );
 						//Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;

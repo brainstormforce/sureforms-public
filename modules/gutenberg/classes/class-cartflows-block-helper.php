@@ -833,7 +833,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			 */
 			public static function get_separator_css( $attr, $id ) {
 
-				$defaults = Cartflows_Gb_Helper::$block_list['uagb/separator']['attributes'];
+				$defaults = Cartflows_Gb_Helper::$block_list['srfm/separator']['attributes'];
 	
 				$attr = array_merge( $defaults, $attr );
 	
@@ -1118,14 +1118,14 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'mobile'  => $m_selectors,
 				);
 	
-				// General.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+				// // General.
+				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
 	
-				// Input Fields.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
+				// // Input Fields.
+				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
 	
-				// Submit Button.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+				// // Submit Button.
+				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
 	
 				return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
 			}
