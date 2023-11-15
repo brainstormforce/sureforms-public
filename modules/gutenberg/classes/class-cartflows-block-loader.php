@@ -67,19 +67,11 @@ if ( ! class_exists( 'Cartflows_Block_Loader' ) ) {
 				require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-cartflows-spectra-compatibility.php';
 			}
 
-
-
-			//wcf()->is_woo_active //Nathan
-			if ( true ) {
-				require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/order-detail-form/class-wcfb-order-detail-form.php';
-				require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/checkout-form/class-wcfb-checkout-form.php';
-				require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/optin-form/class-wcfb-optin-form.php';
-				require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/separator/class-separator.php';
-				require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-uagb-filesystem.php';
-			}
+			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/separator/class-separator.php';
+			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-uagb-filesystem.php';
 		}
 
-			}
+	}
 	Cartflows_Block_Loader::get_instance();
 }
 

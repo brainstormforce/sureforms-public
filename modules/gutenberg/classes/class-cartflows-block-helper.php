@@ -15,802 +15,152 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 	 * Class Cartflows_Block_Helper.
 	 */
 	class Cartflows_Block_Helper {
-
-		/**
-		 * Store Json variable
-		 *
-		 * @since 1.8.1
-		 * @var instance
-		 */
-		public static $icon_json;
-
-		/**
-		 * Get Next Step Button CSS
-		 *
-		 * @since 1.6.15
-		 * @param array  $attr The block attributes.
-		 * @param string $id The selector ID.
-		 * @return array The Widget List.
-		 */
-		public static function get_next_step_button_css( $attr, $id ) {
-
-			$defaults = Cartflows_Gb_Helper::$block_list['wcfb/next-step-button']['attributes'];
-			$attr     = array_merge( $defaults, (array) $attr );
-			$bg_type  = ( isset( $attr['backgroundType'] ) ) ? $attr['backgroundType'] : 'none';
-
-			$m_selectors = array();
-			$t_selectors = array();
-
-			$border_css        = self::generate_border_css( $attr, 'btn' );
-			$border_css        = self::generate_deprecated_border_css(
-				$border_css,
-				( isset( $attr['borderWidth'] ) ? $attr['borderWidth'] : '' ),
-				( isset( $attr['borderRadius'] ) ? $attr['borderRadius'] : '' ),
-				( isset( $attr['borderColor'] ) ? $attr['borderColor'] : '' ),
-				( isset( $attr['borderStyle'] ) ? $attr['borderStyle'] : '' ),
-				( isset( $attr['borderHColor'] ) ? $attr['borderHColor'] : '' )
-			);
-			$border_css_tablet = self::generate_border_css( $attr, 'btn', 'tablet' );
-			$border_css_mobile = self::generate_border_css( $attr, 'btn', 'mobile' );
-
-			$selectors = array(
-
-				' .wpcf__next-step-button-wrap'       => array(
-					'text-align' => $attr['align'],
-				),
-				' .wpcf__next-step-button-link'       => array_merge(
-					array(
-						'text-align'       => $attr['textAlignment'],
-						'color'            => $attr['textColor'],
-						'background-color' => $attr['backgroundColor'],
-						'opacity'          => ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '',
-						'padding-top'      => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnTop'], $attr['paddingTypeDesktop'] ),
-						'padding-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnBottom'], $attr['paddingTypeDesktop'] ),
-						'padding-left'     => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnLeft'], $attr['paddingTypeDesktop'] ),
-						'padding-right'    => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnRight'], $attr['paddingTypeDesktop'] ),
-					),
-					$border_css
-				),
-				' .wpcf__next-step-button-link:hover' => array(
-					'background-color' => $attr['buttonHoverColor'],
-					'color'            => $attr['textHoverColor'],
-					'border-color'     => $attr['btnBorderHColor'],
-				),
-				' .wpcf__next-step-button-link .wpcf__next-step-button-content-wrap .wpcf__next-step-button-title-wrap' => array(
-					'text-transform' => $attr['titletextTransform'],
-					'letter-spacing' => Cartflows_Gb_Helper::get_css_value( $attr['titleletterSpacing'], 'px' ),
-				),
-				' .wpcf__next-step-button-link .wpcf__next-step-button-content-wrap .wpcf__next-step-button-sub-title' => array(
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['titleBottomSpacing'], 'px' ),
-					'text-transform' => $attr['subtitletextTransform'],
-					'letter-spacing' => Cartflows_Gb_Helper::get_css_value( $attr['subtitleletterSpacing'], 'px' ),
-				),
-				' .wpcf__next-step-button-icon svg'   => array(
-					'width'  => Cartflows_Gb_Helper::get_css_value( $attr['iconSize'], 'px' ),
-					'height' => Cartflows_Gb_Helper::get_css_value( $attr['iconSize'], 'px' ),
-					'fill'   => $attr['iconColor'],
-				),
-				' .wpcf__next-step-button-link:hover .wpcf__next-step-button-icon svg' => array(
-					'fill' => $attr['iconHoverColor'],
-				),
-			);
-			if ( 'full' === $attr['align'] ) {
-				$selectors[' a.wpcf__next-step-button-link'] = array(
-					'width'           => '100%',
-					'justify-content' => 'center',
-				);
-			}
-
-			$position = str_replace( '-', ' ', $attr['backgroundPosition'] );
-
-			if ( 'image' == $bg_type ) {
-
-					$selectors[' .wpcf__next-step-button-link']['background-color'] = $attr['backgroundImageColor'];
-
-					$selectors[' .wpcf__next-step-button-link']['background-image']      = isset( $attr['backgroundImage'] ) && isset( $attr['backgroundImage']['url'] ) ? "url('" . $attr['backgroundImage']['url'] . "' )" : null;
-					$selectors[' .wpcf__next-step-button-link']['background-position']   = $position;
-					$selectors[' .wpcf__next-step-button-link']['background-attachment'] = $attr['backgroundAttachment'];
-					$selectors[' .wpcf__next-step-button-link']['background-repeat']     = $attr['backgroundRepeat'];
-					$selectors[' .wpcf__next-step-button-link']['background-size']       = $attr['backgroundSize'];
-
-			} elseif ( 'gradient' === $bg_type ) {
-
-				$selectors[' .wpcf__next-step-button-link']['background-color'] = 'transparent';
-				$selectors[' .wpcf__next-step-button-link']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-				if ( $attr['gradientValue'] ) {
-					$selectors[' .wpcf__next-step-button-link']['background-image'] = $attr['gradientValue'];
-
-				} else {
-					if ( 'linear' === $attr['gradientType'] ) {
-
-						$selectors[' .wpcf__next-step-button-link']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-
-					} else {
-
-						$selectors[' .wpcf__next-step-button-link']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-					}
-				}
-			}
-
-			$margin_type = ( 'after_title' === $attr['iconPosition'] || 'after_title_sub_title' === $attr['iconPosition'] ) ? 'margin-left' : 'margin-right';
-
-			$selectors[' .wpcf__next-step-button-icon svg'][ $margin_type ] = Cartflows_Gb_Helper::get_css_value( $attr['iconSpacing'], 'px' );
-
-			$t_selectors = array(
-				' .wpcf__next-step-button-wrap' => array(
-					'text-align' => $attr['talign'],
-				),
-				' .wpcf__next-step-button-link' => array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnTopTablet'], $attr['paddingTypeTablet'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnBottomTablet'], $attr['paddingTypeTablet'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnLeftTablet'], $attr['paddingTypeTablet'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnRightTablet'], $attr['paddingTypeTablet'] ),
-				),
-			);
-
-			if ( 'full' === $attr['talign'] ) {
-				$t_selectors[' a.wpcf__next-step-button-link'] = array(
-					'width'           => '100%',
-					'justify-content' => 'center',
-				);
-			}
-
-			$merged_tablet_css                            = array_merge( $t_selectors[' .wpcf__next-step-button-link'], $border_css_tablet );
-			$t_selectors[' .wpcf__next-step-button-link'] = $merged_tablet_css;
-
-			$m_selectors = array(
-				' .wpcf__next-step-button-wrap' => array(
-					'text-align' => $attr['malign'],
-				),
-				' .wpcf__next-step-button-link' => array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnTopMobile'], $attr['paddingTypeMobile'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnBottomMobile'], $attr['paddingTypeMobile'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnLeftMobile'], $attr['paddingTypeMobile'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['paddingBtnRightMobile'], $attr['paddingTypeMobile'] ),
-				),
-			);
-
-			if ( 'full' === $attr['malign'] ) {
-				$m_selectors[' a.wpcf__next-step-button-link'] = array(
-					'width'           => '100%',
-					'justify-content' => 'center',
-				);
-			}
-
-			$merged_mobile_css                            = array_merge( $m_selectors[' .wpcf__next-step-button-link'], $border_css_mobile );
-			$m_selectors[' .wpcf__next-step-button-link'] = $merged_mobile_css;
-
-			$combined_selectors = array(
-				'desktop' => $selectors,
-				'tablet'  => $t_selectors,
-				'mobile'  => $m_selectors,
-			);
-
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'title', ' .wpcf__next-step-button-link .wpcf__next-step-button-content-wrap .wpcf__next-step-button-title-wrap', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'subTitle', ' .wpcf__next-step-button-link .wpcf__next-step-button-content-wrap .wpcf__next-step-button-sub-title', $combined_selectors );
-
-			return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
-		}
-
 			/**
-			 * Get Order Detail Form Block CSS
+			 * Get Icon Block CSS
 			 *
-			 * @since 1.6.15
+			 * @since 0.0.1
 			 * @param array  $attr The block attributes.
 			 * @param string $id The selector ID.
 			 * @return array The Widget List.
 			 */
-		public static function get_order_detail_form_css( $attr, $id ) {
+		public static function get_icon_css( $attr, $id ) {
+			$icon_width       = Cartflows_Gb_Helper::get_css_value( $attr['iconSize'], $attr['iconSizeUnit'] );
+			$transformation   = Cartflows_Gb_Helper::get_css_value( $attr['rotation'], $attr['rotationUnit'] );
+			$background       = 'classic' === $attr['iconBackgroundColorType'] ? $attr['iconBackgroundColor'] : $attr['iconBackgroundGradientColor'];
+			$hover_background = 'classic' === $attr['iconHoverBackgroundColorType'] ? $attr['iconHoverBackgroundColor'] : $attr['iconHoverBackgroundGradientColor'];
 
-			$defaults = Cartflows_Gb_Helper::$block_list['wcfb/order-detail-form']['attributes'];
-			$bg_type  = ( isset( $attr['backgroundType'] ) ) ? $attr['backgroundType'] : 'none';
+			$drop_shadow_properties = array(
+				'horizontal' => $attr['iconShadowHOffset'],
+				'vertical'   => $attr['iconShadowVOffset'],
+				'blur'       => $attr['iconShadowBlur'],
+				'color'      => $attr['iconShadowColor'],
+			);
+			$drop_shadow            = Cartflows_Gb_Helper::generate_shadow_css( $drop_shadow_properties );
 
-			$attr = array_merge( $defaults, $attr );
+			$box_shadow_properties = array(
+				'horizontal' => $attr['iconBoxShadowHOffset'],
+				'vertical'   => $attr['iconBoxShadowVOffset'],
+				'blur'       => $attr['iconBoxShadowBlur'],
+				'spread'     => $attr['iconBoxShadowSpread'],
+				'color'      => $attr['iconBoxShadowColor'],
+				'position'   => $attr['iconBoxShadowPosition'],
+			);
+
+			$box_shadow_hover_properties = array(
+				'horizontal' => $attr['iconBoxShadowHOffsetHover'],
+				'vertical'   => $attr['iconBoxShadowVOffsetHover'],
+				'blur'       => $attr['iconBoxShadowBlurHover'],
+				'spread'     => $attr['iconBoxShadowSpreadHover'],
+				'color'      => $attr['iconBoxShadowColorHover'],
+				'position'   => $attr['iconBoxShadowPositionHover'],
+				'alt_color'  => $attr['iconBoxShadowColor'],
+			);
+
+			$box_shadow           = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_properties );
+			$box_shadow_hover_css = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
 
 			$t_selectors = array();
 			$m_selectors = array();
-			$selectors   = array();
 
-			$order_overview            = ( $attr['orderOverview'] ) ? 'block' : 'none';
-			$order_details             = ( $attr['orderDetails'] ) ? 'block' : 'none';
-			$billing_address           = ( $attr['billingAddress'] ) ? 'block' : 'none';
-			$shipping_address          = ( $attr['shippingAddress'] ) ? 'block' : 'none';
-			$shipping_address_position = ( $attr['billingAddress'] ) ? 'right' : 'left';
-			$customer_details          = ( $attr['billingAddress'] || $attr['shippingAddress'] ) ? 'block' : 'none';
-
-			$selectors = array(
-				// Genaral.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order ul.order_details'       => array(
-					'display' => $order_overview,
+			$selectors['.uagb-icon-wrapper']                             = array(
+				'text-align' => $attr['align'],
+			);
+			$selectors['.uagb-icon-wrapper .uagb-svg-wrapper a']         = array(
+				'display' => 'contents',
+			);
+			$selectors['.uagb-icon-wrapper svg']                         = array(
+				'width'      => $icon_width,
+				'height'     => $icon_width,
+				'transform'  => "rotate($transformation)",
+				'box-sizing' => 'content-box',
+				'fill'       => $attr['iconColor'],
+				'filter'     => $drop_shadow ? "drop-shadow( $drop_shadow )" : '',
+			);
+			$selectors['.uagb-icon-wrapper .uagb-svg-wrapper:hover svg'] = array(
+				'fill' => $attr['iconHoverColor'],
+			);
+			$selectors['.uagb-icon-wrapper .uagb-svg-wrapper']           = array_merge(
+				array(
+					'display'        => 'inline-flex',
+					'background'     => $background,
+					// padding.
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopPadding'], $attr['iconPaddingUnit'] ),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightPadding'], $attr['iconPaddingUnit'] ),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomPadding'], $attr['iconPaddingUnit'] ),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftPadding'], $attr['iconPaddingUnit'] ),
+					// margin.
+					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMargin'], $attr['iconMarginUnit'] ),
+					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMargin'], $attr['iconMarginUnit'] ),
+					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMargin'], $attr['iconMarginUnit'] ),
+					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMargin'], $attr['iconMarginUnit'] ),
+					// border.
+					'border-style'   => $attr['iconBorderStyle'],
+					'border-color'   => $attr['iconBorderColor'],
+					'box-shadow'     => $box_shadow,
 				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order section.woocommerce-order-details'       => array(
-					'display' => $order_details,
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details .woocommerce-column--billing-address'       => array(
-					'display' => $billing_address,
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details .woocommerce-column--shipping-address'       => array(
-					'display' => $shipping_address,
-					'float'   => $shipping_address_position,
-				),
-				// Spacing.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order p.woocommerce-thankyou-order-received'       => array(
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomSpacing'], 'px' ),
-				),
-				' .wpcf__order-detail-form .woocommerce-order ul.order_details, .wpcf__order-detail-form .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .woocommerce-order .woocommerce-order-downloads, .wpcf__order-detail-form .woocommerce-order .woocommerce-bacs-bank-details, .wpcf__order-detail-form .woocommerce-order-details.mollie-instructions'       => array(
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['sectionSpacing'], 'px' ),
-				),
-				// Heading.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-thankyou-order-received'       => array(
-					'text-align' => $attr['headingAlignment'],
-					'color'      => $attr['headingColor'],
-				),
-				// Sections.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order h2'       => array(
-					'color' => $attr['sectionHeadingColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order, .wpcf__order-detail-form .woocommerce-order-downloads table.shop_table'       => array(
-					'color' => $attr['sectionContentColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads'       => array(
-					'background-color' => $attr['sectionBackgroundColor'],
-				),
-
-				// Order Overview.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details'       => array(
-					'color'            => $attr['orderOverviewTextColor'],
-					'background-color' => $attr['orderOverviewBackgroundColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order ul.woocommerce-order-overview.woocommerce-thankyou-order-details.order_details li'       => array(
-					'color' => $attr['orderOverviewTextColor'],
-				),
-				// Downloads.
-				' .wpcf__order-detail-form .woocommerce-order h2.woocommerce-order-downloads__title, .wpcf__order-detail-form .woocommerce-order .woocommerce-order-downloads h2.woocommerce-order-downloads__title'       => array(
-					'color' => $attr['downloadHeadingColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads table.shop_table'       => array(
-					'color' => $attr['downloadContentColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads'       => array(
-					'background-color' => $attr['downloadBackgroundColor'],
-				),
-				// Order Details.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details .woocommerce-order-details__title'       => array(
-					'color' => $attr['orderDetailHeadingColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details .woocommerce-table'       => array(
-					'color' => $attr['orderDetailContentColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details'       => array(
-					'background-color' => $attr['orderDetailBackgroundColor'],
-				),
-				// Customer Details.
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details .woocommerce-column__title'       => array(
-					'color' => $attr['customerDetailHeadingColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details address'       => array(
-					'color' => $attr['customerDetailContentColor'],
-				),
-				' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order section.woocommerce-customer-details'       => array(
-					'background-color' => $attr['customerDetailBackgroundColor'],
-					'display'          => $customer_details,
-				),
-
+				self::uag_generate_border_css( $attr, 'icon' )
+			);
+			$selectors['.uagb-icon-wrapper .uagb-svg-wrapper:hover']     = array(
+				'border-color' => $attr['iconBorderHColor'],
+				'background'   => $hover_background,
 			);
 
-				$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads'] = array(
-					'opacity'          => ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '',
-					'background-color' => $attr['backgroundColor'],
+			// If using separate box shadow hover settings, then generate CSS for it.
+			if ( $attr['useSeparateBoxShadows'] ) {
+				$selectors['.uagb-icon-wrapper .uagb-svg-wrapper:hover'] = array(
+					'box-shadow'   => $box_shadow_hover_css,
+					'border-color' => $attr['iconBorderHColor'],
+					'background'   => $hover_background,
 				);
 
-				$position = str_replace( '-', ' ', $attr['backgroundPosition'] );
+			};
 
-				if ( 'image' == $bg_type ) {
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads'] = array(
-						'opacity'               => ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : 0,
-						'background-color'      => $attr['backgroundImageColor'],
-						'background-image'      => ( isset( $attr['backgroundImage'] ) && isset( $attr['backgroundImage']['url'] ) ) ? "url('" . $attr['backgroundImage']['url'] . "' )" : null,
-						'background-position'   => $position,
-						'background-attachment' => $attr['backgroundAttachment'],
-						'background-repeat'     => $attr['backgroundRepeat'],
-						'background-size'       => $attr['backgroundSize'],
-					);
-				} elseif ( 'gradient' === $bg_type ) {
-
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads']['background-color'] = 'transparent';
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-					if ( $attr['gradientValue'] ) {
-						$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads']['background-image'] = $attr['gradientValue'];
-
-					} else {
-						if ( 'linear' === $attr['gradientType'] ) {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-
-						} else {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details, .wpcf__order-detail-form .woocommerce-order-downloads']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						}
-					}
-				}
-				// Order review.
-				$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details'] = array(
-					'opacity'          => ( isset( $attr['odbackgroundOpacity'] ) && '' !== $attr['odbackgroundOpacity'] ) ? $attr['odbackgroundOpacity'] / 100 : 0.79,
-					'background-color' => $attr['odbackgroundColor'],
-				);
-
-				$position = str_replace( '-', ' ', $attr['backgroundPosition'] );
-
-				if ( 'image' == $attr['odbackgroundType'] ) {
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details'] = array(
-						'opacity'               => ( isset( $attr['odbackgroundOpacity'] ) && '' !== $attr['odbackgroundOpacity'] ) ? $attr['odbackgroundOpacity'] / 100 : 0,
-						'background-color'      => $attr['odbackgroundImageColor'],
-						'background-image'      => ( isset( $attr['odbackgroundImage'] ) && isset( $attr['odbackgroundImage']['url'] ) ) ? "url('" . $attr['odbackgroundImage']['url'] . "' )" : null,
-						'background-position'   => $position,
-						'background-attachment' => $attr['odbackgroundAttachment'],
-						'background-repeat'     => $attr['odbackgroundRepeat'],
-						'background-size'       => $attr['odbackgroundSize'],
-					);
-				} elseif ( 'gradient' === $attr['odbackgroundType'] ) {
-
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details']['background-color'] = 'transparent';
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-					if ( $attr['odgradientValue'] ) {
-						$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details']['background-image'] = $attr['odgradientValue'];
-
-					} else {
-						if ( 'linear' === $attr['gradientType'] ) {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						} else {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						}
-					}
-				}
-				// Downloads.
-				$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads'] = array(
-					'opacity'          => ( isset( $attr['dbackgroundOpacity'] ) && '' !== $attr['dbackgroundOpacity'] ) ? $attr['dbackgroundOpacity'] / 100 : 0.79,
-					'background-color' => $attr['dbackgroundType'],
-				);
-
-				$dposition = str_replace( '-', ' ', $attr['dbackgroundPosition'] );
-
-				if ( 'image' == $attr['dbackgroundType'] ) {
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads'] = array(
-						'opacity'               => ( isset( $attr['dbackgroundOpacity'] ) && '' !== $attr['dbackgroundOpacity'] ) ? $attr['dbackgroundOpacity'] / 100 : 0,
-						'background-color'      => $attr['dbackgroundImageColor'],
-						'background-image'      => ( isset( $attr['dbackgroundImage'] ) && isset( $attr['dbackgroundImage']['url'] ) ) ? "url('" . $attr['dbackgroundImage']['url'] . "' )" : null,
-						'background-position'   => $dposition,
-						'background-attachment' => $attr['dbackgroundAttachment'],
-						'background-repeat'     => $attr['dbackgroundRepeat'],
-						'background-size'       => $attr['dbackgroundSize'],
-					);
-				} elseif ( 'gradient' === $attr['dbackgroundType'] ) {
-
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads']['background-color'] = 'transparent';
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-					if ( $attr['dgradientValue'] ) {
-						$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads']['background-image'] = $attr['dgradientValue'];
-
-					} else {
-						if ( 'linear' === $attr['gradientType'] ) {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						} else {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						}
-					}
-				}
-				// Order details.
-				$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details'] = array(
-					'opacity'          => ( isset( $attr['odetailbackgroundOpacity'] ) && '' !== $attr['odetailbackgroundOpacity'] ) ? $attr['odetailbackgroundOpacity'] / 100 : 0.79,
-					'background-color' => $attr['odetailbackgroundColor'],
-				);
-
-				$odetailposition = str_replace( '-', ' ', $attr['odetailbackgroundPosition'] );
-
-				if ( 'image' == $attr['odetailbackgroundType'] ) {
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details'] = array(
-						'opacity'               => ( isset( $attr['odetailbackgroundOpacity'] ) && '' !== $attr['odetailbackgroundOpacity'] ) ? $attr['odetailbackgroundOpacity'] / 100 : 0,
-						'background-color'      => $attr['odetailbackgroundImageColor'],
-						'background-image'      => ( isset( $attr['odetailbackgroundImage'] ) && isset( $attr['odetailbackgroundImage']['url'] ) ) ? "url('" . $attr['odetailbackgroundImage']['url'] . "' )" : null,
-						'background-position'   => $odetailposition,
-						'background-attachment' => $attr['odetailbackgroundAttachment'],
-						'background-repeat'     => $attr['odetailbackgroundRepeat'],
-						'background-size'       => $attr['odetailbackgroundSize'],
-					);
-				} elseif ( 'gradient' === $attr['odetailbackgroundType'] ) {
-
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details']['background-color'] = 'transparent';
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-					if ( $attr['odetailgradientValue'] ) {
-						$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details']['background-image'] = $attr['odetailgradientValue'];
-
-					} else {
-						if ( 'linear' === $attr['gradientType'] ) {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						} else {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						}
-					}
-				}
-				// Customer details.
-				$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details'] = array(
-					'opacity'          => ( isset( $attr['cdetailsbackgroundOpacity'] ) && '' !== $attr['cdetailsbackgroundOpacity'] ) ? $attr['cdetailsbackgroundOpacity'] / 100 : 0.79,
-					'background-color' => $attr['cdetailbackgroundColor'],
-				);
-
-				$cdetailposition = str_replace( '-', ' ', $attr['cdetailbackgroundPosition'] );
-
-				if ( 'image' == $attr['cdetailbackgroundType'] ) {
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details'] = array(
-						'opacity'               => ( isset( $attr['cdetailsbackgroundOpacity'] ) && '' !== $attr['cdetailsbackgroundOpacity'] ) ? $attr['cdetailsbackgroundOpacity'] / 100 : 0,
-						'background-color'      => $attr['cdetailsbackgroundImageColor'],
-						'background-image'      => ( isset( $attr['cdetailbackgroundImage'] ) && isset( $attr['cdetailbackgroundImage']['url'] ) ) ? "url('" . $attr['cdetailbackgroundImage']['url'] . "' )" : null,
-						'background-position'   => $cdetailposition,
-						'background-attachment' => $attr['cdetailbackgroundAttachment'],
-						'background-repeat'     => $attr['cdetailbackgroundRepeat'],
-						'background-size'       => $attr['cdetailbackgroundSize'],
-					);
-				} elseif ( 'gradient' === $attr['cdetailbackgroundType'] ) {
-
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details']['background-color'] = 'transparent';
-					$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : '';
-					if ( $attr['cdetailgradientValue'] ) {
-						$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details']['background-image'] = $attr['cdetailgradientValue'];
-
-					} else {
-						if ( 'linear' === $attr['gradientType'] ) {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						} else {
-
-							$selectors[' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-						}
-					}
-				}
-				$combined_selectors = array(
-					'desktop' => $selectors,
-					'tablet'  => $t_selectors,
-					'mobile'  => $m_selectors,
-				);
-
-				// Heading.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'heading', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-thankyou-order-received', $combined_selectors );
-				// Sections.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'sectionHeading', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order h2', $combined_selectors );
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'sectionContent', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details li, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order p, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details .woocommerce-table, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details address, .wpcf__order-detail-form .woocommerce-order-downloads table.shop_table', $combined_selectors );
-				// Order Overview.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'orderOverview', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-overview.woocommerce-thankyou-order-details.order_details li', $combined_selectors );
-				// Downloads.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'downloadHeading', ' .wpcf__order-detail-form .woocommerce-order h2.woocommerce-order-downloads__title, .wpcf__order-detail-form .woocommerce-order .woocommerce-order-downloads h2.woocommerce-order-downloads__title', $combined_selectors );
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'downloadContent', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-downloads table.shop_table', $combined_selectors );
-				// Order Details.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'orderDetailHeading', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details .woocommerce-order-details__title', $combined_selectors );
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'orderDetailContent', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-order-details .woocommerce-table', $combined_selectors );
-				// Customer Details.
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'customerDetailHeading', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details .woocommerce-column__title', $combined_selectors );
-				$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'customerDetailContent', ' .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details address, .wpcf__order-detail-form .wcf-thankyou-wrap .woocommerce-order .woocommerce-customer-details address p', $combined_selectors );
-
-				return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
-		}
-
-			/**
-			 * Get Checkout form CSS
-			 *
-			 * @since 1.6.15
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
-		public static function get_checkout_form_css( $attr, $id ) {
-
-			$defaults = Cartflows_Gb_Helper::$block_list['wcfb/checkout-form']['attributes'];
-
-			$attr = array_merge( $defaults, (array) $attr );
-
-			$bg_type      = ( isset( $attr['backgroundType'] ) ) ? $attr['backgroundType'] : 'none';
-			$overlay_type = ( isset( $attr['overlayType'] ) ) ? $attr['overlayType'] : 'none';
-
-			$box_shadow_position_css = $attr['boxShadowPosition'];
-
-			if ( 'outset' === $attr['boxShadowPosition'] ) {
-				$box_shadow_position_css = '';
-			}
-
-			$input_field_border_css = self::generate_border_css( $attr, 'field' );
-
-			$input_field_border_css        = self::generate_deprecated_border_css(
-				$input_field_border_css,
-				( isset( $attr['fieldBorderWidth'] ) ? $attr['fieldBorderWidth'] : '' ),
-				( isset( $attr['fieldBorderRadius'] ) ? $attr['fieldBorderRadius'] : '' ),
-				( isset( $attr['fieldBorderColor'] ) ? $attr['fieldBorderColor'] : '' ),
-				( isset( $attr['fieldBorderStyle'] ) ? $attr['fieldBorderStyle'] : '' ),
-				( isset( $attr['fieldBorderHColor'] ) ? $attr['fieldBorderHColor'] : '' )
+			// Generates css for tablet devices.
+			$t_icon_width                                        = Cartflows_Gb_Helper::get_css_value( $attr['iconSizeTablet'], $attr['iconSizeUnit'] );
+			$t_selectors['.uagb-icon-wrapper']                   = array(
+				'text-align' => $attr['alignTablet'],
 			);
-			$input_field_border_css_tablet = self::generate_border_css( $attr, 'field', 'tablet' );
-			$input_field_border_css_mobile = self::generate_border_css( $attr, 'field', 'mobile' );
-
-			$button_border_css        = self::generate_border_css( $attr, 'button' );
-			$button_border_css_tablet = self::generate_border_css( $attr, 'button', 'tablet' );
-			$button_border_css_mobile = self::generate_border_css( $attr, 'button', 'mobile' );
-
-			$m_selectors = array(
-				' .wcf-embed-checkout-form .woocommerce-checkout #payment ul.payment_methods' => array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingTopMobile'], $attr['paymentSectionpaddingTypeMobile'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingRightMobile'], $attr['paymentSectionpaddingTypeMobile'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingBottomMobile'], $attr['paymentSectionpaddingTypeMobile'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingLeftMobile'], $attr['paymentSectionpaddingTypeMobile'] ),
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginTopMobile'], $attr['paymentSectionMarginTypeMobile'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginRightMobile'], $attr['paymentSectionMarginTypeMobile'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginBottomMobile'], $attr['paymentSectionMarginTypeMobile'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginLeftMobile'], $attr['paymentSectionMarginTypeMobile'] ),
-					'border-radius'  => Cartflows_Gb_Helper::get_css_value( $attr['sectionBorderRadius'], 'px' ),
-				),
-				' .wcf-embed-checkout-form .woocommerce #order_review button,  .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns .wcf-next-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button,  .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn' => $button_border_css_tablet,
-				' .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row select, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form .select2-container--default .select2-selection--single, .wcf-embed-checkout-form #order_review .wcf-custom-coupon-field input[type="text"], .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review .input-text, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .select2-container--default .select2-selection--single, .wcf-embed-checkout-form .woocommerce form .form-row select.select, .wcf-embed-checkout-form .woocommerce form .form-row select' => $input_field_border_css_tablet,
-				' .wcf-embed-checkout-form .woocommerce #order_review button,  .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns .wcf-next-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button' => array(
-					'letter-spacing' => Cartflows_Gb_Helper::get_css_value( $attr['buttonLetterSpacingMobile'], $attr['buttonLetterSpacingType'] ),
-				),
+			$t_selectors['.uagb-icon-wrapper svg']               = array(
+				'width'  => $t_icon_width,
+				'height' => $t_icon_width,
 			);
-			$t_selectors = array(
-				' .wcf-embed-checkout-form .woocommerce-checkout #payment ul.payment_methods' => array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingTopTablet'], $attr['paymentSectionpaddingTypeTablet'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingRightTablet'], $attr['paymentSectionpaddingTypeTablet'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingBottomTablet'], $attr['paymentSectionpaddingTypeTablet'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingLeftTablet'], $attr['paymentSectionpaddingTypeTablet'] ),
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginTopTablet'], $attr['paymentSectionMarginTypeTablet'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginRightTablet'], $attr['paymentSectionMarginTypeTablet'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginBottomTablet'], $attr['paymentSectionMarginTypeTablet'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginLeftTablet'], $attr['paymentSectionMarginTypeTablet'] ),
-					'border-radius'  => Cartflows_Gb_Helper::get_css_value( $attr['sectionBorderRadius'], 'px' ),
+			$t_selectors['.uagb-icon-wrapper .uagb-svg-wrapper'] = array_merge(
+				array(
+					'display'        => 'inline-flex',
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftTabletMargin'], $attr['iconTabletMarginUnit'] ),
 				),
-				' .wcf-embed-checkout-form .woocommerce #order_review button,  .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns .wcf-next-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button,  .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn' => $button_border_css_mobile,
-				' .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row select, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form .select2-container--default .select2-selection--single, .wcf-embed-checkout-form #order_review .wcf-custom-coupon-field input[type="text"], .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review .input-text, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .select2-container--default .select2-selection--single, .wcf-embed-checkout-form .woocommerce form .form-row select.select, .wcf-embed-checkout-form .woocommerce form .form-row select' => $input_field_border_css_mobile,
-				' .wcf-embed-checkout-form .woocommerce #order_review button,  .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns .wcf-next-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button' => array(
-					'letter-spacing' => Cartflows_Gb_Helper::get_css_value( $attr['buttonLetterSpacingTablet'], $attr['buttonLetterSpacingType'] ),
-				),
+				self::uag_generate_border_css( $attr, 'icon', 'tablet' )
 			);
 
-			$selectors = array(
-				' .wcf-embed-checkout-form' => array(
-					'--wcf-primary-color'                 => $attr['globalbgColor'],
-					'--wcf-text-color'                    => $attr['globaltextColor'],
-					'--wcf-heading-color'                 => $attr['headBgColor'],
-					'--wcf-field-label-color'             => $attr['fieldLabelColor'],
-					'--wcf-field-bg-color'                => $attr['fieldBgColor'],
-					'--wcf-field-text-color'              => $attr['fieldInputColor'],
-					'--wcf-field-border-color'            => $attr['fieldBorderColor'],
-					'--wcf-field-error-label-color'       => $attr['errorLabelColor'],
-					'--wcf-field-error-border-color'      => $attr['errorFieldBorderColor'],
-					'--wcf-btn-text-color'                => $attr['buttonTextColor'],
-					'--wcf-btn-bg-color'                  => $attr['backgroundColor'],
-					'--wcf-btn-hover-text-color'          => $attr['buttonTextHoverColor'],
-					'--wcf-btn-bg-hover-color'            => $attr['backgroundHoverColor'],
-					'--wcf-payment-section-label-color'   => $attr['paymenttitleColor'],
-					'--wcf-payment-section-desc-text-color' => $attr['paymentdescriptionColor'],
-					'--wcf-payment-section-desc-bg-color' => $attr['informationbgColor'],
-					'--wcf-payment-section-bg-color'      => $attr['sectionbgColor'],
-				),
-				' .wcf-embed-checkout-form .woocommerce .woocommerce-checkout input[type="checkbox"]:focus, .wcf-embed-checkout-form .woocommerce .woocommerce-checkout #order_review input[type="checkbox"]:focus, .wcf-embed-checkout-form .woocommerce .woocommerce-checkout .woocommerce-account-fields input[type="checkbox"]:focus, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce .woocommerce-checkout input[type="checkbox"]:focus, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review input[type="checkbox"]:focus ' => array(
-					'box-shadow' => '0 0 2px',
-				),
-				' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns .wcf-next-button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn' => array_merge(
-					array(
-						'background-color' => $attr['buttonBgColor'],
-						'text-transform'   => $attr['buttonTransform'],
-						'letter-spacing'   => Cartflows_Gb_Helper::get_css_value( $attr['buttonLetterSpacing'], $attr['buttonLetterSpacingType'] ),
-					),
-					$button_border_css
-				),
-				' .wcf-embed-checkout-form .woocommerce #payment #place_order:hover' => array(
-					'border-color'     => $attr['buttonBorderHColor'],
-					'background-color' => $attr['buttonBgHoverColor'],
-				),
-				' .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small:hover, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button:hover, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn:hover' => array(
-					'border-color'     => $attr['buttonBorderHColor'],
-					'background-color' => $attr['buttonBgHoverColor'],
-				),
-				' .wcf-embed-checkout-form .woocommerce-checkout #payment ul.payment_methods' => array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingTop'], $attr['paymentSectionpaddingTypeDesktop'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingRight'], $attr['paymentSectionpaddingTypeDesktop'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingBottom'], $attr['paymentSectionpaddingTypeDesktop'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionpaddingLeft'], $attr['paymentSectionpaddingTypeDesktop'] ),
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginTop'], $attr['paymentSectionMarginTypeDesktop'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginRight'], $attr['paymentSectionMarginTypeDesktop'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginBottom'], $attr['paymentSectionMarginTypeDesktop'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['paymentSectionMarginLeft'], $attr['paymentSectionMarginTypeDesktop'] ),
-					'border-radius'  => Cartflows_Gb_Helper::get_css_value( $attr['sectionBorderRadius'], 'px' ),
-				),
-				' .wcf-embed-checkout-form #payment .woocommerce-privacy-policy-text p' => array(
-					'color' => $attr['paymentdescriptionColor'],
-				),
-				' .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row select, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form .select2-container--default .select2-selection--single, .wcf-embed-checkout-form #order_review .wcf-custom-coupon-field input[type="text"], .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row textarea, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review .input-text, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .select2-container--default .select2-selection--single, .wcf-embed-checkout-form .woocommerce form .form-row select.select, .wcf-embed-checkout-form .woocommerce form .form-row select' => array(
-					$input_field_border_css,
-				),
-				' .wcf-embed-checkout-form .woocommerce form .form-row input.input-text:hover, .wcf-embed-checkout-form .woocommerce form .form-row select:hover, .wcf-embed-checkout-form .woocommerce form .form-row textarea:hover, .wcf-embed-checkout-form #order_review .wcf-custom-coupon-field input[type="text"]:hover, .wcf-embed-checkout-form .woocommerce form .form-row select#billing_country:hover, .wcf-embed-checkout-form .woocommerce form .form-row select:hover, .wcf-embed-checkout-form .woocommerce form .form-row select:hover, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .select2-container--default .select2-selection--single:hover, .wcf-embed-checkout-form .woocommerce form .form-row select.select:hover' => array(
-					'border-color' => $attr['fieldBorderHColor'],
-				),
-				' .woocommerce-NoticeGroup.woocommerce-NoticeGroup-checkout li, .wcf-embed-checkout-form .woocommerce .wcf-custom-coupon-field .woocommerce-error li' => array(
-					'color' => $attr['errorMsgColor'],
-				),
-				' .wcf-embed-checkout-form .woocommerce .woocommerce-NoticeGroup .woocommerce-error, .wcf-embed-checkout-form .woocommerce .woocommerce-notices-wrapper .woocommerce-error' => array(
-					'background-color' => $attr['errorMsgBgColor'],
-					'border-radius'    => Cartflows_Gb_Helper::get_css_value( $attr['msgBorderRadius'], 'px' ),
-					'border-color'     => $attr['errorMsgBorderColor'],
-					'padding-top'      => Cartflows_Gb_Helper::get_css_value( $attr['msgHrPadding'], 'px' ),
-					'padding-right'    => Cartflows_Gb_Helper::get_css_value( $attr['msgVrPadding'], 'px' ),
-					'padding-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['msgHrPadding'], 'px' ),
-					'padding-left'     => Cartflows_Gb_Helper::get_css_value( $attr['msgVrPadding'], 'px' ),
-					'border-width'     => Cartflows_Gb_Helper::get_css_value( $attr['msgBorderSize'], 'px' ),
-				),
-				' .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce-checkout table.shop_table' => array(
-					'background-color' => $attr['orderReviewColumnColor'],
-				),
-				' .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout table.shop_table th, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout table.shop_table td' => array(
-					'color' => $attr['orderReviewColumnTextColor'],
-				),
-				' .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row input.input-text:focus, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row textarea:focus, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review .wcf-custom-coupon-field input.input-text:focus' => array(
-					'box-shadow' => $attr['globalbgColor'] ? '0 0 0 1px ' . $attr['globalbgColor'] : '',
-				),
+			// Generates css for mobile devices.
+			$m_icon_width                                        = Cartflows_Gb_Helper::get_css_value( $attr['iconSizeMobile'], $attr['iconSizeUnit'] );
+			$m_selectors['.uagb-icon-wrapper']                   = array(
+				'text-align' => $attr['alignMobile'],
 			);
-			if ( 'color' == $bg_type ) {
-				$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce .wcf-customer-login-section__login-button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button,  .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn'] = array(
-					'opacity'    => ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : 0.79,
-					'box-shadow' => Cartflows_Gb_Helper::get_css_value( $attr['boxShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowBlur'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowSpread'], 'px' ) . ' ' . $attr['boxShadowColor'] . ' ' . $box_shadow_position_css,
-				);
-			}
-
-			if ( 'gradient' == $bg_type ) {
-				$selectors[' .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn'] = array(
-					'box-shadow' => Cartflows_Gb_Helper::get_css_value( $attr['boxShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowBlur'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowSpread'], 'px' ) . ' ' . $attr['boxShadowColor'] . ' ' . $box_shadow_position_css,
-				);
-			}
-
-			$position = str_replace( '-', ' ', $attr['backgroundPosition'] );
-
-			if ( 'image' == $bg_type ) {
-				$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn'] = array(
-					'opacity'               => ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : 0,
-					'background-color'      => $attr['backgroundImageColor'],
-					'background-image'      => ( isset( $attr['backgroundImage'] ) && isset( $attr['backgroundImage']['url'] ) ) ? "url('" . $attr['backgroundImage']['url'] . "' )" : null,
-					'background-position'   => $position,
-					'background-attachment' => $attr['backgroundAttachment'],
-					'background-repeat'     => $attr['backgroundRepeat'],
-					'background-size'       => $attr['backgroundSize'],
-					'box-shadow'            => Cartflows_Gb_Helper::get_css_value( $attr['boxShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowBlur'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowSpread'], 'px' ) . ' ' . $attr['boxShadowColor'] . ' ' . $box_shadow_position_css,
-				);
-			} elseif ( 'gradient' === $bg_type ) {
-
-				$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn']['background-color'] = 'transparent';
-				$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn']['opacity']          = ( isset( $attr['backgroundOpacity'] ) && '' !== $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] / 100 : 0;
-				if ( $attr['gradientValue'] ) {
-					$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form .woocommerce #wcf-customer-login-section__login-button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn']['background-image'] = $attr['gradientValue'];
-
-				} else {
-					if ( 'linear' === $attr['gradientType'] ) {
-
-						$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn']['background-image'] = 'linear-gradient(' . $attr['gradientAngle'] . 'deg, ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-					} else {
-
-						$selectors[' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce form.woocommerce-form-login .form-row button, .wcf-embed-checkout-form .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form .wcf-custom-coupon-field button.wcf-submit-coupon, .wcf-embed-checkout-form .woocommerce-checkout form.woocommerce-form-login .button, .wcf-embed-checkout-form .woocommerce-checkout form.checkout_coupon .button, .wcf-embed-checkout-form form.checkout_coupon .button, .wcf-embed-checkout-form-two-step .woocommerce .wcf-embed-checkout-form-nav-btns a.wcf-next-button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn']['background-image'] = 'radial-gradient( at ' . $attr['gradientPosition'] . ', ' . $attr['gradientColor1'] . ' ' . $attr['gradientLocation1'] . '%, ' . $attr['gradientColor2'] . ' ' . $attr['gradientLocation2'] . '%)';
-					}
-				}
-			}
-
-			$combined_selectors = array(
-				'desktop' => $selectors,
-				'tablet'  => $t_selectors,
-				'mobile'  => $m_selectors,
+			$m_selectors['.uagb-icon-wrapper svg']               = array(
+				'width'  => $m_icon_width,
+				'height' => $m_icon_width,
 			);
-
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'global', ' .wcf-embed-checkout-form .woocommerce', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'head', ' .wcf-embed-checkout-form .woocommerce h3, .wcf-embed-checkout-form .woocommerce-checkout #order_review_heading, .wcf-embed-checkout-form .woocommerce h3, .wcf-embed-checkout-form .woocommerce h3 span', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'button', ' .wcf-embed-checkout-form .woocommerce #order_review button, .wcf-embed-checkout-form .woocommerce #payment button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #payment button, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce #order_review button.wcf-btn-small, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout.wcf-modern-skin-multistep .woocommerce form .wcf-multistep-nav-btn-group .wcf-multistep-nav-next-btn', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'input', ' .wcf-embed-checkout-form .woocommerce form p.form-row label, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form .woocommerce form .form-row select#billing_country, .wcf-embed-checkout-form .woocommerce form .form-row select#billing_state,  .wcf-embed-checkout-form .woocommerce form .form-row select#shipping_country, .wcf-embed-checkout-form .woocommerce form .form-row select#shipping_state, span#select2-billing_country-container, .wcf-embed-checkout-form .select2-container--default .select2-selection--single .select2-selection__rendered, .wcf-embed-checkout-form.wcf-embed-checkout-form-modern-checkout .select2-container--default .select2-selection--single .select2-selection__rendered, .wcf-embed-checkout-form #order_review .wcf-custom-coupon-field input[type="text"], .wcf-embed-checkout-form .woocommerce form .form-row input.input-text, .wcf-embed-checkout-form .woocommerce form .form-row textarea, .wcf-embed-checkout-form .select2-container--default .select2-selection--single, .wcf-embed-checkout-form .woocommerce form .form-row select, .wcf-embed-checkout-form .woocommerce form .form-row select, .wcf-embed-checkout-form ::placeholder, .wcf-embed-checkout-form ::-webkit-input-placeholder, .wcf-embed-checkout-form .woocommerce #payment [type="radio"]:checked + label, .wcf-embed-checkout-form .woocommerce #payment [type="radio"]:not(:checked) + label, .wcf-embed-checkout-form.wcf-field-modern-label .woocommerce #customer_details .form-row:not( .wcf-anim-hidden-label ) label:not( .woocommerce-form__label-for-checkbox, .checkbox, .input-radio)', $combined_selectors );
-
-			return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
-		}
-
-			/**
-			 * Get Optin Form Block CSS
-			 *
-			 * @since 1.6.15
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
-		public static function get_optin_form_css( $attr, $id ) {
-
-			$defaults = Cartflows_Gb_Helper::$block_list['wcfb/optin-form']['attributes'];
-
-			$attr = array_merge( $defaults, $attr );
-
-			$t_selectors = array();
-			$m_selectors = array();
-			$selectors   = array();
-
-			$input_field_border_css        = self::generate_border_css( $attr, 'inputField' );
-			$input_field_border_css        = self::generate_deprecated_border_css(
-				$input_field_border_css,
-				( isset( $attr['inputFieldBorderWidth'] ) ? $attr['inputFieldBorderWidth'] : '' ),
-				( isset( $attr['inputFieldBorderRadius'] ) ? $attr['inputFieldBorderRadius'] : '' ),
-				( isset( $attr['inputFieldBorderColor'] ) ? $attr['inputFieldBorderColor'] : '' ),
-				( isset( $attr['inputFieldBorderStyle'] ) ? $attr['inputFieldBorderStyle'] : '' ),
-				( isset( $attr['inputFieldBorderHColor'] ) ? $attr['inputFieldBorderHColor'] : '' )
-			);
-			$input_field_border_css_tablet = self::generate_border_css( $attr, 'inputField', 'tablet' );
-			$input_field_border_css_mobile = self::generate_border_css( $attr, 'inputField', 'mobile' );
-
-			$submit_button_border_css        = self::generate_border_css( $attr, 'submitButton' );
-			$submit_button_border_css        = self::generate_deprecated_border_css(
-				$submit_button_border_css,
-				( isset( $attr['submitButtonBorderWidth'] ) ? $attr['submitButtonBorderWidth'] : '' ),
-				( isset( $attr['submitButtonBorderRadius'] ) ? $attr['submitButtonBorderRadius'] : '' ),
-				( isset( $attr['submitButtonBorderColor'] ) ? $attr['submitButtonBorderColor'] : '' ),
-				( isset( $attr['submitButtonBorderStyle'] ) ? $attr['submitButtonBorderStyle'] : '' ),
-				( isset( $attr['submitButtonBorderHColor'] ) ? $attr['submitButtonBorderHColor'] : '' )
-			);
-			$submit_button_border_css_tablet = self::generate_border_css( $attr, 'submitButton', 'tablet' );
-			$submit_button_border_css_mobile = self::generate_border_css( $attr, 'submitButton', 'mobile' );
-
-			$box_shadow_position_css = $attr['boxShadowPosition'];
-
-			if ( 'outset' === $attr['boxShadowPosition'] ) {
-				$box_shadow_position_css = '';
-			}
-
-			$selectors = array(
-				// General.
-				' .wcf-optin-form .checkout.woocommerce-checkout #order_review .woocommerce-checkout-payment button#place_order' => array(
-					'background-color' => $attr['generalPrimaryColor'],
-					'border-color'     => $attr['generalPrimaryColor'],
+			$m_selectors['.uagb-icon-wrapper .uagb-svg-wrapper'] = array_merge(
+				array(
+					'display'        => 'inline-flex',
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMobileMargin'], $attr['iconMobileMarginUnit'] ),
 				),
-
-				// Input Fields.
-				' .wcf-optin-form .checkout.woocommerce-checkout label' => array(
-					'color' => $attr['inputFieldLabelColor'],
-				),
-				' .wcf-optin-form .checkout.woocommerce-checkout span input.input-text' => array_merge(
-					array(
-						'color'            => $attr['inputFieldTextPlaceholderColor'],
-						'background-color' => $attr['inputFieldBackgroundColor'],
-					),
-					$input_field_border_css
-				),
-
-				' .wcf-optin-form .checkout.woocommerce-checkout span input.input-text:hover' => array(
-					'border-color' => $attr['inputFieldBorderHColor'],
-				),
-
-				// Submit Button.
-				' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order' => array_merge(
-					array(
-						'color'            => $attr['submitButtonTextColor'],
-						'background-color' => $attr['submitButtonBackgroundColor'],
-						'box-shadow'       => Cartflows_Gb_Helper::get_css_value( $attr['boxShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowBlur'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['boxShadowSpread'], 'px' ) . ' ' . $attr['boxShadowColor'] . ' ' . $box_shadow_position_css,
-					),
-					$submit_button_border_css
-				),
-				' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order:hover' => array(
-					'color'            => $attr['submitButtonTextHoverColor'],
-					'background-color' => $attr['submitButtonBackgroundHoverColor'],
-					'border-color'     => $attr['submitButtonBorderHColor'],
-				),
-
-			);
-
-			$t_selectors = array(
-				' .wcf-optin-form .checkout.woocommerce-checkout span input.input-text' => $input_field_border_css_tablet,
-				' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order' => $submit_button_border_css_tablet,
-			);
-			$m_selectors = array(
-				' .wcf-optin-form .checkout.woocommerce-checkout span input.input-text' => $input_field_border_css_mobile,
-				' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order' => $submit_button_border_css_mobile,
+				self::uag_generate_border_css( $attr, 'icon', 'mobile' )
 			);
 
 			$combined_selectors = array(
@@ -819,324 +169,963 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'mobile'  => $m_selectors,
 			);
 
-			// General.
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
-
-			// Input Fields.
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
-
-			// Submit Button.
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
-
-			return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return UAGB_Helper::generate_all_css(
+				$combined_selectors,
+				' .uagb-block-' . $id,
+				isset( $gbs_class ) ? $gbs_class : ''
+			);
 		}
 
 			/**
-			 * Get Separator Form Block CSS
+			 * Get Image Block CSS
+			 *
+			 * @since 0.0.1
+			 * @param array  $attr The block attributes.
+			 * @param string $id The selector ID.
+			 * @return array The Widget List.
+			 */
+		public static function get_image_css( $attr, $id ) {
+			$m_selectors = array();
+			$t_selectors = array();
+
+			$image_border_css          = self::uag_generate_border_css( $attr, 'image' );
+			$image_border_css_tablet   = self::uag_generate_border_css( $attr, 'image', 'tablet' );
+			$image_border_css_mobile   = self::uag_generate_border_css( $attr, 'image', 'mobile' );
+			$overlay_border_css        = self::uag_generate_border_css( $attr, 'overlay' );
+			$overlay_border_css_tablet = self::uag_generate_border_css( $attr, 'overlay', 'tablet' );
+			$overlay_border_css_mobile = self::uag_generate_border_css( $attr, 'overlay', 'mobile' );
+
+			$width_tablet = '' !== $attr['widthTablet'] ? $attr['widthTablet'] . 'px' : $attr['width'] . 'px';
+			$width_mobile = '' !== $attr['widthMobile'] ? $attr['widthMobile'] . 'px' : $width_tablet;
+
+			$height_tablet = '' !== $attr['heightTablet'] ? $attr['heightTablet'] . 'px' : $attr['height'] . 'px';
+			$height_mobile = '' !== $attr['heightMobile'] ? $attr['heightMobile'] . 'px' : $height_tablet;
+
+			$align       = '';
+			$alignTablet = '';
+			$alignMobile = '';
+
+			switch ( $attr['align'] ) {
+				case 'left':
+					$align = 'flex-start';
+					break;
+				case 'right':
+					$align = 'flex-end';
+					break;
+				case 'center':
+					$align = 'center';
+					break;
+			}
+
+			switch ( $attr['alignTablet'] ) {
+				case 'left':
+					$alignTablet = 'flex-start';
+					break;
+				case 'right':
+					$alignTablet = 'flex-end';
+					break;
+				case 'center':
+					$alignTablet = 'center';
+					break;
+			}
+
+			switch ( $attr['alignMobile'] ) {
+				case 'left':
+					$alignMobile = 'flex-start';
+					break;
+				case 'right':
+					$alignMobile = 'flex-end';
+					break;
+				case 'center':
+					$alignMobile = 'center';
+					break;
+			}
+
+			$box_shadow_properties       = array(
+				'horizontal' => $attr['imageBoxShadowHOffset'],
+				'vertical'   => $attr['imageBoxShadowVOffset'],
+				'blur'       => $attr['imageBoxShadowBlur'],
+				'spread'     => $attr['imageBoxShadowSpread'],
+				'color'      => $attr['imageBoxShadowColor'],
+				'position'   => $attr['imageBoxShadowPosition'],
+			);
+			$box_shadow_hover_properties = array(
+				'horizontal' => $attr['imageBoxShadowHOffsetHover'],
+				'vertical'   => $attr['imageBoxShadowVOffsetHover'],
+				'blur'       => $attr['imageBoxShadowBlurHover'],
+				'spread'     => $attr['imageBoxShadowSpreadHover'],
+				'color'      => $attr['imageBoxShadowColorHover'],
+				'position'   => $attr['imageBoxShadowPositionHover'],
+				'alt_color'  => $attr['imageBoxShadowColor'],
+			);
+
+			$box_shadow_css       = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_properties );
+			$box_shadow_hover_css = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
+
+			$selectors = array(
+				'.wp-block-uagb-image'          => array(
+					'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMargin'], $attr['imageMarginUnit'] ),
+					'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMargin'], $attr['imageMarginUnit'] ),
+					'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMargin'], $attr['imageMarginUnit'] ),
+					'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMargin'], $attr['imageMarginUnit'] ),
+					'text-align'      => $attr['align'],
+					'justify-content' => $align,
+					'align-self'      => $align,
+				),
+				' .wp-block-uagb-image__figure' => array(
+					'align-items' => $align,
+				),
+				'.wp-block-uagb-image--layout-default figure img' => array_merge(
+					array(
+						'box-shadow' => $box_shadow_css,
+					),
+					$image_border_css
+				),
+				'.wp-block-uagb-image .wp-block-uagb-image__figure img:hover' => array(
+					'border-color' => $attr['imageBorderHColor'],
+				),
+				'.wp-block-uagb-image .wp-block-uagb-image__figure figcaption' => array(
+					'color'         => $attr['captionColor'],
+					'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMargin'], $attr['captionMarginUnit'] ),
+					'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMargin'], $attr['captionMarginUnit'] ),
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMargin'], $attr['captionMarginUnit'] ),
+					'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMargin'], $attr['captionMarginUnit'] ),
+					'text-align'    => $attr['captionAlign'],
+				),
+				'.wp-block-uagb-image .wp-block-uagb-image__figure figcaption a' => array(
+					'color' => $attr['captionColor'],
+				),
+				// overlay.
+				'.wp-block-uagb-image--layout-overlay figure img' => array_merge(
+					array(
+						'box-shadow' => $box_shadow_css,
+					),
+					$image_border_css
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__color-wrapper' => array_merge(
+					array(
+						'background' => $attr['overlayBackground'],
+						'opacity'    => $attr['overlayOpacity'],
+					),
+					$image_border_css
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__color-wrapper:hover' => array(
+					'border-color' => $attr['imageBorderHColor'],
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner' => array_merge(
+					$overlay_border_css,
+					array(
+						'left'   => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'right'  => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'top'    => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'bottom' => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+					)
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading' => array(
+					'color'         => $attr['headingColor'],
+					'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMargin'], $attr['headingMarginUnit'] ),
+					'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMargin'], $attr['headingMarginUnit'] ),
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMargin'], $attr['headingMarginUnit'] ),
+					'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMargin'], $attr['headingMarginUnit'] ),
+					'opacity'       => 'always' === $attr['headingShowOn'] ? 1 : 0,
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading a' => array(
+					'color' => $attr['headingColor'],
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-caption' => array(
+					'opacity' => 'always' === $attr['captionShowOn'] ? 1 : 0,
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner' => array(
+					'border-color' => $attr['overlayBorderHColor'],
+				),
+				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__color-wrapper' => array(
+					'opacity' => $attr['overlayHoverOpacity'],
+				),
+				// Seperator.
+				'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator' => array(
+					'width'            => Cartflows_Gb_Helper::get_css_value( $attr['seperatorWidth'], $attr['separatorWidthType'] ),
+					'border-top-width' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorThickness'], $attr['seperatorThicknessUnit'] ),
+					'border-top-color' => $attr['seperatorColor'],
+					'border-top-style' => $attr['seperatorStyle'],
+					'margin-bottom'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-top'       => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-left'      => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-right'     => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMargin'], $attr['seperatorMarginUnit'] ),
+					'opacity'          => 'always' === $attr['seperatorShowOn'] ? 1 : 0,
+				),
+			);
+
+			$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
+				'object-fit' => $attr['objectFit'],
+				'width'      => $attr['width'] . 'px',
+				'height'     => 'auto',
+			);
+			if ( $attr['customHeightSetDesktop'] ) {
+				$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img']['height'] = $attr['height'] . 'px';
+			}
+
+			if ( 'hover' === $attr['headingShowOn'] ) {
+				$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading'] = array(
+					'opacity' => 1,
+				);
+			}
+			if ( 'hover' === $attr['captionShowOn'] ) {
+				$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner .uagb-image-caption'] = array(
+					'opacity' => 1,
+				);
+			}
+			if ( 'hover' === $attr['seperatorShowOn'] ) {
+				$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
+					'opacity' => 1,
+				);
+			}
+
+			// If using separate box shadow hover settings, then generate CSS for it.
+			if ( $attr['useSeparateBoxShadows'] ) {
+				$selectors['.wp-block-uagb-image--layout-default figure img:hover'] = array(
+					'box-shadow' => $box_shadow_hover_css,
+				);
+
+				$selectors['.wp-block-uagb-image--layout-overlay figure img:hover'] = array(
+					'box-shadow' => $box_shadow_hover_css,
+				);
+
+			};
+
+			if ( 'none' !== $attr['maskShape'] ) {
+				$imagePath = UAGB_URL . 'assets/images/masks/' . $attr['maskShape'] . '.svg';
+				if ( 'custom' === $attr['maskShape'] ) {
+					$imagePath = $attr['maskCustomShape']['url'];
+				}
+				if ( ! empty( $imagePath ) ) {
+					$selectors[ '.wp-block-uagb-image .wp-block-uagb-image__figure img, .uagb-block-' . $id . ' .wp-block-uagb-image--layout-overlay__color-wrapper' ] = array(
+						'mask-image'            => 'url(' . $imagePath . ')',
+						'-webkit-mask-image'    => 'url(' . $imagePath . ')',
+						'mask-size'             => $attr['maskSize'],
+						'-webkit-mask-size'     => $attr['maskSize'],
+						'mask-repeat'           => $attr['maskRepeat'],
+						'-webkit-mask-repeat'   => $attr['maskRepeat'],
+						'mask-position'         => $attr['maskPosition'],
+						'-webkit-mask-position' => $attr['maskPosition'],
+					);
+				}
+			}
+
+			// tablet.
+			$t_selectors['.wp-block-uagb-image--layout-default figure img']       = $image_border_css_tablet;
+			$t_selectors['.wp-block-uagb-image--layout-overlay figure img']       = $image_border_css_tablet;
+			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
+				'width' => Cartflows_Gb_Helper::get_css_value( $attr['widthTablet'], 'px' ),
+			);
+			$t_selectors['.wp-block-uagb-image']                                  = array(
+				'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'text-align'      => $attr['alignTablet'],
+				'justify-content' => $alignTablet,
+				'align-self'      => $alignTablet,
+			);
+			$t_selectors[' .wp-block-uagb-image__figure']                         = array(
+				'align-items' => $alignTablet,
+			);
+			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure figcaption']                           = array(
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMarginTablet'], $attr['captionMarginUnitTablet'] ),
+			);
+			$t_selectors['.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner']       = $overlay_border_css_tablet;
+			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading']   = array(
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMarginTablet'], $attr['headingMarginUnitTablet'] ),
+			);
+			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+			);
+
+			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
+				'object-fit' => $attr['objectFitTablet'],
+				'width'      => $width_tablet,
+				'height'     => 'auto',
+			);
+
+			if ( $attr['customHeightSetTablet'] ) {
+				$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img']['height'] = $height_tablet;
+			}
+
+			// mobile.
+			$m_selectors['.wp-block-uagb-image--layout-default figure img']       = $image_border_css_mobile;
+			$m_selectors['.wp-block-uagb-image--layout-overlay figure img']       = $image_border_css_mobile;
+			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
+				'width' => Cartflows_Gb_Helper::get_css_value( $attr['widthMobile'], 'px' ),
+			);
+			$m_selectors['.wp-block-uagb-image']                                  = array(
+				'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'text-align'      => $attr['alignMobile'],
+				'justify-content' => $alignMobile,
+				'align-self'      => $alignMobile,
+			);
+			$m_selectors[' .wp-block-uagb-image__figure']                         = array(
+				'align-items' => $alignMobile,
+			);
+			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure figcaption'] = array(
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMarginMobile'], $attr['captionMarginUnitMobile'] ),
+			);
+
+			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading']   = array(
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMarginMobile'], $attr['headingMarginUnitMobile'] ),
+			);
+			$m_selectors['.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner']       = $overlay_border_css_mobile;
+			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+			);
+
+			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
+				'object-fit' => $attr['objectFitMobile'],
+				'width'      => $width_mobile,
+				'height'     => 'auto',
+			);
+
+			if ( $attr['customHeightSetMobile'] ) {
+				$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img']['height'] = $height_mobile;
+			}
+
+			$combined_selectors = array(
+				'desktop' => $selectors,
+				'tablet'  => $t_selectors,
+				'mobile'  => $m_selectors,
+			);
+
+			$base_selector = '.uagb-block-';
+
+			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'heading', '.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading', $combined_selectors );
+			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'caption', '.wp-block-uagb-image .wp-block-uagb-image__figure figcaption', $combined_selectors );
+
+			return UAGB_Helper::generate_all_css(
+				$combined_selectors,
+				$base_selector . $id,
+				isset( $gbs_class ) ? $gbs_class : ''
+			);
+		}
+
+			/**
+			 * Get Heading Block CSS
 			 *
 			 * @since x.x.x
 			 * @param array  $attr The block attributes.
 			 * @param string $id The selector ID.
 			 * @return array The Widget List.
 			 */
-			public static function get_separator_css( $attr, $id ) {
+		public static function get_heading_css( $attr, $id ) {
+			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
 
-				$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
-	
-				$attr = array_merge( $defaults, $attr );
-	
-				$t_selectors = array();
-				$m_selectors = array();
-				$selectors   = array();
-				$border_size = '100%';
-				
-				$border_css = array(
-					'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSize'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-					'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeight'], $attr['separatorBorderHeightUnit'] ),
-					'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
-					'border-top-color'  => $attr['separatorColor'],
-					'border-top-style'  => $attr['separatorStyle'],
-				);
-				
-				$border_style       = array();
-				$icon_spacing_style = array();
-				
-				if ( 'none' === $attr['elementType'] ) {
-					$border_style['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css;
-				
-				} else { 
-					$align_css    = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlign'] );
-					$border_style = array(
-						'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
-							array(
-								'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
-				
-							),
-							$align_css
-						),
-					);
-					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css;
-					$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css;
-					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css;
-					$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css;
-				
-					if ( 'left' === $attr['elementPosition'] ) {
-						$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
-						);
-						$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
-							'display' => 'none',
-						);
-						$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before']                          = array(
-							'display' => 'none',
-						);
-					}
-					if ( 'right' === $attr['elementPosition'] ) {
-						$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
-						);
-						$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-						$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-					}
-					if ( 'center' === $attr['elementPosition'] ) {
-						$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
-							'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
-						);
-					}
-				}
-				
-				$selectors = array(
-					'.wp-block-uagb-separator' => array_merge(
-						array(
-							'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-							'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-							'text-align'     => $attr['separatorAlign'],
-						)
-					),
-					'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
-						'font-family'     => $attr['elementTextFontFamily'],
-						'font-style'      => $attr['elementTextFontStyle'],
-						'text-decoration' => $attr['elementTextDecoration'],
-						'text-transform'  => $attr['elementTextTransform'],
-						'font-weight'     => $attr['elementTextFontWeight'],
-						'color'           => $attr['elementColor'],
-						'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSize'], $attr['elementTextFontSizeType'] ),
-						'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeight'], $attr['elementTextLineHeightType'] ),
-						'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacing'], $attr['elementTextLetterSpacingType'] ),
-					),
-					'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-						'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-						'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-						'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-						'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-						'color'       => $attr['elementColor'],
-						'fill'        => $attr['elementColor'],
-					),
-				);
-				$selectors = array_merge( $selectors, $border_style, $icon_spacing_style );
-				
-				// Tablet.
-				$border_css_tablet = array(
-					'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeTablet'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-					'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightTablet'], $attr['separatorBorderHeightUnit'] ),
-					'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
-					'border-top-color'  => $attr['separatorColor'],
-					'border-top-style'  => $attr['separatorStyle'],
-				);
-				
-				$border_style_tablet       = array();
-				$icon_spacing_style_tablet = array();
-				if ( 'none' === $attr['elementType'] ) {
-					$border_style_tablet['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_tablet;
-				
-				} else {
-					$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignTablet'] );
-					$border_style_tablet = array(
-						'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
-							array(
-								'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
-				
-							),
-							$align_css
-						),
-					);
-					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css_tablet;
-					$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css_tablet;
-					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css_tablet;
-					$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_tablet;
-					if ( 'left' === $attr['elementPosition'] ) {
-						$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
-						);
-						$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
-							'display' => 'none',
-						);
-						$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before']                          = array(
-							'display' => 'none',
-						);
-					}
-					if ( 'center' === $attr['elementPosition'] ) {
-						$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
-						);
-					}
-					if ( 'right' === $attr['elementPosition'] ) {
-						$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
-						);
-						$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-						$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-					}
-				}
-				$t_selectors = array(
-					'.wp-block-uagb-separator' => array_merge(
-						array(
-							'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
-							'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
-							'text-align'     => $attr['separatorAlignTablet'],
-						)
+			$attr = array_merge( $defaults, $attr );
+
+			$t_selectors = array();
+			$m_selectors = array();
+			$selectors   = array();
+
+			$highLight_border_css        = self::generate_border_css( $attr, 'highLight' );
+			$highLight_border_css_tablet = self::generate_border_css( $attr, 'highLight', 'tablet' );
+			$highLight_border_css_mobile = self::generate_border_css( $attr, 'highLight', 'mobile' );
+
+			$selectors = array(
+				'.wp-block-uagb-advanced-heading .uagb-heading-text' => array(
+					'color' => $attr['headingColor'],
 				),
-					'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
-						'font-family'     => $attr['elementTextFontFamily'],
-						'font-style'      => $attr['elementTextFontStyle'],
-						'text-decoration' => $attr['elementTextDecoration'],
-						'text-transform'  => $attr['elementTextTransform'],
-						'font-weight'     => $attr['elementTextFontWeight'],
-						'color'           => $attr['elementColor'],
-						'margin-bottom'   => 'initial',
-						'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeTablet'], $attr['elementTextFontSizeType'] ),
-						'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightTablet'], $attr['elementTextLineHeightType'] ),
-						'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingTablet'], $attr['elementTextLetterSpacingType'] ),
+				'.wp-block-uagb-advanced-heading '        => array(
+					'background'     => 'classic' === $attr['blockBackgroundType'] ? $attr['blockBackground'] : $attr['blockGradientBackground'],
+					'text-align'     => $attr['headingAlign'],
+					'margin-top'     => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockTopMargin'],
+						$attr['blockMarginUnit']
 					),
-					'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-						'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-						'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-						'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-						'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr    ['elementIconWidthType'] ),
-						'color'       => $attr['elementColor'],
-						'fill'        => $attr['elementColor'],
+					'margin-right'   => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockRightMargin'],
+						$attr['blockMarginUnit']
 					),
-				);
-				
-				$t_selectors = array_merge( $t_selectors, $border_style_tablet, $icon_spacing_style_tablet );
-				
-				
-				// Mobile.
-				$border_css_mobile         = array(
-					'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeMobile'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-					'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightMobile'], $attr['separatorBorderHeightUnit'] ),
-					'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
-					'border-top-color'  => $attr['separatorColor'],
-					'border-top-style'  => $attr['separatorStyle'],
-				);
-				$border_style_mobile       = array();
-				$icon_spacing_style_mobile = array();
-				if ( 'none' === $attr['elementType'] ) {
-					$border_style_mobile['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_mobile;
-				
-				} else {
-					$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignMobile'] );
-					$border_style_mobile = array(
-						'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
-							array(
-								'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
-				
-							),
-							$align_css
-						),
-					);
-					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css_mobile;
-					$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css_mobile;
-					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css_mobile;
-					$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_mobile;
-					if ( 'left' === $attr['elementPosition'] ) {
-						$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
-				
-						);
-						$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = array(
-							'display' => 'none',
-						);
-						$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = array(
-							'display' => 'none',
-						);
-					}
-					if ( 'center' === $attr['elementPosition'] ) {
-						$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
-							'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
-						);
-					}
-					if ( 'right' === $attr['elementPosition'] ) {
-						$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-							'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
-						);
-						$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-						$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
-							'display' => 'none',
-						);
-					}
-				}
-				$m_selectors = array(
-					'.wp-block-uagb-separator' => array_merge(
-						array(
-							'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
-							'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
-							'text-align'     => $attr['separatorAlignMobile'],
-						)
+					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockBottomMargin'],
+						$attr['blockMarginUnit']
+					),
+					'margin-left'    => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockLeftMargin'],
+						$attr['blockMarginUnit']
+					),
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockTopPadding'],
+						$attr['blockPaddingUnit']
+					),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockRightPadding'],
+						$attr['blockPaddingUnit']
+					),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockBottomPadding'],
+						$attr['blockPaddingUnit']
+					),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value(
+						$attr['blockLeftPadding'],
+						$attr['blockPaddingUnit']
+					),
 				),
-					'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
-						'font-family'     => $attr['elementTextFontFamily'],
-						'font-style'      => $attr['elementTextFontStyle'],
-						'text-decoration' => $attr['elementTextDecoration'],
-						'text-transform'  => $attr['elementTextTransform'],
-						'font-weight'     => $attr['elementTextFontWeight'],
-						'color'           => $attr['elementColor'],
-						'margin-bottom'   => 'initial',
-						'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeMobile'], $attr['elementTextFontSizeType'] ),
-						'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightMobile'], $attr['elementTextLineHeightType'] ),
-						'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingMobile'], $attr['elementTextLetterSpacingType'] ),
+				'.wp-block-uagb-advanced-heading a'       => array(
+					'color' => $attr['linkColor'],
+				),
+				'.wp-block-uagb-advanced-heading a:hover' => array(
+					'color' => $attr['linkHColor'],
+				),
+				'.wp-block-uagb-advanced-heading .uagb-desc-text' => array(
+					'color'         => $attr['subHeadingColor'],
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['subHeadSpace'],
+						'px'
 					),
-					'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-						'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-						'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-						'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-						'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr    ['elementIconWidthType'] ),
-						'color'       => $attr['elementColor'],
-						'fill'        => $attr['elementColor'],
+				),
+				'.wp-block-uagb-advanced-heading .uagb-highlight' => array_merge(
+					array(
+						'background'              => $attr['highLightBackground'],
+						'color'                   => $attr['highLightColor'],
+						'-webkit-text-fill-color' => $attr['highLightColor'],
+						'font-family'             => $attr['highLightFontFamily'],
+						'font-style'              => $attr['highLightFontStyle'],
+						'text-decoration'         => $attr['highLightDecoration'],
+						'text-transform'          => $attr['highLightTransform'],
+						'font-weight'             => $attr['highLightFontWeight'],
+						'font-size'               => Cartflows_Gb_Helper::get_css_value( $attr['highLightFontSize'], $attr['highLightFontSizeType'] ),
+						'line-height'             => Cartflows_Gb_Helper::get_css_value( $attr['highLightLineHeight'], $attr['highLightLineHeightType'] ),
+						'padding-top'             => Cartflows_Gb_Helper::get_css_value(
+							$attr['highLightTopPadding'],
+							$attr['highLightPaddingUnit']
+						),
+						'padding-right'           => Cartflows_Gb_Helper::get_css_value(
+							$attr['highLightRightPadding'],
+							$attr['highLightPaddingUnit']
+						),
+						'padding-bottom'          => Cartflows_Gb_Helper::get_css_value(
+							$attr['highLightBottomPadding'],
+							$attr['highLightPaddingUnit']
+						),
+						'padding-left'            => Cartflows_Gb_Helper::get_css_value(
+							$attr['highLightLeftPadding'],
+							$attr['highLightPaddingUnit']
+						),
+
+					),
+					$highLight_border_css
+				),
+				'.wp-block-uagb-advanced-heading .uagb-highlight:hover' => array(
+					'border-color' => $attr['highLightBorderHColor'],
+				),
+			);
+
+			$heading_text_shadow_color = ( ! empty( $attr['headShadowColor'] ) ? Cartflows_Gb_Helper::get_css_value( $attr['headShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['headShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['headShadowBlur'], 'px' ) . ' ' . $attr['headShadowColor'] : '' );
+
+			if ( 'gradient' === $attr['headingColorType'] ) {
+				$selectors['.wp-block-uagb-advanced-heading .uagb-heading-text'] = array_merge(
+					$selectors['.wp-block-uagb-advanced-heading .uagb-heading-text'],
+					array(
+						'background'              => $attr['headingGradientColor'],
+						'-webkit-background-clip' => 'text',
+						'-webkit-text-fill-color' => 'transparent',
+						'filter'                  => 'drop-shadow( ' . $heading_text_shadow_color . ' )',
+					)
+				);
+				$selectors['.wp-block-uagb-advanced-heading a']                  = array_merge(
+					$selectors['.wp-block-uagb-advanced-heading a'],
+					array(
+						'-webkit-text-fill-color' => $attr['linkColor'],
+					)
+				);
+				$selectors['.wp-block-uagb-advanced-heading a:hover']            = array_merge(
+					$selectors['.wp-block-uagb-advanced-heading a:hover'],
+					array(
+						'-webkit-text-fill-color' => $attr['linkHColor'],
+					)
+				);
+			} else {
+				$selectors['.wp-block-uagb-advanced-heading .uagb-heading-text'] = array_merge(
+					$selectors['.wp-block-uagb-advanced-heading .uagb-heading-text'],
+					array(
+						'text-shadow' => $heading_text_shadow_color,
+					)
+				);
+			}
+
+			// Text Selection & highlight.
+			$highlightSelectionText = array(
+				'color'                   => $attr['highLightColor'],
+				'background'              => $attr['highLightBackground'],
+				'-webkit-text-fill-color' => $attr['highLightColor'],
+			);
+
+			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::-moz-selection'] = $highlightSelectionText;
+			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::selection']      = $highlightSelectionText;
+
+			$seperatorStyle = isset( $attr['seperatorStyle'] ) ? $attr['seperatorStyle'] : '';
+
+			if ( 'none' !== $seperatorStyle ) {
+				$selectors['.wp-block-uagb-advanced-heading .uagb-separator']   = array(
+					'border-top-style' => $attr['seperatorStyle'],
+					'border-top-width' => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorHeight'],
+						$attr['separatorHeightType']
+					),
+					'width'            => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorWidth'],
+						$attr['separatorWidthType']
+					),
+					'border-color'     => $attr['separatorColor'],
+					'margin-bottom'    => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorSpace'],
+						$attr['separatorSpaceType']
 					),
 				);
-				$m_selectors = array_merge( $m_selectors, $border_style_mobile, $icon_spacing_style_mobile );
-	
-				$combined_selectors = array(
+				$t_selectors['.wp-block-uagb-advanced-heading .uagb-separator'] = array(
+					'width'         => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorWidthTablet'],
+						$attr['separatorWidthType']
+					),
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorSpaceTablet'],
+						$attr['separatorSpaceType']
+					),
+				);
+				$m_selectors['.wp-block-uagb-advanced-heading .uagb-separator'] = array(
+					'width'         => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorWidthMobile'],
+						$attr['separatorWidthType']
+					),
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['separatorSpaceMobile'],
+						$attr['separatorSpaceType']
+					),
+				);
+			}
+			$t_selectors['.wp-block-uagb-advanced-heading '] = array(
+				'text-align'     => $attr['headingAlignTablet'],
+				'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['blockTopPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['blockRightPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['blockTopMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['blockRightMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftMarginTablet'], $attr['blockMarginUnitTablet'] ),
+			);
+
+			$t_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
+				array(
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['highLightTopPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['highLightRightPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['highLightBottomPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['highLightLeftPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+				),
+				$highLight_border_css_tablet
+			);
+
+			$m_selectors['.wp-block-uagb-advanced-heading ']                = array(
+				'text-align'     => $attr['headingAlignMobile'],
+				'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['blockTopPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['blockRightPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['blockTopMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['blockRightMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftMarginMobile'], $attr['blockMarginUnitMobile'] ),
+			);
+			$m_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
+				array(
+					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['highLightTopPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['highLightRightPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['highLightBottomPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['highLightLeftPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+				),
+				$highLight_border_css_mobile
+			);
+
+			$t_selectors['.wp-block-uagb-advanced-heading .uagb-desc-text'] = array(
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					$attr['subHeadSpaceTablet'],
+					$attr['subHeadSpaceType']
+				),
+			);
+			$m_selectors['.wp-block-uagb-advanced-heading .uagb-desc-text'] = array(
+				'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					$attr['subHeadSpaceMobile'],
+					$attr['subHeadSpaceType']
+				),
+			);
+			if ( $attr['headingDescToggle'] || 'none' !== $attr['seperatorStyle'] ) {
+				$selectors[' .uagb-heading-text']   = array(
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['headSpace'],
+						'px'
+					),
+				);
+				$t_selectors[' .uagb-heading-text'] = array(
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['headSpaceTablet'],
+						$attr['headSpaceType']
+					),
+				);
+				$m_selectors[' .uagb-heading-text'] = array(
+					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+						$attr['headSpaceMobile'],
+						$attr['headSpaceType']
+					),
+				);
+			}
+
+			$combined_selectors = Cartflows_Gb_Helper::get_combined_selectors(
+				'advanced-heading',
+				array(
 					'desktop' => $selectors,
 					'tablet'  => $t_selectors,
 					'mobile'  => $m_selectors,
+				),
+				$attr
+			);
+
+			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'head', ' .uagb-heading-text', $combined_selectors );
+			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'subHead', ' .uagb-desc-text', $combined_selectors );
+			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .uagb-highlight', $combined_selectors );
+
+			$base_selector = ( $attr['classMigrate'] ) ? '.wp-block-uagb-advanced-heading.uagb-block-' : '#uagb-adv-heading-';
+
+			return Cartflows_Gb_Helper::generate_all_css(
+				$combined_selectors,
+				$base_selector . $id,
+				isset( $gbs_class ) ? '.wp-block-uagb-advanced-heading' . $gbs_class : ''
+			);
+
+		}
+
+
+			/**
+			 * Get Separator Block CSS
+			 *
+			 * @since x.x.x
+			 * @param array  $attr The block attributes.
+			 * @param string $id The selector ID.
+			 * @return array The Widget List.
+			 */
+		public static function get_separator_css( $attr, $id ) {
+
+			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
+
+			$attr = array_merge( $defaults, $attr );
+
+			$t_selectors = array();
+			$m_selectors = array();
+			$selectors   = array();
+			$border_size = '100%';
+
+			$border_css = array(
+				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSize'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeight'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
+				'border-top-color'  => $attr['separatorColor'],
+				'border-top-style'  => $attr['separatorStyle'],
+			);
+
+			$border_style       = array();
+			$icon_spacing_style = array();
+
+			if ( 'none' === $attr['elementType'] ) {
+				$border_style['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css;
+
+			} else {
+				$align_css    = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlign'] );
+				$border_style = array(
+					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
+						array(
+							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
+
+						),
+						$align_css
+					),
 				);
-	
-				// // General.
-				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
-	
-				// // Input Fields.
-				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
-	
-				// // Submit Button.
-				// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
-	
-				return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+				$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css;
+				$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css;
+				$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css;
+				$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css;
+
+				if ( 'left' === $attr['elementPosition'] ) {
+					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+					);
+					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
+						'display' => 'none',
+					);
+					$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before']                          = array(
+						'display' => 'none',
+					);
+				}
+				if ( 'right' === $attr['elementPosition'] ) {
+					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+					);
+					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+					$border_style['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+				}
+				if ( 'center' === $attr['elementPosition'] ) {
+					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+					);
+				}
 			}
+
+			$selectors = array(
+				'.wp-block-uagb-separator' => array_merge(
+					array(
+						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
+						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
+						'text-align'     => $attr['separatorAlign'],
+					)
+				),
+				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
+					'font-family'     => $attr['elementTextFontFamily'],
+					'font-style'      => $attr['elementTextFontStyle'],
+					'text-decoration' => $attr['elementTextDecoration'],
+					'text-transform'  => $attr['elementTextTransform'],
+					'font-weight'     => $attr['elementTextFontWeight'],
+					'color'           => $attr['elementColor'],
+					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSize'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeight'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacing'], $attr['elementTextLetterSpacingType'] ),
+				),
+				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
+					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'color'       => $attr['elementColor'],
+					'fill'        => $attr['elementColor'],
+				),
+			);
+			$selectors = array_merge( $selectors, $border_style, $icon_spacing_style );
+
+			// Tablet.
+			$border_css_tablet = array(
+				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeTablet'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightTablet'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
+				'border-top-color'  => $attr['separatorColor'],
+				'border-top-style'  => $attr['separatorStyle'],
+			);
+
+			$border_style_tablet       = array();
+			$icon_spacing_style_tablet = array();
+			if ( 'none' === $attr['elementType'] ) {
+				$border_style_tablet['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_tablet;
+
+			} else {
+				$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignTablet'] );
+				$border_style_tablet = array(
+					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
+						array(
+							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
+
+						),
+						$align_css
+					),
+				);
+				$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css_tablet;
+				$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css_tablet;
+				$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css_tablet;
+				$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_tablet;
+				if ( 'left' === $attr['elementPosition'] ) {
+					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+					);
+					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
+						'display' => 'none',
+					);
+					$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before']                          = array(
+						'display' => 'none',
+					);
+				}
+				if ( 'center' === $attr['elementPosition'] ) {
+					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+					);
+				}
+				if ( 'right' === $attr['elementPosition'] ) {
+					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+					);
+					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+					$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+				}
+			}
+			$t_selectors = array(
+				'.wp-block-uagb-separator' => array_merge(
+					array(
+						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
+						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
+						'text-align'     => $attr['separatorAlignTablet'],
+					)
+				),
+				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
+					'font-family'     => $attr['elementTextFontFamily'],
+					'font-style'      => $attr['elementTextFontStyle'],
+					'text-decoration' => $attr['elementTextDecoration'],
+					'text-transform'  => $attr['elementTextTransform'],
+					'font-weight'     => $attr['elementTextFontWeight'],
+					'color'           => $attr['elementColor'],
+					'margin-bottom'   => 'initial',
+					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeTablet'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightTablet'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingTablet'], $attr['elementTextLetterSpacingType'] ),
+				),
+				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
+					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr    ['elementIconWidthType'] ),
+					'color'       => $attr['elementColor'],
+					'fill'        => $attr['elementColor'],
+				),
+			);
+
+			$t_selectors = array_merge( $t_selectors, $border_style_tablet, $icon_spacing_style_tablet );
+
+			// Mobile.
+			$border_css_mobile         = array(
+				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeMobile'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightMobile'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
+				'border-top-color'  => $attr['separatorColor'],
+				'border-top-style'  => $attr['separatorStyle'],
+			);
+			$border_style_mobile       = array();
+			$icon_spacing_style_mobile = array();
+			if ( 'none' === $attr['elementType'] ) {
+				$border_style_mobile['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_mobile;
+
+			} else {
+				$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignMobile'] );
+				$border_style_mobile = array(
+					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
+						array(
+							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
+
+						),
+						$align_css
+					),
+				);
+				$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = $border_css_mobile;
+				$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = $border_css_mobile;
+				$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']  = $border_css_mobile;
+				$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_mobile;
+				if ( 'left' === $attr['elementPosition'] ) {
+					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+
+					);
+					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = array(
+						'display' => 'none',
+					);
+					$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::before'] = array(
+						'display' => 'none',
+					);
+				}
+				if ( 'center' === $attr['elementPosition'] ) {
+					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+					);
+				}
+				if ( 'right' === $attr['elementPosition'] ) {
+					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
+						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+					);
+					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+					$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']                           = array(
+						'display' => 'none',
+					);
+				}
+			}
+			$m_selectors = array(
+				'.wp-block-uagb-separator' => array_merge(
+					array(
+						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
+						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
+						'text-align'     => $attr['separatorAlignMobile'],
+					)
+				),
+				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => array(
+					'font-family'     => $attr['elementTextFontFamily'],
+					'font-style'      => $attr['elementTextFontStyle'],
+					'text-decoration' => $attr['elementTextDecoration'],
+					'text-transform'  => $attr['elementTextTransform'],
+					'font-weight'     => $attr['elementTextFontWeight'],
+					'color'           => $attr['elementColor'],
+					'margin-bottom'   => 'initial',
+					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeMobile'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightMobile'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingMobile'], $attr['elementTextLetterSpacingType'] ),
+				),
+				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
+					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr    ['elementIconWidthType'] ),
+					'color'       => $attr['elementColor'],
+					'fill'        => $attr['elementColor'],
+				),
+			);
+			$m_selectors = array_merge( $m_selectors, $border_style_mobile, $icon_spacing_style_mobile );
+
+			$combined_selectors = array(
+				'desktop' => $selectors,
+				'tablet'  => $t_selectors,
+				'mobile'  => $m_selectors,
+			);
+
+			// // General.
+			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+
+			// // Input Fields.
+			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
+
+			// // Submit Button.
+			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+
+			return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+		}
 
 		/**
 		 * Border CSS generation Function.

@@ -58,7 +58,7 @@ class Cartflows_Gutenberg_Editor {
 
 		$post_id   = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_type = get_post_type( $post_id );
-		//$flow_id   = wcf()->utils->get_flow_id_from_step_id( $post_id ); //Nathan
+		// $flow_id   = wcf()->utils->get_flow_id_from_step_id( $post_id ); //Nathan
 		// ! empty( $flow_id ) && Cartflows_Helper::is_gcp_styling_enabled( (int) $flow_id ) && SUREFORMS_FORMS_POST_TYPE === $post_type //Nathan
 		if ( true ) {
 
@@ -74,14 +74,14 @@ class Cartflows_Gutenberg_Editor {
 				}
 			}
 
-		//	$new_color_palette = Cartflows_Helper::generate_css_var_array( $flow_id );
+			// $new_color_palette = Cartflows_Helper::generate_css_var_array( $flow_id );
 
 			// Merge the old and new color palettes.
 			// if ( ! empty( $default_color_pallet ) ) {
-			// 	$new_color_palette = array_merge( $default_color_pallet, $new_color_palette );
+			// $new_color_palette = array_merge( $default_color_pallet, $new_color_palette );
 			// }
 			// Apply the color palette containing the original colors and the new colors.
-		//	add_theme_support( 'editor-color-palette', $new_color_palette );
+			// add_theme_support( 'editor-color-palette', $new_color_palette );
 
 		}
 
@@ -169,11 +169,12 @@ class Cartflows_Gutenberg_Editor {
 
 				// if ( wcf()->utils->is_step_post_type( $current_post_type ) ) { //Nathan
 
-				// 	if ( wcf()->is_woo_active ) {
+				// if ( wcf()->is_woo_active ) {
 
 						$this->maybe_init_cart();
 
-						/* Load woo templates from plugin */
+						/*
+						 Load woo templates from plugin */
 						// $cf_frontend = Cartflows_Frontend::get_instance();
 						// add_filter( 'woocommerce_locate_template', array( $cf_frontend, 'override_woo_template' ), 20, 3 );
 
@@ -181,11 +182,11 @@ class Cartflows_Gutenberg_Editor {
 
 						add_action( 'cartflows_gutenberg_before_optin_shortcode', array( $this, 'before_gb_optin_shortcode_actions' ) );
 
-					}
+			}
 
 					do_action( 'cartflows_gutenberg_editor_compatibility', $current_post_id );
-				}
-		// 	}
+		}
+		// }
 		// }
 	}
 
@@ -199,11 +200,11 @@ class Cartflows_Gutenberg_Editor {
 		// $has_cart = is_a( WC()->cart, 'WC_Cart' );
 
 		// if ( ! $has_cart ) {
-		// 	$session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
-		// 	WC()->session  = new $session_class();
-		// 	WC()->session->init();
-		// 	WC()->cart     = new \WC_Cart();
-		// 	WC()->customer = new \WC_Customer( get_current_user_id(), true );
+		// $session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
+		// WC()->session  = new $session_class();
+		// WC()->session->init();
+		// WC()->cart     = new \WC_Cart();
+		// WC()->customer = new \WC_Customer( get_current_user_id(), true );
 
 		// }
 

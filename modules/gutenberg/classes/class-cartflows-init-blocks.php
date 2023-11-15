@@ -35,12 +35,12 @@ class Cartflows_Init_Blocks {
 	public static $icon_json;
 
 			/**
-		 * As our svg icon is too long array so we will divide that into number of icon chunks.
-		 *
-		 * @var int
-		 * @since 2.7.0
-		 */
-		public static $number_of_icon_chunks = 4;
+			 * As our svg icon is too long array so we will divide that into number of icon chunks.
+			 *
+			 * @var int
+			 * @since 2.7.0
+			 */
+	public static $number_of_icon_chunks = 4;
 
 	/**
 	 *  Initiator
@@ -80,7 +80,7 @@ class Cartflows_Init_Blocks {
 			}
 		);
 
-		//add_action( 'enqueue_block_editor_assets', array( $this, 'add_gcp_vars_to_block_editor' ), 12 );
+		// add_action( 'enqueue_block_editor_assets', array( $this, 'add_gcp_vars_to_block_editor' ), 12 );
 
 		// Load the action only if the theme.json file is present in the file.
 		if ( wp_theme_has_theme_json() ) {
@@ -108,17 +108,17 @@ class Cartflows_Init_Blocks {
 		// $flow_id = wcf()->utils->get_flow_id_from_step_id( $post_id ); //Nathan
 
 		// if (
-		// 	! empty( $flow_id ) &&
-		// 	Cartflows_Helper::is_gcp_styling_enabled( (int) $flow_id ) &&
-		// 	isset( $theme_json_data_two['settings'] ) &&
-		// 	isset( $theme_json_data_two['settings']['color'] )
+		// ! empty( $flow_id ) &&
+		// Cartflows_Helper::is_gcp_styling_enabled( (int) $flow_id ) &&
+		// isset( $theme_json_data_two['settings'] ) &&
+		// isset( $theme_json_data_two['settings']['color'] )
 		// ) {
 
-		// 	$new_color_palette = Cartflows_Helper::generate_css_var_array( $flow_id );
+		// $new_color_palette = Cartflows_Helper::generate_css_var_array( $flow_id );
 
-			if ( ! empty( $new_color_palette ) ) {
-				$theme_json_data_two['settings']['color']['palette']['theme'] = array_merge( $theme_json_data_two['settings']['color']['palette']['theme'], $new_color_palette );
-			}
+		if ( ! empty( $new_color_palette ) ) {
+			$theme_json_data_two['settings']['color']['palette']['theme'] = array_merge( $theme_json_data_two['settings']['color']['palette']['theme'], $new_color_palette );
+		}
 		// }
 
 		return $theme_json_data->update_with( $theme_json_data_two );
@@ -176,10 +176,10 @@ class Cartflows_Init_Blocks {
 			);
 		}
 
-		$thankyou_id          = isset( $_POST['id'] ) ? intval( wp_unslash( $_POST['id'] ) ) : 0;
-		$data['html']         = do_shortcode( '[cartflows_order_details]' );
-		//wcf()->options->get_thankyou_meta_value( $thankyou_id, 'wcf-tq-text' ); //Nathan
-		$data['thankyouText'] =  'thank you';
+		$thankyou_id  = isset( $_POST['id'] ) ? intval( wp_unslash( $_POST['id'] ) ) : 0;
+		$data['html'] = do_shortcode( '[cartflows_order_details]' );
+		// wcf()->options->get_thankyou_meta_value( $thankyou_id, 'wcf-tq-text' ); //Nathan
+		$data['thankyouText'] = 'thank you';
 
 		wp_send_json_success( $data );
 	}
@@ -207,18 +207,18 @@ class Cartflows_Init_Blocks {
 			$checkout_id = intval( $_POST['id'] );
 		}
 
-		//$store_checkout = intval( \Cartflows_Helper::get_global_setting( '_cartflows_store_checkout' ) );
+		// $store_checkout = intval( \Cartflows_Helper::get_global_setting( '_cartflows_store_checkout' ) );
 
-		//$flow_id = wcf()->utils->get_flow_id_from_step_id( $checkout_id ); //Nathan
+		// $flow_id = wcf()->utils->get_flow_id_from_step_id( $checkout_id ); //Nathan
 
 		// if ( ! wcf()->flow->is_flow_testmode( $flow_id ) && ( $store_checkout !== $flow_id ) ) {
 
-		// 	$products = wcf()->utils->get_selected_checkout_products( $checkout_id );
+		// $products = wcf()->utils->get_selected_checkout_products( $checkout_id );
 
-		// 	if ( ! is_array( $products ) || empty( $products[0]['product'] ) ) {
-		// 		wc_clear_notices();
-		// 		wc_add_notice( __( 'No product is selected. Please select products from the checkout meta settings to continue.', 'cartflows' ), 'error' );
-		// 	}
+		// if ( ! is_array( $products ) || empty( $products[0]['product'] ) ) {
+		// wc_clear_notices();
+		// wc_add_notice( __( 'No product is selected. Please select products from the checkout meta settings to continue.', 'cartflows' ), 'error' );
+		// }
 		// }
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form' );
 
@@ -319,8 +319,8 @@ class Cartflows_Init_Blocks {
 
 		// $products = wcf()->options->get_optin_meta_value( $optin_id, 'wcf-optin-product' ); //Nathan
 		// if ( is_array( $products ) && count( $products ) < 1 ) {
-		// 	wc_clear_notices();
-		// 	wc_add_notice( __( 'No product is selected. Please select a Simple, Virtual and Free product from the meta settings.', 'cartflows' ), 'error' );
+		// wc_clear_notices();
+		// wc_add_notice( __( 'No product is selected. Please select a Simple, Virtual and Free product from the meta settings.', 'cartflows' ), 'error' );
 		// }
 
 		$attributes['input_skins'] = isset( $_POST['input_skins'] ) ? sanitize_title( wp_unslash( $_POST['input_skins'] ) ) : '';
@@ -360,9 +360,9 @@ class Cartflows_Init_Blocks {
 		add_filter( 'woocommerce_enable_order_notes_field', '__return_false' );
 		add_filter( 'woocommerce_cart_needs_shipping_address', '__return_false' );
 
-		$data['html']       = do_shortcode( '[cartflows_optin]' );
+		$data['html'] = do_shortcode( '[cartflows_optin]' );
 		// wcf()->options->get_optin_meta_value( $optin_id, 'wcf-submit-button-text' );
-		$data['buttonText'] = 'button text'; //Nathan
+		$data['buttonText'] = 'button text'; // Nathan
 		wp_send_json_success( $data );
 	}
 
@@ -375,7 +375,7 @@ class Cartflows_Init_Blocks {
 
 		global $post;
 
-		//if ( $post && SUREFORMS_FORMS_POST_TYPE === $post->post_type ) { //Nathan
+		// if ( $post && SUREFORMS_FORMS_POST_TYPE === $post->post_type ) { //Nathan
 
 			// Register block styles for both frontend + backend.
 			wp_enqueue_style(
@@ -389,7 +389,7 @@ class Cartflows_Init_Blocks {
 
 			// // Return if no flow ID is found.
 			// if ( empty( $flow_id ) ) {
-			// 	return;
+			// return;
 			// }
 
 			// if ( Cartflows_Helper::is_gcp_styling_enabled( (int) $flow_id ) ) {
@@ -402,9 +402,8 @@ class Cartflows_Init_Blocks {
 					wp_enqueue_style( 'wcf-editor-helper-style', SUREFORMS_URL . 'modules/gutenberg/assets/css/editor-assets.css', array( 'wp-edit-blocks', 'wp-editor' ), SUREFORMS_VER );
 					wp_enqueue_script( 'wcf-editor-helper-script', SUREFORMS_URL . 'modules/gutenberg/assets/js/editor-assets.js', array( 'wp-editor', 'jquery' ), SUREFORMS_VER, true );
 				// }
-			// }       
-		//}
-
+			// }
+		// }
 	}
 
 	/**
@@ -418,16 +417,16 @@ class Cartflows_Init_Blocks {
 		$post_type = get_post_type( $post_id );
 
 		// if ( SUREFORMS_FORMS_POST_TYPE === $post_type ) {
-			$wpcf_ajax_nonce       = wp_create_nonce( 'wpcf_ajax_nonce' );
+			$wpcf_ajax_nonce = wp_create_nonce( 'wpcf_ajax_nonce' );
 			// $step_type             = wcf()->utils->get_step_type( $post_id ); //Nathan
 			// $show_checkout_pro_opt = apply_filters( 'cartflows_show_checkout_pro_opt', false );
 
 			// if ( 'optin' === $step_type && wcf()->is_woo_active ) {
-			// 	wp_enqueue_style( 'wcf-optin-template', wcf()->utils->get_css_url( 'optin-template' ), array( 'wp-edit-blocks' ), SUREFORMS_VER );
+			// wp_enqueue_style( 'wcf-optin-template', wcf()->utils->get_css_url( 'optin-template' ), array( 'wp-edit-blocks' ), SUREFORMS_VER );
 			// }
 			// if ( 'checkout' === $step_type && wcf()->is_woo_active ) {
-			// 	wp_enqueue_style( 'wcf-checkout-template', wcf()->utils->get_css_url( 'checkout-template' ), array( 'wp-edit-blocks' ), SUREFORMS_VER );
-			// 	Cartflows_Checkout_Markup::get_instance()->shortcode_scripts();
+			// wp_enqueue_style( 'wcf-checkout-template', wcf()->utils->get_css_url( 'checkout-template' ), array( 'wp-edit-blocks' ), SUREFORMS_VER );
+			// Cartflows_Checkout_Markup::get_instance()->shortcode_scripts();
 			// }
 
 			$script_dep_path = SUREFORMS_DIR . 'modules/gutenberg/build/blocks.asset.php';
@@ -486,12 +485,12 @@ class Cartflows_Init_Blocks {
 					// $show_checkout_pro_opt
 					'show_checkout_pro_opt'    => false,
 					'ID'                       => $post_id,
-					//$step_type
+					// $step_type
 					'step_type'                => false,
-					//_is_cartflows_pro()
+					// _is_cartflows_pro()
 					'is_cartflows_pro_install' => false,
 					// wcf()->is_woo_active,
-					'is_woo_active'            => true, //Nathan
+					'is_woo_active'            => true, // Nathan
 					'show_product_options'     => $this->maybe_show_product_options_for_store_checkout( $post_id ),
 					// Add more data here that you want to access from `cartflowsGlobal` object.
 				)
@@ -534,12 +533,12 @@ class Cartflows_Init_Blocks {
 		// $store_checkout = intval( get_option( '_cartflows_store_checkout', false ) );
 
 		// if ( $flow_id !== $store_checkout ) {
-		// 	return true;
+		// return true;
 
 		// }
 
 		// if ( $flow_id === $store_checkout && apply_filters( 'cartflows_show_store_checkout_product_tab', false ) ) {
-		// 	return true;
+		// return true;
 		// }
 
 		return false;

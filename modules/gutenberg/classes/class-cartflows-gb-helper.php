@@ -105,6 +105,14 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		public static $icon_json;
 
 		/**
+		 * We have icon list in chunks in this variable we will merge all insides array into one single array.
+		 *
+		 * @var array
+		 * @since 2.7.0
+		 */
+		public static $icon_array_merged = array();
+
+		/**
 		 *  Initiator
 		 *
 		 * @since 1.6.15
@@ -133,7 +141,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * WP Actions.
 		 */
 		public function wp_actions() {
-			//  wcf()->utils->is_step_post_type()  //Nathan
+			// wcf()->utils->is_step_post_type()  //Nathan
 			if ( true ) {
 
 				$this->generate_assets();
@@ -275,7 +283,6 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 
 			$this->get_generated_stylesheet( $this_post );
 
-
 		}
 
 		/**
@@ -319,7 +326,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 				$js_assets = ( isset( $blocks[ $curr_block_name ]['js_assets'] ) ) ? $blocks[ $curr_block_name ]['js_assets'] : array();
 
 				$css_assets = ( isset( $blocks[ $curr_block_name ]['css_assets'] ) ) ? $blocks[ $curr_block_name ]['css_assets'] : array();
-				
+
 				foreach ( $js_assets as $asset_handle => $val ) {
 					// Scripts.
 					wp_enqueue_script( $val );
@@ -391,7 +398,6 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 						// Get CSS for the Block.
 						$css = $block_assets['css'];
 
-							
 						if ( ! empty( $css['common'] ) ) {
 							$desktop .= $css['common'];
 						}
@@ -559,6 +565,73 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		}
 
 		/**
+		 * Generate the Box Shadow or Text Shadow CSS.
+		 *
+		 * For Text Shadow CSS:
+		 * ( 'spread', 'position' ) should not be sent as params during the function call.
+		 * ( 'spread_unit' ) will have no effect.
+		 *
+		 * For Box/Text Shadow Hover CSS:
+		 * ( 'alt_color' ) should be set as the attribute used for ( 'color' ) in Box/Text Shadow Normal CSS.
+		 *
+		 * @param array $shadow_properties  Array containing the necessary shadow properties.
+		 * @return string                   The generated border CSS or an empty string on early return.
+		 *
+		 * @since 2.5.0
+		 */
+		public static function generate_shadow_css( $shadow_properties ) {
+			// Get the Object Properties.
+			$horizontal      = isset( $shadow_properties['horizontal'] ) ? $shadow_properties['horizontal'] : '';
+			$vertical        = isset( $shadow_properties['vertical'] ) ? $shadow_properties['vertical'] : '';
+			$blur            = isset( $shadow_properties['blur'] ) ? $shadow_properties['blur'] : '';
+			$spread          = isset( $shadow_properties['spread'] ) ? $shadow_properties['spread'] : '';
+			$horizontal_unit = isset( $shadow_properties['horizontal_unit'] ) ? $shadow_properties['horizontal_unit'] : 'px';
+			$vertical_unit   = isset( $shadow_properties['vertical_unit'] ) ? $shadow_properties['vertical_unit'] : 'px';
+			$blur_unit       = isset( $shadow_properties['blur_unit'] ) ? $shadow_properties['blur_unit'] : 'px';
+			$spread_unit     = isset( $shadow_properties['spread_unit'] ) ? $shadow_properties['spread_unit'] : 'px';
+			$color           = isset( $shadow_properties['color'] ) ? $shadow_properties['color'] : '';
+			$position        = isset( $shadow_properties['position'] ) ? $shadow_properties['position'] : 'outset';
+			$alt_color       = isset( $shadow_properties['alt_color'] ) ? $shadow_properties['alt_color'] : '';
+
+			// Although optional, color is required for Sarafi on PC. Return early if color isn't set.
+			if ( ! $color && ! $alt_color ) {
+				return '';
+			}
+
+			// Get the CSS units for the number properties.
+
+			$horizontal = self::get_css_value( $horizontal, $horizontal_unit );
+			if ( '' === $horizontal ) {
+				$horizontal = 0;
+			}
+
+			$vertical = self::get_css_value( $vertical, $vertical_unit );
+			if ( '' === $vertical ) {
+				$vertical = 0;
+			}
+
+			$blur = self::get_css_value( $blur, $blur_unit );
+			if ( '' === $blur ) {
+				$blur = 0;
+			}
+
+			$spread = self::get_css_value( $spread, $spread_unit );
+			if ( '' === $spread ) {
+				$spread = 0;
+			}
+
+			// If all numeric unit values are exactly 0, don't render the CSS.
+			if ( ( 0 === $horizontal && 0 === $vertical ) && ( 0 === $blur && 0 === $spread ) ) {
+				return '';
+			}
+
+			// Return the CSS with horizontal, vertical, blur, and color - and conditionally render spread and position.
+			return (
+				$horizontal . ' ' . $vertical . ' ' . $blur . ( $spread ? " {$spread}" : '' ) . ' ' . ( $color ? $color : $alt_color ) . ( 'outset' === $position ? '' : " {$position}" )
+			);
+		}
+
+		/**
 		 * Parse CSS into correct CSS syntax.
 		 *
 		 * @param array  $selectors The block selectors.
@@ -663,7 +736,6 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 					self::$cf_flag = true;
 				}
 
-
 				switch ( $name ) {
 					case 'wcfb/next-step-button':
 						$css = Cartflows_Block_Helper::get_next_step_button_css( $blockattr, $block_id );
@@ -687,7 +759,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 
 					case 'sureforms/separator':
 						$css = Cartflows_Block_Helper::get_separator_css( $blockattr, $block_id );
-						//Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					default:
@@ -695,19 +767,16 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 						break;
 				}
 
-
 				// Add static css here.
 				$block_css_arr = Cartflows_Block_Config::get_block_assets_css();
 
 				if ( isset( $block_css_arr[ $name ] ) && ! in_array( $block_css_arr[ $name ]['name'], $this->static_css_blocks, true ) ) {
 
-					
 					$common_css = array(
 						'common' => $this->get_block_static_css( $block_css_arr[ $name ]['name'] ),
 					);
 					$css       += $common_css;
 				}
-
 
 				if ( isset( $block['innerBlocks'] ) ) {
 					foreach ( $block['innerBlocks'] as $j => $inner_block ) {
@@ -728,7 +797,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 							// Get CSS for the Block.
 							$inner_assets    = $this->get_block_css_and_js( $inner_block );
 							$inner_block_css = $inner_assets['css'];
-							
+
 							$css_common  = ( isset( $css['common'] ) ? $css['common'] : '' );
 							$css_desktop = ( isset( $css['desktop'] ) ? $css['desktop'] : '' );
 							$css_tablet  = ( isset( $css['tablet'] ) ? $css['tablet'] : '' );
@@ -851,44 +920,6 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 			return $border_attr;
 		}
 
-
-		/**
-		 * Generate advanced settings clsses.
-		 *
-		 * @param  array $attributes Blocks Attribute.
-		 * @return array
-		 */
-		public function generate_advanced_setting_classes( $attributes ) {
-
-			$is_visible               = array_key_exists( 'UAGHideDesktop', $attributes ) || array_key_exists( 'UAGHideTab', $attributes ) || array_key_exists( 'UAGHideMob', $attributes );
-			$desktop_class            = $is_visible && isset( $attributes['UAGHideDesktop'] ) ? 'uag-hide-desktop' : '';
-			$tab_class                = $is_visible && isset( $attributes['UAGHideTab'] ) ? 'uag-hide-tab' : '';
-			$mob_class                = $is_visible && isset( $attributes['UAGHideMob'] ) ? 'uag-hide-mob' : '';
-			$zindex_wrap              = array();
-			$zindex_extention_enabled = ( isset( $attributes['zIndex'] ) || isset( $attributes['zIndexTablet'] ) || isset( $attributes['zIndexMobile'] ) );
-			$zindex_desktop           = $zindex_extention_enabled && isset( $attributes['zIndex'] ) ? '--z-index-desktop:' . $attributes['zIndex'] . ';' : false;
-			$zindex_tablet            = $zindex_extention_enabled && isset( $attributes['zIndexTablet'] ) ? '--z-index-tablet:' . $attributes['zIndexTablet'] . ';' : false;
-			$zindex_mobile            = $zindex_extention_enabled && isset( $attributes['zIndexMobile'] ) ? '--z-index-mobile:' . $attributes['zIndexMobile'] . ';' : false;
-
-			if ( $zindex_desktop ) {
-				array_push( $zindex_wrap, $zindex_desktop );
-			}
-			if ( $zindex_tablet ) {
-				array_push( $zindex_wrap, $zindex_tablet );
-			}
-			if ( $zindex_mobile ) {
-				array_push( $zindex_wrap, $zindex_mobile );
-			}
-
-			return array(
-				'desktop_class'            => $desktop_class,
-				'tab_class'                => $tab_class,
-				'mob_class'                => $mob_class,
-				'zindex_wrap'              => $zindex_wrap,
-				'zindex_extention_enabled' => $zindex_extention_enabled,
-			);
-		}
-
 		/**
 		 * Get Json Data.
 		 *
@@ -917,7 +948,45 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 			self::$icon_json = $icons_chunks;
 			return self::$icon_json;
 		}
+
+		/**
+		 * Generate SVG.
+		 *
+		 * @since 1.8.1
+		 * @param  array $icon Decoded fontawesome json file data.
+		 */
+		public static function render_svg_html( $icon ) {
+			$icon = str_replace( 'far', '', $icon );
+			$icon = str_replace( 'fas', '', $icon );
+			$icon = str_replace( 'fab', '', $icon );
+			$icon = str_replace( 'fa-', '', $icon );
+			$icon = str_replace( 'fa', '', $icon );
+			$icon = sanitize_text_field( esc_attr( $icon ) );
+
+			$json = self::backend_load_font_awesome_icons();
+
+			if ( ! empty( $json ) ) {
+				if ( empty( $icon_array_merged ) ) {
+					foreach ( $json as $value ) {
+						self::$icon_array_merged = array_merge( self::$icon_array_merged, $value );
+					}
+				}
+				$json = self::$icon_array_merged;
+			}
+
+			$icon_brand_or_solid = isset( $json[ $icon ]['svg']['brands'] ) ? $json[ $icon ]['svg']['brands'] : ( isset( $json[ $icon ]['svg']['solid'] ) ? $json[ $icon ]['svg']['solid'] : array() );
+			$path                = isset( $icon_brand_or_solid['path'] ) ? $icon_brand_or_solid['path'] : '';
+			$view                = isset( $icon_brand_or_solid['width'] ) && isset( $icon_brand_or_solid['height'] ) ? '0 0 ' . $icon_brand_or_solid['width'] . ' ' . $icon_brand_or_solid['height'] : null;
+
+			if ( $path && $view ) {
+				?>
+				<svg xmlns="https://www.w3.org/2000/svg" viewBox= "<?php echo esc_attr( $view ); ?>"><path d="<?php echo esc_attr( $path ); ?>"></path></svg>
+				<?php
+			}
+		}
+
 	}
+
 	/**
 	 *  Prepare if class 'Cartflows_Gb_Helper' exist.
 	 *  Kicking this off by calling 'get_instance()' method
