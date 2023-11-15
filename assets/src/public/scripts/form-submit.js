@@ -261,9 +261,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				)[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
-					container.querySelector(
-						'.confirm-password-error'
-					).style.display = 'none';
+					const confirmPwdError = container.querySelector(
+						'.srfm-confirm-password-error'
+					)
+					if(confirmPwdError){
+						confirmPwdError.style.display = 'none';
+					}
 					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
