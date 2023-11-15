@@ -6,13 +6,9 @@ import { jsx } from '@emotion/react';
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { createBlock, serialize } from '@wordpress/blocks';
-import { Placeholder, Button, Icon, TextControl } from '@wordpress/components';
-import { dispatch, useSelect } from '@wordpress/data';
-// import { useDispatch, useSelect } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { Placeholder, Button, Icon } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-// import apiFetch from '@wordpress/api-fetch';
 
 import icon from '../../../../../images/Logo.js';
 

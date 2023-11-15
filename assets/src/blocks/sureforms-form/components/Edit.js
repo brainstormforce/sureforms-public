@@ -3,36 +3,22 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { useRef, useEffect, useState } from '@wordpress/element';
+import { useRef, useEffect } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
 	PanelBody,
 	PanelRow,
 	Spinner,
-	SelectControl,
-	Button,
-	Icon,
 } from '@wordpress/components';
+import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 import {
-	useEntityBlockEditor,
-	useEntityProp,
-	store as coreStore,
-} from '@wordpress/core-data';
-import {
-	// useInnerBlocksProps as __stableUseInnerBlocksProps,
-	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
-	// __experimentalUseInnerBlocksProps,
-	// __experimentalBlockContentOverlay as BlockContentOverlay, // TODO when gutenberg releases it: https://github.com/WordPress/gutenberg/blob/afee31ee020b8965e811f5d68a5ca8001780af9d/packages/block-editor/src/components/block-content-overlay/index.js#L17
 	InspectorControls,
 	useBlockProps,
 	Warning,
 } from '@wordpress/block-editor';
-import SelectForm from './SelectForm';
-import apiFetch from '@wordpress/api-fetch';
 
 export default ( { attributes, setAttributes } ) => {
-	// TODO: Let's store a unique hash in both meta and attribute to find.
 	const { id } = attributes;
 
 	const iframeRef = useRef( null );
@@ -221,8 +207,8 @@ export default ( { attributes, setAttributes } ) => {
 								fill="none"
 							>
 								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
+									fillRule="evenodd"
+									clipRule="evenodd"
 									d="M18 11.9992C18 12.4963 17.5971 12.8992 17.1 12.8992H9.1345L11.7238 15.2505C12.0821 15.595 12.0933 16.1647 11.7487 16.523C11.4042 16.8813 10.8345 16.8925 10.4762 16.548L6.2762 12.648C6.09973 12.4783 6 12.244 6 11.9992C6 11.7544 6.09973 11.5202 6.2762 11.3505L10.4762 7.45047C10.8345 7.10596 11.4042 7.11713 11.7487 7.47542C12.0933 7.83372 12.0821 8.40346 11.7238 8.74797L9.1345 11.0992L17.1 11.0992C17.5971 11.0992 18 11.5022 18 11.9992Z"
 									fill="#9CA3AF"
 								/>

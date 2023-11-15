@@ -32,7 +32,6 @@ export default ( { setForm } ) => {
 		control: ( provided, isSelected ) => ( {
 			...provided,
 			width: isSelected && '250px',
-			width: '250px',
 		} ),
 	};
 
