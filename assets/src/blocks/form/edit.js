@@ -310,7 +310,8 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 							} }
 						/>
 					</PanelRow>
-					{ 'sureforms_form' !== postType && (
+					{ /* Not required */ }
+					{ /* { 'sureforms_form' !== postType && (
 						<PanelRow>
 							<p className="srfm-form-notice">
 								{ __(
@@ -336,7 +337,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 								</a>
 							</p>
 						</PanelRow>
-					) }
+					) } */ }
 				</PanelBody>
 			</InspectorControls>
 			{ blockCount === 0 ? (

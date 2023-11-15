@@ -254,12 +254,12 @@ export default ( { attributes, setAttributes } ) => {
 							{ __( 'Choose', 'sureforms' ) }
 							<Icon icon={ 'arrow-right' }></Icon>
 						</Button>
-						<Button
+						{ /* <Button
 							variant="secondary"
 							onClick={ () => setAttributes( { step: null } ) }
 						>
 							{ __( 'Cancel', 'sureforms' ) }
-						</Button>
+						</Button> */ }
 					</div>
 				</div>
 			</Placeholder>

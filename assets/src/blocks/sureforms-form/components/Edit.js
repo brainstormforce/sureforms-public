@@ -3,13 +3,16 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { useRef, useEffect } from '@wordpress/element';
+import { useRef, useEffect, useState } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
 	PanelBody,
 	PanelRow,
 	Spinner,
+	SelectControl,
+	Button,
+	Icon,
 } from '@wordpress/components';
 import {
 	useEntityBlockEditor,
@@ -25,12 +28,10 @@ import {
 	useBlockProps,
 	Warning,
 } from '@wordpress/block-editor';
+import SelectForm from './SelectForm';
+import apiFetch from '@wordpress/api-fetch';
 
-export default ( { attributes } ) => {
-	// const useInnerBlocksProps = __stableUseInnerBlocksProps
-	// 	? __stableUseInnerBlocksProps
-	// 	: __experimentalUseInnerBlocksProps;
-
+export default ( { attributes, setAttributes } ) => {
 	// TODO: Let's store a unique hash in both meta and attribute to find.
 	const { id } = attributes;
 
@@ -45,12 +46,6 @@ export default ( { attributes } ) => {
 
 	const blockProps = useBlockProps();
 
-	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
-		'postType',
-		'sureforms_form',
-		{ id }
-	);
-
 	const [ title, setTitle ] = useEntityProp(
 		'postType',
 		'sureforms_form',
@@ -58,18 +53,9 @@ export default ( { attributes } ) => {
 		id
 	);
 
-	// const innerBlocksProps = useInnerBlocksProps(
-	// 	{},
-	// 	{
-	// 		value: blocks,
-	// 		onInput,
-	// 		onChange,
-	// 		template: [ [ 'sureforms/form', {} ] ],
-	// 		templateLock: 'all',
-	// 	}
-	// );
+	const status = useEntityProp( 'postType', 'sureforms_form', 'status', id );
 
-	const { isMissing, hasResolved } = useSelect( ( select ) => {
+	const { hasResolved } = useSelect( ( select ) => {
 		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
 			[ 'postType', 'sureforms_form', id ]
@@ -83,25 +69,13 @@ export default ( { attributes } ) => {
 			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
 		return {
 			canEdit,
-			isMissing: hasResolvedValue && ! form,
 			hasResolved: hasResolvedValue,
 			form,
 		};
 	} );
 
-	// form has resolved
-	// if ( ! hasResolved ) {
-	// 	return (
-	// 		<div { ...blockProps }>
-	// 			<Placeholder>
-	// 				<Spinner />
-	// 			</Placeholder>
-	// 		</div>
-	// 	);
-	// }
-
 	// form is missing
-	if ( isMissing ) {
+	if ( 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
 			<div { ...blockProps }>
 				<Warning>
@@ -115,70 +89,63 @@ export default ( { attributes } ) => {
 	}
 
 	// Remove unwanted elements from the iframe and add styling for the form
-	useEffect( () => {
-		const removeContentFromIframe = () => {
-			const iframeDocument = iframeRef.current.contentDocument;
+	const removeContentFromIframe = () => {
+		const iframeDocument = iframeRef.current.contentDocument;
 
-			if ( iframeDocument ) {
-				const wpAdminBar =
-					iframeDocument.getElementById( 'wpadminbar' );
-				const siteDesktopHeader =
-					iframeDocument.querySelector( '.site-header' );
-				const srfmSinglePageBanner =
-					iframeDocument.querySelector( '.srfm-page-banner' );
-				const srfmSingleForm =
-					iframeDocument.querySelector( '.srfm-single-form' );
-				const srfmSuccessMsg =
-					iframeDocument.querySelector( '.srfm-success-box' );
-				const siteFooter = iframeDocument.getElementById( 'colophon' );
+		if ( iframeDocument ) {
+			const wpAdminBar = iframeDocument.getElementById( 'wpadminbar' );
+			const siteDesktopHeader =
+				iframeDocument.querySelector( '.site-header' );
+			const srfmSinglePageBanner =
+				iframeDocument.querySelector( '.srfm-page-banner' );
+			const srfmSingleForm =
+				iframeDocument.querySelector( '.srfm-single-form' );
+			const srfmSuccessMsg =
+				iframeDocument.querySelector( '.srfm-success-box' );
+			const siteFooter = iframeDocument.getElementById( 'colophon' );
 
-				if ( iframeDocument && iframeDocument.body ) {
-					iframeDocument.querySelector(
-						'html'
-					).style.backgroundColor = 'transparent';
-					iframeDocument.body.style.pointerEvents = 'none';
-					iframeDocument.body.style.backgroundColor = 'transparent';
-					const iframeHalfScrollHeight =
-						iframeDocument.body.scrollHeight / 2;
-					iframeRef.current.height = iframeHalfScrollHeight + 'px';
-					if ( 300 > iframeHalfScrollHeight ) {
-						iframeDocument.body.style.overflow = 'hidden';
-					}
-				}
-				if ( wpAdminBar ) {
-					wpAdminBar.remove();
-				}
-				if ( siteFooter ) {
-					siteFooter.remove();
-				}
-				if ( siteDesktopHeader ) {
-					siteDesktopHeader.remove();
-				}
-				if ( srfmSinglePageBanner ) {
-					srfmSinglePageBanner.remove();
-				}
-				if ( srfmSuccessMsg ) {
-					srfmSuccessMsg.remove();
-				}
-				if ( srfmSingleForm ) {
-					srfmSingleForm.style.boxShadow = 'none';
-					srfmSingleForm.style.backgroundColor = 'transparent';
-					srfmSingleForm.style.width = '100%';
+			if ( iframeDocument && iframeDocument.body ) {
+				iframeDocument.querySelector( 'html' ).style.backgroundColor =
+					'transparent';
+				iframeDocument.body.style.pointerEvents = 'none';
+				iframeDocument.body.style.backgroundColor = 'transparent';
+				const iframeHalfScrollHeight =
+					iframeDocument.body.scrollHeight / 2;
+				iframeRef.current.height = iframeHalfScrollHeight + 'px';
+				if ( 300 > iframeHalfScrollHeight ) {
+					iframeDocument.body.style.overflow = 'hidden';
 				}
 			}
-		};
+			if ( wpAdminBar ) {
+				wpAdminBar.remove();
+			}
+			if ( siteFooter ) {
+				siteFooter.remove();
+			}
+			if ( siteDesktopHeader ) {
+				siteDesktopHeader.remove();
+			}
+			if ( srfmSinglePageBanner ) {
+				srfmSinglePageBanner.remove();
+			}
+			if ( srfmSuccessMsg ) {
+				srfmSuccessMsg.remove();
+			}
+			if ( srfmSingleForm ) {
+				srfmSingleForm.style.boxShadow = 'none';
+				srfmSingleForm.style.backgroundColor = 'transparent';
+				srfmSingleForm.style.width = '100%';
+			}
+		}
+	};
 
+	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
 			iframeRef.current.onload = () => {
 				removeContentFromIframe();
-				setTimeout( () => {
-					// if ( iframeRef && iframeRef.current ) {
-					// 	iframeRef.current.style.display = 'block';
-					// }
-				}, 800 );
 			};
 		}
-	}, [ iframeRef ] );
+	}, [ id, iframeRef, hasResolved ] );
 
 	return (
 		<>
@@ -196,7 +163,7 @@ export default ( { attributes } ) => {
 					<PanelRow>
 						<p className="srfm-form-notice">
 							{ __(
-								'Note: For Editing the stylings, please check the SureForms styling - ',
+								'Note: For Editing the SureForm, please check the SureForms Editor - ',
 								'sureforms'
 							) }
 							<a
@@ -204,7 +171,7 @@ export default ( { attributes } ) => {
 								target="_blank"
 								rel="noreferrer"
 							>
-								{ __( 'Edit Form Settings ', 'sureforms' ) }
+								{ __( 'Edit Form', 'sureforms' ) }
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -220,20 +187,81 @@ export default ( { attributes } ) => {
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>
-			<div { ...blockProps }>
-				{ /* { <div { ...innerBlocksProps } /> } */ }
-				<iframe
-					loading={ 'eager' }
-					ref={ iframeRef }
-					className="srfm-iframe-preview"
-					title="srfm-iframe-preview"
-					src={ formUrl }
-					style={ {
-						minWidth: '-webkit-fill-available',
-					} }
-					width={ '100%' }
-				/>
-			</div>
+			{ hasResolved ? (
+				<div { ...blockProps }>
+					<div
+						style={ {
+							display: 'flex',
+							justifyContent: 'space-between',
+							padding: ' 12px 32px 12px 32px',
+							alignItems: 'center',
+							boxShadow: '0 8px 8px -10px rgba(0, 0, 0, 0.1)',
+						} }
+					>
+						<button
+							style={ {
+								background: 'none',
+								border: 'none',
+								display: 'flex',
+								alignItems: 'center',
+								cursor: 'pointer',
+								height: '44px',
+								gap: '10px',
+								color: '#9CA3AF',
+							} }
+							onClick={ () => {
+								setAttributes( { id: undefined } );
+							} }
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+							>
+								<path
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d="M18 11.9992C18 12.4963 17.5971 12.8992 17.1 12.8992H9.1345L11.7238 15.2505C12.0821 15.595 12.0933 16.1647 11.7487 16.523C11.4042 16.8813 10.8345 16.8925 10.4762 16.548L6.2762 12.648C6.09973 12.4783 6 12.244 6 11.9992C6 11.7544 6.09973 11.5202 6.2762 11.3505L10.4762 7.45047C10.8345 7.10596 11.4042 7.11713 11.7487 7.47542C12.0933 7.83372 12.0821 8.40346 11.7238 8.74797L9.1345 11.0992L17.1 11.0992C17.5971 11.0992 18 11.5022 18 11.9992Z"
+									fill="#9CA3AF"
+								/>
+							</svg>
+							{ __( 'Back', 'sureforms' ) }
+						</button>
+						<span
+							style={ {
+								color: '#030712',
+								fontFamily: 'Inter',
+								fontSize: '20px',
+								fontStyle: 'normal',
+								fontWeight: '600',
+								lineHeight: '140%',
+							} }
+						>
+							{ title }
+						</span>
+					</div>
+					<div className="srfm-iframe-container">
+						<iframe
+							loading={ 'eager' }
+							ref={ iframeRef }
+							title="srfm-iframe"
+							src={ formUrl }
+							style={ {
+								minWidth: '-webkit-fill-available',
+							} }
+							width={ '100%' }
+						/>
+					</div>
+				</div>
+			) : (
+				<div { ...blockProps }>
+					<Placeholder>
+						<Spinner />
+					</Placeholder>
+				</div>
+			) }
 		</>
 	);
 };

@@ -40,8 +40,10 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 		dateTimePicker,
 		numberSlider,
 	] );
-}
-
-if ( 'sureforms_form' !== sfBlockData.current_screen.id ) {
+} else {
 	registerBlocks( [ sfForm ] );
 }
+
+// if ( 'sureforms_form' !== sfBlockData.current_screen.id ) {
+// 	registerBlocks( [ sfForm ] );
+// }
