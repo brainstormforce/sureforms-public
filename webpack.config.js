@@ -71,7 +71,7 @@ module.exports = {
 		),
 		block_styles: path.resolve(
 			__dirname,
-			'assets/src/admin/block-styles.scss'
+			'sass/block-styles.scss'
 		),
 		settings: path.resolve(
 			__dirname,
