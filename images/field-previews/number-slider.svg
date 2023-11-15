@@ -1,13 +1,15 @@
 <svg width="126" height="112" viewBox="0 0 126 112" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="1.34256" y="1.18945" width="124.157" height="109.336" rx="4.5" stroke="#E4EBF0"/>
-<rect x="16.3268" y="53.0688" width="95.6728" height="1.0343" rx="0.51715" fill="#EDEDED"/>
-<rect x="14" y="53.0688" width="63.3509" height="1.0343" rx="0.51715" fill="#C8D0D7"/>
+<rect x="1.34253" y="1.18945" width="124.157" height="109.336" rx="4.5" stroke="#E4EBF0"/>
+<rect x="13" y="42" width="26" height="2" fill="#E4EBF0"/>
+<rect x="14.8897" y="50.9644" width="77.7" height="0.84" rx="0.42" fill="#EDEDED"/>
+<rect x="13" y="50.9644" width="51.45" height="0.84" rx="0.42" fill="#C8D0D7"/>
 <g filter="url(#filter0_d_5471_20580)">
-<circle cx="74.7656" cy="53.5858" r="2.58575" fill="white"/>
-<circle cx="74.7656" cy="53.5858" r="2.08575" stroke="#C8D0D7"/>
+<ellipse cx="62.3503" cy="51.3847" rx="2.1" ry="2.1" fill="white"/>
+<path d="M63.9503 51.3847C63.9503 52.2683 63.2339 52.9847 62.3503 52.9847C61.4666 52.9847 60.7503 52.2683 60.7503 51.3847C60.7503 50.501 61.4666 49.7847 62.3503 49.7847C63.2339 49.7847 63.9503 50.501 63.9503 51.3847Z" stroke="#C8D0D7"/>
 </g>
+<rect x="95.9397" y="48.35" width="7.3" height="6.06923" rx="0.65" stroke="#C8D0D7" stroke-width="0.7"/>
 <defs>
-<filter id="filter0_d_5471_20580" x="64.1798" y="47" width="21.1715" height="21.1714" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_d_5471_20580" x="52.2503" y="45.2847" width="20.2" height="20.2002" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>

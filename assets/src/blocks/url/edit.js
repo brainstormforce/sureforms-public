@@ -25,7 +25,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.input_preview;
+		const fieldName = fieldsPreview.url_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
