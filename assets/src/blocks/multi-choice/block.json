@@ -22,8 +22,12 @@
 			"type": "boolean"
 		},
 		"options": {
-			"default": [ "Option 1", "Option 2" ],
-			"type": "array"
+			"type": "array",
+			"default": [
+				{
+					"optiontitle":"Option Name 1"
+				}
+			]
 		},
 		"fieldWidth": {
 			"type": "number",
