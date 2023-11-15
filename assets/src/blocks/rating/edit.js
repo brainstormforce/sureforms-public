@@ -2,11 +2,10 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -20,6 +19,7 @@ import { RatingClassicStyle } from './components/RatingClassicStyle';
 import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import Range from '@Components/range/Range.js';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -85,7 +85,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<Range
 								label={ __( 'Number of Icons', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -214,21 +214,33 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<RatingClassicStyle attributes={ attributes } />
+					<RatingClassicStyle
+						setAttributes={ setAttributes }
+						blockID={ block_id }
+						attributes={ attributes }
+					/>
 				) : (
-					<RatingThemeStyle attributes={ attributes } />
+					<RatingThemeStyle
+						setAttributes={ setAttributes }
+						blockID={ block_id }
+						attributes={ attributes }
+					/>
 				) }
 				{ ratingBoxHelpText !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ ratingBoxHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { ratingBoxHelpText: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ ratingBoxHelpText }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

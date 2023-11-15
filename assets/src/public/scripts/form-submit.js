@@ -133,8 +133,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 				validateResult = true;
@@ -153,8 +153,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				if ( phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
 				}
 			}
@@ -196,21 +196,32 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//phone field
 		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
+			const phoneParent = container.querySelector(
+				'.srfm-classic-phone-parent'
+			);
+			const isIntelError = phoneParent.classList.contains(
+				'srfm-classic-input-error'
+			);
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
-			if ( isPhoneRequired === 'true' && ! inputValue ) {
+			if ( isIntelError ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = phoneInput;
+				}
+			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				duplicateMessage.style.display = 'none';
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.add( 'placeholder:!text-red-300' );
+					phoneInput.classList.add(
+						'placeholder:!srfm-text-red-300'
+					);
 				}
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
@@ -222,14 +233,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else {
 				errorMessage.style.display = 'none';
 				//for Tailwind phone field UI
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
-						'!ring-red-500',
-						'!border-red-500'
+						'!srfm-ring-red-500',
+						'!srfm-border-red-500'
 					);
-					phoneInput.classList.remove( 'placeholder:!text-red-300' );
+					phoneInput.classList.remove(
+						'placeholder:!srfm-text-red-300'
+					);
 				}
 			}
 		}
@@ -632,7 +643,6 @@ function showSuccessMessage( element, form ) {
 		element.style.minHeight = '420px';
 	}
 	element.style.opacity = 1;
-	element.style.height = 'auto';
 	form.style.display = 'none';
 }
 
@@ -697,7 +707,7 @@ function extractFormAttributesAndElements( form ) {
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
 	const successMessage = form.nextElementSibling;
-	const errorMessage = form.querySelector( '.srfm-srfm-error-message' );
+	const errorMessage = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
 	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );

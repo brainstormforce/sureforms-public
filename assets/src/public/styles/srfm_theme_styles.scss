@@ -12,7 +12,7 @@ textarea.srfm-textarea-field::placeholder {
 	color: var( --srfm-secondary-color );
 }
 
-form.srfm-form .srfm-text-primary{
+form.srfm-form .srfm-text-primary {
 	color: var( --srfm-primary-color );
 }
 
@@ -32,13 +32,13 @@ form.srfm-form span a:hover {
 }
 
 form.srfm-form .srfm-main-container,
-.srfm-forms-address  {
+.srfm-forms-address {
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 }
 
-.srfm-forms-address  {
+.srfm-forms-address {
 	font-size: 14px;
 	width: 100%;
 }
@@ -55,10 +55,10 @@ form.srfm-form .srfm-main-container,
 	margin-right: 10rem;
 }
 
-.srfm-srfm-error-message {
-	border: 2px solid #dc3232;
+.srfm-error-message {
+	/* border: 2px solid #dc3232; */
 	color: #dc3232;
-	padding: 10px;
+	/* padding: 10px; */
 }
 .srfm-loader {
 	border: 2px solid #f3f3f3;
@@ -166,7 +166,7 @@ input[type="range"]::-webkit-slider-thumb {
 .srfm-switch-background {
 	display: inline-block;
 	position: relative;
-	flex:0 0 50px;
+	flex: 0 0 50px;
 	height: 25px;
 	border-radius: 25px;
 	transition: background-color 0.2s;
@@ -180,7 +180,7 @@ input[type="range"]::-webkit-slider-thumb {
 	height: 21px;
 	border-radius: 50%;
 	background-color: #fff;
-	top: 2px;
+	top: -4px;
 	transition: left 0.2s;
 }
 
@@ -213,7 +213,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-bottom: 1.5rem;
 }
 
-.srfm-range-sliders input[type=range] {
+.srfm-range-sliders input[type="range"] {
 	height: 10px !important;
 	outline: none !important;
 	border-radius: 4px !important;
@@ -225,7 +225,7 @@ input[type="range"]::-webkit-slider-thumb {
 	-moz-appearance: textfield; /* Reset the appearance property */
 }
 
-.srfm-range-sliders input[type=range]::-webkit-slider-runnable-track {
+.srfm-range-sliders input[type="range"]::-webkit-slider-runnable-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer;
@@ -233,7 +233,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #e6e6e6 !important;
 }
 
-.srfm-range-sliders input[type=range]::-moz-range-track {
+.srfm-range-sliders input[type="range"]::-moz-range-track {
 	width: 100% !important;
 	height: 1px !important;
 	cursor: pointer !important;
@@ -241,7 +241,7 @@ input[type="range"]::-webkit-slider-thumb {
 	background-color: #ccc !important;
 }
 
-.srfm-range-sliders input[type=range]::-webkit-slider-thumb {
+.srfm-range-sliders input[type="range"]::-webkit-slider-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -253,7 +253,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -5.5px !important;
 }
 
-.srfm-range-sliders input[type=range]::-moz-range-thumb {
+.srfm-range-sliders input[type="range"]::-moz-range-thumb {
 	box-shadow: none !important;
 	height: 12px !important;
 	width: 12px !important;
@@ -265,35 +265,35 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: -7px !important;
 }
 
-.srfm-range-sliders input[type=range]::-moz-range-progress {
+.srfm-range-sliders input[type="range"]::-moz-range-progress {
 	background: transparent !important;
 }
 
-.srfm-range-sliders input[type=range]::-webkit-range-progress {
+.srfm-range-sliders input[type="range"]::-webkit-range-progress {
 	background: transparent !important;
 }
 
-.srfm-range-sliders input[type=range]::-moz-focus-outer {
+.srfm-range-sliders input[type="range"]::-moz-focus-outer {
 	border: 0 !important;
 }
 
-.srfm-range-sliders input[type=range].srfm-range-slider::-webkit-slider-runnable-track {
+.srfm-range-sliders input[type="range"].srfm-range-slider::-webkit-slider-runnable-track {
 	background-color: transparent !important;
 }
 
-.srfm-range-sliders input[type=range].srfm-range-slider::-moz-range-track {
+.srfm-range-sliders input[type="range"].srfm-range-slider::-moz-range-track {
 	background-color: transparent !important;
 }
 
-.srfm-range-sliders input[type=range].srfm-range-slider::-webkit-slider-thumb {
+.srfm-range-sliders input[type="range"].srfm-range-slider::-webkit-slider-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
-.srfm-range-sliders input[type=range].srfm-range-slider::-moz-range-thumb {
+.srfm-range-sliders input[type="range"].srfm-range-slider::-moz-range-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba(0,10,20,.12), 0 0 8px rgba(0,10,20,.14) !important;
+	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
@@ -339,7 +339,7 @@ button[data-te-datepicker-toggle-button-ref]:hover {
 	background-color: unset !important;
 }
 button[data-te-timepicker-toggle-button],
-	button[data-te-timepicker-toggle-button]:hover {
+button[data-te-timepicker-toggle-button]:hover {
 	border: none !important;
 	color: rgb( 156 163 175 ) !important;
 }
@@ -349,7 +349,6 @@ button[data-te-timepicker-toggle-button] svg {
 	width: 1.25rem !important;
 }
 div[data-te-input-focused],
-div[data-te-input-notch-ref]{
+div[data-te-input-notch-ref] {
 	visibility: hidden !important;
-
 }

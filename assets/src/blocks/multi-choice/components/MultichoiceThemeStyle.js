@@ -1,5 +1,6 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { RichText } from '@wordpress/block-editor';
 
 export const MultichoiceThemeStyle = ( {
 	attributes,
@@ -10,6 +11,7 @@ export const MultichoiceThemeStyle = ( {
 	addOption,
 	changeOption,
 	deleteOption,
+	setAttributes
 } ) => {
 	const { required, options, label, singleSelection, style } = attributes;
 
@@ -55,7 +57,7 @@ export const MultichoiceThemeStyle = ( {
 											? 'none'
 											: 'inherit',
 								} }
-								id={ 'multi-choice-' + blockID + '-i-' + i }
+								id={ 'srfm-multi-choice-' + blockID + '-i-' + i }
 								type={ singleSelection ? 'radio' : 'checkbox' }
 								key={ i }
 								name={
@@ -67,10 +69,10 @@ export const MultichoiceThemeStyle = ( {
 							/>
 							<label
 								htmlFor={
-									'multi-choice-' + blockID + '-i-' + i
+									'srfm-multi-choice-' + blockID + '-i-' + i
 								}
 								className={
-									'sureforms-multi-choice-label-button'
+									'srfm-multi-choice-label-button'
 								}
 								style={
 									style === 'buttons'
@@ -93,10 +95,10 @@ export const MultichoiceThemeStyle = ( {
 							>
 								<span
 									className={
-										'multi-choice-option' + blockID
+										'srfm-multi-choice-option' + blockID
 									}
 									id={
-										'multi-choice-option' +
+										'srfm-multi-choice-option' +
 										blockID +
 										'-i-' +
 										i
@@ -112,20 +114,21 @@ export const MultichoiceThemeStyle = ( {
 		);
 	};
 
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="srfm-text-primary"
-				htmlFor={ 'multi-choice-block-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			{ isSelected && (
 				<>
-					<div className="uagb-forms-radio-controls">
+					<div>
 						{ editView }
 						<div>
 							<Button isSecondary onClick={ addOption }>

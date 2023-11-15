@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -392,6 +396,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 						addOption={ addOption }
 						deleteOption={ deleteOption }
 						changeOption={ changeOption }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<MultichoiceThemeStyle
@@ -403,20 +408,25 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 						addOption={ addOption }
 						deleteOption={ deleteOption }
 						changeOption={ changeOption }
+						setAttributes={ setAttributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</div>
