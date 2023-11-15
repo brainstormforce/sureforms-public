@@ -9,7 +9,7 @@ export const MultichoiceClassicStyle = ( {
 	addOption,
 	changeOption,
 	deleteOption,
-	setAttributes
+	setAttributes,
 } ) => {
 	const { label, required, options, single_selection } = attributes;
 
@@ -18,7 +18,7 @@ export const MultichoiceClassicStyle = ( {
 			<div key={ index }>
 				<label htmlFor={ option.optiontitle }></label>
 				<input
-					className='!srfm-rounded-md !srfm-border-gray-300'
+					className="!srfm-rounded-md !srfm-border-gray-300"
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
 						changeOption(

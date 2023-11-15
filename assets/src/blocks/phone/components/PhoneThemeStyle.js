@@ -1,12 +1,7 @@
 import { RichText } from '@wordpress/block-editor';
 
-export const PhoneThemeStyle = ( {
-	attributes,
-	blockID,
-	setAttributes,
-} ) => {
-	const { label, placeholder, required } =
-		attributes;
+export const PhoneThemeStyle = ( { attributes, blockID, setAttributes } ) => {
+	const { label, placeholder, required } = attributes;
 
 	const isRequired = required ? 'srfm-required' : '';
 

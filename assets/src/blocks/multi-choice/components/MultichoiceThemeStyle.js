@@ -11,7 +11,7 @@ export const MultichoiceThemeStyle = ( {
 	addOption,
 	changeOption,
 	deleteOption,
-	setAttributes
+	setAttributes,
 } ) => {
 	const { required, options, label, singleSelection, style } = attributes;
 
@@ -57,7 +57,9 @@ export const MultichoiceThemeStyle = ( {
 											? 'none'
 											: 'inherit',
 								} }
-								id={ 'srfm-multi-choice-' + blockID + '-i-' + i }
+								id={
+									'srfm-multi-choice-' + blockID + '-i-' + i
+								}
 								type={ singleSelection ? 'radio' : 'checkbox' }
 								key={ i }
 								name={
@@ -71,9 +73,7 @@ export const MultichoiceThemeStyle = ( {
 								htmlFor={
 									'srfm-multi-choice-' + blockID + '-i-' + i
 								}
-								className={
-									'srfm-multi-choice-label-button'
-								}
+								className={ 'srfm-multi-choice-label-button' }
 								style={
 									style === 'buttons'
 										? {
