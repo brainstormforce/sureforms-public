@@ -90,8 +90,6 @@ function Settings( props ) {
 		fetchData();
 	}, [] );
 
-	console.log( sureforms_keys._srfm_thankyou_message_title );
-
 	return (
 		<>
 			<UAGAdvancedPanelBody
@@ -140,7 +138,6 @@ function Settings( props ) {
 					) }
 				</p>
 			</UAGAdvancedPanelBody>
-
 			<UAGAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
@@ -186,6 +183,7 @@ function Settings( props ) {
 							} }
 							isFormSpecific={ true }
 						/>
+						<p className="components-base-control__help" />
 						<UAGTextControl
 							variant="textarea"
 							data={ {
