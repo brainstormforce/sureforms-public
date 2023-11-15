@@ -1,14 +1,39 @@
-import data from '../phoneCodes.json';
+import { useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 
-export const PhoneClassicStyle = ( {
-	attributes,
-	blockID,
-	handleChange,
-	setAttributes,
-} ) => {
-	const { label, placeholder, required, defaultValue, defaultCountryCode } =
-		attributes;
+export const PhoneClassicStyle = ( { setAttributes, attributes, blockID } ) => {
+	const { label, placeholder, required, autoCountry } = attributes;
+
+	useEffect( () => {
+		const phoneNumber = document.getElementById(
+			`sfrm-classic-phone-${ blockID }`
+		);
+		const itlOptions = {};
+		if ( autoCountry ) {
+			itlOptions.initialCountry = 'auto';
+			itlOptions.geoIpLookup = function ( callback ) {
+				fetch( 'https://ipapi.co/json' )
+					.then( function ( res ) {
+						return res.json();
+					} )
+					.then( function ( data ) {
+						callback( data.country_code );
+					} )
+					.catch( function () {
+						callback( 'us' );
+					} );
+			};
+		}
+
+		const intlTelInputInstance = window.intlTelInput(
+			phoneNumber,
+			itlOptions
+		);
+		// Return a cleanup function to destroy the current instance
+		return () => {
+			intlTelInputInstance.destroy();
+		};
+	}, [ autoCountry ] );
 
 	const isRequired = required ? 'srfm-required' : '';
 
@@ -24,38 +49,12 @@ export const PhoneClassicStyle = ( {
 			/>
 			<div className="srfm-relative srfm-mt-2">
 				<div className="srfm-group srfm-classic-phone-parent">
-					<div className="srfm-absolute srfm-inset-y-0 srfm-left-0 srfm-flex srfm-items-center">
-						<select
-							placeholder="US +1"
-							onChange={ ( e ) => handleChange( e ) }
-							className="srfm-classic-phone-select"
-						>
-							{ data.map( ( country, i ) => {
-								return (
-									<option
-										key={ i }
-										value={
-											country.code +
-											' ' +
-											country.dial_code
-										}
-										selected={
-											country.dial_code ===
-												defaultCountryCode && true
-										}
-									>
-										{ country.code }
-									</option>
-								);
-							} ) }
-						</select>
-					</div>
 					<input
 						type="tel"
 						className="srfm-classic-phone-element"
+						id={ `sfrm-classic-phone-${ blockID }` }
 						placeholder={ placeholder }
 						pattern="[0-9]{10}"
-						value={ defaultValue }
 					/>
 				</div>
 			</div>
