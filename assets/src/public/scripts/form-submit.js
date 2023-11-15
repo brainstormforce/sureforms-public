@@ -263,8 +263,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmFieldError.style.display = 'block';
 					const confirmPwdError = container.querySelector(
 						'.srfm-confirm-password-error'
-					)
-					if(confirmPwdError){
+					);
+					if ( confirmPwdError ) {
 						confirmPwdError.style.display = 'none';
 					}
 					// confirmPassword.style.borderColor = '#FCA5A5';
