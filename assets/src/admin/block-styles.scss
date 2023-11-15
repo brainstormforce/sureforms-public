@@ -259,4 +259,14 @@ input[type="range"]::-webkit-slider-thumb {
 	width: 99%;
 	width: calc( 100% - 17px );
 	z-index: 99;
+
+.srfm-min-max-error-styles {
+	font-size: 12px;
+	font-style: normal;
+	color: red;
+}
+
+.srfm-required::after {
+	color: #f00;
+	content: " *";
 }
