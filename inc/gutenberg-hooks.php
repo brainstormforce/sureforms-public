@@ -73,6 +73,7 @@ class Gutenberg_Hooks {
 				'sureforms/url',
 				'sureforms/password',
 				'sureforms/date-time-picker',
+				'uagb/separator',
 				'sureforms/number-slider',
 				'core/columns',
 				'core/image',

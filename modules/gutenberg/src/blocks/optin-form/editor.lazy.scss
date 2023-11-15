@@ -1,0 +1,17 @@
+/**
+ * #.# Styles
+ *
+ * CSS for Backend.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+.wp-block-wcfb-optin-form {
+	.wcf-optin-form .checkout.woocommerce-checkout p {
+		margin-top: 0;
+	}
+}
