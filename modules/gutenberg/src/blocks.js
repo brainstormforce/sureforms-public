@@ -9,6 +9,15 @@
  * Webpack is compiling as the input file.
  */
 
+import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+
+// Delete the local storage on every refresh.
+const uagLocalStorage = getUAGEditorStateLocalStorage();
+if ( uagLocalStorage ) {
+	uagLocalStorage.removeItem( 'uagSettingState' );
+	uagLocalStorage.removeItem( 'isSpectraFontAwesomeAPILoading' );
+}
+
 import fontAwesomePollyfiller from './font-awesome-pollyfiller';
 
 __webpack_public_path__ = uagb_blocks_info.uagb_url + 'dist/';
@@ -40,8 +49,10 @@ import './blocks/icon/block.js';
 
 import CF_Block_Icons from './block-icons';
 
+
 // Keep category list in separate variable and remove category list from icons list.
 if ( uagb_blocks_info.uagb_svg_icons?.uagb_category_list ) {
+
 	wp.uagb_icon_category_list = [ ...uagb_blocks_info.uagb_svg_icons.uagb_category_list ];
 	delete uagb_blocks_info.uagb_svg_icons.uagb_category_list;
 }

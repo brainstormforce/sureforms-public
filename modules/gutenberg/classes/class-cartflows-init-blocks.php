@@ -34,6 +34,14 @@ class Cartflows_Init_Blocks {
 	 */
 	public static $icon_json;
 
+			/**
+		 * As our svg icon is too long array so we will divide that into number of icon chunks.
+		 *
+		 * @var int
+		 * @since 2.7.0
+		 */
+		public static $number_of_icon_chunks = 4;
+
 	/**
 	 *  Initiator
 	 */
@@ -484,7 +492,6 @@ class Cartflows_Init_Blocks {
 					'is_cartflows_pro_install' => false,
 					// wcf()->is_woo_active,
 					'is_woo_active'            => true, //Nathan
-					'wcf_svg_icons'            => $this->backend_load_font_awesome_icons(),
 					'show_product_options'     => $this->maybe_show_product_options_for_store_checkout( $post_id ),
 					// Add more data here that you want to access from `cartflowsGlobal` object.
 				)
@@ -537,30 +544,6 @@ class Cartflows_Init_Blocks {
 
 		return false;
 
-	}
-
-	/**
-	 * Get Json Data.
-	 *
-	 * @since 1.8.1
-	 * @return Array
-	 */
-	public function backend_load_font_awesome_icons() {
-
-		$json_file = SUREFORMS_DIR . 'modules/gutenberg/src/controls/spectra-icons-v6.php';
-
-		if ( ! file_exists( $json_file ) ) {
-			return array();
-		}
-
-		// Function has already run.
-		if ( null !== self::$icon_json ) {
-			return self::$icon_json;
-		}
-
-		self::$icon_json = include $json_file;
-
-		return self::$icon_json;
 	}
 
 	/**

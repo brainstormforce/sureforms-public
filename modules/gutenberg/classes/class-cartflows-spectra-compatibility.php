@@ -55,7 +55,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 				'CF_block-cartflows-block-js',
 				'uagb_blocks_info',
 				array(
-					'uagb_svg_icons'                => Cartflows_Init_Blocks::get_instance()->backend_load_font_awesome_icons(),
+					'number_of_icon_chunks'         => Cartflows_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',
 					'load_font_awesome_5'           => 'disabled',
 					'uag_select_font_globally'      => array(),
@@ -64,7 +64,30 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 					'spectra_custom_fonts'          => apply_filters( 'spectra_system_fonts', array() ),
 				)
 			);
+
+			// Add svg icons in chunks.
+			$this->add_svg_icon_assets();
 		}
+
+		/**
+		 * Localize SVG icon scripts in chunks.
+		 * Ex - if 1800 icons available so we will localize 4 variables for it.
+		 *
+		 * @since 2.7.0
+		 * @return void
+		 */
+		public function add_svg_icon_assets() {
+			$localize_icon_chunks = Cartflows_Gb_Helper::backend_load_font_awesome_icons();
+
+			if ( ! $localize_icon_chunks ) {
+				return;
+			}
+
+			foreach ( $localize_icon_chunks as $chunk_index => $value ) {
+				wp_localize_script( 'CF_block-cartflows-block-js', "uagb_svg_icons_{$chunk_index}", $value );
+			}
+		}
+
 	}
 	/**
 	 * Kicking this off by calling 'get_instance()' method

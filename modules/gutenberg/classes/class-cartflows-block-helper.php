@@ -17,6 +17,14 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 	class Cartflows_Block_Helper {
 
 		/**
+		 * Store Json variable
+		 *
+		 * @since 1.8.1
+		 * @var instance
+		 */
+		public static $icon_json;
+
+		/**
 		 * Get Next Step Button CSS
 		 *
 		 * @since 1.6.15

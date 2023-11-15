@@ -357,10 +357,10 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 		'padding-left': generateCSSUnit( blockLeftPaddingMobile, blockPaddingUnitMobile ),
 	};
 	tablet_selectors[ ' .uagb-separator' ] = {
-		'width': generateCSSUnit(
-			getFallbackNumber( separatorWidthTablet, 'separatorWidthTablet', blockName ),
-			separatorWidthType
-		),
+		// 'width': generateCSSUnit(
+		// 	getFallbackNumber( separatorWidthTablet, 'separatorWidthTablet', blockName ),
+		// 	separatorWidthType
+		// ),
 		'margin-bottom': generateCSSUnit(
 			getFallbackNumber( separatorSpaceTablet, 'separatorSpaceTablet', blockName ),
 			separatorSpaceType
@@ -392,10 +392,10 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 		...highLightBorderCSSMobile,
 	};
 	mobile_selectors[ ' .uagb-separator' ] = {
-		'width': generateCSSUnit(
-			getFallbackNumber( separatorWidthMobile, 'separatorWidthMobile', blockName ),
-			separatorWidthType
-		),
+		// 'width': generateCSSUnit(
+		// 	getFallbackNumber( separatorWidthMobile, 'separatorWidthMobile', blockName ),
+		// 	separatorWidthType
+		// ),
 		'margin-bottom': generateCSSUnit(
 			getFallbackNumber( separatorSpaceMobile, 'separatorSpaceMobile', blockName ),
 			separatorSpaceType

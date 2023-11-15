@@ -217,34 +217,6 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 			return $align_css;
 		}
 
-				/**
-		 * Get Json Data.
-		 *
-		 * @since 1.8.1
-		 * @return array
-		 */
-		public static function backend_load_font_awesome_icons() {
-
-			if ( null !== self::$icon_json ) {
-				return self::$icon_json;
-			}
-
-			$icons_chunks = array();
-			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = UAGB_DIR . "blocks-config/uagb-controls/spectra-icons-v6-{$i}.php";
-				if ( file_exists( $json_file ) ) {
-					$icons_chunks[] = include $json_file;
-				}
-			}
-
-			if ( empty( $icons_chunks ) ) {
-				return array();
-			}
-
-			self::$icon_json = $icons_chunks;
-			return self::$icon_json;
-		}
-
 		/**
 		 * Print the Script in footer.
 		 */
@@ -915,6 +887,35 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 				'zindex_wrap'              => $zindex_wrap,
 				'zindex_extention_enabled' => $zindex_extention_enabled,
 			);
+		}
+
+		/**
+		 * Get Json Data.
+		 *
+		 * @since 1.8.1
+		 * @return array
+		 */
+		public static function backend_load_font_awesome_icons() {
+
+			if ( null !== self::$icon_json ) {
+				return self::$icon_json;
+			}
+
+			$icons_chunks = array();
+			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
+				$json_file = SUREFORMS_DIR . "modules/gutenberg/src/controls/spectra-icons-v6-{$i}.php";
+
+				if ( file_exists( $json_file ) ) {
+					$icons_chunks[] = include $json_file;
+				}
+			}
+
+			if ( empty( $icons_chunks ) ) {
+				return array();
+			}
+
+			self::$icon_json = $icons_chunks;
+			return self::$icon_json;
 		}
 	}
 	/**
