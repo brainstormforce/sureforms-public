@@ -88,6 +88,42 @@ if ( ratingElements ) {
 
 		ratingElements[ i ].setAttribute( 'hidden', 'true' );
 	}
+
+	const singleRating = document.querySelectorAll( '.srfm-rating-icon svg' );
+
+	if ( singleRating ) {
+		singleRating.forEach( ( element ) => {
+			element.addEventListener( 'click', function ( e ) {
+				// Gets the value of the star clicked.
+				const onStar = parseInt(
+					e.target
+						.closest( '.srfm-rating-icon' )
+						.getAttribute( 'data-value' )
+				);
+				const stars = e.target.closest(
+					'.srfm-rating-icon-wrapper'
+				).children;
+
+				// Set the value of the field.
+				e.target
+					.closest( '.srfm-classic-rating-container' )
+					.querySelector( '.srfm-rating-field-result' )
+					.setAttribute( 'value', parseInt( onStar ) );
+
+				for ( let i = 0; i < stars.length; i++ ) {
+					stars[ i ]
+						.querySelector( 'svg' )
+						.classList.remove( 'srfm-fill-current' );
+				}
+
+				for ( let j = 0; j < onStar; j++ ) {
+					stars[ j ]
+						.querySelector( 'svg' )
+						.classList.add( 'srfm-fill-current' );
+				}
+			} );
+		} );
+	}
 }
 
 // Sender's Email.
@@ -653,28 +689,67 @@ const phoneElement = document.getElementsByClassName(
 if ( phoneElement ) {
 	for ( let i = 0; i < phoneElement.length; i++ ) {
 		const blockID = phoneElement[ i ].id.split( '-' )[ 3 ];
-		const countryCode = document.getElementById(
-			`srfm-country-code-${ blockID }`
-		);
 		const phoneNumber = document.getElementById(
 			`srfm-phone-number-${ blockID }`
 		);
 		const fullPhoneNumberInput = document.getElementById(
 			`srfm-fullPhoneNumber-${ blockID }`
 		);
+		const errorMessage = phoneElement[ i ].querySelector(
+			'.srfm-error-message'
+		);
+		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
+		const itlOptions = {
+			utilsScript: '../scripts/int-tel-input/utils.js',
+		};
+		if ( isAutoCountry === 'true' ) {
+			itlOptions.initialCountry = 'auto';
+			itlOptions.geoIpLookup = function ( callback ) {
+				fetch( 'https://ipapi.co/json' )
+					.then( function ( res ) {
+						return res.json();
+					} )
+					.then( function ( data ) {
+						callback( data.country_code );
+					} )
+					.catch( function () {
+						callback( 'us' );
+					} );
+			};
+		}
+
+		const iti = window.intlTelInput( phoneNumber, itlOptions );
 		const updateFullPhoneNumber = () => {
-			const countryCodeValue = countryCode.value
-				.trim()
-				.replace( /[^\d+]/g, '' );
 			const phoneNumberValue = phoneNumber.value.trim();
-			fullPhoneNumberInput.value = `(${ countryCodeValue }) ${ phoneNumberValue }`;
+			fullPhoneNumberInput.value = iti.getNumber();
 			if ( ! phoneNumberValue ) {
 				fullPhoneNumberInput.value = '';
 			}
+			const intTelError = phoneElement[ i ].querySelector(
+				'.srfm-int-tel-error'
+			);
+			const phoneParent = phoneElement[ i ].querySelector(
+				'.srfm-classic-phone-parent'
+			);
+			if ( phoneNumberValue && ! iti.isValidNumber() ) {
+				if ( intTelError ) {
+					intTelError.style.display = 'block';
+					phoneParent.classList.add( 'srfm-classic-input-error' );
+					errorMessage.style.display = 'none';
+				}
+			} else {
+				intTelError.style.display = 'none';
+				phoneParent.classList.remove( 'srfm-classic-input-error' );
+			}
 		};
 
-		countryCode.addEventListener( 'change', updateFullPhoneNumber );
-		phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+		if ( phoneNumber ) {
+			phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
+			phoneNumber.addEventListener(
+				'countrychange',
+				updateFullPhoneNumber
+			);
+		}
 	}
 }
 
@@ -1122,51 +1197,29 @@ const datePickerContainers = document.getElementsByClassName(
 	'srfm-classic-date-time-container'
 );
 if ( datePickerContainers ) {
+	flatpickr( '.srfm-input-date-time', {
+		enableTime: true,
+		dateFormat: 'Y-m-d H:i',
+	} );
+
+	flatpickr( '.srfm-input-date' );
+
+	flatpickr( '.srfm-input-time', {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: 'H:i',
+	} );
+
 	for ( const datePickerContainer of datePickerContainers ) {
-		const datePicker = datePickerContainer.querySelector(
-			'.srfm-classic-date-time-picker'
-		);
 		const resultInput = datePickerContainer.querySelector(
 			'.srfm-classic-date-time-result'
 		);
-		const fieldType = resultInput.getAttribute( 'field-type' );
-		const dateTimeInput = datePickerContainer.querySelector(
-			'.srfm-input-data-time'
-		);
-		let buttonAttribute = '';
-		let eventType = '';
-		if ( fieldType === 'date' ) {
-			eventType = 'dateChange.te.datepicker';
-			buttonAttribute = 'data-te-datepicker-toggle-ref';
-		} else if ( fieldType === 'dateTime' ) {
-			eventType = 'close.te.datetimepicker';
-			buttonAttribute = 'data-te-date-timepicker-toggle-ref';
-		} else {
-			eventType = 'input.te.timepicker';
-			buttonAttribute = 'data-te-timepicker-icon';
-		}
-		const button = datePickerContainer.querySelector(
-			`button[${ buttonAttribute }]`
-		);
-		dateTimeInput.addEventListener( 'click', () => {
-			const clickEvent = new Event( 'click' );
-			if ( button ) {
-				button.dispatchEvent( clickEvent );
-			}
-		} );
-		if ( button ) {
-			button.addEventListener( 'click', () => {
-				datePicker.addEventListener( eventType, () => {
-					formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
-					resultInput.value = formattedDate;
-				} );
-			} );
-		} else {
-			datePicker.addEventListener( eventType, () => {
-				formattedDate = dateTimeInput.value.replaceAll( '/', '-' );
+
+		datePickerContainer.querySelector( '.srfm-input-data-time' ).onchange =
+			function ( e ) {
+				formattedDate = e.target.value.replaceAll( '/', '-' );
 				resultInput.value = formattedDate;
-			} );
-		}
+			};
 	}
 }
 
