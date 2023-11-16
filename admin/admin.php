@@ -225,6 +225,7 @@ class Admin {
 				'sureforms-' . $asset_handle,
 				'sureforms_admin',
 				[
+					'site_url'                => get_site_url(),
 					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SUREFORMS_VER,

@@ -42,6 +42,7 @@ const default_keys = {
 	_srfm_submit_styling_inherit_from_theme: false,
 	_srfm_form_styling: 'classic',
 	_srfm_form_container_width: 650,
+	_srfm_thankyou_message_title: 'Thank you',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -81,13 +82,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--srfm-primary-color',
-							value:
-								sureforms_keys._srfm_color1 || '#0284C7',
+							value: sureforms_keys._srfm_color1 || '#0284C7',
 						},
 						{
 							property: '--srfm-primary-text-color',
-							value:
-								sureforms_keys._srfm_textcolor1 || '#fff',
+							value: sureforms_keys._srfm_textcolor1 || '#fff',
 						},
 						{
 							property: '--srfm-secondary-color',
