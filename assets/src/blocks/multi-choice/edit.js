@@ -2,7 +2,11 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+} from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
@@ -39,7 +43,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
-	const [ newOption, setNewOption ] = useState( '' );
+	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
 
 	function handleClick( index ) {
 		if ( singleSelection === true ) {
@@ -54,21 +58,50 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}
 
+	const addOption = () => {
+		const newOptions = {
+			optiontitle:
+				__( 'Option Name ', 'sureforms' ) + `${ options.length + 1 }`,
+		};
+		options[ options.length ] = newOptions;
+		const addnewOptions = options.map( ( item ) => item );
+
+		setAttributes( { options: addnewOptions } );
+	};
+
+	const changeOption = ( e, index ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...e };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
+	};
+
+	const deleteOption = ( index ) => {
+		const deleteOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				options.splice( index, 1 );
+				item = { options };
+			}
+			return item;
+		} );
+
+		setAttributes( { deleteOptions } );
+	};
+
 	function editOption( value, i ) {
 		if ( value === '' ) {
-			handleDelete( i );
+			deleteOption( i );
 			return;
 		}
 		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
+		updatedOptions[ i ].optiontitle = value;
 		setAttributes( { options: updatedOptions } );
 	}
 
-	function handleDelete( i ) {
-		const newOptions = [ ...options ];
-		newOptions.splice( i, 1 );
-		setAttributes( { options: newOptions } );
-	}
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -208,10 +241,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.optiontitle
 																						}
 																						data={ {
-																							value: option,
+																							value: option.optiontitle,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -228,7 +261,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
-																							handleDelete(
+																							deleteOption(
 																								i
 																							)
 																						}
@@ -254,13 +287,13 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							<div className="sureform-add-option-container">
 								<UAGTextControl
 									data={ {
-										value: newOption,
+										value: newOption.optiontitle,
 										label: 'option',
 									} }
 									showHeaderControls={ false }
-									value={ newOption }
+									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
-										setNewOption( value )
+										setNewOption( { optiontitle: value } )
 									}
 								/>
 								<Button
@@ -359,6 +392,11 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<MultichoiceClassicStyle
 						blockID={ block_id }
 						attributes={ attributes }
+						isSelected={ isSelected }
+						addOption={ addOption }
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<MultichoiceThemeStyle
@@ -366,20 +404,29 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
+						isSelected={ isSelected }
+						addOption={ addOption }
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
+						setAttributes={ setAttributes }
 					/>
 				) }
 
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</div>

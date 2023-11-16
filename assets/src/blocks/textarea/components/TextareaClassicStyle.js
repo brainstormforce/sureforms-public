@@ -1,4 +1,10 @@
-export const TextareaClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const TextareaClassicStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const {
 		label,
 		placeholder,
@@ -8,17 +14,18 @@ export const TextareaClassicStyle = ( { attributes, blockID } ) => {
 		rows,
 		cols,
 	} = attributes;
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="srfm-classic-label-text"
-				htmlFor={ 'text-area-block-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<textarea
 				required={ required }
 				label={ label }

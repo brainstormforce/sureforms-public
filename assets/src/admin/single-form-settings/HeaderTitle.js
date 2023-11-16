@@ -23,10 +23,15 @@ const HeaderTitle = () => {
 				padding: '11px 16px',
 				marginTop: '12px',
 				borderRadius: '4px',
-				border: '1px solid #949494',
-				background: '#FFF',
+				border: '1px solid #94A3B8',
+				background: ' #F9FAFB',
 				boxShadow: 'none',
+				fontFamily: 'Inter',
+				fontSize: '16px',
+				fontStyle: 'normal',
+				fontWeight: '400',
 			} }
+			className="srfm-header-title-input"
 			placeholder={ __( 'Form Title', 'sureforms' ) }
 			value={ title }
 			onChange={ ( value ) => {

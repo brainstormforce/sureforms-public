@@ -198,19 +198,24 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//phone field
 		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
+			const phoneParent = container.querySelector(
+				'.srfm-classic-phone-parent'
+			);
+			const isIntelError = phoneParent.classList.contains(
+				'srfm-classic-input-error'
+			);
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
-			if ( isPhoneRequired === 'true' && ! inputValue ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
+			if ( isIntelError ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = phoneInput;
 				}
-				if ( duplicateMessage ) {
-					duplicateMessage.style.display = 'none';
-				}
+			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
+				errorMessage.style.display = 'block';
+				duplicateMessage.style.display = 'none';
 				validateResult = true;
 				// we might be needing that later.
 				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
@@ -232,8 +237,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorMessage.style.display = 'none';
 				}
 				//for Tailwind phone field UI
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
 						'!srfm-ring-red-500',
@@ -684,7 +687,6 @@ function showSuccessMessage( element, form ) {
 		element.style.minHeight = '420px';
 	}
 	element.style.opacity = 1;
-	element.style.height = 'auto';
 	form.style.display = 'none';
 }
 

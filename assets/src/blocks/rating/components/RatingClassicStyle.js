@@ -1,6 +1,12 @@
-export const RatingClassicStyle = ( { attributes } ) => {
-	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+import { RichText } from '@wordpress/block-editor';
 
+export const RatingClassicStyle = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
+	const { required, label, showNumbers, iconShape, maxValue } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
 	let svg = '';
 	switch ( iconShape ) {
 		case 'star':
@@ -11,7 +17,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -29,7 +35,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -46,7 +52,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					fill="none"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 					viewBox="0 0 122.88 122.88"
 				>
 					<g>
@@ -77,7 +83,7 @@ export const RatingClassicStyle = ( { attributes } ) => {
 					viewBox="0 0 24 24"
 					strokeWidth="1.5"
 					stroke="currentColor"
-					className="h-8 w-8"
+					className="srfm-h-8 srfm-w-8"
 				>
 					<path
 						strokeLinecap="round"
@@ -108,14 +114,14 @@ export const RatingClassicStyle = ( { attributes } ) => {
 
 	return (
 		<>
-			<label className="srfm-classic-label-text">
-				{ label }
-				{ required && label ? (
-					<span style={ { color: 'red' } }> *</span>
-				) : (
-					''
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-classic-label-text ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<ul
 				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0"
 				data-te-rating-init

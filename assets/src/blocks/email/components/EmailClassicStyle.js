@@ -1,4 +1,6 @@
-export const EmailClassicStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -7,18 +9,20 @@ export const EmailClassicStyle = ( { attributes, blockID } ) => {
 		isConfirmEmail,
 		confirmLabel,
 	} = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
 			<div className="srfm-frontend-inputs-holder srfm-classic-inputs-holder">
-				<label
-					className="srfm-classic-label-text"
-					htmlFor={ 'srfm-text-input-' + blockID }
-				>
-					{ label }
-					{ required && label && (
-						<span style={ { color: 'red' } }> *</span>
-					) }
-				</label>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => setAttributes( { label: value } ) }
+					className={ `srfm-classic-label-text ${ isRequired }` }
+					multiline={ false }
+					id={ blockID }
+				/>
 				<div className="srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
 					<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
 						<i
