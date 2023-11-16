@@ -9,12 +9,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
+if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 
 	/**
 	 * Class for Spectra compatibility
 	 */
-	class Cartflows_Spectra_Compatibility {
+	class Sureforms_Spec_Spectra_Compatibility {
 
 		/**
 		 * Member Variable
@@ -55,7 +55,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 				'CF_block-cartflows-block-js',
 				'uagb_blocks_info',
 				array(
-					'number_of_icon_chunks'         => Cartflows_Gb_Helper::$number_of_icon_chunks,
+					'number_of_icon_chunks'         => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',
 					'load_font_awesome_5'           => 'disabled',
 					'uag_select_font_globally'      => array(),
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 		 * @return void
 		 */
 		public function add_svg_icon_assets() {
-			$localize_icon_chunks = Cartflows_Gb_Helper::backend_load_font_awesome_icons();
+			$localize_icon_chunks = Sureforms_Spec_Gb_Helper::backend_load_font_awesome_icons();
 
 			if ( ! $localize_icon_chunks ) {
 				return;
@@ -92,6 +92,6 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 	/**
 	 * Kicking this off by calling 'get_instance()' method
 	 */
-	Cartflows_Spectra_Compatibility::get_instance();
+	Sureforms_Spec_Spectra_Compatibility::get_instance();
 
 endif;

@@ -1,20 +1,20 @@
 <?php
 /**
- * Cartflows Block Js.
+ * Sureforms Block Js.
  *
- * @package Cartflows
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
 
 	/**
-	 * Class Cartflows_Block_JS.
+	 * Class Sureforms_Spec_Block_JS.
 	 */
-	class Cartflows_Block_JS {
+	class Sureforms_Spec_Block_JS {
 
 		/**
 		 * Adds Google fonts for Next Step Button.
@@ -34,8 +34,8 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 			$sub_title_font_weight      = isset( $attr['subTitleFontWeight'] ) ? $attr['subTitleFontWeight'] : '';
 			$sub_title_font_subset      = isset( $attr['subTitleFontSubset'] ) ? $attr['subTitleFontSubset'] : '';
 
-			Cartflows_Gb_Helper::blocks_google_font( $title_load_google_font, $title_font_family, $title_font_weight, $title_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $sub_title_load_google_font, $sub_title_font_family, $sub_title_font_weight, $sub_title_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $title_load_google_font, $title_font_family, $title_font_weight, $title_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $sub_title_load_google_font, $sub_title_font_family, $sub_title_font_weight, $sub_title_font_subset );
 		}
 
 		/**
@@ -96,16 +96,16 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 			$customer_detail_content_font_weight      = isset( $attr['customerDetailContentFontWeight'] ) ? $attr['customerDetailContentFontWeight'] : '';
 			$customer_detail_content_font_subset      = isset( $attr['customerDetailContentFontSubset'] ) ? $attr['customerDetailContentFontSubset'] : '';
 
-			Cartflows_Gb_Helper::blocks_google_font( $heading_load_google_font, $heading_font_family, $heading_font_weight, $heading_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $section_heading_load_google_font, $section_heading_font_family, $section_heading_font_weight, $section_heading_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $section_content_load_google_font, $section_content_font_family, $section_content_font_weight, $section_content_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $order_overview_load_google_font, $order_overview_font_family, $order_overview_font_weight, $order_overview_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $download_heading_load_google_font, $download_heading_font_family, $download_heading_font_weight, $download_heading_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $download_content_load_google_font, $download_content_font_family, $download_content_font_weight, $download_content_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $order_detail_heading_load_google_font, $order_detail_heading_font_family, $order_detail_heading_font_weight, $order_detail_heading_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $order_detail_content_load_google_font, $order_detail_content_font_family, $order_detail_content_font_weight, $order_detail_content_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $customer_detail_heading_load_google_font, $customer_detail_heading_font_family, $customer_detail_heading_font_weight, $customer_detail_heading_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $customer_detail_content_load_google_font, $customer_detail_content_font_family, $customer_detail_content_font_weight, $customer_detail_content_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $heading_load_google_font, $heading_font_family, $heading_font_weight, $heading_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $section_heading_load_google_font, $section_heading_font_family, $section_heading_font_weight, $section_heading_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $section_content_load_google_font, $section_content_font_family, $section_content_font_weight, $section_content_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $order_overview_load_google_font, $order_overview_font_family, $order_overview_font_weight, $order_overview_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $download_heading_load_google_font, $download_heading_font_family, $download_heading_font_weight, $download_heading_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $download_content_load_google_font, $download_content_font_family, $download_content_font_weight, $download_content_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $order_detail_heading_load_google_font, $order_detail_heading_font_family, $order_detail_heading_font_weight, $order_detail_heading_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $order_detail_content_load_google_font, $order_detail_content_font_family, $order_detail_content_font_weight, $order_detail_content_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $customer_detail_heading_load_google_font, $customer_detail_heading_font_family, $customer_detail_heading_font_weight, $customer_detail_heading_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $customer_detail_content_load_google_font, $customer_detail_content_font_family, $customer_detail_content_font_weight, $customer_detail_content_font_subset );
 
 		}
 
@@ -137,10 +137,10 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 			$global_font_weight      = isset( $attr['globalFontWeight'] ) ? $attr['globalFontWeight'] : '';
 			$global_font_subset      = isset( $attr['globalFontSubset'] ) ? $attr['globalFontSubset'] : '';
 
-			Cartflows_Gb_Helper::blocks_google_font( $global_load_google_font, $global_font_family, $global_font_weight, $global_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $head_load_google_font, $head_font_family, $head_font_weight, $head_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $button_load_google_font, $button_font_family, $button_font_weight, $button_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $input_load_google_font, $input_font_family, $input_font_weight, $input_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $global_load_google_font, $global_font_family, $global_font_weight, $global_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $head_load_google_font, $head_font_family, $head_font_weight, $head_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $button_load_google_font, $button_font_family, $button_font_weight, $button_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $input_load_google_font, $input_font_family, $input_font_weight, $input_font_subset );
 
 		}
 
@@ -162,8 +162,8 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 			$submit_button_font_weight      = isset( $attr['submitButtonFontWeight'] ) ? $attr['submitButtonFontWeight'] : '';
 			$submit_button_font_subset      = isset( $attr['submitButtonFontSubset'] ) ? $attr['submitButtonFontSubset'] : '';
 
-			Cartflows_Gb_Helper::blocks_google_font( $general_load_google_font, $general_font_family, $general_font_weight, $general_font_subset );
-			Cartflows_Gb_Helper::blocks_google_font( $submit_button_load_google_font, $submit_button_font_family, $submit_button_font_weight, $submit_button_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $general_load_google_font, $general_font_family, $general_font_weight, $general_font_subset );
+			Sureforms_Spec_Gb_Helper::blocks_google_font( $submit_button_load_google_font, $submit_button_font_family, $submit_button_font_weight, $submit_button_font_subset );
 
 		}
 	}

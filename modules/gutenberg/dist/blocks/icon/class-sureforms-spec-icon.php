@@ -1,20 +1,20 @@
 <?php
 /**
- * WCFB - Checkout Form Styler.
+ * Sureforms - Icons
  *
- * @package WCFB
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WCFB_Icon' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 
 	/**
-	 * Class WCFB_Icon.
+	 * Class Sureforms_Spec_Icon.
 	 */
-	class WCFB_Icon {
+	class Sureforms_Spec_Icon {
 
 		/**
 		 * Member Variable
@@ -54,7 +54,7 @@ if ( ! class_exists( 'WCFB_Icon' ) ) {
 				return;
 			}
 
-			$icon_border_attribute = Cartflows_Block_Config::generate_border_attribute( 'icon' );
+			$icon_border_attribute = Sureforms_Spec_Block_Config::generate_border_attribute( 'icon' );
 
 			$attr = array_merge(
 				$icon_border_attribute,
@@ -751,8 +751,8 @@ if ( ! class_exists( 'WCFB_Icon' ) ) {
 				),
 			);
 
-			// $field_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
+			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
+			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
 
 			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
 
@@ -790,11 +790,7 @@ if ( ! class_exists( 'WCFB_Icon' ) ) {
 				$link_url = $link_url ? $link_url : $link_url;
 			}
 
-			if ( $disable_link && $link_url ) {
-				$icon_html = "<a rel='noopener noreferrer' href='" . $link_url || $hash . "' target='" . $target_val . "'></a>";
-			} else {
-				$icon_html = Cartflows_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' );
-			}
+			
 
 			$main_classes = array(
 				'uagb-icon-wrapper',
@@ -808,7 +804,15 @@ if ( ! class_exists( 'WCFB_Icon' ) ) {
 			ob_start();
 			?>
 				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
-					<span class="uagb-svg-wrapper"><?php echo wp_kses_post( $icon_html ); ?></span>
+					<span class="uagb-svg-wrapper">
+					<?php
+						if ( $disable_link && $link_url ) {
+							echo "<a rel='noopener noreferrer' href='" . $link_url || $hash . "' target='" . $target_val . "'></a>";
+						} else {
+							Sureforms_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' );
+						}
+					?>
+					</span>
 				</div>
 			<?php
 			return ob_get_clean();
@@ -819,5 +823,5 @@ if ( ! class_exists( 'WCFB_Icon' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Icon::get_instance();
+	Sureforms_Spec_Icon::get_instance();
 }

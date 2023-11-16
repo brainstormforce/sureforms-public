@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class Cartflows_Gutenberg_Editor {
+class Sureforms_Spec_Gutenberg_Editor {
 
 	/**
 	 * Member Variable
@@ -184,7 +184,7 @@ class Cartflows_Gutenberg_Editor {
 
 			}
 
-					do_action( 'cartflows_gutenberg_editor_compatibility', $current_post_id );
+					do_action( 'Sureforms_Spec_Gutenberg_Editor_compatibility', $current_post_id );
 		}
 		// }
 		// }
@@ -241,4 +241,4 @@ class Cartflows_Gutenberg_Editor {
 /**
  *  Kicking this off by calling 'get_instance()' method
  */
-Cartflows_Gutenberg_Editor::get_instance();
+Sureforms_Spec_Gutenberg_Editor::get_instance();

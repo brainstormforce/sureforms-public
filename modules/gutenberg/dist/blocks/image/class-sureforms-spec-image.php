@@ -1,20 +1,20 @@
 <?php
 /**
- * WCFB - Checkout Form Styler.
+ * Sureforms - Image.
  *
- * @package WCFB
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WCFB_Image' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 
 	/**
-	 * Class WCFB_Image.
+	 * Class Sureforms_Spec_Image.
 	 */
-	class WCFB_Image {
+	class Sureforms_Spec_Image {
 
 		/**
 		 * Member Variable
@@ -54,8 +54,8 @@ if ( ! class_exists( 'WCFB_Image' ) ) {
 				return;
 			}
 
-			$image_border_attributes   = Cartflows_Block_Config::generate_border_attribute( 'overlay' );
-			$overlay_border_attributes = Cartflows_Block_Config::generate_border_attribute( 'image' );
+			$image_border_attributes   = Sureforms_Spec_Block_Config::generate_border_attribute( 'overlay' );
+			$overlay_border_attributes = Sureforms_Spec_Block_Config::generate_border_attribute( 'image' );
 
 			$attr = array_merge(
 				array(
@@ -1534,12 +1534,12 @@ if ( ! class_exists( 'WCFB_Image' ) ) {
 				$overlay_border_attributes
 			);
 
-			// $field_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
+			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
+			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
 
 			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
 
-			$attributes = apply_filters( 'cartflows_gutenberg_cf_attributes_filters', $attr );
+			$attributes = apply_filters( 'sureforms_gutenberg_cf_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/image',
@@ -1622,7 +1622,7 @@ if ( ! class_exists( 'WCFB_Image' ) ) {
 					<?php
 					if ( 'overlay' === $layout ) {
 						?>
-						<div class="wp-block-uagb-image--layout-overlay__color-wrapper"></div>	
+						<div class="wp-block-uagb-image--layout-overlay__color-wrapper"></div>
 						<div class="wp-block-uagb-image--layout-overlay__inner <?php $overlay_content_position = str_replace( ' ', '-', $overlay_content_position ); ?>">
 						<?php
 						$image_overlay_link;
@@ -1648,5 +1648,5 @@ if ( ! class_exists( 'WCFB_Image' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Image::get_instance();
+	Sureforms_Spec_Image::get_instance();
 }

@@ -1,20 +1,20 @@
 <?php
 /**
- * WCFB - Checkout Form Styler.
+ * Sureforms - Advanced Heading
  *
- * @package WCFB
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 
 	/**
-	 * Class WCFB_Advanced_Heading.
+	 * Class Sureforms_Spec_Advanced_Heading.
 	 */
-	class WCFB_Advanced_Heading {
+	class Sureforms_Spec_Advanced_Heading {
 
 		/**
 		 * Member Variable
@@ -54,7 +54,7 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 				return;
 			}
 
-			$highLight_border_attribute = Cartflows_Block_Config::generate_border_attribute( 'highLight' );
+			$highLight_border_attribute = Sureforms_Spec_Block_Config::generate_border_attribute( 'highLight' );
 
 			$attr = array_merge(
 				$highLight_border_attribute,
@@ -1463,8 +1463,8 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 				),
 			);
 
-			// $field_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
+			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
+			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
 
 			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
 
@@ -1498,7 +1498,7 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 			$separator_position    = isset( $attributes['seperatorPosition'] ) ? $attributes['seperatorPosition'] : '';
 			$heading_desc_position = isset( $attributes['headingDescPosition'] ) ? $attributes['headingDescPosition'] : '';
 
-			$separator = 'none' !== $separator_style ? "<div className='uagb-separator'></div>" : '';
+			$separator = 'none' !== $separator_style ? "<div class='uagb-separator'></div>" : '';
 
 			$separator_position_above = 'above-heading' === $separator_position ? $separator : '';
 			$separator_position_below = 'below-heading' === $separator_position ? $separator : '';
@@ -1540,5 +1540,5 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Advanced_Heading::get_instance();
+	Sureforms_Spec_Advanced_Heading::get_instance();
 }

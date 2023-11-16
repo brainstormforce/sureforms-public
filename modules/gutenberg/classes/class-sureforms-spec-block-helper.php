@@ -1,20 +1,20 @@
 <?php
 /**
- * Cartflows Block Helper.
+ * Sureforms Block Helper.
  *
- * @package Cartflows
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 
 	/**
-	 * Class Cartflows_Block_Helper.
+	 * Class Sureforms_Spec_Block_Helper.
 	 */
-	class Cartflows_Block_Helper {
+	class Sureforms_Spec_Block_Helper {
 		/**
 		 * Get Icon Block CSS
 		 *
@@ -25,12 +25,12 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		 */
 		public static function get_icon_css( $attr, $id ) {
 
-			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/icon']['attributes'];
+			$defaults = Sureforms_Spec_Gb_Helper::$block_list['sureforms/icon']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
-			$icon_width       = Cartflows_Gb_Helper::get_css_value( $attr['iconSize'], $attr['iconSizeUnit'] );
-			$transformation   = Cartflows_Gb_Helper::get_css_value( $attr['rotation'], $attr['rotationUnit'] );
+			$icon_width       = Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconSize'], $attr['iconSizeUnit'] );
+			$transformation   = Sureforms_Spec_Gb_Helper::get_css_value( $attr['rotation'], $attr['rotationUnit'] );
 			$background       = 'classic' === $attr['iconBackgroundColorType'] ? $attr['iconBackgroundColor'] : $attr['iconBackgroundGradientColor'];
 			$hover_background = 'classic' === $attr['iconHoverBackgroundColorType'] ? $attr['iconHoverBackgroundColor'] : $attr['iconHoverBackgroundGradientColor'];
 
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'blur'       => $attr['iconShadowBlur'],
 				'color'      => $attr['iconShadowColor'],
 			);
-			$drop_shadow            = Cartflows_Gb_Helper::generate_shadow_css( $drop_shadow_properties );
+			$drop_shadow            = Sureforms_Spec_Gb_Helper::generate_shadow_css( $drop_shadow_properties );
 
 			$box_shadow_properties = array(
 				'horizontal' => $attr['iconBoxShadowHOffset'],
@@ -61,8 +61,8 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'alt_color'  => $attr['iconBoxShadowColor'],
 			);
 
-			$box_shadow           = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_properties );
-			$box_shadow_hover_css = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
+			$box_shadow           = Sureforms_Spec_Gb_Helper::generate_shadow_css( $box_shadow_properties );
+			$box_shadow_hover_css = Sureforms_Spec_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
 
 			$t_selectors = array();
 			$m_selectors = array();
@@ -89,15 +89,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'display'        => 'inline-flex',
 					'background'     => $background,
 					// padding.
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopPadding'], $attr['iconPaddingUnit'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightPadding'], $attr['iconPaddingUnit'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomPadding'], $attr['iconPaddingUnit'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftPadding'], $attr['iconPaddingUnit'] ),
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopPadding'], $attr['iconPaddingUnit'] ),
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightPadding'], $attr['iconPaddingUnit'] ),
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomPadding'], $attr['iconPaddingUnit'] ),
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftPadding'], $attr['iconPaddingUnit'] ),
 					// margin.
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMargin'], $attr['iconMarginUnit'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMargin'], $attr['iconMarginUnit'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMargin'], $attr['iconMarginUnit'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMargin'], $attr['iconMarginUnit'] ),
+					'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopMargin'], $attr['iconMarginUnit'] ),
+					'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightMargin'], $attr['iconMarginUnit'] ),
+					'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomMargin'], $attr['iconMarginUnit'] ),
+					'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftMargin'], $attr['iconMarginUnit'] ),
 					// border.
 					'border-style'   => $attr['iconBorderStyle'],
 					'border-color'   => $attr['iconBorderColor'],
@@ -121,7 +121,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			};
 
 			// Generates css for tablet devices.
-			$t_icon_width                                        = Cartflows_Gb_Helper::get_css_value( $attr['iconSizeTablet'], $attr['iconSizeUnit'] );
+			$t_icon_width                                        = Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconSizeTablet'], $attr['iconSizeUnit'] );
 			$t_selectors['.uagb-icon-wrapper']                   = array(
 				'text-align' => $attr['alignTablet'],
 			);
@@ -132,20 +132,20 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$t_selectors['.uagb-icon-wrapper .uagb-svg-wrapper'] = array_merge(
 				array(
 					'display'        => 'inline-flex',
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopTabletPadding'], $attr['iconTabletPaddingUnit'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightTabletPadding'], $attr['iconTabletPaddingUnit'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomTabletPadding'], $attr['iconTabletPaddingUnit'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftTabletPadding'], $attr['iconTabletPaddingUnit'] ),
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopTabletMargin'], $attr['iconTabletMarginUnit'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightTabletMargin'], $attr['iconTabletMarginUnit'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomTabletMargin'], $attr['iconTabletMarginUnit'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftTabletPadding'], $attr['iconTabletPaddingUnit'] ),
+					'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomTabletMargin'], $attr['iconTabletMarginUnit'] ),
+					'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftTabletMargin'], $attr['iconTabletMarginUnit'] ),
 				),
 				self::generate_border_css( $attr, 'icon', 'tablet' )
 			);
 
 			// Generates css for mobile devices.
-			$m_icon_width                                        = Cartflows_Gb_Helper::get_css_value( $attr['iconSizeMobile'], $attr['iconSizeUnit'] );
+			$m_icon_width                                        = Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconSizeMobile'], $attr['iconSizeUnit'] );
 			$m_selectors['.uagb-icon-wrapper']                   = array(
 				'text-align' => $attr['alignMobile'],
 			);
@@ -156,14 +156,14 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$m_selectors['.uagb-icon-wrapper .uagb-svg-wrapper'] = array_merge(
 				array(
 					'display'        => 'inline-flex',
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMobilePadding'], $attr['iconMobilePaddingUnit'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMobilePadding'], $attr['iconMobilePaddingUnit'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMobilePadding'], $attr['iconMobilePaddingUnit'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMobilePadding'], $attr['iconMobilePaddingUnit'] ),
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['iconTopMobileMargin'], $attr['iconMobileMarginUnit'] ),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['iconRightMobileMargin'], $attr['iconMobileMarginUnit'] ),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMobileMargin'], $attr['iconMobileMarginUnit'] ),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftMobilePadding'], $attr['iconMobilePaddingUnit'] ),
+					'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconTopMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconRightMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconBottomMobileMargin'], $attr['iconMobileMarginUnit'] ),
+					'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['iconLeftMobileMargin'], $attr['iconMobileMarginUnit'] ),
 				),
 				self::generate_border_css( $attr, 'icon', 'mobile' )
 			);
@@ -174,11 +174,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'mobile'  => $m_selectors,
 			);
 
-			return Cartflows_Gb_Helper::generate_all_css(
-				$combined_selectors,
-				' .uagb-block-' . $id,
-				isset( $gbs_class ) ? $gbs_class : ''
-			);
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
 		}
 
 		/**
@@ -191,7 +187,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		 */
 		public static function get_image_css( $attr, $id ) {
 
-			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/image']['attributes'];
+			$defaults = Sureforms_Spec_Gb_Helper::$block_list['sureforms/image']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -269,15 +265,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'alt_color'  => $attr['imageBoxShadowColor'],
 			);
 
-			$box_shadow_css       = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_properties );
-			$box_shadow_hover_css = Cartflows_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
+			$box_shadow_css       = Sureforms_Spec_Gb_Helper::generate_shadow_css( $box_shadow_properties );
+			$box_shadow_hover_css = Sureforms_Spec_Gb_Helper::generate_shadow_css( $box_shadow_hover_properties );
 
 			$selectors = array(
 				'.wp-block-uagb-image'          => array(
-					'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMargin'], $attr['imageMarginUnit'] ),
-					'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMargin'], $attr['imageMarginUnit'] ),
-					'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMargin'], $attr['imageMarginUnit'] ),
-					'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMargin'], $attr['imageMarginUnit'] ),
+					'margin-top'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageTopMargin'], $attr['imageMarginUnit'] ),
+					'margin-right'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageRightMargin'], $attr['imageMarginUnit'] ),
+					'margin-bottom'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageBottomMargin'], $attr['imageMarginUnit'] ),
+					'margin-left'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageLeftMargin'], $attr['imageMarginUnit'] ),
 					'text-align'      => $attr['align'],
 					'justify-content' => $align,
 					'align-self'      => $align,
@@ -296,10 +292,10 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				),
 				'.wp-block-uagb-image .wp-block-uagb-image__figure figcaption' => array(
 					'color'         => $attr['captionColor'],
-					'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMargin'], $attr['captionMarginUnit'] ),
-					'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMargin'], $attr['captionMarginUnit'] ),
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMargin'], $attr['captionMarginUnit'] ),
-					'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMargin'], $attr['captionMarginUnit'] ),
+					'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionTopMargin'], $attr['captionMarginUnit'] ),
+					'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionRightMargin'], $attr['captionMarginUnit'] ),
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionBottomMargin'], $attr['captionMarginUnit'] ),
+					'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionLeftMargin'], $attr['captionMarginUnit'] ),
 					'text-align'    => $attr['captionAlign'],
 				),
 				'.wp-block-uagb-image .wp-block-uagb-image__figure figcaption a' => array(
@@ -325,18 +321,18 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner' => array_merge(
 					$overlay_border_css,
 					array(
-						'left'   => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
-						'right'  => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
-						'top'    => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
-						'bottom' => Cartflows_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
+						'bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['overlayPositionFromEdge'], $attr['overlayPositionFromEdgeUnit'] ),
 					)
 				),
 				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading' => array(
 					'color'         => $attr['headingColor'],
-					'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMargin'], $attr['headingMarginUnit'] ),
-					'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMargin'], $attr['headingMarginUnit'] ),
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMargin'], $attr['headingMarginUnit'] ),
-					'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMargin'], $attr['headingMarginUnit'] ),
+					'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingTopMargin'], $attr['headingMarginUnit'] ),
+					'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingRightMargin'], $attr['headingMarginUnit'] ),
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingBottomMargin'], $attr['headingMarginUnit'] ),
+					'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingLeftMargin'], $attr['headingMarginUnit'] ),
 					'opacity'       => 'always' === $attr['headingShowOn'] ? 1 : 0,
 				),
 				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading a' => array(
@@ -353,14 +349,14 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				),
 				// Seperator.
 				'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator' => array(
-					'width'            => Cartflows_Gb_Helper::get_css_value( $attr['seperatorWidth'], $attr['separatorWidthType'] ),
-					'border-top-width' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorThickness'], $attr['seperatorThicknessUnit'] ),
+					'width'            => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorWidth'], $attr['separatorWidthType'] ),
+					'border-top-width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorThickness'], $attr['seperatorThicknessUnit'] ),
 					'border-top-color' => $attr['seperatorColor'],
 					'border-top-style' => $attr['seperatorStyle'],
-					'margin-bottom'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-top'       => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-left'      => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-right'     => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-bottom'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-top'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-left'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMargin'], $attr['seperatorMarginUnit'] ),
+					'margin-right'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMargin'], $attr['seperatorMarginUnit'] ),
 					'opacity'          => 'always' === $attr['seperatorShowOn'] ? 1 : 0,
 				),
 			);
@@ -425,13 +421,13 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$t_selectors['.wp-block-uagb-image--layout-default figure img']       = $image_border_css_tablet;
 			$t_selectors['.wp-block-uagb-image--layout-overlay figure img']       = $image_border_css_tablet;
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
-				'width' => Cartflows_Gb_Helper::get_css_value( $attr['widthTablet'], 'px' ),
+				'width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['widthTablet'], 'px' ),
 			);
 			$t_selectors['.wp-block-uagb-image']                                  = array(
-				'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMarginTablet'], $attr['imageMarginUnitTablet'] ),
-				'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMarginTablet'], $attr['imageMarginUnitTablet'] ),
-				'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMarginTablet'], $attr['imageMarginUnitTablet'] ),
-				'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-top'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageTopMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-right'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageRightMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-bottom'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageBottomMarginTablet'], $attr['imageMarginUnitTablet'] ),
+				'margin-left'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageLeftMarginTablet'], $attr['imageMarginUnitTablet'] ),
 				'text-align'      => $attr['alignTablet'],
 				'justify-content' => $alignTablet,
 				'align-self'      => $alignTablet,
@@ -440,23 +436,23 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'align-items' => $alignTablet,
 			);
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure figcaption']                           = array(
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMarginTablet'], $attr['captionMarginUnitTablet'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMarginTablet'], $attr['captionMarginUnitTablet'] ),
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMarginTablet'], $attr['captionMarginUnitTablet'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionTopMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionRightMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionBottomMarginTablet'], $attr['captionMarginUnitTablet'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionLeftMarginTablet'], $attr['captionMarginUnitTablet'] ),
 			);
 			$t_selectors['.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner']       = $overlay_border_css_tablet;
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading']   = array(
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMarginTablet'], $attr['headingMarginUnitTablet'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMarginTablet'], $attr['headingMarginUnitTablet'] ),
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMarginTablet'], $attr['headingMarginUnitTablet'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingTopMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingRightMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingBottomMarginTablet'], $attr['headingMarginUnitTablet'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingLeftMarginTablet'], $attr['headingMarginUnitTablet'] ),
 			);
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
 			);
 
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
@@ -473,13 +469,13 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$m_selectors['.wp-block-uagb-image--layout-default figure img']       = $image_border_css_mobile;
 			$m_selectors['.wp-block-uagb-image--layout-overlay figure img']       = $image_border_css_mobile;
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
-				'width' => Cartflows_Gb_Helper::get_css_value( $attr['widthMobile'], 'px' ),
+				'width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['widthMobile'], 'px' ),
 			);
 			$m_selectors['.wp-block-uagb-image']                                  = array(
-				'margin-top'      => Cartflows_Gb_Helper::get_css_value( $attr['imageTopMarginMobile'], $attr['imageMarginUnitMobile'] ),
-				'margin-right'    => Cartflows_Gb_Helper::get_css_value( $attr['imageRightMarginMobile'], $attr['imageMarginUnitMobile'] ),
-				'margin-bottom'   => Cartflows_Gb_Helper::get_css_value( $attr['imageBottomMarginMobile'], $attr['imageMarginUnitMobile'] ),
-				'margin-left'     => Cartflows_Gb_Helper::get_css_value( $attr['imageLeftMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-top'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageTopMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-right'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageRightMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-bottom'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageBottomMarginMobile'], $attr['imageMarginUnitMobile'] ),
+				'margin-left'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['imageLeftMarginMobile'], $attr['imageMarginUnitMobile'] ),
 				'text-align'      => $attr['alignMobile'],
 				'justify-content' => $alignMobile,
 				'align-self'      => $alignMobile,
@@ -488,24 +484,24 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'align-items' => $alignMobile,
 			);
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure figcaption'] = array(
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['captionTopMarginMobile'], $attr['captionMarginUnitMobile'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['captionRightMarginMobile'], $attr['captionMarginUnitMobile'] ),
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['captionBottomMarginMobile'], $attr['captionMarginUnitMobile'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['captionLeftMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionTopMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionRightMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionBottomMarginMobile'], $attr['captionMarginUnitMobile'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['captionLeftMarginMobile'], $attr['captionMarginUnitMobile'] ),
 			);
 
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading']   = array(
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['headingTopMarginMobile'], $attr['headingMarginUnitMobile'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['headingRightMarginMobile'], $attr['headingMarginUnitMobile'] ),
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['headingBottomMarginMobile'], $attr['headingMarginUnitMobile'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['headingLeftMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingTopMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingRightMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingBottomMarginMobile'], $attr['headingMarginUnitMobile'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingLeftMarginMobile'], $attr['headingMarginUnitMobile'] ),
 			);
 			$m_selectors['.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner']       = $overlay_border_css_mobile;
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['seperatorBottomMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-top'    => Cartflows_Gb_Helper::get_css_value( $attr['seperatorTopMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-left'   => Cartflows_Gb_Helper::get_css_value( $attr['seperatorLeftMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-right'  => Cartflows_Gb_Helper::get_css_value( $attr['seperatorRightMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
 			);
 
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
@@ -524,16 +520,11 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'mobile'  => $m_selectors,
 			);
 
-			$base_selector = '.uagb-block-';
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'heading', '.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading', $combined_selectors );
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'caption', '.wp-block-uagb-image .wp-block-uagb-image__figure figcaption', $combined_selectors );
 
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'heading', '.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'caption', '.wp-block-uagb-image .wp-block-uagb-image__figure figcaption', $combined_selectors );
 
-			return Cartflows_Gb_Helper::generate_all_css(
-				$combined_selectors,
-				$base_selector . $id,
-				isset( $gbs_class ) ? $gbs_class : ''
-			);
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
 		}
 
 		/**
@@ -545,7 +536,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		 * @return array The Widget List.
 		 */
 		public static function get_advanced_heading_css( $attr, $id ) {
-			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/advanced-heading']['attributes'];
+			$defaults = Sureforms_Spec_Gb_Helper::$block_list['sureforms/advanced-heading']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -564,35 +555,35 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'.wp-block-uagb-advanced-heading '        => array(
 					'background'     => 'classic' === $attr['blockBackgroundType'] ? $attr['blockBackground'] : $attr['blockGradientBackground'],
 					'text-align'     => $attr['headingAlign'],
-					'margin-top'     => Cartflows_Gb_Helper::get_css_value(
+					'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockTopMargin'],
 						$attr['blockMarginUnit']
 					),
-					'margin-right'   => Cartflows_Gb_Helper::get_css_value(
+					'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockRightMargin'],
 						$attr['blockMarginUnit']
 					),
-					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockBottomMargin'],
 						$attr['blockMarginUnit']
 					),
-					'margin-left'    => Cartflows_Gb_Helper::get_css_value(
+					'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockLeftMargin'],
 						$attr['blockMarginUnit']
 					),
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value(
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockTopPadding'],
 						$attr['blockPaddingUnit']
 					),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value(
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockRightPadding'],
 						$attr['blockPaddingUnit']
 					),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockBottomPadding'],
 						$attr['blockPaddingUnit']
 					),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value(
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['blockLeftPadding'],
 						$attr['blockPaddingUnit']
 					),
@@ -605,7 +596,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				),
 				'.wp-block-uagb-advanced-heading .uagb-desc-text' => array(
 					'color'         => $attr['subHeadingColor'],
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['subHeadSpace'],
 						'px'
 					),
@@ -620,21 +611,21 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 						'text-decoration'         => $attr['highLightDecoration'],
 						'text-transform'          => $attr['highLightTransform'],
 						'font-weight'             => $attr['highLightFontWeight'],
-						'font-size'               => Cartflows_Gb_Helper::get_css_value( $attr['highLightFontSize'], $attr['highLightFontSizeType'] ),
-						'line-height'             => Cartflows_Gb_Helper::get_css_value( $attr['highLightLineHeight'], $attr['highLightLineHeightType'] ),
-						'padding-top'             => Cartflows_Gb_Helper::get_css_value(
+						'font-size'               => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightFontSize'], $attr['highLightFontSizeType'] ),
+						'line-height'             => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightLineHeight'], $attr['highLightLineHeightType'] ),
+						'padding-top'             => Sureforms_Spec_Gb_Helper::get_css_value(
 							$attr['highLightTopPadding'],
 							$attr['highLightPaddingUnit']
 						),
-						'padding-right'           => Cartflows_Gb_Helper::get_css_value(
+						'padding-right'           => Sureforms_Spec_Gb_Helper::get_css_value(
 							$attr['highLightRightPadding'],
 							$attr['highLightPaddingUnit']
 						),
-						'padding-bottom'          => Cartflows_Gb_Helper::get_css_value(
+						'padding-bottom'          => Sureforms_Spec_Gb_Helper::get_css_value(
 							$attr['highLightBottomPadding'],
 							$attr['highLightPaddingUnit']
 						),
-						'padding-left'            => Cartflows_Gb_Helper::get_css_value(
+						'padding-left'            => Sureforms_Spec_Gb_Helper::get_css_value(
 							$attr['highLightLeftPadding'],
 							$attr['highLightPaddingUnit']
 						),
@@ -647,7 +638,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				),
 			);
 
-			$heading_text_shadow_color = ( ! empty( $attr['headShadowColor'] ) ? Cartflows_Gb_Helper::get_css_value( $attr['headShadowHOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['headShadowVOffset'], 'px' ) . ' ' . Cartflows_Gb_Helper::get_css_value( $attr['headShadowBlur'], 'px' ) . ' ' . $attr['headShadowColor'] : '' );
+			$heading_text_shadow_color = ( ! empty( $attr['headShadowColor'] ) ? Sureforms_Spec_Gb_Helper::get_css_value( $attr['headShadowHOffset'], 'px' ) . ' ' . Sureforms_Spec_Gb_Helper::get_css_value( $attr['headShadowVOffset'], 'px' ) . ' ' . Sureforms_Spec_Gb_Helper::get_css_value( $attr['headShadowBlur'], 'px' ) . ' ' . $attr['headShadowColor'] : '' );
 
 			if ( 'gradient' === $attr['headingColorType'] ) {
 				$selectors['.wp-block-uagb-advanced-heading .uagb-heading-text'] = array_merge(
@@ -695,36 +686,36 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			if ( 'none' !== $seperatorStyle ) {
 				$selectors['.wp-block-uagb-advanced-heading .uagb-separator']   = array(
 					'border-top-style' => $attr['seperatorStyle'],
-					'border-top-width' => Cartflows_Gb_Helper::get_css_value(
+					'border-top-width' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorHeight'],
 						$attr['separatorHeightType']
 					),
-					'width'            => Cartflows_Gb_Helper::get_css_value(
+					'width'            => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorWidth'],
 						$attr['separatorWidthType']
 					),
 					'border-color'     => $attr['separatorColor'],
-					'margin-bottom'    => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom'    => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorSpace'],
 						$attr['separatorSpaceType']
 					),
 				);
 				$t_selectors['.wp-block-uagb-advanced-heading .uagb-separator'] = array(
-					'width'         => Cartflows_Gb_Helper::get_css_value(
+					'width'         => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorWidthTablet'],
 						$attr['separatorWidthType']
 					),
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorSpaceTablet'],
 						$attr['separatorSpaceType']
 					),
 				);
 				$m_selectors['.wp-block-uagb-advanced-heading .uagb-separator'] = array(
-					'width'         => Cartflows_Gb_Helper::get_css_value(
+					'width'         => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorWidthMobile'],
 						$attr['separatorWidthType']
 					),
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorSpaceMobile'],
 						$attr['separatorSpaceType']
 					),
@@ -732,81 +723,81 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			}
 			$t_selectors['.wp-block-uagb-advanced-heading '] = array(
 				'text-align'     => $attr['headingAlignTablet'],
-				'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['blockTopPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
-				'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['blockRightPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
-				'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
-				'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
-				'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['blockTopMarginTablet'], $attr['blockMarginUnitTablet'] ),
-				'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['blockRightMarginTablet'], $attr['blockMarginUnitTablet'] ),
-				'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomMarginTablet'], $attr['blockMarginUnitTablet'] ),
-				'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockTopPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingTablet'], $attr['blockPaddingUnitTablet'] ),
+				'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockTopMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockRightMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockBottomMarginTablet'], $attr['blockMarginUnitTablet'] ),
+				'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginTablet'], $attr['blockMarginUnitTablet'] ),
 			);
 
 			$t_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
 				array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['highLightTopPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['highLightRightPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['highLightBottomPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['highLightLeftPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightTopPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightRightPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightBottomPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightLeftPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
 				),
 				$highLight_border_css_tablet
 			);
 
 			$m_selectors['.wp-block-uagb-advanced-heading ']                = array(
 				'text-align'     => $attr['headingAlignMobile'],
-				'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['blockTopPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
-				'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['blockRightPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
-				'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
-				'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
-				'margin-top'     => Cartflows_Gb_Helper::get_css_value( $attr['blockTopMarginMobile'], $attr['blockMarginUnitMobile'] ),
-				'margin-right'   => Cartflows_Gb_Helper::get_css_value( $attr['blockRightMarginMobile'], $attr['blockMarginUnitMobile'] ),
-				'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['blockBottomMarginMobile'], $attr['blockMarginUnitMobile'] ),
-				'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['blockLeftMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockTopPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingMobile'], $attr['blockPaddingUnitMobile'] ),
+				'margin-top'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockTopMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-right'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockRightMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-bottom'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockBottomMarginMobile'], $attr['blockMarginUnitMobile'] ),
+				'margin-left'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginMobile'], $attr['blockMarginUnitMobile'] ),
 			);
 			$m_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
 				array(
-					'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['highLightTopPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
-					'padding-right'  => Cartflows_Gb_Helper::get_css_value( $attr['highLightRightPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
-					'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['highLightBottomPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
-					'padding-left'   => Cartflows_Gb_Helper::get_css_value( $attr['highLightLeftPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightTopPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightRightPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightBottomPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
+					'padding-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['highLightLeftPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
 				),
 				$highLight_border_css_mobile
 			);
 
 			$t_selectors['.wp-block-uagb-advanced-heading .uagb-desc-text'] = array(
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 					$attr['subHeadSpaceTablet'],
 					$attr['subHeadSpaceType']
 				),
 			);
 			$m_selectors['.wp-block-uagb-advanced-heading .uagb-desc-text'] = array(
-				'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 					$attr['subHeadSpaceMobile'],
 					$attr['subHeadSpaceType']
 				),
 			);
 			if ( $attr['headingDescToggle'] || 'none' !== $attr['seperatorStyle'] ) {
 				$selectors[' .uagb-heading-text']   = array(
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['headSpace'],
 						'px'
 					),
 				);
 				$t_selectors[' .uagb-heading-text'] = array(
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['headSpaceTablet'],
 						$attr['headSpaceType']
 					),
 				);
 				$m_selectors[' .uagb-heading-text'] = array(
-					'margin-bottom' => Cartflows_Gb_Helper::get_css_value(
+					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['headSpaceMobile'],
 						$attr['headSpaceType']
 					),
 				);
 			}
 
-			$combined_selectors = Cartflows_Gb_Helper::get_combined_selectors(
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_combined_selectors(
 				'advanced-heading',
 				array(
 					'desktop' => $selectors,
@@ -816,17 +807,11 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$attr
 			);
 
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'head', ' .uagb-heading-text', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'subHead', ' .uagb-desc-text', $combined_selectors );
-			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .uagb-highlight', $combined_selectors );
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'head', ' .uagb-heading-text', $combined_selectors );
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'subHead', ' .uagb-desc-text', $combined_selectors );
+			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .uagb-highlight', $combined_selectors );
 
-			$base_selector = ( $attr['classMigrate'] ) ? '.wp-block-uagb-advanced-heading.uagb-block-' : '#uagb-adv-heading-';
-
-			return Cartflows_Gb_Helper::generate_all_css(
-				$combined_selectors,
-				$base_selector . $id,
-				isset( $gbs_class ) ? '.wp-block-uagb-advanced-heading' . $gbs_class : ''
-			);
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
 
 		}
 
@@ -841,7 +826,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		 */
 		public static function get_separator_css( $attr, $id ) {
 
-			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
+			$defaults = Sureforms_Spec_Gb_Helper::$block_list['sureforms/separator']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -851,9 +836,9 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$border_size = '100%';
 
 			$border_css = array(
-				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSize'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeight'], $attr['separatorBorderHeightUnit'] ),
-				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
+				'-webkit-mask-size' => ( Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorSize'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBorderHeight'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
 				'border-top-color'  => $attr['separatorColor'],
 				'border-top-style'  => $attr['separatorStyle'],
 			);
@@ -865,11 +850,11 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$border_style['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css;
 
 			} else {
-				$align_css    = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlign'] );
+				$align_css    = Sureforms_Spec_Gb_Helper::alignment_css( $attr['separatorAlign'] );
 				$border_style = array(
 					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
 						array(
-							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
+							'width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
 
 						),
 						$align_css
@@ -882,7 +867,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 
 				if ( 'left' === $attr['elementPosition'] ) {
 					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
 					);
 					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
 						'display' => 'none',
@@ -893,7 +878,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				}
 				if ( 'right' === $attr['elementPosition'] ) {
 					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+						'margin-left' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
 					);
 					$border_style['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
 						'display' => 'none',
@@ -904,8 +889,8 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				}
 				if ( 'center' === $attr['elementPosition'] ) {
 					$icon_spacing_style['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
-						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
+						'margin-left'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacing'], $attr['elementSpacingUnit'] ),
 					);
 				}
 			}
@@ -913,8 +898,8 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$selectors = array(
 				'.wp-block-uagb-separator' => array_merge(
 					array(
-						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
+						'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
+						'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
 						'text-align'     => $attr['separatorAlign'],
 					)
 				),
@@ -925,15 +910,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'text-transform'  => $attr['elementTextTransform'],
 					'font-weight'     => $attr['elementTextFontWeight'],
 					'color'           => $attr['elementColor'],
-					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSize'], $attr['elementTextFontSizeType'] ),
-					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeight'], $attr['elementTextLineHeightType'] ),
-					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacing'], $attr['elementTextLetterSpacingType'] ),
+					'font-size'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextFontSize'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLineHeight'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLetterSpacing'], $attr['elementTextLetterSpacingType'] ),
 				),
 				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
-					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'font-size'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'width'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'height'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
+					'line-height' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidth'], $attr['elementIconWidthType'] ),
 					'color'       => $attr['elementColor'],
 					'fill'        => $attr['elementColor'],
 				),
@@ -942,9 +927,9 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 
 			// Tablet.
 			$border_css_tablet = array(
-				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeTablet'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightTablet'], $attr['separatorBorderHeightUnit'] ),
-				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
+				'-webkit-mask-size' => ( Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorSizeTablet'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBorderHeightTablet'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
 				'border-top-color'  => $attr['separatorColor'],
 				'border-top-style'  => $attr['separatorStyle'],
 			);
@@ -955,11 +940,11 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$border_style_tablet['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_tablet;
 
 			} else {
-				$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignTablet'] );
+				$align_css           = Sureforms_Spec_Gb_Helper::alignment_css( $attr['separatorAlignTablet'] );
 				$border_style_tablet = array(
 					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
 						array(
-							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
+							'width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidthTablet'], $attr['separatorWidthType'] ),
 
 						),
 						$align_css
@@ -971,7 +956,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$border_style_tablet['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_tablet;
 				if ( 'left' === $attr['elementPosition'] ) {
 					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
 					);
 					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before']                          = array(
 						'display' => 'none',
@@ -982,13 +967,13 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				}
 				if ( 'center' === $attr['elementPosition'] ) {
 					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+						'margin-left'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
 					);
 				}
 				if ( 'right' === $attr['elementPosition'] ) {
 					$icon_spacing_style_tablet['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
+						'margin-left' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingTablet'], $attr['elementSpacingUnit'] ),
 					);
 					$border_style_tablet['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
 						'display' => 'none',
@@ -1001,8 +986,8 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$t_selectors = array(
 				'.wp-block-uagb-separator' => array_merge(
 					array(
-						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
-						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
+						'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
+						'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
 						'text-align'     => $attr['separatorAlignTablet'],
 					)
 				),
@@ -1014,15 +999,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'font-weight'     => $attr['elementTextFontWeight'],
 					'color'           => $attr['elementColor'],
 					'margin-bottom'   => 'initial',
-					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeTablet'], $attr['elementTextFontSizeType'] ),
-					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightTablet'], $attr['elementTextLineHeightType'] ),
-					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingTablet'], $attr['elementTextLetterSpacingType'] ),
+					'font-size'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextFontSizeTablet'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLineHeightTablet'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingTablet'], $attr['elementTextLetterSpacingType'] ),
 				),
 				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
-					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr    ['elementIconWidthType'] ),
+					'font-size'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'width'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'height'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr['elementIconWidthType'] ),
+					'line-height' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthTablet'], $attr    ['elementIconWidthType'] ),
 					'color'       => $attr['elementColor'],
 					'fill'        => $attr['elementColor'],
 				),
@@ -1032,9 +1017,9 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 
 			// Mobile.
 			$border_css_mobile         = array(
-				'-webkit-mask-size' => ( Cartflows_Gb_Helper::get_css_value( $attr['separatorSizeMobile'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
-				'border-top-width'  => Cartflows_Gb_Helper::get_css_value( $attr['separatorBorderHeightMobile'], $attr['separatorBorderHeightUnit'] ),
-				'width'             => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
+				'-webkit-mask-size' => ( Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorSizeMobile'], $attr['separatorSizeType'] ) . ' ' . $border_size ),
+				'border-top-width'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBorderHeightMobile'], $attr['separatorBorderHeightUnit'] ),
+				'width'             => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
 				'border-top-color'  => $attr['separatorColor'],
 				'border-top-style'  => $attr['separatorStyle'],
 			);
@@ -1044,11 +1029,11 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$border_style_mobile['.wp-block-uagb-separator:not(.wp-block-uagb-separator--text):not(.wp-block-uagb-separator--icon) .wp-block-uagb-separator__inner'] = $border_css_mobile;
 
 			} else {
-				$align_css           = Cartflows_Gb_Helper::alignment_css( $attr['separatorAlignMobile'] );
+				$align_css           = Sureforms_Spec_Gb_Helper::alignment_css( $attr['separatorAlignMobile'] );
 				$border_style_mobile = array(
 					'.wp-block-uagb-separator .wp-block-uagb-separator__inner' => array_merge(
 						array(
-							'width' => Cartflows_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
+							'width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidthMobile'], $attr['separatorWidthType'] ),
 
 						),
 						$align_css
@@ -1060,7 +1045,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				$border_style_mobile['.wp-block-uagb-separator--icon .wp-block-uagb-separator__inner::after']  = $border_css_mobile;
 				if ( 'left' === $attr['elementPosition'] ) {
 					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
 
 					);
 					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::before'] = array(
@@ -1072,13 +1057,13 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				}
 				if ( 'center' === $attr['elementPosition'] ) {
 					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-left'  => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
-						'margin-right' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+						'margin-left'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+						'margin-right' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
 					);
 				}
 				if ( 'right' === $attr['elementPosition'] ) {
 					$icon_spacing_style_mobile['.wp-block-uagb-separator .wp-block-uagb-separator__inner .wp-block-uagb-separator-element'] = array(
-						'margin-left' => Cartflows_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
+						'margin-left' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementSpacingMobile'], $attr['elementSpacingUnit'] ),
 					);
 					$border_style_mobile['.wp-block-uagb-separator--text .wp-block-uagb-separator__inner::after']                           = array(
 						'display' => 'none',
@@ -1091,8 +1076,8 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$m_selectors = array(
 				'.wp-block-uagb-separator' => array_merge(
 					array(
-						'padding-bottom' => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
-						'padding-top'    => Cartflows_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
+						'padding-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
+						'padding-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
 						'text-align'     => $attr['separatorAlignMobile'],
 					)
 				),
@@ -1104,15 +1089,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'font-weight'     => $attr['elementTextFontWeight'],
 					'color'           => $attr['elementColor'],
 					'margin-bottom'   => 'initial',
-					'font-size'       => Cartflows_Gb_Helper::get_css_value( $attr['elementTextFontSizeMobile'], $attr['elementTextFontSizeType'] ),
-					'line-height'     => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLineHeightMobile'], $attr['elementTextLineHeightType'] ),
-					'letter-spacing'  => Cartflows_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingMobile'], $attr['elementTextLetterSpacingType'] ),
+					'font-size'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextFontSizeMobile'], $attr['elementTextFontSizeType'] ),
+					'line-height'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLineHeightMobile'], $attr['elementTextLineHeightType'] ),
+					'letter-spacing'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementTextLetterSpacingMobile'], $attr['elementTextLetterSpacingType'] ),
 				),
 				'.wp-block-uagb-separator--icon .wp-block-uagb-separator-element svg' => array(
-					'font-size'   => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-					'width'       => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-					'height'      => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
-					'line-height' => Cartflows_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr    ['elementIconWidthType'] ),
+					'font-size'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'width'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'height'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr['elementIconWidthType'] ),
+					'line-height' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['elementIconWidthMobile'], $attr    ['elementIconWidthType'] ),
 					'color'       => $attr['elementColor'],
 					'fill'        => $attr['elementColor'],
 				),
@@ -1126,15 +1111,15 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			);
 
 			// // General.
-			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+			// $combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'general', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text, .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
 
 			// // Input Fields.
-			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
+			// $combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'inputField', ' .wcf-optin-form .checkout.woocommerce-checkout label, .wcf-optin-form .checkout.woocommerce-checkout span input.input-text', $combined_selectors );
 
 			// // Submit Button.
-			// $combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
+			// $combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
 
-			return Cartflows_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
 		}
 
 		/**

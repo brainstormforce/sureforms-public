@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Cartflows_Filesystem.
+ * Class Sureforms_Spec__Filesystem.
  */
-class Cartflows_Filesystem {
+class Sureforms_Spec__Filesystem {
 
 	/**
 	 * Member Variable
@@ -95,7 +95,7 @@ class Cartflows_Filesystem {
  *  Prepare if class 'UAGB_Filesystem' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
-Cartflows_Filesystem::get_instance();
+Sureforms_Spec__Filesystem::get_instance();
 
 /**
  * Filesystem class
@@ -103,5 +103,5 @@ Cartflows_Filesystem::get_instance();
  * @since 0.0.1
  */
 function uagb_filesystem() {
-	return Cartflows_Filesystem::get_instance()->get_filesystem();
+	return Sureforms_Spec__Filesystem::get_instance()->get_filesystem();
 }

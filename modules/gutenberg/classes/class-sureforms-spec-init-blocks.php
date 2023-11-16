@@ -13,11 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Cartflows_Init_Blocks.
+ * Sureforms_Spec_Init_Blocks.
  *
  * @package Cartflows
  */
-class Cartflows_Init_Blocks {
+class Sureforms_Spec_Init_Blocks {
 
 	/**
 	 * Member Variable
@@ -479,7 +479,7 @@ class Cartflows_Init_Blocks {
 					'category'                 => 'cartflows',
 					'ajax_url'                 => admin_url( 'admin-ajax.php' ),
 					'wpcf_ajax_nonce'          => $wpcf_ajax_nonce,
-					'blocks'                   => Cartflows_Block_Config::get_block_attributes(),
+					'blocks'                   => Sureforms_Spec_Block_Config::get_block_attributes(),
 					'tablet_breakpoint'        => CF_TABLET_BREAKPOINT,
 					'mobile_breakpoint'        => CF_MOBILE_BREAKPOINT,
 					// $show_checkout_pro_opt
@@ -567,7 +567,7 @@ class Cartflows_Init_Blocks {
 }
 
 /**
- *  Prepare if class 'Cartflows_Init_Blocks' exist.
+ *  Prepare if class 'Sureforms_Spec_Init_Blocks' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
-Cartflows_Init_Blocks::get_instance();
+Sureforms_Spec_Init_Blocks::get_instance();

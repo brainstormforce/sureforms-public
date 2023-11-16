@@ -1,20 +1,20 @@
 <?php
 /**
- * Cartflows Config.
+ * Sureforms Config.
  *
- * @package Cartflows
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 
 	/**
-	 * Class Cartflows_Block_Config.
+	 * Class Sureforms_Spec_Block_Config.
 	 */
-	class Cartflows_Block_Config {
+	class Sureforms_Spec_Block_Config {
 
 		/**
 		 * Block Attributes
@@ -58,7 +58,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 				self::$block_attributes = array(
 					'sureforms/separator'        => array(
 						'slug'        => '',
-						'title'       => __( 'Separator', 'cartflows' ),
+						'title'       => __( 'Separator', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array(
@@ -116,7 +116,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 					),
 					'sureforms/image'            => array(
 						'slug'        => '',
-						'title'       => __( 'Image', 'cartflows' ),
+						'title'       => __( 'Image', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
@@ -290,7 +290,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 
 					'sureforms/icon'             => array(
 						'slug'        => '',
-						'title'       => __( 'Icon', 'cartflows' ),
+						'title'       => __( 'Icon', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
@@ -385,7 +385,7 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 
 					'sureforms/advanced-heading' => array(
 						'slug'        => '',
-						'title'       => __( 'Heading', 'cartflows' ),
+						'title'       => __( 'Heading', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(

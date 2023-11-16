@@ -1,20 +1,20 @@
 <?php
 /**
- * Cartflows Gb Helper.
+ * Sureforms Gb Helper.
  *
- * @package Cartflows
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 	/**
-	 * Class Cartflows_Gb_Helper.
+	 * Class Sureforms_Spec_Gb_Helper.
 	 */
-	final class Cartflows_Gb_Helper {
+	final class Sureforms_Spec_Gb_Helper {
 
 
 		/**
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		public static $script;
 
 		/**
-		 * Cartflows Block Flag
+		 * Sureforms Block Flag
 		 *
 		 * @since 0.0.1
 		 * @var cf_flag
@@ -128,11 +128,11 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-cartflows-block-config.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-cartflows-block-helper.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-cartflows-block-js.php';
+			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
+			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
+			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
 
-			self::$block_list = Cartflows_Block_Config::get_block_attributes();
+			self::$block_list = Sureforms_Spec_Block_Config::get_block_attributes();
 
 			add_action( 'wp', array( $this, 'wp_actions' ), 10 );
 		}
@@ -319,7 +319,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 
 			$block_list_for_assets = self::$current_block_list;
 
-			$blocks = Cartflows_Block_Config::get_block_attributes();
+			$blocks = Sureforms_Spec_Block_Config::get_block_attributes();
 
 			foreach ( $block_list_for_assets as $key => $curr_block_name ) {
 
@@ -738,43 +738,43 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 
 				switch ( $name ) {
 					case 'wcfb/next-step-button':
-						$css = Cartflows_Block_Helper::get_next_step_button_css( $blockattr, $block_id );
-						Cartflows_Block_JS::blocks_next_step_button_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_next_step_button_css( $blockattr, $block_id );
+						Sureforms_Spec_Block_JS::blocks_next_step_button_gfont( $blockattr );
 						break;
 
 					case 'wcfb/order-detail-form':
-						$css = Cartflows_Block_Helper::get_order_detail_form_css( $blockattr, $block_id );
-						Cartflows_Block_JS::blocks_order_detail_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_order_detail_form_css( $blockattr, $block_id );
+						Sureforms_Spec_Block_JS::blocks_order_detail_form_gfont( $blockattr );
 						break;
 
 					case 'wcfb/checkout-form':
-						$css = Cartflows_Block_Helper::get_checkout_form_css( $blockattr, $block_id );
-						Cartflows_Block_JS::blocks_checkout_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_checkout_form_css( $blockattr, $block_id );
+						Sureforms_Spec_Block_JS::blocks_checkout_form_gfont( $blockattr );
 						break;
 
 					case 'wcfb/optin-form':
-						$css = Cartflows_Block_Helper::get_optin_form_css( $blockattr, $block_id );
-						Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_optin_form_css( $blockattr, $block_id );
+						Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					case 'sureforms/separator':
-						$css = Cartflows_Block_Helper::get_separator_css( $blockattr, $block_id );
-						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
+						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					case 'sureforms/image':
-						$css = Cartflows_Block_Helper::get_image_css( $blockattr, $block_id );
-						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
+						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					case 'sureforms/icon':
-						$css = Cartflows_Block_Helper::get_icon_css( $blockattr, $block_id );
-						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
+						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					case 'sureforms/advanced-heading':
-						$css = Cartflows_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
-						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						$css = Sureforms_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
+						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					default:
@@ -783,7 +783,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 				}
 
 				// Add static css here.
-				$block_css_arr = Cartflows_Block_Config::get_block_assets_css();
+				$block_css_arr = Sureforms_Spec_Block_Config::get_block_assets_css();
 
 				if ( isset( $block_css_arr[ $name ] ) && ! in_array( $block_css_arr[ $name ]['name'], $this->static_css_blocks, true ) ) {
 
@@ -1027,8 +1027,8 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Cartflows_Gb_Helper' exist.
+	 *  Prepare if class 'Sureforms_Spec_Gb_Helper' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Cartflows_Gb_Helper::get_instance();
+	Sureforms_Spec_Gb_Helper::get_instance();
 }

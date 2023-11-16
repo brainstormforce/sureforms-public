@@ -1,7 +1,7 @@
 {
-	"name": "cartflows",
+	"name": "sureforms",
 	"version": "1.10.2",
-	"description": "CartFlows for WooCommerce.",
+	"description": "Sureforms",
 	"private": true,
 	"scripts": {
 		"start": "wp-scripts start --config gutenberg-webpack.config.js",

@@ -1,20 +1,20 @@
 <?php
 /**
- * WCFB - Checkout Form Styler.
+ * Sureforms - Separator.
  *
- * @package WCFB
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WCFB_Separator' ) ) {
+if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 
 	/**
-	 * Class WCFB_Separator.
+	 * Class Sureforms_Spec_Separator.
 	 */
-	class WCFB_Separator {
+	class Sureforms_Spec_Separator {
 
 		/**
 		 * Member Variable
@@ -620,12 +620,12 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 				),
 			);
 
-			// $field_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Cartflows_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
+			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
+			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
 
 			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
 
-			$attributes = apply_filters( 'cartflows_gutenberg_cf_attributes_filters', $attr );
+			$attributes = apply_filters( 'sureforms_gutenberg_cf_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/separator',
@@ -675,7 +675,7 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 					<div class="wp-block-uagb-separator-element">
 						<?php
 						if ( 'icon' === $element_type ) {
-							Cartflows_Gb_Helper::render_svg_html( $attributes['separatorIcon'] );
+							Sureforms_Spec_Gb_Helper::render_svg_html( $separator_icon );
 						} else {
 							echo wp_kses_post( $custom_tag );
 						}
@@ -692,5 +692,5 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Separator::get_instance();
+	Sureforms_Spec_Separator::get_instance();
 }
