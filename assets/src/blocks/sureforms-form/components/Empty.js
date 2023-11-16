@@ -15,7 +15,6 @@ import icon from '../../../../../images/Logo.js';
 /**
  * Components
  */
-// import PlaceholderTemplate from '../../form/components/PlaceholderTemplate';
 import SelectForm from './SelectForm';
 
 export default ( { setAttributes } ) => {
@@ -53,12 +52,6 @@ export default ( { setAttributes } ) => {
 							{ __( 'Choose', 'sureforms' ) }
 							<Icon icon={ 'arrow-right' }></Icon>
 						</Button>
-						{ /* <Button
-							variant="secondary"
-							onClick={ () => setAttributes( { step: null } ) }
-						>
-							{ __( 'Cancel', 'sureforms' ) }
-						</Button> */ }
 					</div>
 				</div>
 			</Placeholder>

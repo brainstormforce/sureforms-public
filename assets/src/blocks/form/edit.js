@@ -41,16 +41,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		)
 		.map( ( block ) => block.name );
 
-	const CORE_BLOCKS = [
-		// 'core/image',
-		// 'core/columns',
-		// 'core/column',
-		// 'core/heading',
-		// 'core/paragraph',
-		// 'sureforms/form',
-	];
-
-	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
+	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS ];
 
 	const filteredAllowedBlocks = applyFilters(
 		'sureforms/form/allowedBlocks',
@@ -187,16 +178,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const buttonStyle = isSureformsForm
 		? {
-			background: '#0084C7',
-			color: '#fff',
+				background: '#0084C7',
+				color: '#fff',
 		  }
 		: {
-			backgroundColor: shouldInheritStyle
-				? sureforms_keys?._srfm_color1 || ''
-				: '',
-			color: shouldInheritStyle
-				? sureforms_keys?._srfm_textcolor1 || ''
-				: '',
+				backgroundColor: shouldInheritStyle
+					? sureforms_keys?._srfm_color1 || ''
+					: '',
+				color: shouldInheritStyle
+					? sureforms_keys?._srfm_textcolor1 || ''
+					: '',
 		  };
 	const renderButtonHtml = () => {
 		return (
@@ -231,72 +222,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		);
 	};
 
-	// Remove unwanted elements from the iframe and add styling for the form
-	useEffect( () => {
-		const removeContentFromIframe = () => {
-			const iframeDocument = iframeRef.current.contentDocument;
-
-			if ( iframeDocument ) {
-				const wpAdminBar =
-					iframeDocument.getElementById( 'wpadminbar' );
-				const siteDesktopHeader =
-					iframeDocument.querySelector( '.site-header' );
-				const srfmSinglePageBanner =
-					iframeDocument.querySelector( '.srfm-page-banner' );
-				const srfmSingleForm =
-					iframeDocument.querySelector( '.srfm-single-form' );
-				const srfmSuccessMsg =
-					iframeDocument.querySelector( '.srfm-success-box' );
-				const siteFooter = iframeDocument.getElementById( 'colophon' );
-
-				if ( iframeDocument && iframeDocument.body ) {
-					iframeDocument.querySelector(
-						'html'
-					).style.backgroundColor = 'transparent';
-					iframeDocument.body.style.pointerEvents = 'none';
-					iframeDocument.body.style.backgroundColor = 'transparent';
-					const iframeHalfScrollHeight =
-						iframeDocument.body.scrollHeight / 2;
-					iframeRef.current.height = iframeHalfScrollHeight + 'px';
-					if ( 300 > iframeHalfScrollHeight ) {
-						iframeDocument.body.style.overflow = 'hidden';
-					}
-				}
-				if ( wpAdminBar ) {
-					wpAdminBar.remove();
-				}
-				if ( siteFooter ) {
-					siteFooter.remove();
-				}
-				if ( siteDesktopHeader ) {
-					siteDesktopHeader.remove();
-				}
-				if ( srfmSinglePageBanner ) {
-					srfmSinglePageBanner.remove();
-				}
-				if ( srfmSuccessMsg ) {
-					srfmSuccessMsg.remove();
-				}
-				if ( srfmSingleForm ) {
-					srfmSingleForm.style.boxShadow = 'none';
-					srfmSingleForm.style.backgroundColor = 'transparent';
-					srfmSingleForm.style.width = '100%';
-				}
-			}
-		};
-
-		if ( iframeRef && iframeRef.current ) {
-			iframeRef.current.onload = () => {
-				removeContentFromIframe();
-				setTimeout( () => {
-					if ( iframeRef && iframeRef.current ) {
-						iframeRef.current.style.display = 'block';
-					}
-				}, 800 );
-			};
-		}
-	}, [] );
-
 	return (
 		<Fragment>
 			<InspectorControls>
@@ -310,34 +235,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 							} }
 						/>
 					</PanelRow>
-					{ /* Not required */ }
-					{ /* { 'sureforms_form' !== postType && (
-						<PanelRow>
-							<p className="srfm-form-notice">
-								{ __(
-									'Note: For Editing the stylings, please check the SureForms styling - ',
-									'sureforms'
-								) }
-								<a
-									href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
-									target="_blank"
-									rel="noreferrer"
-								>
-									{ __( 'Edit Form Settings ', 'sureforms' ) }
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										width="16"
-										height="16"
-										aria-hidden="true"
-										focusable="false"
-									>
-										<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
-									</svg>
-								</a>
-							</p>
-						</PanelRow>
-					) } */ }
 				</PanelBody>
 			</InspectorControls>
 			{ blockCount === 0 ? (
@@ -356,42 +253,25 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 						'srfm-form-style-classic'
 					}
 				>
-					{ 'sureforms_form' === postType ? (
-						<>
-							<InnerBlocks
-								allowedBlocks={ filteredAllowedBlocks }
-								templateLock={ false }
-								renderAppender={
-									blockCount
-										? undefined
-										: InnerBlocks.ButtonBlockAppender
-								}
-							/>
-							<div
-								className={
-									'srfm-submit-button' +
-									( 'inherit' ===
-									sureforms_keys?._srfm_form_styling
-										? ' wp-block-button'
-										: '' )
-								}
-							>
-								{ renderButtonHtml() }
-							</div>
-						</>
-					) : (
-						<iframe
-							loading={ 'eager' }
-							ref={ iframeRef }
-							className="srfm-iframe-preview"
-							title="srfm-iframe-preview"
-							src={ formUrl }
-							style={ {
-								minWidth: '-webkit-fill-available',
-							} }
-							width={ '100%' }
-						/>
-					) }
+					<InnerBlocks
+						allowedBlocks={ filteredAllowedBlocks }
+						templateLock={ false }
+						renderAppender={
+							blockCount
+								? undefined
+								: InnerBlocks.ButtonBlockAppender
+						}
+					/>
+					<div
+						className={
+							'srfm-submit-button' +
+							( 'inherit' === sureforms_keys?._srfm_form_styling
+								? ' wp-block-button'
+								: '' )
+						}
+					>
+						{ renderButtonHtml() }
+					</div>
 				</div>
 			) }
 		</Fragment>
