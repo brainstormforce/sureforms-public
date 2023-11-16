@@ -45,7 +45,7 @@ class Textarea_Markup extends Base {
 		'</label>' .
 		'<div style="position:relative">
 		<div class="srfm-text-area-counter">' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '</div>' .
-		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="srfm-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
+		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-textarea-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="srfm-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
 		( '' !== $help ? '<label for="srfm-textarea" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
 		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>' .
 		'</div>';
@@ -74,7 +74,7 @@ class Textarea_Markup extends Base {
 
 		return '
 		<div class="srfm-frontend-inputs-holder srfm-main-container srfm-textarea-container ' . esc_attr( $classname ) . '">
-			<label for="srfm-textarea" class="srfm-classic-label-text">
+			<label for="srfm-textarea-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . '
 				' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
@@ -87,9 +87,9 @@ class Textarea_Markup extends Base {
 					placeholder="' . esc_attr( $placeholder ) . '"
 					maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '"
 					cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '"
-					id="srfm-textarea" class="srfm-classic-textarea-element">' . esc_html( $default ) . '</textarea>
+					id="srfm-textarea-' . esc_attr( $block_id ) . '" class="srfm-classic-textarea-element">' . esc_html( $default ) . '</textarea>
 			</div>
-			' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
+			' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</p>' : '' ) . '
 			<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
 		</div>';
 
