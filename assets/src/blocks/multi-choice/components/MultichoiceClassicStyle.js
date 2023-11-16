@@ -11,14 +11,14 @@ export const MultichoiceClassicStyle = ( {
 	deleteOption,
 	setAttributes,
 } ) => {
-	const { label, required, options, single_selection } = attributes;
+	const { label, required, options } = attributes;
 
 	const editView = options.map( ( option, index ) => {
 		return (
-			<div key={ index }>
+			<div key={ index } className="srfm-multichoice-addded-option">
 				<label htmlFor={ option.optiontitle }></label>
 				<input
-					className="!srfm-rounded-md !srfm-border-gray-300"
+					className="srfm-multichoice-addded-input !srfm-rounded-md !srfm-border-gray-300"
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
 						changeOption(
@@ -47,12 +47,6 @@ export const MultichoiceClassicStyle = ( {
 					i++;
 					return (
 						<label key={ key } className="srfm-classic-radio">
-							<input
-								type={ single_selection ? 'radio' : 'checkbox' }
-								name={ single_selection ? 'sf-radio-$id' : '' }
-								id={ `srfm-multi-choice-${ blockID }-${ i }` }
-								className="srfm-multi-choice"
-							/>
 							<div className="srfm-flex srfm-items-start srfm-classic-radio-btn srfm-classic-multi-choice">
 								<div className="srfm-pr-[5px] srfm-mt-[3px] srfm-relative srfm-flex">
 									<i
@@ -94,7 +88,7 @@ export const MultichoiceClassicStyle = ( {
 			/>
 			{ isSelected && (
 				<>
-					<div>
+					<div className="srfm-flex srfm-flex-wrap srfm-gap-[15px]">
 						{ editView }
 						<div>
 							<Button isSecondary onClick={ addOption }>

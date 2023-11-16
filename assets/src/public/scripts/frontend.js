@@ -542,6 +542,24 @@ if ( multiChoices ) {
 		} );
 	}
 }
+const multichoiceOptions = document.getElementsByClassName(
+	'srfm-classic-multi-choice'
+);
+if ( window.innerWidth > 630 ) {
+	for ( let x = 0; x < multichoiceOptions.length - 1; x++ ) {
+		const optionHeight = multichoiceOptions[ x ].offsetHeight;
+		const adjacentOptionHeight = multichoiceOptions[ x + 1 ].offsetHeight;
+		if ( optionHeight > adjacentOptionHeight ) {
+			multichoiceOptions[ x ].style.height = optionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height = optionHeight + 'px';
+		} else {
+			multichoiceOptions[ x ].style.height = adjacentOptionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height =
+				adjacentOptionHeight + 'px';
+		}
+		x++;
+	}
+}
 
 // Address Field
 
