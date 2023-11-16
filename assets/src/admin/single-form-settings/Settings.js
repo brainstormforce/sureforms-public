@@ -168,7 +168,7 @@ function Settings( props ) {
 								label: '_srfm_thankyou_message_title',
 							} }
 							label={ __(
-								'Customize the Successful Form Submission message Title',
+								'Form Submission Success Message Title',
 								'sureforms'
 							) }
 							placeholder={ __( 'Thank you', 'sureforms' ) }
@@ -191,7 +191,7 @@ function Settings( props ) {
 								label: '_srfm_thankyou_message',
 							} }
 							label={ __(
-								'Customize the Successful Form Submission message',
+								'Form Submission Success Message Description',
 								'sureforms'
 							) }
 							placeholder={ __(
