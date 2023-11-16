@@ -60,6 +60,12 @@
 .srfm-classic-radio input:checked + .srfm-classic-radio-btn .fa-circle {
 	opacity: 0;
 }
+.srfm-multichoice-addded-option{
+ 	width: calc(50% - 10px);
+}
+.srfm-multichoice-addded-input{
+	width: calc(100% - 40px);
+}
 
 @layer components {
 	// Classic field styles.

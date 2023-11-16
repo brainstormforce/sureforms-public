@@ -15,10 +15,10 @@ export const MultichoiceClassicStyle = ( {
 
 	const editView = options.map( ( option, index ) => {
 		return (
-			<div key={ index }>
+			<div key={ index } className='srfm-multichoice-addded-option'>
 				<label htmlFor={ option.optiontitle }></label>
 				<input
-					className="!srfm-rounded-md !srfm-border-gray-300"
+					className="srfm-multichoice-addded-input !srfm-rounded-md !srfm-border-gray-300"
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
 						changeOption(
@@ -88,7 +88,7 @@ export const MultichoiceClassicStyle = ( {
 			/>
 			{ isSelected && (
 				<>
-					<div>
+					<div className='srfm-flex srfm-flex-wrap srfm-gap-[15px]'>
 						{ editView }
 						<div>
 							<Button isSecondary onClick={ addOption }>
