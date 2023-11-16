@@ -18,6 +18,7 @@ import { EmailClassicStyle } from './components/EmailClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -28,13 +29,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		required,
 		defaultValue,
 		isConfirmEmail,
-		// mighr be used.
+		// might be used.
 		// confirmLabel,
 		formId,
 		block_id,
 		errorMsg,
 		isUnique,
 		duplicateMsg,
+		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -53,6 +55,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px)';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.email_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>

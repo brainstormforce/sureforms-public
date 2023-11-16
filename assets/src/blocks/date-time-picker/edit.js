@@ -18,6 +18,7 @@ import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicSt
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -28,6 +29,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		fieldType,
 		min,
+		preview,
 		max,
 		errorMsg,
 		formId,
@@ -50,6 +52,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px)';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.date_time_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>

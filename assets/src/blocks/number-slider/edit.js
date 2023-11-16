@@ -10,9 +10,10 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { help, block_id, formId, fieldWidth } = attributes;
+	const { help, block_id, formId, fieldWidth, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -30,6 +31,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px)';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.number_slider_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<Settings

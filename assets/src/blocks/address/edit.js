@@ -18,6 +18,7 @@ import { AddressClassicStyle } from './components/addressClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 import countries from './countries.json';
 
@@ -41,6 +42,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 		countryPlaceholder,
 		postalLabel,
 		formId,
+		preview,
 		help,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -60,6 +62,11 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px)';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.address_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

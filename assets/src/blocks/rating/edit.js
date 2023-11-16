@@ -19,6 +19,7 @@ import { RatingClassicStyle } from './components/RatingClassicStyle';
 import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 import Range from '@Components/range/Range.js';
 import widthOptions from '../width-options.json';
 
@@ -34,6 +35,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		showNumbers,
 		iconShape,
 		maxValue,
+		preview,
 		errorMsg,
 		formId,
 	} = attributes;
@@ -55,6 +57,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px )';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.rating_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

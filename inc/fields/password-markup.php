@@ -45,9 +45,9 @@ class Password_Markup extends Base {
 			'<label for="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-pwd-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
 			'<input id="srfm-confirm-input-password-' . esc_attr( $block_id ) . '" type="password" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field srfm-confirm-input-password">' : ''
 		) .
-		( '' !== $help ? '<label for="srfm-input-password" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="srfm-error-message">' . esc_attr( $error_msg ) . '</span>' .
-			'<span style="display:none" class="srfm-error-message srfm-confirm-password-error">Field values do not match.</span>
+		( '' !== $help ? '<p class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) .
+		'<p style="display:none" class="srfm-error-message">' . esc_attr( $error_msg ) . '</p>' .
+			'<p style="display:none" class="srfm-error-message srfm-confirm-password-error">Field values do not match.</p>
         </div>';
 	}
 
@@ -88,7 +88,7 @@ class Password_Markup extends Base {
             </div>
         </div>'
 		: '' ) .
-		( '' !== $help ? '<label for="srfm-input-password" class="srfm-helper-txt">' . esc_attr( $help ) . '</label>' : '' ) .
+		( '' !== $help ? '<p class="srfm-helper-txt">' . esc_attr( $help ) . '</p>' : '' ) .
 		'<p style="display:none" class="srfm-error-message " id="srfm-email-error">' . esc_html( $error_msg ) . '</p>
     <p style="display:none" class="srfm-error-message srfm-confirm-password-error ">' . esc_html( __( 'Password does not match', 'sureforms' ) ) . '</p>
 </div>';

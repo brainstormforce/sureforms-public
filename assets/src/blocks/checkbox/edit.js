@@ -3,11 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import {
-	InspectorControls,
-	useBlockProps,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import UAGTextControl from '@Components/text-control';
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -22,6 +18,7 @@ import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -33,6 +30,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		checkboxHelpText,
 		block_id,
 		errorMsg,
+		preview,
 		formId,
 	} = attributes;
 
@@ -53,9 +51,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		parent_to_width_element.style.width =
 			'calc( ' + fieldWidth + '% - 20px)';
 	}, [ fieldWidth ] );
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.checkbox_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
-		<div { ...useBlockProps() }>
+		<div>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }

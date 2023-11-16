@@ -112,7 +112,7 @@ class Upload_Markup extends Base {
 
 		return '<div id="srfm-upload-container" class="srfm-upload-container srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <div class="srfm-col-span-full">
-            <label class="srfm-classic-label-text">
+            <label for="srfm-upload-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
                 ' . esc_html( $label ) . ' 
                 ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
