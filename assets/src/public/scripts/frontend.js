@@ -677,8 +677,9 @@ if ( phoneElement ) {
 		const fullPhoneNumberInput = document.getElementById(
 			`srfm-fullPhoneNumber-${ blockID }`
 		);
-		const errorMessage =
-			phoneElement[ i ].querySelector( '.srfm-error-message' );
+		const errorMessage = phoneElement[ i ].querySelector(
+			'.srfm-error-message'
+		);
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
@@ -706,8 +707,9 @@ if ( phoneElement ) {
 			if ( ! phoneNumberValue ) {
 				fullPhoneNumberInput.value = '';
 			}
-			const intTelError =
-				phoneElement[ i ].querySelector( '.srfm-int-tel-error' );
+			const intTelError = phoneElement[ i ].querySelector(
+				'.srfm-int-tel-error'
+			);
 			const phoneParent = phoneElement[ i ].querySelector(
 				'.srfm-classic-phone-parent'
 			);
