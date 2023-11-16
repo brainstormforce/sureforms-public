@@ -17,6 +17,7 @@ import { SwitchClassicStyle } from './components/SwitchClassicStyle';
 import { SwitchThemeStyle } from './components/SwitchThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -27,6 +28,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		block_id,
 		errorMsg,
 		formId,
+		preview,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -43,6 +45,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.switch_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>
