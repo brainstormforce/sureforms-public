@@ -1537,7 +1537,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'WCFB_Checkout_Form' exist.
+	 *  Prepare if class 'Sureforms_Spec_Advanced_Heading' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
 	Sureforms_Spec_Advanced_Heading::get_instance();

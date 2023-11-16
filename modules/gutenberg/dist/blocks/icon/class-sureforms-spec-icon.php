@@ -820,7 +820,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'WCFB_Checkout_Form' exist.
+	 *  Prepare if class 'Sureforms_Spec_Icon' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
 	Sureforms_Spec_Icon::get_instance();
