@@ -18,6 +18,7 @@ import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 import UAGNumberControl from '@Components/number-control';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
@@ -31,6 +32,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		minValue,
 		maxValue,
 		errorMsg,
+		preview,
 		formatType,
 		formId,
 	} = attributes;
@@ -59,6 +61,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.number_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>
