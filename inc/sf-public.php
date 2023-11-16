@@ -37,16 +37,30 @@ class SF_Public {
 	 * @since 0.0.1
 	 */
 	public function enqueue_scripts() {
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+
+		/* RTL */
+		if ( is_rtl() ) {
+			$file_prefix .= '-rtl';
+		}
+
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
 		// Font Awesome icons.
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
 
 		// SureForms Theme styles CSS.
-		wp_enqueue_style( 'sureforms-frontend', SUREFORMS_URL . 'assets/build/srfm_theme_styles.css', [], SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-sureforms-frontend', $css_uri . 'srfm_theme_styles'  . $file_prefix . '.css', [], SUREFORMS_VER );
 
 		// Extra.
-		wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+		// wp_enqueue_style( 'sureforms-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+
+		//frontend-tailwind-style
+		// wp_enqueue_style( SUREFORMS_SLUG . '-tailwind-styles', $css_uri . 'sureforms-tailwind' . $file_prefix . '.css', [], SUREFORMS_VER );
 
 		// Flatpickr CSS.
 		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER );

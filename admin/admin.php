@@ -145,7 +145,20 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function sureforms_enqueue_styles() {
-		wp_enqueue_style( 'srfm-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+
+		/* RTL */
+		if ( is_rtl() ) {
+			$file_prefix .= '-rtl';
+		}
+
+		// Enqueue editor styles for post and page.
+		wp_enqueue_style( SUREFORMS_SLUG . '-block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+
+		// wp_enqueue_style( 'srfm', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-editor-styles', SUREFORMS_URL . 'assets/src/blocks/editor-styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );

@@ -76,6 +76,18 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/block-styles-rtl.css',
 						dest: 'assets/css/minified/block-styles.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/sureforms-frontend-ui-styles-rtl.css',
+						dest: 'assets/css/minified/sureforms-frontend-ui-styles.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/sureforms-tailwind-rtl.css',
+						dest: 'assets/css/minified/sureforms-tailwind.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/srfm_theme_styles-rtl.css',
+						dest: 'assets/css/minified/srfm_theme_styles.min-rtl.css',
+					},
 				],
 			},
 		},
@@ -174,6 +186,9 @@ module.exports = function ( grunt ) {
 
 	// Generate Read me file
 	grunt.registerTask( 'readme', [ 'wp_readme_to_markdown' ] );
+
+	// rtlcss
+	grunt.registerTask( 'rtl', [ 'rtlcss' ] );
 
 	// SASS compile
 	grunt.registerTask( 'scss', [ 'sass' ] );
