@@ -395,6 +395,7 @@ class Post_Types {
 			'_srfm_form_class_name'                   => 'string',
 			'_srfm_form_styling'                      => 'string',
 			'_srfm_form_container_width'              => 'integer',
+			'_srfm_thankyou_message_title'            => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

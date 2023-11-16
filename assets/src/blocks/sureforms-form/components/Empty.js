@@ -63,6 +63,7 @@ export default ( { attributes, setAttributes } ) => {
 				_srfm_submit_styling_inherit_from_theme: false,
 				_srfm_form_container_width: 650,
 				_srfm_form_styling: 'classic',
+				_srfm_thankyou_message_title: 'Thank you',
 			};
 
 			try {
