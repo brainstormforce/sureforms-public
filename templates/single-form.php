@@ -74,7 +74,6 @@
 				form-id="<?php echo esc_attr( $custom_post_id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ); ?>" success-url="<?php echo esc_attr( $success_url ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 				<?php
-					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
 					$honeypot_spam = get_option( 'honeypot' );
 				?>
 					<input type="hidden" value="<?php echo esc_attr( $custom_post_id ); ?>" name="form-id">
