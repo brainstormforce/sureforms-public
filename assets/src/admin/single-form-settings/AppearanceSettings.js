@@ -4,10 +4,6 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import {
-	// ToggleControl,
-	SelectControl,
-} from '@wordpress/components';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -170,7 +166,7 @@ function AppearanceSettings( props ) {
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
-				<SelectControl
+				{ /* <SelectControl
 					label={ __( 'Form Styling', 'sureforms' ) }
 					value={ sureforms_keys._srfm_form_styling }
 					options={ [
@@ -184,13 +180,13 @@ function AppearanceSettings( props ) {
 						updateMeta( '_srfm_form_styling', value );
 					} }
 					__nextHasNoMarginBottom
-				/>
-				<p className="components-base-control__help">
+				/> */ }
+				{ /* <p className="components-base-control__help">
 					{ __(
 						'Update settings to view changes on page',
 						'sureforms'
 					) }
-				</p>
+				</p> */ }
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }

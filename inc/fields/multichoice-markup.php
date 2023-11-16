@@ -63,7 +63,7 @@ class Multichoice_Markup extends Base {
 							class="multi-choice-option"
 							id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '"
 						>
-							' . esc_html( $option ) . '
+							' . esc_html( $option['optiontitle'] ) . '
 						</span>
 					</label>
 					<span></span>
@@ -115,7 +115,7 @@ class Multichoice_Markup extends Base {
 								<i class="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300" aria-hidden="true"></i>
 							</div>
 							<div> 
-								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option ) . '</article>
+								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option['optiontitle'] ) . '</article>
 							</div>
 						</div>
 						</label>';

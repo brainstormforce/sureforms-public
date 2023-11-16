@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { PasswordClassicStyle } from './components/PasswordClassicStyle';
@@ -39,24 +40,30 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<PasswordClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<PasswordThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-password-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

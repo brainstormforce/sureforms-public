@@ -1,4 +1,11 @@
-export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const AddressThemeStyle = ( {
+	attributes,
+	countries,
+	blockID,
+	setAttributes,
+} ) => {
 	const {
 		required,
 		label,
@@ -15,20 +22,21 @@ export const AddressThemeStyle = ( { attributes, countries, blockID } ) => {
 		countryPlaceholder,
 		postalLabel,
 	} = attributes;
+
+	const isRequired = required ? 'srfm-required' : '';
 	const inputStyles = {
 		marginTop: '14px',
 	};
 	return (
 		<>
-			<label
-				className="srfm-text-primary"
-				htmlFor={ 'srfm-address-field-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ isRequired }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div>
 				<div
 					id={ 'srfm-address-field-' + blockID }

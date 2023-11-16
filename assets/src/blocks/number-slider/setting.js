@@ -11,6 +11,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import SRFMNumberControl from '@Components/number-control';
+import Range from '@Components/range/Range.js';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
 	const { label, help, min, max, step, valueDisplayText } = attributes;
@@ -38,13 +39,12 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 							}
 						/>
 						<SRFMNumberControl
-							label={ __( 'Min', 'sureforms' ) }
+							label={ __( 'Minimum Value', 'sureforms' ) }
 							value={ min }
 							data={ {
 								value: min,
 								label: 'min',
 							} }
-							displayUnit={ false }
 							onChange={ ( value ) => {
 								if ( value >= max ) {
 									setError( true );
@@ -54,15 +54,17 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 									setAttributes( { min: value } );
 								}
 							} }
+							min={ 0 }
+							displayUnit={ false }
+							showControlHeader={ false }
 						/>
 						<SRFMNumberControl
-							label={ __( 'Max', 'sureforms' ) }
+							label={ __( 'Maximum Value', 'sureforms' ) }
 							value={ max }
 							data={ {
 								value: max,
 								label: 'max',
 							} }
-							displayUnit={ false }
 							onChange={ ( value ) => {
 								if ( value <= min ) {
 									setError( true );
@@ -74,30 +76,29 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 									setAttributes( { max: value } );
 								}
 							} }
+							min={ 0 }
+							displayUnit={ false }
+							showControlHeader={ false }
 						/>
 						{ error && (
-							<p
-								style={ {
-									fontSize: '12px',
-									fontStyle: 'normal',
-									color: 'red',
-								} }
-							>
+							<p className="srfm-min-max-error-styles">
 								{ __(
-									'Please check the value of Min and Max',
+									'Please check the Minimum and Maximum value',
 									'sureforms'
 								) }
 							</p>
 						) }
 						<p className="components-base-control__help">
 							{ __(
-								'Note:Max value should always be greater than min value',
+								'Note: Maximum value should always be greater than minimum value',
 								'sureforms'
 							) }
 						</p>
-						<SRFMNumberControl
+						<Range
 							label={ __( 'Step Increment', 'sureforms' ) }
 							value={ step }
+							min={ 1 }
+							max={ max - 1 }
 							data={ {
 								value: step,
 								label: 'step',
