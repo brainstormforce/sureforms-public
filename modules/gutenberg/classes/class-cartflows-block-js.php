@@ -19,7 +19,7 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 		/**
 		 * Adds Google fonts for Next Step Button.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @param array $attr the blocks attr.
 		 */
 		public static function blocks_next_step_button_gfont( $attr ) {
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 		/**
 		 * Adds Google fonts for Order Detail Form block.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @param array $attr the blocks attr.
 		 */
 		public static function blocks_order_detail_form_gfont( $attr ) {
@@ -112,7 +112,7 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 		/**
 		 * Adds Google fonts for checkout form.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @param array $attr the blocks attr.
 		 */
 		public static function blocks_checkout_form_gfont( $attr ) {
@@ -147,7 +147,7 @@ if ( ! class_exists( 'Cartflows_Block_JS' ) ) {
 		/**
 		 * Adds Google fonts for Optin Form block.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @param array $attr the blocks attr.
 		 */
 		public static function blocks_optin_form_gfont( $attr ) {

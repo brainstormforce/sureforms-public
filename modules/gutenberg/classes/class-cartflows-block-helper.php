@@ -529,7 +529,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			/**
 			 * Get Heading Block CSS
 			 *
-			 * @since x.x.x
+			 * @since 0.0.1
 			 * @param array  $attr The block attributes.
 			 * @param string $id The selector ID.
 			 * @return array The Widget List.
@@ -821,14 +821,14 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		}
 
 
-			/**
-			 * Get Separator Block CSS
-			 *
-			 * @since x.x.x
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
+		/**
+		 * Get Separator Block CSS
+		 *
+		 * @since 0.0.1
+		 * @param array  $attr The block attributes.
+		 * @param string $id The selector ID.
+		 * @return array The Widget List.
+		 */
 		public static function get_separator_css( $attr, $id ) {
 
 			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
@@ -1130,7 +1130,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		/**
 		 * Border CSS generation Function.
 		 *
-		 * @since 2.0.0-beta.3
+		 * @since 0.0.1
 		 * @param  array  $attr   Attribute List.
 		 * @param  string $prefix Attribuate prefix .
 		 * @param  string $device Responsive.
@@ -1195,7 +1195,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		 *
 		 * @param string $value  CSS value.
 		 * @param string $unit  CSS unit.
-		 * @since 1.13.4
+		 * @since 0.0.1
 		 */
 		public static function get_css_value( $value = '', $unit = '' ) {
 
@@ -1215,7 +1215,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 		/**
 		 * Deprecated Border CSS generation Function.
 		 *
-		 * @since 2.0.0-beta.3
+		 * @since 0.0.1
 		 * @param  array  $current_css   Current style list.
 		 * @param  string $border_width   Border Width.
 		 * @param  string $border_radius Border Radius.

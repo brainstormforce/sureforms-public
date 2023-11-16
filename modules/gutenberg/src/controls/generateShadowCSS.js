@@ -24,7 +24,7 @@ import generateCSSUnit from '@Controls/generateCSSUnit';
  * @param {string} shadowProperties.altColor              An alternate color to use for hover if color is undefined.
  * @return {string}                                       The generated css, or empty string if required properties aren't set.
  *
- * @since 2.5.0
+ * @since 0.0.1
  */
 const generateShadowCSS = ( shadowProperties ) => {
 	let {

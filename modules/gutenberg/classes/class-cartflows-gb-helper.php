@@ -20,7 +20,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Member Variable
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var instance
 		 */
 		private static $instance;
@@ -28,7 +28,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Member Variable
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var instance
 		 */
 		public static $block_list;
@@ -36,7 +36,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Current Block List
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var current_block_list
 		 */
 		public static $current_block_list = array();
@@ -44,7 +44,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Page Blocks Variable
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var instance
 		 */
 		public static $page_blocks;
@@ -52,7 +52,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Stylesheet
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var stylesheet
 		 */
 		public static $stylesheet;
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Script
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var script
 		 */
 		public static $script;
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Cartflows Block Flag
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 * @var cf_flag
 		 */
 		public static $cf_flag = false;
@@ -76,14 +76,14 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Static CSS Added Array
 		 *
-		 * @since 1.23.0
+		 * @since 0.0.1
 		 * @var array
 		 */
 		public $static_css_blocks = array();
 
 		/**
 		 * Google fonts to enqueue
-		 *
+		 * @since 0.0.1
 		 * @var array
 		 */
 		public static $gfonts = array();
@@ -92,14 +92,14 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * As our svg icon is too long array so we will divide that into number of icon chunks.
 		 *
 		 * @var int
-		 * @since 2.7.0
+		 * @since 0.0.1
 		 */
 		public static $number_of_icon_chunks = 4;
 
 		/**
 		 * Store Json variable
 		 *
-		 * @since 1.8.1
+		 * @since 0.0.1
 		 * @var instance
 		 */
 		public static $icon_json;
@@ -108,14 +108,14 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * We have icon list in chunks in this variable we will merge all insides array into one single array.
 		 *
 		 * @var array
-		 * @since 2.7.0
+		 * @since 0.0.1
 		 */
 		public static $icon_array_merged = array();
 
 		/**
 		 *  Initiator
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Set alignment css function.
 		 *
 		 * @param string $align passed.
-		 * @since x.x.x
+		 * @since 0.0.1
 		 * @return array
 		 */
 		public static function alignment_css( $align ) {
@@ -261,7 +261,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Generates stylesheet and appends in head tag.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function generate_assets() {
 
@@ -289,7 +289,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Generates stylesheet in loop.
 		 *
 		 * @param object $this_post Current Post Object.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function get_generated_stylesheet( $this_post ) {
 
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Enqueue Gutenberg block assets for both frontend + backend.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function block_assets() {
 
@@ -344,7 +344,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Parse Guten Block.
 		 *
 		 * @param string $content the content string.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function parse( $content ) {
 
@@ -357,7 +357,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Generates stylesheet for reusable blocks.
 		 *
 		 * @param array $blocks Blocks array.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function get_assets( $blocks ) {
 
@@ -438,7 +438,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * @param  string $slug The field slug.
 		 * @param  string $selector The selector array.
 		 * @param  array  $combined_selectors The combined selector array.
-		 * @since  1.6.15
+		 * @since  0.0.1
 		 * @return bool|string
 		 */
 		public static function get_typography_css( $attr, $slug, $selector, $combined_selectors ) {
@@ -535,7 +535,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 *
 		 * @param string $value  CSS value.
 		 * @param string $unit  CSS unit.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public static function get_css_value( $value = '', $unit = '' ) {
 
@@ -553,7 +553,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 *
 		 * @param array  $combined_selectors The combined selector array.
 		 * @param string $id The selector ID.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public static function generate_all_css( $combined_selectors, $id ) {
 
@@ -577,7 +577,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * @param array $shadow_properties  Array containing the necessary shadow properties.
 		 * @return string                   The generated border CSS or an empty string on early return.
 		 *
-		 * @since 2.5.0
+		 * @since 0.0.1
 		 */
 		public static function generate_shadow_css( $shadow_properties ) {
 			// Get the Object Properties.
@@ -636,7 +636,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 *
 		 * @param array  $selectors The block selectors.
 		 * @param string $id The selector ID.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public static function generate_css( $selectors, $id ) {
 			$styling_css = '';
@@ -710,7 +710,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * Generates CSS recurrsively.
 		 *
 		 * @param object $block The block object.
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function get_block_css_and_js( $block ) {
 
@@ -834,7 +834,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		 * @param string $block_name Block Name.
 		 *
 		 * @return string Static CSS.
-		 * @since 1.23.0
+		 * @since 0.0.1
 		 */
 		public function get_block_static_css( $block_name ) {
 
@@ -857,7 +857,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Border attribute generation Function.
 		 *
-		 * @since 2.0.0-beta.3
+		 * @since 0.0.1
 		 * @param  array $prefix   Attribute Prefix.
 		 * @param array $default_args  default attributes args.
 		 * @return array
@@ -923,7 +923,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Get Json Data.
 		 *
-		 * @since 1.8.1
+		 * @since 0.0.1
 		 * @return array
 		 */
 		public static function backend_load_font_awesome_icons() {
@@ -952,7 +952,7 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 		/**
 		 * Generate SVG.
 		 *
-		 * @since 1.8.1
+		 * @since 0.0.1
 		 * @param  array $icon Decoded fontawesome json file data.
 		 */
 		public static function render_svg_html( $icon ) {

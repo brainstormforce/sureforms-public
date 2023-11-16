@@ -47,7 +47,7 @@ if ( ! class_exists( 'Cartflows_Block_Loader' ) ) {
 		/**
 		 * Loads plugin files.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 *
 		 * @return void
 		 */

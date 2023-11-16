@@ -1484,7 +1484,7 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 		 *
 		 * @param array $attributes Array of block attributes.
 		 *
-		 * @since 1.6.15
+		 * @since 0.0.1
 		 */
 		public function render_html( $attributes ) {
 

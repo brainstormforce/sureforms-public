@@ -34,7 +34,7 @@ class Cartflows_Filesystem {
 	/**
 	 * Get an instance of WP_Filesystem.
 	 *
-	 * @since 1.23.0
+	 * @since 0.0.1
 	 */
 	public function get_filesystem() {
 
@@ -75,7 +75,7 @@ class Cartflows_Filesystem {
 	/**
 	 * Method to direct.
 	 *
-	 * @since 1.23.0
+	 * @since 0.0.1
 	 */
 	public function filesystem_method() {
 		return 'direct';
@@ -84,7 +84,7 @@ class Cartflows_Filesystem {
 	/**
 	 * Sets credentials to true.
 	 *
-	 * @since 1.23.0
+	 * @since 0.0.1
 	 */
 	public function request_filesystem_credentials() {
 		return true;
@@ -100,7 +100,7 @@ Cartflows_Filesystem::get_instance();
 /**
  * Filesystem class
  *
- * @since 1.23.0
+ * @since 0.0.1
  */
 function uagb_filesystem() {
 	return Cartflows_Filesystem::get_instance()->get_filesystem();

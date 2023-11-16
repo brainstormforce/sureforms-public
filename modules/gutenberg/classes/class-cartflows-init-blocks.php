@@ -4,7 +4,7 @@
  *
  * Enqueue CSS/JS of all the blocks.
  *
- * @since   1.6.15
+ * @since 0.0.1
  * @package Cartflows
  */
 
@@ -29,17 +29,17 @@ class Cartflows_Init_Blocks {
 	/**
 	 * Store Json variable
 	 *
-	 * @since 1.8.1
+	 * @since 0.0.1
 	 * @var instance
 	 */
 	public static $icon_json;
 
-			/**
-			 * As our svg icon is too long array so we will divide that into number of icon chunks.
-			 *
-			 * @var int
-			 * @since 2.7.0
-			 */
+	/**
+	 * As our svg icon is too long array so we will divide that into number of icon chunks.
+	 *
+	 * @var int
+	 * @since 0.0.1
+	 */
 	public static $number_of_icon_chunks = 4;
 
 	/**
@@ -99,7 +99,7 @@ class Cartflows_Init_Blocks {
 	 * @param WP_Theme_JSON_Data $theme_json_data The Data from the theme.json file.
 	 * @return WP_Theme_JSON_Data $theme_json_data Modified data of theme.json file.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 */
 	public function update_theme_json_file_config( $theme_json_data ) {
 		$theme_json_data_two = $theme_json_data->get_data();
@@ -130,7 +130,7 @@ class Cartflows_Init_Blocks {
 	 *
 	 * Note: Currently the GCP support is added for Elementor and Block Builder.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function add_gcp_vars_to_block_editor() {
@@ -143,7 +143,7 @@ class Cartflows_Init_Blocks {
 	/**
 	 * Renders the Order Detail Form shortcode.
 	 *
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function order_detail_form_shortcode() {
 
@@ -187,7 +187,7 @@ class Cartflows_Init_Blocks {
 	/**
 	 * Renders the Order Checkout Form shortcode.
 	 *
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function order_checkout_form_shortcode() {
 		check_ajax_referer( 'wpcf_ajax_nonce', 'nonce' );
@@ -294,9 +294,9 @@ class Cartflows_Init_Blocks {
 	}
 
 	/**
-	 * Renders the Optin Form shortcode.
+	 * Renders the Option Form shortcode.
 	 *
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function optin_form_shortcode() {
 
@@ -369,7 +369,7 @@ class Cartflows_Init_Blocks {
 	/**
 	 * Enqueue Gutenberg block assets for both frontend + backend.
 	 *
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function block_assets() {
 
@@ -409,7 +409,7 @@ class Cartflows_Init_Blocks {
 	/**
 	 * Enqueue assets for both backend.
 	 *
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function editor_assets() {
 
@@ -504,7 +504,7 @@ class Cartflows_Init_Blocks {
 			 * enqueued when the editor loads.
 			 *
 			 * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
-			 * @since 1.6.15
+			 * @since 0.0.1
 			 */
 			register_block_type(
 				'wcfb/next-step-button',
@@ -550,7 +550,7 @@ class Cartflows_Init_Blocks {
 	 *
 	 * @param array  $categories Block categories.
 	 * @param object $post Post object.
-	 * @since 1.6.15
+	 * @since 0.0.1
 	 */
 	public function register_block_category( $categories, $post ) {
 		return array_merge(

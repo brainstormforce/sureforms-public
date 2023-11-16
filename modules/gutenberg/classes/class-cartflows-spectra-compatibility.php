@@ -26,7 +26,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 		/**
 		 * Initiator
 		 *
-		 * @since 1.5.7
+		 * @since 0.0.1
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -38,7 +38,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 		/**
 		 * Constructor
 		 *
-		 * @since 1.5.7
+		 * @since 0.0.1
 		 */
 		public function __construct() {
 
@@ -73,7 +73,7 @@ if ( ! class_exists( 'Cartflows_Spectra_Compatibility' ) ) :
 		 * Localize SVG icon scripts in chunks.
 		 * Ex - if 1800 icons available so we will localize 4 variables for it.
 		 *
-		 * @since 2.7.0
+		 * @since 0.0.1
 		 * @return void
 		 */
 		public function add_svg_icon_assets() {
