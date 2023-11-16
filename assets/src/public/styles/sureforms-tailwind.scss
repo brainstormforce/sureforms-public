@@ -5,12 +5,20 @@
 $ui-border-radius: 4px;
 $ui-box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 $ui-padding: 12px 16px;
+@mixin mobile630 {
+	@media ( max-width: 630px ) {
+		@content;
+	}
+}
 
 .srfm-classic-radio {
-	flex: 49% 0 0;
+	flex: calc( 50% - 7px ) 0 0;
+	@include mobile630 {
+		flex: calc( 100% ) 0 0;
+	}
 }
 .srfm-radio-buttons {
-	gap: 2%;
+	gap: 7px;
 }
 .srfm-classic-radio input {
 	display: none;
@@ -484,7 +492,7 @@ $ui-padding: 12px 16px;
 				z-index: 10;
 			}
 			.srfm-classic-multi-choice {
-				@apply srfm-cursor-pointer srfm-rounded-lg srfm-ring-1 srfm-ring-gray-300 srfm-bg-white srfm-p-2 srfm-shadow-sm focus:srfm-outline-none focus:srfm-border-0 srfm-mb-2;
+				@apply srfm-cursor-pointer srfm-rounded-lg srfm-ring-1 srfm-ring-gray-300 srfm-bg-white srfm-p-2 srfm-shadow-sm focus:srfm-outline-none focus:srfm-border-0 srfm-mb-[7px];
 			}
 			.srfm-classic-url-element {
 				@apply srfm-block srfm-w-full srfm-rounded-none srfm-rounded-r-md srfm-border-0 srfm-border-[#D1D5DB] srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;

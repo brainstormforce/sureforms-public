@@ -28,10 +28,7 @@ function Settings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-	if (
-		sureforms_keys &&
-		'_srfm_sender_notification' in sureforms_keys
-	) {
+	if ( sureforms_keys && '_srfm_sender_notification' in sureforms_keys ) {
 		if ( ! sureforms_keys._srfm_sender_notification ) {
 			sureforms_keys = default_keys;
 			editPost( {
@@ -141,7 +138,6 @@ function Settings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
-
 			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
@@ -165,26 +161,50 @@ function Settings( props ) {
 						: __( 'Message', 'sureforms' ) }
 				</p>
 				{ 'message' === sureforms_keys._srfm_submit_type ? (
-					<SRFMTextControl
-						variant="textarea"
-						data={ {
-							value: sureforms_keys._srfm_thankyou_message,
-							label: '_srfm_thankyou_message',
-						} }
-						label={ __(
-							'Customize the Successfull Form Submission message',
-							'sureforms'
-						) }
-						placeholder={ __(
-							'Form submitted successfully.',
-							'sureforms'
-						) }
-						value={ sureforms_keys._srfm_thankyou_message }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_thankyou_message', value );
-						} }
-						isFormSpecific={ true }
-					/>
+					<>
+						<SRFMTextControl
+							data={ {
+								value: sureforms_keys._srfm_thankyou_message_title,
+								label: '_srfm_thankyou_message_title',
+							} }
+							label={ __(
+								'Form Submission Success Message Title',
+								'sureforms'
+							) }
+							placeholder={ __( 'Thank you', 'sureforms' ) }
+							value={
+								sureforms_keys._srfm_thankyou_message_title
+							}
+							onChange={ ( value ) => {
+								updateMeta(
+									'_srfm_thankyou_message_title',
+									value
+								);
+							} }
+							isFormSpecific={ true }
+						/>
+						<p className="components-base-control__help" />
+						<SRFMTextControl
+							variant="textarea"
+							data={ {
+								value: sureforms_keys._srfm_thankyou_message,
+								label: '_srfm_thankyou_message',
+							} }
+							label={ __(
+								'Form Submission Success Message Description',
+								'sureforms'
+							) }
+							placeholder={ __(
+								'Form submitted successfully.',
+								'sureforms'
+							) }
+							value={ sureforms_keys._srfm_thankyou_message }
+							onChange={ ( value ) => {
+								updateMeta( '_srfm_thankyou_message', value );
+							} }
+							isFormSpecific={ true }
+						/>
+					</>
 				) : (
 					<SRFMTextControl
 						label={ __(
@@ -247,10 +267,7 @@ function Settings( props ) {
 								sureformsV2CheckboxSecret !== ''
 							) {
 								setShowErr( false );
-								updateMeta(
-									'_srfm_form_recaptcha',
-									value
-								);
+								updateMeta( '_srfm_form_recaptcha', value );
 							} else {
 								setShowErr( true );
 							}
@@ -260,10 +277,7 @@ function Settings( props ) {
 								sureformsV2InvisibleSite !== ''
 							) {
 								setShowErr( false );
-								updateMeta(
-									'_srfm_form_recaptcha',
-									value
-								);
+								updateMeta( '_srfm_form_recaptcha', value );
 							} else {
 								setShowErr( true );
 							}
@@ -273,10 +287,7 @@ function Settings( props ) {
 								sureformsV3Site !== ''
 							) {
 								setShowErr( false );
-								updateMeta(
-									'_srfm_form_recaptcha',
-									value
-								);
+								updateMeta( '_srfm_form_recaptcha', value );
 							} else {
 								setShowErr( true );
 							}

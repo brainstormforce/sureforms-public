@@ -542,6 +542,24 @@ if ( multiChoices ) {
 		} );
 	}
 }
+const multichoiceOptions = document.getElementsByClassName(
+	'srfm-classic-multi-choice'
+);
+if ( window.innerWidth > 630 ) {
+	for ( let x = 0; x < multichoiceOptions.length - 1; x++ ) {
+		const optionHeight = multichoiceOptions[ x ].offsetHeight;
+		const adjacentOptionHeight = multichoiceOptions[ x + 1 ].offsetHeight;
+		if ( optionHeight > adjacentOptionHeight ) {
+			multichoiceOptions[ x ].style.height = optionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height = optionHeight + 'px';
+		} else {
+			multichoiceOptions[ x ].style.height = adjacentOptionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height =
+				adjacentOptionHeight + 'px';
+		}
+		x++;
+	}
+}
 
 // Address Field
 
@@ -1086,7 +1104,7 @@ if ( numberSliderContainer ) {
 	// Pre Init
 	const preInit = ( sliderContainer, primaryColor ) => {
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const val = Number( rangeSliders.value );
 		const min = Number( rangeSliders.getAttribute( 'min' ) );
 		const max = Number( rangeSliders.getAttribute( 'max' ) );
@@ -1097,7 +1115,7 @@ if ( numberSliderContainer ) {
 	const init = ( sliderContainer, primaryColor ) => {
 		// Slider Range Change or Input
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const numberInput = sliderContainer.querySelector(
 			'.srfm-number-input-slider'
 		);

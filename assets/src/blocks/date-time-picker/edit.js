@@ -17,6 +17,7 @@ import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle'
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -26,6 +27,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		fieldType,
 		min,
+		preview,
 		max,
 		errorMsg,
 		formId,
@@ -39,6 +41,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.date_time_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

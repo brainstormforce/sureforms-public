@@ -33,15 +33,7 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 		)
 		.map( ( block ) => block.name );
 
-	const CORE_BLOCKS = [
-		'core/image',
-		'core/columns',
-		'core/column',
-		'core/heading',
-		'core/paragraph',
-	];
-
-	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS, ...CORE_BLOCKS ];
+	const ALLOWED_BLOCKS = [ ...SUREFORMS_BLOCKS ];
 
 	const filteredAllowedBlocks = applyFilters(
 		'sureforms/form/allowedBlocks',
@@ -235,33 +227,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 							} }
 						/>
 					</PanelRow>
-					{ 'sureforms_form' !== postType && (
-						<PanelRow>
-							<p className="srfm-form-notice">
-								{ __(
-									'Note: For Editing the stylings, please check the SureForms styling - ',
-									'sureforms'
-								) }
-								<a
-									href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
-									target="_blank"
-									rel="noreferrer"
-								>
-									{ __( 'Edit Form Settings ', 'sureforms' ) }
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										width="16"
-										height="16"
-										aria-hidden="true"
-										focusable="false"
-									>
-										<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
-									</svg>
-								</a>
-							</p>
-						</PanelRow>
-					) }
 				</PanelBody>
 			</InspectorControls>
 			{ blockCount === 0 ? (

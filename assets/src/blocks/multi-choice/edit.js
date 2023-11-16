@@ -2,11 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -27,6 +23,7 @@ import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
 import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -39,6 +36,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		errorMsg,
 		formId,
+		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -108,8 +106,14 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.multi_choice_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
-		<div { ...useBlockProps() }>
+		<div>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
