@@ -12,7 +12,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Fragment, useEffect, useState, useRef } from '@wordpress/element';
+import { Fragment, useEffect, useState } from '@wordpress/element';
 import Setup from './components/Setup';
 import { store as editorStore } from '@wordpress/editor';
 import { TextControl, PanelBody, PanelRow } from '@wordpress/components';
@@ -23,14 +23,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const { editPost } = useDispatch( editorStore );
 	// Get all registered block types
 	const allBlocks = wp.blocks.getBlockTypes();
-	const iframeRef = useRef( null );
-	// eslint-disable-next-line no-unused-vars
-	const [ formUrl, setFormUrl ] = useEntityProp(
-		'postType',
-		'sureforms_form',
-		'link',
-		id
-	);
 
 	const SUREFORMS_BLOCKS = allBlocks
 		.filter(
@@ -178,16 +170,16 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 
 	const buttonStyle = isSureformsForm
 		? {
-				background: '#0084C7',
-				color: '#fff',
+			background: '#0084C7',
+			color: '#fff',
 		  }
 		: {
-				backgroundColor: shouldInheritStyle
-					? sureforms_keys?._srfm_color1 || ''
-					: '',
-				color: shouldInheritStyle
-					? sureforms_keys?._srfm_textcolor1 || ''
-					: '',
+			backgroundColor: shouldInheritStyle
+				? sureforms_keys?._srfm_color1 || ''
+				: '',
+			color: shouldInheritStyle
+				? sureforms_keys?._srfm_textcolor1 || ''
+				: '',
 		  };
 	const renderButtonHtml = () => {
 		return (

@@ -28,21 +28,11 @@ export default ( { setAttributes } ) => {
 					'Get started by selecting a SureForm.',
 					'sureforms'
 				) }
-				style={ {
-					display: 'flex',
-					alignItems: 'center',
-				} }
+				className="srfm-select-form-placeholder"
 			>
-				<div
-					style={ {
-						display: 'flex',
-						margin: 'auto',
-						flexDirection: 'column',
-						gap: '16px',
-					} }
-				>
+				<div className="srfm-select-form-container">
 					<SelectForm form={ form } setForm={ setForm } />
-					<div style={ { textAlign: 'center' } }>
+					<div className="srfm-select-form-button">
 						<Button
 							variant="primary"
 							onClick={ () => {

@@ -175,26 +175,9 @@ export default ( { attributes, setAttributes } ) => {
 			</InspectorControls>
 			{ hasResolved ? (
 				<div { ...blockProps }>
-					<div
-						style={ {
-							display: 'flex',
-							justifyContent: 'space-between',
-							padding: ' 12px 32px 12px 32px',
-							alignItems: 'center',
-							boxShadow: '0 8px 8px -10px rgba(0, 0, 0, 0.1)',
-						} }
-					>
+					<div className="srfm-form-preview-header">
 						<button
-							style={ {
-								background: 'none',
-								border: 'none',
-								display: 'flex',
-								alignItems: 'center',
-								cursor: 'pointer',
-								height: '44px',
-								gap: '10px',
-								color: '#9CA3AF',
-							} }
+							className="srfm-back-button"
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
@@ -215,16 +198,7 @@ export default ( { attributes, setAttributes } ) => {
 							</svg>
 							{ __( 'Back', 'sureforms' ) }
 						</button>
-						<span
-							style={ {
-								color: '#030712',
-								fontFamily: 'Inter',
-								fontSize: '20px',
-								fontStyle: 'normal',
-								fontWeight: '600',
-								lineHeight: '140%',
-							} }
-						>
+						<span className="srfm-form-preview-title">
 							{ title }
 						</span>
 					</div>
@@ -234,9 +208,6 @@ export default ( { attributes, setAttributes } ) => {
 							ref={ iframeRef }
 							title="srfm-iframe"
 							src={ formUrl }
-							style={ {
-								minWidth: '-webkit-fill-available',
-							} }
 							width={ '100%' }
 						/>
 					</div>

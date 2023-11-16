@@ -271,3 +271,47 @@ input[type="range"]::-webkit-slider-thumb {
 	color: #f00;
 	content: " *";
 }
+
+.srfm-form-preview-header {
+	display: flex;
+	justify-content: space-between;
+	padding: 12px 32px 12px 32px;
+	align-items: center;
+	box-shadow: 0 8px 8px -10px rgba( 0, 0, 0, 0.1 );
+}
+
+.srfm-back-button {
+	background: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	height: 44px;
+	gap: 10px;
+	color: #9ca3af;
+}
+
+.srfm-form-preview-title {
+	color: #030712;
+	font-family: Inter;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 140%;
+}
+
+.srfm-select-form-placeholder {
+	display: flex !important;
+	align-items: center !important;
+}
+
+.srfm-select-form-container {
+	display: flex;
+	margin: auto;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.srfm-select-form-button {
+	text-align: center;
+}
