@@ -14,14 +14,14 @@ const separatorCommonData = applyFilters( 'sureforms/separator', addCommonDataTo
 registerBlockType( 'sureforms/separator', {
 	...separatorCommonData,
 	apiVersion: 2,
-	title: __( 'Separator', 'ultimate-addons-for-gutenberg' ),
+	title: __( 'Separator', 'sureforms' ),
 	description: __(
 		'Add a modern separator to divide your page content with icon/text.',
-		'ultimate-addons-for-gutenberg'
+		'sureforms'
 	),
 	icon: UAGB_Block_Icons.separator,
 	category: uagb_blocks_info.category,
-	keywords: [ __( 'divider', 'ultimate-addons-for-gutenberg' ), __( 'separator', 'ultimate-addons-for-gutenberg' ) ],
+	keywords: [ __( 'divider', 'sureforms' ), __( 'separator', 'sureforms' ) ],
 	attributes,
 	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="separator" /> : <Edit { ...props } /> ),
 	save() {

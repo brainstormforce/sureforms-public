@@ -3,7 +3,6 @@
  */
 
 import Edit from './edit';
-import save from './save';
 import attributes from './attributes';
 import UAGB_Block_Icons from '@Controls/block-icons';
 import { __ } from '@wordpress/i18n';
@@ -17,17 +16,17 @@ let imageCommonData = {};
 imageCommonData = applyFilters( 'sureforms/image', addCommonDataToSpectraBlocks( imageCommonData ) );
 registerBlockType( 'sureforms/image', {
 	...imageCommonData,
-	title: __( 'Image', 'ultimate-addons-for-gutenberg' ),
+	title: __( 'Image', 'sureforms' ),
 	description: __(
 		'Add images on your webpage with multiple customization options.',
-		'ultimate-addons-for-gutenberg'
+		'sureforms'
 	),
 	icon: UAGB_Block_Icons.image,
 	keywords: [
-		__( 'image', 'ultimate-addons-for-gutenberg' ),
-		__( 'advance image', 'ultimate-addons-for-gutenberg' ),
-		__( 'caption', 'ultimate-addons-for-gutenberg' ),
-		__( 'overlay image', 'ultimate-addons-for-gutenberg' ),
+		__( 'image', 'sureforms' ),
+		__( 'advance image', 'sureforms' ),
+		__( 'caption', 'sureforms' ),
+		__( 'overlay image', 'sureforms' ),
 	],
 	supports: {
 		anchor: true,
@@ -42,9 +41,11 @@ registerBlockType( 'sureforms/image', {
 	attributes,
 	category: uagb_blocks_info.category,
 	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="image" /> : <Edit { ...props } /> ),
-	save,
+	save() {
+		return null;
+	},
 	__experimentalLabel: ( atts ) =>
-		applyFilters( 'uag_loop_data_source_label', __( 'Image', 'ultimate-addons-for-gutenberg' ), atts ),
+		applyFilters( 'uag_loop_data_source_label', __( 'Image', 'sureforms' ), atts ),
 	usesContext: [ 'postId', 'postType' ],
 	deprecated,
 	transforms: {

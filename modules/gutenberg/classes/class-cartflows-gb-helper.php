@@ -762,6 +762,21 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
+					case 'sureforms/image':
+						$css = Cartflows_Block_Helper::get_image_css( $blockattr, $block_id );
+						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						break;
+
+					case 'sureforms/icon':
+						$css = Cartflows_Block_Helper::get_icon_css( $blockattr, $block_id );
+						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						break;
+
+					case 'sureforms/advanced-heading':
+						$css = Cartflows_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
+						// Cartflows_Block_JS::blocks_optin_form_gfont( $blockattr );
+						break;
+
 					default:
 						// Nothing to do here.
 						break;
@@ -826,6 +841,30 @@ if ( ! class_exists( 'Cartflows_Gb_Helper' ) ) {
 				'js'  => $js,
 			);
 
+		}
+
+		/**
+		 * Get block dynamic CSS selector with filters applied for extending it.
+		 *
+		 * @param string $block_name Block name to filter.
+		 * @param array  $selectors Array of selectors to filter.
+		 * @param array  $attr Attributes.
+		 * @return array Combined selectors array.
+		 * @since 0.0.1
+		 */
+		public static function get_combined_selectors( $block_name, $selectors, $attr ) {
+			if ( ! is_array( $selectors ) ) {
+				return $selectors;
+			}
+
+			$combined_selectors = array();
+
+			foreach ( $selectors as $key => $selector ) {
+				$hook_prefix                = ( 'desktop' === $key ) ? '' : '_' . $key;
+				$combined_selectors[ $key ] = apply_filters( 'spectra_' . $block_name . $hook_prefix . '_styling', $selector, $attr );
+			}
+
+			return $combined_selectors;
 		}
 
 		/**

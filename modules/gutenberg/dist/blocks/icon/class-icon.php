@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'WCFB_Separator' ) ) {
+if ( ! class_exists( 'WCFB_Icon' ) ) {
 
 	/**
-	 * Class WCFB_Separator.
+	 * Class WCFB_Icon.
 	 */
-	class WCFB_Separator {
+	class WCFB_Icon {
 
 		/**
 		 * Member Variable
@@ -759,7 +759,7 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 			$attributes = apply_filters( 'cartflows_gutenberg_cf_attributes_filters', $attr );
 
 			register_block_type(
-				'sureforms/separator',
+				'sureforms/icon',
 				array(
 					'attributes'      => $attributes,
 					'render_callback' => array( $this, 'render_html' ),
@@ -819,5 +819,5 @@ if ( ! class_exists( 'WCFB_Separator' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Separator::get_instance();
+	WCFB_Icon::get_instance();
 }

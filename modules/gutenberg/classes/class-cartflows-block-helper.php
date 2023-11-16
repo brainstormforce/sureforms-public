@@ -15,15 +15,20 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 	 * Class Cartflows_Block_Helper.
 	 */
 	class Cartflows_Block_Helper {
-			/**
-			 * Get Icon Block CSS
-			 *
-			 * @since 0.0.1
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
+		/**
+		 * Get Icon Block CSS
+		 *
+		 * @since 0.0.1
+		 * @param array  $attr The block attributes.
+		 * @param string $id The selector ID.
+		 * @return array The Widget List.
+		 */
 		public static function get_icon_css( $attr, $id ) {
+
+			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/icon']['attributes'];
+
+			$attr = array_merge( $defaults, $attr );
+
 			$icon_width       = Cartflows_Gb_Helper::get_css_value( $attr['iconSize'], $attr['iconSizeUnit'] );
 			$transformation   = Cartflows_Gb_Helper::get_css_value( $attr['rotation'], $attr['rotationUnit'] );
 			$background       = 'classic' === $attr['iconBackgroundColorType'] ? $attr['iconBackgroundColor'] : $attr['iconBackgroundGradientColor'];
@@ -98,7 +103,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'border-color'   => $attr['iconBorderColor'],
 					'box-shadow'     => $box_shadow,
 				),
-				self::uag_generate_border_css( $attr, 'icon' )
+				self::generate_border_css( $attr, 'icon' )
 			);
 			$selectors['.uagb-icon-wrapper .uagb-svg-wrapper:hover']     = array(
 				'border-color' => $attr['iconBorderHColor'],
@@ -136,7 +141,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomTabletMargin'], $attr['iconTabletMarginUnit'] ),
 					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftTabletMargin'], $attr['iconTabletMarginUnit'] ),
 				),
-				self::uag_generate_border_css( $attr, 'icon', 'tablet' )
+				self::generate_border_css( $attr, 'icon', 'tablet' )
 			);
 
 			// Generates css for mobile devices.
@@ -160,7 +165,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 					'margin-bottom'  => Cartflows_Gb_Helper::get_css_value( $attr['iconBottomMobileMargin'], $attr['iconMobileMarginUnit'] ),
 					'margin-left'    => Cartflows_Gb_Helper::get_css_value( $attr['iconLeftMobileMargin'], $attr['iconMobileMarginUnit'] ),
 				),
-				self::uag_generate_border_css( $attr, 'icon', 'mobile' )
+				self::generate_border_css( $attr, 'icon', 'mobile' )
 			);
 
 			$combined_selectors = array(
@@ -169,31 +174,36 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 				'mobile'  => $m_selectors,
 			);
 
-			return UAGB_Helper::generate_all_css(
+			return Cartflows_Gb_Helper::generate_all_css(
 				$combined_selectors,
 				' .uagb-block-' . $id,
 				isset( $gbs_class ) ? $gbs_class : ''
 			);
 		}
 
-			/**
-			 * Get Image Block CSS
-			 *
-			 * @since 0.0.1
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
+		/**
+		 * Get Image Block CSS
+		 *
+		 * @since 0.0.1
+		 * @param array  $attr The block attributes.
+		 * @param string $id The selector ID.
+		 * @return array The Widget List.
+		 */
 		public static function get_image_css( $attr, $id ) {
+
+			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/image']['attributes'];
+
+			$attr = array_merge( $defaults, $attr );
+
 			$m_selectors = array();
 			$t_selectors = array();
 
-			$image_border_css          = self::uag_generate_border_css( $attr, 'image' );
-			$image_border_css_tablet   = self::uag_generate_border_css( $attr, 'image', 'tablet' );
-			$image_border_css_mobile   = self::uag_generate_border_css( $attr, 'image', 'mobile' );
-			$overlay_border_css        = self::uag_generate_border_css( $attr, 'overlay' );
-			$overlay_border_css_tablet = self::uag_generate_border_css( $attr, 'overlay', 'tablet' );
-			$overlay_border_css_mobile = self::uag_generate_border_css( $attr, 'overlay', 'mobile' );
+			$image_border_css          = self::generate_border_css( $attr, 'image' );
+			$image_border_css_tablet   = self::generate_border_css( $attr, 'image', 'tablet' );
+			$image_border_css_mobile   = self::generate_border_css( $attr, 'image', 'mobile' );
+			$overlay_border_css        = self::generate_border_css( $attr, 'overlay' );
+			$overlay_border_css_tablet = self::generate_border_css( $attr, 'overlay', 'tablet' );
+			$overlay_border_css_mobile = self::generate_border_css( $attr, 'overlay', 'mobile' );
 
 			$width_tablet = '' !== $attr['widthTablet'] ? $attr['widthTablet'] . 'px' : $attr['width'] . 'px';
 			$width_mobile = '' !== $attr['widthMobile'] ? $attr['widthMobile'] . 'px' : $width_tablet;
@@ -393,7 +403,7 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			};
 
 			if ( 'none' !== $attr['maskShape'] ) {
-				$imagePath = UAGB_URL . 'assets/images/masks/' . $attr['maskShape'] . '.svg';
+				$imagePath = SUREFORMS_URL . 'assets/images/masks/' . $attr['maskShape'] . '.svg';
 				if ( 'custom' === $attr['maskShape'] ) {
 					$imagePath = $attr['maskCustomShape']['url'];
 				}
@@ -519,23 +529,23 @@ if ( ! class_exists( 'Cartflows_Block_Helper' ) ) {
 			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'heading', '.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner .uagb-image-heading', $combined_selectors );
 			$combined_selectors = Cartflows_Gb_Helper::get_typography_css( $attr, 'caption', '.wp-block-uagb-image .wp-block-uagb-image__figure figcaption', $combined_selectors );
 
-			return UAGB_Helper::generate_all_css(
+			return Cartflows_Gb_Helper::generate_all_css(
 				$combined_selectors,
 				$base_selector . $id,
 				isset( $gbs_class ) ? $gbs_class : ''
 			);
 		}
 
-			/**
-			 * Get Heading Block CSS
-			 *
-			 * @since 0.0.1
-			 * @param array  $attr The block attributes.
-			 * @param string $id The selector ID.
-			 * @return array The Widget List.
-			 */
-		public static function get_heading_css( $attr, $id ) {
-			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/separator']['attributes'];
+		/**
+		 * Get Heading Block CSS
+		 *
+		 * @since 0.0.1
+		 * @param array  $attr The block attributes.
+		 * @param string $id The selector ID.
+		 * @return array The Widget List.
+		 */
+		public static function get_advanced_heading_css( $attr, $id ) {
+			$defaults = Cartflows_Gb_Helper::$block_list['sureforms/advanced-heading']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 

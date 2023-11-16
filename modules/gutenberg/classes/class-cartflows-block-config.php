@@ -590,6 +590,15 @@ if ( ! class_exists( 'Cartflows_Block_Config' ) ) {
 					'sureforms/separator' => array(
 						'name' => 'separator',
 					),
+					'sureforms/image' => array(
+						'name' => 'image',
+					),
+					'sureforms/icon' => array(
+						'name' => 'icon',
+					),
+					'sureforms/advanced-heading' => array(
+						'name' => 'advanced-heading',
+					),
 
 				);
 			}

@@ -66,7 +66,10 @@ if ( ! class_exists( 'Cartflows_Block_Loader' ) ) {
 			if ( ! $is_spectra_active ) {
 				require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-cartflows-spectra-compatibility.php';
 			}
-
+			
+			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/advanced-heading/class-advanced-heading.php';
+			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/icon/class-icon.php';
+			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/image/class-image.php';
 			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/separator/class-separator.php';
 			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-uagb-filesystem.php';
 		}

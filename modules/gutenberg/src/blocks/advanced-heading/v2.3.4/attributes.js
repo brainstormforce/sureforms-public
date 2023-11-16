@@ -41,7 +41,7 @@ const attributes = {
 	headingTitle: {
 		source: 'html',
 		selector: '.uagb-heading-text',
-		default: __( 'Your Attractive Heading', 'ultimate-addons-for-gutenberg' ),
+		default: __( 'Your Attractive Heading', 'sureforms' ),
 	},
 	headingId: {
 		type: 'string',

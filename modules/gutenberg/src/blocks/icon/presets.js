@@ -10,7 +10,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-1',
-		label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 1', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 2 },
 			{ label: 'iconShadowVOffset', value: 4 },
@@ -21,7 +21,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-2',
-		label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 2', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 0 },
 			{ label: 'iconShadowVOffset', value: 5 },
@@ -32,7 +32,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-3',
-		label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 3', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 0 },
 			{ label: 'iconShadowVOffset', value: 2 },
@@ -43,7 +43,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-4',
-		label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 4', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 0 },
 			{ label: 'iconShadowVOffset', value: 1 },
@@ -54,7 +54,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-5',
-		label: __( 'Preset 5', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 5', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 0 },
 			{ label: 'iconShadowVOffset', value: 5 },
@@ -65,7 +65,7 @@ const dropShadowPresets = [
 	},
 	{
 		value: 'preset-6',
-		label: __( 'Preset 6', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 6', 'sureforms' ),
 		attributes: [
 			{ label: 'iconShadowHOffset', value: 0 },
 			{ label: 'iconShadowVOffset', value: 5 },
@@ -83,7 +83,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-1',
-		label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 1', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 3 },
 			{ label: 'iconBoxShadowVOffset', value: 8 },
@@ -96,7 +96,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-2',
-		label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 2', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 0 },
 			{ label: 'iconBoxShadowVOffset', value: 18 },
@@ -109,7 +109,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-3',
-		label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 3', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 0 },
 			{ label: 'iconBoxShadowVOffset', value: 4 },
@@ -122,7 +122,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-4',
-		label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 4', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 0 },
 			{ label: 'iconBoxShadowVOffset', value: 2 },
@@ -135,7 +135,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-5',
-		label: __( 'Preset 5', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 5', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 0 },
 			{ label: 'iconBoxShadowVOffset', value: 50 },
@@ -148,7 +148,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-6',
-		label: __( 'Preset 6', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 6', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBoxShadowHOffset', value: 0 },
 			{ label: 'iconBoxShadowVOffset', value: 20 },
@@ -167,7 +167,7 @@ const boxShadowHoverPresets = [
 	},
     {
         value: 'preset-1',
-        label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 1', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 3 },
             { label: 'iconBoxShadowVOffsetHover', value: 8 },
@@ -179,7 +179,7 @@ const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-2',
-        label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 2', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 0 },
             { label: 'iconBoxShadowVOffsetHover', value: 18 },
@@ -191,7 +191,7 @@ const boxShadowHoverPresets = [
     },
     {
         value: 'preset-3',
-        label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 3', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 0 },
             { label: 'iconBoxShadowVOffsetHover', value: 4 },
@@ -203,7 +203,7 @@ const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-4',
-        label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 4', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 0 },
             { label: 'iconBoxShadowVOffsetHover', value: 2 },
@@ -215,7 +215,7 @@ const boxShadowHoverPresets = [
 	},
 	{
         value: 'preset-5',
-        label: __( 'Preset 5', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 5', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 0 },
             { label: 'iconBoxShadowVOffsetHover', value: 50 },
@@ -227,7 +227,7 @@ const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-6',
-        label: __( 'Preset 6', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 6', 'sureforms' ),
         attributes: [
             { label: 'iconBoxShadowHOffsetHover', value: 0 },
             { label: 'iconBoxShadowVOffsetHover', value: 20 },
@@ -261,7 +261,7 @@ const iconPresets = [
 	},
 	{
 		value: 'preset-1',
-		label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 1', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBackgroundColor', value: '#DCF1FF' },
 			{ label: 'iconBorderStyle', value: '' },
@@ -279,7 +279,7 @@ const iconPresets = [
 	},
 	{
 		value: 'preset-2',
-		label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 2', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBackgroundColor', value: '' },
 			{ label: 'iconBorderStyle', value: 'solid' },
@@ -301,7 +301,7 @@ const iconPresets = [
 	},
 	{
 		value: 'preset-3',
-		label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 3', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBackgroundColor', value: '#DCF1FF' },
 			{ label: 'iconBorderStyle', value: '' },
@@ -319,7 +319,7 @@ const iconPresets = [
 	},
 	{
 		value: 'preset-4',
-		label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 4', 'sureforms' ),
 		attributes: [
 			{ label: 'iconBackgroundColor', value: '' },
 			{ label: 'iconBorderStyle', value: 'solid' },

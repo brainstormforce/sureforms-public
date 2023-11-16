@@ -86,22 +86,22 @@ const StyleSettings = ( props ) => {
 
 	return (
 		<>
-		<UAGAdvancedPanelBody title={ __( 'Icon', 'ultimate-addons-for-gutenberg' ) } initialOpen={ true }>
+		<UAGAdvancedPanelBody title={ __( 'Icon', 'sureforms' ) } initialOpen={ true }>
 				<UAGTabsControl
 					tabs={ [
 						{
 							name: 'normal',
-							title: __( 'Normal', 'ultimate-addons-for-gutenberg' ),
+							title: __( 'Normal', 'sureforms' ),
 						},
 						{
 							name: 'hover',
-							title: __( 'Hover', 'ultimate-addons-for-gutenberg' ),
+							title: __( 'Hover', 'sureforms' ),
 						},
 					] }
 					normal={
 						<>
 							<AdvancedPopColorControl
-								label={ __( 'Icon Color', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Icon Color', 'sureforms' ) }
 								colorValue={ iconColor ? iconColor : '' }
 								data={ {
 									value: iconColor,
@@ -110,7 +110,7 @@ const StyleSettings = ( props ) => {
 								setAttributes={ setAttributes }
 							/>
 							<ColorSwitchControl
-								label={ __( 'Background Type', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Background Type', 'sureforms' ) }
 								type={ {
 									value: iconBackgroundColorType,
 									label: 'iconBackgroundColorType',
@@ -130,7 +130,7 @@ const StyleSettings = ( props ) => {
 					hover={
 						<>
 							<AdvancedPopColorControl
-								label={ __( 'Icon Color', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Icon Color', 'sureforms' ) }
 								colorValue={ iconHoverColor ? iconHoverColor : '' }
 								data={ {
 									value: iconHoverColor,
@@ -139,7 +139,7 @@ const StyleSettings = ( props ) => {
 								setAttributes={ setAttributes }
 							/>
 							<ColorSwitchControl
-								label={ __( 'Background Type', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Background Type', 'sureforms' ) }
 								type={ {
 									value: iconHoverBackgroundColorType,
 									label: 'iconHoverBackgroundColorType',
@@ -167,7 +167,7 @@ const StyleSettings = ( props ) => {
 			/>
 		</UAGAdvancedPanelBody>
 		<UAGAdvancedPanelBody
-			title={ __( 'Drop Shadow', 'ultimate-addons-for-gutenberg' ) }
+			title={ __( 'Drop Shadow', 'sureforms' ) }
 			initialOpen={ false }
 		>
 			<UAGPresets
@@ -181,14 +181,14 @@ const StyleSettings = ( props ) => {
 				textShadowColor={ {
 					value: iconShadowColor,
 					label: 'iconShadowColor',
-					title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+					title: __( 'Color', 'sureforms' ),
 				} }
 				textShadowHOffset={ {
 					value: iconShadowHOffset,
 					label: 'iconShadowHOffset',
 					title: __(
 						'Horizontal',
-						'ultimate-addons-for-gutenberg'
+						'sureforms'
 					),
 				} }
 				textShadowVOffset={ {
@@ -196,23 +196,23 @@ const StyleSettings = ( props ) => {
 					label: 'iconShadowVOffset',
 					title: __(
 						'Vertical',
-						'ultimate-addons-for-gutenberg'
+						'sureforms'
 					),
 				} }
 				textShadowBlur={ {
 					value: iconShadowBlur,
 					label: 'iconShadowBlur',
-					title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+					title: __( 'Blur', 'sureforms' ),
 				} }
 				popup={ false }
 			/>
 		</UAGAdvancedPanelBody>
 		<UAGAdvancedPanelBody
-			title={__( 'Box Shadow','ultimate-addons-for-gutenberg' )}
+			title={__( 'Box Shadow','sureforms' )}
 			initialOpen={false}
 		>
 			<ToggleControl
-				label={ __( 'Separate Hover Shadow', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Separate Hover Shadow', 'sureforms' ) }
 				checked={ useSeparateBoxShadows }
 				onChange={ () => setAttributes( { useSeparateBoxShadows: ! useSeparateBoxShadows } ) }
 			/>
@@ -223,14 +223,14 @@ const StyleSettings = ( props ) => {
 							name: 'normal',
 							title: __(
 								'Normal',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						},
 						{
 							name: 'hover',
 							title: __(
 								'Hover',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						},
 					] }
@@ -247,14 +247,14 @@ const StyleSettings = ( props ) => {
 								boxShadowColor={ {
 									value: iconBoxShadowColor,
 									label: 'iconBoxShadowColor',
-									title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Color', 'sureforms' ),
 								} }
 								boxShadowHOffset={ {
 									value: iconBoxShadowHOffset,
 									label: 'iconBoxShadowHOffset',
 									title: __(
 										'Horizontal',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowVOffset={ {
@@ -262,25 +262,25 @@ const StyleSettings = ( props ) => {
 									label: 'iconBoxShadowVOffset',
 									title: __(
 										'Vertical',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowBlur={ {
 									value: iconBoxShadowBlur,
 									label: 'iconBoxShadowBlur',
-									title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Blur', 'sureforms' ),
 								} }
 								boxShadowSpread={ {
 									value: iconBoxShadowSpread,
 									label: 'iconBoxShadowSpread',
-									title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Spread', 'sureforms' ),
 								} }
 								boxShadowPosition={ {
 									value: iconBoxShadowPosition,
 									label: 'iconBoxShadowPosition',
 									title: __(
 										'Position',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 							/>
@@ -299,14 +299,14 @@ const StyleSettings = ( props ) => {
 								boxShadowColor={ {
 									value: iconBoxShadowColorHover,
 									label: 'iconBoxShadowColorHover',
-									title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Color', 'sureforms' ),
 								} }
 								boxShadowHOffset={ {
 									value: iconBoxShadowHOffsetHover,
 									label: 'iconBoxShadowHOffsetHover',
 									title: __(
 										'Horizontal',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowVOffset={ {
@@ -314,25 +314,25 @@ const StyleSettings = ( props ) => {
 									label: 'iconBoxShadowVOffsetHover',
 									title: __(
 										'Vertical',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowBlur={ {
 									value: iconBoxShadowBlurHover,
 									label: 'iconBoxShadowBlurHover',
-									title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Blur', 'sureforms' ),
 								} }
 								boxShadowSpread={ {
 									value: iconBoxShadowSpreadHover,
 									label: 'iconBoxShadowSpreadHover',
-									title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Spread', 'sureforms' ),
 								} }
 								boxShadowPosition={ {
 									value: iconBoxShadowPositionHover,
 									label: 'iconBoxShadowPositionHover',
 									title: __(
 										'Position',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 							/>
@@ -353,14 +353,14 @@ const StyleSettings = ( props ) => {
 								boxShadowColor={ {
 									value: iconBoxShadowColor,
 									label: 'iconBoxShadowColor',
-									title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Color', 'sureforms' ),
 								} }
 								boxShadowHOffset={ {
 									value: iconBoxShadowHOffset,
 									label: 'iconBoxShadowHOffset',
 									title: __(
 										'Horizontal',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowVOffset={ {
@@ -368,25 +368,25 @@ const StyleSettings = ( props ) => {
 									label: 'iconBoxShadowVOffset',
 									title: __(
 										'Vertical',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowBlur={ {
 									value: iconBoxShadowBlur,
 									label: 'iconBoxShadowBlur',
-									title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Blur', 'sureforms' ),
 								} }
 								boxShadowSpread={ {
 									value: iconBoxShadowSpread,
 									label: 'iconBoxShadowSpread',
-									title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Spread', 'sureforms' ),
 								} }
 								boxShadowPosition={ {
 									value: iconBoxShadowPosition,
 									label: 'iconBoxShadowPosition',
 									title: __(
 										'Position',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 							/>
@@ -395,10 +395,10 @@ const StyleSettings = ( props ) => {
 			
 	
 		</UAGAdvancedPanelBody>
-		<UAGAdvancedPanelBody title={__( 'Spacing', 'ultimate-addons-for-gutenberg' )} initialOpen={ false }>
+		<UAGAdvancedPanelBody title={__( 'Spacing', 'sureforms' )} initialOpen={ false }>
 			<SpacingControl
 				{ ...props }
-				label={ __( 'Padding', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Padding', 'sureforms' ) }
 				valueTop={ {
 					value: iconTopPadding,
 					label: 'iconTopPadding',
@@ -468,7 +468,7 @@ const StyleSettings = ( props ) => {
 			/>
 			<SpacingControl
 				{ ...props }
-				label={ __( 'Margin', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
 					value: iconTopMargin,
 					label: 'iconTopMargin',

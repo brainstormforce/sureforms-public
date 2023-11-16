@@ -107,11 +107,11 @@ export default function Image( {
 	} else if ( filename ) {
 		defaultedAlt = sprintf(
 			/* translators: %s: file name */
-			__( 'This image has an empty alt attribute; its file name is %s', 'ultimate-addons-for-gutenberg' ),
+			__( 'This image has an empty alt attribute; its file name is %s', 'sureforms' ),
 			filename
 		);
 	} else {
-		defaultedAlt = __( 'This image has an empty alt attribute', 'ultimate-addons-for-gutenberg' );
+		defaultedAlt = __( 'This image has an empty alt attribute', 'sureforms' );
 	}
 
 	let img = (
@@ -310,7 +310,7 @@ export default function Image( {
 					<ToolbarButton
 						onClick={ () => setIsEditingImage( true ) }
 						icon={ crop }
-						label={ __( 'Crop', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Crop', 'sureforms' ) }
 					/>
 				) }
 			</BlockControls>

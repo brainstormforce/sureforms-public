@@ -25,8 +25,8 @@ export default function Layout( { attributes, isSelected, setAttributes, caption
 					ref={ headingRef }
 					tagName={ headingTag }
 					className="uagb-image-heading"
-					aria-label={ __( 'Image overlay heading text', 'ultimate-addons-for-gutenberg' ) }
-					placeholder={ __( 'Add Heading', 'ultimate-addons-for-gutenberg' ) }
+					aria-label={ __( 'Image overlay heading text', 'sureforms' ) }
+					placeholder={ __( 'Add Heading', 'sureforms' ) }
 					value={ heading }
 					onChange={ ( value ) => setAttributes( { heading: value } ) }
 				/>
@@ -41,8 +41,8 @@ export default function Layout( { attributes, isSelected, setAttributes, caption
 					ref={ captionRef }
 					tagName="figcaption"
 					className="uagb-image-caption"
-					aria-label={ __( 'Image caption text', 'ultimate-addons-for-gutenberg' ) }
-					placeholder={ __( 'Add caption', 'ultimate-addons-for-gutenberg' ) }
+					aria-label={ __( 'Image caption text', 'sureforms' ) }
+					placeholder={ __( 'Add caption', 'sureforms' ) }
 					value={ caption }
 					onChange={ ( value ) => setAttributes( { caption: value } ) }
 				/>

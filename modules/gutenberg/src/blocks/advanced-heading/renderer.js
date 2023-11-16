@@ -30,7 +30,7 @@ const Renderer = ( props ) => {
 	return (
 		<RichText
 			tagName={ headingTag }
-			placeholder={ __( 'Write a Heading', 'ultimate-addons-for-gutenberg' ) }
+			placeholder={ __( 'Write a Heading', 'sureforms' ) }
 			value={ headingTitle }
 			className="uagb-heading-text"
 			onChange={ ( value ) => {

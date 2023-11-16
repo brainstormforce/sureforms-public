@@ -347,7 +347,7 @@ const Render = ( props ) => {
 	const isExternal = isExternalImage( id, url );
 	const src = isExternal ? url : undefined;
 	const mediaPreview = !! url && (
-		<img alt={ __( 'Edit image', 'ultimate-addons-for-gutenberg' ) } title={ __( 'Edit image', 'ultimate-addons-for-gutenberg' ) } className={ 'edit-image-preview' } src={ url } />
+		<img alt={ __( 'Edit image', 'sureforms' ) } title={ __( 'Edit image', 'sureforms' ) } className={ 'edit-image-preview' } src={ url } />
 	);
 
 	// If an image is externally hosted, try to fetch the image data. This may
@@ -377,7 +377,7 @@ const Render = ( props ) => {
 				}
 
 				setExternalBlob();
-				createNotice( 'success', __( 'Image uploaded.', 'ultimate-addons-for-gutenberg' ), {
+				createNotice( 'success', __( 'Image uploaded.', 'sureforms' ), {
 					type: 'snackbar',
 				} );
 			},
@@ -412,7 +412,7 @@ const Render = ( props ) => {
 					rel={ rel }
 				/>
 				{ externalBlob && (
-					<ToolbarButton onClick={ uploadExternal } icon={ upload } label={ __( 'Upload external image', 'ultimate-addons-for-gutenberg' ) } />
+					<ToolbarButton onClick={ uploadExternal } icon={ upload } label={ __( 'Upload external image', 'sureforms' ) } />
 				) }
 			</BlockControls>
 			<div
@@ -455,10 +455,10 @@ const Render = ( props ) => {
 				<MediaPlaceholder
 					icon={ <BlockIcon icon={ UAGB_Block_Icons.image } /> }
 					labels={ {
-						title: __( 'Image', 'ultimate-addons-for-gutenberg' ),
+						title: __( 'Image', 'sureforms' ),
 						instructions: __(
 							'Upload an image file, pick one from your media library, or add one with a URL.',
-							'ultimate-addons-for-gutenberg'
+							'sureforms'
 						),
 					} }
 					onSelect={ onSelectImage }

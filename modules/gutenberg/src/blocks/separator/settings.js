@@ -78,11 +78,11 @@ const Settings = ( props ) => {
 		return (
 			<>
 				<UAGAdvancedPanelBody
-					title={ __( 'Separator', 'ultimate-addons-for-gutenberg' ) }
+					title={ __( 'Separator', 'sureforms' ) }
 					initialOpen={ true }
 				>
 					<UAGSelectControl
-						label={ __( 'Style', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Style', 'sureforms' ) }
 						data={ {
 							value: separatorStyle,
 							label: 'separatorStyle',
@@ -95,7 +95,7 @@ const Settings = ( props ) => {
 							separatorStyle !== 'solid'
 								? __(
 										'Note: Please set Separator Height for proper thickness.',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 								  )
 								: false
 						}
@@ -103,45 +103,45 @@ const Settings = ( props ) => {
 						options={ [
 							{
 								value: 'none',
-								label: __( 'None', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'None', 'sureforms' ),
 							},
 							{
 								value: 'dotted',
-								label: __( 'Dotted', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Dotted', 'sureforms' ),
 							},
 							{
 								value: 'dashed',
-								label: __( 'Dashed', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Dashed', 'sureforms' ),
 							},
 							{
 								value: 'double',
-								label: __( 'Double', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Double', 'sureforms' ),
 							},
 							{
 								value: 'solid',
-								label: __( 'Solid', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Solid', 'sureforms' ),
 							},
 							{
 								value: 'rectangles',
-								label: __( 'Rectangles', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Rectangles', 'sureforms' ),
 							},
 							{
 								value: 'parallelogram',
-								label: __( 'Parallelogram', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Parallelogram', 'sureforms' ),
 							},
 							{
 								value: 'slash',
-								label: __( 'Slash', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Slash', 'sureforms' ),
 							},
 							{
 								value: 'leaves',
-								label: __( 'Leaves', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Leaves', 'sureforms' ),
 							},
 						] }
 					/>
 					<MultiButtonsControl
 						setAttributes={ setAttributes }
-						label={ __( 'Add Element', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Add Element', 'sureforms' ) }
 						data={ {
 							value: elementType,
 							label: 'elementType',
@@ -149,15 +149,15 @@ const Settings = ( props ) => {
 						options={ [
 							{
 								value: 'none',
-								label: __( 'None', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'None', 'sureforms' ),
 							},
 							{
 								value: 'text',
-								label: __( 'Text', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Text', 'sureforms' ),
 							},
 							{
 								value: 'icon',
-								label: __( 'Icon', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Icon', 'sureforms' ),
 							},
 						] }
 						showIcons={ false }
@@ -166,7 +166,7 @@ const Settings = ( props ) => {
 					{ elementType === 'text' && (
 						<>
 							<UAGTextControl
-								label={ __( 'Text', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Text', 'sureforms' ) }
 								data={ {
 									value: separatorText,
 									label: 'separatorText',
@@ -176,7 +176,7 @@ const Settings = ( props ) => {
 							/>
 							<MultiButtonsControl
 								setAttributes={ setAttributes }
-								label={ __( 'Heading Tag', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Heading Tag', 'sureforms' ) }
 								data={ {
 									value: separatorTextTag,
 									label: 'separatorTextTag',
@@ -184,35 +184,35 @@ const Settings = ( props ) => {
 								options={ [
 									{
 										value: 'h1',
-										label: __( 'H1', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H1', 'sureforms' ),
 									},
 									{
 										value: 'h2',
-										label: __( 'H2', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H2', 'sureforms' ),
 									},
 									{
 										value: 'h3',
-										label: __( 'H3', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H3', 'sureforms' ),
 									},
 									{
 										value: 'h4',
-										label: __( 'H4', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H4', 'sureforms' ),
 									},
 									{
 										value: 'h5',
-										label: __( 'H5', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H5', 'sureforms' ),
 									},
 									{
 										value: 'h6',
-										label: __( 'H6', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'H6', 'sureforms' ),
 									},
 									{
 										value: 'span',
-										label: __( 'Span', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'Span', 'sureforms' ),
 									},
 									{
 										value: 'p',
-										label: __( 'P', 'ultimate-addons-for-gutenberg' ),
+										label: __( 'P', 'sureforms' ),
 									},
 								] }
 							/>
@@ -221,7 +221,7 @@ const Settings = ( props ) => {
 					{ elementType === 'icon' && (
 						<>
 							<UAGIconPicker
-								label={ __( 'Icon', 'ultimate-addons-for-gutenberg' ) }
+								label={ __( 'Icon', 'sureforms' ) }
 								value={ separatorIcon }
 								onChange={ ( value ) => setAttributes( { separatorIcon: value } ) }
 							/>
@@ -237,7 +237,7 @@ const Settings = ( props ) => {
 			<UAGAdvancedPanelBody title="Separator" initialOpen={ true }>
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
-					label={ __( 'Alignment', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Alignment', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: separatorAlign,
@@ -257,24 +257,24 @@ const Settings = ( props ) => {
 						{
 							value: 'left',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
-							tooltip: __( 'Left', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
-							tooltip: __( 'Center', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
-							tooltip: __( 'Right', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
 					showIcons={ true }
 					responsive={ true }
 				/>
 				<ResponsiveSlider
-					label={ __( 'Width', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Width', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: separatorWidth,
@@ -297,18 +297,18 @@ const Settings = ( props ) => {
 					} }
 					units={ [
 						{
-							name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+							name: __( 'Pixel', 'sureforms' ),
 							unitValue: 'px',
 						},
 						{
-							name: __( '%', 'ultimate-addons-for-gutenberg' ),
+							name: __( '%', 'sureforms' ),
 							unitValue: '%',
 						},
 					] }
 					setAttributes={ setAttributes }
 				/>
 				<ResponsiveSlider
-					label={ __( 'Height', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Height', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: separatorHeight,
@@ -331,11 +331,11 @@ const Settings = ( props ) => {
 					} }
 					units={ [
 						{
-							name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+							name: __( 'Pixel', 'sureforms' ),
 							unitValue: 'px',
 						},
 						{
-							name: __( '%', 'ultimate-addons-for-gutenberg' ),
+							name: __( '%', 'sureforms' ),
 							unitValue: '%',
 						},
 					] }
@@ -347,7 +347,7 @@ const Settings = ( props ) => {
 					separatorStyle !== 'dashed' &&
 					separatorStyle !== 'none' && (
 						<ResponsiveSlider
-							label={ __( 'Size', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Size', 'sureforms' ) }
 							data={ {
 								desktop: {
 									value: separatorSize,
@@ -370,11 +370,11 @@ const Settings = ( props ) => {
 							} }
 							units={ [
 								{
-									name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+									name: __( 'Pixel', 'sureforms' ),
 									unitValue: 'px',
 								},
 								{
-									name: __( '%', 'ultimate-addons-for-gutenberg' ),
+									name: __( '%', 'sureforms' ),
 									unitValue: '%',
 								},
 							] }
@@ -383,7 +383,7 @@ const Settings = ( props ) => {
 					) }
 				{ separatorStyle !== 'none' && (
 					<ResponsiveSlider
-						label={ __( 'Separator Height', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Separator Height', 'sureforms' ) }
 						data={ {
 							desktop: {
 								value: separatorBorderHeight,
@@ -406,11 +406,11 @@ const Settings = ( props ) => {
 						} }
 						units={ [
 							{
-								name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+								name: __( 'Pixel', 'sureforms' ),
 								unitValue: 'px',
 							},
 							{
-								name: __( '%', 'ultimate-addons-for-gutenberg' ),
+								name: __( '%', 'sureforms' ),
 								unitValue: '%',
 							},
 						] }
@@ -419,7 +419,7 @@ const Settings = ( props ) => {
 				) }
 				{ separatorStyle !== 'none' && (
 					<AdvancedPopColorControl
-						label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Color', 'sureforms' ) }
 						colorValue={ separatorColor ? separatorColor : '' }
 						data={ {
 							value: separatorColor,
@@ -437,14 +437,14 @@ const Settings = ( props ) => {
 			<UAGAdvancedPanelBody
 				title={
 					elementType === 'text'
-						? __( 'Text', 'ultimate-addons-for-gutenberg' )
-						: __( 'Icon', 'ultimate-addons-for-gutenberg' )
+						? __( 'Text', 'sureforms' )
+						: __( 'Icon', 'sureforms' )
 				}
 				initialOpen={ false }
 			>
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
-					label={ __( 'Alignment', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Alignment', 'sureforms' ) }
 					responsive={ true }
 					data={ {
 						desktop: {
@@ -465,23 +465,23 @@ const Settings = ( props ) => {
 						{
 							value: 'left',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
-							tooltip: __( 'Left', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
-							tooltip: __( 'Center', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
-							tooltip: __( 'Right', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
 					showIcons={ true }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Color', 'sureforms' ) }
 					colorValue={ elementColor ? elementColor : '' }
 					data={ {
 						value: elementColor,
@@ -491,7 +491,7 @@ const Settings = ( props ) => {
 				/>
 				{ elementType === 'text' && (
 					<TypographyControl
-						label={ __( 'Typography', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Typography', 'sureforms' ) }
 						attributes={ attributes }
 						setAttributes={ setAttributes }
 						loadGoogleFonts={ {
@@ -571,7 +571,7 @@ const Settings = ( props ) => {
 
 				{ elementType === 'icon' && (
 					<ResponsiveSlider
-						label={ __( 'Icon Size', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Icon Size', 'sureforms' ) }
 						data={ {
 							desktop: {
 								value: elementIconWidth,
@@ -594,11 +594,11 @@ const Settings = ( props ) => {
 						} }
 						units={ [
 							{
-								name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+								name: __( 'Pixel', 'sureforms' ),
 								unitValue: 'px',
 							},
 							{
-								name: __( 'EM', 'ultimate-addons-for-gutenberg' ),
+								name: __( 'EM', 'sureforms' ),
 								unitValue: 'em',
 							},
 						] }
@@ -606,7 +606,7 @@ const Settings = ( props ) => {
 					/>
 				) }
 				<ResponsiveSlider
-					label={ __( 'Spacing', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Spacing', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: elementSpacing,
@@ -629,7 +629,7 @@ const Settings = ( props ) => {
 					} }
 					units={ [
 						{
-							name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+							name: __( 'Pixel', 'sureforms' ),
 							unitValue: 'px',
 						},
 					] }

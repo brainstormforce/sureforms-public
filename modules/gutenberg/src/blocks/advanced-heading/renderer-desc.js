@@ -24,7 +24,7 @@ const RendererDesc = ( props ) => {
 	return (
 		<RichText
 			tagName="p"
-			placeholder={ __( 'Write a Description', 'ultimate-addons-for-gutenberg' ) }
+			placeholder={ __( 'Write a Description', 'sureforms' ) }
 			value={ headingDesc }
 			className="uagb-desc-text"
 			onChange={ ( value ) => setAttributes( { headingDesc: value } ) }

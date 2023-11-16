@@ -246,7 +246,7 @@ const attributes = {
 	},
 	separatorText: {
 		type: 'string',
-		default: __( 'Divider', 'ultimate-addons-for-gutenberg' ),
+		default: __( 'Divider', 'sureforms' ),
 	},
 	separatorTextTag: {
 		type: 'string',

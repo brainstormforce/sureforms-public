@@ -36,14 +36,14 @@ const GeneralSettings = ( props ) => {
 
 	return (
 		<>
-			<UAGAdvancedPanelBody title={ __( 'Icon', 'ultimate-addons-for-gutenberg' ) } initialOpen={ true }>
+			<UAGAdvancedPanelBody title={ __( 'Icon', 'sureforms' ) } initialOpen={ true }>
 				<UAGIconPicker
-					label={ __( 'Icon', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Icon', 'sureforms' ) }
 					value={ icon }
 					onChange={ ( value ) => setAttributes( { icon: value } ) }
 				/>
 				<ResponsiveSlider
-					label={ __( 'Size', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Size', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: iconSize,
@@ -68,7 +68,7 @@ const GeneralSettings = ( props ) => {
 				/>
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
-					label={ __( 'Alignment', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Alignment', 'sureforms' ) }
 					data={ {
 						desktop: {
 							value: align,
@@ -87,24 +87,24 @@ const GeneralSettings = ( props ) => {
 						{
 							value: 'left',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
-							tooltip: __( 'Left', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
-							tooltip: __( 'Center', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
 							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
-							tooltip: __( 'Right', 'ultimate-addons-for-gutenberg' ),
+							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
 					showIcons={ true }
 					responsive={ true }
 				/>
 				<Range
-					label={ __( 'Rotation', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Rotation', 'sureforms' ) }
 					setAttributes={ setAttributes }
 					value={ rotation }
 					data={ {
@@ -119,20 +119,20 @@ const GeneralSettings = ( props ) => {
 					} }
 					units={ [
 						{
-							name: __( 'Degree', 'ultimate-addons-for-gutenberg' ),
+							name: __( 'Degree', 'sureforms' ),
 							unitValue: 'deg',
 						},
 					] }
 				/>
 				<ToggleControl
-					label={ __( 'Link', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Link', 'sureforms' ) }
 					checked={ disableLink }
 					onChange={ () => setAttributes( { disableLink: ! disableLink } ) }
 				/>
 				{ disableLink && (
 					<>
 						<UAGTextControl
-							label={ __( 'URL', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'URL', 'sureforms' ) }
 							value={ link }
 							data={ {
 								value: link,
@@ -140,17 +140,17 @@ const GeneralSettings = ( props ) => {
 							} }
 							setAttributes={ setAttributes }
 							onChange={ ( value ) => setAttributes( { link: value } ) }
-							placeholder={ __( 'Enter URL', 'ultimate-addons-for-gutenberg' ) }
+							placeholder={ __( 'Enter URL', 'sureforms' ) }
 						/>
 						<ToggleControl
-							label={ __( 'Open in New Tab', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Open in New Tab', 'sureforms' ) }
 							checked={ target }
 							onChange={ () => setAttributes( { target: ! target } ) }
 						/>
 					</>
 				) }
 			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody title={ __( 'Presets', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody title={ __( 'Presets', 'sureforms' ) } initialOpen={ false }>
 				<UAGPresets setAttributes={ setAttributes } presets={ iconPresets } presetInputType="radioImage" />
 			</UAGAdvancedPanelBody>
 		</>

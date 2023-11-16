@@ -8,7 +8,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-1',
-		label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 1', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 3 },
 			{ label: 'imageBoxShadowVOffset', value: 8 },
@@ -21,7 +21,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-2',
-		label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 2', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 0 },
 			{ label: 'imageBoxShadowVOffset', value: 18 },
@@ -34,7 +34,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-3',
-		label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 3', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 0 },
 			{ label: 'imageBoxShadowVOffset', value: 4 },
@@ -47,7 +47,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-4',
-		label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 4', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 0 },
 			{ label: 'imageBoxShadowVOffset', value: 2 },
@@ -60,7 +60,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-5',
-		label: __( 'Preset 5', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 5', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 0 },
 			{ label: 'imageBoxShadowVOffset', value: 50 },
@@ -73,7 +73,7 @@ const boxShadowPresets = [
 	},
 	{
 		value: 'preset-6',
-		label: __( 'Preset 6', 'ultimate-addons-for-gutenberg' ),
+		label: __( 'Preset 6', 'sureforms' ),
 		attributes: [
 			{ label: 'imageBoxShadowHOffset', value: 0 },
 			{ label: 'imageBoxShadowVOffset', value: 20 },
@@ -91,7 +91,7 @@ export const boxShadowHoverPresets = [
 	},
     {
         value: 'preset-1',
-        label: __( 'Preset 1', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 1', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 3 },
             { label: 'imageBoxShadowVOffsetHover', value: 8 },
@@ -103,7 +103,7 @@ export const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-2',
-        label: __( 'Preset 2', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 2', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 0 },
             { label: 'imageBoxShadowVOffsetHover', value: 18 },
@@ -115,7 +115,7 @@ export const boxShadowHoverPresets = [
     },
     {
         value: 'preset-3',
-        label: __( 'Preset 3', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 3', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 0 },
             { label: 'imageBoxShadowVOffsetHover', value: 4 },
@@ -127,7 +127,7 @@ export const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-4',
-        label: __( 'Preset 4', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 4', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 0 },
             { label: 'imageBoxShadowVOffsetHover', value: 2 },
@@ -139,7 +139,7 @@ export const boxShadowHoverPresets = [
 	},
 	{
         value: 'preset-5',
-        label: __( 'Preset 5', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 5', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 0 },
             { label: 'imageBoxShadowVOffsetHover', value: 50 },
@@ -151,7 +151,7 @@ export const boxShadowHoverPresets = [
     },
 	{
         value: 'preset-6',
-        label: __( 'Preset 6', 'ultimate-addons-for-gutenberg' ),
+        label: __( 'Preset 6', 'sureforms' ),
         attributes: [
             { label: 'imageBoxShadowHOffsetHover', value: 0 },
             { label: 'imageBoxShadowVOffsetHover', value: 20 },

@@ -402,61 +402,61 @@ export default function Settings( props ) {
 		desktop: [
 			{
 				value: '',
-				label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Default', 'sureforms' ),
 			},
 			{
 				value: 'fill',
-				label: __( 'Fill', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Fill', 'sureforms' ),
 			},
 			{
 				value: 'cover',
-				label: __( 'Cover', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Cover', 'sureforms' ),
 			},
 			{
 				value: 'contain',
-				label: __( 'Contain', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Contain', 'sureforms' ),
 			},
 		],
 		tablet: [
 			{
 				value: '',
-				label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Default', 'sureforms' ),
 			},
 			{
 				value: 'fill',
-				label: __( 'Fill', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Fill', 'sureforms' ),
 			},
 			{
 				value: 'cover',
-				label: __( 'Cover', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Cover', 'sureforms' ),
 			},
 			{
 				value: 'contain',
-				label: __( 'Contain', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Contain', 'sureforms' ),
 			},
 		],
 		mobile: [
 			{
 				value: '',
-				label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Default', 'sureforms' ),
 			},
 			{
 				value: 'fill',
-				label: __( 'Fill', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Fill', 'sureforms' ),
 			},
 			{
 				value: 'cover',
-				label: __( 'Cover', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Cover', 'sureforms' ),
 			},
 			{
 				value: 'contain',
-				label: __( 'Contain', 'ultimate-addons-for-gutenberg' ),
+				label: __( 'Contain', 'sureforms' ),
 			},
 		],
 	};
 
 	const generalPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Image', 'ultimate-addons-for-gutenberg' ) } initialOpen={ true }>
+		<UAGAdvancedPanelBody title={ __( 'Image', 'sureforms' ) } initialOpen={ true }>
 			<UAGMediaPicker
 				onSelectImage={ onSelectImage }
 				backgroundImage={ { url } }
@@ -465,7 +465,7 @@ export default function Settings( props ) {
 			/>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
-				label={ __( 'Alignment', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Alignment', 'sureforms' ) }
 				data={ {
 					desktop: {
 						value: align,
@@ -485,17 +485,17 @@ export default function Settings( props ) {
 					{
 						value: 'left',
 						icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
-						tooltip: __( 'Left', 'ultimate-addons-for-gutenberg' ),
+						tooltip: __( 'Left', 'sureforms' ),
 					},
 					{
 						value: 'center',
 						icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
-						tooltip: __( 'Center', 'ultimate-addons-for-gutenberg' ),
+						tooltip: __( 'Center', 'sureforms' ),
 					},
 					{
 						value: 'right',
 						icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
-						tooltip: __( 'Right', 'ultimate-addons-for-gutenberg' ),
+						tooltip: __( 'Right', 'sureforms' ),
 					},
 				] }
 				showIcons={ true }
@@ -503,7 +503,7 @@ export default function Settings( props ) {
 			/>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
-				label={ __( 'Layout', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Layout', 'sureforms' ) }
 				data={ {
 					value: layout,
 					label: 'layout',
@@ -512,11 +512,11 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'default',
-						label: __( 'Normal', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Normal', 'sureforms' ),
 					},
 					{
 						value: 'overlay',
-						label: __( 'Overlay', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Overlay', 'sureforms' ),
 					},
 				] }
 				showIcons={ false }
@@ -525,7 +525,7 @@ export default function Settings( props ) {
 			{ layout === 'overlay' && (
 				<>
 					<SpectraMatrixControl
-						label={ __( 'Content Position', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Content Position', 'sureforms' ) }
 						data={ {
 							label: 'overlayContentPosition',
 							value: overlayContentPosition,
@@ -539,7 +539,7 @@ export default function Settings( props ) {
 						deviceType={ deviceType }
 					/>
 					<Range
-						label={ __( 'Border Distance From EDGE', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Border Distance From EDGE', 'sureforms' ) }
 						setAttributes={ setAttributes }
 						value={ overlayPositionFromEdge }
 						data={ {
@@ -587,7 +587,7 @@ export default function Settings( props ) {
 						imageHeight={ naturalHeight }
 					/>
 					<UAGTextControl
-						label={ __( 'Alt Text', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Alt Text', 'sureforms' ) }
 						enableDynamicContent={ true }
 						dynamicContentType="text"
 						value={ alt }
@@ -601,7 +601,7 @@ export default function Settings( props ) {
 				</>
 			) }
 			<ResponsiveSelectControl
-				label={ __( 'Object Fit', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Object Fit', 'sureforms' ) }
 				data={ {
 					desktop: {
 						value: objectFit,
@@ -620,7 +620,7 @@ export default function Settings( props ) {
 				setAttributes={ setAttributes }
 			/>
 			<UAGSelectControl
-				label={ __( 'On Hover Image', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'On Hover Image', 'sureforms' ) }
 				data={ {
 					value: imageHoverEffect,
 					label: 'imageHoverEffect',
@@ -629,23 +629,23 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'static',
-						label: __( 'Static', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Static', 'sureforms' ),
 					},
 					{
 						value: 'zoomin',
-						label: __( 'Zoom In', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Zoom In', 'sureforms' ),
 					},
 					{
 						value: 'slide',
-						label: __( 'Slide', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Slide', 'sureforms' ),
 					},
 					{
 						value: 'grayscale',
-						label: __( 'Gray Scale', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Gray Scale', 'sureforms' ),
 					},
 					{
 						value: 'blur',
-						label: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Blur', 'sureforms' ),
 					},
 				] }
 			/>
@@ -653,7 +653,7 @@ export default function Settings( props ) {
 			{ layout !== 'overlay' && (
 				<>
 					<ToggleControl
-						label={ __( 'Enable Caption', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Enable Caption', 'sureforms' ) }
 						checked={ enableCaption }
 						onChange={ () => {
 							setAttributes( { enableCaption: ! enableCaption } );
@@ -662,7 +662,7 @@ export default function Settings( props ) {
 					{ enableCaption && (
 						<MultiButtonsControl
 							setAttributes={ setAttributes }
-							label={ __( 'Alignment', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Alignment', 'sureforms' ) }
 							data={ {
 								value: captionAlign,
 								label: 'captionAlign',
@@ -672,17 +672,17 @@ export default function Settings( props ) {
 								{
 									value: 'left',
 									icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
-									tooltip: __( 'Left', 'ultimate-addons-for-gutenberg' ),
+									tooltip: __( 'Left', 'sureforms' ),
 								},
 								{
 									value: 'center',
 									icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
-									tooltip: __( 'Center', 'ultimate-addons-for-gutenberg' ),
+									tooltip: __( 'Center', 'sureforms' ),
 								},
 								{
 									value: 'right',
 									icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
-									tooltip: __( 'Right', 'ultimate-addons-for-gutenberg' ),
+									tooltip: __( 'Right', 'sureforms' ),
 								},
 							] }
 							showIcons={ true }
@@ -695,9 +695,9 @@ export default function Settings( props ) {
 
 	// shape
 	const shapeGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Mask', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Mask', 'sureforms' ) } initialOpen={ false }>
 			<UAGSelectControl
-				label={ __( 'Mask Shape', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Mask Shape', 'sureforms' ) }
 				data={ {
 					value: maskShape,
 					label: 'maskShape',
@@ -706,43 +706,43 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'none',
-						label: __( 'None', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'None', 'sureforms' ),
 					},
 					{
 						value: 'circle',
-						label: __( 'Circle', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Circle', 'sureforms' ),
 					},
 					{
 						value: 'diamond',
-						label: __( 'Diamond', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Diamond', 'sureforms' ),
 					},
 					{
 						value: 'hexagon',
-						label: __( 'Hexagon', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Hexagon', 'sureforms' ),
 					},
 					{
 						value: 'rounded',
-						label: __( 'Rounded', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Rounded', 'sureforms' ),
 					},
 					{
 						value: 'blob1',
-						label: __( 'Blob 1', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Blob 1', 'sureforms' ),
 					},
 					{
 						value: 'blob2',
-						label: __( 'Blob 2', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Blob 2', 'sureforms' ),
 					},
 					{
 						value: 'blob3',
-						label: __( 'Blob 3', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Blob 3', 'sureforms' ),
 					},
 					{
 						value: 'blob4',
-						label: __( 'Blob 4', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Blob 4', 'sureforms' ),
 					},
 					{
 						value: 'custom',
-						label: __( 'Custom', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Custom', 'sureforms' ),
 					},
 				] }
 			/>
@@ -751,14 +751,14 @@ export default function Settings( props ) {
 					onSelectImage={ onSelectCustomMaskShape }
 					backgroundImage={ maskCustomShape }
 					onRemoveImage={ onRemoveMaskCustomShape }
-					label={ __( 'Custom Mask Image', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Custom Mask Image', 'sureforms' ) }
 					slug={ 'custom-mask-image' }
 				/>
 			) }
 			{ maskShape !== 'none' && (
 				<>
 					<UAGSelectControl
-						label={ __( 'Mask Size', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Mask Size', 'sureforms' ) }
 						data={ {
 							value: maskSize,
 							label: 'maskSize',
@@ -767,20 +767,20 @@ export default function Settings( props ) {
 						options={ [
 							{
 								value: 'auto',
-								label: __( 'Auto', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Auto', 'sureforms' ),
 							},
 							{
 								value: 'contain',
-								label: __( 'Contain', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Contain', 'sureforms' ),
 							},
 							{
 								value: 'cover',
-								label: __( 'Cover', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Cover', 'sureforms' ),
 							},
 						] }
 					/>
 					<UAGSelectControl
-						label={ __( 'Mask Position', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Mask Position', 'sureforms' ) }
 						data={ {
 							value: maskPosition,
 							label: 'maskPosition',
@@ -789,44 +789,44 @@ export default function Settings( props ) {
 						options={ [
 							{
 								value: 'center top',
-								label: __( 'Center Top', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Center Top', 'sureforms' ),
 							},
 							{
 								value: 'center center',
-								label: __( 'Center Center', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Center Center', 'sureforms' ),
 							},
 							{
 								value: 'center bottom',
-								label: __( 'Center Bottom', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Center Bottom', 'sureforms' ),
 							},
 							{
 								value: 'left top',
-								label: __( 'Left Top', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Left Top', 'sureforms' ),
 							},
 							{
 								value: 'left center',
-								label: __( 'Left Center', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Left Center', 'sureforms' ),
 							},
 							{
 								value: 'left bottom',
-								label: __( 'Left Bottom', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Left Bottom', 'sureforms' ),
 							},
 							{
 								value: 'right top',
-								label: __( 'Right Top', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Right Top', 'sureforms' ),
 							},
 							{
 								value: 'right center',
-								label: __( 'Right Center', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Right Center', 'sureforms' ),
 							},
 							{
 								value: 'right bottom',
-								label: __( 'Right Bottom', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Right Bottom', 'sureforms' ),
 							},
 						] }
 					/>
 					<UAGSelectControl
-						label={ __( 'Mask Repeat', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Mask Repeat', 'sureforms' ) }
 						data={ {
 							value: maskRepeat,
 							label: 'maskRepeat',
@@ -835,19 +835,19 @@ export default function Settings( props ) {
 						options={ [
 							{
 								value: 'no-repeat',
-								label: __( 'No Repeat', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'No Repeat', 'sureforms' ),
 							},
 							{
 								value: 'repeat',
-								label: __( 'Repeat', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Repeat', 'sureforms' ),
 							},
 							{
 								value: 'repeat-x',
-								label: __( 'Repeat-X', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Repeat-X', 'sureforms' ),
 							},
 							{
 								value: 'repeat-y',
-								label: __( 'Repeat-Y', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Repeat-Y', 'sureforms' ),
 							},
 						] }
 					/>
@@ -858,11 +858,11 @@ export default function Settings( props ) {
 
 	// Separator settings.
 	const seperatorGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Separator', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Separator', 'sureforms' ) } initialOpen={ false }>
 			{ seperatorStyle !== 'none' && (
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
-					label={ __( 'Show On', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Show On', 'sureforms' ) }
 					data={ {
 						value: seperatorShowOn,
 						label: 'seperatorShowOn',
@@ -871,18 +871,18 @@ export default function Settings( props ) {
 					options={ [
 						{
 							value: 'always',
-							label: __( 'Always', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Always', 'sureforms' ),
 						},
 						{
 							value: 'hover',
-							label: __( 'Hover', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Hover', 'sureforms' ),
 						},
 					] }
 					showIcons={ false }
 				/>
 			) }
 			<UAGSelectControl
-				label={ __( 'Style', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Style', 'sureforms' ) }
 				data={ {
 					value: seperatorStyle,
 					label: 'seperatorStyle',
@@ -891,29 +891,29 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'none',
-						label: __( 'None', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'None', 'sureforms' ),
 					},
 					{
 						value: 'solid',
-						label: __( 'Solid', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Solid', 'sureforms' ),
 					},
 					{
 						value: 'double',
-						label: __( 'Double', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Double', 'sureforms' ),
 					},
 					{
 						value: 'dashed',
-						label: __( 'Dashed', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Dashed', 'sureforms' ),
 					},
 					{
 						value: 'dotted',
-						label: __( 'Dotted', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Dotted', 'sureforms' ),
 					},
 				] }
 			/>
 			{ 'none' !== seperatorStyle && (
 				<UAGSelectControl
-					label={ __( 'Position', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Position', 'sureforms' ) }
 					data={ {
 						value: seperatorPosition,
 						label: 'seperatorPosition',
@@ -922,15 +922,15 @@ export default function Settings( props ) {
 					options={ [
 						{
 							value: 'before_title',
-							label: __( 'Before Title', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Before Title', 'sureforms' ),
 						},
 						{
 							value: 'after_title',
-							label: __( 'After Title', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'After Title', 'sureforms' ),
 						},
 						{
 							value: 'after_sub_title',
-							label: __( 'After Sub Title', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'After Sub Title', 'sureforms' ),
 						},
 					] }
 				/>
@@ -939,10 +939,10 @@ export default function Settings( props ) {
 	);
 
 	const headingGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Heading', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Heading', 'sureforms' ) } initialOpen={ false }>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
-				label={ __( 'Show On', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Show On', 'sureforms' ) }
 				data={ {
 					value: headingShowOn,
 					label: 'headingShowOn',
@@ -951,11 +951,11 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'always',
-						label: __( 'Always', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Always', 'sureforms' ),
 					},
 					{
 						value: 'hover',
-						label: __( 'Hover', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Hover', 'sureforms' ),
 					},
 				] }
 				showIcons={ false }
@@ -964,10 +964,10 @@ export default function Settings( props ) {
 	);
 
 	const descriptionGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Description', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Description', 'sureforms' ) } initialOpen={ false }>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
-				label={ __( 'Show On', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Show On', 'sureforms' ) }
 				data={ {
 					value: captionShowOn,
 					label: 'captionShowOn',
@@ -976,11 +976,11 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'always',
-						label: __( 'Always', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Always', 'sureforms' ),
 					},
 					{
 						value: 'hover',
-						label: __( 'Hover', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Hover', 'sureforms' ),
 					},
 				] }
 				showIcons={ false }
@@ -989,10 +989,10 @@ export default function Settings( props ) {
 	);
 
 	const headingStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Heading', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Heading', 'sureforms' ) } initialOpen={ false }>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
-				label={ __( 'Heading Tag', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Heading Tag', 'sureforms' ) }
 				data={ {
 					value: headingTag,
 					label: 'headingTag',
@@ -1000,33 +1000,33 @@ export default function Settings( props ) {
 				options={ [
 					{
 						value: 'h1',
-						label: __( 'H1', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H1', 'sureforms' ),
 					},
 					{
 						value: 'h2',
-						label: __( 'H2', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H2', 'sureforms' ),
 					},
 					{
 						value: 'h3',
-						label: __( 'H3', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H3', 'sureforms' ),
 					},
 					{
 						value: 'h4',
-						label: __( 'H4', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H4', 'sureforms' ),
 					},
 					{
 						value: 'h5',
-						label: __( 'H5', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H5', 'sureforms' ),
 					},
 					{
 						value: 'h6',
-						label: __( 'H6', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'H6', 'sureforms' ),
 					},
 				] }
 			/>
 
 			<TypographyControl
-				label={ __( 'Typography', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Typography', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				loadGoogleFonts={ {
 					value: headingLoadGoogleFonts,
@@ -1111,7 +1111,7 @@ export default function Settings( props ) {
 			/>
 
 			<AdvancedPopColorControl
-				label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Color', 'sureforms' ) }
 				colorValue={ headingColor ? headingColor : '' }
 				data={ {
 					value: headingColor,
@@ -1120,7 +1120,7 @@ export default function Settings( props ) {
 				setAttributes={ setAttributes }
 			/>
 			<SpacingControl
-				label={ __( 'Margin', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
 					value: headingTopMargin,
 					label: 'headingTopMargin',
@@ -1196,13 +1196,13 @@ export default function Settings( props ) {
 		<UAGAdvancedPanelBody
 			title={
 				layout === 'overlay'
-					? __( 'Description', 'ultimate-addons-for-gutenberg' )
-					: __( 'Caption', 'ultimate-addons-for-gutenberg' )
+					? __( 'Description', 'sureforms' )
+					: __( 'Caption', 'sureforms' )
 			}
 			initialOpen={ false }
 		>
 			<TypographyControl
-				label={ __( 'Typography', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Typography', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				loadGoogleFonts={ {
 					value: captionLoadGoogleFonts,
@@ -1287,7 +1287,7 @@ export default function Settings( props ) {
 			/>
 
 			<AdvancedPopColorControl
-				label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Color', 'sureforms' ) }
 				colorValue={ captionColor ? captionColor : '' }
 				data={ {
 					value: captionColor,
@@ -1296,7 +1296,7 @@ export default function Settings( props ) {
 				setAttributes={ setAttributes }
 			/>
 			<SpacingControl
-				label={ __( 'Margin', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
 					value: captionTopMargin,
 					label: 'captionTopMargin',
@@ -1369,7 +1369,7 @@ export default function Settings( props ) {
 	);
 
 	const ImageStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Image', 'ultimate-addons-for-gutenberg' ) } initialOpen={ true }>
+		<UAGAdvancedPanelBody title={ __( 'Image', 'sureforms' ) } initialOpen={ true }>
 			<ResponsiveBorder
 				setAttributes={ setAttributes }
 				prefix={ 'image' }
@@ -1378,7 +1378,7 @@ export default function Settings( props ) {
 			/>
 
 			<SpacingControl
-				label={ __( 'Margin', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
 					value: imageTopMargin,
 					label: 'imageTopMargin',
@@ -1452,11 +1452,11 @@ export default function Settings( props ) {
 
 	const imageBoxShadowStylePanel = (
 		<UAGAdvancedPanelBody
-			title={ __( 'Box Shadow', 'ultimate-addons-for-gutenberg' ) }
+			title={ __( 'Box Shadow', 'sureforms' ) }
 			initialOpen={ false }
 		>
 			<ToggleControl
-				label={ __( 'Separate Hover Shadow', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Separate Hover Shadow', 'sureforms' ) }
 				checked={ useSeparateBoxShadows }
 				onChange={ () => setAttributes( { useSeparateBoxShadows: ! useSeparateBoxShadows } ) }
 			/>
@@ -1467,14 +1467,14 @@ export default function Settings( props ) {
 							name: 'normal',
 							title: __(
 								'Normal',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						},
 						{
 							name: 'hover',
 							title: __(
 								'Hover',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						},
 					] }
@@ -1490,19 +1490,19 @@ export default function Settings( props ) {
 								setAttributes={ setAttributes }
 								label={ __(
 									'Box Shadow',
-									'ultimate-addons-for-gutenberg'
+									'sureforms'
 								) }
 								boxShadowColor={ {
 									value: imageBoxShadowColor,
 									label: 'imageBoxShadowColor',
-									title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Color', 'sureforms' ),
 								} }
 								boxShadowHOffset={ {
 									value: imageBoxShadowHOffset,
 									label: 'imageBoxShadowHOffset',
 									title: __(
 										'Horizontal',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowVOffset={ {
@@ -1510,25 +1510,25 @@ export default function Settings( props ) {
 									label: 'imageBoxShadowVOffset',
 									title: __(
 										'Vertical',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowBlur={ {
 									value: imageBoxShadowBlur,
 									label: 'imageBoxShadowBlur',
-									title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Blur', 'sureforms' ),
 								} }
 								boxShadowSpread={ {
 									value: imageBoxShadowSpread,
 									label: 'imageBoxShadowSpread',
-									title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Spread', 'sureforms' ),
 								} }
 								boxShadowPosition={ {
 									value: imageBoxShadowPosition,
 									label: 'imageBoxShadowPosition',
 									title: __(
 										'Position',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								popup={ false }
@@ -1547,19 +1547,19 @@ export default function Settings( props ) {
 								setAttributes={ setAttributes }
 								label={ __(
 									'Box Shadow',
-									'ultimate-addons-for-gutenberg'
+									'sureforms'
 								) }
 								boxShadowColor={ {
 									value: imageBoxShadowColorHover,
 									label: 'imageBoxShadowColorHover',
-									title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Color', 'sureforms' ),
 								} }
 								boxShadowHOffset={ {
 									value: imageBoxShadowHOffsetHover,
 									label: 'imageBoxShadowHOffsetHover',
 									title: __(
 										'Horizontal',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowVOffset={ {
@@ -1567,25 +1567,25 @@ export default function Settings( props ) {
 									label: 'imageBoxShadowVOffsetHover',
 									title: __(
 										'Vertical',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								boxShadowBlur={ {
 									value: imageBoxShadowBlurHover,
 									label: 'imageBoxShadowBlurHover',
-									title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Blur', 'sureforms' ),
 								} }
 								boxShadowSpread={ {
 									value: imageBoxShadowSpreadHover,
 									label: 'imageBoxShadowSpreadHover',
-									title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+									title: __( 'Spread', 'sureforms' ),
 								} }
 								boxShadowPosition={ {
 									value: imageBoxShadowPositionHover,
 									label: 'imageBoxShadowPositionHover',
 									title: __(
 										'Position',
-										'ultimate-addons-for-gutenberg'
+										'sureforms'
 									),
 								} }
 								popup={ false }
@@ -1606,19 +1606,19 @@ export default function Settings( props ) {
 						setAttributes={ setAttributes }
 						label={ __(
 							'Box Shadow',
-							'ultimate-addons-for-gutenberg'
+							'sureforms'
 						) }
 						boxShadowColor={ {
 							value: imageBoxShadowColor,
 							label: 'imageBoxShadowColor',
-							title: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+							title: __( 'Color', 'sureforms' ),
 						} }
 						boxShadowHOffset={ {
 							value: imageBoxShadowHOffset,
 							label: 'imageBoxShadowHOffset',
 							title: __(
 								'Horizontal',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						} }
 						boxShadowVOffset={ {
@@ -1626,25 +1626,25 @@ export default function Settings( props ) {
 							label: 'imageBoxShadowVOffset',
 							title: __(
 								'Vertical',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						} }
 						boxShadowBlur={ {
 							value: imageBoxShadowBlur,
 							label: 'imageBoxShadowBlur',
-							title: __( 'Blur', 'ultimate-addons-for-gutenberg' ),
+							title: __( 'Blur', 'sureforms' ),
 						} }
 						boxShadowSpread={ {
 							value: imageBoxShadowSpread,
 							label: 'imageBoxShadowSpread',
-							title: __( 'Spread', 'ultimate-addons-for-gutenberg' ),
+							title: __( 'Spread', 'sureforms' ),
 						} }
 						boxShadowPosition={ {
 							value: imageBoxShadowPosition,
 							label: 'imageBoxShadowPosition',
 							title: __(
 								'Position',
-								'ultimate-addons-for-gutenberg'
+								'sureforms'
 							),
 						} }
 						popup={ false }
@@ -1655,9 +1655,9 @@ export default function Settings( props ) {
 	);
 
 	const overlayStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Overlay', 'ultimate-addons-for-gutenberg' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody title={ __( 'Overlay', 'sureforms' ) } initialOpen={ false }>
 			<AdvancedPopColorControl
-				label={ __( 'Background', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Background', 'sureforms' ) }
 				colorValue={ overlayBackground ? overlayBackground : '' }
 				data={ {
 					value: overlayBackground,
@@ -1666,7 +1666,7 @@ export default function Settings( props ) {
 				setAttributes={ setAttributes }
 			/>
 			<Range
-				label={ __( 'Overlay Opacity', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Overlay Opacity', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				value={ overlayOpacity }
 				data={ {
@@ -1679,7 +1679,7 @@ export default function Settings( props ) {
 				displayUnit={ false }
 			/>
 			<Range
-				label={ __( 'Overlay Hover Opacity', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Overlay Hover Opacity', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				value={ overlayHoverOpacity }
 				data={ {
@@ -1697,7 +1697,7 @@ export default function Settings( props ) {
 	const seperatorStylePanel = (
 		<UAGAdvancedPanelBody title="Separator" initialOpen={ false }>
 			<Range
-				label={ __( 'Width', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Width', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				value={ seperatorWidth }
 				data={ {
@@ -1712,21 +1712,21 @@ export default function Settings( props ) {
 				} }
 				units={ [
 					{
-						name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+						name: __( 'Pixel', 'sureforms' ),
 						unitValue: 'px',
 					},
 					{
-						name: __( 'Em', 'ultimate-addons-for-gutenberg' ),
+						name: __( 'Em', 'sureforms' ),
 						unitValue: 'em',
 					},
 					{
-						name: __( '%', 'ultimate-addons-for-gutenberg' ),
+						name: __( '%', 'sureforms' ),
 						unitValue: '%',
 					},
 				] }
 			/>
 			<Range
-				label={ __( 'Thickness', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Thickness', 'sureforms' ) }
 				setAttributes={ setAttributes }
 				value={ seperatorThickness }
 				data={ {
@@ -1741,7 +1741,7 @@ export default function Settings( props ) {
 				} }
 			/>
 			<AdvancedPopColorControl
-				label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Color', 'sureforms' ) }
 				colorValue={ seperatorColor ? seperatorColor : '' }
 				data={ {
 					value: seperatorColor,
@@ -1751,7 +1751,7 @@ export default function Settings( props ) {
 			/>
 			<SpacingControl
 				{ ...props }
-				label={ __( 'Margin', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
 					value: seperatorTopMargin,
 					label: 'seperatorTopMargin',

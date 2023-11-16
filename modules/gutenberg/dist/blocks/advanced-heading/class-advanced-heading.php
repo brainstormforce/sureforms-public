@@ -1540,5 +1540,5 @@ if ( ! class_exists( 'WCFB_Advanced_Heading' ) ) {
 	 *  Prepare if class 'WCFB_Checkout_Form' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	WCFB_Separator::get_instance();
+	WCFB_Advanced_Heading::get_instance();
 }
