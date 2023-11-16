@@ -11,7 +11,16 @@
 		"reusable": false,
 		"html": false
 	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
 	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
 		"id": {
 			"type": "number"
 		},

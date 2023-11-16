@@ -32,6 +32,7 @@ module.exports = {
 	globals: {
 		alert: true,
 		sfBlockData: true,
+		fieldsPreview: true,
 		confirm: true,
 		jQuery: true,
 		elementor: true,

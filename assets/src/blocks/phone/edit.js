@@ -17,6 +17,7 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { PhoneThemeStyle } from './components/PhoneThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -27,6 +28,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		block_id,
 		isUnique,
 		duplicateMsg,
+		preview,
 		errorMsg,
 		formId,
 		autoCountry,
@@ -45,6 +47,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.phone_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>
