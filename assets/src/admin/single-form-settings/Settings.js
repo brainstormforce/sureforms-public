@@ -7,7 +7,6 @@ import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
 
-
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
