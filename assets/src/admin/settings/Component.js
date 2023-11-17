@@ -28,7 +28,7 @@ const Component = ( { path } ) => {
 		const { name, value, type, checked } = e.target;
 		const newValue = type === 'checkbox' ? checked : value;
 
-		if ( name === 'srfm_v2_checkbox_secret' ) {
+		if ( name === 'sureforms_v2_checkbox_secret' ) {
 			setSureformsV2CheckboxSecret( newValue );
 			setFormData( () => ( {
 				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
@@ -39,7 +39,7 @@ const Component = ( { path } ) => {
 				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_v2_checkbox_site' ) {
+		} else if ( name === 'sureforms_v2_checkbox_site' ) {
 			setSureformsV2CheckboxSite( newValue );
 			setFormData( () => ( {
 				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
@@ -50,7 +50,7 @@ const Component = ( { path } ) => {
 				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_v2_invisible_secret' ) {
+		} else if ( name === 'sureforms_v2_invisible_secret' ) {
 			setSureformsV2InvisibleSecret( newValue );
 			setFormData( () => ( {
 				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
@@ -61,7 +61,7 @@ const Component = ( { path } ) => {
 				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_v2_invisible_site' ) {
+		} else if ( name === 'sureforms_v2_invisible_site' ) {
 			setSureformsV2InvisibleSite( newValue );
 			setFormData( () => ( {
 				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
@@ -72,7 +72,7 @@ const Component = ( { path } ) => {
 				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_v3_secret' ) {
+		} else if ( name === 'sureforms_v3_secret' ) {
 			setSureformsV3Secret( newValue );
 			setFormData( () => ( {
 				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
@@ -83,7 +83,7 @@ const Component = ( { path } ) => {
 				honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_v3_site' ) {
+		} else if ( name === 'sureforms_v3_site' ) {
 			setSureformsV3Site( newValue );
 			setFormData( () => ( {
 				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
@@ -248,7 +248,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="srfm_v2_checkbox_site"
+																		name="sureforms_v2_checkbox_site"
 																		id="srfm_v2_checkbox_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
@@ -268,7 +268,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="srfm_v2_checkbox_secret"
+																		name="sureforms_v2_checkbox_secret"
 																		id="srfm_v2_checkbox_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
@@ -293,7 +293,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="srfm_v2_invisible_site"
+																		name="sureforms_v2_invisible_site"
 																		id="srfm_v2_invisible_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
@@ -313,7 +313,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="srfm_v2_invisible_secret"
+																		name="sureforms_v2_invisible_secret"
 																		id="srfm_v2_invisible_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
@@ -338,7 +338,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4 ">
 																	<input
 																		type="text"
-																		name="srfm_v3_site"
+																		name="sureforms_v3_site"
 																		id="srfm_v3_site"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
@@ -358,7 +358,7 @@ const Component = ( { path } ) => {
 																<div className="mb-4">
 																	<input
 																		type="text"
-																		name="srfm_v3_secret"
+																		name="sureforms_v3_secret"
 																		id="srfm_v3_secret"
 																		className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 																		placeholder={ __(
