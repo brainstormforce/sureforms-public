@@ -45,17 +45,9 @@ module.exports = {
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		form_archive_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/styles/form-archive-styles.scss'
-		),
 		// sureforms_frontend_styles: path.resolve(
 		// 	__dirname,
 		// 	'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
-		// ),
-		// srfm_theme_styles: path.resolve(
-		// 	__dirname,
-		// 	'assets/src/public/styles/srfm_theme_styles.scss'
 		// ),
 		flatpickr_css: path.resolve(
 			__dirname,

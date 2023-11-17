@@ -81,12 +81,16 @@ module.exports = function ( grunt ) {
 						dest: 'assets/css/minified/sureforms-frontend-ui-styles.min-rtl.css',
 					},
 					{
-						src: 'assets/css/unminified/sureforms-tailwind-rtl.css',
-						dest: 'assets/css/minified/sureforms-tailwind.min-rtl.css',
-					},
-					{
 						src: 'assets/css/unminified/srfm_theme_styles-rtl.css',
 						dest: 'assets/css/minified/srfm_theme_styles.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/form-archive-styles-rtl.css',
+						dest: 'assets/css/minified/form-archive-styles.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/header-styles-rtl.css',
+						dest: 'assets/css/minified/header-styles.min-rtl.css',
 					},
 				],
 			},
