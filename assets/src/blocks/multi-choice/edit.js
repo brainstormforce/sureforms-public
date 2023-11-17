@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
@@ -12,7 +12,6 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
-import { useBlockProps } from '@wordpress/block-editor';
 /**
  * Component Dependencies
  */
@@ -43,6 +42,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
 	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
+	const blockProps = useBlockProps();
 
 	function handleClick( index ) {
 		if ( singleSelection === true ) {
@@ -114,7 +114,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	}
 
 	return (
-		<div { ...useBlockProps() }>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
