@@ -12,6 +12,7 @@ import InspectorTab, {
 	UAGTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
+import { useBlockProps } from '@wordpress/block-editor';
 /**
  * Component Dependencies
  */
@@ -113,7 +114,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	}
 
 	return (
-		<div>
+		<div { ...useBlockProps() }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
