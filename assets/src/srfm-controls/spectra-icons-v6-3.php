@@ -4,7 +4,6 @@
  *
  * @package     SureForms
  * @author      Brainstorm Force
- * @link        https://wpspectra.com/
  */
 
 /**
