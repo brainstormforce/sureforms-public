@@ -72,7 +72,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-blackground-type',
@@ -82,7 +82,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(6, 147,_ 227) 0%, rgb(155, 81, 224) 100%)',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-gradient-blackground',
@@ -91,7 +91,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBackground'              =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-blackground',
@@ -135,7 +135,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'left',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment',
@@ -145,7 +145,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment-tablet',
@@ -155,7 +155,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment-mobile',
@@ -165,7 +165,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-color-type',
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headingColor'                 =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-color',
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-gradient-color',
@@ -193,7 +193,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadingColor'              =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-color',
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#0170b9',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-color',
@@ -240,7 +240,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'separatorHeight'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-thickness',
@@ -259,7 +259,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'separatorWidth'               =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-width',
@@ -269,7 +269,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'separatorWidthTablet'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-width',
@@ -278,7 +278,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'separatorWidthMobile'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-width',
@@ -297,7 +297,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 15,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin',
@@ -307,7 +307,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin-tablet',
@@ -317,7 +317,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin-mobile',
@@ -336,7 +336,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 15,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'sub-title-bottom-margin',
@@ -346,7 +346,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'sub-title-bottom-margin-tablet',
@@ -356,7 +356,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'sub-title-bottom-margin-mobile',
@@ -375,7 +375,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-family',
@@ -384,7 +384,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headFontWeight'               =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-weight',
@@ -394,7 +394,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'normal',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-style',
@@ -403,7 +403,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headTransform'                =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-transform',
@@ -412,7 +412,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headDecoration'               =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-decoration',
@@ -457,7 +457,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headFontSize'                 =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size',
@@ -466,7 +466,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headFontSizeTablet'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size-tablet',
@@ -475,7 +475,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headFontSizeMobile'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size-mobile',
@@ -484,7 +484,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLineHeight'               =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height',
@@ -493,7 +493,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLineHeightTablet'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height-tablet',
@@ -502,7 +502,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLineHeightMobile'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height-mobile',
@@ -511,7 +511,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLetterSpacing'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-letter-spacing',
@@ -520,7 +520,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLetterSpacingTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-letter-spacing-tablet',
@@ -529,7 +529,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'headLetterSpacingMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-letter-spacing-mobile',
@@ -568,7 +568,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-family',
@@ -577,7 +577,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadFontWeight'            =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-weight',
@@ -587,7 +587,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'normal',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-style',
@@ -596,7 +596,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadTransform'             =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-transform',
@@ -605,7 +605,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadDecoration'            =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-decoration',
@@ -614,7 +614,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadFontSize'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size',
@@ -624,7 +624,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size-type',
@@ -651,7 +651,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadFontSizeTablet'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size-tablet',
@@ -660,7 +660,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadFontSizeMobile'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size-mobile',
@@ -669,7 +669,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLineHeight'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height',
@@ -687,7 +687,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLineHeightTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height-tablet',
@@ -696,7 +696,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLineHeightMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height-mobile',
@@ -705,7 +705,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLetterSpacing'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing',
@@ -714,7 +714,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLetterSpacingTablet'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-tablet',
@@ -723,7 +723,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'subHeadLetterSpacingMobile'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-mobile',
@@ -733,7 +733,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-type',
@@ -743,7 +743,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 15,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin',
@@ -753,7 +753,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin',
@@ -763,7 +763,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin',
@@ -773,7 +773,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-width-type',
@@ -783,7 +783,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'boolean',
 						'default'      => false,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-load-google-fonts',
@@ -793,7 +793,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'boolean',
 						'default'      => false,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-load-google-fonts',
@@ -802,7 +802,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'separatorHoverColor'          =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-hover-color',
@@ -816,7 +816,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopPadding'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-padding',
@@ -825,7 +825,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightPadding'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-padding',
@@ -834,7 +834,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftPadding'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-padding',
@@ -843,7 +843,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomPadding'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-padding',
@@ -852,7 +852,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopPaddingTablet'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-padding-tablet',
@@ -861,7 +861,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightPaddingTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-padding-tablet',
@@ -870,7 +870,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftPaddingTablet'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-padding-tablet',
@@ -879,7 +879,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomPaddingTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-padding-tablet',
@@ -888,7 +888,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopPaddingMobile'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-padding-mobile',
@@ -897,7 +897,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightPaddingMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-padding-mobile',
@@ -906,7 +906,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftPaddingMobile'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-padding-mobile',
@@ -915,7 +915,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomPaddingMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-padding-mobile',
@@ -956,7 +956,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopMargin'               =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-margin',
@@ -965,7 +965,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightMargin'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-margin',
@@ -974,7 +974,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftMargin'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-margin',
@@ -983,7 +983,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-margin',
@@ -992,7 +992,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopMarginTablet'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-margin-tablet',
@@ -1001,7 +1001,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightMarginTablet'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-margin-tablet',
@@ -1010,7 +1010,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftMarginTablet'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-margin-tablet',
@@ -1019,7 +1019,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomMarginTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-margin-tablet',
@@ -1028,7 +1028,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockTopMarginMobile'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-top-margin-mobile',
@@ -1037,7 +1037,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockRightMarginMobile'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-right-margin-mobile',
@@ -1046,7 +1046,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockLeftMarginMobile'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-left-margin-mobile',
@@ -1055,7 +1055,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'blockBottomMarginMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'block-bottom-margin-mobile',
@@ -1096,7 +1096,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'linkColor'                    =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'link-color',
@@ -1105,7 +1105,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'linkHColor'                   =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'link-hover-color',
@@ -1115,7 +1115,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#fff',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-color',
@@ -1125,7 +1125,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#007cba',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-background',
@@ -1135,7 +1135,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'boolean',
 						'default'      => false,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-load-google-fonts',
@@ -1145,7 +1145,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-family',
@@ -1155,7 +1155,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-weight',
@@ -1165,7 +1165,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'normal',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-style',
@@ -1174,7 +1174,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightTransform'           =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-transform',
@@ -1183,7 +1183,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightDecoration'          =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-decoration',
@@ -1228,7 +1228,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightFontSize'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-size',
@@ -1237,7 +1237,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightFontSizeTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-size-tablet',
@@ -1246,7 +1246,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightFontSizeMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-font-size-mobile',
@@ -1255,7 +1255,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLineHeight'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-line-height',
@@ -1264,7 +1264,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLineHeightTablet'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-line-height-tablet',
@@ -1273,7 +1273,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLineHeightMobile'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-line-height-mobile',
@@ -1282,7 +1282,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLetterSpacing'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-letter-spacing',
@@ -1291,7 +1291,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLetterSpacingTablet' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-letter-spacing-tablet',
@@ -1300,7 +1300,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLetterSpacingMobile' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-letter-spacing-mobile',
@@ -1318,7 +1318,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightTopPadding'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-top-padding',
@@ -1327,7 +1327,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightRightPadding'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-right-padding',
@@ -1336,7 +1336,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLeftPadding'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-left-padding',
@@ -1345,7 +1345,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightBottomPadding'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-bottom-padding',
@@ -1354,7 +1354,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightTopPaddingTablet'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-top-padding-tablet',
@@ -1363,7 +1363,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightRightPaddingTablet'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-right-padding-tablet',
@@ -1372,7 +1372,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLeftPaddingTablet'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-left-padding-tablet',
@@ -1381,7 +1381,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightBottomPaddingTablet' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-bottom-padding-tablet',
@@ -1390,7 +1390,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightTopPaddingMobile'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-top-padding-mobile',
@@ -1399,7 +1399,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightRightPaddingMobile'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-right-padding-mobile',
@@ -1408,7 +1408,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightLeftPaddingMobile'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-left-padding-mobile',
@@ -1417,7 +1417,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					'highLightBottomPaddingMobile' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-bottom-padding-mobile',
@@ -1454,7 +1454,7 @@ if ( ! class_exists( 'Sureforms_Spec_Advanced_Heading' ) ) {
 					array(
 						'type'         => 'boolean',
 						'default'      => false,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'highlight-padding-link',

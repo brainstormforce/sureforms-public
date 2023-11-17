@@ -2,7 +2,7 @@
 /**
  * Gutenburg Editor Compatibility.
  *
- * @package CartFlows
+ * @package Sureforms
  */
 
 // Exit if accessed directly.

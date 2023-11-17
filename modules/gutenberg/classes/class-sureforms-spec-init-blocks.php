@@ -5,7 +5,7 @@
  * Enqueue CSS/JS of all the blocks.
  *
  * @since 0.0.1
- * @package Cartflows
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sureforms_Spec_Init_Blocks.
  *
- * @package Cartflows
+ * @package Sureforms
  */
 class Sureforms_Spec_Init_Blocks {
 

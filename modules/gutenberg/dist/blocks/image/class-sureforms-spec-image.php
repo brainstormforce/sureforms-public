@@ -57,6 +57,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 			$image_border_attributes   = Sureforms_Spec_Block_Config::generate_border_attribute( 'overlay' );
 			$overlay_border_attributes = Sureforms_Spec_Block_Config::generate_border_attribute( 'image' );
 
+			
 			$attr = array_merge(
 				array(
 					'block_id'                    =>
@@ -120,7 +121,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-align-tablet',
@@ -130,7 +131,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-align-mobile',
@@ -253,7 +254,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageTopMargin'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-top-margin',
@@ -262,7 +263,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageRightMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-right-margin',
@@ -271,7 +272,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageLeftMargin'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-left-margin',
@@ -280,7 +281,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageBottomMargin'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-bottom-margin',
@@ -289,7 +290,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageTopMarginTablet'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-top-margin-tablet',
@@ -298,7 +299,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageRightMarginTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-right-margin-tablet',
@@ -307,7 +308,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageLeftMarginTablet'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-left-margin-tablet',
@@ -316,7 +317,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageBottomMarginTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-bottom-margin-tablet',
@@ -325,7 +326,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageTopMarginMobile'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-top-margin-mobile',
@@ -334,7 +335,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageRightMarginMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-right-margin-mobile',
@@ -343,7 +344,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageLeftMarginMobile'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-left-margin-mobile',
@@ -352,7 +353,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageBottomMarginMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-bottom-margin-mobile',
@@ -408,7 +409,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionColor'                =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-color',
@@ -418,7 +419,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'center',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-align',
@@ -428,7 +429,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-family',
@@ -437,7 +438,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionFontWeight'           =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-weight',
@@ -447,7 +448,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'normal',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-style',
@@ -456,7 +457,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionTransform'            =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-transform',
@@ -465,7 +466,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionDecoration'           =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-decoration',
@@ -510,7 +511,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionFontSize'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size',
@@ -519,7 +520,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionFontSizeTablet'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size-tablet',
@@ -528,7 +529,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionFontSizeMobile'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-font-size-mobile',
@@ -537,7 +538,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLineHeight'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height',
@@ -546,7 +547,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLineHeightTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height-tablet',
@@ -555,7 +556,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLineHeightMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-line-height-mobile',
@@ -564,7 +565,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionTopMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-top-margin',
@@ -573,7 +574,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionRightMargin'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-right-margin',
@@ -582,7 +583,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLeftMargin'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-left-margin',
@@ -591,7 +592,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionBottomMargin'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-bottom-margin',
@@ -600,7 +601,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionTopMarginTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-top-margin-tablet',
@@ -609,7 +610,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionRightMarginTablet'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-right-margin-tablet',
@@ -618,7 +619,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLeftMarginTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-left-margin-tablet',
@@ -627,7 +628,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionBottomMarginTablet'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-bottom-margin-tablet',
@@ -636,7 +637,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionTopMarginMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-top-margin-mobile',
@@ -645,7 +646,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionRightMarginMobile'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-right-margin-mobile',
@@ -654,7 +655,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLeftMarginMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-left-margin-mobile',
@@ -663,7 +664,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionBottomMarginMobile'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-bottom-margin-mobile',
@@ -729,7 +730,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#fff',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-color',
@@ -739,7 +740,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'Default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-family',
@@ -748,7 +749,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingFontWeight'           =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-weight',
@@ -758,7 +759,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'normal',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-style',
@@ -767,7 +768,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingTransform'            =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-transform',
@@ -776,7 +777,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingDecoration'           =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-decoration',
@@ -821,7 +822,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingFontSize'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size',
@@ -830,7 +831,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingFontSizeTablet'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size-tablet',
@@ -839,7 +840,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingFontSizeMobile'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-font-size-mobile',
@@ -848,7 +849,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLineHeight'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height',
@@ -857,7 +858,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLineHeightTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height-tablet',
@@ -866,7 +867,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLineHeightMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-line-height-mobile',
@@ -875,7 +876,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingTopMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-top-margin',
@@ -884,7 +885,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingRightMargin'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-right-margin',
@@ -893,7 +894,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLeftMargin'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-left-margin',
@@ -902,7 +903,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingBottomMargin'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin',
@@ -911,7 +912,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingTopMarginTablet'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-top-margin-tablet',
@@ -920,7 +921,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingRightMarginTablet'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-right-margin-tablet',
@@ -929,7 +930,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLeftMarginTablet'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-left-margin-tablet',
@@ -938,7 +939,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingBottomMarginTablet'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin-tablet',
@@ -947,7 +948,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingTopMarginMobile'      =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-top-margin-mobile',
@@ -956,7 +957,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingRightMarginMobile'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-right-margin-mobile',
@@ -965,7 +966,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLeftMarginMobile'     =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-left-margin-mobile',
@@ -974,7 +975,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingBottomMarginMobile'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'main-title-bottom-margin-mobile',
@@ -1016,7 +1017,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 15,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overlay-position-from-edge',
@@ -1044,7 +1045,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overlay-background',
@@ -1054,7 +1055,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'float',
 						'default'      => 0.2,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overlay-opacity',
@@ -1064,7 +1065,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 1,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overlay-hover-opacity',
@@ -1074,7 +1075,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'hover',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'seperator-show-on',
@@ -1093,7 +1094,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#fff',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-color',
@@ -1108,7 +1109,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 30,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-width',
@@ -1127,7 +1128,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 2,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-thickness',
@@ -1145,7 +1146,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorTopMargin'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-top-margin',
@@ -1154,7 +1155,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorRightMargin'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-right-margin',
@@ -1163,7 +1164,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorLeftMargin'         =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-left-margin',
@@ -1172,7 +1173,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorBottomMargin'       =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin',
@@ -1181,7 +1182,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorTopMarginTablet'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-top-margin-tablet',
@@ -1190,7 +1191,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorRightMarginTablet'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-right-margin-tablet',
@@ -1199,7 +1200,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorLeftMarginTablet'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-left-margin-tablet',
@@ -1208,7 +1209,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorBottomMarginTablet' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin-tablet',
@@ -1217,7 +1218,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorTopMarginMobile'    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-top-margin-mobile',
@@ -1226,7 +1227,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorRightMarginMobile'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-right-margin-mobile',
@@ -1235,7 +1236,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorLeftMarginMobile'   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-left-margin-mobile',
@@ -1244,7 +1245,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'seperatorBottomMarginMobile' =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'separator-bottom-margin-mobile',
@@ -1308,7 +1309,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-color',
@@ -1318,7 +1319,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-h-offset',
@@ -1328,7 +1329,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-v-offset',
@@ -1337,7 +1338,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageBoxShadowBlur'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-blur',
@@ -1346,7 +1347,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'imageBoxShadowSpread'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-spread',
@@ -1356,7 +1357,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'outset',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'image-shadow-position',
@@ -1445,7 +1446,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLetterSpacing'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing',
@@ -1454,7 +1455,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLetterSpacingTablet'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-tablet',
@@ -1463,7 +1464,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'headingLetterSpacingMobile'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-mobile',
@@ -1481,7 +1482,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLetterSpacing'        =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing',
@@ -1490,7 +1491,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLetterSpacingTablet'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-tablet',
@@ -1499,7 +1500,7 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 					'captionLetterSpacingMobile'  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'desc-letter-spacing-mobile',
@@ -1617,14 +1618,15 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 
 			ob_start();
 			?>
-				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
-					<?php echo wp_kses_post( $figure_image ); ?>
-					<?php
+<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+    <?php echo wp_kses_post( $figure_image ); ?>
+    <?php
 					if ( 'overlay' === $layout ) {
 						?>
-						<div class="wp-block-uagb-image--layout-overlay__color-wrapper"></div>
-						<div class="wp-block-uagb-image--layout-overlay__inner <?php $overlay_content_position = str_replace( ' ', '-', $overlay_content_position ); ?>">
-						<?php
+    <div class="wp-block-uagb-image--layout-overlay__color-wrapper"></div>
+    <div
+        class="wp-block-uagb-image--layout-overlay__inner <?php $overlay_content_position = str_replace( ' ', '-', $overlay_content_position ); ?>">
+        <?php
 						$image_overlay_link;
 						'before_title' === $seperator_position ? $separator : '';
 						$custom_image_heading;
@@ -1632,14 +1634,14 @@ if ( ! class_exists( 'Sureforms_Spec_Image' ) ) {
 						$custom_image_caption;
 						'after_sub_title' === $seperator_position ? $separator : '';
 						?>
-						</div>
-						<?php
+    </div>
+    <?php
 					} else {
 						$enable_caption ? $custom_image_caption : '';
 					}
 					?>
-				</div>
-			<?php
+</div>
+<?php
 			return ob_get_clean();
 		}
 	}

@@ -5,7 +5,6 @@
 import UAGB_Block_Icons from '@Controls/block-icons';
 import attributes from './attributes';
 import Edit from './edit';
-import deprecated from './deprecated';
 import './style.scss';
 import { __ } from '@wordpress/i18n';
 import { registerBlockType, createBlock } from '@wordpress/blocks';
@@ -39,7 +38,6 @@ registerBlockType( 'sureforms/advanced-heading', {
 	},
 	__experimentalLabel: ( atts ) =>
 		applyFilters( 'uag_loop_data_source_label', __( 'Heading', 'sureforms' ), atts ),
-	deprecated,
 	usesContext: [ 'postId', 'postType' ],
 	transforms: {
 		from: [

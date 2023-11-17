@@ -3,8 +3,10 @@ import { __ } from '@wordpress/i18n';
 
 const highLightBorderAttributes = getBorderAttributes( 'highLight' );
 
-const headingAlignmentDefault = 'yes' === uagb_blocks_info.uagb_old_user_less_than_2 ? 'center' : 'left';
-const headingDescToggleDefault = 'yes' === uagb_blocks_info.uagb_old_user_less_than_2 ? true : false;
+const headingAlignmentDefault =
+	'yes' === uagb_blocks_info.uagb_old_user_less_than_2 ? 'center' : 'left';
+const headingDescToggleDefault =
+	'yes' === uagb_blocks_info.uagb_old_user_less_than_2 ? true : false;
 
 const attributes = {
 	block_id: {
@@ -17,22 +19,23 @@ const attributes = {
 	blockBackgroundType: {
 		type: 'string',
 		default: 'classic',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-blackground-type',
 		},
 	},
 	blockGradientBackground: {
 		type: 'string',
-		default: 'linear-gradient(90deg, rgb(6, 147, 227) 0%, rgb(155, 81, 224) 100%)',
-		isGBSStyle : true,
+		default:
+			'linear-gradient(90deg, rgb(6, 147, 227) 0%, rgb(155, 81, 224) 100%)',
+
 		UAGCopyPaste: {
 			styleType: 'block-gradient-blackground',
 		},
 	},
 	blockBackground: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-blackground',
 		},
@@ -67,7 +70,7 @@ const attributes = {
 	headingAlign: {
 		type: 'string',
 		default: headingAlignmentDefault,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'overall-alignment',
 		},
@@ -75,7 +78,7 @@ const attributes = {
 	headingAlignTablet: {
 		type: 'string',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'overall-alignment-tablet',
 		},
@@ -83,7 +86,7 @@ const attributes = {
 	headingAlignMobile: {
 		type: 'string',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'overall-alignment-mobile',
 		},
@@ -91,29 +94,30 @@ const attributes = {
 	headingColorType: {
 		type: 'string',
 		default: 'classic',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-color-type',
 		},
 	},
 	headingColor: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-color',
 		},
 	},
 	headingGradientColor: {
 		type: 'string',
-		default: 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-		isGBSStyle : true,
+		default:
+			'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
+
 		UAGCopyPaste: {
 			styleType: 'main-title-gradient-color',
 		},
 	},
 	subHeadingColor: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-color',
 		},
@@ -121,7 +125,7 @@ const attributes = {
 	separatorColor: {
 		type: 'string',
 		default: '#0170b9',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-color',
 		},
@@ -150,7 +154,7 @@ const attributes = {
 	},
 	separatorHeight: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-thickness',
 		},
@@ -165,7 +169,7 @@ const attributes = {
 	},
 	separatorWidth: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-width',
 		},
@@ -173,14 +177,14 @@ const attributes = {
 	},
 	separatorWidthTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-width',
 		},
 	},
 	separatorWidthMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-width',
 		},
@@ -195,7 +199,7 @@ const attributes = {
 	headSpace: {
 		type: 'number',
 		default: 15,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-bottom-margin',
 		},
@@ -203,7 +207,7 @@ const attributes = {
 	headSpaceMobile: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-bottom-margin-tablet',
 		},
@@ -211,7 +215,7 @@ const attributes = {
 	headSpaceTablet: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-bottom-margin-mobile',
 		},
@@ -226,7 +230,7 @@ const attributes = {
 	subHeadSpace: {
 		type: 'number',
 		default: 15,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'sub-title-bottom-margin',
 		},
@@ -234,7 +238,7 @@ const attributes = {
 	subHeadSpaceMobile: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'sub-title-bottom-margin-tablet',
 		},
@@ -242,7 +246,7 @@ const attributes = {
 	subHeadSpaceTablet: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'sub-title-bottom-margin-mobile',
 		},
@@ -257,14 +261,14 @@ const attributes = {
 	headFontFamily: {
 		type: 'string',
 		default: 'Default',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-family',
 		},
 	},
 	headFontWeight: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-weight',
 		},
@@ -272,21 +276,21 @@ const attributes = {
 	headFontStyle: {
 		type: 'string',
 		default: 'normal',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-style',
 		},
 	},
 	headTransform: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-transform',
 		},
 	},
 	headDecoration: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-decoration',
 		},
@@ -321,63 +325,63 @@ const attributes = {
 	},
 	headFontSize: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-size',
 		},
 	},
 	headFontSizeTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-size-tablet',
 		},
 	},
 	headFontSizeMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-font-size-mobile',
 		},
 	},
 	headLineHeight: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-line-height',
 		},
 	},
 	headLineHeightTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-line-height-tablet',
 		},
 	},
 	headLineHeightMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-line-height-mobile',
 		},
 	},
 	headLetterSpacing: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-letter-spacing',
 		},
 	},
 	headLetterSpacingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-letter-spacing-tablet',
 		},
 	},
 	headLetterSpacingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-letter-spacing-mobile',
 		},
@@ -409,14 +413,14 @@ const attributes = {
 	subHeadFontFamily: {
 		type: 'string',
 		default: 'Default',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-family',
 		},
 	},
 	subHeadFontWeight: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-weight',
 		},
@@ -424,28 +428,28 @@ const attributes = {
 	subHeadFontStyle: {
 		type: 'string',
 		default: 'normal',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-style',
 		},
 	},
 	subHeadTransform: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-transform',
 		},
 	},
 	subHeadDecoration: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-decoration',
 		},
 	},
 	subHeadFontSize: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-size',
 		},
@@ -453,7 +457,7 @@ const attributes = {
 	subHeadFontSizeType: {
 		type: 'string',
 		default: 'px',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-size-type',
 		},
@@ -474,21 +478,21 @@ const attributes = {
 	},
 	subHeadFontSizeTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-size-tablet',
 		},
 	},
 	subHeadFontSizeMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-font-size-mobile',
 		},
 	},
 	subHeadLineHeight: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-line-height',
 		},
@@ -502,35 +506,35 @@ const attributes = {
 	},
 	subHeadLineHeightTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-line-height-tablet',
 		},
 	},
 	subHeadLineHeightMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-line-height-mobile',
 		},
 	},
 	subHeadLetterSpacing: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-letter-spacing',
 		},
 	},
 	subHeadLetterSpacingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-letter-spacing-tablet',
 		},
 	},
 	subHeadLetterSpacingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-letter-spacing-mobile',
 		},
@@ -538,7 +542,7 @@ const attributes = {
 	subHeadLetterSpacingType: {
 		type: 'string',
 		default: 'px',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-letter-spacing-type',
 		},
@@ -547,7 +551,7 @@ const attributes = {
 	separatorSpace: {
 		type: 'number',
 		default: 15,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-bottom-margin',
 		},
@@ -555,7 +559,7 @@ const attributes = {
 	separatorSpaceTablet: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-bottom-margin',
 		},
@@ -563,7 +567,7 @@ const attributes = {
 	separatorSpaceMobile: {
 		type: 'number',
 		default: '',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-bottom-margin',
 		},
@@ -571,7 +575,7 @@ const attributes = {
 	separatorSpaceType: {
 		type: 'string',
 		default: 'px',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-width-type',
 		},
@@ -579,7 +583,7 @@ const attributes = {
 	headLoadGoogleFonts: {
 		type: 'boolean',
 		default: false,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'main-title-load-google-fonts',
 		},
@@ -587,14 +591,14 @@ const attributes = {
 	subHeadLoadGoogleFonts: {
 		type: 'boolean',
 		default: false,
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'desc-load-google-fonts',
 		},
 	},
 	separatorHoverColor: {
 		type: 'string',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'separator-hover-color',
 		},
@@ -606,84 +610,84 @@ const attributes = {
 	// padding
 	blockTopPadding: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-top-padding',
 		},
 	},
 	blockRightPadding: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-right-padding',
 		},
 	},
 	blockLeftPadding: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-left-padding',
 		},
 	},
 	blockBottomPadding: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-bottom-padding',
 		},
 	},
 	blockTopPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-top-padding-tablet',
 		},
 	},
 	blockRightPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-right-padding-tablet',
 		},
 	},
 	blockLeftPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-left-padding-tablet',
 		},
 	},
 	blockBottomPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-bottom-padding-tablet',
 		},
 	},
 	blockTopPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-top-padding-mobile',
 		},
 	},
 	blockRightPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-right-padding-mobile',
 		},
 	},
 	blockLeftPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-left-padding-mobile',
 		},
 	},
 	blockBottomPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-bottom-padding-mobile',
 		},
@@ -716,84 +720,75 @@ const attributes = {
 	// margin
 	blockTopMargin: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-top-margin',
 		},
 	},
 	blockRightMargin: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-right-margin',
 		},
 	},
 	blockLeftMargin: {
 		type: 'number',
-		isGBSStyle : true,
+
 		UAGCopyPaste: {
 			styleType: 'block-left-margin',
 		},
 	},
 	blockBottomMargin: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-bottom-margin',
 		},
 	},
 	blockTopMarginTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-top-margin-tablet',
 		},
 	},
 	blockRightMarginTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-right-margin-tablet',
 		},
 	},
 	blockLeftMarginTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-left-margin-tablet',
 		},
 	},
 	blockBottomMarginTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-bottom-margin-tablet',
 		},
 	},
 	blockTopMarginMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-top-margin-mobile',
 		},
 	},
 	blockRightMarginMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-right-margin-mobile',
 		},
 	},
 	blockLeftMarginMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-left-margin-mobile',
 		},
 	},
 	blockBottomMarginMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'block-bottom-margin-mobile',
 		},
@@ -826,14 +821,12 @@ const attributes = {
 	// link
 	linkColor: {
 		type: 'string',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'link-color',
 		},
 	},
 	linkHColor: {
 		type: 'string',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'link-hover-color',
 		},
@@ -842,7 +835,6 @@ const attributes = {
 	highLightColor: {
 		type: 'string',
 		default: '#fff',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-color',
 		},
@@ -850,7 +842,6 @@ const attributes = {
 	highLightBackground: {
 		type: 'string',
 		default: '#007cba',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-background',
 		},
@@ -858,7 +849,6 @@ const attributes = {
 	highLightLoadGoogleFonts: {
 		type: 'boolean',
 		default: false,
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-load-google-fonts',
 		},
@@ -866,7 +856,6 @@ const attributes = {
 	highLightFontFamily: {
 		type: 'string',
 		default: 'Default',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-family',
 		},
@@ -874,7 +863,6 @@ const attributes = {
 	highLightFontWeight: {
 		type: 'string',
 		default: 'Default',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-weight',
 		},
@@ -882,21 +870,18 @@ const attributes = {
 	highLightFontStyle: {
 		type: 'string',
 		default: 'normal',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-style',
 		},
 	},
 	highLightTransform: {
 		type: 'string',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-transform',
 		},
 	},
 	highLightDecoration: {
 		type: 'string',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-decoration',
 		},
@@ -931,63 +916,54 @@ const attributes = {
 	},
 	highLightFontSize: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-size',
 		},
 	},
 	highLightFontSizeTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-size-tablet',
 		},
 	},
 	highLightFontSizeMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-font-size-mobile',
 		},
 	},
 	highLightLineHeight: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-line-height',
 		},
 	},
 	highLightLineHeightTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-line-height-tablet',
 		},
 	},
 	highLightLineHeightMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-line-height-mobile',
 		},
 	},
 	highLightLetterSpacing: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-letter-spacing',
 		},
 	},
 	highLightLetterSpacingTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-letter-spacing-tablet',
 		},
 	},
 	highLightLetterSpacingMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-letter-spacing-mobile',
 		},
@@ -1001,84 +977,72 @@ const attributes = {
 	},
 	highLightTopPadding: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-top-padding',
 		},
 	},
 	highLightRightPadding: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-right-padding',
 		},
 	},
 	highLightLeftPadding: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-left-padding',
 		},
 	},
 	highLightBottomPadding: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-bottom-padding',
 		},
 	},
 	highLightTopPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-top-padding-tablet',
 		},
 	},
 	highLightRightPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-right-padding-tablet',
 		},
 	},
 	highLightLeftPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-left-padding-tablet',
 		},
 	},
 	highLightBottomPaddingTablet: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-bottom-padding-tablet',
 		},
 	},
 	highLightTopPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-top-padding-mobile',
 		},
 	},
 	highLightRightPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-right-padding-mobile',
 		},
 	},
 	highLightLeftPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-left-padding-mobile',
 		},
 	},
 	highLightBottomPaddingMobile: {
 		type: 'number',
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-bottom-padding-mobile',
 		},
@@ -1107,7 +1071,6 @@ const attributes = {
 	highLightPaddingLink: {
 		type: 'boolean',
 		default: false,
-		isGBSStyle : true,
 		UAGCopyPaste: {
 			styleType: 'highlight-padding-link',
 		},

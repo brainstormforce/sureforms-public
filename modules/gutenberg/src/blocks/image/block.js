@@ -8,7 +8,6 @@ import UAGB_Block_Icons from '@Controls/block-icons';
 import { __ } from '@wordpress/i18n';
 import './style.scss';
 import { registerBlockType, createBlock } from '@wordpress/blocks';
-import deprecated from './deprecated';
 import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
@@ -47,7 +46,6 @@ registerBlockType( 'sureforms/image', {
 	__experimentalLabel: ( atts ) =>
 		applyFilters( 'uag_loop_data_source_label', __( 'Image', 'sureforms' ), atts ),
 	usesContext: [ 'postId', 'postType' ],
-	deprecated,
 	transforms: {
 		from: [
 			{

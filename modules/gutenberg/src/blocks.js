@@ -37,11 +37,6 @@ uagb_blocks_info.font_awesome_5_polyfill = fontAwesomePollyfiller;
 uagLocalStorage.setItem( 'uagSvgConfirmation', JSON.stringify( uagb_blocks_info?.svg_confirmation || false ) );
 
 import './editor.scss';
-
-// import './blocks/order-detail-form/block.js';
-// import './blocks/next-step-button/block.js';
-// import './blocks/checkout-form/block.js';
-// import './blocks/optin-form/block.js';
 import './blocks/separator/block.js';
 import './blocks/advanced-heading/block.js';
 import './blocks/image/block.js';

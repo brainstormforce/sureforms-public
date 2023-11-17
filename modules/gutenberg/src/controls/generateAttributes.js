@@ -47,7 +47,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderTopWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopWidth${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-top-width' + item.copyPastePrefix,
 			},
@@ -55,7 +54,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderLeftWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderLeftWidth${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-left-width' + item.copyPastePrefix,
 			},
@@ -63,7 +61,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderRightWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderRightWidth${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-right-width' + item.copyPastePrefix,
 			},
@@ -71,7 +68,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderBottomWidth' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderBottomWidth${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-bottom-width' + item.copyPastePrefix,
 			},
@@ -81,7 +77,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderTopLeftRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopLeftRadius${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-top-left-radius' + item.copyPastePrefix,
 			},
@@ -89,7 +84,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderTopRightRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderTopRightRadius${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-top-right-radius' + item.copyPastePrefix,
 			},
@@ -97,7 +91,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderBottomLeftRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderBottomLeftRadius${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-bottom-left-radius' + item.copyPastePrefix,
 			},
@@ -105,7 +98,6 @@ export const getBorderAttributes = ( prefix ) => {
 		attributes[ prefix + 'BorderBottomRightRadius' + item.devicePrefix ] = {
 			type: 'number',
 			default: defaults[ `borderBottomRightRadius${ item.devicePrefix }` ],
-			isGBSStyle: true,
 			UAGCopyPaste: {
 				styleType: prefix + '-border-bottom-right-radius' + item.copyPastePrefix,
 			},
@@ -140,7 +132,6 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderStyle' ] = {
 		type: 'string',
 		default: defaults.borderStyle,
-		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-style',
 		},
@@ -149,7 +140,6 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderColor' ] = {
 		type: 'string',
 		default: defaults.borderColor,
-		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-color',
 		},
@@ -158,7 +148,6 @@ export const getBorderAttributes = ( prefix ) => {
 	attributes[ prefix + 'BorderHColor' ] = {
 		type: 'string',
 		default: defaults.borderHColor,
-		isGBSStyle: true,
 		UAGCopyPaste: {
 			styleType: prefix + '-border-hover-color',
 		},

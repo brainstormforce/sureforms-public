@@ -2,7 +2,7 @@
 /**
  * Spectra theme compatibility
  *
- * @package CartFlows
+ * @package Sureforms
  */
 
 // Exit if accessed directly.

@@ -68,7 +68,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 40,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-size',
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconSizeTablet'                   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-size-tablet',
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconSizeMobile'                   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-size-mobile',
@@ -105,7 +105,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'center',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment',
@@ -115,7 +115,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment-tablet',
@@ -125,7 +125,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'overall-alignment-mobile',
@@ -135,7 +135,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#333',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-color',
@@ -145,7 +145,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-border-color',
@@ -155,7 +155,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-background-color-type',
@@ -165,7 +165,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-background-color',
@@ -175,7 +175,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-background-gradient-color',
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-hover-color',
@@ -195,7 +195,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-hover-background-color-type',
@@ -204,7 +204,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconHoverBackgroundColor'         =>
 					array(
 						'type'         => 'string',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-hover-background-color',
@@ -214,7 +214,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-hover-background-gradient-color',
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-rotation',
@@ -234,7 +234,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'deg',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-rotation-type',
@@ -263,7 +263,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-padding',
@@ -273,7 +273,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-padding',
@@ -283,7 +283,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-padding',
@@ -293,7 +293,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-padding',
@@ -302,7 +302,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopTabletPadding'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-tablet-padding',
@@ -311,7 +311,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconRightTabletPadding'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-tablet-padding',
@@ -320,7 +320,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconLeftTabletPadding'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-tablet-padding',
@@ -329,7 +329,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBottomTabletPadding'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-tablet-padding',
@@ -338,7 +338,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopMobilePadding'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-mobile-padding',
@@ -347,7 +347,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconRightMobilePadding'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-mobile-padding',
@@ -356,7 +356,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconLeftMobilePadding'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-mobile-padding',
@@ -365,7 +365,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBottomMobilePadding'          =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-mobile-padding',
@@ -406,7 +406,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopMargin'                    =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-margin',
@@ -415,7 +415,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconRightMargin'                  =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-margin',
@@ -424,7 +424,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconLeftMargin'                   =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-margin',
@@ -433,7 +433,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBottomMargin'                 =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-margin',
@@ -442,7 +442,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopTabletMargin'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-tablet-margin',
@@ -451,7 +451,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconRightTabletMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-tablet-margin',
@@ -460,7 +460,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconLeftTabletMargin'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-tablet-margin',
@@ -469,7 +469,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBottomTabletMargin'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-tablet-margin',
@@ -478,7 +478,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopMobileMargin'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-top-mobile-margin',
@@ -487,7 +487,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconRightMobileMargin'            =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-right-mobile-margin',
@@ -496,7 +496,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconLeftMobileMargin'             =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-left-mobile-margin',
@@ -505,7 +505,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBottomMobileMargin'           =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-bottom-mobile-margin',
@@ -552,7 +552,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'default',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-border-style',
@@ -567,7 +567,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-shadow-color',
@@ -577,7 +577,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-shadow-hoffset',
@@ -587,7 +587,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-shadow-voffset',
@@ -597,7 +597,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-shadow-blur',
@@ -607,7 +607,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-color',
@@ -617,7 +617,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-hoffset',
@@ -627,7 +627,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-voffset',
@@ -636,7 +636,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBoxShadowBlur'                =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-blur',
@@ -645,7 +645,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconBoxShadowSpread'              =>
 					array(
 						'type'         => 'number',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-spread',
@@ -655,7 +655,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'outset',
-						'isGBSStyle'   => true,
+						
 						'UAGCopyPaste' =>
 						array(
 							'styleType' => 'icon-box-shadow-position',

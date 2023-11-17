@@ -10,7 +10,6 @@ import DynamicCSSLoader from '@Components/dynamic-css-loader';
 import { compose } from '@wordpress/compose';
 import { getLoopImage } from './getLoopImage';
 import AddStaticStyles from '@Controls/AddStaticStyles';
-import AddGBSStyles from '@Controls/AddGBSStyles';
 import addInitialAttr from '@Controls/addInitialAttr';
 
 function UAGBImageEdit( props ) {
@@ -53,6 +52,5 @@ function UAGBImageEdit( props ) {
 export default compose( 
 	getLoopImage, 
 	addInitialAttr, 
-	AddStaticStyles,
-	AddGBSStyles,
+	AddStaticStyles
 	)( UAGBImageEdit );
