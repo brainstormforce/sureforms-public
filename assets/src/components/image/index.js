@@ -4,14 +4,14 @@ import { BaseControl } from '@wordpress/components';
 import { MediaUpload } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGB_Block_Icons from '@Controls/block-icons';
+import SRFM_Block_Icons from '@Controls/block-icons';
 import apiFetch from '@wordpress/api-fetch';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
-import UAGConfirmPopup from '../popup-confirm';
-import UAGHelpText from '@Components/help-text';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
+import SRFMConfirmPopup from '../popup-confirm';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGMediaPicker = ( props ) => {
+const SRFMMediaPicker = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -19,7 +19,7 @@ const UAGMediaPicker = ( props ) => {
 		return select( 'core/block-editor' ).getSelectedBlock();
 	}, [] );
 
-	const uagLocalStorage = getUAGEditorStateLocalStorage();
+	const srfmLocalStorage = getSRFMEditorStateLocalStorage();
 	const blockNameForHook = selectedBlock?.name.split( '/' ).pop(); // eslint-disable-line @wordpress/no-unused-vars-before-return
 
 	useEffect( () => {
@@ -51,12 +51,12 @@ const UAGMediaPicker = ( props ) => {
 		case 'video':
 			selectMediaLabel = __( 'Select Video', 'sureforms' );
 			replaceMediaLabel = __( 'Change Video', 'sureforms' );
-			placeholderIcon = UAGB_Block_Icons.video_placeholder;
+			placeholderIcon = SRFM_Block_Icons.video_placeholder;
 			break;
 		case 'lottie':
 			selectMediaLabel = __( 'Select Lottie Animation', 'sureforms' );
 			replaceMediaLabel = __( 'Change Lottie Animation', 'sureforms' );
-			placeholderIcon = UAGB_Block_Icons.lottie;
+			placeholderIcon = SRFM_Block_Icons.lottie;
 			break;
 		case 'svg':
 			selectMediaLabel = __( 'Upload SVG', 'sureforms' );
@@ -70,7 +70,7 @@ const UAGMediaPicker = ( props ) => {
 	const registerImageExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageExtender',
+			'srfm.registerImageExtender',
 			'',
 			selectedBlock?.name,
 			onSelectImage
@@ -78,7 +78,7 @@ const UAGMediaPicker = ( props ) => {
 	const registerImageLinkExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'uagb.registerImageLinkExtender',
+			'srfm.registerImageLinkExtender',
 			'',
 			selectedBlock?.name,
 			'bgImageLink',
@@ -98,21 +98,21 @@ const UAGMediaPicker = ( props ) => {
 
 	const onConfirm = ( open ) => {
 		const formData = new window.FormData();
-		formData.append( 'action', 'uagb_svg_confirmation' );
+		formData.append( 'action', 'srfm_svg_confirmation' );
 		formData.append(
 			'svg_nonce',
-			uagb_blocks_info.uagb_svg_confirmation_nonce
+			srfm_blocks_info.srfm_svg_confirmation_nonce
 		);
 		formData.append( 'confirmation', 'yes' );
 
 		apiFetch( {
-			url: uagb_blocks_info.ajax_url,
+			url: srfm_blocks_info.ajax_url,
 			method: 'POST',
 			body: formData,
 		} ).then( ( response ) => {
 			if ( response.success ) {
-				uagLocalStorage.setItem(
-					'uagSvgConfirmation',
+				srfmLocalStorage.setItem(
+					'srfmSvgConfirmation',
 					JSON.stringify( 'yes' )
 				);
 				open();
@@ -121,8 +121,9 @@ const UAGMediaPicker = ( props ) => {
 	};
 
 	const OpenMediaUploader = ( open ) => {
-		const svgConfirmation =
-			getUAGEditorStateLocalStorage( 'uagSvgConfirmation' );
+		const svgConfirmation = getSRFMEditorStateLocalStorage(
+			'srfmSvgConfirmation'
+		);
 		if ( slug !== 'svg' || svgConfirmation === 'yes' ) {
 			open();
 			return;
@@ -137,15 +138,15 @@ const UAGMediaPicker = ( props ) => {
 			<>
 				{ 'add' === uploadType && (
 					<button
-						className={ `spectra-media-control__clickable spectra-media-control__clickable--${ uploadType }` }
+						className={ `srfm-media-control__clickable srfm-media-control__clickable--${ uploadType }` }
 						onClick={ () => OpenMediaUploader( open ) }
 					>
 						{ renderButton( uploadType ) }
 					</button>
 				) }
-				<div className="spectra-media-control__footer">
+				<div className="srfm-media-control__footer">
 					<button
-						className="uag-control-label"
+						className="srfm-control-label"
 						onClick={ () => OpenMediaUploader( open ) }
 					>
 						{ replaceMediaLabel }
@@ -153,7 +154,7 @@ const UAGMediaPicker = ( props ) => {
 					{ registerImageExtender }
 				</div>
 				{ slug === 'svg' && (
-					<UAGConfirmPopup
+					<SRFMConfirmPopup
 						isOpen={ isOpen }
 						setOpen={ setOpen }
 						onConfirm={ onConfirm }
@@ -173,9 +174,9 @@ const UAGMediaPicker = ( props ) => {
 
 	const renderButton = ( buttonType ) => (
 		<div
-			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
+			className={ `srfm-media-control__button srfm-media-control__button--${ buttonType }` }
 		>
-			{ UAGB_Block_Icons[ buttonType ] }
+			{ SRFM_Block_Icons[ buttonType ] }
 		</div>
 	);
 
@@ -207,12 +208,12 @@ const UAGMediaPicker = ( props ) => {
 
 	const controlName = getIdFromString( props?.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -221,15 +222,15 @@ const UAGMediaPicker = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<BaseControl
-				className="spectra-media-control"
-				id={ `uagb-option-selector-${ slug }` }
+				className="srfm-media-control"
+				id={ `srfm-option-selector-${ slug }` }
 				label={ label }
 				hideLabelFromVision={ disableLabel }
 			>
 				{ isShowImageUploader() ? (
 					<>
 						<div
-							className="spectra-media-control__wrapper"
+							className="srfm-media-control__wrapper"
 							style={ {
 								backgroundImage:
 									! placeholderIcon &&
@@ -241,13 +242,13 @@ const UAGMediaPicker = ( props ) => {
 							} }
 						>
 							{ placeholderIcon && backgroundImage && (
-								<div className="spectra-media-control__icon spectra-media-control__icon--stroke">
+								<div className="srfm-media-control__icon srfm-media-control__icon--stroke">
 									{ placeholderIcon }
 								</div>
 							) }
 							{ backgroundImage?.svg && (
 								<div
-									className="spectra-media-control__icon spectra-media-control__icon--stroke"
+									className="srfm-media-control__icon srfm-media-control__icon--stroke"
 									dangerouslySetInnerHTML={ {
 										__html: backgroundImage.svg,
 									} }
@@ -264,14 +265,14 @@ const UAGMediaPicker = ( props ) => {
 							/>
 							{ ! disableRemove && backgroundImage && (
 								<button
-									className="spectra-media-control__clickable spectra-media-control__clickable--close"
+									className="srfm-media-control__clickable srfm-media-control__clickable--close"
 									onClick={ onRemoveImage }
 								>
 									{ renderButton( 'close' ) }
 								</button>
 							) }
 						</div>
-						<UAGHelpText text={ help } />
+						<SRFMHelpText text={ help } />
 					</>
 				) : (
 					registerImageExtender
@@ -283,4 +284,4 @@ const UAGMediaPicker = ( props ) => {
 	);
 };
 
-export default UAGMediaPicker;
+export default SRFMMediaPicker;

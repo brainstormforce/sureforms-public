@@ -5,13 +5,13 @@ import { useEffect, useState, useRef } from '@wordpress/element';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import { useDeviceType } from '@Controls/getPreviewType';
 import ResponsiveToggle from '../responsive-toggle';
-import UAGMediaPicker from '@Components/image';
+import SRFMMediaPicker from '@Components/image';
 import { select } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const ResponsiveUAGImage = ( props ) => {
+const ResponsiveSRFMImage = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	const { backgroundImage, setAttributes, help = false } = props;
@@ -52,7 +52,7 @@ const ResponsiveUAGImage = ( props ) => {
 
 	const output = {};
 	output.Desktop = (
-		<UAGMediaPicker
+		<SRFMMediaPicker
 			onSelectImage={ onSelectImage }
 			backgroundImage={ backgroundImage.desktop.value }
 			onRemoveImage={ onRemoveImage }
@@ -60,7 +60,7 @@ const ResponsiveUAGImage = ( props ) => {
 		/>
 	);
 	output.Tablet = (
-		<UAGMediaPicker
+		<SRFMMediaPicker
 			onSelectImage={ onSelectImage }
 			backgroundImage={ backgroundImage.tablet.value }
 			onRemoveImage={ onRemoveImage }
@@ -68,7 +68,7 @@ const ResponsiveUAGImage = ( props ) => {
 		/>
 	);
 	output.Mobile = (
-		<UAGMediaPicker
+		<SRFMMediaPicker
 			onSelectImage={ onSelectImage }
 			backgroundImage={ backgroundImage.mobile.value }
 			onRemoveImage={ onRemoveImage }
@@ -78,12 +78,12 @@ const ResponsiveUAGImage = ( props ) => {
 
 	const controlName = 'image'; // there is no label props that's why keep hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -91,9 +91,9 @@ const ResponsiveUAGImage = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uag-responsive-image-select uagb-responsive-select-control">
-				<div className="uagb-size-type-field-tabs">
-					<div className="uagb-control__header">
+			<div className="srfm-responsive-image-select srfm-responsive-select-control">
+				<div className="srfm-size-type-field-tabs">
+					<div className="srfm-control__header">
 						<ResponsiveToggle
 							label={ __( 'Image', 'sureforms' ) }
 							responsive={ responsive }
@@ -103,11 +103,11 @@ const ResponsiveUAGImage = ( props ) => {
 						? output[ deviceType ]
 						: output.Desktop }
 				</div>
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-export default ResponsiveUAGImage;
+export default ResponsiveSRFMImage;

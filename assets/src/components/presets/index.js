@@ -12,10 +12,10 @@ import { applyFilters } from '@wordpress/hooks';
 import { select, dispatch } from '@wordpress/data';
 import classnames from 'classnames';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 
-const UAGPresets = ( props ) => {
+const SRFMPresets = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -206,7 +206,7 @@ const UAGPresets = ( props ) => {
 			<>
 				<input
 					key={ key }
-					className="uag-presets-radio-input"
+					className="srfm-presets-radio-input"
 					type="radio"
 					value={ key }
 					checked={ checked }
@@ -217,7 +217,7 @@ const UAGPresets = ( props ) => {
 				{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control, jsx-a11y/no-noninteractive-element-interactions */ }
 				<label
 					htmlFor={ key }
-					className="uag-presets-radio-input-label"
+					className="srfm-presets-radio-input-label"
 					dangerouslySetInnerHTML={ {
 						__html: preset.icon,
 					} }
@@ -229,7 +229,7 @@ const UAGPresets = ( props ) => {
 
 	const presetDropdown = (
 		<SelectControl
-			className="uagb-presets-dropdown"
+			className="srfm-presets-dropdown"
 			onChange={ updatePresets }
 			options={ presets }
 			label={ label }
@@ -238,7 +238,7 @@ const UAGPresets = ( props ) => {
 
 	const presetRadioImage = (
 		<>
-			<div className="uagb-presets-radio-image-wrap">
+			<div className="srfm-presets-radio-image-wrap">
 				{ presetRadioImageOptions }
 			</div>
 		</>
@@ -246,12 +246,12 @@ const UAGPresets = ( props ) => {
 
 	const controlName = getIdFromString( label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -260,16 +260,16 @@ const UAGPresets = ( props ) => {
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
 			<div
-				className={ classnames( className, 'uagb-presets-main-wrap' ) }
+				className={ classnames( className, 'srfm-presets-main-wrap' ) }
 			>
-				<div className="uagb-presets-label-reset-wrap">
+				<div className="srfm-presets-label-reset-wrap">
 					<label
-						htmlFor="uag-presets-label"
-						className="uag-presets-label"
+						htmlFor="srfm-presets-label"
+						className="srfm-presets-label"
 					>
 						{ label }
 					</label>
-					<UAGReset
+					<SRFMReset
 						attributeNames={ resetAttributes }
 						setAttributes={ setAttributes }
 						onReset={ onReset }
@@ -277,16 +277,16 @@ const UAGPresets = ( props ) => {
 				</div>
 				{ 'dropdown' === presetInputType && presetDropdown }
 				{ 'radioImage' === presetInputType && presetRadioImage }
-				<UAGHelpText text={ help } />
+				<SRFMHelpText text={ help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-UAGPresets.defaultProps = {
+SRFMPresets.defaultProps = {
 	presetInputType: 'dropdown',
 	label: __( 'Select Preset', 'sureforms' ),
 };
 
-export default memo( UAGPresets );
+export default memo( SRFMPresets );

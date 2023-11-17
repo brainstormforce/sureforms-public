@@ -5,11 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 /**
@@ -119,12 +119,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -143,7 +143,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -180,7 +180,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
-										<span className="uag-control-label uagb-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
 												'sureforms'
@@ -237,7 +237,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							'0',
 																					} }
 																				>
-																					<UAGTextControl
+																					<SRFMTextControl
 																						showHeaderControls={
 																							false
 																						}
@@ -285,11 +285,11 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="uag-control-label uagb-control__header">
+							<span className="srfm-control-label srfm-control__header">
 								{ __( 'Add New Option', 'sureforms' ) }
 							</span>
 							<div className="sureform-add-option-container">
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: newOption.optiontitle,
 										label: 'option',
@@ -320,8 +320,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
 							</div>
-							<span className="uag-control-label uagb-control__header" />
-							<UAGTextControl
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								data={ {
 									value: help,
 									label: 'help',
@@ -376,9 +376,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										} }
 									/>
 								) }
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

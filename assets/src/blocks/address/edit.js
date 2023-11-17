@@ -5,11 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -65,12 +65,12 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -89,7 +89,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -101,13 +101,13 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 									}
 								/>
 							) }
-							<UAGAdvancedPanelBody
+							<SRFMAdvancedPanelBody
 								title={ __( 'Address Line 1', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: lineOneLabel,
 												label: 'lineOneLabel',
@@ -121,7 +121,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: lineOnePlaceholder,
 										label: 'lineOnePlaceholder',
@@ -134,14 +134,14 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<UAGAdvancedPanelBody
+							</SRFMAdvancedPanelBody>
+							<SRFMAdvancedPanelBody
 								title={ __( 'Address Line 2', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: lineTwoLabel,
 												label: 'lineTwoLabel',
@@ -155,7 +155,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: lineTwoPlaceholder,
 										label: 'lineTwoPlaceholder',
@@ -168,14 +168,14 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<UAGAdvancedPanelBody
+							</SRFMAdvancedPanelBody>
+							<SRFMAdvancedPanelBody
 								title={ __( 'City', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: cityLabel,
 												label: 'cityLabel',
@@ -189,7 +189,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: cityPlaceholder,
 										label: 'cityPlaceholder',
@@ -202,14 +202,14 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<UAGAdvancedPanelBody
+							</SRFMAdvancedPanelBody>
+							<SRFMAdvancedPanelBody
 								title={ __( 'State', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: stateLabel,
 												label: 'stateLabel',
@@ -223,7 +223,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: statePlaceholder,
 										label: 'statePlaceholder',
@@ -236,14 +236,14 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<UAGAdvancedPanelBody
+							</SRFMAdvancedPanelBody>
+							<SRFMAdvancedPanelBody
 								title={ __( 'Postal Code', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: postalLabel,
 												label: 'postalLabel',
@@ -257,7 +257,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: postalPlaceholder,
 										label: 'postalPlaceholder',
@@ -270,14 +270,14 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<UAGAdvancedPanelBody
+							</SRFMAdvancedPanelBody>
+							<SRFMAdvancedPanelBody
 								title={ __( 'Country', 'sureforms' ) }
 								initialOpen={ false }
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<UAGTextControl
+										<SRFMTextControl
 											data={ {
 												value: countryLabel,
 												label: 'countryLabel',
@@ -291,7 +291,7 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 											}
 										/>
 									) }
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: countryPlaceholder,
 										label: 'countryPlaceholder',
@@ -304,9 +304,9 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 										} )
 									}
 								/>
-							</UAGAdvancedPanelBody>
-							<span className="uag-control-label uagb-control__header" />
-							<UAGTextControl
+							</SRFMAdvancedPanelBody>
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -317,9 +317,9 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
