@@ -6,6 +6,7 @@ import EntriesView from './EntriesView';
 import Integrations from './Integrations';
 
 export default ( { } ) => {
+	const siteUrl = sureforms_admin.site_url;
 	return (
 		<div
 			css={ css`
@@ -32,7 +33,7 @@ export default ( { } ) => {
 				</h2>
 				<ScButton
 					type="primary"
-					href="/wp-admin/post-new.php?post_type=sureforms_form"
+					href={ `${ siteUrl }/wp-admin/post-new.php?post_type=sureforms_form` }
 					style={ {
 						'--primary-background': '#125D9F',
 						'--sc-focus-ring-color-primary': '#125D9F',

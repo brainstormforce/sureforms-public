@@ -2,14 +2,14 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -17,6 +17,7 @@ import { DatetimepickerThemeStyle } from './components/DatetimepickerThemeStyle'
 import { DatetimepickerClassicStyle } from './components/DatetimepickerClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -26,6 +27,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		fieldType,
 		min,
+		preview,
 		max,
 		errorMsg,
 		formId,
@@ -40,6 +42,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.date_time_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -47,12 +55,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -71,7 +79,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -105,7 +113,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
-										<span className="uag-control-label uagb-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -131,7 +139,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 												}
 											} }
 										/>
-										<span className="uag-control-label uagb-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
 										<input
@@ -175,8 +183,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								) : (
 									''
 								) }
-							<span className="uag-control-label uagb-control__header" />
-							<UAGTextControl
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								data={ {
 									value: help,
 									label: 'help',
@@ -187,9 +195,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -204,21 +212,33 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<DatetimepickerClassicStyle attributes={ attributes } />
+					<DatetimepickerClassicStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<DatetimepickerThemeStyle attributes={ attributes } />
+					<DatetimepickerThemeStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'email-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

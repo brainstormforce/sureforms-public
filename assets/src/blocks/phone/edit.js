@@ -3,21 +3,21 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import data from './phoneCodes.json';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import { PhoneClassicStyle } from './components/PhoneClassicStyle';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { PhoneThemeStyle } from './components/PhoneThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -26,12 +26,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		help,
 		placeholder,
 		block_id,
-		defaultValue,
-		defaultCountryCode,
 		isUnique,
 		duplicateMsg,
+		preview,
 		errorMsg,
 		formId,
+		autoCountry,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -48,6 +48,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.phone_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -55,12 +61,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -71,7 +77,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -82,64 +88,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: value } )
 								}
 							/>
-							<div className="components-base-control">
-								<lable>
-									{ __( 'Default Value', 'sureforms' ) }
-								</lable>
-								<div
-									style={ {
-										display: 'flex',
-										alignItems: 'center',
-										marginTop: '10px',
-									} }
-								>
-									{ data && (
-										<select
-											style={ {
-												minHeight: '32px',
-												color: '#50575e',
-												borderColor: '#e6e7e9',
-											} }
-											placeholder="US +1"
-											value={ defaultCountryCode }
-											onChange={ ( e ) => {
-												const value = e.target.value;
-												setAttributes( {
-													defaultCountryCode: value,
-												} );
-											} }
-										>
-											{ data.map( ( country, i ) => {
-												return (
-													<option
-														key={ i }
-														value={
-															country.dial_code
-														}
-													>
-														{ country.code +
-															' ' +
-															country.dial_code }
-													</option>
-												);
-											} ) }
-										</select>
-									) }
-									<UAGTextControl
-										value={ defaultValue }
-										data={ {
-											value: defaultValue,
-											label: 'defaultValue',
-										} }
-										showHeaderControls={ false }
-										onChange={ ( value ) =>
-											setAttributes( {
-												defaultValue: value,
-											} )
-										}
-									/>
-								</div>
-							</div>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -148,7 +96,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -171,7 +119,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ isUnique && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __(
 										'Validation Message for Duplicate ',
 										'sureforms'
@@ -186,7 +134,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGTextControl
+							<ToggleControl
+								label={ __(
+									'Enable Auto Country',
+									'sureforms'
+								) }
+								checked={ autoCountry }
+								onChange={ ( value ) =>
+									setAttributes( { autoCountry: value } )
+								}
+							/>
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -197,9 +155,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -215,25 +173,31 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						attributes={ attributes }
 						blockID={ block_id }
 						handleChange={ handleChange }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<PhoneThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
 						handleChange={ handleChange }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'phone-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

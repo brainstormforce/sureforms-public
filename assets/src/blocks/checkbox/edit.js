@@ -2,14 +2,14 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
@@ -17,6 +17,7 @@ import { CheckboxClassicStyle } from './components/CheckboxClassicStyle';
 import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -27,6 +28,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		checkboxHelpText,
 		block_id,
 		errorMsg,
+		preview,
 		formId,
 	} = attributes;
 
@@ -39,19 +41,25 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.checkbox_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
-		<div { ...useBlockProps() }>
+		<div>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -70,7 +78,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -82,7 +90,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGTextControl
+							<SRFMTextControl
 								data={ {
 									value: labelUrl,
 									label: 'labelUrl',
@@ -105,7 +113,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { checked } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								data={ {
 									value: checkboxHelpText,
 									label: 'checkboxHelpText',
@@ -116,9 +124,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { checkboxHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -134,22 +142,34 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					} }
 				>
 					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-						<CheckboxClassicStyle attributes={ attributes } />
+						<CheckboxClassicStyle
+							blockID={ block_id }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) : (
-						<CheckboxThemeStyle attributes={ attributes } />
+						<CheckboxThemeStyle
+							blockID={ block_id }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) }
 				</div>
 				{ checkboxHelpText !== '' && (
-					<label
-						htmlFor={ 'checkbox-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ checkboxHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { checkboxHelpText: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ checkboxHelpText }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</div>

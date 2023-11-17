@@ -1,18 +1,18 @@
 /* --------- Common Responsive Select CSS --------- */
 
-.uag-responsive-common-button .dashicon {
+.srfm-responsive-common-button .dashicon {
 	font-size: 10px;
 }
 
-.components-button.uag-responsive-common-button:hover,
-.components-button.uag-responsive-common-button:focus,
-.components-button.uag-responsive-common-button:active {
+.components-button.srfm-responsive-common-button:hover,
+.components-button.srfm-responsive-common-button:focus,
+.components-button.srfm-responsive-common-button:active {
 	box-shadow: none;
 	outline: none;
-	color: $spectra-color-primary;
+	color: $srfm-color-primary;
 }
 
-.uag-responsive-label-wrap {
+.srfm-responsive-label-wrap {
 	display: flex;
 	align-items: center;
 }

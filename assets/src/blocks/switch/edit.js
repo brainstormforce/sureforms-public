@@ -2,21 +2,22 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { SwitchClassicStyle } from './components/SwitchClassicStyle';
 import { SwitchThemeStyle } from './components/SwitchThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -27,6 +28,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		block_id,
 		errorMsg,
 		formId,
+		preview,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -44,6 +46,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.switch_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -51,12 +59,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -75,7 +83,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -97,7 +105,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { checked } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ switchHelpText }
 								data={ {
@@ -108,9 +116,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { switchHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -123,22 +131,32 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						<SwitchClassicStyle
 							attributes={ attributes }
 							sureforms_keys={ sureforms_keys }
+							blockID={ block_id }
+							setAttributes={ setAttributes }
 						/>
 					) : (
-						<SwitchThemeStyle attributes={ attributes } />
+						<SwitchThemeStyle
+							blockID={ block_id }
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					) }
 				</div>
 				{ switchHelpText !== '' && (
-					<label
-						htmlFor={ 'switch-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ switchHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { switchHelpText: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ switchHelpText }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

@@ -110,24 +110,24 @@ class Upload_Markup extends Base {
 		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '<div id="srfm-upload-container" class="srfm-upload-container srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <div class="col-span-full">
-            <label class="srfm-classic-label-text">
+        <div class="srfm-col-span-full">
+            <label for="srfm-upload-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
                 ' . esc_html( $label ) . ' 
                 ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
             <div class="srfm-upload-inner-div srfm-classic-upload-div">
-                <div class="text-center">
-                    <div style="font-size:35px" class="text-center text-gray-300">
+                <div class="srfm-text-center">
+                    <div style="font-size:35px" class="srfm-text-center srfm-text-gray-300">
                         <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                     </div>
-                    <div class="mt-2 flex text-sm leading-6 text-gray-600">
+                    <div class="srfm-mt-2 srfm-flex srfm-text-sm srfm-leading-6 srfm-text-gray-600">
                         <input class="srfm-upload-size" value="' . esc_attr( $file_size ) . '" type="hidden" />
                         <label for="srfm-upload-' . esc_attr( $block_id ) . '" class="srfm-classic-upload-label">
                             <span>Click to upload the file</span>
-                            <input id="srfm-upload-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-upload-field sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
+                            <input id="srfm-upload-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-upload' . $block_id ) ) . '" type="file" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-upload-field srfm-sr-only" accept=".' . esc_attr( str_replace( ' ', ' .', $accepted_formats ) ) . '">
                         </label>
                     </div>
-                    <p class="m-1 text-xs leading-5 text-gray-600"> <span class="font-semibold">' . ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ) . '</span> up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
+                    <p class="srfm-m-1 srfm-text-xs srfm-leading-5 srfm-text-gray-600"> <span class="srfm-font-semibold">' . ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ) . '</span> up to ' . esc_attr( $file_size ? $file_size . ' MB' : 'Not Defined' ) . '</p>
                 </div>
             </div>
         </div>

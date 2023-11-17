@@ -10,14 +10,17 @@
 		"reusable": false,
 		"html": false
 	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
 	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
 		"block_id": {
-			"type": "string"
-		},
-		"defaultValue": {
-			"type": "string"
-		},
-		"defaultCountryCode": {
 			"type": "string"
 		},
 		"required": {
@@ -49,6 +52,10 @@
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"autoCountry": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

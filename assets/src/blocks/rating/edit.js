@@ -2,16 +2,15 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
-import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
@@ -20,6 +19,8 @@ import { RatingClassicStyle } from './components/RatingClassicStyle';
 import { RatingThemeStyle } from './components/RatingThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
+import Range from '@Components/range/Range.js';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -32,6 +33,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		showNumbers,
 		iconShape,
 		maxValue,
+		preview,
 		errorMsg,
 		formId,
 	} = attributes;
@@ -45,16 +47,22 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.rating_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
 				<InspectorTabs>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -73,7 +81,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
@@ -85,7 +93,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<Range
 								label={ __( 'Number of Icons', 'sureforms' ) }
 								displayUnit={ false }
 								step={ 1 }
@@ -104,7 +112,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								} }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ ratingBoxHelpText }
 								data={ {
@@ -117,10 +125,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.style }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Icon Styles', 'sureforms' ) }
 							initialOpen={ true }
 						>
@@ -199,7 +207,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									},
 								] }
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
@@ -214,21 +222,33 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				} }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<RatingClassicStyle attributes={ attributes } />
+					<RatingClassicStyle
+						setAttributes={ setAttributes }
+						blockID={ block_id }
+						attributes={ attributes }
+					/>
 				) : (
-					<RatingThemeStyle attributes={ attributes } />
+					<RatingThemeStyle
+						setAttributes={ setAttributes }
+						blockID={ block_id }
+						attributes={ attributes }
+					/>
 				) }
 				{ ratingBoxHelpText !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ ratingBoxHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { ratingBoxHelpText: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ ratingBoxHelpText }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

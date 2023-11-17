@@ -4,7 +4,7 @@ import styles from './editor.lazy.scss';
 import { __ } from '@wordpress/i18n';
 import renderSVG from '@Controls/renderIcon';
 
-const UAGConfirmPopup = ( props ) => {
+const SRFMConfirmPopup = ( props ) => {
 	const {
 		isOpen,
 		setOpen,
@@ -47,10 +47,10 @@ const UAGConfirmPopup = ( props ) => {
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
-					className="uag-confirm-popup-wrapper"
-					overlayClassName="uag-confirm-popup-overlay"
+					className="srfm-confirm-popup-wrapper"
+					overlayClassName="srfm-confirm-popup-overlay"
 				>
-					<div className="uag-confirm-popup-icon">
+					<div className="srfm-confirm-popup-icon">
 						{ icon !== '' ? (
 							renderSVG( icon )
 						) : (
@@ -70,26 +70,26 @@ const UAGConfirmPopup = ( props ) => {
 							</svg>
 						) }
 					</div>
-					<div className="uag-confirm-popup-content">
-						<div className="uag-confirm-popup-text">
-							<span className="uag-confirm-popup-title">
+					<div className="srfm-confirm-popup-content">
+						<div className="srfm-confirm-popup-text">
+							<span className="srfm-confirm-popup-title">
 								{ title }
 							</span>
-							<span className="uag-confirm-popup-description">
+							<span className="srfm-confirm-popup-description">
 								{ description }
 							</span>
 						</div>
-						<div className="uag-confirm-popup-controls">
+						<div className="srfm-confirm-popup-controls">
 							{ isProcessing === false ? (
 								<>
 									<Button
-										className="uag-confirm-popup-buttons uag-popup-confirmation-button"
+										className="srfm-confirm-popup-buttons srfm-popup-confirmation-button"
 										onClick={ handleConfirmation }
 									>
 										{ confirmLabel }
 									</Button>
 									<Button
-										className="uag-confirm-popup-buttons uag-popup-cancellation-button"
+										className="srfm-confirm-popup-buttons srfm-popup-cancellation-button"
 										onClick={ closeModal }
 									>
 										{ cancelLabel }
@@ -98,7 +98,7 @@ const UAGConfirmPopup = ( props ) => {
 							) : (
 								<Button
 									isBusy={ true }
-									className="uag-confirm-popup-buttons uag-popup-confirmation-button"
+									className="srfm-confirm-popup-buttons srfm-popup-confirmation-button"
 								>
 									{ processingLabel }
 								</Button>
@@ -111,6 +111,6 @@ const UAGConfirmPopup = ( props ) => {
 	);
 };
 
-UAGConfirmPopup.defaultProps = {};
+SRFMConfirmPopup.defaultProps = {};
 
-export default UAGConfirmPopup;
+export default SRFMConfirmPopup;

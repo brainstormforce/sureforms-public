@@ -5,12 +5,20 @@
 $ui-border-radius: 4px;
 $ui-box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 $ui-padding: 12px 16px;
+@mixin mobile630 {
+	@media ( max-width: 630px ) {
+		@content;
+	}
+}
 
 .srfm-classic-radio {
-	flex: 49% 0 0;
+	flex: calc( 50% - 7px ) 0 0;
+	@include mobile630 {
+		flex: calc( 100% ) 0 0;
+	}
 }
 .srfm-radio-buttons {
-	gap: 2%;
+	gap: 7px;
 }
 .srfm-classic-radio input {
 	display: none;
@@ -438,91 +446,101 @@ $ui-padding: 12px 16px;
 		.srfm-classic-inputs-holder {
 			gap: 0 !important;
 			.srfm-classic-input-element {
-				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-srfm_primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply srfm-mt-2 srfm-w-full srfm-border-0 srfm-rounded-md srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-number-element {
-				@apply mt-2 w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-srfm_primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply srfm-mt-2 srfm-w-full srfm-border-0 srfm-rounded-md srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-textarea-element {
-				@apply w-full border-solid border-0 border-[#d1d5db] rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-srfm_primary_color focus:ring-srfm_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply srfm-w-full srfm-border-solid srfm-border-0 srfm-border-[#d1d5db] srfm-rounded-md srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-email-element {
-				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-srfm_primary_color focus:ring-srfm_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply srfm-w-full srfm-border-solid srfm-border-0 srfm-border-[#D1D5DB] srfm-rounded-md srfm-py-1.5 srfm-pr-10 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-phone-parent {
-				@apply relative ring-1 ring-gray-300 border-[#D1D5DB] rounded-md border-0 outline-0 focus-within:ring-srfm_primary_color focus-within:ring-2 focus-within:border-solid focus-within:border-0 focus-within:border-srfm_primary_color focus-within:outline-0;
+				@apply srfm-relative srfm-ring-1 srfm-ring-gray-300 srfm-border-[#D1D5DB] srfm-rounded-md srfm-border-0 srfm-outline-0 focus-within:srfm-ring-srfm_primary_color focus-within:srfm-ring-2 focus-within:srfm-border-solid focus-within:srfm-border-0 focus-within:srfm-border-srfm_primary_color focus-within:srfm-outline-0;
+				.iti {
+					@apply srfm-w-full;
+				}
 			}
 			.srfm-classic-phone-element {
-				@apply w-full rounded-md py-1.5 pl-[4.1rem] text-gray-900 shadow-sm ring-0 border-0 bg-white outline-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 focus:ring-0 focus:border-0;
+				@apply srfm-w-full srfm-rounded-md srfm-py-1.5 srfm-pl-[4.1rem] srfm-text-gray-900 srfm-shadow-sm srfm-ring-0 srfm-border-0 srfm-bg-white srfm-outline-0 placeholder:srfm-text-gray-500 sm:srfm-text-sm sm:srfm-leading-6 focus:srfm-ring-0 focus:srfm-border-0;
 				margin: 0;
 			}
 			.srfm-classic-phone-select {
-				@apply h-full rounded-md border-0 bg-white py-0 pl-3 pr-7 text-gray-900 focus:outline-none ring-0 focus:ring-inset focus:ring-0 focus:outline-0 focus:border-0 sm:text-sm;
+				@apply srfm-h-full srfm-rounded-md srfm-border-0 srfm-bg-white srfm-py-0 srfm-pl-3 srfm-pr-7 srfm-text-gray-900 focus:srfm-outline-none srfm-ring-0 focus:srfm-ring-inset focus:srfm-ring-0 focus:srfm-outline-0 focus:srfm-border-0 sm:srfm-text-sm;
 			}
 			.srfm-classic-pwd-element {
-				@apply w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset  ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-srfm_primary_color focus:ring-srfm_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply srfm-w-full srfm-border-solid srfm-border-0 srfm-border-[#D1D5DB] srfm-rounded-md srfm-py-1.5 srfm-pr-10 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-address-element {
-				@apply relative w-full rounded-none border-0 bg-white py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-srfm_primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply srfm-relative srfm-w-full srfm-rounded-none srfm-border-0 srfm-bg-white srfm-py-1.5 srfm-text-gray-900 srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-z-10 focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-adress-select {
-				@apply relative bg-white w-full rounded-none border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-10 focus:ring-2 focus:ring-srfm_primary_color focus:outline-0 sm:text-sm sm:leading-6;
+				@apply srfm-relative srfm-bg-white srfm-w-full srfm-rounded-none srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 focus:srfm-z-10 focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 sm:srfm-text-sm sm:srfm-leading-6;
 			}
 			.srfm-classic-dropdown-btn {
-				@apply border-solid border-0 text-gray-900 border-[#D1D5DB] placeholder:text-gray-500 relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-srfm_primary_color sm:text-sm sm:leading-6;
+				@apply srfm-border-solid srfm-border-0 srfm-text-gray-900 srfm-border-[#D1D5DB] placeholder:srfm-text-gray-500 srfm-relative srfm-w-full srfm-cursor-pointer srfm-rounded-md srfm-bg-white srfm-py-1.5 srfm-pl-3 srfm-pr-10 srfm-text-left srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-gray-300 focus:srfm-outline-none focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color sm:srfm-text-sm sm:srfm-leading-6;
 				background: white !important;
 				color: inherit !important;
 			}
 			.srfm-classic-dropdown-li {
-				@apply text-gray-900 relative select-none py-2 pl-3 pr-9 hover:bg-srfm_primary_color hover:text-white cursor-pointer;
+				@apply srfm-text-gray-900 srfm-relative srfm-select-none srfm-py-2 srfm-pl-3 srfm-pr-9 hover:srfm-bg-srfm_primary_color hover:srfm-text-white srfm-cursor-pointer;
 			}
 			.srfm-classic-dropdown-ul {
-				@apply opacity-0 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm mx-0 list-none pl-0;
+				@apply srfm-opacity-0 srfm-absolute srfm-mt-1 srfm-max-h-60 srfm-w-full srfm-overflow-auto srfm-rounded-md srfm-bg-white srfm-py-1 srfm-text-base srfm-shadow-lg srfm-ring-1 srfm-ring-black srfm-ring-opacity-5 focus:srfm-outline-none sm:srfm-text-sm srfm-mx-0 srfm-list-none srfm-pl-0;
 				z-index: 10;
 			}
 			.srfm-classic-multi-choice {
-				@apply cursor-pointer rounded-lg ring-1 ring-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:border-0 mb-2;
+				@apply srfm-cursor-pointer srfm-rounded-lg srfm-ring-1 srfm-ring-gray-300 srfm-bg-white srfm-p-2 srfm-shadow-sm focus:srfm-outline-none focus:srfm-border-0 srfm-mb-[7px];
 			}
 			.srfm-classic-url-element {
-				@apply block w-full rounded-none rounded-r-md border-0 border-[#D1D5DB] py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:border-solid focus:border-srfm_primary_color focus:ring-srfm_primary_color focus:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply srfm-block srfm-w-full srfm-rounded-none srfm-rounded-r-md srfm-border-0 srfm-border-[#D1D5DB] srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;
 				margin: 0;
 			}
 			.srfm-classic-url-prefix {
-				@apply inline-flex items-center bg-white rounded-l-md border border-solid border-r-0 border-[#D1D5DB] ring-0 px-3 text-gray-900 sm:text-sm;
+				@apply srfm-inline-flex srfm-items-center srfm-bg-white srfm-rounded-l-md srfm-border srfm-border-solid srfm-border-r-0 srfm-border-[#D1D5DB] srfm-ring-0 srfm-px-3 srfm-text-gray-900 sm:srfm-text-sm;
 			}
 			.srfm-classic-upload-result {
-				@apply mt-2 flex bg-white rounded-lg border border-solid border-gray-900/25;
+				@apply srfm-mt-2 srfm-flex srfm-bg-white srfm-rounded-lg srfm-border srfm-border-solid srfm-border-gray-900/25;
 			}
 			.srfm-classic-upload-div {
-				@apply mt-2 flex justify-center rounded-lg bg-white border border-dashed border-gray-900/25 px-4 py-6;
+				@apply srfm-mt-2 srfm-flex srfm-justify-center srfm-rounded-lg srfm-bg-white srfm-border srfm-border-dashed srfm-border-gray-900/25 srfm-px-4 srfm-py-6;
 			}
 			.srfm-classic-upload-label {
-				@apply text-sm relative w-full cursor-pointer rounded-md bg-white font-semibold text-srfm_primary_color focus-within:outline-none  focus-within:ring-indigo-600 focus-within:ring-offset-2;
+				@apply srfm-text-sm srfm-relative srfm-w-full srfm-cursor-pointer srfm-rounded-md srfm-bg-white srfm-font-semibold srfm-text-srfm_primary_color focus-within:srfm-outline-none focus-within:srfm-ring-indigo-600 focus-within:srfm-ring-offset-2;
 			}
 			.srfm-classic-toggle-icon {
-				@apply duration-100 ease-out absolute flex h-full w-full items-center justify-center transition-opacity;
+				@apply srfm-duration-100 srfm-ease-out srfm-absolute srfm-flex srfm-h-full srfm-w-full srfm-items-center srfm-justify-center srfm-transition-opacity;
 			}
 			.srfm-classic-toggle-bg {
-				@apply inline-block relative h-[14px] rounded-[25px] cursor-pointer transition-colors duration-200;
+				@apply srfm-inline-block srfm-relative srfm-h-[14px] srfm-rounded-[25px] srfm-cursor-pointer srfm-transition-colors srfm-duration-200;
 				flex: 0 0 40px;
 			}
 			.srfm-classic-datetime-picker {
-				@apply block w-full border-solid border-0 border-[#D1D5DB] rounded-md py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white placeholder:text-gray-500 focus:ring-2 focus:border-solid focus:border-srfm_primary_color focus-visible:border-srfm_primary_color focus:ring-srfm_primary_color focus-visible:ring-srfm_primary_color focus:outline-0 focus-visible:outline-0 focus:bg-white sm:text-sm sm:leading-6;
+				@apply srfm-block srfm-w-full srfm-border-solid srfm-border-0 srfm-border-[#D1D5DB] srfm-rounded-md srfm-py-1.5 srfm-pr-10 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-border-solid focus:srfm-border-srfm_primary_color focus-visible:srfm-border-srfm_primary_color focus:srfm-ring-srfm_primary_color focus-visible:srfm-ring-srfm_primary_color focus:srfm-outline-0 focus-visible:srfm-outline-0 focus:srfm-bg-white sm:srfm-text-sm sm:srfm-leading-6;
 			}
-
 			.srfm-classic-label-text {
-				@apply text-sm font-medium leading-6 text-srfm_primary_color;
+				@apply srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-srfm_primary_color;
 			}
 			.srfm-error-message,
 			.srfm-duplicate-message,
 			.srfm-confirm-email-error {
-				@apply mt-2 text-sm text-red-600 mb-0;
+				@apply srfm-mt-2 srfm-text-sm srfm-text-red-600 srfm-mb-0;
 			}
 			.srfm-helper-txt {
-				@apply mt-2 text-sm text-gray-500 mb-0;
+				@apply srfm-mt-2 srfm-text-sm srfm-text-gray-500 srfm-mb-0;
 			}
 			.srfm-classic-input-error {
-				@apply ring-red-500 border-red-500 placeholder:text-red-300;
+				@apply srfm-ring-red-500 srfm-border-red-500 placeholder:srfm-text-red-300;
+			}
+			.srfm-classic-label-text {
+				a {
+					@apply srfm-text-srfm_primary_color srfm-no-underline;
+				}
+				a:hover {
+					@apply srfm-text-srfm_primary_color srfm-underline;
+				}
 			}
 		}
 	}

@@ -2,22 +2,24 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import UAGNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaClassicStyle } from './components/TextareaClassicStyle';
 import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -32,6 +34,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		rows,
 		cols,
 		formId,
+		preview,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -44,6 +47,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover
+	if ( preview ) {
+		const fieldName = fieldsPreview.textarea_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -51,12 +60,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -67,7 +76,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -78,7 +87,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { placeholder: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								variant="textarea"
 								label={ __( 'Default Value', 'sureforms' ) }
 								value={ defaultValue }
@@ -98,7 +107,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -110,11 +119,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
-								label={ __( 'Text Max Length', 'sureforms' ) }
+							<SRFMNumberControl
+								label={ __(
+									'Text Maximum Length',
+									'sureforms'
+								) }
 								value={ maxLength }
 								displayUnit={ false }
-								min={ 0 }
 								data={ {
 									value: maxLength,
 									label: 'maxLength',
@@ -124,8 +135,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										maxLength: Number( value ),
 									} );
 								} }
+								min={ 0 }
+								showControlHeader={ false }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Rows', 'sureforms' ) }
 								value={ rows }
 								displayUnit={ false }
@@ -139,7 +152,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { rows: Number( value ) } );
 								} }
 							/>
-							<UAGNumberControl
+							<Range
 								label={ __( 'Columns', 'sureforms' ) }
 								displayUnit={ false }
 								value={ cols }
@@ -153,7 +166,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { cols: Number( value ) } );
 								} }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ textAreaHelpText }
 								data={ {
@@ -164,9 +177,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { textAreaHelpText: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -178,20 +191,33 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				} }
 			>
 				{ 'classic' === stylingType ? (
-					<TextareaClassicStyle attributes={ attributes } />
+					<TextareaClassicStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) : (
-					<TextareaThemeStyle attributes={ attributes } />
+					<TextareaThemeStyle
+						blockID={ block_id }
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				) }
 				{ textAreaHelpText !== '' && (
-					<label
+					<RichText
+						tagName="label"
+						value={ textAreaHelpText }
+						onChange={ ( value ) =>
+							setAttributes( { textAreaHelpText: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ textAreaHelpText }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

@@ -1,16 +1,23 @@
-export const DatetimepickerThemeStyle = ( { attributes, blockID } ) => {
+import { RichText } from '@wordpress/block-editor';
+
+export const DatetimepickerThemeStyle = ( {
+	attributes,
+	blockID,
+	setAttributes,
+} ) => {
 	const { label, required, fieldType, min, max, className } = attributes;
+	const isRequired = required ? 'srfm-required' : '';
+
 	return (
 		<>
-			<label
-				className="srfm-text-primary"
-				htmlFor={ 'date-picker-' + blockID }
-			>
-				{ label }
-				{ required && label && (
-					<span style={ { color: 'red' } }> *</span>
-				) }
-			</label>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => setAttributes( { label: value } ) }
+				className={ `srfm-text-primary ${ isRequired }` }
+				multiline={ false }
+				id={ blockID }
+			/>
 			<div
 				style={ {
 					display: 'flex',

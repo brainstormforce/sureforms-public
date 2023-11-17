@@ -4,11 +4,11 @@
 	"description": "Collect and Manage data effortlessly with customizable SureForm.",
 	"category": "sureforms",
 	"keywords": [ "form", "sureform" ],
-	"parent": [ "sureforms/sf-form" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
-		"html": false
+		"html": false,
+		"multiple": false
 	},
 	"attributes": {
 		"id": {

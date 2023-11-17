@@ -2,23 +2,24 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
-import UAGSelectControl from '@Components/select-control';
-import UAGNumberControl from '@Components/number-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMSelectControl from '@Components/select-control';
+import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberClassicStyle } from './components/numberClassicStyle';
 import { NumberThemeStyle } from './components/numberThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -31,11 +32,13 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		minValue,
 		maxValue,
 		errorMsg,
+		preview,
 		formatType,
 		formId,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
+	const [ error, setError ] = useState( false );
 
 	const handleInput = ( e ) => {
 		let inputValue = e.target.value;
@@ -59,6 +62,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.number_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -66,12 +75,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -82,7 +91,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { label: newValue } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -93,10 +102,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: newValue } )
 								}
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
-								step={ 1 }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',
@@ -107,6 +115,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 										defaultValue: value,
 									} )
 								}
+								showControlHeader={ false }
 							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
@@ -116,7 +125,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -128,37 +137,61 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Minimum Value', 'sureforms' ) }
 								displayUnit={ false }
-								step={ 1 }
 								data={ {
 									value: minValue,
 									label: 'minValue',
 								} }
 								value={ minValue }
-								onChange={ ( value ) =>
-									setAttributes( {
-										minValue: value,
-									} )
-								}
+								onChange={ ( value ) => {
+									if ( value >= maxValue ) {
+										setError( true );
+										setAttributes( { minValue: 0 } );
+									} else {
+										setError( false );
+										setAttributes( { minValue: value } );
+									}
+								} }
+								showControlHeader={ false }
 							/>
-							<UAGNumberControl
+							<SRFMNumberControl
 								label={ __( 'Maximum Value', 'sureforms' ) }
 								displayUnit={ false }
-								step={ 1 }
 								data={ {
 									value: maxValue,
 									label: 'maxValue',
 								} }
 								value={ maxValue }
-								onChange={ ( value ) =>
-									setAttributes( {
-										maxValue: value,
-									} )
-								}
+								onChange={ ( value ) => {
+									if ( value <= minValue ) {
+										setError( true );
+										setAttributes( {
+											maxValue: Number( minValue ) + 1,
+										} );
+									} else {
+										setError( false );
+										setAttributes( { maxValue: value } );
+									}
+								} }
+								showControlHeader={ false }
 							/>
-							<UAGSelectControl
+							{ error && (
+								<p className="srfm-min-max-error-styles">
+									{ __(
+										'Please check the Minimum and Maximum value',
+										'sureforms'
+									) }
+								</p>
+							) }
+							<p className="components-base-control__help">
+								{ __(
+									'Note: Maximum value should always be greater than minimum value',
+									'sureforms'
+								) }
+							</p>
+							<SRFMSelectControl
 								label={ __( 'Number Format', 'sureforms' ) }
 								data={ {
 									value: formatType,
@@ -180,7 +213,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									},
 								] }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -191,9 +224,9 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: newValue } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -209,25 +242,31 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 						attributes={ attributes }
 						blockID={ block_id }
 						handleInput={ handleInput }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<NumberThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
 						handleInput={ handleInput }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-number-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

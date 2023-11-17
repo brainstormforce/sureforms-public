@@ -1,26 +1,26 @@
-document.addEventListener( 'load', spectra_responsive_icons );
-document.addEventListener( 'DOMContentLoaded', spectra_responsive_icons );
+document.addEventListener( 'load', srfm_responsive_icons );
+document.addEventListener( 'DOMContentLoaded', srfm_responsive_icons );
 
 import DeviceIcons from './device-icons';
 
-function spectra_responsive_icons() {
+function srfm_responsive_icons() {
 	wp.data.subscribe( function () {
 		setTimeout( function () {
-			spectra_responsive_icon();
+			srfm_responsive_icon();
 		}, 500 );
 	} );
 }
 
-function spectra_responsive_icon() {
+function srfm_responsive_icon() {
 	if ( ! document.querySelector( '.edit-post-header__settings' ) ) {
 		return null;
 	}
-	if ( document.querySelector( '.spectra-responsive-icons__wrap' ) ) {
+	if ( document.querySelector( '.srfm-responsive-icons__wrap' ) ) {
 		return null;
 	}
 
 	const buttonWrapper = document.createElement( 'div' );
-	buttonWrapper.classList.add( 'spectra-responsive-icons__wrap' );
+	buttonWrapper.classList.add( 'srfm-responsive-icons__wrap' );
 
 	document
 		.querySelector( '.edit-post-header__settings' )
@@ -30,6 +30,6 @@ function spectra_responsive_icon() {
 		);
 	wp.element.render(
 		<DeviceIcons />,
-		document.querySelector( '.spectra-responsive-icons__wrap' )
+		document.querySelector( '.srfm-responsive-icons__wrap' )
 	);
 }

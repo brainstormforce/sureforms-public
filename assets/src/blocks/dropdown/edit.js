@@ -2,14 +2,14 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 
 /**
@@ -22,6 +22,7 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -33,6 +34,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		errorMsg,
 		formId,
 		placeholder,
+		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
@@ -60,6 +62,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.dropdown_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -67,12 +75,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -83,7 +91,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { label: value } );
 								} }
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								data={ {
 									value: placeholder,
@@ -102,7 +110,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -139,7 +147,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 											}
 										} }
 									>
-										<span className="uag-control-label uagb-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
 												'sureforms'
@@ -196,7 +204,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							'0',
 																					} }
 																				>
-																					<UAGTextControl
+																					<SRFMTextControl
 																						showHeaderControls={
 																							false
 																						}
@@ -244,11 +252,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="uag-control-label uagb-control__header">
+							<span className="srfm-control-label srfm-control__header">
 								{ __( 'Add New Option', 'sureforms' ) }
 							</span>
 							<div className="sureform-add-option-container">
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: newOption,
 										label: 'option',
@@ -279,8 +287,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
 							</div>
-							<span className="uag-control-label uagb-control__header" />
-							<UAGTextControl
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								data={ {
 									value: help,
 									label: 'help',
@@ -291,9 +299,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -310,24 +318,30 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<DropdownClassicStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) : (
 					<DropdownThemeStyle
 						attributes={ attributes }
 						blockID={ block_id }
+						setAttributes={ setAttributes }
 					/>
 				) }
 				{ help !== '' && (
-					<label
-						htmlFor={ 'srfm-text-input-help-' + block_id }
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) =>
+							setAttributes( { help: value } )
+						}
 						className={
 							'classic' === sureforms_keys?._srfm_form_styling
 								? 'srfm-helper-txt'
 								: 'srfm-text-secondary'
 						}
-					>
-						{ help }
-					</label>
+						multiline={ false }
+						id={ block_id }
+					/>
 				) }
 			</div>
 		</>

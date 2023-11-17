@@ -14,10 +14,10 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const BoxShadowControl = ( props ) => {
@@ -26,7 +26,7 @@ const BoxShadowControl = ( props ) => {
 	const [ showAdvancedControls, toggleAdvancedControls ] = useState( false );
 
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	); // eslint-disable-line @wordpress/no-unused-vars-before-return
 
@@ -35,10 +35,10 @@ const BoxShadowControl = ( props ) => {
 	useLayoutEffect( () => {
 		window.addEventListener( 'click', function ( e ) {
 			const popupButton = document.querySelector(
-				`.active.popup-${ blockId } .spectra-control-popup__options--action-button`
+				`.active.popup-${ blockId } .srfm-control-popup__options--action-button`
 			);
 			const popupWrap = document.querySelector(
-				`.active.popup-${ blockId } .spectra-control-popup`
+				`.active.popup-${ blockId } .srfm-control-popup`
 			);
 
 			if (
@@ -47,28 +47,28 @@ const BoxShadowControl = ( props ) => {
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
 				! e.target?.classList?.contains(
-					'uagb-advanced-color-indicate'
+					'srfm-advanced-color-indicate'
 				) &&
-				! e.target?.parentElement?.closest( '.uagb-popover-color' ) &&
-				! e.target?.parentElement?.closest( '.uagb-reset' )
+				! e.target?.parentElement?.closest( '.srfm-popover-color' ) &&
+				! e.target?.parentElement?.closest( '.srfm-reset' )
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState =
-					getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const srfmSettingState =
+					getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 				const data = {
-					...uagSettingState,
+					...srfmSettingState,
 					[ blockName ]: {
-						...uagSettingState?.[ blockName ],
+						...srfmSettingState?.[ blockName ],
 						selectedSetting: false,
 					},
 				};
 
-				const uagLocalStorage = getUAGEditorStateLocalStorage();
-				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem(
-						'uagSettingState',
+				const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+				if ( srfmLocalStorage ) {
+					srfmLocalStorage.setItem(
+						'srfmSettingState',
 						JSON.stringify( data )
 					);
 				}
@@ -246,31 +246,31 @@ const BoxShadowControl = ( props ) => {
 
 	if ( showAdvancedControls ) {
 		advancedControls = (
-			<div className="uagb-box-shadow-advanced spectra-control-popup">
+			<div className="srfm-box-shadow-advanced srfm-control-popup">
 				{ overallControls }
 			</div>
 		);
 	}
 
 	const boxShadowAdvancedControls = (
-		<div className="spectra-control-popup__options--action-wrapper">
-			<span className="uag-control-label">
+		<div className="srfm-control-popup__options--action-wrapper">
+			<span className="srfm-control-label">
 				{ label }
 				{ isBoxShadowUpdated && (
-					<div className="spectra__change-indicator--dot-right" />
+					<div className="srfm__change-indicator--dot-right" />
 				) }
 			</span>
 			<Button
-				className="uag-box-shadow-button spectra-control-popup__options--action-button"
+				className="srfm-box-shadow-button srfm-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
 					const allPopups = document.querySelectorAll(
-						'.spectra-control-popup__options'
+						'.srfm-control-popup__options'
 					);
 					if ( allPopups && 0 < allPopups.length ) {
 						for ( let i = 0; i < allPopups.length; i++ ) {
 							const popupButton = allPopups[ i ]?.querySelector(
-								'.spectra-control-popup__options.active .spectra-control-popup__options--action-button'
+								'.srfm-control-popup__options.active .srfm-control-popup__options--action-button'
 							);
 							popupButton?.click();
 						}
@@ -278,29 +278,29 @@ const BoxShadowControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState =
-						getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const srfmSettingState =
+						getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 					let data = {
-						...uagSettingState,
+						...srfmSettingState,
 						[ blockName ]: {
-							...uagSettingState?.[ blockName ],
-							selectedSetting: '.uag-box-shadow-options',
+							...srfmSettingState?.[ blockName ],
+							selectedSetting: '.srfm-box-shadow-options',
 						},
 					};
 
 					if ( showAdvancedControls ) {
 						data = {
-							...uagSettingState,
+							...srfmSettingState,
 							[ blockName ]: {
-								...uagSettingState?.[ blockName ],
+								...srfmSettingState?.[ blockName ],
 								selectedSetting: false,
 							},
 						};
 					}
-					const uagLocalStorage = getUAGEditorStateLocalStorage();
-					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem(
-							'uagSettingState',
+					const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+					if ( srfmLocalStorage ) {
+						srfmLocalStorage.setItem(
+							'srfmSettingState',
 							JSON.stringify( data )
 						);
 					}
@@ -313,12 +313,12 @@ const BoxShadowControl = ( props ) => {
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -328,11 +328,11 @@ const BoxShadowControl = ( props ) => {
 			{ controlBeforeDomElement }
 			{ popup ? (
 				<div
-					className={ ` components-base-control uag-box-shadow-options spectra-control-popup__options popup-${ blockId } ${ activeClass }` }
+					className={ ` components-base-control srfm-box-shadow-options srfm-control-popup__options popup-${ blockId } ${ activeClass }` }
 				>
 					{ boxShadowAdvancedControls }
 					{ showAdvancedControls && advancedControls }
-					<UAGHelpText text={ help } />
+					<SRFMHelpText text={ help } />
 				</div>
 			) : (
 				<>{ overallControls }</>

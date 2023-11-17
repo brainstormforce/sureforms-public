@@ -6,7 +6,7 @@ import { Button, Tooltip, Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGReset = ( props ) => {
+const SRFMReset = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -22,7 +22,7 @@ const UAGReset = ( props ) => {
 	}, [ blockNameForHook ] );
 
 	const allBlocksAttributes = applyFilters(
-		'uagb.blocksAttributes',
+		'srfm.blocksAttributes',
 		blocksAttributes
 	);
 
@@ -113,12 +113,12 @@ const UAGReset = ( props ) => {
 
 	const controlName = 'reset'; // there is no label props that's why keep hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -130,7 +130,7 @@ const UAGReset = ( props ) => {
 		>
 			{ controlBeforeDomElement }
 			<Button
-				className="uagb-reset"
+				className="srfm-reset"
 				isSecondary
 				isSmall
 				onClick={ ( e ) => {
@@ -146,4 +146,4 @@ const UAGReset = ( props ) => {
 	);
 };
 
-export default UAGReset;
+export default SRFMReset;

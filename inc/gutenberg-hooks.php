@@ -74,10 +74,7 @@ class Gutenberg_Hooks {
 				'sureforms/password',
 				'sureforms/date-time-picker',
 				'sureforms/number-slider',
-				'core/columns',
-				'core/image',
-				'core/heading',
-				'core/paragraph',
+				'sureforms/form',
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
@@ -187,11 +184,37 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
-				'plugin_url'  => SUREFORMS_URL,
-				'admin_email' => get_option( 'admin_email' ),
-				'post_url'    => admin_url( 'post.php' ),
+				'plugin_url'     => SUREFORMS_URL,
+				'admin_email'    => get_option( 'admin_email' ),
+				'post_url'       => admin_url( 'post.php' ),
+				'current_screen' => get_current_screen(),
 
 			]
+		);
+
+		// Localizing the field preview image links.
+		wp_localize_script(
+			'sureforms-' . $all_screen_blocks,
+			'fieldsPreview',
+			array(
+				'input_preview'         => SUREFORMS_URL . 'images/field-previews/input.svg',
+				'email_preview'         => SUREFORMS_URL . 'images/field-previews/email.svg',
+				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
+				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
+				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
+				'switch_preview'        => SUREFORMS_URL . 'images/field-previews/switch.svg',
+				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
+				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
+				'rating_preview'        => SUREFORMS_URL . 'images/field-previews/rating.svg',
+				'upload_preview'        => SUREFORMS_URL . 'images/field-previews/upload.svg',
+				'phone_preview'         => SUREFORMS_URL . 'images/field-previews/phone.svg',
+				'dropdown_preview'      => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
+				'address_preview'       => SUREFORMS_URL . 'images/field-previews/address.svg',
+				'password_preview'      => SUREFORMS_URL . 'images/field-previews/password.svg',
+				'date_time_preview'     => SUREFORMS_URL . 'images/field-previews/date-time.svg',
+				'number_slider_preview' => SUREFORMS_URL . 'images/field-previews/number-slider.svg',
+				'sureforms_preview'     => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+			)
 		);
 
 		$formats = array();
@@ -208,7 +231,7 @@ class Gutenberg_Hooks {
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
-			'uagb_blocks_info',
+			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
 			]

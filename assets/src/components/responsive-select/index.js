@@ -13,7 +13,7 @@ import ResponsiveToggle from '../responsive-toggle';
 import { select } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import styles from './editor.lazy.scss';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const ResponsiveSelectControl = ( props ) => {
@@ -72,12 +72,12 @@ const ResponsiveSelectControl = ( props ) => {
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -85,11 +85,11 @@ const ResponsiveSelectControl = ( props ) => {
 	return (
 		<div
 			ref={ panelRef }
-			className="uagb-responsive-select-control components-base-control"
+			className="srfm-responsive-select-control components-base-control"
 		>
 			{ controlBeforeDomElement }
-			<div className="uagb-size-type-field-tabs">
-				<div className="uagb-control__header">
+			<div className="srfm-size-type-field-tabs">
+				<div className="srfm-control__header">
 					<ResponsiveToggle
 						label={ label }
 						responsive={ responsive }
@@ -97,7 +97,7 @@ const ResponsiveSelectControl = ( props ) => {
 				</div>
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
 			</div>
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 			{ controlAfterDomElement }
 		</div>
 	);

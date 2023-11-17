@@ -3,6 +3,7 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
+const webpack = require( 'webpack' );
 
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
@@ -18,7 +19,6 @@ const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 
 module.exports = {
 	...defaultConfig,
-	mode: 'production',
 	optimization: {
 		usedExports: true,
 	},
@@ -35,6 +35,9 @@ module.exports = {
 				},
 			],
 		} ),
+		new webpack.optimize.LimitChunkCountPlugin( {
+			maxChunks: 1,
+		} ),
 	],
 	entry: {
 		formEditor: path.resolve(
@@ -42,10 +45,6 @@ module.exports = {
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		tailwindElements: path.resolve(
-			__dirname,
-			'assets/src/public/scripts/elements.js'
-		),
 		form_archive_styles: path.resolve(
 			__dirname,
 			'assets/src/admin/styles/form-archive-styles.scss'
@@ -53,6 +52,14 @@ module.exports = {
 		sureforms_frontend_styles: path.resolve(
 			__dirname,
 			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
+		),
+		srfm_theme_styles: path.resolve(
+			__dirname,
+			'assets/src/public/styles/srfm_theme_styles.scss'
+		),
+		flatpickr_css: path.resolve(
+			__dirname,
+			'assets/src/public/styles/dependencies/flatpickr.min.css'
 		),
 		tailwind_frontend_styles: path.resolve(
 			__dirname,
@@ -74,6 +81,10 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/single-form-settings/header-styles.scss'
 		),
+		flatpickr_js: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/dependencies/flatpickr.min.js'
+		),
 		page_header: path.resolve(
 			__dirname,
 			'assets/src/admin/components/PageHeader.js'
@@ -89,7 +100,7 @@ module.exports = {
 			...defaultConfig.resolve.alias,
 			'@Admin': path.resolve( __dirname, 'assets/src/admin/' ),
 			'@Blocks': path.resolve( __dirname, 'assets/src/blocks/' ),
-			'@Controls': path.resolve( __dirname, 'assets/src/uagb-controls/' ),
+			'@Controls': path.resolve( __dirname, 'assets/src/srfm-controls/' ),
 			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
 			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
 			'@Attributes': path.resolve(
@@ -121,7 +132,6 @@ module.exports = {
 	},
 	output: {
 		...defaultConfig.output,
-		filename: '[name].js',
 		path: path.resolve( __dirname, 'assets/build' ),
 	},
 };

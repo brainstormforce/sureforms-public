@@ -91,8 +91,8 @@ export default function RangeTypographyControl( props ) {
 	);
 
 	return (
-		<div className="uagb-size-type-field-tabs">
-			<div className="uagb-responsive-control-inner">
+		<div className="srfm-size-type-field-tabs">
+			<div className="srfm-responsive-control-inner">
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
 			</div>
 		</div>

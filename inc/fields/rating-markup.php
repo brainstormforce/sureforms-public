@@ -119,7 +119,7 @@ class Rating_Markup extends Base {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="h-8 w-8"
+                            class="srfm-h-8 srfm-w-8"
                             >
                             <path
                             stroke-linecap="round"
@@ -134,7 +134,7 @@ class Rating_Markup extends Base {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="h-8 w-8" >
+                            class="srfm-h-8 srfm-w-8" >
                             <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -149,7 +149,7 @@ class Rating_Markup extends Base {
                                 fill="none"
                                 stroke-width="1.5"
                                 stroke="currentColor"
-                                class="h-8 w-8"
+                                class="srfm-h-8 srfm-w-8"
                                 x="0px" y="0px" 
                                 viewBox="0 0 122.88 122.88" 
                                 xml:space="preserve">
@@ -166,7 +166,7 @@ class Rating_Markup extends Base {
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
                             stroke="currentColor"
-                            class="h-8 w-8"
+                            class="srfm-h-8 srfm-w-8"
                             >
                             <path
                             stroke-linecap="round"
@@ -181,15 +181,13 @@ class Rating_Markup extends Base {
                 ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
             <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="srfm-classic-rating-field-' . esc_attr( $block_id ) . '" class="srfm-rating-field-result"/>
-            <ul class="srfm-classic-event m-0 mt-2 flex list-none gap-3 p-0" data-te-rating-init>';
-
+            <ul class="srfm-classic-event srfm-rating-icon-wrapper srfm-mt-2 srfm-ml-0 srfm-mb-0 srfm-flex srfm-flex-wrap srfm-list-none srfm-gap-3 srfm-p-0">';
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
-                <li class="flex items-center flex-col-reverse" >
+                <li class="srfm-flex srfm-items-center srfm-flex-col-reverse" >
                 <span class="srfm-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
                     <span
-                    class="srfm-text-primary"
-                    data-te-rating-icon-ref>
+                    class="srfm-text-primary srfm-rating-icon srfm-cursor-pointer" data-value="' . esc_attr( strval( $i + 1 ) ) . '">
                     ' . $svg . ' 
                     </span>
                 </li>';
