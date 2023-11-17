@@ -5,6 +5,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import apiFetch from '@wordpress/api-fetch';
 
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -53,10 +54,13 @@ function Settings( props ) {
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					'/wp-json/sureforms/v1/srfm-settings'
-				);
-				const data = await response.json();
+				const data = await apiFetch( {
+					path: 'sureforms/v1/srfm-settings',
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+					},
+				} );
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
