@@ -122,12 +122,12 @@ const ResponsiveSlider = ( props ) => {
 
 	const controlName = getIdFromString( props.label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -135,8 +135,8 @@ const ResponsiveSlider = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-responsive-range">
-				<div className="uagb-responsive-control-inner">
+			<div className="srfm-responsive-range">
+				<div className="srfm-responsive-control-inner">
 					{ output[ deviceType ]
 						? output[ deviceType ]
 						: output.Desktop }

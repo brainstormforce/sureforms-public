@@ -1,14 +1,14 @@
-.uagb-presets-radio-image-wrap {
+.srfm-presets-radio-image-wrap {
 	display: grid;
 	grid-column-gap: 16px;
 	grid-template-columns: repeat( 2, 1fr );
 	grid-row-gap: 14px;
 
-	.uag-presets-radio-input {
+	.srfm-presets-radio-input {
 		display: none;
 	}
 
-	.uag-presets-radio-input-label {
+	.srfm-presets-radio-input-label {
 		position: relative;
 		display: inline-block;
 	}
@@ -24,12 +24,12 @@
 		transition: background 0.08s ease, box-shadow 0.08s ease;
 	}
 
-	.uag-presets-radio-input:checked + .uag-presets-radio-input-label svg {
+	.srfm-presets-radio-input:checked + .srfm-presets-radio-input-label svg {
 		background-color: #007cba;
 		border: 1px solid #00608f;
 	}
 
-	.uag-presets-radio-image-clickable {
+	.srfm-presets-radio-image-clickable {
 		position: absolute;
 		top: 0;
 		bottom: 0;
@@ -40,16 +40,16 @@
 	}
 }
 
-.uagb-inspector-tab .components-panel__body .uag-presets-label {
+.srfm-inspector-tab .components-panel__body .srfm-presets-label {
 	line-height: 2.4;
 }
 
-.uagb-presets-label-reset-wrap {
+.srfm-presets-label-reset-wrap {
 	display: flex;
 	justify-content: space-between;
 }
 
-.uagb-presets-main-wrap {
+.srfm-presets-main-wrap {
 	&.border-none svg {
 		border: none;
 	}

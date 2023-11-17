@@ -36,7 +36,7 @@ function generateCSS(
 			if ( responsiveType === 'tablet' ) {
 				gen_styling_css +=
 					'@media only screen and (max-width: ' +
-					uagb_blocks_info.tablet_breakpoint +
+					srfm_blocks_info.tablet_breakpoint +
 					'px) {';
 				gen_styling_css += id;
 				gen_styling_css += selector + '{';
@@ -45,7 +45,7 @@ function generateCSS(
 			} else if ( responsiveType === 'mobile' ) {
 				gen_styling_css +=
 					'@media only screen and (max-width: ' +
-					uagb_blocks_info.mobile_breakpoint +
+					srfm_blocks_info.mobile_breakpoint +
 					'px) {';
 				gen_styling_css += id;
 				gen_styling_css += selector + '{';

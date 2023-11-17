@@ -11,6 +11,7 @@ namespace SureForms\Inc;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Email\Email_Template;
+use WP_REST_Server;
 
 /**
  * Sureforms Submit Class.
@@ -19,6 +20,13 @@ use SureForms\Inc\Email\Email_Template;
  */
 class Sureforms_Submit {
 	use Get_Instance;
+
+	/**
+	 * Namespace.
+	 *
+	 * @var string
+	 */
+	protected $namespace = 'sureforms/v1';
 
 	/**
 	 * Constructor
@@ -39,28 +47,28 @@ class Sureforms_Submit {
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/submit-form',
 			array(
-				'methods'             => 'POST',
+				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
 				'permission_callback' => '__return_true',
 			)
 		);
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/srfm-settings',
 			array(
-				'methods'             => 'POST',
+				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
 				'permission_callback' => '__return_true',
 			)
 		);
 		register_rest_route(
-			'sureforms/v1',
+			$this->namespace,
 			'/srfm-settings',
 			array(
-				'methods'             => 'GET',
+				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
 				'permission_callback' => '__return_true',
 			)
@@ -71,9 +79,8 @@ class Sureforms_Submit {
 	 * Handle Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 *
 	 * @since 0.0.1
-	 * @return array<int, string>|\WP_Error Array containing the response data or error.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
 		$form_data = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
@@ -142,12 +149,12 @@ class Sureforms_Submit {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data );
+					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data );
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 			}
 		} elseif ( ! isset( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -171,24 +178,24 @@ class Sureforms_Submit {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
-					return $this->handle_form_entry( $form_data );
+					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
 					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
 				}
 			} else {
-				return $this->handle_form_entry( $form_data );
+				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 			}
 		} else {
 			return new \WP_Error( 'spam_detected', 'Spam Detected', array( 'status' => 403 ) );
 		}
+
 	}
 
 	/**
 	 * Handle Settings Form Submission
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 *
-	 * @return void|\WP_Error Array containing the response data or error.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 0.0.1
 	 */
 	public function handle_settings_form_submission( $request ) {
@@ -216,6 +223,8 @@ class Sureforms_Submit {
 				}
 			}
 		}
+
+		return rest_ensure_response( 'success' );
 	}
 
 	/**

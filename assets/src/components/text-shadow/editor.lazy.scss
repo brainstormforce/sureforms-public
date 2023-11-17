@@ -1,15 +1,15 @@
 /** Text Shadow Popup CSS*/
-.uag-text-shadow-options {
+.srfm-text-shadow-options {
 	margin-bottom: 24px;
 	position: relative;
 
-	.uag-text-shadow-option-actions {
+	.srfm-text-shadow-option-actions {
 		display: flex;
 		justify-content: space-between;
 		margin: 0;
 		align-items: center;
 
-		.uag-text-shadow-button {
+		.srfm-text-shadow-button {
 			margin: 0;
 			height: 28px;
 			width: 28px;
@@ -29,7 +29,7 @@
 		}
 	}
 
-	.uagb-text-shadow-advanced {
+	.srfm-text-shadow-advanced {
 		border: 1px solid #d3d3d3;
 		border-radius: 3px;
 		padding: 15px;
@@ -73,11 +73,11 @@
 			margin-left: -6px;
 		}
 
-		.uagb-shadow-color,
-		.uagb-horizontal-wrap,
-		.uagb-vertical-wrap,
-		.uagb-blur-wrap,
-		.uagb-spread-wrap {
+		.srfm-shadow-color,
+		.srfm-horizontal-wrap,
+		.srfm-vertical-wrap,
+		.srfm-blur-wrap,
+		.srfm-spread-wrap {
 			margin-bottom: 16px;
 		}
 	}

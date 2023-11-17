@@ -29,7 +29,7 @@ const defaultProps = {
 	onChange: null,
 };
 
-export default function UAGSelectControl( {
+export default function SRFMSelectControl( {
 	layout,
 	label,
 	options,
@@ -59,28 +59,28 @@ export default function UAGSelectControl( {
 
 	// Filter for the control that should appear before this control.
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 
 	// Filter for the control that should appear after this control.
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
 
 	// Filter for all the options of this control.
 	const allOptions = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.options`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.options`,
 		options,
 		blockNameForHook
 	);
 
 	// Filter for all the children of this control.
 	const allChildren = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.children`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.children`,
 		children,
 		blockNameForHook
 	);
@@ -88,7 +88,7 @@ export default function UAGSelectControl( {
 	return (
 		<div
 			ref={ panelRef }
-			className={ `uagb-select-control uagb-select-control--layout-${ layout }` }
+			className={ `srfm-select-control srfm-select-control--layout-${ layout }` }
 		>
 			{ controlBeforeDomElement }
 			{ children ? (
@@ -122,5 +122,5 @@ export default function UAGSelectControl( {
 	);
 }
 
-UAGSelectControl.propTypes = propTypes;
-UAGSelectControl.defaultProps = defaultProps;
+SRFMSelectControl.propTypes = propTypes;
+SRFMSelectControl.defaultProps = defaultProps;
