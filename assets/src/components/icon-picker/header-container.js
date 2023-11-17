@@ -20,10 +20,10 @@ const HeaderContainer = ( props ) => {
 
 	// Search input container.
 	return (
-		<section className="uagb-ip-header">
+		<section className="srfm-ip-header">
 			<h2>{ __( 'Icon Library', 'sureforms' ) }</h2>
-			<div className="uagb-ip-search-container">
-				<div className="uagb-ip-search-bar">
+			<div className="srfm-ip-search-container">
+				<div className="srfm-ip-search-bar">
 					{ removeTextIcon() }
 					<input
 						type="text"

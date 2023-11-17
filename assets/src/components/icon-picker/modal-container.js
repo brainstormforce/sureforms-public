@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from '@wordpress/element';
 import renderSVG from '@Controls/renderIcon';
 import { __ } from '@wordpress/i18n';
 import { Grid } from 'react-virtualized';
-import { uagbClassNames } from '@Utils/Helpers';
+import { srfmClassNames } from '@Utils/Helpers';
 
 import chunk from './chunks';
 import HeaderContainer from './header-container';
@@ -11,7 +11,7 @@ import HeaderContainer from './header-container';
 const ModalContainer = ( props ) => {
 	const { value, onChange, closeModal, defaultIcons, iconCategoryList } =
 		props;
-	const defaultIconsWithKeys = { ...uagb_blocks_info.uagb_svg_icons };
+	const defaultIconsWithKeys = { ...srfm_blocks_info.srfm_svg_icons };
 	const NUMBER_OF_COLUMN = 8;
 
 	const setIconListWithChunks = ( icons ) => chunk( icons, NUMBER_OF_COLUMN );
@@ -109,8 +109,8 @@ const ModalContainer = ( props ) => {
 	const renderIconList = () => {
 		if ( ! iconList.length ) {
 			return (
-				<div className="uagb-ip-icons icon-not-found">
-					<div className="uagb-icon-not-available">
+				<div className="srfm-ip-icons icon-not-found">
+					<div className="srfm-icon-not-available">
 						<span>{ __( 'No Icons Found', 'sureforms' ) }</span>
 					</div>
 				</div>
@@ -133,8 +133,8 @@ const ModalContainer = ( props ) => {
 				return null;
 			}
 
-			const iconClass = uagbClassNames( [
-				'uagb-icon-item',
+			const iconClass = srfmClassNames( [
+				'srfm-icon-item',
 				value === currentIcon && 'default',
 				currentIcon === insertIcon && 'selected',
 			] );
@@ -162,7 +162,7 @@ const ModalContainer = ( props ) => {
 		}
 		const heightAndWidth = iconContainerWidth / NUMBER_OF_COLUMN;
 		return (
-			<div className="uagb-ip-icons">
+			<div className="srfm-ip-icons">
 				<Grid
 					cellRenderer={ cellRenderer }
 					columnCount={ iconList[ 0 ].length }
@@ -189,7 +189,7 @@ const ModalContainer = ( props ) => {
 
 	// List of categories.
 	const listOfCategory = () => (
-		<div className="uagb-ip-categories-list">
+		<div className="srfm-ip-categories-list">
 			<div
 				key="all"
 				className={ 'all' === categoryListName ? 'selected' : null }
@@ -223,9 +223,9 @@ const ModalContainer = ( props ) => {
 	// Modal component.
 	return (
 		<Modal
-			className="uagb-ip-modal-wrapper"
+			className="srfm-ip-modal-wrapper"
 			onRequestClose={ closeModal }
-			overlayClassName="uagb-ip-modal-wrapper-overlay"
+			overlayClassName="srfm-ip-modal-wrapper-overlay"
 			shouldCloseOnClickOutside={ false }
 			closeButtonLabel={ __( 'Close', 'sureforms' ) }
 		>
@@ -240,11 +240,11 @@ const ModalContainer = ( props ) => {
 				inputElement={ inputElement }
 			/>
 			{ /* middle  */ }
-			<section className="uagb-ip-lr-container">
-				<div className="uagb-ip-left">{ listOfCategory() }</div>
-				<div className="uagb-ip-right">
+			<section className="srfm-ip-lr-container">
+				<div className="srfm-ip-left">{ listOfCategory() }</div>
+				<div className="srfm-ip-right">
 					<div
-						className="uagb-ip-modal-container"
+						className="srfm-ip-modal-container"
 						ref={ iconContainerRef }
 					>
 						{ renderIconList() }
@@ -252,7 +252,7 @@ const ModalContainer = ( props ) => {
 				</div>
 			</section>
 			{ /* Footer */ }
-			<section className="uagb-ip-footer">
+			<section className="srfm-ip-footer">
 				<button
 					className={ '' === insertIcon ? 'disable' : null }
 					onClick={

@@ -1,17 +1,17 @@
 @import "../../styles/variables";
 
-.uagb-responsive-select-control {
-	.uagb-size-type-field-tabs {
+.srfm-responsive-select-control {
+	.srfm-size-type-field-tabs {
 		align-items: center;
 		display: grid;
 		grid-template-columns: 50% 50%;
 
-		.uagb-control__header {
+		.srfm-control__header {
 			margin-bottom: 0;
 		}
 	}
 }
 
-.components-base-control .components-base-control.uagb-responsive-select-control {
-	margin-bottom: $spectra-control-vertical-gap !important;
+.components-base-control .components-base-control.srfm-responsive-select-control {
+	margin-bottom: $srfm-control-vertical-gap !important;
 }

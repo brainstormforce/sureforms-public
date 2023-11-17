@@ -2,11 +2,11 @@
 
 @import "../../styles/variables";
 
-.uag-control-tabs {
-	margin: 0 ( -$spectra-panel-body-padding );
-	padding: 0 $spectra-panel-body-padding;
+.srfm-control-tabs {
+	margin: 0 ( -$srfm-panel-body-padding );
+	padding: 0 $srfm-panel-body-padding;
 
-	&.uag-control-tabs-three-tabs {
+	&.srfm-control-tabs-three-tabs {
 		.components-tab-panel__tabs {
 			& > .components-button {
 				width: 31.3%;
@@ -16,26 +16,26 @@
 
 	& > .components-tab-panel__tabs {
 		justify-content: space-between;
-		margin: 0 ( -$spectra-panel-body-padding ) $spectra-control-vertical-gap;
-		padding: 0 $spectra-panel-body-padding;
-		border-bottom: 1px solid $spectra-color-border;
+		margin: 0 ( -$srfm-panel-body-padding ) $srfm-control-vertical-gap;
+		padding: 0 $srfm-panel-body-padding;
+		border-bottom: 1px solid $srfm-color-border;
 
 		& > .components-button {
 			width: 47%;
 			text-align: center;
 			justify-content: center;
-			border: 1px solid $spectra-color-border;
-			border-radius: $spectra-control-border-radius $spectra-control-border-radius 0 0;
-			color: $spectra-color-body;
-			background-color: $spectra-color-light-background;
+			border: 1px solid $srfm-color-border;
+			border-radius: $srfm-control-border-radius $srfm-control-border-radius 0 0;
+			color: $srfm-color-body;
+			background-color: $srfm-color-light-background;
 			max-height: 30px;
-			font-size: $spectra-font-size-button;
+			font-size: $srfm-font-size-button;
 			border-bottom: 0;
 			margin-bottom: -1px;
 
 			&.active-tab {
-				color: $spectra-color-primary;
-				background: $spectra-color-plain-background;
+				color: $srfm-color-primary;
+				background: $srfm-color-plain-background;
 			}
 
 			&:focus:not( :disabled ) {
@@ -45,7 +45,7 @@
 	}
 
 	& .components-base-control {
-		margin-bottom: $spectra-control-vertical-gap;
+		margin-bottom: $srfm-control-vertical-gap;
 
 		.components-base-control,
 		.components-base-control__field {

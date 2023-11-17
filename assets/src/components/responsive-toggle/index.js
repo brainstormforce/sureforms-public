@@ -6,9 +6,9 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { dispatch, select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
 const ResponsiveToggle = ( props ) => {
@@ -71,20 +71,20 @@ const ResponsiveToggle = ( props ) => {
 			name: __( 'Desktop', 'sureforms' ),
 			staticName: 'Desktop',
 			title: devicesSvgs.desktop,
-			itemClass: 'uagb-desktop-tab uagb-responsive-tabs',
+			itemClass: 'srfm-desktop-tab srfm-responsive-tabs',
 		},
 		{
 			name: __( 'Tablet', 'sureforms' ),
 			staticName: 'Tablet',
 			title: devicesSvgs.tablet,
-			itemClass: 'uagb-tablet-tab uagb-responsive-tabs',
+			itemClass: 'srfm-tablet-tab srfm-responsive-tabs',
 		},
 		{
 			name: __( 'Mobile', 'sureforms' ),
 			staticName: 'Mobile',
 			key: 'mobile',
 			title: devicesSvgs.mobile,
-			itemClass: 'uagb-mobile-tab uagb-responsive-tabs',
+			itemClass: 'srfm-mobile-tab srfm-responsive-tabs',
 		},
 	];
 
@@ -100,22 +100,26 @@ const ResponsiveToggle = ( props ) => {
 
 		if ( 'svg' === eventTriggerElement.tagName ) {
 			eventTriggerElement = eventTriggerElement.closest(
-				'.uag-responsive-common-button'
+				'.srfm-responsive-common-button'
 			);
 		}
-		if ( eventTriggerElement.closest( '.uag-typography-options.active' ) ) {
-			settingsPopup = '.uag-typography-options';
+		if (
+			eventTriggerElement.closest( '.srfm-typography-options.active' )
+		) {
+			settingsPopup = '.srfm-typography-options';
 		}
-		if ( eventTriggerElement.closest( '.uag-box-shadow-options.active' ) ) {
-			settingsPopup = '.uag-box-shadow-options';
+		if (
+			eventTriggerElement.closest( '.srfm-box-shadow-options.active' )
+		) {
+			settingsPopup = '.srfm-box-shadow-options';
 		}
 
 		const blockName = getSelectedBlock()?.name;
-		const uagSettingState =
-			getUAGEditorStateLocalStorage( 'uagSettingState' );
+		const srfmSettingState =
+			getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 		const inspectorTab = eventTriggerElement.closest(
-			'.uagb-inspector-tab'
+			'.srfm-inspector-tab'
 		);
 		const panelBody = eventTriggerElement.closest(
 			'.components-panel__body.is-opened'
@@ -124,22 +128,22 @@ const ResponsiveToggle = ( props ) => {
 
 		if ( panelBody.classList && 0 !== panelBody.classList ) {
 			panelBody.classList.forEach( ( className ) => {
-				if ( className.includes( 'uag-advance-panel-body' ) ) {
+				if ( className.includes( 'srfm-advance-panel-body' ) ) {
 					panelBodyClass = className;
 				}
 			} );
 		}
 
 		let inspectorTabName = 'style';
-		if ( inspectorTab.classList.contains( 'uagb-tab-content-general' ) ) {
+		if ( inspectorTab.classList.contains( 'srfm-tab-content-general' ) ) {
 			inspectorTabName = 'general';
 		}
-		if ( inspectorTab.classList.contains( 'uagb-tab-content-advance' ) ) {
+		if ( inspectorTab.classList.contains( 'srfm-tab-content-advance' ) ) {
 			inspectorTabName = 'advance';
 		}
 
 		const data = {
-			...uagSettingState,
+			...srfmSettingState,
 			[ blockName ]: {
 				selectedTab: inspectorTabName,
 				selectedPanel: panelBodyClass,
@@ -147,10 +151,10 @@ const ResponsiveToggle = ( props ) => {
 			},
 		};
 
-		const uagLocalStorage = getUAGEditorStateLocalStorage();
-		if ( uagLocalStorage ) {
-			uagLocalStorage.setItem(
-				'uagSettingState',
+		const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+		if ( srfmLocalStorage ) {
+			srfmLocalStorage.setItem(
+				'srfmSettingState',
 				JSON.stringify( data )
 			);
 		}
@@ -162,25 +166,25 @@ const ResponsiveToggle = ( props ) => {
 	const controlName = getIdFromString( props.label );
 
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
 
 	return (
-		<div ref={ panelRef } className="uag-responsive-label-wrap">
+		<div ref={ panelRef } className="srfm-responsive-label-wrap">
 			{ controlBeforeDomElement }
 
-			{ label && <span className="uag-control-label">{ label }</span> }
+			{ label && <span className="srfm-control-label">{ label }</span> }
 			{ ! displayResponsive && responsive && (
 				<Button
-					key="uag-responsive-common-button"
-					className="uag-responsive-common-button"
+					key="srfm-responsive-common-button"
+					className="srfm-responsive-common-button"
 					onClick={ commonResponsiveHandler }
 				>
 					{ devicesSvgs[ deviceType.toLowerCase() ] }
@@ -188,7 +192,7 @@ const ResponsiveToggle = ( props ) => {
 			) }
 			{ displayResponsive && responsive && (
 				<ButtonGroup
-					className="uagb-range-control-responsive components-tab-panel__tabs"
+					className="srfm-range-control-responsive components-tab-panel__tabs"
 					aria-label={ __( 'Device', 'sureforms' ) }
 				>
 					{ devices.map(
@@ -220,7 +224,7 @@ const ResponsiveToggle = ( props ) => {
 					) }
 				</ButtonGroup>
 			) }
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 			{ controlAfterDomElement }
 		</div>
 	);

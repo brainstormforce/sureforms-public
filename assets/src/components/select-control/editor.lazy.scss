@@ -1,18 +1,18 @@
 @import "../../styles/variables";
 
-.uagb-select-control {
+.srfm-select-control {
 	&--layout-inline {
 		.components-select-control {
 			align-items: center;
 			display: grid;
 			grid-template-columns: 50% 50%;
-			margin-bottom: $spectra-control-vertical-gap;
-			color: $spectra-color-body;
+			margin-bottom: $srfm-control-vertical-gap;
+			color: $srfm-color-body;
 			gap: 0;
 		}
 
-		.uagb-control__header,
-		.uag-control-label,
+		.srfm-control__header,
+		.srfm-control-label,
 		.components-select-control label.components-input-control__label {
 			margin-bottom: 0;
 		}

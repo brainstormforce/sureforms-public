@@ -7,12 +7,12 @@ import { useState } from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMNumberControl from '@Components/number-control';
 import Range from '@Components/range/Range.js';
-import UAGNumberControl from '@Components/number-control';
 import widthOptions from '../width-options.json';
 
 export default ( { attributes, setAttributes, sureforms_keys } ) => {
@@ -25,8 +25,8 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 				tabs={ [ 'general', 'advance' ] }
 				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.general }>
-					<UAGAdvancedPanelBody
+				<InspectorTab { ...SRFMTabs.general }>
+					<SRFMAdvancedPanelBody
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
@@ -39,7 +39,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 							}
 							__nextHasNoMarginBottom
 						/>
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }
 							data={ {
@@ -50,7 +50,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<UAGNumberControl
+						<SRFMNumberControl
 							label={ __( 'Minimum Value', 'sureforms' ) }
 							value={ min }
 							data={ {
@@ -70,7 +70,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 							displayUnit={ false }
 							showControlHeader={ false }
 						/>
-						<UAGNumberControl
+						<SRFMNumberControl
 							label={ __( 'Maximum Value', 'sureforms' ) }
 							value={ max }
 							data={ {
@@ -123,7 +123,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 							''
 						) : (
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __(
 									'Value Display label',
 									'sureforms'
@@ -138,7 +138,7 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								}
 							/>
 						) }
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
 							data={ {
@@ -149,9 +149,9 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 								setAttributes( { help: value } )
 							}
 						/>
-					</UAGAdvancedPanelBody>
+					</SRFMAdvancedPanelBody>
 				</InspectorTab>
-				<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);

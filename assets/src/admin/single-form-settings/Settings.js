@@ -3,8 +3,9 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import apiFetch from '@wordpress/api-fetch';
 
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -53,10 +54,13 @@ function Settings( props ) {
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(
-					'/wp-json/sureforms/v1/srfm-settings'
-				);
-				const data = await response.json();
+				const data = await apiFetch( {
+					path: 'sureforms/v1/srfm-settings',
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+					},
+				} );
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
@@ -92,11 +96,11 @@ function Settings( props ) {
 
 	return (
 		<>
-			<UAGAdvancedPanelBody
+			<SRFMAdvancedPanelBody
 				title={ __( 'Notification Settings', 'sureforms' ) }
 				initialOpen={ true }
 			>
-				<UAGTextControl
+				<SRFMTextControl
 					label={ __(
 						'Customize the email address on which you want to send the notifications',
 						'sureforms'
@@ -137,8 +141,8 @@ function Settings( props ) {
 						'sureforms'
 					) }
 				</p>
-			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -162,7 +166,7 @@ function Settings( props ) {
 				</p>
 				{ 'message' === sureforms_keys._srfm_submit_type ? (
 					<>
-						<UAGTextControl
+						<SRFMTextControl
 							data={ {
 								value: sureforms_keys._srfm_thankyou_message_title,
 								label: '_srfm_thankyou_message_title',
@@ -184,7 +188,7 @@ function Settings( props ) {
 							isFormSpecific={ true }
 						/>
 						<p className="components-base-control__help" />
-						<UAGTextControl
+						<SRFMTextControl
 							variant="textarea"
 							data={ {
 								value: sureforms_keys._srfm_thankyou_message,
@@ -206,7 +210,7 @@ function Settings( props ) {
 						/>
 					</>
 				) : (
-					<UAGTextControl
+					<SRFMTextControl
 						label={ __(
 							'Customize the Thankyou page URL',
 							'sureforms'
@@ -226,8 +230,8 @@ function Settings( props ) {
 						isFormSpecific={ true }
 					/>
 				) }
-			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -312,7 +316,7 @@ function Settings( props ) {
 						'sureforms'
 					) }
 				</p>
-			</UAGAdvancedPanelBody>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 }

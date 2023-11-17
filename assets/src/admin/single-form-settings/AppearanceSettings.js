@@ -2,9 +2,9 @@ import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import UAGMediaPicker from '@Components/image';
+import SRFMMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -162,7 +162,7 @@ function AppearanceSettings( props ) {
 
 	return (
 		<>
-			<UAGAdvancedPanelBody
+			<SRFMAdvancedPanelBody
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
@@ -243,7 +243,7 @@ function AppearanceSettings( props ) {
 					isFormSpecific={ true }
 				/>
 				}
-				<UAGMediaPicker
+				<SRFMMediaPicker
 					label={ __( 'Background Image', 'sureforms' ) }
 					onSelectImage={ onSelectRestImage }
 					backgroundImage={ sureforms_keys._srfm_bg }
@@ -290,8 +290,8 @@ function AppearanceSettings( props ) {
 					}
 					isFormSpecific={ true }
 				/>
-			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -361,7 +361,7 @@ function AppearanceSettings( props ) {
 						}
 					} }
 				/>
-			</UAGAdvancedPanelBody>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 }

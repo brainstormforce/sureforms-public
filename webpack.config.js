@@ -100,7 +100,7 @@ module.exports = {
 			...defaultConfig.resolve.alias,
 			'@Admin': path.resolve( __dirname, 'assets/src/admin/' ),
 			'@Blocks': path.resolve( __dirname, 'assets/src/blocks/' ),
-			'@Controls': path.resolve( __dirname, 'assets/src/uagb-controls/' ),
+			'@Controls': path.resolve( __dirname, 'assets/src/srfm-controls/' ),
 			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
 			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
 			'@Attributes': path.resolve(

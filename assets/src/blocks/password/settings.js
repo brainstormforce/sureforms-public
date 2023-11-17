@@ -6,11 +6,11 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -29,8 +29,8 @@ export default ( { attributes, setAttributes } ) => {
 				tabs={ [ 'general', 'advance' ] }
 				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.general }>
-					<UAGAdvancedPanelBody
+				<InspectorTab { ...SRFMTabs.general }>
+					<SRFMAdvancedPanelBody
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
@@ -43,7 +43,7 @@ export default ( { attributes, setAttributes } ) => {
 							}
 							__nextHasNoMarginBottom
 						/>
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }
 							data={ {
@@ -54,7 +54,7 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { label: value } )
 							}
 						/>
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Placeholder', 'sureforms' ) }
 							value={ placeholder }
 							data={ {
@@ -73,7 +73,7 @@ export default ( { attributes, setAttributes } ) => {
 							}
 						/>
 						{ required && (
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Error message', 'sureforms' ) }
 								value={ errorMsg }
 								data={ {
@@ -95,7 +95,7 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { isConfirmPassword: checked } )
 							}
 						/>
-						<UAGTextControl
+						<SRFMTextControl
 							label={ __( 'Help', 'sureforms' ) }
 							value={ help }
 							data={ {
@@ -106,9 +106,9 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { help: value } )
 							}
 						/>
-					</UAGAdvancedPanelBody>
+					</SRFMAdvancedPanelBody>
 				</InspectorTab>
-				<InspectorTab { ...UAGTabs.style }></InspectorTab>
+				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);
