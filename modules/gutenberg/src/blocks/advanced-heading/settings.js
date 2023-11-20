@@ -19,8 +19,6 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import renderGBSSettings from '@Controls/renderGBSSettings';
-import styling from './styling';
 
 const Settings = ( props ) => {
 	const { attributes, deviceType, setAttributes } = props;
@@ -1262,7 +1260,6 @@ const Settings = ( props ) => {
 						{ spacingStylePanel() }
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
-						{ renderGBSSettings( styling, setAttributes, attributes ) }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

@@ -62,6 +62,9 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 					'uag_load_select_font_globally' => array(),
 					'font_awesome_5_polyfill'       => array(),
 					'spectra_custom_fonts'          => apply_filters( 'spectra_system_fonts', array() ),
+					'tablet_breakpoint'                       => SRFM_TABLET_BREAKPOINT,
+					'mobile_breakpoint'                       => SRFM_TABLET_BREAKPOINT,
+					'category'						=> 'sureforms'
 				)
 			);
 

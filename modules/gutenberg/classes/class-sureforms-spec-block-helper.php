@@ -174,7 +174,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 				'mobile'  => $m_selectors,
 			);
 
-			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .uagb-block-' . $id );
 		}
 
 		/**
@@ -524,7 +524,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'caption', '.wp-block-uagb-image .wp-block-uagb-image__figure figcaption', $combined_selectors );
 
 
-			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .uagb-block-' . $id );
 		}
 
 		/**
@@ -811,7 +811,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'subHead', ' .uagb-desc-text', $combined_selectors );
 			$combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .uagb-highlight', $combined_selectors );
 
-			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .uagb-block-' . $id );
 
 		}
 
@@ -1119,7 +1119,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			// // Submit Button.
 			// $combined_selectors = Sureforms_Spec_Gb_Helper::get_typography_css( $attr, 'submitButton', ' .wcf-optin-form .checkout.woocommerce-checkout .wcf-order-wrap #order_review .woocommerce-checkout-payment button#place_order', $combined_selectors );
 
-			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .cf-block-' . $id );
+			return Sureforms_Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .uagb-block-' . $id );
 		}
 
 		/**

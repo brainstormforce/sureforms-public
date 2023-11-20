@@ -61,5 +61,8 @@
 		"sass-loader": "^6.0.6",
 		"style-loader": "^2.0.0",
 		"webpack": "^4.46.0"
+	},
+	"volta": {
+		"node": "12.13.0"
 	}
 }

@@ -7,6 +7,7 @@ import attributes from './attributes';
 import UAGB_Block_Icons from '@Controls/block-icons';
 import { __ } from '@wordpress/i18n';
 import './style.scss';
+import save from './save';
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
@@ -40,9 +41,7 @@ registerBlockType( 'sureforms/image', {
 	attributes,
 	category: uagb_blocks_info.category,
 	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="image" /> : <Edit { ...props } /> ),
-	save() {
-		return null;
-	},
+	save,
 	__experimentalLabel: ( atts ) =>
 		applyFilters( 'uag_loop_data_source_label', __( 'Image', 'sureforms' ), atts ),
 	usesContext: [ 'postId', 'postType' ],

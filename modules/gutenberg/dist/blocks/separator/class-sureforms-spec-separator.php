@@ -68,297 +68,161 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				array(
 					'type'         => 'string',
 					'default'      => 'center',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'overall-alignment',
-					),
 				),
 				'separatorAlignTablet'           =>
 				array(
 					'type'         => 'string',
 					'default'      => 'center',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'overall-alignment-tablet',
-					),
 				),
 				'separatorAlignMobile'           =>
 				array(
 					'type'         => 'string',
 					'default'      => 'center',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'overall-alignment-mobile',
-					),
 				),
 				'separatorStyle'                 =>
 				array(
 					'type'         => 'string',
 					'default'      => 'solid',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-style',
-					),
 				),
 				'separatorWidth'                 =>
 				array(
 					'type'         => 'number',
 					'default'      => 100,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-width',
-					),
 				),
 				'separatorWidthTablet'           =>
 				array(
 					'type'         => 'number',
 					'default'      => 100,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-width-tablet',
-					),
 				),
 				'separatorWidthMobile'           =>
 				array(
 					'type'         => 'number',
 					'default'      => 100,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-width-mobile',
-					),
 				),
 				'separatorWidthType'             =>
 				array(
 					'type'         => 'string',
 					'default'      => '%',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-width-type',
-					),
 				),
 				'separatorBorderHeight'          =>
 				array(
 					'type'         => 'number',
 					'default'      => 3,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-height',
-					),
 				),
 				'separatorBorderHeightMobile'    =>
 				array(
 					'type'         => 'number',
 					'default'      => 3,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-height-mobile',
-					),
 				),
 				'separatorBorderHeightTablet'    =>
 				array(
 					'type'         => 'number',
 					'default'      => 3,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-height-tablet',
-					),
 				),
 				'separatorBorderHeightUnit'      =>
 				array(
 					'type'         => 'string',
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-thickness-unit',
-					),
 				),
 				'separatorSize'                  =>
 				array(
 					'type'         => 'number',
 					'default'      => 5,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-size',
-					),
 				),
 				'separatorSizeMobile'            =>
 				array(
 					'type'         => 'number',
 					'default'      => 5,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-size-Mobile',
-					),
 				),
 				'separatorSizeTablet'            =>
 				array(
 					'type'         => 'number',
 					'default'      => 5,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-size-Tablet',
-					),
 				),
 				'separatorSizeType'              =>
 				array(
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-size-type',
-					),
 				),
 				'separatorColor'                 =>
 				array(
 					'type'         => 'string',
 					'default'      => '#333',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-color',
-					),
 				),
 				'separatorHeight'                =>
 				array(
 					'type'         => 'number',
 					'default'      => 10,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-gap',
-					),
 				),
 				'separatorHeightMobile'          =>
 				array(
 					'type'         => 'number',
 					'default'      => 10,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-gap-mobile',
-					),
 				),
 				'separatorHeightTablet'          =>
 				array(
 					'type'         => 'number',
 					'default'      => 10,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-gap-tablet',
-					),
 				),
 				'separatorHeightType'            =>
 				array(
 					'type'         => 'string',
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-gap-unit',
-					),
 				),
 				'separatorBottomPadding'         =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-bottom-padding',
-					),
 				),
 				'separatorPaddingTopTablet'      =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-top-padding-tablet',
-					),
 				),
 				'separatorPaddingRightTablet'    =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-right-padding-tablet',
-					),
 				),
 				'separatorPaddingBottomTablet'   =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-bottom-padding-tablet',
-					),
 				),
 				'separatorPaddingLeftTablet'     =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-left-padding-tablet',
-					),
 				),
 				'separatorPaddingTopMobile'      =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-top-padding-mobile',
-					),
 				),
 				'separatorPaddingRightMobile'    =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-right-padding-mobile',
-					),
 				),
 				'separatorPaddingBottomMobile'   =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-bottom-padding-mobile',
-					),
 				),
 				'separatorPaddingLeftMobile'     =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-left-padding-mobile',
-					),
 				),
 				'separatorPaddingUnit'           =>
 				array(
 					'type'         => 'number',
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-padding-unit',
-					),
 				),
 				'separatorMobilePaddingUnit'     =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-padding-unit-mobile',
-					),
 					'default'      => 'px',
 				),
 				'separatorTabletPaddingUnit'     =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-padding-unit-tablet',
-					),
 					'default'      => 'px',
 				),
 				'separatorPaddingLink'           =>
 				array(
 					'type'         => 'boolean',
 					'default'      => true,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-padding-link',
-					),
 				),
 				'elementType'                    =>
 				array(
@@ -374,10 +238,6 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				array(
 					'type'         => 'string',
 					'default'      => 'h4',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'separator-text-tag',
-					),
 				),
 				'separatorIcon'                  =>
 				array(
@@ -388,37 +248,21 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				array(
 					'type'         => 'string',
 					'default'      => 'center',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'element-position',
-					),
 				),
 				'elementSpacing'                 =>
 				array(
 					'type'         => 'number',
 					'default'      => 15,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'element-spacing',
-					),
 				),
 				'elementSpacingTablet'           =>
 				array(
 					'type'         => 'number',
 					'default'      => 15,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'element-spacing-tablet',
-					),
 				),
 				'elementSpacingMobile'           =>
 				array(
 					'type'         => 'number',
 					'default'      => 15,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'element-spacing-mobile',
-					),
 				),
 				'elementSpacingUnit'             =>
 				array(
@@ -429,189 +273,101 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				array(
 					'type'         => 'boolean',
 					'default'      => false,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-load-google-fonts',
-					),
 				),
 				'elementTextFontFamily'          =>
 				array(
 					'type'         => 'string',
 					'default'      => 'Default',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-family',
-					),
 				),
 				'elementTextFontWeight'          =>
 				array(
 					'type'         => 'string',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-weight',
-					),
 				),
 				'elementTextFontSize'            =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-size',
-					),
 				),
 				'elementTextFontSizeType'        =>
 				array(
 					'type'         => 'string',
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-size-type',
-					),
 				),
 				'elementTextFontSizeTablet'      =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-size-tablet',
-					),
 				),
 				'elementTextFontSizeMobile'      =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-size-mobile',
-					),
 				),
 				'elementTextLineHeightType'      =>
 				array(
 					'type'         => 'string',
 					'default'      => 'em',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-line-height-type',
-					),
 				),
 				'elementTextLineHeight'          =>
 				array(
 					'type'         => 'number',
 					'default'      => 1,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-line-height',
-					),
 				),
 				'elementTextLineHeightTablet'    =>
 				array(
 					'type'         => 'number',
 					'default'      => 1,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-line-height-tablet',
-					),
 				),
 				'elementTextLineHeightMobile'    =>
 				array(
 					'type'         => 'number',
 					'default'      => 1,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-line-height-mobile',
-					),
 				),
 				'elementTextFontStyle'           =>
 				array(
 					'type'         => 'string',
 					'default'      => 'normal',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-font-style',
-					),
 				),
 				'elementTextLetterSpacing'       =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'label-letter-spacing',
-					),
 				),
 				'elementTextLetterSpacingTablet' =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'label-letter-spacing-tablet',
-					),
 				),
 				'elementTextLetterSpacingMobile' =>
 				array(
 					'type'         => 'number',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'label-letter-spacing-mobile',
-					),
 				),
 				'elementTextLetterSpacingType'   =>
 				array(
 					'type'         => 'string',
 					'default'      => 'px',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'label-letter-spacing-type',
-					),
 				),
 				'elementTextDecoration'          =>
 				array(
 					'type'         => 'string',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-decoration',
-					),
 				),
 				'elementTextTransform'           =>
 				array(
 					'type'         => 'string',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-transform',
-					),
 				),
 				'elementColor'                   =>
 				array(
 					'type'         => 'string',
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-title-color',
-					),
 				),
 				'elementIconWidth'               =>
 				array(
 					'type'         => 'number',
 					'default'      => 30,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-icon-width',
-					),
 				),
 				'elementIconWidthTablet'         =>
 				array(
 					'type'         => 'number',
 					'default'      => 30,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-icon-width-tablet',
-					),
 				),
 				'elementIconWidthMobile'         =>
 				array(
 					'type'         => 'number',
 					'default'      => 30,
-					'UAGCopyPaste' =>
-					array(
-						'styleType' => 'main-icon-width-mobile',
-					),
 				),
 				'elementIconWidthType'           =>
 				array(
@@ -645,6 +401,12 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 		 */
 		public function render_html( $attributes ) {
 
+			$block_id = '';
+
+			if ( isset( $attributes['block_id'] ) ) {
+				$block_id = $attributes['block_id'];
+			}
+
 			$custom_svg         = array(
 				'rectangles'    => 'url("data:image/svg+xml,%3Csvg width=\'16\' height=\'16\' viewBox=\'0 0 16 16\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M6.4 0H16L9.6 16H0L6.4 0Z\' fill=\'black\'/%3E%3C/svg%3E")',
 				'parallelogram' => 'url("data:image/svg+xml,%3Csvg width=\'8\' height=\'16\' viewBox=\'0 0 8 16\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'8\' height=\'16\' fill=\'black\'/%3E%3C/svg%3E")',
@@ -661,7 +423,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 			
 			$main_classes       = array(
 				'wp-block-uagb-separator',
-				'cf-block-' . $attributes['block_id'],
+				'uagb-block-' . $block_id,
 				$element_type_css,
 			);
 
@@ -680,7 +442,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 						<?php
 						if ( 'icon' === $element_type ) {
 							Sureforms_Spec_Gb_Helper::render_svg_html( $separator_icon );
-						} else {
+						} else if( 'text' === $element_type ) {
 							echo wp_kses_post( $custom_tag );
 						}
 						?>

@@ -414,13 +414,13 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			}
 
 			if ( ! empty( $tablet ) ) {
-				$tab_styling_css .= '@media only screen and (max-width: ' . CF_TABLET_BREAKPOINT . 'px) {';
+				$tab_styling_css .= '@media only screen and (max-width: ' . SRFM_TABLET_BREAKPOINT . 'px) {';
 				$tab_styling_css .= $tablet;
 				$tab_styling_css .= '}';
 			}
 
 			if ( ! empty( $mobile ) ) {
-				$mob_styling_css .= '@media only screen and (max-width: ' . CF_MOBILE_BREAKPOINT . 'px) {';
+				$mob_styling_css .= '@media only screen and (max-width: ' . SRFM_MOBILE_BREAKPOINT . 'px) {';
 				$mob_styling_css .= $mobile;
 				$mob_styling_css .= '}';
 			}
@@ -682,29 +682,23 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @param array  $load_google_font the blocks attr.
 		 * @param string $font_family the blocks attr.
 		 * @param array  $font_weight the blocks attr.
-		 * @param array  $font_subset the blocks attr.
 		 */
-		public static function blocks_google_font( $load_google_font, $font_family, $font_weight, $font_subset ) {
+		public static function blocks_google_font( $load_google_font, $font_family, $font_weight ) {
 
 			if ( true === $load_google_font ) {
 				if ( ! array_key_exists( $font_family, self::$gfonts ) ) {
 					$add_font                     = array(
 						'fontfamily'   => $font_family,
 						'fontvariants' => ( isset( $font_weight ) && ! empty( $font_weight ) ? array( $font_weight ) : array() ),
-						'fontsubsets'  => ( isset( $font_subset ) && ! empty( $font_subset ) ? array( $font_subset ) : array() ),
 					);
 					self::$gfonts[ $font_family ] = $add_font;
 				} else {
 					if ( isset( $font_weight ) && ! empty( $font_weight ) && ! in_array( $font_weight, self::$gfonts[ $font_family ]['fontvariants'], true ) ) {
 						array_push( self::$gfonts[ $font_family ]['fontvariants'], $font_weight );
 					}
-					if ( isset( $font_subset ) && ! empty( $font_subset ) && ! in_array( $font_subset, self::$gfonts[ $font_family ]['fontsubsets'], true ) ) {
-						array_push( self::$gfonts[ $font_family ]['fontsubsets'], $font_subset );
-					}
 				}
 			}
 		}
-
 
 		/**
 		 * Generates CSS recurrsively.
@@ -732,49 +726,28 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 				self::$current_block_list[] = $name;
 
-				if ( strpos( $name, 'wcfb/' ) !== false ) {
+				if ( strpos( $name, 'sureforms/' ) !== false ) {
 					self::$cf_flag = true;
 				}
 
 				switch ( $name ) {
-					case 'wcfb/next-step-button':
-						$css = Sureforms_Spec_Block_Helper::get_next_step_button_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_next_step_button_gfont( $blockattr );
-						break;
-
-					case 'wcfb/order-detail-form':
-						$css = Sureforms_Spec_Block_Helper::get_order_detail_form_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_order_detail_form_gfont( $blockattr );
-						break;
-
-					case 'wcfb/checkout-form':
-						$css = Sureforms_Spec_Block_Helper::get_checkout_form_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_checkout_form_gfont( $blockattr );
-						break;
-
-					case 'wcfb/optin-form':
-						$css = Sureforms_Spec_Block_Helper::get_optin_form_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
-						break;
-
 					case 'sureforms/separator':
 						$css = Sureforms_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
-						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
+						Sureforms_Spec_Block_JS::blocks_seperator_gfont( $blockattr );
 						break;
 
 					case 'sureforms/image':
 						$css = Sureforms_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
-						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
+						Sureforms_Spec_Block_JS::blocks_image_gfont( $blockattr );
 						break;
 
 					case 'sureforms/icon':
 						$css = Sureforms_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
-						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
 						break;
 
 					case 'sureforms/advanced-heading':
 						$css = Sureforms_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
-						// Sureforms_Spec_Block_JS::blocks_optin_form_gfont( $blockattr );
+						Sureforms_Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
 						break;
 
 					default:

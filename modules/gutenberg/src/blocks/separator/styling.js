@@ -31,16 +31,16 @@ const alignmentCSS = ( align ) => {
 };
 
 function styling( attributes, clientId, name, deviceType ) {
-	const blockName = name.replace( 'uagb/', '' );
+	const blockName = name.replace( 'sureforms/', '' );
 	const previewType = deviceType.toLowerCase();
 	const {
-		block_id,
+		block_id, 
 		//separator
 		separatorAlign,
 		separatorAlignTablet,
 		separatorAlignMobile,
 		separatorStyle,
-		separatorColor,
+		separatorColor,  
 		separatorWidth,
 		separatorWidthTablet,
 		separatorWidthMobile,

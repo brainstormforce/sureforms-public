@@ -54,10 +54,10 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 				return;
 			}
 
-			$icon_border_attribute = Sureforms_Spec_Block_Config::generate_border_attribute( 'icon' );
+			//$icon_border_attribute = Sureforms_Spec_Block_Config::generate_border_attribute( 'icon' );
 
 			$attr = array_merge(
-				$icon_border_attribute,
+				//$icon_border_attribute,
 				array(
 					'icon'                             =>
 					array(
@@ -68,177 +68,88 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 40,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-size',
-						),
 					),
 					'iconSizeTablet'                   =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-size-tablet',
-						),
 					),
 					'iconSizeMobile'                   =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-size-mobile',
-						),
 					),
 					'iconSizeUnit'                     =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-size-type',
-						),
 					),
 					'align'                            =>
 					array(
 						'type'         => 'string',
 						'default'      => 'center',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'overall-alignment',
-						),
 					),
 					'alignTablet'                      =>
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'overall-alignment-tablet',
-						),
 					),
 					'alignMobile'                      =>
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'overall-alignment-mobile',
-						),
 					),
 					'iconColor'                        =>
 					array(
 						'type'         => 'string',
 						'default'      => '#333',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-color',
-						),
 					),
 					'iconBorderColor'                  =>
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-border-color',
-						),
 					),
 					'iconBackgroundColorType'          =>
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-background-color-type',
-						),
 					),
 					'iconBackgroundColor'              =>
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-background-color',
-						),
 					),
 					'iconBackgroundGradientColor'      =>
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-background-gradient-color',
-						),
 					),
 					'iconHoverColor'                   =>
 					array(
 						'type'         => 'string',
 						'default'      => '',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-hover-color',
-						),
 					),
 					'iconHoverBackgroundColorType'     =>
 					array(
 						'type'         => 'string',
 						'default'      => 'classic',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-hover-background-color-type',
-						),
 					),
 					'iconHoverBackgroundColor'         =>
 					array(
 						'type'         => 'string',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-hover-background-color',
-						),
 					),
 					'iconHoverBackgroundGradientColor' =>
 					array(
 						'type'         => 'string',
 						'default'      => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-hover-background-gradient-color',
-						),
 					),
 					'rotation'                         =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-rotation',
-						),
 					),
 					'rotationUnit'                     =>
 					array(
 						'type'         => 'string',
 						'default'      => 'deg',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-rotation-type',
-						),
 					),
 					'block_id'                         =>
 					array(
@@ -263,140 +174,68 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-padding',
-						),
 					),
 					'iconRightPadding'                 =>
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-padding',
-						),
 					),
 					'iconLeftPadding'                  =>
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-padding',
-						),
 					),
 					'iconBottomPadding'                =>
 					array(
 						'type'         => 'number',
 						'default'      => 5,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-padding',
-						),
 					),
 					'iconTopTabletPadding'             =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-tablet-padding',
-						),
 					),
 					'iconRightTabletPadding'           =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-tablet-padding',
-						),
 					),
 					'iconLeftTabletPadding'            =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-tablet-padding',
-						),
 					),
 					'iconBottomTabletPadding'          =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-tablet-padding',
-						),
 					),
 					'iconTopMobilePadding'             =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-mobile-padding',
-						),
 					),
 					'iconRightMobilePadding'           =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-mobile-padding',
-						),
 					),
 					'iconLeftMobilePadding'            =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-mobile-padding',
-						),
 					),
 					'iconBottomMobilePadding'          =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-mobile-padding',
-						),
 					),
 					'iconPaddingUnit'                  =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-padding-unit',
-						),
 					),
 					'iconTabletPaddingUnit'            =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-tablet-padding-unit',
-						),
 					),
 					'iconMobilePaddingUnit'            =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-mobile-padding-unit',
-						),
 					),
 					'iconPaddingLink'                  =>
 					array(
@@ -406,137 +245,65 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					'iconTopMargin'                    =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-margin',
-						),
 					),
 					'iconRightMargin'                  =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-margin',
-						),
 					),
 					'iconLeftMargin'                   =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-margin',
-						),
 					),
 					'iconBottomMargin'                 =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-margin',
-						),
 					),
 					'iconTopTabletMargin'              =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-tablet-margin',
-						),
 					),
 					'iconRightTabletMargin'            =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-tablet-margin',
-						),
 					),
 					'iconLeftTabletMargin'             =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-tablet-margin',
-						),
 					),
 					'iconBottomTabletMargin'           =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-tablet-margin',
-						),
 					),
 					'iconTopMobileMargin'              =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-top-mobile-margin',
-						),
 					),
 					'iconRightMobileMargin'            =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-right-mobile-margin',
-						),
 					),
 					'iconLeftMobileMargin'             =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-left-mobile-margin',
-						),
 					),
 					'iconBottomMobileMargin'           =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-bottom-mobile-margin',
-						),
 					),
 					'iconMarginUnit'                   =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-margin-unit',
-						),
 					),
 					'iconTabletMarginUnit'             =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-tablet-margin-unit',
-						),
 					),
 					'iconMobileMarginUnit'             =>
 					array(
 						'type'         => 'string',
 						'default'      => 'px',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-mobile-margin-unit',
-						),
 					),
 					'iconMarginLink'                   =>
 					array(
@@ -552,11 +319,6 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => 'default',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-border-style',
-						),
 					),
 					'useSeparateBoxShadows'            =>
 					array(
@@ -567,196 +329,105 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-color',
-						),
 					),
 					'iconShadowHOffset'                =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-hoffset',
-						),
 					),
 					'iconShadowVOffset'                =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-voffset',
-						),
 					),
 					'iconShadowBlur'                   =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-blur',
-						),
 					),
 					'iconBoxShadowColor'               =>
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-color',
-						),
 					),
 					'iconBoxShadowHOffset'             =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-hoffset',
-						),
 					),
 					'iconBoxShadowVOffset'             =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-voffset',
-						),
 					),
 					'iconBoxShadowBlur'                =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-blur',
-						),
 					),
 					'iconBoxShadowSpread'              =>
 					array(
 						'type'         => 'number',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-spread',
-						),
 					),
 					'iconBoxShadowPosition'            =>
 					array(
 						'type'         => 'string',
 						'default'      => 'outset',
-						
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-position',
-						),
 					),
 					'iconShadowColorHover'             =>
 					array(
 						'type'         => 'string',
 						'default'      => '#00000070',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-color-hover',
-						),
 					),
 					'iconShadowHOffsetHover'           =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-hoffset-hover',
-						),
 					),
 					'iconShadowVOffsetHover'           =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-voffset-hover',
-						),
 					),
 					'iconShadowBlurHover'              =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-shadow-blur-hover',
-						),
 					),
 					'iconBoxShadowColorHover'          =>
 					array(
 						'type'         => 'string',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-color-hover',
-						),
 					),
 					'iconBoxShadowHOffsetHover'        =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-hoffset-hover',
-						),
 					),
 					'iconBoxShadowVOffsetHover'        =>
 					array(
 						'type'         => 'number',
 						'default'      => 0,
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-voffset-hover',
-						),
 					),
 					'iconBoxShadowBlurHover'           =>
 					array(
 						'type'         => 'number',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-blur-hover',
-						),
 					),
 					'iconBoxShadowSpreadHover'         =>
 					array(
 						'type'         => 'number',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-spread-hover',
-						),
 					),
 					'iconBoxShadowPositionHover'       =>
 					array(
 						'type'         => 'string',
 						'default'      => 'outset',
-						'UAGCopyPaste' =>
-						array(
-							'styleType' => 'icon-box-shadow-position-hover',
-						),
 					),
 				),
 			);
 
-			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
+			$icon_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
 
-			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
+			$attr = array_merge( $icon_border_attr, $attr );
 
-			$attributes = apply_filters( 'cartflows_gutenberg_cf_attributes_filters', $attr );
+			$attributes = apply_filters( 'sureforms_gutenberg_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/icon',
@@ -776,6 +447,13 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 		 */
 		public function render_html( $attributes ) {
 
+			
+			$block_id = '';
+
+			if ( isset( $attributes['block_id'] ) ) {
+				$block_id = $attributes['block_id'];
+			}
+
 			$icon         = isset( $attributes['icon'] ) && $attributes['icon'] ? $attributes['icon'] : '';
 			$link         = isset( $attributes['link'] ) && $attributes['link'] ? $attributes['link'] : '';
 			$target       = isset( $attributes['target'] ) && $attributes['target'] ? $attributes['target'] : '';
@@ -790,11 +468,9 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 				$link_url = $link_url ? $link_url : $link_url;
 			}
 
-			
-
 			$main_classes = array(
 				'uagb-icon-wrapper',
-				'cf-block-' . $attributes['block_id'],
+				'uagb-block-' . $block_id,
 			);
 
 			if ( isset( $attributes['className'] ) ) {

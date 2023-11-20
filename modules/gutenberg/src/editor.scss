@@ -662,10 +662,10 @@ button.components-button.uagb-review-select-btn.is-secondary {
 
 /* Block Editor Block Icons Color*/
 .block-editor-block-icon.has-colors svg.uagb-editor-icons {
-	stroke: $spectra-color-secondary;
+	stroke: currentColor;
 
 	path {
-		stroke: $spectra-color-secondary;
+		stroke: currentColor;
 	}
 }
 

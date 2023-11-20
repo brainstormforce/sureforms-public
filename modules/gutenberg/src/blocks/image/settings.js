@@ -27,8 +27,6 @@ import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
 import boxShadowPresets,{ boxShadowHoverPresets } from './presets';
 import UAGPresets from '@Components/presets';
 import { pickRelevantMediaFiles, getDevicesAttributes } from './utils';
-import renderGBSSettings from '@Controls/renderGBSSettings';
-import styling from './styling';
 
 export default function Settings( props ) {
 
@@ -1852,7 +1850,6 @@ export default function Settings( props ) {
 						{ 'none' !== seperatorStyle && layout === 'overlay' && seperatorStylePanel }
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
-						{ renderGBSSettings( styling, setAttributes, attributes ) }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
