@@ -62,6 +62,9 @@ class SF_Public {
 		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
 
 		// SureForms frontend JS.
+		if( has_block('sureforms/rating') ) {
+			wp_enqueue_script( 'srfm-rating-js', SUREFORMS_URL . 'assets/src/public/scripts/rating.js', [], SUREFORMS_VER, true );
+		}
 		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
 
