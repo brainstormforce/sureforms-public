@@ -43,7 +43,7 @@ export const PasswordClassicStyle = ( {
 					>
 						{ confirmLabel }
 						{ required && confirmLabel && (
-							<span style={ { color: 'red' } }> *</span>
+							<span className="srfm-text-red"> *</span>
 						) }
 					</label>
 					<div className="srfm-relative srfm-mt-2">

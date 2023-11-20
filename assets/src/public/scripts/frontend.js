@@ -181,12 +181,12 @@ if ( uploadFieldsContainer ) {
 						uploadField.querySelector(
 							`#srfm-upload-title-${ id }`
 						).innerHTML =
-							`<div class="srfm-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+							`<div class="srfm-text-primary srfm-flex srfm-items-center srfm-gap-[10px]">
                         <i class="fa-solid fa-file-lines srfm-text-primary"></i> ` +
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary srfm-cursor-pointer" id="srfm-reset-upload-field"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -206,7 +206,7 @@ if ( uploadFieldsContainer ) {
 							];
 							const icon = imageFormats.includes( file.type )
 								? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
-								: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
+								: '<div class="srfm-text-gray-300 srfm-text-[35px]"><i class="fa-solid fa-file-lines"></i></div>';
 							const uploadResultContainer =
 								uploadField.querySelector(
 									`#srfm-upload-field-result-${ id }`
@@ -221,7 +221,7 @@ if ( uploadFieldsContainer ) {
 	).toFixed( 2 ) }MB</div>
 									</div>
 									<div>
-  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
+  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400 srfm-cursor-pointer" id="srfm-reset-upload-field"></i>
 									</div>
 								</div>
 							</div>`;

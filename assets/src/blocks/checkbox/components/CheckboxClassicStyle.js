@@ -14,7 +14,7 @@ export const CheckboxClassicStyle = ( {
 	}, [ isChecked ] );
 	return (
 		<>
-			<div className="srfm-relative srfm-flex srfm-items-start srfm-flex-row gap-2">
+			<div className="srfm-relative srfm-flex srfm-items-start srfm-flex-row srfm-gap-2">
 				<div className="srfm-flex srfm-h-6 srfm-items-center">
 					<input
 						type="checkbox"
