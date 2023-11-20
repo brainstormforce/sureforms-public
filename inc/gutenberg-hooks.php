@@ -74,10 +74,7 @@ class Gutenberg_Hooks {
 				'sureforms/password',
 				'sureforms/date-time-picker',
 				'sureforms/number-slider',
-				'core/columns',
-				'core/image',
-				'core/heading',
-				'core/paragraph',
+				'sureforms/form',
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
@@ -187,9 +184,10 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
-				'plugin_url'  => SUREFORMS_URL,
-				'admin_email' => get_option( 'admin_email' ),
-				'post_url'    => admin_url( 'post.php' ),
+				'plugin_url'     => SUREFORMS_URL,
+				'admin_email'    => get_option( 'admin_email' ),
+				'post_url'       => admin_url( 'post.php' ),
+				'current_screen' => get_current_screen(),
 
 			]
 		);
@@ -233,7 +231,7 @@ class Gutenberg_Hooks {
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
-			'uagb_blocks_info',
+			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
 			]

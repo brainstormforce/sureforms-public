@@ -10,12 +10,12 @@ function renderSVG( svg, setAttributes = false ) {
 	svg = parseSVG( svg );
 	let fontAwesome;
 	// Load Polyfiller Array if needed.
-	if ( 0 !== uagb_blocks_info.font_awesome_5_polyfill.length ) {
-		fontAwesome = uagb_blocks_info.uagb_svg_icons[ svg ];
+	if ( 0 !== srfm_blocks_info.font_awesome_5_polyfill.length ) {
+		fontAwesome = srfm_blocks_info.srfm_svg_icons[ svg ];
 		if ( ! fontAwesome ) {
 			fontAwesome =
-				uagb_blocks_info.uagb_svg_icons[
-					uagb_blocks_info.font_awesome_5_polyfill?.[ svg ]
+				srfm_blocks_info.srfm_svg_icons[
+					srfm_blocks_info.font_awesome_5_polyfill?.[ svg ]
 				];
 		}
 	}

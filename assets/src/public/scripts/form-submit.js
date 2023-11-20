@@ -276,12 +276,13 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					'.srfm-error-message'
 				)[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'block';
+					confirmFieldError.style.display = 'block';
+					const confirmPwdError = container.querySelector(
+						'.srfm-confirm-password-error'
+					);
+					if ( confirmPwdError ) {
+						confirmPwdError.style.display = 'none';
 					}
-					container.querySelector(
-						'.confirm-password-error'
-					).style.display = 'none';
 					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
@@ -670,8 +671,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 } );
 
 function submitFormData( form ) {
+	const site_url = sureforms_submit.site_url;
 	const formData = new FormData( form );
-	return fetch( '/wp-json/sureforms/v1/submit-form', {
+	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		body: formData,
 	} )

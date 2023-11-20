@@ -31,7 +31,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 						></i>
 					</div>
 					<input
-						id={ 'srfm-text-input-' + blockID }
+						id={ 'srfm-email-' + blockID }
 						type="email"
 						value={ defaultValue }
 						className={ 'srfm-classic-email-element' }
@@ -58,7 +58,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 								></i>
 							</div>
 							<input
-								id={ 'srfm-text-input-' + blockID }
+								id={ 'srfm-confirm-email-' + blockID }
 								type="email"
 								value={ defaultValue }
 								className={ 'srfm-classic-email-element' }

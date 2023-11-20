@@ -39,12 +39,12 @@ export default function Separator( { disabledTopSpace } ) {
 
 	const controlName = 'separator'; // there is no label props that's why keep hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -52,10 +52,8 @@ export default function Separator( { disabledTopSpace } ) {
 		<div ref={ panelRef }>
 			{ controlBeforeDomElement }
 			<div
-				className={ `spectra-separator ${
-					disabledTopSpace
-						? 'spectra-separator--removed-top-space'
-						: ''
+				className={ `srfm-separator ${
+					disabledTopSpace ? 'srfm-separator--removed-top-space' : ''
 				}` }
 			/>
 			{ controlAfterDomElement }

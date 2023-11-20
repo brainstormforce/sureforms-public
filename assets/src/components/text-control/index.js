@@ -11,11 +11,11 @@ import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
-import UAGHelpText from '@Components/help-text';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGTextControl = ( props ) => {
+const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	// Add and remove the CSS on the drop and remove of the component.
@@ -39,7 +39,7 @@ const UAGTextControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? applyFilters(
-				'uagb.registerTextExtender',
+				'srfm.registerTextExtender',
 				'',
 				selectedBlock?.name,
 				props.name,
@@ -82,10 +82,10 @@ const UAGTextControl = ( props ) => {
 
 	const HeaderControls = () => {
 		return (
-			<div className="uagb-control__header">
+			<div className="srfm-control__header">
 				<ResponsiveToggle label={ props?.label } />
-				<div className="uagb-number-control__actions uagb-control__actions">
-					<UAGReset
+				<div className="srfm-number-control__actions srfm-control__actions">
+					<SRFMReset
 						onReset={ resetValues }
 						value={ props?.value }
 						attributeNames={ [ props?.data?.label ] }
@@ -99,12 +99,12 @@ const UAGTextControl = ( props ) => {
 
 	const controlName = getIdFromString( props.label ); // there is no label props that's why keep hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -114,9 +114,9 @@ const UAGTextControl = ( props ) => {
 			{ controlBeforeDomElement }
 			<div
 				className={ classnames(
-					'components-base-control uagb-text-control uagb-size-type-field-tabs',
+					'components-base-control srfm-text-control srfm-size-type-field-tabs',
 					isEnableDynamicContent()
-						? ' uagb-text-control--open-dynamic-content'
+						? ' srfm-text-control--open-dynamic-content'
 						: '',
 					props.className
 				) }
@@ -126,8 +126,8 @@ const UAGTextControl = ( props ) => {
 				) }
 				<div
 					className={ classnames(
-						'uagb-text-control__controls',
-						'uagb-text-control__controls-' + props?.variant
+						'srfm-text-control__controls',
+						'srfm-text-control__controls-' + props?.variant
 					) }
 				>
 					{ ! isEnableDynamicContent() && (
@@ -177,14 +177,14 @@ const UAGTextControl = ( props ) => {
 					{ registerTextExtender }
 				</div>
 
-				<UAGHelpText text={ props.help } />
+				<SRFMHelpText text={ props.help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-UAGTextControl.defaultProps = {
+SRFMTextControl.defaultProps = {
 	label: '',
 	type: 'text',
 	className: '',
@@ -200,4 +200,4 @@ UAGTextControl.defaultProps = {
 	isFormSpecific: false,
 };
 
-export default UAGTextControl;
+export default SRFMTextControl;

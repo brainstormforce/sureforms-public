@@ -11,7 +11,7 @@ import {
 	useLayoutEffect,
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 
 const LAYOUT = 'general',
 	STYLE = 'style',
@@ -26,7 +26,8 @@ const InspectorTabs = ( props ) => {
 		};
 	}, [] );
 
-	const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+	const srfmSettingState =
+		getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 
 	const { defaultTab, children, tabs } = props;
 	const [ currentTab, setCurrentTab ] = useState(
@@ -41,22 +42,22 @@ const InspectorTabs = ( props ) => {
 		sidebarPanel = tabContainer.current.closest( '.components-panel' );
 	} );
 
-	const renderUAGTabsSettingsInOrder = () => {
+	const renderSRFMTabsSettingsInOrder = () => {
 		// Inspector Tabs Priority Rendering Code. (Conflicts with 3rd Party plugin panels in Inspector Panel)
 		const tabsContainer = document.querySelector(
-			'.uagb-inspector-tabs-container'
+			'.srfm-inspector-tabs-container'
 		);
 		let dynamicContentContainer = document.querySelector(
-			'.components-panel__body.uagb-dynamic-content-wrap'
+			'.components-panel__body.srfm-dynamic-content-wrap'
 		);
 		let tabsGeneralContainer = document.querySelector(
-			'.uagb-tab-content-general'
+			'.srfm-tab-content-general'
 		);
 		let tabsStyleContainer = document.querySelector(
-			'.uagb-tab-content-style'
+			'.srfm-tab-content-style'
 		);
 		let tabsAdvanceContainer = document.querySelector(
-			'.uagb-tab-content-advance'
+			'.srfm-tab-content-advance'
 		);
 
 		if ( tabsContainer ) {
@@ -88,64 +89,64 @@ const InspectorTabs = ( props ) => {
 
 	// component did mount
 	useEffect( () => {
-		renderUAGTabsSettingsInOrder();
+		renderSRFMTabsSettingsInOrder();
 
 		const { getSelectedBlock } = select( 'core/block-editor' );
 		const blockName = getSelectedBlock()?.name;
 		// This code is to fix the side-effect of the editor responsive click settings panel refresh issue.
 		if (
-			uagSettingState &&
-			uagSettingState[ blockName ] &&
-			currentTab !== uagSettingState[ blockName ]?.selectedTab
+			srfmSettingState &&
+			srfmSettingState[ blockName ] &&
+			currentTab !== srfmSettingState[ blockName ]?.selectedTab
 		) {
 			setCurrentTab(
-				uagSettingState[ blockName ]?.selectedTab || 'general'
+				srfmSettingState[ blockName ]?.selectedTab || 'general'
 			);
 			if ( sidebarPanel ) {
 				sidebarPanel.setAttribute(
-					'data-uagb-tab',
-					uagSettingState[ blockName ]?.selectedTab || 'general'
+					'data-srfm-tab',
+					srfmSettingState[ blockName ]?.selectedTab || 'general'
 				);
 			}
 		} else if ( sidebarPanel ) {
-			sidebarPanel.setAttribute( 'data-uagb-tab', 'general' );
+			sidebarPanel.setAttribute( 'data-srfm-tab', 'general' );
 		}
 		// Above Section Ends.
 		// component will unmount
 		return () => {
 			if ( sidebarPanel ) {
 				const inspectorTabs = sidebarPanel.querySelector(
-					'.uagb-inspector-tabs-container'
+					'.srfm-inspector-tabs-container'
 				);
 
 				if ( ! inspectorTabs || null === inspectorTabs ) {
-					sidebarPanel.removeAttribute( 'data-uagb-tab' );
+					sidebarPanel.removeAttribute( 'data-srfm-tab' );
 				}
 			}
 		};
 	}, [] );
 
 	const _onTabChange = ( tab ) => {
-		renderUAGTabsSettingsInOrder();
+		renderSRFMTabsSettingsInOrder();
 		setCurrentTab( tab );
-		doAction( `uag_inspector_change_tab`, tab );
+		doAction( `srfm_inspector_change_tab`, tab );
 		if ( sidebarPanel ) {
-			sidebarPanel.setAttribute( 'data-uagb-tab', tab );
+			sidebarPanel.setAttribute( 'data-srfm-tab', tab );
 		}
 		// Below code is to set the setting state of Tab for each block.
 		const { getSelectedBlock } = select( 'core/block-editor' );
 		const blockName = getSelectedBlock()?.name;
 
 		const data = {
-			...uagSettingState,
+			...srfmSettingState,
 			[ blockName ]: {
 				selectedTab: tab,
 			},
 		};
-		const uagLocalStorage = getUAGEditorStateLocalStorage();
-		if ( uagLocalStorage ) {
-			uagLocalStorage.setItem(
-				'uagSettingState',
+		const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+		if ( srfmLocalStorage ) {
+			srfmLocalStorage.setItem(
+				'srfmSettingState',
 				JSON.stringify( data )
 			);
 		}
@@ -153,22 +154,22 @@ const InspectorTabs = ( props ) => {
 
 	return (
 		<>
-			<div className={ 'uagb-inspector-tabs-container' }>
+			<div className={ 'srfm-inspector-tabs-container' }>
 				{ /*
 				 * The tabs is static, you must use layout, style & advance
 				 */ }
 				<div
 					ref={ tabContainer }
 					className={ classnames(
-						'uagb-inspector-tabs',
-						'uagb-inspector-tabs-count-' + tabs.length,
+						'srfm-inspector-tabs',
+						'srfm-inspector-tabs-count-' + tabs.length,
 						currentTab
 					) }
 				>
 					{ tabs.indexOf( LAYOUT ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === LAYOUT,
+								'srfm-active': currentTab === LAYOUT,
 							} ) }
 							onClick={ () => _onTabChange( LAYOUT ) }
 						>
@@ -189,7 +190,7 @@ const InspectorTabs = ( props ) => {
 					{ tabs.indexOf( STYLE ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === STYLE,
+								'srfm-active': currentTab === STYLE,
 							} ) }
 							onClick={ () => _onTabChange( STYLE ) }
 						>
@@ -209,7 +210,7 @@ const InspectorTabs = ( props ) => {
 					{ tabs.indexOf( ADVANCE ) > -1 && (
 						<div
 							className={ classnames( {
-								'uagb-active': currentTab === ADVANCE,
+								'srfm-active': currentTab === ADVANCE,
 							} ) }
 							onClick={ () => _onTabChange( ADVANCE ) }
 						>

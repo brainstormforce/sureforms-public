@@ -3,9 +3,9 @@ import styles from './editor.lazy.scss';
 import renderSVG from '@Controls/renderIcon';
 import { __ } from '@wordpress/i18n';
 import ModalContainer from './modal-container';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
-const UAGIconPicker = ( props ) => {
+const SRFMIconPicker = ( props ) => {
 	// Add and remove the CSS on the drop and remove of the component.
 	useLayoutEffect( () => {
 		styles.use();
@@ -15,8 +15,8 @@ const UAGIconPicker = ( props ) => {
 	}, [] );
 
 	const { label, value, onChange, help = false } = props;
-	const defaultIcons = [ ...wp.UAGBSvgIcons ];
-	const iconCategoryList = [ ...wp.uagb_icon_category_list ];
+	const defaultIcons = [ ...wp.SRFMSvgIcons ];
+	const iconCategoryList = [ ...wp.srfm_icon_category_list ];
 	// For modal.
 	const [ isOpen, setOpen ] = useState( false );
 
@@ -27,11 +27,11 @@ const UAGIconPicker = ( props ) => {
 
 	// Modal placeholder.
 	const modalPlaceHolder = (
-		<div className={ `uag-ip-placeholder-wrap` }>
+		<div className={ `srfm-ip-placeholder-wrap` }>
 			{ /* If icon available then show remove button. */ }
 			{ isIconAvailable && (
 				<div
-					className="uag-ip-remove-icon"
+					className="srfm-ip-remove-icon"
 					onClick={ () => {
 						onChange( '' );
 					} }
@@ -40,17 +40,17 @@ const UAGIconPicker = ( props ) => {
 				</div>
 			) }
 
-			<div className="uag-ip-selected-icon" onClick={ openModal }>
-				<div className="uag-ip-selected-icon-overlay">
+			<div className="srfm-ip-selected-icon" onClick={ openModal }>
+				<div className="srfm-ip-selected-icon-overlay">
 					{ ! isIconAvailable && renderSVG( 'plus' ) }
 				</div>
 				{ isIconAvailable && (
-					<div className="uag-ip-selected-icon-value">
+					<div className="srfm-ip-selected-icon-value">
 						{ renderSVG( value ) }
 					</div>
 				) }
 			</div>
-			<div className="uag-ip-actions">
+			<div className="srfm-ip-actions">
 				<span onClick={ openModal }>
 					{ isIconAvailable
 						? __( 'Change Icon', 'sureforms' )
@@ -60,8 +60,8 @@ const UAGIconPicker = ( props ) => {
 		</div>
 	);
 	return (
-		<div className="uag-custom-ip components-base-control">
-			<span className="uag-control-label">
+		<div className="srfm-custom-ip components-base-control">
+			<span className="srfm-control-label">
 				{ label || __( 'Icon', 'sureforms' ) }
 			</span>
 			{ modalPlaceHolder }
@@ -75,8 +75,8 @@ const UAGIconPicker = ( props ) => {
 					} }
 				/>
 			) }
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 		</div>
 	);
 };
-export default UAGIconPicker;
+export default SRFMIconPicker;

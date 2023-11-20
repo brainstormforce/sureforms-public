@@ -152,7 +152,6 @@ class Post_Types {
 						[],
 					],
 				],
-				'template_lock'     => 'all',
 			)
 		);
 

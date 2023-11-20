@@ -1,5 +1,5 @@
 /**
- * Spectra Helper Panel to display Assistance in a Separate Settings Panel.
+ * SRFM Helper Panel to display Assistance in a Separate Settings Panel.
  */
 import styles from './editor.lazy.scss';
 import { useLayoutEffect } from '@wordpress/element';
@@ -14,8 +14,8 @@ const defaultProps = {
 	useLogo: true,
 };
 
-// The Spectra Helper Panel Component.
-const SpectraHelperPanel = ( props ) => {
+// The SRFM Helper Panel Component.
+const SRFMHelperPanel = ( props ) => {
 	const { useLogo, message } = props;
 
 	// Add and remove the CSS on the drop and remove of the component.
@@ -26,9 +26,9 @@ const SpectraHelperPanel = ( props ) => {
 		};
 	}, [] );
 
-	const spectraLogo = (
+	const SRFMLogo = (
 		<svg
-			className="uagb-helper-panel__element uagb-helper-panel__element--logo"
+			className="srfm-helper-panel__element srfm-helper-panel__element--logo"
 			width="30"
 			height="30"
 			viewBox="0 0 30 30"
@@ -56,10 +56,10 @@ const SpectraHelperPanel = ( props ) => {
 	);
 
 	return (
-		<div className="uagb-helper-panel">
-			{ useLogo && spectraLogo }
+		<div className="srfm-helper-panel">
+			{ useLogo && SRFMLogo }
 			{ message && (
-				<h3 className="uagb-helper-panel__element uagb-helper-panel__element--message">
+				<h3 className="srfm-helper-panel__element srfm-helper-panel__element--message">
 					{ message }
 				</h3>
 			) }
@@ -67,7 +67,7 @@ const SpectraHelperPanel = ( props ) => {
 	);
 };
 
-export default SpectraHelperPanel;
+export default SRFMHelperPanel;
 
-SpectraHelperPanel.propTypes = propTypes;
-SpectraHelperPanel.defaultProps = defaultProps;
+SRFMHelperPanel.propTypes = propTypes;
+SRFMHelperPanel.defaultProps = defaultProps;

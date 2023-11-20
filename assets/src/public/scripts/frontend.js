@@ -1144,7 +1144,7 @@ if ( numberSliderContainer ) {
 	// Pre Init
 	const preInit = ( sliderContainer, primaryColor ) => {
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const val = Number( rangeSliders.value );
 		const min = Number( rangeSliders.getAttribute( 'min' ) );
 		const max = Number( rangeSliders.getAttribute( 'max' ) );
@@ -1155,7 +1155,7 @@ if ( numberSliderContainer ) {
 	const init = ( sliderContainer, primaryColor ) => {
 		// Slider Range Change or Input
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const numberInput = sliderContainer.querySelector(
 			'.srfm-number-input-slider'
 		);

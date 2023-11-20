@@ -17,12 +17,12 @@ import { limitMax, limitMin } from '@Controls/unitWiseMinMaxOption';
 import classnames from 'classnames';
 import { select, useSelect } from '@wordpress/data';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
-import UAGReset from '../reset';
+import SRFMReset from '../reset';
 import Separator from '@Components/separator';
 import { applyFilters } from '@wordpress/hooks';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
-const UAGNumberControl = ( props ) => {
+const SRFMNumberControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	// Add and remove the CSS on the drop and remove of the component.
@@ -49,7 +49,7 @@ const UAGNumberControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? wp.hooks.applyFilters(
-				'uagb.registerTextExtender',
+				'srfm.registerTextExtender',
 				'',
 				selectedBlock?.name,
 				props.name,
@@ -141,7 +141,7 @@ const UAGNumberControl = ( props ) => {
 				>
 					<Button
 						key={ key.unitValue }
-						className={ 'uagb-number-control__units--' + key.name }
+						className={ 'srfm-number-control__units--' + key.name }
 						isSmall
 						isPrimary={ props.unit.value === key.unitValue }
 						isSecondary={ props.unit.value !== key.unitValue }
@@ -164,9 +164,9 @@ const UAGNumberControl = ( props ) => {
 
 	const ControlHeader = () => {
 		return (
-			<div className="uagb-control__header">
-				<div className="uagb-number-control__actions uagb-control__actions">
-					<UAGReset
+			<div className="srfm-control__header">
+				<div className="srfm-number-control__actions srfm-control__actions">
+					<SRFMReset
 						onReset={ resetValues }
 						attributeNames={ [
 							props.data.label,
@@ -176,7 +176,7 @@ const UAGNumberControl = ( props ) => {
 					/>
 					{ props.displayUnit && (
 						<ButtonGroup
-							className="uagb-control__units"
+							className="srfm-control__units"
 							aria-label={ __( 'Select Units', 'sureforms' ) }
 						>
 							{ onUnitSizeClick( unitSizes ) }
@@ -191,12 +191,12 @@ const UAGNumberControl = ( props ) => {
 
 	const controlName = getIdFromString( props?.label ); //
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -204,9 +204,9 @@ const UAGNumberControl = ( props ) => {
 	return (
 		<div
 			ref={ panelRef }
-			className={ `components-base-control uag-number-control uagb-size-type-field-tabs${
+			className={ `components-base-control srfm-number-control srfm-size-type-field-tabs${
 				isEnableDynamicContent()
-					? ' uagb-text-control--open-dynamic-content'
+					? ' srfm-text-control--open-dynamic-content'
 					: ''
 			}` }
 		>
@@ -214,8 +214,8 @@ const UAGNumberControl = ( props ) => {
 			{ props.showControlHeader && <ControlHeader /> }
 			<div
 				className={ classnames(
-					'uagb-number-control__mobile-controls',
-					'uag-number-control__' + variant
+					'srfm-number-control__mobile-controls',
+					'srfm-number-control__' + variant
 				) }
 			>
 				<ResponsiveToggle
@@ -242,7 +242,7 @@ const UAGNumberControl = ( props ) => {
 				{ /* Show the Dynamic Content Controls */ }
 				{ registerTextExtender }
 			</div>
-			{ <UAGHelpText text={ props.help } /> }
+			{ <SRFMHelpText text={ props.help } /> }
 			{ /* Add a separator below for better UI since many dynamic content controls are shown */ }
 			{ isEnableDynamicContent() && <Separator /> }
 			{ controlAfterDomElement }
@@ -250,7 +250,7 @@ const UAGNumberControl = ( props ) => {
 	);
 };
 
-UAGNumberControl.defaultProps = {
+SRFMNumberControl.defaultProps = {
 	label: __( 'Margin', 'sureforms' ),
 	className: '',
 	allowReset: true,
@@ -270,4 +270,4 @@ UAGNumberControl.defaultProps = {
 	help: false,
 };
 
-export default UAGNumberControl;
+export default SRFMNumberControl;

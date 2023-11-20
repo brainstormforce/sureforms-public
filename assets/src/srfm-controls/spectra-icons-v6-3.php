@@ -2,9 +2,8 @@
 /**
  * Font awesome icons array array file.
  *
- * @package     UAGB
+ * @package     SureForms
  * @author      Brainstorm Force
- * @link        https://wpspectra.com/
  */
 
 /**
@@ -5181,7 +5180,7 @@ return array(
 		'label'             => __( 'Zhihu', 'sureforms' ),
 		'custom_categories' => array( 'brands' ),
 	),
-	'uagb_category_list'                 => array(
+	'srfm_category_list'                 => array(
 		array(
 			'slug'  => 'brands',
 			'title' => __( 'Brands', 'sureforms' ),
