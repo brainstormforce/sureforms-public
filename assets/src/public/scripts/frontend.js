@@ -154,11 +154,14 @@ if ( uploadFieldsContainer ) {
 			uploadInput.addEventListener( 'change', ( e ) => {
 				const id = e.target.id.split( '-' )[ 2 ];
 				const file = e.target.files[ 0 ];
-				const isError = uploadField.querySelector( '.srfm-error-message' );
+				const isError = uploadField.querySelector(
+					'.srfm-error-message'
+				);
 				if ( isError ) {
 					isError.style.display = 'none';
 				}
-				const maxFileSize = parseInt( fileSizeField.value ) * 1024 * 1024;
+				const maxFileSize =
+					parseInt( fileSizeField.value ) * 1024 * 1024;
 				if ( file ) {
 					if ( file.size > maxFileSize ) {
 						e.target.value = '';
@@ -227,19 +230,29 @@ if ( uploadFieldsContainer ) {
 									</div>
 								</div>`;
 								if ( uploadResultContainer ) {
-									uploadResultContainer.style.display = 'flex';
+									uploadResultContainer.style.display =
+										'flex';
 								}
-								const resetButton = uploadField.querySelector( '#srfm-reset-upload-field' );
+								const resetButton = uploadField.querySelector(
+									'#srfm-reset-upload-field'
+								);
 								if ( resetButton ) {
-									resetButton.addEventListener( 'click', () => {
-										uploadInput.value = '';
+									resetButton.addEventListener(
+										'click',
+										() => {
+											uploadInput.value = '';
 
-										const resultElement = uploadField.querySelector( `#srfm-upload-field-result-${ id }` );
+											const resultElement =
+												uploadField.querySelector(
+													`#srfm-upload-field-result-${ id }`
+												);
 
-										if ( resultElement ) {
-											resultElement.style.display = 'none';
+											if ( resultElement ) {
+												resultElement.style.display =
+													'none';
+											}
 										}
-									} );
+									);
 								}
 							};
 							reader.readAsDataURL( file );
@@ -274,7 +287,9 @@ if ( toggleSwitchesContainer ) {
 				// eslint-disable-next-line no-undef
 
 				if (
-					toggleSwitch.classList.contains( 'srfm-classic-switch-input' )
+					toggleSwitch.classList.contains(
+						'srfm-classic-switch-input'
+					)
 				) {
 					const computedStyle = getComputedStyle( formElement );
 					const primaryColor = computedStyle.getPropertyValue(
@@ -282,13 +297,14 @@ if ( toggleSwitchesContainer ) {
 					);
 					const currentValue = toggleSwitch.value;
 
-					toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
+					toggleSwitch.value =
+						currentValue === 'true' ? 'false' : 'true';
 					const switchBackground = toggleSwitchesContainer[
 						i
 					].querySelector( '.srfm-switch-background' );
-					const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-						'.srfm-switch-toggle'
-					);
+					const switchToggle = toggleSwitchesContainer[
+						i
+					].querySelector( '.srfm-switch-toggle' );
 					const switchTickIcon = toggleSwitchesContainer[
 						i
 					].querySelector( '.srfm-classic-toggle-icon' );
@@ -296,13 +312,13 @@ if ( toggleSwitchesContainer ) {
 					if ( toggleSwitch.value === 'true' ) {
 						if ( switchBackground && switchTickIcon ) {
 							switchBackground.style.backgroundColor =
-							primaryColor !== ''
-								? 'var(--srfm-primary-color)'
-								: '#0284c7';
+								primaryColor !== ''
+									? 'var(--srfm-primary-color)'
+									: '#0284c7';
 							switchTickIcon.style.fill =
-							primaryColor !== ''
-								? 'var(--srfm-primary-color)'
-								: '#0284c7';
+								primaryColor !== ''
+									? 'var(--srfm-primary-color)'
+									: '#0284c7';
 						}
 						// will be used later
 
@@ -334,7 +350,8 @@ if ( toggleSwitchesContainer ) {
 							}
 						} else {
 							if ( switchBackground ) {
-								switchBackground.style.backgroundColor = '#dcdcdc';
+								switchBackground.style.backgroundColor =
+									'#dcdcdc';
 								switchBackground
 									.querySelector(
 										'.srfm-classic-toggle-icon-container'
@@ -389,7 +406,8 @@ if ( toggleSwitchesContainer ) {
 								switchToggle.style.left = '0';
 							}
 							if ( switchBackground ) {
-								switchBackground.style.backgroundColor = '#dcdcdc';
+								switchBackground.style.backgroundColor =
+									'#dcdcdc';
 							}
 							if ( toggleSwitch ) {
 								toggleSwitch.value = 'false';
@@ -410,9 +428,9 @@ if ( toggleSwitchesContainer ) {
 							}
 							if ( switchBackground && switchTickIcon ) {
 								switchBackground.style.backgroundColor =
-								primaryColor !== ''
-									? 'var(--srfm-primary-color)'
-									: '#0284c7';
+									primaryColor !== ''
+										? 'var(--srfm-primary-color)'
+										: '#0284c7';
 								switchTickIcon.style.fill =
 									primaryColor !== ''
 										? 'var(--srfm-primary-color)'
@@ -425,13 +443,14 @@ if ( toggleSwitchesContainer ) {
 					}
 				} else {
 					const currentValue = toggleSwitch.value;
-					toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
+					toggleSwitch.value =
+						currentValue === 'true' ? 'false' : 'true';
 					const switchBackground = toggleSwitchesContainer[
 						i
 					].querySelector( '.srfm-switch-background' );
-					const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-						'.srfm-switch-toggle'
-					);
+					const switchToggle = toggleSwitchesContainer[
+						i
+					].querySelector( '.srfm-switch-toggle' );
 					if ( toggleSwitch.value === 'true' ) {
 						if ( switchBackground && switchToggle ) {
 							switchBackground.style.backgroundColor = '#007CBA';
@@ -651,7 +670,14 @@ if ( addressElement ) {
 
 			fullAddressInput.value = fullAddress;
 		};
-		if ( addressLine1 && addressLine2 && addressCity && addressState && addressPostal && addressCountry ) {
+		if (
+			addressLine1 &&
+			addressLine2 &&
+			addressCity &&
+			addressState &&
+			addressPostal &&
+			addressCountry
+		) {
 			addressLine1.addEventListener( 'change', updateFullAddress );
 			addressLine2.addEventListener( 'change', updateFullAddress );
 			addressCity.addEventListener( 'change', updateFullAddress );
@@ -920,11 +946,13 @@ if ( passwordContainer ) {
 				const passwordStrength = passwordInput.querySelector(
 					'.srfm-password-strength-message'
 				);
-				passwordInput.querySelector( '.srfm-error-message' ).style.display =
-					'none';
+				passwordInput.querySelector(
+					'.srfm-error-message'
+				).style.display = 'none';
 				if ( passwordInput.querySelector( '.srfm-info-icon' ) ) {
-					passwordInput.querySelector( '.srfm-info-icon' ).style.display =
-						'inline-block';
+					passwordInput.querySelector(
+						'.srfm-info-icon'
+					).style.display = 'inline-block';
 				}
 				const strength = calculatePasswordStrength( password );
 				updatePasswordStrength( strength, passwordStrength );
@@ -1043,7 +1071,8 @@ if ( selectFieldContainer ) {
 							selectFieldButton
 								.querySelector( '.srfm-classic-select-icon ' )
 								.classList.add( 'srfm-rotate-0' );
-							const selectedValue = event.target.textContent.trim();
+							const selectedValue =
+								event.target.textContent.trim();
 							selectFieldButton.querySelector(
 								'.srfm-dropdown-value'
 							).textContent = selectedValue;

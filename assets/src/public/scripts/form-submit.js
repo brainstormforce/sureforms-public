@@ -132,10 +132,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorInputIcon.style.display = 'flex';
 				}
 				if ( phoneParent ) {
+					const phoneInput =
+						container.querySelectorAll( 'input' )[ 1 ];
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
 						'!srfm-border-red-500'
 					);
+					if ( ! firstErrorInput ) {
+						firstErrorInput = phoneInput;
+					}
 				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -230,7 +235,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 				// phoneInput.style.color = 'red';
 				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
+					firstErrorInput = phoneInput;
 				}
 			} else {
 				if ( errorMessage ) {
