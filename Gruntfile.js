@@ -113,7 +113,7 @@ module.exports = function ( grunt ) {
 						src: [ '*.css', '!*-rtl.css' ],
 						dest: 'assets/css/unminified',
 						ext: '-rtl.css',
-					}
+					},
 				],
 			},
 		},

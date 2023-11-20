@@ -100,11 +100,9 @@ input:checked + .slider:before {
 	visibility: hidden;
 }
 .type-sureforms_form:hover {
-
-.srfm-shortcode {
-	visibility: visible;
-
-}
+	.srfm-shortcode {
+		visibility: visible;
+	}
 }
 .srfm-entries-number {
 	padding: 0 !important;
@@ -126,14 +124,14 @@ input:checked + .slider:before {
 }
 
 #srfm-copy-icon {
-	color: #9BA3AF !important;
+	color: #9ba3af !important;
 }
-#srfm-copy-icon.dashicons-yes{
-		color: green !important;
+#srfm-copy-icon.dashicons-yes {
+	color: green !important;
 }
 
 .uagb-advanced-color-settings-container {
 	.uagb-advanced-color-indicate.uag-global-indicator::before {
-		top: 3px!important;
+		top: 3px !important;
 	}
 }
