@@ -1097,7 +1097,7 @@ if ( numberSliderContainer ) {
 	const bgInit = ( element, val = 0, min = 0, max = 255, color ) => {
 		color = color === '' ? '#0284c7' : color;
 		// Background Change
-		const isRTL = sureforms_submit.isRTL;
+		const isRTL = SureForms.isRTL;
 		let direction = 'right';
 		if ( isRTL === '1' ) {
 			direction = 'left';
