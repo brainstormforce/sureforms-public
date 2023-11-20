@@ -1,31 +1,32 @@
 import { PanelBody } from '@wordpress/components';
 import { useRef, memo, useState, useEffect } from '@wordpress/element';
-import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
+import getSRFMEditorStateLocalStorage from '@Controls/getSRFMEditorStateLocalStorage';
 import { select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 
-const UAGAdvancedPanelBody = ( props ) => {
+const SRFMAdvancedPanelBody = ( props ) => {
 	const { children } = props;
 
 	const panelRef = useRef( null );
 	// Below code is to set the setting state of Tab for each block.
 	const { getSelectedBlock } = select( 'core/block-editor' );
 	const blockName = getSelectedBlock()?.name;
-	const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+	const srfmSettingState =
+		getSRFMEditorStateLocalStorage( 'srfmSettingState' );
 	const [ panelNameForHook, setPanelNameForHook ] = useState( 'style' );
 
 	const getInspectorTabName = () => {
 		let inspectorTabName = 'style';
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-general'
+				'srfm-tab-content-general'
 			)
 		) {
 			inspectorTabName = 'general';
 		}
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-advance'
+				'srfm-tab-content-advance'
 			)
 		) {
 			inspectorTabName = 'advance';
@@ -39,7 +40,7 @@ const UAGAdvancedPanelBody = ( props ) => {
 	}, [ panelRef ] );
 
 	const onPanelToggle = () => {
-		if ( 'enabled' === uagb_blocks_info.collapse_panels ) {
+		if ( 'enabled' === srfm_blocks_info.collapse_panels ) {
 			const siblings = getSiblings( panelRef.current );
 
 			siblings.forEach( ( element ) => {
@@ -49,39 +50,39 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 		let match = false;
 		panelRef?.current?.classList.forEach( function ( value ) {
-			if ( value.includes( 'uag-advance-panel-body' ) ) {
+			if ( value.includes( 'srfm-advance-panel-body' ) ) {
 				match = value;
 			}
 		} );
 		let inspectorTabName = 'style';
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-general'
+				'srfm-tab-content-general'
 			)
 		) {
 			inspectorTabName = 'general';
 		}
 		if (
 			panelRef?.current?.parentElement?.classList.contains(
-				'uagb-tab-content-advance'
+				'srfm-tab-content-advance'
 			)
 		) {
 			inspectorTabName = 'advance';
 		}
 
 		const data = {
-			...uagSettingState,
+			...srfmSettingState,
 			[ blockName ]: {
-				...uagSettingState?.[ blockName ],
+				...srfmSettingState?.[ blockName ],
 				selectedPanel: match,
 				selectedTab: inspectorTabName,
 			},
 		};
 
-		const uagLocalStorage = getUAGEditorStateLocalStorage();
-		if ( uagLocalStorage ) {
-			uagLocalStorage.setItem(
-				'uagSettingState',
+		const srfmLocalStorage = getSRFMEditorStateLocalStorage();
+		if ( srfmLocalStorage ) {
+			srfmLocalStorage.setItem(
+				'srfmSettingState',
 				JSON.stringify( data )
 			);
 		}
@@ -114,12 +115,12 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 	const blockNameForHook = blockName?.split( '/' )?.pop();
 	const tabBodyBefore = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }.before`,
 		'',
 		blockName
 	);
 	const tabBodyAfter = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ panelTitle }`,
 		'',
 		blockName
 	);
@@ -129,7 +130,7 @@ const UAGAdvancedPanelBody = ( props ) => {
 			{ ...props }
 			onToggle={ onPanelToggle }
 			ref={ panelRef }
-			className={ `uag-advance-panel-body-${ panelTitle }` }
+			className={ `srfm-advance-panel-body-${ panelTitle }` }
 		>
 			{ tabBodyBefore }
 			{ children }
@@ -137,4 +138,4 @@ const UAGAdvancedPanelBody = ( props ) => {
 		</PanelBody>
 	);
 };
-export default memo( UAGAdvancedPanelBody );
+export default memo( SRFMAdvancedPanelBody );

@@ -2,9 +2,8 @@
 /**
  * Font awesome icons array array file.
  *
- * @package     UAGB
+ * @package     SureForms
  * @author      Brainstorm Force
- * @link        https://wpspectra.com/
  */
 
 /**

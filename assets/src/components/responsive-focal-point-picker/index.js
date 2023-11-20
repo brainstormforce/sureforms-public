@@ -15,10 +15,10 @@ import { __ } from '@wordpress/i18n';
 import { FocalPointPicker } from '@wordpress/components';
 import { select } from '@wordpress/data';
 import styles from './editor.lazy.scss';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
 
-const ResponsiveUAGFocalPointPicker = ( props ) => {
+const ResponsiveSRFMFocalPointPicker = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -82,12 +82,12 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 
 	const controlName = 'position'; // There is no label props that's why keep hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -95,9 +95,9 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-responsive-select-control">
-				<div className="uagb-size-type-field-tabs">
-					<div className="uagb-control__header">
+			<div className="srfm-responsive-select-control">
+				<div className="srfm-size-type-field-tabs">
+					<div className="srfm-control__header">
 						<ResponsiveToggle
 							label={ __( 'Position', 'sureforms' ) }
 							responsive={ responsive }
@@ -107,11 +107,11 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 						? output[ deviceType ]
 						: output.Desktop }
 				</div>
-				<UAGHelpText text={ props.help } />
+				<SRFMHelpText text={ props.help } />
 			</div>
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
-export default ResponsiveUAGFocalPointPicker;
+export default ResponsiveSRFMFocalPointPicker;

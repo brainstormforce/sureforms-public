@@ -9,10 +9,18 @@
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,
-		"html": false,
-		"transforms": false
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
 	},
 	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
 		"id": {
 			"type": "number"
 		},

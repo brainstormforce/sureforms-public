@@ -11,7 +11,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { select } from '@wordpress/data';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import ResponsiveToggle from '../responsive-toggle';
-import UAGNumberControl from '@Components/number-control';
+import SRFMNumberControl from '@Components/number-control';
 import useDimensionHandler from './use-dimension-handler';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -81,7 +81,7 @@ export default function ImageSizeControl( {
 	const output = {};
 	output.Desktop = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -96,7 +96,7 @@ export default function ImageSizeControl( {
 				showControlHeader={ false }
 				onChange={ ( value ) => updateDimension( 'width', value ) }
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
@@ -123,7 +123,7 @@ export default function ImageSizeControl( {
 
 	output.Tablet = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -140,7 +140,7 @@ export default function ImageSizeControl( {
 					updateDimension( 'widthTablet', value )
 				}
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
@@ -167,7 +167,7 @@ export default function ImageSizeControl( {
 
 	output.Mobile = (
 		<>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
@@ -184,7 +184,7 @@ export default function ImageSizeControl( {
 					updateDimension( 'widthMobile', value )
 				}
 			/>
-			<UAGNumberControl
+			<SRFMNumberControl
 				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
@@ -211,12 +211,12 @@ export default function ImageSizeControl( {
 
 	const controlName = 'image-size'; // This components have no label props that's why added hard coded label
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -251,8 +251,8 @@ export default function ImageSizeControl( {
 			) }
 			{ isResizable && (
 				<div className="block-editor-image-size-control">
-					<div className="uagb-size-type-field-tabs">
-						<div className="uagb-control__header">
+					<div className="srfm-size-type-field-tabs">
+						<div className="srfm-control__header">
 							<ResponsiveToggle
 								label={ __( 'Image Dimensions', 'sureforms' ) }
 								responsive={ responsive }

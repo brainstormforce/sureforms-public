@@ -31,7 +31,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 						></i>
 					</div>
 					<input
-						id={ 'srfm-text-input-' + blockID }
+						id={ 'srfm-email-' + blockID }
 						type="email"
 						value={ defaultValue }
 						className={ 'srfm-classic-email-element' }
@@ -47,7 +47,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 						>
 							{ confirmLabel }
 							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
+								<span className="srfm-text-red"> *</span>
 							) }
 						</label>
 						<div className="srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
@@ -58,7 +58,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 								></i>
 							</div>
 							<input
-								id={ 'srfm-text-input-' + blockID }
+								id={ 'srfm-confirm-email-' + blockID }
 								type="email"
 								value={ defaultValue }
 								className={ 'srfm-classic-email-element' }

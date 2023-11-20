@@ -24,7 +24,7 @@ const defaultProps = {
 	setAttributes: () => {},
 };
 
-export default function UAGMultiSelectControl( props ) {
+export default function SRFMMultiSelectControl( props ) {
 	const { label, options, data, isSearchable, setAttributes } = props;
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
@@ -36,17 +36,17 @@ export default function UAGMultiSelectControl( props ) {
 
 	const controlName = getIdFromString( label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		selectedBlock
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }`,
 		'',
 		selectedBlock
 	);
 	const allOptions = applyFilters(
-		`spectra.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
+		`srfm.${ selectedBlock }.${ panelNameForHook }.${ controlName }.options`,
 		options,
 		selectedBlock
 	);
@@ -74,8 +74,8 @@ export default function UAGMultiSelectControl( props ) {
 						}, [] ),
 					} )
 				}
-				classNamePrefix={ 'spectra-multi-select' }
-				className={ 'spectra-multi-select' }
+				classNamePrefix={ 'srfm-multi-select' }
+				className={ 'srfm-multi-select' }
 				isSearchable={ isSearchable }
 				isMulti
 			/>
@@ -84,5 +84,5 @@ export default function UAGMultiSelectControl( props ) {
 	);
 }
 
-UAGMultiSelectControl.propTypes = propTypes;
-UAGMultiSelectControl.defaultProps = defaultProps;
+SRFMMultiSelectControl.propTypes = propTypes;
+SRFMMultiSelectControl.defaultProps = defaultProps;

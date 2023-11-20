@@ -19,7 +19,7 @@ import Settings from './Settings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import HeaderTitle from './HeaderTitle.js';
 
@@ -42,6 +42,7 @@ const default_keys = {
 	_srfm_submit_styling_inherit_from_theme: false,
 	_srfm_form_styling: 'classic',
 	_srfm_form_container_width: 650,
+	_srfm_thankyou_message_title: 'Thank you',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -81,13 +82,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--srfm-primary-color',
-							value:
-								sureforms_keys._srfm_color1 || '#0284C7',
+							value: sureforms_keys._srfm_color1 || '#0284C7',
 						},
 						{
 							property: '--srfm-primary-text-color',
-							value:
-								sureforms_keys._srfm_textcolor1 || '#fff',
+							value: sureforms_keys._srfm_textcolor1 || '#fff',
 						},
 						{
 							property: '--srfm-secondary-color',
@@ -152,10 +151,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 				tabs={ [ 'general', 'advance' ] }
 				defaultTab={ 'general' }
 			>
-				<InspectorTab { ...UAGTabs.general }>
+				<InspectorTab { ...SRFMTabs.general }>
 					<AppearanceSettings default_keys={ default_keys } />
 				</InspectorTab>
-				<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
+				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<Settings default_keys={ default_keys } />
 				</InspectorTab>
 			</InspectorTabs>

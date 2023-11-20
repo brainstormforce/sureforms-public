@@ -39,12 +39,12 @@ export default function ColorSwitchControl( {
 
 	const controlName = getIdFromString( label );
 	const controlBeforeDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
 		'',
 		blockNameForHook
 	);
 	const controlAfterDomElement = applyFilters(
-		`spectra.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
 		'',
 		blockNameForHook
 	);
@@ -52,12 +52,12 @@ export default function ColorSwitchControl( {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className="uagb-color-switch-control-container">
+			<div className="srfm-color-switch-control-container">
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
 					label={ label }
 					data={ type }
-					className="uagb-multi-button-alignment-control"
+					className="srfm-multi-button-alignment-control"
 					options={ [
 						{
 							value: 'classic',

@@ -181,12 +181,12 @@ if ( uploadFieldsContainer ) {
 						uploadField.querySelector(
 							`#srfm-upload-title-${ id }`
 						).innerHTML =
-							`<div class="srfm-text-primary" style="display:flex; gap:0.4rem; align-items:center">
+							`<div class="srfm-text-primary srfm-flex srfm-items-center srfm-gap-[10px]">
                         <i class="fa-solid fa-file-lines srfm-text-primary"></i> ` +
 							fileName +
 							' ' +
 							( file.size / 1000000 ).toFixed( 2 ) +
-							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary" id="srfm-reset-upload-field" style="cursor:pointer"></i></div>`;
+							`MB <i class="fa-sharp fa-solid fa-trash-can srfm-text-primary srfm-cursor-pointer" id="srfm-reset-upload-field"></i></div>`;
 					}
 					if ( isClassic ) {
 						/* eslint-disable no-undef */
@@ -206,7 +206,7 @@ if ( uploadFieldsContainer ) {
 							];
 							const icon = imageFormats.includes( file.type )
 								? `<img class="srfm-rounded-md" src="${ imgSrc }" height="50px" width="50px"/>`
-								: '<div style="font-size:35px" class="srfm-text-gray-300"><i class="fa-solid fa-file-lines"></i></div>';
+								: '<div class="srfm-text-gray-300 srfm-text-[35px]"><i class="fa-solid fa-file-lines"></i></div>';
 							const uploadResultContainer =
 								uploadField.querySelector(
 									`#srfm-upload-field-result-${ id }`
@@ -221,7 +221,7 @@ if ( uploadFieldsContainer ) {
 	).toFixed( 2 ) }MB</div>
 									</div>
 									<div>
-  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400" id="srfm-reset-upload-field" style="cursor:pointer"></i>
+  										<i class="fa-sharp fa-solid fa-trash-can srfm-text-gray-400 srfm-cursor-pointer" id="srfm-reset-upload-field"></i>
 									</div>
 								</div>
 							</div>`;
@@ -540,6 +540,24 @@ if ( multiChoices ) {
 				.get( clickedId )
 				.join( ', ' );
 		} );
+	}
+}
+const multichoiceOptions = document.getElementsByClassName(
+	'srfm-classic-multi-choice'
+);
+if ( window.innerWidth > 630 ) {
+	for ( let x = 0; x < multichoiceOptions.length - 1; x++ ) {
+		const optionHeight = multichoiceOptions[ x ].offsetHeight;
+		const adjacentOptionHeight = multichoiceOptions[ x + 1 ].offsetHeight;
+		if ( optionHeight > adjacentOptionHeight ) {
+			multichoiceOptions[ x ].style.height = optionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height = optionHeight + 'px';
+		} else {
+			multichoiceOptions[ x ].style.height = adjacentOptionHeight + 'px';
+			multichoiceOptions[ x + 1 ].style.height =
+				adjacentOptionHeight + 'px';
+		}
+		x++;
 	}
 }
 
@@ -1079,7 +1097,7 @@ if ( numberSliderContainer ) {
 	const bgInit = ( element, val = 0, min = 0, max = 255, color ) => {
 		color = color === '' ? '#0284c7' : color;
 		// Background Change
-		const isRTL = SureForms.isRTL;
+		const isRTL = sureforms_submit.isRTL;
 		let direction = 'right';
 		if ( isRTL === '1' ) {
 			direction = 'left';
@@ -1091,7 +1109,7 @@ if ( numberSliderContainer ) {
 	// Pre Init
 	const preInit = ( sliderContainer, primaryColor ) => {
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const val = Number( rangeSliders.value );
 		const min = Number( rangeSliders.getAttribute( 'min' ) );
 		const max = Number( rangeSliders.getAttribute( 'max' ) );
@@ -1102,7 +1120,7 @@ if ( numberSliderContainer ) {
 	const init = ( sliderContainer, primaryColor ) => {
 		// Slider Range Change or Input
 		const rangeSliders =
-			sliderContainer.querySelector( '#srfm-range-slider' );
+			sliderContainer.querySelector( '.srfm-range-slider' );
 		const numberInput = sliderContainer.querySelector(
 			'.srfm-number-input-slider'
 		);

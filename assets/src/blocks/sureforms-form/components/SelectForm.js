@@ -28,16 +28,16 @@ export default ( { setForm } ) => {
 		}
 	};
 
-	const customStyles = {
-		control: ( provided ) => ( {
+	const selectFormStyles = {
+		control: ( provided, isSelected ) => ( {
 			...provided,
-			width: 'fit-content',
+			width: isSelected && '250px',
 		} ),
 	};
 
 	return (
 		<Select
-			styles={ customStyles }
+			styles={ selectFormStyles }
 			loading={ loading }
 			isSearchable
 			options={ ( formsData || [] ).map( ( formEntry ) => {
