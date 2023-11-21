@@ -63,7 +63,10 @@ class SF_Public {
 
 		// SureForms frontend JS.
 		if( has_block('sureforms/rating') ) {
-			wp_enqueue_script( 'srfm-rating-js', SUREFORMS_URL . 'assets/src/public/scripts/rating.js', [], SUREFORMS_VER, true );
+			wp_enqueue_script( 'srfm-rating-js', SUREFORMS_URL . 'assets/src/public/scripts/minified/rating.min.js', [], SUREFORMS_VER, true );
+		}
+		if( has_block('sureforms/upload') ) {
+			wp_enqueue_script( 'srfm-uploadfield-js', SUREFORMS_URL . 'assets/src/public/scripts/minified/uploadfield.min.js', [], SUREFORMS_VER, true );
 		}
 		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );

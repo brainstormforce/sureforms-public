@@ -60,12 +60,27 @@ module.exports = function ( grunt ) {
 			main: [ 'sureforms' ],
 			zip: [ '*.zip' ],
 		},
+		uglify: {
+			js: {
+				files: [
+					{
+						// all .js to min.js
+						expand: true,
+						src: [ '**.js' ],
+						dest: 'assets/src/public/scripts/minified',
+						cwd: 'assets/src/public/scripts/unminified',
+						ext: '.min.js',
+					},
+				],
+			},
+		},
 	} );
 
 	/* Load Tasks */
 	grunt.loadNpmTasks( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks( 'grunt-contrib-compress' );
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	/* Read File Generation task */
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 
@@ -79,4 +94,6 @@ module.exports = function ( grunt ) {
 		'compress',
 		'clean:main',
 	] );
+	// min all
+	grunt.registerTask( 'minify', [ 'uglify:js' ] );
 };
