@@ -185,7 +185,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			}
 
 			if ( isset( $link ) && ! empty( $link ) ) {
-				echo '<link id="srfm_show_google_fonts" href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
+				echo '<link id="srfm_show_google_fonts" href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet, Generic.Commenting.DocComment.MissingShort
 			}
 		}
 

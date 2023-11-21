@@ -54,10 +54,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 				return;
 			}
 
-			// $icon_border_attribute = Sureforms_Spec_Block_Config::generate_border_attribute( 'icon' );
-
 			$attr = array_merge(
-				// $icon_border_attribute,
 				array(
 					'icon'                             =>
 					array(
@@ -482,9 +479,10 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 					<span class="uagb-svg-wrapper">
 					<?php
 					if ( $disable_link && $link_url ) {
-						echo "<a rel='noopener noreferrer' href='" . $link_url || $hash . "' target='" . $target_val . "'></a>";
+						$href = $link_url || $hash;
+						echo "<a rel='noopener noreferrer' href='" . esc_attr( $href ) . "' target='" . esc_attr( $target_val ) . "'></a>";
 					} else {
-						Sureforms_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' );
+						Sureforms_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, Generic.Commenting.DocComment.MissingShort
 					}
 					?>
 					</span>
