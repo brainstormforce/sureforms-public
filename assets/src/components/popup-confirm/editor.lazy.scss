@@ -1,6 +1,6 @@
 @import "../../styles/variables";
 
-.uag-confirm-popup-wrapper {
+.srfm-confirm-popup-wrapper {
 	display: flex;
 	flex-direction: row;
 	align-items: flex-start;
@@ -22,7 +22,7 @@
 			display: none;
 		}
 
-		.uag-confirm-popup-icon {
+		.srfm-confirm-popup-icon {
 			display: flex;
 			flex-direction: row;
 			align-items: flex-start;
@@ -41,19 +41,19 @@
 			}
 		}
 
-		.uag-confirm-popup-content {
+		.srfm-confirm-popup-content {
 			box-sizing: border-box;
 			display: flex;
 			flex-direction: column;
 			gap: 24px;
 
-			.uag-confirm-popup-text {
+			.srfm-confirm-popup-text {
 				display: flex;
 				flex-direction: column;
 				order: 1;
 				gap: 4px;
 
-				.uag-confirm-popup-title {
+				.srfm-confirm-popup-title {
 					width: 480px;
 					height: 28px;
 					font-style: normal;
@@ -66,7 +66,7 @@
 					flex-grow: 0;
 				}
 
-				.uag-confirm-popup-description {
+				.srfm-confirm-popup-description {
 					width: 480px;
 					height: 20px;
 					font-style: normal;
@@ -82,7 +82,7 @@
 				}
 			}
 
-			.uag-confirm-popup-controls {
+			.srfm-confirm-popup-controls {
 				display: flex;
 				flex-direction: row;
 				align-items: flex-start;
@@ -90,7 +90,7 @@
 				flex: none;
 				order: 2;
 
-				.uag-confirm-popup-buttons {
+				.srfm-confirm-popup-buttons {
 					display: flex;
 					flex-direction: row;
 					justify-content: center;
@@ -99,7 +99,7 @@
 					box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.05 );
 				}
 
-				.uag-popup-confirmation-button {
+				.srfm-popup-confirmation-button {
 					background: #007cba;
 					color: #fff;
 					border-radius: 2px;
@@ -107,7 +107,7 @@
 					order: 0;
 				}
 
-				.uag-popup-cancellation-button {
+				.srfm-popup-cancellation-button {
 					background: #fff;
 					border: 1px solid #e6e7e9;
 					border-radius: 2px;
@@ -119,6 +119,6 @@
 	}
 }
 
-.uag-confirm-popup-overlay {
+.srfm-confirm-popup-overlay {
 	background-color: #00000070;
 }

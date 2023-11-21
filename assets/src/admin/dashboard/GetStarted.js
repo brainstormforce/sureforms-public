@@ -6,6 +6,8 @@ import { ScCard, ScFlex } from '@surecart/components-react';
 import GetStartedBox from './GetStartedBox';
 
 export default () => {
+	const siteUrl = sureforms_admin.site_url;
+
 	return (
 		<ScCard
 			css={ css`
@@ -47,7 +49,7 @@ export default () => {
 							'sureforms'
 						) }
 						buttonLabel={ __( 'Create New Form', 'sureforms' ) }
-						buttonUrl={ '/wp-admin/post-new.php?post_type=sureforms_form' }
+						buttonUrl={ `${ siteUrl }/wp-admin/post-new.php?post_type=sureforms_form` }
 						btnFilled={ true }
 					/>
 					<GetStartedBox
@@ -60,7 +62,7 @@ export default () => {
 						) }
 						buttonLabel={ __( 'View All Forms', 'sureforms' ) }
 						buttonUrl={
-							'/wp-admin/edit.php?post_type=sureforms_form'
+							`${ siteUrl }/wp-admin/edit.php?post_type=sureforms_form`
 						}
 						btnFilled={ false }
 					/>
@@ -73,7 +75,7 @@ export default () => {
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Entries', 'sureforms' ) }
-						buttonUrl={ '/wp-admin/edit.php?post_type=sureforms_entry' }
+						buttonUrl={ `${ siteUrl }/wp-admin/edit.php?post_type=sureforms_entry` }
 						btnFilled={ false }
 					/>
 				</ScFlex>

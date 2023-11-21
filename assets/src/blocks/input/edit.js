@@ -7,10 +7,10 @@ import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import UAGTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputClassicStyle } from './components/InputClassicStyle';
@@ -18,6 +18,7 @@ import { InputThemeStyle } from './components/InputThemeStyle';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -32,6 +33,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		isUnique,
 		duplicateMsg,
 		formId,
+		preview,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -43,6 +45,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.input_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -50,12 +58,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
 								data={ {
@@ -66,7 +74,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								value={ placeholder }
 								data={ {
@@ -77,7 +85,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { placeholder: value } )
 								}
 							/>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								value={ defaultValue }
 								data={ {
@@ -96,7 +104,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
 									value={ errorMsg }
 									data={ {
@@ -119,7 +127,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 							{ isUnique && (
-								<UAGTextControl
+								<SRFMTextControl
 									label={ __(
 										'Validation Message for Duplicate ',
 										'sureforms'
@@ -134,7 +142,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
 								data={ {
@@ -164,9 +172,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 							/>
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div

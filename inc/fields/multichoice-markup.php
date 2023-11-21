@@ -63,7 +63,7 @@ class Multichoice_Markup extends Base {
 							class="multi-choice-option"
 							id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '"
 						>
-							' . esc_html( $option ) . '
+							' . esc_html( $option['optiontitle'] ) . '
 						</span>
 					</label>
 					<span></span>
@@ -103,8 +103,8 @@ class Multichoice_Markup extends Base {
 				<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
 				<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />
 				<input class="srfm-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">
-				<label for="text" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
-				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2">';
+				<label class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
+				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2 srfm-justify-between">';
 		if ( is_array( $options ) ) {
 			foreach ( $options as $i => $option ) {
 						$output .= ' <label class="srfm-classic-radio">
@@ -115,7 +115,7 @@ class Multichoice_Markup extends Base {
 								<i class="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300" aria-hidden="true"></i>
 							</div>
 							<div> 
-								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option ) . '</article>
+								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option['optiontitle'] ) . '</article>
 							</div>
 						</div>
 						</label>';

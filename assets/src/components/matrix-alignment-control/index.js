@@ -3,7 +3,7 @@ import styles from './editor.lazy.scss';
 import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import { __experimentalAlignmentMatrixControl as AlignmentMatrixControl } from '@wordpress/components';
-import UAGHelpText from '@Components/help-text';
+import SRFMHelpText from '@Components/help-text';
 
 // Set Prop Types for All Valid Props.
 const propTypes = {
@@ -18,8 +18,8 @@ const defaultProps = {
 	label: __( 'Alignment', 'sureforms' ),
 };
 
-// Create the Spectra Control.
-const SpectraMatrixControl = ( props ) => {
+// Create the SRFM Control.
+const SRFMMatrixControl = ( props ) => {
 	// Add and remove the CSS on the drop and remove of the component.
 	useLayoutEffect( () => {
 		styles.use();
@@ -43,10 +43,10 @@ const SpectraMatrixControl = ( props ) => {
 	// Render the Alignment Matrix Control.
 	return (
 		<>
-			<div className="components-base-control spectra__matrix-control">
-				<div className="uag-control-label">{ label }</div>
+			<div className="components-base-control srfm__matrix-control">
+				<div className="srfm-control-label">{ label }</div>
 				<AlignmentMatrixControl
-					className={ 'spectra__matrix-control--box' }
+					className={ 'srfm__matrix-control--box' }
 					label={ label }
 					value={ data?.value }
 					onChange={
@@ -56,12 +56,12 @@ const SpectraMatrixControl = ( props ) => {
 					}
 				/>
 			</div>
-			<UAGHelpText text={ help } />
+			<SRFMHelpText text={ help } />
 		</>
 	);
 };
 
-SpectraMatrixControl.propTypes = propTypes;
-SpectraMatrixControl.defaultProps = defaultProps;
+SRFMMatrixControl.propTypes = propTypes;
+SRFMMatrixControl.defaultProps = defaultProps;
 
-export default SpectraMatrixControl;
+export default SRFMMatrixControl;

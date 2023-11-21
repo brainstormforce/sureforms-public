@@ -87,11 +87,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( errorMessage ) {
 					errorMessage.style.display = 'block';
 				}
-				// might be used later
 				if ( duplicateMessage ) {
 					duplicateMessage.style.display = 'none';
 				}
-				// inputField.style.borderColor = '#FCA5A5';
 				if ( inputField ) {
 					inputField.classList.add( 'srfm-classic-input-error' );
 				}
@@ -112,7 +110,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
-				// inputField.style.borderColor = '#d1d5db';
 			}
 		}
 
@@ -132,10 +129,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorInputIcon.style.display = 'flex';
 				}
 				if ( phoneParent ) {
+					const phoneInput =
+						container.querySelectorAll( 'input' )[ 1 ];
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
 						'!srfm-border-red-500'
 					);
+					if ( ! firstErrorInput ) {
+						firstErrorInput = phoneInput;
+					}
 				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -183,12 +185,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 
 			if ( ischeckedRequired === 'true' && ! checkedSelected ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput && visibleInput ) {
 					firstErrorInput = visibleInput;
 				}
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -196,15 +200,22 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//phone field
 		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
+			const phoneParent = container.querySelector(
+				'.srfm-classic-phone-parent'
+			);
+			const isIntelError = phoneParent.classList.contains(
+				'srfm-classic-input-error'
+			);
 			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
-			if ( isPhoneRequired === 'true' && ! inputValue ) {
+			if ( isIntelError ) {
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = phoneInput;
+				}
+			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
 				errorMessage.style.display = 'block';
 				duplicateMessage.style.display = 'none';
 				validateResult = true;
-				// we might be needing that later.
-				// phoneInput.parentElement.style.borderColor = '#FCA5A5';
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( phoneParent ) {
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
@@ -217,15 +228,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( errorInputIcon ) {
 					errorInputIcon.style.display = 'flex';
 				}
-				// phoneInput.style.color = 'red';
 				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
+					firstErrorInput = phoneInput;
 				}
 			} else {
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				//for Tailwind phone field UI
-				const phoneParent =
-					container.querySelector( '#srfm-phone-parent' );
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
 						'!srfm-ring-red-500',
@@ -261,35 +271,39 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				)[ 1 ];
 				if ( isRequired === 'true' && ! confirmPasswordValue ) {
 					confirmFieldError.style.display = 'block';
-					container.querySelector(
-						'.confirm-password-error'
-					).style.display = 'none';
-					// confirmPassword.style.borderColor = '#FCA5A5';
+					const confirmPwdError = container.querySelector(
+						'.srfm-confirm-password-error'
+					);
+					if ( confirmPwdError ) {
+						confirmPwdError.style.display = 'none';
+					}
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
 					validateResult = true;
 				} else if ( confirmPasswordValue !== inputValue ) {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					container.querySelector(
 						'.srfm-confirm-password-error'
 					).style.display = 'block';
-					// confirmPassword.style.borderColor = '#FCA5A5';
 					confirmPassword.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmPassword;
 					}
 					validateResult = true;
 				} else {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					confirmPassword.classList.remove(
 						'srfm-classic-input-error'
 					);
 					container.querySelector(
 						'.srfm-confirm-password-error'
 					).style.display = 'none';
-					// confirmPassword.style.borderColor = '#d1d5db';
 				}
 			}
 		}
@@ -305,11 +319,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
-					confirmFieldError.style.display = 'block';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'block';
+					}
 					container.querySelector(
 						'.confirm-email-error'
 					).style.display = 'none';
-					// confirmEmail.style.borderColor = '#FCA5A5';
 					confirmEmail.classList.add( 'srfm-classic-input-error' );
 					if ( ! firstErrorInput ) {
 						firstErrorInput = confirmEmail;
@@ -319,7 +334,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmEmailValue &&
 					confirmEmailValue !== inputValue
 				) {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					container.querySelector(
 						'.srfm-confirm-email-error'
 					).style.display = 'block';
@@ -330,7 +347,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					confirmEmail.style.borderColor = '#d1d5db';
 					confirmEmail.classList.remove( 'srfm-classic-input-error' );
 					container.querySelector(
@@ -341,7 +360,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Address field
-		//Might be used later
 		if ( container.classList.contains( 'srfm-address-container' ) ) {
 			const addressInput = container.querySelectorAll( 'input,select' );
 			const isAddressRequired =
@@ -353,8 +371,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( ! addressInput[ i ].value ) {
-					errorMessage.style.display = 'block';
-					// addressInput[ i ].style.borderColor = '#FCA5A5';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
 					errCounter = 1;
 					validateResult = true;
 					if ( ! firstErrorInput ) {
@@ -362,11 +381,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 				} else {
 					errorMessage.style.display = 'none';
-					// addressInput[ i ].style.borderColor = '#d1d5db';
 				}
 				if ( errCounter === 1 ) {
-					errorMessage.style.display = 'block';
-				} else {
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
+				} else if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
 			}
@@ -388,16 +408,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
-				errorMessage.style.display = 'block';
-				// uploadInputInnerDiv.style.borderColor = '#FCA5A5';
-
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = uploadInput;
 				}
 			} else {
-				errorMessage.style.display = 'none';
-				uploadInputInnerDiv.style.borderColor = '#d1d5db';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
+				if ( uploadInputInnerDiv ) {
+					uploadInputInnerDiv.style.borderColor = '#d1d5db';
+				}
 			}
 		}
 
@@ -414,7 +438,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( isDateRequired === 'true' && ! dateInput[ i ].value ) {
-					errorMessage.style.display = 'block';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
 					dateInput[ i ].style.borderColor = '#FCA5A5';
 					dateErrCounter = 1;
 					validateResult = true;
@@ -423,12 +449,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 				} else {
 					dateInput[ i ].style.borderColor = '#d1d5db';
-					errorMessage.style.display = 'none';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'none';
+					}
 				}
 			}
 			if ( dateErrCounter === 1 ) {
-				errorMessage.style.display = 'block';
-			} else {
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -444,8 +474,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				min !== '' &&
 				Number( inputValue ) < Number( min )
 			) {
-				minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
-				minMaxErrorMessage.style.display = `block`;
+				if ( minMaxErrorMessage ) {
+					minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
+					minMaxErrorMessage.style.display = `block`;
+				}
 				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -456,14 +488,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				max !== '' &&
 				Number( inputValue ) > Number( max )
 			) {
-				minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
-				minMaxErrorMessage.style.display = `block`;
+				if ( minMaxErrorMessage ) {
+					minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
+					minMaxErrorMessage.style.display = `block`;
+				}
 				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else {
+			} else if ( minMaxErrorMessage ) {
 				minMaxErrorMessage.innerText = '';
 			}
 		}
@@ -476,9 +510,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const ratingRequired =
 				classicRatingField.getAttribute( 'aria-required' );
 			if ( ratingRequired === 'true' && ! classicRatingField.value ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -493,12 +529,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const dateTimeRequired =
 				classicDateTimeField.getAttribute( 'aria-required' );
 			if ( dateTimeRequired === 'true' && ! classicDateTimeField.value ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = classicDateTimeField;
 				}
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -534,14 +572,18 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'.srfm-classic-dropdown-btn'
 			);
 			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				dropdownBtn.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = dropdownBtn;
 				}
 			} else {
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				dropdownBtn.classList.remove( 'srfm-classic-input-error' );
 			}
 		}
@@ -614,8 +656,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 } );
 
 function submitFormData( form ) {
+	const site_url = sureforms_submit.site_url;
 	const formData = new FormData( form );
-	return fetch( '/wp-json/sureforms/v1/submit-form', {
+	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		body: formData,
 	} )
@@ -636,7 +679,6 @@ function showSuccessMessage( element, form ) {
 		element.style.minHeight = '420px';
 	}
 	element.style.opacity = 1;
-	element.style.height = 'auto';
 	form.style.display = 'none';
 }
 

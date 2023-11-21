@@ -1,14 +1,14 @@
 /* --------- Common Image and Icon Picker Styles --------- */
 
-.spectra-media-control {
+.srfm-media-control {
 	position: relative;
 	// The Overall Wrapper.
 	&__wrapper {
-		height: $spectra-control-mediapicker-height;
-		border-radius: $spectra-control-border-radius;
-		border: 1px solid $spectra-color-border;
+		height: $srfm-control-mediapicker-height;
+		border-radius: $srfm-control-border-radius;
+		border: 1px solid $srfm-color-border;
 		position: relative;
-		background-color: $spectra-color-plain-background;
+		background-color: $srfm-color-plain-background;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -20,7 +20,7 @@
 		justify-content: flex-end;
 
 		&--small {
-			height: $spectra-control-mediapicker-height-small;
+			height: $srfm-control-mediapicker-height-small;
 		}
 	}
 
@@ -38,18 +38,18 @@
 		border-radius: 50%;
 
 		&--add {
-			background-color: $spectra-color-icon-disabled;
+			background-color: $srfm-color-icon-disabled;
 
 			svg path {
-				fill: $spectra-color-plain-background;
+				fill: $srfm-color-plain-background;
 			}
 		}
 
 		&--close {
-			background-color: $spectra-color-light-background;
+			background-color: $srfm-color-light-background;
 
 			svg path {
-				fill: $spectra-color-icon;
+				fill: $srfm-color-icon;
 			}
 		}
 	}
@@ -76,8 +76,8 @@
 		&--replace {
 			width: 100%;
 			height: 25px;
-			color: $spectra-color-body;
-			background-color: $spectra-color-light-background;
+			color: $srfm-color-body;
+			background-color: $srfm-color-light-background;
 			position: absolute;
 			bottom: -1px;
 			-webkit-display: flex;
@@ -88,7 +88,7 @@
 			align-items: center;
 			justify-content: center;
 
-			.uag-control-label {
+			.srfm-control-label {
 				margin-bottom: 0;
 			}
 		}
@@ -118,25 +118,25 @@
 		}
 
 		&--stroke svg path {
-			stroke: $spectra-color-border-hover;
+			stroke: $srfm-color-border-hover;
 		}
 
 		&--fill svg path {
-			fill: $spectra-color-border-hover;
+			fill: $srfm-color-border-hover;
 		}
 
-		& + .spectra-media-control__clickable--replace {
+		& + .srfm-media-control__clickable--replace {
 			position: relative;
 		}
 	}
 
-	.spectra-media-control__footer {
+	.srfm-media-control__footer {
 		background: #f0f0f1;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 
-		.uag-control-label {
+		.srfm-control-label {
 			flex-grow: 1;
 			height: 26px;
 			margin-bottom: 0;
@@ -146,7 +146,7 @@
 			font-size: 12px;
 		}
 		// dynamic image extender
-		.spectra-btn-image-extender {
+		.srfm-btn-image-extender {
 			border-top: 0;
 			border-bottom: 0;
 			border-right: 0;

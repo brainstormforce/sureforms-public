@@ -2,18 +2,14 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	useBlockProps,
-	InspectorControls,
-	RichText,
-} from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
-import UAGTextControl from '@Components/text-control';
-import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
+import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
-	UAGTabs,
+	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 /**
@@ -27,6 +23,7 @@ import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
 import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -39,11 +36,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		block_id,
 		errorMsg,
 		formId,
+		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ selected, setSelected ] = useState( [] );
-	const [ newOption, setNewOption ] = useState( '' );
+	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
 
 	function handleClick( index ) {
 		if ( singleSelection === true ) {
@@ -58,40 +56,75 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}
 
+	const addOption = () => {
+		const newOptions = {
+			optiontitle:
+				__( 'Option Name ', 'sureforms' ) + `${ options.length + 1 }`,
+		};
+		options[ options.length ] = newOptions;
+		const addnewOptions = options.map( ( item ) => item );
+
+		setAttributes( { options: addnewOptions } );
+	};
+
+	const changeOption = ( e, index ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...e };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
+	};
+
+	const deleteOption = ( index ) => {
+		const deleteOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				options.splice( index, 1 );
+				item = { options };
+			}
+			return item;
+		} );
+
+		setAttributes( { deleteOptions } );
+	};
+
 	function editOption( value, i ) {
 		if ( value === '' ) {
-			handleDelete( i );
+			deleteOption( i );
 			return;
 		}
 		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
+		updatedOptions[ i ].optiontitle = value;
 		setAttributes( { options: updatedOptions } );
 	}
 
-	function handleDelete( i ) {
-		const newOptions = [ ...options ];
-		newOptions.splice( i, 1 );
-		setAttributes( { options: newOptions } );
-	}
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = fieldsPreview.multi_choice_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
+
 	return (
-		<div { ...useBlockProps() }>
+		<div>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
 				>
-					<InspectorTab { ...UAGTabs.general }>
-						<UAGAdvancedPanelBody
+					<InspectorTab { ...SRFMTabs.general }>
+						<SRFMAdvancedPanelBody
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<UAGTextControl
+							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
 									value: label,
@@ -110,7 +143,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								}
 							/>
 							{ required && (
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -147,7 +180,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
-										<span className="uag-control-label uagb-control__header">
+										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
 												'sureforms'
@@ -204,7 +237,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							'0',
 																					} }
 																				>
-																					<UAGTextControl
+																					<SRFMTextControl
 																						showHeaderControls={
 																							false
 																						}
@@ -212,10 +245,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.optiontitle
 																						}
 																						data={ {
-																							value: option,
+																							value: option.optiontitle,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -232,7 +265,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
-																							handleDelete(
+																							deleteOption(
 																								i
 																							)
 																						}
@@ -252,19 +285,19 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="uag-control-label uagb-control__header">
+							<span className="srfm-control-label srfm-control__header">
 								{ __( 'Add New Option', 'sureforms' ) }
 							</span>
 							<div className="sureform-add-option-container">
-								<UAGTextControl
+								<SRFMTextControl
 									data={ {
-										value: newOption,
+										value: newOption.optiontitle,
 										label: 'option',
 									} }
 									showHeaderControls={ false }
-									value={ newOption }
+									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
-										setNewOption( value )
+										setNewOption( { optiontitle: value } )
 									}
 								/>
 								<Button
@@ -287,8 +320,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'ADD', 'sureforms' ) }
 								</Button>
 							</div>
-							<span className="uag-control-label uagb-control__header" />
-							<UAGTextControl
+							<span className="srfm-control-label srfm-control__header" />
+							<SRFMTextControl
 								data={ {
 									value: help,
 									label: 'help',
@@ -343,9 +376,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										} }
 									/>
 								) }
-						</UAGAdvancedPanelBody>
+						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<div
@@ -363,6 +396,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<MultichoiceClassicStyle
 						blockID={ block_id }
 						attributes={ attributes }
+						isSelected={ isSelected }
+						addOption={ addOption }
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
 						setAttributes={ setAttributes }
 					/>
 				) : (
@@ -371,6 +408,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 						attributes={ attributes }
 						handleClick={ handleClick }
 						selected={ selected }
+						isSelected={ isSelected }
+						addOption={ addOption }
+						deleteOption={ deleteOption }
+						changeOption={ changeOption }
 						setAttributes={ setAttributes }
 					/>
 				) }

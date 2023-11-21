@@ -96,6 +96,7 @@ class Load_Form_Defaults {
 			'_srfm_submit_styling_inherit_from_theme',
 			'_srfm_form_container_width',
 			'_srfm_form_styling',
+			'_srfm_thankyou_message_title',
 		);
 
 		foreach ( $meta_values as $meta_key ) {

@@ -16,19 +16,20 @@
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$custom_post_id                 = get_the_ID();
-		$sureforms_color1_val           = get_post_meta( intval( $custom_post_id ), '_srfm_color1', true );
-		$sureforms_textcolor1_val       = get_post_meta( intval( $custom_post_id ), '_srfm_textcolor1', true );
-		$sureforms_color2_val           = get_post_meta( intval( $custom_post_id ), '_srfm_color2', true );
-		$sureforms_bg_val               = get_post_meta( intval( $custom_post_id ), '_srfm_bg', true );
-		$sureforms_fontsize_val         = get_post_meta( intval( $custom_post_id ), '_srfm_fontsize', true );
-		$sureforms_submit_type_val      = get_post_meta( intval( $custom_post_id ), '_srfm_submit_type', true );
-		$sureforms_thankyou_message_val = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message', true );
-		$sureforms_submit_url_val       = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
-		$button_styling_from_theme_val  = get_post_meta( intval( $custom_post_id ), '_srfm_submit_styling_inherit_from_theme', true );
-		$sureforms_form_class_name      = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
-		$styling                        = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
-		$form_container_width           = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
+		$custom_post_id                   = get_the_ID();
+		$sureforms_color1_val             = get_post_meta( intval( $custom_post_id ), '_srfm_color1', true );
+		$sureforms_textcolor1_val         = get_post_meta( intval( $custom_post_id ), '_srfm_textcolor1', true );
+		$sureforms_color2_val             = get_post_meta( intval( $custom_post_id ), '_srfm_color2', true );
+		$sureforms_bg_val                 = get_post_meta( intval( $custom_post_id ), '_srfm_bg', true );
+		$sureforms_fontsize_val           = get_post_meta( intval( $custom_post_id ), '_srfm_fontsize', true );
+		$sureforms_submit_type_val        = get_post_meta( intval( $custom_post_id ), '_srfm_submit_type', true );
+		$sureforms_thankyou_message_title = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message_title', true );
+		$sureforms_thankyou_message_val   = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message', true );
+		$sureforms_submit_url_val         = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
+		$button_styling_from_theme_val    = get_post_meta( intval( $custom_post_id ), '_srfm_submit_styling_inherit_from_theme', true );
+		$sureforms_form_class_name        = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
+		$styling                          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
+		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 
 		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
 		$color_textprimary         = $sureforms_textcolor1_val ? strval( $sureforms_textcolor1_val ) : '#fff';
@@ -36,6 +37,7 @@
 		$background_image_url      = $sureforms_bg_val ? rawurldecode( strval( $sureforms_bg_val ) ) : '';
 		$form_font_size            = $sureforms_fontsize_val ? $sureforms_fontsize_val : '';
 		$success_submit_type       = $sureforms_submit_type_val ? strval( $sureforms_submit_type_val ) : '';
+		$success_message_title     = $sureforms_thankyou_message_title ? strval( $sureforms_thankyou_message_title ) : '';
 		$success_message           = $sureforms_thankyou_message_val ? strval( $sureforms_thankyou_message_val ) : '';
 		$success_url               = $sureforms_submit_url_val ? strval( $sureforms_submit_url_val ) : '';
 		$button_styling_from_theme = $button_styling_from_theme_val ? strval( $button_styling_from_theme_val ) : '';
@@ -72,7 +74,6 @@
 				form-id="<?php echo esc_attr( $custom_post_id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ); ?>" success-url="<?php echo esc_attr( $success_url ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 				<?php
-					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
 					$honeypot_spam = get_option( 'honeypot' );
 				?>
 					<input type="hidden" value="<?php echo esc_attr( $custom_post_id ); ?>" name="form-id">
@@ -87,12 +88,12 @@
 					?>
 				</form>
 				<?php
-				if ( isset( $success_message ) ) {
+				if ( isset( $success_message ) && isset( $success_message_title ) ) {
 					?>
 				<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
 					<i class="fa-regular fa-circle-check"></i>
 					<article class="srfm-success-box-header">
-						<?php esc_html_e( 'Thank you', 'sureforms' ); ?>
+						<?php echo esc_html( $success_message_title ); ?>
 					</article>
 					<article class="srfm-success-box-subtxt srfm-text-gray-900">
 						<?php echo esc_html( $success_message ); ?>

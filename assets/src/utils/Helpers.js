@@ -43,8 +43,8 @@ export function getPanelIdFromRef( ref ) {
 	return null;
 }
 
-export const uagbClassNames = ( classes ) =>
+export const srfmClassNames = ( classes ) =>
 	classes.filter( Boolean ).join( ' ' );
 
-export const uagbDeepClone = ( arrayOrObject ) =>
+export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
