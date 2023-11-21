@@ -47,7 +47,7 @@ export const EmailClassicStyle = ( { attributes, blockID, setAttributes } ) => {
 						>
 							{ confirmLabel }
 							{ required && label && (
-								<span style={ { color: 'red' } }> *</span>
+								<span className="srfm-text-red"> *</span>
 							) }
 						</label>
 						<div className="srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
