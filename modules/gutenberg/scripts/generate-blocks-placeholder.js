@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 const path = require( 'path' );
 const paths = require( './paths' );
 const fs = require( 'fs' );

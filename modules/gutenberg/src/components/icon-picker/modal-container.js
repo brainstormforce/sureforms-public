@@ -9,16 +9,20 @@ import chunk from './chunks';
 import HeaderContainer from './header-container';
 
 const ModalContainer = ( props ) => {
-	const { value, onChange, closeModal, defaultIcons, iconCategoryList } = props;
+	const { value, onChange, closeModal, defaultIcons, iconCategoryList } =
+		props;
 	const defaultIconsWithKeys = { ...uagb_blocks_info.uagb_svg_icons };
 	const NUMBER_OF_COLUMN = 8;
 
 	const setIconListWithChunks = ( icons ) => chunk( icons, NUMBER_OF_COLUMN );
 
 	const [ searchIconInputValue, setSearchIconInputValue ] = useState( '' );
-	const [ iconList, setIconList ] = useState( setIconListWithChunks( defaultIcons ) );
+	const [ iconList, setIconList ] = useState(
+		setIconListWithChunks( defaultIcons )
+	);
 	const [ categoryListName, setCategoryListName ] = useState( 'all' );
-	const [ iconListByCategory, setIconListByCategory ] = useState( defaultIcons );
+	const [ iconListByCategory, setIconListByCategory ] =
+		useState( defaultIcons );
 	const [ insertIcon, setInsertIcon ] = useState( '' );
 	const inputElement = useRef();
 
@@ -43,7 +47,9 @@ const ModalContainer = ( props ) => {
 		inputElement.current.focus();
 		setIconContainerHeight( getContainerHeight( 'h' ) );
 		setIconContainerWidth( getContainerHeight( 'w' ) );
-		const selectedIconRowIndex = iconList.findIndex( ( row_value ) => row_value.includes( value ) );
+		const selectedIconRowIndex = iconList.findIndex( ( row_value ) =>
+			row_value.includes( value )
+		);
 		setRowIndexForFirstTime( selectedIconRowIndex );
 	}, [] );
 
@@ -54,13 +60,20 @@ const ModalContainer = ( props ) => {
 			findIconsByCategory = defaultIcons;
 		} else if ( 'no-category' === category ) {
 			for ( const defaultIcon in defaultIconsWithKeys ) {
-				if ( 0 === defaultIconsWithKeys[ defaultIcon ].custom_categories.length ) {
+				if (
+					0 ===
+					defaultIconsWithKeys[ defaultIcon ].custom_categories.length
+				) {
 					findIconsByCategory.push( defaultIcon );
 				}
 			}
 		} else {
 			for ( const defaultIcon in defaultIconsWithKeys ) {
-				if ( defaultIconsWithKeys[ defaultIcon ].custom_categories.includes( category ) ) {
+				if (
+					defaultIconsWithKeys[
+						defaultIcon
+					].custom_categories.includes( category )
+				) {
 					findIconsByCategory.push( defaultIcon );
 				}
 			}
@@ -78,7 +91,10 @@ const ModalContainer = ( props ) => {
 		if ( '' !== inputValue ) {
 			const filterIcons = ( icons ) =>
 				defaultIconsWithKeys[ icons ]?.label
-					? -1 !== defaultIconsWithKeys[ icons ].label.toLowerCase().indexOf( inputValue )
+					? -1 !==
+					  defaultIconsWithKeys[ icons ].label
+					  	.toLowerCase()
+					  	.indexOf( inputValue )
 					: false;
 
 			const resultIcons = [ ...iconListByCategory ].filter( filterIcons );
@@ -95,7 +111,7 @@ const ModalContainer = ( props ) => {
 			return (
 				<div className="uagb-ip-icons icon-not-found">
 					<div className="uagb-icon-not-available">
-						<span>{ __( 'No Icons Found', 'ultimate-addons-for-gutenberg' ) }</span>
+						<span>{ __( 'No Icons Found', 'sureforms' ) }</span>
 					</div>
 				</div>
 			);
@@ -104,7 +120,9 @@ const ModalContainer = ( props ) => {
 			if ( ! actualTitle ) {
 				return '';
 			}
-			return actualTitle.length < 11 ? actualTitle : actualTitle.slice( 0, 10 ) + '..';
+			return actualTitle.length < 11
+				? actualTitle
+				: actualTitle.slice( 0, 10 ) + '..';
 		};
 		// renderer.
 		function cellRenderer( renderer ) {
@@ -148,10 +166,18 @@ const ModalContainer = ( props ) => {
 				<Grid
 					cellRenderer={ cellRenderer }
 					columnCount={ iconList[ 0 ].length }
-					columnWidth={ NUMBER_OF_COLUMN === iconList[ 0 ].length ? heightAndWidth - 2 : 100 }
+					columnWidth={
+						NUMBER_OF_COLUMN === iconList[ 0 ].length
+							? heightAndWidth - 2
+							: 100
+					}
 					height={ iconContainerHeight }
 					rowCount={ iconList.length }
-					rowHeight={ NUMBER_OF_COLUMN === iconList[ 0 ].length ? heightAndWidth : 100 }
+					rowHeight={
+						NUMBER_OF_COLUMN === iconList[ 0 ].length
+							? heightAndWidth
+							: 100
+					}
 					width={ iconContainerWidth }
 					scrollToRow={ rowIndexForFirstTime }
 					//
@@ -169,12 +195,14 @@ const ModalContainer = ( props ) => {
 				className={ 'all' === categoryListName ? 'selected' : null }
 				onClick={ () => clickToCategoryList( 'all' ) }
 			>
-				{ __( 'All Icons', 'ultimate-addons-for-gutenberg' ) }
+				{ __( 'All Icons', 'sureforms' ) }
 			</div>
 			{ iconCategoryList.map( ( cateValue, key ) => (
 				<div
 					key={ key }
-					className={ cateValue.slug === categoryListName ? 'selected' : null }
+					className={
+						cateValue.slug === categoryListName ? 'selected' : null
+					}
 					onClick={ () => clickToCategoryList( cateValue.slug ) }
 				>
 					{ cateValue.title }
@@ -182,10 +210,12 @@ const ModalContainer = ( props ) => {
 			) ) }
 			<div
 				key="no-category"
-				className={ 'no-category' === categoryListName ? 'selected' : null }
+				className={
+					'no-category' === categoryListName ? 'selected' : null
+				}
 				onClick={ () => clickToCategoryList( 'no-category' ) }
 			>
-				{ __( 'Other', 'ultimate-addons-for-gutenberg' ) }
+				{ __( 'Other', 'sureforms' ) }
 			</div>
 		</div>
 	);
@@ -197,7 +227,7 @@ const ModalContainer = ( props ) => {
 			onRequestClose={ closeModal }
 			overlayClassName="uagb-ip-modal-wrapper-overlay"
 			shouldCloseOnClickOutside={ false }
-			closeButtonLabel={ __( 'Close', 'ultimate-addons-for-gutenberg' ) }
+			closeButtonLabel={ __( 'Close', 'sureforms' ) }
 		>
 			{ /* Header  */ }
 			<HeaderContainer
@@ -213,7 +243,10 @@ const ModalContainer = ( props ) => {
 			<section className="uagb-ip-lr-container">
 				<div className="uagb-ip-left">{ listOfCategory() }</div>
 				<div className="uagb-ip-right">
-					<div className="uagb-ip-modal-container" ref={ iconContainerRef }>
+					<div
+						className="uagb-ip-modal-container"
+						ref={ iconContainerRef }
+					>
 						{ renderIconList() }
 					</div>
 				</div>
@@ -225,13 +258,13 @@ const ModalContainer = ( props ) => {
 					onClick={
 						'' !== insertIcon
 							? () => {
-									onChange( insertIcon );
-									closeModal();
+								onChange( insertIcon );
+								closeModal();
 							  }
 							: null
 					}
 				>
-					{ __( 'Insert Icon', 'ultimate-addons-for-gutenberg' ) }
+					{ __( 'Insert Icon', 'sureforms' ) }
 				</button>
 			</section>
 		</Modal>
