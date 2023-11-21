@@ -41,12 +41,12 @@ class Email_Markup extends Base {
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="srfm-input-email-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
+        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '</label>
         <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" type="email" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" class="srfm-input-email srfm-input-field">
         <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
         <span style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</span>' .
 		( true === $is_confirm_email ?
-			'<label for="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>' .
+			'<label for="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '</label>' .
 			'<input id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" type="email" data-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field srfm-input-confirm-email">'
 		: '' ) .
 		( '' !== $help ? '<label for="srfm-input-email" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
