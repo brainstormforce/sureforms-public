@@ -15,12 +15,15 @@
 
 .srfm-classic-radio {
 	flex: calc(50% - 10px) 0 0;
+	@include mobile630 {
+		flex: calc( 100% ) 0 0;
+	}
 }
 .srfm-radio-buttons {
 	gap: 7px;
 	flex: calc(50% - 7px) 0 0;
 	@include mobile630 {
-		flex: calc( 100% ) 0 0;
+		flex: unset;
 	}
 }
 .srfm-classic-radio input {
