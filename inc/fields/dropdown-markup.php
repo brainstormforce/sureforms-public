@@ -38,7 +38,7 @@ class Dropdown_Markup extends Base {
 		$output  = '';
 		$output .= '<div class="srfm-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label class="srfm-text-primary">' . esc_html( $label ) . ' 
-            ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
+            ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '
         </label>
         <select 
         name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
