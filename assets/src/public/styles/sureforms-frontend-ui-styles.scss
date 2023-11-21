@@ -7,7 +7,6 @@ $ui-padding: 12px 16px;
 		@content;
 	}
 }
-
 .srfm-single-form {
 	margin: auto;
 	background-color: white;
@@ -199,5 +198,11 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 .srfm-form {
 	.wp-block-columns {
 		margin: 0 !important;
+	}
+}
+
+.srfm-main-container{
+	@include mobile630 {
+		width:  100%!important;
 	}
 }
