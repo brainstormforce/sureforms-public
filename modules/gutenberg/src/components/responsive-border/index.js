@@ -24,11 +24,11 @@ const propTypes = {
 };
 
 const defaultProps = {
-	borderStyleLabel: __( 'Style', 'ultimate-addons-for-gutenberg' ),
-	borderWidthLabel: __( 'Width', 'ultimate-addons-for-gutenberg' ),
-	borderRadiusLabel: __( 'Radius', 'ultimate-addons-for-gutenberg' ),
-	borderColorLabel: __( 'Color', 'ultimate-addons-for-gutenberg' ),
-	borderHoverColorLabel: __( 'Color', 'ultimate-addons-for-gutenberg' ),
+	borderStyleLabel: __( 'Style', 'sureforms' ),
+	borderWidthLabel: __( 'Width', 'sureforms' ),
+	borderRadiusLabel: __( 'Radius', 'sureforms' ),
+	borderColorLabel: __( 'Color', 'sureforms' ),
+	borderHoverColorLabel: __( 'Color', 'sureforms' ),
 };
 
 const ResponsiveBorder = ( props ) => {
@@ -49,9 +49,9 @@ const ResponsiveBorder = ( props ) => {
 		borderColorLabel,
 		borderHoverColorLabel,
 		showWidth,
-		label = __( 'Border', 'ultimate-addons-for-gutenberg' ),
-		normalTabLabel = __( 'Normal', 'ultimate-addons-for-gutenberg' ),
-		hoverTabLabel = __( 'Hover', 'ultimate-addons-for-gutenberg' ),
+		label = __( 'Border', 'sureforms' ),
+		normalTabLabel = __( 'Normal', 'sureforms' ),
+		hoverTabLabel = __( 'Hover', 'sureforms' ),
 		borderRadiusHelp,
 		help = false,
 	} = props;
@@ -79,7 +79,11 @@ const ResponsiveBorder = ( props ) => {
 	const tabOutputNormal = (
 		<AdvancedPopColorControl
 			label={ borderColorLabel }
-			colorValue={ attributes[ prefix + 'BorderColor' ] ? attributes[ prefix + 'BorderColor' ] : '' }
+			colorValue={
+				attributes[ prefix + 'BorderColor' ]
+					? attributes[ prefix + 'BorderColor' ]
+					: ''
+			}
 			data={ {
 				value: attributes[ prefix + 'BorderColor' ],
 				label: prefix + 'BorderColor',
@@ -90,7 +94,11 @@ const ResponsiveBorder = ( props ) => {
 	const tabOutputHover = (
 		<AdvancedPopColorControl
 			label={ borderHoverColorLabel }
-			colorValue={ attributes[ prefix + 'BorderHColor' ] ? attributes[ prefix + 'BorderHColor' ] : '' }
+			colorValue={
+				attributes[ prefix + 'BorderHColor' ]
+					? attributes[ prefix + 'BorderHColor' ]
+					: ''
+			}
 			data={ {
 				value: attributes[ prefix + 'BorderHColor' ],
 				label: prefix + 'BorderHColor',
@@ -101,7 +109,9 @@ const ResponsiveBorder = ( props ) => {
 
 	const advancedControls = (
 		<>
-			{ ! disabledBorderTitle && <p className="spectra-panel__body-sub-heading">{ label }</p> }
+			{ ! disabledBorderTitle && (
+				<p className="spectra-panel__body-sub-heading">{ label }</p>
+			) }
 			<UAGSelectControl
 				label={ borderStyleLabel }
 				data={ {
@@ -112,47 +122,49 @@ const ResponsiveBorder = ( props ) => {
 				options={ [
 					{
 						value: 'default',
-						label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Default', 'sureforms' ),
 					},
 					{
 						value: 'none',
-						label: __( 'None', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'None', 'sureforms' ),
 					},
 					{
 						value: 'solid',
-						label: __( 'Solid', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Solid', 'sureforms' ),
 					},
 					{
 						value: 'dotted',
-						label: __( 'Dotted', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Dotted', 'sureforms' ),
 					},
 					{
 						value: 'dashed',
-						label: __( 'Dashed', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Dashed', 'sureforms' ),
 					},
 					{
 						value: 'double',
-						label: __( 'Double', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Double', 'sureforms' ),
 					},
 					{
 						value: 'groove',
-						label: __( 'Groove', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Groove', 'sureforms' ),
 					},
 					{
 						value: 'inset',
-						label: __( 'Inset', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Inset', 'sureforms' ),
 					},
 					{
 						value: 'outset',
-						label: __( 'Outset', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Outset', 'sureforms' ),
 					},
 					{
 						value: 'ridge',
-						label: __( 'Ridge', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Ridge', 'sureforms' ),
 					},
 				] }
 			/>
-			{ 'default' !== borderStyle && 'none' !== borderStyle && showWidth !== false && (
+			{ 'default' !== borderStyle &&
+				'none' !== borderStyle &&
+				showWidth !== false && (
 				<SpacingControl
 					label={ borderWidthLabel }
 					valueTop={ {
@@ -172,35 +184,51 @@ const ResponsiveBorder = ( props ) => {
 						label: prefix + 'BorderLeftWidth',
 					} }
 					valueTopTablet={ {
-						value: attributes[ prefix + 'BorderTopWidthTablet' ],
+						value: attributes[
+							prefix + 'BorderTopWidthTablet'
+						],
 						label: prefix + 'BorderTopWidthTablet',
 					} }
 					valueRightTablet={ {
-						value: attributes[ prefix + 'BorderRightWidthTablet' ],
+						value: attributes[
+							prefix + 'BorderRightWidthTablet'
+						],
 						label: prefix + 'BorderRightWidthTablet',
 					} }
 					valueBottomTablet={ {
-						value: attributes[ prefix + 'BorderBottomWidthTablet' ],
+						value: attributes[
+							prefix + 'BorderBottomWidthTablet'
+						],
 						label: prefix + 'BorderBottomWidthTablet',
 					} }
 					valueLeftTablet={ {
-						value: attributes[ prefix + 'BorderLeftWidthTablet' ],
+						value: attributes[
+							prefix + 'BorderLeftWidthTablet'
+						],
 						label: prefix + 'BorderLeftWidthTablet',
 					} }
 					valueTopMobile={ {
-						value: attributes[ prefix + 'BorderTopWidthMobile' ],
+						value: attributes[
+							prefix + 'BorderTopWidthMobile'
+						],
 						label: prefix + 'BorderTopWidthMobile',
 					} }
 					valueRightMobile={ {
-						value: attributes[ prefix + 'BorderRightWidthMobile' ],
+						value: attributes[
+							prefix + 'BorderRightWidthMobile'
+						],
 						label: prefix + 'BorderRightWidthMobile',
 					} }
 					valueBottomMobile={ {
-						value: attributes[ prefix + 'BorderBottomWidthMobile' ],
+						value: attributes[
+							prefix + 'BorderBottomWidthMobile'
+						],
 						label: prefix + 'BorderBottomWidthMobile',
 					} }
 					valueLeftMobile={ {
-						value: attributes[ prefix + 'BorderLeftWidthMobile' ],
+						value: attributes[
+							prefix + 'BorderLeftWidthMobile'
+						],
 						label: prefix + 'BorderLeftWidthMobile',
 					} }
 					disableUnits={ true }
@@ -234,44 +262,60 @@ const ResponsiveBorder = ( props ) => {
 						label: prefix + 'BorderBottomLeftRadius',
 					} }
 					valueTopTablet={ {
-						value: attributes[ prefix + 'BorderTopLeftRadiusTablet' ],
+						value: attributes[
+							prefix + 'BorderTopLeftRadiusTablet'
+						],
 						label: prefix + 'BorderTopLeftRadiusTablet',
 					} }
 					valueRightTablet={ {
-						value: attributes[ prefix + 'BorderTopRightRadiusTablet' ],
+						value: attributes[
+							prefix + 'BorderTopRightRadiusTablet'
+						],
 						label: prefix + 'BorderTopRightRadiusTablet',
 					} }
 					valueBottomTablet={ {
-						value: attributes[ prefix + 'BorderBottomRightRadiusTablet' ],
+						value: attributes[
+							prefix + 'BorderBottomRightRadiusTablet'
+						],
 						label: prefix + 'BorderBottomRightRadiusTablet',
 					} }
 					valueLeftTablet={ {
-						value: attributes[ prefix + 'BorderBottomLeftRadiusTablet' ],
+						value: attributes[
+							prefix + 'BorderBottomLeftRadiusTablet'
+						],
 						label: prefix + 'BorderBottomLeftRadiusTablet',
 					} }
 					valueTopMobile={ {
-						value: attributes[ prefix + 'BorderTopLeftRadiusMobile' ],
+						value: attributes[
+							prefix + 'BorderTopLeftRadiusMobile'
+						],
 						label: prefix + 'BorderTopLeftRadiusMobile',
 					} }
 					valueRightMobile={ {
-						value: attributes[ prefix + 'BorderTopRightRadiusMobile' ],
+						value: attributes[
+							prefix + 'BorderTopRightRadiusMobile'
+						],
 						label: prefix + 'BorderTopRightRadiusMobile',
 					} }
 					valueBottomMobile={ {
-						value: attributes[ prefix + 'BorderBottomRightRadiusMobile' ],
+						value: attributes[
+							prefix + 'BorderBottomRightRadiusMobile'
+						],
 						label: prefix + 'BorderBottomRightRadiusMobile',
 					} }
 					valueLeftMobile={ {
-						value: attributes[ prefix + 'BorderBottomLeftRadiusMobile' ],
+						value: attributes[
+							prefix + 'BorderBottomLeftRadiusMobile'
+						],
 						label: prefix + 'BorderBottomLeftRadiusMobile',
 					} }
 					units={ [
 						{
-							name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+							name: __( 'Pixel', 'sureforms' ),
 							unitValue: 'px',
 						},
 						{
-							name: __( '%', 'ultimate-addons-for-gutenberg' ),
+							name: __( '%', 'sureforms' ),
 							unitValue: '%',
 						},
 					] }

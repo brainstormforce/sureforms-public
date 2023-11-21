@@ -21,18 +21,29 @@ const UAGReset = ( props ) => {
 		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
 	}, [ blockNameForHook ] );
 
-	const allBlocksAttributes = applyFilters( 'uagb.blocksAttributes', blocksAttributes );
+	const allBlocksAttributes = applyFilters(
+		'uagb.blocksAttributes',
+		blocksAttributes
+	);
 
 	const getBlockResetValue = () => {
 		const selectedBlockName = getSelectedBlock()?.name.split( '/' ).pop();
 		let defaultValues = false;
 
-		if ( attributeNames && 'undefined' !== typeof allBlocksAttributes[ selectedBlockName ] ) {
+		if (
+			attributeNames &&
+			'undefined' !== typeof allBlocksAttributes[ selectedBlockName ]
+		) {
 			attributeNames.map( ( attributeName ) => {
 				if ( attributeName ) {
 					const blockDefaultAttributeValue =
-						'undefined' !== typeof allBlocksAttributes[ selectedBlockName ][ attributeName ]?.default
-							? allBlocksAttributes[ selectedBlockName ][ attributeName ]?.default
+						'undefined' !==
+						typeof allBlocksAttributes[ selectedBlockName ][
+							attributeName
+						]?.default
+							? allBlocksAttributes[ selectedBlockName ][
+								attributeName
+							  ]?.default
 							: '';
 					defaultValues = {
 						...defaultValues,
@@ -55,7 +66,8 @@ const UAGReset = ( props ) => {
 		attributeNames.map( ( attributeName ) => {
 			if (
 				selectedBlockAttributes?.[ attributeName ] &&
-				selectedBlockAttributes?.[ attributeName ] !== defaultValues?.[ attributeName ]
+				selectedBlockAttributes?.[ attributeName ] !==
+					defaultValues?.[ attributeName ]
 			) {
 				resetDisableState = false;
 			}
@@ -74,7 +86,9 @@ const UAGReset = ( props ) => {
 			attributeNames.map( ( attributeName ) => {
 				if ( attributeName ) {
 					if ( setAttributes ) {
-						setAttributes( { [ attributeName ]: defaultValues?.[ attributeName ] } );
+						setAttributes( {
+							[ attributeName ]: defaultValues?.[ attributeName ],
+						} );
 					}
 				}
 				toggleRefreshPresets( ! refreshPresets );
@@ -99,7 +113,11 @@ const UAGReset = ( props ) => {
 		blockNameForHook
 	);
 	return (
-		<Tooltip text={ __( 'Reset', 'ultimate-addons-for-gutenberg' ) } key={ 'reset' } ref={ panelRef }>
+		<Tooltip
+			text={ __( 'Reset', 'sureforms' ) }
+			key={ 'reset' }
+			ref={ panelRef }
+		>
 			{ controlBeforeDomElement }
 			<Button
 				className="uagb-reset"

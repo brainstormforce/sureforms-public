@@ -11,7 +11,7 @@ const DynamicFontLoader = ( { attributes } ) => {
 		subHeadFontWeight,
 		highLightLoadGoogleFonts,
 		highLightFontFamily,
-		highLightFontWeight
+		highLightFontWeight,
 	} = attributes;
 
 	let loadHeadingGoogleFonts;
@@ -21,29 +21,46 @@ const DynamicFontLoader = ( { attributes } ) => {
 	if ( headLoadGoogleFonts === true ) {
 		const hconfig = {
 			google: {
-				families: [ headFontFamily + ( headFontWeight ? ':' + headFontWeight : '' ) ],
+				families: [
+					headFontFamily +
+						( headFontWeight ? ':' + headFontWeight : '' ),
+				],
 			},
 		};
 
-		loadHeadingGoogleFonts = <WebfontLoader config={ hconfig }></WebfontLoader>;
+		loadHeadingGoogleFonts = (
+			<WebfontLoader config={ hconfig }></WebfontLoader>
+		);
 	}
 	if ( subHeadLoadGoogleFonts === true ) {
 		const sconfig = {
 			google: {
-				families: [ subHeadFontFamily + ( subHeadFontWeight ? ':' + subHeadFontWeight : '' ) ],
+				families: [
+					subHeadFontFamily +
+						( subHeadFontWeight ? ':' + subHeadFontWeight : '' ),
+				],
 			},
 		};
 
-		loadSubHeadingGoogleFonts = <WebfontLoader config={ sconfig }></WebfontLoader>;
+		loadSubHeadingGoogleFonts = (
+			<WebfontLoader config={ sconfig }></WebfontLoader>
+		);
 	}
 	if ( highLightLoadGoogleFonts === true ) {
 		const sconfig = {
 			google: {
-				families: [ highLightFontFamily + ( highLightFontWeight ? ':' + highLightFontWeight : '' ) ],
+				families: [
+					highLightFontFamily +
+						( highLightFontWeight
+							? ':' + highLightFontWeight
+							: '' ),
+				],
 			},
 		};
 
-		loadHighLightHeadingGoogleFonts = <WebfontLoader config={ sconfig }></WebfontLoader>;
+		loadHighLightHeadingGoogleFonts = (
+			<WebfontLoader config={ sconfig }></WebfontLoader>
+		);
 	}
 	return (
 		<>

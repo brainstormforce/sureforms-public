@@ -2,12 +2,17 @@ const responsiveConditionPreview = ( props ) => {
 	// Desktop.
 	const element = document.getElementById( 'block-' + props.clientId );
 
-	const desktopStyle = document.getElementById( props.clientId + '-desktop-hide-block' );
+	const desktopStyle = document.getElementById(
+		props.clientId + '-desktop-hide-block'
+	);
 	if ( props.attributes.UAGHideDesktop ) {
 		if ( null !== element && undefined !== element ) {
 			if ( null === desktopStyle || undefined === desktopStyle ) {
 				const $style = document.createElement( 'style' );
-				$style.setAttribute( 'id', props.clientId + '-desktop-hide-block' );
+				$style.setAttribute(
+					'id',
+					props.clientId + '-desktop-hide-block'
+				);
 
 				$style.innerHTML =
 					'.uagb-block-' +
@@ -24,8 +29,10 @@ const responsiveConditionPreview = ( props ) => {
 	} else if ( null !== desktopStyle && undefined !== desktopStyle ) {
 		desktopStyle.remove();
 	}
-	const tabletPreview = document.getElementsByClassName( 'is-tablet-preview' );
-	const mobilePreview = document.getElementsByClassName( 'is-mobile-preview' );
+	const tabletPreview =
+		document.getElementsByClassName( 'is-tablet-preview' );
+	const mobilePreview =
+		document.getElementsByClassName( 'is-mobile-preview' );
 
 	if ( 0 !== tabletPreview.length || 0 !== mobilePreview.length ) {
 		const preview = tabletPreview[ 0 ] || mobilePreview[ 0 ];
@@ -36,17 +43,26 @@ const responsiveConditionPreview = ( props ) => {
 			iframe = preview.getElementsByTagName( 'iframe' )[ 0 ];
 		}
 
-		const iframeDocument = iframe?.contentWindow.document || iframe?.contentDocument;
+		const iframeDocument =
+			iframe?.contentWindow.document || iframe?.contentDocument;
 
 		if ( ! iframe || ! iframeDocument ) {
 			return;
 		}
-		const iframeTabletElement = iframeDocument.getElementById( props.clientId + '-tablet-hide-block' );
+		const iframeTabletElement = iframeDocument.getElementById(
+			props.clientId + '-tablet-hide-block'
+		);
 
 		if ( props.attributes.UAGHideTab ) {
-			if ( null === iframeTabletElement || undefined === iframeTabletElement ) {
+			if (
+				null === iframeTabletElement ||
+				undefined === iframeTabletElement
+			) {
 				const $style = document.createElement( 'style' );
-				$style.setAttribute( 'id', props.clientId + '-tablet-hide-block' );
+				$style.setAttribute(
+					'id',
+					props.clientId + '-tablet-hide-block'
+				);
 
 				$style.innerHTML =
 					'.uagb-block-' +
@@ -61,14 +77,25 @@ const responsiveConditionPreview = ( props ) => {
 					iframeDocument.head.appendChild( $style );
 				}, 500 );
 			}
-		} else if ( null !== iframeTabletElement && undefined !== iframeTabletElement ) {
+		} else if (
+			null !== iframeTabletElement &&
+			undefined !== iframeTabletElement
+		) {
 			iframeTabletElement.remove();
 		}
-		const iframeMobileElement = iframeDocument.getElementById( props.clientId + '-mobile-hide-block' );
+		const iframeMobileElement = iframeDocument.getElementById(
+			props.clientId + '-mobile-hide-block'
+		);
 		if ( props.attributes.UAGHideMob ) {
-			if ( null === iframeMobileElement || undefined === iframeMobileElement ) {
+			if (
+				null === iframeMobileElement ||
+				undefined === iframeMobileElement
+			) {
 				const $style = document.createElement( 'style' );
-				$style.setAttribute( 'id', props.clientId + '-mobile-hide-block' );
+				$style.setAttribute(
+					'id',
+					props.clientId + '-mobile-hide-block'
+				);
 
 				$style.innerHTML =
 					'.uagb-block-' +
@@ -83,7 +110,10 @@ const responsiveConditionPreview = ( props ) => {
 					iframeDocument.head.appendChild( $style );
 				}, 500 );
 			}
-		} else if ( null !== iframeMobileElement && undefined !== iframeMobileElement ) {
+		} else if (
+			null !== iframeMobileElement &&
+			undefined !== iframeMobileElement
+		) {
 			iframeMobileElement.remove();
 		}
 	}

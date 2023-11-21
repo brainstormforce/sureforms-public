@@ -1,7 +1,9 @@
 import { memo } from '@wordpress/element';
 import TypographyControl from '@Components/typography';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, { UAGTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { __ } from '@wordpress/i18n';
@@ -94,8 +96,8 @@ const Settings = ( props ) => {
 							separatorStyle !== 'double' &&
 							separatorStyle !== 'solid'
 								? __(
-										'Note: Please set Separator Height for proper thickness.',
-										'sureforms'
+									'Note: Please set Separator Height for proper thickness.',
+									'sureforms'
 								  )
 								: false
 						}
@@ -223,7 +225,9 @@ const Settings = ( props ) => {
 							<UAGIconPicker
 								label={ __( 'Icon', 'sureforms' ) }
 								value={ separatorIcon }
-								onChange={ ( value ) => setAttributes( { separatorIcon: value } ) }
+								onChange={ ( value ) =>
+									setAttributes( { separatorIcon: value } )
+								}
 							/>
 						</>
 					) }
@@ -256,17 +260,29 @@ const Settings = ( props ) => {
 					options={ [
 						{
 							value: 'left',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-left' ) }
+								/>
+							),
 							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-center' ) }
+								/>
+							),
 							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-right' ) }
+								/>
+							),
 							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
@@ -346,41 +362,41 @@ const Settings = ( props ) => {
 					separatorStyle !== 'dotted' &&
 					separatorStyle !== 'dashed' &&
 					separatorStyle !== 'none' && (
-						<ResponsiveSlider
-							label={ __( 'Size', 'sureforms' ) }
-							data={ {
-								desktop: {
-									value: separatorSize,
-									label: 'separatorSize',
-								},
-								tablet: {
-									value: separatorSizeTablet,
-									label: 'separatorSizeTablet',
-								},
-								mobile: {
-									value: separatorSizeMobile,
-									label: 'separatorSizeMobile',
-								},
-							} }
-							min={ 0 }
-							max={ '%' === separatorSizeType ? 100 : 500 }
-							unit={ {
-								value: separatorSizeType,
-								label: 'separatorSizeType',
-							} }
-							units={ [
-								{
-									name: __( 'Pixel', 'sureforms' ),
-									unitValue: 'px',
-								},
-								{
-									name: __( '%', 'sureforms' ),
-									unitValue: '%',
-								},
-							] }
-							setAttributes={ setAttributes }
-						/>
-					) }
+					<ResponsiveSlider
+						label={ __( 'Size', 'sureforms' ) }
+						data={ {
+							desktop: {
+								value: separatorSize,
+								label: 'separatorSize',
+							},
+							tablet: {
+								value: separatorSizeTablet,
+								label: 'separatorSizeTablet',
+							},
+							mobile: {
+								value: separatorSizeMobile,
+								label: 'separatorSizeMobile',
+							},
+						} }
+						min={ 0 }
+						max={ '%' === separatorSizeType ? 100 : 500 }
+						unit={ {
+							value: separatorSizeType,
+							label: 'separatorSizeType',
+						} }
+						units={ [
+							{
+								name: __( 'Pixel', 'sureforms' ),
+								unitValue: 'px',
+							},
+							{
+								name: __( '%', 'sureforms' ),
+								unitValue: '%',
+							},
+						] }
+						setAttributes={ setAttributes }
+					/>
+				) }
 				{ separatorStyle !== 'none' && (
 					<ResponsiveSlider
 						label={ __( 'Separator Height', 'sureforms' ) }
@@ -464,17 +480,29 @@ const Settings = ( props ) => {
 					options={ [
 						{
 							value: 'left',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-left' ) }
+								/>
+							),
 							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-center' ) }
+								/>
+							),
 							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-right' ) }
+								/>
+							),
 							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
@@ -643,12 +671,17 @@ const Settings = ( props ) => {
 		<div>
 			<InspectorControls>
 				<InspectorTabs>
-					<InspectorTab { ...UAGTabs.general }>{ separatorGeneralSettings() }</InspectorTab>
+					<InspectorTab { ...UAGTabs.general }>
+						{ separatorGeneralSettings() }
+					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style }>
 						{ separatorStyleSettings() }
 						{ elementType !== 'none' && iconAndTextStyleSettings() }
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.advance } parentProps={ props }></InspectorTab>
+					<InspectorTab
+						{ ...UAGTabs.advance }
+						parentProps={ props }
+					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</div>

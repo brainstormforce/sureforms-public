@@ -66,163 +66,163 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 				'separatorAlign'                 =>
 				array(
-					'type'         => 'string',
-					'default'      => 'center',
+					'type'    => 'string',
+					'default' => 'center',
 				),
 				'separatorAlignTablet'           =>
 				array(
-					'type'         => 'string',
-					'default'      => 'center',
+					'type'    => 'string',
+					'default' => 'center',
 				),
 				'separatorAlignMobile'           =>
 				array(
-					'type'         => 'string',
-					'default'      => 'center',
+					'type'    => 'string',
+					'default' => 'center',
 				),
 				'separatorStyle'                 =>
 				array(
-					'type'         => 'string',
-					'default'      => 'solid',
+					'type'    => 'string',
+					'default' => 'solid',
 				),
 				'separatorWidth'                 =>
 				array(
-					'type'         => 'number',
-					'default'      => 100,
+					'type'    => 'number',
+					'default' => 100,
 				),
 				'separatorWidthTablet'           =>
 				array(
-					'type'         => 'number',
-					'default'      => 100,
+					'type'    => 'number',
+					'default' => 100,
 				),
 				'separatorWidthMobile'           =>
 				array(
-					'type'         => 'number',
-					'default'      => 100,
+					'type'    => 'number',
+					'default' => 100,
 				),
 				'separatorWidthType'             =>
 				array(
-					'type'         => 'string',
-					'default'      => '%',
+					'type'    => 'string',
+					'default' => '%',
 				),
 				'separatorBorderHeight'          =>
 				array(
-					'type'         => 'number',
-					'default'      => 3,
+					'type'    => 'number',
+					'default' => 3,
 				),
 				'separatorBorderHeightMobile'    =>
 				array(
-					'type'         => 'number',
-					'default'      => 3,
+					'type'    => 'number',
+					'default' => 3,
 				),
 				'separatorBorderHeightTablet'    =>
 				array(
-					'type'         => 'number',
-					'default'      => 3,
+					'type'    => 'number',
+					'default' => 3,
 				),
 				'separatorBorderHeightUnit'      =>
 				array(
-					'type'         => 'string',
-					'default'      => 'px',
+					'type'    => 'string',
+					'default' => 'px',
 				),
 				'separatorSize'                  =>
 				array(
-					'type'         => 'number',
-					'default'      => 5,
+					'type'    => 'number',
+					'default' => 5,
 				),
 				'separatorSizeMobile'            =>
 				array(
-					'type'         => 'number',
-					'default'      => 5,
+					'type'    => 'number',
+					'default' => 5,
 				),
 				'separatorSizeTablet'            =>
 				array(
-					'type'         => 'number',
-					'default'      => 5,
+					'type'    => 'number',
+					'default' => 5,
 				),
 				'separatorSizeType'              =>
 				array(
-					'default'      => 'px',
+					'default' => 'px',
 				),
 				'separatorColor'                 =>
 				array(
-					'type'         => 'string',
-					'default'      => '#333',
+					'type'    => 'string',
+					'default' => '#333',
 				),
 				'separatorHeight'                =>
 				array(
-					'type'         => 'number',
-					'default'      => 10,
+					'type'    => 'number',
+					'default' => 10,
 				),
 				'separatorHeightMobile'          =>
 				array(
-					'type'         => 'number',
-					'default'      => 10,
+					'type'    => 'number',
+					'default' => 10,
 				),
 				'separatorHeightTablet'          =>
 				array(
-					'type'         => 'number',
-					'default'      => 10,
+					'type'    => 'number',
+					'default' => 10,
 				),
 				'separatorHeightType'            =>
 				array(
-					'type'         => 'string',
-					'default'      => 'px',
+					'type'    => 'string',
+					'default' => 'px',
 				),
 				'separatorBottomPadding'         =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingTopTablet'      =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingRightTablet'    =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingBottomTablet'   =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingLeftTablet'     =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingTopMobile'      =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingRightMobile'    =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingBottomMobile'   =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingLeftMobile'     =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'separatorPaddingUnit'           =>
 				array(
-					'type'         => 'number',
-					'default'      => 'px',
+					'type'    => 'number',
+					'default' => 'px',
 				),
 				'separatorMobilePaddingUnit'     =>
 				array(
-					'type'         => 'number',
-					'default'      => 'px',
+					'type'    => 'number',
+					'default' => 'px',
 				),
 				'separatorTabletPaddingUnit'     =>
 				array(
-					'type'         => 'number',
-					'default'      => 'px',
+					'type'    => 'number',
+					'default' => 'px',
 				),
 				'separatorPaddingLink'           =>
 				array(
-					'type'         => 'boolean',
-					'default'      => true,
+					'type'    => 'boolean',
+					'default' => true,
 				),
 				'elementType'                    =>
 				array(
@@ -236,8 +236,8 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 				'separatorTextTag'               =>
 				array(
-					'type'         => 'string',
-					'default'      => 'h4',
+					'type'    => 'string',
+					'default' => 'h4',
 				),
 				'separatorIcon'                  =>
 				array(
@@ -246,23 +246,23 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 				'elementPosition'                =>
 				array(
-					'type'         => 'string',
-					'default'      => 'center',
+					'type'    => 'string',
+					'default' => 'center',
 				),
 				'elementSpacing'                 =>
 				array(
-					'type'         => 'number',
-					'default'      => 15,
+					'type'    => 'number',
+					'default' => 15,
 				),
 				'elementSpacingTablet'           =>
 				array(
-					'type'         => 'number',
-					'default'      => 15,
+					'type'    => 'number',
+					'default' => 15,
 				),
 				'elementSpacingMobile'           =>
 				array(
-					'type'         => 'number',
-					'default'      => 15,
+					'type'    => 'number',
+					'default' => 15,
 				),
 				'elementSpacingUnit'             =>
 				array(
@@ -271,103 +271,103 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 				'elementTextLoadGoogleFonts'     =>
 				array(
-					'type'         => 'boolean',
-					'default'      => false,
+					'type'    => 'boolean',
+					'default' => false,
 				),
 				'elementTextFontFamily'          =>
 				array(
-					'type'         => 'string',
-					'default'      => 'Default',
+					'type'    => 'string',
+					'default' => 'Default',
 				),
 				'elementTextFontWeight'          =>
 				array(
-					'type'         => 'string',
+					'type' => 'string',
 				),
 				'elementTextFontSize'            =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextFontSizeType'        =>
 				array(
-					'type'         => 'string',
-					'default'      => 'px',
+					'type'    => 'string',
+					'default' => 'px',
 				),
 				'elementTextFontSizeTablet'      =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextFontSizeMobile'      =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextLineHeightType'      =>
 				array(
-					'type'         => 'string',
-					'default'      => 'em',
+					'type'    => 'string',
+					'default' => 'em',
 				),
 				'elementTextLineHeight'          =>
 				array(
-					'type'         => 'number',
-					'default'      => 1,
+					'type'    => 'number',
+					'default' => 1,
 				),
 				'elementTextLineHeightTablet'    =>
 				array(
-					'type'         => 'number',
-					'default'      => 1,
+					'type'    => 'number',
+					'default' => 1,
 				),
 				'elementTextLineHeightMobile'    =>
 				array(
-					'type'         => 'number',
-					'default'      => 1,
+					'type'    => 'number',
+					'default' => 1,
 				),
 				'elementTextFontStyle'           =>
 				array(
-					'type'         => 'string',
-					'default'      => 'normal',
+					'type'    => 'string',
+					'default' => 'normal',
 				),
 				'elementTextLetterSpacing'       =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextLetterSpacingTablet' =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextLetterSpacingMobile' =>
 				array(
-					'type'         => 'number',
+					'type' => 'number',
 				),
 				'elementTextLetterSpacingType'   =>
 				array(
-					'type'         => 'string',
-					'default'      => 'px',
+					'type'    => 'string',
+					'default' => 'px',
 				),
 				'elementTextDecoration'          =>
 				array(
-					'type'         => 'string',
+					'type' => 'string',
 				),
 				'elementTextTransform'           =>
 				array(
-					'type'         => 'string',
+					'type' => 'string',
 				),
 				'elementColor'                   =>
 				array(
-					'type'         => 'string',
+					'type' => 'string',
 				),
 				'elementIconWidth'               =>
 				array(
-					'type'         => 'number',
-					'default'      => 30,
+					'type'    => 'number',
+					'default' => 30,
 				),
 				'elementIconWidthTablet'         =>
 				array(
-					'type'         => 'number',
-					'default'      => 30,
+					'type'    => 'number',
+					'default' => 30,
 				),
 				'elementIconWidthMobile'         =>
 				array(
-					'type'         => 'number',
-					'default'      => 30,
+					'type'    => 'number',
+					'default' => 30,
 				),
 				'elementIconWidthType'           =>
 				array(
@@ -402,7 +402,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				$block_id = $attributes['block_id'];
 			}
 
-			$custom_svg         = array(
+			$custom_svg = array(
 				'rectangles'    => 'url("data:image/svg+xml,%3Csvg width=\'16\' height=\'16\' viewBox=\'0 0 16 16\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M6.4 0H16L9.6 16H0L6.4 0Z\' fill=\'black\'/%3E%3C/svg%3E")',
 				'parallelogram' => 'url("data:image/svg+xml,%3Csvg width=\'8\' height=\'16\' viewBox=\'0 0 8 16\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'8\' height=\'16\' fill=\'black\'/%3E%3C/svg%3E")',
 				'slash'         => 'url("data:image/svg+xml,%3Csvg width=\'16\' height=\'16\' viewBox=\'0 0 16 16\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M6.29312 16.9999L17 6.29302M14.2931 16.9999L17 14.293M-0.707031 15.9999L16.0002 -0.707153M8.00017 -0.707153L-0.706882 7.9999\' stroke=\'black\'/%3E%3C/svg%3E")',
@@ -414,14 +414,13 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 			$element_type       = isset( $attributes['elementType'] ) ? $attributes['elementType'] : '';
 			$element_type_css   = $element_type ? 'wp-block-uagb-separator--' . $attributes['elementType'] : '';
 			$separator_text_tag = isset( $attributes['separatorTextTag'] ) ? $attributes['separatorTextTag'] : '';
-			$svg_pattern = isset( $custom_svg[ $separator_style ] ) ? $custom_svg[ $separator_style ] : '';
-			
-			$main_classes       = array(
+			$svg_pattern        = isset( $custom_svg[ $separator_style ] ) ? $custom_svg[ $separator_style ] : '';
+
+			$main_classes = array(
 				'wp-block-uagb-separator',
 				'uagb-block-' . $block_id,
 				$element_type_css,
 			);
-
 
 			if ( isset( $attributes['className'] ) ) {
 				$main_classes[] = $attributes['className'];
@@ -437,7 +436,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 						<?php
 						if ( 'icon' === $element_type ) {
 							Sureforms_Spec_Gb_Helper::render_svg_html( $separator_icon );
-						} else if( 'text' === $element_type ) {
+						} elseif ( 'text' === $element_type ) {
 							echo wp_kses_post( $custom_tag );
 						}
 						?>

@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { useEffect, useState, useRef, useLayoutEffect } from '@wordpress/element';
+import {
+	useEffect,
+	useState,
+	useRef,
+	useLayoutEffect,
+} from '@wordpress/element';
 
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import { useDeviceType } from '@Controls/getPreviewType';
@@ -46,7 +51,9 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 			url={ url }
 			value={ value }
 			onChange={ ( focalPoint ) => {
-				setAttributes( { [ backgroundPosition[ device ]?.label ]: focalPoint } );
+				setAttributes( {
+					[ backgroundPosition[ device ]?.label ]: focalPoint,
+				} );
 			} }
 		/>
 	);
@@ -55,7 +62,9 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 			url={ url ? url : backgroundImage.desktop?.value?.url }
 			value={ value }
 			onChange={ ( focalPoint ) => {
-				setAttributes( { [ backgroundPosition[ device ]?.label ]: focalPoint } );
+				setAttributes( {
+					[ backgroundPosition[ device ]?.label ]: focalPoint,
+				} );
 			} }
 		/>
 	);
@@ -64,7 +73,9 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 			url={ url ? url : backgroundImage.desktop?.value?.url }
 			value={ value }
 			onChange={ ( focalPoint ) => {
-				setAttributes( { [ backgroundPosition[ device ]?.label ]: focalPoint } );
+				setAttributes( {
+					[ backgroundPosition[ device ]?.label ]: focalPoint,
+				} );
 			} }
 		/>
 	);
@@ -88,11 +99,13 @@ const ResponsiveUAGFocalPointPicker = ( props ) => {
 				<div className="uagb-size-type-field-tabs">
 					<div className="uagb-control__header">
 						<ResponsiveToggle
-							label={ __( 'Position', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Position', 'sureforms' ) }
 							responsive={ responsive }
 						/>
 					</div>
-					{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
+					{ output[ deviceType ]
+						? output[ deviceType ]
+						: output.Desktop }
 				</div>
 				<UAGHelpText text={ props.help } />
 			</div>

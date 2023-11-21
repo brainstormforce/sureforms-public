@@ -29,13 +29,16 @@ function UAGBImageEdit( props ) {
 		if ( hasDynamicContent && ! attributes?.context ) {
 			setAttributes( { context } );
 		}
-	}, [ context ] )
+	}, [ context ] );
 
 	useEffect( () => {
 		scrollBlockToView();
 	}, [ deviceType ] );
 
-	const blockStyling = useMemo( () => styling( attributes, clientId, name, deviceType ), [ attributes, deviceType ] );
+	const blockStyling = useMemo(
+		() => styling( attributes, clientId, name, deviceType ),
+		[ attributes, deviceType ]
+	);
 
 	useEffect( () => {
 		responsiveConditionPreview( props );
@@ -49,8 +52,8 @@ function UAGBImageEdit( props ) {
 		</>
 	);
 }
-export default compose( 
-	getLoopImage, 
-	addInitialAttr, 
+export default compose(
+	getLoopImage,
+	addInitialAttr,
 	AddStaticStyles
-	)( UAGBImageEdit );
+)( UAGBImageEdit );

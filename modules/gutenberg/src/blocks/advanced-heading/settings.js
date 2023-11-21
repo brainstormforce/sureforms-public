@@ -2,7 +2,9 @@ import { memo } from '@wordpress/element';
 
 import TypographyControl from '@Components/typography';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
-import InspectorTab, { UAGTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import Range from '@Components/range/Range.js';
 import MultiButtonsControl from '@Components/multi-buttons-control';
@@ -258,7 +260,10 @@ const Settings = ( props ) => {
 	}
 	const generalPanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Content', 'sureforms' ) } initialOpen={ true }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Content', 'sureforms' ) }
+				initialOpen={ true }
+			>
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
 					label={ __( 'Alignment', 'sureforms' ) }
@@ -279,17 +284,29 @@ const Settings = ( props ) => {
 					options={ [
 						{
 							value: 'left',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-left' ) }
+								/>
+							),
 							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-center' ) }
+								/>
+							),
 							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-right' ) }
+								/>
+							),
 							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
@@ -299,7 +316,11 @@ const Settings = ( props ) => {
 				<ToggleControl
 					label={ __( 'Heading', 'sureforms' ) }
 					checked={ headingTitleToggle }
-					onChange={ () => setAttributes( { headingTitleToggle: ! headingTitleToggle } ) }
+					onChange={ () =>
+						setAttributes( {
+							headingTitleToggle: ! headingTitleToggle,
+						} )
+					}
 				/>
 				{ headingTitleToggle && (
 					<MultiButtonsControl
@@ -350,11 +371,18 @@ const Settings = ( props ) => {
 	};
 	const subHeadingPanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Sub Heading', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Sub Heading', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<ToggleControl
 					label={ __( 'Enable Sub Heading', 'sureforms' ) }
 					checked={ headingDescToggle }
-					onChange={ () => setAttributes( { headingDescToggle: ! headingDescToggle } ) }
+					onChange={ () =>
+						setAttributes( {
+							headingDescToggle: ! headingDescToggle,
+						} )
+					}
 				/>
 				{ headingDescToggle && (
 					<UAGSelectControl
@@ -381,7 +409,10 @@ const Settings = ( props ) => {
 	};
 	const separatorPanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Separator', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Separator', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<UAGSelectControl
 					label={ __( 'Style', 'sureforms' ) }
 					data={ {
@@ -428,8 +459,10 @@ const Settings = ( props ) => {
 	};
 	const headingStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Heading', 'sureforms' ) } initialOpen={ true }>
-
+			<UAGAdvancedPanelBody
+				title={ __( 'Heading', 'sureforms' ) }
+				initialOpen={ true }
+			>
 				<ColorSwitchControl
 					label={ __( 'Text Color', 'sureforms' ) }
 					type={ {
@@ -597,8 +630,10 @@ const Settings = ( props ) => {
 
 	const subHeadingStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Sub Heading', 'sureforms' ) } initialOpen={ false }>
-
+			<UAGAdvancedPanelBody
+				title={ __( 'Sub Heading', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<AdvancedPopColorControl
 					label={ __( 'Color', 'sureforms' ) }
 					colorValue={ subHeadingColor ? subHeadingColor : '' }
@@ -731,7 +766,10 @@ const Settings = ( props ) => {
 
 	const seperatorSettings = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Separator', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Separator', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<ResponsiveSlider
 					label={ __( 'Width', 'sureforms' ) }
 					data={ {
@@ -832,7 +870,10 @@ const Settings = ( props ) => {
 
 	const backgroundStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Background', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Background', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<ColorSwitchControl
 					label={ __( 'Background Color', 'sureforms' ) }
 					type={ {
@@ -855,7 +896,10 @@ const Settings = ( props ) => {
 
 	const spacingStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Spacing', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Spacing', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<SpacingControl
 					label={ __( 'Padding', 'sureforms' ) }
 					valueTop={ {
@@ -1002,7 +1046,10 @@ const Settings = ( props ) => {
 
 	const linkStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Link', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Link', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<p className="components-base-control__help">
 					{ __(
 						'Below settings will apply to the heading text to which a link is applied.',
@@ -1050,7 +1097,10 @@ const Settings = ( props ) => {
 
 	const highLightStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Highlight', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Highlight', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<p className="components-base-control__help">
 					{ __(
 						'Highlight heading text from toolbar to see the below controls working.',
@@ -1259,8 +1309,10 @@ const Settings = ( props ) => {
 						{ backgroundStylePanel() }
 						{ spacingStylePanel() }
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
-					</InspectorTab>
+					<InspectorTab
+						{ ...UAGTabs.advance }
+						parentProps={ props }
+					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</div>

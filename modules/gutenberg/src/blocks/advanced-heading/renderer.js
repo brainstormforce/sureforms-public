@@ -18,14 +18,24 @@ const Renderer = ( props ) => {
 
 	// Check if this has dynamic content.
 	if ( headingHasDynamicContent ) {
-		const renderedMarkup = applyFilters( `uag_render_text_loop_data`, headingTitle, context );
+		const renderedMarkup = applyFilters(
+			`uag_render_text_loop_data`,
+			headingTitle,
+			context
+		);
 		if ( renderedMarkup !== '' ) {
 			allowedFormats = [ 'sureforms/dynamic-content' ];
 			headingTitle = renderedMarkup;
 		}
 	}
-	
-	const propsOnSplit = ( value ) => value ? createBlock( 'sureforms/advanced-heading', { ...attributes, headingTitle: value} ) : createBlock( 'core/paragraph' );
+
+	const propsOnSplit = ( value ) =>
+		value
+			? createBlock( 'sureforms/advanced-heading', {
+				...attributes,
+				headingTitle: value,
+			  } )
+			: createBlock( 'core/paragraph' );
 
 	return (
 		<RichText

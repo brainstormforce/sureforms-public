@@ -16,7 +16,7 @@ function addAttributes( block ) {
 			globalBlockStyleId: {
 				type: 'string',
 				default: '',
-			}
+			},
 		} );
 	}
 

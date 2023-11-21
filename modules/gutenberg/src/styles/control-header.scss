@@ -79,7 +79,7 @@
 					background-color: unset;
 					color: $spectra-color-body;
 
-					&:hover:not(:disabled) {
+					&:hover:not( :disabled ) {
 						color: $spectra-color-primary;
 					}
 				}
@@ -90,7 +90,7 @@
 			}
 		}
 
-		.components-button.is-secondary:hover:not(:disabled) {
+		.components-button.is-secondary:hover:not( :disabled ) {
 			background: 0 0;
 			box-shadow: 0 0;
 		}

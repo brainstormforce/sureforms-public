@@ -3,7 +3,9 @@ import TypographyControl from '@Components/typography';
 import { useViewportMatch } from '@wordpress/compose';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import ResponsiveSelectControl from '@Components/responsive-select';
-import InspectorTab, { UAGTabs } from '@Components/inspector-tabs/InspectorTab.js';
+import InspectorTab, {
+	UAGTabs,
+} from '@Components/inspector-tabs/InspectorTab.js';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SpacingControl from '@Components/spacing-control';
 import Range from '@Components/range/Range.js';
@@ -14,7 +16,10 @@ import { __ } from '@wordpress/i18n';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGSelectControl from '@Components/select-control';
 import UAGTextControl from '@Components/text-control';
-import { store as blockEditorStore, InspectorControls } from '@wordpress/block-editor';
+import {
+	store as blockEditorStore,
+	InspectorControls,
+} from '@wordpress/block-editor';
 import { Icon, ToggleControl } from '@wordpress/components';
 import UAGTabsControl from '@Components/tabs';
 import renderSVG from '@Controls/renderIcon';
@@ -24,13 +29,19 @@ import SpectraMatrixControl from '@Components/matrix-alignment-control';
 import { store as coreStore } from '@wordpress/core-data';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import boxShadowPresets,{ boxShadowHoverPresets } from './presets';
+import boxShadowPresets, { boxShadowHoverPresets } from './presets';
 import UAGPresets from '@Components/presets';
 import { pickRelevantMediaFiles, getDevicesAttributes } from './utils';
 
 export default function Settings( props ) {
-
-	const { attributes, setAttributes, context, isSelected, clientId, deviceType } = props;
+	const {
+		attributes,
+		setAttributes,
+		context,
+		isSelected,
+		clientId,
+		deviceType,
+	} = props;
 	const {
 		block_id,
 		objectFit,
@@ -249,7 +260,10 @@ export default function Settings( props ) {
 		}
 		switch ( deviceType ) {
 			case 'Mobile':
-				if ( 'custom' === sizeSlugMobile && currentSizes.mobile !== sizeSlugMobile ) {
+				if (
+					'custom' === sizeSlugMobile &&
+					currentSizes.mobile !== sizeSlugMobile
+				) {
 					setAttributes( { objectFitMobile: 'cover' } );
 				} else if ( 'custom' !== sizeSlugMobile ) {
 					updateMobileImage( sizeSlugMobile );
@@ -257,15 +271,21 @@ export default function Settings( props ) {
 				setCurrentSizes( { ...currentSizes, mobile: sizeSlugMobile } );
 				break;
 			case 'Tablet':
-				if ( 'custom' === sizeSlugTablet && currentSizes.tablet !== sizeSlugTablet ) {
+				if (
+					'custom' === sizeSlugTablet &&
+					currentSizes.tablet !== sizeSlugTablet
+				) {
 					setAttributes( { objectFitTablet: 'cover' } );
-				} else if ( 'custom' !== sizeSlugTablet ){
+				} else if ( 'custom' !== sizeSlugTablet ) {
 					updateTabletImage( sizeSlugTablet );
 				}
 				setCurrentSizes( { ...currentSizes, tablet: sizeSlugTablet } );
 				break;
 			default:
-				if ( 'custom' === sizeSlug && currentSizes.desktop !== sizeSlug ) {
+				if (
+					'custom' === sizeSlug &&
+					currentSizes.desktop !== sizeSlug
+				) {
 					setAttributes( { objectFit: 'cover' } );
 				} else if ( 'custom' !== sizeSlug ) {
 					updateImage( sizeSlug );
@@ -280,13 +300,16 @@ export default function Settings( props ) {
 	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
 	const imageSizeOptions =
 		image?.media_details &&
-		imageSizes.reduce( ( acc, item ) => {
-			if ( image?.media_details?.sizes[ item.slug ] ) {
-				const custom = acc.pop();
-				acc.push( { value: item.slug, label: item.name }, custom );
-			}
-			return acc;
-		}, [ { value: 'custom', label: 'Custom' } ] );
+		imageSizes.reduce(
+			( acc, item ) => {
+				if ( image?.media_details?.sizes[ item.slug ] ) {
+					const custom = acc.pop();
+					acc.push( { value: item.slug, label: item.name }, custom );
+				}
+				return acc;
+			},
+			[ { value: 'custom', label: 'Custom' } ]
+		);
 
 	const updateImage = ( newSizeSlug ) => {
 		const newUrl = image?.media_details?.sizes[ newSizeSlug ];
@@ -299,7 +322,7 @@ export default function Settings( props ) {
 			height: newUrl?.height,
 			sizeSlug: newSizeSlug,
 		} );
-	}
+	};
 
 	const updateTabletImage = ( newSizeSlug ) => {
 		const newUrl = image?.media_details?.sizes[ newSizeSlug ];
@@ -312,7 +335,7 @@ export default function Settings( props ) {
 			heightTablet: newUrl?.height,
 			sizeSlugTablet: newSizeSlug,
 		} );
-	}
+	};
 
 	const updateMobileImage = ( newSizeSlug ) => {
 		const newUrl = image?.media_details?.sizes[ newSizeSlug ];
@@ -325,7 +348,7 @@ export default function Settings( props ) {
 			heightMobile: newUrl?.height,
 			sizeSlugMobile: newSizeSlug,
 		} );
-	}
+	};
 
 	/*
 	 * Event to set Image as null while removing.
@@ -365,7 +388,11 @@ export default function Settings( props ) {
 		}
 
 		let mediaAttributes = pickRelevantMediaFiles( media, imageDefaultSize );
-		mediaAttributes = { ...mediaAttributes, ...getDevicesAttributes( media, 'Tablet' ), ...getDevicesAttributes( media, 'Mobile' ) };
+		mediaAttributes = {
+			...mediaAttributes,
+			...getDevicesAttributes( media, 'Tablet' ),
+			...getDevicesAttributes( media, 'Mobile' ),
+		};
 
 		// If Custom Sizing was set, remove the size reset.
 		if ( 'custom' === sizeSlug ) {
@@ -454,7 +481,10 @@ export default function Settings( props ) {
 	};
 
 	const generalPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Image', 'sureforms' ) } initialOpen={ true }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Image', 'sureforms' ) }
+			initialOpen={ true }
+		>
 			<UAGMediaPicker
 				onSelectImage={ onSelectImage }
 				backgroundImage={ { url } }
@@ -487,12 +517,16 @@ export default function Settings( props ) {
 					},
 					{
 						value: 'center',
-						icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+						icon: (
+							<Icon icon={ renderSVG( 'fa fa-align-center' ) } />
+						),
 						tooltip: __( 'Center', 'sureforms' ),
 					},
 					{
 						value: 'right',
-						icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+						icon: (
+							<Icon icon={ renderSVG( 'fa fa-align-right' ) } />
+						),
 						tooltip: __( 'Right', 'sureforms' ),
 					},
 				] }
@@ -669,17 +703,35 @@ export default function Settings( props ) {
 							options={ [
 								{
 									value: 'left',
-									icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
+									icon: (
+										<Icon
+											icon={ renderSVG(
+												'fa fa-align-left'
+											) }
+										/>
+									),
 									tooltip: __( 'Left', 'sureforms' ),
 								},
 								{
 									value: 'center',
-									icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+									icon: (
+										<Icon
+											icon={ renderSVG(
+												'fa fa-align-center'
+											) }
+										/>
+									),
 									tooltip: __( 'Center', 'sureforms' ),
 								},
 								{
 									value: 'right',
-									icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+									icon: (
+										<Icon
+											icon={ renderSVG(
+												'fa fa-align-right'
+											) }
+										/>
+									),
 									tooltip: __( 'Right', 'sureforms' ),
 								},
 							] }
@@ -693,7 +745,10 @@ export default function Settings( props ) {
 
 	// shape
 	const shapeGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Mask', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Mask', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			<UAGSelectControl
 				label={ __( 'Mask Shape', 'sureforms' ) }
 				data={ {
@@ -856,7 +911,10 @@ export default function Settings( props ) {
 
 	// Separator settings.
 	const seperatorGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Separator', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Separator', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			{ seperatorStyle !== 'none' && (
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
@@ -937,7 +995,10 @@ export default function Settings( props ) {
 	);
 
 	const headingGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Heading', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Heading', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
 				label={ __( 'Show On', 'sureforms' ) }
@@ -962,7 +1023,10 @@ export default function Settings( props ) {
 	);
 
 	const descriptionGeneralPanel = (
-		<UAGAdvancedPanelBody title={ __( 'Description', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Description', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
 				label={ __( 'Show On', 'sureforms' ) }
@@ -987,7 +1051,10 @@ export default function Settings( props ) {
 	);
 
 	const headingStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Heading', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Heading', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
 				label={ __( 'Heading Tag', 'sureforms' ) }
@@ -1367,7 +1434,10 @@ export default function Settings( props ) {
 	);
 
 	const ImageStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Image', 'sureforms' ) } initialOpen={ true }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Image', 'sureforms' ) }
+			initialOpen={ true }
+		>
 			<ResponsiveBorder
 				setAttributes={ setAttributes }
 				prefix={ 'image' }
@@ -1456,40 +1526,35 @@ export default function Settings( props ) {
 			<ToggleControl
 				label={ __( 'Separate Hover Shadow', 'sureforms' ) }
 				checked={ useSeparateBoxShadows }
-				onChange={ () => setAttributes( { useSeparateBoxShadows: ! useSeparateBoxShadows } ) }
+				onChange={ () =>
+					setAttributes( {
+						useSeparateBoxShadows: ! useSeparateBoxShadows,
+					} )
+				}
 			/>
 			{ useSeparateBoxShadows ? (
 				<UAGTabsControl
 					tabs={ [
 						{
 							name: 'normal',
-							title: __(
-								'Normal',
-								'sureforms'
-							),
+							title: __( 'Normal', 'sureforms' ),
 						},
 						{
 							name: 'hover',
-							title: __(
-								'Hover',
-								'sureforms'
-							),
+							title: __( 'Hover', 'sureforms' ),
 						},
 					] }
 					normal={
 						<>
 							<UAGPresets
-								setAttributes = { setAttributes }
-								presets = { boxShadowPresets }
-								presetInputType = 'radioImage'
+								setAttributes={ setAttributes }
+								presets={ boxShadowPresets }
+								presetInputType="radioImage"
 							/>
 							<BoxShadowControl
 								blockId={ block_id }
 								setAttributes={ setAttributes }
-								label={ __(
-									'Box Shadow',
-									'sureforms'
-								) }
+								label={ __( 'Box Shadow', 'sureforms' ) }
 								boxShadowColor={ {
 									value: imageBoxShadowColor,
 									label: 'imageBoxShadowColor',
@@ -1498,18 +1563,12 @@ export default function Settings( props ) {
 								boxShadowHOffset={ {
 									value: imageBoxShadowHOffset,
 									label: 'imageBoxShadowHOffset',
-									title: __(
-										'Horizontal',
-										'sureforms'
-									),
+									title: __( 'Horizontal', 'sureforms' ),
 								} }
 								boxShadowVOffset={ {
 									value: imageBoxShadowVOffset,
 									label: 'imageBoxShadowVOffset',
-									title: __(
-										'Vertical',
-										'sureforms'
-									),
+									title: __( 'Vertical', 'sureforms' ),
 								} }
 								boxShadowBlur={ {
 									value: imageBoxShadowBlur,
@@ -1524,10 +1583,7 @@ export default function Settings( props ) {
 								boxShadowPosition={ {
 									value: imageBoxShadowPosition,
 									label: 'imageBoxShadowPosition',
-									title: __(
-										'Position',
-										'sureforms'
-									),
+									title: __( 'Position', 'sureforms' ),
 								} }
 								popup={ false }
 							/>
@@ -1536,17 +1592,14 @@ export default function Settings( props ) {
 					hover={
 						<>
 							<UAGPresets
-								setAttributes = { setAttributes }
-								presets = { boxShadowHoverPresets }
-								presetInputType = 'radioImage'
+								setAttributes={ setAttributes }
+								presets={ boxShadowHoverPresets }
+								presetInputType="radioImage"
 							/>
 							<BoxShadowControl
 								blockId={ block_id }
 								setAttributes={ setAttributes }
-								label={ __(
-									'Box Shadow',
-									'sureforms'
-								) }
+								label={ __( 'Box Shadow', 'sureforms' ) }
 								boxShadowColor={ {
 									value: imageBoxShadowColorHover,
 									label: 'imageBoxShadowColorHover',
@@ -1555,18 +1608,12 @@ export default function Settings( props ) {
 								boxShadowHOffset={ {
 									value: imageBoxShadowHOffsetHover,
 									label: 'imageBoxShadowHOffsetHover',
-									title: __(
-										'Horizontal',
-										'sureforms'
-									),
+									title: __( 'Horizontal', 'sureforms' ),
 								} }
 								boxShadowVOffset={ {
 									value: imageBoxShadowVOffsetHover,
 									label: 'imageBoxShadowVOffsetHover',
-									title: __(
-										'Vertical',
-										'sureforms'
-									),
+									title: __( 'Vertical', 'sureforms' ),
 								} }
 								boxShadowBlur={ {
 									value: imageBoxShadowBlurHover,
@@ -1581,10 +1628,7 @@ export default function Settings( props ) {
 								boxShadowPosition={ {
 									value: imageBoxShadowPositionHover,
 									label: 'imageBoxShadowPositionHover',
-									title: __(
-										'Position',
-										'sureforms'
-									),
+									title: __( 'Position', 'sureforms' ),
 								} }
 								popup={ false }
 							/>
@@ -1595,17 +1639,14 @@ export default function Settings( props ) {
 			) : (
 				<>
 					<UAGPresets
-						setAttributes = { setAttributes }
-						presets = { boxShadowPresets }
-						presetInputType = 'radioImage'
+						setAttributes={ setAttributes }
+						presets={ boxShadowPresets }
+						presetInputType="radioImage"
 					/>
 					<BoxShadowControl
 						blockId={ block_id }
 						setAttributes={ setAttributes }
-						label={ __(
-							'Box Shadow',
-							'sureforms'
-						) }
+						label={ __( 'Box Shadow', 'sureforms' ) }
 						boxShadowColor={ {
 							value: imageBoxShadowColor,
 							label: 'imageBoxShadowColor',
@@ -1614,18 +1655,12 @@ export default function Settings( props ) {
 						boxShadowHOffset={ {
 							value: imageBoxShadowHOffset,
 							label: 'imageBoxShadowHOffset',
-							title: __(
-								'Horizontal',
-								'sureforms'
-							),
+							title: __( 'Horizontal', 'sureforms' ),
 						} }
 						boxShadowVOffset={ {
 							value: imageBoxShadowVOffset,
 							label: 'imageBoxShadowVOffset',
-							title: __(
-								'Vertical',
-								'sureforms'
-							),
+							title: __( 'Vertical', 'sureforms' ),
 						} }
 						boxShadowBlur={ {
 							value: imageBoxShadowBlur,
@@ -1640,20 +1675,20 @@ export default function Settings( props ) {
 						boxShadowPosition={ {
 							value: imageBoxShadowPosition,
 							label: 'imageBoxShadowPosition',
-							title: __(
-								'Position',
-								'sureforms'
-							),
+							title: __( 'Position', 'sureforms' ),
 						} }
 						popup={ false }
 					/>
 				</>
-			) }			
+			) }
 		</UAGAdvancedPanelBody>
 	);
 
 	const overlayStylePanel = (
-		<UAGAdvancedPanelBody title={ __( 'Overlay', 'sureforms' ) } initialOpen={ false }>
+		<UAGAdvancedPanelBody
+			title={ __( 'Overlay', 'sureforms' ) }
+			initialOpen={ false }
+		>
 			<AdvancedPopColorControl
 				label={ __( 'Background', 'sureforms' ) }
 				colorValue={ overlayBackground ? overlayBackground : '' }
@@ -1838,7 +1873,8 @@ export default function Settings( props ) {
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style } parentProps={ props }>
 						{ ImageStylePanel }
-						{ 'static' === imageHoverEffect && imageBoxShadowStylePanel }
+						{ 'static' === imageHoverEffect &&
+							imageBoxShadowStylePanel }
 						{ layout === 'overlay' && (
 							<>
 								{ overlayStylePanel }
@@ -1846,11 +1882,17 @@ export default function Settings( props ) {
 								{ captionStylePanel }
 							</>
 						) }
-						{ enableCaption && layout !== 'overlay' && captionStylePanel }
-						{ 'none' !== seperatorStyle && layout === 'overlay' && seperatorStylePanel }
+						{ enableCaption &&
+							layout !== 'overlay' &&
+							captionStylePanel }
+						{ 'none' !== seperatorStyle &&
+							layout === 'overlay' &&
+							seperatorStylePanel }
 					</InspectorTab>
-					<InspectorTab { ...UAGTabs.advance } parentProps={ props }>
-					</InspectorTab>
+					<InspectorTab
+						{ ...UAGTabs.advance }
+						parentProps={ props }
+					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</>

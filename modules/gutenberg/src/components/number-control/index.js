@@ -1,8 +1,18 @@
-import { ButtonGroup, Button, Tooltip, __experimentalNumberControl as NumberControl } from '@wordpress/components';
+import {
+	ButtonGroup,
+	Button,
+	Tooltip,
+	__experimentalNumberControl as NumberControl,
+} from '@wordpress/components';
 import ResponsiveToggle from '../responsive-toggle';
 import { __, sprintf } from '@wordpress/i18n';
 import styles from './editor.lazy.scss';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { limitMax, limitMin } from '@Controls/unitWiseMinMaxOption';
 import classnames from 'classnames';
 import { select, useSelect } from '@wordpress/data';
@@ -35,19 +45,31 @@ const UAGNumberControl = ( props ) => {
 		return select( 'core/block-editor' ).getSelectedBlock();
 	}, [] );
 
-	// If Dynamic Content prop is enabled and the name (attribute name) is set, we retrieve the controls for the dynamic content feature. 
-	const registerTextExtender = props.enableDynamicContent && props.name ? wp.hooks.applyFilters( 'uagb.registerTextExtender', '', selectedBlock?.name, props.name, props.dynamicContentType ) : null;
+	// If Dynamic Content prop is enabled and the name (attribute name) is set, we retrieve the controls for the dynamic content feature.
+	const registerTextExtender =
+		props.enableDynamicContent && props.name
+			? wp.hooks.applyFilters(
+				'uagb.registerTextExtender',
+				'',
+				selectedBlock?.name,
+				props.name,
+				props.dynamicContentType
+			  )
+			: null;
 
 	const isEnableDynamicContent = () => {
-		if( !props.enableDynamicContent || ! props.name ){
+		if ( ! props.enableDynamicContent || ! props.name ) {
 			return false;
 		}
-		const dynamicContent = selectedBlock?.attributes?.dynamicContent
-		if( dynamicContent && dynamicContent?.[props.name]?.enable === true ) {
-			return true
+		const dynamicContent = selectedBlock?.attributes?.dynamicContent;
+		if (
+			dynamicContent &&
+			dynamicContent?.[ props.name ]?.enable === true
+		) {
+			return true;
 		}
 		return false;
-	}
+	};
 
 	const { isShiftStepEnabled } = props;
 
@@ -57,11 +79,11 @@ const UAGNumberControl = ( props ) => {
 
 	let unitSizes = [
 		{
-			name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+			name: __( 'Pixel', 'sureforms' ),
 			unitValue: 'px',
 		},
 		{
-			name: __( 'Em', 'ultimate-addons-for-gutenberg' ),
+			name: __( 'Em', 'sureforms' ),
 			unitValue: 'em',
 		},
 	];
@@ -112,7 +134,7 @@ const UAGNumberControl = ( props ) => {
 				<Tooltip
 					text={ sprintf(
 						/* translators: abbreviation for units */
-						__( '%s units', 'ultimate-addons-for-gutenberg' ),
+						__( '%s units', 'sureforms' ),
 						key.name
 					) }
 					key={ key.name }
@@ -126,7 +148,7 @@ const UAGNumberControl = ( props ) => {
 						aria-pressed={ props.unit.value === key.unitValue }
 						aria-label={ sprintf(
 							/* translators: abbreviation for units */
-							__( '%s units', 'ultimate-addons-for-gutenberg' ),
+							__( '%s units', 'sureforms' ),
 							key.name
 						) }
 						onClick={ () => onChangeUnits( key.unitValue ) }
@@ -146,13 +168,16 @@ const UAGNumberControl = ( props ) => {
 				<div className="uagb-number-control__actions uagb-control__actions">
 					<UAGReset
 						onReset={ resetValues }
-						attributeNames={ [ props.data.label, props.displayUnit ? props.unit.label : false ] }
+						attributeNames={ [
+							props.data.label,
+							props.displayUnit ? props.unit.label : false,
+						] }
 						setAttributes={ props.setAttributes }
 					/>
 					{ props.displayUnit && (
 						<ButtonGroup
 							className="uagb-control__units"
-							aria-label={ __( 'Select Units', 'ultimate-addons-for-gutenberg' ) }
+							aria-label={ __( 'Select Units', 'sureforms' ) }
 						>
 							{ onUnitSizeClick( unitSizes ) }
 						</ButtonGroup>
@@ -177,22 +202,28 @@ const UAGNumberControl = ( props ) => {
 	);
 
 	return (
-		<div ref={ panelRef } className={`components-base-control uag-number-control uagb-size-type-field-tabs${isEnableDynamicContent() ? ' uagb-text-control--open-dynamic-content' : ''}`}>
+		<div
+			ref={ panelRef }
+			className={ `components-base-control uag-number-control uagb-size-type-field-tabs${
+				isEnableDynamicContent()
+					? ' uagb-text-control--open-dynamic-content'
+					: ''
+			}` }
+		>
 			{ controlBeforeDomElement }
-			{ props.showControlHeader &&
-				<ControlHeader />
-			}
-			<div className={ classnames(
+			{ props.showControlHeader && <ControlHeader /> }
+			<div
+				className={ classnames(
 					'uagb-number-control__mobile-controls',
-					'uag-number-control__' + variant,
+					'uag-number-control__' + variant
 				) }
 			>
 				<ResponsiveToggle
-					label= { props.label }
-					responsive= { props.responsive }
+					label={ props.label }
+					responsive={ props.responsive }
 				/>
-				{/* If Dynamic Content is enabled, we don't need to show the input field */}
-				{ !isEnableDynamicContent() &&
+				{ /* If Dynamic Content is enabled, we don't need to show the input field */ }
+				{ ! isEnableDynamicContent() && (
 					<>
 						<NumberControl
 							labelPosition="edge"
@@ -204,29 +235,23 @@ const UAGNumberControl = ( props ) => {
 							value={ inputValue }
 							step={ props?.step || 1 }
 							required={ props?.required }
-							readOnly={isEnableDynamicContent()}
+							readOnly={ isEnableDynamicContent() }
 						/>
 					</>
-				}
-				{/* Show the Dynamic Content Controls */}
-				{
-					registerTextExtender
-				}
+				) }
+				{ /* Show the Dynamic Content Controls */ }
+				{ registerTextExtender }
 			</div>
-			{ <UAGHelpText text={ props.help } />}
-			{/* Add a separator below for better UI since many dynamic content controls are shown */}
-			{
-				isEnableDynamicContent() && (
-					<Separator />
-				)
-			}
+			{ <UAGHelpText text={ props.help } /> }
+			{ /* Add a separator below for better UI since many dynamic content controls are shown */ }
+			{ isEnableDynamicContent() && <Separator /> }
 			{ controlAfterDomElement }
 		</div>
 	);
 };
 
 UAGNumberControl.defaultProps = {
-	label: __( 'Margin', 'ultimate-addons-for-gutenberg' ),
+	label: __( 'Margin', 'sureforms' ),
 	className: '',
 	allowReset: true,
 	isShiftStepEnabled: true,

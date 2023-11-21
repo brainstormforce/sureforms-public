@@ -1,6 +1,6 @@
 const PreviewImage = ( { image, isChildren = false } ) => {
 	if ( ! image ) {
-		console.error( __( 'Please add preview image.', 'ultimate-addons-for-gutenberg' ) ); // eslint-disable-line
+		console.error( __( 'Please add preview image.', 'sureforms' ) ); // eslint-disable-line
 	}
 
 	let imgUrl = uagb_blocks_info.uagb_url;

@@ -95,11 +95,13 @@ const ResponsiveUAGImage = ( props ) => {
 				<div className="uagb-size-type-field-tabs">
 					<div className="uagb-control__header">
 						<ResponsiveToggle
-							label={ __( 'Image', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Image', 'sureforms' ) }
 							responsive={ responsive }
 						/>
 					</div>
-					{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
+					{ output[ deviceType ]
+						? output[ deviceType ]
+						: output.Desktop }
 				</div>
 				<UAGHelpText text={ help } />
 			</div>

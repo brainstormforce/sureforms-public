@@ -61,14 +61,14 @@ export default function RangeTypographyControl( props ) {
 				value={ sizeTablet.value }
 				min={ min }
 				max={ 200 }
-				unit={ typeTablet? typeTablet : type }
+				unit={ typeTablet ? typeTablet : type }
 				responsive={ true }
 				setAttributes={ setAttributes }
 				data={ {
 					value: sizeTablet.value,
 					label: sizeTabletLabel,
 				} }
-				step={ props?.stepTablet? props?.stepTablet : props?.step }
+				step={ props?.stepTablet ? props?.stepTablet : props?.step }
 			/>
 		</>
 	);
@@ -80,14 +80,14 @@ export default function RangeTypographyControl( props ) {
 				value={ sizeMobile.value }
 				min={ min }
 				max={ 200 }
-				unit={ typeMobile? typeMobile : type }
+				unit={ typeMobile ? typeMobile : type }
 				responsive={ true }
 				setAttributes={ setAttributes }
 				data={ {
 					value: sizeMobile.value,
 					label: sizeMobileLabel,
 				} }
-				step={ props?.stepMobile? props?.stepMobile : props?.step }
+				step={ props?.stepMobile ? props?.stepMobile : props?.step }
 			/>
 		</>
 	);

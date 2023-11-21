@@ -45,17 +45,30 @@ export default function save( props ) {
 		descText = (
 			<>
 				{ seperatorPosition === 'above-sub-heading' ? seprator : '' }
-				<RichText.Content tagName="p" value={ headingDesc } className="uagb-desc-text" />
+				<RichText.Content
+					tagName="p"
+					value={ headingDesc }
+					className="uagb-desc-text"
+				/>
 				{ seperatorPosition === 'below-sub-heading' ? seprator : '' }
 			</>
 		);
 	}
 
 	return (
-		<div className={ classnames( props.className, `uagb-block-${ block_id }` ) }>
-			{ headingDescToggle && 'above-heading' === headingDescPosition ? descText : '' }
+		<div
+			className={ classnames(
+				props.className,
+				`uagb-block-${ block_id }`
+			) }
+		>
+			{ headingDescToggle && 'above-heading' === headingDescPosition
+				? descText
+				: '' }
 			{ headingTitleToggle && headingText }
-			{ headingDescToggle && 'below-heading' === headingDescPosition ? descText : '' }
+			{ headingDescToggle && 'below-heading' === headingDescPosition
+				? descText
+				: '' }
 			{ ! headingDescToggle && ! headingTitleToggle ? seprator : '' }
 		</div>
 	);

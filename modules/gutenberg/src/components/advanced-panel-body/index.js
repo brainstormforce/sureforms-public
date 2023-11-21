@@ -16,10 +16,18 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 	const getInspectorTabName = () => {
 		let inspectorTabName = 'style';
-		if ( panelRef?.current?.parentElement?.classList.contains( 'uagb-tab-content-general' ) ) {
+		if (
+			panelRef?.current?.parentElement?.classList.contains(
+				'uagb-tab-content-general'
+			)
+		) {
 			inspectorTabName = 'general';
 		}
-		if ( panelRef?.current?.parentElement?.classList.contains( 'uagb-tab-content-advance' ) ) {
+		if (
+			panelRef?.current?.parentElement?.classList.contains(
+				'uagb-tab-content-advance'
+			)
+		) {
 			inspectorTabName = 'advance';
 		}
 
@@ -46,10 +54,18 @@ const UAGAdvancedPanelBody = ( props ) => {
 			}
 		} );
 		let inspectorTabName = 'style';
-		if ( panelRef?.current?.parentElement?.classList.contains( 'uagb-tab-content-general' ) ) {
+		if (
+			panelRef?.current?.parentElement?.classList.contains(
+				'uagb-tab-content-general'
+			)
+		) {
 			inspectorTabName = 'general';
 		}
-		if ( panelRef?.current?.parentElement?.classList.contains( 'uagb-tab-content-advance' ) ) {
+		if (
+			panelRef?.current?.parentElement?.classList.contains(
+				'uagb-tab-content-advance'
+			)
+		) {
 			inspectorTabName = 'advance';
 		}
 
@@ -64,7 +80,10 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 		const uagLocalStorage = getUAGEditorStateLocalStorage();
 		if ( uagLocalStorage ) {
-			uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+			uagLocalStorage.setItem(
+				'uagSettingState',
+				JSON.stringify( data )
+			);
 		}
 	};
 
@@ -73,7 +92,11 @@ const UAGAdvancedPanelBody = ( props ) => {
 		let sibling = elem.parentNode.firstChild;
 
 		while ( sibling ) {
-			if ( sibling.nodeType === 1 && sibling !== elem && sibling.classList.contains( 'is-opened' ) ) {
+			if (
+				sibling.nodeType === 1 &&
+				sibling !== elem &&
+				sibling.classList.contains( 'is-opened' )
+			) {
 				siblings.push( sibling );
 			}
 			sibling = sibling.nextSibling;
@@ -84,9 +107,9 @@ const UAGAdvancedPanelBody = ( props ) => {
 
 	const panelTitle = props?.title
 		? props?.title
-				.toLowerCase()
-				.replace( /[^a-zA-Z ]/g, '' )
-				.replace( /\s+/g, '-' )
+			.toLowerCase()
+			.replace( /[^a-zA-Z ]/g, '' )
+			.replace( /\s+/g, '-' )
 		: '';
 
 	const blockNameForHook = blockName.split( '/' ).pop();

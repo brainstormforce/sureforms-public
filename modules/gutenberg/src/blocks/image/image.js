@@ -51,12 +51,16 @@ export default function Image( {
 
 	const { multiImageSelection } = useSelect(
 		( select ) => {
-			const { getMultiSelectedBlockClientIds, getBlockName } = select( blockEditorStore );
+			const { getMultiSelectedBlockClientIds, getBlockName } =
+				select( blockEditorStore );
 			const multiSelectedClientIds = getMultiSelectedBlockClientIds();
 			return {
 				multiImageSelection:
 					multiSelectedClientIds.length &&
-					multiSelectedClientIds.every( ( _clientId ) => getBlockName( _clientId ) === 'sureforms/image' ),
+					multiSelectedClientIds.every(
+						( _clientId ) =>
+							getBlockName( _clientId ) === 'sureforms/image'
+					),
 			};
 		},
 		[ id, isSelected ]
@@ -77,7 +81,10 @@ export default function Image( {
 
 	const isLargeViewport = useViewportMatch( 'medium' );
 	const isWideAligned = [ 'wide', 'full' ].includes( align );
-	const [ { loadedNaturalWidth, loadedNaturalHeight }, setLoadedNaturalSize ] = useState( {} );
+	const [
+		{ loadedNaturalWidth, loadedNaturalHeight },
+		setLoadedNaturalSize,
+	] = useState( {} );
 	const [ isEditingImage, setIsEditingImage ] = useState( false );
 	const clientWidth = useClientWidth( containerRef, [ align ] );
 	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
@@ -86,18 +93,27 @@ export default function Image( {
 	// width and height. This resolves an issue in Safari where the loaded natural
 	// width and height is otherwise lost when switching between alignments.
 	const { naturalWidth, naturalHeight } = useMemo( () => {
-		const getWidth = imageRef.current?.naturalWidth || loadedNaturalWidth || undefined;
-		const getHeight = imageRef.current?.naturalHeight || loadedNaturalHeight || undefined;
-		
-		if( ! attributes.naturalWidth || ! attributes.naturalHeight ){
-			setAttributes( { naturalWidth : getWidth, naturalHeight : getHeight } );
+		const getWidth =
+			imageRef.current?.naturalWidth || loadedNaturalWidth || undefined;
+		const getHeight =
+			imageRef.current?.naturalHeight || loadedNaturalHeight || undefined;
+
+		if ( ! attributes.naturalWidth || ! attributes.naturalHeight ) {
+			setAttributes( {
+				naturalWidth: getWidth,
+				naturalHeight: getHeight,
+			} );
 		}
 
 		return {
-			naturalWidth : getWidth,
-			naturalHeight : getHeight,
+			naturalWidth: getWidth,
+			naturalHeight: getHeight,
 		};
-	}, [ loadedNaturalWidth, loadedNaturalHeight, imageRef.current?.complete ] );
+	}, [
+		loadedNaturalWidth,
+		loadedNaturalHeight,
+		imageRef.current?.complete,
+	] );
 
 	const filename = getFilename( url );
 	let defaultedAlt;
@@ -107,11 +123,17 @@ export default function Image( {
 	} else if ( filename ) {
 		defaultedAlt = sprintf(
 			/* translators: %s: file name */
-			__( 'This image has an empty alt attribute; its file name is %s', 'sureforms' ),
+			__(
+				'This image has an empty alt attribute; its file name is %s',
+				'sureforms'
+			),
 			filename
 		);
 	} else {
-		defaultedAlt = __( 'This image has an empty alt attribute', 'sureforms' );
+		defaultedAlt = __(
+			'This image has an empty alt attribute',
+			'sureforms'
+		);
 	}
 
 	let img = (
@@ -119,9 +141,9 @@ export default function Image( {
 		// should direct focus to block.
 		<>
 			<img
-				srcSet={ `${ temporaryURL || url } ${ urlTablet ? ',' + urlTablet + ' 780w' : '' }${
-					urlMobile ? ', ' + urlMobile + ' 360w' : ''
-				}` }
+				srcSet={ `${ temporaryURL || url } ${
+					urlTablet ? ',' + urlTablet + ' 780w' : ''
+				}${ urlMobile ? ', ' + urlMobile + ' 360w' : '' }` }
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
 				onLoad={ ( event ) => {
@@ -144,7 +166,9 @@ export default function Image( {
 		const exceedMaxWidth = naturalWidth > clientWidth;
 		const ratio = naturalHeight / naturalWidth;
 		imageWidthWithinContainer = exceedMaxWidth ? clientWidth : naturalWidth;
-		imageHeightWithinContainer = exceedMaxWidth ? clientWidth * ratio : naturalHeight;
+		imageHeightWithinContainer = exceedMaxWidth
+			? clientWidth * ratio
+			: naturalHeight;
 	}
 
 	useEffect( () => {
@@ -194,8 +218,10 @@ export default function Image( {
 		const currentHeight = height || imageHeightWithinContainer;
 
 		const ratio = naturalWidth / naturalHeight;
-		const minWidth = naturalWidth < naturalHeight ? MIN_SIZE : MIN_SIZE * ratio;
-		const minHeight = naturalHeight < naturalWidth ? MIN_SIZE : MIN_SIZE / ratio;
+		const minWidth =
+			naturalWidth < naturalHeight ? MIN_SIZE : MIN_SIZE * ratio;
+		const minHeight =
+			naturalHeight < naturalWidth ? MIN_SIZE : MIN_SIZE / ratio;
 
 		// With the current implementation of ResizableBox, an image needs an
 		// explicit pixel value for the max-width. In absence of being able to
@@ -281,19 +307,31 @@ export default function Image( {
 					if ( deviceType === 'Tablet' ) {
 						const tabletWidth = widthTablet ? widthTablet : 780;
 						setAttributes( {
-							widthTablet: Math.abs( parseInt( tabletWidth + delta.width, 10 ) ),
-							heightTablet: Math.abs( parseInt( heightTablet + delta.height, 10 ) ),
+							widthTablet: Math.abs(
+								parseInt( tabletWidth + delta.width, 10 )
+							),
+							heightTablet: Math.abs(
+								parseInt( heightTablet + delta.height, 10 )
+							),
 						} );
 					} else if ( deviceType === 'Mobile' ) {
 						const mobileWidth = widthMobile ? widthMobile : 320;
 						setAttributes( {
-							widthMobile: Math.abs( parseInt( mobileWidth + delta.width, 10 ) ),
-							heightMobile: Math.abs( parseInt( heightMobile + delta.height, 10 ) ),
+							widthMobile: Math.abs(
+								parseInt( mobileWidth + delta.width, 10 )
+							),
+							heightMobile: Math.abs(
+								parseInt( heightMobile + delta.height, 10 )
+							),
 						} );
 					} else {
 						setAttributes( {
-							width: Math.abs( parseInt( currentWidth + delta.width, 10 ) ),
-							height: Math.abs( parseInt( currentHeight + delta.height, 10 ) ),
+							width: Math.abs(
+								parseInt( currentWidth + delta.width, 10 )
+							),
+							height: Math.abs(
+								parseInt( currentHeight + delta.height, 10 )
+							),
 						} );
 					}
 				} }

@@ -12,7 +12,11 @@ export function getLoopImage( ChildComponent ) {
 			return <ChildComponent { ...props } />;
 		}
 
-		const filteredProps = applyFilters( 'spectra_filter_dc_image', attributes, context );
+		const filteredProps = applyFilters(
+			'spectra_filter_dc_image',
+			attributes,
+			context
+		);
 		props = { ...props, ...{ attributes: filteredProps } };
 
 		return <ChildComponent { ...props } />;

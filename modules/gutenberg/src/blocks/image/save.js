@@ -31,22 +31,20 @@ export default function Save( props ) {
 		seperatorPosition,
 	} = props.attributes;
 
-	const image = (
-		url && '' !== url && (
-			<img
-				srcSet={ `${ url } ${ urlTablet ? ',' + urlTablet + ' 780w' : '' }${
-					urlMobile ? ', ' + urlMobile + ' 360w' : ''
-				}` }
-				sizes="(max-width: 480px) 150px"
-				src={ url }
-				alt={ alt }
-				className={ id ? `uag-image-${ id }` : null }
-				width={ width ? width : naturalWidth }
-				height={ height ? height : naturalHeight }
-				title={ title }
-				loading="lazy"
-			/>
-		)
+	const image = url && '' !== url && (
+		<img
+			srcSet={ `${ url } ${ urlTablet ? ',' + urlTablet + ' 780w' : '' }${
+				urlMobile ? ', ' + urlMobile + ' 360w' : ''
+			}` }
+			sizes="(max-width: 480px) 150px"
+			src={ url }
+			alt={ alt }
+			className={ id ? `uag-image-${ id }` : null }
+			width={ width ? width : naturalWidth }
+			height={ height ? height : naturalHeight }
+			title={ title }
+			loading="lazy"
+		/>
 	);
 	// block validation issue fixing - ImageURLInputUI components automatic provide "noopener"
 	const getRel = () => {
@@ -57,8 +55,13 @@ export default function Save( props ) {
 	};
 	const figureImage = (
 		<>
-			{ ( href && '' !== href ) ? (
-				<a className={ linkClass } href={ href } target={ linkTarget } rel={ getRel() }>
+			{ href && '' !== href ? (
+				<a
+					className={ linkClass }
+					href={ href }
+					target={ linkTarget }
+					rel={ getRel() }
+				>
 					{ image }
 				</a>
 			) : (
@@ -83,12 +86,18 @@ export default function Save( props ) {
 	const imageCaption = (
 		<>
 			{ ! RichText.isEmpty( caption ) && (
-				<RichText.Content tagName="figcaption" className="uagb-image-caption" value={ caption } />
+				<RichText.Content
+					tagName="figcaption"
+					className="uagb-image-caption"
+					value={ caption }
+				/>
 			) }
 		</>
 	);
 
-	const separator = 'none' !== seperatorStyle && <div className="uagb-image-separator"></div>;
+	const separator = 'none' !== seperatorStyle && (
+		<div className="uagb-image-separator"></div>
+	);
 
 	const imageOverlayLink = (
 		// eslint-disable-next-line jsx-a11y/anchor-has-content
@@ -123,11 +132,13 @@ export default function Save( props ) {
 							) }` }
 						>
 							{ imageOverlayLink }
-							{ 'before_title' === seperatorPosition && separator }
+							{ 'before_title' === seperatorPosition &&
+								separator }
 							{ imageHeading }
 							{ 'after_title' === seperatorPosition && separator }
 							{ imageCaption }
-							{ 'after_sub_title' === seperatorPosition && separator }
+							{ 'after_sub_title' === seperatorPosition &&
+								separator }
 						</div>
 					</>
 				) : (

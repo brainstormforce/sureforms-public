@@ -1,6 +1,11 @@
 import { TabPanel } from '@wordpress/components';
 import styles from './editor.lazy.scss';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import Separator from '@Components/separator';
 import { select } from '@wordpress/data';
@@ -28,7 +33,8 @@ const UAGTabsControl = ( props ) => {
 
 	const tabRef = useRef( null );
 
-	const tabsCountClass = 3 === props.tabs.length ? 'uag-control-tabs-three-tabs ' : '';
+	const tabsCountClass =
+		3 === props.tabs.length ? 'uag-control-tabs-three-tabs ' : '';
 
 	const tabs = props.tabs.map( ( tab, index ) => {
 		return {
@@ -71,7 +77,8 @@ const UAGTabsControl = ( props ) => {
 					}
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const uagSettingState =
+						getUAGEditorStateLocalStorage( 'uagSettingState' );
 					const data = {
 						...uagSettingState,
 						[ blockName ]: {
@@ -82,12 +89,19 @@ const UAGTabsControl = ( props ) => {
 
 					const uagLocalStorage = getUAGEditorStateLocalStorage();
 					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+						uagLocalStorage.setItem(
+							'uagSettingState',
+							JSON.stringify( data )
+						);
 					}
 				} }
 			>
 				{ ( tabName ) => {
-					return <div className="uag-control-tabs-output">{ props[ tabName.name ] }</div>;
+					return (
+						<div className="uag-control-tabs-output">
+							{ props[ tabName.name ] }
+						</div>
+					);
 				} }
 			</TabPanel>
 			{ ! props?.disableBottomSeparator && <Separator /> }

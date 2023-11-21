@@ -6,7 +6,12 @@ import { __ } from '@wordpress/i18n';
 import Range from '@Components/range/Range.js';
 import AdvancedPopColorControl from '../color-control/advanced-pop-color-control';
 import { Button, Dashicon } from '@wordpress/components';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { select } from '@wordpress/data';
 import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
@@ -25,7 +30,7 @@ const TextShadowControl = ( props ) => {
 		textShadowHOffset,
 		textShadowVOffset,
 		textShadowBlur,
-		label = __( 'Text Shadow', 'ultimate-addons-for-gutenberg' ),
+		label = __( 'Text Shadow', 'sureforms' ),
 		popup = false,
 		blockId,
 		help = false,
@@ -39,12 +44,16 @@ const TextShadowControl = ( props ) => {
 			const popupButton = document.querySelector(
 				`.active.popup-${ blockId } .spectra-control-popup__options--action-button`
 			);
-			const popupWrap = document.querySelector( `.active.popup-${ blockId } .spectra-control-popup` );
+			const popupWrap = document.querySelector(
+				`.active.popup-${ blockId } .spectra-control-popup`
+			);
 
 			if (
 				popupButton &&
 				! popupButton?.contains( e.target ) &&
-				! e.target?.classList?.contains( 'uagb-advanced-color-indicate' ) &&
+				! e.target?.classList?.contains(
+					'uagb-advanced-color-indicate'
+				) &&
 				! e.target?.parentElement?.closest( '.uagb-popover-color' ) &&
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
@@ -52,7 +61,8 @@ const TextShadowControl = ( props ) => {
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const uagSettingState =
+					getUAGEditorStateLocalStorage( 'uagSettingState' );
 
 				const data = {
 					...uagSettingState,
@@ -64,7 +74,10 @@ const TextShadowControl = ( props ) => {
 
 				const uagLocalStorage = getUAGEditorStateLocalStorage();
 				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+					uagLocalStorage.setItem(
+						'uagSettingState',
+						JSON.stringify( data )
+					);
 				}
 			}
 		} );
@@ -92,8 +105,13 @@ const TextShadowControl = ( props ) => {
 			attributeNames.forEach( ( attributeName ) => {
 				if ( attributeName ) {
 					const blockDefaultAttributeValue =
-						'undefined' !== typeof blocksAttributes[ selectedBlockName ][ attributeName ]?.default
-							? blocksAttributes[ selectedBlockName ][ attributeName ]?.default
+						'undefined' !==
+						typeof blocksAttributes[ selectedBlockName ][
+							attributeName
+						]?.default
+							? blocksAttributes[ selectedBlockName ][
+								attributeName
+							  ]?.default
 							: '';
 					defaultValues = {
 						...defaultValues,
@@ -113,7 +131,8 @@ const TextShadowControl = ( props ) => {
 		attributeNames.forEach( ( attributeName ) => {
 			if (
 				selectedBlockAttributes?.[ attributeName ] &&
-				selectedBlockAttributes?.[ attributeName ] !== defaultValues?.[ attributeName ]
+				selectedBlockAttributes?.[ attributeName ] !==
+					defaultValues?.[ attributeName ]
 			) {
 				isTextShadowUpdated = true;
 			}
@@ -179,20 +198,28 @@ const TextShadowControl = ( props ) => {
 	);
 
 	if ( showAdvancedControls ) {
-		advancedControls = <div className="uagb-text-shadow-advanced spectra-control-popup">{ overallControls }</div>;
+		advancedControls = (
+			<div className="uagb-text-shadow-advanced spectra-control-popup">
+				{ overallControls }
+			</div>
+		);
 	}
 
 	const textShadowAdvancedControls = (
 		<div className="spectra-control-popup__options--action-wrapper">
 			<span className="uag-control-label">
 				{ label }
-				{ isTextShadowUpdated && <div className="spectra__change-indicator--dot-right" /> }
+				{ isTextShadowUpdated && (
+					<div className="spectra__change-indicator--dot-right" />
+				) }
 			</span>
 			<Button
 				className="uag-text-shadow-button spectra-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
-					const allPopups = document.querySelectorAll( '.spectra-control-popup__options' );
+					const allPopups = document.querySelectorAll(
+						'.spectra-control-popup__options'
+					);
 					if ( allPopups && 0 < allPopups.length ) {
 						for ( let i = 0; i < allPopups.length; i++ ) {
 							const popupButton = allPopups[ i ]?.querySelector(
@@ -204,7 +231,8 @@ const TextShadowControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const uagSettingState =
+						getUAGEditorStateLocalStorage( 'uagSettingState' );
 					let data = {
 						...uagSettingState,
 						[ blockName ]: {
@@ -224,7 +252,10 @@ const TextShadowControl = ( props ) => {
 					}
 					const uagLocalStorage = getUAGEditorStateLocalStorage();
 					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+						uagLocalStorage.setItem(
+							'uagSettingState',
+							JSON.stringify( data )
+						);
 					}
 				} }
 			>
@@ -246,7 +277,10 @@ const TextShadowControl = ( props ) => {
 	);
 
 	return (
-		<div ref={ panelRef } className={ popup ? 'components-base-control' : '' }>
+		<div
+			ref={ panelRef }
+			className={ popup ? 'components-base-control' : '' }
+		>
 			{ controlBeforeDomElement }
 			{ popup ? (
 				<div

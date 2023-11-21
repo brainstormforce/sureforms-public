@@ -58,7 +58,10 @@ export const isExternalImage = ( id, url ) => url && ! id && ! isBlobURL( url );
  * @return {boolean} Whether or not it has default image size.
  */
 export const hasDefaultSize = ( image, defaultSize ) => {
-	return image?.sizes?.[ defaultSize ] || image?.media_details?.sizes?.[ defaultSize ] ? true : false;
+	return image?.sizes?.[ defaultSize ] ||
+		image?.media_details?.sizes?.[ defaultSize ]
+		? true
+		: false;
 };
 
 /**
@@ -84,22 +87,22 @@ export const getDevicesAttributes = ( media, deviceType ) => {
 
 	const getMobileAttributes = pickRelevantMediaFiles( media, deviceSizeSlug );
 	const mediaAttributes = {};
-	if( getMobileAttributes.url ){
+	if ( getMobileAttributes.url ) {
 		mediaAttributes[ urlType ] = getMobileAttributes.url;
 	}
 
-	if( 'custom' !== deviceSizeSlug ){
-		if( getMobileAttributes.height ){
+	if ( 'custom' !== deviceSizeSlug ) {
+		if ( getMobileAttributes.height ) {
 			mediaAttributes[ heightType ] = getMobileAttributes.height;
 		}
 
-		if( getMobileAttributes.width ){
+		if ( getMobileAttributes.width ) {
 			mediaAttributes[ widthType ] = getMobileAttributes.width;
 		}
-	}else{
+	} else {
 		mediaAttributes[ heightType ] = undefined;
 		mediaAttributes[ widthType ] = undefined;
 	}
-	
+
 	return mediaAttributes;
-}
+};

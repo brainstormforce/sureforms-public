@@ -15,7 +15,7 @@ const propTypes = {
 
 // Set the Required Default Values.
 const defaultProps = {
-	label: __( 'Alignment', 'ultimate-addons-for-gutenberg' ),
+	label: __( 'Alignment', 'sureforms' ),
 };
 
 // Create the Spectra Control.
@@ -49,7 +49,11 @@ const SpectraMatrixControl = ( props ) => {
 					className={ 'spectra__matrix-control--box' }
 					label={ label }
 					value={ data?.value }
-					onChange={ onChange || setAttributes ? ( newValue ) => onChangeHandler( newValue ) : false }
+					onChange={
+						onChange || setAttributes
+							? ( newValue ) => onChangeHandler( newValue )
+							: false
+					}
 				/>
 			</div>
 			<UAGHelpText text={ help } />

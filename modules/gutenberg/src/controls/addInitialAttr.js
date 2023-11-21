@@ -1,29 +1,43 @@
 import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
-const getUniqId = ( blocks ) => blocks
-	.reduce( ( result, block ) => {
-		if ( block?.attributes?.block_id && block.name.includes( 'uagb' ) ) {
-			result.blockIds.push( block.attributes.block_id );
-			result.clientIds.push( block.clientId );
-		}
+const getUniqId = ( blocks ) =>
+	blocks.reduce(
+		( result, block ) => {
+			if (
+				block?.attributes?.block_id &&
+				block.name.includes( 'uagb' )
+			) {
+				result.blockIds.push( block.attributes.block_id );
+				result.clientIds.push( block.clientId );
+			}
 
-		if ( block.innerBlocks ) {
-			const { blockIds, clientIds } = getUniqId( block.innerBlocks );
-			result.blockIds = [ ...result.blockIds, ...blockIds ];
-			result.clientIds = [ ...result.clientIds, ...clientIds ];
-		}
+			if ( block.innerBlocks ) {
+				const { blockIds, clientIds } = getUniqId( block.innerBlocks );
+				result.blockIds = [ ...result.blockIds, ...blockIds ];
+				result.clientIds = [ ...result.clientIds, ...clientIds ];
+			}
 
-		return result;
-	}, { blockIds: [], clientIds: [] } );
+			return result;
+		},
+		{ blockIds: [], clientIds: [] }
+	);
 
 const checkDuplicate = ( blockIds, block_id, currentIndex ) => {
-	const getFiltered =  blockIds.filter( ( el ) => ( el === block_id ) );
-	return getFiltered.length > 1 && currentIndex === blockIds.lastIndexOf( block_id )
-}
+	const getFiltered = blockIds.filter( ( el ) => el === block_id );
+	return (
+		getFiltered.length > 1 &&
+		currentIndex === blockIds.lastIndexOf( block_id )
+	);
+};
 
 const addInitialAttr = ( ChildComponent ) => {
 	const WrappedComponent = ( props ) => {
-		const { name, setAttributes, clientId, attributes : { block_id } } = props;
+		const {
+			name,
+			setAttributes,
+			clientId,
+			attributes: { block_id },
+		} = props;
 
 		const listOfParentBlock = [
 			'uagb/faq',
@@ -33,20 +47,50 @@ const addInitialAttr = ( ChildComponent ) => {
 			'uagb/social-share',
 			'uagb/content-timeline',
 			'uagb/tabs',
-			'uagb/how-to'
+			'uagb/how-to',
 		]; // Add all parent block name here who's getting issue in customize preview.
 
 		useEffect( () => {
-			if ( uagb_blocks_info.is_customize_preview && ( '0' === block_id || undefined === block_id ) && listOfParentBlock.includes( name ) ) {
-				document.addEventListener( `UAG-${name}-${clientId.substr( 0, 8 )}-BlockCustomizeWidgetEditor`, function ( e ) {
-					setAttributes( { block_id: e.detail.id, classMigrate: e.detail.classMigrate, childMigrate: e.detail.childMigrate } );
-				} );
+			if (
+				uagb_blocks_info.is_customize_preview &&
+				( '0' === block_id || undefined === block_id ) &&
+				listOfParentBlock.includes( name )
+			) {
+				document.addEventListener(
+					`UAG-${ name }-${ clientId.substr(
+						0,
+						8
+					) }-BlockCustomizeWidgetEditor`,
+					function ( e ) {
+						setAttributes( {
+							block_id: e.detail.id,
+							classMigrate: e.detail.classMigrate,
+							childMigrate: e.detail.childMigrate,
+						} );
+					}
+				);
 			}
 		}, [] );
 
 		useEffect( () => {
-			if ( uagb_blocks_info.is_customize_preview && ( '0' === block_id || undefined === block_id ) && listOfParentBlock.includes( name ) ) {
-				const loadCustomEvent = new CustomEvent( `UAG-${name}-${clientId.substr( 0, 8 )}-BlockCustomizeWidgetEditor`, { detail: { id: clientId.substr( 0, 8 ), classMigrate: true, childMigrate: true }, } );
+			if (
+				uagb_blocks_info.is_customize_preview &&
+				( '0' === block_id || undefined === block_id ) &&
+				listOfParentBlock.includes( name )
+			) {
+				const loadCustomEvent = new CustomEvent(
+					`UAG-${ name }-${ clientId.substr(
+						0,
+						8
+					) }-BlockCustomizeWidgetEditor`,
+					{
+						detail: {
+							id: clientId.substr( 0, 8 ),
+							classMigrate: true,
+							childMigrate: true,
+						},
+					}
+				);
 				document.dispatchEvent( loadCustomEvent );
 			}
 		}, [ props.attributes ] );
@@ -81,7 +125,7 @@ const addInitialAttr = ( ChildComponent ) => {
 				'uagb/icon-list',
 				'uagb/restaurant-menu',
 				'uagb/social-share',
-                'uagb/content-timeline',
+				'uagb/content-timeline',
 				'uagb/instagram-feed',
 			];
 
@@ -89,7 +133,11 @@ const addInitialAttr = ( ChildComponent ) => {
 
 			const listOfEditorInnerblocksPreview = [ 'uagb/countdown' ];
 
-			const listOfAllTaxonomyStore = [ 'uagb/post-carousel', 'uagb/post-grid', 'uagb/post-masonry' ];
+			const listOfAllTaxonomyStore = [
+				'uagb/post-carousel',
+				'uagb/post-grid',
+				'uagb/post-masonry',
+			];
 
 			const attributeObject = { block_id: clientId.substr( 0, 8 ) };
 
@@ -97,7 +145,7 @@ const addInitialAttr = ( ChildComponent ) => {
 				attributeObject.allTaxonomyStore = undefined;
 			}
 
-            // editorInnerblocksPreview: This attribute is used to display innerblocks preview for 'Replace with Content' mode.
+			// editorInnerblocksPreview: This attribute is used to display innerblocks preview for 'Replace with Content' mode.
 			if ( listOfEditorInnerblocksPreview.includes( name ) ) {
 				attributeObject.editorInnerblocksPreview = false;
 			}
@@ -114,7 +162,6 @@ const addInitialAttr = ( ChildComponent ) => {
 				attributeObject.classMigrate = true;
 			}
 
-
 			/**
 			 * Resolve issue of reusable block.
 			 * As of now we are not providing for all block
@@ -124,16 +171,26 @@ const addInitialAttr = ( ChildComponent ) => {
 				'uagb/image-gallery',
 			];
 
-			if( ! REUSABLE_BLOCK_ISSUE_RESOLVED_BLOCKS.includes( name ) ){
+			if ( ! REUSABLE_BLOCK_ISSUE_RESOLVED_BLOCKS.includes( name ) ) {
 				const getAllBlocks = select( 'core/editor' )?.getBlocks();
-				const { blockIds, clientIds } = getAllBlocks ? getUniqId( getAllBlocks ) : { blockIds: [], clientIds: [] };
-				if ( 'not_set' === block_id || '0' === block_id || ! block_id || checkDuplicate( blockIds, block_id, clientIds.indexOf( clientId ) ) ) {
+				const { blockIds, clientIds } = getAllBlocks
+					? getUniqId( getAllBlocks )
+					: { blockIds: [], clientIds: [] };
+				if (
+					'not_set' === block_id ||
+					'0' === block_id ||
+					! block_id ||
+					checkDuplicate(
+						blockIds,
+						block_id,
+						clientIds.indexOf( clientId )
+					)
+				) {
 					setAttributes( attributeObject );
 				}
-			}else{
+			} else {
 				setAttributes( attributeObject );
 			}
-
 		}, [ clientId ] );
 
 		return <ChildComponent { ...props } />;

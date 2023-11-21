@@ -183,11 +183,12 @@ $border-color: #d6d9dd;
 	position: sticky;
 	top: -3px;
 	z-index: 9;
-	border-top: calc(0.1em + 1px) solid #f2f4f5;
+	border-top: calc( 0.1em + 1px ) solid #f2f4f5;
 	direction: initial;
 }
 
-.customize-widgets-layout__inspector .uagb-inspector-tabs-container { // CSS to resolve issue in customizer > widget > spectra inspector tab has gap https://share.getcloudapp.com/d5uDXmn0.
+.customize-widgets-layout__inspector .uagb-inspector-tabs-container {
+	// CSS to resolve issue in customizer > widget > spectra inspector tab has gap https://share.getcloudapp.com/d5uDXmn0.
 	top: -12px;
 	margin-left: -12px;
 	margin-right: -12px;

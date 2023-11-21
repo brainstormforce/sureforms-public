@@ -2,7 +2,12 @@ import { useEffect, useRef } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 
-export default function Layout( { attributes, isSelected, setAttributes, captionRef } ) {
+export default function Layout( {
+	attributes,
+	isSelected,
+	setAttributes,
+	captionRef,
+} ) {
 	const {
 		caption,
 		enableCaption,
@@ -25,10 +30,15 @@ export default function Layout( { attributes, isSelected, setAttributes, caption
 					ref={ headingRef }
 					tagName={ headingTag }
 					className="uagb-image-heading"
-					aria-label={ __( 'Image overlay heading text', 'sureforms' ) }
+					aria-label={ __(
+						'Image overlay heading text',
+						'sureforms'
+					) }
 					placeholder={ __( 'Add Heading', 'sureforms' ) }
 					value={ heading }
-					onChange={ ( value ) => setAttributes( { heading: value } ) }
+					onChange={ ( value ) =>
+						setAttributes( { heading: value } )
+					}
 				/>
 			) }
 		</>
@@ -44,13 +54,17 @@ export default function Layout( { attributes, isSelected, setAttributes, caption
 					aria-label={ __( 'Image caption text', 'sureforms' ) }
 					placeholder={ __( 'Add caption', 'sureforms' ) }
 					value={ caption }
-					onChange={ ( value ) => setAttributes( { caption: value } ) }
+					onChange={ ( value ) =>
+						setAttributes( { caption: value } )
+					}
 				/>
 			) }
 		</>
 	);
 
-	const separator = 'none' !== seperatorStyle && <div className="uagb-image-separator"></div>;
+	const separator = 'none' !== seperatorStyle && (
+		<div className="uagb-image-separator"></div>
+	);
 
 	return (
 		<>

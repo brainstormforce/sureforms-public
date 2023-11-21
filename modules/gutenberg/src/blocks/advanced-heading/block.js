@@ -16,11 +16,17 @@ import { applyFilters } from '@wordpress/hooks';
 
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 let headingCommonData = {};
-headingCommonData = applyFilters( 'sureforms/advanced-heading', addCommonDataToSpectraBlocks( headingCommonData ) );
+headingCommonData = applyFilters(
+	'sureforms/advanced-heading',
+	addCommonDataToSpectraBlocks( headingCommonData )
+);
 registerBlockType( 'sureforms/advanced-heading', {
 	...headingCommonData,
 	title: __( 'Heading', 'sureforms' ),
-	description: __( 'Add heading, sub heading and a separator using one block.', 'sureforms' ),
+	description: __(
+		'Add heading, sub heading and a separator using one block.',
+		'sureforms'
+	),
 	icon: UAGB_Block_Icons.advanced_heading,
 	keywords: [
 		__( 'creative heading', 'sureforms' ),
@@ -33,10 +39,18 @@ registerBlockType( 'sureforms/advanced-heading', {
 	attributes,
 	category: uagb_blocks_info.category,
 	edit: ( props ) =>
-		props.attributes.isPreview ? <PreviewImage image="advanced-heading" /> : <Edit { ...props } />,
+		props.attributes.isPreview ? (
+			<PreviewImage image="advanced-heading" />
+		) : (
+			<Edit { ...props } />
+		),
 	save,
 	__experimentalLabel: ( atts ) =>
-		applyFilters( 'uag_loop_data_source_label', __( 'Heading', 'sureforms' ), atts ),
+		applyFilters(
+			'uag_loop_data_source_label',
+			__( 'Heading', 'sureforms' ),
+			atts
+		),
 	usesContext: [ 'postId', 'postType' ],
 	transforms: {
 		from: [
@@ -48,7 +62,9 @@ registerBlockType( 'sureforms/advanced-heading', {
 						headingTitle: attribute.content,
 						headingAlign: attribute.textAlign,
 						headingColor: colourNameToHex( attribute.textColor ),
-						blockBackground: colourNameToHex( attribute.backgroundColor ),
+						blockBackground: colourNameToHex(
+							attribute.backgroundColor
+						),
 					} );
 				},
 			},
@@ -61,7 +77,9 @@ registerBlockType( 'sureforms/advanced-heading', {
 						headingDesc: attribute.citation,
 						headingAlign: attribute.align,
 						headingColor: colourNameToHex( attribute.textColor ),
-						blockBackground: colourNameToHex( attribute.backgroundColor ),
+						blockBackground: colourNameToHex(
+							attribute.backgroundColor
+						),
 					} );
 				},
 			},
@@ -73,7 +91,9 @@ registerBlockType( 'sureforms/advanced-heading', {
 						headingTitle: attribute.content,
 						headingAlign: attribute.align,
 						headingColor: colourNameToHex( attribute.textColor ),
-						blockBackground: colourNameToHex( attribute.backgroundColor ),
+						blockBackground: colourNameToHex(
+							attribute.backgroundColor
+						),
 					} );
 				},
 			},
@@ -91,8 +111,12 @@ registerBlockType( 'sureforms/advanced-heading', {
 					return newitems.map( ( text ) =>
 						createBlock( 'sureforms/advanced-heading', {
 							headingTitle: text.text,
-							headingColor: colourNameToHex( _attributes.textColor ),
-							blockBackground: colourNameToHex( _attributes.backgroundColor ),
+							headingColor: colourNameToHex(
+								_attributes.textColor
+							),
+							blockBackground: colourNameToHex(
+								_attributes.backgroundColor
+							),
 						} )
 					);
 				},

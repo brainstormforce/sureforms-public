@@ -1,40 +1,40 @@
 // Custom icon picker
 @import '../../styles/variables';
 
-.srfm-custom-ip {
-	.srfm-control-label {
+.uag-custom-ip {
+	.uag-control-label {
 		padding-bottom: 4px;
 		display: block;
 	}
 
-	.srfm-ip-placeholder-wrap {
+	.uag-ip-placeholder-wrap {
 		width: 256px;
 		max-width: 100%;
 		min-height: 96px;
 		display: flex;
-		background-color: $srfm-color-plain-background;
-		border: 1px solid $srfm-color-border;
-		border-radius: $srfm-control-border-radius;
+		background-color: $spectra-color-plain-background;
+		border: 1px solid $spectra-color-border;
+		border-radius: $spectra-control-border-radius;
 		position: relative;
 		overflow: hidden;
 		// On wrapper hover functionality.
 		&:hover {
-			.srfm-ip-actions {
+			.uag-ip-actions {
 				transform: translate( 0, 0 );
 			}
 		}
 
-		.srfm-ip-remove-icon > svg,
-		.srfm-ip-selected-icon-overlay > svg {
-			fill: $srfm-color-plain-background;
+		.uag-ip-remove-icon > svg,
+		.uag-ip-selected-icon-overlay > svg {
+			fill: $spectra-color-plain-background;
 			width: 18px;
 			height: 18px;
-			background-color: $srfm-color-icon-disabled;
+			background-color: $spectra-color-icon-disabled;
 			padding: 2.4px;
 			border-radius: 50%;
 		}
 
-		.srfm-ip-remove-icon {
+		.uag-ip-remove-icon {
 			position: absolute;
 			right: 5px;
 			top: 5px;
@@ -51,20 +51,20 @@
 			}
 		}
 
-		.srfm-ip-selected-icon {
+		.uag-ip-selected-icon {
 			width: 100%;
 			display: flex;
 			cursor: pointer;
 		}
 
-		.srfm-ip-selected-icon-overlay {
+		.uag-ip-selected-icon-overlay {
 			display: flex;
 			width: 100%;
 			justify-content: center;
 			align-items: center;
 		}
 
-		.srfm-ip-selected-icon-value {
+		.uag-ip-selected-icon-value {
 			position: absolute;
 			z-index: 1;
 			width: 100%;
@@ -76,11 +76,11 @@
 			> svg {
 				height: 30px;
 				width: 30px;
-				fill: $srfm-color-body;
+				fill: $spectra-color-body;
 			}
 		}
 
-		.srfm-ip-actions {
+		.uag-ip-actions {
 			position: absolute;
 			bottom: 0;
 			width: 100%;
@@ -90,13 +90,13 @@
 			transition: 0.2s all ease-in-out;
 
 			> span {
-				background-color: $srfm-color-light-background;
+				background-color: $spectra-color-light-background;
 				flex: 1;
 				font-size: 13px;
 				font-weight: 400;
 				text-align: center;
 				line-height: 24px;
-				color: $srfm-color-body;
+				color: $spectra-color-body;
 				cursor: pointer;
 			}
 		}
@@ -104,11 +104,11 @@
 }
 
 // Modal popup style.
-.components-modal__screen-overlay.srfm-ip-modal-wrapper-overlay {
+.components-modal__screen-overlay.uagb-ip-modal-wrapper-overlay {
 	background-color: rgba( 0, 0, 0, 0.7 );
 }
 
-.components-modal__frame.srfm-ip-modal-wrapper {
+.components-modal__frame.uagb-ip-modal-wrapper {
 	width: 1080px;
 	height: 796px;
 	max-height: 80%;
@@ -125,7 +125,7 @@
 		margin: 0;
 		background-color: #fff;
 		overflow: unset;
-		border-radius: $srfm-control-popup-border-radius;
+		border-radius: $spectra-control-popup-border-radius;
 		> div:not( .components-modal__header ) {
 			height: 100%;
 		}
@@ -151,7 +151,7 @@
 			}
 		}
 
-		.srfm-ip-header {
+		.uagb-ip-header {
 			display: flex;
 			align-items: baseline;
 			height: 64px;
@@ -165,7 +165,7 @@
 			}
 		}
 
-		.srfm-ip-footer {
+		.uagb-ip-footer {
 			height: 68px;
 			text-align: right;
 			display: flex;
@@ -177,7 +177,7 @@
 				color: #fff;
 				border: none;
 				background-color: #007cba;
-				border-radius: $srfm-control-popup-border-radius;
+				border-radius: $spectra-control-popup-border-radius;
 				width: 89px;
 				height: 36px;
 				cursor: pointer;
@@ -190,23 +190,24 @@
 		}
 	}
 
-	.srfm-ip-lr-container {
+	.uagb-ip-lr-container {
 		display: flex;
+		// Height 100% - height of footer and header
 		height: calc( 100% - 134px );
 		grid-gap: 24px;
 
-		.srfm-ip-left {
+		.uagb-ip-left {
 			width: 156px;
 			overflow: auto;
 		}
 
-		.srfm-ip-right {
+		.uagb-ip-right {
 			flex: 1;
 			padding: 14px;
 			padding-right: 0;
 			border: 1px solid #e6e7e9;
-			border-radius: $srfm-control-popup-border-radius;
-			.srfm-ip-modal-container {
+			border-radius: $spectra-control-popup-border-radius;
+			.uagb-ip-modal-container {
 				height: 100%;
 				.ReactVirtualized__Grid__innerScrollContainer {
 					> div {
@@ -219,11 +220,11 @@
 		}
 	}
 
-	.srfm-ip-categories-list {
+	.uagb-ip-categories-list {
 		> div {
 			padding: 9px 10px;
 			cursor: pointer;
-			border-radius: $srfm-control-popup-border-radius;
+			border-radius: $spectra-control-popup-border-radius;
 			color: #1d2327;
 			display: flex;
 			justify-content: space-between;
@@ -237,11 +238,11 @@
 	}
 
 	// Search bar.
-	.srfm-ip-search-container {
+	.uagb-ip-search-container {
 		flex: 1;
 		padding-left: 24px;
 
-		.srfm-ip-search-bar {
+		.uagb-ip-search-bar {
 			position: relative;
 
 			> svg,
@@ -265,9 +266,9 @@
 				height: 36px;
 				width: 100%;
 				padding: 7px 12px 7px calc( 12px * 2 + 14px );
-				border: 1px solid $srfm-color-border;
+				border: 1px solid $spectra-color-border;
 				margin: 0;
-				border-radius: $srfm-control-popup-border-radius;
+				border-radius: $spectra-control-popup-border-radius;
 				color: #1d2327;
 
 				&::placeholder {
@@ -281,7 +282,7 @@
 		}
 	}
 	// Icons container
-	.srfm-ip-icons {
+	.uagb-ip-icons {
 		.ReactVirtualized__Grid__innerScrollContainer {
 			overflow-x: hidden !important;
 			max-width: inherit !important;
@@ -291,12 +292,12 @@
 			align-items: center;
 			justify-content: center;
 		}
-		.srfm-icon-item {
+		.uagb-icon-item {
 			width: 80px;
 			height: 80px;
-			background-color: $srfm-color-plain-background;
-			border: 1px solid $srfm-color-border;
-			border-radius: $srfm-control-border-radius;
+			background-color: $spectra-color-plain-background;
+			border: 1px solid $spectra-color-border;
+			border-radius: $spectra-control-border-radius;
 			display: flex;
 			align-items: center;
 			justify-content: center;

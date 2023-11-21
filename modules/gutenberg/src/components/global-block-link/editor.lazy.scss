@@ -1,5 +1,4 @@
 .spectra-global-block-style-name-modal {
-
 	& > .components-modal__content {
 		width: 550px;
 		margin: 0;
@@ -94,7 +93,6 @@
 }
 
 .spectra-gbs-button {
-
 	&.delete {
 		margin-left: 5px;
 	}
@@ -153,7 +151,7 @@
 				margin: 0;
 				flex: 1;
 				justify-content: center;
-				box-shadow: inset 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+				box-shadow: inset 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) );
 			}
 		}
 	}
@@ -170,12 +168,11 @@
 }
 
 @keyframes button-loading-spinner {
-
 	from {
-		transform: rotate(0turn);
+		transform: rotate( 0turn );
 	}
 
 	to {
-		transform: rotate(1turn);
+		transform: rotate( 1turn );
 	}
 }

@@ -1,4 +1,9 @@
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import ResponsiveSelectControl from '@Components/responsive-select';
 import { __ } from '@wordpress/i18n';
 import styles from './editor.lazy.scss';
@@ -64,19 +69,20 @@ export default function ImageSizeControl( {
 			deviceWidth = width;
 	}
 
-	const { currentHeight, currentWidth, updateDimension } = useDimensionHandler(
-		deviceHeight,
-		deviceWidth,
-		imageHeight,
-		imageWidth,
-		onChange
-	);
+	const { currentHeight, currentWidth, updateDimension } =
+		useDimensionHandler(
+			deviceHeight,
+			deviceWidth,
+			imageHeight,
+			imageWidth,
+			onChange
+		);
 
 	const output = {};
 	output.Desktop = (
 		<>
 			<UAGNumberControl
-				label={ __( 'Width', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
 					value: width,
@@ -91,7 +97,7 @@ export default function ImageSizeControl( {
 				onChange={ ( value ) => updateDimension( 'width', value ) }
 			/>
 			<UAGNumberControl
-				label={ __( 'Height', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
 					value: height,
@@ -118,7 +124,7 @@ export default function ImageSizeControl( {
 	output.Tablet = (
 		<>
 			<UAGNumberControl
-				label={ __( 'Width', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
 					value: widthTablet,
@@ -130,10 +136,12 @@ export default function ImageSizeControl( {
 				step={ 1 }
 				max={ -Infinity }
 				showControlHeader={ false }
-				onChange={ ( value ) => updateDimension( 'widthTablet', value ) }
+				onChange={ ( value ) =>
+					updateDimension( 'widthTablet', value )
+				}
 			/>
 			<UAGNumberControl
-				label={ __( 'Height', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
 					value: heightTablet,
@@ -160,7 +168,7 @@ export default function ImageSizeControl( {
 	output.Mobile = (
 		<>
 			<UAGNumberControl
-				label={ __( 'Width', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Width', 'sureforms' ) }
 				value={ currentWidth }
 				data={ {
 					value: widthMobile,
@@ -172,10 +180,12 @@ export default function ImageSizeControl( {
 				step={ 1 }
 				max={ -Infinity }
 				showControlHeader={ false }
-				onChange={ ( value ) => updateDimension( 'widthMobile', value ) }
+				onChange={ ( value ) =>
+					updateDimension( 'widthMobile', value )
+				}
 			/>
 			<UAGNumberControl
-				label={ __( 'Height', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Height', 'sureforms' ) }
 				value={ currentHeight }
 				data={ {
 					value: heightMobile,
@@ -216,7 +226,7 @@ export default function ImageSizeControl( {
 			{ controlBeforeDomElement }
 			{ imageSizeOptions.length !== 0 && (
 				<ResponsiveSelectControl
-					label={ __( 'Image Size', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Image Size', 'sureforms' ) }
 					options={ {
 						desktop: imageSizeOptions,
 						tablet: imageSizeOptions,
@@ -243,11 +253,20 @@ export default function ImageSizeControl( {
 				<div className="block-editor-image-size-control">
 					<div className="uagb-size-type-field-tabs">
 						<div className="uagb-control__header">
-							<ResponsiveToggle label={ __( 'Image Dimensions', 'ultimate-addons-for-gutenberg' ) } responsive={ responsive } />
+							<ResponsiveToggle
+								label={ __( 'Image Dimensions', 'sureforms' ) }
+								responsive={ responsive }
+							/>
 						</div>
-						<div className="block-editor-image-size-control__row">{ output[ deviceType ] }</div>
+						<div className="block-editor-image-size-control__row">
+							{ output[ deviceType ] }
+						</div>
 					</div>
-					{ help && <p className="components-base-control__help">{ help }</p> }
+					{ help && (
+						<p className="components-base-control__help">
+							{ help }
+						</p>
+					) }
 				</div>
 			) }
 			{ controlAfterDomElement }

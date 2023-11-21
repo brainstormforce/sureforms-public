@@ -25,13 +25,7 @@ const defaultProps = {
 };
 
 export default function UAGMultiSelectControl( props ) {
-	const {
-		label,
-		options,
-		data,
-		isSearchable,
-		setAttributes
-	} = props;
+	const { label, options, data, isSearchable, setAttributes } = props;
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	const { getSelectedBlock } = select( 'core/block-editor' );
@@ -58,7 +52,10 @@ export default function UAGMultiSelectControl( props ) {
 	);
 
 	const allOptionsFlat = allOptions.reduce( ( accumulator, currentItem ) => {
-		return [ ...accumulator, ...( currentItem?.options || [ currentItem ] ) ]
+		return [
+			...accumulator,
+			...( currentItem?.options || [ currentItem ] ),
+		];
 	}, [] );
 
 	return (
@@ -66,7 +63,9 @@ export default function UAGMultiSelectControl( props ) {
 			{ controlBeforeDomElement }
 			<Select
 				options={ allOptions }
-				defaultValue={ allOptionsFlat.filter( ( item ) => data.value.includes( item.value ) ) }
+				defaultValue={ allOptionsFlat.filter( ( item ) =>
+					data.value.includes( item.value )
+				) }
 				onChange={ ( option ) =>
 					setAttributes( {
 						[ data.label ]: option.reduce( ( acc, current ) => {

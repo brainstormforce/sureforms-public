@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 import { useDeviceType } from '@Controls/getPreviewType';
 import ResponsiveToggle from '../responsive-toggle';
@@ -40,21 +45,27 @@ const ResponsiveSelectControl = ( props ) => {
 	output.Desktop = (
 		<SelectControl
 			value={ data.desktop.value }
-			onChange={ ( value ) => setAttributes( { [ data.desktop.label ]: value } ) }
+			onChange={ ( value ) =>
+				setAttributes( { [ data.desktop.label ]: value } )
+			}
 			options={ options.desktop }
 		/>
 	);
 	output.Tablet = (
 		<SelectControl
 			value={ data.tablet.value }
-			onChange={ ( value ) => setAttributes( { [ data.tablet.label ]: value } ) }
+			onChange={ ( value ) =>
+				setAttributes( { [ data.tablet.label ]: value } )
+			}
 			options={ options.tablet || options.desktop }
 		/>
 	);
 	output.Mobile = (
 		<SelectControl
 			value={ data.mobile.value }
-			onChange={ ( value ) => setAttributes( { [ data.mobile.label ]: value } ) }
+			onChange={ ( value ) =>
+				setAttributes( { [ data.mobile.label ]: value } )
+			}
 			options={ options.mobile || options.desktop }
 		/>
 	);
@@ -72,11 +83,17 @@ const ResponsiveSelectControl = ( props ) => {
 	);
 
 	return (
-		<div ref={ panelRef } className="uagb-responsive-select-control components-base-control">
+		<div
+			ref={ panelRef }
+			className="uagb-responsive-select-control components-base-control"
+		>
 			{ controlBeforeDomElement }
 			<div className="uagb-size-type-field-tabs">
 				<div className="uagb-control__header">
-					<ResponsiveToggle label={ label } responsive={ responsive } />
+					<ResponsiveToggle
+						label={ label }
+						responsive={ responsive }
+					/>
 				</div>
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
 			</div>

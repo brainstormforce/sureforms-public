@@ -8,7 +8,13 @@ import { getFallbackNumber } from '@Controls/getAttributeFallback';
 import generateBorderCSS from '@Controls/generateBorderCSS';
 import generateShadowCSS from '@Controls/generateShadowCSS';
 
-function styling( attributes, clientId, name, deviceType, gbsSelector = false ) {
+function styling(
+	attributes,
+	clientId,
+	name,
+	deviceType,
+	gbsSelector = false
+) {
 	const blockName = name.replace( 'sureforms/', '' );
 	const previewType = deviceType.toLowerCase();
 	const {
@@ -92,35 +98,43 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 	} = attributes;
 
 	const iconWidth = getFallbackNumber( iconSize, 'iconSize', blockName );
-	const transformation = generateCSSUnit( getFallbackNumber( rotation, 'rotation', blockName ), rotationUnit );
-	const background = 'classic' === iconBackgroundColorType ? iconBackgroundColor : iconBackgroundGradientColor;
+	const transformation = generateCSSUnit(
+		getFallbackNumber( rotation, 'rotation', blockName ),
+		rotationUnit
+	);
+	const background =
+		'classic' === iconBackgroundColorType
+			? iconBackgroundColor
+			: iconBackgroundGradientColor;
 	const hoverBackground =
-		'classic' === iconHoverBackgroundColorType ? iconHoverBackgroundColor : iconHoverBackgroundGradientColor;
+		'classic' === iconHoverBackgroundColorType
+			? iconHoverBackgroundColor
+			: iconHoverBackgroundGradientColor;
 
 	const dropShadow = generateShadowCSS( {
-		'horizontal': iconShadowHOffset,
-		'vertical': iconShadowVOffset,
-		'blur': iconShadowBlur,
-		'color': iconShadowColor,
+		horizontal: iconShadowHOffset,
+		vertical: iconShadowVOffset,
+		blur: iconShadowBlur,
+		color: iconShadowColor,
 	} );
 
 	const boxShadow = generateShadowCSS( {
-		'horizontal': iconBoxShadowHOffset,
-		'vertical': iconBoxShadowVOffset,
-		'blur': iconBoxShadowBlur,
-		'spread': iconBoxShadowSpread,
-		'color': iconBoxShadowColor,
-		'position': iconBoxShadowPosition,
+		horizontal: iconBoxShadowHOffset,
+		vertical: iconBoxShadowVOffset,
+		blur: iconBoxShadowBlur,
+		spread: iconBoxShadowSpread,
+		color: iconBoxShadowColor,
+		position: iconBoxShadowPosition,
 	} );
 
 	const boxShadowHoverCSS = generateShadowCSS( {
-		'horizontal': iconBoxShadowHOffsetHover,
-		'vertical': iconBoxShadowVOffsetHover,
-		'blur': iconBoxShadowBlurHover,
-		'spread': iconBoxShadowSpreadHover,
-		'color': iconBoxShadowColorHover,
-		'position': iconBoxShadowPositionHover,
-		'altColor': iconBoxShadowColor,
+		horizontal: iconBoxShadowHOffsetHover,
+		vertical: iconBoxShadowVOffsetHover,
+		blur: iconBoxShadowBlurHover,
+		spread: iconBoxShadowSpreadHover,
+		color: iconBoxShadowColorHover,
+		position: iconBoxShadowPositionHover,
+		altColor: iconBoxShadowColor,
 	} );
 
 	const selectors = {
@@ -128,25 +142,34 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 			'text-align': align,
 		},
 		'.uagb-icon-wrapper svg': {
-			'width': generateCSSUnit( iconWidth, iconSizeUnit ),
-			'height': generateCSSUnit( iconWidth, iconSizeUnit ),
+			width: generateCSSUnit( iconWidth, iconSizeUnit ),
+			height: generateCSSUnit( iconWidth, iconSizeUnit ),
 			'box-sizing': 'content-box',
-			'transform': `rotate(${ transformation })`,
-			'fill': iconColor,
-			'filter': dropShadow ? `drop-shadow( ${ dropShadow } )` : '',
+			transform: `rotate(${ transformation })`,
+			fill: iconColor,
+			filter: dropShadow ? `drop-shadow( ${ dropShadow } )` : '',
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper': {
-			'display': 'inline-flex',
-			'background': background,
+			display: 'inline-flex',
+			background,
 			//padding
 			'padding-top': generateCSSUnit( iconTopPadding, iconPaddingUnit ),
-			'padding-right': generateCSSUnit( iconRightPadding, iconPaddingUnit ),
-			'padding-bottom': generateCSSUnit( iconBottomPadding, iconPaddingUnit ),
+			'padding-right': generateCSSUnit(
+				iconRightPadding,
+				iconPaddingUnit
+			),
+			'padding-bottom': generateCSSUnit(
+				iconBottomPadding,
+				iconPaddingUnit
+			),
 			'padding-left': generateCSSUnit( iconLeftPadding, iconPaddingUnit ),
 			// margin
 			'margin-top': generateCSSUnit( iconTopMargin, iconMarginUnit ),
 			'margin-right': generateCSSUnit( iconRightMargin, iconMarginUnit ),
-			'margin-bottom': generateCSSUnit( iconBottomMargin, iconMarginUnit ),
+			'margin-bottom': generateCSSUnit(
+				iconBottomMargin,
+				iconMarginUnit
+			),
 			'margin-left': generateCSSUnit( iconLeftMargin, iconMarginUnit ),
 			// border
 			'border-style': iconBorderStyle,
@@ -156,20 +179,20 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper:hover': {
 			'border-color': iconBorderHColor,
-			'background': hoverBackground,
+			background: hoverBackground,
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper:hover svg': {
-			'fill': iconHoverColor,
+			fill: iconHoverColor,
 		},
 	};
 
 	// Box Shadow.
 	if ( useSeparateBoxShadows ) {
-		selectors['.uagb-icon-wrapper .uagb-svg-wrapper:hover'] = {
-			'box-shadow' : boxShadowHoverCSS,
-			'background': hoverBackground,
+		selectors[ '.uagb-icon-wrapper .uagb-svg-wrapper:hover' ] = {
+			'box-shadow': boxShadowHoverCSS,
+			background: hoverBackground,
 			'border-color': iconBorderHColor,
-		}
+		};
 	}
 
 	const tabletSelectors = {
@@ -178,20 +201,44 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper': {
 			// padding
-			'padding-top': generateCSSUnit( iconTopTabletPadding, iconTabletPaddingUnit ),
-			'padding-right': generateCSSUnit( iconRightTabletPadding, iconTabletPaddingUnit ),
-			'padding-bottom': generateCSSUnit( iconBottomTabletPadding, iconTabletPaddingUnit ),
-			'padding-left': generateCSSUnit( iconLeftTabletPadding, iconTabletPaddingUnit ),
+			'padding-top': generateCSSUnit(
+				iconTopTabletPadding,
+				iconTabletPaddingUnit
+			),
+			'padding-right': generateCSSUnit(
+				iconRightTabletPadding,
+				iconTabletPaddingUnit
+			),
+			'padding-bottom': generateCSSUnit(
+				iconBottomTabletPadding,
+				iconTabletPaddingUnit
+			),
+			'padding-left': generateCSSUnit(
+				iconLeftTabletPadding,
+				iconTabletPaddingUnit
+			),
 			// margin
-			'margin-top': generateCSSUnit( iconTopTabletMargin, iconTabletMarginUnit ),
-			'margin-right': generateCSSUnit( iconRightTabletMargin, iconTabletMarginUnit ),
-			'margin-bottom': generateCSSUnit( iconBottomTabletMargin, iconTabletMarginUnit ),
-			'margin-left': generateCSSUnit( iconLeftTabletMargin, iconTabletMarginUnit ),
+			'margin-top': generateCSSUnit(
+				iconTopTabletMargin,
+				iconTabletMarginUnit
+			),
+			'margin-right': generateCSSUnit(
+				iconRightTabletMargin,
+				iconTabletMarginUnit
+			),
+			'margin-bottom': generateCSSUnit(
+				iconBottomTabletMargin,
+				iconTabletMarginUnit
+			),
+			'margin-left': generateCSSUnit(
+				iconLeftTabletMargin,
+				iconTabletMarginUnit
+			),
 			...generateBorderCSS( attributes, 'icon', 'tablet' ),
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper svg': {
-			'width': generateCSSUnit( iconSizeTablet, iconSizeUnit ),
-			'height': generateCSSUnit( iconSizeTablet, iconSizeUnit ),
+			width: generateCSSUnit( iconSizeTablet, iconSizeUnit ),
+			height: generateCSSUnit( iconSizeTablet, iconSizeUnit ),
 		},
 	};
 
@@ -200,28 +247,54 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 			'text-align': alignMobile,
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper': {
-			'padding-top': generateCSSUnit( iconTopMobilePadding, iconMobilePaddingUnit ),
-			'padding-right': generateCSSUnit( iconRightMobilePadding, iconMobilePaddingUnit ),
-			'padding-bottom': generateCSSUnit( iconBottomMobilePadding, iconMobilePaddingUnit ),
-			'padding-left': generateCSSUnit( iconLeftMobilePadding, iconMobilePaddingUnit ),
-			'margin-top': generateCSSUnit( iconTopMobileMargin, iconMobileMarginUnit ),
-			'margin-right': generateCSSUnit( iconRightMobileMargin, iconMobileMarginUnit ),
-			'margin-bottom': generateCSSUnit( iconBottomMobileMargin, iconMobileMarginUnit ),
-			'margin-left': generateCSSUnit( iconLeftMobileMargin, iconMobileMarginUnit ),
+			'padding-top': generateCSSUnit(
+				iconTopMobilePadding,
+				iconMobilePaddingUnit
+			),
+			'padding-right': generateCSSUnit(
+				iconRightMobilePadding,
+				iconMobilePaddingUnit
+			),
+			'padding-bottom': generateCSSUnit(
+				iconBottomMobilePadding,
+				iconMobilePaddingUnit
+			),
+			'padding-left': generateCSSUnit(
+				iconLeftMobilePadding,
+				iconMobilePaddingUnit
+			),
+			'margin-top': generateCSSUnit(
+				iconTopMobileMargin,
+				iconMobileMarginUnit
+			),
+			'margin-right': generateCSSUnit(
+				iconRightMobileMargin,
+				iconMobileMarginUnit
+			),
+			'margin-bottom': generateCSSUnit(
+				iconBottomMobileMargin,
+				iconMobileMarginUnit
+			),
+			'margin-left': generateCSSUnit(
+				iconLeftMobileMargin,
+				iconMobileMarginUnit
+			),
 			...generateBorderCSS( attributes, 'icon', 'mobile' ),
 		},
 		'.uagb-icon-wrapper .uagb-svg-wrapper svg': {
-			'width': generateCSSUnit( iconSizeMobile, iconSizeUnit ),
-			'height': generateCSSUnit( iconSizeMobile, iconSizeUnit ),
+			width: generateCSSUnit( iconSizeMobile, iconSizeUnit ),
+			height: generateCSSUnit( iconSizeMobile, iconSizeUnit ),
 		},
 	};
 
 	let stylingCss = '';
-	const base_selector = gbsSelector ? gbsSelector : `.uagb-block-${ block_id }`;
-	
+	const base_selector = gbsSelector
+		? gbsSelector
+		: `.uagb-block-${ block_id }`;
+
 	stylingCss = generateCSS( selectors, base_selector );
 
-	if( 'tablet' === previewType || 'mobile' === previewType || gbsSelector ) {
+	if ( 'tablet' === previewType || 'mobile' === previewType || gbsSelector ) {
 		stylingCss += generateCSS(
 			tabletSelectors,
 			`${ base_selector }`,
@@ -229,7 +302,7 @@ function styling( attributes, clientId, name, deviceType, gbsSelector = false ) 
 			'tablet'
 		);
 
-		if( 'mobile' === previewType || gbsSelector ){
+		if ( 'mobile' === previewType || gbsSelector ) {
 			stylingCss += generateCSS(
 				mobileSelectors,
 				`${ base_selector }`,

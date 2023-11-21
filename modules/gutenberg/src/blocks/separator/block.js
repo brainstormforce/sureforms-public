@@ -10,7 +10,10 @@ import { registerBlockType } from '@wordpress/blocks';
 import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
-const separatorCommonData = applyFilters( 'sureforms/separator', addCommonDataToSpectraBlocks( {} ) );
+const separatorCommonData = applyFilters(
+	'sureforms/separator',
+	addCommonDataToSpectraBlocks( {} )
+);
 registerBlockType( 'sureforms/separator', {
 	...separatorCommonData,
 	apiVersion: 2,
@@ -23,7 +26,12 @@ registerBlockType( 'sureforms/separator', {
 	category: uagb_blocks_info.category,
 	keywords: [ __( 'divider', 'sureforms' ), __( 'separator', 'sureforms' ) ],
 	attributes,
-	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="separator" /> : <Edit { ...props } /> ),
+	edit: ( props ) =>
+		props.attributes.isPreview ? (
+			<PreviewImage image="separator" />
+		) : (
+			<Edit { ...props } />
+		),
 	save() {
 		return null;
 	},

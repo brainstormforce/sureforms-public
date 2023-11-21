@@ -9,19 +9,33 @@ async function getImageHeightWidth( url, setAttributes, onlyHas = null ) {
 	img.addEventListener( 'load', function () {
 		const imgTagWidth =
 			'height' === onlyHas?.type
-				? parseInt( ( onlyHas.value * this?.naturalWidth ) / this?.naturalHeight )
+				? parseInt(
+					( onlyHas.value * this?.naturalWidth ) /
+							this?.naturalHeight
+				  )
 				: this?.naturalWidth;
 		const imgTagHeight =
 			'width' === onlyHas?.type
-				? parseInt( ( onlyHas.value * this?.naturalHeight ) / this?.naturalWidth )
+				? parseInt(
+					( onlyHas.value * this?.naturalHeight ) /
+							this?.naturalWidth
+				  )
 				: this?.naturalHeight;
 		setAttributes( {
 			// eslint-disable-next-line no-nested-ternary
-			imgTagHeight: isNaN( imgTagHeight ) ? ( onlyHas !== null ? onlyHas?.value : imgTagHeight ) : imgTagHeight,
+			imgTagHeight: isNaN( imgTagHeight )
+				? onlyHas !== null
+					? onlyHas?.value
+					: imgTagHeight
+				: imgTagHeight,
 		} );
 		setAttributes( {
 			// eslint-disable-next-line no-nested-ternary
-			imgTagWidth: isNaN( imgTagWidth ) ? ( onlyHas !== null ? onlyHas?.value : imgTagWidth ) : imgTagWidth,
+			imgTagWidth: isNaN( imgTagWidth )
+				? onlyHas !== null
+					? onlyHas?.value
+					: imgTagWidth
+				: imgTagWidth,
 		} );
 	} );
 	img.src = url;

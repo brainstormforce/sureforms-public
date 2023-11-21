@@ -10,38 +10,54 @@ const InspectorTab = ( props ) => {
 	const blockName = getSelectedBlock()?.name;
 
 	const tabContent = function () {
-		return applyFilters( `uag_${ type }_tab_content`, '', props.parentProps );
+		return applyFilters(
+			`uag_${ type }_tab_content`,
+			'',
+			props.parentProps
+		);
 	};
 
 	useEffect( () => {
-		const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+		const uagSettingState =
+			getUAGEditorStateLocalStorage( 'uagSettingState' );
 
 		if ( uagSettingState ) {
 			const inspectorTabName = uagSettingState[ blockName ]?.selectedTab;
 			const panelBodyClass = uagSettingState[ blockName ]?.selectedPanel;
 			const settingsPopup = uagSettingState[ blockName ]?.selectedSetting;
-			const selectedInnerTab = uagSettingState[ blockName ]?.selectedInnerTab;
+			const selectedInnerTab =
+				uagSettingState[ blockName ]?.selectedInnerTab;
 
 			// This code is to fix the side-effect of the editor responsive click settings panel refresh issue AND aldo for preserving state for better block editor experinence.
 			if ( inspectorTabName && type === inspectorTabName ) {
 				let panelToActivate = false;
 				if ( panelBodyClass ) {
-					panelToActivate = tabRef.current.querySelector( `.${ panelBodyClass }` );
+					panelToActivate = tabRef.current.querySelector(
+						`.${ panelBodyClass }`
+					);
 				} else {
-					panelToActivate = tabRef.current.querySelector( '.is-opened' );
+					panelToActivate =
+						tabRef.current.querySelector( '.is-opened' );
 				}
 
 				if ( panelToActivate ) {
 					if ( ! panelToActivate.classList.contains( 'is-opened' ) ) {
-						panelToActivate.querySelector( '.components-button' ).click();
+						panelToActivate
+							.querySelector( '.components-button' )
+							.click();
 					}
 					if ( selectedInnerTab ) {
 						// Need a delay to open the popup as the makup load just after the above click function called.
 						setTimeout( function () {
-							const selectedInnerTabToActivate = panelToActivate.querySelector( selectedInnerTab );
+							const selectedInnerTabToActivate =
+								panelToActivate.querySelector(
+									selectedInnerTab
+								);
 							if (
 								selectedInnerTabToActivate &&
-								! selectedInnerTabToActivate.classList.contains( 'active-tab' )
+								! selectedInnerTabToActivate.classList.contains(
+									'active-tab'
+								)
 							) {
 								selectedInnerTabToActivate.click();
 							}
@@ -50,10 +66,18 @@ const InspectorTab = ( props ) => {
 					if ( settingsPopup ) {
 						// Need a delay to open the popup as the makup load just after the above click function called.
 						setTimeout( function () {
-							const settingsPopupToActivate = panelToActivate.querySelector( settingsPopup );
+							const settingsPopupToActivate =
+								panelToActivate.querySelector( settingsPopup );
 
-							if ( settingsPopupToActivate && ! settingsPopupToActivate.classList.contains( 'active' ) ) {
-								settingsPopupToActivate.querySelector( '.components-button' ).click();
+							if (
+								settingsPopupToActivate &&
+								! settingsPopupToActivate.classList.contains(
+									'active'
+								)
+							) {
+								settingsPopupToActivate
+									.querySelector( '.components-button' )
+									.click();
 							}
 						}, 100 );
 					}
@@ -63,8 +87,16 @@ const InspectorTab = ( props ) => {
 	}, [] );
 
 	const blockNameForHook = blockName.split( '/' ).pop();
-	const inspectorTabBefore = applyFilters( `spectra.${ blockNameForHook }.tab_${ type }.before`, '', blockName );
-	const inspectorTabAfter = applyFilters( `spectra.${ blockNameForHook }.tab_${ type }`, '', blockName );
+	const inspectorTabBefore = applyFilters(
+		`spectra.${ blockNameForHook }.tab_${ type }.before`,
+		'',
+		blockName
+	);
+	const inspectorTabAfter = applyFilters(
+		`spectra.${ blockNameForHook }.tab_${ type }`,
+		'',
+		blockName
+	);
 
 	return (
 		<div
@@ -75,7 +107,9 @@ const InspectorTab = ( props ) => {
 			ref={ tabRef }
 		>
 			{ inspectorTabBefore }
-			{ Array.isArray( children ) ? children.map( ( item ) => item ) : children }
+			{ Array.isArray( children )
+				? children.map( ( item ) => item )
+				: children }
 			{ tabContent() }
 			{ inspectorTabAfter }
 		</div>

@@ -31,7 +31,11 @@ const ResponsiveSlider = ( props ) => {
 			<Range
 				{ ...props }
 				label={ props.label }
-				value={ isNaN( props.data.desktop.value ) ? '' : props.data.desktop.value }
+				value={
+					isNaN( props.data.desktop.value )
+						? ''
+						: props.data.desktop.value
+				}
 				data={ {
 					value: props.data.desktop.value,
 					label: props.data.desktop.label,
@@ -39,9 +43,9 @@ const ResponsiveSlider = ( props ) => {
 				onChange={
 					props?.onChange
 						? ( value ) => {
-								if ( props?.onChange ) {
-									props.onChange( value );
-								}
+							if ( props?.onChange ) {
+								props.onChange( value );
+							}
 						  }
 						: false
 				}
@@ -58,7 +62,11 @@ const ResponsiveSlider = ( props ) => {
 			<Range
 				{ ...props }
 				label={ props.label }
-				value={ isNaN( props.data.tablet.value ) ? '' : props.data.tablet.value }
+				value={
+					isNaN( props.data.tablet.value )
+						? ''
+						: props.data.tablet.value
+				}
 				data={ {
 					value: props.data.tablet.value,
 					label: props.data.tablet.label,
@@ -66,9 +74,9 @@ const ResponsiveSlider = ( props ) => {
 				onChange={
 					props?.onChange
 						? ( value ) => {
-								if ( props?.onChange ) {
-									props.onChange( value );
-								}
+							if ( props?.onChange ) {
+								props.onChange( value );
+							}
 						  }
 						: false
 				}
@@ -85,7 +93,11 @@ const ResponsiveSlider = ( props ) => {
 			<Range
 				{ ...props }
 				label={ props.label }
-				value={ isNaN( props.data.mobile.value ) ? '' : props.data.mobile.value }
+				value={
+					isNaN( props.data.mobile.value )
+						? ''
+						: props.data.mobile.value
+				}
 				data={ {
 					value: props.data.mobile.value,
 					label: props.data.mobile.label,
@@ -93,9 +105,9 @@ const ResponsiveSlider = ( props ) => {
 				onChange={
 					props?.onChange
 						? ( value ) => {
-								if ( props?.onChange ) {
-									props.onChange( value );
-								}
+							if ( props?.onChange ) {
+								props.onChange( value );
+							}
 						  }
 						: false
 				}
@@ -125,7 +137,9 @@ const ResponsiveSlider = ( props ) => {
 			{ controlBeforeDomElement }
 			<div className="uagb-responsive-range">
 				<div className="uagb-responsive-control-inner">
-					{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
+					{ output[ deviceType ]
+						? output[ deviceType ]
+						: output.Desktop }
 				</div>
 			</div>
 			{ controlAfterDomElement }

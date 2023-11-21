@@ -1,5 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-for */
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import Separator from '@Components/separator';
 import { useSelect } from '@wordpress/data';
 import { TextControl, TextareaControl } from '@wordpress/components';
@@ -33,7 +38,13 @@ const UAGTextControl = ( props ) => {
 
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
-			? applyFilters( 'uagb.registerTextExtender', '', selectedBlock?.name, props.name, props.dynamicContentType )
+			? applyFilters(
+				'uagb.registerTextExtender',
+				'',
+				selectedBlock?.name,
+				props.name,
+				props.dynamicContentType
+			  )
 			: null;
 
 	const isEnableDynamicContent = () => {
@@ -41,7 +52,10 @@ const UAGTextControl = ( props ) => {
 			return false;
 		}
 		const dynamicContent = selectedBlock?.attributes?.dynamicContent;
-		if ( dynamicContent && dynamicContent?.[ props.name ]?.enable === true ) {
+		if (
+			dynamicContent &&
+			dynamicContent?.[ props.name ]?.enable === true
+		) {
 			return true;
 		}
 		return false;
@@ -99,11 +113,15 @@ const UAGTextControl = ( props ) => {
 			<div
 				className={ classnames(
 					'components-base-control uagb-text-control uagb-size-type-field-tabs',
-					isEnableDynamicContent() ? ' uagb-text-control--open-dynamic-content' : '',
+					isEnableDynamicContent()
+						? ' uagb-text-control--open-dynamic-content'
+						: '',
 					props.className
 				) }
 			>
-				{ props?.variant !== 'inline' && props?.showHeaderControls && <HeaderControls /> }
+				{ props?.variant !== 'inline' && props?.showHeaderControls && (
+					<HeaderControls />
+				) }
 				<div
 					className={ classnames(
 						'uagb-text-control__controls',
@@ -116,7 +134,8 @@ const UAGTextControl = ( props ) => {
 								<TextControl
 									label={
 										props?.variant === 'inline' ||
-										( props?.variant !== 'inline' && ! props?.showHeaderControls )
+										( props?.variant !== 'inline' &&
+											! props?.showHeaderControls )
 											? props?.label
 											: false
 									}
@@ -130,7 +149,11 @@ const UAGTextControl = ( props ) => {
 							) }
 							{ props?.variant === 'textarea' && (
 								<TextareaControl
-									label={ ! props?.showHeaderControls ? props?.label : false }
+									label={
+										! props?.showHeaderControls
+											? props?.label
+											: false
+									}
 									value={ props?.value }
 									onChange={ handleOnChange }
 									autoComplete={ props?.autoComplete }
@@ -139,10 +162,13 @@ const UAGTextControl = ( props ) => {
 							) }
 						</>
 					) }
-					{ isEnableDynamicContent() && props?.variant === 'inline' && (
+					{ isEnableDynamicContent() &&
+						props?.variant === 'inline' && (
 						<div className="components-base-control">
 							<div className="components-base-control__field">
-								<label className="components-base-control__label">{ props.label }</label>
+								<label className="components-base-control__label">
+									{ props.label }
+								</label>
 							</div>
 						</div>
 					) }

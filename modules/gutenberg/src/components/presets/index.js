@@ -1,7 +1,13 @@
 import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import styles from './editor.lazy.scss';
-import { useLayoutEffect, useEffect, useState, useRef, memo } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+	memo,
+} from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { select, dispatch } from '@wordpress/data';
 import classnames from 'classnames';
@@ -28,7 +34,14 @@ const UAGPresets = ( props ) => {
 		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
 	}, [ blockNameForHook ] );
 
-	const { setAttributes, presets, presetInputType, label, className, help = false } = props;
+	const {
+		setAttributes,
+		presets,
+		presetInputType,
+		label,
+		className,
+		help = false,
+	} = props;
 
 	const resetAttributes = [];
 
@@ -58,21 +71,38 @@ const UAGPresets = ( props ) => {
 		if ( presets ) {
 			presets.map( ( preset ) => {
 				if ( preset.value ) {
-					if ( 'default' !== selectedPreset && 'default' === preset.value && preset.attributes ) {
+					if (
+						'default' !== selectedPreset &&
+						'default' === preset.value &&
+						preset.attributes
+					) {
 						preset.attributes.map( ( presetItem ) => {
-							setAttributes( { [ presetItem.label ]: presetItem.value } );
-							return presetItem;
-						} );
-					}
-					if ( preset.value && preset.value === selectedPreset && preset.attributes ) {
-						presets[ 1 ]?.defaultPresetAttributes?.map( ( presetItem ) => {
 							setAttributes( {
-								[ presetItem.label ]: presets[ 0 ]?.defaultAttributes[ presetItem.label ]?.default,
+								[ presetItem.label ]: presetItem.value,
 							} );
 							return presetItem;
 						} );
+					}
+					if (
+						preset.value &&
+						preset.value === selectedPreset &&
+						preset.attributes
+					) {
+						presets[ 1 ]?.defaultPresetAttributes?.map(
+							( presetItem ) => {
+								setAttributes( {
+									[ presetItem.label ]:
+										presets[ 0 ]?.defaultAttributes[
+											presetItem.label
+										]?.default,
+								} );
+								return presetItem;
+							}
+						);
 						preset.attributes.map( ( presetItem ) => {
-							setAttributes( { [ presetItem.label ]: presetItem.value } );
+							setAttributes( {
+								[ presetItem.label ]: presetItem.value,
+							} );
 							return presetItem;
 						} );
 
@@ -110,7 +140,10 @@ const UAGPresets = ( props ) => {
 		} );
 
 		childBlocksClientIds.map( ( clientId ) => {
-			dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, childBlocksAttributes );
+			dispatch( 'core/block-editor' ).updateBlockAttributes(
+				clientId,
+				childBlocksAttributes
+			);
 			return clientId;
 		} );
 	};
@@ -139,10 +172,14 @@ const UAGPresets = ( props ) => {
 					if (
 						presets[ 1 ]?.defaultChildAttributes &&
 						presets[ 1 ]?.defaultChildAttributes[ attr.label ] &&
-						undefined !== presets[ 1 ]?.defaultChildAttributes[ attr.label ].default
+						undefined !==
+							presets[ 1 ]?.defaultChildAttributes[ attr.label ]
+								.default
 					) {
 						childBlocksAttributes[ attr.label ] =
-							presets[ 1 ]?.defaultChildAttributes[ attr.label ].default;
+							presets[ 1 ]?.defaultChildAttributes[
+								attr.label
+							].default;
 					}
 					return attr;
 				} );
@@ -151,7 +188,10 @@ const UAGPresets = ( props ) => {
 		} );
 
 		childBlocksClientIds.map( ( clientId ) => {
-			dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, childBlocksAttributes );
+			dispatch( 'core/block-editor' ).updateBlockAttributes(
+				clientId,
+				childBlocksAttributes
+			);
 			return clientId;
 		} );
 	};
@@ -198,7 +238,9 @@ const UAGPresets = ( props ) => {
 
 	const presetRadioImage = (
 		<>
-			<div className="uagb-presets-radio-image-wrap">{ presetRadioImageOptions }</div>
+			<div className="uagb-presets-radio-image-wrap">
+				{ presetRadioImageOptions }
+			</div>
 		</>
 	);
 
@@ -217,12 +259,21 @@ const UAGPresets = ( props ) => {
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
-			<div className={ classnames( className, 'uagb-presets-main-wrap' ) }>
+			<div
+				className={ classnames( className, 'uagb-presets-main-wrap' ) }
+			>
 				<div className="uagb-presets-label-reset-wrap">
-					<label htmlFor="uag-presets-label" className="uag-presets-label">
+					<label
+						htmlFor="uag-presets-label"
+						className="uag-presets-label"
+					>
 						{ label }
 					</label>
-					<UAGReset attributeNames={ resetAttributes } setAttributes={ setAttributes } onReset={ onReset } />
+					<UAGReset
+						attributeNames={ resetAttributes }
+						setAttributes={ setAttributes }
+						onReset={ onReset }
+					/>
 				</div>
 				{ 'dropdown' === presetInputType && presetDropdown }
 				{ 'radioImage' === presetInputType && presetRadioImage }
@@ -235,7 +286,7 @@ const UAGPresets = ( props ) => {
 
 UAGPresets.defaultProps = {
 	presetInputType: 'dropdown',
-	label: __( 'Select Preset', 'ultimate-addons-for-gutenberg' ),
+	label: __( 'Select Preset', 'sureforms' ),
 };
 
 export default memo( UAGPresets );

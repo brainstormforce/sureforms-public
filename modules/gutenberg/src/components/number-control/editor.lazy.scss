@@ -4,7 +4,6 @@
 	.uagb-number-control__mobile-controls {
 		// Full-width Control.
 		&.uag-number-control__full-width {
-
 			position: relative;
 
 			color: $spectra-color-body;
@@ -24,14 +23,13 @@
 				height: $spectra-control-input-height;
 				z-index: 1;
 			}
-
 		}
 
 		// Inline Control.
 		&.uag-number-control__inline {
 			align-items: center;
 			display: grid;
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat( 3, 1fr );
 			color: $spectra-color-body;
 
 			.uag-control-label {
@@ -55,7 +53,6 @@
 				position: absolute;
 				right: 34%;
 			}
-
 		}
 
 		> .components-button svg {
@@ -84,9 +81,7 @@
 
 	// To fix dynamic content layout for inline control variant.
 	&.uagb-text-control--open-dynamic-content {
-
 		.uag-number-control__inline {
-
 			display: block;
 
 			.uagb-dynamic-content-wrap {
@@ -101,5 +96,4 @@
 	input[type="number"]::-webkit-outer-spin-button {
 		opacity: 1;
 	}
-
 }

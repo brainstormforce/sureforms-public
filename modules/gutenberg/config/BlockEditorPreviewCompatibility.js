@@ -1,73 +1,58 @@
-function BlockEditorPreviewCompatibility ( cssStyleID, styleTagId, styling ) {
-
-
+function BlockEditorPreviewCompatibility( cssStyleID, styleTagId, styling ) {
 	// Required CSS File.
-		const WidgetCssFileTag = document.getElementById( cssStyleID );
-		let cloneWidgetCssFileTag = false;
+	const WidgetCssFileTag = document.getElementById( cssStyleID );
+	let cloneWidgetCssFileTag = false;
 
-		if ( WidgetCssFileTag ) {
+	if ( WidgetCssFileTag ) {
+		cloneWidgetCssFileTag = WidgetCssFileTag.cloneNode( true );
+	}
 
-			cloneWidgetCssFileTag = WidgetCssFileTag.cloneNode( true );
-		}
+	// Desktop.
+	const element = document.getElementById( styleTagId );
 
-    	// Desktop.
-		let element = document.getElementById(
-			styleTagId
-		);
+	if ( null === element || undefined === element ) {
+		const $style = document.createElement( 'style' );
+		$style.setAttribute( 'id', styleTagId );
+		document.head.appendChild( $style );
+	}
 
-		if ( null === element || undefined === element ) {
+	if ( null !== element && undefined !== element ) {
+		element.innerHTML = styling;
+	}
+	// Desktop ends.
 
+	// Tablet / Mobile Starts.
+	const tabletPreview =
+		document.getElementsByClassName( 'is-tablet-preview' );
+	const mobilePreview =
+		document.getElementsByClassName( 'is-mobile-preview' );
+
+	if ( 0 !== tabletPreview.length || 0 !== mobilePreview.length ) {
+		const preview = tabletPreview[ 0 ] || mobilePreview[ 0 ];
+
+		const iframe = preview.getElementsByTagName( 'iframe' )[ 0 ];
+		const iframeDocument =
+			iframe.contentWindow.document || iframe.contentDocument;
+
+		let elementRes = iframeDocument.getElementById( styleTagId );
+		if ( null === elementRes || undefined === elementRes ) {
 			const $style = document.createElement( 'style' );
-			$style.setAttribute(
-				'id',
-				styleTagId
-			);
-			document.head.appendChild( $style );
+			$style.setAttribute( 'id', styleTagId );
+
+			iframeDocument.head.appendChild( $style );
 		}
 
-		if ( null !== element && undefined !== element ) {
-			element.innerHTML = styling;
+		// Required CSS File.
+		if ( cloneWidgetCssFileTag ) {
+			iframeDocument.head.appendChild( cloneWidgetCssFileTag );
 		}
-		// Desktop ends.
 
-		// Tablet / Mobile Starts.
-		let tabletPreview = document.getElementsByClassName('is-tablet-preview');
-		let mobilePreview = document.getElementsByClassName('is-mobile-preview');
+		elementRes = iframeDocument.getElementById( styleTagId );
 
-		if ( 0 !== tabletPreview.length || 0 !== mobilePreview.length ) {
-
-			let preview = tabletPreview[0] || mobilePreview[0];
-
-			let iframe = preview.getElementsByTagName('iframe')[0];
-			let iframeDocument = iframe.contentWindow.document || iframe.contentDocument;
-
-			let element = iframeDocument.getElementById(
-				styleTagId
-			);
-			if ( null === element || undefined === element ) {
-
-				const $style = document.createElement( 'style' );
-				$style.setAttribute(
-					'id',
-					styleTagId
-					);
-
-				iframeDocument.head.appendChild( $style );
-			}
-
-			// Required CSS File.
-            if ( cloneWidgetCssFileTag ) {
-                iframeDocument.head.appendChild( cloneWidgetCssFileTag );
-            }
-
-			element = iframeDocument.getElementById(
-				styleTagId
-			);
-
-			if ( null !== element && undefined !== element ) {
-				element.innerHTML = styling;
-			}
+		if ( null !== elementRes && undefined !== elementRes ) {
+			elementRes.innerHTML = styling;
 		}
+	}
 }
 
 export default BlockEditorPreviewCompatibility;

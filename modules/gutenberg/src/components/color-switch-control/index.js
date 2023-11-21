@@ -2,13 +2,24 @@ import { __ } from '@wordpress/i18n';
 import GradientSettings from '@Components/gradient-settings';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import { select } from '@wordpress/data';
 import styles from './editor.lazy.scss';
 import { applyFilters } from '@wordpress/hooks';
 
-export default function ColorSwitchControl( { label, type, classic, gradient, setAttributes } ) {
+export default function ColorSwitchControl( {
+	label,
+	type,
+	classic,
+	gradient,
+	setAttributes,
+} ) {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	// Add and remove the CSS on the drop and remove of the component.
@@ -50,18 +61,18 @@ export default function ColorSwitchControl( { label, type, classic, gradient, se
 					options={ [
 						{
 							value: 'classic',
-							label: __( 'Classic', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Classic', 'sureforms' ),
 						},
 						{
 							value: 'gradient',
-							label: __( 'Gradient', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Gradient', 'sureforms' ),
 						},
 					] }
 					showIcons={ false }
 				/>
 				{ type.value === 'classic' ? (
 					<AdvancedPopColorControl
-						label={ __( 'Color', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Color', 'sureforms' ) }
 						colorValue={ classic.value }
 						data={ {
 							value: classic.value,
@@ -70,7 +81,10 @@ export default function ColorSwitchControl( { label, type, classic, gradient, se
 						setAttributes={ setAttributes }
 					/>
 				) : (
-					<GradientSettings backgroundGradient={ gradient } setAttributes={ setAttributes } />
+					<GradientSettings
+						backgroundGradient={ gradient }
+						setAttributes={ setAttributes }
+					/>
 				) }
 			</div>
 			{ controlAfterDomElement }

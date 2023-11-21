@@ -4,7 +4,12 @@ import Range from '@Components/range/Range.js';
 import { __ } from '@wordpress/i18n';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import { select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
@@ -70,11 +75,11 @@ const GradientSettings = ( props ) => {
 					options={ [
 						{
 							value: 'basic',
-							label: __( 'Basic', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Basic', 'sureforms' ),
 						},
 						{
 							value: 'advanced',
-							label: __( 'Advanced', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Advanced', 'sureforms' ),
 						},
 					] }
 					showIcons={ false }
@@ -96,8 +101,12 @@ const GradientSettings = ( props ) => {
 			{ 'advanced' === type && (
 				<>
 					<AdvancedPopColorControl
-						label={ __( 'Color 1', 'ultimate-addons-for-gutenberg' ) }
-						colorValue={ backgroundGradientColor1.value ? backgroundGradientColor1.value : '' }
+						label={ __( 'Color 1', 'sureforms' ) }
+						colorValue={
+							backgroundGradientColor1.value
+								? backgroundGradientColor1.value
+								: ''
+						}
 						data={ {
 							value: backgroundGradientColor1.value,
 							label: backgroundGradientColor1.label,
@@ -105,8 +114,12 @@ const GradientSettings = ( props ) => {
 						setAttributes={ setAttributes }
 					/>
 					<AdvancedPopColorControl
-						label={ __( 'Color 2', 'ultimate-addons-for-gutenberg' ) }
-						colorValue={ backgroundGradientColor2.value ? backgroundGradientColor2.value : '' }
+						label={ __( 'Color 2', 'sureforms' ) }
+						colorValue={
+							backgroundGradientColor2.value
+								? backgroundGradientColor2.value
+								: ''
+						}
 						data={ {
 							value: backgroundGradientColor2.value,
 							label: backgroundGradientColor2.label,
@@ -115,7 +128,7 @@ const GradientSettings = ( props ) => {
 					/>
 					<MultiButtonsControl
 						setAttributes={ setAttributes }
-						label={ __( 'Type', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Type', 'sureforms' ) }
 						data={ {
 							value: backgroundGradientType.value,
 							label: backgroundGradientType.label,
@@ -124,16 +137,16 @@ const GradientSettings = ( props ) => {
 						options={ [
 							{
 								value: 'linear',
-								label: __( 'Linear', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Linear', 'sureforms' ),
 							},
 							{
 								value: 'radial',
-								label: __( 'Radial', 'ultimate-addons-for-gutenberg' ),
+								label: __( 'Radial', 'sureforms' ),
 							},
 						] }
 					/>
 					<Range
-						label={ __( 'Location 1', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Location 1', 'sureforms' ) }
 						setAttributes={ setAttributes }
 						value={ backgroundGradientLocation1.value }
 						data={ {
@@ -145,7 +158,7 @@ const GradientSettings = ( props ) => {
 						displayUnit={ false }
 					/>
 					<Range
-						label={ __( 'Location 2', 'ultimate-addons-for-gutenberg' ) }
+						label={ __( 'Location 2', 'sureforms' ) }
 						setAttributes={ setAttributes }
 						value={ backgroundGradientLocation2.value }
 						data={ {
@@ -158,7 +171,7 @@ const GradientSettings = ( props ) => {
 					/>
 					{ 'linear' === backgroundGradientType.value && (
 						<Range
-							label={ __( 'Angle', 'ultimate-addons-for-gutenberg' ) }
+							label={ __( 'Angle', 'sureforms' ) }
 							setAttributes={ setAttributes }
 							value={ backgroundGradientAngle.value }
 							data={ {

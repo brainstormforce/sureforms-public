@@ -12,6 +12,9 @@ function addCommonDataToSpectraBlocks( configData = {} ) {
 	if ( 'site-editor' === uagb_blocks_info.is_site_editor ) {
 		data = {};
 	}
-	return applyFilters( 'addCommonDataToSpectraBlocks', { ...configData, ...data } );
+	return applyFilters( 'addCommonDataToSpectraBlocks', {
+		...configData,
+		...data,
+	} );
 }
 export default addCommonDataToSpectraBlocks;

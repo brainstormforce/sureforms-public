@@ -8,13 +8,13 @@ const Render = ( props ) => {
 		attributes: {
 			block_id,
 			headingTitleToggle,
-			headingDescToggle, 
+			headingDescToggle,
 			seperatorStyle,
 			seperatorPosition,
 			headingDescPosition,
 		},
 		className,
-		deviceType
+		deviceType,
 	} = props;
 
 	const separator = seperatorStyle !== 'none' && (
@@ -47,11 +47,15 @@ const Render = ( props ) => {
 				`uagb-block-${ block_id }`,
 			] ) }
 		>
-			{ headingDescToggle && 'above-heading' === headingDescPosition ? descText : '' }
+			{ headingDescToggle && 'above-heading' === headingDescPosition
+				? descText
+				: '' }
 			{ headingTitleToggle && headingText }
-			{ headingDescToggle && 'below-heading' === headingDescPosition ? descText : '' }
+			{ headingDescToggle && 'below-heading' === headingDescPosition
+				? descText
+				: '' }
 			{ ! headingDescToggle && ! headingTitleToggle ? separator : '' }
-		</div>	
+		</div>
 	);
 };
 export default memo( Render );

@@ -10,18 +10,18 @@ import generateCSSUnit from '@Controls/generateCSSUnit';
  * For Box/Text Shadow Hover CSS:
  * { altColor } should be set as the attribute used for { color } in Box/Text Shadow Normal CSS.
  *
- * @param {Object} shadowProperties                       The object of properties used to generate the Box/Text Shadow CSS.
- * @param {number|undefined} shadowProperties.horizontal  The horizontal value.
- * @param {number|undefined} shadowProperties.vertical    The vertical value.
- * @param {number|undefined} shadowProperties.blur        The blur value.
- * @param {number|undefined} shadowProperties.spread      The spread value.
- * @param {string} shadowProperties.horizontalUnit        The horizontal unit, defaults to 'px'.
- * @param {string} shadowProperties.verticalUnit          The vertical unit, defaults to 'px'.
- * @param {string} shadowProperties.blurUnit              The blur unit, defaults to 'px'.
- * @param {string} shadowProperties.spreadUnit            The spread unit, defaults to 'px'.
- * @param {string|undefined} shadowProperties.color       The shadow color.
- * @param {string} shadowProperties.position              The inset/outset position.
- * @param {string} shadowProperties.altColor              An alternate color to use for hover if color is undefined.
+ * @param {Object}           shadowProperties                The object of properties used to generate the Box/Text Shadow CSS.
+ * @param {number|undefined} shadowProperties.horizontal     The horizontal value.
+ * @param {number|undefined} shadowProperties.vertical       The vertical value.
+ * @param {number|undefined} shadowProperties.blur           The blur value.
+ * @param {number|undefined} shadowProperties.spread         The spread value.
+ * @param {string}           shadowProperties.horizontalUnit The horizontal unit, defaults to 'px'.
+ * @param {string}           shadowProperties.verticalUnit   The vertical unit, defaults to 'px'.
+ * @param {string}           shadowProperties.blurUnit       The blur unit, defaults to 'px'.
+ * @param {string}           shadowProperties.spreadUnit     The spread unit, defaults to 'px'.
+ * @param {string|undefined} shadowProperties.color          The shadow color.
+ * @param {string}           shadowProperties.position       The inset/outset position.
+ * @param {string}           shadowProperties.altColor       An alternate color to use for hover if color is undefined.
  * @return {string}                                       The generated css, or empty string if required properties aren't set.
  *
  * @since 0.0.1
@@ -73,7 +73,9 @@ const generateShadowCSS = ( shadowProperties ) => {
 	}
 
 	// Return the CSS with horizontal, vertical, blur, and color - and conditionally render spread and position.
-	return `${ horizontal } ${ vertical } ${ blur }${ spread ? ` ${ spread }` : '' } ${ color ? color : altColor }${
+	return `${ horizontal } ${ vertical } ${ blur }${
+		spread ? ` ${ spread }` : ''
+	} ${ color ? color : altColor }${
 		'outset' === position ? '' : ` ${ position }`
 	}`;
 };

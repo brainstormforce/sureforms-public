@@ -1,4 +1,9 @@
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { SelectControl } from '@wordpress/components';
 import { select } from '@wordpress/data';
 import styles from './editor.lazy.scss';
@@ -24,7 +29,16 @@ const defaultProps = {
 	onChange: null,
 };
 
-export default function UAGSelectControl( { layout, label, options, data, setAttributes, onChange, help, children } ) {
+export default function UAGSelectControl( {
+	layout,
+	label,
+	options,
+	data,
+	setAttributes,
+	onChange,
+	help,
+	children,
+} ) {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 
@@ -72,14 +86,19 @@ export default function UAGSelectControl( { layout, label, options, data, setAtt
 	);
 
 	return (
-		<div ref={ panelRef } className={ `uagb-select-control uagb-select-control--layout-${ layout }` }>
+		<div
+			ref={ panelRef }
+			className={ `uagb-select-control uagb-select-control--layout-${ layout }` }
+		>
 			{ controlBeforeDomElement }
 			{ children ? (
 				<SelectControl
 					label={ label }
 					value={ data.value }
 					onChange={ ( value ) =>
-						onChange ? onChange( value ) : setAttributes( { [ data.label ]: value } )
+						onChange
+							? onChange( value )
+							: setAttributes( { [ data.label ]: value } )
 					}
 					help={ help }
 				>
@@ -90,7 +109,9 @@ export default function UAGSelectControl( { layout, label, options, data, setAtt
 					label={ label }
 					value={ data.value }
 					onChange={ ( value ) =>
-						onChange ? onChange( value ) : setAttributes( { [ data.label ]: value } )
+						onChange
+							? onChange( value )
+							: setAttributes( { [ data.label ]: value } )
 					}
 					options={ allOptions }
 					help={ help }

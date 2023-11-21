@@ -20,7 +20,6 @@ export function getBlockPrefix() {
 	return 'wcfb/';
 }
 
-
 export function getPanelIdFromRef( ref ) {
 	if ( ref.current ) {
 		const parentElement = ref.current.parentElement.closest(
@@ -56,7 +55,6 @@ export function getIdFromString( label ) {
  */
 export const GBS_RANDOM_NUMBER = 0.001020304;
 
-
 /**
  * A function to check if an object is not empty.
  *
@@ -72,12 +70,13 @@ export const isObjectNotEmpty = ( obj ) => {
 		Object.keys( obj ).length > 0 &&
 		Object.getPrototypeOf( obj ) === Object.prototype
 	);
-}
+};
 
 /**
  * Check if object is empty.
- * 
+ *
  * @param {Object} obj - The object.
  * @return {boolean} - The result.
  */
-export const isEmptyObject = ( obj ) => Object.keys( obj ).length === 0 && obj.constructor === Object;
+export const isEmptyObject = ( obj ) =>
+	Object.keys( obj ).length === 0 && obj.constructor === Object;

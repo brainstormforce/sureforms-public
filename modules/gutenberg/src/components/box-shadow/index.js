@@ -7,7 +7,12 @@ import Range from '@Components/range/Range.js';
 import AdvancedPopColorControl from '../color-control/advanced-pop-color-control';
 import { Button, Dashicon } from '@wordpress/components';
 import MultiButtonsControl from '../multi-buttons-control/index';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { select } from '@wordpress/data';
 import getUAGEditorStateLocalStorage from '@Controls/getUAGEditorStateLocalStorage';
 import { blocksAttributes } from '@Attributes/getBlocksDefaultAttributes';
@@ -20,7 +25,10 @@ const BoxShadowControl = ( props ) => {
 	const panelRef = useRef( null );
 	const [ showAdvancedControls, toggleAdvancedControls ] = useState( false );
 
-	const allBlocksAttributes = applyFilters( 'uagb.blocksAttributes', blocksAttributes ); // eslint-disable-line @wordpress/no-unused-vars-before-return
+	const allBlocksAttributes = applyFilters(
+		'uagb.blocksAttributes',
+		blocksAttributes
+	); // eslint-disable-line @wordpress/no-unused-vars-before-return
 
 	const { getSelectedBlock } = select( 'core/block-editor' );
 
@@ -29,20 +37,25 @@ const BoxShadowControl = ( props ) => {
 			const popupButton = document.querySelector(
 				`.active.popup-${ blockId } .spectra-control-popup__options--action-button`
 			);
-			const popupWrap = document.querySelector( `.active.popup-${ blockId } .spectra-control-popup` );
+			const popupWrap = document.querySelector(
+				`.active.popup-${ blockId } .spectra-control-popup`
+			);
 
 			if (
 				popupButton &&
 				! popupButton?.contains( e.target ) &&
 				popupWrap &&
 				! popupWrap?.contains( e.target ) &&
-				! e.target?.classList?.contains( 'uagb-advanced-color-indicate' ) &&
+				! e.target?.classList?.contains(
+					'uagb-advanced-color-indicate'
+				) &&
 				! e.target?.parentElement?.closest( '.uagb-popover-color' ) &&
 				! e.target?.parentElement?.closest( '.uagb-reset' )
 			) {
 				toggleAdvancedControls( false );
 				const blockName = getSelectedBlock()?.name;
-				const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+				const uagSettingState =
+					getUAGEditorStateLocalStorage( 'uagSettingState' );
 
 				const data = {
 					...uagSettingState,
@@ -54,7 +67,10 @@ const BoxShadowControl = ( props ) => {
 
 				const uagLocalStorage = getUAGEditorStateLocalStorage();
 				if ( uagLocalStorage ) {
-					uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+					uagLocalStorage.setItem(
+						'uagSettingState',
+						JSON.stringify( data )
+					);
 				}
 			}
 		} );
@@ -73,7 +89,7 @@ const BoxShadowControl = ( props ) => {
 		boxShadowBlur,
 		boxShadowSpread,
 		boxShadowPosition,
-		label = __( 'Box Shadow', 'ultimate-addons-for-gutenberg' ),
+		label = __( 'Box Shadow', 'sureforms' ),
 		popup = false,
 		blockId,
 		help = false,
@@ -101,8 +117,13 @@ const BoxShadowControl = ( props ) => {
 			attributeNames.forEach( ( attributeName ) => {
 				if ( attributeName ) {
 					const blockDefaultAttributeValue =
-						'undefined' !== typeof allBlocksAttributes[ selectedBlockName ][ attributeName ]?.default
-							? allBlocksAttributes[ selectedBlockName ][ attributeName ]?.default
+						'undefined' !==
+						typeof allBlocksAttributes[ selectedBlockName ][
+							attributeName
+						]?.default
+							? allBlocksAttributes[ selectedBlockName ][
+								attributeName
+							  ]?.default
 							: '';
 					defaultValues = {
 						...defaultValues,
@@ -122,7 +143,8 @@ const BoxShadowControl = ( props ) => {
 		attributeNames.forEach( ( attributeName ) => {
 			if (
 				selectedBlockAttributes?.[ attributeName ] &&
-				selectedBlockAttributes?.[ attributeName ] !== defaultValues?.[ attributeName ]
+				selectedBlockAttributes?.[ attributeName ] !==
+					defaultValues?.[ attributeName ]
 			) {
 				isBoxShadowUpdated = true;
 			}
@@ -208,13 +230,13 @@ const BoxShadowControl = ( props ) => {
 				options={ [
 					{
 						value: 'outset',
-						label: __( 'Outset', 'ultimate-addons-for-gutenberg' ),
-						tooltip: __( 'Outset', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Outset', 'sureforms' ),
+						tooltip: __( 'Outset', 'sureforms' ),
 					},
 					{
 						value: 'inset',
-						label: __( 'Inset', 'ultimate-addons-for-gutenberg' ),
-						tooltip: __( 'Inset (10px)', 'ultimate-addons-for-gutenberg' ),
+						label: __( 'Inset', 'sureforms' ),
+						tooltip: __( 'Inset (10px)', 'sureforms' ),
 					},
 				] }
 				showIcons={ false }
@@ -223,20 +245,28 @@ const BoxShadowControl = ( props ) => {
 	);
 
 	if ( showAdvancedControls ) {
-		advancedControls = <div className="uagb-box-shadow-advanced spectra-control-popup">{ overallControls }</div>;
+		advancedControls = (
+			<div className="uagb-box-shadow-advanced spectra-control-popup">
+				{ overallControls }
+			</div>
+		);
 	}
 
 	const boxShadowAdvancedControls = (
 		<div className="spectra-control-popup__options--action-wrapper">
 			<span className="uag-control-label">
 				{ label }
-				{ isBoxShadowUpdated && <div className="spectra__change-indicator--dot-right" /> }
+				{ isBoxShadowUpdated && (
+					<div className="spectra__change-indicator--dot-right" />
+				) }
 			</span>
 			<Button
 				className="uag-box-shadow-button spectra-control-popup__options--action-button"
 				aria-pressed={ showAdvancedControls }
 				onClick={ () => {
-					const allPopups = document.querySelectorAll( '.spectra-control-popup__options' );
+					const allPopups = document.querySelectorAll(
+						'.spectra-control-popup__options'
+					);
 					if ( allPopups && 0 < allPopups.length ) {
 						for ( let i = 0; i < allPopups.length; i++ ) {
 							const popupButton = allPopups[ i ]?.querySelector(
@@ -248,7 +278,8 @@ const BoxShadowControl = ( props ) => {
 					toggleAdvancedControls( ! showAdvancedControls );
 
 					const blockName = getSelectedBlock()?.name;
-					const uagSettingState = getUAGEditorStateLocalStorage( 'uagSettingState' );
+					const uagSettingState =
+						getUAGEditorStateLocalStorage( 'uagSettingState' );
 					let data = {
 						...uagSettingState,
 						[ blockName ]: {
@@ -268,7 +299,10 @@ const BoxShadowControl = ( props ) => {
 					}
 					const uagLocalStorage = getUAGEditorStateLocalStorage();
 					if ( uagLocalStorage ) {
-						uagLocalStorage.setItem( 'uagSettingState', JSON.stringify( data ) );
+						uagLocalStorage.setItem(
+							'uagSettingState',
+							JSON.stringify( data )
+						);
 					}
 				} }
 			>

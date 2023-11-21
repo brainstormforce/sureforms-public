@@ -34,7 +34,7 @@ const UAGMediaPicker = ( props ) => {
 		backgroundImage,
 		onRemoveImage,
 		slug = 'image',
-		label = __( 'Image', 'ultimate-addons-for-gutenberg' ),
+		label = __( 'Image', 'sureforms' ),
 		disableLabel = false,
 		disableRemove = false,
 		allow = [ 'image' ],
@@ -50,30 +50,41 @@ const UAGMediaPicker = ( props ) => {
 
 	switch ( slug ) {
 		case 'video':
-			selectMediaLabel = __( 'Select Video', 'ultimate-addons-for-gutenberg' );
-			replaceMediaLabel = __( 'Change Video', 'ultimate-addons-for-gutenberg' );
+			selectMediaLabel = __( 'Select Video', 'sureforms' );
+			replaceMediaLabel = __( 'Change Video', 'sureforms' );
 			placeholderIcon = UAGB_Block_Icons.video_placeholder;
 			break;
 		case 'lottie':
-			selectMediaLabel = __( 'Select Lottie Animation', 'ultimate-addons-for-gutenberg' );
-			replaceMediaLabel = __( 'Change Lottie Animation', 'ultimate-addons-for-gutenberg' );
+			selectMediaLabel = __( 'Select Lottie Animation', 'sureforms' );
+			replaceMediaLabel = __( 'Change Lottie Animation', 'sureforms' );
 			placeholderIcon = UAGB_Block_Icons.lottie;
 			break;
 		case 'svg':
-			selectMediaLabel = __( 'Upload SVG', 'ultimate-addons-for-gutenberg' );
-			replaceMediaLabel = __( 'Change SVG', 'ultimate-addons-for-gutenberg' );
+			selectMediaLabel = __( 'Upload SVG', 'sureforms' );
+			replaceMediaLabel = __( 'Change SVG', 'sureforms' );
 			break;
 		default:
-			selectMediaLabel = __( 'Select Image', 'ultimate-addons-for-gutenberg' );
-			replaceMediaLabel = __( 'Change Image', 'ultimate-addons-for-gutenberg' );
+			selectMediaLabel = __( 'Select Image', 'sureforms' );
+			replaceMediaLabel = __( 'Change Image', 'sureforms' );
 	}
 
 	const registerImageExtender = disableDynamicContent
 		? null
-		: applyFilters( 'uagb.registerImageExtender', '', selectedBlock?.name, onSelectImage );
+		: applyFilters(
+			'uagb.registerImageExtender',
+			'',
+			selectedBlock?.name,
+			onSelectImage
+		  );
 	const registerImageLinkExtender = disableDynamicContent
 		? null
-		: applyFilters( 'uagb.registerImageLinkExtender', '', selectedBlock?.name, 'bgImageLink', 'url' );
+		: applyFilters(
+			'uagb.registerImageLinkExtender',
+			'',
+			selectedBlock?.name,
+			'bgImageLink',
+			'url'
+		  );
 
 	const isShowImageUploader = () => {
 		if ( disableDynamicContent ) {
@@ -88,27 +99,31 @@ const UAGMediaPicker = ( props ) => {
 
 	const onConfirm = ( open ) => {
 		// Create an object with the svg_nonce and confirmation properties
-        const data = {
-            svg_nonce: uagb_blocks_info.uagb_svg_confirmation_nonce,
+		const data = {
+			svg_nonce: uagb_blocks_info.uagb_svg_confirmation_nonce,
 			confirmation: 'yes',
-        };
+		};
 		// Call the getApiData function with the specified parameters
-        const getApiFetchData = getApiData( {
-            url: uagb_blocks_info.ajax_url,
-            action: 'uagb_svg_confirmation',
-            data,
-        } );
+		const getApiFetchData = getApiData( {
+			url: uagb_blocks_info.ajax_url,
+			action: 'uagb_svg_confirmation',
+			data,
+		} );
 		// Wait for the API call to complete, then update uagLocalstorage
-        getApiFetchData.then( ( response ) => {
-			if( response.success ) {
-				uagLocalStorage.setItem( 'uagSvgConfirmation', JSON.stringify( 'yes' ) );
+		getApiFetchData.then( ( response ) => {
+			if ( response.success ) {
+				uagLocalStorage.setItem(
+					'uagSvgConfirmation',
+					JSON.stringify( 'yes' )
+				);
 				open();
 			}
 		} );
 	};
 
 	const OpenMediaUploader = ( open ) => {
-		const svgConfirmation = getUAGEditorStateLocalStorage( 'uagSvgConfirmation' );
+		const svgConfirmation =
+			getUAGEditorStateLocalStorage( 'uagSvgConfirmation' );
 		if ( slug !== 'svg' || svgConfirmation === 'yes' ) {
 			open();
 			return;
@@ -130,7 +145,10 @@ const UAGMediaPicker = ( props ) => {
 					</button>
 				) }
 				<div className="spectra-media-control__footer">
-					<button className="uag-control-label" onClick={ () => OpenMediaUploader( open ) }>
+					<button
+						className="uag-control-label"
+						onClick={ () => OpenMediaUploader( open ) }
+					>
 						{ replaceMediaLabel }
 					</button>
 					{ registerImageExtender }
@@ -140,13 +158,13 @@ const UAGMediaPicker = ( props ) => {
 						isOpen={ isOpen }
 						setOpen={ setOpen }
 						onConfirm={ onConfirm }
-						title={ __( 'Upload SVG?', 'ultimate-addons-for-gutenberg' ) }
+						title={ __( 'Upload SVG?', 'sureforms' ) }
 						description={ __(
 							'Upload SVG can be potentially risky. Are you sure?',
-							'ultimate-addons-for-gutenberg'
+							'sureforms'
 						) }
-						confirmLabel={ __( 'Upload Anyway', 'ultimate-addons-for-gutenberg' ) }
-						cancelLabel={ __( 'Cancel', 'ultimate-addons-for-gutenberg' ) }
+						confirmLabel={ __( 'Upload Anyway', 'sureforms' ) }
+						cancelLabel={ __( 'Cancel', 'sureforms' ) }
 						executable={ open }
 					/>
 				) }
@@ -155,7 +173,9 @@ const UAGMediaPicker = ( props ) => {
 	};
 
 	const renderButton = ( buttonType ) => (
-		<div className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }>
+		<div
+			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
+		>
 			{ UAGB_Block_Icons[ buttonType ] }
 		</div>
 	);
@@ -216,7 +236,9 @@ const UAGMediaPicker = ( props ) => {
 									! placeholderIcon &&
 									backgroundImage?.url &&
 									! backgroundImage?.svg &&
-									`url("${ generateBackground( backgroundImage?.url ) }")`,
+									`url("${ generateBackground(
+										backgroundImage?.url
+									) }")`,
 							} }
 						>
 							{ placeholderIcon && backgroundImage?.url && (
@@ -227,7 +249,9 @@ const UAGMediaPicker = ( props ) => {
 							{ backgroundImage?.svg && (
 								<div
 									className="spectra-media-control__icon spectra-media-control__icon--stroke"
-									dangerouslySetInnerHTML={ { __html: backgroundImage.svg } }
+									dangerouslySetInnerHTML={ {
+										__html: backgroundImage.svg,
+									} }
 								></div>
 							) }
 							<MediaUpload
@@ -235,7 +259,9 @@ const UAGMediaPicker = ( props ) => {
 								onSelect={ onSelectImage }
 								allowedTypes={ allow }
 								value={ backgroundImage }
-								render={ ( { open } ) => renderMediaUploader( open ) }
+								render={ ( { open } ) =>
+									renderMediaUploader( open )
+								}
 							/>
 							{ ! disableRemove && backgroundImage?.url && (
 								<button

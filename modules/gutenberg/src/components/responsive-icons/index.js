@@ -4,7 +4,8 @@ document.addEventListener( 'DOMContentLoaded', spectra_responsive_icons );
 import DeviceIcons from './device-icons';
 
 function spectra_responsive_icons() {
-	if ( uagb_blocks_info.wp_version > '6.2.2' ) { // Don't show the Spectra Responsive Icons if WP version is greater than 6.2.2.
+	if ( uagb_blocks_info.wp_version > '6.2.2' ) {
+		// Don't show the Spectra Responsive Icons if WP version is greater than 6.2.2.
 		return;
 	}
 	wp.data.subscribe( function () {
@@ -27,6 +28,12 @@ function spectra_responsive_icon() {
 
 	document
 		.querySelector( '.edit-post-header__settings' )
-		.insertBefore( buttonWrapper, document.querySelector( '.edit-post-header__settings' ).firstChild );
-	wp.element.render( <DeviceIcons />, document.querySelector( '.spectra-responsive-icons__wrap' ) );
+		.insertBefore(
+			buttonWrapper,
+			document.querySelector( '.edit-post-header__settings' ).firstChild
+		);
+	wp.element.render(
+		<DeviceIcons />,
+		document.querySelector( '.spectra-responsive-icons__wrap' )
+	);
 }

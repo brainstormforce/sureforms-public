@@ -9,7 +9,7 @@
 
 	&:not( .wp-block-uagb-separator--text ):not( .wp-block-uagb-separator--icon ) .wp-block-uagb-separator__inner {
 		border-top-style: solid;
-		-webkit-mask: var(--my-background-image);
+		-webkit-mask: var( --my-background-image );
 		-webkit-mask-size: 38px 100%;
 		-webkit-mask-repeat: repeat-x;
 		margin-top: 5px;
@@ -31,7 +31,7 @@
 				flex-grow: 1;
 				border-top-color: #333;
 				border-top-style: solid;
-				-webkit-mask: var(--my-background-image);
+				-webkit-mask: var( --my-background-image );
 				-webkit-mask-size: 38px 100%;
 				-webkit-mask-repeat: repeat-x;
 			}
@@ -43,7 +43,7 @@
 				flex-grow: 1;
 				border-top-color: #333;
 				border-top-style: solid;
-				-webkit-mask: var(--my-background-image);
+				-webkit-mask: var( --my-background-image );
 				-webkit-mask-size: 38px 100%;
 				-webkit-mask-repeat: repeat-x;
 			}

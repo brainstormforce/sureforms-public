@@ -11,9 +11,9 @@ const UAGConfirmPopup = ( props ) => {
 		onConfirm,
 		title,
 		description,
-		confirmLabel = __( 'Confirm', 'ultimate-addons-for-gutenberg' ),
-		cancelLabel = __( 'Cancel', 'ultimate-addons-for-gutenberg' ),
-		processingLabel = __( 'Processing…', 'ultimate-addons-for-gutenberg' ),
+		confirmLabel = __( 'Confirm', 'sureforms' ),
+		cancelLabel = __( 'Cancel', 'sureforms' ),
+		processingLabel = __( 'Processing…', 'sureforms' ),
 		icon = '',
 		executable = false,
 	} = props;
@@ -72,8 +72,12 @@ const UAGConfirmPopup = ( props ) => {
 					</div>
 					<div className="uag-confirm-popup-content">
 						<div className="uag-confirm-popup-text">
-							<span className="uag-confirm-popup-title">{ title }</span>
-							<span className="uag-confirm-popup-description">{ description }</span>
+							<span className="uag-confirm-popup-title">
+								{ title }
+							</span>
+							<span className="uag-confirm-popup-description">
+								{ description }
+							</span>
 						</div>
 						<div className="uag-confirm-popup-controls">
 							{ isProcessing === false ? (

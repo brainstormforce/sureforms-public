@@ -47,9 +47,9 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 		 */
 		public static function get_block_attributes() {
 
-			$image_attribute   = self::generate_border_attribute( 'image' );
-			$overlay_attribute = self::generate_border_attribute( 'overlay' );
-			$icon_border_attribute = self::generate_border_attribute( 'icon' );
+			$image_attribute            = self::generate_border_attribute( 'image' );
+			$overlay_attribute          = self::generate_border_attribute( 'overlay' );
+			$icon_border_attribute      = self::generate_border_attribute( 'icon' );
 			$highLight_border_attribute = self::generate_border_attribute( 'highLight' );
 
 			if ( null === self::$block_attributes ) {
@@ -585,13 +585,13 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 
 			if ( null === self::$block_assets_css ) {
 				self::$block_assets_css = array(
-					'sureforms/separator' => array(
+					'sureforms/separator'        => array(
 						'name' => 'separator',
 					),
-					'sureforms/image' => array(
+					'sureforms/image'            => array(
 						'name' => 'image',
 					),
-					'sureforms/icon' => array(
+					'sureforms/icon'             => array(
 						'name' => 'icon',
 					),
 					'sureforms/advanced-heading' => array(

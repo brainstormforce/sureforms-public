@@ -13,7 +13,10 @@ import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 let imageCommonData = {};
-imageCommonData = applyFilters( 'sureforms/image', addCommonDataToSpectraBlocks( imageCommonData ) );
+imageCommonData = applyFilters(
+	'sureforms/image',
+	addCommonDataToSpectraBlocks( imageCommonData )
+);
 registerBlockType( 'sureforms/image', {
 	...imageCommonData,
 	title: __( 'Image', 'sureforms' ),
@@ -40,10 +43,19 @@ registerBlockType( 'sureforms/image', {
 
 	attributes,
 	category: uagb_blocks_info.category,
-	edit: ( props ) => ( props.attributes.isPreview ? <PreviewImage image="image" /> : <Edit { ...props } /> ),
+	edit: ( props ) =>
+		props.attributes.isPreview ? (
+			<PreviewImage image="image" />
+		) : (
+			<Edit { ...props } />
+		),
 	save,
 	__experimentalLabel: ( atts ) =>
-		applyFilters( 'uag_loop_data_source_label', __( 'Image', 'sureforms' ), atts ),
+		applyFilters(
+			'uag_loop_data_source_label',
+			__( 'Image', 'sureforms' ),
+			atts
+		),
 	usesContext: [ 'postId', 'postType' ],
 	transforms: {
 		from: [

@@ -48,21 +48,20 @@
 	width: inherit;
 }
 .wp-block-uagb-image {
-
 	&--effect {
 		&-slide {
 			.wp-block-uagb-image__figure {
 				img,
 				.wp-block-uagb-image--layout-overlay__color-wrapper {
-					width: calc(100% + 40px) !important;
+					width: calc( 100% + 40px ) !important;
 					max-width: none !important;
-					transform: translate3d(-40px, 0, 0);
+					transform: translate3d( -40px, 0, 0 );
 					transition: transform 0.35s ease-in-out;
 				}
 				&:hover {
 					img,
 					.wp-block-uagb-image--layout-overlay__color-wrapper {
-						transform: translate3d(0, 0, 0);
+						transform: translate3d( 0, 0, 0 );
 					}
 				}
 			}
@@ -80,9 +79,7 @@
 			margin-bottom: 8px;
 
 			.block-editor-block-icon {
-
 				svg.uagb-editor-icons {
-
 					path {
 						stroke: #0063a1;
 					}
@@ -103,13 +100,13 @@
 		// The 'Media Library' and 'Insert from URL' buttons in the MediaPlaceholder are tertiary,
 		// but we require the styling of secondary buttons.
 		.components-button.is-tertiary {
-			box-shadow: inset 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba));
-			color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba));
+			box-shadow: inset 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #007cba ) );
+			color: var( --wp-components-color-accent, var( --wp-admin-theme-color, #007cba ) );
 			padding: 6px 12px;
 
 			&:hover {
-				box-shadow: inset 0 0 0 1px var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #006ba1));
-				color: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #006ba1));
+				box-shadow: inset 0 0 0 1px var( --wp-components-color-accent-darker-10, var( --wp-admin-theme-color-darker-10, #006ba1 ) );
+				color: var( --wp-components-color-accent-darker-10, var( --wp-admin-theme-color-darker-10, #006ba1 ) );
 			}
 		}
 	}

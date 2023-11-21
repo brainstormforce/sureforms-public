@@ -8,7 +8,12 @@ import {
 import ResponsiveToggle from '../responsive-toggle';
 import { __, sprintf } from '@wordpress/i18n';
 import styles from './editor.lazy.scss';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
 import { limitMax, limitMin } from '@Controls/unitWiseMinMaxOption';
@@ -44,11 +49,11 @@ const Range = ( props ) => {
 
 	let unitSizes = [
 		{
-			name: __( 'Pixel', 'ultimate-addons-for-gutenberg' ),
+			name: __( 'Pixel', 'sureforms' ),
 			unitValue: 'px',
 		},
 		{
-			name: __( 'Em', 'ultimate-addons-for-gutenberg' ),
+			name: __( 'Em', 'sureforms' ),
 			unitValue: 'em',
 		},
 	];
@@ -99,7 +104,7 @@ const Range = ( props ) => {
 				<Tooltip
 					text={ sprintf(
 						/* translators: abbreviation for units */
-						__( '%s units', 'ultimate-addons-for-gutenberg' ),
+						__( '%s units', 'sureforms' ),
 						key.name
 					) }
 					key={ key.name }
@@ -113,7 +118,7 @@ const Range = ( props ) => {
 						aria-pressed={ props.unit.value === key.unitValue }
 						aria-label={ sprintf(
 							/* translators: abbreviation for units */
-							__( '%s units', 'ultimate-addons-for-gutenberg' ),
+							__( '%s units', 'sureforms' ),
 							key.name
 						) }
 						onClick={ () => onChangeUnits( key.unitValue ) }
@@ -144,19 +149,27 @@ const Range = ( props ) => {
 			{ controlBeforeDomElement }
 			<div className="uag-range-control uagb-size-type-field-tabs">
 				<div className="uagb-control__header">
-					<ResponsiveToggle label={ props.label } responsive={ props.responsive } />
+					<ResponsiveToggle
+						label={ props.label }
+						responsive={ props.responsive }
+					/>
 					<div className="uagb-range-control__actions uagb-control__actions">
 						{ props?.allowReset && (
 							<UAGReset
 								onReset={ resetValues }
-								attributeNames={ [ props.data.label, props.displayUnit ? props.unit.label : false ] }
+								attributeNames={ [
+									props.data.label,
+									props.displayUnit
+										? props.unit.label
+										: false,
+								] }
 								setAttributes={ props.setAttributes }
 							/>
 						) }
 						{ props.displayUnit && (
 							<ButtonGroup
 								className="uagb-control__units"
-								aria-label={ __( 'Select Units', 'ultimate-addons-for-gutenberg' ) }
+								aria-label={ __( 'Select Units', 'sureforms' ) }
 							>
 								{ onUnitSizeClick( unitSizes ) }
 							</ButtonGroup>
@@ -195,7 +208,7 @@ const Range = ( props ) => {
 };
 
 Range.defaultProps = {
-	label: __( 'Margin', 'ultimate-addons-for-gutenberg' ),
+	label: __( 'Margin', 'sureforms' ),
 	className: '',
 	allowReset: true,
 	withInputField: true,

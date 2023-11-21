@@ -48,7 +48,7 @@ const WebfontLoader = ( props ) => {
 	const handleInactive = () => {
 		setValue( { status: statuses.inactive } );
 	};
-	
+
 	const loadFonts = () => {
 		if ( ! googlefonts.includes( props.config.google.families[ 0 ] ) ) {
 			WebFont.load( {
@@ -61,7 +61,7 @@ const WebfontLoader = ( props ) => {
 		}
 
 		let iframeFound = document.getElementsByTagName( 'iframe' );
-		if( iframeFound ) {
+		if ( iframeFound ) {
 			iframeFound = iframeFound[ 0 ];
 		}
 

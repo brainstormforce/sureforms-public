@@ -2,7 +2,12 @@
  * External dependencies
  */
 import styles from './editor.lazy.scss';
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { getPanelIdFromRef } from '@Utils/Helpers';
 import { select } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -47,7 +52,11 @@ export default function Separator( { disabledTopSpace } ) {
 		<div ref={ panelRef }>
 			{ controlBeforeDomElement }
 			<div
-				className={ `spectra-separator ${ disabledTopSpace ? 'spectra-separator--removed-top-space' : '' }` }
+				className={ `spectra-separator ${
+					disabledTopSpace
+						? 'spectra-separator--removed-top-space'
+						: ''
+				}` }
 			/>
 			{ controlAfterDomElement }
 		</div>

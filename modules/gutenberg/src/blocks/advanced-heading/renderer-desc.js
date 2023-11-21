@@ -4,7 +4,14 @@ import { applyFilters } from '@wordpress/hooks';
 import { createBlock } from '@wordpress/blocks';
 
 const RendererDesc = ( props ) => {
-	const { setAttributes, attributes, context, onReplace, mergeBlocks, descriptionHasDynamicContent  } = props;
+	const {
+		setAttributes,
+		attributes,
+		context,
+		onReplace,
+		mergeBlocks,
+		descriptionHasDynamicContent,
+	} = props;
 
 	let { headingDesc } = props.attributes;
 
@@ -12,15 +19,25 @@ const RendererDesc = ( props ) => {
 
 	// Check if this has dynamic content.
 	if ( descriptionHasDynamicContent ) {
-		const renderedMarkup = applyFilters( `uag_render_text_loop_data`, headingDesc, context );
+		const renderedMarkup = applyFilters(
+			`uag_render_text_loop_data`,
+			headingDesc,
+			context
+		);
 		if ( renderedMarkup !== '' ) {
 			allowedFormats = [ 'sureforms/dynamic-content' ];
 			headingDesc = renderedMarkup;
 		}
 	}
-	
-	const propsOnSplit = ( value ) => value ? createBlock( 'sureforms/advanced-heading', { ...attributes, headingDesc: value} ) : createBlock( 'core/paragraph' );
-	
+
+	const propsOnSplit = ( value ) =>
+		value
+			? createBlock( 'sureforms/advanced-heading', {
+				...attributes,
+				headingDesc: value,
+			  } )
+			: createBlock( 'core/paragraph' );
+
 	return (
 		<RichText
 			tagName="p"

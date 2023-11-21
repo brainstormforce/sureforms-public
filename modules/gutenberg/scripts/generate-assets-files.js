@@ -40,7 +40,7 @@ fs.readdir( paths.pluginSrc + '/blocks', function ( readError, items ) {
 			},
 			function ( error, result ) {
 				if ( result && ! error ) {
-					let file_name = item;
+					const file_name = item;
 
 					console.log( `Generating for - ${ file_name }` ); // eslint-disable-line
 
@@ -48,7 +48,9 @@ fs.readdir( paths.pluginSrc + '/blocks', function ( readError, items ) {
 						'./assets/css/blocks/' + file_name + '.css',
 						result.css,
 						function ( err ) {
-							if ( err ) throw err;
+							if ( err ) {
+								throw err;
+							}
 						}
 					);
 				}

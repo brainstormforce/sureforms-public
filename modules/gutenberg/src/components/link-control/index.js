@@ -15,20 +15,28 @@ const propTypes = {
 };
 
 const defaultProps = {
-	placeholder: __( 'Search…', 'ultimate-addons-for-gutenberg' ),
+	placeholder: __( 'Search…', 'sureforms' ),
 	settings: [
 		{
 			id: 'opensInNewTab',
-			title: __( 'Open in new window', 'ultimate-addons-for-gutenberg' ),
+			title: __( 'Open in new window', 'sureforms' ),
 		},
 		{
 			id: 'noFollow',
-			title: __( 'Add nofollow', 'ultimate-addons-for-gutenberg' ),
+			title: __( 'Add nofollow', 'sureforms' ),
 		},
 	],
 };
 
-export default function UAGLinkControl( { data, label, placeholder, settings, onChange, help, setAttributes } ) {
+export default function UAGLinkControl( {
+	data,
+	label,
+	placeholder,
+	settings,
+	onChange,
+	help,
+	setAttributes,
+} ) {
 	// Add and remove the CSS on the drop and remove of the component.
 	useLayoutEffect( () => {
 		styles.use();
@@ -54,7 +62,7 @@ export default function UAGLinkControl( { data, label, placeholder, settings, on
 					onChange={ onChange }
 					withCreateSuggestion={ false }
 					onRemove={ () => {
-						setAttributes( { [ data?.label ]: undefined } )
+						setAttributes( { [ data?.label ]: undefined } );
 					} }
 				/>
 				{ help && <p className="uagb-link-control__help">{ help }</p> }

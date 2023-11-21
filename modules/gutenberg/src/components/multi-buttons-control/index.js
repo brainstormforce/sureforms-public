@@ -1,7 +1,13 @@
+/* eslint-disable @wordpress/no-unused-vars-before-return */
 /**
  * WordPress dependencies
  */
-import { useLayoutEffect, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import { Button, ButtonGroup } from '@wordpress/components';
@@ -45,47 +51,73 @@ const MultiButtonsControl = ( props ) => {
 		help = false,
 	} = props;
 
-	const setAttributes = props.setAttributes && 'function' === typeof props.setAttributes ? props.setAttributes : false; 
+	const setAttributes =
+		props.setAttributes && 'function' === typeof props.setAttributes
+			? props.setAttributes
+			: false;
 
 	const selectedBlock = getSelectedBlock()?.name.split( '/' ).pop(); // eslint-disable-line @wordpress/no-unused-vars-before-return
-	const allBlocksAttributes = applyFilters( 'uagb.blocksAttributes', blocksAttributes ); // eslint-disable-line @wordpress/no-unused-vars-before-return
-	const [ buttonPrimaryStateDesktop, setbuttonPrimaryStateDesktop ] = useState( true );
-	const [ buttonPrimaryStateTablet, setbuttonPrimaryStateTablet ] = useState( true );
-	const [ buttonPrimaryStateMobile, setbuttonPrimaryStateMobile ] = useState( true );
+	const allBlocksAttributes = applyFilters(
+		'uagb.blocksAttributes',
+		blocksAttributes
+	); // eslint-disable-line @wordpress/no-unused-vars-before-return
+	const [ buttonPrimaryStateDesktop, setbuttonPrimaryStateDesktop ] =
+		useState( true );
+	const [ buttonPrimaryStateTablet, setbuttonPrimaryStateTablet ] =
+		useState( true );
+	const [ buttonPrimaryStateMobile, setbuttonPrimaryStateMobile ] =
+		useState( true );
 
 	const deviceType = useDeviceType();
 	const iconsClass = showIcons ? 'uag-multibutton-icons' : '';
 
 	if ( ! options ) {
-		return __( 'Please add a option props to MultiButtonsControl', 'ultimate-addons-for-gutenberg' );
+		return __(
+			'Please add a option props to MultiButtonsControl',
+			'sureforms'
+		);
 	}
 
 	if ( responsive ) {
 		const output = {};
 
 		output.Desktop = (
-			<ButtonGroup className={ `uagb-multi-button-button-group` } aria-label={ label }>
+			<ButtonGroup
+				className={ `uagb-multi-button-button-group` }
+				aria-label={ label }
+			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `uagb-multi-button` }
 						isLarge
-						isSecondary={ data.desktop.value !== option.value || ! buttonPrimaryStateDesktop }
-						isPrimary={ data.desktop.value === option.value && buttonPrimaryStateDesktop }
+						isSecondary={
+							data.desktop.value !== option.value ||
+							! buttonPrimaryStateDesktop
+						}
+						isPrimary={
+							data.desktop.value === option.value &&
+							buttonPrimaryStateDesktop
+						}
 						aria-pressed={ data.desktop.value === option.value }
 						onClick={ () => {
 							setbuttonPrimaryStateDesktop( true );
-							if ( option.value === data.desktop.value && buttonPrimaryStateDesktop ) {
+							if (
+								option.value === data.desktop.value &&
+								buttonPrimaryStateDesktop
+							) {
 								setbuttonPrimaryStateDesktop( false );
-								if( setAttributes ) {
+								if ( setAttributes ) {
 									setAttributes( {
 										[ data.desktop.label ]:
-											allBlocksAttributes[ selectedBlock ][ data.desktop.label ].default,
+											allBlocksAttributes[
+												selectedBlock
+											][ data.desktop.label ].default,
 									} );
 								}
 								return;
 							}
-							if( setAttributes ) {
+							if ( setAttributes ) {
 								setAttributes( {
 									[ data.desktop.label ]: option.value,
 								} );
@@ -101,29 +133,43 @@ const MultiButtonsControl = ( props ) => {
 			</ButtonGroup>
 		);
 		output.Tablet = (
-			<ButtonGroup className={ `uagb-multi-button-button-group` } aria-label={ label }>
+			<ButtonGroup
+				className={ `uagb-multi-button-button-group` }
+				aria-label={ label }
+			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `uagb-multi-button` }
 						isLarge
-						isSecondary={ data.tablet.value !== option.value || ! buttonPrimaryStateTablet }
-						isPrimary={ data.tablet.value === option.value && buttonPrimaryStateTablet }
+						isSecondary={
+							data.tablet.value !== option.value ||
+							! buttonPrimaryStateTablet
+						}
+						isPrimary={
+							data.tablet.value === option.value &&
+							buttonPrimaryStateTablet
+						}
 						aria-pressed={ data.tablet.value === option.value }
 						onClick={ () => {
 							setbuttonPrimaryStateTablet( true );
 
-							if ( option.value === data.tablet.value && buttonPrimaryStateTablet ) {
+							if (
+								option.value === data.tablet.value &&
+								buttonPrimaryStateTablet
+							) {
 								setbuttonPrimaryStateTablet( false );
-								if( setAttributes ) {
+								if ( setAttributes ) {
 									setAttributes( {
 										[ data.tablet.label ]:
-											allBlocksAttributes[ selectedBlock ][ data.tablet.label ].default,
+											allBlocksAttributes[
+												selectedBlock
+											][ data.tablet.label ].default,
 									} );
 								}
-									return;
+								return;
 							}
-							if( setAttributes ) {
+							if ( setAttributes ) {
 								setAttributes( {
 									[ data.tablet.label ]: option.value,
 								} );
@@ -139,29 +185,43 @@ const MultiButtonsControl = ( props ) => {
 			</ButtonGroup>
 		);
 		output.Mobile = (
-			<ButtonGroup className={ `uagb-multi-button-button-group` } aria-label={ label }>
+			<ButtonGroup
+				className={ `uagb-multi-button-button-group` }
+				aria-label={ label }
+			>
 				{ options.map( ( option ) => (
 					<Button
 						key={ `option-${ option.value }` }
 						className={ `uagb-multi-button` }
 						isLarge
-						isSecondary={ data.mobile.value !== option.value || ! buttonPrimaryStateMobile }
-						isPrimary={ data.mobile.value === option.value && buttonPrimaryStateMobile }
+						isSecondary={
+							data.mobile.value !== option.value ||
+							! buttonPrimaryStateMobile
+						}
+						isPrimary={
+							data.mobile.value === option.value &&
+							buttonPrimaryStateMobile
+						}
 						aria-pressed={ data.mobile.value === option.value }
 						onClick={ () => {
 							setbuttonPrimaryStateMobile( true );
 
-							if ( option.value === data.mobile.value && buttonPrimaryStateMobile ) {
+							if (
+								option.value === data.mobile.value &&
+								buttonPrimaryStateMobile
+							) {
 								setbuttonPrimaryStateMobile( false );
-								if( setAttributes ) {
+								if ( setAttributes ) {
 									setAttributes( {
 										[ data.mobile.label ]:
-											allBlocksAttributes[ selectedBlock ][ data.mobile.label ].default,
+											allBlocksAttributes[
+												selectedBlock
+											][ data.mobile.label ].default,
 									} );
 								}
 								return;
 							}
-							if( setAttributes ) {
+							if ( setAttributes ) {
 								setAttributes( {
 									[ data.mobile.label ]: option.value,
 								} );
@@ -181,7 +241,10 @@ const MultiButtonsControl = ( props ) => {
 				className={ `components-base-control uagb-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
 			>
 				<div className="uagb-control__header uagb-size-type-field-tabs">
-					<ResponsiveToggle label={ label } responsive={ responsive } />
+					<ResponsiveToggle
+						label={ label }
+						responsive={ responsive }
+					/>
 				</div>
 				{ output[ deviceType ] ? output[ deviceType ] : output.Desktop }
 				<UAGHelpText text={ help } />
@@ -197,15 +260,17 @@ const MultiButtonsControl = ( props ) => {
 
 		if ( value === data.value && buttonPrimaryStateDesktop ) {
 			setbuttonPrimaryStateDesktop( false );
-			if( setAttributes ) {
+			if ( setAttributes ) {
 				setAttributes( {
-					[ data.label ]: allBlocksAttributes[ selectedBlock ][ data.label ].default,
+					[ data.label ]:
+						allBlocksAttributes[ selectedBlock ][ data.label ]
+							.default,
 				} );
 			}
 
 			return;
 		}
-		if( setAttributes ) {
+		if ( setAttributes ) {
 			setAttributes( {
 				[ data.label ]: value,
 			} );
@@ -234,15 +299,26 @@ const MultiButtonsControl = ( props ) => {
 			<div
 				className={ ` uagb-multi-buttons-control ${ iconsClass } spectra-multi-buttons__color-scheme--${ colorVariant } spectra-multi-buttons__layout--${ layoutVariant }` }
 			>
-				<div className="uagb-multi-buttons-control__label uag-control-label">{ label }</div>
-				<ButtonGroup className={ `uagb-multi-button-button-group` } aria-label={ label }>
+				<div className="uagb-multi-buttons-control__label uag-control-label">
+					{ label }
+				</div>
+				<ButtonGroup
+					className={ `uagb-multi-button-button-group` }
+					aria-label={ label }
+				>
 					{ allOptions.map( ( option ) => (
 						<Button
 							key={ `option-${ option.value }` }
 							className={ `uagb-multi-button` }
 							isLarge
-							isSecondary={ data.value !== option.value || ! buttonPrimaryStateDesktop }
-							isPrimary={ data.value === option.value && buttonPrimaryStateDesktop }
+							isSecondary={
+								data.value !== option.value ||
+								! buttonPrimaryStateDesktop
+							}
+							isPrimary={
+								data.value === option.value &&
+								buttonPrimaryStateDesktop
+							}
 							aria-pressed={ data.value === option.value }
 							onClick={ () => onClickHandler( option.value ) }
 							aria-label={ option.tooltip }

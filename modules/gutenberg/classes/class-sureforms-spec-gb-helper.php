@@ -83,6 +83,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 		/**
 		 * Google fonts to enqueue
+		 *
 		 * @since 0.0.1
 		 * @var array
 		 */

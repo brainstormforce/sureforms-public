@@ -2,8 +2,16 @@
 
 import { useEffect, useState } from '@wordpress/element';
 
-export default function useDimensionHandler( customHeight, customWidth, defaultHeight, defaultWidth, onChange ) {
-	const [ currentWidth, setCurrentWidth ] = useState( customWidth ? customWidth : defaultWidth ? defaultWidth : '' );
+export default function useDimensionHandler(
+	customHeight,
+	customWidth,
+	defaultHeight,
+	defaultWidth,
+	onChange
+) {
+	const [ currentWidth, setCurrentWidth ] = useState(
+		customWidth ? customWidth : defaultWidth ? defaultWidth : ''
+	);
 	const [ currentHeight, setCurrentHeight ] = useState(
 		customHeight ? customHeight : defaultHeight ? defaultHeight : ''
 	);
@@ -23,10 +31,16 @@ export default function useDimensionHandler( customHeight, customWidth, defaultH
 	// If custom values change, it means an outsider has resized the image using some other method (eg resize box)
 	// this keeps track of these values too. We need to parse before comparing; custom values can be strings.
 	useEffect( () => {
-		if ( customWidth !== undefined && Number.parseInt( customWidth ) !== Number.parseInt( currentWidth ) ) {
+		if (
+			customWidth !== undefined &&
+			Number.parseInt( customWidth ) !== Number.parseInt( currentWidth )
+		) {
 			setCurrentWidth( customWidth );
 		}
-		if ( customHeight !== undefined && Number.parseInt( customHeight ) !== Number.parseInt( currentHeight ) ) {
+		if (
+			customHeight !== undefined &&
+			Number.parseInt( customHeight ) !== Number.parseInt( currentHeight )
+		) {
 			setCurrentHeight( customHeight );
 		}
 	}, [ customWidth, customHeight ] );
@@ -43,8 +57,12 @@ export default function useDimensionHandler( customHeight, customWidth, defaultH
 	};
 
 	const updateDimensions = ( nextHeight, nextWidth ) => {
-		setCurrentHeight( nextHeight ? nextHeight : defaultHeight ? defaultHeight : '' );
-		setCurrentHeight( nextWidth ? nextWidth : defaultWidth ? defaultWidth : '' );
+		setCurrentHeight(
+			nextHeight ? nextHeight : defaultHeight ? defaultHeight : ''
+		);
+		setCurrentHeight(
+			nextWidth ? nextWidth : defaultWidth ? defaultWidth : ''
+		);
 		onChange( { height: nextHeight, width: nextWidth } );
 	};
 

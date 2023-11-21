@@ -7,38 +7,94 @@ import RangeTypographyControl from './range-typography';
 import googleFonts from '@Controls/fonts';
 import Select from 'react-select';
 
-const { uag_select_font_globally, uag_load_select_font_globally } = uagb_blocks_info;
+const { uag_select_font_globally, uag_load_select_font_globally } =
+	uagb_blocks_info;
 
 function FontFamilyControl( props ) {
 	const fonts = [
 		{
 			value: 'Default',
-			label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
-			weight: [ 'Default', '100', '200', '300', '400', '500', '600', '700', '800', '900' ],
+			label: __( 'Default', 'sureforms' ),
+			weight: [
+				'Default',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+			],
 			google: false,
 		},
 		{
 			value: 'Arial',
 			label: 'Arial',
-			weight: [ 'Default', '100', '200', '300', '400', '500', '600', '700', '800', '900' ],
+			weight: [
+				'Default',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+			],
 			google: false,
 		},
 		{
 			value: 'Helvetica',
 			label: 'Helvetica',
-			weight: [ 'Default', '100', '200', '300', '400', '500', '600', '700', '800', '900' ],
+			weight: [
+				'Default',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+			],
 			google: false,
 		},
 		{
 			value: 'Times New Roman',
 			label: 'Times New Roman',
-			weight: [ 'Default', '100', '200', '300', '400', '500', '600', '700', '800', '900' ],
+			weight: [
+				'Default',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+			],
 			google: false,
 		},
 		{
 			value: 'Georgia',
 			label: 'Georgia',
-			weight: [ 'Default', '100', '200', '300', '400', '500', '600', '700', '800', '900' ],
+			weight: [
+				'Default',
+				'100',
+				'200',
+				'300',
+				'400',
+				'500',
+				'600',
+				'700',
+				'800',
+				'900',
+			],
 			google: false,
 		},
 	];
@@ -89,7 +145,10 @@ function FontFamilyControl( props ) {
 	const onLoadGoogleFonts = ( loadGoogleFonts, fontFamily ) => {
 		let value;
 
-		if ( fontFamily !== '' && typeof googleFonts[ fontFamily ] !== 'object' ) {
+		if (
+			fontFamily !== '' &&
+			typeof googleFonts[ fontFamily ] !== 'object'
+		) {
 			value = false;
 		} else {
 			value = true;
@@ -99,7 +158,8 @@ function FontFamilyControl( props ) {
 	};
 
 	const gFonts =
-		uag_load_select_font_globally === 'enabled' && uag_select_font_globally !== 0
+		uag_load_select_font_globally === 'enabled' &&
+		uag_select_font_globally !== 0
 			? uag_select_font_globally
 			: fonts;
 
@@ -150,25 +210,50 @@ function FontFamilyControl( props ) {
 	if ( gFonts ) {
 		// eslint-disable-next-line array-callback-return
 		gFonts.map( ( font ) => {
-			if ( ! props.fontFamily.weight && font.value === props.fontFamily.value ) {
-				fontFamilyValue = { ...props.fontFamily, weight: font.weight, label: font.value };
+			if (
+				! props.fontFamily.weight &&
+				font.value === props.fontFamily.value
+			) {
+				fontFamilyValue = {
+					...props.fontFamily,
+					weight: font.weight,
+					label: font.value,
+				};
 			}
 		} );
 	}
 
 	let fontSize;
 	const fontSizeStepsVal = 'em' === props.fontSizeType.value ? 0.1 : 1; // fractional value when unit is em.
-	const fontSizeStepsValMobile = 'em' === props.fontSizeTypeMobile?.value ? 0.1 : 1;
-	const fontSizeStepsValTablet = 'em' === props.fontSizeTypeTablet?.value ? 0.1 : 1;
+	const fontSizeStepsValMobile =
+		'em' === props.fontSizeTypeMobile?.value ? 0.1 : 1;
+	const fontSizeStepsValTablet =
+		'em' === props.fontSizeTypeTablet?.value ? 0.1 : 1;
 	if ( true !== props.disableFontSize ) {
 		fontSize = (
 			<RangeTypographyControl
 				type={ props.fontSizeType }
 				typeLabel={ props.fontSizeType.label }
-				typeMobile={ props.fontSizeTypeMobile? props.fontSizeTypeMobile : props.fontSizeType }
-				typeLabelMobile={ props.fontSizeTypeMobile?.label? props.fontSizeTypeMobile.label : props.fontSizeType.label }
-				typeTablet={ props.fontSizeTypeTablet? props.fontSizeTypeTablet : props.fontSizeType }
-				typeLabelTablet={ props.fontSizeTypeTablet?.label? props.fontSizeTypeTablet.label : props.fontSizeType.label }
+				typeMobile={
+					props.fontSizeTypeMobile
+						? props.fontSizeTypeMobile
+						: props.fontSizeType
+				}
+				typeLabelMobile={
+					props.fontSizeTypeMobile?.label
+						? props.fontSizeTypeMobile.label
+						: props.fontSizeType.label
+				}
+				typeTablet={
+					props.fontSizeTypeTablet
+						? props.fontSizeTypeTablet
+						: props.fontSizeType
+				}
+				typeLabelTablet={
+					props.fontSizeTypeTablet?.label
+						? props.fontSizeTypeTablet.label
+						: props.fontSizeType.label
+				}
 				sizeMobile={ props.fontSizeMobile }
 				sizeMobileLabel={ props.fontSizeMobile.label }
 				sizeTablet={ props.fontSizeTablet }
@@ -177,13 +262,19 @@ function FontFamilyControl( props ) {
 				sizeLabel={ props.fontSize.label }
 				min={ 0 }
 				sizeMobileText={
-					! props.fontSizeLabel ? __( 'Font Size', 'ultimate-addons-for-gutenberg' ) : props.fontSizeLabel
+					! props.fontSizeLabel
+						? __( 'Font Size', 'sureforms' )
+						: props.fontSizeLabel
 				}
 				sizeTabletText={
-					! props.fontSizeLabel ? __( 'Font Size', 'ultimate-addons-for-gutenberg' ) : props.fontSizeLabel
+					! props.fontSizeLabel
+						? __( 'Font Size', 'sureforms' )
+						: props.fontSizeLabel
 				}
 				sizeText={
-					! props.fontSizeLabel ? __( 'Font Size', 'ultimate-addons-for-gutenberg' ) : props.fontSizeLabel
+					! props.fontSizeLabel
+						? __( 'Font Size', 'sureforms' )
+						: props.fontSizeLabel
 				}
 				step={ fontSizeStepsVal }
 				stepMobile={ fontSizeStepsValMobile }
@@ -197,12 +288,15 @@ function FontFamilyControl( props ) {
 		<>
 			{ /* Font Family */ }
 			<div className="components-base-control uag-font-family-searchable-select__wrapper">
-				<label className="components-input-control__label" htmlFor="font-family">
-					{ __( 'Font Family', 'ultimate-addons-for-gutenberg' ) }
+				<label
+					className="components-input-control__label"
+					htmlFor="font-family"
+				>
+					{ __( 'Font Family', 'sureforms' ) }
 				</label>
 				<Select
 					styles={ customSelectStyles }
-					placeholder={ __( 'Default', 'ultimate-addons-for-gutenberg' ) }
+					placeholder={ __( 'Default', 'sureforms' ) }
 					onChange={ onFontfamilyChange }
 					options={ gFonts }
 					value={ fontFamilyValue }
@@ -216,7 +310,7 @@ function FontFamilyControl( props ) {
 			{ fontSize }
 			{ /* Font Weitght */ }
 			<UAGSelectControl
-				label={ __( 'Weight', 'ultimate-addons-for-gutenberg' ) }
+				label={ __( 'Weight', 'sureforms' ) }
 				data={ {
 					value: props.fontWeight.value,
 					label: props.fontWeight.label,
@@ -227,7 +321,7 @@ function FontFamilyControl( props ) {
 			{ /* Font Style */ }
 			{ props.fontStyle && (
 				<UAGSelectControl
-					label={ __( 'Style', 'ultimate-addons-for-gutenberg' ) }
+					label={ __( 'Style', 'sureforms' ) }
 					data={ {
 						value: props.fontStyle.value,
 						label: props.fontStyle.label,
@@ -236,15 +330,15 @@ function FontFamilyControl( props ) {
 					options={ [
 						{
 							value: 'normal',
-							label: __( 'Default', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Default', 'sureforms' ),
 						},
 						{
 							value: 'italic',
-							label: __( 'Italic', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Italic', 'sureforms' ),
 						},
 						{
 							value: 'oblique',
-							label: __( 'Oblique', 'ultimate-addons-for-gutenberg' ),
+							label: __( 'Oblique', 'sureforms' ),
 						},
 					] }
 				/>

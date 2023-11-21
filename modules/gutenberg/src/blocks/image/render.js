@@ -1,4 +1,10 @@
-import { useLayoutEffect, memo, useEffect, useState, useRef } from '@wordpress/element';
+import {
+	useLayoutEffect,
+	memo,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
 import classnames from 'classnames';
 import { isBlobURL, getBlobByURL, revokeBlobURL } from '@wordpress/blob';
 import { ToolbarButton } from '@wordpress/components';
@@ -22,7 +28,14 @@ import styles from './editor.lazy.scss';
 /**
  * Internal dependencies
  */
-import { pickRelevantMediaFiles, isTemporaryImage, isExternalImage, hasDefaultSize, isMediaDestroyed, getDevicesAttributes } from './utils';
+import {
+	pickRelevantMediaFiles,
+	isTemporaryImage,
+	isExternalImage,
+	hasDefaultSize,
+	isMediaDestroyed,
+	getDevicesAttributes,
+} from './utils';
 
 /**
  * Module constants
@@ -40,9 +53,17 @@ const propTypes = {};
 const defaultProps = {};
 
 const Render = ( props ) => {
-
 	let { attributes } = props;
-	const { setAttributes, className, isSelected, insertBlocksAfter, onReplace, context, clientId, deviceType } = props;
+	const {
+		setAttributes,
+		className,
+		isSelected,
+		insertBlocksAfter,
+		onReplace,
+		context,
+		clientId,
+		deviceType,
+	} = props;
 
 	if ( props?.loopUrl ) {
 		attributes = { ...attributes, url: props.loopUrl };
@@ -195,20 +216,26 @@ const Render = ( props ) => {
 					height: undefined,
 					// Fallback to size "full" if there's no default image size.
 					// It means the image is smaller, and the block will use a full-size URL.
-					sizeSlug: hasDefaultSize( media, imageDefaultSize ) ? imageDefaultSize : 'full',
+					sizeSlug: hasDefaultSize( media, imageDefaultSize )
+						? imageDefaultSize
+						: 'full',
 					...additionalAttributes,
 				};
 			}
 			if ( 'custom' !== sizeSlugTablet ) {
 				additionalAttributes = {
 					...additionalAttributes,
-					sizeSlugTablet: hasDefaultSize( media, imageDefaultSize ) ? imageDefaultSize : 'full',
+					sizeSlugTablet: hasDefaultSize( media, imageDefaultSize )
+						? imageDefaultSize
+						: 'full',
 				};
 			}
 			if ( 'custom' !== sizeSlugMobile ) {
 				additionalAttributes = {
 					...additionalAttributes,
-					sizeSlugMobile: hasDefaultSize( media, imageDefaultSize ) ? imageDefaultSize : 'full',
+					sizeSlugMobile: hasDefaultSize( media, imageDefaultSize )
+						? imageDefaultSize
+						: 'full',
 				};
 			}
 		} else {
@@ -224,7 +251,10 @@ const Render = ( props ) => {
 			// Use the WordPress option to determine the proper default.
 			// The constants used in Gutenberg do not match WP options so a little more complicated than ideal.
 			// TODO: fix this in a follow up PR, requires updating media-text and ui component.
-			switch ( wp?.media?.view?.settings?.defaultProps?.link || LINK_DESTINATION_NONE ) {
+			switch (
+				wp?.media?.view?.settings?.defaultProps?.link ||
+				LINK_DESTINATION_NONE
+			) {
 				case 'file':
 				case LINK_DESTINATION_MEDIA:
 					linkDestination = LINK_DESTINATION_MEDIA;
@@ -255,7 +285,11 @@ const Render = ( props ) => {
 		}
 
 		mediaAttributes.href = href;
-		mediaAttributes = { ...mediaAttributes, ...getDevicesAttributes( media, 'Tablet' ), ...getDevicesAttributes( media, 'Mobile' ) };
+		mediaAttributes = {
+			...mediaAttributes,
+			...getDevicesAttributes( media, 'Tablet' ),
+			...getDevicesAttributes( media, 'Mobile' ),
+		};
 
 		const imageAttributes = {
 			...mediaAttributes,
@@ -347,7 +381,12 @@ const Render = ( props ) => {
 	const isExternal = isExternalImage( id, url );
 	const src = isExternal ? url : undefined;
 	const mediaPreview = !! url && (
-		<img alt={ __( 'Edit image', 'sureforms' ) } title={ __( 'Edit image', 'sureforms' ) } className={ 'edit-image-preview' } src={ url } />
+		<img
+			alt={ __( 'Edit image', 'sureforms' ) }
+			title={ __( 'Edit image', 'sureforms' ) }
+			className={ 'edit-image-preview' }
+			src={ url }
+		/>
 	);
 
 	// If an image is externally hosted, try to fetch the image data. This may
@@ -412,7 +451,11 @@ const Render = ( props ) => {
 					rel={ rel }
 				/>
 				{ externalBlob && (
-					<ToolbarButton onClick={ uploadExternal } icon={ upload } label={ __( 'Upload external image', 'sureforms' ) } />
+					<ToolbarButton
+						onClick={ uploadExternal }
+						icon={ upload }
+						label={ __( 'Upload external image', 'sureforms' ) }
+					/>
 				) }
 			</BlockControls>
 			<div

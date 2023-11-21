@@ -2,18 +2,29 @@ import WebfontLoader from '@Components/typography/fontloader';
 import { memo } from '@wordpress/element';
 
 const DynamicFontLoader = ( { attributes } ) => {
-	const { elementTextLoadGoogleFonts, elementTextFontFamily, elementTextFontWeight } = attributes;
+	const {
+		elementTextLoadGoogleFonts,
+		elementTextFontFamily,
+		elementTextFontWeight,
+	} = attributes;
 
 	let loadTextGoogleFonts;
 
 	if ( elementTextLoadGoogleFonts === true ) {
 		const hconfig = {
 			google: {
-				families: [ elementTextFontFamily + ( elementTextFontWeight ? ':' + elementTextFontWeight : '' ) ],
+				families: [
+					elementTextFontFamily +
+						( elementTextFontWeight
+							? ':' + elementTextFontWeight
+							: '' ),
+				],
 			},
 		};
 
-		loadTextGoogleFonts = <WebfontLoader config={ hconfig }></WebfontLoader>;
+		loadTextGoogleFonts = (
+			<WebfontLoader config={ hconfig }></WebfontLoader>
+		);
 	}
 	return <>{ loadTextGoogleFonts }</>;
 };

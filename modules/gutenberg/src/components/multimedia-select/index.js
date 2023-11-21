@@ -7,7 +7,7 @@ import UAGHelpText from '@Components/help-text';
 const MultiMediaSelector = ( props ) => {
 	const {
 		slug = 'media',
-		label = __( 'Media', 'ultimate-addons-for-gutenberg' ),
+		label = __( 'Media', 'sureforms' ),
 		disableLabel = false,
 		mediaType,
 		onSelectMedia,
@@ -25,16 +25,16 @@ const MultiMediaSelector = ( props ) => {
 
 	switch ( mediaType ) {
 		case 'images':
-			selectorLabel = __( 'Select Images', 'ultimate-addons-for-gutenberg' );
-			replacerLabel = __( 'Replace Images', 'ultimate-addons-for-gutenberg' );
+			selectorLabel = __( 'Select Images', 'sureforms' );
+			replacerLabel = __( 'Replace Images', 'sureforms' );
 			break;
 		default:
-			selectorLabel = __( 'Select Media', 'ultimate-addons-for-gutenberg' );
-			replacerLabel = __( 'Replace Media', 'ultimate-addons-for-gutenberg' );
+			selectorLabel = __( 'Select Media', 'sureforms' );
+			replacerLabel = __( 'Replace Media', 'sureforms' );
 	}
 
 	if ( createGallery ) {
-		replacerLabel = __( 'Edit Gallery', 'ultimate-addons-for-gutenberg' );
+		replacerLabel = __( 'Edit Gallery', 'sureforms' );
 	}
 
 	const renderMediaUploader = ( open ) => {
@@ -54,7 +54,9 @@ const MultiMediaSelector = ( props ) => {
 	};
 
 	const renderButton = ( buttonType ) => (
-		<div className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }>
+		<div
+			className={ `spectra-media-control__button spectra-media-control__button--${ buttonType }` }
+		>
 			{ UAGB_Block_Icons[ buttonType ] }
 		</div>
 	);
@@ -68,14 +70,22 @@ const MultiMediaSelector = ( props ) => {
 		>
 			<div className="spectra-media-control__wrapper">
 				{ mediaGallery[ 0 ]?.url && (
-					<div className={ 'spectra-media-control__icon spectra-media-control__icon--stroke' }>
+					<div
+						className={
+							'spectra-media-control__icon spectra-media-control__icon--stroke'
+						}
+					>
 						{ placeholderIcon }
 					</div>
 				) }
 				<MediaUpload
 					title={ selectorLabel }
 					onSelect={ onSelectMedia }
-					allowedTypes={ allowedTypes ? allowedTypes : [ 'image', 'video', 'audio' ] }
+					allowedTypes={
+						allowedTypes
+							? allowedTypes
+							: [ 'image', 'video', 'audio' ]
+					}
 					multiple={ true }
 					value={ mediaIDs }
 					gallery={ createGallery }

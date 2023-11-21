@@ -29,6 +29,7 @@
 		"classnames": "^2.2.6",
 		"prop-types": "^15.6.2",
 		"re-resizable": "^4.7.1",
+		"react": "^18.2.0",
 		"react-color": "^2.18.0",
 		"react-container-dimensions": "^1.4.1",
 		"react-countdown": "^2.3.1",
@@ -38,7 +39,8 @@
 		"react-slick": "^0.24.0",
 		"react-transition-group": "^2.4.0",
 		"react-virtualized": "^9.22.5",
-		"striptags": "^3.2.0"
+		"striptags": "^3.2.0",
+		"webfontloader": "^1.6.28"
 	},
 	"devDependencies": {
 		"@babel/plugin-syntax-dynamic-import": "^7.8.3",

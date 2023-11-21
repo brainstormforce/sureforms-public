@@ -19,7 +19,13 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 const UAGBAdvancedHeading = ( props ) => {
 	const {
 		attributes,
-		attributes: { UAGHideDesktop, UAGHideTab, UAGHideMob, headingTitle, headingDesc },
+		attributes: {
+			UAGHideDesktop,
+			UAGHideTab,
+			UAGHideMob,
+			headingTitle,
+			headingDesc,
+		},
 		isSelected,
 		clientId,
 		name,
@@ -29,12 +35,18 @@ const UAGBAdvancedHeading = ( props ) => {
 	} = props;
 
 	// Check dynamic content in heading and description.
-	const headingHasDynamicContent = -1 !== headingTitle.indexOf( '<span data-spectra-dc-field="' );
-	const descriptionHasDynamicContent = headingDesc && -1 !== headingDesc.indexOf( '<span data-spectra-dc-field="' );
+	const headingHasDynamicContent =
+		-1 !== headingTitle.indexOf( '<span data-spectra-dc-field="' );
+	const descriptionHasDynamicContent =
+		headingDesc &&
+		-1 !== headingDesc.indexOf( '<span data-spectra-dc-field="' );
 
 	// Including condition in props for child component.
-	props = { ...props, headingHasDynamicContent, descriptionHasDynamicContent };
-
+	props = {
+		...props,
+		headingHasDynamicContent,
+		descriptionHasDynamicContent,
+	};
 
 	useEffect( () => {
 		responsiveConditionPreview( props );
@@ -42,16 +54,22 @@ const UAGBAdvancedHeading = ( props ) => {
 
 	useEffect( () => {
 		// Check if block has dynamic content and context is not set.
-		if ( ( headingHasDynamicContent || descriptionHasDynamicContent ) && ! attributes?.context ) {
+		if (
+			( headingHasDynamicContent || descriptionHasDynamicContent ) &&
+			! attributes?.context
+		) {
 			setAttributes( { context } );
 		}
-	}, [ context ] )
+	}, [ context ] );
 
 	useEffect( () => {
 		scrollBlockToView();
 	}, [ deviceType ] );
 
-	const blockStyling = useMemo( () => styling( attributes, clientId, name, deviceType ), [ attributes, deviceType ] );
+	const blockStyling = useMemo(
+		() => styling( attributes, clientId, name, deviceType ),
+		[ attributes, deviceType ]
+	);
 
 	return (
 		<>
@@ -65,5 +83,5 @@ const UAGBAdvancedHeading = ( props ) => {
 
 export default compose(
 	AddInitialAttr,
-	AddStaticStyles,
+	AddStaticStyles
 )( UAGBAdvancedHeading );

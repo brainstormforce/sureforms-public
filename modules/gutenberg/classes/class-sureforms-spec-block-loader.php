@@ -65,7 +65,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Loader' ) ) {
 			if ( ! $is_spectra_active ) {
 				require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-spectra-compatibility.php';
 			}
-			
+
 			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/icon/class-sureforms-spec-icon.php';
 			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/separator/class-sureforms-spec-separator.php';
 			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-filesystem.php';

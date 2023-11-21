@@ -36,7 +36,10 @@ const GeneralSettings = ( props ) => {
 
 	return (
 		<>
-			<UAGAdvancedPanelBody title={ __( 'Icon', 'sureforms' ) } initialOpen={ true }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Icon', 'sureforms' ) }
+				initialOpen={ true }
+			>
 				<UAGIconPicker
 					label={ __( 'Icon', 'sureforms' ) }
 					value={ icon }
@@ -86,17 +89,29 @@ const GeneralSettings = ( props ) => {
 					options={ [
 						{
 							value: 'left',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-left' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-left' ) }
+								/>
+							),
 							tooltip: __( 'Left', 'sureforms' ),
 						},
 						{
 							value: 'center',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-center' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-center' ) }
+								/>
+							),
 							tooltip: __( 'Center', 'sureforms' ),
 						},
 						{
 							value: 'right',
-							icon: <Icon icon={ renderSVG( 'fa fa-align-right' ) } />,
+							icon: (
+								<Icon
+									icon={ renderSVG( 'fa fa-align-right' ) }
+								/>
+							),
 							tooltip: __( 'Right', 'sureforms' ),
 						},
 					] }
@@ -127,7 +142,9 @@ const GeneralSettings = ( props ) => {
 				<ToggleControl
 					label={ __( 'Link', 'sureforms' ) }
 					checked={ disableLink }
-					onChange={ () => setAttributes( { disableLink: ! disableLink } ) }
+					onChange={ () =>
+						setAttributes( { disableLink: ! disableLink } )
+					}
 				/>
 				{ disableLink && (
 					<>
@@ -139,19 +156,30 @@ const GeneralSettings = ( props ) => {
 								label: 'link',
 							} }
 							setAttributes={ setAttributes }
-							onChange={ ( value ) => setAttributes( { link: value } ) }
+							onChange={ ( value ) =>
+								setAttributes( { link: value } )
+							}
 							placeholder={ __( 'Enter URL', 'sureforms' ) }
 						/>
 						<ToggleControl
 							label={ __( 'Open in New Tab', 'sureforms' ) }
 							checked={ target }
-							onChange={ () => setAttributes( { target: ! target } ) }
+							onChange={ () =>
+								setAttributes( { target: ! target } )
+							}
 						/>
 					</>
 				) }
 			</UAGAdvancedPanelBody>
-			<UAGAdvancedPanelBody title={ __( 'Presets', 'sureforms' ) } initialOpen={ false }>
-				<UAGPresets setAttributes={ setAttributes } presets={ iconPresets } presetInputType="radioImage" />
+			<UAGAdvancedPanelBody
+				title={ __( 'Presets', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<UAGPresets
+					setAttributes={ setAttributes }
+					presets={ iconPresets }
+					presetInputType="radioImage"
+				/>
 			</UAGAdvancedPanelBody>
 		</>
 	);

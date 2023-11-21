@@ -8,13 +8,13 @@ const addBlockEditorDynamicStyles = () => {
 		const cloneLinkTag = ( linkId ) => {
 			const getTag = document.getElementById( linkId );
 			return getTag ? getTag.cloneNode( true ) : false;
-		}
+		};
 
 		const cloneStyleTag = ( styleId ) => {
 			const getStyleTag = document.getElementById( styleId );
 			return getStyleTag ? getStyleTag.textContent : false;
-		}
-		
+		};
+
 		const dashiconsCss = cloneLinkTag( 'dashicons-css' );
 		const blockCssCss = cloneLinkTag( 'uagb-block-css-css' );
 		const slickStyle = cloneLinkTag( 'uagb-slick-css-css' );
@@ -23,34 +23,46 @@ const addBlockEditorDynamicStyles = () => {
 
 		const editorStyle = cloneStyleTag( 'uagb-editor-styles' );
 		const editorProStyle = cloneStyleTag( 'spectra-pro-editor-styles' );
-		const spacingStyle = cloneStyleTag( 'uagb-blocks-editor-spacing-style' );
-		const editorCustomStyle = cloneStyleTag( 'uagb-blocks-editor-custom-css' );
+		const spacingStyle = cloneStyleTag(
+			'uagb-blocks-editor-spacing-style'
+		);
+		const editorCustomStyle = cloneStyleTag(
+			'uagb-blocks-editor-custom-css'
+		);
 
 		for ( const iterateIFrames of getAllIFrames ) {
-			const iframeDocument = iterateIFrames?.contentWindow.document || iterateIFrames?.contentDocument;
-			if( ! iframeDocument?.head ){
+			const iframeDocument =
+				iterateIFrames?.contentWindow.document ||
+				iterateIFrames?.contentDocument;
+			if ( ! iframeDocument?.head ) {
 				continue;
 			}
 
 			const copyLinkTag = ( clonedTag, tagId ) => {
-				if ( ! clonedTag ) return;
+				if ( ! clonedTag ) {
+					return;
+				}
 				const isExistTag = iframeDocument.getElementById( tagId );
-				if ( isExistTag ) return;
+				if ( isExistTag ) {
+					return;
+				}
 				iframeDocument.head.appendChild( clonedTag );
-			}
+			};
 
 			const copyStyleTag = ( clonedTag, tagId ) => {
-				if ( ! clonedTag ) return;
+				if ( ! clonedTag ) {
+					return;
+				}
 				const isExistTag = iframeDocument.getElementById( tagId );
-				if( ! isExistTag ){
-					const node = document.createElement( 'style' )
+				if ( ! isExistTag ) {
+					const node = document.createElement( 'style' );
 					node.setAttribute( 'id', tagId );
 					node.textContent = clonedTag;
-					iframeDocument.head.appendChild( node )
-				}else{
-					isExistTag.textContent = clonedTag
+					iframeDocument.head.appendChild( node );
+				} else {
+					isExistTag.textContent = clonedTag;
 				}
-			}
+			};
 
 			copyLinkTag( blockCssCss, 'uagb-block-css-css' );
 			copyLinkTag( dashiconsCss, 'dashicons-css' );

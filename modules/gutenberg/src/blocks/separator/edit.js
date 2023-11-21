@@ -33,7 +33,10 @@ const UAGBSeparator = ( props ) => {
 		scrollBlockToView();
 	}, [ deviceType ] );
 
-	const blockStyling = useMemo( () => styling( attributes, clientId, name, deviceType ), [ attributes, deviceType ] );
+	const blockStyling = useMemo(
+		() => styling( attributes, clientId, name, deviceType ),
+		[ attributes, deviceType ]
+	);
 
 	return (
 		<>
@@ -44,7 +47,4 @@ const UAGBSeparator = ( props ) => {
 		</>
 	);
 };
-export default compose( 
-	AddStaticStyles,
-	AddInitialAttr 
-)( UAGBSeparator );
+export default compose( AddStaticStyles, AddInitialAttr )( UAGBSeparator );

@@ -28,14 +28,24 @@ function hexToRgba( color, opacity ) {
 
 	const parsed_color = result
 		? {
-				r: parseInt( result[ 1 ], 16 ),
-				g: parseInt( result[ 2 ], 16 ),
-				b: parseInt( result[ 3 ], 16 ),
+			r: parseInt( result[ 1 ], 16 ),
+			g: parseInt( result[ 2 ], 16 ),
+			b: parseInt( result[ 3 ], 16 ),
 		  }
 		: null;
 
 	if ( parsed_color ) {
-		return 'rgba(' + parsed_color.r + ',' + parsed_color.g + ',' + parsed_color.b + ',' + opacity + ')';
+		return (
+			'rgba(' +
+			parsed_color.r +
+			',' +
+			parsed_color.g +
+			',' +
+			parsed_color.b +
+			',' +
+			opacity +
+			')'
+		);
 	}
 
 	return '';

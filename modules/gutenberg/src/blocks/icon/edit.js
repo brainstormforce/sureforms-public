@@ -23,7 +23,10 @@ const UAGBIcon = ( props ) => {
 		clientId,
 	} = props;
 
-	const blockStyling = useMemo( () => styling( attributes, clientId, name, deviceType ), [ attributes, deviceType ] );
+	const blockStyling = useMemo(
+		() => styling( attributes, clientId, name, deviceType ),
+		[ attributes, deviceType ]
+	);
 
 	useEffect( () => {
 		scrollBlockToView();
@@ -42,7 +45,4 @@ const UAGBIcon = ( props ) => {
 	);
 };
 
-export default compose(
-	addInitialAttr,
-	AddStaticStyles
-)( UAGBIcon );
+export default compose( addInitialAttr, AddStaticStyles )( UAGBIcon );
