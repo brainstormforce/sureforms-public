@@ -215,7 +215,7 @@ class Address_Markup extends Base {
 		$output   = '';
 		$output  .= '
 		<div class="srfm-address-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-address-container-' . esc_attr( $block_id ) . '"> 
-					<label for="srfm-address-line-1-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
+					<label for="srfm-address-line-1-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>
 					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" id="srfm-fullAddress-' . esc_attr( $block_id ) . '" />
 					<div class="srfm-mt-2">
 						<input type="text" class=" srfm-classic-address-element !srfm-top-[3px] !srfm-rounded-t-md " id="srfm-address-line-1-' . esc_attr( $block_id ) . '"

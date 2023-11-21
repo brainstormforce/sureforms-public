@@ -38,7 +38,7 @@ class Dropdown_Markup extends Base {
 		$output  = '';
 		$output .= '<div class="srfm-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label class="srfm-text-primary">' . esc_html( $label ) . ' 
-            ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '
+            ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '
         </label>
         <select 
         name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
@@ -81,7 +81,7 @@ class Dropdown_Markup extends Base {
 		$output  = '';
 		$output .= '<div class="srfm-classic-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
         <label for="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' 
-            ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '
+            ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '
         </label>
         <div class= "srfm-relative srfm-mt-2">
             <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" id="srfm-classic-dropdown-' . esc_attr( $block_id ) . '" class="srfm-classic-dropdown-result" value="" />
