@@ -74,7 +74,7 @@ class Sureforms_Spec_Init_Blocks {
 
 		global $post;
 
-		// if ( $post && SUREFORMS_FORMS_POST_TYPE === $post->post_type ) { //Nathan
+		 if ( $post && SUREFORMS_FORMS_POST_TYPE === $post->post_type ) {
 
 			// Register block styles for both frontend + backend.
 			wp_enqueue_style(
@@ -84,7 +84,7 @@ class Sureforms_Spec_Init_Blocks {
 				SUREFORMS_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
 			);
 
-		// }
+		 }
 	}
 
 	/**

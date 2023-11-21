@@ -142,16 +142,11 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * WP Actions.
 		 */
 		public function wp_actions() {
-			// wcf()->utils->is_step_post_type()  //Nathan
-			if ( true ) {
-
-				$this->generate_assets();
-				add_action( 'wp_enqueue_scripts', array( $this, 'block_assets' ), 10 );
-				add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 120 );
-				add_action( 'wp_head', array( $this, 'print_stylesheet' ), 80 );
-				add_action( 'wp_footer', array( $this, 'print_script' ), 1000 );
-			}
-
+			$this->generate_assets();
+			add_action( 'wp_enqueue_scripts', array( $this, 'block_assets' ), 10 );
+			add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 120 );
+			add_action( 'wp_head', array( $this, 'print_stylesheet' ), 80 );
+			add_action( 'wp_footer', array( $this, 'print_script' ), 1000 );
 		}
 
 		/**

@@ -50,7 +50,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 			$image_attribute            = self::generate_border_attribute( 'image' );
 			$overlay_attribute          = self::generate_border_attribute( 'overlay' );
 			$icon_border_attribute      = self::generate_border_attribute( 'icon' );
-			$highLight_border_attribute = self::generate_border_attribute( 'highLight' );
+			$high_light_border_attribute = self::generate_border_attribute( 'highLight' );
 
 			if ( null === self::$block_attributes ) {
 				self::$block_attributes = array(
@@ -387,7 +387,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
-							$highLight_border_attribute,
+							$high_light_border_attribute,
 							array(
 								'classMigrate'             => false,
 								'blockBackground'          => '',
@@ -608,7 +608,6 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 		 *
 		 * @since 0.0.1
 		 * @param  array $prefix   Attribute Prefix.
-		 * @param array $default_args  default attributes args.
 		 * @return array
 		 */
 		public static function generate_border_attribute( $prefix ) {

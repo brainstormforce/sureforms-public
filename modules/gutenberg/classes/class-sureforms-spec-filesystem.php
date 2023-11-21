@@ -1,8 +1,8 @@
 <?php
 /**
- * UAGB Filesystem
+ * Sureforms Filesystem
  *
- * @package UAGB
+ * @package Sureforms
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Sureforms_Spec__Filesystem.
+ * Class Sureforms_Spec_Filesystem.
  */
-class Sureforms_Spec__Filesystem {
+class Sureforms_Spec_Filesystem {
 
 	/**
 	 * Member Variable
@@ -95,7 +95,7 @@ class Sureforms_Spec__Filesystem {
  *  Prepare if class 'UAGB_Filesystem' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
-Sureforms_Spec__Filesystem::get_instance();
+Sureforms_Spec_Filesystem::get_instance();
 
 /**
  * Filesystem class
@@ -103,5 +103,5 @@ Sureforms_Spec__Filesystem::get_instance();
  * @since 0.0.1
  */
 function uagb_filesystem() {
-	return Sureforms_Spec__Filesystem::get_instance()->get_filesystem();
+	return Sureforms_Spec_Filesystem::get_instance()->get_filesystem();
 }
