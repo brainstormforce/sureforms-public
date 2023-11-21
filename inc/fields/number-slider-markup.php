@@ -68,7 +68,7 @@ class Number_Slider_Markup extends Base {
 		$error_msg          = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="srfm-number-slider-container srfm-classic-number-slider srfm-classic-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
+		return '<div class="srfm-number-slider-container srfm-main-container srfm-classic-number-slider srfm-classic-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <div class="range-slider-container">
             <div class="range-slider-block">
                 <div id="srfm-range-sliders-' . esc_attr( $block_id ) . '" class="srfm-range-sliders srfm-w-full">
