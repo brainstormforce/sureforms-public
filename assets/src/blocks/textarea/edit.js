@@ -54,8 +54,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			'srfm-textarea-fieldwidth' + block_id
 		);
 		const parent_to_width_element = width_req_element.parentElement;
-		parent_to_width_element.style.width =
-			'calc( ' + fieldWidth + '% - 20px)';
+		if ( window.innerWidth < 630 ) {
+			parent_to_width_element.style.width = '100%';
+		} else {
+			parent_to_width_element.style.width =
+				'calc( ' + fieldWidth + '% - 20px)';
+		}
 	}, [ fieldWidth ] );
 	// show the block preview on hover
 	if ( preview ) {
