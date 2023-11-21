@@ -129,10 +129,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorInputIcon.style.display = 'flex';
 				}
 				if ( phoneParent ) {
+					const phoneInput =
+						container.querySelectorAll( 'input' )[ 1 ];
 					phoneParent.classList.add(
 						'!srfm-ring-red-500',
 						'!srfm-border-red-500'
 					);
+					if ( ! firstErrorInput ) {
+						firstErrorInput = phoneInput;
+					}
 				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -180,12 +185,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 
 			if ( ischeckedRequired === 'true' && ! checkedSelected ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput && visibleInput ) {
 					firstErrorInput = visibleInput;
 				}
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -222,10 +229,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorInputIcon.style.display = 'flex';
 				}
 				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
+					firstErrorInput = phoneInput;
 				}
 			} else {
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				//for Tailwind phone field UI
 				if ( isUnique !== 'true' && phoneParent ) {
 					phoneParent.classList.remove(
@@ -274,7 +283,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else if ( confirmPasswordValue !== inputValue ) {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					container.querySelector(
 						'.srfm-confirm-password-error'
 					).style.display = 'block';
@@ -284,7 +295,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					confirmPassword.classList.remove(
 						'srfm-classic-input-error'
 					);
@@ -306,7 +319,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			if ( confirmEmail ) {
 				const confirmEmailValue = confirmEmail.value;
 				if ( isRequired === 'true' && ! confirmEmailValue ) {
-					confirmFieldError.style.display = 'block';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'block';
+					}
 					container.querySelector(
 						'.confirm-email-error'
 					).style.display = 'none';
@@ -319,7 +334,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					confirmEmailValue &&
 					confirmEmailValue !== inputValue
 				) {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					container.querySelector(
 						'.srfm-confirm-email-error'
 					).style.display = 'block';
@@ -330,7 +347,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 					validateResult = true;
 				} else {
-					confirmFieldError.style.display = 'none';
+					if ( confirmFieldError ) {
+						confirmFieldError.style.display = 'none';
+					}
 					confirmEmail.style.borderColor = '#d1d5db';
 					confirmEmail.classList.remove( 'srfm-classic-input-error' );
 					container.querySelector(
@@ -352,7 +371,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( ! addressInput[ i ].value ) {
-					errorMessage.style.display = 'block';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
 					errCounter = 1;
 					validateResult = true;
 					if ( ! firstErrorInput ) {
@@ -362,8 +383,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					errorMessage.style.display = 'none';
 				}
 				if ( errCounter === 1 ) {
-					errorMessage.style.display = 'block';
-				} else {
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
+				} else if ( errorMessage ) {
 					errorMessage.style.display = 'none';
 				}
 			}
@@ -385,15 +408,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
-				errorMessage.style.display = 'block';
-
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = uploadInput;
 				}
 			} else {
-				errorMessage.style.display = 'none';
-				uploadInputInnerDiv.style.borderColor = '#d1d5db';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
+				if ( uploadInputInnerDiv ) {
+					uploadInputInnerDiv.style.borderColor = '#d1d5db';
+				}
 			}
 		}
 
@@ -410,7 +438,9 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if ( isDateRequired === 'true' && ! dateInput[ i ].value ) {
-					errorMessage.style.display = 'block';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'block';
+					}
 					dateInput[ i ].style.borderColor = '#FCA5A5';
 					dateErrCounter = 1;
 					validateResult = true;
@@ -419,12 +449,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					}
 				} else {
 					dateInput[ i ].style.borderColor = '#d1d5db';
-					errorMessage.style.display = 'none';
+					if ( errorMessage ) {
+						errorMessage.style.display = 'none';
+					}
 				}
 			}
 			if ( dateErrCounter === 1 ) {
-				errorMessage.style.display = 'block';
-			} else {
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -440,8 +474,10 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				min !== '' &&
 				Number( inputValue ) < Number( min )
 			) {
-				minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
-				minMaxErrorMessage.style.display = `block`;
+				if ( minMaxErrorMessage ) {
+					minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
+					minMaxErrorMessage.style.display = `block`;
+				}
 				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
@@ -452,14 +488,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				max !== '' &&
 				Number( inputValue ) > Number( max )
 			) {
-				minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
-				minMaxErrorMessage.style.display = `block`;
+				if ( minMaxErrorMessage ) {
+					minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
+					minMaxErrorMessage.style.display = `block`;
+				}
 				inputField.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
-			} else {
+			} else if ( minMaxErrorMessage ) {
 				minMaxErrorMessage.innerText = '';
 			}
 		}
@@ -472,9 +510,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const ratingRequired =
 				classicRatingField.getAttribute( 'aria-required' );
 			if ( ratingRequired === 'true' && ! classicRatingField.value ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -489,12 +529,14 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const dateTimeRequired =
 				classicDateTimeField.getAttribute( 'aria-required' );
 			if ( dateTimeRequired === 'true' && ! classicDateTimeField.value ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = classicDateTimeField;
 				}
-			} else {
+			} else if ( errorMessage ) {
 				errorMessage.style.display = 'none';
 			}
 		}
@@ -530,14 +572,18 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				'.srfm-classic-dropdown-btn'
 			);
 			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
-				errorMessage.style.display = 'block';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'block';
+				}
 				dropdownBtn.classList.add( 'srfm-classic-input-error' );
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = dropdownBtn;
 				}
 			} else {
-				errorMessage.style.display = 'none';
+				if ( errorMessage ) {
+					errorMessage.style.display = 'none';
+				}
 				dropdownBtn.classList.remove( 'srfm-classic-input-error' );
 			}
 		}
