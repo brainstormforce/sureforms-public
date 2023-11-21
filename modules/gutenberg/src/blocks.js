@@ -42,9 +42,6 @@ import './blocks/advanced-heading/block.js';
 import './blocks/image/block.js';
 import './blocks/icon/block.js';
 
-import CF_Block_Icons from './block-icons';
-
-
 // Keep category list in separate variable and remove category list from icons list.
 if ( uagb_blocks_info.uagb_svg_icons?.uagb_category_list ) {
 
@@ -53,15 +50,6 @@ if ( uagb_blocks_info.uagb_svg_icons?.uagb_category_list ) {
 }
 
 wp.UAGBSvgIcons = Object.keys( uagb_blocks_info.uagb_svg_icons );
-
-const { updateCategory } = wp.blocks;
-
-// wp.WCFSvgIcons = Object.keys( cf_blocks_info.wcf_svg_icons );
-wp.UAGBSvgIcons = Object.keys( uagb_blocks_info.uagb_svg_icons );
-
-updateCategory( 'cartflows', {
-	icon: CF_Block_Icons.logo,
-} );
 
 const addCfResponsiveCondtionBlocks = function ( blocks ) {
 	blocks.push( 'wcfb/' );

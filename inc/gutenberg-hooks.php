@@ -216,8 +216,6 @@ class Gutenberg_Hooks {
 			'uagb_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
-				'number_of_icon_chunks'                   => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
-
 			]
 		);
 

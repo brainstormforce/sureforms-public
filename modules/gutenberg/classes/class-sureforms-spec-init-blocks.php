@@ -1,6 +1,6 @@
 <?php
 /**
- * Cartflows Blocks Initializer
+ * Sureforms Blocks Initializer
  *
  * Enqueue CSS/JS of all the blocks.
  *
@@ -63,24 +63,6 @@ class Sureforms_Spec_Init_Blocks {
 		// Hook: Editor assets.
 		add_action( 'enqueue_block_editor_assets', array( $this, 'editor_assets' ) );
 
-		// add_action( 'enqueue_block_editor_assets', array( $this, 'add_gcp_vars_to_block_editor' ), 12 );
-
-	}
-
-	/**
-	 * Enqueue the Global Color Pallet CSS vars to the page to use in the page builder settings.
-	 * This CSS vars needs to be re-added so as to enqueue in the block editor to display the colors in the editor window.
-	 *
-	 * Note: Currently the GCP support is added for Elementor and Block Builder.
-	 *
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public function add_gcp_vars_to_block_editor() {
-
-		// Call the same function which generates the inline styles i:e the CSS VARs with the selected values.
-		wcf()->flow->enqueue_gcp_color_vars( 'CF_block-cartflows-frontend-style' );
-
 	}
 
 	/**
@@ -96,30 +78,12 @@ class Sureforms_Spec_Init_Blocks {
 
 			// Register block styles for both frontend + backend.
 			wp_enqueue_style(
-				'CF_block-cartflows-style-css', // Handle.
+				'SRFM_block-sureforms-style-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/build/style-blocks.css',
 				is_admin() ? array( 'wp-editor' ) : null, // Dependency to include the CSS after it.
 				SUREFORMS_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
 			);
 
-			// $flow_id = wcf()->utils->get_flow_id_from_step_id( $post->ID );
-
-			// // Return if no flow ID is found.
-			// if ( empty( $flow_id ) ) {
-			// return;
-			// }
-
-			// if ( Cartflows_Helper::is_gcp_styling_enabled( (int) $flow_id ) ) {
-
-				// $gcp_vars = Cartflows_Helper::generate_gcp_css_style( (int) $flow_id );
-
-				// Include the CSS/JS only if the CSS vars are set.
-				// if ( ! empty( $gcp_vars ) ) {
-					// Add editor helper css & JS files.
-					wp_enqueue_style( 'wcf-editor-helper-style', SUREFORMS_URL . 'modules/gutenberg/assets/css/editor-assets.css', array( 'wp-edit-blocks', 'wp-editor' ), SUREFORMS_VER );
-					wp_enqueue_script( 'wcf-editor-helper-script', SUREFORMS_URL . 'modules/gutenberg/assets/js/editor-assets.js', array( 'wp-editor', 'jquery' ), SUREFORMS_VER, true );
-				// }
-			// }
 		// }
 	}
 
@@ -147,18 +111,18 @@ class Sureforms_Spec_Init_Blocks {
 
 			// Register block editor script for backend.
 			wp_enqueue_script(
-				'CF_block-cartflows-block-js', // Handle.
+				'SRFM_block-sureforms-block-js', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/build/blocks.js',
 				$script_dep, // Dependencies, defined above.
 				$script_ver, // Version: filemtime — Gets file modification time.
 				true // Enqueue the script in the footer.
 			);
 
-			wp_set_script_translations( 'CF_block-cartflows-block-js', 'cartflows' );
+			wp_set_script_translations( 'SRFM_block-sureforms-block-js', 'sureforms' );
 
 			// Register block editor styles for backend.
 			wp_enqueue_style(
-				'CF_block-cartflows-block-editor-css', // Handle.
+				'SRFM_block-sureforms-block-editor-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/build/blocks.style.css',
 				array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
 				SUREFORMS_VER // Version: File modification time.
@@ -166,7 +130,7 @@ class Sureforms_Spec_Init_Blocks {
 
 			// Common Editor style.
 			wp_enqueue_style(
-				'CF_block-common-editor-css', // Handle.
+				'SRFM_block-common-editor-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/dist/editor.css',
 				array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
 				SUREFORMS_VER // Version: File modification time.

@@ -69,9 +69,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * Sureforms Block Flag
 		 *
 		 * @since 0.0.1
-		 * @var cf_flag
+		 * @var srfm_flag
 		 */
-		public static $cf_flag = false;
+		public static $srfm_flag = false;
 
 		/**
 		 * Static CSS Added Array
@@ -161,7 +161,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			if ( empty( self::$gfonts ) ) {
 				return;
 			}
-			$show_google_fonts = apply_filters( 'cf_blocks_show_google_fonts', true );
+			$show_google_fonts = apply_filters( 'sureforms_blocks_show_google_fonts', true );
 			if ( ! $show_google_fonts ) {
 				return;
 			}
@@ -189,7 +189,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			}
 
 			if ( isset( $link ) && ! empty( $link ) ) {
-				echo '<link id="cf_show_google_fonts" href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
+				echo '<link id="srfm_show_google_fonts" href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
 			}
 		}
 
@@ -279,7 +279,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			 *
 			 * @param \WP_Post $this_post The global post.
 			 */
-			$this_post = apply_filters( 'cf_post_for_stylesheet', $this_post );
+			$this_post = apply_filters( 'sureforms_post_for_stylesheet', $this_post );
 
 			$this->get_generated_stylesheet( $this_post );
 
@@ -727,7 +727,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				self::$current_block_list[] = $name;
 
 				if ( strpos( $name, 'sureforms/' ) !== false ) {
-					self::$cf_flag = true;
+					self::$srfm_flag = true;
 				}
 
 				switch ( $name ) {

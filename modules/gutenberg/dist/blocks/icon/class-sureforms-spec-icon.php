@@ -427,7 +427,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 
 			$attr = array_merge( $icon_border_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_attributes_filters', $attr );
+			$attributes = apply_filters( 'sureforms_gutenberg_icon_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/icon',

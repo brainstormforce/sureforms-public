@@ -376,12 +376,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 			);
 
-			// $field_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'field' );
-			// $btn_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'button' );
-
-			// $attr = array_merge( $field_border_attr, $btn_border_attr, $attr );
-
-			$attributes = apply_filters( 'sureforms_gutenberg_cf_attributes_filters', $attr );
+			$attributes = apply_filters( 'sureforms_gutenberg_separator_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/separator',

@@ -52,7 +52,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 		public function spectra_editor_assets() {
 
 			wp_localize_script(
-				'CF_block-cartflows-block-js',
+				'SRFM_block-sureforms-block-js',
 				'uagb_blocks_info',
 				array(
 					'number_of_icon_chunks'         => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 			}
 
 			foreach ( $localize_icon_chunks as $chunk_index => $value ) {
-				wp_localize_script( 'CF_block-cartflows-block-js', "uagb_svg_icons_{$chunk_index}", $value );
+				wp_localize_script( 'SRFM_block-sureforms-block-js', "uagb_svg_icons_{$chunk_index}", $value );
 			}
 		}
 
