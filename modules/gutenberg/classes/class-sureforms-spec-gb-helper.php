@@ -293,6 +293,32 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 				$blocks = $this->parse( $this_post->post_content );
 
+				$count = count( $blocks );
+				for ( $i = 0; $i < $count; $i++ ) {
+					if ( isset( $blocks[ $i ]['blockName'] ) && 'sureforms/sf-form' === $blocks[ $i ]['blockName'] ) {
+						if ( isset( $blocks[ $i ]['attrs']['id'] ) && $blocks[ $i ]['attrs']['id'] ) {
+							if ( $form_id ) {
+								$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
+								if ( $form_post ) {
+									$blocks = array_merge( $blocks, $this->parse( $form_post->post_content ) );
+								}
+							}
+						}
+					}
+
+					if ( has_shortcode( $this_post->post_content, 'sureforms' ) && isset( $blocks[ $i ]['blockName'] ) && 'core/shortcode' === $blocks[ $i ]['blockName'] ) {
+						if ( isset( $blocks[ $i ]['innerHTML'] ) && $blocks[ $i ]['innerHTML'] && str_contains( $blocks[ $i ]['innerHTML'], '[sureforms' ) ) {
+							$form_id = preg_replace( '/\D+/', '', $blocks[ $i ]['innerHTML'] );
+							if ( $form_id ) {
+								$form_post = get_post( $form_id );
+								if ( $form_post ) {
+									$blocks = array_merge( $blocks, $this->parse( $form_post->post_content ) );
+								}
+							}
+						}
+					}
+				}
+
 				self::$page_blocks = $blocks;
 
 				if ( ! is_array( $blocks ) || empty( $blocks ) ) {
