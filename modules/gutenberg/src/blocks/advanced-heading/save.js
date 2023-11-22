@@ -14,28 +14,28 @@ export default function save( props ) {
 		headingDesc,
 		headingDescToggle,
 		headingTag,
-		seperatorStyle,
+		separatorStyle,
 		headingId,
-		seperatorPosition,
+		separatorPosition,
 		headingDescPosition,
 	} = props.attributes;
 
 	let seprator = '';
-	if ( seperatorStyle !== 'none' ) {
+	if ( separatorStyle !== 'none' ) {
 		seprator = <div className="uagb-separator"></div>;
 	}
 	let headingText = '';
 	if ( headingTitle ) {
 		headingText = (
 			<>
-				{ seperatorPosition === 'above-heading' ? seprator : '' }
+				{ separatorPosition === 'above-heading' ? seprator : '' }
 				<RichText.Content
 					tagName={ headingTag }
 					value={ headingTitle }
-					className="uagb-heading-text saasdasdsad"
+					className="uagb-heading-text"
 					id={ headingId }
 				/>
-				{ seperatorPosition === 'below-heading' ? seprator : '' }
+				{ separatorPosition === 'below-heading' ? seprator : '' }
 			</>
 		);
 	}
@@ -44,13 +44,13 @@ export default function save( props ) {
 	if ( headingDesc ) {
 		descText = (
 			<>
-				{ seperatorPosition === 'above-sub-heading' ? seprator : '' }
+				{ separatorPosition === 'above-sub-heading' ? seprator : '' }
 				<RichText.Content
 					tagName="p"
 					value={ headingDesc }
 					className="uagb-desc-text"
 				/>
-				{ seperatorPosition === 'below-sub-heading' ? seprator : '' }
+				{ separatorPosition === 'below-sub-heading' ? seprator : '' }
 			</>
 		);
 	}
@@ -59,6 +59,7 @@ export default function save( props ) {
 		<div
 			className={ classnames(
 				props.className,
+				`wp-block-uagb-advanced-heading`,
 				`uagb-block-${ block_id }`
 			) }
 		>

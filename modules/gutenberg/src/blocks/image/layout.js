@@ -15,8 +15,8 @@ export default function Layout( {
 		headingTag,
 		layout,
 		overlayContentPosition,
-		seperatorStyle,
-		seperatorPosition,
+		separatorStyle,
+		separatorPosition,
 	} = attributes;
 	const headingRef = useRef();
 	useEffect( () => {
@@ -62,7 +62,7 @@ export default function Layout( {
 		</>
 	);
 
-	const separator = 'none' !== seperatorStyle && (
+	const separator = 'none' !== separatorStyle && (
 		<div className="uagb-image-separator"></div>
 	);
 
@@ -77,11 +77,11 @@ export default function Layout( {
 							'-'
 						) }` }
 					>
-						{ 'before_title' === seperatorPosition && separator }
+						{ 'before_title' === separatorPosition && separator }
 						{ imageHeading }
-						{ 'after_title' === seperatorPosition && separator }
+						{ 'after_title' === separatorPosition && separator }
 						{ imageCaption }
-						{ 'after_sub_title' === seperatorPosition && separator }
+						{ 'after_sub_title' === separatorPosition && separator }
 					</div>
 				</>
 			) : (

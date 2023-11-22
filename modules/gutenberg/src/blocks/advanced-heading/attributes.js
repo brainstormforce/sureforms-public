@@ -86,11 +86,11 @@ const attributes = {
 		type: 'number',
 		default: 2,
 	},
-	seperatorStyle: {
+	separatorStyle: {
 		type: 'string',
 		default: 'none',
 	},
-	seperatorPosition: {
+	separatorPosition: {
 		type: 'string',
 		default: 'below-heading',
 	},

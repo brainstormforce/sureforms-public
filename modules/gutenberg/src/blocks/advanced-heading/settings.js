@@ -88,8 +88,8 @@ const Settings = ( props ) => {
 		separatorWidthTablet,
 		separatorWidthMobile,
 		separatorWidthType,
-		seperatorStyle,
-		seperatorPosition,
+		separatorStyle,
+		separatorPosition,
 		separatorHeight,
 		separatorHeightType,
 		headSpace,
@@ -416,8 +416,8 @@ const Settings = ( props ) => {
 				<UAGSelectControl
 					label={ __( 'Style', 'sureforms' ) }
 					data={ {
-						value: seperatorStyle,
-						label: 'seperatorStyle',
+						value: separatorStyle,
+						label: 'separatorStyle',
 					} }
 					setAttributes={ setAttributes }
 					options={ [
@@ -443,12 +443,12 @@ const Settings = ( props ) => {
 						},
 					] }
 				/>
-				{ 'none' !== seperatorStyle && (
+				{ 'none' !== separatorStyle && (
 					<UAGSelectControl
 						label={ __( 'Position', 'sureforms' ) }
 						data={ {
-							value: seperatorPosition,
-							label: 'seperatorPosition',
+							value: separatorPosition,
+							label: 'separatorPosition',
 						} }
 						setAttributes={ setAttributes }
 						options={ separatorPositionOptions }
@@ -592,7 +592,7 @@ const Settings = ( props ) => {
 					} }
 					popup={ true }
 				/>
-				{ ( headingDescToggle || 'none' !== seperatorStyle ) && (
+				{ ( headingDescToggle || 'none' !== separatorStyle ) && (
 					<ResponsiveSlider
 						label={ __( 'Bottom Spacing', 'sureforms' ) }
 						data={ {
@@ -764,7 +764,7 @@ const Settings = ( props ) => {
 		);
 	};
 
-	const seperatorSettings = () => {
+	const separatorSettings = () => {
 		return (
 			<UAGAdvancedPanelBody
 				title={ __( 'Separator', 'sureforms' ) }
@@ -1302,7 +1302,7 @@ const Settings = ( props ) => {
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.style } parentProps={ props }>
 						{ headingTitleToggle && headingStylePanel() }
-						{ 'none' !== seperatorStyle && seperatorSettings() }
+						{ 'none' !== separatorStyle && separatorSettings() }
 						{ headingDescToggle && subHeadingStylePanel() }
 						{ linkStylePanel() }
 						{ highLightStylePanel() }

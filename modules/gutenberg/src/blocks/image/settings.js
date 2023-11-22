@@ -164,31 +164,31 @@ export default function Settings( props ) {
 		overlayBackground,
 		overlayOpacity,
 		overlayHoverOpacity,
-		// seperator
-		seperatorShowOn,
-		seperatorStyle,
-		seperatorWidth,
+		// separator
+		separatorShowOn,
+		separatorStyle,
+		separatorWidth,
 		separatorWidthType,
-		seperatorThickness,
-		seperatorThicknessUnit,
-		seperatorPosition,
-		seperatorColor,
-		seperatorTopMargin,
-		seperatorRightMargin,
-		seperatorLeftMargin,
-		seperatorBottomMargin,
-		seperatorTopMarginTablet,
-		seperatorRightMarginTablet,
-		seperatorLeftMarginTablet,
-		seperatorBottomMarginTablet,
-		seperatorTopMarginMobile,
-		seperatorRightMarginMobile,
-		seperatorLeftMarginMobile,
-		seperatorBottomMarginMobile,
-		seperatorMarginUnit,
-		seperatorMarginUnitTablet,
-		seperatorMarginUnitMobile,
-		seperatorMarginLink,
+		separatorThickness,
+		separatorThicknessUnit,
+		separatorPosition,
+		separatorColor,
+		separatorTopMargin,
+		separatorRightMargin,
+		separatorLeftMargin,
+		separatorBottomMargin,
+		separatorTopMarginTablet,
+		separatorRightMarginTablet,
+		separatorLeftMarginTablet,
+		separatorBottomMarginTablet,
+		separatorTopMarginMobile,
+		separatorRightMarginMobile,
+		separatorLeftMarginMobile,
+		separatorBottomMarginMobile,
+		separatorMarginUnit,
+		separatorMarginUnitTablet,
+		separatorMarginUnitMobile,
+		separatorMarginLink,
 		// effect
 		imageHoverEffect,
 		// shadow
@@ -910,18 +910,18 @@ export default function Settings( props ) {
 	);
 
 	// Separator settings.
-	const seperatorGeneralPanel = (
+	const separatorGeneralPanel = (
 		<UAGAdvancedPanelBody
 			title={ __( 'Separator', 'sureforms' ) }
 			initialOpen={ false }
 		>
-			{ seperatorStyle !== 'none' && (
+			{ separatorStyle !== 'none' && (
 				<MultiButtonsControl
 					setAttributes={ setAttributes }
 					label={ __( 'Show On', 'sureforms' ) }
 					data={ {
-						value: seperatorShowOn,
-						label: 'seperatorShowOn',
+						value: separatorShowOn,
+						label: 'separatorShowOn',
 					} }
 					className="uagb-multi-button-alignment-control"
 					options={ [
@@ -940,8 +940,8 @@ export default function Settings( props ) {
 			<UAGSelectControl
 				label={ __( 'Style', 'sureforms' ) }
 				data={ {
-					value: seperatorStyle,
-					label: 'seperatorStyle',
+					value: separatorStyle,
+					label: 'separatorStyle',
 				} }
 				setAttributes={ setAttributes }
 				options={ [
@@ -967,12 +967,12 @@ export default function Settings( props ) {
 					},
 				] }
 			/>
-			{ 'none' !== seperatorStyle && (
+			{ 'none' !== separatorStyle && (
 				<UAGSelectControl
 					label={ __( 'Position', 'sureforms' ) }
 					data={ {
-						value: seperatorPosition,
-						label: 'seperatorPosition',
+						value: separatorPosition,
+						label: 'separatorPosition',
 					} }
 					setAttributes={ setAttributes }
 					options={ [
@@ -1727,15 +1727,15 @@ export default function Settings( props ) {
 		</UAGAdvancedPanelBody>
 	);
 
-	const seperatorStylePanel = (
+	const separatorStylePanel = (
 		<UAGAdvancedPanelBody title="Separator" initialOpen={ false }>
 			<Range
 				label={ __( 'Width', 'sureforms' ) }
 				setAttributes={ setAttributes }
-				value={ seperatorWidth }
+				value={ separatorWidth }
 				data={ {
-					value: seperatorWidth,
-					label: 'seperatorWidth',
+					value: separatorWidth,
+					label: 'separatorWidth',
 				} }
 				min={ 0 }
 				max={ '%' === separatorWidthType ? 100 : 500 }
@@ -1761,24 +1761,24 @@ export default function Settings( props ) {
 			<Range
 				label={ __( 'Thickness', 'sureforms' ) }
 				setAttributes={ setAttributes }
-				value={ seperatorThickness }
+				value={ separatorThickness }
 				data={ {
-					value: seperatorThickness,
-					label: 'seperatorThickness',
+					value: separatorThickness,
+					label: 'separatorThickness',
 				} }
 				min={ 0 }
 				max={ 10 }
 				unit={ {
-					value: seperatorThicknessUnit,
-					label: 'seperatorThicknessUnit',
+					value: separatorThicknessUnit,
+					label: 'separatorThicknessUnit',
 				} }
 			/>
 			<AdvancedPopColorControl
 				label={ __( 'Color', 'sureforms' ) }
-				colorValue={ seperatorColor ? seperatorColor : '' }
+				colorValue={ separatorColor ? separatorColor : '' }
 				data={ {
-					value: seperatorColor,
-					label: 'seperatorColor',
+					value: separatorColor,
+					label: 'separatorColor',
 				} }
 				setAttributes={ setAttributes }
 			/>
@@ -1786,71 +1786,71 @@ export default function Settings( props ) {
 				{ ...props }
 				label={ __( 'Margin', 'sureforms' ) }
 				valueTop={ {
-					value: seperatorTopMargin,
-					label: 'seperatorTopMargin',
+					value: separatorTopMargin,
+					label: 'separatorTopMargin',
 				} }
 				valueRight={ {
-					value: seperatorRightMargin,
-					label: 'seperatorRightMargin',
+					value: separatorRightMargin,
+					label: 'separatorRightMargin',
 				} }
 				valueBottom={ {
-					value: seperatorBottomMargin,
-					label: 'seperatorBottomMargin',
+					value: separatorBottomMargin,
+					label: 'separatorBottomMargin',
 				} }
 				valueLeft={ {
-					value: seperatorLeftMargin,
-					label: 'seperatorLeftMargin',
+					value: separatorLeftMargin,
+					label: 'separatorLeftMargin',
 				} }
 				valueTopTablet={ {
-					value: seperatorTopMarginTablet,
-					label: 'seperatorTopMarginTablet',
+					value: separatorTopMarginTablet,
+					label: 'separatorTopMarginTablet',
 				} }
 				valueRightTablet={ {
-					value: seperatorRightMarginTablet,
-					label: 'seperatorRightMarginTablet',
+					value: separatorRightMarginTablet,
+					label: 'separatorRightMarginTablet',
 				} }
 				valueBottomTablet={ {
-					value: seperatorBottomMarginTablet,
-					label: 'seperatorBottomMarginTablet',
+					value: separatorBottomMarginTablet,
+					label: 'separatorBottomMarginTablet',
 				} }
 				valueLeftTablet={ {
-					value: seperatorLeftMarginTablet,
-					label: 'seperatorLeftMarginTablet',
+					value: separatorLeftMarginTablet,
+					label: 'separatorLeftMarginTablet',
 				} }
 				valueTopMobile={ {
-					value: seperatorTopMarginMobile,
-					label: 'seperatorTopMarginMobile',
+					value: separatorTopMarginMobile,
+					label: 'separatorTopMarginMobile',
 				} }
 				valueRightMobile={ {
-					value: seperatorRightMarginMobile,
-					label: 'seperatorRightMarginMobile',
+					value: separatorRightMarginMobile,
+					label: 'separatorRightMarginMobile',
 				} }
 				valueBottomMobile={ {
-					value: seperatorBottomMarginMobile,
-					label: 'seperatorBottomMarginMobile',
+					value: separatorBottomMarginMobile,
+					label: 'separatorBottomMarginMobile',
 				} }
 				valueLeftMobile={ {
-					value: seperatorLeftMarginMobile,
-					label: 'seperatorLeftMarginMobile',
+					value: separatorLeftMarginMobile,
+					label: 'separatorLeftMarginMobile',
 				} }
 				unit={ {
-					value: seperatorMarginUnit,
-					label: 'seperatorMarginUnit',
+					value: separatorMarginUnit,
+					label: 'separatorMarginUnit',
 				} }
 				mUnit={ {
-					value: seperatorMarginUnitMobile,
-					label: 'seperatorMarginUnitMobile',
+					value: separatorMarginUnitMobile,
+					label: 'separatorMarginUnitMobile',
 				} }
 				tUnit={ {
-					value: seperatorMarginUnitTablet,
-					label: 'seperatorMarginUnitTablet',
+					value: separatorMarginUnitTablet,
+					label: 'separatorMarginUnitTablet',
 				} }
 				deviceType={ deviceType }
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 				link={ {
-					value: seperatorMarginLink,
-					label: 'seperatorMarginLink',
+					value: separatorMarginLink,
+					label: 'separatorMarginLink',
 				} }
 			/>
 		</UAGAdvancedPanelBody>
@@ -1867,7 +1867,7 @@ export default function Settings( props ) {
 							<>
 								{ headingGeneralPanel }
 								{ descriptionGeneralPanel }
-								{ seperatorGeneralPanel }
+								{ separatorGeneralPanel }
 							</>
 						) }
 					</InspectorTab>
@@ -1885,9 +1885,9 @@ export default function Settings( props ) {
 						{ enableCaption &&
 							layout !== 'overlay' &&
 							captionStylePanel }
-						{ 'none' !== seperatorStyle &&
+						{ 'none' !== separatorStyle &&
 							layout === 'overlay' &&
-							seperatorStylePanel }
+							separatorStylePanel }
 					</InspectorTab>
 					<InspectorTab
 						{ ...UAGTabs.advance }

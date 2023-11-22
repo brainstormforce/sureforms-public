@@ -27,8 +27,8 @@ export default function Save( props ) {
 		headingTag,
 		headingId,
 		overlayContentPosition,
-		seperatorStyle,
-		seperatorPosition,
+		separatorStyle,
+		separatorPosition,
 	} = props.attributes;
 
 	const image = url && '' !== url && (
@@ -95,7 +95,7 @@ export default function Save( props ) {
 		</>
 	);
 
-	const separator = 'none' !== seperatorStyle && (
+	const separator = 'none' !== separatorStyle && (
 		<div className="uagb-image-separator"></div>
 	);
 
@@ -113,6 +113,7 @@ export default function Save( props ) {
 		<div
 			className={ classnames(
 				props.className,
+				`wp-block-uagb-image`,
 				`uagb-block-${ block_id }`,
 				'wp-block-uagb-image',
 				`wp-block-uagb-image--layout-${ layout }`,
@@ -132,12 +133,12 @@ export default function Save( props ) {
 							) }` }
 						>
 							{ imageOverlayLink }
-							{ 'before_title' === seperatorPosition &&
+							{ 'before_title' === separatorPosition &&
 								separator }
 							{ imageHeading }
-							{ 'after_title' === seperatorPosition && separator }
+							{ 'after_title' === separatorPosition && separator }
 							{ imageCaption }
-							{ 'after_sub_title' === seperatorPosition &&
+							{ 'after_sub_title' === separatorPosition &&
 								separator }
 						</div>
 					</>

@@ -1,7 +1,7 @@
-import image from '@CFBlocks/image/attributes';
-import icon from '@CFBlocks/icon/attributes';
-import advancedHeading from '@CFBlocks/advanced-heading/attributes';
-import separator from '@CFBlocks/separator/attributes';
+import image from '@SRFMBlocks/image/attributes';
+import icon from '@SRFMBlocks/icon/attributes';
+import advancedHeading from '@SRFMBlocks/advanced-heading/attributes';
+import separator from '@SRFMBlocks/separator/attributes';
 
 export const blocksAttributes = {
 	separator,

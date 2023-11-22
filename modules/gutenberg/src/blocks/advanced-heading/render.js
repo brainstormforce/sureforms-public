@@ -9,15 +9,15 @@ const Render = ( props ) => {
 			block_id,
 			headingTitleToggle,
 			headingDescToggle,
-			seperatorStyle,
-			seperatorPosition,
+			separatorStyle,
+			separatorPosition,
 			headingDescPosition,
 		},
 		className,
 		deviceType,
 	} = props;
 
-	const separator = seperatorStyle !== 'none' && (
+	const separator = separatorStyle !== 'none' && (
 		<div className="uagb-separator-wrap">
 			<div className="uagb-separator"></div>
 		</div>
@@ -25,17 +25,17 @@ const Render = ( props ) => {
 
 	const headingText = (
 		<>
-			{ seperatorPosition === 'above-heading' ? separator : '' }
+			{ separatorPosition === 'above-heading' ? separator : '' }
 			<Renderer { ...props } />
-			{ seperatorPosition === 'below-heading' ? separator : '' }
+			{ separatorPosition === 'below-heading' ? separator : '' }
 		</>
 	);
 
 	const descText = (
 		<>
-			{ seperatorPosition === 'above-sub-heading' ? separator : '' }
+			{ separatorPosition === 'above-sub-heading' ? separator : '' }
 			<RendererDesc { ...props } />
-			{ seperatorPosition === 'below-sub-heading' ? separator : '' }
+			{ separatorPosition === 'below-sub-heading' ? separator : '' }
 		</>
 	);
 
@@ -43,6 +43,7 @@ const Render = ( props ) => {
 		<div
 			className={ uagbClassNames( [
 				className,
+				`wp-block-uagb-advanced-heading`,
 				`uagb-editor-preview-mode-${ deviceType.toLowerCase() }`,
 				`uagb-block-${ block_id }`,
 			] ) }

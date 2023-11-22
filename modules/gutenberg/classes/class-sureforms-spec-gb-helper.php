@@ -729,7 +729,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				switch ( $name ) {
 					case 'sureforms/separator':
 						$css = Sureforms_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_seperator_gfont( $blockattr );
+						Sureforms_Spec_Block_JS::blocks_separator_gfont( $blockattr );
 						break;
 
 					case 'sureforms/image':

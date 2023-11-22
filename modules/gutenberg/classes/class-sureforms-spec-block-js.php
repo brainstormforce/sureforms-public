@@ -22,7 +22,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
 		 * @since 0.0.1
 		 * @param array $attr the blocks attr.
 		 */
-		public static function blocks_seperator_gfont( $attr ) {
+		public static function blocks_separator_gfont( $attr ) {
 
 			$element_text_load_google_font = isset( $attr['elementTextLoadGoogleFonts'] ) ? $attr['elementTextLoadGoogleFonts'] : '';
 			$element_text_font_family      = isset( $attr['elementTextFontFamily'] ) ? $attr['elementTextFontFamily'] : '';

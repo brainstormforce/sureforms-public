@@ -121,29 +121,29 @@ export default function styling(
 		overlayPositionFromEdgeUnit,
 		overlayBackground,
 		overlayBorderHColor,
-		// seperator
-		seperatorShowOn,
-		seperatorStyle,
-		seperatorWidth,
+		// separator
+		separatorShowOn,
+		separatorStyle,
+		separatorWidth,
 		separatorWidthType,
-		seperatorThickness,
-		seperatorThicknessUnit,
-		seperatorColor,
-		seperatorTopMargin,
-		seperatorRightMargin,
-		seperatorLeftMargin,
-		seperatorBottomMargin,
-		seperatorTopMarginTablet,
-		seperatorRightMarginTablet,
-		seperatorLeftMarginTablet,
-		seperatorBottomMarginTablet,
-		seperatorTopMarginMobile,
-		seperatorRightMarginMobile,
-		seperatorLeftMarginMobile,
-		seperatorBottomMarginMobile,
-		seperatorMarginUnit,
-		seperatorMarginUnitTablet,
-		seperatorMarginUnitMobile,
+		separatorThickness,
+		separatorThicknessUnit,
+		separatorColor,
+		separatorTopMargin,
+		separatorRightMargin,
+		separatorLeftMargin,
+		separatorBottomMargin,
+		separatorTopMarginTablet,
+		separatorRightMarginTablet,
+		separatorLeftMarginTablet,
+		separatorBottomMarginTablet,
+		separatorTopMarginMobile,
+		separatorRightMarginMobile,
+		separatorLeftMarginMobile,
+		separatorBottomMarginMobile,
+		separatorMarginUnit,
+		separatorMarginUnitTablet,
+		separatorMarginUnitMobile,
 		// border
 		imageBorderHColor,
 		// shadow
@@ -179,9 +179,9 @@ export default function styling(
 		customHeightSetMobile,
 	} = attributes;
 
-	const seperatorWidthFallback = getFallbackNumber(
-		seperatorWidth,
-		'seperatorWidth',
+	const separatorWidthFallback = getFallbackNumber(
+		separatorWidth,
+		'separatorWidth',
 		blockName
 	);
 	const overlayPositionFromEdgeFallback = getFallbackNumber(
@@ -189,9 +189,9 @@ export default function styling(
 		'overlayPositionFromEdge',
 		blockName
 	);
-	const seperatorThicknessFallback = getFallbackNumber(
-		seperatorThickness,
-		'seperatorThickness',
+	const separatorThicknessFallback = getFallbackNumber(
+		separatorThickness,
+		'separatorThickness',
 		blockName
 	);
 
@@ -429,36 +429,36 @@ export default function styling(
 			{
 				opacity: overlayHoverOpacityFallback,
 			},
-		// Seperator
+		// separator
 		'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator':
 			{
 				width: generateCSSUnit(
-					seperatorWidthFallback,
+					separatorWidthFallback,
 					separatorWidthType
 				),
 				'border-top-width': generateCSSUnit(
-					seperatorThicknessFallback,
-					seperatorThicknessUnit
+					separatorThicknessFallback,
+					separatorThicknessUnit
 				),
-				'border-top-color': seperatorColor,
-				'border-top-style': seperatorStyle,
+				'border-top-color': separatorColor,
+				'border-top-style': separatorStyle,
 				'margin-bottom': generateCSSUnit(
-					seperatorBottomMargin,
-					seperatorMarginUnit
+					separatorBottomMargin,
+					separatorMarginUnit
 				),
 				'margin-top': generateCSSUnit(
-					seperatorTopMargin,
-					seperatorMarginUnit
+					separatorTopMargin,
+					separatorMarginUnit
 				),
 				'margin-left': generateCSSUnit(
-					seperatorLeftMargin,
-					seperatorMarginUnit
+					separatorLeftMargin,
+					separatorMarginUnit
 				),
 				'margin-right': generateCSSUnit(
-					seperatorRightMargin,
-					seperatorMarginUnit
+					separatorRightMargin,
+					separatorMarginUnit
 				),
-				opacity: seperatorShowOn === 'always' ? 1 : 0,
+				opacity: separatorShowOn === 'always' ? 1 : 0,
 			},
 	};
 
@@ -487,7 +487,7 @@ export default function styling(
 			opacity: 1,
 		};
 	}
-	if ( seperatorShowOn === 'hover' ) {
+	if ( separatorShowOn === 'hover' ) {
 		selectors[
 			'.wp-block-uagb-image .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'
 		] = {
@@ -639,20 +639,20 @@ export default function styling(
 		'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'
 	] = {
 		'margin-bottom': generateCSSUnit(
-			seperatorBottomMarginTablet,
-			seperatorMarginUnitTablet
+			separatorBottomMarginTablet,
+			separatorMarginUnitTablet
 		),
 		'margin-top': generateCSSUnit(
-			seperatorTopMarginTablet,
-			seperatorMarginUnitTablet
+			separatorTopMarginTablet,
+			separatorMarginUnitTablet
 		),
 		'margin-left': generateCSSUnit(
-			seperatorLeftMarginTablet,
-			seperatorMarginUnitTablet
+			separatorLeftMarginTablet,
+			separatorMarginUnitTablet
 		),
 		'margin-right': generateCSSUnit(
-			seperatorRightMarginTablet,
-			seperatorMarginUnitTablet
+			separatorRightMarginTablet,
+			separatorMarginUnitTablet
 		),
 	};
 
@@ -780,20 +780,20 @@ export default function styling(
 		'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'
 	] = {
 		'margin-bottom': generateCSSUnit(
-			seperatorBottomMarginMobile,
-			seperatorMarginUnitMobile
+			separatorBottomMarginMobile,
+			separatorMarginUnitMobile
 		),
 		'margin-top': generateCSSUnit(
-			seperatorTopMarginMobile,
-			seperatorMarginUnitMobile
+			separatorTopMarginMobile,
+			separatorMarginUnitMobile
 		),
 		'margin-left': generateCSSUnit(
-			seperatorLeftMarginMobile,
-			seperatorMarginUnitMobile
+			separatorLeftMarginMobile,
+			separatorMarginUnitMobile
 		),
 		'margin-right': generateCSSUnit(
-			seperatorRightMarginMobile,
-			seperatorMarginUnitMobile
+			separatorRightMarginMobile,
+			separatorMarginUnitMobile
 		),
 	};
 

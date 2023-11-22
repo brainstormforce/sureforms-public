@@ -347,17 +347,17 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 				'.wp-block-uagb-image--layout-overlay .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__color-wrapper' => array(
 					'opacity' => $attr['overlayHoverOpacity'],
 				),
-				// Seperator.
+				// separator.
 				'.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator' => array(
-					'width'            => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorWidth'], $attr['separatorWidthType'] ),
-					'border-top-width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorThickness'], $attr['seperatorThicknessUnit'] ),
-					'border-top-color' => $attr['seperatorColor'],
-					'border-top-style' => $attr['seperatorStyle'],
-					'margin-bottom'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-top'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-left'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMargin'], $attr['seperatorMarginUnit'] ),
-					'margin-right'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMargin'], $attr['seperatorMarginUnit'] ),
-					'opacity'          => 'always' === $attr['seperatorShowOn'] ? 1 : 0,
+					'width'            => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorWidth'], $attr['separatorWidthType'] ),
+					'border-top-width' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorThickness'], $attr['separatorThicknessUnit'] ),
+					'border-top-color' => $attr['separatorColor'],
+					'border-top-style' => $attr['separatorStyle'],
+					'margin-bottom'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBottomMargin'], $attr['separatorMarginUnit'] ),
+					'margin-top'       => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorTopMargin'], $attr['separatorMarginUnit'] ),
+					'margin-left'      => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorLeftMargin'], $attr['separatorMarginUnit'] ),
+					'margin-right'     => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorRightMargin'], $attr['separatorMarginUnit'] ),
+					'opacity'          => 'always' === $attr['separatorShowOn'] ? 1 : 0,
 				),
 			);
 
@@ -380,7 +380,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 					'opacity' => 1,
 				);
 			}
-			if ( 'hover' === $attr['seperatorShowOn'] ) {
+			if ( 'hover' === $attr['separatorShowOn'] ) {
 				$selectors['.wp-block-uagb-image .wp-block-uagb-image__figure:hover .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
 					'opacity' => 1,
 				);
@@ -449,10 +449,10 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['headingLeftMarginTablet'], $attr['headingMarginUnitTablet'] ),
 			);
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
-				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
-				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMarginTablet'], $attr['seperatorMarginUnitTablet'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBottomMarginTablet'], $attr['separatorMarginUnitTablet'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorTopMarginTablet'], $attr['separatorMarginUnitTablet'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorLeftMarginTablet'], $attr['separatorMarginUnitTablet'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorRightMarginTablet'], $attr['separatorMarginUnitTablet'] ),
 			);
 
 			$t_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
@@ -498,10 +498,10 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			);
 			$m_selectors['.wp-block-uagb-image--layout-overlay .wp-block-uagb-image--layout-overlay__inner']       = $overlay_border_css_mobile;
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image--layout-overlay__inner .uagb-image-separator'] = array(
-				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorBottomMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorTopMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorLeftMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
-				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['seperatorRightMarginMobile'], $attr['seperatorMarginUnitMobile'] ),
+				'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorBottomMarginMobile'], $attr['separatorMarginUnitMobile'] ),
+				'margin-top'    => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorTopMarginMobile'], $attr['separatorMarginUnitMobile'] ),
+				'margin-left'   => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorLeftMarginMobile'], $attr['separatorMarginUnitMobile'] ),
+				'margin-right'  => Sureforms_Spec_Gb_Helper::get_css_value( $attr['separatorRightMarginMobile'], $attr['separatorMarginUnitMobile'] ),
 			);
 
 			$m_selectors['.wp-block-uagb-image .wp-block-uagb-image__figure img'] = array(
@@ -680,11 +680,11 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::-moz-selection'] = $highlight_selection_text;
 			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::selection']      = $highlight_selection_text;
 
-			$seperator_style = isset( $attr['seperatorStyle'] ) ? $attr['seperatorStyle'] : '';
+			$separator_style = isset( $attr['separatorStyle'] ) ? $attr['separatorStyle'] : '';
 
-			if ( 'none' !== $seperator_style ) {
+			if ( 'none' !== $separator_style ) {
 				$selectors['.wp-block-uagb-advanced-heading .uagb-separator']   = array(
-					'border-top-style' => $attr['seperatorStyle'],
+					'border-top-style' => $attr['separatorStyle'],
 					'border-top-width' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['separatorHeight'],
 						$attr['separatorHeightType']
@@ -775,7 +775,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 					$attr['subHeadSpaceType']
 				),
 			);
-			if ( $attr['headingDescToggle'] || 'none' !== $attr['seperatorStyle'] ) {
+			if ( $attr['headingDescToggle'] || 'none' !== $attr['separatorStyle'] ) {
 				$selectors[' .uagb-heading-text']   = array(
 					'margin-bottom' => Sureforms_Spec_Gb_Helper::get_css_value(
 						$attr['headSpace'],

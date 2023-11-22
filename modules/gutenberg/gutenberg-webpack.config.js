@@ -24,7 +24,7 @@ module.exports = {
 			...defaultConfig.resolve.alias,
 			'@Controls': path.resolve( __dirname, 'src/controls/' ),
 			'@Components': path.resolve( __dirname, 'src/components/' ),
-			'@CFBlocks': path.resolve( __dirname, 'src/blocks/' ),
+			'@SRFMBlocks': path.resolve( __dirname, 'src/blocks/' ),
 			'@Utils': path.resolve( __dirname, 'src/utils/' ),
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Store': path.resolve( __dirname, 'src/store/' ),

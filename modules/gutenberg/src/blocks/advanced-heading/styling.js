@@ -33,7 +33,7 @@ function styling(
 		headSpace,
 		headSpaceTablet,
 		headSpaceMobile,
-		seperatorStyle,
+		separatorStyle,
 		separatorHeight,
 		separatorHeightType,
 		separatorWidth,
@@ -361,9 +361,9 @@ function styling(
 	}
 
 	// separator
-	if ( seperatorStyle !== 'none' ) {
+	if ( separatorStyle !== 'none' ) {
 		selectors[ ' .uagb-separator' ] = {
-			'border-top-style': seperatorStyle,
+			'border-top-style': separatorStyle,
 			'border-top-width': generateCSSUnit(
 				getFallbackNumber(
 					separatorHeight,
@@ -637,7 +637,7 @@ function styling(
 		),
 	};
 
-	if ( headingDescToggle || 'none' !== seperatorStyle ) {
+	if ( headingDescToggle || 'none' !== separatorStyle ) {
 		selectors[ ' .uagb-heading-text' ] = {
 			'margin-bottom': generateCSSUnit(
 				getFallbackNumber( headSpace, 'headSpace', blockName ),

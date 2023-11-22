@@ -451,24 +451,24 @@ const attributes = {
 		type: 'number',
 		default: 1,
 	},
-	// seperator.
-	seperatorShowOn: {
+	// separator.
+	separatorShowOn: {
 		type: 'string',
 		default: 'hover',
 	},
-	seperatorStyle: {
+	separatorStyle: {
 		type: 'string',
 		default: 'none',
 	},
-	seperatorColor: {
+	separatorColor: {
 		type: 'string',
 		default: '#fff',
 	},
-	seperatorPosition: {
+	separatorPosition: {
 		type: 'string',
 		default: 'after_title',
 	},
-	seperatorWidth: {
+	separatorWidth: {
 		type: 'number',
 		default: 30,
 	},
@@ -476,63 +476,63 @@ const attributes = {
 		type: 'string',
 		default: '%',
 	},
-	seperatorThickness: {
+	separatorThickness: {
 		type: 'number',
 		default: 2,
 	},
-	seperatorThicknessUnit: {
+	separatorThicknessUnit: {
 		type: 'string',
 		default: 'px',
 	},
-	seperatorTopMargin: {
+	separatorTopMargin: {
 		type: 'number',
 	},
-	seperatorRightMargin: {
+	separatorRightMargin: {
 		type: 'number',
 	},
-	seperatorLeftMargin: {
+	separatorLeftMargin: {
 		type: 'number',
 	},
-	seperatorBottomMargin: {
+	separatorBottomMargin: {
 		type: 'number',
 	},
-	seperatorTopMarginTablet: {
+	separatorTopMarginTablet: {
 		type: 'number',
 	},
-	seperatorRightMarginTablet: {
+	separatorRightMarginTablet: {
 		type: 'number',
 	},
-	seperatorLeftMarginTablet: {
+	separatorLeftMarginTablet: {
 		type: 'number',
 	},
-	seperatorBottomMarginTablet: {
+	separatorBottomMarginTablet: {
 		type: 'number',
 	},
-	seperatorTopMarginMobile: {
+	separatorTopMarginMobile: {
 		type: 'number',
 	},
-	seperatorRightMarginMobile: {
+	separatorRightMarginMobile: {
 		type: 'number',
 	},
-	seperatorLeftMarginMobile: {
+	separatorLeftMarginMobile: {
 		type: 'number',
 	},
-	seperatorBottomMarginMobile: {
+	separatorBottomMarginMobile: {
 		type: 'number',
 	},
-	seperatorMarginUnit: {
+	separatorMarginUnit: {
 		type: 'string',
 		default: 'px',
 	},
-	seperatorMarginUnitTablet: {
+	separatorMarginUnitTablet: {
 		type: 'string',
 		default: 'px',
 	},
-	seperatorMarginUnitMobile: {
+	separatorMarginUnitMobile: {
 		type: 'string',
 		default: 'px',
 	},
-	seperatorMarginLink: {
+	separatorMarginLink: {
 		type: 'boolean',
 		default: false,
 	},
