@@ -62,12 +62,19 @@ class SF_Public {
 		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
 
 		// SureForms frontend JS.
-		if( has_block('sureforms/rating') ) {
-			wp_enqueue_script( 'srfm-rating-js', SUREFORMS_URL . 'assets/src/public/scripts/minified/rating.min.js', [], SUREFORMS_VER, true );
-		}
-		if( has_block('sureforms/upload') ) {
-			wp_enqueue_script( 'srfm-uploadfield-js', SUREFORMS_URL . 'assets/src/public/scripts/minified/uploadfield.min.js', [], SUREFORMS_VER, true );
-		}
+		$this->enqueue_srfm_script('rating', 'rating');
+		$this->enqueue_srfm_script('upload', 'uploadfield');
+		$this->enqueue_srfm_script('switch', 'switchfield');
+		$this->enqueue_srfm_script('address', 'addressfield');
+		$this->enqueue_srfm_script('date-time-picker', 'datetimefield');
+		$this->enqueue_srfm_script('phone', 'phonefield');
+		$this->enqueue_srfm_script('checkbox', 'checkbox');
+		$this->enqueue_srfm_script('dropdown', 'dropdown');
+		$this->enqueue_srfm_script('multi-choice', 'multichoice');
+		$this->enqueue_srfm_script('number-slider', 'number-slider');
+		$this->enqueue_srfm_script('number', 'numberfield');
+		$this->enqueue_srfm_script('textarea', 'textarea');
+		$this->enqueue_srfm_script('url', 'urlfield');
 		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
 
@@ -85,6 +92,21 @@ class SF_Public {
 			)
 		);
 	}
+
+	/**
+	 * enqueue block scripts
+	 *
+	 * @param string $block_type
+	 * @param string $script_name
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function enqueue_srfm_script($block_type, $script_name) {
+		if (has_block("sureforms/{$block_type}")) {
+			wp_enqueue_script("srfm-{$block_type}-js", SUREFORMS_URL . "assets/src/public/scripts/minified/{$script_name}.min.js", [], SUREFORMS_VER, true);
+		}
+	}
+	
 
 	/**
 	 * Form Template filter.

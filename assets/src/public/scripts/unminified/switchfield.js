@@ -16,142 +16,174 @@ function initializeSwitchField(){
                 toggleSwitch.id = toggleSwitchCurrentId + i;
                 toggleLabel.htmlFor = toggleSwitchCurrentId + i;
             }
-            toggleSwitch.addEventListener( 'click', () => {
-                const formElement = toggleSwitch.closest( 'form' );
-                // eslint-disable-next-line no-undef
+            if ( toggleSwitch ) {
+                toggleSwitch.addEventListener( 'click', () => {
+                    const formElement = toggleSwitch.closest( 'form' );
+                    // eslint-disable-next-line no-undef
     
-                if (
-                    toggleSwitch.classList.contains( 'srfm-classic-switch-input' )
-                ) {
-                    const computedStyle = getComputedStyle( formElement );
-                    const primaryColor = computedStyle.getPropertyValue(
-                        '--srfm-primary-color'
-                    );
-                    const currentValue = toggleSwitch.value;
+                    if (
+                        toggleSwitch.classList.contains(
+                            'srfm-classic-switch-input'
+                        )
+                    ) {
+                        const computedStyle = getComputedStyle( formElement );
+                        const primaryColor = computedStyle.getPropertyValue(
+                            '--srfm-primary-color'
+                        );
+                        const currentValue = toggleSwitch.value;
     
-                    toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-                    const switchBackground = toggleSwitchesContainer[
-                        i
-                    ].querySelector( '.srfm-switch-background' );
-                    const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-                        '.srfm-switch-toggle'
-                    );
-                    const switchTickIcon = toggleSwitchesContainer[
-                        i
-                    ].querySelector( '.srfm-classic-toggle-icon' );
+                        toggleSwitch.value =
+                            currentValue === 'true' ? 'false' : 'true';
+                        const switchBackground = toggleSwitchesContainer[
+                            i
+                        ].querySelector( '.srfm-switch-background' );
+                        const switchToggle = toggleSwitchesContainer[
+                            i
+                        ].querySelector( '.srfm-switch-toggle' );
+                        const switchTickIcon = toggleSwitchesContainer[
+                            i
+                        ].querySelector( '.srfm-classic-toggle-icon' );
     
-                    if ( toggleSwitch.value === 'true' ) {
-                        switchBackground.style.backgroundColor =
-                            primaryColor !== ''
-                                ? 'var(--srfm-primary-color)'
-                                : '#0284c7';
-                        switchTickIcon.style.fill =
-                            primaryColor !== ''
-                                ? 'var(--srfm-primary-color)'
-                                : '#0284c7';
-                        if (
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.contains( '!srfm-opacity-0' )
-                        ) {
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.remove( '!srfm-opacity-0' );
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.add( '!srfm-opacity-100' );
-                            switchToggle.style.left = '24px';
-                            toggleSwitch.value = 'true';
+                        if ( toggleSwitch.value === 'true' ) {
+                            if ( switchBackground && switchTickIcon ) {
+                                switchBackground.style.backgroundColor =
+                                    primaryColor !== ''
+                                        ? 'var(--srfm-primary-color)'
+                                        : '#0284c7';
+                                switchTickIcon.style.fill =
+                                    primaryColor !== ''
+                                        ? 'var(--srfm-primary-color)'
+                                        : '#0284c7';
+                            }
+                            if (
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.contains( '!srfm-opacity-0' )
+                            ) {
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.remove( '!srfm-opacity-0' );
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.add( '!srfm-opacity-100' );
+                                if ( switchToggle ) {
+                                    switchToggle.style.left = '24px';
+                                }
+                                if ( toggleSwitch ) {
+                                    toggleSwitch.value = 'true';
+                                }
+                            } else {
+                                if ( switchBackground ) {
+                                    switchBackground.style.backgroundColor =
+                                        '#dcdcdc';
+                                    switchBackground
+                                        .querySelector(
+                                            '.srfm-classic-toggle-icon-container'
+                                        )
+                                        .classList.add( '!srfm-opacity-0' );
+                                    switchBackground
+                                        .querySelector(
+                                            '.srfm-classic-toggle-icon-container'
+                                        )
+                                        .classList.remove( '!srfm-opacity-100' );
+                                }
+                                if ( switchToggle ) {
+                                    switchToggle.style.left = '0';
+                                }
+                                if ( toggleSwitch ) {
+                                    toggleSwitch.value = 'false';
+                                }
+                            }
                         } else {
-                            switchBackground.style.backgroundColor = '#dcdcdc';
-    
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.add( '!srfm-opacity-0' );
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.remove( '!srfm-opacity-100' );
-                            switchToggle.style.left = '0';
-                            toggleSwitch.value = 'false';
+                            // eslint-disable-next-line no-lonely-if
+                            if (
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.contains( '!srfm-opacity-100' )
+                            ) {
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.remove( '!srfm-opacity-100' );
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.add( '!srfm-opacity-0' );
+                                if ( switchToggle ) {
+                                    switchToggle.style.left = '0';
+                                }
+                                if ( switchBackground ) {
+                                    switchBackground.style.backgroundColor =
+                                        '#dcdcdc';
+                                }
+                                if ( toggleSwitch ) {
+                                    toggleSwitch.value = 'false';
+                                }
+                            } else {
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.remove( '!srfm-opacity-0' );
+                                switchBackground
+                                    .querySelector(
+                                        '.srfm-classic-toggle-icon-container'
+                                    )
+                                    .classList.add( '!srfm-opacity-100' );
+                                if ( switchToggle ) {
+                                    switchToggle.style.left = '24px';
+                                }
+                                if ( switchBackground && switchTickIcon ) {
+                                    switchBackground.style.backgroundColor =
+                                        primaryColor !== ''
+                                            ? 'var(--srfm-primary-color)'
+                                            : '#0284c7';
+                                    switchTickIcon.style.fill =
+                                        primaryColor !== ''
+                                            ? 'var(--srfm-primary-color)'
+                                            : '#0284c7';
+                                }
+                                if ( toggleSwitch ) {
+                                    toggleSwitch.value = 'true';
+                                }
+                            }
                         }
                     } else {
-                        // eslint-disable-next-line no-lonely-if
-                        if (
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.contains( '!srfm-opacity-100' )
-                        ) {
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.remove( '!srfm-opacity-100' );
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.add( '!srfm-opacity-0' );
-                            switchToggle.style.left = '0';
-                            switchBackground.style.backgroundColor = '#dcdcdc';
-                            toggleSwitch.value = 'false';
-                        } else {
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.remove( '!srfm-opacity-0' );
-                            switchBackground
-                                .querySelector(
-                                    '.srfm-classic-toggle-icon-container'
-                                )
-                                .classList.add( '!srfm-opacity-100' );
-                            switchToggle.style.left = '24px';
-                            switchBackground.style.backgroundColor =
-                                primaryColor !== ''
-                                    ? 'var(--srfm-primary-color)'
-                                    : '#0284c7';
-                            switchTickIcon.style.fill =
-                                primaryColor !== ''
-                                    ? 'var(--srfm-primary-color)'
-                                    : '#0284c7';
-                            toggleSwitch.value = 'true';
+                        const currentValue = toggleSwitch.value;
+                        toggleSwitch.value =
+                            currentValue === 'true' ? 'false' : 'true';
+                        const switchBackground = toggleSwitchesContainer[
+                            i
+                        ].querySelector( '.srfm-switch-background' );
+                        const switchToggle = toggleSwitchesContainer[
+                            i
+                        ].querySelector( '.srfm-switch-toggle' );
+                        if ( toggleSwitch.value === 'true' ) {
+                            if ( switchBackground && switchToggle ) {
+                                switchBackground.style.backgroundColor = '#007CBA';
+                                switchToggle.style.left = '27px';
+                            }
+                        } else if ( switchBackground && switchToggle ) {
+                            switchBackground[ i ].style.backgroundColor = '#dcdcdc';
+                            switchToggle.style.left = '2px';
                         }
                     }
-                } else {
-                    const currentValue = toggleSwitch.value;
-                    toggleSwitch.value = currentValue === 'true' ? 'false' : 'true';
-                    const switchBackground = toggleSwitchesContainer[
-                        i
-                    ].querySelector( '.srfm-switch-background' );
-                    const switchToggle = toggleSwitchesContainer[ i ].querySelector(
-                        '.srfm-switch-toggle'
-                    );
-                    if ( toggleSwitch.value === 'true' ) {
-                        switchBackground.style.backgroundColor = '#007CBA';
-                        switchToggle.style.left = '27px';
-                    } else {
-                        switchBackground[ i ].style.backgroundColor = '#dcdcdc';
-                        switchToggle.style.left = '2px';
-                    }
-                }
-            } );
+                } );
+            }
         }
     }
 
     //default field JS
-
     const toggleSwitches = document.getElementsByClassName( 'srfm-default-switch' );
 
     if ( toggleSwitches ) {

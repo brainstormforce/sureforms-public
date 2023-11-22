@@ -93,7 +93,7 @@
 // rating classic style JS
 
 // Function to initialize classic ratings
-function initializeClassicRatings() {
+function initializeRatings() {
     // Initialize single ratings
     const singleRatingIcons = document.querySelectorAll('.srfm-rating-icon svg');
 
@@ -137,5 +137,4 @@ function handleSingleRatingClick(e) {
     }
 }
 
-// Execute the initialization function when the DOM is ready
-document.addEventListener('DOMContentLoaded', initializeClassicRatings);
+document.addEventListener('DOMContentLoaded', initializeRatings);
