@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -36,6 +36,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
+	const blockProps = useBlockProps();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -50,7 +51,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<div>
+		<div { ...blockProps }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
