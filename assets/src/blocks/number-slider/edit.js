@@ -13,7 +13,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { help, block_id, formId, fieldWidth, preview } = attributes;
+	const { help, block_id, formId, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
@@ -23,18 +23,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		const width_req_element = document.getElementById(
-			'srfm-numberslider-fieldwidth' + block_id
-		);
-		const parent_to_width_element = width_req_element.parentElement;
-		if ( window.innerWidth < 630 ) {
-			parent_to_width_element.style.width = '100%';
-		} else {
-			parent_to_width_element.style.width =
-				'calc( ' + fieldWidth + '% - 20px)';
-		}
-	}, [ fieldWidth ] );
 	// show the block preview on hover.
 	if ( preview ) {
 		const fieldName = fieldsPreview.number_slider_preview;
@@ -57,7 +45,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					flexDirection: 'column',
 					gap: '.5rem',
 				} }
-				id={ 'srfm-numberslider-fieldwidth' + block_id }
 			>
 				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
 					<SliderClassicStyle

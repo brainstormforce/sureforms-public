@@ -1,5 +1,8 @@
 import { registerBlockType, createBlock } from '@wordpress/blocks';
-import { getBlockTypes } from './util';
+import { getBlockTypes, getAllowedBlocks } from './util';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { addFilter } from '@wordpress/hooks';
+import { useDeviceType } from '@Controls/getPreviewType';
 
 /**
  * Function to register blocks provided by SureForms.
@@ -14,7 +17,6 @@ export const registerBlocks = ( blocks = [] ) => {
  * Function to register an individual block.
  *
  * @param {Object} block The block to be registered.
- *
  */
 const registerBlock = ( block ) => {
 	if ( ! block ) {
@@ -54,3 +56,43 @@ const registerBlock = ( block ) => {
 		}
 	);
 };
+
+// Width feature for all sureforms blocks.
+const blockWidthWrapperProps = createHigherOrderComponent(
+	( BlockListBlock ) => {
+		return ( props ) => {
+			const { attributes, name } = props;
+
+			const wrapperProps = {
+				...props.wrapperProps,
+			};
+
+			const allowedBlocks = getAllowedBlocks();
+
+			if ( allowedBlocks.includes( name ) ) {
+				if ( attributes?.fieldWidth ) {
+					if ( 'Mobile' !== useDeviceType() ) {
+						wrapperProps.style = {
+							width:
+								'calc(' + attributes.fieldWidth + '% - 20px)',
+						};
+					}
+				}
+				return (
+					<BlockListBlock
+						{ ...props }
+						wrapperProps={ wrapperProps }
+					/>
+				);
+			}
+			return <BlockListBlock { ...props } />;
+		};
+	},
+	'blockWidthWrapperProps'
+);
+
+addFilter(
+	'editor.BlockListBlock',
+	'uagb/with-block-with-wrapper-props',
+	blockWidthWrapperProps
+);

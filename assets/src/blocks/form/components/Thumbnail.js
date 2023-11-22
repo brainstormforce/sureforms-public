@@ -19,7 +19,8 @@ export default ( { label, children, selected, onSelect } ) => {
 		}
 		&:focus,
 		&:active {
-			box-shadow: inset 0 0 0 1px #fff,
+			box-shadow:
+				inset 0 0 0 1px #fff,
 				0 0 0 var( --wp-admin-border-width-focus )
 					var( --wp-admin-theme-color );
 			outline: 2px solid transparent;
@@ -27,7 +28,8 @@ export default ( { label, children, selected, onSelect } ) => {
 	`;
 
 	const highlighted = css`
-		box-shadow: inset 0 0 0 1px #fff,
+		box-shadow:
+			inset 0 0 0 1px #fff,
 			0 0 0 var( --wp-admin-border-width-focus )
 				var( --wp-admin-theme-color );
 		outline: 2px solid transparent;
