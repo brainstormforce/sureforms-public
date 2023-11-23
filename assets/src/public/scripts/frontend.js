@@ -283,7 +283,7 @@ if ( toggleSwitchesContainer ) {
 				const switchTickIcon = toggleSwitchesContainer[
 					i
 				].querySelector( '.srfm-classic-toggle-icon' );
-
+				const isRTL = SureForms.isRTL;
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor =
 						primaryColor !== ''
@@ -315,7 +315,11 @@ if ( toggleSwitchesContainer ) {
 								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!srfm-opacity-100' );
-						switchToggle.style.left = '24px';
+						if ( isRTL === '1' ) {
+							switchToggle.style.right = '24px';
+						} else {
+							switchToggle.style.left = '24px';
+						}
 						toggleSwitch.value = 'true';
 					} else {
 						switchBackground.style.backgroundColor = '#dcdcdc';
@@ -330,7 +334,11 @@ if ( toggleSwitchesContainer ) {
 								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.remove( '!srfm-opacity-100' );
-						switchToggle.style.left = '0';
+						if ( isRTL === '1' ) {
+							switchToggle.style.right = '0';
+						} else {
+							switchToggle.style.left = '0';
+						}
 						toggleSwitch.value = 'false';
 					}
 					// will be used later
@@ -365,7 +373,11 @@ if ( toggleSwitchesContainer ) {
 								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!srfm-opacity-0' );
-						switchToggle.style.left = '0';
+						if ( isRTL === '1' ) {
+							switchToggle.style.right = '0';
+						} else {
+							switchToggle.style.left = '0';
+						}
 						switchBackground.style.backgroundColor = '#dcdcdc';
 						toggleSwitch.value = 'false';
 					} else {
@@ -379,7 +391,11 @@ if ( toggleSwitchesContainer ) {
 								'.srfm-classic-toggle-icon-container'
 							)
 							.classList.add( '!srfm-opacity-100' );
-						switchToggle.style.left = '24px';
+						if ( isRTL === '1' ) {
+							switchToggle.style.right = '24px';
+						} else {
+							switchToggle.style.left = '24px';
+						}
 						switchBackground.style.backgroundColor =
 							primaryColor !== ''
 								? 'var(--srfm-primary-color)'
@@ -402,10 +418,18 @@ if ( toggleSwitchesContainer ) {
 				);
 				if ( toggleSwitch.value === 'true' ) {
 					switchBackground.style.backgroundColor = '#007CBA';
-					switchToggle.style.left = '27px';
+					if ( isRTL === '1' ) {
+						switchToggle.style.right = '27px';
+					} else {
+						switchToggle.style.left = '27px';
+					}
 				} else {
 					switchBackground[ i ].style.backgroundColor = '#dcdcdc';
-					switchToggle.style.left = '2px';
+					if ( isRTL === '1' ) {
+						switchToggle.style.right = '2px';
+					} else {
+						switchToggle.style.left = '2px';
+					}
 				}
 			}
 		} );
