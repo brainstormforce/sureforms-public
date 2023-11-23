@@ -72,5 +72,7 @@ module.exports = {
 		scroll: true,
 		sf_admin: true,
 		sureforms_admin: true,
+		flatpickr: true,
+		getComputedStyle: true,
 	},
 };
