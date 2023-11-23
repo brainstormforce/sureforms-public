@@ -67,8 +67,8 @@ module.exports = function ( grunt ) {
 						// all .js to min.js
 						expand: true,
 						src: [ '**.js' ],
-						dest: 'assets/src/public/scripts/minified',
-						cwd: 'assets/src/public/scripts/unminified',
+						dest: 'assets/src/public/scripts/minified/blocks',
+						cwd: 'assets/src/public/scripts/unminified/blocks',
 						ext: '.min.js',
 					},
 				],
