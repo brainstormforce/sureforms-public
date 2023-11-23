@@ -64,6 +64,7 @@ class Textarea_Markup extends Base {
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['textAreaHelpText'] ) ? $attributes['textAreaHelpText'] : '';
 		$max_length  = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
@@ -73,7 +74,7 @@ class Textarea_Markup extends Base {
 		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
 		return '
-		<div class="srfm-frontend-inputs-holder srfm-main-container srfm-textarea-container ' . esc_attr( $classname ) . '">
+		<div class="srfm-frontend-inputs-holder srfm-main-container srfm-textarea-container ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
 			<label for="srfm-textarea-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . '
 				' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '

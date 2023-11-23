@@ -2,8 +2,8 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -19,10 +19,12 @@ import { TextareaThemeStyle } from './components/TextareaThemeStyle';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
+		fieldWidth,
 		label,
 		placeholder,
 		textAreaHelpText,
@@ -65,6 +67,17 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }

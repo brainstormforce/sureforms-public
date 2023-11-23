@@ -3,17 +3,25 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
+import widthOptions from '../width-options.json';
 
 export default ( { attributes, setAttributes } ) => {
-	const { label, placeholder, help, required, defaultValue, errorMsg } =
-		attributes;
+	const {
+		label,
+		placeholder,
+		help,
+		required,
+		defaultValue,
+		errorMsg,
+		fieldWidth,
+	} = attributes;
 
 	return (
 		<InspectorControls>
@@ -26,6 +34,15 @@ export default ( { attributes, setAttributes } ) => {
 						title={ __( 'Attributes', 'sureforms' ) }
 						initialOpen={ true }
 					>
+						<SelectControl
+							label={ __( 'Field Width', 'sureforms' ) }
+							value={ fieldWidth }
+							options={ widthOptions }
+							onChange={ ( value ) =>
+								setAttributes( { fieldWidth: Number( value ) } )
+							}
+							__nextHasNoMarginBottom
+						/>
 						<SRFMTextControl
 							label={ __( 'Label', 'sureforms' ) }
 							value={ label }

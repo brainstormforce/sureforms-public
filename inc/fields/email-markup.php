@@ -67,6 +67,7 @@ class Email_Markup extends Base {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$is_unique        = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
@@ -77,7 +78,7 @@ class Email_Markup extends Base {
 		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
             ' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
         </label>

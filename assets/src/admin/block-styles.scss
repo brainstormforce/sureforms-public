@@ -93,7 +93,7 @@ input[type="range"]::-webkit-slider-thumb {
 	margin-top: 12px;
 	text-align: var( --srfm_submit_alignment );
 	width: var( --srfm_submit_width );
-	.sureforms-button {
+	.srfm-button {
 		background-color: var( --srfm-primary-color );
 		color: var( --srfm-primary-text-color );
 		border: none;
@@ -101,8 +101,9 @@ input[type="range"]::-webkit-slider-thumb {
 		border-radius: 4px;
 		font-weight: 600;
 		font-size: 0.875rem;
+		margin-left: 10px;
 	}
-	.sureforms-default-colors {
+	.srfm-default-colors {
 		background-color: #0284c7;
 		color: #ffffff;
 	}
