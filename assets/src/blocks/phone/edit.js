@@ -3,8 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { ToggleControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -17,11 +17,13 @@ import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { PhoneThemeStyle } from './components/PhoneThemeStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
+		fieldWidth,
 		label,
 		help,
 		placeholder,
@@ -66,6 +68,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }

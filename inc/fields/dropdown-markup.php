@@ -71,6 +71,7 @@ class Dropdown_Markup extends Base {
 	public function classic_styling( $attributes ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
@@ -79,7 +80,7 @@ class Dropdown_Markup extends Base {
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
-		$output .= '<div class="srfm-classic-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+		$output .= '<div class="srfm-classic-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <label for="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' 
             ' . ( $required && $label ? '<span class="text-required_icon_color"> *</span>' : '' ) . '
         </label>

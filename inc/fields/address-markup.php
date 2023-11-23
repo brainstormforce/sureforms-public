@@ -198,6 +198,7 @@ class Address_Markup extends Base {
 	public function classic_styling( $attributes ) {
 			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$options              = isset( $attributes['options'] ) ? $attributes['options'] : '';
+			$field_width          = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label                = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg            = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
@@ -214,7 +215,7 @@ class Address_Markup extends Base {
 			$data = $this->get_countries();
 		$output   = '';
 		$output  .= '
-		<div class="srfm-address-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-address-container-' . esc_attr( $block_id ) . '"> 
+		<div class="srfm-address-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-address-container-' . esc_attr( $block_id ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" > 
 					<label for="srfm-address-line-1-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
 					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" id="srfm-fullAddress-' . esc_attr( $block_id ) . '" />
 					<div class="srfm-mt-2">

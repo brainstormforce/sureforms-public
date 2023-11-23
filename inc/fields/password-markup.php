@@ -61,6 +61,7 @@ class Password_Markup extends Base {
 	public function classic_styling( $attributes ) {
 		$required            = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder         = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width         = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label               = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help                = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg           = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
@@ -69,7 +70,7 @@ class Password_Markup extends Base {
 		$classname           = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id            = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="srfm-input-password-container srfm-frontend-inputs-holder srfm-main-container srfm-classic-inputs-holder' . esc_attr( $classname ) . '">
+		return '<div class="srfm-input-password-container srfm-frontend-inputs-holder srfm-main-container srfm-classic-inputs-holder' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
     <label for="srfm-input-password-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '</label>
     <div class= "srfm-relative srfm-mt-2">
         <input type="password" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-password-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-classic-pwd-element">
