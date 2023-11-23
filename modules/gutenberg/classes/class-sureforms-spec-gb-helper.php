@@ -297,11 +297,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				for ( $i = 0; $i < $count; $i++ ) {
 					if ( isset( $blocks[ $i ]['blockName'] ) && 'sureforms/sf-form' === $blocks[ $i ]['blockName'] ) {
 						if ( isset( $blocks[ $i ]['attrs']['id'] ) && $blocks[ $i ]['attrs']['id'] ) {
-							if ( $form_id ) {
-								$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
-								if ( $form_post ) {
-									$blocks = array_merge( $blocks, $this->parse( $form_post->post_content ) );
-								}
+							$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
+							if ( $form_post ) {
+								$blocks = array_merge( $blocks, $this->parse( $form_post->post_content ) );
 							}
 						}
 					}
