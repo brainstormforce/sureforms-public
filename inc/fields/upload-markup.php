@@ -104,12 +104,13 @@ class Upload_Markup extends Base {
 			$many_types_symbol = '';
 		}
 		$accepted_formats = str_replace( '...', '', $allowed_formats );
+		$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div id="srfm-upload-container" class="srfm-upload-container srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+		return '<div id="srfm-upload-container" class="srfm-upload-container srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <div class="srfm-col-span-full">
             <label for="srfm-upload-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
                 ' . esc_html( $label ) . ' 

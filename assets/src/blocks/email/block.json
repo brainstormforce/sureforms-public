@@ -35,6 +35,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
 		"label": {
 			"type": "string",
 			"default": "Email"
