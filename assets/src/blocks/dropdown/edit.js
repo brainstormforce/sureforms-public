@@ -2,8 +2,13 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import {
+	ToggleControl,
+	SelectControl,
+	Button,
+	Icon,
+} from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -22,12 +27,14 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		options,
+		fieldWidth,
 		label,
 		help,
 		block_id,
@@ -80,6 +87,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {

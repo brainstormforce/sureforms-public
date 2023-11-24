@@ -20,6 +20,15 @@
   margin-top: -50px;
   margin-bottom: 40px;
   box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 15px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.srfm-submit-container {
+  width: 100%;
+  margin: 10px;
 }
 
 .srfm-frontend-inputs-holder input,
@@ -153,9 +162,9 @@
 }
 
 .srfm-success-box {
-  gap: 12px;
+  gap: 12px !important;
   display: flex;
-  flex-direction: column;
+  flex-direction: column !important;
   align-items: center;
   justify-content: center;
   min-height: 0;
@@ -189,4 +198,10 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 
 .srfm-form .wp-block-columns {
   margin: 0 !important;
+}
+
+@media (max-width: 630px) {
+  .srfm-main-container {
+    width: 100% !important;
+  }
 }

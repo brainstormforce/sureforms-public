@@ -26,6 +26,10 @@
 		"required": {
 			"type": "boolean"
 		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
 		"label": {
 			"type": "string",
 			"default": "Phone Number"

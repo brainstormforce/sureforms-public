@@ -13,7 +13,7 @@ import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { help, block_id, preview, formId } = attributes;
+	const { help, block_id, formId, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 

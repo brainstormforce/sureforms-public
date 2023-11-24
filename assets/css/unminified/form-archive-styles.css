@@ -121,13 +121,13 @@ input:checked + .slider:before {
 }
 
 #srfm-copy-icon {
-  color: #9BA3AF !important;
+  color: #9ba3af !important;
 }
 
 #srfm-copy-icon.dashicons-yes {
   color: green !important;
 }
 
-.uagb-advanced-color-settings-container .uagb-advanced-color-indicate.uag-global-indicator::before {
+.srfm-advanced-color-settings-container .srfm-advanced-color-indicate.srfm-global-indicator::before {
   top: 3px !important;
 }

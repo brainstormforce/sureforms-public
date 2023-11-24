@@ -75,6 +75,7 @@ export const DatetimepickerClassicStyle = ( {
 					type="text"
 					className={ `srfm-classic-email-element ${ dateTimeType }` }
 					required={ required }
+					placeholder="Choose ..."
 				/>
 			</div>
 		</>
