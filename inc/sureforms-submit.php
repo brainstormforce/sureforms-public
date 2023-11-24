@@ -342,6 +342,7 @@ class Sureforms_Submit {
 			}
 
 			if ( $sent ) {
+				do_action( 'srfm_form_submit', $response );
 				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
 			} else {
 				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
