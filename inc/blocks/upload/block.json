@@ -3,7 +3,6 @@
 	"title": "Upload Field",
 	"description": "Displays a SureForm Upload Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "upload", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

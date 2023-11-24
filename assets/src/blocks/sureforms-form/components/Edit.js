@@ -20,8 +20,8 @@ import {
 
 export default ( { attributes, setAttributes } ) => {
 	const { id } = attributes;
-
 	const iframeRef = useRef( null );
+
 	// eslint-disable-next-line no-unused-vars
 	const [ formUrl, setFormUrl ] = useEntityProp(
 		'postType',

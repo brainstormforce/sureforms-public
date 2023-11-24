@@ -25,6 +25,7 @@ const default_keys = {
 	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
 	_srfm_form_container_width: { default: 650 },
 	_srfm_thankyou_message_title: { default: 'Thank you' },
+	_srfm_submit_button_text: { default: 'Submit' },
 };
 
 export const blocksAttributes = {

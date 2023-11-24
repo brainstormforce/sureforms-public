@@ -3,7 +3,6 @@
 	"title": "Address Field",
 	"description": "Displays a SureForm Address Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "address", "country", "location", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

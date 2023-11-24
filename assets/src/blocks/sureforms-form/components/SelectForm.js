@@ -5,8 +5,9 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
+import { addQueryArgs } from '@wordpress/url';
 
-export default ( { setForm } ) => {
+export default ( { setForm, setFormId } ) => {
 	const [ formsData, setFormsData ] = useState( [] );
 	const [ loading, setLoading ] = useState( false );
 
@@ -23,6 +24,22 @@ export default ( { setForm } ) => {
 				path: 'sureforms/v1/forms-data',
 			} );
 			setFormsData( response );
+		} finally {
+			setLoading( false );
+		}
+	};
+
+	const getFormMarkup = async ( queryParams ) => {
+		let response;
+		try {
+			setLoading( true );
+			response = await apiFetch( {
+				path: addQueryArgs(
+					'sureforms/v1/generate-form-markup',
+					queryParams
+				),
+			} );
+			return response;
 		} finally {
 			setLoading( false );
 		}
@@ -52,10 +69,10 @@ export default ( { setForm } ) => {
 			} ) }
 			placeholder={ __( 'Choose a form', 'sureforms' ) }
 			onChange={ ( value ) => {
-				const formData = formsData.find(
-					( formEntry ) => formEntry.id === parseInt( value.value )
-				);
-				setForm( formData );
+				const queryParams = { id: value.value };
+				const formMarkup = getFormMarkup( queryParams );
+				setFormId( value.value );
+				setForm( formMarkup );
 			} }
 			className="srfm-select-form"
 			classNamePrefix="srfm-select"

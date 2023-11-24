@@ -13,6 +13,7 @@ import {
 	faAlignCenter,
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
+import SRFMTextControl from '@Components/text-control';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -45,9 +46,7 @@ function AppearanceSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-secondary-color',
-			sureforms_keys._srfm_color2
-				? sureforms_keys._srfm_color2
-				: 'none'
+			sureforms_keys._srfm_color2 ? sureforms_keys._srfm_color2 : 'none'
 		);
 		root.style.setProperty(
 			'--srfm_fontsize',
@@ -199,8 +198,7 @@ function AppearanceSettings( props ) {
 						if ( colorValue !== sureforms_keys._srfm_color1 ) {
 							updateMeta( '_srfm_color1', colorValue );
 						}
-					}
-					}
+					} }
 					value={ sureforms_keys._srfm_color1 }
 					isFormSpecific={ true }
 				/>
@@ -219,30 +217,28 @@ function AppearanceSettings( props ) {
 						if ( colorValue !== sureforms_keys._srfm_textcolor1 ) {
 							updateMeta( '_srfm_textcolor1', colorValue );
 						}
-					}
-					}
+					} }
 					value={ sureforms_keys._srfm_textcolor1 }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._srfm_form_styling &&
-				<AdvancedPopColorControl
-					label={ __( 'Secondary color', 'sureforms' ) }
-					help={ __( 'Help, Placeholders, etc.', 'sureforms' ) }
-					colorValue={ sureforms_keys._srfm_color2 }
-					data={ {
-						value: sureforms_keys._srfm_color2,
-						label: '_srfm_color2',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureforms_keys._srfm_color2 ) {
-							updateMeta( '_srfm_color2', colorValue );
-						}
-					}
-					}
-					value={ sureforms_keys._srfm_color2 }
-					isFormSpecific={ true }
-				/>
-				}
+				{ 'inherit' === sureforms_keys._srfm_form_styling && (
+					<AdvancedPopColorControl
+						label={ __( 'Secondary color', 'sureforms' ) }
+						help={ __( 'Help, Placeholders, etc.', 'sureforms' ) }
+						colorValue={ sureforms_keys._srfm_color2 }
+						data={ {
+							value: sureforms_keys._srfm_color2,
+							label: '_srfm_color2',
+						} }
+						onColorChange={ ( colorValue ) => {
+							if ( colorValue !== sureforms_keys._srfm_color2 ) {
+								updateMeta( '_srfm_color2', colorValue );
+							}
+						} }
+						value={ sureforms_keys._srfm_color2 }
+						isFormSpecific={ true }
+					/>
+				) }
 				<SRFMMediaPicker
 					label={ __( 'Background Image', 'sureforms' ) }
 					onSelectImage={ onSelectRestImage }
@@ -317,6 +313,20 @@ function AppearanceSettings( props ) {
 						'sureforms'
 					) }
 				</p> */ }
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_submit_button_text,
+						label: '_srfm_submit_button_text',
+					} }
+					label={ __( 'Submit Button Text', 'sureforms' ) }
+					placeholder={ __( 'Submit', 'sureforms' ) }
+					value={ sureforms_keys._srfm_submit_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_submit_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<p className="components-base-control__help" />
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {
@@ -347,9 +357,7 @@ function AppearanceSettings( props ) {
 					] }
 					showIcons={ true }
 					onChange={ ( value ) => {
-						if (
-							sureforms_keys._srfm_submit_alignment === value
-						) {
+						if ( sureforms_keys._srfm_submit_alignment === value ) {
 							updateMeta( '_srfm_submit_alignment', 'left' );
 							updateMeta( '_srfm_submit_width', '' );
 						} else if ( 'justify' === value ) {

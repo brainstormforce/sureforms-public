@@ -3,7 +3,6 @@
 	"title": "Phone Number",
 	"description": "Displays a SureForm Phone Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "telephone", "phone", "mobile", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

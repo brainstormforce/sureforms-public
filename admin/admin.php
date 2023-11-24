@@ -145,7 +145,10 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function sureforms_enqueue_styles() {
-		wp_enqueue_style( 'srfm-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
+		$current_screen = get_current_screen();
+		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
+			wp_enqueue_style( 'srfm-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
+		}
 		wp_enqueue_style( 'srfm-editor-styles', SUREFORMS_URL . 'assets/src/blocks/editor-styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
