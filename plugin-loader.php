@@ -20,6 +20,7 @@ use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Load_Form_Defaults;
 use SureForms\Inc\Activator;
 use SureForms\Inc\SF_Admin_Ajax;
+use SureForms\Inc\SRFM_Export;
 
 /**
  * Plugin_Loader
@@ -104,6 +105,7 @@ class Plugin_Loader {
 		Activator::get_instance();
 		SF_Admin_Ajax::get_instance();
 		Forms_Data::get_instance();
+		SRFM_Export::get_instance();
 
 		/**
 		 * The code that runs during plugin activation

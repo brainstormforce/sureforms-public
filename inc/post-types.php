@@ -293,6 +293,9 @@ class Post_Types {
 		if ( 'sureforms_entry' === $post->post_type ) {
 			$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '">View</a>';
 		}
+		if('sureforms_form' === $post->post_type){
+			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
+		}
 
 		return $actions;
 	}
