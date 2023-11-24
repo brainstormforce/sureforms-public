@@ -136,6 +136,67 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			self::$block_list = Sureforms_Spec_Block_Config::get_block_attributes();
 
 			add_action( 'wp', array( $this, 'wp_actions' ), 10 );
+
+			add_filter( 'render_block', array( $this, 'generate_render_styles' ), 10, 2 );
+		}
+
+		/**
+		 * Get form id content.
+		 *
+		 * @param string $id form id.
+		 * @since 0.0.1
+		 * @return void
+		 */
+		public function form_content_by_id( $id ) {
+			$args = array(
+				'p'         => $id,
+				'post_type' => 'sureforms_form',
+			);
+			$loop = new WP_Query( $args );
+
+			if ( isset( $loop->posts[0] ) && $loop->posts[0] ) {
+
+				/**
+				 * Filters the post to build stylesheet for.
+				 *
+				 * @param \WP_Post $this_post The global post.
+				 */
+				$this_post = apply_filters( 'sureforms_post_for_stylesheet', $loop->posts[0] );
+
+				$this->get_generated_stylesheet( $this_post );
+			}
+		}
+
+		/**
+		 * Render function.
+		 *
+		 * @param string $block_content Entire Block Content.
+		 * @param array  $block Block Properties As An Array.
+		 * @return string
+		 */
+		public function generate_render_styles( $block_content, $block ) {
+
+			if ( isset( $block['blockName'] ) && ( 'sureforms/sf-form' === $block['blockName'] ) ) {
+
+				if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
+					self::form_content_by_id( $block['attrs']['id'] );
+				}
+			}
+
+			if ( isset( $block['blockName'] ) && ( 'core/shortcode' === $block['blockName'] ) ) {
+
+				if ( isset( $block['innerHTML'] ) ) {
+					$start_explode = ( explode( 'form-id="', $block['innerHTML'] ) );
+					if ( isset( $start_explode[1] ) ) {
+						$end_explode = explode( '"', $start_explode[1] );
+						if ( isset( $end_explode ) ) {
+							self::form_content_by_id( $end_explode[0] );
+						}
+					}
+				}
+			}
+
+			return $block_content;
 		}
 
 		/**
@@ -252,7 +313,6 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			<?php
 			ob_end_flush();
 		}
-
 
 		/**
 		 * Generates stylesheet and appends in head tag.
