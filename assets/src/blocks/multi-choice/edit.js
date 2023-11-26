@@ -3,11 +3,16 @@
  */
 import { __ } from '@wordpress/i18n';
 import {
+	ToggleControl,
+	SelectControl,
+	Button,
+	Icon,
+} from '@wordpress/components';
+import {
 	InspectorControls,
 	RichText,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { ToggleControl, Button, Icon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -27,12 +32,14 @@ import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
 import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
 		required,
 		options,
+		fieldWidth,
 		label,
 		singleSelection,
 		style,
@@ -129,6 +136,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {
@@ -351,36 +369,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
+								<MultiButtonsControl
+									label={ __( 'Appearance', 'sureforms' ) }
+									data={ {
+										value: style,
+										label: 'style',
+									} }
+									options={ [
+										{
+											value: 'default',
+											icon: 'Radio',
+										},
+										{
+											value: 'buttons',
+											icon: 'Buttons',
+										},
+									] }
+									showIcons={ true }
+									onChange={ ( value ) => {
+										if ( style !== value ) {
+											setAttributes( {
+												style: value,
+											} );
+										} else {
+											setAttributes( {
+												style: 'buttons',
+											} );
+										}
+									} }
+								/>
+							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
@@ -388,7 +406,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<div
 				className={
-					'srfm-main-container srfm-classic-inputs-holder' +
+					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder' +
 					( isSelected ? ' sf--focus' : '' )
 				}
 				style={ {

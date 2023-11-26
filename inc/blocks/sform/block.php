@@ -24,7 +24,7 @@ class Block extends Base {
 	 * @return string|false
 	 */
 	public function render( $attributes, $content = '' ) {
-		$id = $attributes['id'];
+		$id = isset( $attributes['id'] ) ? $attributes['id'] : '';
 
 		if ( empty( $id ) ) {
 			return '';

@@ -20,6 +20,7 @@ import SelectForm from './SelectForm';
 export default ( { setAttributes } ) => {
 	const [ form, setForm ] = useState( {} );
 	const [ formId, setFormId ] = useState();
+	const [ value, setValue ] = useState( '' );
 
 	return (
 		<div { ...useBlockProps() }>
@@ -36,6 +37,10 @@ export default ( { setAttributes } ) => {
 						form={ form }
 						setForm={ setForm }
 						setFormId={ setFormId }
+						label="title"
+						id="id"
+						selectedVal={ value }
+						handleChange={ ( val ) => setValue( val ) }
 					/>
 					<div className="srfm-select-form-button">
 						<Button

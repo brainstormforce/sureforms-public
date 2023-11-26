@@ -1,38 +1,37 @@
-/** @jsx jsx */
-
-import { jsx } from '@emotion/react';
-import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import Select from 'react-select';
 import { addQueryArgs } from '@wordpress/url';
+import apiFetch from '@wordpress/api-fetch';
+import { useEffect, useRef, useState } from '@wordpress/element';
 
-export default ( { setForm, setFormId } ) => {
+const SelectForm = ( {
+	label,
+	id,
+	selectedVal,
+	handleChange,
+	setForm,
+	setFormId,
+} ) => {
 	const [ formsData, setFormsData ] = useState( [] );
-	const [ loading, setLoading ] = useState( false );
+	const [ query, setQuery ] = useState( '' );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const inputRef = useRef( null );
 
-	useEffect( () => {
-		fetchForms();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [] );
-
+	// Fetch forms data.
 	const fetchForms = async () => {
 		let response;
 		try {
-			setLoading( true );
 			response = await apiFetch( {
 				path: 'sureforms/v1/forms-data',
 			} );
 			setFormsData( response );
-		} finally {
-			setLoading( false );
+		} catch ( error ) {
+			console.log( error );
 		}
 	};
 
 	const getFormMarkup = async ( queryParams ) => {
 		let response;
 		try {
-			setLoading( true );
 			response = await apiFetch( {
 				path: addQueryArgs(
 					'sureforms/v1/generate-form-markup',
@@ -40,42 +39,97 @@ export default ( { setForm, setFormId } ) => {
 				),
 			} );
 			return response;
-		} finally {
-			setLoading( false );
+		} catch ( error ) {
+			console.log( error );
 		}
 	};
+	useEffect( () => {
+		fetchForms();
+		document.addEventListener( 'click', toggle );
+		return () => document.removeEventListener( 'click', toggle );
+	}, [] );
 
-	const selectFormStyles = {
-		control: ( provided, isSelected ) => ( {
-			...provided,
-			width: isSelected && '250px',
-		} ),
+	const selectOption = ( option ) => {
+		setQuery( () => '' );
+		handleChange( option[ label ] );
+		setIsOpen( () => ! isOpen );
+	};
+
+	function toggle( e ) {
+		setIsOpen( e && e.target === inputRef.current );
+	}
+
+	const getDisplayValue = () => {
+		if ( query ) {
+			return query;
+		}
+		if ( selectedVal ) {
+			return selectedVal;
+		}
+		return '';
+	};
+
+	const filter = () => {
+		return formsData.filter(
+			( option ) =>
+				option[ label ].toLowerCase().indexOf( query.toLowerCase() ) >
+				-1
+		);
 	};
 
 	return (
-		<Select
-			styles={ selectFormStyles }
-			loading={ loading }
-			isSearchable
-			options={ ( formsData || [] ).map( ( formEntry ) => {
-				const originalTitle = formEntry.title;
-				const replacedTitle = originalTitle.replace( /&#8211;/g, '-' ); // Replace "&#8211;" with "-"
+		<div className="srfm-form-select-dropdown">
+			<div>
+				<div className="srfm-form-select-value">
+					<input
+						ref={ inputRef }
+						type="text"
+						value={ getDisplayValue() }
+						name="searchTerm"
+						onChange={ ( e ) => {
+							setQuery( e.target.value );
+							handleChange( null );
+						} }
+						onClick={ toggle }
+						placeholder={ __( 'Select a SureForm', 'sureforms' ) }
+					/>
+				</div>
+				<div
+					className={ `srfm-form-select-arrow ${
+						isOpen ? 'srfm-form-arrow-open' : ''
+					}` }
+				></div>
+			</div>
 
-				return {
-					value: formEntry.id,
-					label:
-						originalTitle === '' ? 'Untitled Form' : replacedTitle,
-				};
-			} ) }
-			placeholder={ __( 'Choose a form', 'sureforms' ) }
-			onChange={ ( value ) => {
-				const queryParams = { id: value.value };
-				const formMarkup = getFormMarkup( queryParams );
-				setFormId( value.value );
-				setForm( formMarkup );
-			} }
-			className="srfm-select-form"
-			classNamePrefix="srfm-select"
-		/>
+			<div
+				className={ `srfm-form-select-options ${
+					isOpen ? 'srfm-form-arrow-open' : ''
+				}` }
+			>
+				{ filter( formsData ).map( ( option, index ) => {
+					return (
+						<div
+							onClick={ () => {
+								selectOption( option );
+								const queryParams = { id: option.id };
+								const formMarkup = getFormMarkup( queryParams );
+								setFormId( option.id );
+								setForm( formMarkup );
+							} }
+							className={ `srfm-form-single-option ${
+								option[ label ] === selectedVal
+									? 'srfm-form-selected'
+									: ''
+							}` }
+							key={ `${ id }-${ index }` }
+						>
+							{ option[ label ] }
+						</div>
+					);
+				} ) }
+			</div>
+		</div>
 	);
 };
+
+export default SelectForm;

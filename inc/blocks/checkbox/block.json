@@ -23,6 +23,10 @@
 		"block_id": {
 			"type": "string"
 		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
 		"label": {
 			"type": "string",
 			"default": "Checkbox"

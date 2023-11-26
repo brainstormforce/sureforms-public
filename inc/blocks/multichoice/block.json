@@ -37,6 +37,10 @@
 				}
 			]
 		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
 		"label": {
 			"default": "Multi Choice",
 			"type": "string",

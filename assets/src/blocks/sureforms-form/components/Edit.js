@@ -10,6 +10,7 @@ import {
 	PanelBody,
 	PanelRow,
 	Spinner,
+	Button,
 } from '@wordpress/components';
 import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 import {
@@ -41,26 +42,93 @@ export default ( { attributes, setAttributes } ) => {
 
 	const status = useEntityProp( 'postType', 'sureforms_form', 'status', id );
 
-	const { hasResolved } = useSelect( ( select ) => {
+	const hasResolved = useSelect( ( select ) => {
 		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
 			[ 'postType', 'sureforms_form', id ]
 		);
-		const form = select( coreStore ).getEntityRecord(
-			'postType',
-			'sureforms_form',
-			id
-		);
-		const canEdit =
-			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
-		return {
-			canEdit,
-			hasResolved: hasResolvedValue,
-			form,
-		};
+		return hasResolvedValue;
 	} );
 
-	// form is missing
+	// Remove unwanted elements from the iframe and add styling for the form
+	const removeContentFromIframe = () => {
+		const iframeDocument = iframeRef.current.contentDocument;
+
+		if ( ! iframeDocument ) {
+			return;
+		}
+
+		const wpAdminBar = iframeDocument.getElementById( 'wpadminbar' );
+		const siteDesktopHeader =
+			iframeDocument.querySelector( '.site-header' );
+		const srfmSinglePageBanner =
+			iframeDocument.querySelector( '.srfm-page-banner' );
+		const srfmSingleForm =
+			iframeDocument.querySelector( '.srfm-single-form' );
+		const srfmSuccessMsg =
+			iframeDocument.querySelector( '.srfm-success-box' );
+
+		const srfmForm = iframeDocument.querySelector( '.srfm-form' );
+		const siteFooter = iframeDocument.getElementById( 'colophon' );
+		const iframeHtml = iframeDocument.querySelector(
+			'html.srfm-html.hydrated'
+		);
+
+		if ( iframeHtml ) {
+			iframeHtml.style.setProperty( 'margin-top', '14px', 'important' );
+		}
+		if ( iframeDocument.body ) {
+			const bodyStyle = iframeDocument.body.style;
+			bodyStyle.pointerEvents = 'none';
+			bodyStyle.backgroundColor = 'transparent';
+			bodyStyle.overflow = 'hidden';
+		}
+
+		// Combine style changes
+		if ( wpAdminBar ) {
+			wpAdminBar.remove();
+		}
+		if ( siteFooter ) {
+			siteFooter.remove();
+		}
+		if ( siteDesktopHeader ) {
+			siteDesktopHeader.remove();
+		}
+		if ( srfmSinglePageBanner ) {
+			srfmSinglePageBanner.remove();
+		}
+		if ( srfmSuccessMsg ) {
+			srfmSuccessMsg.remove();
+		}
+
+		// Combine element removal
+		if ( srfmSingleForm ) {
+			const iframeHalfScrollHeight = srfmSingleForm.scrollHeight;
+			iframeRef.current.height = iframeHalfScrollHeight + 'px';
+			srfmSingleForm.style.boxShadow = 'none';
+			srfmSingleForm.style.backgroundColor = 'transparent';
+			srfmSingleForm.style.width = '100%';
+			iframeRef.current.style.setProperty(
+				'margin-bottom',
+				'-44px',
+				'important'
+			);
+		}
+		if ( srfmForm ) {
+			srfmSingleForm.style.padding = '1px';
+			srfmSingleForm.style.margin = 0;
+		}
+	};
+
+	useEffect( () => {
+		if ( iframeRef && iframeRef.current ) {
+			iframeRef.current.onload = () => {
+				removeContentFromIframe();
+			};
+		}
+	}, [ id, iframeRef, hasResolved ] );
+
+	// If form is in draft or trash then show the warning.
 	if ( 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
 			<div { ...blockProps }>
@@ -73,65 +141,6 @@ export default ( { attributes, setAttributes } ) => {
 			</div>
 		);
 	}
-
-	// Remove unwanted elements from the iframe and add styling for the form
-	const removeContentFromIframe = () => {
-		const iframeDocument = iframeRef.current.contentDocument;
-
-		if ( iframeDocument ) {
-			const wpAdminBar = iframeDocument.getElementById( 'wpadminbar' );
-			const siteDesktopHeader =
-				iframeDocument.querySelector( '.site-header' );
-			const srfmSinglePageBanner =
-				iframeDocument.querySelector( '.srfm-page-banner' );
-			const srfmSingleForm =
-				iframeDocument.querySelector( '.srfm-single-form' );
-			const srfmSuccessMsg =
-				iframeDocument.querySelector( '.srfm-success-box' );
-			const siteFooter = iframeDocument.getElementById( 'colophon' );
-
-			if ( iframeDocument && iframeDocument.body ) {
-				iframeDocument.querySelector( 'html' ).style.backgroundColor =
-					'transparent';
-				iframeDocument.body.style.pointerEvents = 'none';
-				iframeDocument.body.style.backgroundColor = 'transparent';
-				const iframeHalfScrollHeight =
-					iframeDocument.body.scrollHeight / 2;
-				iframeRef.current.height = iframeHalfScrollHeight + 'px';
-				if ( 300 > iframeHalfScrollHeight ) {
-					iframeDocument.body.style.overflow = 'hidden';
-				}
-			}
-			if ( wpAdminBar ) {
-				wpAdminBar.remove();
-			}
-			if ( siteFooter ) {
-				siteFooter.remove();
-			}
-			if ( siteDesktopHeader ) {
-				siteDesktopHeader.remove();
-			}
-			if ( srfmSinglePageBanner ) {
-				srfmSinglePageBanner.remove();
-			}
-			if ( srfmSuccessMsg ) {
-				srfmSuccessMsg.remove();
-			}
-			if ( srfmSingleForm ) {
-				srfmSingleForm.style.boxShadow = 'none';
-				srfmSingleForm.style.backgroundColor = 'transparent';
-				srfmSingleForm.style.width = '100%';
-			}
-		}
-	};
-
-	useEffect( () => {
-		if ( iframeRef && iframeRef.current ) {
-			iframeRef.current.onload = () => {
-				removeContentFromIframe();
-			};
-		}
-	}, [ id, iframeRef, hasResolved ] );
 
 	return (
 		<>
@@ -171,37 +180,20 @@ export default ( { attributes, setAttributes } ) => {
 							</a>
 						</p>
 					</PanelRow>
-				</PanelBody>
-			</InspectorControls>
-			{ hasResolved ? (
-				<div { ...blockProps }>
-					<div className="srfm-form-preview-header">
-						<button
-							className="srfm-back-button"
+					<PanelRow>
+						<Button
+							variant="primary"
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M18 11.9992C18 12.4963 17.5971 12.8992 17.1 12.8992H9.1345L11.7238 15.2505C12.0821 15.595 12.0933 16.1647 11.7487 16.523C11.4042 16.8813 10.8345 16.8925 10.4762 16.548L6.2762 12.648C6.09973 12.4783 6 12.244 6 11.9992C6 11.7544 6.09973 11.5202 6.2762 11.3505L10.4762 7.45047C10.8345 7.10596 11.4042 7.11713 11.7487 7.47542C12.0933 7.83372 12.0821 8.40346 11.7238 8.74797L9.1345 11.0992L17.1 11.0992C17.5971 11.0992 18 11.5022 18 11.9992Z"
-									fill="#9CA3AF"
-								/>
-							</svg>
-							{ __( 'Back', 'sureforms' ) }
-						</button>
-						<span className="srfm-form-preview-title">
-							{ title }
-						</span>
-					</div>
+							{ __( 'Change Form', 'sureforms' ) }
+						</Button>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
+			{ hasResolved ? (
+				<div { ...blockProps }>
 					<div className="srfm-iframe-container">
 						<iframe
 							loading={ 'eager' }

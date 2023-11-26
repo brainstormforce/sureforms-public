@@ -12,13 +12,17 @@ $ui-padding: 12px 16px;
 }
 
 .srfm-classic-radio {
-	flex: calc( 50% - 7px ) 0 0;
+	flex: calc( 50% - 10px ) 0 0;
 	@include mobile630 {
 		flex: calc( 100% ) 0 0;
 	}
 }
 .srfm-radio-buttons {
 	gap: 7px;
+	flex: calc( 50% - 7px ) 0 0;
+	@include mobile630 {
+		flex: unset;
+	}
 }
 .srfm-classic-radio input {
 	display: none;
@@ -445,6 +449,8 @@ $ui-padding: 12px 16px;
 		.srfm-frontend-inputs-holder,
 		.srfm-classic-inputs-holder {
 			gap: 0 !important;
+			margin: 0 10px;
+			margin-bottom: 20px;
 			.srfm-classic-input-element {
 				@apply srfm-mt-2 srfm-w-full srfm-border-0 srfm-rounded-md srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 srfm-bg-white placeholder:srfm-text-gray-500 focus:srfm-ring-2 focus:srfm-ring-srfm_primary_color focus:srfm-outline-0 sm:srfm-text-sm sm:srfm-leading-6;
 			}

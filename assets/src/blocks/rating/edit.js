@@ -21,11 +21,13 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import Range from '@Components/range/Range.js';
+import widthOptions from '../width-options.json';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		block_id,
 		required,
+		fieldWidth,
 		label,
 		ratingBoxHelpText,
 		width,
@@ -62,6 +64,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
+							<SelectControl
+								label={ __( 'Field Width', 'sureforms' ) }
+								value={ fieldWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										fieldWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
+							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								data={ {

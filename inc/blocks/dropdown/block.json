@@ -29,6 +29,10 @@
 			"default": [ "Option 1", "Option 2" ],
 			"type": "array"
 		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
 		"label": {
 			"default": "Dropdown",
 			"type": "string"
