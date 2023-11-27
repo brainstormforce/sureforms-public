@@ -8,8 +8,36 @@ import {
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
+import apiFetch from '@wordpress/api-fetch';
+
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
+	const handleFileChange = (event) => {
+		const file = event.target.files[0];
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			const data = JSON.parse(event.target.result);
+			// const formId = data.ID;
+			// const postContent = data.post_content;
+			// console.log(typeof postContent)
+			const site_url = sureforms_admin.site_url;
+			console.log({site_url})
+			fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
+				method: 'POST',
+				body: JSON.stringify(data),
+			} )
+				.then( ( response ) => {
+					if ( response.ok ) {
+						return response;
+					}
+				} )
+				.catch( ( e ) => {
+					console.log( e );
+				} );
+		};
+		reader.readAsText(file);
+	};
+  
 	return (
 		<>
 			<div
@@ -78,6 +106,10 @@ export default () => {
 							gap: 15px;
 						` }
 					>
+						<input type='file' onChange={handleFileChange} />
+						<button>
+						{ __( 'Import', 'sureforms' ) }
+						</button>
 						<article
 							css={ css`
 								color: #94a3b8;
