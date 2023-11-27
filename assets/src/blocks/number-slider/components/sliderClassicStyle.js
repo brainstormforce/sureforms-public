@@ -14,6 +14,11 @@ export const SliderClassicStyle = ( {
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+	const isRTL = sf_admin.isRTL;
+	let direction = 'right';
+	if ( isRTL === '1' ) {
+		direction = 'left';
+	}
 
 	const handleChange = ( e ) => {
 		const currentValue = Number( e.target.value );
@@ -56,7 +61,7 @@ export const SliderClassicStyle = ( {
 									step={ step }
 									value={ slideValue }
 									style={ {
-										background: `linear-gradient(to right, ${ color } 0%, ${ color } ${ bgValue }%, rgb(255, 255, 255) ${ bgValue }%, white 100%)`,
+										background: `linear-gradient(to ${ direction }, ${ color } 0%, ${ color } ${ bgValue }%, rgb(255, 255, 255) ${ bgValue }%, white 100%)`,
 									} }
 									onChange={ handleChange }
 									placeholder={ placeholder }

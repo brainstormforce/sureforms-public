@@ -272,6 +272,218 @@ input[type="range"]::-webkit-slider-thumb {
 	content: " *";
 }
 
+//Admin CSS
+
+body.post-type-sureforms_form {
+	.edit-post-visual-editor__post-title-wrapper h1.editor-post-title__input {
+		display: none;
+	}
+	.edit-post-sidebar {
+		> .components-panel {
+			.components-panel__row label {
+				max-width: none;
+			}
+			> .components-panel__body {
+				display: none;
+				order: 3;
+				&--sureforms {
+					order: 1;
+					display: block;
+					padding: 0;
+					border-bottom: none;
+					.components-panel__body {
+						display: block;
+						width: 100%;
+					}
+					> .components-panel__body-title {
+						display: none;
+					}
+				}
+				.srfm_colorpicker {
+					align-items: flex-start;
+					&.no-margin {
+						margin-top: 7px;
+					}
+					> div {
+						width: 50%;
+						flex-grow: 0;
+						flex-shrink: 0;
+						margin-bottom: 0;
+						.components-base-control__field {
+							margin-bottom: 0;
+						}
+						.components-color-palette__item {
+							box-shadow: none !important;
+						}
+						.components-circular-option-picker__option-wrapper {
+							display: block;
+							width: 30px;
+							height: 30px;
+							border-radius: 50%;
+							margin-bottom: 4px;
+							margin-right: 8px;
+							padding: 0;
+						}
+						&:only-child {
+							width: 100%;
+							display: flex;
+							align-items: flex-end;
+							.components-base-control__field {
+								flex-shrink: 0;
+							}
+							> p {
+								padding-bottom: 6px;
+							}
+						}
+					}
+				}
+			}
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+			}
+
+			// might be used later
+			// .components-range-control__number {
+			// 	display: flex;
+			// 	align-items: center;
+			// 	width: 0px !important;
+			// 	.components-input-control__input {
+			// 		width: fit-content;
+			// 	}
+			// }
+
+			> div {
+				.components-tab-panel__tab-content {
+					padding: 0 !important;
+					.components-panel__body.is-opened {
+						width: 100%;
+					}
+				}
+			}
+			> .components-panel__body.is-opened > .components-panel__body-title {
+				display: none;
+			}
+
+			> .srfm--panel {
+				border-bottom: none;
+				display: block;
+				order: 1;
+
+				> div {
+					> .components-tab-panel__tabs {
+						display: flex;
+						> button {
+							width: 50%;
+							flex-shrink: 0;
+							color: rgba( 85, 93, 102, 0.8 );
+							&.active {
+								color: #191e23;
+								pointer-events: none;
+							}
+							&:last-child {
+								border-left: 1px solid #e2e4e7 !important;
+							}
+							&:hover {
+								color: #191e23;
+								background: #f3f4f5;
+							}
+						}
+					}
+				}
+			}
+			.srfm-background-image__toggle {
+				display: block;
+				background-color: #f0f0f0;
+				border-radius: 2px;
+				line-height: 20px;
+				width: 100%;
+				padding: 8px 5px;
+				text-align: center;
+				height: fit-content;
+			}
+		}
+	}
+
+	.edit-post-header {
+		.edit-post-fullscreen-mode-close {
+			&::after {
+				speak: none;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				border-left: 1px solid hsla( 0, 0%, 100%, 0.3 );
+				display: inline-block;
+				font-family: dashicons, sans-serif;
+				font-size: 2.1em;
+				font-style: normal;
+				font-variant: normal;
+				font-weight: 400;
+				line-height: 1;
+				margin-left: 12px;
+				padding-left: 16px;
+				padding-right: 3px;
+				padding-top: 0.1em;
+				text-transform: none;
+			}
+			overflow: visible;
+			padding-left: 15px;
+			padding-right: 15px;
+			position: relative;
+			width: auto;
+		}
+	}
+
+	.srfm-shortcode {
+		display: flex;
+	}
+}
+
+[data-type="sureforms/form"] {
+	.block-editor-inner-blocks {
+		.block-editor-block-list__layout {
+			.wp-block {
+				padding: 5px;
+				margin-top: 1em;
+
+				&:not( :last-child ) {
+					margin-bottom: 20px;
+				}
+			}
+		}
+	}
+}
+
+p.components-base-control__help {
+	margin: 1em 0;
+}
+.srfm-form-preview-header {
+	display: flex;
+	justify-content: space-between;
+	padding: 12px 32px 12px 32px;
+	align-items: center;
+	box-shadow: 0 8px 8px -10px rgba( 0, 0, 0, 0.1 );
+}
+
+.srfm-back-button {
+	background: none;
+	border: none;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	height: 44px;
+	gap: 10px;
+	color: #9ca3af;
+}
+
+.srfm-form-preview-title {
+	color: #030712;
+	font-family: Inter;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 22.4px;
+}
+
 .srfm-select-form-placeholder {
 	display: flex !important;
 	align-items: center !important;

@@ -45,18 +45,6 @@ module.exports = {
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		form_archive_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/styles/form-archive-styles.scss'
-		),
-		sureforms_frontend_styles: path.resolve(
-			__dirname,
-			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
-		),
-		srfm_theme_styles: path.resolve(
-			__dirname,
-			'assets/src/public/styles/srfm_theme_styles.scss'
-		),
 		flatpickr_css: path.resolve(
 			__dirname,
 			'assets/src/public/styles/dependencies/flatpickr.min.css'
@@ -69,17 +57,9 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
 		),
-		block_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/block-styles.scss'
-		),
 		settings: path.resolve(
 			__dirname,
 			'assets/src/admin/settings/settings.js'
-		),
-		editor_header_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/single-form-settings/header-styles.scss'
 		),
 		flatpickr_js: path.resolve(
 			__dirname,
