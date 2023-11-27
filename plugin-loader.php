@@ -221,24 +221,24 @@ class Plugin_Loader {
 	}
 
 
-		/**
-		 * Loads plugin files.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
+	/**
+	 * Loads plugin files.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function load_plugin() {
 		$this->load_core_files();
 	}
 
-				/**
-				 * Load Core Files.
-				 *
-				 * @since 1.0.0
-				 *
-				 * @return void
-				 */
+	/**
+	 * Load Core Files.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function load_core_files() {
 		include_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
 	}
