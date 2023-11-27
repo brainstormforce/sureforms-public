@@ -7,6 +7,7 @@
 
 namespace SureForms\Inc;
 
+use Sureforms_Spec_Gb_Helper;
 use SureForms\Inc\Traits\Get_Instance;
 /**
  * Gutenberg hooks handler class.
@@ -73,6 +74,10 @@ class Gutenberg_Hooks {
 				'sureforms/url',
 				'sureforms/password',
 				'sureforms/date-time-picker',
+				'sureforms/separator',
+				'sureforms/icon',
+				'sureforms/image',
+				'sureforms/advanced-heading',
 				'sureforms/number-slider',
 				'sureforms/form',
 			);

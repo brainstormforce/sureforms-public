@@ -718,12 +718,12 @@ button.components-button.srfm-review-select-btn.is-secondary {
 
 /* Block Editor Block Icons Color*/
 .block-editor-block-icon.has-colors svg.srfm-editor-icons {
-	stroke: $srfm-color-secondary;
+	stroke: currentColor;
 
 	path,
 	rect,
 	circle {
-		stroke: $srfm-color-secondary;
+		stroke: currentColor;
 	}
 }
 
