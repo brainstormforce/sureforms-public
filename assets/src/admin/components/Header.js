@@ -5,38 +5,47 @@ import {
 	ScBreadcrumbs,
 	ScDrawer,
 } from '@surecart/components-react';
-import { useState } from '@wordpress/element';
+import { useState, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 import apiFetch from '@wordpress/api-fetch';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
+	const [ data, setData] = useState();
+	const inputFileRef = useRef();
 	const handleFileChange = (event) => {
 		const file = event.target.files[0];
 		const reader = new FileReader();
 		reader.onload = (event) => {
 			const data = JSON.parse(event.target.result);
-			// const formId = data.ID;
-			// const postContent = data.post_content;
-			// console.log(typeof postContent)
-			const site_url = sureforms_admin.site_url;
-			console.log({site_url})
-			fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
-				method: 'POST',
-				body: JSON.stringify(data),
-			} )
-				.then( ( response ) => {
-					if ( response.ok ) {
-						return response;
-					}
-				} )
-				.catch( ( e ) => {
-					console.log( e );
-				} );
+			setData(data);
 		};
 		reader.readAsText(file);
 	};
+	const handleExportForm = () =>{
+		if(!data){
+			return;
+		}
+		const site_url = sureforms_admin.site_url;
+		fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
+			method: 'POST',
+			body: JSON.stringify(data),
+		} )
+		.then( ( response ) => {
+			if ( response.ok ) {
+				inputFileRef.current.value = null;
+				// Clear data
+				setData(null);
+				// Refresh the page
+                window.location.reload();
+				return response;
+			}
+		} )
+		.catch( ( e ) => {
+			console.log( e );
+		} );
+	}
   
 	return (
 		<>
@@ -106,8 +115,10 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						<input type='file' onChange={handleFileChange} />
-						<button>
+						<input type='file' ref={inputFileRef} accept='.json' onChange={handleFileChange} />
+						<button
+						onClick={handleExportForm}
+						>
 						{ __( 'Import', 'sureforms' ) }
 						</button>
 						<article

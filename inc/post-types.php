@@ -41,6 +41,8 @@ class Post_Types {
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
+		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
+		add_filter( 'handle_bulk_actions-edit-sureforms_form', [ $this, 'modify_bulk_action_handler' ], 10, 3 );
 	}
 
 	/**
@@ -293,13 +295,46 @@ class Post_Types {
 		if ( 'sureforms_entry' === $post->post_type ) {
 			$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '">View</a>';
 		}
-		if('sureforms_form' === $post->post_type){
+		if ( 'sureforms_form' === $post->post_type ) {
 			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
 		}
 
 		return $actions;
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $bulk_actions
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_modify_bulk_actions( $bulk_actions ) {
+		$bulk_actions['export'] = __( 'Export', 'sureforms' );
+		return $bulk_actions;
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $redirect_to
+	 * @param [type] $action
+	 * @param [type] $post_ids
+	 * @since x.x.x
+	 * @return void
+	 */
+	// public function modify_bulk_action_handler($redirect_to, $action, $post_ids){
+	// if ($action !== 'export') {
+	// return $redirect_to;
+	// }
+	// Get the IDs of the selected posts
+	// $post_ids = implode(',', $post_ids);
+
+	// Call the JavaScript function with the post IDs
+	// echo '<script type="text/javascript">exportForm(' . $post_ids . ');</script>';
+	// return $redirect_to;
+
+	// }
 	/**
 	 * Show blank slate styles.
 	 *

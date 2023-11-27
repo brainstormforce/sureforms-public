@@ -271,9 +271,13 @@ class Admin {
 			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
 		}
 		wp_enqueue_script( 'srfm-export', SUREFORMS_URL . 'assets/src/public/scripts/export.js', [], SUREFORMS_VER, true );
-		wp_localize_script('srfm-export', 'sureforms_export', array(
-			'ajaxurl' => admin_url('admin-ajax.php')
-		 ));
+		wp_localize_script(
+			'srfm-export',
+			'sureforms_export',
+			array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
 		// Int-tel-input JS.
 		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
 	}
