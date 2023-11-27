@@ -152,7 +152,9 @@ input[type="range"]::-webkit-slider-thumb {
 	font-size: 0.8rem;
 	opacity: 0;
 	visibility: hidden;
-	transition: opacity 0.2s, visibility 0.2s;
+	transition:
+		opacity 0.2s,
+		visibility 0.2s;
 	width: 500px;
 }
 
@@ -287,13 +289,17 @@ input[type="range"]::-webkit-slider-thumb {
 
 .srfm-range-sliders input[type="range"].srfm-range-slider::-webkit-slider-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
+	box-shadow:
+		0 0 0 0.5px rgba( 0, 10, 20, 0.12 ),
+		0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 
 .srfm-range-sliders input[type="range"].srfm-range-slider::-moz-range-thumb {
 	background-color: #fff !important;
-	box-shadow: 0 0 0 0.5px rgba( 0, 10, 20, 0.12 ), 0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
+	box-shadow:
+		0 0 0 0.5px rgba( 0, 10, 20, 0.12 ),
+		0 0 8px rgba( 0, 10, 20, 0.14 ) !important;
 	cursor: pointer !important;
 }
 

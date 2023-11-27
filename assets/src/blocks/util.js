@@ -63,3 +63,26 @@ const getBlockTypes = ( exclude = '' ) => {
 };
 
 export { stripHTML, getSpacingPresetCssVar, getBlockTypes };
+
+export const getAllowedBlocks = () => {
+	const getBlocks = [
+		'sureforms/input',
+		'sureforms/email',
+		'sureforms/textarea',
+		'sureforms/number',
+		'sureforms/switch',
+		'sureforms/checkbox',
+		'sureforms/phone',
+		'sureforms/address',
+		'sureforms/dropdown',
+		'sureforms/multi-choice',
+		'sureforms/rating',
+		'sureforms/upload',
+		'sureforms/url',
+		'sureforms/password',
+		'sureforms/date-time-picker',
+		'sureforms/number-slider',
+	];
+
+	return getBlocks;
+};

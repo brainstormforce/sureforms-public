@@ -1137,8 +1137,13 @@ if ( numberSliderContainer ) {
 	const bgInit = ( element, val = 0, min = 0, max = 255, color ) => {
 		color = color === '' ? '#0284c7' : color;
 		// Background Change
+		const isRTL = SureForms.isRTL;
+		let direction = 'right';
+		if ( isRTL === '1' ) {
+			direction = 'left';
+		}
 		const valBg = ( ( val - min ) / ( max - min ) ) * 100;
-		element.style.background = `linear-gradient(to right, ${ color } 0%, ${ color } ${ valBg }%, #fff ${ valBg }%, white 100%)`;
+		element.style.background = `linear-gradient(to ${ direction }, ${ color } 0%, ${ color } ${ valBg }%, #fff ${ valBg }%, white 100%)`;
 	};
 
 	// Pre Init

@@ -41,12 +41,12 @@ class Email_Markup extends Base {
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		return '<div class="srfm-input-email-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '</label>
+        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>
         <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" type="email" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" class="srfm-input-email srfm-input-field">
         <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
         <span style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</span>' .
 		( true === $is_confirm_email ?
-			'<label for="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red"> *</span>' : '' ) . '</label>' .
+			'<label for="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>' .
 			'<input id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" type="email" data-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field srfm-input-confirm-email">'
 		: '' ) .
 		( '' !== $help ? '<label for="srfm-input-email" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
@@ -67,6 +67,7 @@ class Email_Markup extends Base {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$is_unique        = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
@@ -77,7 +78,7 @@ class Email_Markup extends Base {
 		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
-		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
         <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
             ' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
         </label>

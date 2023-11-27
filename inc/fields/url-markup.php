@@ -55,12 +55,13 @@ class Url_Markup extends Base {
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="srfm-main-container srfm-frontend-inputs-holder srfm-input-url-container srfm-classic-input-url-container' . esc_attr( $classname ) . '">
+		return '<div class="srfm-main-container srfm-frontend-inputs-holder srfm-input-url-container srfm-classic-input-url-container' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
 			<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
 			</label>

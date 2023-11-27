@@ -123,7 +123,7 @@ export const RatingClassicStyle = ( {
 				id={ blockID }
 			/>
 			<ul
-				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 srfm-p-0"
+				className="srfm-classic-event srfm-mt-2 srfm-flex srfm-list-none srfm-gap-3 !srfm-p-0"
 				data-te-rating-init
 			>
 				{ ratingItems }

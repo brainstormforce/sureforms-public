@@ -61,13 +61,14 @@ class Number_Markup extends Base {
 			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
 			$max_value   = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
+			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
             <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
             <div>
                 <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">

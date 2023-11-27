@@ -97,6 +97,7 @@ class Rating_Markup extends Base {
 	 */
 	public function classic_styling( $attributes ) {
 		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
 		$width        = isset( $attributes['width'] ) ? $attributes['width'] : '';
@@ -109,7 +110,7 @@ class Rating_Markup extends Base {
 		$block_id     = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 
 		$output  = '';
-		$output .= '<div class="srfm-classic-rating-container srfm-main-container srfm-classic-inputs-holder ' . esc_attr( $classname ) . '">';
+		$output .= '<div class="srfm-classic-rating-container srfm-main-container srfm-classic-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);"	>';
 		$svg     = '';
 		switch ( $icon_shape ) {
 			case 'star':
@@ -181,7 +182,7 @@ class Rating_Markup extends Base {
                 ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
             </label>
             <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="srfm-classic-rating-field-' . esc_attr( $block_id ) . '" class="srfm-rating-field-result"/>
-            <ul class="srfm-classic-event srfm-rating-icon-wrapper srfm-mt-2 srfm-ml-0 srfm-mb-0 srfm-flex srfm-flex-wrap srfm-list-none srfm-gap-3 srfm-p-0">';
+            <ul class="srfm-classic-event srfm-rating-icon-wrapper srfm-mt-2 srfm-ml-0 srfm-mb-0 srfm-flex srfm-flex-wrap srfm-list-none srfm-gap-3 !srfm-p-0">';
 		for ( $i = 0; $i < $max_value; $i++ ) {
 			$output .= '
                 <li class="srfm-flex srfm-items-center srfm-flex-col-reverse" >
