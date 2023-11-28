@@ -8,44 +8,9 @@ import {
 import { useState, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
-import apiFetch from '@wordpress/api-fetch';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
-	const [ data, setData] = useState();
-	const inputFileRef = useRef();
-	const handleFileChange = (event) => {
-		const file = event.target.files[0];
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			const data = JSON.parse(event.target.result);
-			setData(data);
-		};
-		reader.readAsText(file);
-	};
-	const handleExportForm = () =>{
-		if(!data){
-			return;
-		}
-		const site_url = sureforms_admin.site_url;
-		fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
-			method: 'POST',
-			body: JSON.stringify(data),
-		} )
-		.then( ( response ) => {
-			if ( response.ok ) {
-				inputFileRef.current.value = null;
-				// Clear data
-				setData(null);
-				// Refresh the page
-                window.location.reload();
-				return response;
-			}
-		} )
-		.catch( ( e ) => {
-			console.log( e );
-		} );
-	}
   
 	return (
 		<>
@@ -115,11 +80,31 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						<input type='file' ref={inputFileRef} accept='.json' onChange={handleFileChange} />
 						<button
-						onClick={handleExportForm}
+						className='srfm-import-btn'
+						css={
+							css`display: inline-block;
+							position: relative;
+							box-sizing: border-box;
+							cursor: pointer;
+							white-space: nowrap;
+							text-decoration: none;
+							text-shadow: none;
+							top: -3px;
+							margin-left: 4px;
+							border: 1px solid #2271b1;
+							border-radius: 3px;
+							background: #f6f7f7;
+							font-size: 13px;
+							font-weight: 400;
+							line-height: 2.15384615;
+							color: #2271b1;
+							padding: 0 10px;
+							min-height: 30px;
+							-webkit-appearance: none;`
+						}
 						>
-						{ __( 'Import', 'sureforms' ) }
+						{ __( 'Import Form', 'sureforms' ) }
 						</button>
 						<article
 							css={ css`

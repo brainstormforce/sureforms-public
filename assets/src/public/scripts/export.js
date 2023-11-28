@@ -46,3 +46,73 @@ function bulkExport(){
 }
 
 document.addEventListener('DOMContentLoaded', bulkExport)
+let data;
+const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const currData = JSON.parse(event.target.result);
+        data = currData;
+        const impSubmitBtn = document.querySelector('#import-form-submit');
+        if(impSubmitBtn){
+            impSubmitBtn.removeAttribute('disabled')
+        }
+    };
+    reader.readAsText(file);
+};
+const handleImportForm = () =>{
+    if( ! data ){
+        return;
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', sureforms_export.ajaxurl, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    //const site_url = sureforms_admin.site_url;
+    // fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
+    //     method: 'POST',
+    //     body: JSON.stringify(data),
+    // } )
+    // .then( ( response ) => {
+    //     if ( response.ok ) {
+    //         window.location.reload();
+    //         return response;
+    //     }
+    // } )
+    // .catch( ( e ) => {
+    //     console.log( e );
+    // } );
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                window.location.reload();
+            } else {
+                console.log('Error:', xhr.status, xhr.statusText);
+            }
+        }
+    };
+
+    xhr.onerror = function (error) {
+        console.log('Request failed:', error);
+    };
+
+    // xhr.send(JSON.stringify(data));
+    xhr.send(`action=import_form&data=${JSON.stringify(data)}`);
+}
+
+function importForm(){
+    const importBtn = document.querySelector('.srfm-import-btn');
+    const importContainer = document.querySelector('.srfm-import-wrap');
+    const impSubmitBtn = document.querySelector('#import-form-submit');
+    if(importBtn){
+        importBtn.addEventListener('click',()=>{
+            if(importContainer){
+                importContainer.style.display = 'block';
+            }
+        })
+    }
+    impSubmitBtn.addEventListener('click',(e)=>{
+        e.preventDefault();
+        handleImportForm();
+    })
+}
+document.addEventListener('DOMContentLoaded',importForm)

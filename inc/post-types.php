@@ -43,6 +43,7 @@ class Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_filter( 'handle_bulk_actions-edit-sureforms_form', [ $this, 'modify_bulk_action_handler' ], 10, 3 );
+		add_action( 'admin_notices', [$this, 'import_form_popup'] );
 	}
 
 	/**
@@ -314,27 +315,6 @@ class Post_Types {
 		return $bulk_actions;
 	}
 
-	/**
-	 * Undocumented function
-	 *
-	 * @param [type] $redirect_to
-	 * @param [type] $action
-	 * @param [type] $post_ids
-	 * @since x.x.x
-	 * @return void
-	 */
-	// public function modify_bulk_action_handler($redirect_to, $action, $post_ids){
-	// if ($action !== 'export') {
-	// return $redirect_to;
-	// }
-	// Get the IDs of the selected posts
-	// $post_ids = implode(',', $post_ids);
-
-	// Call the JavaScript function with the post IDs
-	// echo '<script type="text/javascript">exportForm(' . $post_ids . ');</script>';
-	// return $redirect_to;
-
-	// }
 	/**
 	 * Show blank slate styles.
 	 *
@@ -749,6 +729,21 @@ class Post_Types {
 
 			}
 		}
+	}
+
+	public function import_form_popup() {
+		?>
+			<div class="upload-plugin-wrap">
+				<div class="sfrm-import-form srfm-import-wrap">
+					<p class="srfm-import-help">Select the SureForms Forms export file(.json) you would like to import.</p>
+					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
+						<?php wp_nonce_field('srfm_import_nonce', '_wpnonce'); ?>
+						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
+						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
+					</form>
+				</div>
+			</div>
+		<?php
 	}
 
 }
