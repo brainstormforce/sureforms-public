@@ -44,6 +44,9 @@ const default_keys = {
 	_srfm_form_container_width: 650,
 	_srfm_thankyou_message_title: 'Thank you',
 	_srfm_submit_button_text: 'Submit',
+	_srfm_additional_classes: '',
+	_srfm_page_form_title: true,
+	_srfm_single_page_form_title: true,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {

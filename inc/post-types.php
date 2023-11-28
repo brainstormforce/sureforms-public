@@ -391,6 +391,10 @@ class Post_Types {
 			'_srfm_form_container_width'              => 'integer',
 			'_srfm_thankyou_message_title'            => 'string',
 			'_srfm_submit_button_text'                => 'string',
+			'_srfm_additional_classes'                => 'string',
+			'_srfm_hide_title_post_specific'          => 'boolean',
+			'_srfm_page_form_title'                   => 'boolean',
+			'_srfm_single_page_form_title'            => 'boolean',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

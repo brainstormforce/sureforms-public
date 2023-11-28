@@ -369,36 +369,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-								<MultiButtonsControl
-									label={ __( 'Appearance', 'sureforms' ) }
-									data={ {
-										value: style,
-										label: 'style',
-									} }
-									options={ [
-										{
-											value: 'default',
-											icon: 'Radio',
-										},
-										{
-											value: 'buttons',
-											icon: 'Buttons',
-										},
-									] }
-									showIcons={ true }
-									onChange={ ( value ) => {
-										if ( style !== value ) {
-											setAttributes( {
-												style: value,
-											} );
-										} else {
-											setAttributes( {
-												style: 'buttons',
-											} );
-										}
-									} }
-								/>
-							) }
+									<MultiButtonsControl
+										label={ __( 'Appearance', 'sureforms' ) }
+										data={ {
+											value: style,
+											label: 'style',
+										} }
+										options={ [
+											{
+												value: 'default',
+												icon: 'Radio',
+											},
+											{
+												value: 'buttons',
+												icon: 'Buttons',
+											},
+										] }
+										showIcons={ true }
+										onChange={ ( value ) => {
+											if ( style !== value ) {
+												setAttributes( {
+													style: value,
+												} );
+											} else {
+												setAttributes( {
+													style: 'buttons',
+												} );
+											}
+										} }
+									/>
+								) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

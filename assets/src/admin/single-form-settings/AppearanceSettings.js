@@ -14,6 +14,7 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
+import { ToggleControl } from '@wordpress/components';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -186,6 +187,26 @@ function AppearanceSettings( props ) {
 						'sureforms'
 					) }
 				</p> */ }
+				<ToggleControl
+					label={ __(
+						'Hide form title on the Page/Post',
+						'sureforms'
+					) }
+					checked={ sureforms_keys._srfm_page_form_title }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_page_form_title', value );
+					} }
+				/>
+				<ToggleControl
+					label={ __(
+						'Hide form title on the Single Form page',
+						'sureforms'
+					) }
+					checked={ sureforms_keys._srfm_single_page_form_title }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_single_page_form_title', value );
+					} }
+				/>
 				<AdvancedPopColorControl
 					label={ __( 'Primary color', 'sureforms' ) }
 					help={ __( 'Labels, Borders, Button, etc.', 'sureforms' ) }

@@ -678,8 +678,11 @@ function showSuccessMessage( element, form ) {
 	} else {
 		element.style.minHeight = '420px';
 	}
-	element.style.opacity = 1;
-	form.style.display = 'none';
+	element.style.display = 'flex';
+	setTimeout( () => {
+		element.style.opacity = 1;
+		form.style.display = 'none';
+	}, 500 );
 }
 
 function redirectToUrl( url ) {

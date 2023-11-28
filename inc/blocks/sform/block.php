@@ -26,6 +26,8 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		$id = isset( $attributes['id'] ) ? $attributes['id'] : '';
 
+		$hide_title_current_page = isset( $attributes['hideTitle'] ) ? $attributes['hideTitle'] : '';
+
 		if ( empty( $id ) ) {
 			return '';
 		}
@@ -40,7 +42,7 @@ class Block extends Base {
 			return '';
 		}
 
-		$content = Generate_Form_Markup::get_form_markup( absint( $id ) );
+		$content = Generate_Form_Markup::get_form_markup( absint( $id ), $hide_title_current_page );
 
 		return $content;
 	}
