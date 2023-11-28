@@ -143,6 +143,7 @@ class SF_Admin_Ajax {
 					'integrations'           => self::sureforms_get_integration(),
 					'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 					'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
+					'isRTL'                  => is_rtl(),
 				)
 			);
 	}

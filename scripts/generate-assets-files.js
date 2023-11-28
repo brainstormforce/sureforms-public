@@ -29,9 +29,3 @@ generateAndWriteCSS(
 	paths.pluginDist + '/common-editor.css',
 	'\n\nCommon editor generated!'
 );
-
-generateAndWriteCSS(
-	paths.pluginSrc + '/admin/admin.scss',
-	paths.pluginDist + '/admin.css',
-	'\nAdmin CSS generated!'
-);

@@ -39,9 +39,18 @@ class Admin {
 	 */
 	public function sureforms_enqueue_header_styles() {
 		$current_screen = get_current_screen();
+		$file_prefix    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name       = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+
+		/* RTL */
+		if ( is_rtl() ) {
+			$file_prefix .= '-rtl';
+		}
 
 		if ( 'sureforms_form' === $current_screen->id ) {
-			wp_enqueue_style( 'sureforms-editor-header-styles', SUREFORMS_URL . 'assets/build/editor_header_styles.css', [], SUREFORMS_VER, 'all' );
+			wp_enqueue_style( SUREFORMS_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		}
 	}
 
@@ -149,13 +158,24 @@ class Admin {
 		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_style( 'srfm-block-styles', SUREFORMS_URL . 'assets/build/block_styles.css', [], SUREFORMS_VER, 'all' );
 		}
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+
+		/* RTL */
+		if ( is_rtl() ) {
+			$file_prefix .= '-rtl';
+		}
+
+		// Enqueue editor styles for post and page.
+		wp_enqueue_style( SUREFORMS_SLUG . '-block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( 'srfm-editor-styles', SUREFORMS_URL . 'assets/src/blocks/editor-styles.css', [], SUREFORMS_VER, 'all' );
-		wp_enqueue_style( 'srfm-admin', SUREFORMS_URL . 'assets/build/admin.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_backend_styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
-		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.min.css', [], SUREFORMS_VER );
 	}
 
 	/**
@@ -208,6 +228,16 @@ class Admin {
 	 */
 	public function enqueue_scripts() {
 		$current_screen = get_current_screen();
+
+		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
+			$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+
+			/* RTL */
+		if ( is_rtl() ) {
+			$file_prefix .= '-rtl';
+		}
 
 		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SUREFORMS_ENTRIES_POST_TYPE === $current_screen->post_type ) {
 			$asset_handle = 'dashboard';
@@ -269,7 +299,7 @@ class Admin {
 			wp_enqueue_script( 'settings', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
 			wp_enqueue_style( 'srfm-setting-styles', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SUREFORMS_VER, 'all' );
 		}
-		wp_enqueue_style( 'srfm-form-archive-styles', SUREFORMS_URL . 'assets/build/form_archive_styles.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( SUREFORMS_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
 		}
