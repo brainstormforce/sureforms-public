@@ -103,7 +103,25 @@ class SF_Public {
 	 * @return void
 	 */
 	public function enqueue_srfm_script( $block_type, $script_name ) {
-		if ( has_block( "sureforms/{$block_type}" ) ) {
+		global $post;
+		$content = $post->post_content;
+		$sureforms_id;
+		// regex pattern to match the SureForms shortcode.
+		$pattern_block     = '/<!--\s*wp:sureforms\/sf-form\s*{"id":(\d+)}\s*\/-->/';
+		$pattern_shortcode = '/\[sureforms id=\'(\d+)\'\]/';
+		// regex matches on the post content.
+		preg_match( $pattern_shortcode, $content, $matches_shortcode );
+		preg_match( $pattern_block, $content, $matches_block );
+		if ( isset( $matches_shortcode[1] ) ) {
+			$sureforms_id = $matches_shortcode[1];
+		} elseif ( isset( $matches_block[1] ) ) {
+			$sureforms_id = $matches_block[1];
+		} else {
+			$sureforms_id = null;
+		}
+		$content_post = get_post( $sureforms_id );
+		$post_content = $content_post->post_content;
+		if ( has_block( "sureforms/{$block_type}", $post_content ) ) {
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
