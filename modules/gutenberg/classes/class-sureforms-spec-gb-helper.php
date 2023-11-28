@@ -936,7 +936,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			if ( file_exists( $block_static_css_path ) ) {
 
-				$file_system = uagb_filesystem();
+				$file_system = srfm_filesystem();
 
 				$css = $file_system->get_contents( $block_static_css_path );
 			}

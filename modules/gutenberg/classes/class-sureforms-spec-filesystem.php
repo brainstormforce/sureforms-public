@@ -92,7 +92,7 @@ class Sureforms_Spec_Filesystem {
 }
 
 /**
- *  Prepare if class 'UAGB_Filesystem' exist.
+ *  Prepare if class 'SRFM_Filesystem' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
 Sureforms_Spec_Filesystem::get_instance();
@@ -102,6 +102,6 @@ Sureforms_Spec_Filesystem::get_instance();
  *
  * @since 0.0.1
  */
-function uagb_filesystem() {
+function srfm_filesystem() {
 	return Sureforms_Spec_Filesystem::get_instance()->get_filesystem();
 }
