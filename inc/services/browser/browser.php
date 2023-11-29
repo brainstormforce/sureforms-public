@@ -1,5 +1,6 @@
 <?php
 // @codingStandardsIgnoreStart-- This is a library so phpcs is ignored here.
+
 /**
  * File: Browser.php
  * Author: Chris Schuld (http://chrisschuld.com/)
@@ -40,6 +41,9 @@
  * This implementation is based on the original work from Gary White
  * http://apptools.com/phptools/browser/
  */
+
+ namespace SureForms\Inc\Services\Browser;
+ 
 class Browser {
 
 	private $_agent        = '';

@@ -13,7 +13,6 @@
 	}
 
 	.components-text-control__input {
-		padding-right: 30px;
 		margin-left: 0;
 		margin-right: 0;
 		color: $srfm-color-body;
@@ -104,5 +103,11 @@
 
 	&.components-base-control > .components-base-control__help {
 		margin-top: $srfm-control-label-bottom-margin;
+	}
+
+	&.srfm-with-dropdown {
+		.components-text-control__input {
+			padding-right: 35px;
+		}
 	}
 }
