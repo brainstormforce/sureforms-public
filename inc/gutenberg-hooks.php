@@ -9,6 +9,7 @@ namespace SureForms\Inc;
 
 use Sureforms_Spec_Gb_Helper;
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\SRFM_Smart_Tags;
 /**
  * Gutenberg hooks handler class.
  *
@@ -189,11 +190,11 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
-				'plugin_url'     => SUREFORMS_URL,
-				'admin_email'    => get_option( 'admin_email' ),
-				'post_url'       => admin_url( 'post.php' ),
-				'current_screen' => get_current_screen(),
-
+				'plugin_url'       => SUREFORMS_URL,
+				'admin_email'      => get_option( 'admin_email' ),
+				'post_url'         => admin_url( 'post.php' ),
+				'current_screen'   => get_current_screen(),
+				'smart_tags_array' => SRFM_Smart_Tags::smart_tag_list(),
 			]
 		);
 

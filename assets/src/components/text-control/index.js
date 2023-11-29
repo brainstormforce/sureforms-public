@@ -6,7 +6,11 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { TextControl, TextareaControl } from '@wordpress/components';
+import {
+	TextControl,
+	TextareaControl,
+	DropdownMenu,
+} from '@wordpress/components';
 import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
@@ -14,10 +18,12 @@ import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
+import { plus } from '@wordpress/icons';
 
 const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
+	const [ inputData, setInputData ] = useState( props?.value );
 	// Add and remove the CSS on the drop and remove of the component.
 	useLayoutEffect( () => {
 		styles.use();
@@ -69,8 +75,10 @@ const SRFMTextControl = ( props ) => {
 				[ props?.data?.label ]: newValue,
 			} );
 		}
+
 		if ( props?.onChange ) {
 			props?.onChange( newValue );
+			setInputData( newValue );
 		}
 	};
 
@@ -87,7 +95,7 @@ const SRFMTextControl = ( props ) => {
 				<div className="srfm-number-control__actions srfm-control__actions">
 					<SRFMReset
 						onReset={ resetValues }
-						value={ props?.value }
+						value={ inputData }
 						attributeNames={ [ props?.data?.label ] }
 						setAttributes={ props?.setAttributes }
 						isFormSpecific={ props?.isFormSpecific }
@@ -108,6 +116,25 @@ const SRFMTextControl = ( props ) => {
 		'',
 		blockNameForHook
 	);
+
+	const generateSmartTagsDropDown = () => {
+		const smartTagList = sfBlockData.smart_tags_array;
+		if ( ! smartTagList ) {
+			return;
+		}
+		const entries = Object.entries( smartTagList );
+		const data = entries.map( ( [ key, val ] ) => {
+			return {
+				title: val,
+				onClick: () => {
+					props?.onChange( inputData + key );
+					setInputData( inputData + key );
+				},
+			};
+		} );
+
+		return data;
+	};
 
 	return (
 		<div ref={ panelRef } className="components-base-control">
@@ -142,7 +169,7 @@ const SRFMTextControl = ( props ) => {
 											: false
 									}
 									type={ props?.type }
-									value={ props?.value }
+									value={ inputData }
 									onChange={ handleOnChange }
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
@@ -156,10 +183,23 @@ const SRFMTextControl = ( props ) => {
 											? props?.label
 											: false
 									}
-									value={ props?.value }
+									value={ inputData }
 									onChange={ handleOnChange }
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
+								/>
+							) }
+
+							{ props?.withSmartTagDropdown === true && (
+								<DropdownMenu
+									icon={ plus }
+									className="srfm-scroll-dropdown"
+									label="Select Shortcodes"
+									controls={
+										generateSmartTagsDropDown()
+											? generateSmartTagsDropDown()
+											: []
+									}
 								/>
 							) }
 						</>
@@ -198,6 +238,7 @@ SRFMTextControl.defaultProps = {
 	enableDynamicContent: false,
 	help: false,
 	isFormSpecific: false,
+	withSmartTagDropdown: false,
 };
 
 export default SRFMTextControl;

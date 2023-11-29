@@ -118,6 +118,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 							<SRFMNumberControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
+								withSmartTagDropdown={ true }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',
