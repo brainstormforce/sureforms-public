@@ -265,10 +265,10 @@ class Sureforms_Submit {
 	 */
 	public function handle_form_entry( $form_data ) {
 
-		$id          = wp_kses_post( $form_data['form-id'] );
-		$form_markup = get_the_content( null, false, $form_data['form-id'] );
-
-		$pattern = '/"label":"(.*?)"/';
+		$id           = wp_kses_post( $form_data['form-id'] );
+		$form_markup  = get_the_content( null, false, $form_data['form-id'] );
+		$sender_email = '';
+		$pattern      = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
 		$labels = $matches[1];
 
@@ -285,7 +285,7 @@ class Sureforms_Submit {
 			$meta_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
-		$first_input = str_replace( ' ', '_', $labels[0] );
+		$first_input = isset( $labels[0] ) ? str_replace( ' ', '_', $labels[0] ) : '';
 		$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 		$honeypot_value = get_option( 'honeypot' );
@@ -338,11 +338,25 @@ class Sureforms_Submit {
 
 			if ( 'on' === $sender_notification && isset( $form_data['srfm-sender-email-field'] ) ) {
 				$sender_email = strval( $form_data['srfm-sender-email-field'] );
-				wp_mail( $sender_email, $subject, $message, $headers );
+				if ( $sender_email ) {
+					wp_mail( $sender_email, $subject, $message, $headers );
+				}
 			}
 
 			if ( $sent ) {
-				do_action( 'srfm_form_submit', $response );
+
+				$form_submit_response = array(
+					'success'       => true,
+					'senders_email' => $sender_email ? $sender_email : '',
+					'admin_email'   => $admin_email ? $admin_email : '',
+					'form_id'       => $id ? intval( $id ) : '',
+					'form_name'     => $name ? $name : '',
+					'subject'       => $subject ? $subject : '',
+					'message'       => $message ? wp_json_encode( $message ) : '',
+				);
+
+				do_action( 'srfm_form_submit', $form_submit_response );
+
 				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
 			} else {
 				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
