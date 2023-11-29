@@ -1,7 +1,6 @@
 .srfm-form {
 	display: flex;
-	flex-direction: column;
-	gap: 24px;
+	flex-wrap: wrap;
 	margin-top: 2rem;
 	margin-bottom: 2rem;
 	background-attachment: fixed;
