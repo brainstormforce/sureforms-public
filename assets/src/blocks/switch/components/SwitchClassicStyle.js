@@ -13,6 +13,7 @@ export const SwitchClassicStyle = ( {
 	if ( color === '' ) {
 		color = '#0284C7';
 	}
+	const isRTL = sf_admin.isRTL;
 	const isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
 		setToggle( isChecked );
@@ -33,11 +34,17 @@ export const SwitchClassicStyle = ( {
 							type="checkbox"
 							checked={ toggle }
 							aria-required={ required ? 'true' : 'false' }
-							onClick={ () => setToggle( ! toggle ) }
+							onClick={ () => {
+								setToggle( ! toggle );
+							} }
 						/>
 						<div
 							className="srfm-switch-toggle !srfm--top-[4px] !srfm-shadow !srfm-border !srfm-border-gray-200 !srfm-h-5 !srfm-w-5"
-							style={ { left: toggle ? '24px' : '0' } }
+							style={
+								isRTL === '1'
+									? { right: toggle ? '24px' : '0' }
+									: { left: toggle ? '24px' : '0' }
+							}
 						>
 							<span
 								className={ `srfm-classic-toggle-icon-container srfm-classic-toggle-icon ${

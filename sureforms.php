@@ -20,6 +20,7 @@ define( 'SUREFORMS_DIR', plugin_dir_path( SUREFORMS_FILE ) );
 define( 'SUREFORMS_URL', plugins_url( '/', SUREFORMS_FILE ) );
 define( 'SUREFORMS_VER', '0.0.1' );
 define( 'SUREFORMS_SLUG', 'srfm' );
+define( 'SUREFORMS_LOC', 'SureForms' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SUREFORMS_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SUREFORMS_ENTRIES_POST_TYPE', 'sureforms_entry' );
