@@ -5,13 +5,13 @@ import {
 	ScBreadcrumbs,
 	ScDrawer,
 } from '@surecart/components-react';
-import { useState, useRef } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
-  
+
 	return (
 		<>
 			<div
@@ -80,10 +80,12 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						<button
-						className='srfm-import-btn'
-						css={
-							css`display: inline-block;
+						{
+							sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
+							<button
+								className="srfm-import-btn"
+								css={
+									css`display: inline-block;
 							position: relative;
 							box-sizing: border-box;
 							cursor: pointer;
@@ -102,10 +104,11 @@ export default () => {
 							padding: 0 10px;
 							min-height: 30px;
 							-webkit-appearance: none;`
+								}
+							>
+								{ __( 'Import Form', 'sureforms' ) }
+							</button>
 						}
-						>
-						{ __( 'Import Form', 'sureforms' ) }
-						</button>
 						<article
 							css={ css`
 								color: #94a3b8;

@@ -275,7 +275,8 @@ class Admin {
 			'srfm-export',
 			'sureforms_export',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+				'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
 			)
 		);
 		// Int-tel-input JS.

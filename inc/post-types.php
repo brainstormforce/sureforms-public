@@ -43,7 +43,7 @@ class Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_filter( 'handle_bulk_actions-edit-sureforms_form', [ $this, 'modify_bulk_action_handler' ], 10, 3 );
-		add_action( 'admin_notices', [$this, 'import_form_popup'] );
+		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 	}
 
 	/**
@@ -304,11 +304,11 @@ class Post_Types {
 	}
 
 	/**
-	 * Undocumented function
+	 * Modify list bulk actions.
 	 *
-	 * @param [type] $bulk_actions
+	 * @param array<Mixed> $bulk_actions An array of bulk action links.
 	 * @since x.x.x
-	 * @return void
+	 * @return array<Mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
 		$bulk_actions['export'] = __( 'Export', 'sureforms' );
@@ -731,19 +731,30 @@ class Post_Types {
 		}
 	}
 
+	/**
+	 * Show the import form popup
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function import_form_popup() {
-		?>
-			<div class="upload-plugin-wrap">
-				<div class="sfrm-import-form srfm-import-wrap">
+		$screen = get_current_screen();
+		$id     = $screen ? $screen->id : '';
+		if ( 'edit-sureforms_form' === $id ) {
+			?>
+			<div class="srfm-import-plugin-wrap">
+				<div class="srfm-import-wrap">
 					<p class="srfm-import-help">Select the SureForms Forms export file(.json) you would like to import.</p>
 					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
-						<?php wp_nonce_field('srfm_import_nonce', '_wpnonce'); ?>
+						<?php wp_nonce_field( 'srfm_import_nonce', '_wpnonce' ); ?>
 						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
 						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
 					</form>
+					<p id="srfm-import-error">There is some error in json file, please export the SureForms Forms again.</p>
 				</div>
 			</div>
-		<?php
+			<?php
+		}
 	}
 
 }
