@@ -9,7 +9,9 @@ import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 
 const SRFMEditorHeader = ( { clientId } ) => {
-	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const postId = useSelect( ( select ) => {
+		return select( 'core/editor' ).getCurrentPostId();
+	}, [] );
 	const postStatus = useSelect( ( select ) => {
 		return select( 'core/editor' ).getEditedPostAttribute( 'status' );
 	}, [] );
