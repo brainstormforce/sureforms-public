@@ -345,14 +345,20 @@ class Sureforms_Submit {
 
 			if ( $sent ) {
 
+				$modified_message = [];
+				foreach ( $meta_data as $key => $value ) {
+					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+					$modified_message[ $only_key ] = esc_attr( $value );
+				}
+
 				$form_submit_response = array(
 					'success'       => true,
-					'senders_email' => $sender_email ? $sender_email : '',
+					'senders_email' => $sender_email ? esc_attr( $sender_email ) : '',
 					'admin_email'   => $admin_email ? $admin_email : '',
-					'form_id'       => $id ? intval( $id ) : '',
-					'form_name'     => $name ? $name : '',
-					'subject'       => $subject ? $subject : '',
-					'message'       => $message ? wp_json_encode( $message ) : '',
+					'form_id'       => $id ? esc_attr( intval( $id ) ) : '',
+					'form_name'     => $name ? esc_attr( $name ) : '',
+					'subject'       => $subject ? esc_attr( $subject ) : '',
+					'message'       => $modified_message,
 				);
 
 				do_action( 'srfm_form_submit', $form_submit_response );
