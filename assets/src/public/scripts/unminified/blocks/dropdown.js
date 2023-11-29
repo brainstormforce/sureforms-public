@@ -23,7 +23,7 @@ function initializeDropdown() {
 						.querySelector( '.srfm-classic-select-icon ' )
 						.classList.add( 'srfm-rotate-180', '!srfm-pl-4' );
 
-					const nextSibling = selectFieldButton.nextElementSibling;
+					const nextSibling = selectFieldButton?.nextElementSibling;
 					const options = nextSibling.querySelectorAll(
 						'.srfm-classic-dropdown-option'
 					);
@@ -40,8 +40,8 @@ function initializeDropdown() {
 					const dropdownResultInput = selectField.querySelector(
 						'.srfm-classic-dropdown-result'
 					);
-					nextSibling.style.display = 'block';
 					if ( nextSibling ) {
+						nextSibling.style.display = 'block';
 						nextSibling.classList.add( '!srfm-opacity-100' );
 						nextSibling.classList.add( '!srfm-z-10' );
 						nextSibling.classList.remove( '!srfm-opacity-0' );
@@ -88,10 +88,12 @@ function initializeDropdown() {
 						.querySelector( '.srfm-classic-select-icon ' )
 						.classList.add( 'srfm-rotate-0' );
 					const nextSibling = selectFieldButton.nextElementSibling;
-					nextSibling.classList.remove( '!srfm-opacity-100' );
-					nextSibling.classList.remove( '!srfm-z-10' );
-					nextSibling.classList.add( '!srfm-opacity-0' );
-					nextSibling.style.display = 'none';
+					if ( nextSibling ) {
+						nextSibling.classList.remove( '!srfm-opacity-100' );
+						nextSibling.classList.remove( '!srfm-z-10' );
+						nextSibling.classList.add( '!srfm-opacity-0' );
+						nextSibling.style.display = 'none';
+					}
 				} );
 			}
 		}

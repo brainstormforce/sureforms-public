@@ -75,5 +75,6 @@ module.exports = {
 		flatpickr: true,
 		getComputedStyle: true,
 		uagb_blocks_info: true,
+		SureForms: true,
 	},
 };

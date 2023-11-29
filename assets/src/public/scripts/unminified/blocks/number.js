@@ -15,12 +15,12 @@ function initializeNumberField() {
 						return;
 					}
 					if ( formatType === 'non-decimal' ) {
-						inputValue = inputValue.replace( /[^0-9]/g, '' );
+						inputValue = inputValue?.replace( /[^0-9]/g, '' );
 					} else {
-						inputValue = inputValue.replace( /[^0-9.]/g, '' );
-						const dotCount = inputValue.split( '.' ).length - 1;
+						inputValue = inputValue?.replace( /[^0-9.]/g, '' );
+						const dotCount = inputValue?.split( '.' ).length - 1;
 						if ( dotCount > 1 ) {
-							inputValue = inputValue.replace( /\.+$/g, '' );
+							inputValue = inputValue?.replace( /\.+$/g, '' );
 						}
 					}
 					numberInput.value = inputValue;
