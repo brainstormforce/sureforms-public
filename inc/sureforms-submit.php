@@ -358,7 +358,8 @@ class Sureforms_Submit {
 					'form_id'       => $id ? esc_attr( intval( $id ) ) : '',
 					'form_name'     => $name ? esc_attr( $name ) : '',
 					'subject'       => $subject ? esc_attr( $subject ) : '',
-					'message'       => $modified_message,
+					'message'       => __( 'Form submitted successfully', 'sureforms' ),
+					'data'          => $modified_message,
 				);
 
 				do_action( 'srfm_form_submit', $form_submit_response );
