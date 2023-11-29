@@ -548,6 +548,9 @@ $ui-padding: 12px 16px;
 					@apply srfm-text-srfm_primary_color srfm-underline;
 				}
 			}
+			.srfm-submit-text {
+				@apply srfm-flex srfm-gap-[6px] srfm-justify-center srfm-items-center srfm-min-h-[24px];
+			}
 		}
 	}
 }
