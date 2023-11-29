@@ -49,9 +49,13 @@ class SRFM_Export {
 		$posts = array();
 
 		foreach ( $post_ids as $post_id ) {
-			$post_id = intval( $post_id );
-			$post    = get_post( $post_id );
-			$posts[] = $post;
+			$post_id   = intval( $post_id );
+			$post      = get_post( $post_id );
+			$post_meta = get_post_meta( $post_id );
+			$posts[]   = array(
+				'post'      => $post,
+				'post_meta' => $post_meta,
+			);
 		}
 		wp_send_json( $posts );
 	}
@@ -72,14 +76,15 @@ class SRFM_Export {
 		$responses = array();
 		if ( is_iterable( $data ) ) {
 			foreach ( $data as $form_data ) {
-				$post_content = $form_data['post_content'];
-				$post_title   = $form_data['post_title'];
+				$post_content = $form_data['post']['post_content'];
+				$post_title   = $form_data['post']['post_title'];
+				$post_meta    = $form_data['post_meta'];
 				// Check if sureforms/form exists in post_content.
 				if ( strpos( $post_content, '<!-- wp:sureforms/form' ) !== false ) {
 					$new_post = array(
 						'post_title'   => $post_title,
 						'post_content' => $post_content,
-						'post_status'  => 'publish',
+						'post_status'  => 'draft',
 						'post_type'    => 'sureforms_form',
 					);
 
@@ -87,6 +92,10 @@ class SRFM_Export {
 					if ( ! $post_id ) {
 						http_response_code( 400 );
 						wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
+					}
+					// Update post meta.
+					foreach ( $post_meta as $meta_key => $meta_value ) {
+						update_post_meta( $post_id, $meta_key, $meta_value[0] );
 					}
 				} else {
 					http_response_code( 400 );
