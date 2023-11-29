@@ -354,8 +354,8 @@ class Sureforms_Submit {
 				$form_submit_response = array(
 					'success'       => true,
 					'senders_email' => $sender_email ? esc_attr( $sender_email ) : '',
-					'admin_email'   => $admin_email ? $admin_email : '',
-					'form_id'       => $id ? esc_attr( intval( $id ) ) : '',
+					'admin_email'   => $email ? $admin_email : '',
+					'form_id'       => $id ? intval( $id ) : '',
 					'form_name'     => $name ? esc_attr( $name ) : '',
 					'subject'       => $subject ? esc_attr( $subject ) : '',
 					'message'       => __( 'Form submitted successfully', 'sureforms' ),
