@@ -49,6 +49,7 @@ class SRFM_Export {
 		$posts = array();
 
 		foreach ( $post_ids as $post_id ) {
+			$post_id = intval( $post_id );
 			$post    = get_post( $post_id );
 			$posts[] = $post;
 		}
@@ -64,37 +65,38 @@ class SRFM_Export {
 	public function handle_import_form() {
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
+		if ( ! $post_data ) {
+			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
+		}
 		$data      = json_decode( $post_data, true );
 		$responses = array();
+		if ( is_iterable( $data ) ) {
+			foreach ( $data as $form_data ) {
+				$post_content = $form_data['post_content'];
+				$post_title   = $form_data['post_title'];
+				// Check if sureforms/form exists in post_content.
+				if ( strpos( $post_content, '<!-- wp:sureforms/form' ) !== false ) {
+					$new_post = array(
+						'post_title'   => $post_title,
+						'post_content' => $post_content,
+						'post_status'  => 'publish',
+						'post_type'    => 'sureforms_form',
+					);
 
-		foreach ( $data as $form_data ) {
-			$post_content = $form_data['post_content'];
-			$post_title   = $form_data['post_title'];
-			// Check if sureforms/form exists in post_content.
-			if ( strpos( $post_content, '<!-- wp:sureforms/form' ) !== false ) {
-				$new_post = array(
-					'post_title'   => $post_title,
-					'post_content' => $post_content,
-					'post_status'  => 'publish',
-					'post_type'    => 'sureforms_form',
-				);
-
-				$post_id = wp_insert_post( $new_post );
-				if ( ! $post_id ) {
+					$post_id = wp_insert_post( $new_post );
+					if ( ! $post_id ) {
+						http_response_code( 400 );
+						wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
+					}
+				} else {
 					http_response_code( 400 );
 					wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
-					return;
 				}
-			} else {
-				http_response_code( 400 );
-				wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
-				return;
 			}
 		}
 
 		// Return the responses.
 		wp_send_json_success( $responses );
-		die();
 	}
 
 	/**

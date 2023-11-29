@@ -42,7 +42,6 @@ class Post_Types {
 		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
-		add_filter( 'handle_bulk_actions-edit-sureforms_form', [ $this, 'modify_bulk_action_handler' ], 10, 3 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 	}
 
