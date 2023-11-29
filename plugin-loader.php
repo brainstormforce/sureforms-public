@@ -92,6 +92,7 @@ class Plugin_Loader {
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
+		add_action( 'plugins_loaded', array( $this, 'load_plugin' ), 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'sureforms_activation_redirect' ] );
 		Post_Types::get_instance();
@@ -220,7 +221,32 @@ class Plugin_Loader {
 			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}
+
+
+	/**
+	 * Loads plugin files.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function load_plugin() {
+		$this->load_core_files();
+	}
+
+	/**
+	 * Load Core Files.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function load_core_files() {
+		include_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
+	}
 }
+
+
 
 /**
  * Kicking this off by calling 'get_instance()' method

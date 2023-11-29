@@ -1,0 +1,356 @@
+.srfm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  background-attachment: fixed;
+}
+
+form.srfm-form input:-ms-input-placeholder, textarea.srfm-textarea-field:-ms-input-placeholder {
+  color: var(--srfm-secondary-color);
+}
+
+form.srfm-form input::placeholder,
+textarea.srfm-textarea-field::placeholder {
+  color: var(--srfm-secondary-color);
+}
+
+form.srfm-form .srfm-text-primary {
+  color: var(--srfm-primary-color);
+}
+
+form.srfm-form .srfm-text-secondary {
+  color: var(--srfm-secondary-color);
+}
+
+form.srfm-form .srfm-error-message,
+.srfm-password-strength-message {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+form.srfm-form span a:hover {
+  cursor: pointer;
+}
+
+form.srfm-form .srfm-main-container,
+.srfm-forms-address {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.srfm-forms-address {
+  font-size: 14px;
+  width: 100%;
+}
+
+.srfm-form-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2em;
+}
+
+.srfm-single-form-page {
+  margin-right: 10rem;
+  margin-left: 10rem;
+}
+
+.srfm-error-message {
+  /* border: 2px solid #dc3232; */
+  color: #dc3232;
+  /* padding: 10px; */
+}
+
+.srfm-loader {
+  border: 2px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 2px solid #3498db;
+  width: 20px;
+  height: 20px; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+.srfm-success-message {
+  background: #e0ffc7;
+  border: 1px solid #b4d39b;
+  box-sizing: border-box;
+  color: #333;
+  padding: 15px 15px;
+  overflow-wrap: break-word;
+}
+
+/* Customize range input */
+input[type=range] {
+  /* -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none; */
+  width: 100%;
+  height: 10px;
+  border: 2px solid var(--srfm-primary-color);
+  border-radius: 4px;
+  background-color: white;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  /* -webkit-appearance: none;
+     appearance: none; */
+  width: 20px;
+  height: 20px;
+  background-color: var(--srfm-primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.srfm-country-field {
+  color: var(--srfm-secondary-color);
+}
+
+/* Safari */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+/* CSS for text-area counter */
+.srfm-text-area-counter {
+  bottom: 0.5em;
+  font-size: 0.8em;
+  padding: 0.5em 0.7em;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  transition: opacity 0.18s linear;
+  z-index: 2;
+}
+
+.srfm-info-icon {
+  position: relative;
+  display: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.srfm-info-icon::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 17rem;
+  transform: translateX(50%);
+  padding: 2px;
+  background-color: #333;
+  color: #fff;
+  font-size: 0.8rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  width: 500px;
+}
+
+.srfm-info-icon:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Switch Field CSS */
+.srfm-switch-background {
+  display: inline-block;
+  position: relative;
+  flex: 0 0 50px;
+  height: 25px;
+  border-radius: 25px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.srfm-switch-toggle {
+  display: inline-block;
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background-color: #fff;
+  top: -4px;
+  transition: right 0.2s;
+}
+
+.srfm-switch {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Upload Field CSS */
+.srfm-upload-title {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+  margin-top: 12px;
+  font-size: 25px;
+  gap: 10px;
+}
+
+.srfm-classic-inputs-holder {
+  gap: 0 !important;
+}
+
+/**
+ * Classic Range Sliders CSS
+ */
+.srfm-range-sliders > *:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+.srfm-range-sliders input[type=range] {
+  height: 10px !important;
+  outline: none !important;
+  border-radius: 4px !important;
+  padding: 0 !important;
+  -webkit-appearance: none;
+}
+
+.srfm-range-sliders input[type=number] {
+  -moz-appearance: textfield; /* Reset the appearance property */
+}
+
+.srfm-range-sliders input[type=range]::-webkit-slider-runnable-track {
+  width: 100% !important;
+  height: 1px !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  background-color: #e6e6e6 !important;
+}
+
+.srfm-range-sliders input[type=range]::-moz-range-track {
+  width: 100% !important;
+  height: 1px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  background-color: #ccc !important;
+}
+
+.srfm-range-sliders input[type=range]::-webkit-slider-thumb {
+  box-shadow: none !important;
+  height: 12px !important;
+  width: 12px !important;
+  border-color: transparent !important;
+  border-radius: 50% !important;
+  background-color: #999 !important;
+  cursor: ew-resize;
+  -webkit-appearance: none;
+  margin-top: -5.5px !important;
+}
+
+.srfm-range-sliders input[type=range]::-moz-range-thumb {
+  box-shadow: none !important;
+  height: 12px !important;
+  width: 12px !important;
+  border-color: transparent !important;
+  border-radius: 50% !important;
+  background-color: #999 !important;
+  cursor: ew-resize !important;
+  -webkit-appearance: none;
+  margin-top: -7px !important;
+}
+
+.srfm-range-sliders input[type=range]::-moz-range-progress {
+  background: transparent !important;
+}
+
+.srfm-range-sliders input[type=range]::-webkit-range-progress {
+  background: transparent !important;
+}
+
+.srfm-range-sliders input[type=range]::-moz-focus-outer {
+  border: 0 !important;
+}
+
+.srfm-range-sliders input[type=range].srfm-range-slider::-webkit-slider-runnable-track {
+  background-color: transparent !important;
+}
+
+.srfm-range-sliders input[type=range].srfm-range-slider::-moz-range-track {
+  background-color: transparent !important;
+}
+
+.srfm-range-sliders input[type=range].srfm-range-slider::-webkit-slider-thumb {
+  background-color: #fff !important;
+  box-shadow: 0 0 0 0.5px rgba(0, 10, 20, 0.12), 0 0 8px rgba(0, 10, 20, 0.14) !important;
+  cursor: pointer !important;
+}
+
+.srfm-range-sliders input[type=range].srfm-range-slider::-moz-range-thumb {
+  background-color: #fff !important;
+  box-shadow: 0 0 0 0.5px rgba(0, 10, 20, 0.12), 0 0 8px rgba(0, 10, 20, 0.14) !important;
+  cursor: pointer !important;
+}
+
+.srfm-range-sliders .input-slider::-webkit-outer-spin-button,
+.srfm-range-sliders .input-slider::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0 !important;
+}
+
+.srfm-range-sliders .range-slider-group .range-slider {
+  width: calc(100% - 70px) !important;
+}
+
+.srfm-classic-date-time-picker svg {
+  fill: rgb(156, 163, 175);
+}
+
+.srfm-classic-date-time-picker div:first-child,
+.srfm-classic-date-time-picker div:last-child {
+  border-color: #d1d5db;
+}
+
+td[data-te-date],
+div[data-te-datepicker-view-ref] th {
+  padding: 0 !important;
+  border: none !important;
+}
+
+div[data-te-datepicker-view-ref] table {
+  border: none !important;
+}
+
+input[data-te-input-placeholder-active]:focus,
+input[data-te-input-placeholder-active]:focus-visible,
+.srfm-classic-date-time-picker:focus-visible,
+div[data-te-input-notch-ref]:focus-visible,
+div[data-te-input-notch-leading-ref]:focus-visible,
+div[data-te-input-notch-middle-ref]:focus-visible,
+div[data-te-input-notch-trailing-ref]:focus-visible,
+.srfm-classic-date-time-picker {
+  border-color: var(--srfm-primary-color) !important;
+  outline: none !important;
+}
+
+button[data-te-date-timepicker-toggle-ref]:hover,
+button[data-te-timepicker-toggle-button]:hover,
+button[data-te-datepicker-toggle-button-ref]:hover {
+  background-color: unset !important;
+}
+
+button[data-te-timepicker-toggle-button],
+button[data-te-timepicker-toggle-button]:hover {
+  border: none !important;
+  color: rgb(156, 163, 175) !important;
+}
+
+button[data-te-timepicker-toggle-button] svg {
+  height: 1.25rem !important;
+  width: 1.25rem !important;
+}
+
+div[data-te-input-focused],
+div[data-te-input-notch-ref] {
+  visibility: hidden !important;
+}

@@ -72,5 +72,6 @@ module.exports = {
 		scroll: true,
 		sf_admin: true,
 		sureforms_admin: true,
+		uagb_blocks_info: true,
 	},
 };
