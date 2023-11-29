@@ -133,7 +133,7 @@ class SRFM_Smart_Tags {
 	/**
 	 *  Smart Tag Callback.
 	 *
-	 * @param string $tags smart tag
+	 * @param string $tags smart tag.
 	 * @since 0.0.1
 	 * @return string
 	 */
@@ -268,7 +268,7 @@ class SRFM_Smart_Tags {
 			$format = 'd/m/Y';
 		}
 
-		$date = date( $format, strtotime( current_time( 'mysql' ) ) );
+		$date = gmdate( $format, strtotime( current_time( 'mysql' ) ) );
 		return $date ? $date : '';
 	}
 
@@ -322,9 +322,9 @@ class SRFM_Smart_Tags {
 	}
 
 	/**
-	 * Parse Post properties
+	 * Parse Post properties.
 	 *
-	 * @param string $value post tag,
+	 * @param string $value post tag.
 	 * @since  0.0.1
 	 * @return string
 	 */
@@ -353,9 +353,9 @@ class SRFM_Smart_Tags {
 	}
 
 	/**
-	 * Parse browser/user-agent properties
+	 * Parse browser/user-agent properties.
 	 *
-	 * @param string $value browser tag,
+	 * @param string $value browser tag.
 	 * @since  0.0.1
 	 * @return string
 	 */
@@ -374,13 +374,13 @@ class SRFM_Smart_Tags {
 	}
 
 
-	 /**
-	  * Parse Request Query properties.
-	  *
-	  * @param string $value tag
-	  * @since  0.0.1
-	  * @return string
-	  */
+	/**
+	 * Parse Request Query properties.
+	 *
+	 * @param string $value tag.
+	 * @since  0.0.1
+	 * @return string
+	 */
 	public static function parse_request_param( $value ) {
 
 		if ( ! $value ) {

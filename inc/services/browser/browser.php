@@ -1,5 +1,5 @@
 <?php
-// phpcs:ignore -- This is a library so phpcs is ignored here.
+// @codingStandardsIgnoreStart-- This is a library so phpcs is ignored here.
 /**
  * File: Browser.php
  * Author: Chris Schuld (http://chrisschuld.com/)
@@ -1833,4 +1833,4 @@ class Browser {
 		}
 	}
 }
-// phpcs:ignore
+// @codingStandardsIgnoreEnd
