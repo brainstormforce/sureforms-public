@@ -162,13 +162,14 @@
 }
 
 .srfm-success-box {
-  gap: 12px !important;
-  display: flex;
+  display: none;
   flex-direction: column !important;
+  gap: 12px !important;
   align-items: center;
   justify-content: center;
-  min-height: 0;
+  height: 0;
   opacity: 0;
+  min-height: 0;
   transition: opacity 1.4s;
 }
 .srfm-success-box .fa-circle-check {
