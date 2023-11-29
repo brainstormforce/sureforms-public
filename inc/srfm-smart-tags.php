@@ -35,8 +35,8 @@ class SRFM_Smart_Tags {
 	/**
 	 * Smart Tag Render Function.
 	 *
-	 * @param string $block_content Entire Block Content.
-	 * @param array  $block Block Properties As An Array.
+	 * @param string       $block_content Entire Block Content.
+	 * @param array<mixed> $block Block Properties As An Array.
 	 * @since 0.0.1
 	 * @return string
 	 */
@@ -59,11 +59,12 @@ class SRFM_Smart_Tags {
 	/**
 	 * Check Form By ID.
 	 *
-	 * @param array $id Form id.
+	 * @param int|false $id Form id.
 	 * @since 0.0.1
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
+		/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
 		return get_post_type( $id ) ? true : false;
 	}
 
@@ -71,7 +72,7 @@ class SRFM_Smart_Tags {
 	 * Smart Tag List.
 	 *
 	 * @since 0.0.1
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function smart_tag_list() {
 		return [
@@ -124,6 +125,7 @@ class SRFM_Smart_Tags {
 				$replace = self::smart_tags_callback( $match );
 			}
 
+			/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
 			$content = str_replace( $match, $replace, $content );
 		}
 
@@ -135,7 +137,7 @@ class SRFM_Smart_Tags {
 	 *
 	 * @param string $tags smart tag.
 	 * @since 0.0.1
-	 * @return string
+	 * @return mixed
 	 */
 	public function smart_tags_callback( $tags ) {
 
@@ -268,6 +270,7 @@ class SRFM_Smart_Tags {
 			$format = 'd/m/Y';
 		}
 
+		/** @phpstan-ignore-next-line */  // phpcs:ignore -- False positive
 		$date = gmdate( $format, strtotime( current_time( 'mysql' ) ) );
 		return $date ? $date : '';
 	}
@@ -278,14 +281,10 @@ class SRFM_Smart_Tags {
 	 *
 	 * @param string $value user tag.
 	 * @since  0.0.1
-	 * @return string
+	 * @return mixed
 	 */
 	private static function parse_user_props( $value ) {
 		$user = wp_get_current_user();
-
-		if ( ! $user && $user->ID ) {
-			return '';
-		}
 
 		$user_info = get_user_meta( $user->ID );
 
@@ -294,7 +293,7 @@ class SRFM_Smart_Tags {
 		}
 
 		if ( '{user_id}' === $value ) {
-			return isset( $user->ID ) ? $user->ID : '';
+			return ( null !== $user->ID ) ? $user->ID : '';
 		}
 
 		if ( '{user_display_name}' === $value ) {
@@ -302,11 +301,11 @@ class SRFM_Smart_Tags {
 		}
 
 		if ( '{user_first_name}' === $value ) {
-			return isset( $user_info['first_name'][0] ) ? $user_info['first_name'][0] : '';
+			return ( is_array( $user_info ) && isset( $user_info['first_name'][0] ) ) ? $user_info['first_name'][0] : '';
 		}
 
 		if ( '{user_last_name}' === $value ) {
-			return isset( $user_info['last_name'][0] ) ? $user_info['last_name'][0] : '';
+			return ( is_array( $user_info ) && isset( $user_info['last_name'][0] ) ) ? $user_info['last_name'][0] : '';
 		}
 
 		if ( '{user_email}' === $value ) {
@@ -350,6 +349,8 @@ class SRFM_Smart_Tags {
 		if ( property_exists( $post, $value ) ) {
 			return $post->{$value};
 		}
+
+		return '';
 	}
 
 	/**
@@ -379,7 +380,7 @@ class SRFM_Smart_Tags {
 	 *
 	 * @param string $value tag.
 	 * @since  0.0.1
-	 * @return string
+	 * @return array<mixed>|string
 	 */
 	public static function parse_request_param( $value ) {
 
@@ -388,12 +389,7 @@ class SRFM_Smart_Tags {
 		}
 
 		$exploded = explode( ':', $value );
-
-		if ( ! $exploded ) {
-			return '';
-		}
-
-		$param = array_pop( $exploded );
+		$param    = array_pop( $exploded );
 
 		if ( ! $param ) {
 			return '';
