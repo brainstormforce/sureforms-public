@@ -304,8 +304,10 @@ class Admin {
 			'srfm-export',
 			'sureforms_export',
 			array(
-				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-				'srfm_export_nonce' => wp_create_nonce( 'export_form_nonce' ),
+				'ajaxurl'              => admin_url( 'admin-ajax.php' ),
+				'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
+				'site_url'             => get_site_url(),
+				'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
 			)
 		);
 		// Int-tel-input JS.

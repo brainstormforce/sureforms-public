@@ -30,7 +30,7 @@ function exportForm( postId ) {
 function bulkExport() {
 	const applyBtn = document.querySelector( '#doaction' );
 	const select = document.querySelector( '#bulk-action-selector-top' );
-	if ( applyBtn ) {
+	if ( applyBtn && select ) {
 		applyBtn.addEventListener( 'click', ( e ) => {
 			if ( select.value !== 'export' ) {
 				return;
@@ -72,8 +72,10 @@ const handleImportForm = () => {
 	if ( ! data ) {
 		return;
 	}
-	const site_url = sureforms_admin.site_url;
-	fetch( `${ site_url }/wp-json/sureforms/v1/sureforms_import`, {
+	const site_url = sureforms_export.site_url;
+	const endpoint = sureforms_export.srfm_import_endpoint;
+	const path = site_url + endpoint;
+	fetch( path, {
 		method: 'POST',
 		body: JSON.stringify( data ),
 		headers: {
