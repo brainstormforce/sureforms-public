@@ -54,8 +54,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
 
 	const rootContainer = document.querySelector( '.is-root-container' );
-	const customDiv = document.createElement( 'div' );
-	customDiv.className = 'your-custom-div';
 
 	const { deviceType } = useSelect( () => {
 		return {
@@ -79,7 +77,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			rootContainerDiv?.classList.add( 'srfm-form-style-classic' );
 		}
 	};
-	useEffect( addFormStylingClass, [ rootContainer, customDiv, deviceType ] );
+	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	// Render the Components in the center of the Header
 	const headerCenterContainer = document.querySelector(
@@ -149,15 +147,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 					iframeRootContainer?.classList.add(
 						'srfm-form-style-classic'
 					);
-					const customDivSelector =
-						document.querySelector( '.your-custom-div' );
-					if ( ! customDivSelector ) {
-						customDiv.innerHTML = 'submit';
-						iframeBody.insertAdjacentElement(
-							'afterend',
-							customDiv
-						);
-					}
 				}
 			};
 
@@ -180,7 +169,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 100 );
-	}, [ deviceType, sureforms_keys, customDiv ] );
+	}, [ deviceType, sureforms_keys ] );
 
 	return (
 		<PluginDocumentSettingPanel

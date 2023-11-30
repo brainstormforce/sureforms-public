@@ -194,6 +194,7 @@ class Gutenberg_Hooks {
 				'post_url'               => admin_url( 'post.php' ),
 				'current_screen'         => get_current_screen(),
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
+				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
 			]
 		);
 

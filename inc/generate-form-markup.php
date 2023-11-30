@@ -59,8 +59,7 @@ class Generate_Form_Markup {
 	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $hide_title_current_page = false, $post_type = 'post' ) {
-		// phpcs:ignore
-		$id = isset( $_GET['id'] ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
+		$id = isset( $_GET['id'] ) && wp_verify_nonce( $_GET['srfm_form_markup_nonce'], 'srfm_form_markup' ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
 
 		$post = get_post( Sureforms_Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {

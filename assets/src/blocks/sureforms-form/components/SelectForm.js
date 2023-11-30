@@ -34,7 +34,7 @@ const SelectForm = ( {
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs(
-					'sureforms/v1/generate-form-markup',
+					sfBlockData.get_form_markup_url,
 					queryParams
 				),
 			} );
@@ -111,7 +111,11 @@ const SelectForm = ( {
 						<div
 							onClick={ () => {
 								selectOption( option );
-								const queryParams = { id: option.id };
+								const queryParams = {
+									id: option.id,
+									srfm_form_markup_nonce:
+										sfBlockData.srfm_form_markup_nonce,
+								};
 								const formMarkup = getFormMarkup( queryParams );
 								setFormId( option.id );
 								setForm( formMarkup );
