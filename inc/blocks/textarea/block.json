@@ -3,7 +3,6 @@
 	"title": "Textarea",
 	"description": "Displays a SureForm Textarea Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "textarea", "input", "custom", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

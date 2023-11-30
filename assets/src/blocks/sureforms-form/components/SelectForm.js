@@ -1,8 +1,16 @@
 import { __ } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useRef, useState } from '@wordpress/element';
 
-const SelectForm = ( { label, id, selectedVal, handleChange, setForm } ) => {
+const SelectForm = ( {
+	label,
+	id,
+	selectedVal,
+	handleChange,
+	setForm,
+	setFormId,
+} ) => {
 	const [ formsData, setFormsData ] = useState( [] );
 	const [ query, setQuery ] = useState( '' );
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -21,6 +29,20 @@ const SelectForm = ( { label, id, selectedVal, handleChange, setForm } ) => {
 		}
 	};
 
+	const getFormMarkup = async ( queryParams ) => {
+		let response;
+		try {
+			response = await apiFetch( {
+				path: addQueryArgs(
+					sfBlockData.get_form_markup_url,
+					queryParams
+				),
+			} );
+			return response;
+		} catch ( error ) {
+			console.log( error );
+		}
+	};
 	useEffect( () => {
 		fetchForms();
 		document.addEventListener( 'click', toggle );
@@ -89,11 +111,14 @@ const SelectForm = ( { label, id, selectedVal, handleChange, setForm } ) => {
 						<div
 							onClick={ () => {
 								selectOption( option );
-								const formData = formsData.find(
-									( formEntry ) =>
-										formEntry.id === parseInt( option.id )
-								);
-								setForm( formData );
+								const queryParams = {
+									id: option.id,
+									srfm_form_markup_nonce:
+										sfBlockData.srfm_form_markup_nonce,
+								};
+								const formMarkup = getFormMarkup( queryParams );
+								setFormId( option.id );
+								setForm( formMarkup );
 							} }
 							className={ `srfm-form-single-option ${
 								option[ label ] === selectedVal

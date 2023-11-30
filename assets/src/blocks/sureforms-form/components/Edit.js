@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { useRef, useEffect } from '@wordpress/element';
+import { useRef, useEffect, useState } from '@wordpress/element';
 import {
 	Placeholder,
 	TextControl,
@@ -11,6 +11,7 @@ import {
 	PanelRow,
 	Spinner,
 	Button,
+	ToggleControl,
 } from '@wordpress/components';
 import { useEntityProp, store as coreStore } from '@wordpress/core-data';
 import {
@@ -20,9 +21,10 @@ import {
 } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes } ) => {
-	const { id } = attributes;
-
+	const { id, hideTitle } = attributes;
 	const iframeRef = useRef( null );
+	const [ loading, setLoading ] = useState( false );
+
 	// eslint-disable-next-line no-unused-vars
 	const [ formUrl, setFormUrl ] = useEntityProp(
 		'postType',
@@ -118,10 +120,12 @@ export default ( { attributes, setAttributes } ) => {
 			srfmSingleForm.style.padding = '1px';
 			srfmSingleForm.style.margin = 0;
 		}
+		setLoading( false );
 	};
 
 	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
+			setLoading( true );
 			iframeRef.current.onload = () => {
 				removeContentFromIframe();
 			};
@@ -147,9 +151,22 @@ export default ( { attributes, setAttributes } ) => {
 			<InspectorControls>
 				<PanelBody title={ __( 'Form Settings', 'sureforms' ) }>
 					<PanelRow>
+						<ToggleControl
+							label={ __(
+								'Hide title on this page',
+								'sureforms'
+							) }
+							checked={ hideTitle }
+							onChange={ ( value ) => {
+								setAttributes( { hideTitle: value } );
+							} }
+						/>
+					</PanelRow>
+					<PanelRow>
 						<TextControl
 							label={ __( 'Form Title', 'sureforms' ) }
 							value={ title }
+							disabled={ hideTitle }
 							onChange={ ( value ) => {
 								setTitle( value );
 							} }
@@ -182,10 +199,11 @@ export default ( { attributes, setAttributes } ) => {
 					</PanelRow>
 					<PanelRow>
 						<Button
-							variant="primary"
+							isSecondary
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
+							className="srfm-change-form-btn"
 						>
 							{ __( 'Change Form', 'sureforms' ) }
 						</Button>
@@ -195,6 +213,11 @@ export default ( { attributes, setAttributes } ) => {
 			{ hasResolved ? (
 				<div { ...blockProps }>
 					<div className="srfm-iframe-container">
+						{ loading && (
+							<div className="srfm-iframe-loader">
+								<Spinner />
+							</div>
+						) }
 						<iframe
 							loading={ 'eager' }
 							ref={ iframeRef }

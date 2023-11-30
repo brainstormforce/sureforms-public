@@ -102,10 +102,21 @@ export default ( { attributes, setAttributes, sureforms_keys } ) => {
 						) }
 						<p className="components-base-control__help">
 							{ __(
-								'Note: Maximum value should always be greater than minimum value',
+								'Note: Maximum value should be greater than minimum value',
 								'sureforms'
 							) }
 						</p>
+						<SRFMTextControl
+							label={ __( 'Label', 'sureforms' ) }
+							value={ label }
+							data={ {
+								value: label,
+								label: 'label',
+							} }
+							onChange={ ( value ) =>
+								setAttributes( { label: value } )
+							}
+						/>
 						<Range
 							label={ __( 'Step Increment', 'sureforms' ) }
 							value={ step }
