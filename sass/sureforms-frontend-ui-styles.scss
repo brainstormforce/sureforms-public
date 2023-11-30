@@ -160,13 +160,14 @@ $ui-padding: 12px 16px;
 	}
 }
 .srfm-success-box {
-	gap: 12px !important;
-	display: flex;
-	flex-direction: column !important;
+	display: none;
+	flex-direction: column;
+	gap: 12px;
 	align-items: center;
 	justify-content: center;
-	min-height: 0;
+	height: 0;
 	opacity: 0;
+	min-height: 0;
 	transition: opacity 1.4s;
 	.fa-circle-check {
 		font-size: 36px;

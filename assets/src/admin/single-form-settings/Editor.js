@@ -21,7 +21,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import HeaderTitle from './HeaderTitle.js';
+import SRFMEditorHeader from './SRFMEditorHeader.js';
 
 const { select, dispatch } = wp.data;
 
@@ -43,18 +43,17 @@ const default_keys = {
 	_srfm_form_styling: 'classic',
 	_srfm_form_container_width: 650,
 	_srfm_thankyou_message_title: 'Thank you',
+	_srfm_submit_button_text: 'Submit',
+	_srfm_additional_classes: '',
+	_srfm_page_form_title: false,
+	_srfm_single_page_form_title: false,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
 
-	const headerCenter = document.querySelector( '.edit-post-header__center' );
-
-	if ( headerCenter ) {
-		const root = createRoot( headerCenter );
-		root.render( <HeaderTitle /> );
-	}
+	const rootContainer = document.querySelector( '.is-root-container' );
 
 	const { deviceType } = useSelect( () => {
 		return {
@@ -64,6 +63,30 @@ const SureformsFormSpecificSettings = ( props ) => {
 				)?.__experimentalGetPreviewDeviceType() || 'Desktop',
 		};
 	}, [] );
+
+	// Find the main Editor Container
+	const rootContainerDiv = document.querySelector(
+		'.edit-post-visual-editor__content-area'
+	);
+
+	// Add styling class to main Editor Container
+	const addFormStylingClass = () => {
+		if ( rootContainer && 'Desktop' === deviceType ) {
+			rootContainer?.classList.add( 'srfm-form-style-classic' );
+		} else if ( rootContainerDiv ) {
+			rootContainerDiv?.classList.add( 'srfm-form-style-classic' );
+		}
+	};
+	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+
+	// Render the Components in the center of the Header
+	const headerCenterContainer = document.querySelector(
+		'.edit-post-header__center'
+	);
+	if ( headerCenterContainer ) {
+		const root = createRoot( headerCenterContainer );
+		root.render( <SRFMEditorHeader /> );
+	}
 
 	const sureforms_keys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -117,6 +140,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 							prop.value
 						);
 					} );
+
+					// Add the styling class when the device type is changed
+					const iframeRootContainer =
+						iframeBody?.querySelector( '.is-root-container' );
+					iframeRootContainer?.classList.add(
+						'srfm-form-style-classic'
+					);
 				}
 			};
 

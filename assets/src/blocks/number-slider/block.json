@@ -4,7 +4,6 @@
 	"description": "Displays a SureForm Number Slider Field",
 	"category": "sureforms",
 	"keywords": [ "number slider", "range slider", "range input" ],
-	"ancestor": [ "sureforms/form" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

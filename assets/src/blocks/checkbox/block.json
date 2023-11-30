@@ -4,7 +4,6 @@
 	"title": "Checkbox",
 	"description": "Displays a SureForm Checkbox Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
 	"textdomain": "sureforms",
 	"supports": {

@@ -3,7 +3,7 @@
  * Sureforms get forms title and Ids.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc;
@@ -16,7 +16,7 @@ use SureForms\Inc\Sureforms_Helper;
 /**
  * Load Defaults Class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Forms_Data {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Forms_Data {
 	 * Add custom API Route load-form-defaults
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
@@ -53,7 +53,7 @@ class Forms_Data {
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_form_permissions_check( $request ) {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -71,7 +71,7 @@ class Forms_Data {
 	 * Handle Form status
 	 *
 	 * @return WP_REST_Response
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function load_sureforms_forms() {
 		$args = array(

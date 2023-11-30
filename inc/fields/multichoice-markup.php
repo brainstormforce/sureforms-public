@@ -109,7 +109,7 @@ class Multichoice_Markup extends Base {
 			foreach ( $options as $i => $option ) {
 						$output .= ' <label class="srfm-classic-radio">
 						<input type="' . esc_attr( $single_selection ? 'radio' : 'checkbox' ) . '" ' . esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$block_id" ) . '"' : '' ) . ' id="srfm-multi-choice-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-multi-choice">
-						<div class="srfm-flex srfm-items-start srfm-classic-radio-btn srfm-classic-multi-choice">
+						<div class="srfm-flex srfm-items-center srfm-classic-radio-btn srfm-classic-multi-choice">
 							<div class="srfm-pr-[5px] rtl:srfm-pl-[5px] rtl:srfm-pr-[0] srfm-relative srfm-flex">
 								<i class="fa fa-check-circle srfm-text-base" aria-hidden="true"></i>
 								<i class="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300" aria-hidden="true"></i>

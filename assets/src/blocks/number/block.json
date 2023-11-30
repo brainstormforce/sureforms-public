@@ -3,7 +3,6 @@
 	"title": "Number Field",
 	"description": "Displays a SureForm Number Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "number", "input", "custom", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

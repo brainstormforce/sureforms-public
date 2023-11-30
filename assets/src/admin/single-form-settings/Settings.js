@@ -317,6 +317,29 @@ function Settings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Advanced', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_additional_classes,
+						label: '_srfm_additional_classes',
+					} }
+					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
+					value={ sureforms_keys._srfm_additional_classes }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_additional_classes', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<p className="components-base-control__help">
+					{ __(
+						' Separate multiple classes with spaces. ',
+						'sureforms'
+					) }
+				</p>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 }

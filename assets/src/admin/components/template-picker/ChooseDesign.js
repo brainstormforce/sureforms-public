@@ -2,14 +2,12 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 import { __ } from '@wordpress/i18n';
-import Thumbnail from './Thumbnail';
+import Thumbnail from '../template-picker/Thumbnail';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import PlaceholderTemplate from './PlaceholderTemplate';
-// Might be used later.
-// const { dispatch } = wp.data;
+import PlaceholderTemplate from '../template-picker/PlaceholderTemplate';
 
-export default ( { templates, template, setTemplate } ) => {
+export default ( { templates, template, handleTemplatePicker } ) => {
 	const [ choice, setChoice ] = useState( template );
 
 	const imageCSS = css`
@@ -17,15 +15,6 @@ export default ( { templates, template, setTemplate } ) => {
 		height: 300px !important;
 		object-fit: contain;
 	`;
-
-	// Might be used later.
-	// useEffect( () => {
-	// 	dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
-	// }, [ choice ] );
-
-	// Force Form panel open.
-	// const forcePanel = () => {
-	// };
 
 	return (
 		<PlaceholderTemplate
@@ -35,11 +24,15 @@ export default ( { templates, template, setTemplate } ) => {
 					variant="primary"
 					disabled={ ! choice }
 					onClick={ () => {
-						// forcePanel();
-						setTemplate( choice );
+						handleTemplatePicker( choice );
 					} }
 				>
 					{ __( 'Select Template', 'sureforms' ) }
+				</Button>
+			}
+			footerLeft={
+				<Button variant="primary" onClick={ handleTemplatePicker }>
+					{ __( 'Close', 'sureforms' ) }
 				</Button>
 			}
 			maxHeight={ '300px' }

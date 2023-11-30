@@ -3,7 +3,6 @@
 	"title": "Dropdown",
 	"description": "Displays a SureForm Dropdown Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "select", "dropdown", "options", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

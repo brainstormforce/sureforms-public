@@ -3,7 +3,7 @@
  * Sureforms Load Defaults Class file.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc;
@@ -16,7 +16,7 @@ use SureForms\Inc\Sureforms_Helper;
 /**
  * Load Defaults Class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Load_Form_Defaults {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Load_Form_Defaults {
 	 * Add custom API Route load-form-defaults
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
@@ -53,7 +53,7 @@ class Load_Form_Defaults {
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_form_permissions_check( $request ) {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -73,7 +73,7 @@ class Load_Form_Defaults {
 	 * @param \WP_REST_Request $request Request object or array containing form data.
 	 *
 	 * @return WP_REST_Response
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function handle_sureforms_form_defaults( $request ) {
 		$data            = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
