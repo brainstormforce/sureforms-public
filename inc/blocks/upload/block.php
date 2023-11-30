@@ -26,23 +26,9 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$styling      = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_form_styling', true ) ) : '';
 			$markup_class = new Upload_Markup();
 			ob_start();
-			switch ( $styling ) {
-				case 'inherit':
-					// phpcs:ignore
-					echo $markup_class->default_styling( $attributes );
-					break;
-				case 'classic':
-					// phpcs:ignore
-					echo $markup_class->classic_styling( $attributes );
-					break;
-				default:
-					// phpcs:ignore
-					echo $markup_class->default_styling( $attributes );
-					break;
-			}
+			echo $markup_class->classic_styling( $attributes );
 		}
 			return ob_get_clean();
 	}

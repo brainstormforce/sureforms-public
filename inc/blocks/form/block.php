@@ -42,12 +42,11 @@ class Block extends Base {
 			$success_message       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ) : '';
 			$success_url           = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ) : '';
 			$classname             = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$styling               = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
+			$styling               = 'classic';
 
 			// Submit button.
 			$button_text      = isset( $attributes['submitButtonText'] ) ? Sureforms_Helper::get_string_value( $attributes['submitButtonText'] ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
-			$styling          = get_post_meta( intval( $id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_styling', true ) ) : '';
 
 			if ( 'justify' === $button_alignment ) {
 				$full = true;
@@ -269,11 +268,6 @@ class Block extends Base {
 
 				}
 			</style>
-			<?php
-			if ( ! empty( $styling ) && 'classic' === $styling ) {
-				wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
-			}
-			?>
 		<?php
 		return ob_get_clean();
 	}

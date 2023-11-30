@@ -28,7 +28,6 @@
 		$sureforms_submit_url_val         = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
 		$button_styling_from_theme_val    = get_post_meta( intval( $custom_post_id ), '_srfm_submit_styling_inherit_from_theme', true );
 		$sureforms_form_class_name        = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
-		$styling                          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
 		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 
 		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
@@ -70,7 +69,7 @@
 				<h2 class="srfm-page-banner-title" ><?php echo esc_attr( get_the_Title() ); ?> </h2>
 			</div>
 			<div>
-				<form method="post" id="srfm-form-<?php echo esc_attr( $custom_post_id ); ?>" class="srfm-form srfm-single-form <?php echo esc_attr( 'classic' === $styling ? 'srfm-form-style-classic' : '' ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'srfm-form-background' : '' ); ?><?php echo esc_attr( $sureforms_form_class_name ); ?>" 
+				<form method="post" id="srfm-form-<?php echo esc_attr( $custom_post_id ); ?>" class="srfm-form srfm-single-form srfm-form-style-classic <?php echo esc_attr( '' !== $background_image_url ? 'srfm-form-background' : '' ); ?><?php echo esc_attr( $sureforms_form_class_name ); ?>" 
 				form-id="<?php echo esc_attr( $custom_post_id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ); ?>" success-url="<?php echo esc_attr( $success_url ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
 				<?php
