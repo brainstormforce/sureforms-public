@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Email Class
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Email_Template {
 
@@ -25,7 +25,7 @@ class Email_Template {
 	/**
 	 * Class Constructor
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function __construct() {
@@ -35,7 +35,7 @@ class Email_Template {
 	/**
 	 * Get email header.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return string
 	 */
 	public function get_header() {
@@ -71,7 +71,7 @@ class Email_Template {
 	/**
 	 * Get email footer.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return string footer tags.
 	 */
 	public function get_footer() {
@@ -88,7 +88,7 @@ class Email_Template {
 	 * Render email template.
 	 *
 	 * @param array<string, string> $fields Submission fields.
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return string
 	 */
 	public function render( $fields ) {

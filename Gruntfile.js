@@ -49,9 +49,7 @@ module.exports = function ( grunt ) {
 			},
 			style: {
 				expand: true,
-				src: [
-					'assets/css/unminified/*.css',
-				],
+				src: [ 'assets/css/unminified/*.css' ],
 			},
 		},
 		cssmin: {
@@ -91,6 +89,10 @@ module.exports = function ( grunt ) {
 					{
 						src: 'assets/css/unminified/header-styles-rtl.css',
 						dest: 'assets/css/minified/header-styles.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/srfm-form-selector-rtl.css',
+						dest: 'assets/css/minified/srfm-form-selector.min-rtl.css',
 					},
 				],
 			},

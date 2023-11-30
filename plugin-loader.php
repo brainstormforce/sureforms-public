@@ -130,7 +130,7 @@ class Plugin_Loader {
 	 * Activation Reset
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function sureforms_activation_redirect() {
 

@@ -3,7 +3,7 @@
  * Sureforms Generate Form Class file.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc;
@@ -16,7 +16,7 @@ use SureForms\Inc\Sureforms_Helper;
 /**
  * Load Defaults Class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Generate_Form_Markup {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Generate_Form_Markup {
 	 * Add custom API Route load-form-defaults
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
@@ -56,14 +56,14 @@ class Generate_Form_Markup {
 	 * @param string     $post_type Contains post type.
 	 *
 	 * @return string|false
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $hide_title_current_page = false, $post_type = 'post' ) {
 		// phpcs:ignore
 		$id = isset( $_GET['id'] ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
 
 		$post = get_post( Sureforms_Helper::get_integer_value( $id ) );
-		if ( $post ) {
+		if ( $post && ! empty( $post->post_content ) ) {
 			$content = apply_filters( 'the_content', $post->post_content );
 		} else {
 			$content = '';
@@ -94,11 +94,7 @@ class Generate_Form_Markup {
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
 			$styling          = get_post_meta( intval( $id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_styling', true ) ) : '';
 
-			if ( 'justify' === $button_alignment ) {
-				$full = true;
-			} else {
-				$full = false;
-			}
+			$full               = 'justify' === $button_alignment ? true : false;
 			$recaptcha_version  = get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ) : '';
 			$show_title_on_page = get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ? strval( get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ) : '';
 
@@ -117,7 +113,7 @@ class Generate_Form_Markup {
 					break;
 			}
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
-				$title = get_the_title( (int) $id );
+				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?> <h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
 				<?php
 			}

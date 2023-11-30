@@ -54,7 +54,7 @@ class Post_Types {
 	 * @param string $button_text Parent slug.
 	 * @param string $button_url Parent slug.
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '' ) {
 		echo '<div class="sureform-add-new-form">';
