@@ -88,7 +88,7 @@ class Datetimepicker_Markup extends Base {
 
 			$output  = '';
 			$output .= '
-			<div class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container srfm-overflow-auto' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
+			<div block-id="' . esc_attr( $block_id ) .'" class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container srfm-overflow-auto' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
@@ -99,10 +99,10 @@ class Datetimepicker_Markup extends Base {
 		$input_type = '';
 		switch ( $field_type ) {
 			case 'dateTime':
-				$input_type = ' srfm-input-date-time';
+				$input_type = ' srfm-input-date-time-' . $block_id;
 				break;
 			case 'date':
-				$input_type = ' srfm-input-date';
+				$input_type = ' srfm-input-date-' . $block_id;
 				break;
 			case 'time':
 				$input_type = ' srfm-input-time';

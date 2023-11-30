@@ -121,8 +121,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'Time', 'sureforms' ) }
 								</option>
 							</SelectControl>
-							{ 'classic' !==
-								sureforms_keys?._srfm_form_styling &&
+							{
 							( 'dateTime' === fieldType ||
 								'date' === fieldType ) ? (
 									<>
