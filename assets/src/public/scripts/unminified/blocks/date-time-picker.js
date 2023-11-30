@@ -57,7 +57,7 @@ function initializeDateTime() {
 			noCalendar: true,
 			dateFormat: 'H:i',
 		} );
-	
+
 		for ( const datePickerContainer of datePickerContainers ) {
 			const resultInput = datePickerContainer.querySelector(
 				'.srfm-classic-date-time-result'
@@ -80,12 +80,13 @@ function initializeDateTime() {
 				minDate,
 				maxDate,
 			} );
-	
-			datePickerContainer.querySelector( '.srfm-input-data-time' ).onchange =
-				function ( e ) {
-					formattedDate = e.target.value.replaceAll( '/', '-' );
-					resultInput.value = formattedDate;
-				};
+
+			datePickerContainer.querySelector(
+				'.srfm-input-data-time'
+			).onchange = function ( e ) {
+				const formattedDate = e.target.value.replaceAll( '/', '-' );
+				resultInput.value = formattedDate;
+			};
 		}
 	}
 }
