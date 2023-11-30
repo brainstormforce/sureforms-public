@@ -1256,21 +1256,23 @@ if ( datePickerContainers ) {
 		const resultInput = datePickerContainer.querySelector(
 			'.srfm-classic-date-time-result'
 		);
-		const blockId = datePickerContainer.getAttribute('block-id');
-		const minMaxHolder = datePickerContainer.querySelector('.srfm-min-max-holder');
-		const maxDate = minMaxHolder.getAttribute('max');
-		const minDate = minMaxHolder.getAttribute('min');
-		flatpickr( `.srfm-input-date-time-${blockId}`, {
+		const blockId = datePickerContainer.getAttribute( 'block-id' );
+		const minMaxHolder = datePickerContainer.querySelector(
+			'.srfm-min-max-holder'
+		);
+		const maxDate = minMaxHolder.getAttribute( 'max' );
+		const minDate = minMaxHolder.getAttribute( 'min' );
+		flatpickr( `.srfm-input-date-time-${ blockId }`, {
 			enableTime: true,
 			dateFormat: 'Y-m-d H:i',
-			minDate: minDate,
-			maxDate: maxDate,
+			minDate,
+			maxDate,
 		} );
-		flatpickr( `.srfm-input-date-${blockId}`, {
+		flatpickr( `.srfm-input-date-${ blockId }`, {
 			enableTime: false,
 			dateFormat: 'Y-m-d',
-			minDate: minDate,
-			maxDate: maxDate,
+			minDate,
+			maxDate,
 		} );
 
 		datePickerContainer.querySelector( '.srfm-input-data-time' ).onchange =

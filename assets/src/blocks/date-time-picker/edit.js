@@ -121,9 +121,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'Time', 'sureforms' ) }
 								</option>
 							</SelectControl>
-							{
-							( 'dateTime' === fieldType ||
-								'date' === fieldType ) ? (
+							{ 'dateTime' === fieldType ||
+							'date' === fieldType ? (
 									<>
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
