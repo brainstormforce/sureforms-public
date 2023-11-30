@@ -81,7 +81,7 @@ export default () => {
 						` }
 					>
 						{
-							sureforms_admin.breadcrumbs[ 0 ] && sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
+							sureforms_admin.breadcrumbs[ 0 ].title && sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
 							<button
 								className="srfm-import-btn"
 							>
