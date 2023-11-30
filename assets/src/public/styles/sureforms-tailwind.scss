@@ -554,3 +554,14 @@ $ui-padding: 12px 16px;
 		}
 	}
 }
+
+.srfm-single-form {
+	.wp-block-uagb-advanced-heading,
+	.wp-block-uagb-image,
+	.wp-block-uagb-icon,
+	.wp-block-uagb-separator {
+		width: calc(100% - 20px);
+		margin: 0 10px;
+		margin-bottom: 20px;
+	}
+}
