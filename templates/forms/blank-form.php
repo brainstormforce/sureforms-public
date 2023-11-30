@@ -12,6 +12,6 @@ return [
 	'title'      => __( 'Blank Form', 'sureforms' ),
 	'categories' => [ 'sureforms_form' ],
 	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '<!-- wp:sureforms/input {"id":"block0f7dbe7d5bf74313a5115eab13819b59"} /-->',
+	'content'    => '',
 
 ];

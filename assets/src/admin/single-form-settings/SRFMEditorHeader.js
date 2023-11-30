@@ -1,12 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { useEntityProp } from '@wordpress/core-data';
-import { TextControl, Button } from '@wordpress/components';
+import { TextControl, Button, Modal } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import Setup from '../components/template-picker/Setup';
 import apiFetch from '@wordpress/api-fetch';
 import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as editorStore } from '@wordpress/editor';
 
 const SRFMEditorHeader = ( { clientId } ) => {
 	const postId = useSelect( ( select ) => {
@@ -23,13 +24,36 @@ const SRFMEditorHeader = ( { clientId } ) => {
 	);
 	const [ patterns, setPatterns ] = useState( [] );
 	const [ template, setTemplate ] = useState( '' );
-	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
-	const [ templatePickerVisible, setTemplatePickerVisible ] =
-		useState( false );
+	const { replaceInnerBlocks, resetBlocks } = useDispatch( blockEditorStore );
+	const [ templatePickerVisible, setTemplatePickerVisible ] = useState();
+	// const blockCount = useSelect( ( select ) =>
+	// 	select( 'core/editor' ).getBlockCount( clientId )
+	// );
+	// let sureforms_keys = useSelect( ( select ) =>
+	// 	select( editorStore ).getEditedPostAttribute( 'meta' )
+	// );
+	const { editPost } = useDispatch( editorStore );
 
 	useEffect( () => {
 		getPatterns();
 	}, [] );
+
+	// useEffect( () => {
+	// if ( ! templatePickerVisible ) {
+	// if ( sureforms_keys._srfm_form_template === 'blank-form' ) {
+	// 	setTemplatePickerVisible( false );
+	// } else if (
+	// 	sureforms_keys._srfm_form_template === '' &&
+	// 	! templatePickerVisible
+	// ) {
+	// 	setTemplatePickerVisible( true );
+	// } else if ( blockCount === 0 ) {
+	// 	setTemplatePickerVisible( false );
+	// }
+	// }, [
+	// sureforms_keys._srfm_form_template,
+	//  blockCount
+	// ] );
 
 	useEffect( () => {
 		if ( template && postStatus !== 'publish' ) {
@@ -67,10 +91,15 @@ const SRFMEditorHeader = ( { clientId } ) => {
 	};
 
 	const onCreate = async () => {
+		const option_array = {};
+		option_array[ '_srfm_form_template' ] = template;
+		editPost( {
+			meta: option_array,
+		} );
 		const result = await maybeCreateTemplate( {
 			template,
 		} );
-
+		resetBlocks( [] );
 		replaceInnerBlocks(
 			clientId,
 			createBlocksFromInnerBlocksTemplate( result ),
@@ -124,16 +153,21 @@ const SRFMEditorHeader = ( { clientId } ) => {
 				{ __( 'Template Picker', 'sureforms' ) }
 			</Button>
 			{ templatePickerVisible && (
-				<div className="srfm-modal-overlay">
-					<div className="srfm-modal">
-						<Setup
-							templates={ patterns }
-							onCreate={ onCreate }
-							clientId={ clientId }
-							handleTemplatePicker={ handleTemplatePicker }
-						/>
-					</div>
-				</div>
+				<Modal
+					focusOnMount //focus on the first element in the modal
+					shouldCloseOnEsc
+					shouldCloseOnClickOutside
+					overlayClassName="my-extra-modal-overlay-class"
+					title={ __( 'Choose A Starting Template', 'sureforms' ) }
+					onRequestClose={ handleTemplatePicker }
+				>
+					<Setup
+						templates={ patterns }
+						onCreate={ onCreate }
+						clientId={ clientId }
+						handleTemplatePicker={ handleTemplatePicker }
+					/>
+				</Modal>
 			) }
 			<TextControl
 				style={ {
