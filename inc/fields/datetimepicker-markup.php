@@ -88,7 +88,7 @@ class Datetimepicker_Markup extends Base {
 
 			$output  = '';
 			$output .= '
-			<div block-id="' . esc_attr( $block_id ) .'" class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container srfm-overflow-auto' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
+			<div block-id="' . esc_attr( $block_id ) . '" class="srfm-classic-inputs-holder srfm-main-container srfm-classic-date-time-container srfm-overflow-auto' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 			<label for="srfm-input-date-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
 				' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
 			</label>
