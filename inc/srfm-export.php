@@ -79,8 +79,9 @@ class SRFM_Export {
 				$post_content = $form_data['post']['post_content'];
 				$post_title   = $form_data['post']['post_title'];
 				$post_meta    = $form_data['post_meta'];
+				$post_type    = $form_data['post']['post_type'];
 				// Check if sureforms/form exists in post_content.
-				if ( strpos( $post_content, '<!-- wp:sureforms/form' ) !== false ) {
+				if ( 'sureforms_form' === $post_type ) {
 					$new_post = array(
 						'post_title'   => $post_title,
 						'post_content' => $post_content,
