@@ -163,8 +163,8 @@
 
 .srfm-success-box {
   display: none;
-  flex-direction: column !important;
-  gap: 12px !important;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   height: 0;

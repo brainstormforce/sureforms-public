@@ -104,6 +104,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								variant="textarea"
 								label={ __( 'Default Value', 'sureforms' ) }
 								value={ defaultValue }
+								withSmartTagDropdown={ true }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',
