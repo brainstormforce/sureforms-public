@@ -19,6 +19,7 @@ import SelectForm from './SelectForm';
 
 export default ( { setAttributes } ) => {
 	const [ form, setForm ] = useState( {} );
+	const [ formId, setFormId ] = useState();
 	const [ value, setValue ] = useState( '' );
 
 	return (
@@ -35,6 +36,7 @@ export default ( { setAttributes } ) => {
 					<SelectForm
 						form={ form }
 						setForm={ setForm }
+						setFormId={ setFormId }
 						label="title"
 						id="id"
 						selectedVal={ value }
@@ -44,7 +46,7 @@ export default ( { setAttributes } ) => {
 						<Button
 							variant="primary"
 							onClick={ () => {
-								setAttributes( { id: form?.id } );
+								setAttributes( { id: formId } );
 							} }
 						>
 							{ __( 'Choose', 'sureforms' ) }

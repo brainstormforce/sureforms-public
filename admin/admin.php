@@ -115,7 +115,7 @@ class Admin {
 	 * Render Admin Dashboard.
 	 *
 	 * @return void
-	 * @since x.x.x
+	 * @since 0.0.1
 	 */
 	public function render_dashboard() {
 		echo '<div id="srfm-dashboard-container"></div>';
@@ -154,6 +154,8 @@ class Admin {
 	 * @since 0.0.1
 	 */
 	public function sureforms_enqueue_styles() {
+		$current_screen = get_current_screen();
+
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
@@ -165,7 +167,10 @@ class Admin {
 		}
 
 		// Enqueue editor styles for post and page.
-		wp_enqueue_style( SUREFORMS_SLUG . '-block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type ) {
+			wp_enqueue_style( SUREFORMS_SLUG . '-block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		}
+		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( 'srfm-editor-styles', SUREFORMS_URL . 'assets/src/blocks/editor-styles.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'srfm-frontend-styles', SUREFORMS_URL . 'assets/build/sureforms_backend_styles.css', [], SUREFORMS_VER, 'all' );
@@ -177,7 +182,7 @@ class Admin {
 	/**
 	 * Get Breadcrumbs for current page.
 	 *
-	 * @since X.X.X
+	 * @since 0.0.1
 	 * @return array Breadcrumbs Array.
 	 */
 	public function get_breadcrumbs_for_current_page() {

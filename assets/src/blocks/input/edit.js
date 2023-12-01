@@ -100,7 +100,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
+								className="srfm-with-dropdown"
 								value={ defaultValue }
+								withSmartTagDropdown={ true }
 								data={ {
 									value: defaultValue,
 									label: 'defaultValue',

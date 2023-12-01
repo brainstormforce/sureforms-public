@@ -3,7 +3,6 @@
 	"title": "Date & Time Picker",
 	"description": "Displays a SureForm Date & Time Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "date", "time", "day", "date picker", "time picker" ],
 	"textdomain": "sureforms",
 	"supports": {

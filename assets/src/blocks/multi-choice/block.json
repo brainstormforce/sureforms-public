@@ -4,7 +4,6 @@
 	"title": "Multiple Choice",
 	"description": "Displays a SureForm Multi-Choice Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "multi-choice", "quiz", "multi", "sureforms" ],
 	"textdomain": "sureforms",
 	"supports": {
@@ -34,7 +33,7 @@
 			"type": "array",
 			"default": [
 				{
-					"optiontitle":"Option Name 1"
+					"optiontitle": "Option Name 1"
 				}
 			]
 		},

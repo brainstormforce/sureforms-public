@@ -4,7 +4,6 @@
 	"description": "Displays a SureForm Email Field",
 	"category": "sureforms",
 	"keywords": [ "email", "mail" ],
-	"ancestor": [ "sureforms/form" ],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

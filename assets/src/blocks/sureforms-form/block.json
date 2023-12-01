@@ -21,6 +21,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"hideTitle": {
+			"type": "boolean",
+			"default": false
+		},
 		"id": {
 			"type": "number"
 		},

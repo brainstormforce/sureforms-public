@@ -3,7 +3,6 @@
 	"title": "Rating Field",
 	"description": "Displays a SureForm Rating Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "rating", "star rating", "review", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

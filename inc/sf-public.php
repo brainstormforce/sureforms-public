@@ -28,6 +28,7 @@ class SF_Public {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
 		add_filter( 'the_content', [ $this, 'print_form' ], PHP_INT_MAX );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_filter( 'render_block', array( $this, 'generate_render_script' ), 10, 2 );
 	}
 
 	/**
@@ -71,8 +72,6 @@ class SF_Public {
 		// Int-tel-input JS.
 		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
-
-		// SureForms frontend JS.
 		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/src/public/scripts/form-submit.js', [], SUREFORMS_VER, true );
 
@@ -98,6 +97,40 @@ class SF_Public {
 				'site_url' => site_url(),
 			)
 		);
+	}
+
+	/**
+	 * Enqueue block scripts
+	 *
+	 * @param string $block_type block name.
+	 * @since 0.0.1
+	 * @return void
+	 */
+	public function enqueue_srfm_script( $block_type ) {
+		$block_name        = str_replace( 'sureforms/', '', $block_type );
+		$script_dep_blocks = [ 'rating', 'upload', 'switch', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
+			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
+			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-js", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+		}
+	}
+
+	/**
+	 * Render function.
+	 *
+	 * @param string $block_content Entire Block Content.
+	 * @param array  $block Block Properties As An Array.
+	 * @return string
+	 * @phpstan-ignore-next-line
+	 */
+	public function generate_render_script( $block_content, $block ) {
+
+		if ( isset( $block['blockName'] ) ) {
+			self::enqueue_srfm_script( $block['blockName'] );
+		}
+		return $block_content;
 	}
 
 	/**
