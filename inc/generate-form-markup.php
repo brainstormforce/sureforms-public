@@ -3,7 +3,7 @@
  * Sureforms Generate Form Class file.
  *
  * @package sureforms.
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc;
@@ -16,7 +16,7 @@ use SureForms\Inc\Sureforms_Helper;
 /**
  * Load Defaults Class.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Generate_Form_Markup {
 	use Get_Instance;
@@ -34,7 +34,7 @@ class Generate_Form_Markup {
 	 * Add custom API Route load-form-defaults
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
@@ -56,14 +56,13 @@ class Generate_Form_Markup {
 	 * @param string     $post_type Contains post type.
 	 *
 	 * @return string|false
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $hide_title_current_page = false, $post_type = 'post' ) {
-		// phpcs:ignore
-		$id = isset( $_GET['id'] ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
+		$id = isset( $_GET['id'] ) && wp_verify_nonce( $_GET['srfm_form_markup_nonce'], 'srfm_form_markup' ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
 
 		$post = get_post( Sureforms_Helper::get_integer_value( $id ) );
-		if ( $post ) {
+		if ( $post && ! empty( $post->post_content ) ) {
 			$content = apply_filters( 'the_content', $post->post_content );
 		} else {
 			$content = '';
@@ -92,13 +91,8 @@ class Generate_Form_Markup {
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
-			$styling          = get_post_meta( intval( $id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_styling', true ) ) : '';
 
-			if ( 'justify' === $button_alignment ) {
-				$full = true;
-			} else {
-				$full = false;
-			}
+			$full               = 'justify' === $button_alignment ? true : false;
 			$recaptcha_version  = get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ) : '';
 			$show_title_on_page = get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ? strval( get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ) : '';
 
@@ -117,7 +111,7 @@ class Generate_Form_Markup {
 					break;
 			}
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
-				$title = get_the_title( (int) $id );
+				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?> <h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
 				<?php
 			}
@@ -141,138 +135,42 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?>">
-					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="<?php echo 'inherit' === $styling ? 'wp-block-button' : ''; ?>">
+					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-								<?php
-								switch ( $styling ) {
-									case 'inherit':
-										// @phpstan-ignore-next-line
-										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';" type="submit" id="srfm-submit-btn" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
-										<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-											' . esc_html( $button_text ) . '
-											<div style="display: none;" class="srfm-loader"></div>
-										</div>
-									</button>';
-										break;
-									case 'classic':
-										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( '#0284c7' === $color_primary && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !srfm-mt-[24px] !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '">
-										<div class="srfm-submit-text">
-											' . esc_html( $button_text ) . '
-											<div style="display: none;" class="srfm-loader"></div>
-										</div>
-										</button>';
-										break;
-									default:
-										echo '<button style="margin-top: 24px; width: ' . esc_attr( $full ? '100%' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="srfm-submit-btn" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
-									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-										' . esc_html( $button_text ) . '
-										<div style="display: none;" class="srfm-loader"></div>
-									</div>
-								</button>';
-										break;
-								};
-								?>
+							<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button !srfm-mt-[24px] !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color">
+								<div class="srfm-submit-text">
+									<?php echo esc_html( $button_text ); ?>
+									<div style="display: none;" class="srfm-loader"></div>
+								</div>
+							</button>
 						<?php endif; ?>
 							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-								<?php
-								switch ( $styling ) {
-									case 'inherit':
-										// @phpstan-ignore-next-line
-										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-										break;
-									case 'classic':
-										// @phpstan-ignore-next-line
-										echo '<button style="color: #ffffff; width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div class="srfm-submit-text">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-										break;
-									default:
-										echo '<button style="width: ' . esc_attr( $full ? '100%;' : '' ) . ';' . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-										break;
-								};
-								?>
+								<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+									<div class="srfm-submit-text">
+									<?php echo esc_html( $button_text ); ?>
+										<div style="display: none;" class="srfm-loader"></div>
+									</div>
+								</button>
 							<?php endif; ?>
 							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), array(), SUREFORMS_VER, true ); ?>
-									<?php
-									switch ( $styling ) {
-										case 'inherit':
-											// @phpstan-ignore-next-line
-											echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="g-recaptcha srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-											break;
-										case 'classic':
-											// @phpstan-ignore-next-line
-											echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" class="g-recaptcha srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div class="srfm-submit-text">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-											break;
-										default:
-											echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" class="g-recaptcha srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '" recaptcha-type="' . esc_attr( $recaptcha_version ) . '" data-sitekey="' . esc_attr( $google_captcha_site_key ) . '" id="srfm-submit-btn">
-											<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-												' . esc_html( $button_text ) . '
-												<div style="display: none;" class="srfm-loader"></div>
-											</div>
-										</button>';
-											break;
-									};
-									?>
+								<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+									<div class="srfm-submit-text">
+										<?php echo esc_html( $button_text ); ?>
+										<div style="display: none;" class="srfm-loader"></div>
+									</div>
+								</button>
 						<?php endif; ?>
 						<?php endif; ?>
 						<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-							<?php
-							switch ( $styling ) {
-								case 'inherit':
-									// @phpstan-ignore-next-line
-									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="srfm-submit-btn" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
-									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-										' . esc_html( $button_text ) . '
-										<div style="display: none;" class="srfm-loader"></div>
-									</div>
-								</button>';
-									break;
-								case 'classic':
-									// @phpstan-ignore-next-line
-									echo '<button style="color: #ffffff; width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" id="srfm-submit-btn" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '!srfm-bg-srfm_primary_color' ) . '">
+							<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color">
 									<div class="srfm-submit-text">
-										' . esc_html( $button_text ) . '
+										<?php echo esc_html( $button_text ); ?>
 										<div style="display: none;" class="srfm-loader"></div>
 									</div>
-								</button>';
-									break;
-								default:
-									echo '<button style="width: ' . ( esc_attr( $full ? '100%;' : ';' ) ) . ( empty( $color_primary ) && 'inherit' === $styling ? 'background-color: #0284C7; color: #ffffff; border: none; padding: 13px 25px; border-radius: 4px;' : '' ) . '" type="submit" id="srfm-submit-btn" class="srfm-button ' . ( 'inherit' === $styling ? 'wp-block-button__link' : '' ) . '">
-									<div style="display: flex; gap: 6px; align-items: center; min-height: 24px; justify-content: center;">
-										' . esc_html( $button_text ) . '
-										<div style="display: none;" class="srfm-loader"></div>
-									</div>
-								</button>';
-									break;
-							};
-							?>
+								</button>
 						<?php endif; ?>
 					</div>
 					</div>
@@ -320,11 +218,6 @@ class Generate_Form_Markup {
 
 				}
 			</style>
-			<?php
-			if ( ! empty( $styling ) && 'classic' === $styling ) {
-				wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
-			}
-			?>
 		<?php
 		return ob_get_clean();
 	}
