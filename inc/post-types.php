@@ -8,9 +8,11 @@
 
 namespace SureForms\Inc;
 
+use WP_REST_Response;
 use WP_Screen;
 use WP_Query;
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Generate_Form_Markup;
 
 /**
  * Post Types Main Class.
@@ -52,7 +54,7 @@ class Post_Types {
 	 * @param string $button_text Parent slug.
 	 * @param string $button_url Parent slug.
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function get_blank_page_markup( $title, $subtitle, $image, $button_text = '', $button_url = '' ) {
 		echo '<div class="sureform-add-new-form">';
@@ -145,13 +147,6 @@ class Post_Types {
 				'supports'          => array( 'title', 'author', 'editor', 'custom-fields' ),
 				'show_in_menu'      => 'sureforms_menu',
 				'show_in_nav_menus' => true,
-				'template'          => [
-					[
-						'sureforms/form',
-						[],
-						[],
-					],
-				],
 			)
 		);
 
@@ -395,6 +390,11 @@ class Post_Types {
 			'_srfm_form_styling'                      => 'string',
 			'_srfm_form_container_width'              => 'integer',
 			'_srfm_thankyou_message_title'            => 'string',
+			'_srfm_submit_button_text'                => 'string',
+			'_srfm_additional_classes'                => 'string',
+			'_srfm_hide_title_post_specific'          => 'boolean',
+			'_srfm_page_form_title'                   => 'boolean',
+			'_srfm_single_page_form_title'            => 'boolean',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -527,7 +527,7 @@ class Post_Types {
 	 * Custom Shortcode.
 	 *
 	 * @param array<mixed> $atts Attributes.
-	 * @return string|void $content Post Content.
+	 * @return string|false. $content Post Content.
 	 * @since 0.0.1
 	 */
 	public function sureforms_shortcode( array $atts ) {
@@ -542,8 +542,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = $post->post_content;
-			$content = apply_filters( 'the_content', $content );
+			$content = Generate_Form_Markup::get_form_markup( $id );
 			return $content;
 		}
 

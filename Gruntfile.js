@@ -49,9 +49,7 @@ module.exports = function ( grunt ) {
 			},
 			style: {
 				expand: true,
-				src: [
-					'assets/css/unminified/*.css',
-				],
+				src: [ 'assets/css/unminified/*.css' ],
 			},
 		},
 		cssmin: {
@@ -91,6 +89,10 @@ module.exports = function ( grunt ) {
 					{
 						src: 'assets/css/unminified/header-styles-rtl.css',
 						dest: 'assets/css/minified/header-styles.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/srfm-form-selector-rtl.css',
+						dest: 'assets/css/minified/srfm-form-selector.min-rtl.css',
 					},
 				],
 			},
@@ -174,12 +176,27 @@ module.exports = function ( grunt ) {
 			main: [ 'sureforms' ],
 			zip: [ '*.zip' ],
 		},
+		uglify: {
+			js: {
+				files: [
+					{
+						// all .js to min.js
+						expand: true,
+						src: [ '**.js' ],
+						dest: 'assets/src/public/scripts/minified/blocks',
+						cwd: 'assets/src/public/scripts/unminified/blocks',
+						ext: '.min.js',
+					},
+				],
+			},
+		},
 	} );
 
 	/* Load Tasks */
 	grunt.loadNpmTasks( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks( 'grunt-contrib-compress' );
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-sass' );
 	grunt.loadNpmTasks( '@lodder/grunt-postcss' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
@@ -201,7 +218,7 @@ module.exports = function ( grunt ) {
 	grunt.registerTask( 'style', [ 'scss', 'postcss:style', 'rtl' ] );
 
 	// min all
-	grunt.registerTask( 'minify', [ 'style', 'cssmin:css' ] );
+	grunt.registerTask( 'minify', [ 'style', 'cssmin:css', 'uglify:js' ] );
 
 	/* Register task started */
 	grunt.registerTask( 'release', [

@@ -190,11 +190,13 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
-				'plugin_url'       => SUREFORMS_URL,
-				'admin_email'      => get_option( 'admin_email' ),
-				'post_url'         => admin_url( 'post.php' ),
-				'current_screen'   => get_current_screen(),
-				'smart_tags_array' => SRFM_Smart_Tags::smart_tag_list(),
+				'plugin_url'             => SUREFORMS_URL,
+				'admin_email'            => get_option( 'admin_email' ),
+				'post_url'               => admin_url( 'post.php' ),
+				'current_screen'         => get_current_screen(),
+				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
+				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
+				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
 			]
 		);
 

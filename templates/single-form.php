@@ -5,6 +5,8 @@
  * @package SureForms
  */
 
+use SureForms\Inc\Generate_Form_Markup;
+
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -30,6 +32,8 @@
 		$sureforms_form_class_name        = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
 		$styling                          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
 		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
+		$submit_button_text               = get_post_meta( intval( $custom_post_id ), '_srfm_submit_button_text', true );
+		$show_title_on_single_form_page   = get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
 
 		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
 		$color_textprimary         = $sureforms_textcolor1_val ? strval( $sureforms_textcolor1_val ) : '#fff';
@@ -41,6 +45,33 @@
 		$success_message           = $sureforms_thankyou_message_val ? strval( $sureforms_thankyou_message_val ) : '';
 		$success_url               = $sureforms_submit_url_val ? strval( $sureforms_submit_url_val ) : '';
 		$button_styling_from_theme = $button_styling_from_theme_val ? strval( $button_styling_from_theme_val ) : '';
+
+		// Submit button.
+		$button_text      = $submit_button_text ? strval( $submit_button_text ) : '';
+		$button_alignment = get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
+		$styling          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
+
+	if ( 'justify' === $button_alignment ) {
+		$full = true;
+	} else {
+		$full = false;
+	}
+
+		$recaptcha_version       = get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
+		$google_captcha_site_key = '';
+	switch ( $recaptcha_version ) {
+		case 'v2-checkbox':
+			$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
+			break;
+		case 'v2-invisible':
+			$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
+			break;
+		case 'v3-reCAPTCHA':
+			$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
+			break;
+		default:
+			break;
+	}
 	?>
 		<style>
 			#srfm-single-form-page {
@@ -67,26 +98,25 @@
 		</style>
 		<div id="srfm-single-form-page">
 			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $color_primary ); ?>">
-				<h2 class="srfm-page-banner-title" ><?php echo esc_attr( get_the_Title() ); ?> </h2>
+			<?php if ( '1' !== $show_title_on_single_form_page ) : ?>
+				<h2 class="srfm-page-banner-title"><?php echo esc_html( get_the_title() ); ?></h2>
+			<?php endif; ?>
 			</div>
 			<div>
-				<form method="post" id="srfm-form-<?php echo esc_attr( $custom_post_id ); ?>" class="srfm-form srfm-single-form <?php echo esc_attr( 'classic' === $styling ? 'srfm-form-style-classic' : '' ); ?> <?php echo esc_attr( '' !== $background_image_url ? 'srfm-form-background' : '' ); ?><?php echo esc_attr( $sureforms_form_class_name ); ?>" 
-				form-id="<?php echo esc_attr( $custom_post_id ); ?>" message-type="<?php echo esc_attr( $success_submit_type ); ?>" success-url="<?php echo esc_attr( $success_url ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
-				style="background-image: url('<?php echo esc_url( $background_image_url ); ?>'); padding: 2rem; font-size:<?php echo esc_attr( $form_font_size . 'px;' ); ?> ">
-				<?php
-					$honeypot_spam = get_option( 'honeypot' );
-				?>
-					<input type="hidden" value="<?php echo esc_attr( $custom_post_id ); ?>" name="form-id">
-					<?php if ( '1' === $honeypot_spam ) : ?>
-						<input type="hidden" value="" name="srfm-honeypot-field">
-					<?php endif; ?>		
-					<?php
-					while ( have_posts() ) :
-						the_post();
-						the_content();
-					endwhile;
-					?>
-				</form>
+			<?php
+				// phpcs:ignore
+				echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
+				// phpcs:ignoreEnd
+			?>
+			<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
+				<i class="fa-regular fa-circle-check"></i>
+				<article class="srfm-success-box-header">
+					<?php echo esc_html( $success_message_title ); ?>
+				</article>
+				<article class="srfm-success-box-subtxt srfm-text-gray-900">
+					<?php echo esc_html( $success_message ); ?>
+				</article>
+			</div>
 				<?php
 				if ( isset( $success_message ) && isset( $success_message_title ) ) {
 					?>
@@ -110,6 +140,7 @@
 					$form_path = isset( $segments[1] ) ? $segments[1] : '';
 					wp_footer();
 					?>
+			<?php wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' ); ?>
 			</div>
 		</div>
 	</body>

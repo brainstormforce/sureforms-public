@@ -3,7 +3,6 @@
 	"title": "Text Field",
 	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "text", "input", "custom", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

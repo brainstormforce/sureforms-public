@@ -1,5 +1,4 @@
 import * as sfForm from '@Blocks/sureforms-form';
-import * as form from '@Blocks/form';
 import * as text from '@Blocks/input';
 import * as number from '@Blocks/number';
 import * as email from '@Blocks/email';
@@ -21,7 +20,6 @@ import { registerBlocks } from './register-block';
 
 if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 	registerBlocks( [
-		form,
 		text,
 		email,
 		url,
@@ -43,7 +41,3 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 } else {
 	registerBlocks( [ sfForm ] );
 }
-
-// if ( 'sureforms_form' !== sfBlockData.current_screen.id ) {
-// 	registerBlocks( [ sfForm ] );
-// }

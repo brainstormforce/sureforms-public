@@ -5,7 +5,7 @@
  * This file defines the base class for form fields in the SureForms package.
  *
  * @package SureForms
- * @since X.X.X
+ * @since 0.0.1
  */
 
 namespace SureForms\Inc\Fields;
@@ -15,7 +15,7 @@ namespace SureForms\Inc\Fields;
  *
  * Defines the base class for form fields.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Base {
 

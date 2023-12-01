@@ -21,6 +21,7 @@ use SureForms\Inc\Load_Form_Defaults;
 use SureForms\Inc\Activator;
 use SureForms\Inc\SF_Admin_Ajax;
 use SureForms\Inc\SRFM_Smart_Tags;
+use SureForms\Inc\Generate_Form_Markup;
 
 /**
  * Plugin_Loader
@@ -107,6 +108,7 @@ class Plugin_Loader {
 		SF_Admin_Ajax::get_instance();
 		Forms_Data::get_instance();
 		SRFM_Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
@@ -130,7 +132,7 @@ class Plugin_Loader {
 	 * Activation Reset
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
 	public function sureforms_activation_redirect() {
 

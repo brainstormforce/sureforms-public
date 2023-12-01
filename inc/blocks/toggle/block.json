@@ -3,7 +3,6 @@
 	"title": "Switch",
 	"description": "Displays a SureForm Switch Field",
 	"category": "sureforms",
-	"ancestor": [ "sureforms/form" ],
 	"keywords": [ "submit", "button" ],
 	"textdomain": "sureforms",
 	"supports": {
