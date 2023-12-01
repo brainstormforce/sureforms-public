@@ -28,6 +28,7 @@ class Block extends Base {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
 			$markup_class = new Dropdown_Markup();
 			ob_start();
+			// phpcs:ignore
 			echo $markup_class->classic_styling( $attributes );
 		}
 		return ob_get_clean();

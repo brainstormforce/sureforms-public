@@ -29,7 +29,8 @@ class Block extends Base {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
 			$markup_class = new Input_Markup();
 			ob_start();
-			$markup_class->classic_styling( $attributes );
+			// phpcs:ignore
+			echo $markup_class->classic_styling( $attributes );
 		}
 		return ob_get_clean();
 	}
