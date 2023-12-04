@@ -43,6 +43,8 @@ class Post_Types {
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
+		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
+		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 	}
 
 	/**
@@ -77,7 +79,7 @@ class Post_Types {
 	 *
 	 * @param string $post_type Post type.
 	 * @return void
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function sureforms_render_blank_state( $post_type ) {
 
@@ -222,7 +224,7 @@ class Post_Types {
 	 *
 	 * @param string $messages Post type.
 	 * @return string
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function sureforms_entries_updated_message( $messages ) {
 		global $post_ID;
@@ -242,7 +244,7 @@ class Post_Types {
 	 * @param string   $title Post title.
 	 * @param \WP_Post $post The current WP_Post object.
 	 * @return string
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function sureforms_default_cpt_title_filter( $title, $post ) {
 		$post_type = $post->post_type;
@@ -258,7 +260,7 @@ class Post_Types {
 	 * Remove publishing actions from single entries page.
 	 *
 	 * @return void
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function sureforms_remove_entries_publishing_actions() {
 		global $typenow;
@@ -282,21 +284,36 @@ class Post_Types {
 	 * @param \WP_Post     $post  The current WP_Post object.
 	 *
 	 * @return array<Mixed> $actions Modified row action links.
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function sureforms_modify_entries_list_row_actions( $actions, $post ) {
 		if ( 'sureforms_entry' === $post->post_type ) {
 			$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '">View</a>';
+		}
+		if ( 'sureforms_form' === $post->post_type ) {
+			$actions['export'] = '<a href="#" onclick="exportForm(' . $post->ID . ')">Export</a>';
 		}
 
 		return $actions;
 	}
 
 	/**
+	 * Modify list bulk actions.
+	 *
+	 * @param array<Mixed> $bulk_actions An array of bulk action links.
+	 * @since x.x.x
+	 * @return array<Mixed> $bulk_actions Modified action links.
+	 */
+	public function register_modify_bulk_actions( $bulk_actions ) {
+		$bulk_actions['export'] = __( 'Export', 'sureforms' );
+		return $bulk_actions;
+	}
+
+	/**
 	 * Show blank slate styles.
 	 *
 	 * @return void
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function get_blank_state_styles() {
 		echo '<style type="text/css">.sf-add-new-form-button:focus { box-shadow:none !important; outline:none !important; } #posts-filter .wp-list-table, #posts-filter .tablenav.top, .tablenav.bottom .actions, .wrap .subsubsub  { display: none; } #posts-filter .tablenav.bottom { height: auto; } .sureform-add-new-form{ display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: center; padding: 24px 0 24px 0; } .sureform-blank-page-title { color: var(--dashboard-heading); font-family: Inter; font-size: 22px; font-style: normal; font-weight: 600; line-height: 28px; margin: 0; } .sureform-blank-page-subtitle { color: var(--dashboard-text); margin: 0; font-family: Inter; font-size: 14px; font-style: normal; font-weight: 400; line-height: 16px; }</style>';
@@ -307,7 +324,7 @@ class Post_Types {
 	 *
 	 * @param string $which String which tablenav is being shown.
 	 * @return void
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function maybe_render_blank_form_state( $which ) {
 		$screen    = get_current_screen();
@@ -350,7 +367,7 @@ class Post_Types {
 	 * Set up a div for the header to render into it.
 	 *
 	 * @return void
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public static function embed_page_header() {
 		$screen    = get_current_screen();
@@ -709,6 +726,32 @@ class Post_Types {
 				echo '</select>';
 
 			}
+		}
+	}
+
+	/**
+	 * Show the import form popup
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function import_form_popup() {
+		$screen = get_current_screen();
+		$id     = $screen ? $screen->id : '';
+		if ( 'edit-sureforms_form' === $id ) {
+			?>
+			<div class="srfm-import-plugin-wrap">
+				<div class="srfm-import-wrap">
+					<p class="srfm-import-help"><?php echo esc_html__( 'Select the SureForms Forms export file(.json) you would like to import.', 'sureforms' ); ?></p>
+					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
+						<?php wp_nonce_field( 'srfm_import_nonce', '_wpnonce' ); ?>
+						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
+						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
+					</form>
+					<p id="srfm-import-error"><?php echo esc_html__( 'There is some error in json file, please export the SureForms Forms again.', 'sureforms' ); ?></p>
+				</div>
+			</div>
+			<?php
 		}
 	}
 

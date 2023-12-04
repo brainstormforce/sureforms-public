@@ -9,6 +9,7 @@ namespace SureForms\Inc;
 
 use Sureforms_Spec_Gb_Helper;
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\SRFM_Smart_Tags;
 /**
  * Gutenberg hooks handler class.
  *
@@ -193,6 +194,7 @@ class Gutenberg_Hooks {
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),
 				'current_screen'         => get_current_screen(),
+				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
 			]

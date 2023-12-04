@@ -8,8 +8,10 @@ import {
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
+
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
+
 	return (
 		<>
 			<div
@@ -78,6 +80,14 @@ export default () => {
 							gap: 15px;
 						` }
 					>
+						{
+							sureforms_admin.breadcrumbs[ 0 ].title && sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
+							<button
+								className="srfm-import-btn"
+							>
+								{ __( 'Import Form', 'sureforms' ) }
+							</button>
+						}
 						<article
 							css={ css`
 								color: #94a3b8;

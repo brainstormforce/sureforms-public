@@ -30,7 +30,6 @@ use SureForms\Inc\Generate_Form_Markup;
 		$sureforms_submit_url_val         = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
 		$button_styling_from_theme_val    = get_post_meta( intval( $custom_post_id ), '_srfm_submit_styling_inherit_from_theme', true );
 		$sureforms_form_class_name        = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
-		$styling                          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
 		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 		$submit_button_text               = get_post_meta( intval( $custom_post_id ), '_srfm_submit_button_text', true );
 		$show_title_on_single_form_page   = get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
@@ -140,7 +139,6 @@ use SureForms\Inc\Generate_Form_Markup;
 					$form_path = isset( $segments[1] ) ? $segments[1] : '';
 					wp_footer();
 					?>
-			<?php wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' ); ?>
 			</div>
 		</div>
 	</body>
