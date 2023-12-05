@@ -54,11 +54,14 @@ class SF_Public {
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
 
 		// SureForms Theme styles CSS.
-		wp_enqueue_style( SUREFORMS_SLUG . '-sureforms-frontend', $css_uri . 'srfm_theme_styles' . $file_prefix . '.css', [], SUREFORMS_VER );
-		wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+		//wp_enqueue_style( SUREFORMS_SLUG . '-sureforms-frontend', $css_uri . 'srfm_theme_styles' . $file_prefix . '.css', [], SUREFORMS_VER );
+		//wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
 
 		// Extra.
-		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		//wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+
+		wp_enqueue_style( SUREFORMS_SLUG . '-form', $css_uri . 'form' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
 		// Flatpickr CSS.
 		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER );
@@ -109,11 +112,21 @@ class SF_Public {
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'sureforms/', '', $block_type );
 		$script_dep_blocks = [ 'rating', 'upload', 'switch', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
-			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
 			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-js", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+		}
+
+		$extra_blocks = ['input'];
+		$style_dep_blocks[] = array_merge( $script_dep_blocks, $extra_blocks );
+
+		if ( in_array( $block_name, $style_dep_blocks, true ) ) {
+			$css_uri      = SUREFORMS_URL . 'assets/css/' . $dir_name . '/blocks/default/';
+			wp_enqueue_style( SUREFORMS_SLUG . "-{$block_name}-block", $js_uri . $block_name . $file_prefix . '.css', [], SUREFORMS_VER, true );
 		}
 	}
 

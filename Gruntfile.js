@@ -23,6 +23,13 @@ module.exports = function ( grunt ) {
 						dest: 'assets/css/unminified',
 						ext: '.css',
 					},
+					{
+						expand: true,
+						cwd: 'sass/blocks/default',
+						src: [ '**.scss' ],
+						dest: 'assets/css/unminified/blocks/default',
+						ext: '.css',
+					},
 				],
 			},
 		},
@@ -49,8 +56,9 @@ module.exports = function ( grunt ) {
 			},
 			style: {
 				expand: true,
-				src: [ 'assets/css/unminified/*.css' ],
+				src: [ 'assets/css/unminified/*.css', 'assets/css/unminified/blocks/default/*.css' ],
 			},
+
 		},
 		cssmin: {
 			options: {
@@ -94,7 +102,33 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/srfm-form-selector-rtl.css',
 						dest: 'assets/css/minified/srfm-form-selector.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/single-rtl.css',
+						dest: 'assets/css/minified/single.min-rtl.css',
+					},
+
+					// Generated '.min.css' files from '.css' files.
+					// NOTE: Avoided '-rtl.css' files.
+					{
+						expand: true,
+						src: [ '**/*.css', '!**/*-rtl.css' ],
+						dest: 'assets/css/minified/blocks/default',
+						cwd: 'assets/css/unminified/blocks/default',
+						ext: '.min.css',
+					},
+
+					// Generating RTL files from '/unminified/' into '/minified/'
+					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
+					{
+						src: 'assets/css/unminified/blocks/default/input-rtl.css',
+						dest: 'assets/css/minified/blocks/default/input.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/blocks/default/textarea-rtl.css',
+						dest: 'assets/css/minified/blocks/default/textarea.min-rtl.css',
+					},
 				],
+
 			},
 		},
 		rtlcss: {
@@ -114,6 +148,13 @@ module.exports = function ( grunt ) {
 						cwd: 'assets/css/unminified/',
 						src: [ '*.css', '!*-rtl.css' ],
 						dest: 'assets/css/unminified',
+						ext: '-rtl.css',
+					},
+					{
+						expand: true,
+						cwd: 'assets/css/unminified/blocks/default/',
+						src: [ '*.css', '!*-rtl.css' ],
+						dest: 'assets/css/unminified/blocks/default',
 						ext: '-rtl.css',
 					},
 				],
