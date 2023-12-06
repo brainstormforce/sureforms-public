@@ -14,6 +14,8 @@ import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
 
 const TemplatePicker = ( { clientId } ) => {
+	const [ patterns, setPatterns ] = useState( [] );
+
 	// Remove admin bar padding.
 	useEffect( () => {
 		document.querySelector( 'html.wp-toolbar' ).style.paddingTop = 0;
@@ -31,7 +33,8 @@ const TemplatePicker = ( { clientId } ) => {
 		getPatterns();
 	}, [] );
 
-	const [ patterns, setPatterns ] = useState( [] );
+	console.log( patterns );
+
 	const { replaceInnerBlocks, resetBlocks } = useDispatch( blockEditorStore );
 	// const blockCount = useSelect( ( select ) =>
 	// 	select( 'core/editor' ).getBlockCount( clientId )
@@ -136,56 +139,62 @@ const TemplatePicker = ( { clientId } ) => {
 					<div className="srfm-tp-sp-container">
 						<Header />
 						<div className="srfm-tp-sp-methods-container">
-							<h1 className="srfm-tp-sp-heading">
-								{ __( 'Create a New Form', 'sureforms' ) }
-							</h1>
-							<div className="srfm-tp-sp-methods">
-								<Link
-									to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
-									reloadDocument
-								>
-									<StartingPoint
-										icon={ ICONS.scratch }
-										title={ __(
-											'Start from Scratch',
-											'sureforms'
-										) }
-										description={ __(
-											'Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity.',
-											'sureforms'
-										) }
-									/>
-								</Link>
-								<Link
-									to={ {
-										pathname: 'wp-admin/admin.php',
-										search: `?page=sureforms_add_new_form&method=template`,
-									} }
-								>
-									<StartingPoint
-										icon={ ICONS.template }
-										title={ __(
-											'Use a Template',
-											'sureforms'
-										) }
-										description={ __(
-											'Save time and jumpstart your form creation process with our extensive library of professionally designed templates.',
-											'sureforms'
-										) }
-									/>
-								</Link>
-								<StartingPoint
-									icon={ ICONS.ai }
-									title={ __(
-										'Create with AI',
-										'sureforms'
-									) }
-									description={ __(
-										'Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form.',
-										'sureforms'
-									) }
-									isComingSoon={ true }
-								/>
+							<div className="srfm-tp-sp-methods-inner-wrap">
+								<h1 className="srfm-tp-sp-heading">
+									{ __( 'Create a New Form', 'sureforms' ) }
+								</h1>
+								<div className="srfm-tp-sp-methods">
+									<Link
+										className="srfm-single-card"
+										to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
+										reloadDocument
+									>
+										<StartingPoint
+											icon={ ICONS.scratch }
+											title={ __(
+												'Start from Scratch',
+												'sureforms'
+											) }
+											description={ __(
+												'Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity.',
+												'sureforms'
+											) }
+										/>
+									</Link>
+									<Link
+										className="srfm-single-card"
+										to={ {
+											pathname: 'wp-admin/admin.php',
+											search: `?page=sureforms_add_new_form&method=template`,
+										} }
+									>
+										<StartingPoint
+											icon={ ICONS.template }
+											title={ __(
+												'Use a Template',
+												'sureforms'
+											) }
+											description={ __(
+												'Save time and jumpstart your form creation process with our extensive library of professionally designed templates.',
+												'sureforms'
+											) }
+										/>
+									</Link>
+									<div className="srfm-single-card">
+										<StartingPoint
+											icon={ ICONS.ai }
+											title={ __(
+												'Create with AI',
+												'sureforms'
+											) }
+											description={ __(
+												'Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form.',
+												'sureforms'
+											) }
+											isComingSoon={ true }
+										/>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
