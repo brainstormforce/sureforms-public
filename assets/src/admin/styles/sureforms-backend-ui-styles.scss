@@ -752,6 +752,41 @@ body.post-type-sureforms_form {
 								box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.10);
 							}
 						}
+						.srfm-modal-area-box{
+							display: flex;
+							flex-direction: column;
+							align-items: flex-start;
+							gap: 8px;
+							align-self: stretch;
+							.srfm-modal-area-header{
+								display: flex;
+								justify-content: space-between;
+								align-items: center;
+								align-self: stretch;
+								.srfm-modal-area-header-text{
+									color: var(--dashboard-heading, #1E293B);
+									font-size: 14px;
+									font-style: normal;
+									font-weight: 500;
+									line-height: 20px;
+								}
+								.srfm-modal-area-header-checkbox{
+									display: flex;
+									align-items: center;
+									gap: 6px;
+									.checkbox-text{
+										color: var(--dashboard-text, #475569);
+										font-size: 12px;
+										font-style: normal;
+										font-weight: 400;
+										line-height: 16px;
+									}
+								}
+							}
+							.srfm-modal-area-header + div {
+								width: 100%;
+							}
+						}
 					}	
 				}
 			}
