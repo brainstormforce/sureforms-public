@@ -60,6 +60,7 @@ class SF_Public {
 		// Extra.
 		//wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
+		wp_enqueue_style( SUREFORMS_SLUG . 'block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( SUREFORMS_SLUG . '-form', $css_uri . 'form' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
 

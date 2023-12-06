@@ -59,7 +59,7 @@ class Input_Markup extends Base {
 				<?php if( $label ) { ?>
 					<label for="srfm-text-input-<?php echo esc_attr( $block_id ) ?>" class="srfm-block-label"><?php echo esc_html( $label ) ?><?php if( $required ) { ?><span class="srfm-requred"> *</span><?php } ?></label>
 				<?php } ?>
-				<input type="text" name="srfm-text-input-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" aria-unique="<?php echo esc_attr( $aria_unique_attr ); ?>" <?php echo esc_attr(  $placeholder_attr .''. $max_length_attr .''. $default_value_attr ); ?> />
+				<input class="srfm-block-input" type="text" name="srfm-text-input-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" aria-unique="<?php echo esc_attr( $aria_unique_attr ); ?>" <?php echo esc_attr(  $placeholder_attr .''. $max_length_attr .''. $default_value_attr ); ?> />
 				<?php if( $help ) { ?>
 					<div class="srfm-description"><?php echo esc_html( $help ); ?></div>
 				<?php } ?>
