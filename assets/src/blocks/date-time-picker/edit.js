@@ -144,8 +144,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
-										<div className='srfm-date-setting-wrap'>
-											<div className='srfm-date-setting-icon'>
+										<div className="srfm-date-setting-wrap">
+											<div className="srfm-date-setting-icon">
 												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
 											</div>
 											<input
@@ -210,8 +210,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
-										<div className='srfm-date-setting-wrap'>
-											<div className='srfm-date-setting-icon'>
+										<div className="srfm-date-setting-wrap">
+											<div className="srfm-date-setting-icon">
 												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
 											</div>
 											<input
