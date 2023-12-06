@@ -384,7 +384,9 @@ class Admin {
 				'srfm-template-picker',
 				'sureforms_admin',
 				[
+					'site_url'                     => get_site_url(),
 					'plugin_url'                   => SUREFORMS_URL,
+					'preview_images_url'           => SUREFORMS_URL . 'images/template-previews/',
 					'admin_url'                    => admin_url( '/edit.php?post_type=sureforms_form' ),
 					'breadcrumbs'                  => $this->get_breadcrumbs_for_current_page(),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),

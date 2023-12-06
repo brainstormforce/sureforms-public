@@ -9,7 +9,7 @@ import { Modal } from '@wordpress/components';
 import Header from './components/Header.js';
 import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
-import ICONS from './images/icons.js';
+import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
 
@@ -141,10 +141,7 @@ const TemplatePicker = ( { clientId } ) => {
 							</h1>
 							<div className="srfm-tp-sp-methods">
 								<Link
-									to={ {
-										pathname: 'wp-admin/post-new.php',
-										search: `?post_type=sureforms_form`,
-									} }
+									to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
 									reloadDocument
 								>
 									<StartingPoint

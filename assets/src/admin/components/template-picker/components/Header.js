@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from '../../../dashboard/templates/Logo';
 import { ScBreadcrumb, ScBreadcrumbs } from '@surecart/components-react';
-import ICONS from '../images/icons';
+import ICONS from './icons';
 
 const Header = () => {
 	return (

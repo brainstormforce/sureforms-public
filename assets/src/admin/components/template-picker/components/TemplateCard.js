@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ICONS from '../images/icons';
+import ICONS from './icons';
 import { randomNiceColor } from '@Utils/Helpers';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import apiFetch from '@wordpress/api-fetch';
-import templatesMarkup from '../templates/templatesMarkup';
+import templatesMarkup from './templatesMarkup';
 
 const TemplateCard = ( { templateName, templatePreview } ) => {
 	const [ isHovered, setIsHovered ] = useState( false );
@@ -19,18 +19,23 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 		setIsHovered( false );
 	};
 
-	function toCamelCase( inputString ) {
-		return inputString
-			.replace( /(?:^\w|[A-Z]|\b\w)/g, function ( word, index ) {
-				return index === 0 ? word.toLowerCase() : word.toUpperCase();
-			} )
-			.replace( /\s+/g, '' );
-	}
+	// function toCamelCase( inputString ) {
+	// 	return inputString
+	// 		.replace( /(?:^\w|[A-Z]|\b\w)/g, function ( word, index ) {
+	// 			return index === 0 ? word.toLowerCase() : word.toUpperCase();
+	// 		} )
+	// 		.replace( /\s+/g, '' );
+	// }
 
 	const handleAddNewPost = async ( templateName ) => {
-		const formTemplateName = toCamelCase( templateName );
+		const filteredArray = templatesMarkup.filter(
+			( item ) => item.title === templateName
+		);
 
-		const formData = templatesMarkup[ formTemplateName ];
+		const formData =
+			filteredArray.length > 0 ? filteredArray[ 0 ].formData : null;
+
+		console.log( formData );
 
 		if ( '1' !== sureforms_admin.capability ) {
 			console.error( 'User does not have permission to create posts' );
@@ -92,22 +97,17 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 					</>
 				) }
 			</div>
-			<div
-				className="srfm-ts-preview-container"
-				style={
-					templateName !== 'Blank Form'
-						? { backgroundColor: color, zIndex: -1 }
-						: {}
-				}
-			>
-				{ templatePreview && (
+			{ templatePreview && templateName !== 'Blank Form' ? (
+				<div
+					className="srfm-ts-preview-container"
+					style={ { backgroundColor: color, zIndex: -1 } }
+				>
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }
 					/>
-				) }
-			</div>
-			{ templateName === 'Blank Form' && (
+				</div>
+			) : (
 				<Link
 					to={ {
 						pathname: 'wp-admin/post-new.php',
