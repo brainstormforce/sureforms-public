@@ -144,7 +144,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
-										<div>
+										<div className='srfm-date-setting-wrap'>
+											<div className='srfm-date-setting-icon'>
+												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
+											</div>
 											<input
 												className="srfm-date-time-picker"
 												type="text"
@@ -163,6 +166,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ isMinPopVisible && (
 												<Popover>
 													<DatePicker
+														className="srfm-date-picker-setting"
 														currentDate={ new Date() }
 														onChange={ ( date ) => {
 															const currDate =
@@ -206,7 +210,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
-										<div>
+										<div className='srfm-date-setting-wrap'>
+											<div className='srfm-date-setting-icon'>
+												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
+											</div>
 											<input
 												className="srfm-date-time-picker"
 												type="text"
@@ -225,6 +232,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											{ isMaxPopVisible && (
 												<Popover>
 													<DatePicker
+														className="srfm-date-picker-setting"
 														currentDate={ new Date() }
 														onChange={ ( date ) => {
 															const currDate =
