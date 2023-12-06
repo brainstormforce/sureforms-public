@@ -19,9 +19,9 @@ export function getImageSize( sizes ) {
 export function getIdFromString( label ) {
 	return label
 		? label
-			.toLowerCase()
-			.replace( /[^a-zA-Z ]/g, '' )
-			.replace( /\s+/g, '-' )
+				.toLowerCase()
+				.replace( /[^a-zA-Z ]/g, '' )
+				.replace( /\s+/g, '-' )
 		: '';
 }
 
@@ -48,3 +48,14 @@ export const srfmClassNames = ( classes ) =>
 
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
+
+export const randomNiceColor = () => {
+	const randomInt = ( min, max ) => {
+		return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+	};
+
+	var h = randomInt( 0, 360 );
+	var s = randomInt( 42, 98 );
+	var l = randomInt( 40, 90 );
+	return `hsla(${ h },${ s }%,${ l }%,${ 0.1 })`;
+};

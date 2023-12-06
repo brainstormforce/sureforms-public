@@ -1,0 +1,5 @@
+const templatesMarkup = {
+	contactForm: `<!-- wp:sureforms/input {"id":"block1e339f805adb42acadb2ab77ddd7c5b3","required":true,"label":"Full Name"} /--><!-- wp:sureforms/email {"id":"blockdbc94679f6ea4491a174ed78666f3ddc","required":true} /--><!-- wp:sureforms/phone {"id":"block36db0d7999b44bd788aaed4cab09cf80","placeholder":"","help":""} /--><!-- wp:sureforms/textarea {"id":"block0c2968c28c1e4e08bed54209feb757b4","label":"Message:"} /-->`,
+};
+
+export default templatesMarkup;

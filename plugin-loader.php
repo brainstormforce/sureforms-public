@@ -23,6 +23,7 @@ use SureForms\Inc\SF_Admin_Ajax;
 use SureForms\Inc\SRFM_Export;
 use SureForms\Inc\SRFM_Smart_Tags;
 use SureForms\Inc\Generate_Form_Markup;
+use SureForms\Inc\Create_New_Form;
 
 /**
  * Plugin_Loader
@@ -111,6 +112,7 @@ class Plugin_Loader {
 		SRFM_Export::get_instance();
 		SRFM_Smart_Tags::get_instance();
 		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
 
 		/**
 		 * The code that runs during plugin activation

@@ -48,7 +48,7 @@ export default ( { templates, template, handleTemplatePicker } ) => {
 					` }
 				>
 					{ templates.map( ( singleTemplate, key ) => {
-						const url = sfBlockData?.plugin_url;
+						const url = sureforms_admin?.plugin_url;
 						const name = singleTemplate.name.replace(
 							'sureforms/',
 							''
