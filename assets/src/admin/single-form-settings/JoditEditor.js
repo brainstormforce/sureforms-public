@@ -9,9 +9,14 @@ const Editor = ({ placeholder }) => {
         () => ({
             readonly: false,
             placeholder: placeholder || 'Start typings...',
-            showCharsCounter: false,
-            showWordsCounter: false,
-            showXPathInStatusbar: false
+            useSearch: false,
+			iframe: true,
+			minHeight: 240,
+			spellcheck: true,
+			toolbarButtonSize: "small",
+			disablePlugins: "about,fullsize,file,image,image-processor,image-properties,media,powered-by-jodit,speech-recognize,video",
+			buttons: "bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall",
+  			toolbarInlineForSelection: true,
         }),
         [placeholder]
     );
@@ -23,7 +28,9 @@ const Editor = ({ placeholder }) => {
 			config={config}
 			tabIndex={1}
 			onBlur={newContent => setContent(newContent)}
-			onChange={newContent => {}}
+			onChange={newContent => {
+				console.log({newContent})
+			}}
 		/>
 	);
 };

@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
 import Editor from './JoditEditor';
 
 const EmailNotification = ()=>{
@@ -36,16 +35,14 @@ const EmailNotification = ()=>{
                     <div className='srfm-modal-area-box'>
                         <div className='srfm-modal-area-header'>
                             <div className='srfm-modal-area-header-text'>
-                                <p>Email Body</p>
+                                <p>{__('Email Body','sureforms')}</p>
                             </div>
                             <div className='srfm-modal-area-header-checkbox'>
-                                <input type='checkbox'/>
-                                <p className='checkbox-text'>Send Email as RAW HTML Format</p>
+                                <input className='srfm-modal-checkbox' type='checkbox'/>
+                                <span className='checkbox-text'>{__('Send Email as RAW HTML Format','sureforms')}</span>
                             </div>
                         </div>
-                        <div>
-                            {/* <textarea className='srfm-email-editor-wrap' type='textarea'/> */}
-                            {/* <CMSEditor/> */}
+                        <div className='srfm-editor-wrap'>
                             <Editor placeholder={'placeholder'} />
                         </div>
                     </div>

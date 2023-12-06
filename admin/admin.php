@@ -301,6 +301,7 @@ class Admin {
 			wp_enqueue_style( 'srfm-setting-styles', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SUREFORMS_VER, 'all' );
 		}
 		wp_enqueue_style( SUREFORMS_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
 		}
