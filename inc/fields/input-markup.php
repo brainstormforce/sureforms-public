@@ -19,37 +19,7 @@ class Input_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms input default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$block_id      = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
-		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$duplicate_msg = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-		$placeholder   = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$max_text_len  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
-		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
-
-		return '<div class="srfm-input-text-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-			<label class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-			<input id="srfm-input-text-' . esc_attr( $block_id ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="text" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" 
-			aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" maxlength="' . esc_attr( $max_text_len ) . '" class="srfm-input-field">
-			' . ( '' !== $help ? '<label for="srfm-input-text" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-			<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-			<span style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $duplicate_msg ) . '</span>
-		</div>';
-	}
-
-	/**
-	 * Render the sureforms input classic styling
+	 * Render input markup
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 *
@@ -66,19 +36,42 @@ class Input_Markup extends Base {
 		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$max_text_len  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
+		$max_text_length  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
 		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		return '<div class="srfm-main-container srfm-frontend-inputs-holder  ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
-			<label for="srfm-input-text-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
-			<div class="">
-				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-text-' . esc_attr( $block_id ) . '" class="srfm-classic-input-element" 
-				placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxlength="' . esc_attr( $max_text_len ) . '">
+		$inline_style = '';
+
+		// Append Dynamic styles here.
+		$inline_style .= $field_width ? 'width:' . $field_width . 'px;' : '';
+		$style =  $inline_style ? 'style="'. $inline_style .'"' : '';
+
+
+		// html attributes
+		$placeholder_attr = $placeholder ? 'placeholder="'. $placeholder .'" ' : '';
+		$max_length_attr = $max_text_length ? 'maxlength="'. $max_text_length .'" ' : '';
+		$aria_require_attr = $required ? 'true' : 'false';
+		$aria_unique_attr = $is_unique ? 'true' : 'false';
+		$default_value_attr = $default ? 'value="'. $default .'" ' : '';
+
+		ob_start(); ?>
+
+			<div class="srfm-block srfm-text-input-block <?php echo esc_attr( $classname ) ?>" <?php esc_attr( $style ) ?>>
+				<?php if( $label ) { ?>
+					<label for="srfm-text-input-<?php echo esc_attr( $block_id ) ?>" class="srfm-block-label"><?php echo esc_html( $label ) ?><?php if( $required ) { ?><span class="srfm-requred"> *</span><?php } ?></label>
+				<?php } ?>
+				<input type="text" name="srfm-text-input-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" aria-unique="<?php echo esc_attr( $aria_unique_attr ); ?>" <?php echo esc_attr(  $placeholder_attr .''. $max_length_attr .''. $default_value_attr ); ?> />
+				<?php if( $help ) { ?>
+					<div class="srfm-description"><?php echo esc_html( $help ); ?></div>
+				<?php } ?>
+				<?php if( $required ) { ?>
+					<div class="srfm-error srfm-hide"><?php echo esc_html( $error_msg ); ?></div>
+				<?php } ?>
+				<?php if( $is_unique ) { ?>
+					<div class="srfm-error srfm-hide"><?php echo esc_html( $duplicate_msg ); ?></div>
+				<?php } ?>
 			</div>
-			' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</p>' : '' ) . '
-			<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-			<p style="display:none" class="srfm-duplicate-message">' . esc_html( $duplicate_msg ) . '</p>
-		</div>';
+		<?php 
+		return ob_get_clean();
 	}
 
 }
