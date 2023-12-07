@@ -4,11 +4,11 @@
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
-  border-bottom: 1px solid var(--colors-gray-200, #E5E7EB);
-  background: var(--base-white, #FFF);
+  border-bottom: 1px solid var(--colors-gray-200, #e5e7eb);
+  background: var(--base-white, #fff);
 }
 .srfm-header-settings-modal .components-modal__header .components-modal__header-heading {
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   /* Dashboard/Headings/H6 */
   font-family: Inter;
   font-size: 14px;
@@ -17,7 +17,7 @@
   line-height: 20px; /* 142.857% */
 }
 .srfm-header-settings-modal .components-modal__content {
-  background-color: #F4F9FA;
+  background-color: #f4f9fa;
 }
 .srfm-header-settings-modal .components-modal__header .components-button svg {
   width: 24px;
@@ -35,8 +35,8 @@
   align-items: flex-start;
   gap: 2px;
   align-self: stretch;
-  border-left: 1px solid var(--dashboard-border-primary, #DCE0E6);
-  background: var(--dashboard-surface-secondary, #FFF);
+  border-left: 1px solid var(--dashboard-border-primary, #dce0e6);
+  background: var(--dashboard-surface-secondary, #fff);
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab {
   display: flex;
@@ -45,7 +45,8 @@
   gap: 8px;
   align-self: stretch;
   border-radius: 2px;
-  background: var(--colors-slate-50, #F8FAFC);
+  background: var(--colors-slate-50, #f8fafc);
+  cursor: pointer;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab .srfm-modal-tab-text {
   color: var(--dashboard-text, #475569);
@@ -69,7 +70,7 @@
   align-items: flex-start;
   gap: 8px;
   flex: 1 0 0;
-  background-color: #F4F9FA;
+  background-color: #f4f9fa;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content {
   display: flex;
@@ -85,7 +86,7 @@
   align-self: stretch;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-heading .srfm-modal-inner-heading-text {
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -97,14 +98,15 @@
   justify-content: center;
   align-items: center;
   border-radius: 6px;
-  background: var(--dashboard-primary, #125D9F);
+  background: var(--dashboard-primary, #125d9f);
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-  color: var(--dashboard-surface-secondary, #FFF);
+  color: var(--dashboard-surface-secondary, #fff);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: 16px;
   border: none;
+  cursor: pointer;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box {
   display: flex;
@@ -112,12 +114,12 @@
   align-items: flex-start;
   align-self: stretch;
   border-radius: var(--border-radius-4, 4px);
-  border: 1px solid #DCE0E6;
-  background: #FFF;
+  border: 1px solid #dce0e6;
+  background: #fff;
   box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-text {
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
@@ -126,11 +128,12 @@
   align-items: center;
   gap: 8px;
   align-self: stretch;
+  justify-content: space-between;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-separator {
   width: 768px;
   height: 1px;
-  background: #DCE0E6;
+  background: #dce0e6;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content {
   display: flex;
@@ -149,7 +152,7 @@
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-label {
   width: 144px;
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -162,8 +165,8 @@
   gap: 116px;
   flex: 1 0 0;
   border-radius: var(--border-radius-4, 4px);
-  border: 1px solid #DCE0E6;
-  background: #FFF;
+  border: 1px solid #dce0e6;
+  background: #fff;
   box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box {
@@ -180,7 +183,7 @@
   align-self: stretch;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-modal-area-header .srfm-modal-area-header-text {
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -233,7 +236,8 @@
   empty-cells: show;
   max-width: 100%;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap th, .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap td {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap th,
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap td {
   padding: 2px 5px;
   border: 1px solid #ccc;
   -webkit-user-select: text;
@@ -270,4 +274,128 @@
   -khtml-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-notification-btn {
+  display: flex;
+  padding: 7px 11px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  background: var(--Light-Purple, #f5f3ff);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  color: var(--dashboard-primary, #125d9f);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 133.333% */
+  border: none;
+  cursor: pointer;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table {
+  display: flex;
+  padding: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  align-self: stretch;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  border: 1px solid #c3c4c7;
+  background: #fff;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.04);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row {
+  display: flex;
+  padding-left: 0px;
+  align-items: flex-start;
+  align-self: stretch;
+  color: #2c3338;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col {
+  display: flex;
+  padding: 8px 10px;
+  align-items: flex-start;
+  flex: 1 0 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col .srfm-modal-col-text {
+  color: #2c3338;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 19.6px; /* 140% */
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.second {
+  width: 224px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.third {
+  width: 160px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.fourth {
+  width: 104px;
+  gap: 16px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-separator {
+  width: 715px;
+  margin-right: -2px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body {
+  display: flex;
+  padding-bottom: 0px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data {
+  height: 40px;
+  align-self: stretch;
+  background: #f6f7f7;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-cursor-pointer {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch {
+  display: inline-block;
+  position: relative;
+  width: 32px;
+  height: 16px;
+  border-radius: 20px;
+  background: #dfd9ea;
+  transition: background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  vertical-align: middle;
+  cursor: pointer;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fafafa;
+  border-radius: 50%;
+  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch:active::before {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28), 0 0 0 20px rgba(128, 128, 128, 0.1);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch {
+  background: var(--dashboard-primary, #125D9F);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch::before {
+  right: 18px;
+  background: #fff;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch:active::before {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28), 0 0 0 20px rgba(0, 150, 136, 0.2);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input[type=checkbox] {
+  display: none;
+  width: 32px;
+  height: 16px;
 }
