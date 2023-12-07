@@ -1,10 +1,8 @@
 import { useState, useRef, useMemo } from '@wordpress/element';
 import JoditEditor from 'jodit-react';
 
-const Editor = ( { placeholder } ) => {
+const Editor = ( { placeholder,handleEmailBodyContent,content } ) => {
 	const editor = useRef( null );
-	const [ content, setContent ] = useState( '' );
-
 	const config = useMemo(
 		() => ( {
 			readonly: false,
@@ -26,9 +24,8 @@ const Editor = ( { placeholder } ) => {
 			value={ content }
 			config={ config }
 			tabIndex={ 0 }
-			onBlur={ ( newContent ) => setContent( newContent ) }
 			onChange={ ( newContent ) => {
-				console.log( { newContent } );
+				handleEmailBodyContent(newContent)
 			} }
 		/>
 	);

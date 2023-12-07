@@ -47,6 +47,7 @@ const default_keys = {
 	_srfm_additional_classes: '',
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
+	_srfm_email_notification: [ { id:1,status: false, name: 'Admin Notification Email', email_to: sfBlockData.admin_email, subject: 'New Form Submission', email_body: '' } ],
 };
 
 const SureformsFormSpecificSettings = ( props ) => {

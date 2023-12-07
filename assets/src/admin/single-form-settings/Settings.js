@@ -33,7 +33,6 @@ function Settings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	if ( sureforms_keys && '_srfm_sender_notification' in sureforms_keys ) {
 		if ( ! sureforms_keys._srfm_sender_notification ) {
 			sureforms_keys = default_keys;
@@ -47,7 +46,6 @@ function Settings( props ) {
 			meta: sureforms_keys,
 		} );
 	}
-
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;
@@ -55,7 +53,7 @@ function Settings( props ) {
 			meta: option_array,
 		} );
 	}
-
+	console.log({sureforms_keys})
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
@@ -373,7 +371,7 @@ function Settings( props ) {
 					</svg> }
 					isFullScreen={ true }
 				>
-					<SingleFormSetting />
+					<SingleFormSetting sureformsKeys={ sureforms_keys } />
 				</Modal>
 			) }
 		</>

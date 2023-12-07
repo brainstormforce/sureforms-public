@@ -1,7 +1,20 @@
 import { __ } from '@wordpress/i18n';
 import Editor from './JoditEditor';
+import { useState } from '@wordpress/element';
 
-const EmailConfirmation = () => {
+const EmailConfirmation = ({data,handleConfirmEmail}) => {
+	const [formData,setFormData]=useState({
+		id: data.id || false,
+		status:data.status || false,
+		name:data.name,
+		email_to:data.email_to,
+		subject:data.subject,
+		email_body:data.email_body,
+	});
+	const handleOnChangeEmailBodyContent=(newContent)=>{
+		setFormData({...formData,email_body:newContent})
+	}
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -9,7 +22,7 @@ const EmailConfirmation = () => {
 					<span className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</span>
-					<button className="srfm-modal-inner-heading-button">
+					<button onClick={()=>handleConfirmEmail(formData)} className="srfm-modal-inner-heading-button">
 						{ __( 'Save Changes', 'sureforms' ) }
 					</button>
 				</div>
@@ -21,15 +34,15 @@ const EmailConfirmation = () => {
 					<div className="srfm-modal-inner-box-content">
 						<div className="srfm-modal-input-box">
 							<label className="srfm-modal-label">{ __( 'Name', 'sureforms' ) }</label>
-							<input className="srfm-modal-input" />
+							<input onChange={(e)=>setFormData({...formData,name:e.target.value})} value={formData.name} className="srfm-modal-input" />
 						</div>
 						<div className="srfm-modal-input-box">
 							<label className="srfm-modal-label">{ __( 'Send Email To', 'sureforms' ) }</label>
-							<input className="srfm-modal-input" />
+							<input onChange={(e)=>setFormData({...formData,email_to:e.target.value})} value={formData.email_to} className="srfm-modal-input" />
 						</div>
 						<div className="srfm-modal-input-box">
 							<label className="srfm-modal-label">{ __( 'Subject', 'sureforms' ) }</label>
-							<input className="srfm-modal-input" />
+							<input onChange={(e)=>setFormData({...formData,subject:e.target.value})} value={formData.subject} className="srfm-modal-input" />
 						</div>
 						<div className="srfm-modal-area-box">
 							<div className="srfm-modal-area-header">
@@ -42,7 +55,7 @@ const EmailConfirmation = () => {
 								</div>
 							</div>
 							<div className="srfm-editor-wrap">
-								<Editor placeholder={ 'placeholder' } />
+								<Editor placeholder={ 'placeholder' } handleEmailBodyContent={handleOnChangeEmailBodyContent} content={formData.email_body} />
 							</div>
 						</div>
 					</div>
