@@ -9,9 +9,10 @@
  */
 
 return [
-	'title'      => __( 'Blank Form', 'sureforms' ),
-	'categories' => [ 'sureforms_form' ],
-	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '',
+	'title'            => __( 'Blank Form', 'sureforms' ),
+	'categories'       => [ 'sureforms_form' ],
+	'templateCategory' => 'Basic Forms',
+	'postTypes'        => SUREFORMS_FORMS_POST_TYPE,
+	'content'          => '',
 
 ];

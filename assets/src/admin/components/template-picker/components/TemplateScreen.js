@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TemplateCard from './TemplateCard';
 import { __ } from '@wordpress/i18n';
 import templatesMarkup from './templatesMarkup';
 import ICONS from './icons';
+import apiFetch from '@wordpress/api-fetch';
 
 const TemplateScreen = () => {
+	const [ patterns, setPatterns ] = useState( [] );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
 	const [ selectedCategory, setSelectedCategory ] = useState( null );
 	const [ showSearch, setShowSearch ] = useState( false );
 
-	const filteredTemplates = templatesMarkup.filter( ( template ) => {
+	const getPatterns = async () => {
+		const newPatterns = await apiFetch( {
+			path: '/sureforms/v1/form-patterns',
+		} );
+		setPatterns( newPatterns );
+	};
+
+	useEffect( () => {
+		getPatterns();
+	}, [] );
+
+	const filteredTemplates = patterns.filter( ( template ) => {
 		const matchesSearch = template.title
 			.toLowerCase()
 			.includes( searchQuery.toLowerCase() );
 		const matchesCategory =
 			! selectedCategory ||
-			template.category === selectedCategory ||
+			template.templateCategory === selectedCategory ||
 			selectedCategory === 'All Forms';
 
 		return matchesSearch && matchesCategory;
@@ -62,17 +75,21 @@ const TemplateScreen = () => {
 						onClick={ () => handleCategoryClick( null ) }
 					>
 						{ __( 'All Forms', 'sureforms' ) }
-						<span>{ templatesMarkup.length }</span>
+						<span>{ patterns.length }</span>
 					</div>
 					{ Array.from(
 						new Set(
-							templatesMarkup.map(
-								( template ) => template.category
+							patterns.map(
+								( template ) => template.templateCategory
 							)
 						)
 					).map( ( uniqueCategory ) => {
-						const categoryElements = templatesMarkup.filter(
-							( template ) => template.category === uniqueCategory
+						const categoryElements = patterns.filter(
+							( template ) => {
+								return (
+									template.templateCategory === uniqueCategory
+								);
+							}
 						);
 						return (
 							<div
@@ -105,6 +122,7 @@ const TemplateScreen = () => {
 								sureforms_admin.preview_images_url +
 								'contact-form.png'
 							}
+							formData={ template.content }
 						/>
 					);
 				} ) }

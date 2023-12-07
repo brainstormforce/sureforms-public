@@ -59,15 +59,15 @@ class Create_New_Form {
 	 */
 	public static function create_sureforms_form( $data ) {
 		$content = $data->get_body();
-		$content = str_replace( '"', '', $content );
+		$content = strval( json_decode( $content ) );
 
 		// Create a new SureForms Form with Template.
 		$post_id = wp_insert_post(
 			array(
-				'post_type'    => 'sureforms_form',
 				'post_title'   => 'Untitled Form',
 				'post_content' => $content,
 				'post_status'  => 'draft',
+				'post_type'    => 'sureforms_form',
 			)
 		);
 

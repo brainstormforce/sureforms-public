@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import apiFetch from '@wordpress/api-fetch';
 import templatesMarkup from './templatesMarkup';
 
-const TemplateCard = ( { templateName, templatePreview } ) => {
+const TemplateCard = ( { templateName, templatePreview, formData } ) => {
 	const [ isHovered, setIsHovered ] = useState( false );
 
 	const [ color, setColor ] = useState( randomNiceColor() );
@@ -28,12 +28,12 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 	// }
 
 	const handleAddNewPost = async ( templateName ) => {
-		const filteredArray = templatesMarkup.filter(
-			( item ) => item.title === templateName
-		);
+		// const filteredArray = templatesMarkup.filter(
+		// 	( item ) => item.title === templateName
+		// );
 
-		const formData =
-			filteredArray.length > 0 ? filteredArray[ 0 ].formData : null;
+		// const formData =
+		// 	filteredArray.length > 0 ? filteredArray[ 0 ].formData : null;
 
 		console.log( formData );
 
@@ -86,7 +86,7 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 						<Link
 							to={ {
 								pathname: 'wp-admin/admin.php',
-								search: `?page=sureforms_add_new_form&method=template&template=${ templateName }`,
+								search: `?page=add-new-form&method=template&template=${ templateName }`,
 							} }
 						>
 							<button className="srfm-tc-hover-preview-btn">

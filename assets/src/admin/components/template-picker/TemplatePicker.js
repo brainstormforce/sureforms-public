@@ -165,7 +165,7 @@ const TemplatePicker = ( { clientId } ) => {
 										className="srfm-single-card"
 										to={ {
 											pathname: 'wp-admin/admin.php',
-											search: `?page=sureforms_add_new_form&method=template`,
+											search: `?page=add-new-form&method=template`,
 										} }
 									>
 										<StartingPoint
