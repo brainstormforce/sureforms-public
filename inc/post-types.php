@@ -412,15 +412,48 @@ class Post_Types {
 			'_srfm_hide_title_post_specific'          => 'boolean',
 			'_srfm_page_form_title'                   => 'boolean',
 			'_srfm_single_page_form_title'            => 'boolean',
-			'_srfm_email_notification'                => 'array',
+			'_srfm_email_notification'                => array(
+				'type'  => 'array',
+				'items' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'id'         => array(
+							'type' => 'integer',
+						),
+						'status'     => array(
+							'type' => 'boolean',
+						),
+						'name'       => array(
+							'type' => 'string',
+						),
+						'email_to'   => array(
+							'type' => 'string',
+						),
+						'subject'    => array(
+							'type' => 'string',
+						),
+						'email_body' => array(
+							'type' => 'string',
+						),
+					),
+				),
+			),
 		);
-		foreach ( $metas as $meta => $type ) {
+
+		foreach ( $metas as $meta => $args ) {
+			$type  = is_array( $args ) ? $args['type'] : $args;
+			$items = is_array( $args ) && isset( $args['items'] ) ? $args['items'] : null;
 			register_meta(
 				'post',
 				$meta,
 				array(
 					'object_subtype'    => SUREFORMS_FORMS_POST_TYPE,
-					'show_in_rest'      => true,
+					'show_in_rest'      => array(
+						'schema' => array(
+							'type'  => $type,
+							'items' => $items,
+						),
+					),
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
