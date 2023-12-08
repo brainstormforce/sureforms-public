@@ -1,32 +1,15 @@
 import React from 'react';
-import Logo from '../../../dashboard/templates/Logo';
-import { ScBreadcrumb, ScBreadcrumbs } from '@surecart/components-react';
 import ICONS from './icons';
+import Breadcrumbs from './Breadcrumbs';
 
 const Header = () => {
 	return (
 		<div className="srfm-tp-header">
 			<div className="srfm-tp-header-items">
 				{ /** Logo & Breadcrumbs */ }
-				<h2 className="srfm-tp-main-title">
-					<ScBreadcrumbs>
-						<ScBreadcrumb>
-							<Logo display="block" />
-						</ScBreadcrumb>
-						{ sureforms_admin?.breadcrumbs &&
-							sureforms_admin.breadcrumbs.length > 0 &&
-							sureforms_admin.breadcrumbs.map(
-								( breadcrumb, index ) => (
-									<ScBreadcrumb
-										key={ index }
-										href={ breadcrumb.link }
-									>
-										{ breadcrumb.title }
-									</ScBreadcrumb>
-								)
-							) }
-					</ScBreadcrumbs>
-				</h2>
+				<div className="srfm-tp-main-title">
+					<Breadcrumbs />
+				</div>
 			</div>
 
 			{ /** Close Icon */ }

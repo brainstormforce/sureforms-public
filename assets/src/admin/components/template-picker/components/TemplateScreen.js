@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import TemplateCard from './TemplateCard';
 import { __ } from '@wordpress/i18n';
 import ICONS from './icons';
