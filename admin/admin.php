@@ -145,7 +145,7 @@ class Admin {
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
 			'edit_others_posts',
-			'sureforms_add_new_form',
+			'add-new-form',
 			[ $this, 'sureforms_add_new_form_callback' ],
 			2
 		);
@@ -355,7 +355,7 @@ class Admin {
 		// Int-tel-input JS.
 		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
 
-		if ( 'sureforms_page_sureforms_add_new_form' === $current_screen->id ) {
+		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
 
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -403,7 +403,7 @@ class Admin {
 	 * @param string $classes Space separated class string.
 	 */
 	public function admin_template_picker_body_class( $classes = '' ) {
-		$theme_builder_class = isset( $_GET['page'] ) && 'sureforms_add_new_form' === $_GET['page'] ? 'srfm-template-picker' : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Fetching a $_GET value, no nonce available to validate.
+		$theme_builder_class = isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ? 'srfm-template-picker' : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Fetching a $_GET value, no nonce available to validate.
 		$classes            .= ' ' . $theme_builder_class . ' ';
 
 		return $classes;

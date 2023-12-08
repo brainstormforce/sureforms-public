@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ICONS from './icons';
-import { randomNiceColor } from '@Utils/Helpers';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import apiFetch from '@wordpress/api-fetch';
-import templatesMarkup from './templatesMarkup';
 
-const TemplateCard = ( { templateName, templatePreview } ) => {
+const TemplateCard = ( {
+	templateName,
+	templateId,
+	templatePreview,
+	formData,
+	color,
+} ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
-	const [ color, setColor ] = useState( randomNiceColor() );
-
 	const blankImg = sureforms_admin.preview_images_url + 'blank.svg';
 
 	const handleMouseEnter = () => {
@@ -20,24 +22,7 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 		setHoverClass( '' );
 	};
 
-	// function toCamelCase( inputString ) {
-	// 	return inputString
-	// 		.replace( /(?:^\w|[A-Z]|\b\w)/g, function ( word, index ) {
-	// 			return index === 0 ? word.toLowerCase() : word.toUpperCase();
-	// 		} )
-	// 		.replace( /\s+/g, '' );
-	// }
-
-	const handleAddNewPost = async ( templateName ) => {
-		const filteredArray = templatesMarkup.filter(
-			( item ) => item.title === templateName
-		);
-
-		const formData =
-			filteredArray.length > 0 ? filteredArray[ 0 ].formData : null;
-
-		console.log( formData );
-
+	const handleAddNewPost = async () => {
 		if ( '1' !== sureforms_admin.capability ) {
 			console.error( 'User does not have permission to create posts' );
 			return;
@@ -76,7 +61,7 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 			onMouseLeave={ handleMouseLeave }
 		>
 
-			{ templatePreview && templateName !== 'Blank Form' ? (
+			{ templatePreview && templateId !== 'form-1' ? (
 				<div
 					className={ `srfm-ts-preview-container${ hoverClass }` }
 					style={ { backgroundColor: color } }
@@ -85,14 +70,14 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 						<div className="srfm-tc-btn-container">
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
-								onClick={ () => handleAddNewPost( templateName ) }
+								onClick={ () => handleAddNewPost() }
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
 							<Link
 								to={ {
 									pathname: 'wp-admin/admin.php',
-									search: `?page=sureforms_add_new_form&method=template&template=${ templateName }`,
+									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
 								} }
 							>
 								<button className="srfm-tc-hover-preview-btn srfm-common-btn">

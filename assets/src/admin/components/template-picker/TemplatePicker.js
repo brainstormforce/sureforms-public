@@ -1,11 +1,4 @@
-import { useEffect, useState, render } from '@wordpress/element';
-import ChooseDesign from './ChooseDesign';
-import apiFetch from '@wordpress/api-fetch';
-import { createBlocksFromInnerBlocksTemplate, parse } from '@wordpress/blocks';
-import { store as blockEditorStore } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { Modal } from '@wordpress/components';
+import { useEffect, render } from '@wordpress/element';
 import Header from './components/Header.js';
 import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
@@ -13,110 +6,11 @@ import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
 
-const TemplatePicker = ( { clientId } ) => {
-	const [ patterns, setPatterns ] = useState( [] );
-
+const TemplatePicker = () => {
 	// Remove admin bar padding.
 	useEffect( () => {
 		document.querySelector( 'html.wp-toolbar' ).style.paddingTop = 0;
 	}, [] );
-
-	const [ template, setTemplate ] = useState( '' );
-	const [ templatePickerVisible, setTemplatePickerVisible ] =
-		useState( false );
-
-	const postStatus = useSelect( ( select ) => {
-		return select( 'core/editor' ).getEditedPostAttribute( 'status' );
-	}, [] );
-
-	useEffect( () => {
-		getPatterns();
-	}, [] );
-
-	console.log( patterns );
-
-	const { replaceInnerBlocks, resetBlocks } = useDispatch( blockEditorStore );
-	// const blockCount = useSelect( ( select ) =>
-	// 	select( 'core/editor' ).getBlockCount( clientId )
-	// );
-	const sureforms_keys = useSelect( ( select ) =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
-	);
-	const { editPost } = useDispatch( editorStore );
-
-	useEffect( () => {
-		if ( template && postStatus !== 'publish' ) {
-			onCreate( template );
-		} else if ( template ) {
-			onCreate( template );
-		}
-	}, [ template, onCreate ] );
-
-	// useEffect( () => {
-	// 	if (
-	// 		sureforms_keys._srfm_form_template === '' &&
-	// 		postStatus !== 'publish'
-	// 	) {
-	// 		setTemplatePickerVisible( true );
-	// 	}
-	// }, [] );
-
-	const getPatterns = async () => {
-		const newPatterns = await apiFetch( {
-			path: '/sureforms/v1/form-patterns',
-		} );
-		setPatterns( newPatterns );
-	};
-
-	/**
-	 * Maybe create the template for the form.
-	 *
-	 */
-	const maybeCreateTemplate = async () => {
-		const newPattern = patterns.find(
-			( singlePattern ) =>
-				singlePattern.name === `sureforms/${ template }`
-		);
-
-		if ( ! newPattern ) {
-			alert( 'Something went wrong' );
-			return;
-		}
-		// parse blocks.
-		const parsed = parse( newPattern.content );
-
-		return parsed;
-	};
-
-	const onCreate = async () => {
-		const option_array = {};
-		option_array._srfm_form_template = template;
-		editPost( {
-			meta: option_array,
-		} );
-		const result = await maybeCreateTemplate( {
-			template,
-		} );
-		resetBlocks( [] );
-		replaceInnerBlocks(
-			clientId,
-			createBlocksFromInnerBlocksTemplate( result ),
-			false
-		);
-	};
-
-	const handleTemplatePicker = ( choice ) => {
-		setTemplatePickerVisible( ! templatePickerVisible );
-		if ( typeof choice !== 'object' ) {
-			setTemplate( choice );
-		}
-	};
-
-	useEffect( () => {
-		if ( template ) {
-			onCreate( template );
-		}
-	}, [ template, onCreate ] );
 
 	// Starting screen navigation
 	function useQuery() {
@@ -165,7 +59,7 @@ const TemplatePicker = ( { clientId } ) => {
 										className="srfm-single-card"
 										to={ {
 											pathname: 'wp-admin/admin.php',
-											search: `?page=sureforms_add_new_form&method=template`,
+											search: `?page=add-new-form&method=template`,
 										} }
 									>
 										<StartingPoint
@@ -200,35 +94,16 @@ const TemplatePicker = ( { clientId } ) => {
 					</div>
 				);
 		}
-		return '';
 	}
 
-	// if ( ! template ) {
 	return (
 		<>
-			{ /* <Modal
-					// focusOnMount
-					// shouldCloseOnEsc
-					// shouldCloseOnClickOutside
-					overlayClassName="srfm-template-picker-modal-overlay"
-					// title={ __( 'Choose A Starting Template', 'sureforms' ) }
-					onRequestClose={ handleTemplatePicker }
-				>
-					<ChooseDesign
-						templates={ patterns }
-						template={ template }
-						setTemplate={ setTemplate }
-						handleTemplatePicker={ handleTemplatePicker }
-					/>
-				</Modal> */ }
 			<Router>
 				<QueryScreen />
 			</Router>
 		</>
 	);
 };
-// return null;
-// };
 
 export default TemplatePicker;
 
