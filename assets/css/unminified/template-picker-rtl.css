@@ -148,11 +148,50 @@
   color: #50575e;
   cursor: pointer;
 }
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-ts-sidebar-categories-container {
+  padding-bottom: 1.25em;
+}
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-ts-sidebar-categories-container .srfm-ts-sidebar-category {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 0.5em 0.625em;
+  cursor: pointer;
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container {
+  padding: 1em;
+  border: 1px solid rgb(220, 224, 230);
+  border-radius: 4px;
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-title-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 0.75em;
+  color: rgb(30, 41, 59);
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-title-container svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-title-container .srfm-req-template-title {
+  width: calc(100% - 24px);
+  font-size: 0.875em;
+  font-weight: 500;
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-body {
+  padding-bottom: 0.75em;
+  font-size: 0.875em;
+  color: rgb(71, 85, 105);
+}
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-btn {
+  padding: 0.4375em 0.625em;
+  font-size: 0.75em;
+  font-weight: 500;
+  background: rgb(245, 243, 255);
+  color: rgb(18, 93, 159);
+  border: 0;
+  width: 100%;
   cursor: pointer;
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-cards-container {

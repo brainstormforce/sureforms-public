@@ -191,11 +191,55 @@ $sidebar_width: 290px;
 			}
 
 			.srfm-ts-sidebar-categories-container {
+				padding-bottom: 1.25em;
 				.srfm-ts-sidebar-category {
 					display: flex;
 					flex-wrap: wrap;
 					justify-content: space-between;
 					padding: 0.5em 0.625em;
+					cursor: pointer;
+				}
+			}
+
+			.srfm-req-template-container {
+				padding: 1em;
+				border: 1px solid rgba(220, 224, 230, 1);
+				border-radius: 4px;
+
+				.srfm-req-template-title-container {
+					display: flex;
+					flex-wrap: wrap;
+					padding-bottom: 0.75em;
+					color: rgba(30, 41, 59, 1);
+
+					svg {
+						width: 16px;
+						height: 16px;
+						margin-right: 8px;
+
+					}
+
+					.srfm-req-template-title {
+						width: calc(100% - 24px);
+						font-size: 0.875em;
+						font-weight: 500;
+					}
+				}
+
+				.srfm-req-template-body {
+					padding-bottom: 0.75em;
+					font-size: 0.875em;
+					color: rgba(71, 85, 105, 1);
+				}
+
+				.srfm-req-template-btn {
+					padding: 0.4375em 0.625em;
+					font-size: 0.75em;
+					font-weight: 500;
+					background: rgba(245, 243, 255, 1);
+					color: rgba(18, 93, 159, 1);
+					border: 0;
+					width: 100%;
 					cursor: pointer;
 				}
 			}
