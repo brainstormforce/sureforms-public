@@ -127,12 +127,14 @@ class Block_Patterns extends WP_REST_Controller {
 		$keys   = array(
 			'name'             => 'name',
 			'title'            => 'title',
+			'info'             => 'info',
 			'description'      => 'description',
 			'viewportWidth'    => 'viewport_width',
 			'blockTypes'       => 'block_types',
 			'categories'       => 'categories',
 			'templateCategory' => 'templateCategory',
 			'id'               => 'id',
+			'isPro'            => 'isPro',
 			'keywords'         => 'keywords',
 			'content'          => 'content',
 			'inserter'         => 'inserter',
@@ -174,6 +176,12 @@ class Block_Patterns extends WP_REST_Controller {
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
+				'info'             => array(
+					'description' => __( 'The pattern basic description', 'sureforms' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
 				'description'      => array(
 					'description' => __( 'The pattern detailed description.', 'sureforms' ),
 					'type'        => 'string',
@@ -207,6 +215,12 @@ class Block_Patterns extends WP_REST_Controller {
 				'id'               => array(
 					'description' => __( 'The pattern template id.', 'sureforms' ),
 					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'isPro'            => array(
+					'description' => __( 'Wether pattern is pro or not.', 'sureforms' ),
+					'type'        => 'boolean',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),

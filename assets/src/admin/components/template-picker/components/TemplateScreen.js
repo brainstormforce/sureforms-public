@@ -60,7 +60,6 @@ const TemplateScreen = () => {
 		}
 	}, [ searchQuery ] );
 
-	// Starting screen navigation
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
 	}
@@ -69,10 +68,21 @@ const TemplateScreen = () => {
 		const query = useQuery();
 		const templateId = query.get( 'template-id' );
 
+		const selectedTemplate = patterns.find(
+			( template ) => template.id === templateId
+		);
+
+		const { title, content, info } = selectedTemplate || {};
+
 		if ( templateId ) {
 			return (
 				<>
-					<TemplatePreview templateId={ templateId } />
+					<TemplatePreview
+						templateName={ title }
+						formData={ content }
+						info={ info }
+						templatePreview={ `${ sureforms_admin.preview_images_url }contact-form.png` }
+					/>
 				</>
 			);
 		} else {

@@ -312,10 +312,6 @@ $text_color: #6b21a8;
 	align-self: stretch;
 }
 
-.srfm-ts-sidebar-search-input {
-	// width: 150px;
-}
-
 .srfm-ts-sidebar-search-icon {
 	display: flex;
 	cursor: pointer;
@@ -391,4 +387,63 @@ $text_color: #6b21a8;
 	background: #f5f3ff;
 	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 	border: none;
+	color: var( --dashboard-primary, #125d9f );
+	font-family: Inter;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+}
+
+.srfm-ts-preview-container {
+	display: flex;
+	flex-direction: row;
+	padding: 40px;
+	gap: 32px;
+	overflow-y: scroll;
+	height: 80vh;
+	justify-content: flex-start;
+}
+
+.srfm-ts-sidebar-back-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	align-self: stretch;
+	color: #475569;
+	font-family: Inter;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 20px;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.srfm-ts-preview-form-info-container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	align-self: stretch;
+}
+
+.srfm-ts-preview-form-title {
+	color: #1e293b;
+	font-family: Inter;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 28px;
+}
+
+.srfm-ts-preview-form-info {
+	align-self: stretch;
+	color: #475569;
+	font-family: Inter;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 20px;
 }

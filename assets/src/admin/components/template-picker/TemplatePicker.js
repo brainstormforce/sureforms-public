@@ -94,35 +94,16 @@ const TemplatePicker = () => {
 					</div>
 				);
 		}
-		return '';
 	}
 
-	// if ( ! template ) {
 	return (
 		<>
-			{ /* <Modal
-					// focusOnMount
-					// shouldCloseOnEsc
-					// shouldCloseOnClickOutside
-					overlayClassName="srfm-template-picker-modal-overlay"
-					// title={ __( 'Choose A Starting Template', 'sureforms' ) }
-					onRequestClose={ handleTemplatePicker }
-				>
-					<ChooseDesign
-						templates={ patterns }
-						template={ template }
-						setTemplate={ setTemplate }
-						handleTemplatePicker={ handleTemplatePicker }
-					/>
-				</Modal> */ }
 			<Router>
 				<QueryScreen />
 			</Router>
 		</>
 	);
 };
-// return null;
-// };
 
 export default TemplatePicker;
 

@@ -15,4 +15,5 @@ return [
 	'postTypes'        => SUREFORMS_FORMS_POST_TYPE,
 	'content'          => '',
 	'id'               => 'form-1',
+	'isPro'            => false,
 ];

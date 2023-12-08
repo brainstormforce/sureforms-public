@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ICONS from './icons';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
@@ -52,7 +52,7 @@ const TemplateCard = ( {
 			console.log( error );
 		}
 	};
-	console.log( templateId );
+
 	return (
 		<div
 			className="srfm-ts-template-card"
@@ -66,7 +66,7 @@ const TemplateCard = ( {
 							className="srfm-tc-hover-use-btn"
 							onClick={ () => handleAddNewPost() }
 						>
-							{ __( 'Use Template', 'astra-addon' ) }
+							{ __( 'Use Template', 'sureforms' ) }
 						</button>
 						<Link
 							to={ {
@@ -76,7 +76,7 @@ const TemplateCard = ( {
 						>
 							<button className="srfm-tc-hover-preview-btn">
 								{ ICONS.eye }
-								{ __( 'Preview', 'astra-addon' ) }
+								{ __( 'Preview', 'sureforms' ) }
 							</button>
 						</Link>
 					</>
