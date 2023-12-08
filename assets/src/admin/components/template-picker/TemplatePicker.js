@@ -30,7 +30,7 @@ const TemplatePicker = () => {
 				);
 			default:
 				return (
-					<div className="srfm-tp-sp-container">
+					<div className="srfm-tp-sp-container srfm-content-section">
 						<Header />
 						<div className="srfm-tp-sp-methods-container">
 							<div className="srfm-tp-sp-methods-inner-wrap">
@@ -117,4 +117,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );

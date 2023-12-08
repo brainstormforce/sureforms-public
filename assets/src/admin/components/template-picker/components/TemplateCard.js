@@ -11,14 +11,15 @@ const TemplateCard = ( {
 	formData,
 	color,
 } ) => {
-	const [ isHovered, setIsHovered ] = useState( false );
+	const [ hoverClass, setHoverClass ] = useState( '' );
+	const blankImg = sureforms_admin.preview_images_url + 'blank.svg';
 
 	const handleMouseEnter = () => {
-		setIsHovered( true );
+		setHoverClass( ' hovered' );
 	};
 
 	const handleMouseLeave = () => {
-		setIsHovered( false );
+		setHoverClass( '' );
 	};
 
 	const handleAddNewPost = async () => {
@@ -59,34 +60,34 @@ const TemplateCard = ( {
 			onMouseEnter={ handleMouseEnter }
 			onMouseLeave={ handleMouseLeave }
 		>
-			<div className="srfm-tc-btn-container">
-				{ isHovered && templateId !== 'form-1' && (
-					<>
-						<button
-							className="srfm-tc-hover-use-btn"
-							onClick={ () => handleAddNewPost() }
-						>
-							{ __( 'Use Template', 'sureforms' ) }
-						</button>
-						<Link
-							to={ {
-								pathname: 'wp-admin/admin.php',
-								search: `?page=add-new-form&method=template&template-id=${ templateId }`,
-							} }
-						>
-							<button className="srfm-tc-hover-preview-btn">
-								{ ICONS.eye }
-								{ __( 'Preview', 'sureforms' ) }
-							</button>
-						</Link>
-					</>
-				) }
-			</div>
+
 			{ templatePreview && templateId !== 'form-1' ? (
 				<div
-					className="srfm-ts-preview-container"
-					style={ { backgroundColor: color, zIndex: -1 } }
+					className={ `srfm-ts-preview-container${ hoverClass }` }
+					style={ { backgroundColor: color } }
 				>
+					<>
+						<div className="srfm-tc-btn-container">
+							<button
+								className="srfm-tc-hover-use-btn srfm-common-btn"
+								onClick={ () => handleAddNewPost() }
+							>
+								{ __( 'Use Template', 'sureforms' ) }
+							</button>
+							<Link
+								to={ {
+									pathname: 'wp-admin/admin.php',
+									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
+								} }
+							>
+								<button className="srfm-tc-hover-preview-btn srfm-common-btn">
+									{ __( 'Preview', 'sureforms' ) }
+									{ ICONS.eye }
+								</button>
+							</Link>
+						</div>
+					</>
+
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }
@@ -101,7 +102,11 @@ const TemplateCard = ( {
 					reloadDocument
 					className="srfm-ts-blank-form"
 				>
-					{ ICONS.plus }
+					<img
+						className="srfm-ts-preview-image"
+						src={ blankImg }
+					/>
+
 				</Link>
 			) }
 			<div className="srfm-ts-template-name">{ templateName }</div>

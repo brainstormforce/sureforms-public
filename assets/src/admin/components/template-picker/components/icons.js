@@ -52,9 +52,9 @@ const ICONS = {
 			<path
 				d="M6 18L18 6M6 6L18 18"
 				stroke="#475569"
-				stroke-width="1.5"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
 			/>
 		</svg>
 	),
@@ -69,9 +69,9 @@ const ICONS = {
 			<path
 				d="M39 28.5V23.25C39 19.5221 35.9779 16.5 32.25 16.5H29.25C28.0074 16.5 27 15.4926 27 14.25V11.25C27 7.52208 23.9779 4.5 20.25 4.5H16.5M24 22.5V34.5M30 28.5H18M21 4.5H11.25C10.0074 4.5 9 5.50736 9 6.75V41.25C9 42.4926 10.0074 43.5 11.25 43.5H36.75C37.9926 43.5 39 42.4926 39 41.25V22.5C39 12.5589 30.9411 4.5 21 4.5Z"
 				stroke="url(#paint0_linear_4036_26181)"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
 			/>
 			<defs>
 				<linearGradient
@@ -82,8 +82,8 @@ const ICONS = {
 					y2="43.5"
 					gradientUnits="userSpaceOnUse"
 				>
-					<stop stop-color="#18C1CC" />
-					<stop offset="1" stop-color="#135A99" />
+					<stop stopColor="#18C1CC" />
+					<stop offset="1" stopColor="#135A99" />
 				</linearGradient>
 			</defs>
 		</svg>
@@ -99,9 +99,9 @@ const ICONS = {
 			<path
 				d="M12 13.7561V12C12 9.51472 14.0147 7.5 16.5 7.5H31.5C33.9853 7.5 36 9.51472 36 12V13.7561M12 13.7561C12.4692 13.5902 12.974 13.5 13.5 13.5H34.5C35.026 13.5 35.5308 13.5902 36 13.7561M12 13.7561C10.2522 14.3738 9 16.0407 9 18V19.7561M36 13.7561C37.7478 14.3738 39 16.0407 39 18V19.7561M39 19.7561C38.5308 19.5902 38.026 19.5 37.5 19.5H10.5C9.97405 19.5 9.46917 19.5902 9 19.7561M39 19.7561C40.7478 20.3738 42 22.0407 42 24V36C42 38.4853 39.9853 40.5 37.5 40.5H10.5C8.01472 40.5 6 38.4853 6 36V24C6 22.0407 7.25221 20.3738 9 19.7561"
 				stroke="url(#paint0_linear_4036_26187)"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
 			/>
 			<defs>
 				<linearGradient
@@ -112,8 +112,8 @@ const ICONS = {
 					y2="40.5"
 					gradientUnits="userSpaceOnUse"
 				>
-					<stop stop-color="#A8CC18" />
-					<stop offset="1" stop-color="#139969" />
+					<stop stopColor="#A8CC18" />
+					<stop offset="1" stopColor="#139969" />
 				</linearGradient>
 			</defs>
 		</svg>
@@ -158,8 +158,8 @@ const ICONS = {
 			className="srfm-ts-preview-blank-form"
 		>
 			<path
-				fill-rule="evenodd"
-				clip-rule="evenodd"
+				fillRule="evenodd"
+				clipRule="evenodd"
 				d="M20 6.25C20.6904 6.25 21.25 6.80964 21.25 7.5V18.75H32.5C33.1904 18.75 33.75 19.3096 33.75 20C33.75 20.6904 33.1904 21.25 32.5 21.25H21.25V32.5C21.25 33.1904 20.6904 33.75 20 33.75C19.3096 33.75 18.75 33.1904 18.75 32.5V21.25H7.5C6.80964 21.25 6.25 20.6904 6.25 20C6.25 19.3096 6.80964 18.75 7.5 18.75H18.75V7.5C18.75 6.80964 19.3096 6.25 20 6.25Z"
 				fill="#555D66"
 			/>
@@ -189,8 +189,8 @@ const ICONS = {
 			fill="none"
 		>
 			<path
-				fill-rule="evenodd"
-				clip-rule="evenodd"
+				fillRule="evenodd"
+				clipRule="evenodd"
 				d="M9 3.5C5.96243 3.5 3.5 5.96243 3.5 9C3.5 12.0376 5.96243 14.5 9 14.5C10.519 14.5 11.893 13.8852 12.8891 12.8891C13.8852 11.893 14.5 10.519 14.5 9C14.5 5.96243 12.0376 3.5 9 3.5ZM2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9C16 10.6625 15.4197 12.1906 14.4517 13.3911L17.7803 16.7197C18.0732 17.0126 18.0732 17.4874 17.7803 17.7803C17.4874 18.0732 17.0126 18.0732 16.7197 17.7803L13.3911 14.4517C12.1906 15.4197 10.6625 16 9 16C5.13401 16 2 12.866 2 9Z"
 				fill="#555D66"
 			/>

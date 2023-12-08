@@ -87,7 +87,7 @@ const TemplateScreen = () => {
 			);
 		} else {
 			return (
-				<div className="srfm-ts-main-container">
+				<div className="srfm-ts-main-container srfm-content-section">
 					<div className="srfm-ts-sidebar">
 						<div className="srfm-ts-sidebar-header">
 							{ ! showSearch ? (
