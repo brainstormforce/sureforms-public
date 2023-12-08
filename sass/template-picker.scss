@@ -48,6 +48,19 @@ $sidebar_width: 290px;
 		justify-content: center;
 	}
 
+	.srfm-common-btn {
+		padding: 0.5625em 0.625em;
+		background: #125D9F;
+		box-shadow: 0px 1px 2px 0px #0000000D;
+		border-radius: 6px;
+		font-size:  0.875em;
+		font-weight: 500;
+		color: #fff;
+		border: 0;
+		width: 100%;
+		cursor: pointer;
+	}
+
 	a {
 		text-decoration: none;
 	}
@@ -96,6 +109,7 @@ $sidebar_width: 290px;
 		.srfm-tp-sp-methods {
 			display: flex;
 			flex-wrap: wrap;
+			justify-content: space-between;
 			max-width: 768px;
 			gap: 24px;
 
@@ -159,14 +173,14 @@ $sidebar_width: 290px;
 
 	// Screen One ends here
 
-	// Screen Two starts here
+	// Common screen one and two 
 
-	.srfm-ts-main-container {
+	.srfm-ts-preview-container, .srfm-ts-main-container  {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 
-		.srfm-ts-sidebar {
+		.srfm-ts-sidebar, .srfm-ts-preview {
 			position: fixed;
 			left: 0;
 			width: $sidebar_width;
@@ -174,6 +188,23 @@ $sidebar_width: 290px;
 			padding: 1.25em;
 			background-color: $bg_white;
 			border-right: 1px solid $border;
+		}
+
+		.srfm-ts-cards-container, .srfm-ts-preview {
+			display: flex;
+			flex-wrap: wrap;
+			width: calc( 100% - $sidebar_width );
+			margin-left: $sidebar_width;
+			padding: 2.5em;
+		}
+	}
+
+	// Screen Two starts here
+
+	.srfm-ts-main-container {
+
+		.srfm-ts-sidebar {
+
 
 			.srfm-ts-sidebar-header {
 				display: flex;
@@ -246,11 +277,6 @@ $sidebar_width: 290px;
 		}
 
 		.srfm-ts-cards-container {
-			display: flex;
-			flex-wrap: wrap;
-			width: calc( 100% - $sidebar_width );
-			margin-left: $sidebar_width;
-			padding: 2.5em;
 			gap: 2em;
 
 			.srfm-ts-template-card {
@@ -316,7 +342,7 @@ $sidebar_width: 290px;
 				text-overflow: ellipsis;
 			}
 
-			.srfm-ts-preview-container {
+			.srfm-ts-preview-wrap {
 				position: relative;
 
 				.srfm-tc-btn-container {
@@ -376,5 +402,59 @@ $sidebar_width: 290px;
 			}
 		}
 	}
-}
 
+	.srfm-ts-preview-container {
+		.srfm-ts-sidebar {
+			.srfm-ts-sidebar-back-btn {
+				border: 0;
+				background-color: transparent;
+				display: flex;
+				align-items: center;
+				padding: 0;
+				font-weight: 500;
+				font-size: 0.875em;
+				color: #475569;
+				margin-bottom: 1.5em;
+
+				svg {
+					margin-right: 0.5em;
+				}
+
+				&:focus {
+    				box-shadow: none;
+				}
+			}
+
+			.srfm-ts-preview-form-title {
+				color: #1E293B;
+				padding-bottom: 0.75em;
+				font-size: 1.25em;
+				font-weight: 600;
+			}
+
+			.srfm-ts-preview-form-info {
+				color: #475569;
+				padding-bottom: 1.5em;
+				font-weight: 400;
+				font-size: 0.875em;
+			}
+
+		}
+	
+		.srfm-ts-preview {
+			background-color: $bg_color;
+	
+			.srfm-ts-preview-template {
+				width: 100%;
+				text-align: center;
+	
+				img {
+					width: 100%;
+					max-width: 666px;
+					margin: 0 auto;
+				}
+			}
+		}
+	}
+	
+}

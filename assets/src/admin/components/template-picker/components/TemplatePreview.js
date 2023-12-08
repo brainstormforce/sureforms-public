@@ -43,24 +43,18 @@ const TemplatePreview = ( {
 
 	return (
 		<div
-			className="srfm-ts-preview-container"
-			style={ { marginTop: '5rem' } }
-		>
+			className="srfm-ts-preview-container srfm-content-section">
 			<div className="srfm-ts-sidebar">
-				<div className="srfm-ts-sidebar-header">
-					<Link
-						className="srfm-single-card"
-						to={ {
-							pathname: 'wp-admin/admin.php',
-							search: `?page=add-new-form&method=template`,
-						} }
+				<Link
+					className="srfm-ts-sidebar-back-btn"
+					to={ {
+						pathname: 'wp-admin/admin.php',
+						search: `?page=add-new-form&method=template`,
+					} }
 					>
-						<button className="srfm-ts-sidebar-back-btn">
-							{ ICONS.back }
-							{ __( 'Back', 'sureforms' ) }
-						</button>
+					{ ICONS.back }
+					{ __( 'Back', 'sureforms' ) }
 					</Link>
-				</div>
 				<div className="srfm-ts-preview-form-info-container">
 					<div className="srfm-ts-preview-form-title">
 						{ templateName }
@@ -68,7 +62,7 @@ const TemplatePreview = ( {
 					<div className="srfm-ts-preview-form-info">{ info }</div>
 				</div>
 				<button
-					className="srfm-tc-hover-use-btn"
+					className="srfm-common-btn"
 					onClick={ () => handleAddNewPost() }
 				>
 					{ __( 'Use Template', 'sureforms' ) }
@@ -76,7 +70,7 @@ const TemplatePreview = ( {
 			</div>
 			<div className="srfm-ts-preview">
 				{ templatePreview && (
-					<div className="srfm-ts-preview-container">
+					<div className="srfm-ts-preview-template">
 						<img
 							className="srfm-ts-preview-image"
 							src={ templatePreview }

@@ -63,7 +63,7 @@ const TemplateCard = ( {
 
 			{ templatePreview && templateId !== 'form-1' ? (
 				<div
-					className={ `srfm-ts-preview-container${ hoverClass }` }
+					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
 				>
 					<>
