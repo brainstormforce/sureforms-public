@@ -50,10 +50,10 @@ $sidebar_width: 290px;
 
 	.srfm-common-btn {
 		padding: 0.5625em 0.625em;
-		background: #125D9F;
-		box-shadow: 0px 1px 2px 0px #0000000D;
+		background: #125d9f;
+		box-shadow: 0px 1px 2px 0px #0000000d;
 		border-radius: 6px;
-		font-size:  0.875em;
+		font-size: 0.875em;
 		font-weight: 500;
 		color: #fff;
 		border: 0;
@@ -99,6 +99,15 @@ $sidebar_width: 290px;
 			display: flex;
 			align-items: center;
 			gap: 8px;
+			color: #4b5563;
+			font-size: 13.081px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 23.546px;
+			a {
+				color: #4b5563;
+				box-shadow: none;
+			}
 		}
 
 		.srfm-tp-header-close {
@@ -189,14 +198,16 @@ $sidebar_width: 290px;
 
 	// Screen One ends here
 
-	// Common screen one and two 
+	// Common screen one and two
 
-	.srfm-ts-preview-container, .srfm-ts-main-container  {
+	.srfm-ts-preview-container,
+	.srfm-ts-main-container {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 
-		.srfm-ts-sidebar, .srfm-ts-preview {
+		.srfm-ts-sidebar,
+		.srfm-ts-preview {
 			position: fixed;
 			left: 0;
 			width: $sidebar_width;
@@ -206,7 +217,8 @@ $sidebar_width: 290px;
 			border-right: 1px solid $border;
 		}
 
-		.srfm-ts-cards-container, .srfm-ts-preview {
+		.srfm-ts-cards-container,
+		.srfm-ts-preview {
 			display: flex;
 			flex-wrap: wrap;
 			width: calc( 100% - $sidebar_width );
@@ -218,10 +230,7 @@ $sidebar_width: 290px;
 	// Screen Two starts here
 
 	.srfm-ts-main-container {
-
 		.srfm-ts-sidebar {
-
-
 			.srfm-ts-sidebar-header {
 				display: flex;
 				flex-wrap: wrap;
@@ -250,24 +259,23 @@ $sidebar_width: 290px;
 
 			.srfm-req-template-container {
 				padding: 1em;
-				border: 1px solid rgba(220, 224, 230, 1);
+				border: 1px solid rgba( 220, 224, 230, 1 );
 				border-radius: 4px;
 
 				.srfm-req-template-title-container {
 					display: flex;
 					flex-wrap: wrap;
 					padding-bottom: 0.75em;
-					color: rgba(30, 41, 59, 1);
+					color: rgba( 30, 41, 59, 1 );
 
 					svg {
 						width: 16px;
 						height: 16px;
 						margin-right: 8px;
-
 					}
 
 					.srfm-req-template-title {
-						width: calc(100% - 24px);
+						width: calc( 100% - 24px );
 						font-size: 0.875em;
 						font-weight: 500;
 					}
@@ -276,15 +284,15 @@ $sidebar_width: 290px;
 				.srfm-req-template-body {
 					padding-bottom: 0.75em;
 					font-size: 0.875em;
-					color: rgba(71, 85, 105, 1);
+					color: rgba( 71, 85, 105, 1 );
 				}
 
 				.srfm-req-template-btn {
 					padding: 0.4375em 0.625em;
 					font-size: 0.75em;
 					font-weight: 500;
-					background: rgba(245, 243, 255, 1);
-					color: rgba(18, 93, 159, 1);
+					background: rgba( 245, 243, 255, 1 );
+					color: rgba( 18, 93, 159, 1 );
 					border: 0;
 					width: 100%;
 					cursor: pointer;
@@ -437,12 +445,12 @@ $sidebar_width: 290px;
 				}
 
 				&:focus {
-    				box-shadow: none;
+					box-shadow: none;
 				}
 			}
 
 			.srfm-ts-preview-form-title {
-				color: #1E293B;
+				color: #1e293b;
 				padding-bottom: 0.75em;
 				font-size: 1.25em;
 				font-weight: 600;
@@ -454,16 +462,15 @@ $sidebar_width: 290px;
 				font-weight: 400;
 				font-size: 0.875em;
 			}
-
 		}
-	
+
 		.srfm-ts-preview {
 			background-color: $bg_color;
-	
+
 			.srfm-ts-preview-template {
 				width: 100%;
 				text-align: center;
-	
+
 				img {
 					width: 100%;
 					max-width: 666px;
@@ -472,5 +479,4 @@ $sidebar_width: 290px;
 			}
 		}
 	}
-	
 }
