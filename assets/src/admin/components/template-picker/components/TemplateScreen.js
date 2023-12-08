@@ -26,7 +26,7 @@ const TemplateScreen = () => {
 	};
 
 	return (
-		<div className="srfm-ts-main-container">
+		<div className="srfm-ts-main-container srfm-content-section">
 			<div className="srfm-ts-sidebar">
 				<div className="srfm-ts-sidebar-header">
 					{ ! showSearch ? (
@@ -35,7 +35,7 @@ const TemplateScreen = () => {
 						<input
 							type="text"
 							placeholder={ __(
-								'Search Templates...',
+								'Search Templates…',
 								'sureforms'
 							) }
 							className="srfm-ts-sidebar-search-input"

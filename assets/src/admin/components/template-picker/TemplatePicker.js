@@ -39,7 +39,7 @@ const TemplatePicker = ( { clientId } ) => {
 	// const blockCount = useSelect( ( select ) =>
 	// 	select( 'core/editor' ).getBlockCount( clientId )
 	// );
-	let sureforms_keys = useSelect( ( select ) =>
+	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const { editPost } = useDispatch( editorStore );
@@ -90,7 +90,7 @@ const TemplatePicker = ( { clientId } ) => {
 
 	const onCreate = async () => {
 		const option_array = {};
-		option_array[ '_srfm_form_template' ] = template;
+		option_array._srfm_form_template = template;
 		editPost( {
 			meta: option_array,
 		} );
@@ -136,7 +136,7 @@ const TemplatePicker = ( { clientId } ) => {
 				);
 			default:
 				return (
-					<div className="srfm-tp-sp-container">
+					<div className="srfm-tp-sp-container srfm-content-section">
 						<Header />
 						<div className="srfm-tp-sp-methods-container">
 							<div className="srfm-tp-sp-methods-inner-wrap">
@@ -242,4 +242,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );

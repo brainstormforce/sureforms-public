@@ -7,16 +7,17 @@ import apiFetch from '@wordpress/api-fetch';
 import templatesMarkup from './templatesMarkup';
 
 const TemplateCard = ( { templateName, templatePreview } ) => {
-	const [ isHovered, setIsHovered ] = useState( false );
-
+	const [ hoverClass, setHoverClass ] = useState( '' );
 	const [ color, setColor ] = useState( randomNiceColor() );
 
+	const blankImg = sureforms_admin.preview_images_url + 'blank.svg';
+
 	const handleMouseEnter = () => {
-		setIsHovered( true );
+		setHoverClass( ' hovered' );
 	};
 
 	const handleMouseLeave = () => {
-		setIsHovered( false );
+		setHoverClass( '' );
 	};
 
 	// function toCamelCase( inputString ) {
@@ -74,34 +75,34 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 			onMouseEnter={ handleMouseEnter }
 			onMouseLeave={ handleMouseLeave }
 		>
-			<div className="srfm-tc-btn-container">
-				{ isHovered && templateName !== 'Blank Form' && (
-					<>
-						<button
-							className="srfm-tc-hover-use-btn"
-							onClick={ () => handleAddNewPost( templateName ) }
-						>
-							{ __( 'Use Template', 'astra-addon' ) }
-						</button>
-						<Link
-							to={ {
-								pathname: 'wp-admin/admin.php',
-								search: `?page=sureforms_add_new_form&method=template&template=${ templateName }`,
-							} }
-						>
-							<button className="srfm-tc-hover-preview-btn">
-								{ ICONS.eye }
-								{ __( 'Preview', 'astra-addon' ) }
-							</button>
-						</Link>
-					</>
-				) }
-			</div>
+
 			{ templatePreview && templateName !== 'Blank Form' ? (
 				<div
-					className="srfm-ts-preview-container"
-					style={ { backgroundColor: color, zIndex: -1 } }
+					className={ `srfm-ts-preview-container${ hoverClass }` }
+					style={ { backgroundColor: color } }
 				>
+					<>
+						<div className="srfm-tc-btn-container">
+							<button
+								className="srfm-tc-hover-use-btn srfm-common-btn"
+								onClick={ () => handleAddNewPost( templateName ) }
+							>
+								{ __( 'Use Template', 'sureforms' ) }
+							</button>
+							<Link
+								to={ {
+									pathname: 'wp-admin/admin.php',
+									search: `?page=sureforms_add_new_form&method=template&template=${ templateName }`,
+								} }
+							>
+								<button className="srfm-tc-hover-preview-btn srfm-common-btn">
+									{ __( 'Preview', 'sureforms' ) }
+									{ ICONS.eye }
+								</button>
+							</Link>
+						</div>
+					</>
+
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }
@@ -116,7 +117,11 @@ const TemplateCard = ( { templateName, templatePreview } ) => {
 					reloadDocument
 					className="srfm-ts-blank-form"
 				>
-					{ ICONS.plus }
+					<img
+						className="srfm-ts-preview-image"
+						src={ blankImg }
+					/>
+
 				</Link>
 			) }
 			<div className="srfm-ts-template-name">{ templateName }</div>
