@@ -134,7 +134,7 @@ class Admin {
 	}
 
 	/**
-	 * Create New Form.
+	 * Add new form menu item.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -149,18 +149,10 @@ class Admin {
 			[ $this, 'sureforms_add_new_form_callback' ],
 			2
 		);
-
-		// Get the current submenu page.
-		$submenu_page = isset( $_GET['page'] ) ? $_GET['page'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		if ( ! isset( $_GET['tab'] ) && 'sureforms_form_settings' === $submenu_page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) );
-			exit;
-		}
 	}
 
 	/**
-	 * Add new form callback.
+	 * Add new form mentu item callback.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -388,7 +380,6 @@ class Admin {
 					'plugin_url'                   => SUREFORMS_URL,
 					'preview_images_url'           => SUREFORMS_URL . 'images/template-previews/',
 					'admin_url'                    => admin_url( '/edit.php?post_type=sureforms_form' ),
-					'breadcrumbs'                  => $this->get_breadcrumbs_for_current_page(),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
 				]

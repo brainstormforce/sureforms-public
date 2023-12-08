@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from '@wordpress/element';
 import TemplateCard from './TemplateCard';
 import { __ } from '@wordpress/i18n';
 import ICONS from './icons';
@@ -83,123 +83,119 @@ const TemplateScreen = () => {
 					/>
 				</>
 			);
-		} else {
-			return (
-				<div className="srfm-ts-main-container srfm-content-section">
-					<div className="srfm-ts-sidebar">
-						<div className="srfm-ts-sidebar-header">
-							{ ! showSearch ? (
-								__( 'Form Templates', 'sureforms' )
-							) : (
-								<input
-									type="text"
-									placeholder={ __(
-										'Search Templates...',
-										'sureforms'
-									) }
-									className="srfm-ts-sidebar-search-input"
-									value={ searchQuery }
-									onChange={ ( e ) =>
-										setSearchQuery( e.target.value )
-									}
-								/>
-							) }
-							<span
-								className="srfm-ts-sidebar-search-icon"
-								onClick={ () => {
-									setShowSearch( ! showSearch );
-								} }
-							>
-								{ ICONS.search }
-							</span>
-						</div>
-						<div className="srfm-ts-sidebar-categories-container">
-							<div
-								className={ `srfm-ts-sidebar-category ${
-									selectedCategory === null ? 'selected' : ''
-								}` }
-								onClick={ () => handleCategoryClick( null ) }
-							>
-								{ __( 'All Forms', 'sureforms' ) }
-								<span>{ patterns.length }</span>
-							</div>
-							{ Array.from(
-								new Set(
-									patterns.map(
-										( template ) =>
-											template.templateCategory
-									)
-								)
-							).map( ( uniqueCategory ) => {
-								const categoryElements = patterns.filter(
-									( template ) => {
-										return (
-											template.templateCategory ===
-											uniqueCategory
-										);
-									}
-								);
-								return (
-									<div
-										className={ `srfm-ts-sidebar-category ${
-											selectedCategory === uniqueCategory
-												? 'selected'
-												: ''
-										}` }
-										key={ uniqueCategory }
-										onClick={ () =>
-											handleCategoryClick(
-												uniqueCategory
-											)
-										}
-									>
-										{ uniqueCategory }
-										<span>{ categoryElements.length }</span>
-									</div>
-								);
-							} ) }
-						</div>
-						<div className="srfm-req-template-container">
-							<div className="srfm-req-template-title-container">
-								{ ICONS.message }
-								<div className="srfm-req-template-title">
-									{ __( 'Request template', 'sureforms' ) }
-								</div>
-							</div>
-							<div className="srfm-req-template-body">
-								{ __(
-									'Can’t find it? Let us know what kind of form do you need.',
+		}
+		return (
+			<div className="srfm-ts-main-container srfm-content-section">
+				<div className="srfm-ts-sidebar">
+					<div className="srfm-ts-sidebar-header">
+						{ ! showSearch ? (
+							__( 'Form Templates', 'sureforms' )
+						) : (
+							<input
+								type="text"
+								placeholder={ __(
+									'Search Templates…',
 									'sureforms'
 								) }
-							</div>
-							<button className="srfm-req-template-btn">
-								{ __( 'Request a Template', 'sureforms' ) }
-							</button>
-						</div>
+								className="srfm-ts-sidebar-search-input"
+								value={ searchQuery }
+								onChange={ ( e ) =>
+									setSearchQuery( e.target.value )
+								}
+							/>
+						) }
+						<span
+							className="srfm-ts-sidebar-search-icon"
+							onClick={ () => {
+								setShowSearch( ! showSearch );
+							} }
+						>
+							{ ICONS.search }
+						</span>
 					</div>
-					<div className="srfm-ts-cards-container">
-						{ filteredTemplates.map( ( template ) => {
-							const title = template.title;
-							const templateId = template.id;
-
+					<div className="srfm-ts-sidebar-categories-container">
+						<div
+							className={ `srfm-ts-sidebar-category ${
+								selectedCategory === null ? 'selected' : ''
+							}` }
+							onClick={ () => handleCategoryClick( null ) }
+						>
+							{ __( 'All Forms', 'sureforms' ) }
+							<span>{ patterns.length }</span>
+						</div>
+						{ Array.from(
+							new Set(
+								patterns.map(
+									( template ) => template.templateCategory
+								)
+							)
+						).map( ( uniqueCategory ) => {
+							const categoryElements = patterns.filter(
+								( template ) => {
+									return (
+										template.templateCategory ===
+										uniqueCategory
+									);
+								}
+							);
 							return (
-								<TemplateCard
-									key={ title }
-									templateName={ title }
-									templateId={ templateId }
-									templatePreview={
-										sureforms_admin.preview_images_url +
-										'contact-form.png'
+								<div
+									className={ `srfm-ts-sidebar-category ${
+										selectedCategory === uniqueCategory
+											? 'selected'
+											: ''
+									}` }
+									key={ uniqueCategory }
+									onClick={ () =>
+										handleCategoryClick( uniqueCategory )
 									}
-									formData={ template.content }
-									color={ templateColors[ template.id ] }
-								/>
+								>
+									{ uniqueCategory }
+									<span>{ categoryElements.length }</span>
+								</div>
 							);
 						} ) }
 					</div>
+					<div className="srfm-req-template-container">
+						<div className="srfm-req-template-title-container">
+							{ ICONS.message }
+							<div className="srfm-req-template-title">
+								{ __( 'Request template', 'sureforms' ) }
+							</div>
+						</div>
+						<div className="srfm-req-template-body">
+							{ __(
+								'Can’t find it? Let us know what kind of form do you need.',
+								'sureforms'
+							) }
+						</div>
+						<button className="srfm-req-template-btn">
+							{ __( 'Request a Template', 'sureforms' ) }
+						</button>
+					</div>
 				</div>
-			);
-		}
+				<div className="srfm-ts-cards-container">
+					{ filteredTemplates.map( ( template ) => {
+						const filteredTemplateTitle = template.title;
+						const filteredTemplateId = template.id;
+
+						return (
+							<TemplateCard
+								key={ filteredTemplateTitle }
+								templateName={ filteredTemplateTitle }
+								templateId={ filteredTemplateId }
+								templatePreview={
+									sureforms_admin.preview_images_url +
+									'contact-form.png'
+								}
+								formData={ template.content }
+								color={ templateColors[ template.id ] }
+							/>
+						);
+					} ) }
+				</div>
+			</div>
+		);
 	}
 
 	return <QueryScreen />;

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from '@wordpress/element';
 import ICONS from './icons';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
-import apiFetch from '@wordpress/api-fetch';
+import { handleAddNewPost } from '@Utils/Helpers';
 
 const TemplateCard = ( {
 	templateName,
@@ -22,45 +22,12 @@ const TemplateCard = ( {
 		setHoverClass( '' );
 	};
 
-	const handleAddNewPost = async () => {
-		if ( '1' !== sureforms_admin.capability ) {
-			console.error( 'User does not have permission to create posts' );
-			return;
-		}
-
-		try {
-			const response = await apiFetch( {
-				path: 'sureforms/v1/create-new-form',
-				method: 'POST',
-				headers: {
-					'Content-Type': 'text/html',
-				},
-				data: formData,
-			} );
-
-			if ( response.id ) {
-				const postId = response.id;
-
-				// Redirect to the newly created post
-				window.location.href = `${ sureforms_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
-			} else {
-				console.error(
-					'Error creating sureforms_form:',
-					response.message
-				);
-			}
-		} catch ( error ) {
-			console.log( error );
-		}
-	};
-
 	return (
 		<div
 			className="srfm-ts-template-card"
 			onMouseEnter={ handleMouseEnter }
 			onMouseLeave={ handleMouseLeave }
 		>
-
 			{ templatePreview && templateId !== 'form-1' ? (
 				<div
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
@@ -70,7 +37,7 @@ const TemplateCard = ( {
 						<div className="srfm-tc-btn-container">
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
-								onClick={ () => handleAddNewPost() }
+								onClick={ () => handleAddNewPost( formData ) }
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
@@ -91,6 +58,7 @@ const TemplateCard = ( {
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }
+						alt={ __( 'Template preview image', 'sureforms' ) }
 					/>
 				</div>
 			) : (
@@ -102,8 +70,8 @@ const TemplateCard = ( {
 					<img
 						className="srfm-ts-preview-image"
 						src={ blankImg }
+						alt={ __( 'Blank template image', 'sureforms' ) }
 					/>
-
 				</Link>
 			) }
 			<div className="srfm-ts-template-name">{ templateName }</div>

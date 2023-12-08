@@ -47,7 +47,6 @@ const default_keys = {
 	_srfm_additional_classes: '',
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
-	_srfm_form_template: '',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {

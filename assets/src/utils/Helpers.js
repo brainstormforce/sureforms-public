@@ -5,6 +5,8 @@
  * @return {Object} sizeArr - The sizeArr object.
  */
 
+import apiFetch from '@wordpress/api-fetch';
+
 export function getImageSize( sizes ) {
 	const sizeArr = [];
 	for ( const size in sizes ) {
@@ -48,6 +50,35 @@ export const srfmClassNames = ( classes ) =>
 
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
+
+export const handleAddNewPost = async ( formData ) => {
+	if ( '1' !== sureforms_admin.capability ) {
+		console.error( 'User does not have permission to create posts' );
+		return;
+	}
+
+	try {
+		const response = await apiFetch( {
+			path: 'sureforms/v1/create-new-form',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'text/html',
+			},
+			data: formData,
+		} );
+
+		if ( response.id ) {
+			const postId = response.id;
+
+			// Redirect to the newly created post
+			window.location.href = `${ sureforms_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
+		} else {
+			console.error( 'Error creating sureforms_form:', response.message );
+		}
+	} catch ( error ) {
+		console.log( error );
+	}
+};
 
 export const randomNiceColor = () => {
 	const randomInt = ( min, max ) => {
