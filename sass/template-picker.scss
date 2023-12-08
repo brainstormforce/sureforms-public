@@ -82,7 +82,23 @@ $sidebar_width: 290px;
 		z-index: 9;
 
 		.srfm-tp-main-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
 			margin: 0;
+			color: var( --colors-gray-600, #4b5563 );
+			font-family: Inter;
+			font-size: 13.081px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 23.546px; /* 179.999% */
+		}
+
+		.srfm-header-breadcrumb-container,
+		.srfm-header-breadcrumb {
+			display: flex;
+			align-items: center;
+			gap: 8px;
 		}
 
 		.srfm-tp-header-close {
