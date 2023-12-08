@@ -3,7 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	Popover,
+	DatePicker,
+} from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -35,9 +40,21 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		formId,
 	} = attributes;
 	const [ showErr, setShowErr ] = useState( false );
+	const [ isMinPopVisible, setIsMinPopVisible ] = useState( false );
+	const [ isMaxPopVisible, setIsMaxPopVisible ] = useState( false );
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
 
+	const getFormattedDate = ( date ) => {
+		const currentDate = new Date( date );
+		const day = currentDate.getDate().toString().padStart( 2, '0' );
+		const month = ( currentDate.getMonth() + 1 )
+			.toString()
+			.padStart( 2, '0' );
+		const year = currentDate.getFullYear();
+		// Format the date components
+		return `${ year }/${ month }/${ day }`;
+	};
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -121,63 +138,141 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									{ __( 'Time', 'sureforms' ) }
 								</option>
 							</SelectControl>
-							{ 'classic' !==
-								sureforms_keys?._srfm_form_styling &&
-							( 'dateTime' === fieldType ||
-								'date' === fieldType ) ? (
+							{ 'dateTime' === fieldType ||
+							'date' === fieldType ? (
 									<>
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Minimum Date', 'sureforms' ) }
 										</span>
-										<input
-											className="srfm-date-time-picker"
-											type="date"
-											id="srfm-for-min-date"
-											value={ min }
-											onChange={ ( e ) => {
-												if ( '' !== max ) {
-													if ( e.target.value < max ) {
-														setShowErr( false );
-														setAttributes( {
-															min: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
-												} else {
-													setShowErr( false );
-													setAttributes( {
-														min: e.target.value,
-													} );
-												}
-											} }
-										/>
+										<div className="srfm-date-setting-wrap">
+											<div className="srfm-date-setting-icon">
+												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
+											</div>
+											<input
+												className="srfm-date-time-picker"
+												type="text"
+												id="srfm-for-min-date"
+												value={ min }
+												placeholder={ __(
+													'select a date',
+													'sureforms'
+												) }
+												onClick={ () => {
+													setIsMinPopVisible(
+														( state ) => ! state
+													);
+												} }
+											/>
+											{ isMinPopVisible && (
+												<Popover>
+													<DatePicker
+														className="srfm-date-picker-setting"
+														currentDate={ new Date() }
+														onChange={ ( date ) => {
+															const currDate =
+															getFormattedDate(
+																date
+															);
+															if ( '' !== max ) {
+																if (
+																	currDate < max
+																) {
+																	setShowErr(
+																		false
+																	);
+																	setAttributes( {
+																		min: currDate,
+																	} );
+																	setIsMinPopVisible(
+																		( state ) =>
+																			! state
+																	);
+																} else {
+																	setShowErr(
+																		true
+																	);
+																}
+															} else {
+																setShowErr( false );
+																setAttributes( {
+																	min: currDate,
+																} );
+																setIsMinPopVisible(
+																	( state ) =>
+																		! state
+																);
+															}
+														} }
+													/>
+												</Popover>
+											) }
+										</div>
 										<span className="srfm-control-label srfm-control__header">
 											{ __( 'Maximum Date', 'sureforms' ) }
 										</span>
-										<input
-											className="srfm-date-time-picker"
-											type="date"
-											id="srfm-for-max-date"
-											value={ max }
-											onChange={ ( e ) => {
-												if ( '' !== min ) {
-													if ( min < e.target.value ) {
-														setShowErr( false );
-														setAttributes( {
-															max: e.target.value,
-														} );
-													} else {
-														setShowErr( true );
-													}
-												} else {
-													setShowErr( false );
-													setAttributes( {
-														max: e.target.value,
-													} );
-												}
-											} }
-										/>
+										<div className="srfm-date-setting-wrap">
+											<div className="srfm-date-setting-icon">
+												<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[18px]"></i>
+											</div>
+											<input
+												className="srfm-date-time-picker"
+												type="text"
+												id="srfm-for-max-date"
+												value={ max }
+												placeholder={ __(
+													'select a date',
+													'sureforms'
+												) }
+												onClick={ () => {
+													setIsMaxPopVisible(
+														( state ) => ! state
+													);
+												} }
+											/>
+											{ isMaxPopVisible && (
+												<Popover>
+													<DatePicker
+														className="srfm-date-picker-setting"
+														currentDate={ new Date() }
+														onChange={ ( date ) => {
+															const currDate =
+															getFormattedDate(
+																date
+															);
+															if ( '' !== min ) {
+																if (
+																	min < currDate
+																) {
+																	setShowErr(
+																		false
+																	);
+																	setAttributes( {
+																		max: currDate,
+																	} );
+																	setIsMaxPopVisible(
+																		( state ) =>
+																			! state
+																	);
+																} else {
+																	setShowErr(
+																		true
+																	);
+																}
+															} else {
+																setShowErr( false );
+																setAttributes( {
+																	max: currDate,
+																} );
+																setIsMaxPopVisible(
+																	( state ) =>
+																		! state
+																);
+															}
+														} }
+													/>
+												</Popover>
+											) }
+										</div>
 										{ showErr && (
 											<p style={ { color: 'red' } }>
 												{ __(
