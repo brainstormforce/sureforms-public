@@ -29,8 +29,6 @@ const TemplateScreen = () => {
 		setPatterns( newPatterns );
 	};
 
-	console.log( patterns );
-
 	useEffect( () => {
 		getPatterns();
 	}, [] );

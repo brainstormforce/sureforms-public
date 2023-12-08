@@ -42,7 +42,7 @@ const TemplateCard = ( {
 				const postId = response.id;
 
 				// Redirect to the newly created post
-				window.location.href = `/wp-admin/post.php?post=${ postId }&action=edit`;
+				window.location.href = `${ sureforms_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
 			} else {
 				console.error(
 					'Error creating sureforms_form:',
@@ -76,7 +76,7 @@ const TemplateCard = ( {
 							</button>
 							<Link
 								to={ {
-									pathname: 'wp-admin/admin.php',
+									location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
 									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
 								} }
 							>
@@ -95,10 +95,7 @@ const TemplateCard = ( {
 				</div>
 			) : (
 				<Link
-					to={ {
-						pathname: 'wp-admin/post-new.php',
-						search: `?post_type=sureforms_form`,
-					} }
+					to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
 					reloadDocument
 					className="srfm-ts-blank-form"
 				>

@@ -7,6 +7,8 @@ import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
 
 const TemplatePicker = () => {
+
+
 	// Remove admin bar padding.
 	useEffect( () => {
 		document.querySelector( 'html.wp-toolbar' ).style.paddingTop = 0;
@@ -58,7 +60,7 @@ const TemplatePicker = () => {
 									<Link
 										className="srfm-single-card"
 										to={ {
-											pathname: 'wp-admin/admin.php',
+											location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
 											search: `?page=add-new-form&method=template`,
 										} }
 									>

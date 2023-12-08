@@ -29,7 +29,7 @@ const TemplatePreview = ( {
 				const postId = response.id;
 
 				// Redirect to the newly created post
-				window.location.href = `/wp-admin/post.php?post=${ postId }&action=edit`;
+				window.location.href = `${ sureforms_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
 			} else {
 				console.error(
 					'Error creating sureforms_form:',
@@ -48,7 +48,7 @@ const TemplatePreview = ( {
 				<Link
 					className="srfm-ts-sidebar-back-btn"
 					to={ {
-						pathname: 'wp-admin/admin.php',
+						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=add-new-form&method=template`,
 					} }
 					>
