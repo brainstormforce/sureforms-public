@@ -164,12 +164,12 @@ input:checked + .slider:before {
 }
 
 .srfm-import-button[disabled] {
-  color: #a7aaad !important;
-  border-color: #dcdcde !important;
-  background: #f6f7f7 !important;
-  box-shadow: none !important;
+  color: #a7aaad;
+  border-color: #dcdcde;
+  background: #f6f7f7;
+  box-shadow: none;
   cursor: default;
-  transform: none !important;
+  transform: none;
 }
 
 .srfm-import-button {
