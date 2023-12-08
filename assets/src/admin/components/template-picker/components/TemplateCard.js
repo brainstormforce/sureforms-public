@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ICONS from './icons';
-import { randomNiceColor } from '@Utils/Helpers';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import apiFetch from '@wordpress/api-fetch';
-import templatesMarkup from './templatesMarkup';
 
-const TemplateCard = ( { templateName, templatePreview, formData } ) => {
+const TemplateCard = ( {
+	templateName,
+	templateId,
+	templatePreview,
+	formData,
+	color,
+} ) => {
 	const [ isHovered, setIsHovered ] = useState( false );
-
-	const [ color, setColor ] = useState( randomNiceColor() );
 
 	const handleMouseEnter = () => {
 		setIsHovered( true );
@@ -19,24 +21,7 @@ const TemplateCard = ( { templateName, templatePreview, formData } ) => {
 		setIsHovered( false );
 	};
 
-	// function toCamelCase( inputString ) {
-	// 	return inputString
-	// 		.replace( /(?:^\w|[A-Z]|\b\w)/g, function ( word, index ) {
-	// 			return index === 0 ? word.toLowerCase() : word.toUpperCase();
-	// 		} )
-	// 		.replace( /\s+/g, '' );
-	// }
-
-	const handleAddNewPost = async ( templateName ) => {
-		// const filteredArray = templatesMarkup.filter(
-		// 	( item ) => item.title === templateName
-		// );
-
-		// const formData =
-		// 	filteredArray.length > 0 ? filteredArray[ 0 ].formData : null;
-
-		console.log( formData );
-
+	const handleAddNewPost = async () => {
 		if ( '1' !== sureforms_admin.capability ) {
 			console.error( 'User does not have permission to create posts' );
 			return;
@@ -67,7 +52,7 @@ const TemplateCard = ( { templateName, templatePreview, formData } ) => {
 			console.log( error );
 		}
 	};
-
+	console.log( templateId );
 	return (
 		<div
 			className="srfm-ts-template-card"
@@ -75,18 +60,18 @@ const TemplateCard = ( { templateName, templatePreview, formData } ) => {
 			onMouseLeave={ handleMouseLeave }
 		>
 			<div className="srfm-tc-btn-container">
-				{ isHovered && templateName !== 'Blank Form' && (
+				{ isHovered && templateId !== 'form-1' && (
 					<>
 						<button
 							className="srfm-tc-hover-use-btn"
-							onClick={ () => handleAddNewPost( templateName ) }
+							onClick={ () => handleAddNewPost() }
 						>
 							{ __( 'Use Template', 'astra-addon' ) }
 						</button>
 						<Link
 							to={ {
 								pathname: 'wp-admin/admin.php',
-								search: `?page=add-new-form&method=template&template=${ templateName }`,
+								search: `?page=add-new-form&method=template&template-id=${ templateId }`,
 							} }
 						>
 							<button className="srfm-tc-hover-preview-btn">
@@ -97,7 +82,7 @@ const TemplateCard = ( { templateName, templatePreview, formData } ) => {
 					</>
 				) }
 			</div>
-			{ templatePreview && templateName !== 'Blank Form' ? (
+			{ templatePreview && templateId !== 'form-1' ? (
 				<div
 					className="srfm-ts-preview-container"
 					style={ { backgroundColor: color, zIndex: -1 } }

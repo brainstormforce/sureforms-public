@@ -1,23 +1,24 @@
 $bg_color: #f4f9fa;
-$bg_white : #fff;
-$bg_color_3 : #F3E8FF;
+$bg_white: #fff;
+$bg_color_3: #f3e8ff;
 $border: #e5e7eb;
-$border_2 : #DCE0E6;
+$border_2: #dce0e6;
 $heading_color: #1e293b;
-$box_shadow : #0D131E1A;
-$box_shadow_2 : #00000033;
-$heading_color: #1E293B;
-$desc_color:  #475569;
-$text_color: #6B21A8;
+$box_shadow: #0d131e1a;
+$box_shadow_2: #00000033;
+$heading_color: #1e293b;
+$desc_color: #475569;
+$text_color: #6b21a8;
 
 .srfm-template-picker {
 	background: $bg_color;
 	font-size: 16px;
 
-	*, *::before, *::after {
+	*,
+	*::before,
+	*::after {
 		box-sizing: border-box;
 	}
-
 
 	#adminmenuback,
 	#adminmenumain,
@@ -36,14 +37,13 @@ $text_color: #6B21A8;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: calc(100vh - 70px);
+		height: calc( 100vh - 70px );
 		padding-top: 70px;
 	}
 
 	a {
 		text-decoration: none;
 	}
-
 
 	// Screen One starts here
 
@@ -91,14 +91,14 @@ $text_color: #6B21A8;
 			max-width: 768px;
 			gap: 24px;
 
-			.srfm-single-card{
+			.srfm-single-card {
 				position: relative;
-				width: calc(33.33% - 24px );
+				width: calc( 33.33% - 24px );
 				box-shadow: 0px 1px 2px 0px $box_shadow;
 				border: 1px solid $border_2;
 				background-color: $bg_white;
 				border-radius: 8px;
-				transition: .3s;
+				transition: 0.3s;
 
 				.srfm-tp-cs-badge {
 					position: absolute;
@@ -125,7 +125,7 @@ $text_color: #6B21A8;
 						font-weight: 600;
 						color: $heading_color;
 						margin-top: 0;
-						margin-bottom:  0.625em;
+						margin-bottom: 0.625em;
 					}
 
 					.srfm-tp-sp-description {
@@ -136,16 +136,15 @@ $text_color: #6B21A8;
 				}
 
 				&:hover {
-					@media (min-width: 781px) {
+					@media ( min-width: 781px ) {
 						box-shadow: 0px 1px 2px 0px $box_shadow;
 						box-shadow: 0px 16px 48px -8px $box_shadow_2;
 					}
 				}
 
-				@media (max-width: 782px) {
+				@media ( max-width: 782px ) {
 					width: 100%;
 				}
-
 			}
 		}
 	}
@@ -155,14 +154,12 @@ $text_color: #6B21A8;
 	// Screen Two starts here
 
 	.srfm-ts-main-container {
-
 	}
-
 }
 
 //////////////////////
-/// 
-/// 
+///
+///
 
 .srfm-ts-main-container {
 	display: flex;
@@ -344,4 +341,54 @@ $text_color: #6B21A8;
 	font-weight: 400;
 	line-height: 20px;
 	cursor: pointer;
+}
+
+.srfm-req-template-container {
+	display: flex;
+	padding: 16px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 12px;
+	align-self: stretch;
+	border-radius: 4px;
+	border: 1px solid #dce0e6;
+	max-width: 250px;
+}
+
+.srfm-req-template-title-container {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.srfm-req-template-title {
+	color: #1e293b;
+	font-family: Inter;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 20px;
+}
+
+.srfm-req-template-body {
+	align-self: stretch;
+	color: #475569;
+	font-family: Inter;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+.srfm-req-template-btn {
+	display: flex;
+	padding: 7px 11px;
+	justify-content: center;
+	align-items: center;
+	align-self: stretch;
+	border-radius: 4px;
+	background: #f5f3ff;
+	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+	border: none;
 }

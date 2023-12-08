@@ -132,6 +132,7 @@ class Block_Patterns extends WP_REST_Controller {
 			'blockTypes'       => 'block_types',
 			'categories'       => 'categories',
 			'templateCategory' => 'templateCategory',
+			'id'               => 'id',
 			'keywords'         => 'keywords',
 			'content'          => 'content',
 			'inserter'         => 'inserter',
@@ -198,7 +199,13 @@ class Block_Patterns extends WP_REST_Controller {
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'templateCategory' => array(
-					'description' => __( 'The pattern form template category.', 'sureforms' ),
+					'description' => __( 'The pattern template category.', 'sureforms' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'id'               => array(
+					'description' => __( 'The pattern template id.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
