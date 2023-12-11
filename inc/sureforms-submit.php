@@ -323,6 +323,7 @@ class Sureforms_Submit {
 			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 			$smart_tags         = new SRFM_Smart_Tags();
 			$is_mail_sent       = false;
+			$emails             = [];
 			if ( is_iterable( $email_notification ) ) {
 				foreach ( $email_notification as $notification ) {
 					foreach ( $notification as $item ) {
@@ -340,6 +341,7 @@ class Sureforms_Submit {
 							'Content-Type: text/html; charset=utf-8';
 							$sent           = wp_mail( $to, $subject, $message, $headers );
 							$is_mail_sent   = $sent;
+							$emails[]       = $to;
 						}
 					}
 				}
@@ -356,6 +358,7 @@ class Sureforms_Submit {
 				$form_submit_response = array(
 					'success'   => true,
 					'form_id'   => $id ? intval( $id ) : '',
+					'emails'    => $emails,
 					'form_name' => $name ? esc_attr( $name ) : '',
 					'message'   => __( 'Form submitted successfully', 'sureforms' ),
 					'data'      => $modified_message,
