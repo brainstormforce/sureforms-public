@@ -222,8 +222,10 @@ input:checked + .slider:before {
 	-webkit-appearance: none;
 }
 
-.page-title-action {
-	display: none !important;
+.wrap {
+	.page-title-action {
+		display: none;
+	}
 }
 
 .srfm-add-form-btn {
