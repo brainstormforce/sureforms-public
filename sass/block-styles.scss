@@ -1,12 +1,53 @@
 
-.srfm-form { // This is the parent form class. Adds specificity so that there is no conflict.
-	.srfm-block {
-		.srfm-block-label {
-			display: block;
-		}
+.srfm-form-container { // This is the parent form class. Adds specificity so that there is no conflict.
+	.srfm-block-width-25 {
+		width: calc(25% - 0.6em);
+	}
 
-		.srfm-block-input {
+	.srfm-block-width-33-3 {
+		width: calc(33.33% - 0.6em);
+	}
+
+	.srfm-block-width-50 {
+		width: calc(50% - 0.6em);
+	}
+
+	.srfm-block-width-100 {
+		width: 100%;
+	}
+
+	.srfm-block-width-25,
+	.srfm-block-width-33-3,
+	.srfm-block-width-50 {
+		@media (max-width: 576px) {
 			width: 100%;
 		}
 	}
+
+	.srfm-form { 
+		.srfm-block {
+			.srfm-block-label {
+				display: block;
+	
+				.srfm-required {
+					color: var(--srfm-error-text-color);
+				}
+			}
+	
+			.srfm-input-common {
+				width: 100%;
+			}
+	
+			.srfm-error-message {
+				display: none;
+			}
+
+			
+		}
+	}
+
+	.srfm-success-box{
+		display: none;
+	}
 }
+

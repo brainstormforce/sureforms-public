@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Dropdown Markup Class.
@@ -17,49 +18,6 @@ use SureForms\Inc\Traits\Get_Instance;
  */
 class Dropdown_Markup extends Base {
 	use Get_Instance;
-
-	/**
-	 * Render the sureforms dropdown default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
-		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-		$output  = '';
-		$output .= '<div class="srfm-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label class="srfm-text-primary">' . esc_html( $label ) . ' 
-            ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '
-        </label>
-        <select 
-        name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
-        aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
-        class="srfm-input-field"
-        >';
-		if ( ! empty( $placeholder ) ) {
-			$output .= '<option value="">' . $placeholder . '</option>';
-		}
-		foreach ( $options as $option ) {
-			$option      = esc_attr( $option );
-			$option_text = esc_html( $option );
-
-			$output .= '<option value="' . $option . '">' . $option_text . '</option>';
-		}
-
-		$output .= '</select>' . ( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-                <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-            </div>';
-		return $output;
-	}
 
 	/**
 	 * Render the sureforms dropdown classic styling

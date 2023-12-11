@@ -110,6 +110,111 @@ class Generate_Form_Markup {
 				default:
 					break;
 			}
+
+
+			$label_text_color = '';
+			$body_input_color = '';
+			$placeholder_color = '';
+			$border_color = '';
+			$help_text_color = '';
+			$base_background_color = '';
+			$light_background_color = '';
+
+			//Info colors.
+			$info_surface_color = '';
+			$info_text_color = '';
+			$info_background_color = '';
+	
+			//Success colors
+			$success_surface_color = '';
+			$success_text_color = '';
+			$success_background_color = '';
+	
+			//Warning colors
+			$success_surface_color = '';
+			$success_text_color = '';
+			$success_background_color = '';
+	
+			//Warning colors
+			$warning_surface_color = '';
+			$warning_text_color = '';
+			$warning_background_color = '';
+	
+			//Warning colors
+			$error_surface_color = '';
+			$error_text_color = '';
+			$error_background_color = '';
+	
+			$font_size = '';
+			$media_query_mobile = '';
+			$border = '';
+			$border_radius = '';
+
+			// New colors.
+			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
+			$body_input_color_var = $body_input_color ? $body_input_color : '#4B5563';
+			$placeholder_color_var = $placeholder_color ? $placeholder_color : '#9CA3AF';
+			$border_color_var = $border_color ? $border_color : '#D1D5DB';
+			$help_color_var = $help_text_color ? $help_text_color : '#6B7280';
+			$base_background_var = $base_background_color ? $base_background_color : '#FFFFFF';
+			$light_background_var = $light_background_color ? $light_background_color : '#F9FAFB';
+	
+			//Info colors.
+			$info_surface_var = $info_surface_color ? $info_surface_color : '#3B82F6';
+			$info_text_var = $info_text_color ? $info_text_color : '#2563EB';
+			$info_background_color_var = $info_background_color ? $info_background_color : '#EFF6FF';
+	
+			//Success colors.
+			$success_surface_var = $success_surface_color ? $success_surface_color : '#22C55E';
+			$success_text_var = $success_text_color ? $success_text_color : '#16A34A';
+			$success_background_color_var = $success_background_color ? $success_background_color : '#F0FDF4';
+	
+			//Warning colors.
+			$warning_surface_var = $warning_surface_color ? $warning_surface_color : '#FACC15';
+			$warning_text_var = $warning_text_color ? $warning_text_color : '#CA8A04';
+			$warning_background_color_var = $warning_background_color ? $warning_background_color : '#FEFCE8';
+	
+			//Error colors.
+			$error_surface_var = $warning_surface_color ? $warning_surface_color : '#EF4444';
+			$error_text_var = $warning_text_color ? $warning_text_color : '#DC2626';
+			$error_background_color_var = $warning_background_color ? $warning_background_color : '#FEF2F2';
+	
+			$font_size_var = $font_size ? $font_size : '20px';
+			$media_query_mobile_var =  $media_query_mobile ? $media_query_mobile : '576px';
+			$border_var = $border ? $border : '1px';
+			$border_radius_var = $border_radius ? $border_radius : '8px';
+			?>
+
+			<div class="srfm-form-container">
+			<style>
+				.srfm-form-container {
+					--srfm-label-text-color : <?php echo esc_html($label_text_color_var); ?>;
+					--srfm-body-input-color : <?php echo esc_html($body_input_color_var); ?>;
+					--srfm-placeholder-color : <?php echo esc_html($placeholder_color_var); ?>;
+					--srfm-border-color : <?php echo esc_html($border_color_var); ?>;
+					--srfm-help-color : <?php echo esc_html($help_color_var); ?>;
+					--srfm-base-background-color : <?php echo esc_html($base_background_var); ?>;
+					--srfm-light-background-color : <?php echo esc_html($light_background_var); ?>;
+					--srfm-info-surface-color : <?php echo esc_html($info_surface_var); ?>;
+					--srfm-info-text-color : <?php echo esc_html($info_text_var); ?>;
+					--srfm-info-background-color : <?php echo esc_html($info_background_color_var); ?>;
+					--srfm-success-surface-color : <?php echo esc_html($success_surface_var); ?>;
+					--srfm-success-text-color : <?php echo esc_html($success_text_var); ?>;
+					--srfm-success-background-color : <?php echo esc_html($success_background_color_var); ?>;
+					--srfm-warning-surface-color : <?php echo esc_html($warning_surface_var); ?>;
+					--srfm-warning-text-color : <?php echo esc_html($warning_text_var); ?>;
+					--srfm-warning-background-color : <?php echo esc_html($warning_background_color_var); ?>;
+					--srfm-error-surface-color : <?php echo esc_html($error_surface_var); ?>;
+					--srfm-error-text-color : <?php echo esc_html($error_text_var); ?>;
+					--srfm-error-background-color : <?php echo esc_html($error_background_color_var); ?>;
+					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;
+					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
+					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
+					--srfm-border: <?php echo esc_html( $border_var ); ?>;
+					font-size: var(--srfm-font-size );
+				}
+			</style>
+			<?php
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?> <h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
@@ -193,31 +298,7 @@ class Generate_Form_Markup {
 			$form_path = isset( $segments[1] ) ? $segments[1] : '';
 		}
 		?>
-			<style>
-				<?php echo esc_attr( '#srfm-form-' . $id . ', #srfm-success-message-page-' . $id ); ?> {
-					--srfm-secondary-color: 
-					<?php
-						echo esc_attr( $color_secondary );
-					?>
-						;
-					--srfm-primary-color: 
-					<?php
-						echo esc_attr( $color_primary );
-					?>
-						;
-					--srfm-primary-text-color:
-					<?php
-						echo esc_attr( $color_text_primary );
-					?>
-						;
-					font-size: <?php echo esc_attr( isset( $form_font_size ) ? $form_font_size . 'px;' : '' ); ?>
-
-				}
-				<?php echo esc_attr( '#srfm-form-' . $id ); ?> {
-					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>'); 
-
-				}
-			</style>
+			</div>
 		<?php
 		return ob_get_clean();
 	}

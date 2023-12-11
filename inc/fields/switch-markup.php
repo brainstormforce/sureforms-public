@@ -20,45 +20,6 @@ use SureForms\Inc\Sureforms_Helper;
 class Switch_Markup extends Base {
 	use Get_Instance;
 
-	/**
-	 * Render the sureforms checkbox default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$block_id      = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
-		$form_id       = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
-		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help          = isset( $attributes['switchHelpText'] ) ? $attributes['switchHelpText'] : '';
-		$checked       = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
-		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$color_primary = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ) : '';
-		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
-
-		return '<div class="srfm-switch-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-		<label class="srfm-switch-label" for="srfm-switch-' . esc_attr( $block_id ) . '">
-			<div style="display: flex; align-items: flex-start; gap: 0.5rem;" class="srfm-text-primary">
-				<div class="srfm-switch-background" style="background-color: ' . ( $checked ? '#007CBA' : '#dcdcdc' ) . ';">
-					<input class="srfm-switch srfm-default-switch"
-						name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
-						id="srfm-switch-' . esc_attr( $block_id ) . '"
-						' . ( $checked ? 'checked' : '' ) . ' type="checkbox"
-						aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" />
-					<div class="srfm-switch-toggle" style="left: ' . ( $checked ? '27px' : '2px' ) . ';"></div>
-				</div>
-				<span style="color: var(--srfm-primary-color)">' . esc_html( $label ) . '</span>
-				' . ( $required && $label ? '<span style="color: red;"> *</span>' : '' ) . '
-			</div>
-		</label>
-		' . ( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-		<span style="margin-top: 5px; display: none;" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-	</div>';
-
-	}
 
 	/**
 	 * Render the sureforms checkbox classic styling
@@ -80,6 +41,15 @@ class Switch_Markup extends Base {
 		$color_primary = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_color1', true ) ) : '';
 		$checked_color = ! empty( $color_primary ) ? $color_primary : '#0084C7';
 		$direction     = is_rtl() ? 'right' : 'left';
+
+		$slug        = 'switch';
+
+		$inline_style = '';
+
+		// Append Dynamic styles here.
+		$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
+		$style         = $inline_style ? 'style="' . $inline_style . '"' : '';
+
 
 		return '<div class="srfm-switch-container srfm-main-container srfm-frontend-inputs-holder srfm-classic-switch-container' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
 		<label class="srfm-switch-label" for="srfm-switch-' . esc_attr( $block_id ) . '">
@@ -104,6 +74,14 @@ class Switch_Markup extends Base {
 		' . ( '' !== $help ? '<p for="srfm-checkbox" class="srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '
 		<span style="display: none;" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 	</div>';
+
+	ob_start(); ?>
+			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ); ?>" <?php echo wp_kses_post( $style ); ?>>
+				
+			</div>
+
+		<?php
+		return ob_get_clean();
 
 	}
 

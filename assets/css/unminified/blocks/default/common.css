@@ -1,0 +1,69 @@
+.srfm-form-container .srfm-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.srfm-form-container .srfm-form .srfm-block {
+  margin-bottom: 1.2em;
+}
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common {
+  border-color: var(--srfm-error-surface-color);
+  background-color: var(--srfm-error-background-color);
+}
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-error-icon {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0.7em;
+  transform: translateY(-50%);
+}
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-error-icon svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-error-icon svg path {
+  stroke: var(--srfm-error-surface-color);
+}
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-error-message {
+  display: block;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-block-wrap {
+  position: relative;
+  line-height: 0;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-block-label {
+  font-size: 0.7em;
+  margin-bottom: 0.429em;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--srfm-label-text-color);
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-input-common {
+  font-size: 0.8em;
+  font-weight: 400;
+  padding: 0.625em 0.875em;
+  padding-right: 2.2em;
+  line-height: normal;
+  border: var(--srfm-border) solid var(--srfm-border-color);
+  border-radius: var(--srfm-border-radius);
+  background-color: var(--srfm-base-background-color);
+  outline: none;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-error-icon {
+  display: none;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-error-message, .srfm-form-container .srfm-form .srfm-block .srfm-description {
+  font-size: 0.7em;
+  margin-top: 0.571em;
+  font-weight: 400;
+  line-height: normal;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-description {
+  color: var(--srfm-help-color);
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-error-message {
+  color: var(--srfm-error-text-color);
+}
+.srfm-form-container .srfm-form .srfm-submit-container {
+  width: 100%;
+}

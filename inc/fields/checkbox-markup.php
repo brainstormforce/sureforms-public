@@ -21,42 +21,6 @@ class Checkbox_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms checkbox default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
-		$label_url = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
-		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
-		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-		return '<div class="srfm-checkbox-container srfm-main-container' . esc_attr( $classname ) . '">
-		<div>
-			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
-			<span class="srfm-text-primary">
-				<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' .
-					( $label_url
-						? '<a class="srfm-text-primary" target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
-						: esc_html( $label )
-					) .
-					( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
-				'</label>
-			</span>
-		</div>' .
-		( '' !== $help ? '<label for="srfm-checkbox" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-	</div>';
-
-	}
-
-	/**
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -73,6 +37,19 @@ class Checkbox_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+
+		$slug = 'datepicker';
+
+		$inline_style = '';
+
+		// Append Dynamic styles here.
+		$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
+		$style =  $inline_style ? 'style="'. $inline_style .'"' : '';
+
+		// html attributes
+		$aria_require_attr = $required ? 'true' : 'false';
+
+
 
 		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
 			<div class= "srfm-relative srfm-flex srfm-items-start srfm-flex-row srfm-gap-2">
@@ -92,6 +69,18 @@ class Checkbox_Markup extends Base {
 			' . ( '' !== $help ? '<p for="srfm-checkbox" class="srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '
 			<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
 		</div>';
+
+		ob_start(); ?>
+			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ) ?>" <?php echo wp_kses_post( $style ) ?>>
+				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+					
+
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
+			</div>
+		<?php
+
+		return ob_get_clean();
 
 	}
 

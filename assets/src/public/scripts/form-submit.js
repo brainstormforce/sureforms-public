@@ -56,7 +56,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		);
 	}
 	const fieldContainers = Array.from(
-		formContainer.querySelectorAll( '.srfm-main-container' )
+		formContainer.querySelectorAll( '.srfm-block' )
 	);
 
 	for ( const container of fieldContainers ) {
@@ -84,31 +84,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
-				}
-				if ( duplicateMessage ) {
-					duplicateMessage.style.display = 'none';
+				if( errorMessage ) {
+					errorMessage.textContent = errorMessage.getAttribute('data-error-msg');
 				}
 				if ( inputField ) {
-					inputField.classList.add( 'srfm-classic-input-error' );
-				}
-				if ( errorInputIcon ) {
-					errorInputIcon.style.display = 'flex';
+					inputField.closest('.srfm-block').classList.add('srfm-error');
 				}
 				validateResult = true;
+
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
 				}
 			} else {
 				if ( inputField ) {
-					inputField.classList.remove( 'srfm-classic-input-error' );
-				}
-				if ( errorInputIcon ) {
-					errorInputIcon.style.display = 'none';
-				}
-				if ( errorMessage ) {
-					errorMessage.style.display = 'none';
+					inputField.closest('.srfm-block').classList.remove('srfm-error');
 				}
 			}
 		}
@@ -117,17 +106,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const hasDuplicate = uniqueEntryData?.some(
 				( entry ) => entry[ fieldName ] === 'not unique'
 			);
+
 			const phoneParent = container.querySelector( '#srfm-phone-parent' );
 			if ( hasDuplicate ) {
-				if ( duplicateMessage ) {
-					duplicateMessage.style.display = 'block';
-				}
+
 				if ( inputField ) {
-					inputField.classList.add( 'srfm-classic-input-error' );
+					inputField.closest('.srfm-block').classList.add('srfm-error');
 				}
-				if ( errorInputIcon ) {
-					errorInputIcon.style.display = 'flex';
-				}
+
+				errorMessage.textContent = errorMessage.getAttribute('data-unique-msg');
+	
 				if ( phoneParent ) {
 					const phoneInput =
 						container.querySelectorAll( 'input' )[ 1 ];
@@ -144,15 +132,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = inputField;
 				}
 			} else {
-				if ( duplicateMessage ) {
-					duplicateMessage.style.display = 'none';
-				}
+
 				if ( inputField ) {
-					inputField.classList.remove( 'srfm-classic-input-error' );
+					inputField.closest('.srfm-block').classList.remove('srfm-error');
 				}
-				if ( errorInputIcon ) {
-					errorInputIcon.style.display = 'none';
-				}
+				
 				if ( phoneParent ) {
 					phoneParent.classList.remove(
 						'!srfm-ring-red-500',

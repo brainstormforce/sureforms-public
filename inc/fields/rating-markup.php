@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Rating Markup Class.
@@ -18,75 +19,6 @@ use SureForms\Inc\Traits\Get_Instance;
 class Rating_Markup extends Base {
 	use Get_Instance;
 
-	/**
-	 * Render the sureforms rating default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
-		$width        = isset( $attributes['width'] ) ? $attributes['width'] : '';
-		$icon_color   = isset( $attributes['iconColor'] ) ? strval( $attributes['iconColor'] ) : '';
-		$show_numbers = isset( $attributes['showNumbers'] ) ? $attributes['showNumbers'] : '';
-		$icon_shape   = isset( $attributes['iconShape'] ) ? $attributes['iconShape'] : '';
-		$max_value    = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
-		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname    = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id     = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-		$output  = '';
-		$output .= '<div class="srfm-rating-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label class="srfm-text-primary">' .
-			esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
-        </label>
-        <input type="hidden" class="srfm-rating-random-id" aria-required="' .
-			esc_attr( $required ? 'true' : 'false' ) . '" value="' .
-			esc_attr( $block_id ) . '" />
-        <input type="hidden" class="srfm-rating-icon-color-' .
-			esc_attr( $block_id ) . '" value="' . esc_attr( $icon_color ) . '" />
-        <div style="justify-content: ' . ( 'fullWidth' === $width ? 'space-between' : 'space-evenly' ) . '; display: flex; align-items: center;">';
-
-		$icon = '';
-		switch ( $icon_shape ) {
-			case 'star':
-				$icon .= '<i class="fa fa-star"></i>';
-				break;
-			case 'heart':
-				$icon .= '<i class="fa fa-heart"></i>';
-				break;
-			case 'smiley':
-				$icon .= '<i class="fa fa-smile"></i>';
-				break;
-			default:
-				$icon .= '<i class="fa fa-star"></i>';
-				break;
-		}
-
-		for ( $i = 0; $i < $max_value; $i++ ) {
-			$output .= '
-                <input style="display:contents;" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" class="srfm-rating-field" value="' .
-					esc_attr( strval( $i + 1 ) ) . '" id="srfm-rating-' .
-					esc_attr( $block_id . '-' . $i ) . '" type="radio" aria-required=' . esc_attr( $required && 0 === $i ? 'true' : 'false' ) . ' />
-                <div style="display:flex; flex-direction:column; align-items: center;">
-                    <label color-data="#ddd" style="color:#ddd; font-size:25px;" class="srfm-rating-' .
-						esc_attr( $block_id ) . '" for="srfm-rating-' . esc_attr( $block_id . '-' . $i ) . '">' .
-						wp_kses_post( $icon ) . '
-                    </label>
-                    <div>' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</div>
-                </div>';
-		}
-
-		$output .= '
-            </div>' . ( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-            <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-        </div>';
-
-		return $output;
-	}
 
 	/**
 	 * Render the sureforms rating classic styling
@@ -108,10 +40,16 @@ class Rating_Markup extends Base {
 		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$classname    = isset( $attributes['className'] ) ? $attributes['className'] : '';
 		$block_id     = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$slug        = 'rating';
 
-		$output  = '';
-		$output .= '<div class="srfm-classic-rating-container srfm-main-container srfm-classic-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);"	>';
-		$svg     = '';
+		$inline_style = '';
+
+		// Append Dynamic styles here.
+		$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
+		$style         = $inline_style ? 'style="' . $inline_style . '"' : '';
+
+
+        $svg     = '';
 		switch ( $icon_shape ) {
 			case 'star':
 				$svg .= '<svg
@@ -177,29 +115,20 @@ class Rating_Markup extends Base {
 				break;
 		}
 
-		$output .= '
-            <label class="srfm-classic-label-text">
-                ' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
-            </label>
-            <input type="hidden" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" id="srfm-classic-rating-field-' . esc_attr( $block_id ) . '" class="srfm-rating-field-result"/>
-            <ul class="srfm-classic-event srfm-rating-icon-wrapper srfm-mt-2 srfm-ml-0 srfm-mb-0 srfm-flex srfm-flex-wrap srfm-list-none srfm-gap-3 !srfm-p-0">';
-		for ( $i = 0; $i < $max_value; $i++ ) {
-			$output .= '
-                <li class="srfm-flex srfm-items-center srfm-flex-col-reverse" >
-                <span class="srfm-text-primary">' . esc_html( strval( $show_numbers ? $i + 1 : '' ) ) . '</span>
-                    <span
-                    class="srfm-text-primary srfm-rating-icon srfm-cursor-pointer" data-value="' . esc_attr( strval( $i + 1 ) ) . '">
-                    ' . $svg . ' 
-                    </span>
-                </li>';
-		}
-
-		$output .= '
-            </ul>' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-            <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-        </div>';
-
-		return $output;
+        ob_start(); ?>
+		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ); ?>" <?php echo wp_kses_post( $style ); ?>>
+            <?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+            <input type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"/>
+            <ul>
+                <?php for ( $i = 0; $i < $max_value; $i++ ) { ?>
+                    <li>
+                        <span class="srfm-number"><?php echo esc_html( strval( $show_numbers ? $i + 1 : '' ) ); ?></span>
+                        <span data-value="<?php echo esc_attr( strval( $i + 1 ) ); ?>"><?php echo $svg; ?></span>
+                    </li>
+                <?php } ?>
+            </ul>
+        <?php
+		return ob_get_clean();
 
 	}
 

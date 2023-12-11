@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Input Markup Class.
@@ -17,36 +18,6 @@ use SureForms\Inc\Traits\Get_Instance;
  */
 class Number_Slider_Markup extends Base {
 	use Get_Instance;
-
-	/**
-	 * Render the sureforms number slider default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
-		$label              = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help               = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$min                = isset( $attributes['min'] ) ? $attributes['min'] : 0;
-		$max                = isset( $attributes['max'] ) ? $attributes['max'] : 100;
-		$step               = isset( $attributes['step'] ) ? $attributes['step'] : 1;
-		$value_display_text = isset( $attributes['valueDisplayText'] ) ? $attributes['valueDisplayText'] : '';
-		$error_msg          = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname          = isset( $attributes['className'] ) ? $attributes['className'] : '';
-
-		return '<div class="srfm-number-slider-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label class="srfm-text-primary" for="srfm-number-slider-' . esc_attr( $block_id ) . '">' . esc_html( $label ) . '</label>
-        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-number-slider-' . esc_attr( $block_id ) . '" type="range"
-        min="' . intval( $min ) . '" max="' . intval( $max ) . '" step="' . intval( $step ) . '" value="0"
-        class="srfm-number-slider-input"
-        >
-        <div style="font-size:14px; font-weight:600;">' . esc_html( $value_display_text ) . '<span id="srfm-number-slider-value-' . esc_attr( $block_id ) . '">0</span></div>' .
-		( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt" for="srfm-number-slider-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-        </div>';
-	}
 
 	/**
 	 * Render the sureforms number slider classic styling

@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Input Markup Class.
@@ -37,38 +38,28 @@ class Input_Markup extends Base {
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_length  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
-		$classname     = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$classname     = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$slug = 'input';
 
-		$inline_style = '';
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
-		// Append Dynamic styles here.
-		$inline_style .= $field_width ? 'width:' . $field_width . 'px;' : '';
-		$style =  $inline_style ? 'style="'. $inline_style .'"' : '';
-
-
-		// html attributes
-		$placeholder_attr = $placeholder ? 'placeholder="'. $placeholder .'" ' : '';
-		$max_length_attr = $max_text_length ? 'maxlength="'. $max_text_length .'" ' : '';
-		$aria_require_attr = $required ? 'true' : 'false';
-		$aria_unique_attr = $is_unique ? 'true' : 'false';
-		$default_value_attr = $default ? 'value="'. $default .'" ' : '';
+		//Attributes
+		$placeholder = $placeholder ? $placeholder : '';
+		$max_length = $max_text_length ? $max_text_length : '';
+		$aria_require = $required ? 'true' : 'false';
+		$aria_unique = $is_unique ? 'true' : 'false';
+		$default_value = $default ? $default : '';
 
 		ob_start(); ?>
 
-			<div class="srfm-block srfm-text-input-block <?php echo esc_attr( $classname ) ?>" <?php esc_attr( $style ) ?>>
-				<?php if( $label ) { ?>
-					<label for="srfm-text-input-<?php echo esc_attr( $block_id ) ?>" class="srfm-block-label"><?php echo esc_html( $label ) ?><?php if( $required ) { ?><span class="srfm-requred"> *</span><?php } ?></label>
-				<?php } ?>
-				<input class="srfm-block-input" type="text" name="srfm-text-input-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" aria-unique="<?php echo esc_attr( $aria_unique_attr ); ?>" <?php echo esc_attr(  $placeholder_attr .''. $max_length_attr .''. $default_value_attr ); ?> />
-				<?php if( $help ) { ?>
-					<div class="srfm-description"><?php echo esc_html( $help ); ?></div>
-				<?php } ?>
-				<?php if( $required ) { ?>
-					<div class="srfm-error srfm-hide"><?php echo esc_html( $error_msg ); ?></div>
-				<?php } ?>
-				<?php if( $is_unique ) { ?>
-					<div class="srfm-error srfm-hide"><?php echo esc_html( $duplicate_msg ); ?></div>
-				<?php } ?>
+	<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+				<div class="srfm-block-wrap">
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-text-input-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxlength="<?php echo esc_attr( $max_length ); ?>" value="<?php echo esc_attr( $default_value ); ?>" />
+					<?php echo Sureforms_Helper::fetch_svg('error_icon', 'srfm-error-icon'); ?>
+				</div>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', $duplicate_msg ) ); ?>
 			</div>
 		<?php 
 		return ob_get_clean();

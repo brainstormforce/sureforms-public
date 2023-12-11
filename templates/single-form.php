@@ -74,16 +74,6 @@ use SureForms\Inc\Generate_Form_Markup;
 	?>
 		<style>
 			#srfm-single-form-page {
-				--srfm-secondary-color: 
-				<?php
-					echo esc_attr( $color_secondary );
-				?>
-					;
-				--srfm-primary-color: 
-				<?php
-					echo empty( $color_primary ) && '' === $button_styling_from_theme ? '#0284C7' : esc_attr( $color_primary );
-				?>
-				;
 				--srfm-primary-text-color: 
 					<?php
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
@@ -93,6 +83,7 @@ use SureForms\Inc\Generate_Form_Markup;
 					<?php
 					echo esc_attr( $form_container_width . 'px' );
 					?>
+				
 			}
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
