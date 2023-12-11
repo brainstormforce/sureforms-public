@@ -11,6 +11,8 @@ const Editor = ( { handleEmailBodyContent, content } ) => {
 			minHeight: 300,
 			toolbarAdaptive: false,
 			buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,brush,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall,source',
+			askBeforePasteHTML: false,
+  			askBeforePasteFromWord: false
 		} ),
 		[ ]
 	);

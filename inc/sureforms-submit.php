@@ -320,25 +320,27 @@ class Sureforms_Submit {
 					'name' => $name,
 				),
 			);
-			$email_notification = get_post_meta( $id, '_srfm_email_notification' );
+			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 			$smart_tags         = new SRFM_Smart_Tags();
 			$is_mail_sent       = false;
-			foreach ( $email_notification as $notification ) {
-				foreach ( $notification as $item ) {
-					if ( $item['status'] === true ) {
-						$to             = $item['email_to'];
-						$to             = $smart_tags->process_smart_tags( $to );
-						$subject        = $item['subject'];
-						$subject        = $smart_tags->process_smart_tags( $subject );
-						$email_body     = $item['email_body'];
-						$email_template = new Email_Template();
-						$message        = $email_template->render( $meta_data, $email_body );
-						$headers        = "From: $to\r\n" .
+			if ( is_iterable( $email_notification ) ) {
+				foreach ( $email_notification as $notification ) {
+					foreach ( $notification as $item ) {
+						if ( $item['status'] === true ) {
+							$to             = $item['email_to'];
+							$to             = $smart_tags->process_smart_tags( $to );
+							$subject        = $item['subject'];
+							$subject        = $smart_tags->process_smart_tags( $subject );
+							$email_body     = $item['email_body'];
+							$email_template = new Email_Template();
+							$message        = $email_template->render( $meta_data, $email_body );
+							$headers        = "From: $to\r\n" .
 							"Reply-To: $to\r\n" .
 							'X-Mailer: PHP/' . phpversion() . "\r\n" .
 							'Content-Type: text/html; charset=utf-8';
-						$sent           = wp_mail( $to, $subject, $message, $headers );
-						$is_mail_sent   = $sent;
+							$sent           = wp_mail( $to, $subject, $message, $headers );
+							$is_mail_sent   = $sent;
+						}
 					}
 				}
 			}
@@ -352,14 +354,11 @@ class Sureforms_Submit {
 				}
 
 				$form_submit_response = array(
-					'success'       => true,
-					'senders_email' => $sender_email ? esc_attr( $sender_email ) : '',
-					'admin_email'   => $email ? $admin_email : '',
-					'form_id'       => $id ? intval( $id ) : '',
-					'form_name'     => $name ? esc_attr( $name ) : '',
-					'subject'       => $subject ? esc_attr( $subject ) : '',
-					'message'       => __( 'Form submitted successfully', 'sureforms' ),
-					'data'          => $modified_message,
+					'success'   => true,
+					'form_id'   => $id ? intval( $id ) : '',
+					'form_name' => $name ? esc_attr( $name ) : '',
+					'message'   => __( 'Form submitted successfully', 'sureforms' ),
+					'data'      => $modified_message,
 				);
 
 				do_action( 'srfm_form_submit', $form_submit_response );

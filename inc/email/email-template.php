@@ -88,6 +88,7 @@ class Email_Template {
 	 * Render email template.
 	 *
 	 * @param array<string, string> $fields Submission fields.
+	 * @param string                $email_body email body.
 	 * @since 0.0.1
 	 * @return string
 	 */
