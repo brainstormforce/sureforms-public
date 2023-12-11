@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 
 const SingleFormSetting = ( props ) => {
 	const { sureformsKeys } = props;
-    const emailNotificationData = sureformsKeys._srfm_email_notification || [];
+	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const [ selectedTab, setSelectedTab ] = useState( 'email_notification' );
 	return (
 		<div className="srfm-setting-modal-container">

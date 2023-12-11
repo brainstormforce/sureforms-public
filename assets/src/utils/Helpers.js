@@ -48,3 +48,22 @@ export const srfmClassNames = ( classes ) =>
 
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
+
+export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
+	const smartTagList = sfBlockData.smart_tags_array;
+	if ( ! smartTagList ) {
+		return;
+	}
+	const entries = Object.entries( smartTagList );
+	const data = entries.map( ( [ key, val ] ) => {
+		return {
+			title: val,
+			onClick: () => {
+				props?.onChange( inputData + key );
+				setInputData( inputData + key );
+			},
+		};
+	} );
+
+	return data;
+};

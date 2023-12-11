@@ -53,7 +53,6 @@ function Settings( props ) {
 			meta: option_array,
 		} );
 	}
-	console.log({sureforms_keys})
 	useEffect( () => {
 		const fetchData = async () => {
 			try {

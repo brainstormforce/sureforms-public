@@ -18,6 +18,7 @@
 }
 .srfm-header-settings-modal .components-modal__content {
   background-color: #f4f9fa;
+  padding: 0;
 }
 .srfm-header-settings-modal .components-modal__header .components-button svg {
   width: 24px;
@@ -37,6 +38,7 @@
   align-self: stretch;
   border-left: 1px solid var(--dashboard-border-primary, #dce0e6);
   background: var(--dashboard-surface-secondary, #fff);
+  min-height: 100vh;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab {
   display: flex;
@@ -55,6 +57,9 @@
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab .srfm-modal-tab-text p {
+  margin: 0;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab .srfm-modal-tab-icon {
   display: flex;
@@ -130,6 +135,9 @@
   align-self: stretch;
   justify-content: space-between;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-text h5 {
+  margin: 0;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-separator {
   width: 768px;
   height: 1px;
@@ -149,6 +157,12 @@
   align-items: center;
   gap: 10px;
   align-self: stretch;
+  position: relative;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-label {
   width: 144px;
@@ -207,73 +221,9 @@
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-modal-area-header + div {
   width: 100%;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap html {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap body {
-  box-sizing: border-box;
-  font-size: 13px;
-  line-height: 1.6;
-  padding: 10px;
-  margin: 0;
-  background: transparent;
-  color: #000;
-  position: relative;
-  z-index: 2;
-  -webkit-user-select: auto;
-  -ms-user-select: auto;
-  user-select: auto;
-  overflow: auto;
-  outline: none;
-  margin: 0px;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap table {
-  width: 100%;
-  border: none;
-  border-collapse: collapse;
-  empty-cells: show;
-  max-width: 100%;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap th,
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap td {
-  padding: 2px 5px;
-  border: 1px solid #ccc;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap p {
-  margin-top: 0;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap .jodit_editor .jodit_iframe_wrapper {
-  display: block;
-  clear: both;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  position: relative;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap .jodit_editor .jodit_iframe_wrapper:after {
-  position: absolute;
-  content: "";
-  z-index: 1;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  cursor: pointer;
-  display: block;
-  background: rgba(0, 0, 0, 0);
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap .jodit_editor.jodit_disabled {
-  user-select: none;
-  -o-user-select: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap ul {
+  list-style: disc;
+  margin-right: 2em;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-notification-btn {
   display: flex;
@@ -315,27 +265,39 @@
   align-self: stretch;
   color: #2c3338;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col {
-  display: flex;
-  padding: 8px 10px;
-  align-items: flex-start;
-  flex: 1 0 0;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col .srfm-modal-col-text {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-text {
   color: #2c3338;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 19.6px; /* 140% */
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.second {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row p {
+  margin: 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-first {
+  display: flex;
+  padding: 8px 12px;
+  align-items: flex-start;
+  flex: 1 0 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-second {
+  display: flex;
   width: 224px;
+  padding: 8px 10px;
+  align-items: flex-start;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.third {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-third {
+  display: flex;
   width: 160px;
+  padding: 8px 10px;
+  align-items: flex-start;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col.fourth {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-fourth {
+  display: flex;
   width: 104px;
+  padding: 8px 10px;
+  align-items: flex-start;
   gap: 16px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-separator {
@@ -350,52 +312,13 @@
   align-self: stretch;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data {
-  height: 40px;
   align-self: stretch;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data.odd {
   background: #f6f7f7;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-cursor-pointer {
   cursor: pointer;
   border: none;
   background: none;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch {
-  display: inline-block;
-  position: relative;
-  width: 32px;
-  height: 16px;
-  border-radius: 20px;
-  background: #dfd9ea;
-  transition: background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  vertical-align: middle;
-  cursor: pointer;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch::before {
-  content: "";
-  position: absolute;
-  top: 1px;
-  right: 2px;
-  width: 14px;
-  height: 14px;
-  background: #fafafa;
-  border-radius: 50%;
-  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data .srfm-status-switch:active::before {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28), 0 0 0 20px rgba(128, 128, 128, 0.1);
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch {
-  background: var(--dashboard-primary, #125D9F);
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch::before {
-  right: 18px;
-  background: #fff;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input:checked + .srfm-status-switch:active::before {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28), 0 0 0 20px rgba(0, 150, 136, 0.2);
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data input[type=checkbox] {
-  display: none;
-  width: 32px;
-  height: 16px;
 }

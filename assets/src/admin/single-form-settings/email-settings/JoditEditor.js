@@ -1,31 +1,26 @@
-import { useState, useRef, useMemo } from '@wordpress/element';
+import { useRef, useMemo } from '@wordpress/element';
 import JoditEditor from 'jodit-react';
 
-const Editor = ( { placeholder,handleEmailBodyContent,content } ) => {
+const Editor = ( { handleEmailBodyContent, content } ) => {
 	const editor = useRef( null );
 	const config = useMemo(
 		() => ( {
-			readonly: false,
-			placeholder: placeholder || 'Start typings...',
-			useSearch: false,
-			iframe: true,
-			minHeight: 240,
-			spellcheck: true,
-			toolbarButtonSize: 'small',
-			disablePlugins: 'about,fullsize,file,image,image-processor,image-properties,media,powered-by-jodit,speech-recognize,video',
+			disablePlugins: 'powered-by-jodit',
+			allowResizeY: true,
+			height: 'auto',
+			minHeight: 300,
+			toolbarAdaptive: false,
 			buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall,source',
-  			toolbarInlineForSelection: true,
 		} ),
-		[ placeholder ]
+		[ ]
 	);
 	return (
 		<JoditEditor
 			ref={ editor }
 			value={ content }
 			config={ config }
-			tabIndex={ 0 }
-			onChange={ ( newContent ) => {
-				handleEmailBodyContent(newContent)
+			onBlur={ ( newContent ) => {
+				handleEmailBodyContent( newContent );
 			} }
 		/>
 	);

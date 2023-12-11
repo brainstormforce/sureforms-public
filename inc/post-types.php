@@ -412,48 +412,14 @@ class Post_Types {
 			'_srfm_hide_title_post_specific'          => 'boolean',
 			'_srfm_page_form_title'                   => 'boolean',
 			'_srfm_single_page_form_title'            => 'boolean',
-			'_srfm_email_notification'                => array(
-				'type'  => 'array',
-				'items' => array(
-					'type'       => 'object',
-					'properties' => array(
-						'id'         => array(
-							'type' => 'integer',
-						),
-						'status'     => array(
-							'type' => 'boolean',
-						),
-						'name'       => array(
-							'type' => 'string',
-						),
-						'email_to'   => array(
-							'type' => 'string',
-						),
-						'subject'    => array(
-							'type' => 'string',
-						),
-						'email_body' => array(
-							'type' => 'string',
-						),
-					),
-				),
-			),
 		);
-
-		foreach ( $metas as $meta => $args ) {
-			$type  = is_array( $args ) ? $args['type'] : $args;
-			$items = is_array( $args ) && isset( $args['items'] ) ? $args['items'] : null;
+		foreach ( $metas as $meta => $type ) {
 			register_meta(
 				'post',
 				$meta,
 				array(
 					'object_subtype'    => SUREFORMS_FORMS_POST_TYPE,
-					'show_in_rest'      => array(
-						'schema' => array(
-							'type'  => $type,
-							'items' => $items,
-						),
-					),
+					'show_in_rest'      => true,
 					'single'            => true,
 					'type'              => $type,
 					'sanitize_callback' => 'sanitize_text_field',
@@ -463,6 +429,57 @@ class Post_Types {
 				)
 			);
 		}
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_email_notification',
+			array(
+				'single'       => true,
+				'type'         => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest' => array(
+					'schema' => array(
+						'type' => 'array',
+						'items' => array(
+						   'type'      => 'object',
+						   'properties' => array(
+							   'id'        => array(
+								   'type' => 'integer',
+							   ),
+							   'status'    => array(
+								   'type' => 'boolean',
+							   ),
+							   'is_raw_format'    => array(
+								   'type' => 'boolean',
+							   ),
+							   'name'      => array(
+								   'type' => 'string',
+							   ),
+							   'email_to'  => array(
+								   'type' => 'string',
+							   ),
+							   'subject'   => array(
+								   'type' => 'string',
+							   ),
+							   'email_body' => array(
+								   'type' => 'string',
+							   ),
+						   ),
+						),
+					),
+				),
+				'default'      => array(
+					array(
+						'id'        => 1,
+						'status'    => false,
+						'is_raw_format'    => false,
+						'name'      => 'Admin Notification Email',
+						'email_to'  => '{admin_email}',
+						'subject'   => 'New Form Submission',
+						'email_body' => '',
+					),
+				),
+			)
+		); 
 	}
 
 	/**
