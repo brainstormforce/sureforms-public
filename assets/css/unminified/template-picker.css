@@ -61,7 +61,7 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: var(--colors-gray-600, #4b5563);
+  color: #4b5563;
   font-size: 13px;
   font-style: normal;
   font-weight: 500;
@@ -72,6 +72,16 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #4b5563;
+  font-size: 13.081px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 23.546px;
+}
+.srfm-template-picker .srfm-tp-header .srfm-header-breadcrumb-container a,
+.srfm-template-picker .srfm-tp-header .srfm-header-breadcrumb a {
+  color: #4b5563;
+  box-shadow: none;
 }
 .srfm-template-picker .srfm-tp-header .srfm-tp-header-close {
   cursor: pointer;
@@ -148,12 +158,16 @@
     width: 100%;
   }
 }
-.srfm-template-picker .srfm-ts-preview-container, .srfm-template-picker .srfm-ts-main-container {
+.srfm-template-picker .srfm-ts-preview-container,
+.srfm-template-picker .srfm-ts-main-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
 }
-.srfm-template-picker .srfm-ts-preview-container .srfm-ts-sidebar, .srfm-template-picker .srfm-ts-preview-container .srfm-ts-preview, .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar, .srfm-template-picker .srfm-ts-main-container .srfm-ts-preview {
+.srfm-template-picker .srfm-ts-preview-container .srfm-ts-sidebar,
+.srfm-template-picker .srfm-ts-preview-container .srfm-ts-preview,
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar,
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-preview {
   position: fixed;
   left: 0;
   width: 290px;
@@ -162,7 +176,10 @@
   background-color: #fff;
   border-right: 1px solid #e5e7eb;
 }
-.srfm-template-picker .srfm-ts-preview-container .srfm-ts-cards-container, .srfm-template-picker .srfm-ts-preview-container .srfm-ts-preview, .srfm-template-picker .srfm-ts-main-container .srfm-ts-cards-container, .srfm-template-picker .srfm-ts-main-container .srfm-ts-preview {
+.srfm-template-picker .srfm-ts-preview-container .srfm-ts-cards-container,
+.srfm-template-picker .srfm-ts-preview-container .srfm-ts-preview,
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-cards-container,
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-preview {
   display: flex;
   flex-wrap: wrap;
   width: calc(100% - 290px);

@@ -15,7 +15,7 @@ use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 
 /**
- * Load Defaults Class.
+ * Create New Form.
  *
  * @since 0.0.1
  */
@@ -32,7 +32,7 @@ class Create_New_Form {
 	}
 
 	/**
-	 * Add custom API Route load-form-defaults
+	 * Add custom API Route create-new-form.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -50,7 +50,7 @@ class Create_New_Form {
 	}
 
 	/**
-	 * Handle Form status
+	 * Create new form from selected templates
 	 *
 	 * @param \WP_REST_Request $data Form Markup Data.
 	 *

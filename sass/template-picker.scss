@@ -10,6 +10,7 @@ $heading_color: #1e293b;
 $desc_color: #475569;
 $text_color: #6b21a8;
 $text_color_2: #50575e;
+$text_color_3 : #4b5563;
 $btn_primary_color: #125d9f;
 $btn_secondary_color: #fff;
 
@@ -55,7 +56,7 @@ $sidebar_width: 290px;
 		background: $btn_primary_color;
 		box-shadow: 0px 1px 2px 0px $box_shadow_3;
 		border-radius: 6px;
-		font-size:  0.875em;
+		font-size: 0.875em;
 		font-weight: 500;
 		color: $btn_secondary_color;
 		border: 0;
@@ -88,7 +89,7 @@ $sidebar_width: 290px;
 			align-items: center;
 			gap: 8px;
 			margin: 0;
-			color: var( --colors-gray-600, #4b5563 );
+			color: $text_color_3;
 			font-size: 13px;
 			font-style: normal;
 			font-weight: 500;
@@ -100,6 +101,15 @@ $sidebar_width: 290px;
 			display: flex;
 			align-items: center;
 			gap: 8px;
+			color: $text_color_3;
+			font-size: 13.081px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 23.546px;
+			a {
+				color: $text_color_3;
+				box-shadow: none;
+			}
 		}
 
 		.srfm-tp-header-close {
@@ -190,14 +200,16 @@ $sidebar_width: 290px;
 
 	// Screen One ends here
 
-	// Common screen one and two 
+	// Common screen one and two
 
-	.srfm-ts-preview-container, .srfm-ts-main-container  {
+	.srfm-ts-preview-container,
+	.srfm-ts-main-container {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 
-		.srfm-ts-sidebar, .srfm-ts-preview {
+		.srfm-ts-sidebar,
+		.srfm-ts-preview {
 			position: fixed;
 			left: 0;
 			width: $sidebar_width;
@@ -207,7 +219,8 @@ $sidebar_width: 290px;
 			border-right: 1px solid $border;
 		}
 
-		.srfm-ts-cards-container, .srfm-ts-preview {
+		.srfm-ts-cards-container,
+		.srfm-ts-preview {
 			display: flex;
 			flex-wrap: wrap;
 			width: calc( 100% - $sidebar_width );
@@ -219,10 +232,7 @@ $sidebar_width: 290px;
 	// Screen Two starts here
 
 	.srfm-ts-main-container {
-
 		.srfm-ts-sidebar {
-
-
 			.srfm-ts-sidebar-header {
 				display: flex;
 				flex-wrap: wrap;
@@ -259,7 +269,7 @@ $sidebar_width: 290px;
 
 			.srfm-req-template-container {
 				padding: 1em;
-				border: 1px solid rgba(220, 224, 230, 1);
+				border: 1px solid rgba( 220, 224, 230, 1 );
 				border-radius: 4px;
 
 				.srfm-req-template-title-container {
@@ -272,11 +282,10 @@ $sidebar_width: 290px;
 						width: 16px;
 						height: 16px;
 						margin-right: 8px;
-
 					}
 
 					.srfm-req-template-title {
-						width: calc(100% - 24px);
+						width: calc( 100% - 24px );
 						font-size: 0.875em;
 						font-weight: 500;
 					}
@@ -446,7 +455,7 @@ $sidebar_width: 290px;
 				}
 
 				&:focus {
-    				box-shadow: none;
+					box-shadow: none;
 				}
 			}
 
@@ -463,16 +472,15 @@ $sidebar_width: 290px;
 				font-weight: 400;
 				font-size: 0.875em;
 			}
-
 		}
-	
+
 		.srfm-ts-preview {
 			background-color: $bg_color;
-	
+
 			.srfm-ts-preview-template {
 				width: 100%;
 				text-align: center;
-	
+
 				img {
 					width: 100%;
 					max-width: 666px;
@@ -481,5 +489,4 @@ $sidebar_width: 290px;
 			}
 		}
 	}
-	
 }

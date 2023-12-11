@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import ICONS from './icons';
 
 const Breadcrumbs = () => {
@@ -17,16 +17,32 @@ const Breadcrumbs = () => {
 		<div className="srfm-header-breadcrumb-container">
 			{ ICONS.logo }
 			{ page === 'add-new-form' && (
-				<span className="srfm-header-breadcrumb">
-					{ ICONS.breadcrumb }
-					{ __( 'Add New Form', 'sureforms' ) }
-				</span>
+				<Link
+					className="srfm-tp-breadcrumb-url"
+					to={ {
+						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						search: `?page=add-new-form`,
+					} }
+				>
+					<span className="srfm-header-breadcrumb">
+						{ ICONS.breadcrumb }
+						{ __( 'Add New Form', 'sureforms' ) }
+					</span>
+				</Link>
 			) }
 			{ method === 'template' && (
-				<span className="srfm-header-breadcrumb">
-					{ ICONS.breadcrumb }
-					{ __( 'Select a Template', 'sureforms' ) }
-				</span>
+				<Link
+					className="srfm-tp-breadcrumb-url"
+					to={ {
+						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						search: `?page=add-new-form&method=template`,
+					} }
+				>
+					<span className="srfm-header-breadcrumb">
+						{ ICONS.breadcrumb }
+						{ __( 'Select a Template', 'sureforms' ) }
+					</span>
+				</Link>
 			) }
 			{ templateId && (
 				<span className="srfm-header-breadcrumb">

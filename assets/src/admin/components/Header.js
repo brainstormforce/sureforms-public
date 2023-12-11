@@ -79,17 +79,17 @@ export default () => {
 									{ sureforms_admin.breadcrumbs[ 0 ].title &&
 										sureforms_admin.breadcrumbs[ 0 ]
 											.title === 'Forms' && (
-											<a
-												href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
-											>
-												<button className="srfm-add-form-btn">
-													{ __(
-														'Add New',
-														'sureforms'
-													) }
-												</button>
-											</a>
-										) }
+										<a
+											href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
+										>
+											<button className="srfm-add-form-btn">
+												{ __(
+													'Add New',
+													'sureforms'
+												) }
+											</button>
+										</a>
+									) }
 								</ScBreadcrumbs>
 							</div>
 						</h1>
@@ -104,10 +104,10 @@ export default () => {
 						{ sureforms_admin.breadcrumbs[ 0 ].title &&
 							sureforms_admin.breadcrumbs[ 0 ].title ===
 								'Forms' && (
-								<button className="srfm-import-btn">
-									{ __( 'Import Form', 'sureforms' ) }
-								</button>
-							) }
+							<button className="srfm-import-btn">
+								{ __( 'Import Form', 'sureforms' ) }
+							</button>
+						) }
 						<article
 							css={ css`
 								color: #94a3b8;
