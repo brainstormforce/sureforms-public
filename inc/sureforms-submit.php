@@ -326,7 +326,7 @@ class Sureforms_Submit {
 			if ( is_iterable( $email_notification ) ) {
 				foreach ( $email_notification as $notification ) {
 					foreach ( $notification as $item ) {
-						if ( $item['status'] === true ) {
+						if ( true === $item['status'] ) {
 							$to             = $item['email_to'];
 							$to             = $smart_tags->process_smart_tags( $to );
 							$subject        = $item['subject'];

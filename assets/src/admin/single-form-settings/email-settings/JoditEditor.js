@@ -12,7 +12,7 @@ const Editor = ( { handleEmailBodyContent, content } ) => {
 			toolbarAdaptive: false,
 			buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,brush,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall,source',
 			askBeforePasteHTML: false,
-  			askBeforePasteFromWord: false
+  			askBeforePasteFromWord: false,
 		} ),
 		[ ]
 	);
