@@ -225,6 +225,10 @@
   list-style: disc;
   margin-left: 2em;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-editor-wrap .srfm-editor-textarea {
+  width: 100%;
+  min-height: 300px;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-notification-btn {
   display: flex;
   padding: 7px 11px;

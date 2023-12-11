@@ -99,52 +99,6 @@ function Settings( props ) {
 	return (
 		<>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Notification Settings', 'sureforms' ) }
-				initialOpen={ true }
-			>
-				<SRFMTextControl
-					label={ __(
-						'Customize the email address on which you want to send the notifications',
-						'sureforms'
-					) }
-					help={ __(
-						'Please add the emails separated by , if you want to send emails to multiple email addresses',
-						'sureforms'
-					) }
-					placeholder={ __( 'E-mail addres', 'sureforms' ) }
-					data={ {
-						value: sureforms_keys._srfm_email,
-						label: '_srfm_email',
-					} }
-					value={ sureforms_keys._srfm_email }
-					isFormSpecific={ true }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_email', value );
-					} }
-				/>
-				<ToggleControl
-					label={ __(
-						"Turn toggle on to send notification to sender's email address",
-						'sureforms'
-					) }
-					checked={
-						'on' === sureforms_keys._srfm_sender_notification
-					}
-					onChange={ ( value ) => {
-						updateMeta(
-							'_srfm_sender_notification',
-							value ? 'on' : 'off'
-						);
-					} }
-				/>
-				<p className="components-base-control__help">
-					{ __(
-						'Please note that this setting will only work when an email field is present in the form',
-						'sureforms'
-					) }
-				</p>
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>

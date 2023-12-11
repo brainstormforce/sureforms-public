@@ -11,6 +11,7 @@ const EmailConfirmation = ( props ) => {
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
 		status: data.status || false,
+		is_raw_format: data.is_raw_format || false,
 		name: data.name,
 		email_to: data.email_to,
 		subject: data.subject,
@@ -71,12 +72,15 @@ const EmailConfirmation = ( props ) => {
 									<p>{ __( 'Email Body', 'sureforms' ) }</p>
 								</div>
 								<div className="srfm-modal-area-header-checkbox">
-									<input className="srfm-modal-checkbox" type="checkbox" />
+									<input checked={ formData.is_raw_format } onChange={ () => setFormData( { ...formData, is_raw_format: ! formData.is_raw_format } ) } className="srfm-modal-checkbox" type="checkbox" />
 									<span className="checkbox-text">{ __( 'Send Email as RAW HTML Format', 'sureforms' ) }</span>
 								</div>
 							</div>
 							<div className="srfm-editor-wrap">
-								<Editor handleEmailBodyContent={ handleOnChangeEmailBodyContent } content={ formData.email_body } />
+								{
+									formData.is_raw_format === true
+										? <textarea onChange={ ( e ) => setFormData( { ...formData, email_body: e.target.value } ) } className="srfm-editor-textarea">{ formData.email_body }</textarea> : <Editor handleEmailBodyContent={ handleOnChangeEmailBodyContent } content={ formData.email_body } />
+								}
 							</div>
 						</div>
 					</div>

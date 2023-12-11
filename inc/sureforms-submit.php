@@ -313,44 +313,37 @@ class Sureforms_Submit {
 		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-			$response = array(
+			$response           = array(
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => array(
 					'name' => $name,
 				),
 			);
-			$email_notification = get_post_meta($id,'_srfm_email_notification');
-			$smart_tags = new SRFM_Smart_Tags();
-			foreach ($email_notification as $notification) {
-				foreach ($notification as $item) {
-					if ($item['status'] === true) {
-						$to = $item['email_to'];
-						$to = $smart_tags->process_smart_tags($to);
-						$subject = $item['subject'];
-						$subject = $smart_tags->process_smart_tags($subject);
-						$email_body = $item['email_body'];
+			$email_notification = get_post_meta( $id, '_srfm_email_notification' );
+			$smart_tags         = new SRFM_Smart_Tags();
+			$is_mail_sent       = false;
+			foreach ( $email_notification as $notification ) {
+				foreach ( $notification as $item ) {
+					if ( $item['status'] === true ) {
+						$to             = $item['email_to'];
+						$to             = $smart_tags->process_smart_tags( $to );
+						$subject        = $item['subject'];
+						$subject        = $smart_tags->process_smart_tags( $subject );
+						$email_body     = $item['email_body'];
 						$email_template = new Email_Template();
-						$message = $email_template->render( $meta_data, $email_body );
-						$headers = "From: $to\r\n" .
+						$message        = $email_template->render( $meta_data, $email_body );
+						$headers        = "From: $to\r\n" .
 							"Reply-To: $to\r\n" .
 							'X-Mailer: PHP/' . phpversion() . "\r\n" .
 							'Content-Type: text/html; charset=utf-8';
-						$sent = wp_mail( $to, $subject, $message, $headers );
+						$sent           = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent   = $sent;
 					}
-				}
-			 }
-
-			$sender_notification = get_post_meta( intval( $id ), '_srfm_sender_notification', true );
-
-			if ( 'on' === $sender_notification && isset( $form_data['srfm-sender-email-field'] ) ) {
-				$sender_email = strval( $form_data['srfm-sender-email-field'] );
-				if ( $sender_email ) {
-					wp_mail( $sender_email, $subject, $message, $headers );
 				}
 			}
 
-			if ( $sent ) {
+			if ( $is_mail_sent ) {
 
 				$modified_message = [];
 				foreach ( $meta_data as $key => $value ) {

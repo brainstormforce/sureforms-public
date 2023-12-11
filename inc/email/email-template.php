@@ -91,7 +91,7 @@ class Email_Template {
 	 * @since 0.0.1
 	 * @return string
 	 */
-	public function render( $fields,$email_body ) {
+	public function render( $fields, $email_body ) {
 		$message         = $this->get_header();
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
 		$field_index     = 1;

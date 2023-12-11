@@ -433,53 +433,53 @@ class Post_Types {
 			'sureforms_form',
 			'_srfm_email_notification',
 			array(
-				'single'       => true,
-				'type'         => 'array',
+				'single'        => true,
+				'type'          => 'array',
 				'auth_callback' => '__return_true',
-				'show_in_rest' => array(
+				'show_in_rest'  => array(
 					'schema' => array(
-						'type' => 'array',
+						'type'  => 'array',
 						'items' => array(
-						   'type'      => 'object',
-						   'properties' => array(
-							   'id'        => array(
-								   'type' => 'integer',
-							   ),
-							   'status'    => array(
-								   'type' => 'boolean',
-							   ),
-							   'is_raw_format'    => array(
-								   'type' => 'boolean',
-							   ),
-							   'name'      => array(
-								   'type' => 'string',
-							   ),
-							   'email_to'  => array(
-								   'type' => 'string',
-							   ),
-							   'subject'   => array(
-								   'type' => 'string',
-							   ),
-							   'email_body' => array(
-								   'type' => 'string',
-							   ),
-						   ),
+							'type'       => 'object',
+							'properties' => array(
+								'id'            => array(
+									'type' => 'integer',
+								),
+								'status'        => array(
+									'type' => 'boolean',
+								),
+								'is_raw_format' => array(
+									'type' => 'boolean',
+								),
+								'name'          => array(
+									'type' => 'string',
+								),
+								'email_to'      => array(
+									'type' => 'string',
+								),
+								'subject'       => array(
+									'type' => 'string',
+								),
+								'email_body'    => array(
+									'type' => 'string',
+								),
+							),
 						),
 					),
 				),
-				'default'      => array(
+				'default'       => array(
 					array(
-						'id'        => 1,
-						'status'    => false,
-						'is_raw_format'    => false,
-						'name'      => 'Admin Notification Email',
-						'email_to'  => '{admin_email}',
-						'subject'   => 'New Form Submission',
-						'email_body' => '',
+						'id'            => 1,
+						'status'        => false,
+						'is_raw_format' => false,
+						'name'          => 'Admin Notification Email',
+						'email_to'      => '{admin_email}',
+						'subject'       => 'New Form Submission',
+						'email_body'    => '',
 					),
 				),
 			)
-		); 
+		);
 	}
 
 	/**

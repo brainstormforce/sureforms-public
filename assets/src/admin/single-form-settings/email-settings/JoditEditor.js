@@ -10,7 +10,7 @@ const Editor = ( { handleEmailBodyContent, content } ) => {
 			height: 'auto',
 			minHeight: 300,
 			toolbarAdaptive: false,
-			buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall,source',
+			buttons: 'bold,italic,underline,strikethrough,eraser,ul,ol,font,fontsize,paragraph,brush,classSpan,lineHeight,superscript,subscript,spellcheck,cut,copy,paste,selectall,source',
 		} ),
 		[ ]
 	);
