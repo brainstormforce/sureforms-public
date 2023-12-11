@@ -5,12 +5,14 @@ $border: #e5e7eb;
 $border_2: #dce0e6;
 $box_shadow: #0d131e1a;
 $box_shadow_2: #00000033;
+$box_shadow_3: #0000000d;
 $heading_color: #1e293b;
 $desc_color: #475569;
 $text_color: #6b21a8;
 $text_color_2: #50575e;
 $btn_primary_color: #125d9f;
 $btn_secondary_color: #fff;
+
 
 $sidebar_width: 290px;
 
@@ -50,12 +52,12 @@ $sidebar_width: 290px;
 
 	.srfm-common-btn {
 		padding: 0.5625em 0.625em;
-		background: #125D9F;
-		box-shadow: 0px 1px 2px 0px #0000000D;
+		background: $btn_primary_color;
+		box-shadow: 0px 1px 2px 0px $box_shadow_3;
 		border-radius: 6px;
 		font-size:  0.875em;
 		font-weight: 500;
-		color: #fff;
+		color: $btn_secondary_color;
 		border: 0;
 		width: 100%;
 		cursor: pointer;
@@ -87,11 +89,10 @@ $sidebar_width: 290px;
 			gap: 8px;
 			margin: 0;
 			color: var( --colors-gray-600, #4b5563 );
-			font-family: Inter;
-			font-size: 13.081px;
+			font-size: 13px;
 			font-style: normal;
 			font-weight: 500;
-			line-height: 23.546px; /* 179.999% */
+			line-height: normal;
 		}
 
 		.srfm-header-breadcrumb-container,
@@ -231,7 +232,15 @@ $sidebar_width: 290px;
 				color: $heading_color;
 				padding-bottom: 1.25em;
 
+				.srfm-ts-sidebar-search-input {
+					font-weight: 400;
+					border-color: $border_2;
+					width: calc(100% - 40px);
+				}
+
 				.srfm-ts-sidebar-search-icon {
+					line-height: 0;
+					align-self: center;
 					color: $text_color_2;
 					cursor: pointer;
 				}
@@ -257,7 +266,7 @@ $sidebar_width: 290px;
 					display: flex;
 					flex-wrap: wrap;
 					padding-bottom: 0.75em;
-					color: rgba(30, 41, 59, 1);
+					color: $heading_color;
 
 					svg {
 						width: 16px;
@@ -276,15 +285,15 @@ $sidebar_width: 290px;
 				.srfm-req-template-body {
 					padding-bottom: 0.75em;
 					font-size: 0.875em;
-					color: rgba(71, 85, 105, 1);
+					color: $desc_color;
 				}
 
 				.srfm-req-template-btn {
 					padding: 0.4375em 0.625em;
 					font-size: 0.75em;
 					font-weight: 500;
-					background: rgba(245, 243, 255, 1);
-					color: rgba(18, 93, 159, 1);
+					background: #f5f3ff;
+					color: $btn_primary_color;
 					border: 0;
 					width: 100%;
 					cursor: pointer;
@@ -301,8 +310,8 @@ $sidebar_width: 290px;
 				flex-wrap: wrap;
 				align-items: flex-start;
 				width: calc( 25% - 2em );
-				border: 1px solid #dce0e6;
-				background-color: #fff;
+				border: 1px solid $border_2;
+				background-color: $bg_white;
 				box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
 				transition: 0.3s;
 
@@ -382,7 +391,7 @@ $sidebar_width: 290px;
 						font-weight: 500;
 						border: 0;
 						width: 126px;
-						box-shadow: 0px 1px 2px 0px #0000000d;
+						box-shadow: 0px 1px 2px 0px $box_shadow_3;
 						border-radius: 8px;
 						cursor: pointer;
 					}
@@ -399,7 +408,7 @@ $sidebar_width: 290px;
 						justify-content: center;
 						background-color: $btn_secondary_color;
 						color: $btn_primary_color;
-						border: 1px solid #e5e7eb;
+						border: 1px solid $border;
 						line-height: 17px;
 
 						svg {
@@ -429,7 +438,7 @@ $sidebar_width: 290px;
 				padding: 0;
 				font-weight: 500;
 				font-size: 0.875em;
-				color: #475569;
+				color: $desc_color;
 				margin-bottom: 1.5em;
 
 				svg {
@@ -442,14 +451,14 @@ $sidebar_width: 290px;
 			}
 
 			.srfm-ts-preview-form-title {
-				color: #1E293B;
+				color: $heading_color;
 				padding-bottom: 0.75em;
 				font-size: 1.25em;
 				font-weight: 600;
 			}
 
 			.srfm-ts-preview-form-info {
-				color: #475569;
+				color: $desc_color;
 				padding-bottom: 1.5em;
 				font-weight: 400;
 				font-size: 0.875em;

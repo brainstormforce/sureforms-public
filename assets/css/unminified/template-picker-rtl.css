@@ -29,7 +29,7 @@
 }
 .srfm-template-picker .srfm-common-btn {
   padding: 0.5625em 0.625em;
-  background: #125D9F;
+  background: #125d9f;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.0509803922);
   border-radius: 6px;
   font-size: 0.875em;
@@ -62,11 +62,10 @@
   gap: 8px;
   margin: 0;
   color: var(--colors-gray-600, #4b5563);
-  font-family: Inter;
-  font-size: 13.081px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 500;
-  line-height: 23.546px; /* 179.999% */
+  line-height: normal;
 }
 .srfm-template-picker .srfm-tp-header .srfm-header-breadcrumb-container,
 .srfm-template-picker .srfm-tp-header .srfm-header-breadcrumb {
@@ -179,7 +178,14 @@
   color: #1e293b;
   padding-bottom: 1.25em;
 }
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-ts-sidebar-header .srfm-ts-sidebar-search-input {
+  font-weight: 400;
+  border-color: #dce0e6;
+  width: calc(100% - 40px);
+}
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-ts-sidebar-header .srfm-ts-sidebar-search-icon {
+  line-height: 0;
+  align-self: center;
   color: #50575e;
   cursor: pointer;
 }
@@ -202,7 +208,7 @@
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 0.75em;
-  color: rgb(30, 41, 59);
+  color: #1e293b;
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-title-container svg {
   width: 16px;
@@ -217,14 +223,14 @@
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-body {
   padding-bottom: 0.75em;
   font-size: 0.875em;
-  color: rgb(71, 85, 105);
+  color: #475569;
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-btn {
   padding: 0.4375em 0.625em;
   font-size: 0.75em;
   font-weight: 500;
-  background: rgb(245, 243, 255);
-  color: rgb(18, 93, 159);
+  background: #f5f3ff;
+  color: #125d9f;
   border: 0;
   width: 100%;
   cursor: pointer;
@@ -361,7 +367,7 @@
   box-shadow: none;
 }
 .srfm-template-picker .srfm-ts-preview-container .srfm-ts-sidebar .srfm-ts-preview-form-title {
-  color: #1E293B;
+  color: #1e293b;
   padding-bottom: 0.75em;
   font-size: 1.25em;
   font-weight: 600;
