@@ -39,6 +39,7 @@
   border-left: 1px solid var(--dashboard-border-primary, #dce0e6);
   background: var(--dashboard-surface-secondary, #fff);
   min-height: 80vh;
+  position: fixed;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab {
   display: flex;
@@ -76,6 +77,8 @@
   gap: 8px;
   background-color: #f4f9fa;
   width: calc(100% - 290px);
+  margin-right: 290px;
+  overflow-y: auto;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content {
   display: flex;
