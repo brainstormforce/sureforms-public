@@ -101,7 +101,6 @@ const EmailNotification = ( { emailNotificationData } ) => {
 										</th>
 									</tr>
 								</thead>
-								<div className="srfm-modal-separator"></div>
 								<tbody>
 									{
 										emailNotificationData && emailNotificationData.map( ( el, i ) => {
@@ -139,6 +138,22 @@ const EmailNotification = ( { emailNotificationData } ) => {
 										} )
 									}
 								</tbody>
+								<tfoot>
+									<tr className="srfm-modal-row">
+										<th className="srfm-modal-col-first">
+											<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
+										</th>
+										<th className="srfm-modal-col-second">
+											<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
+										</th>
+										<th className="srfm-modal-col-third">
+											<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
+										</th>
+										<th className="srfm-modal-col-fourth">
+											<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
+										</th>
+									</tr>
+								</tfoot>
 							</table>
 						</div>
 					</div>
