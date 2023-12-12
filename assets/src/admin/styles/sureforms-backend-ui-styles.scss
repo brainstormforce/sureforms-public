@@ -581,68 +581,27 @@ body.post-type-sureforms_form {
 	.block-list-appender {
 		width: calc( 100% - 20px );
 		.block-editor-inserter {
-			// font-size: var( --formality_fontsize );
 			position: relative;
 			&:after {
-				// margin-top: 2.4em;
+				margin-top: 20px;
 				display: inline-block;
 				position: absolute;
-				right: 0;
 				margin-left: auto;
-				width: auto;
-				content: "Send";
-				// content: var( --formality_send_text );
-				color: white;
-				// color: var( --formality_col2 );
-				line-height: 1.5em;
-				padding: 0.75em 2em;
-				background: black;
-				// background: var( --formality_col1 );
-				border-width: 2px;
-				border-style: solid;
-				cursor: pointer;
-				font-weight: bold;
-				border-radius: 0.3em;
+				width: calc( var( --srfm_submit_width_backend ) - 44px );
+				content: var( --srfm_submit_button_text );
+				line-height: 12px;
+				box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+				border: none;
+				border-radius: 6px;
+				padding: 13px 25px;
+				background: var( --srfm-primary-color );
+				color: var( --srfm-primary-text-color );
+				text-align: center;
+				right: var( --srfm_submit_alignment_backend );
+				transform: translateX( var( --srfm_submit_alignment_backend ) );
+				letter-spacing: inherit;
+				font-weight: inherit;
 			}
-		}
-
-		.block-list-appender__toggle {
-			width: 100%;
-			margin: 0;
-			height: auto;
-			// outline: 2px dashed var( --formality_col1 );
-			box-shadow: none;
-			// color: var( --formality_col1 ) !important;
-			opacity: 0.4;
-			padding: 16px;
-			background: none !important;
-			box-shadow: none !important;
-			.components-visually-hidden + svg {
-				width: 32px;
-				height: auto;
-				fill: currentColor;
-				// background-color: var( --formality_col1 );
-				// color: var( --formality_col2 );
-				flex: none;
-			}
-			&:hover {
-				opacity: 1;
-			}
-		}
-
-		&:after {
-			position: static;
-			content: var( --formality_credits );
-			font-size: 0.7em;
-			opacity: 0.5;
-			padding-top: 2em;
-			margin-top: 12em;
-			display: block;
-			white-space: pre-wrap;
-			border-top-color: var( --formality_col1_alpha );
-			border-top-style: solid;
-			border-top-width: 1px;
-			box-shadow: none !important;
 		}
 	}
 }

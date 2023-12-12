@@ -6,6 +6,9 @@
   --srfm_fontsize: 16px;
   --srfm_submit_alignment: "left";
   --srfm_submit_width: "";
+  --srfm_submit_width_backend: "";
+  --srfm_submit_alignment_backend: "";
+  --srfm_submit_button_text: "Submit";
 }
 
 .editor-styles-wrapper {
