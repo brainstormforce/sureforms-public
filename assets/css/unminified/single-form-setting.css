@@ -52,7 +52,7 @@
   cursor: pointer;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab .srfm-modal-tab-text p {
-  color: var(--dashboard-heading, #1E293B);
+  color: var(--dashboard-heading, #1e293b);
   font-family: Inter;
   font-size: 14px;
   font-style: normal;
@@ -165,6 +165,9 @@
   top: 0;
   right: 0;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon {
+  min-height: 41px;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-label {
   width: 144px;
   color: var(--dashboard-heading, #1e293b);
@@ -183,6 +186,9 @@
   border: 1px solid #dce0e6;
   background: #fff;
   box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-input.with-icon {
+  padding: 10px 24px 10px 12px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box {
   display: flex;

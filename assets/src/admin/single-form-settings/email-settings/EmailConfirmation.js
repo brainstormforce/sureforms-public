@@ -55,7 +55,7 @@ const EmailConfirmation = ( props ) => {
 						</div>
 						<div className="srfm-modal-input-box">
 							<label className="srfm-modal-label">{ __( 'Subject', 'sureforms' ) }</label>
-							<input onChange={ ( e ) => setDynamicSubject( e.target.value ) } value={ dynamicSubject } className="srfm-modal-input" />
+							<input onChange={ ( e ) => setDynamicSubject( e.target.value ) } value={ dynamicSubject } className="srfm-modal-input with-icon" />
 							<DropdownMenu
 								icon={ dropdownIcon }
 								className="srfm-scroll-dropdown"
