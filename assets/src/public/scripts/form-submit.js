@@ -377,7 +377,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Upload field
-		if ( container.classList.contains( 'srfm-upload-container' ) ) {
+		if ( container.classList.contains( 'srfm-upload-block' ) ) {
 			const uploadInput = container.querySelectorAll( 'input' )[ 1 ];
 			const uploadInputInnerDiv = container.getElementsByClassName(
 				'srfm-upload-inner-div'
@@ -393,18 +393,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				uploadInput.getAttribute( 'aria-required' );
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
 				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
+					errorMessage.textContent = errorMessage.getAttribute('data-error-msg');
 				}
+
+				if ( inputField ) {
+					inputField.closest('.srfm-block').classList.add('srfm-error');
+				}
+
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = uploadInput;
 				}
 			} else {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'none';
-				}
-				if ( uploadInputInnerDiv ) {
-					uploadInputInnerDiv.style.borderColor = '#d1d5db';
+				if ( inputField ) {
+					inputField.closest('.srfm-block').classList.remove('srfm-error');
 				}
 			}
 		}

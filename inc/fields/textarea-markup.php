@@ -55,7 +55,7 @@ class Textarea_Markup extends Base {
 		$max_length_html = '' !== $max_length ? '0/' . $max_length : '';
 
 		ob_start(); ?>
-		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
 				<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>

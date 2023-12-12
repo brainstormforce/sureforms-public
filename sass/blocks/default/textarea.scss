@@ -1,6 +1,11 @@
 .srfm-form-container {
     .srfm-form {
         .srfm-textarea-block {
+
+            .srfm-block-wrap {
+                line-height: 0;
+            }
+            
             .srfm-text-counter {
                 position: absolute;
                 bottom: 1em;
@@ -8,8 +13,9 @@
                 font-weight: 500;
                 font-size: .7em;
             }
-            .srfm-block-textarea {
+            .srfm-input-textarea {
                 padding-right: .875em;
+                padding-bottom: 1.4em;
                 resize: none;
             }
         }

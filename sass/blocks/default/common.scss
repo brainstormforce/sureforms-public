@@ -3,7 +3,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        
+
         .srfm-block {
             margin-bottom: 1.2em;
 
@@ -40,7 +40,6 @@
 
             .srfm-block-wrap {
                 position: relative;
-                line-height: 0;
             }
             
             .srfm-block-label {
@@ -57,10 +56,15 @@
                 padding: 0.625em 0.875em;
                 padding-right: 2.2em;
                 line-height: normal;
+                color: var(--srfm-body-input-color);
                 border: var(--srfm-border) solid var(--srfm-border-color);
                 border-radius: var(--srfm-border-radius);
                 background-color: var(--srfm-base-background-color);
                 outline: none;
+
+                &::placeholder { 
+                    color: var(--srfm-placeholder-color);
+                }
             }
 
             .srfm-error-icon {

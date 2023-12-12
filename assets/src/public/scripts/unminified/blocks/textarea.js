@@ -1,6 +1,7 @@
+
 function initializeTextarea() {
 	const textAreaContainer = Array.from(
-		document.getElementsByClassName( 'srfm-textarea-container' )
+		document.getElementsByClassName( 'srfm-textarea-block' )
 	);
 	if ( textAreaContainer ) {
 		for ( const areaInput of textAreaContainer ) {
@@ -11,7 +12,7 @@ function initializeTextarea() {
 					const maxLength = areaField.getAttribute( 'maxLength' );
 					if ( maxLength !== '' ) {
 						const counterDiv = areaInput.querySelector(
-							'.srfm-text-area-counter'
+							'.srfm-text-counter'
 						);
 						const remainingLength =
 							maxLength - textAreaValue.length;

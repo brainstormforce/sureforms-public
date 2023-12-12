@@ -1,0 +1,28 @@
+.srfm-form-container {
+    .srfm-form {
+        .srfm-rating-block {
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                list-style: none;
+                margin: 0;
+
+                li {
+                    text-align: center;
+                    line-height: 1;
+                    
+                    .srfm-icon {
+                        display: block;
+                        width: 2em;
+                    }
+    
+                    .srfm-rating-number {
+                        font-size: 0.7em;
+                    }
+                }
+               
+               
+            }
+        }
+    }
+}

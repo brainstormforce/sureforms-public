@@ -49,37 +49,30 @@ class Upload_Markup extends Base {
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$classname        = isset( $attributes['className'] ) ? ' '. $attributes['className'] : '';
 		$slug        = 'upload';
 
-		$inline_style = '';
-
-		// Append Dynamic styles here.
-		$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
-		$style         = $inline_style ? 'style="' . $inline_style . '"' : '';
-
-		// html attributes
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 		$aria_require_attr = $required ? 'true' : 'false';
 
-
-	ob_start(); ?>
-		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ); ?>" <?php echo wp_kses_post( $style ); ?>>
-		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-		<div class="srfm-block-wrap">
-			<i class="fa fa-cloud-upload" aria-hidden="true"></i>
-			<div class="srfm-upload-wrap">
-				<input class="srfm-upload-size" value="<?php echo esc_attr( $file_size ) ?>" type="hidden" />
-				<label for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>">
-					<span><?php _e('Click to upload the file', 'sureforms'); ?></span>
-					<input name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>" type="file" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  accept="<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
-				</label>
+		ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+			<div class="srfm-block-wrap">
+				<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
+				<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap">
+					<input class="srfm-<?php echo esc_attr( $slug ); ?>-size" value="<?php echo esc_attr( $file_size ) ?>" type="hidden" />
+					<label for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>">
+						<p><?php _e('Click to upload the file', 'sureforms'); ?></p>
+						<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>" type="file" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  accept="<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
+					</label>
+				</div>
+				<p><span><?php ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> <?php _e('up to ', 'sureforms' ); echo esc_attr( $file_size ? $file_size . __(' MB', 'sureforms') : __('Not Defined', 'sureforms') ); ?></p>
 			</div>
-			<p> <span><?php ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> <?php _e('up to ', 'sureforms' ); echo esc_attr( $file_size ? $file_size . __(' MB', 'sureforms') : __('Not Defined', 'sureforms') ); ?></p>
-		</div>
-		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-		</div>
-	<?php
-	return ob_get_clean();
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
+			</div>
+		<?php
+		return ob_get_clean();
 	}
-
 }

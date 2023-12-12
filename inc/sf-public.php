@@ -122,10 +122,10 @@ class SF_Public {
 
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
 			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
-			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-js", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
 		}
 
-		$extra_blocks = ['input', 'common'];
+		$extra_blocks = ['input', 'email', 'common'];
 		$style_dep_blocks[] = array_merge( $script_dep_blocks, $extra_blocks );
 
 		if ( in_array( $block_name, isset( $style_dep_blocks[0] ) ? $style_dep_blocks[0] : '', true ) ) {

@@ -35,34 +35,31 @@ class Url_Markup extends Base {
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname   = isset( $attributes['className'] ) ? ' '. $attributes['className'] : '';
 			$slug        = 'url';
 
-			$inline_style = '';
-
-			// Append Dynamic styles here.
-			$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
-			$style         = $inline_style ? 'style="' . $inline_style . '"' : '';
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
 			// html attributes
-			$placeholder_attr = $placeholder ? 'placeholder="'. $placeholder .'" ' : '';
-			$default_value_attr = $default ? 'value="'. $default .'" ' : '';
+			$placeholder_attr = $placeholder ? ' placeholder="'. $placeholder .'" ' : '';
+			$default_value_attr = $default ? ' value="'. $default .'" ' : '';
 			$aria_require_attr = $required ? 'true' : 'false';
 
-		ob_start(); ?>
-			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ); ?>" <?php echo wp_kses_post( $style ); ?>>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-			<div class="srfm-block-wrap">
-				<span class="srfm-protocol"><?php _e('https://', 'sureforms') ?></span>
-				<input type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $default_value_attr .' '. $placeholder_attr ); ?> />
+			ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+					<div class="srfm-block-wrap">
+						<span class="srfm-protocol"><?php _e('https://', 'sureforms') ?></span>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $default_value_attr .' '. $placeholder_attr ); ?> />
+						<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
+					</div>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
-			</div>
-
 		<?php
 		return ob_get_clean();
 
 	}
 
 }
+

@@ -29,7 +29,6 @@
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-block-wrap {
   position: relative;
-  line-height: 0;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-block-label {
   font-size: 0.7em;
@@ -44,10 +43,17 @@
   padding: 0.625em 0.875em;
   padding-right: 2.2em;
   line-height: normal;
+  color: var(--srfm-body-input-color);
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   background-color: var(--srfm-base-background-color);
   outline: none;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-input-common:-ms-input-placeholder {
+  color: var(--srfm-placeholder-color);
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-input-common::placeholder {
+  color: var(--srfm-placeholder-color);
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-error-icon {
   display: none;
