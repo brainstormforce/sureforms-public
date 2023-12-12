@@ -187,7 +187,6 @@ class Admin {
 	 */
 	public function get_breadcrumbs_for_current_page() {
 		global $post, $pagenow;
-
 		$breadcrumbs = array();
 
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -214,6 +213,24 @@ class Admin {
 						'link'  => get_edit_post_link( $post->ID ),
 					);
 				}
+			}
+		} else {
+			$current_screen = get_current_screen();
+			if ( $current_screen && 'sureforms_form' === $current_screen->post_type ) {
+				$breadcrumbs[] = array(
+					'title' => 'Forms',
+					'link'  => '',
+				);
+			} elseif ( $current_screen && 'sureforms_entry' === $current_screen->post_type ) {
+				$breadcrumbs[] = array(
+					'title' => 'Entries',
+					'link'  => '',
+				);
+			} else {
+				$breadcrumbs[] = array(
+					'title' => '',
+					'link'  => '',
+				);
 			}
 		}
 
