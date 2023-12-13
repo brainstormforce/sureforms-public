@@ -59,7 +59,7 @@ class Upload_Markup extends Base {
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
-				<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
+				<?php echo Sureforms_Helper::fetch_svg('upload', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
 				<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap">
 					<input class="srfm-<?php echo esc_attr( $slug ); ?>-size" value="<?php echo esc_attr( $file_size ) ?>" type="hidden" />
 					<label for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>">

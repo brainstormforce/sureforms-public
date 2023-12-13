@@ -6,6 +6,7 @@
 
         .srfm-block {
             margin-bottom: 1.2em;
+            color: var(--srfm-body-input-color);
 
             &.srfm-error {
                 .srfm-block-wrap {
@@ -85,6 +86,30 @@
 
             .srfm-error-message {
                 color: var(--srfm-error-text-color);
+            }
+
+
+            .srfm-with-icon {
+                .srfm-input-common {
+                    padding-left: 2.4em;
+                }
+
+                .srfm-input-icon {
+                    display: block;
+                    position: absolute;
+                    top: 50%;
+                    left: 0.7em;
+                    transform: translateY(-50%);
+    
+                    svg {
+                        width: 0.9em;
+                        height: 0.9em;
+                        
+                        path {
+                            stroke: var(--srfm-body-input-color);
+                        }
+                    }
+                }
             }
         }
 

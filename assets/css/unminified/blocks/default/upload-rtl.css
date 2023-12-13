@@ -12,6 +12,10 @@
   font-size: 0.7em;
   margin-bottom: 0.5em;
 }
+.srfm-form-container .srfm-form .srfm-upload-block .srfm-block-wrap .srfm-upload-icon svg {
+  width: 1.5em;
+  stroke: var(--srfm-body-input-color);
+}
 .srfm-form-container .srfm-form .srfm-upload-block .srfm-block-wrap .srfm-input-upload {
   position: absolute;
   top: 0;

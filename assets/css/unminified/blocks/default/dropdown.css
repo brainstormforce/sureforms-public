@@ -1,0 +1,85 @@
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  font-family: "Open Sans", "Helvetica Neue", "Segoe UI", "Calibri", "Arial", sans-serif;
+  font-size: 18px;
+  color: #60666d;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__current {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__current:focus + .select-box__list {
+  opacity: 1;
+  animation-name: none;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__current:focus + .select-box__list .select-box__option {
+  cursor: pointer;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__current:focus .select-box__icon {
+  transform: translateY(-50%) rotate(180deg);
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 18px;
+  opacity: 0.3;
+  transition: 0.2s ease;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__value {
+  display: flex;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__input {
+  display: none;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__input:checked + .select-box__input-text {
+  display: block;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__input-text {
+  display: none;
+  width: 100%;
+  margin: 0;
+  padding: 0.625em 0.875em;
+  border: var(--srfm-border) solid var(--srfm-border-color);
+  border-radius: var(--srfm-border-radius);
+  font-size: 14px;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__list {
+  position: absolute;
+  width: 100%;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  z-index: 999;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  animation-name: HideList;
+  animation-duration: 0.5s;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: step-start;
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__option {
+  display: block;
+  padding: 15px;
+  background-color: #fff;
+}
+.srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__option:hover, .srfm-form-container .srfm-form .srfm-dropdown-block .srfm-block-wrap .select-box__option:focus {
+  color: #546c84;
+  background-color: #fbfbfb;
+}
+@keyframes HideList {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}

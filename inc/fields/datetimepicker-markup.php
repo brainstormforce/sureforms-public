@@ -35,19 +35,16 @@ class Datetimepicker_Markup extends Base {
 			$min         = isset( $attributes['min'] ) ? $attributes['min'] : '';
 			$max         = isset( $attributes['max'] ) ? $attributes['max'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
 			$slug = 'datepicker';
 
-			$inline_style = '';
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
-			// Append Dynamic styles here.
-			$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
-			$style =  $inline_style ? 'style="'. $inline_style .'"' : '';
-	
 			// html attributes
 			$aria_require_attr = $required ? 'true' : 'false';
+			$min_attr = $min ? ' min="'. esc_attr($min) .'" ' : '';
+			$max_attr = $max ? ' max="'. esc_attr($max) .'" ' : '';
 
 			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock></i>' : '<i class="fa-regular fa-calendar"></i>';
 
@@ -65,15 +62,15 @@ class Datetimepicker_Markup extends Base {
 			}
 
 		ob_start(); ?>
-			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ) ?>" <?php echo wp_kses_post( $style ) ?>>
-			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
-				<input type="hidden" class="srfm-min-max-holder" min="<?php esc_attr($min); ?>" max="<?php esc_attr($max); ?>" >
-				<input type="hidden" field-type="<?php echo esc_attr( $field_type ); ?>" class="srfm-classic-date-time-result" name="srfm-hidden<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" value="">
-				<div class="srfm-block-wrap">
-					<?php echo wp_kses_post( $input_icon ); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
+				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+				<input type="hidden" class="srfm-<?php echo esc_attr( $slug ); ?>-holder" <?php wp_kses_post( $min_attr .''. $max_attr ); ?> >
+				<input type="hidden" field-type="<?php echo esc_attr( $field_type ); ?>" class="srfm-<?php echo esc_attr( $slug ); ?>-result" name="srfm-hidden-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" value="">
+				<div class="srfm-block-wrap srfm-with-icon">
+					<?php echo Sureforms_Helper::fetch_svg('calender', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
 					<input type="text" class="srfm-input-common" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" >
+					<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 				</div>
-
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
 			</div>

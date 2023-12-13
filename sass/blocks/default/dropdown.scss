@@ -1,0 +1,120 @@
+.srfm-form-container {
+    .srfm-form {
+        .srfm-dropdown-block {
+
+            .srfm-block-wrap {
+                .select-box {
+                    position: relative;
+                    display: block;
+                    width: 100%;
+                    margin: 0 auto;
+                    font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+                    font-size: 18px;
+                    color: #60666d;
+                    
+                    &__current {
+                      position: relative;
+                      cursor: pointer;
+                      outline: none;
+                      
+                      &:focus {
+                        & + .select-box__list {
+                            
+                           opacity: 1;
+                  
+                          // We have to set "animation-name: none;" to make the list visible (read below how it works)
+                  
+                          animation-name: none;
+                          
+                          .select-box__option {
+                            cursor: pointer;
+                          }
+                        }
+                        
+                        .select-box__icon {
+                          transform: translateY(-50%) rotate(180deg);
+                        }
+                      }
+                    }
+                    
+                    &__icon {
+                      position: absolute;
+                      top: 50%;
+                      right: 15px;
+                      transform: translateY(-50%);
+                      width: 18px;
+                      opacity: 0.3;
+                      transition: 0.2s ease;
+                    }
+                    
+                    &__value {
+                      display: flex;
+                    }
+                    
+                    &__input {
+                      display: none;
+                      
+                      &:checked + .select-box__input-text {
+                        display: block;
+                      }
+                    }
+                    
+                    &__input-text {
+                      display: none;
+                      width: 100%;
+                      margin: 0;
+                      padding: 0.625em 0.875em;
+                      border: var(--srfm-border) solid var(--srfm-border-color);
+                      border-radius: var(--srfm-border-radius);
+                      font-size: 14px;
+                    }
+                    
+                    &__list {
+                      position: absolute;
+                      width: 100%;
+                      padding: 0;
+                      list-style: none;
+                      opacity: 0;
+                      z-index: 999;
+                      margin: 0;
+                      max-height: 200px;
+                      overflow-y: auto;
+                      
+                      // We need to use animation with delay.
+                      // Otherwise the click event will not have time to run on label, because this element disapears immediately when .select-box__current element loses the focus.
+                      // This delay will not be noticed because we set "opacity" to "0".
+                      // We also use "animation-fill-mode: forwards" to make the list stay hidden.
+                      
+                      animation-name: HideList;
+                      animation-duration: 0.5s;
+                      animation-delay: 0.5s;
+                      animation-fill-mode: forwards;
+                      animation-timing-function: step-start;
+                      box-shadow: 0 15px 30px -10px transparentize(#000, 0.9);
+                    }
+                    
+                    &__option {
+                      display: block;
+                      padding: 15px;
+                      background-color: #fff;
+                      
+                      &:hover,
+                      &:focus {
+                        color: #546c84;
+                        background-color: #fbfbfb;
+                      }
+                    }
+                  }
+                  
+                  @keyframes HideList {
+                    from {
+                      transform: scaleY(1);
+                    }
+                    to {
+                      transform: scaleY(0);
+                    }
+                  }
+            }
+        }
+    }
+}

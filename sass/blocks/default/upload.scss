@@ -19,6 +19,13 @@
                     margin-bottom: .5em;
                 }
 
+                .srfm-upload-icon {
+                    svg {
+                        width: 1.5em;
+                        stroke: var(--srfm-body-input-color);
+                    }
+                }
+
                 .srfm-input-upload {
                     position: absolute;
                     top: 0;

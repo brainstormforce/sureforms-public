@@ -1,5 +1,10 @@
 
 .srfm-form-container { // This is the parent form class. Adds specificity so that there is no conflict.
+
+	* {
+		box-sizing: border-box;
+	}
+	
 	.srfm-block-width-25 {
 		width: calc(25% - 0.6em);
 	}

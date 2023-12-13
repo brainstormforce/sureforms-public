@@ -1,0 +1,22 @@
+.srfm-form-container {
+    .srfm-form {
+        .srfm-address-block {
+            .srfm-block-wrap {
+                .srfm-input-common {
+                    border-radius: 0;
+                    border-bottom-width: 0;
+                    padding-right: 0.875em;
+                    &:nth-child(1) {
+                        border-top-left-radius: var(--srfm-border-radius);
+                        border-top-right-radius: var(--srfm-border-radius);
+                    }
+                    &:nth-last-child(1) {
+                        border-bottom-width: var(--srfm-border);
+                        border-bottom-left-radius: var(--srfm-border-radius);
+                        border-bottom-right-radius: var(--srfm-border-radius);
+                    }
+                }
+            }
+        }
+    }
+}

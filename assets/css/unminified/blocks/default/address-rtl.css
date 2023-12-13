@@ -1,0 +1,14 @@
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common {
+  border-radius: 0;
+  border-bottom-width: 0;
+  padding-left: 0.875em;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common:nth-child(1) {
+  border-top-right-radius: var(--srfm-border-radius);
+  border-top-left-radius: var(--srfm-border-radius);
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common:nth-last-child(1) {
+  border-bottom-width: var(--srfm-border);
+  border-bottom-right-radius: var(--srfm-border-radius);
+  border-bottom-left-radius: var(--srfm-border-radius);
+}

@@ -1,0 +1,85 @@
+@keyframes wave-4 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap * {
+  box-sizing: border-box;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-block-text {
+  font-size: 0.7em;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx:not(:last-child) {
+  margin-left: 6px;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx span {
+  float: right;
+  vertical-align: middle;
+  transform: translate3d(0, 0, 0);
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx span:first-child {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  transform: scale(1);
+  border: 1px solid #cccfdb;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 1px rgba(0, 16, 75, 0.05);
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx span:first-child svg {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx span:last-child {
+  padding-right: 8px;
+  line-height: 18px;
+}
+@media screen and (max-width: 640px) {
+  .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .cbx {
+    width: 100%;
+    display: inline-block;
+  }
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .inp-cbx {
+  position: absolute;
+  visibility: hidden;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .inp-cbx:checked + .cbx span:first-child {
+  background: #07f;
+  border-color: #07f;
+  animation: wave-4 0.4s ease;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .inp-cbx:checked + .cbx span:first-child svg {
+  stroke-dashoffset: 0;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .inline-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

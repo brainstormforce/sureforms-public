@@ -1,0 +1,69 @@
+.srfm-form-container {
+    .srfm-form {
+        .srfm-multi-choice-block {
+            .srfm-block-wrap {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+
+                .srfm-multi-choice-single {
+                    width: calc(50% - 0.3em);
+                    margin-bottom: 0.6em;
+                    cursor: pointer;
+
+                    input {
+                        position: absolute;
+                        opacity: 0;
+
+                        &:checked + .srfm-block-content-wrap {
+                                .srfm-multi-choice-icon {
+                                svg {
+                                    opacity: 1;
+
+                                    path {
+                                        fill: #0284c7;
+                                    }
+                                }
+                            }
+                        }
+
+                        &:checked +  .srfm-block-content-wrap {
+                            border-color: #0284c7;
+                        }
+                    }
+
+                    .srfm-block-content-wrap {
+                        position: relative;
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        padding: 0.625em 0.875em;
+                        border: var(--srfm-border) solid var(--srfm-border-color);
+                        border-radius: var(--srfm-border-radius);
+                        width: 100%;
+
+                        .srfm-multi-choice-icon {
+                            width: 16px;
+                            height: 16px;
+                            border-radius: 100%;
+                            border: var(--srfm-border) solid var(--srfm-border-color);
+                            border-radius: 100%;
+                            line-height: 0;
+                           
+                            svg {
+                                opacity: 0;
+                            }
+
+                        }
+    
+                        p {
+                            font-size: .7em;
+                            padding-left: .5em;
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

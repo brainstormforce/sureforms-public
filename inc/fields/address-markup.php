@@ -57,90 +57,57 @@ class Address_Markup extends Base {
 			$state_placeholder    = isset( $attributes['statePlaceholder'] ) ? $attributes['statePlaceholder'] : '';
 			$postal_placeholder   = isset( $attributes['postalPlaceholder'] ) ? $attributes['postalPlaceholder'] : '';
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
-			$classname            = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname            = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
-
-
 			$slug = 'address';
-
-			$inline_style = '';
-
-			// Append Dynamic styles here.
-			$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
-			$style =  $inline_style ? 'style="'. $inline_style .'"' : '';
 	
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
+
 			// html attributes
+			$line_one_placeholder_attr = $line_one_placeholder ? ' placeholder="'. esc_attr($line_one_placeholder) .'" ' : '';
+			$line_two_placeholder_attr = $line_two_placeholder ? ' placeholder="'. esc_attr($line_two_placeholder) .'" ' : '';
+			$city_placeholder_attr = $city_placeholder ? ' placeholder="'. esc_attr($city_placeholder) .'" ' : '';
+			$state_placeholder_attr = $state_placeholder ? ' placeholder="'. esc_attr($state_placeholder) .'" ' : '';
+			$postal_placeholder_attr = $postal_placeholder ? ' placeholder="'. esc_attr($postal_placeholder) .'" ' : '';
+			
+
 			$aria_require_attr = $required ? 'true' : 'false';
-
-
 
 			$data = $this->get_countries();
 
-
-		$output   = '';
-		$output  .= '
-		<div class="srfm-address-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-address-container-' . esc_attr( $block_id ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" > 
-					<label for="srfm-address-line-1-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" id="srfm-fullAddress-' . esc_attr( $block_id ) . '" />
-					<div class="srfm-mt-2">
-						<input type="text" class=" srfm-classic-address-element !srfm-top-[3px] !srfm-rounded-t-md " id="srfm-address-line-1-' . esc_attr( $block_id ) . '"
-						aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
-						placeholder="' . esc_attr( $line_one_placeholder ) . '">
-					</div>
-					<div class="">
-						<input type="text" class=" srfm-classic-address-element !srfm-top-[2px] " id="srfm-address-line-2-' . esc_attr( $block_id ) . '"
-						placeholder="' . esc_attr( $line_two_placeholder ) . '">
-					</div>
-					<div class="srfm-flex -space-x-px">
-						<div class="srfm-w-1/2 srfm-min-w-0 srfm-flex-1">
-						<input type="text" class=" srfm-classic-address-element !srfm-top-[1px] " id="srfm-address-city-' . esc_attr( $block_id ) . '"
-							aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
-							placeholder="' . esc_attr( $city_placeholder ) . '">
-						</div>
-						<div class="srfm-min-w-0 srfm-flex-1">
-						<input type="text" class=" srfm-classic-address-element !srfm-top-[1px] " id="srfm-address-state-' . esc_attr( $block_id ) . '"
-							aria-required=' . esc_attr( $required ? 'true' : 'false' ) . '
-							placeholder="' . esc_attr( $state_placeholder ) . '">
-						</div>
-					</div>
-					<div class="-space-y-px srfm-rounded-md srfm-shadow-sm">
-						<div>
-							<label for="srfm-address-country-' . esc_attr( $block_id ) . '" class="srfm-sr-only">Country</label>
-							<select id="srfm-address-country-' . esc_attr( $block_id ) . '" autocomplete="country-name" class="srfm-classic-adress-select">';
-
-		if ( ! empty( $country_placeholder ) ) :
-			$output .= '<option value="" selected disabled hidden>' . esc_html( $country_placeholder ) . '</option>';
-							endif;
-		if ( is_array( $data ) ) {
-			foreach ( $data as $country ) {
-				if ( is_array( $country ) && isset( $country['name'] ) ) {
-					$output .= '<option value="' . esc_attr( strval( $country['name'] ) ) . '">
-										' . esc_html( strval( $country['name'] ) ) . '
-									</option>';
-				}
-			}
-		}
-
-							$output .= '
-							</select>
-						</div>
-						<div>
-							<label for="srfm-address-postal-' . esc_attr( $block_id ) . '" class="srfm-sr-only">ZIP / Postal code</label>
-							<input type="text" autocomplete="postal-code" class=" srfm-classic-address-element !srfm-rounded-b-md  " id="srfm-address-postal-' . esc_attr( $block_id ) . '"
-							aria-required=' . esc_attr( $required ? 'true' : 'fasle' ) . '
-							placeholder="' . esc_attr( $postal_placeholder ) . '">
-						</div>
-					</div>' .
-					( '' !== $help ? '<p class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) .
-					'<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-				</div>
-		';
-	//	return $output;
-	ob_start(); ?>
-		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block <?php echo esc_attr( $classname ) ?>" <?php echo wp_kses_post( $style ) ?>>
+		ob_start(); ?>
+		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-hidden"/>	
+			<div class="srfm-block-wrap">
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-1" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-1" aria-required="<?php echo esc_attr($aria_require_attr); ?>" <?php echo wp_kses_post($line_one_placeholder_attr); ?> />	
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-2" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-2" <?php echo wp_kses_post($line_two_placeholder_attr); ?> />	
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-city" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-city" aria-required="<?php echo esc_attr($aria_require_attr); ?>" <?php echo wp_kses_post($city_placeholder_attr); ?> />	
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-state" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-state" aria-required="<?php echo esc_attr($aria_require_attr); ?>" <?php echo wp_kses_post($state_placeholder_attr); ?> />	
 
+				<?php
+					if ( is_array( $data ) ) { 
+				?>
+				<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country" autocomplete="country-name">;
+					<?php if( $country_placeholder ) { ?>
+						<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
+					<?php } ?>
+				<?php
+						foreach ( $data as $country ) {
+							if ( is_array( $country ) && isset( $country['name'] ) ) {
+				?>
+					<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
+				<?php 
+							}
+						}
+				?>
+				</select>
+				<?php
+					}
+				?>
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-postal-code" aria-required="<?php echo esc_attr($aria_require_attr); ?>" <?php echo wp_kses_post($postal_placeholder_attr); ?> />	
+			</div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
 		</div>

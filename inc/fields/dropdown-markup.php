@@ -41,43 +41,54 @@ class Dropdown_Markup extends Base {
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
 		$aria_require_attr  = $required ? 'true' : 'false';
-		$default_value_attr = $default ? ' value="' . $default . '" ' : '';
 		$placeholder_attr   = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
-
-		$output  = '';
-		$output .= '<div class="srfm-classic-dropdown-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
-        <label for="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' 
-            ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '
-        </label>
-        <div class= "srfm-relative srfm-mt-2">
-            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" type="hidden" id="srfm-classic-dropdown-' . esc_attr( $block_id ) . '" class="srfm-classic-dropdown-result" value="" />
-            <button type="button" class="srfm-classic-dropdown-button srfm-classic-dropdown-btn" id="srfm-classic-dropdown-button-' . esc_attr( $block_id ) . '">
-                <span class="srfm-dropdown-value srfm-font-normal srfm-text-gray-900 srfm-block srfm-truncate">' . esc_attr( '' !== $placeholder ? $placeholder : '&nbsp;' ) . '</span>
-                <span class="srfm-classic-select-icon srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-2 srfm-duration-300 srfm-transition-all">
-                    <i class="fa-solid fa-angle-down srfm-h-5 srfm-w-5 srfm-text-gray-500 srfm-mt-[10px]"></i>
-                </span>
-            </button>
-            <ul class="srfm-classic-dropdown-box srfm-classic-dropdown-ul" tabindex="-1" value="value" style="display: none;">' . ( 0 === count( $options ) ? '<div class="srfm-text-gray-500 srfm-relative srfm-select-none srfm-py-2 srfm-pl-3 srfm-pr-9">' . esc_html__( 'No Options Found', 'sureforms' ) . '</div>' : '' );
-
-		foreach ( $options as $option ) {
-			$option_text = esc_html( $option );
-
-			$output .= '<li class="srfm-classic-dropdown-option srfm-classic-dropdown-li" id="srfm-listbox-option-0" role="option">
-                            <span class="srfm-font-normal srfm-block srfm-truncate">' . $option_text . '</span>
-                        </li>';
-		}
-
-		$output .= '</ul>
-                </div>
-                ' . ( '' !== $help ? '<p class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '
-                <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-            </div>';
-		return $output;
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-					
+					<div class="srfm-block-wrap">
+						<div class="select-box">
+						<div class="select-box__current" tabindex="1">
+							<div class="select-box__value">
+							<input class="select-box__input" type="radio" id="0" value="1" name="Ben" checked="checked"/>
+							<p class="select-box__input-text">Cream</p>
+							</div>
+							<div class="select-box__value">
+							<input class="select-box__input" type="radio" id="1" value="2" name="Ben"/>
+							<p class="select-box__input-text">Cheese</p>
+							</div>
+							<div class="select-box__value">
+							<input class="select-box__input" type="radio" id="2" value="3" name="Ben"/>
+							<p class="select-box__input-text">Milk</p>
+							</div>
+							<div class="select-box__value">
+							<input class="select-box__input" type="radio" id="3" value="4" name="Ben"/>
+							<p class="select-box__input-text">Honey</p>
+							</div>
+							<div class="select-box__value">
+							<input class="select-box__input" type="radio" id="4" value="5" name="Ben"/>
+							<p class="select-box__input-text">Toast</p>
+							</div><img class="select-box__icon" src="http://cdn.onlinewebfonts.com/svg/img_295694.svg" alt="Arrow Icon" aria-hidden="true"/>
+						</div>
+						<ul class="select-box__list">
+							<li>
+							<label class="select-box__option" for="0" aria-hidden="aria-hidden">Cream</label>
+							</li>
+							<li>
+							<label class="select-box__option" for="1" aria-hidden="aria-hidden">Cheese</label>
+							</li>
+							<li>
+							<label class="select-box__option" for="2" aria-hidden="aria-hidden">Milk</label>
+							</li>
+							<li>
+							<label class="select-box__option" for="3" aria-hidden="aria-hidden">Honey</label>
+							</li>
+							<li>
+							<label class="select-box__option" for="4" aria-hidden="aria-hidden">Toast</label>
+							</li>
+						</ul>
+						</div>
+					</div>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>

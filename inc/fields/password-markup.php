@@ -49,9 +49,10 @@ class Password_Markup extends Base {
 		<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 		<div class="srfm-block">
 			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
-			<div class="srfm-block-wrap">
-			<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
+			<div class="srfm-block-wrap srfm-with-icon">
+				<?php echo Sureforms_Helper::fetch_svg('lock', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post(  $placeholder_attr ); ?>/>
+				<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 			</div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
@@ -59,9 +60,10 @@ class Password_Markup extends Base {
 		<?php if( true === $is_confirm_password ) { ?>
 			<div class="srfm-block">
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $confirm_label, $slug .'-confirm', $block_id, $required )); ?>
-				<div class="srfm-block-wrap">
-					<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
+				<div class="srfm-block-wrap srfm-with-icon">
+					<?php echo Sureforms_Helper::fetch_svg('lock', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post(  $placeholder_attr ); ?>/>
+					<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 				</div>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>

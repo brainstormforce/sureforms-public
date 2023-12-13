@@ -45,7 +45,7 @@ class Phone_Markup extends Base {
 		// Append Dynamic styles here.
 		$inline_style .= $field_width ? 'width:' . $field_width . '%;' : '';
 		$style         = $inline_style ? 'style="' . $inline_style . '"' : '';
-
+		$aria_require_attr  = $required ? 'true' : 'false';
 		$placeholder_attr   = $placeholder ? 'placeholder="' . $placeholder . '" ' : '';
 
 		ob_start(); ?>
@@ -61,5 +61,4 @@ class Phone_Markup extends Base {
 		<?php
 		return ob_get_clean();
 	}
-
 }

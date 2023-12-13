@@ -5,6 +5,7 @@
 }
 .srfm-form-container .srfm-form .srfm-block {
   margin-bottom: 1.2em;
+  color: var(--srfm-body-input-color);
 }
 .srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common {
   border-color: var(--srfm-error-surface-color);
@@ -69,6 +70,23 @@
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-error-message {
   color: var(--srfm-error-text-color);
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-with-icon .srfm-input-common {
+  padding-right: 2.4em;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-with-icon .srfm-input-icon {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0.7em;
+  transform: translateY(-50%);
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-with-icon .srfm-input-icon svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-with-icon .srfm-input-icon svg path {
+  stroke: var(--srfm-body-input-color);
 }
 .srfm-form-container .srfm-form .srfm-submit-container {
   width: 100%;
