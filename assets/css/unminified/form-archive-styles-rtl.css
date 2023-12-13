@@ -244,5 +244,5 @@ input:checked + .slider:before {
   min-height: 30px;
   -webkit-appearance: none;
   margin-top: 5px;
-  margin-right: 20px;
+  margin-right: 25px;
 }
