@@ -1889,10 +1889,6 @@ export default function Settings( props ) {
 							layout === 'overlay' &&
 							separatorStylePanel }
 					</InspectorTab>
-					<InspectorTab
-						{ ...UAGTabs.advance }
-						parentProps={ props }
-					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</>

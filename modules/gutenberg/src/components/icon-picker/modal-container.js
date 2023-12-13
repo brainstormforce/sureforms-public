@@ -11,7 +11,7 @@ import HeaderContainer from './header-container';
 const ModalContainer = ( props ) => {
 	const { value, onChange, closeModal, defaultIcons, iconCategoryList } =
 		props;
-	const defaultIconsWithKeys = { ...uagb_blocks_info.uagb_svg_icons };
+	const defaultIconsWithKeys = { ...srfm_spec_blocks_info.uagb_svg_icons };
 	const NUMBER_OF_COLUMN = 8;
 
 	const setIconListWithChunks = ( icons ) => chunk( icons, NUMBER_OF_COLUMN );
@@ -93,8 +93,8 @@ const ModalContainer = ( props ) => {
 				defaultIconsWithKeys[ icons ]?.label
 					? -1 !==
 					  defaultIconsWithKeys[ icons ].label
-					  	.toLowerCase()
-					  	.indexOf( inputValue )
+							.toLowerCase()
+							.indexOf( inputValue )
 					: false;
 
 			const resultIcons = [ ...iconListByCategory ].filter( filterIcons );
@@ -258,8 +258,8 @@ const ModalContainer = ( props ) => {
 					onClick={
 						'' !== insertIcon
 							? () => {
-								onChange( insertIcon );
-								closeModal();
+									onChange( insertIcon );
+									closeModal();
 							  }
 							: null
 					}
