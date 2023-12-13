@@ -116,7 +116,9 @@ const TemplateScreen = () => {
 					<div className="srfm-ts-sidebar-categories-container">
 						<div
 							className={ `srfm-ts-sidebar-category ${
-								selectedCategory === null ? 'selected' : ''
+								selectedCategory === null
+									? 'srfm-ts-category-is-selected'
+									: ''
 							}` }
 							onClick={ () => handleCategoryClick( null ) }
 						>
@@ -142,7 +144,7 @@ const TemplateScreen = () => {
 								<div
 									className={ `srfm-ts-sidebar-category ${
 										selectedCategory === uniqueCategory
-											? 'selected'
+											? 'srfm-ts-category-is-selected'
 											: ''
 									}` }
 									key={ uniqueCategory }

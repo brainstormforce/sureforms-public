@@ -216,6 +216,9 @@
   padding: 0.5em 0.625em;
   cursor: pointer;
 }
+.srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-ts-sidebar-categories-container .srfm-ts-category-is-selected {
+  font-weight: 600;
+}
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container {
   padding: 1em;
   border: 1px solid rgb(220, 224, 230);

@@ -10,10 +10,9 @@ $heading_color: #1e293b;
 $desc_color: #475569;
 $text_color: #6b21a8;
 $text_color_2: #50575e;
-$text_color_3 : #4b5563;
+$text_color_3: #4b5563;
 $btn_primary_color: #125d9f;
 $btn_secondary_color: #fff;
-
 
 $sidebar_width: 290px;
 
@@ -245,7 +244,7 @@ $sidebar_width: 290px;
 				.srfm-ts-sidebar-search-input {
 					font-weight: 400;
 					border-color: $border_2;
-					width: calc(100% - 40px);
+					width: calc( 100% - 40px );
 				}
 
 				.srfm-ts-sidebar-search-icon {
@@ -264,6 +263,9 @@ $sidebar_width: 290px;
 					justify-content: space-between;
 					padding: 0.5em 0.625em;
 					cursor: pointer;
+				}
+				.srfm-ts-category-is-selected {
+					font-weight: 600;
 				}
 			}
 
