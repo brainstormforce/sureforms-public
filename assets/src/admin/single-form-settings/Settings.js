@@ -1,4 +1,4 @@
-import { ToggleControl, SelectControl, PanelRow } from '@wordpress/components';
+import { ToggleControl, SelectControl, PanelRow, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -6,12 +6,15 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
+import SingleFormSetting from './singleFormSettingPopup';
+import svgIcons from '../../../../images/single-form-logo.json';
+import parse from 'html-react-parser';
 
 function Settings( props ) {
 	const { editPost } = useDispatch( editorStore );
-
 	const { default_keys } = props;
-
+	// Modal icon
+	const modalIcon = parse( svgIcons.modalLogo );
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
 	const [ sureformsV2CheckboxSecret, setSureformsV2CheckboxSecret ] =
@@ -24,11 +27,14 @@ function Settings( props ) {
 	const [ sureformsV3Secret, setSureformsV3Secret ] = useState( '' );
 
 	const [ showErr, setShowErr ] = useState( false );
+	const [ isOpen, setOpen ] = useState( false );
+
+	const openModal = () => setOpen( true );
+	const closeModal = () => setOpen( false );
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	if ( sureforms_keys && '_srfm_sender_notification' in sureforms_keys ) {
 		if ( ! sureforms_keys._srfm_sender_notification ) {
 			sureforms_keys = default_keys;
@@ -42,7 +48,6 @@ function Settings( props ) {
 			meta: sureforms_keys,
 		} );
 	}
-
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;
@@ -50,7 +55,6 @@ function Settings( props ) {
 			meta: option_array,
 		} );
 	}
-
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
@@ -96,52 +100,6 @@ function Settings( props ) {
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Notification Settings', 'sureforms' ) }
-				initialOpen={ true }
-			>
-				<SRFMTextControl
-					label={ __(
-						'Customize the email address on which you want to send the notifications',
-						'sureforms'
-					) }
-					help={ __(
-						'Please add the emails separated by , if you want to send emails to multiple email addresses',
-						'sureforms'
-					) }
-					placeholder={ __( 'E-mail addres', 'sureforms' ) }
-					data={ {
-						value: sureforms_keys._srfm_email,
-						label: '_srfm_email',
-					} }
-					value={ sureforms_keys._srfm_email }
-					isFormSpecific={ true }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_email', value );
-					} }
-				/>
-				<ToggleControl
-					label={ __(
-						"Turn toggle on to send notification to sender's email address",
-						'sureforms'
-					) }
-					checked={
-						'on' === sureforms_keys._srfm_sender_notification
-					}
-					onChange={ ( value ) => {
-						updateMeta(
-							'_srfm_sender_notification',
-							value ? 'on' : 'off'
-						);
-					} }
-				/>
-				<p className="components-base-control__help">
-					{ __(
-						'Please note that this setting will only work when an email field is present in the form',
-						'sureforms'
-					) }
-				</p>
-			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
@@ -340,6 +298,35 @@ function Settings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
+			<div className="srfm-custom-layout-panel components-panel__body">
+				<h2 className="components-panel__body-title">
+					<button className="components-button components-panel__body-toggle" onClick={ openModal }>
+						<span className="srfm-title">
+							<div> { __( 'Email Notification', 'sureforms' ) }</div>
+						</span>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<g id="heroicons-mini/ellipsis-horizontal">
+								<g id="Union">
+									<path d="M3.60156 12.0031C3.60156 11.009 4.40745 10.2031 5.40156 10.2031C6.39567 10.2031 7.20156 11.009 7.20156 12.0031C7.20156 12.9972 6.39567 13.8031 5.40156 13.8031C4.40745 13.8031 3.60156 12.9972 3.60156 12.0031Z" fill="#555D66" />
+									<path d="M10.2016 12.0031C10.2016 11.009 11.0074 10.2031 12.0016 10.2031C12.9957 10.2031 13.8016 11.009 13.8016 12.0031C13.8016 12.9972 12.9957 13.8031 12.0016 13.8031C11.0074 13.8031 10.2016 12.9972 10.2016 12.0031Z" fill="#555D66" />
+									<path d="M18.6016 10.2031C17.6074 10.2031 16.8016 11.009 16.8016 12.0031C16.8016 12.9972 17.6074 13.8031 18.6016 13.8031C19.5957 13.8031 20.4016 12.9972 20.4016 12.0031C20.4016 11.009 19.5957 10.2031 18.6016 10.2031Z" fill="#555D66" />
+								</g>
+							</g>
+						</svg>
+					</button>
+				</h2>
+			</div>
+			{ isOpen && (
+				<Modal
+					onRequestClose={ closeModal }
+					title={ __( 'Single Form Setting', 'sureforms' ) }
+					className="srfm-header-settings-modal"
+					icon={ modalIcon }
+					isFullScreen={ true }
+				>
+					<SingleFormSetting sureformsKeys={ sureforms_keys } />
+				</Modal>
+			) }
 		</>
 	);
 }
