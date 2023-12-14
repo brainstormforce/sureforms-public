@@ -106,8 +106,12 @@ const SelectForm = ( {
 					isOpen ? 'srfm-form-arrow-open' : ''
 				}` }
 			>
-				{ filter( formsData ).map( ( option, index ) => {
-					return (
+				{ formsData.length === 0 ? (
+					<div className="srfm-form-single-option">
+						{ __( 'No forms found...', 'sureforms' ) }
+					</div>
+				) : (
+					filter( formsData ).map( ( option, index ) => (
 						<div
 							onClick={ () => {
 								selectOption( option );
@@ -129,8 +133,8 @@ const SelectForm = ( {
 						>
 							{ option[ label ] }
 						</div>
-					);
-				} ) }
+					) )
+				) }
 			</div>
 		</div>
 	);

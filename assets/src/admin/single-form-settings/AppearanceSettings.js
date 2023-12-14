@@ -150,8 +150,8 @@ function AppearanceSettings( props ) {
 				'--srfm_submit_alignment',
 				value ? value : 'left'
 			);
-			root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
-			updateMeta( '_srfm_submit_width_backend', 'auto' );
+			root.style.setProperty( '--srfm_submit_width_backend', '100px' );
+			updateMeta( '_srfm_submit_width_backend', '100px' );
 
 			if ( value === 'left' ) {
 				root.style.setProperty(
@@ -179,7 +179,7 @@ function AppearanceSettings( props ) {
 					'--srfm_submit_alignment_backend',
 					'50%'
 				);
-				root.style.setProperty( '--srfm_submit_width_backend', '100%' );
+				root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
@@ -399,8 +399,12 @@ function AppearanceSettings( props ) {
 					placeholder={ __( 'SUBMIT', 'sureforms' ) }
 					value={ sureforms_keys._srfm_submit_button_text }
 					onChange={ ( value ) => {
-						const btnText = value.toUpperCase();
-						updateMeta( '_srfm_submit_button_text', btnText );
+						// const btnText = value.toUpperCase();
+						updateMeta(
+							'_srfm_submit_button_text',
+							// btnText
+							value
+						);
 					} }
 					isFormSpecific={ true }
 				/>
@@ -441,7 +445,7 @@ function AppearanceSettings( props ) {
 						} else if ( 'justify' === value ) {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '100%' );
-							updateMeta( '_srfm_submit_width_backend', '100%' );
+							updateMeta( '_srfm_submit_width_backend', 'auto' );
 						} else {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '' );

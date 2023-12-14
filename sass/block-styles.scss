@@ -275,8 +275,24 @@ input[type="range"]::-webkit-slider-thumb {
 	content: " *";
 }
 
+// Form Title Editor Styles.
 .srfm-header-title-input {
 	.components-base-control__field {
+		.components-text-control__input {
+			max-width: 500px;
+			width: 120%;
+			padding: 11px 16px;
+			margin-top: 12px;
+			margin-right: 100px;
+			border-radius: 4px;
+			border: 1px solid #94a3b8;
+			background: #f9fafb;
+			box-shadow: none;
+			font-family: Inter;
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+		}
 		.components-text-control__input::placeholder {
 			color: #94a3b8;
 		}
@@ -285,6 +301,39 @@ input[type="range"]::-webkit-slider-thumb {
 			border: 1px solid #0284c7;
 			background: #fff;
 			box-shadow: 0px 0px 0px 3px #e5eff6, 0px 1px 2px 0px rgba( 16, 24, 40, 0.05 );
+		}
+	}
+}
+
+// Mobile
+@media screen and ( max-width: 767px ) {
+	.srfm-header-title-input {
+		display: none;
+		.components-base-control__field {
+			.components-text-control__input {
+				width: 100%;
+			}
+		}
+	}
+}
+
+// Tablet
+@media screen and ( max-width: 950px ) {
+	.srfm-header-title-input {
+		.components-base-control__field {
+			.components-text-control__input {
+				width: 100%;
+				margin-right: 0px;
+			}
+		}
+	}
+}
+
+// Hide Default title editor only on bigger screen
+@media screen and ( min-width: 767px ) {
+	body.post-type-sureforms_form {
+		.edit-post-visual-editor__post-title-wrapper h1.editor-post-title__input {
+			display: none;
 		}
 	}
 }
@@ -312,9 +361,6 @@ body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container >
 // TODO: remove the unused CSS.
 
 body.post-type-sureforms_form {
-	.edit-post-visual-editor__post-title-wrapper h1.editor-post-title__input {
-		display: none;
-	}
 	.edit-post-sidebar {
 		> .components-panel {
 			.components-panel__row label {
@@ -494,6 +540,9 @@ p.components-base-control__help {
 	margin: 1em 0;
 }
 
+div.edit-post-visual-editor .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *:not( p ) {
+	margin-top: 1rem;
+}
 // Block appender styles.
 body .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper > * + *,
 body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
