@@ -20,10 +20,6 @@ const Settings = ( props ) => {
 				<InspectorTab { ...UAGTabs.style } parentProps={ props }>
 					<StyleSettings { ...props } />
 				</InspectorTab>
-				<InspectorTab
-					{ ...UAGTabs.advance }
-					parentProps={ props }
-				></InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);
