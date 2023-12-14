@@ -83,6 +83,10 @@
   color: #4b5563;
   box-shadow: none;
 }
+.srfm-template-picker .srfm-tp-header .srfm-tp-logo {
+  display: flex;
+  cursor: pointer;
+}
 .srfm-template-picker .srfm-tp-header .srfm-tp-header-close {
   cursor: pointer;
 }
