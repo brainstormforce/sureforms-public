@@ -122,7 +122,6 @@ class Post_Types {
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'SureForms Form', 'add new on admin bar', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
 			'new_item'           => __( 'New Form', 'sureforms' ),

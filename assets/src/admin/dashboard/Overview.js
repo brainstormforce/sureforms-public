@@ -5,19 +5,20 @@ import { ScButton, ScFlex } from '@surecart/components-react';
 import EntriesView from './EntriesView';
 import Integrations from './Integrations';
 
-export default ( { } ) => {
+export default ( {} ) => {
 	const siteUrl = sureforms_admin.site_url;
 	return (
 		<div
 			css={ css`
-                    width: 100%;
-				` } >
+				width: 100%;
+			` }
+		>
 			<div
 				css={ css`
 					display: flex;
 					align-items: center;
-                    justify-content: space-between;
-                    width: 100%;
+					justify-content: space-between;
+					width: 100%;
 				` }
 			>
 				<h2
@@ -26,14 +27,14 @@ export default ( { } ) => {
 						font-size: 30px;
 						font-weight: 600;
 						line-height: 36px;
-                        margin:0;
+						margin: 0;
 					` }
 				>
-                    Overview
+					Overview
 				</h2>
 				<ScButton
 					type="primary"
-					href={ `${ siteUrl }/wp-admin/post-new.php?post_type=sureforms_form` }
+					href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
 					style={ {
 						'--primary-background': '#125D9F',
 						'--sc-focus-ring-color-primary': '#125D9F',
@@ -50,7 +51,6 @@ export default ( { } ) => {
 				<EntriesView />
 				<Integrations />
 			</ScFlex>
-
 		</div>
 	);
 };

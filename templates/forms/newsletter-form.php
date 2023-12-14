@@ -9,27 +9,12 @@
  */
 
 return [
-	'title'      => __( 'Newsletter Form', 'sureforms' ),
-	'categories' => [ 'sureforms_form' ],
-	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '<!-- wp:sureforms/form -->
-    <!-- wp:sureforms/form -->
-    <!-- wp:columns -->
-    <div class="wp-block-columns"><!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/input {"label":"First Name","name":"First Name"} -->
-    <sc-input label="First Name" name="First Name" placeholder="" size="medium" value="" class="wp-block-srfm-input"></sc-input>
-    <!-- /wp:sureforms/input --></div>
-    <!-- /wp:column -->
-    
-    <!-- wp:column -->
-    <div class="wp-block-column"><!-- wp:sureforms/input {"label":"Last Name","name":"Last Name"} -->
-    <sc-input label="Last Name" name="Last Name" placeholder="" size="medium" value="" class="wp-block-srfm-input"></sc-input>
-    <!-- /wp:sureforms/input --></div>
-    <!-- /wp:column --></div>
-    <!-- /wp:columns -->
-    
-    <!-- wp:sureforms/email {"name":"input"} /-->
-    <!-- /wp:sureforms/form -->
-    <!-- /wp:sureforms/form -->',
-
+	'title'            => __( 'Newsletter Form', 'sureforms' ),
+	'info'             => __( 'Creates a Newsletter Form', 'sureforms' ),
+	'categories'       => [ 'sureforms_form' ],
+	'templateCategory' => __( 'Newsletter Forms', 'sureforms' ),
+	'postTypes'        => SUREFORMS_FORMS_POST_TYPE,
+	'content'          => '<!-- wp:sureforms/input {"block_id":"3f513e23","fieldWidth":50,"label":"Name","formId":3697} /--><!-- wp:sureforms/email {"block_id":"6ef07308","fieldWidth":50,"label":"Your Email","formId":3697} /-->',
+	'id'               => 'form-3',
+	'isPro'            => true,
 ];
