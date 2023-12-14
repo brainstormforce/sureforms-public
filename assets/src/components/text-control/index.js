@@ -14,7 +14,11 @@ import {
 import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
-import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
+import {
+	getIdFromString,
+	getPanelIdFromRef,
+	generateSmartTagsDropDown,
+} from '@Utils/Helpers';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
@@ -117,25 +121,6 @@ const SRFMTextControl = ( props ) => {
 		blockNameForHook
 	);
 
-	const generateSmartTagsDropDown = () => {
-		const smartTagList = sfBlockData.smart_tags_array;
-		if ( ! smartTagList ) {
-			return;
-		}
-		const entries = Object.entries( smartTagList );
-		const data = entries.map( ( [ key, val ] ) => {
-			return {
-				title: val,
-				onClick: () => {
-					props?.onChange( inputData + key );
-					setInputData( inputData + key );
-				},
-			};
-		} );
-
-		return data;
-	};
-
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
@@ -196,8 +181,16 @@ const SRFMTextControl = ( props ) => {
 									className="srfm-scroll-dropdown"
 									label="Select Shortcodes"
 									controls={
-										generateSmartTagsDropDown()
-											? generateSmartTagsDropDown()
+										generateSmartTagsDropDown(
+											setInputData,
+											inputData,
+											props
+										)
+											? generateSmartTagsDropDown(
+												setInputData,
+												inputData,
+												props
+											  )
 											: []
 									}
 								/>

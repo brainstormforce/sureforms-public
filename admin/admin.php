@@ -303,6 +303,7 @@ class Admin {
 
 		// Admin Submenu Styles.
 		wp_enqueue_style( 'srfm-submenu', SUREFORMS_URL . 'assets/src/admin/sureforms-submenu.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';

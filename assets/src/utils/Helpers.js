@@ -90,3 +90,22 @@ export const randomNiceColor = () => {
 	const l = randomInt( 40, 90 );
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
+
+export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
+	const smartTagList = sfBlockData.smart_tags_array;
+	if ( ! smartTagList ) {
+		return;
+	}
+	const entries = Object.entries( smartTagList );
+	const data = entries.map( ( [ key, val ] ) => {
+		return {
+			title: val,
+			onClick: () => {
+				props?.onChange( inputData + key );
+				setInputData( inputData + key );
+			},
+		};
+	} );
+
+	return data;
+};
