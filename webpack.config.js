@@ -44,6 +44,10 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
+		quickActionSidebar: path.resolve(
+			__dirname,
+			'./modules/quick-action-sidebar/index.js'
+		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
 		flatpickr_css: path.resolve(
 			__dirname,

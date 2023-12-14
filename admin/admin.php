@@ -317,5 +317,6 @@ class Admin {
 		);
 		// Int-tel-input JS.
 		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-quick-action-siderbar', SUREFORMS_URL . 'assets/build/quickActionSidebar.js', [], SUREFORMS_VER, true );
 	}
 }
