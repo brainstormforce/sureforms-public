@@ -43,10 +43,12 @@ const default_keys = {
 	_srfm_form_styling: 'classic',
 	_srfm_form_container_width: 650,
 	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_submit_button_text: 'Submit',
+	_srfm_submit_button_text: 'SUBMIT',
 	_srfm_additional_classes: '',
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
+	_srfm_submit_alignment_backend: '100%',
+	_srfm_submit_width_backend: 'auto',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
