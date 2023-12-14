@@ -108,7 +108,7 @@ const SelectForm = ( {
 			>
 				{ formsData.length === 0 ? (
 					<div className="srfm-form-single-option">
-						{ __( 'No forms found...', 'sureforms' ) }
+						{ __( 'No forms found…', 'sureforms' ) }
 					</div>
 				) : (
 					filter( formsData ).map( ( option, index ) => (
