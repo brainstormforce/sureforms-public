@@ -100,12 +100,12 @@ const UAGMediaPicker = ( props ) => {
 	const onConfirm = ( open ) => {
 		// Create an object with the svg_nonce and confirmation properties
 		const data = {
-			svg_nonce: uagb_blocks_info.uagb_svg_confirmation_nonce,
+			svg_nonce: srfm_spec_blocks_info.uagb_svg_confirmation_nonce,
 			confirmation: 'yes',
 		};
 		// Call the getApiData function with the specified parameters
 		const getApiFetchData = getApiData( {
-			url: uagb_blocks_info.ajax_url,
+			url: srfm_spec_blocks_info.ajax_url,
 			action: 'uagb_svg_confirmation',
 			data,
 		} );

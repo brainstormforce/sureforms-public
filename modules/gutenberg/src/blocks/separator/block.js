@@ -23,7 +23,7 @@ registerBlockType( 'sureforms/separator', {
 		'sureforms'
 	),
 	icon: UAGB_Block_Icons.separator,
-	category: uagb_blocks_info.category,
+	category: srfm_spec_blocks_info.category,
 	keywords: [ __( 'divider', 'sureforms' ), __( 'separator', 'sureforms' ) ],
 	attributes,
 	edit: ( props ) =>

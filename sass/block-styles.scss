@@ -6,6 +6,9 @@
 	--srfm_fontsize: 16px;
 	--srfm_submit_alignment: "left";
 	--srfm_submit_width: "";
+	--srfm_submit_width_backend: "";
+	--srfm_submit_alignment_backend: "";
+	--srfm_submit_button_text: "Submit";
 }
 .editor-styles-wrapper {
 	background-image: var( --srfm_bg );
@@ -286,22 +289,24 @@ input[type="range"]::-webkit-slider-thumb {
 	}
 }
 
-// Template picker modal
-.srfm-modal-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+// Block appender styles.
+body .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper > * + *,
+body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
+.block-editor-button-block-appender.components-button.components-button {
+	margin-block-start: 1rem;
 }
 
-.srfm-modal {
-	background: white;
-	border-radius: 8px;
-	box-shadow: 0 0 10px rgba( 0, 0, 0, 0.2 ); /* Box shadow on all sides */
+.block-editor-button-block-appender.components-button.components-button {
+	box-shadow: none;
+	border: 1px dashed #959595;
+	padding: 24px;
+	svg {
+		width: 30px;
+		height: 30px;
+		color: white;
+		background-color: #555d66;
+		border-radius: 100%;
+	}
 }
 
 // TODO: remove the unused CSS.

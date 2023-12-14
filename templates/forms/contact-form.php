@@ -9,15 +9,12 @@
  */
 
 return [
-	'title'      => __( 'Contact Form', 'sureforms' ),
-	'categories' => [ 'sureforms_form' ],
-	'postTypes'  => SUREFORMS_FORMS_POST_TYPE,
-	'content'    => '
-    <!-- wp:sureforms/input {"id":"block1e339f805adb42acadb2ab77ddd7c5b3","required":true,"label":"Full Name"} /-->
-    
-    <!-- wp:sureforms/email {"id":"blockdbc94679f6ea4491a174ed78666f3ddc","required":true} /-->
-    
-    <!-- wp:sureforms/phone {"id":"block36db0d7999b44bd788aaed4cab09cf80","placeholder":"","help":""} /-->
-    
-    <!-- wp:sureforms/textarea {"id":"block0c2968c28c1e4e08bed54209feb757b4","label":"Message:"} /-->',
+	'title'            => __( 'Contact Form', 'sureforms' ),
+	'info'             => __( 'A basic Contact Form', 'sureforms' ),
+	'categories'       => [ 'sureforms_form' ],
+	'templateCategory' => __( 'Basic Forms', 'sureforms' ),
+	'postTypes'        => SUREFORMS_FORMS_POST_TYPE,
+	'content'          => '<!-- wp:sureforms/input {"block_id":"e8a489f7","required":true,"label":"Name","formId":17} /--><!-- wp:sureforms/email {"block_id":"a5728450","required":true,"formId":17} /--><!-- wp:sureforms/input {"block_id":"9ec2463e","required":true,"label":"Subject","formId":17} /--><!-- wp:sureforms/textarea {"block_id":"4afb9556","required":true,"label":"Message","formId":17} /-->',
+	'id'               => 'form-2',
+	'isPro'            => false,
 ];

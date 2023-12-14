@@ -37,7 +37,7 @@ registerBlockType( 'sureforms/advanced-heading', {
 		anchor: true,
 	},
 	attributes,
-	category: uagb_blocks_info.category,
+	category: srfm_spec_blocks_info.category,
 	edit: ( props ) =>
 		props.attributes.isPreview ? (
 			<PreviewImage image="advanced-heading" />

@@ -125,15 +125,19 @@ class Block_Patterns extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		$fields = $this->get_fields_for_response( $request );
 		$keys   = array(
-			'name'          => 'name',
-			'title'         => 'title',
-			'description'   => 'description',
-			'viewportWidth' => 'viewport_width',
-			'blockTypes'    => 'block_types',
-			'categories'    => 'categories',
-			'keywords'      => 'keywords',
-			'content'       => 'content',
-			'inserter'      => 'inserter',
+			'name'             => 'name',
+			'title'            => 'title',
+			'info'             => 'info',
+			'description'      => 'description',
+			'viewportWidth'    => 'viewport_width',
+			'blockTypes'       => 'block_types',
+			'categories'       => 'categories',
+			'templateCategory' => 'templateCategory',
+			'id'               => 'id',
+			'isPro'            => 'isPro',
+			'keywords'         => 'keywords',
+			'content'          => 'content',
+			'inserter'         => 'inserter',
 		);
 		$data   = array();
 		foreach ( $keys as $item_key => $rest_key ) {
@@ -160,55 +164,79 @@ class Block_Patterns extends WP_REST_Controller {
 			'title'      => 'block-pattern',
 			'type'       => 'object',
 			'properties' => array(
-				'name'           => array(
+				'name'             => array(
 					'description' => __( 'The pattern name.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'title'          => array(
+				'title'            => array(
 					'description' => __( 'The pattern title, in human readable format.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'description'    => array(
+				'info'             => array(
+					'description' => __( 'The pattern basic description', 'sureforms' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'description'      => array(
 					'description' => __( 'The pattern detailed description.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'viewport_width' => array(
+				'viewport_width'   => array(
 					'description' => __( 'The pattern viewport width for inserter preview.', 'sureforms' ),
 					'type'        => 'number',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'block_types'    => array(
+				'block_types'      => array(
 					'description' => __( 'Block types that the pattern is intended to be used with.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'categories'     => array(
+				'categories'       => array(
 					'description' => __( 'The pattern category slugs.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'keywords'       => array(
+				'templateCategory' => array(
+					'description' => __( 'The pattern template category.', 'sureforms' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'id'               => array(
+					'description' => __( 'The pattern template id.', 'sureforms' ),
+					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'isPro'            => array(
+					'description' => __( 'Wether pattern is pro or not.', 'sureforms' ),
+					'type'        => 'boolean',
+					'readonly'    => true,
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'keywords'         => array(
 					'description' => __( 'The pattern keywords.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'content'        => array(
+				'content'          => array(
 					'description' => __( 'The pattern content.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'inserter'       => array(
+				'inserter'         => array(
 					'description' => __( 'Determines whether the pattern is visible in inserter.', 'sureforms' ),
 					'type'        => 'boolean',
 					'readonly'    => true,

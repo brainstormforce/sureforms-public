@@ -61,6 +61,10 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/settings/settings.js'
 		),
+		templatePicker: path.resolve(
+			__dirname,
+			'assets/src/admin/components/template-picker/TemplatePicker.js'
+		),
 		flatpickr_js: path.resolve(
 			__dirname,
 			'assets/src/public/scripts/dependencies/flatpickr.min.js'

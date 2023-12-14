@@ -94,6 +94,10 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/srfm-form-selector-rtl.css',
 						dest: 'assets/css/minified/srfm-form-selector.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/template-picker-rtl.css',
+						dest: 'assets/css/minified/template-picker.min-rtl.css',
+					},
 				],
 			},
 		},

@@ -52,7 +52,7 @@ const addInitialAttr = ( ChildComponent ) => {
 
 		useEffect( () => {
 			if (
-				uagb_blocks_info.is_customize_preview &&
+				srfm_spec_blocks_info.is_customize_preview &&
 				( '0' === block_id || undefined === block_id ) &&
 				listOfParentBlock.includes( name )
 			) {
@@ -74,7 +74,7 @@ const addInitialAttr = ( ChildComponent ) => {
 
 		useEffect( () => {
 			if (
-				uagb_blocks_info.is_customize_preview &&
+				srfm_spec_blocks_info.is_customize_preview &&
 				( '0' === block_id || undefined === block_id ) &&
 				listOfParentBlock.includes( name )
 			) {

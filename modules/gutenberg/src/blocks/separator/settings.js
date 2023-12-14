@@ -678,10 +678,6 @@ const Settings = ( props ) => {
 						{ separatorStyleSettings() }
 						{ elementType !== 'none' && iconAndTextStyleSettings() }
 					</InspectorTab>
-					<InspectorTab
-						{ ...UAGTabs.advance }
-						parentProps={ props }
-					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</div>
