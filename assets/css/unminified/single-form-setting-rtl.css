@@ -274,6 +274,7 @@
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper table {
   width: 100%;
   border-collapse: collapse;
+  width: 716px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper thead {
   border-bottom: 1px solid #dce0e6;
@@ -322,9 +323,7 @@
   width: 15%;
   padding: 8px 10px;
   align-items: flex-start;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-fourth button {
-  margin-left: 16px;
+  gap: 16px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body {
   display: flex;
