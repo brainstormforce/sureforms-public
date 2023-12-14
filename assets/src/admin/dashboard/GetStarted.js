@@ -49,7 +49,7 @@ export default () => {
 							'sureforms'
 						) }
 						buttonLabel={ __( 'Create New Form', 'sureforms' ) }
-						buttonUrl={ `${ siteUrl }/wp-admin/post-new.php?post_type=sureforms_form` }
+						buttonUrl={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
 						btnFilled={ true }
 					/>
 					<GetStartedBox
@@ -61,9 +61,7 @@ export default () => {
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Forms', 'sureforms' ) }
-						buttonUrl={
-							`${ siteUrl }/wp-admin/edit.php?post_type=sureforms_form`
-						}
+						buttonUrl={ `${ siteUrl }/wp-admin/edit.php?post_type=sureforms_form` }
 						btnFilled={ false }
 					/>
 					<GetStartedBox

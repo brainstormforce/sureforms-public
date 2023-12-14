@@ -110,7 +110,7 @@ const GlobalBlockStyles = ( props ) => {
 		const formData = new window.FormData();
 
 		formData.append( 'action', 'uag_global_block_styles' );
-		formData.append( 'security', uagb_blocks_info.uagb_ajax_nonce );
+		formData.append( 'security', srfm_spec_blocks_info.uagb_ajax_nonce );
 		formData.append( 'attributes', JSON.stringify( styleAttributes ) );
 		formData.append(
 			'spectraGlobalStyles',
@@ -126,7 +126,7 @@ const GlobalBlockStyles = ( props ) => {
 		formData.append( 'bulkUpdateStyles', bulkUpdateStyles );
 
 		apiFetch( {
-			url: uagb_blocks_info.ajax_url,
+			url: srfm_spec_blocks_info.ajax_url,
 			method: 'POST',
 			body: formData,
 		} ).then( ( data ) => {

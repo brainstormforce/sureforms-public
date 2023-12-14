@@ -122,7 +122,6 @@ class Post_Types {
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'SureForms Form', 'add new on admin bar', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
 			'new_item'           => __( 'New Form', 'sureforms' ),
@@ -412,6 +411,8 @@ class Post_Types {
 			'_srfm_hide_title_post_specific'          => 'boolean',
 			'_srfm_page_form_title'                   => 'boolean',
 			'_srfm_single_page_form_title'            => 'boolean',
+			'_srfm_submit_width_backend'              => 'string',
+			'_srfm_submit_alignment_backend'          => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

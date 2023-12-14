@@ -11,6 +11,7 @@ import Logo from '../dashboard/templates/Logo';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
+	const siteUrl = sureforms_admin.site_url;
 
 	return (
 		<>
@@ -62,12 +63,32 @@ export default () => {
 									<ScBreadcrumb>
 										<Logo display="block" />
 									</ScBreadcrumb>
-									{ sureforms_admin?.breadcrumbs && sureforms_admin.breadcrumbs.length > 0 && (
-										sureforms_admin.breadcrumbs.map( ( breadcrumb, index ) => (
-											<ScBreadcrumb key={ index } href={ breadcrumb.link }>
-												{ breadcrumb.title }
-											</ScBreadcrumb>
-										) )
+									{ sureforms_admin?.breadcrumbs &&
+										sureforms_admin.breadcrumbs.length >
+											0 &&
+										sureforms_admin.breadcrumbs.map(
+											( breadcrumb, index ) => (
+												<ScBreadcrumb
+													key={ index }
+													href={ breadcrumb.link }
+												>
+													{ breadcrumb.title }
+												</ScBreadcrumb>
+											)
+										) }
+									{ sureforms_admin.breadcrumbs[ 0 ].title &&
+										sureforms_admin.breadcrumbs[ 0 ]
+											.title === 'Forms' && (
+										<a
+											href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
+										>
+											<button className="srfm-add-form-btn">
+												{ __(
+													'Add New',
+													'sureforms'
+												) }
+											</button>
+										</a>
 									) }
 								</ScBreadcrumbs>
 							</div>
@@ -80,14 +101,13 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						{
-							sureforms_admin?.breadcrumbs[ 0 ]?.title && sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
-							<button
-								className="srfm-import-btn"
-							>
+						{ sureforms_admin.breadcrumbs[ 0 ].title &&
+							sureforms_admin.breadcrumbs[ 0 ].title ===
+								'Forms' && (
+							<button className="srfm-import-btn">
 								{ __( 'Import Form', 'sureforms' ) }
 							</button>
-						}
+						) }
 						<article
 							css={ css`
 								color: #94a3b8;
@@ -236,7 +256,10 @@ export default () => {
 								margin-top: 20px;
 							` }
 						>
-							{ __( 'All caught up!! Check back for new notifications later.', 'sureforms' ) }
+							{ __(
+								'All caught up!! Check back for new notifications later.',
+								'sureforms'
+							) }
 						</article>
 						<article
 							css={ css`
@@ -246,8 +269,7 @@ export default () => {
 								color: rgb( 100, 116, 139 );
 								padding-bottom: 30px;
 							` }
-						>
-						</article>
+						></article>
 					</div>
 				</div>
 			</ScDrawer>

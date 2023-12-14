@@ -8,22 +8,20 @@
 }
 
 .srfm-form-style-classic {
-
 	.block-editor-inner-blocks .block-editor-block-list__layout .wp-block {
 		margin: 0 10px 20px 10px !important;
 	}
-
 }
 
 .srfm-classic-radio {
-	flex: calc(50% - 10px) 0 0;
+	flex: calc( 50% - 10px ) 0 0;
 	@include mobile630 {
 		flex: calc( 100% ) 0 0;
 	}
 }
 .srfm-radio-buttons {
 	gap: 7px;
-	flex: calc(50% - 7px) 0 0;
+	flex: calc( 50% - 7px ) 0 0;
 	@include mobile630 {
 		flex: unset;
 	}
@@ -66,15 +64,15 @@
 .srfm-classic-radio input:checked + .srfm-classic-radio-btn .fa-circle {
 	opacity: 0;
 }
-.srfm-form-style-classic  .block-editor-inner-blocks  .block-editor-block-list__layout{
-display: flex;
-flex-wrap: wrap;
+.srfm-form-style-classic .block-editor-inner-blocks .block-editor-block-list__layout {
+	display: flex;
+	flex-wrap: wrap;
 }
-.srfm-multichoice-addded-option{
- 	width: calc(50% - 10px);
+.srfm-multichoice-addded-option {
+	width: calc( 50% - 10px );
 }
-.srfm-multichoice-addded-input{
-	width: calc(100% - 40px);
+.srfm-multichoice-addded-input {
+	width: calc( 100% - 40px );
 }
 
 @layer components {
@@ -557,11 +555,9 @@ flex-wrap: wrap;
 	}
 }
 
-
-// Temp css 
+// Temp css
 
 body.post-type-sureforms_form {
-
 	.edit-post-visual-editor .block-editor-block-list__layout {
 		display: flex;
 		flex-wrap: wrap;
@@ -571,7 +567,7 @@ body.post-type-sureforms_form {
 		padding: 12px;
 	}
 
-	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)){
+	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > :where( :not( .alignleft ):not( .alignright ):not( .alignfull ) ) {
 		max-width: 100%;
 	}
 
@@ -579,10 +575,34 @@ body.post-type-sureforms_form {
 	.block-editor-block-list__block.wp-block[data-type="sureforms/separator"],
 	.block-editor-block-list__block.wp-block[data-type="sureforms/advanced-heading"],
 	.block-editor-block-list__block.wp-block[data-type="sureforms/image"] {
-		width: calc(100% - 20px);
+		width: calc( 100% - 20px );
 	}
 
+	// Add submit button below the Block Appender.
 	.block-list-appender {
-		width: calc(100% - 20px);
+		width: calc( 100% - 20px );
+		.block-editor-inserter {
+			position: relative;
+			&:after {
+				margin-top: 20px;
+				display: inline-block;
+				position: absolute;
+				margin-left: auto;
+				width: calc( var( --srfm_submit_width_backend ) - 44px );
+				content: var( --srfm_submit_button_text );
+				line-height: 12px;
+				box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+				border: none;
+				border-radius: 6px;
+				padding: 13px 25px;
+				background: var( --srfm-primary-color );
+				color: var( --srfm-primary-text-color );
+				text-align: center;
+				right: var( --srfm_submit_alignment_backend );
+				transform: translateX( var( --srfm_submit_alignment_backend ) );
+				letter-spacing: inherit;
+				font-weight: inherit;
+			}
+		}
 	}
 }

@@ -1309,10 +1309,6 @@ const Settings = ( props ) => {
 						{ backgroundStylePanel() }
 						{ spacingStylePanel() }
 					</InspectorTab>
-					<InspectorTab
-						{ ...UAGTabs.advance }
-						parentProps={ props }
-					></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 		</div>

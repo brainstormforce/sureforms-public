@@ -25,7 +25,7 @@ const Navigation = () => {
 			{ navigation.map( ( item ) => (
 				<Link
 					to={ {
-						pathname: 'wp-admin/admin.php',
+						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }
