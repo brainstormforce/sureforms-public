@@ -50,25 +50,23 @@ class Datetimepicker_Markup extends Base {
 
 			$input_type_class = '';
 			if( 'dateTime' === $field_type ) {
-				$input_type = ' srfm-input-date-time';
+				$input_type = 'date-time';
 			}
 
 			if( 'date' === $field_type ) {
-				$input_type = ' srfm-input-date';
+				$input_type = ' date';
 			}
 
 			if( 'time' === $field_type ) {
-				$input_type = ' srfm-input-time';
+				$input_type = ' time';
 			}
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
-				<input type="hidden" class="srfm-<?php echo esc_attr( $slug ); ?>-holder" <?php wp_kses_post( $min_attr .''. $max_attr ); ?> >
-				<input type="hidden" field-type="<?php echo esc_attr( $field_type ); ?>" class="srfm-<?php echo esc_attr( $slug ); ?>-result" name="srfm-hidden-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" value="">
 				<div class="srfm-block-wrap srfm-with-icon">
 					<?php echo Sureforms_Helper::fetch_svg('calender', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
-					<input type="text" class="srfm-input-common" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" >
+					<input type="text" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?> srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $input_type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" value="" >
 					<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 				</div>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>

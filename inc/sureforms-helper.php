@@ -123,10 +123,10 @@ class Sureforms_Helper {
 	 * @param string $icon the icon name.
 	 * @param bool   $class if the baseline class should be added.
 	 */
-	public static function fetch_svg( $icon = '', $class = '' ) {
+	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
 
-		$output = '<span class="srfm-icon'. $class .'">';
+		$output = '<span class="srfm-icon'. $class .'" '. $html . '>';
 			if ( ! self::$srfm_svgs ) {
 				ob_start();
 				include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound

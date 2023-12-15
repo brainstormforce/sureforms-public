@@ -9,9 +9,20 @@
   text-align: center;
   line-height: 1;
 }
+.srfm-form-container .srfm-form .srfm-rating-block ul li.srfm-fill svg {
+  fill: var(--srfm-primary-color);
+  stroke: var(--srfm-primary-color);
+  transform: scale(1.1);
+  transition: 0.3s;
+}
 .srfm-form-container .srfm-form .srfm-rating-block ul li .srfm-icon {
   display: block;
-  width: 2em;
+  width: 2.5em;
+  cursor: pointer;
+  padding-left: 0.5em;
+}
+.srfm-form-container .srfm-form .srfm-rating-block ul li .srfm-icon svg {
+  stroke: var(--srfm-primary-color);
 }
 .srfm-form-container .srfm-form .srfm-rating-block ul li .srfm-rating-number {
   font-size: 0.7em;

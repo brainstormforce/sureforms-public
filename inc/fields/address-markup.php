@@ -89,8 +89,8 @@ class Address_Markup extends Base {
 				<?php
 					if ( is_array( $data ) ) {
 				?>
-				<div class="srfm-address-country-wrap">
-					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country" autocomplete="country-name">
+				<div class="srfm-address-country-wrap srfm-dropdown-common-wrap">
+					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country srfm-dropdown-common" autocomplete="country-name">
 						<?php if( $country_placeholder ) { ?>
 							<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
 						<?php } ?>
@@ -104,7 +104,6 @@ class Address_Markup extends Base {
 							}
 					?>
 					</select>
-					<?php echo Sureforms_Helper::fetch_svg('angle-down', 'srfm-'. $slug .'-icon'); ?>
 				</div>
 				<?php
 					}

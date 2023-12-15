@@ -46,29 +46,20 @@ class Dropdown_Markup extends Base {
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-					<div class="srfm-block-wrap">
-						<div class="select-box">
-							<div class="srfm-dropdown-current" tabindex="1">
-								<div class="srfm-dropdown-value">
-									<input class="srfm-dropdown-input" type="radio" id="0" value="1" name="Ben" checked="checked"/>
-									<p class="srfm-dropdown-input-text">Cream</p>
-								</div>
-								<div class="srfm-dropdown-value">
-									<input class="srfm-dropdown-input" type="radio" id="1" value="2" name="Ben"/>
-									<p class="srfm-dropdown-input-text">Cheese</p>
-								</div>
-								<?php echo Sureforms_Helper::fetch_svg('angle-down', 'srfm-'. $slug .'-icon'); ?>
-							</div>
-							<ul class="srfm-dropdown-list">
-								<li>
-								<label class="srfm-dropdown-option" for="0" aria-hidden="aria-hidden">Cream</label>
-								</li>
-								<li>
-								<label class="srfm-dropdown-option" for="1" aria-hidden="aria-hidden">Cheese</label>
-								</li>
-							</ul>
-						</div>
-					</div>
+				<div class="srfm-dropdown-common-wrap">
+				<?php 
+
+				if ( is_array( $options ) ) { ?>
+				<select class="srfm-dropdown-common">
+				<?php
+				foreach ( $options as $option ) {
+					$option_text = esc_html( $option );
+				?>
+					<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+				<?php } ?>
+				</select>
+				<?php } ?>
+				</div>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>

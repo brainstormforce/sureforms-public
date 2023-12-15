@@ -61,9 +61,51 @@
 		@keyframes l7 {to{transform: rotate(.5turn)}}
 	}
 
-	.srfm-form { 
-
+	.srfm-form {
 		.srfm-block {
+			.srfm-dropdown-common-wrap {
+				select {
+					display: block;
+				}
+				.nice-select  {
+					width: 100%;
+
+					&.open {
+						.nice-select-dropdown {
+							transform: scale(1) translateY(0);
+						}
+					}
+
+					.nice-select-dropdown {
+						width: 100%;
+						transform: scale(1) translateY(1em);
+
+						.list {
+							margin: 0;
+						}
+					}
+				}
+			}
+
+			&.srfm-phone-block {
+
+				.iti__country-list {
+					display: block;
+					border: var(--srfm-border) solid var(--srfm-border-color);
+               		border-radius: var(--srfm-border-radius);
+					transform: translateY(0);
+					opacity: 1;
+					transition:  .2s cubic-bezier(0.5, 0, 0, 1.25),opacity .15s ease-out;
+					
+					&.iti__hide {
+						display: block;
+						transform: translateY(1em);
+						opacity: 0;
+						visibility: hidden;
+					}
+				}
+			}
+
 			.srfm-required {
 				color: var(--srfm-error-text-color);
 			}
@@ -79,7 +121,6 @@
 			.srfm-error-message {
 				display: none;
 			}
-
 		}
 	}
 

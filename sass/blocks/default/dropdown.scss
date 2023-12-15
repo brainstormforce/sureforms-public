@@ -1,112 +1,127 @@
-.srfm-form-container {
-  .srfm-form {
-    .srfm-dropdown-block {
-      .srfm-block-wrap {
-        .select-box {
-          position: relative;
-          display: block;
-          width: 100%;
-          margin: 0 auto;
-          font-size: .7em;
-          color: #60666d;
+// .srfm-form-container {
+//   .srfm-form {
+//     .srfm-dropdown-block {
+//       .srfm-block-wrap {
+//         .select-box {
+//           position: relative;
+//           display: block;
+//           width: 100%;
+//           margin: 0 auto;
+//           font-size: .7em;
 
-          .srfm-dropdown-current {
-            position: relative;
-            cursor: pointer;
-            outline: none;
+//           .srfm-dropdown-current {
+//             position: relative;
+//             cursor: pointer;
+//             outline: none;
 
-            &:focus {
-              &+.srfm-dropdown-list {
+//             &:focus {
+//               &+.srfm-dropdown-list {
 
-                opacity: 1;
+//                 opacity: 1;
 
-                // We have to set "animation-name: none;" to make the list visible (read below how it works)
+//                 // We have to set "animation-name: none;" to make the list visible (read below how it works)
 
-                animation-name: none;
+//                 animation-name: none;
 
-                .srfm-dropdown-option {
-                  cursor: pointer;
-                }
-              }
+//                 .srfm-dropdown-option {
+//                   cursor: pointer;
+//                 }
+//               }
 
-              .srfm-dropdown-icon {
-                transform: translateY(-50%) rotate(180deg);
-              }
-            }
-          }
+//               .srfm-dropdown-icon {
+//                 transform: translateY(-50%) rotate(180deg);
+//               }
+//             }
+//           }
 
-          .srfm-dropdown-icon {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            width: 18px;
-            line-height: 0;
-            transition: 0.2s ease;
-          }
+//           .srfm-dropdown-icon {
+//             position: absolute;
+//             top: 50%;
+//             right: 15px;
+//             transform: translateY(-50%);
+//             width: 18px;
+//             line-height: 0;
+//             transition: 0.2s ease;
+//           }
 
-          .srfm-dropdown-value {
-            display: flex;
-          }
+//           .srfm-dropdown-value {
+//             display: flex;
+//           }
 
-          .srfm-dropdown-input {
-            display: none;
+//           .srfm-dropdown-input {
+//             display: none;
 
-            &:checked+.srfm-dropdown-input-text {
-              display: block;
-            }
-          }
+//             &:checked+.srfm-dropdown-input-text {
+//               display: block;
+//             }
+//           }
 
-          .srfm-dropdown-input-text {
-            display: none;
-            width: 100%;
-            margin: 0;
-            padding: 0.625em 0.875em;
-            border: var(--srfm-border) solid var(--srfm-border-color);
-            border-radius: var(--srfm-border-radius);
-          }
+//           .srfm-dropdown-input-text {
+//             display: none;
+//             width: 100%;
+//             margin: 0;
+//             padding: 0.625em 0.875em;
+//             border: var(--srfm-border) solid var(--srfm-border-color);
+//             border-radius: var(--srfm-border-radius);
+//           }
 
-          .srfm-dropdown-list {
-            position: absolute;
-            width: 100%;
-            padding: 0;
-            list-style: none;
-            opacity: 0;
-            z-index: 999;
-            margin: 0;
-            max-height: 200px;
-            overflow-y: auto;
-            animation-name: HideList;
-            animation-duration: 0.5s;
-            animation-delay: 0.5s;
-            animation-fill-mode: forwards;
-            animation-timing-function: step-start;
-            box-shadow: 0 15px 30px -10px transparentize(#000, 0.9);
-          }
+//           .srfm-dropdown-list {
+//             position: absolute;
+//             width: 100%;
+//             padding: 0;
+//             list-style: none;
+//             opacity: 0;
+//             z-index: 999;
+//             margin: 0;
+//             margin-top: .5em;
+//             border: var(--srfm-border) solid var(--srfm-border-color);
+//             border-radius: var(--srfm-border-radius);
+//             max-height: 200px;
+//             overflow-y: auto;
+//             animation-name: HideList;
+//             animation-duration: 0.5s;
+//             animation-delay: 0.5s;
+//             animation-fill-mode: forwards;
+//             animation-timing-function: step-start;
 
-          .srfm-dropdown-option {
-            display: block;
-            padding: .5em;
-            background-color: #fff;
+//             li {
+//               &:nth-child(1){
+//                 .srfm-dropdown-option {
+//                   padding-top: 0.5em;
+//                 }
+//               }
 
-            &:hover,
-            &:focus {
-              color: #546c84;
-              background-color: #fbfbfb;
-            }
-          }
-        }
+//               &:nth-last-child(1) {
+//                 .srfm-dropdown-option {
+//                   padding-bottom: 0.5em;
+//                 }
+//               }
+//             }
+//           }
 
-        @keyframes HideList {
-          from {
-            transform: scaleY(1);
-          }
+//           .srfm-dropdown-option {
+//             display: block;
+//             padding: .5em;
+//             background-color: var(--srfm-base-background-color);
 
-          to {
-            transform: scaleY(0);
-          }
-        }
-      }
-    }
-  }
-}
+//             &:hover,
+//             &:focus {
+//               color: var(--srfm-base-background-color);
+//               background-color: var(--srfm-primary-color);
+//             }
+//           }
+//         }
+
+//         @keyframes HideList {
+//           from {
+//             transform: scaleY(1);
+//           }
+
+//           to {
+//             transform: scaleY(0);
+//           }
+//         }
+//       }
+//     }
+//   }
+// }

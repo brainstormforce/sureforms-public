@@ -32,8 +32,8 @@
   width: 100%;
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-input-address-country {
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
+  border-radius: 0;
+  border-bottom: 0;
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-address-icon {
   position: absolute;

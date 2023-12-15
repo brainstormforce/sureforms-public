@@ -1,156 +1,61 @@
 function initializeRatings() {
-	// Initialize single ratings
-	const singleRatingIcons = document.querySelectorAll(
-		'.srfm-rating-icon svg'
-	);
 
-	if ( singleRatingIcons ) {
-		singleRatingIcons.forEach( ( icon ) => {
-			icon.addEventListener( 'click', handleSingleRatingClick );
-		} );
-	}
+	const ratingBlock = document.querySelectorAll('.srfm-rating-block');
 
-	// Initialize classic ratings
-	const classicRatingContainers = document.getElementsByClassName(
-		'srfm-classic-rating-container'
-	);
+	if( ratingBlock ) {
+		ratingBlock.forEach(element => {
+			const singeSelector = element.querySelectorAll('.srfm-icon');
 
-	for ( const classicRating of classicRatingContainers ) {
-		const icons = classicRating.querySelectorAll(
-			'.srfm-classic-event [data-te-rating-icon-ref]'
-		);
-		const ratingResult = classicRating.querySelector(
-			'.srfm-rating-field-result'
-		);
+			if( singeSelector ) {
+				singeSelector.forEach(single => {
+					single.addEventListener( 'click', function(e) {
+						handleSingleRating(e,'click');
+					} );
+					single.addEventListener( 'mouseover', function(e) {
+						handleSingleRating(e,'hover');
+					} );
 
-		icons.forEach( ( el ) => {
-			el.addEventListener( 'onSelect.te.rating', ( e ) => {
-				const ratingValue = e.value;
-				ratingResult.value = ratingValue;
-			} );
-		} );
+					single.addEventListener( 'mouseout', function(e) {
+						handleSingleRating(e,'mouse-out');
+					} );
+				});
+			}
+		});
 	}
 }
 
-function handleSingleRatingClick( e ) {
-	const onStar = parseInt(
-		e.target.closest( '.srfm-rating-icon' ).getAttribute( 'data-value' )
-	);
-	const stars = e.target.closest( '.srfm-rating-icon-wrapper' ).children;
+function handleSingleRating(e, type) {
+	const stars = e.currentTarget.closest( 'ul' ).children;
+	const selectedValue = parseInt(e.currentTarget.getAttribute('data-value'));
+	const ratingValue = e.currentTarget.closest('.srfm-block').querySelector('.srfm-input-rating');
 
-	const container = e.target.closest( '.srfm-classic-rating-container' );
-	const resultField = container.querySelector( '.srfm-rating-field-result' );
+	if( selectedValue && selectedValue ) {
+		for ( let i = 0; i < stars.length; i++ ) {
+			stars[ i ].classList.remove('srfm-fill');
+		}
+		for ( let j = 0; j < selectedValue; j++ ) {
+			stars[ j ].classList.add('srfm-fill');
+		}
 
-	resultField.setAttribute( 'value', onStar );
-
-	for ( let i = 0; i < stars.length; i++ ) {
-		stars[ i ]
-			.querySelector( 'svg' )
-			.classList.remove( 'srfm-fill-current' );
-	}
-
-	for ( let j = 0; j < onStar; j++ ) {
-		stars[ j ].querySelector( 'svg' ).classList.add( 'srfm-fill-current' );
-	}
-
-	// Rating Field theme JS code
-
-	const ratingElements =
-		document.getElementsByClassName( 'srfm-rating-field' );
-
-	if ( ratingElements ) {
-		const randomIds = document.getElementsByClassName(
-			'srfm-rating-random-id'
-		);
-		const inputLabels = [];
-
-		for ( let i = 0; i < randomIds.length; i++ ) {
-			const inputLabel = document.getElementsByClassName(
-				'srfm-rating-' + randomIds[ i ].value
-			);
-			if ( inputLabel.length > 0 ) {
-				inputLabels.push( inputLabel );
+		if( 'click' === type ) {
+			if( ratingValue ) {
+				ratingValue.setAttribute('value', selectedValue );
 			}
 		}
-		const selectedRatingIndex = new Map();
-		for ( let x = 0; x < inputLabels.length; x++ ) {
-			selectedRatingIndex.set( inputLabels[ x ][ 0 ].className, -1 );
-		}
 
-		for ( let i = 0; i < ratingElements.length; i++ ) {
-			ratingElements[ i ].addEventListener( 'click', ( ev ) => {
-				const clickArr = ev.target.id.split( '-' );
-				const clickedStarId = clickArr[ 2 ];
-				const clickIndexId = Number( clickArr[ 3 ] );
-				const selectedBlock = `srfm-rating-${ clickedStarId }`;
-				const isSelected = ev.target;
-				const label =
-					ratingElements[ i ].nextElementSibling.querySelector(
-						'label'
-					);
-				const colorDataValue = label.getAttribute( 'color-data' );
-				const iconColor = document.querySelector(
-					`.srfm-rating-icon-color-${ clickedStarId }`
-				).value;
-
-				if ( colorDataValue === iconColor ) {
-					isSelected.value = '';
-				} else {
-					isSelected.value = clickIndexId + 1;
+		if( 'mouse-out' === type ) {
+			if( ratingValue && stars ) {
+				for ( let k = 0; k < stars.length; k++ ) {
+					stars[ k ].classList.remove('srfm-fill');
 				}
-				if (
-					selectedRatingIndex.get( selectedBlock ) === clickIndexId
-				) {
-					selectedRatingIndex.set( selectedBlock, -1 );
-				} else {
-					selectedRatingIndex.set( selectedBlock, clickIndexId );
-				}
-				for ( let j = 0; j < inputLabels.length; j++ ) {
-					for ( let k = 0; k < inputLabels[ j ].length; k++ ) {
-						const hasClassName = inputLabels[ j ][
-							k
-						].classList.contains(
-							`srfm-rating-${ clickedStarId }`
-						);
 
-						if (
-							k <=
-								parseInt(
-									selectedRatingIndex.get( selectedBlock )
-								) &&
-							inputLabels[ j ][ k ] &&
-							hasClassName
-						) {
-							inputLabels[ j ][ k ].style.color = iconColor;
-							inputLabels[ j ][ k ].setAttribute(
-								'color-data',
-								iconColor
-							);
-						} else if ( inputLabels[ j ][ k ] && hasClassName ) {
-							inputLabels[ j ][ k ].style.color = '#ddd';
-							inputLabels[ j ][ k ].setAttribute(
-								'color-data',
-								'#ddd'
-							);
-						}
-						if (
-							k ===
-								parseInt(
-									selectedRatingIndex.get( selectedBlock )
-								) &&
-							hasClassName
-						) {
-							inputLabels[ j ][ k ].style.fontSize = '30px';
-						} else {
-							inputLabels[ j ][ k ].style.fontSize = '25px';
-						}
+				if( ratingValue.getAttribute('value') ) {
+					for ( let l = 0; l < ratingValue.getAttribute('value'); l++ ) {
+						stars[ l ].classList.add('srfm-fill');
 					}
 				}
-			} );
-
-			ratingElements[ i ].setAttribute( 'hidden', 'true' );
+			}
 		}
 	}
 }
-
 document.addEventListener( 'DOMContentLoaded', initializeRatings );
