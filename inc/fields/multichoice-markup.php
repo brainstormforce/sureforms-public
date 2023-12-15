@@ -46,7 +46,7 @@ class Multichoice_Markup extends Base {
 			$name_attr = $single_selection ? 'name="srfm-input-'. esc_attr( $slug ) . '-' . esc_attr( $block_id ).'"' : '';
 
 			ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr($type_attr); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ) ?>" id="srfm-block-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr($block_id); ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr($type_attr); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
 			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr($block_id); ?>" type="hidden" value=""/>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>	
 				<?php if ( is_array( $options ) ) { ?>

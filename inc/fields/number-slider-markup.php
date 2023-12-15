@@ -44,7 +44,7 @@ class Number_Slider_Markup extends Base {
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
 		ob_start(); ?>
-		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
+		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
 			<div class="srfm-block-wrap" style='--min:<?php echo esc_attr($min); ?>; --max:<?php echo esc_attr($max); ?>; --step:<?php echo esc_attr($step); ?>; --value:<?php echo esc_attr($min); ?>; --text-value:"<?php echo esc_attr($min); ?>";'>
 				<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" type="range" min="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" value="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
 				<output></output>
