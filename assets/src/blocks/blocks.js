@@ -15,6 +15,7 @@ import * as url from '@Blocks/url';
 import * as password from '@Blocks/password';
 import * as dateTimePicker from '@Blocks/date-time-picker';
 import * as numberSlider from '@Blocks/number-slider';
+import * as hidden from '@Blocks/hidden';
 
 import { registerBlocks } from './register-block';
 
@@ -37,6 +38,7 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 		password,
 		dateTimePicker,
 		numberSlider,
+		hidden,
 	] );
 } else {
 	registerBlocks( [ sfForm ] );
