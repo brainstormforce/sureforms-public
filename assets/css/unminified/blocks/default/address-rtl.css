@@ -1,3 +1,7 @@
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common {
   border-radius: 0;
   border-bottom-width: 0;
@@ -11,4 +15,33 @@
   border-bottom-width: var(--srfm-border);
   border-bottom-right-radius: var(--srfm-border-radius);
   border-bottom-left-radius: var(--srfm-border-radius);
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common.srfm-input-address-city, .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common.srfm-input-address-state {
+  width: 50%;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common.srfm-input-address-state {
+  border-right: 0;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-input-common.srfm-input-address-country {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap {
+  position: relative;
+  width: 100%;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-input-address-country {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-address-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  width: 18px;
+  line-height: 0;
+  transition: 0.2s ease;
+  cursor: pointer;
 }

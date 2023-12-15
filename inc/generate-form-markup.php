@@ -111,6 +111,7 @@ class Generate_Form_Markup {
 					break;
 			}
 
+			$primary_color = '';
 
 			$label_text_color = '';
 			$body_input_color = '';
@@ -151,6 +152,9 @@ class Generate_Form_Markup {
 			$border_radius = '';
 
 			// New colors.
+
+			$primary_color_var = $primary_color ? $primary_color : '#046bd2';
+
 			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
 			$body_input_color_var = $body_input_color ? $body_input_color : '#4B5563';
 			$placeholder_color_var = $placeholder_color ? $placeholder_color : '#9CA3AF';
@@ -183,11 +187,16 @@ class Generate_Form_Markup {
 			$media_query_mobile_var =  $media_query_mobile ? $media_query_mobile : '576px';
 			$border_var = $border ? $border : '1px';
 			$border_radius_var = $border_radius ? $border_radius : '8px';
+			$container_id = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
 			?>
 
-			<div class="srfm-form-container">
+			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
+				<div class="srfm-form-loader">
+					<div class="loader"></div>
+				</div>
 			<style>
-				.srfm-form-container {
+				<?php echo $container_id ?> {
+					--srfm-primary-color : <?php echo esc_html($primary_color_var); ?>;
 					--srfm-label-text-color : <?php echo esc_html($label_text_color_var); ?>;
 					--srfm-body-input-color : <?php echo esc_html($body_input_color_var); ?>;
 					--srfm-placeholder-color : <?php echo esc_html($placeholder_color_var); ?>;

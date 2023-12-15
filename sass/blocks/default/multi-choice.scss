@@ -5,30 +5,31 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
+                row-gap: 0.6em;
 
                 .srfm-multi-choice-single {
                     width: calc(50% - 0.3em);
-                    margin-bottom: 0.6em;
                     cursor: pointer;
 
                     input {
                         position: absolute;
                         opacity: 0;
 
-                        &:checked + .srfm-block-content-wrap {
-                                .srfm-multi-choice-icon {
+                        &:checked+.srfm-block-content-wrap {
+                            .srfm-multi-choice-icon {
+                                border-color: transparent;
                                 svg {
                                     opacity: 1;
 
                                     path {
-                                        fill: #0284c7;
+                                        fill: var(--srfm-primary-color);
                                     }
                                 }
                             }
                         }
 
-                        &:checked +  .srfm-block-content-wrap {
-                            border-color: #0284c7;
+                        &:checked+.srfm-block-content-wrap {
+                            border-color: var(--srfm-primary-color);
                         }
                     }
 
@@ -49,18 +50,22 @@
                             border: var(--srfm-border) solid var(--srfm-border-color);
                             border-radius: 100%;
                             line-height: 0;
-                           
+
                             svg {
                                 opacity: 0;
                             }
 
                         }
-    
+
                         p {
                             font-size: .7em;
                             padding-left: .5em;
                             margin-bottom: 0;
                         }
+                    }
+
+                    @media (max-width: 767px) {
+                        width: 100%;
                     }
                 }
             }

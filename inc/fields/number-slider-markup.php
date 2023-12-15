@@ -43,13 +43,14 @@ class Number_Slider_Markup extends Base {
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 
-		ob_start(); ?>		
+		ob_start(); ?>
 		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
-		<div class="srfm-block-wrap" style='--min:0; --max:100; --step:1; --value:1; --text-value:"1";'>
-		<input type="range" min="0" max="100" value="1" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
-		<output></output>
-		<div class='srfm-block-wrap__progress'></div>
-		</div>
+			<div class="srfm-block-wrap" style='--min:<?php echo esc_attr($min); ?>; --max:<?php echo esc_attr($max); ?>; --step:<?php echo esc_attr($step); ?>; --value:<?php echo esc_attr($min); ?>; --text-value:"<?php echo esc_attr($min); ?>";'>
+				<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" type="range" min="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" value="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
+				<output></output>
+				<div class='srfm-<?php echo esc_attr( $slug ); ?>-progress'></div>
+			</div>
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 		</div>
 		<?php
 		return ob_get_clean();

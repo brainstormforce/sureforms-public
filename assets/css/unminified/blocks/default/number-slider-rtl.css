@@ -1,11 +1,13 @@
+.srfm-form-container .srfm-form .srfm-number-slider-block {
+  margin-top: 1em;
+}
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap {
-  --primary-color: #0366d6;
   --value-offset-y: var(--ticks-gap);
   --value-active-color: white;
   --value-background: transparent;
-  --value-background-hover: var(--primary-color);
+  --value-background-hover: var(--srfm-primary-color);
   --value-font: 700 12px/1 Arial;
-  --fill-color: var(--primary-color);
+  --fill-color: var(--srfm-primary-color);
   --progress-background: #eee;
   --progress-radius: 20px;
   --track-height: calc(var(--thumb-size) / 2);
@@ -17,7 +19,7 @@
   --thumb-shadow: 0 0 3px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.5) inset,
       0 0 0 99px var(--thumb-color) inset;
   --thumb-shadow-active: 0 0 0 calc(var(--thumb-size) / 4) inset var(--thumb-color),
-      0 0 0 99px var(--primary-color) inset, 0 0 3px rgba(0, 0, 0, 0.4);
+      0 0 0 99px var(--srfm-primary-color) inset, 0 0 3px rgba(0, 0, 0, 0.4);
   --thumb-shadow-hover: var(--thumb-shadow);
   --ticks-thickness: 1px;
   --ticks-height: 5px;
@@ -46,6 +48,8 @@
           1);
   --thumb-close-to-min: Min(1, Max(var(--ca) - 2, 0));
   --thumb-close-to-max: Min(1, Max(98 - var(--cb), 0));
+  width: 100%;
+  min-width: 200px;
   display: inline-block;
   height: max(var(--track-height), var(--thumb-size));
   padding-bottom: var(--flip-y, var(--ticks-gap));
@@ -57,24 +61,7 @@
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap[data-ticks-position=top] {
   --flip-y: 1;
 }
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap__values {
-  position: relative;
-  top: 50%;
-  line-height: 0;
-  text-align: justify;
-  width: 100%;
-  pointer-events: none;
-  margin: 0 auto;
-  z-index: 5;
-}
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap__values::after {
-  content: "";
-  width: 100%;
-  display: inline-block;
-  height: 0;
-  background: red;
-}
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap__progress {
+.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap .srfm-number-slider-progress {
   --start-end: calc(var(--thumb-size) / 2);
   --clip-end: calc(100% - (var(--cb)) * 1%);
   --clip-start: calc(var(--ca) * 1%);
@@ -89,7 +76,7 @@
   z-index: -1;
   border-radius: var(--progress-radius);
 }
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap__progress::before {
+.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap .srfm-number-slider-progress::before {
   content: "";
   position: absolute;
   right: 0;
@@ -103,7 +90,7 @@
   z-index: 1;
   border-radius: inherit;
 }
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap__progress::after {
+.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap .srfm-number-slider-progress::after {
   content: "";
   position: absolute;
   top: 0;
@@ -125,6 +112,9 @@
   cursor: grab;
   outline: none;
   background: none;
+}
+.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input:focus {
+  border: 0;
 }
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input:not(:only-of-type) {
   pointer-events: none;
@@ -208,7 +198,7 @@
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input:nth-of-type(2) + output {
   --value: var(--value-b);
 }
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input:only-of-type ~ .srfm-block-wrap__progress {
+.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input:only-of-type ~ .srfm-number-slider-progress {
   --clip-start: 0;
   right: 0;
 }
@@ -230,9 +220,4 @@
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap > input + output::after {
   content: var(--prefix, "") var(--text-value-b) var(--suffix, "");
   font: var(--value-font);
-}
-.srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap,
-.srfm-form-container .srfm-form .srfm-number-slider-block label[dir=rtl] .srfm-block-wrap {
-  width: 100%;
-  min-width: 200px;
 }

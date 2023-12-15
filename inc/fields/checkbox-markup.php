@@ -40,23 +40,23 @@ class Checkbox_Markup extends Base {
 		$slug = 'checkbox';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-
+		
 		// html attributes
 		$aria_require_attr = $required ? 'true' : 'false';
-
+		$checked_attr = $checked ? 'checked' : '';
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 					<div class="srfm-block-wrap">
-						<input class="inp-cbx" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" type="checkbox"/>
-						<label class="cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
-							<span>
-								<svg width="12px" height="10px">
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
+						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
+							<span class="srfm-span-wrap">
+								<svg class="srfm-check-icon" width="12px" height="10px">
 									<use xlink:href="#srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check"></use>
 								</svg>
 							</span>
-							<span class="srfm-block-text"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>': esc_html( $label ); ?></span>
+							<span class="srfm-block-text srfm-span-wrap"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>': esc_html( $label ); ?><?php if( $required ){ ?><span class="srfm-required"> *</span><?php } ?></span>
 						</label>
-						<svg class="inline-svg">
+						<svg class="srfm-inline-svg">
 							<symbol id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check" viewbox="0 0 12 10">
 							<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
 							</symbol>

@@ -87,22 +87,25 @@ class Address_Markup extends Base {
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-state" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-state" aria-required="<?php echo esc_attr($aria_require_attr); ?>" <?php echo wp_kses_post($state_placeholder_attr); ?> />	
 
 				<?php
-					if ( is_array( $data ) ) { 
+					if ( is_array( $data ) ) {
 				?>
-				<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country" autocomplete="country-name">;
-					<?php if( $country_placeholder ) { ?>
-						<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
-					<?php } ?>
-				<?php
-						foreach ( $data as $country ) {
-							if ( is_array( $country ) && isset( $country['name'] ) ) {
-				?>
-					<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
-				<?php 
+				<div class="srfm-address-country-wrap">
+					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country" autocomplete="country-name">
+						<?php if( $country_placeholder ) { ?>
+							<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
+						<?php } ?>
+					<?php
+							foreach ( $data as $country ) {
+								if ( is_array( $country ) && isset( $country['name'] ) ) {
+					?>
+						<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
+					<?php 
+								}
 							}
-						}
-				?>
-				</select>
+					?>
+					</select>
+					<?php echo Sureforms_Helper::fetch_svg('angle-down', 'srfm-'. $slug .'-icon'); ?>
+				</div>
 				<?php
 					}
 				?>

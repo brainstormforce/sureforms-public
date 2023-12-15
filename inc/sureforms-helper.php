@@ -95,7 +95,7 @@ class Sureforms_Helper {
 	 * @return array<mixed>
 	 * @since 0.0.1
 	 */
-	public static function GenerateCommonFormMarkup( $type, $label = '',  $slug = '', $block_id = '', $required = '',  $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '' ) {
+	public static function GenerateCommonFormMarkup( $type, $label = '',  $slug = '', $block_id = '', $required = '',  $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="'. $duplicate_msg . '"' : '';
 
 		switch ($type) {
@@ -106,7 +106,7 @@ class Sureforms_Helper {
 				return $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
 			  break;
 			case "error":
-				return $required ? '<div class="srfm-error-message" data-error-msg="'. $error_msg .'"' . $duplicate_msg .'>' . esc_html( $error_msg ) . '</div>' : '';
+				return $required || $override ? '<div class="srfm-error-message" data-error-msg="'. $error_msg .'"' . $duplicate_msg .'>' . esc_html( $error_msg ) . '</div>' : '';
 			  	break;
 			case "is_unique":
 				return $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';

@@ -1,25 +1,15 @@
 function initializePhoneField() {
-	const phoneElement = document.getElementsByClassName(
-		'srfm-input-phone-container'
-	);
+	const phone = document.querySelectorAll('.srfm-phone-block');
 
-	if ( phoneElement ) {
-		for ( let i = 0; i < phoneElement.length; i++ ) {
-			const blockID = phoneElement[ i ].id.split( '-' )[ 3 ];
-			const phoneNumber = document.getElementById(
-				`srfm-phone-number-${ blockID }`
-			);
-			const fullPhoneNumberInput = document.getElementById(
-				`srfm-fullPhoneNumber-${ blockID }`
-			);
-			const errorMessage = phoneElement[ i ].querySelector(
-				'.srfm-error-message'
-			);
-			const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
-			const itlOptions = {
-				utilsScript: '../scripts/int-tel-input/utils.js',
-			};
-			if ( isAutoCountry === 'true' ) {
+	phone.forEach(element => {
+		const phoneNumber = element.querySelector('.srfm-input-phone');
+		const errorMessage = element.querySelector('.srfm-error-message');
+		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
+		const itlOptions = {
+			utilsScript: '../scripts/int-tel-input/utils.js',
+		};
+
+		if ( isAutoCountry === 'true' ) {
 				itlOptions.initialCountry = 'auto';
 				itlOptions.geoIpLookup = function ( callback ) {
 					fetch( 'https://ipapi.co/json' )
@@ -35,40 +25,31 @@ function initializePhoneField() {
 				};
 			}
 
-			const iti = window.intlTelInput( phoneNumber, itlOptions );
-			const updateFullPhoneNumber = () => {
-				const phoneNumberValue = phoneNumber.value.trim();
-				fullPhoneNumberInput.value = iti.getNumber();
-				if ( ! phoneNumberValue ) {
-					fullPhoneNumberInput.value = '';
-				}
-				const intTelError = phoneElement[ i ].querySelector(
-					'.srfm-int-tel-error'
-				);
-				const phoneParent = phoneElement[ i ].querySelector(
-					'.srfm-classic-phone-parent'
-				);
-				if ( phoneNumberValue && ! iti.isValidNumber() ) {
-					if ( intTelError ) {
-						intTelError.style.display = 'block';
-						phoneParent.classList.add( 'srfm-classic-input-error' );
-						errorMessage.style.display = 'none';
-					}
-				} else {
-					intTelError.style.display = 'none';
-					phoneParent.classList.remove( 'srfm-classic-input-error' );
-				}
-			};
+		const iti = window.intlTelInput( phoneNumber, itlOptions );
 
-			if ( phoneNumber ) {
-				phoneNumber.addEventListener( 'change', updateFullPhoneNumber );
-				phoneNumber.addEventListener(
-					'countrychange',
-					updateFullPhoneNumber
-				);
+		const updatePhoneNumber = () => {
+			const phoneNumberValue = phoneNumber.value.trim();
+
+			if ( phoneNumberValue && ! iti.isValidNumber() ) {
+				phoneNumber.closest('.srfm-block').classList.add('srfm-error');
+				errorMessage.textContent = "Please enter a valid phone number.";
+			} else {
+				phoneNumber.closest('.srfm-block').classList.remove('srfm-error');
 			}
+		};
+
+
+		if ( phoneNumber ) {
+			phoneNumber.addEventListener( 'change', updatePhoneNumber );
+			phoneNumber.addEventListener(
+				'countrychange',
+				updatePhoneNumber
+			);
 		}
-	}
+	});
 }
+
+
+
 
 document.addEventListener( 'DOMContentLoaded', initializePhoneField );

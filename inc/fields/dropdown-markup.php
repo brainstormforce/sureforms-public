@@ -48,45 +48,25 @@ class Dropdown_Markup extends Base {
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 					<div class="srfm-block-wrap">
 						<div class="select-box">
-						<div class="select-box__current" tabindex="1">
-							<div class="select-box__value">
-							<input class="select-box__input" type="radio" id="0" value="1" name="Ben" checked="checked"/>
-							<p class="select-box__input-text">Cream</p>
+							<div class="srfm-dropdown-current" tabindex="1">
+								<div class="srfm-dropdown-value">
+									<input class="srfm-dropdown-input" type="radio" id="0" value="1" name="Ben" checked="checked"/>
+									<p class="srfm-dropdown-input-text">Cream</p>
+								</div>
+								<div class="srfm-dropdown-value">
+									<input class="srfm-dropdown-input" type="radio" id="1" value="2" name="Ben"/>
+									<p class="srfm-dropdown-input-text">Cheese</p>
+								</div>
+								<?php echo Sureforms_Helper::fetch_svg('angle-down', 'srfm-'. $slug .'-icon'); ?>
 							</div>
-							<div class="select-box__value">
-							<input class="select-box__input" type="radio" id="1" value="2" name="Ben"/>
-							<p class="select-box__input-text">Cheese</p>
-							</div>
-							<div class="select-box__value">
-							<input class="select-box__input" type="radio" id="2" value="3" name="Ben"/>
-							<p class="select-box__input-text">Milk</p>
-							</div>
-							<div class="select-box__value">
-							<input class="select-box__input" type="radio" id="3" value="4" name="Ben"/>
-							<p class="select-box__input-text">Honey</p>
-							</div>
-							<div class="select-box__value">
-							<input class="select-box__input" type="radio" id="4" value="5" name="Ben"/>
-							<p class="select-box__input-text">Toast</p>
-							</div><img class="select-box__icon" src="http://cdn.onlinewebfonts.com/svg/img_295694.svg" alt="Arrow Icon" aria-hidden="true"/>
-						</div>
-						<ul class="select-box__list">
-							<li>
-							<label class="select-box__option" for="0" aria-hidden="aria-hidden">Cream</label>
-							</li>
-							<li>
-							<label class="select-box__option" for="1" aria-hidden="aria-hidden">Cheese</label>
-							</li>
-							<li>
-							<label class="select-box__option" for="2" aria-hidden="aria-hidden">Milk</label>
-							</li>
-							<li>
-							<label class="select-box__option" for="3" aria-hidden="aria-hidden">Honey</label>
-							</li>
-							<li>
-							<label class="select-box__option" for="4" aria-hidden="aria-hidden">Toast</label>
-							</li>
-						</ul>
+							<ul class="srfm-dropdown-list">
+								<li>
+								<label class="srfm-dropdown-option" for="0" aria-hidden="aria-hidden">Cream</label>
+								</li>
+								<li>
+								<label class="srfm-dropdown-option" for="1" aria-hidden="aria-hidden">Cheese</label>
+								</li>
+							</ul>
 						</div>
 					</div>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>

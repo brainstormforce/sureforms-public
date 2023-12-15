@@ -46,15 +46,14 @@ class Multichoice_Markup extends Base {
 			$name_attr = $single_selection ? 'name="srfm-input-'. esc_attr( $slug ) . '-' . esc_attr( $block_id ).'"' : '';
 
 			ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
-			<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
-			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>" type="hidden" value=""/>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr($type_attr); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ) ?>" id="srfm-block-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr($block_id); ?>">
+			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr($block_id); ?>" type="hidden" value=""/>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>	
 				<?php if ( is_array( $options ) ) { ?>
 					<div class="srfm-block-wrap">
 						<?php foreach ( $options as $i => $option ) { ?>
 							<label class="srfm-<?php echo esc_attr( $slug ); ?>-single">
-								<input type="<?php echo $type_attr; ?>" id="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id .'-'. $i ); ?>" <?php echo wp_kses_post( $name_attr ); ?>/>
+								<input type="<?php echo $type_attr; ?>" id="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id .'-'. $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
 								<div class="srfm-block-content-wrap">
 									<?php echo Sureforms_Helper::fetch_svg('check', 'srfm-'. $slug .'-icon'); ?>
 									<p><?php echo isset( $option['optiontitle'] ) ? esc_html( $option['optiontitle'] ) : ''; ?></p>
