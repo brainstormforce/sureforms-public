@@ -82,13 +82,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
+
+		// Checks if input if required is filled or not.
 		if ( isRequired && inputField.type !== 'hidden' ) {
 			if ( isRequired === 'true' && ! inputValue ) {
-				if( errorMessage ) {
-					errorMessage.textContent = errorMessage.getAttribute('data-error-msg');
-				}
 				if ( inputField ) {
 					inputField.closest('.srfm-block').classList.add('srfm-error');
+				}
+				if( errorMessage ) {
+					errorMessage.textContent = errorMessage.getAttribute('data-error-msg');
 				}
 				validateResult = true;
 
@@ -102,31 +104,20 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
+		// Checks if input is unique.
 		if ( isUnique === 'true' && inputValue !== '' ) {
+
 			const hasDuplicate = uniqueEntryData?.some(
 				( entry ) => entry[ fieldName ] === 'not unique'
 			);
 
-			const phoneParent = container.querySelector( '#srfm-phone-parent' );
 			if ( hasDuplicate ) {
-
 				if ( inputField ) {
 					inputField.closest('.srfm-block').classList.add('srfm-error');
 				}
 
 				errorMessage.textContent = errorMessage.getAttribute('data-unique-msg');
-	
-				if ( phoneParent ) {
-					const phoneInput =
-						container.querySelectorAll( 'input' )[ 1 ];
-					phoneParent.classList.add(
-						'!srfm-ring-red-500',
-						'!srfm-border-red-500'
-					);
-					if ( ! firstErrorInput ) {
-						firstErrorInput = phoneInput;
-					}
-				}
+
 				validateResult = true;
 				if ( ! firstErrorInput ) {
 					firstErrorInput = inputField;
@@ -136,28 +127,23 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( inputField ) {
 					inputField.closest('.srfm-block').classList.remove('srfm-error');
 				}
-				
-				if ( phoneParent ) {
-					phoneParent.classList.remove(
-						'!srfm-ring-red-500',
-						'!srfm-border-red-500'
-					);
-				}
 			}
 		}
 
-		//Radio OR Chekcbox type field
+		//Radio OR Checkbox type field
 		if (
-			container.classList.contains( 'srfm-rating-container' ) ||
-			container.classList.contains( 'srfm-multi-choice-container' ) ||
-			container.classList.contains( 'srfm-checkbox-container' ) ||
-			container.classList.contains( 'srfm-switch-container' )
+			container.classList.contains( 'srfm-rating-block' ) ||
+			container.classList.contains( 'srfm-multi-choice-block' ) ||
+			container.classList.contains( 'srfm-checkbox-container' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
-			const ischeckedRequired =
+
+			const isCheckedRequired =
 				checkedInput[ 0 ].getAttribute( 'aria-required' );
+
 			let checkedSelected = false;
 			let visibleInput = null;
+
 			for ( let i = 0; i < checkedInput.length; i++ ) {
 				if ( ! visibleInput && checkedInput[ i ].type !== 'hidden' ) {
 					visibleInput = checkedInput[ i ];
@@ -168,70 +154,39 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			}
 
-			if ( ischeckedRequired === 'true' && ! checkedSelected ) {
+			if ( isCheckedRequired === 'true' && ! checkedSelected ) {
+
 				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
+					container.classList.add('srfm-error');
 				}
 				validateResult = true;
 				if ( ! firstErrorInput && visibleInput ) {
 					firstErrorInput = visibleInput;
 				}
 			} else if ( errorMessage ) {
-				errorMessage.style.display = 'none';
+				container.classList.remove('srfm-error');
 			}
 		}
 
-		//phone field
-		if ( container.classList.contains( 'srfm-input-phone-container' ) ) {
+		//Phone field
+		if ( container.classList.contains( 'srfm-phone-block' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
-			const phoneParent = container.querySelector(
-				'.srfm-classic-phone-parent'
+			const isIntelError = container.classList.contains(
+				'srfm-phone-error'
 			);
-			const isIntelError = phoneParent.classList.contains(
-				'srfm-classic-input-error'
-			);
-			const isPhoneRequired = phoneInput.getAttribute( 'aria-required' );
+
 			if ( isIntelError ) {
+				container.classList.add('srfm-error');
 				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = phoneInput;
-				}
-			} else if ( isPhoneRequired === 'true' && ! inputValue ) {
-				errorMessage.style.display = 'block';
-				duplicateMessage.style.display = 'none';
-				validateResult = true;
-				if ( phoneParent ) {
-					phoneParent.classList.add(
-						'!srfm-ring-red-500',
-						'!srfm-border-red-500'
-					);
-					phoneInput.classList.add(
-						'placeholder:!srfm-text-red-300'
-					);
-				}
-				if ( errorInputIcon ) {
-					errorInputIcon.style.display = 'flex';
-				}
 				if ( ! firstErrorInput ) {
 					firstErrorInput = phoneInput;
 				}
 			} else {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'none';
-				}
-				//for Tailwind phone field UI
-				if ( isUnique !== 'true' && phoneParent ) {
-					phoneParent.classList.remove(
-						'!srfm-ring-red-500',
-						'!srfm-border-red-500'
-					);
-					phoneInput.classList.remove(
-						'placeholder:!srfm-text-red-300'
-					);
-				}
+				container.classList.remove('srfm-error');
 			}
 		}
 
+		// NEED TO ASK
 		if ( isAllowDecimal === 'decimal' && inputValue !== '' ) {
 			// Add .00 if no decimal point exists
 			if ( ! inputValue.includes( '.' ) ) {
@@ -239,34 +194,18 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//check for password field
-		if ( container.classList.contains( 'srfm-input-password-container' ) ) {
+		//Password field
+		if ( container.classList.contains( 'srfm-password-block' ) ) {
 			const confirmPassword = container.querySelector(
-				'.srfm-confirm-input-password'
+				'.srfm-input-password-confirm'
 			);
-			if ( container.querySelector( '.srfm-info-icon' ) ) {
-				container.querySelector( '.srfm-info-icon' ).style.display =
-					'none';
-			}
+
 			if ( confirmPassword ) {
 				const confirmPasswordValue = confirmPassword.value;
 				const confirmFieldError = container.querySelectorAll(
 					'.srfm-error-message'
 				)[ 1 ];
-				if ( isRequired === 'true' && ! confirmPasswordValue ) {
-					confirmFieldError.style.display = 'block';
-					const confirmPwdError = container.querySelector(
-						'.srfm-confirm-password-error'
-					);
-					if ( confirmPwdError ) {
-						confirmPwdError.style.display = 'none';
-					}
-					confirmPassword.classList.add( 'srfm-classic-input-error' );
-					if ( ! firstErrorInput ) {
-						firstErrorInput = confirmPassword;
-					}
-					validateResult = true;
-				} else if ( confirmPasswordValue !== inputValue ) {
+				 if ( confirmPasswordValue !== inputValue ) {
 					if ( confirmFieldError ) {
 						confirmFieldError.style.display = 'none';
 					}

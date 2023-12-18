@@ -28,16 +28,18 @@ function initializePhoneField() {
 		const iti = window.intlTelInput( phoneNumber, itlOptions );
 
 		const updatePhoneNumber = () => {
-			const phoneNumberValue = phoneNumber.value.trim();
+			const phoneNumberValue = ( phoneNumber?.value ) ? phoneNumber?.value.trim() : '';
+			const parentBlock = phoneNumber.closest('.srfm-block');
 
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
-				phoneNumber.closest('.srfm-block').classList.add('srfm-error');
+				parentBlock.classList.add('srfm-phone-error');
+				parentBlock.classList.add('srfm-error');
 				errorMessage.textContent = "Please enter a valid phone number.";
 			} else {
-				phoneNumber.closest('.srfm-block').classList.remove('srfm-error');
+				parentBlock.classList.remove('srfm-phone-error');
+				parentBlock.classList.remove('srfm-error');
 			}
 		};
-
 
 		if ( phoneNumber ) {
 			phoneNumber.addEventListener( 'change', updatePhoneNumber );
