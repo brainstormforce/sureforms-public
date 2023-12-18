@@ -33,24 +33,24 @@ class Dropdown_Markup extends Base {
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$class_name   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$slug        = 'dropdown';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-
-		$aria_require_attr  = $required ? 'true' : 'false';
-		$placeholder_attr   = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+		$aria_require  = $required ? 'true' : 'false';
+		$placeholder_html   = $placeholder ?  $placeholder  : 'Select option';
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-				<div class="srfm-dropdown-common-wrap">
+				<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 				<?php 
 
 				if ( is_array( $options ) ) { ?>
-				<select class="srfm-dropdown-common">
+				<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $slug ); ?>-input" aria-required="<?php echo esc_attr( $aria_require ); ?>">
+				<option value="" disabled selected><?php echo esc_html( $placeholder_html, 'sureforms' ); ?></option>
 				<?php
 				foreach ( $options as $option ) {
 					$option_text = esc_html( $option );

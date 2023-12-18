@@ -57,7 +57,7 @@ class Address_Markup extends Base {
 			$state_placeholder    = isset( $attributes['statePlaceholder'] ) ? $attributes['statePlaceholder'] : '';
 			$postal_placeholder   = isset( $attributes['postalPlaceholder'] ) ? $attributes['postalPlaceholder'] : '';
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
-			$classname            = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+			$class_name            = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$slug = 'address';
@@ -77,7 +77,7 @@ class Address_Markup extends Base {
 			$data = $this->get_countries();
 
 		ob_start(); ?>
-		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
 			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-hidden"/>	
 			<div class="srfm-block-wrap">

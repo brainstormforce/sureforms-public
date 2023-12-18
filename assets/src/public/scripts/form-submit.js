@@ -56,7 +56,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		);
 	}
 	const fieldContainers = Array.from(
-		formContainer.querySelectorAll( '.srfm-block' )
+		formContainer.querySelectorAll( '.srfm-block-single' )
 	);
 
 	for ( const container of fieldContainers ) {
@@ -195,122 +195,98 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		//Password field
-		if ( container.classList.contains( 'srfm-password-block' ) ) {
-			const confirmPassword = container.querySelector(
-				'.srfm-input-password-confirm'
-			);
+		if ( container.classList.contains( 'srfm-password-block-wrap' ) ) {
+			const parent = container;
 
-			if ( confirmPassword ) {
-				const confirmPasswordValue = confirmPassword.value;
-				const confirmFieldError = container.querySelectorAll(
-					'.srfm-error-message'
-				)[ 1 ];
-				 if ( confirmPasswordValue !== inputValue ) {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'none';
+			if( parent ) {
+				const confirmParent = parent.querySelector('.srfm-password-confirm-block');
+
+				if( confirmParent ) {
+					const confirmValue = confirmParent.querySelector('.srfm-input-password-confirm').value;
+					const confirmError = confirmParent.querySelector('.srfm-error-message');
+
+					if( ! confirmValue && confirmError ) {
+						confirmError.textContent = confirmError.getAttribute('data-error-msg');
+						confirmParent.classList.add('srfm-error');
+
+						if ( ! firstErrorInput ) {
+							firstErrorInput = confirmValue;
+						}
+						validateResult = true;
+					} else {
+						if ( confirmValue !== inputValue ) {
+							confirmParent.classList.add('srfm-error');
+							confirmError.textContent = "Confirmation Password is not the same";
+
+							if ( ! firstErrorInput ) {
+								firstErrorInput = confirmValue;
+							}
+							validateResult = true;
+						} else {
+							confirmParent.classList.remove('srfm-error');
+						}
 					}
-					container.querySelector(
-						'.srfm-confirm-password-error'
-					).style.display = 'block';
-					confirmPassword.classList.add( 'srfm-classic-input-error' );
-					if ( ! firstErrorInput ) {
-						firstErrorInput = confirmPassword;
-					}
-					validateResult = true;
-				} else {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'none';
-					}
-					confirmPassword.classList.remove(
-						'srfm-classic-input-error'
-					);
-					container.querySelector(
-						'.srfm-confirm-password-error'
-					).style.display = 'none';
 				}
 			}
 		}
 
 		//Check for email
-		if ( container.classList.contains( 'srfm-input-email-container' ) ) {
-			const confirmEmail = container.querySelector(
-				'.srfm-input-confirm-email'
-			);
-			const confirmFieldError = container.querySelectorAll(
-				'.srfm-error-message'
-			)[ 2 ];
-			if ( confirmEmail ) {
-				const confirmEmailValue = confirmEmail.value;
-				if ( isRequired === 'true' && ! confirmEmailValue ) {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'block';
+		if ( container.classList.contains( 'srfm-email-block-wrap' ) ) {
+			const parent = container;
+
+			if( parent ) {
+				const confirmParent = parent.querySelector('.srfm-email-confirm-block');
+
+				if( confirmParent ) {
+					const confirmValue = confirmParent.querySelector('.srfm-input-email-confirm').value;
+					const confirmError = confirmParent.querySelector('.srfm-error-message');
+
+					if( ! confirmValue && confirmError ) {
+						confirmError.textContent = confirmError.getAttribute('data-error-msg');
+						confirmParent.classList.add('srfm-error');
+
+						if ( ! firstErrorInput ) {
+							firstErrorInput = confirmValue;
+						}
+						validateResult = true;
+					} else {
+						if ( confirmValue !== inputValue ) {
+							confirmParent.classList.add('srfm-error');
+							confirmError.textContent = "Confirmation email is not the same";
+
+							if ( ! firstErrorInput ) {
+								firstErrorInput = confirmValue;
+							}
+							validateResult = true;
+						} else {
+							confirmParent.classList.remove('srfm-error');
+						}
 					}
-					container.querySelector(
-						'.confirm-email-error'
-					).style.display = 'none';
-					confirmEmail.classList.add( 'srfm-classic-input-error' );
-					if ( ! firstErrorInput ) {
-						firstErrorInput = confirmEmail;
-					}
-					validateResult = true;
-				} else if (
-					confirmEmailValue &&
-					confirmEmailValue !== inputValue
-				) {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'none';
-					}
-					container.querySelector(
-						'.srfm-confirm-email-error'
-					).style.display = 'block';
-					confirmEmail.style.borderColor = '#FCA5A5';
-					confirmEmail.classList.add( 'srfm-classic-input-error' );
-					if ( ! firstErrorInput ) {
-						firstErrorInput = confirmEmail;
-					}
-					validateResult = true;
-				} else {
-					if ( confirmFieldError ) {
-						confirmFieldError.style.display = 'none';
-					}
-					confirmEmail.style.borderColor = '#d1d5db';
-					confirmEmail.classList.remove( 'srfm-classic-input-error' );
-					container.querySelector(
-						'.srfm-confirm-email-error'
-					).style.display = 'none';
 				}
 			}
 		}
 
 		//Address field
-		if ( container.classList.contains( 'srfm-address-container' ) ) {
+		if ( container.classList.contains( 'srfm-address-block' ) ) {
 			const addressInput = container.querySelectorAll( 'input,select' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
-			let errCounter = 0;
+
 			for (
 				let i = 1;
 				i < addressInput.length && isAddressRequired === 'true';
 				i++
 			) {
-				if ( ! addressInput[ i ].value ) {
-					if ( errorMessage ) {
-						errorMessage.style.display = 'block';
-					}
-					errCounter = 1;
+				if ( ! addressInput[ i ].value && 2 !== i) {
+
+					container.classList.add('srfm-error');
 					validateResult = true;
+
 					if ( ! firstErrorInput ) {
 						firstErrorInput = addressInput[ i ];
 					}
 				} else {
-					errorMessage.style.display = 'none';
-				}
-				if ( errCounter === 1 ) {
-					if ( errorMessage ) {
-						errorMessage.style.display = 'block';
-					}
-				} else if ( errorMessage ) {
-					errorMessage.style.display = 'none';
+					container.classList.remove('srfm-error');
 				}
 			}
 		}
@@ -350,44 +326,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Date field
-		if ( container.classList.contains( 'srfm-input-date-container' ) ) {
-			const dateInput = container.querySelectorAll( 'input' );
-			const isDateRequired =
-				dateInput[ 1 ].getAttribute( 'aria-required' );
-			let dateErrCounter = 0;
-
-			for (
-				let i = 1;
-				i < dateInput.length && isDateRequired === 'true';
-				i++
-			) {
-				if ( isDateRequired === 'true' && ! dateInput[ i ].value ) {
-					if ( errorMessage ) {
-						errorMessage.style.display = 'block';
-					}
-					dateInput[ i ].style.borderColor = '#FCA5A5';
-					dateErrCounter = 1;
-					validateResult = true;
-					if ( ! firstErrorInput ) {
-						firstErrorInput = dateInput[ i ];
-					}
-				} else {
-					dateInput[ i ].style.borderColor = '#d1d5db';
-					if ( errorMessage ) {
-						errorMessage.style.display = 'none';
-					}
-				}
-			}
-			if ( dateErrCounter === 1 ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
-				}
-			} else if ( errorMessage ) {
-				errorMessage.style.display = 'none';
-			}
-		}
-
+		// Number field.
 		if ( container.classList.contains( 'srfm-input-number-container' ) ) {
 			const min = inputField.getAttribute( 'minimum' );
 			const max = inputField.getAttribute( 'maximum' );
@@ -427,91 +366,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//classic rating field
-		if ( container.classList.contains( 'srfm-classic-rating-container' ) ) {
-			const classicRatingField = container.querySelector(
-				'.srfm-rating-field-result'
-			);
-			const ratingRequired =
-				classicRatingField.getAttribute( 'aria-required' );
-			if ( ratingRequired === 'true' && ! classicRatingField.value ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
-				}
-				validateResult = true;
-			} else if ( errorMessage ) {
-				errorMessage.style.display = 'none';
-			}
-		}
-
-		//classic date time field
-		if (
-			container.classList.contains( 'srfm-classic-date-time-container' )
-		) {
-			const classicDateTimeField = container.querySelector(
-				'.srfm-input-data-time'
-			);
-			const dateTimeRequired =
-				classicDateTimeField.getAttribute( 'aria-required' );
-			if ( dateTimeRequired === 'true' && ! classicDateTimeField.value ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
-				}
-				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = classicDateTimeField;
-				}
-			} else if ( errorMessage ) {
-				errorMessage.style.display = 'none';
-			}
-		}
-
-		//classic field url
-		if (
-			container.classList.contains( 'srfm-classic-input-url-container' )
-		) {
-			const urlInput = container.querySelector( '.srfm-url-input' );
-			const validUrlMessage = container.querySelector(
-				'.srfm-validation-url-message'
-			);
-
-			if ( validUrlMessage.style.display === 'block' ) {
-				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = urlInput;
-				}
-			}
-		}
-
-		//classic dropdown field
-		if (
-			container.classList.contains( 'srfm-classic-dropdown-container' )
-		) {
-			const dropdownInput = container.querySelector(
-				'.srfm-classic-dropdown-result'
-			);
-			const dropdownValue = dropdownInput.value;
-			const isDropDownRequired =
-				dropdownInput.getAttribute( 'aria-required' );
-			const dropdownBtn = container.querySelector(
-				'.srfm-classic-dropdown-btn'
-			);
-			if ( isDropDownRequired === 'true' && ! dropdownValue ) {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'block';
-				}
-				dropdownBtn.classList.add( 'srfm-classic-input-error' );
-				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = dropdownBtn;
-				}
-			} else {
-				if ( errorMessage ) {
-					errorMessage.style.display = 'none';
-				}
-				dropdownBtn.classList.remove( 'srfm-classic-input-error' );
-			}
-		}
 	}
 
 	if ( firstErrorInput ) {

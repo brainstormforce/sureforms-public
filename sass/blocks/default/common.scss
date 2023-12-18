@@ -11,7 +11,7 @@
             &.srfm-error {
                 .srfm-block-wrap {
 
-                    .srfm-input-common {
+                    .srfm-input-common, .srfm-dropdown-common {
                         border-color: var(--srfm-error-surface-color);
                         background-color: var(--srfm-error-background-color);
                     }

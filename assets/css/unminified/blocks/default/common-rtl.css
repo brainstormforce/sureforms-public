@@ -7,7 +7,7 @@
   margin-bottom: 1.2em;
   color: var(--srfm-body-input-color);
 }
-.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common {
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common, .srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-dropdown-common {
   border-color: var(--srfm-error-surface-color);
   background-color: var(--srfm-error-background-color);
 }

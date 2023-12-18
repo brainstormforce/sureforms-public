@@ -38,7 +38,7 @@ class Input_Markup extends Base {
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg     = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_length  = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
-		$classname     = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$class_name     = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$slug = 'input';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
@@ -52,7 +52,7 @@ class Input_Markup extends Base {
 
 		ob_start(); ?>
 
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxlength="<?php echo esc_attr( $max_length ); ?>" value="<?php echo esc_attr( $default_value ); ?>" />

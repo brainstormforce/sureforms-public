@@ -35,7 +35,7 @@ class Datetimepicker_Markup extends Base {
 			$min         = isset( $attributes['min'] ) ? $attributes['min'] : '';
 			$max         = isset( $attributes['max'] ) ? $attributes['max'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+			$class_name   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$slug = 'datepicker';
 
@@ -62,7 +62,7 @@ class Datetimepicker_Markup extends Base {
 			}
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ) ?>">
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
 				<div class="srfm-block-wrap srfm-with-icon">
 					<?php echo Sureforms_Helper::fetch_svg('calender', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>

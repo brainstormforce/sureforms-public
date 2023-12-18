@@ -35,7 +35,7 @@ class Checkbox_Markup extends Base {
 		$label_url   = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
 		$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$class_name   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$slug = 'checkbox';
 
@@ -45,7 +45,7 @@ class Checkbox_Markup extends Base {
 		$aria_require_attr = $required ? 'true' : 'false';
 		$checked_attr = $checked ? 'checked' : '';
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 					<div class="srfm-block-wrap">
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
 						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">

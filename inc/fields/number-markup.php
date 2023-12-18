@@ -55,7 +55,7 @@ class Number_Markup extends Base {
 			
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-block-width-<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
 				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="<?php echo esc_attr( $type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr .''. $max_value_attr ); ?> /> 

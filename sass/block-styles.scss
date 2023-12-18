@@ -64,6 +64,9 @@
 	.srfm-form {
 		.srfm-block {
 			.srfm-dropdown-common-wrap {
+				display: inline-block;
+				width: 100%;
+				
 				select {
 					display: block;
 				}
