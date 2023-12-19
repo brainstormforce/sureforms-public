@@ -67,8 +67,9 @@ class Upload_Markup extends Base {
 						<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>" type="file" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  accept="<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
 					</label>
 				</div>
-				<p><span><?php ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> <?php _e('up to ', 'sureforms' ); echo esc_attr( $file_size ? $file_size . __(' MB', 'sureforms') : __('Not Defined', 'sureforms') ); ?></p>
+				<p><span><?php echo ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> <?php _e('up to ', 'sureforms' ); echo esc_attr( $file_size ? $file_size . __(' MB', 'sureforms') : __('Not Defined', 'sureforms') ); ?></p>
 			</div>
+			<div class="srfm-<?php echo esc_attr( $slug ); ?>-data"></div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>

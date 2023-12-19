@@ -40,6 +40,65 @@
                 }
             }
 
+            .srfm-upload-data { 
+                display: none;
+                flex-wrap: wrap;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+                border: var(--srfm-border) dashed var(--srfm-border-color);
+                border-radius: var(--srfm-border-radius);
+                padding: 1em;
+                margin-top: .5em;
+
+                &.active {
+                    display: flex;
+                }
+
+                .srfm-upload-data-left {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: calc(100% - 1em);
+
+                    img,svg {
+                        width: 3em;
+                        height: 3em;
+                        object-fit: cover;
+                        border-radius: var(--srfm-border-radius);
+                    }
+
+                    .srfm-upload-data-details {
+                        padding-left: 0.5em;
+                        padding-right: 0.5em;
+                        width: calc(100% - 3em);
+
+                        .srfm-upload-data-filename {
+                            font-size: .9em;
+                            font-weight: 500;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            color: var(--srfm-primary-color);
+                        }
+
+                        .srfm-upload-data-size {
+                            font-size: .7em;
+                        }
+                    }
+
+                   
+                }
+
+                .srfm-upload-data-right {
+                    width: 1em;
+                    
+                    svg {
+                        width: 1em;
+                        height: 1em;
+                    }
+                }
+            }
+
             &.srfm-error {
                 .srfm-block-wrap {
                     border-color: var(--srfm-error-surface-color);

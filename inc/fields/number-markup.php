@@ -48,8 +48,8 @@ class Number_Markup extends Base {
 			$aria_require_attr = $required ? 'true' : 'false';
 			$default_value_attr = $default ? ' value="'. $default .'" ' : '';
 			$format_attr = $format_type ? ' format-type="'. $format_type .'" ' : '';
-			$min_value_attr = $min_value ? ' minimum="'. $min_value .'" ' : '';
-			$max_value_attr = $max_value ? ' max_value="'. $max_value .'" ' : '';
+			$min_value_attr = $min_value ? ' min="'. $min_value .'" ' : '';
+			$max_value_attr = $max_value ? ' max="'. $max_value .'" ' : '';
 
 			$type = 'none' === $format_type ? 'number' : 'text';
 			

@@ -293,19 +293,22 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Upload field
 		if ( container.classList.contains( 'srfm-upload-block' ) ) {
-			const uploadInput = container.querySelectorAll( 'input' )[ 1 ];
-			const uploadInputInnerDiv = container.getElementsByClassName(
-				'srfm-upload-inner-div'
-			)[ 0 ];
+			const uploadInput = container.querySelector( '.srfm-input-upload' );
+			const uploadInputInnerDiv = container.querySelector('.srfm-block-wrap');
+
+
 			const isSizeError = container.querySelector(
 				'.srfm-upload-file-size-error'
 			);
+
 			if ( isSizeError ) {
 				isSizeError.setAttribute( 'hidden', 'true' );
 			}
 
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
+
+				
 			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
 				if ( errorMessage ) {
 					errorMessage.textContent = errorMessage.getAttribute('data-error-msg');
@@ -327,42 +330,34 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 
 		// Number field.
-		if ( container.classList.contains( 'srfm-input-number-container' ) ) {
-			const min = inputField.getAttribute( 'minimum' );
-			const max = inputField.getAttribute( 'maximum' );
-			const minMaxErrorMessage = container.querySelector(
-				'.srfm-min-max-validation-message'
-			);
-			if (
-				inputValue &&
-				min !== '' &&
-				Number( inputValue ) < Number( min )
-			) {
-				if ( minMaxErrorMessage ) {
-					minMaxErrorMessage.innerText = `Minimum value is ${ min }`;
-					minMaxErrorMessage.style.display = `block`;
+		if ( container.classList.contains( 'srfm-number-block' ) ) {
+			const min = inputField.getAttribute( 'min' );
+			const max = inputField.getAttribute( 'max' );
+
+			if( inputValue ) {
+				if( min ) {
+					if( min !== '' && Number( inputValue ) < Number( min ) ) {
+						inputField.closest('.srfm-block').classList.add('srfm-error');
+						if ( errorMessage ) {
+							errorMessage.textContent = `Minimum value is ${ min }`;
+						}
+					} else {
+						inputField.closest('.srfm-block').classList.remove('srfm-error');
+					}
 				}
-				inputField.classList.add( 'srfm-classic-input-error' );
-				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
+	
+				if( max ) {
+					if( max !== '' && Number( inputValue ) > Number( max )) {
+						inputField.closest('.srfm-block').classList.add('srfm-error');
+
+						if ( errorMessage ) {
+							errorMessage.textContent = `Maximum value is ${ max }`;
+						}
+
+					} else {
+						inputField.closest('.srfm-block').classList.remove('srfm-error');
+					}
 				}
-			} else if (
-				inputValue &&
-				max !== '' &&
-				Number( inputValue ) > Number( max )
-			) {
-				if ( minMaxErrorMessage ) {
-					minMaxErrorMessage.innerText = `Maximum value is ${ max }`;
-					minMaxErrorMessage.style.display = `block`;
-				}
-				inputField.classList.add( 'srfm-classic-input-error' );
-				validateResult = true;
-				if ( ! firstErrorInput ) {
-					firstErrorInput = inputField;
-				}
-			} else if ( minMaxErrorMessage ) {
-				minMaxErrorMessage.innerText = '';
 			}
 		}
 
@@ -452,15 +447,12 @@ function submitFormData( form ) {
 }
 
 function showSuccessMessage( element, form ) {
-	if ( window.innerWidth > 760 ) {
-		element.style.minHeight = '600px';
-	} else {
-		element.style.minHeight = '420px';
-	}
-	element.style.display = 'flex';
+	form.style.opacity = 1;
+	form.style.display = 'none';
+	element.classList.add('srfm-active');
+
 	setTimeout( () => {
 		element.style.opacity = 1;
-		form.style.display = 'none';
 	}, 500 );
 }
 
@@ -485,7 +477,7 @@ async function handleFormSubmission(
 	submitType
 ) {
 	try {
-		loader.removeAttribute( 'style' );
+		loader.classList.add('srfm-active');
 
 		const isValidate = await fieldValidation(
 			formId,
@@ -495,13 +487,13 @@ async function handleFormSubmission(
 		);
 
 		if ( isValidate ) {
-			loader.setAttribute( 'style', 'display: none' );
+			loader.classList.remove('srfm-active');
 			return;
 		}
 
 		const formStatus = await submitFormData( form );
 
-		loader.setAttribute( 'style', 'display: none' );
+		loader.classList.add('srfm-active');
 		if ( formStatus ) {
 			if ( submitType === 'message' ) {
 				showSuccessMessage( successMessage, form );
@@ -512,7 +504,7 @@ async function handleFormSubmission(
 			showErrorMessage( errorMessage );
 		}
 	} catch ( error ) {
-		loader.setAttribute( 'style', 'display: none' );
+		loader.classList.remove('srfm-active');
 		showErrorMessage( errorMessage );
 	}
 }

@@ -55,7 +55,7 @@ class Multichoice_Markup extends Base {
 							<label class="srfm-<?php echo esc_attr( $slug ); ?>-single">
 								<input type="<?php echo $type_attr; ?>" id="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id .'-'. $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
 								<div class="srfm-block-content-wrap">
-									<?php echo Sureforms_Helper::fetch_svg('check', 'srfm-'. $slug .'-icon'); ?>
+									<?php echo Sureforms_Helper::fetch_svg('check-circle-solid', 'srfm-'. $slug .'-icon'); ?>
 									<p><?php echo isset( $option['optiontitle'] ) ? esc_html( $option['optiontitle'] ) : ''; ?></p>
 								</div>
 							</label>

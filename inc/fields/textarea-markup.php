@@ -58,7 +58,9 @@ class Textarea_Markup extends Base {
 		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
-				<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>
+				<?php if( $max_length_html ) { ?>
+					<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>
+				<?php } ?>
 				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . ''. $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ></textarea>
 			</div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
