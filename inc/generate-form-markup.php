@@ -88,6 +88,7 @@ class Generate_Form_Markup {
 			$success_url           = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ) : '';
 			$classname             = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ) : '';
 			$styling               = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
+			$is_page_break         = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
@@ -123,16 +124,41 @@ class Generate_Form_Markup {
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
 					$honeypot_spam = get_option( 'honeypot' );
 				?>
+				<!-- page-break header start -->
+				<?php if ( $is_page_break ) : ?>
+				<div class="srfm-page-break-header-container">
+					<div class="srfm-page-break-progress-container">
+						<div class="srfm-progress"></div>
+						<div class="srfm-text-wrap active">
+							<div class="srfm-circle">1</div>
+						</div>
+						<div class="srfm-text-wrap">
+							<div class="srfm-circle">2</div>
+						</div>
+					</div>
+				</div>
+				<?php endif; ?>
+				<!-- page-break header end -->
 				<input type="hidden" value="<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" name="form-id">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
 				<?php if ( '1' === $honeypot_spam ) : ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
 				<?php endif; ?>
 				<?php
+				if ( $is_page_break ) {
+					self::form_pagination( $post );
+				} else {
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
+				}
 				?>
+				<?php if ( $is_page_break ) : ?>
+					<div class="srfm-page-break-buttons">
+						<button class="srfm-pre-btn">Previous</button>
+						<button class="srfm-nxt-btn">Next</button>
+					</div>
+				<?php endif; ?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?>">
 					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>">
@@ -220,5 +246,25 @@ class Generate_Form_Markup {
 			</style>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $post
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function form_pagination( $post ) {
+		$content     = $post->post_content;
+		$content     = preg_replace( '/<!--\s*wp:sureforms\/page-break\s*{"block_id":"[^"]+"}\s*\/-->/i', '<!-- wp:sureforms/page-break /-->', $content );
+		$pages       = explode( '<!-- wp:sureforms/page-break /-->', $content );
+		$new_content = '';
+		foreach ( $pages as $page ) {
+			$new_content .= '<div class="srfm-page-break">';
+			$new_content .= apply_filters( 'the_content', $page );
+			$new_content .= '</div>';
+		}
+		echo $new_content;
 	}
 }

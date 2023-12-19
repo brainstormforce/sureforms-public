@@ -473,3 +473,43 @@ body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container >
   background-color: #555d66;
   border-radius: 100%;
 }
+
+.editor-styles-wrapper {
+  counter-reset: page-break;
+}
+.editor-styles-wrapper .srfm-page-break-wrapper {
+  display: flex;
+  padding: 12px 8px;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  counter-increment: page-break;
+}
+.editor-styles-wrapper .srfm-page-break-wrapper .srfm-page-break-divider {
+  height: 1px;
+  flex: 1 0 0;
+  background: var(--Dashboard-border-primary, #DCE0E6);
+}
+.editor-styles-wrapper .srfm-page-break-wrapper .srfm-page-break-content {
+  display: flex;
+  padding: 10px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--Dashboard-border-primary, #DCE0E6);
+  background: var(--Base-White, #FFF);
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+.editor-styles-wrapper .srfm-page-break-wrapper .srfm-page-break-content p {
+  color: var(--Dashboard-heading, #1E293B);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
+}
+.editor-styles-wrapper .srfm-page-break-wrapper .srfm-page-break-content p:after {
+  content: " - " counter(page-break);
+}

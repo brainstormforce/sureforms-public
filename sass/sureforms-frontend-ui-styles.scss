@@ -204,3 +204,104 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 		width: 100% !important;
 	}
 }
+
+.srfm-page-break {
+	width: 100%;
+	display: none;
+}
+.srfm-page-break-buttons {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	.srfm-pre-btn,
+	.srfm-nxt-btn {
+		padding: 13px 25px;
+		border: none;
+		background-color: var( --srfm-primary-color );
+		box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+		border-radius: 0.375rem;
+		color: #ffffff;
+		cursor: pointer;
+	}
+	.srfm-pre-btn:disabled,
+	.srfm-nxt-btn:disabled {
+		background-color: #4692b8;
+		cursor: not-allowed;
+	}
+}
+
+// progress
+
+.srfm-page-break-header-container {
+	text-align: center;
+	width: 100%;
+	.srfm-page-break-progress-container {
+		display: flex;
+		justify-content: space-between;
+		position: relative;
+		margin-bottom: 30px;
+		max-width: 100%;
+	}
+	.srfm-page-break-progress-container::before {
+		content: "";
+		background-color: lightgrey;
+		position: absolute;
+		top: 18px;
+		left: 20px;
+		transform: translateY( -50% );
+		height: 4px;
+		width: 90%;
+		z-index: 0;
+	}
+
+	.srfm-progress {
+		background-color: var( --srfm-primary-color );
+		position: absolute;
+		top: 18px;
+		left: 20px;
+		transform: translateY( -50% );
+		height: 4px;
+		max-width: 90%;
+		width: 0%;
+		z-index: 0;
+		transition: 400ms ease;
+	}
+
+	.srfm-text-wrap {
+		display: inline-block;
+		text-align: center;
+		width: 75px;
+	}
+
+	.srfm-text-wrap p {
+		font-weight: 400;
+		font-size: 12px;
+		color: var( --srfm-primary-color );
+	}
+
+	.srfm-text-wrap.active p {
+		font-weight: 400;
+		color: var( --srfm-primary-color );
+		transition: 400ms ease;
+	}
+
+	.srfm-circle {
+		background-color: #ffffff;
+		border: 3px solid lightgrey;
+		color: var( --srfm-primary-color );
+		font-weight: 700;
+		border-radius: 50%;
+		height: 25px;
+		width: 25px;
+		position: relative;
+		left: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: 400ms ease;
+	}
+	.srfm-text-wrap.active div.srfm-circle {
+		border-color: var( --srfm-primary-color );
+		color: var( --srfm-primary-color );
+	}
+}

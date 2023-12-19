@@ -11,7 +11,7 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, createRoot } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
 import AppearanceSettings from './AppearanceSettings.js';
@@ -49,13 +49,17 @@ const default_keys = {
 	_srfm_single_page_form_title: false,
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'auto',
+	_srfm_is_page_break: false,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const { editPost } = useDispatch( editorStore );
 
 	const rootContainer = document.querySelector( '.is-root-container' );
+	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
 
 	const { deviceType } = useSelect( () => {
 		return {
@@ -65,6 +69,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 				)?.__experimentalGetPreviewDeviceType() || 'Desktop',
 		};
 	}, [] );
+	function updateMeta( option, value ) {
+		const option_array = {};
+		option_array[ option ] = value;
+		editPost( {
+			meta: option_array,
+		} );
+	}
 
 	// Find the main Editor Container
 	const rootContainerDiv = document.querySelector(
@@ -80,6 +91,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}
 	};
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	useEffect( () => {
+		updateMeta( '_srfm_is_page_break', isPageBreak );
+	}, [ isPageBreak ] );
 
 	// Render the Components in the center of the Header
 	const headerCenterContainer = document.querySelector(

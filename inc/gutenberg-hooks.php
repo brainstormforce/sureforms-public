@@ -86,6 +86,7 @@ class Gutenberg_Hooks {
 				'sureforms/advanced-heading',
 				'sureforms/number-slider',
 				'sureforms/form',
+				'sureforms/page-break',
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
