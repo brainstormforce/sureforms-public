@@ -53,10 +53,10 @@ module.exports = {
 			__dirname,
 			'assets/src/public/styles/sureforms-tailwind.scss'
 		),
-		sureforms_backend_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
-		),
+		// sureforms_backend_styles: path.resolve(
+		// 	__dirname,
+		// 	'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
+		// ),
 		settings: path.resolve(
 			__dirname,
 			'assets/src/admin/settings/settings.js'
@@ -83,6 +83,7 @@ module.exports = {
 			'@Controls': path.resolve( __dirname, 'assets/src/srfm-controls/' ),
 			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
 			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
+			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
 			'@Attributes': path.resolve(
 				__dirname,
 				'assets/src/blocks-attributes/'

@@ -4,8 +4,7 @@
 import { RichText } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import Settings from './settings';
-import { UrlThemeStyle } from './components/UrlThemeStyle';
-import { UrlClassicStyle } from './components/UrlClassicStyle';
+import { UrlComponent } from './components/default.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -35,27 +34,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 			/>
-			<div
-				className={ 'srfm-main-container srfm-classic-inputs-holder' }
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<UrlClassicStyle
+				<UrlComponent
 						blockID={ block_id }
 						setAttributes={ setAttributes }
 						attributes={ attributes }
-					/>
-				) : (
-					<UrlThemeStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) }
+				/>
 				{ help !== '' && (
 					<RichText
 						tagName="label"
@@ -63,16 +46,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						onChange={ ( value ) =>
 							setAttributes( { help: value } )
 						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
+						className="srfm-description"
 						multiline={ false }
 						id={ block_id }
 					/>
 				) }
-			</div>
 		</>
 	);
 };

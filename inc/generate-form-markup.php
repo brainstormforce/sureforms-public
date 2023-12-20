@@ -183,7 +183,7 @@ class Generate_Form_Markup {
 			$error_text_var = $warning_text_color ? $warning_text_color : '#DC2626';
 			$error_background_color_var = $warning_background_color ? $warning_background_color : '#FEF2F2';
 	
-			$font_size_var = $font_size ? $font_size : '20px';
+			$font_size_var = $form_font_size ? $form_font_size . 'px' : '20px';
 			$media_query_mobile_var =  $media_query_mobile ? $media_query_mobile : '576px';
 			$border_var = $border ? $border : '1px';
 			$border_radius_var = $border_radius ? $border_radius : '8px';

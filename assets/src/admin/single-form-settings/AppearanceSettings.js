@@ -50,7 +50,7 @@ function AppearanceSettings( props ) {
 			sureforms_keys._srfm_color2 ? sureforms_keys._srfm_color2 : 'none'
 		);
 		root.style.setProperty(
-			'--srfm_fontsize',
+			'--srfm-font-size',
 			sureforms_keys._srfm_fontsize
 				? sureforms_keys._srfm_fontsize + 'px'
 				: 'none'

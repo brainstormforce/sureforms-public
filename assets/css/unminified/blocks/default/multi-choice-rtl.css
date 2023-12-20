@@ -48,6 +48,7 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap p {
   font-size: 0.7em;
   padding-right: 0.5em;
+  margin-top: 0;
   margin-bottom: 0;
 }
 @media (max-width: 767px) {

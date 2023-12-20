@@ -21,8 +21,7 @@ import InspectorTab, {
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { DropdownClassicStyle } from './components/DropdownClassicStyle';
-import { DropdownThemeStyle } from './components/DropdownThemeStyle';
+import { DropdownComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -322,46 +321,23 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<DropdownClassicStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<DropdownThemeStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) }
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<DropdownComponent
+				attributes={ attributes }
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) =>
+						setAttributes( { help: value } )
+					}
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</>
 	);
 };

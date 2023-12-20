@@ -21,7 +21,7 @@ const default_keys = {
 	_srfm_color2: { default: '' },
 	_srfm_email: { default: sfBlockData.admin_email },
 	_srfm_submit_url: { default: '' },
-	_srfm_fontsize: { default: 16 },
+	_srfm_fontsize: { default: 20 },
 	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
 	_srfm_form_container_width: { default: 650 },
 	_srfm_thankyou_message_title: { default: 'Thank you' },

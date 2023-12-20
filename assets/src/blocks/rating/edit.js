@@ -15,8 +15,7 @@ import InspectorTab, {
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { RatingClassicStyle } from './components/RatingClassicStyle';
-import { RatingThemeStyle } from './components/RatingThemeStyle';
+import { RatingComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
@@ -224,29 +223,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<RatingClassicStyle
+	
+				<RatingComponent
 						setAttributes={ setAttributes }
 						blockID={ block_id }
 						attributes={ attributes }
-					/>
-				) : (
-					<RatingThemeStyle
-						setAttributes={ setAttributes }
-						blockID={ block_id }
-						attributes={ attributes }
-					/>
-				) }
+				/>
 				{ ratingBoxHelpText !== '' && (
 					<RichText
 						tagName="label"
@@ -254,16 +236,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						onChange={ ( value ) =>
 							setAttributes( { ratingBoxHelpText: value } )
 						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
+						className="srfm-description"
 						multiline={ false }
 						id={ block_id }
 					/>
 				) }
-			</div>
 		</>
 	);
 };

@@ -52,8 +52,7 @@ class Email_Markup extends Base {
 			<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 				<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
 					<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
-					<div class="srfm-block-wrap srfm-with-icon">
-						<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
+					<div class="srfm-block-wrap">
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="email" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post($default_value_attr .' '. $placeholder_attr); ?> >
 						<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 					</div>
@@ -63,8 +62,7 @@ class Email_Markup extends Base {
 				<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
 					<?php if( true === $is_confirm_email ) { ?>
 						<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug .'-confirm', $block_id, $required ) ); ?>
-						<div class="srfm-block-wrap srfm-with-icon">
-							<?php echo Sureforms_Helper::fetch_svg('email', 'srfm-'. esc_attr( $slug ) .'-icon srfm-input-icon'); ?>
+						<div class="srfm-block-wrap">
 							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="email" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" <?php echo wp_kses_post($default_value_attr .' '. $placeholder_attr); ?> >
 							<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
 						</div>
