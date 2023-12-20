@@ -84,7 +84,8 @@ class Post_Types {
 	public function sureforms_render_blank_state( $post_type ) {
 
 		if ( SUREFORMS_FORMS_POST_TYPE === $post_type ) {
-			$new_form_url = admin_url( 'post-new.php?post_type=' . SUREFORMS_FORMS_POST_TYPE );
+			$page_name    = 'add-new-form';
+			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
