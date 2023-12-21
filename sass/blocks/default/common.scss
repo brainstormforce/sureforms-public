@@ -42,7 +42,7 @@
             .srfm-block-wrap {
                 position: relative;
             }
-            
+
             .srfm-block-label {
                 font-size: 0.7em;
                 margin-bottom: 0.429em;
@@ -101,11 +101,10 @@
                     left: 0.7em;
                     transform: translateY(-50%);
                     line-height: 0;
-    
+
                     svg {
                         width: 0.9em;
                         height: 0.9em;
-                        
                         path {
                             stroke: var(--srfm-body-input-color);
                         }

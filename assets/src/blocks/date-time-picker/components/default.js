@@ -1,56 +1,18 @@
 import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
 
 export const DateTimeComponent = ( {
 	attributes,
 	setAttributes,
 	blockID,
 } ) => {
-	const { label, required, fieldType } = attributes;
-	const [ dateTimeType, setDateTimeType ] = useState(
-		'srfm-input-date-time'
-	);
-
-	const isRequired = required ? 'srfm-required' : '';
-
-	function dateTimeSelected( type ) {
-		if ( 'time' === type ) {
-			setDateTimeType( 'srfm-input-time' );
-			setTimeout( () => {
-				/* eslint-disable no-undef */
-				flatpickr( '.srfm-input-time', {
-					enableTime: true,
-					noCalendar: true,
-					dateFormat: 'H:i',
-				} );
-				/* eslint-enable no-undef */
-			}, 500 );
-		}
-		if ( 'date' === type ) {
-			setDateTimeType( 'srfm-input-date' );
-			setTimeout( () => {
-				/* eslint-disable no-undef */
-				flatpickr( '.srfm-input-date' );
-				/* eslint-enable no-undef */
-			}, 500 );
-		}
-
-		if ( 'dateTime' === type ) {
-			setDateTimeType( 'srfm-input-date-time' );
-			setTimeout( () => {
-				/* eslint-disable no-undef */
-				flatpickr( '.srfm-input-date-time', {
-					enableTime: true,
-					dateFormat: 'Y-m-d H:i',
-				} );
-				/* eslint-enable no-undef */
-			}, 500 );
-		}
-	}
-
-	useEffect( () => {
-		dateTimeSelected( fieldType );
-	}, [ fieldType ] );
+	const { label, required, fieldType } = attributes;	
+	const isRequired = required ? ' srfm-required' : '';
+	const slug = 'datepicker';
+	const calender = parse( svgIcons['calender'] );
+	const clock = parse( svgIcons['clock'] );
 
 	return (
 		<>
@@ -58,24 +20,21 @@ export const DateTimeComponent = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `srfm-classic-label-text ${ isRequired }` }
+				className={ `srfm-block-label ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
-			<div className="srfm-classic-date-time-picker srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm datepicker-with-limits">
-				<div className="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-					{ 'time' === fieldType ? (
-						<i className="fa-solid fa-clock srfm-text-gray-400 srfm-text-[20px]"></i>
-					) : (
-						<i className="fa-regular fa-calendar srfm-text-gray-400 srfm-text-[20px]"></i>
-					) }
-				</div>
+			<div className="srfm-block-wrap srfm-with-icon">
+				{ 'time' === fieldType ? (
+					<span class={`srfm-icon srfm-${slug}-icon srfm-input-icon`}>{clock}</span>
+				) : (
+					<span class={`srfm-icon srfm-${slug}-icon srfm-input-icon`}>{calender}</span>
+				) }
 				<input
-					id={ 'srfm-text-input-' + blockID }
+					id={ `srfm-${slug}-${blockID}`}
 					type="text"
-					className={ `srfm-classic-email-element ${ dateTimeType }` }
+					className={ `srfm-input-common srfm-input-${slug}` }
 					required={ required }
-					placeholder="Choose ..."
 				/>
 			</div>
 		</>

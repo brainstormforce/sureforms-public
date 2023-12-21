@@ -3,12 +3,12 @@ import IntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import { useEffect, useState } from '@wordpress/element';
 
-export const PhoneClassicStyle = ( { setAttributes, attributes, blockID } ) => {
+export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const { label, placeholder, required, autoCountry } = attributes;
 	const [ country, setCountry ] = useState( '' );
 
-	const isRequired = required ? 'srfm-required' : '';
-
+	const isRequired = required ? ' srfm-required' : '';
+	const slug = "phone";
 	useEffect( () => {
 		fetch( 'https://ipapi.co/json' )
 			.then( ( res ) => res.json() )
@@ -26,15 +26,15 @@ export const PhoneClassicStyle = ( { setAttributes, attributes, blockID } ) => {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `srfm-classic-label-text ${ isRequired }` }
+				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
-			<div className="srfm-relative srfm-mt-2">
+			<div className="srfm-block-wrap">
 				<IntlTelInput
-					containerClassName="intl-tel-input srfm-group srfm-classic-phone-parent"
-					inputClassName="srfm-classic-phone-element"
-					fieldId={ `sfrm-classic-phone-${ blockID }` }
+					containerClassName="intl-tel-input"
+					inputClassName={`srfm-input-common srfm-input-${slug}`}
+					fieldId={ `srfm-input-${slug}-${ blockID }` }
 					placeholder={ placeholder }
 					pattern="[0-9]{10}"
 					defaultCountry={ autoCountry ? country : 'us' }

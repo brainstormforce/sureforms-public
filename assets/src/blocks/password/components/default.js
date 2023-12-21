@@ -23,7 +23,7 @@ export const PasswordComponent = ( {
 			/>
 			<div class="srfm-block-wrap">
 				<input
-					id={ 'srfm-text-input-' + blockID }
+					id={  `srfm-${slug}-${blockID}` }
 					type="password"
 					className={ `srfm-input-common srfm-input-${slug}` }
 					placeholder={ placeholder }

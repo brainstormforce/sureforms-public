@@ -2,7 +2,7 @@ import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
-export const MultichoiceClassicStyle = ( {
+export const MultiChoiceComponent = ( {
 	attributes,
 	blockID,
 	isSelected,
@@ -12,13 +12,15 @@ export const MultichoiceClassicStyle = ( {
 	setAttributes,
 } ) => {
 	const { label, required, options } = attributes;
+	const isRequired = required ? ' srfm-required' : '';
+	const slug = "multi-choice";
 
 	const editView = options.map( ( option, index ) => {
 		return (
-			<div key={ index } className="srfm-multichoice-addded-option">
+			<div key={ index } className={`srfm-multi-choice-single`}>
 				<label htmlFor={ option.optiontitle }></label>
 				<input
-					className="srfm-multichoice-addded-input !srfm-rounded-md !srfm-border-gray-300"
+					className="srfm-input-common"
 					aria-label={ option.optiontitle }
 					onChange={ ( e ) =>
 						changeOption(
@@ -42,30 +44,14 @@ export const MultichoiceClassicStyle = ( {
 
 	const OriginalView = () => {
 		return (
-			<div className="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2">
+			<div className="srfm-block-wrap">
 				{ options.map( ( option, key, i = 0 ) => {
 					i++;
 					return (
-						<label key={ key } className="srfm-classic-radio">
-							<div className="srfm-flex srfm-items-start srfm-classic-radio-btn srfm-classic-multi-choice">
-								<div className="srfm-pr-[5px] srfm-mt-[3px] srfm-relative srfm-flex">
-									<i
-										className="fa fa-check-circle srfm-text-base"
-										aria-hidden="true"
-									></i>
-									<i
-										className="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300"
-										aria-hidden="true"
-									></i>
-								</div>
-								<div>
-									<article
-										id={ `srfm-multi-choice-option-${ blockID }-${ i }` }
-										className="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-gray-900 srfm-mt-[-0.5px]"
-									>
-										{ option.optiontitle }
-									</article>
-								</div>
+						<label key={ key } className="srfm-multi-choice-single">
+							<div className="srfm-block-content-wrap">
+								<span className={`srfm-icon srfm-${slug}-icon`}></span>
+								<p>{ option.optiontitle }</p>
 							</div>
 						</label>
 					);
@@ -74,24 +60,22 @@ export const MultichoiceClassicStyle = ( {
 		);
 	};
 
-	const isRequired = required ? 'srfm-required' : '';
-
 	return (
 		<>
 			<RichText
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => setAttributes( { label: value } ) }
-				className={ `srfm-classic-label-text ${ isRequired }` }
+				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
 			/>
 			{ isSelected && (
 				<>
-					<div className="srfm-flex srfm-flex-wrap srfm-gap-[15px]">
+					<div className="srfm-block-wrap">
 						{ editView }
-						<div>
-							<Button isSecondary onClick={ addOption }>
+						<div class={`srfm-${slug}-add-option-wrapper`}>
+							<Button isPrimary onClick={ addOption }>
 								{ __( ' + Add Option ', 'sureforms' ) }
 							</Button>
 						</div>

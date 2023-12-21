@@ -50,6 +50,7 @@
   padding-left: 0.5em;
   margin-top: 0;
   margin-bottom: 0;
+  word-break: break-word;
 }
 @media (max-width: 767px) {
   .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {

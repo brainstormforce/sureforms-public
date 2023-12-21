@@ -28,8 +28,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
-import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
+import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -404,58 +403,28 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder' +
-					( isSelected ? ' sf--focus' : '' )
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<MultichoiceClassicStyle
-						blockID={ block_id }
-						attributes={ attributes }
-						isSelected={ isSelected }
-						addOption={ addOption }
-						deleteOption={ deleteOption }
-						changeOption={ changeOption }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<MultichoiceThemeStyle
-						blockID={ block_id }
-						attributes={ attributes }
-						handleClick={ handleClick }
-						selected={ selected }
-						isSelected={ isSelected }
-						addOption={ addOption }
-						deleteOption={ deleteOption }
-						changeOption={ changeOption }
-						setAttributes={ setAttributes }
-					/>
-				) }
+			<MultiChoiceComponent
+				blockID={ block_id }
+				attributes={ attributes }
+				isSelected={ isSelected }
+				addOption={ addOption }
+				deleteOption={ deleteOption }
+				changeOption={ changeOption }
+				setAttributes={ setAttributes }
+			/>
 
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) =>
+						setAttributes( { help: value } )
+					}
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</div>
 	);
 };
