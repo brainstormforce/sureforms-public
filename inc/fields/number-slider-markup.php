@@ -42,15 +42,24 @@ class Number_Slider_Markup extends Base {
 		$slug = 'number-slider';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-
+		$inverse_value = $max - $min;
 		ob_start(); ?>
-		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
-			<div class="srfm-block-wrap" style='--min:<?php echo esc_attr($min); ?>; --max:<?php echo esc_attr($max); ?>; --step:<?php echo esc_attr($step); ?>; --value:<?php echo esc_attr($min); ?>; --text-value:"<?php echo esc_attr($min); ?>";'>
-				<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" type="range" min="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" value="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
-				<output></output>
-				<div class='srfm-<?php echo esc_attr( $slug ); ?>-progress'></div>
+
+
+<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
+		<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+		<div class="srfm-block-wrap">
+		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr($min); ?>%; --max:<?php echo esc_attr($max); ?>%; --value:<?php echo esc_attr($min); ?>%; --inverse:<?php echo esc_attr($inverse_value); ?>%;">
+			<div  class="srfm-<?php echo esc_attr( $slug ); ?>-inverse"></div>
+			<div class="srfm-<?php echo esc_attr( $slug ); ?>"></div>
+			<span class="srfm-<?php echo esc_attr( $slug ); ?>-thumb"></span>
+			<div class="srfm-<?php echo esc_attr( $slug ); ?>-sign">
+				<span><?php echo esc_attr($min); ?></span>
 			</div>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
+		</div>
+		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" type="range" tabindex="0" value="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" min="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
+		</div>
+		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 		</div>
 		<?php
 		return ob_get_clean();

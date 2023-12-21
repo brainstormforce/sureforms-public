@@ -1,5 +1,5 @@
-import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 export const NumberSliderComponent = ( {
 	attributes,
@@ -18,15 +18,16 @@ export const NumberSliderComponent = ( {
 				multiline={ false }
 				id={ blockID }
 			/>
-			<input
-				id={ `srfm-${slug}-${blockID}` }
-				type="range"
-				min={ min }
-				max={ max }
-				step={ step }
-				placeholder={ placeholder }
-				className={`srfm-input-${slug}`}
-			/>
+			<div className="srfm-block-wrap">
+				<div className={`srfm-${slug}-wrap`}>
+				<div className={`srfm-${slug}-inverse`}></div>
+				<div className={`srfm-${slug}`}></div>
+				<span className={`srfm-${slug}-thumb`}></span>
+					<div className={`srfm-${slug}-sign`}>
+						<span>{__( '10', 'sureforms' )}</span>
+					</div>
+				</div>
+		</div>
 		</>
 	);
 };

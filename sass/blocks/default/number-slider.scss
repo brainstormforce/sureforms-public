@@ -1,261 +1,114 @@
 .srfm-form-container {
     .srfm-form {
         .srfm-number-slider-block {
-            padding-top: 1em;
+
+            $background-color_1: #CCC;
+
             .srfm-block-wrap {
-                --value-offset-y: var(--ticks-gap);
-                --value-active-color: white;
-                --value-background: transparent;
-                --value-background-hover: var(--srfm-primary-color);
-                --value-font: 700 12px/1 Arial;
-
-                --fill-color: var(--srfm-primary-color);
-                --progress-background: #eee;
-                --progress-radius: 20px;
-                --track-height: calc(var(--thumb-size) / 2);
-
-                --min-max-font: 12px Arial;
-                --min-max-opacity: 0.5;
-                --min-max-x-offset: 10%; // 50% to center
-
-                --thumb-size: 22px;
-                --thumb-color: white;
-                --thumb-shadow: 0 0 3px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.5) inset,
-                    0 0 0 99px var(--thumb-color) inset;
-
-                --thumb-shadow-active: 0 0 0 calc(var(--thumb-size) / 4) inset var(--thumb-color),
-                    0 0 0 99px var(--srfm-primary-color) inset, 0 0 3px rgba(0, 0, 0, 0.4);
-
-                --thumb-shadow-hover: var(--thumb-shadow);
-
-                --ticks-thickness: 1px;
-                --ticks-height: 5px;
-                --ticks-gap: var(--ticks-height,
-                        0); // vertical space between the ticks and the progress bar
-                --ticks-color: silver;
-
-                // ⚠️ BELOW VARIABLES SHOULD NOT BE CHANGED
-                --step: 1;
-                --ticks-count: Calc(var(--max) - var(--min)) / var(--step);
-                --maxTicksAllowed: 30;
-                --too-many-ticks: Min(1, Max(var(--ticks-count) - var(--maxTicksAllowed), 0));
-                --x-step: Max(var(--step),
-                        var(--too-many-ticks) * (var(--max) - var(--min))); // manipulate the number of steps if too many ticks exist, so there would only be 2
-                --tickInterval: 100/ ((var(--max) - var(--min)) / var(--step)) * var(--tickEvery, 1);
-                --tickIntervalPerc: calc((100% - var(--thumb-size)) / ((var(--max) - var(--min)) / var(--x-step)) * var(--tickEvery, 1));
-
-                --value-a: Clamp(var(--min),
-                        var(--value, 0),
-                        var(--max)); // default value ("--value" is used in single-range markup)
-                --value-b: var(--value, 0); // default value
-                --text-value-a: var(--text-value, "");
-
-                --completed-a: calc((var(--value-a) - var(--min)) / (var(--max) - var(--min)) * 100);
-                --completed-b: calc((var(--value-b) - var(--min)) / (var(--max) - var(--min)) * 100);
-                --ca: Min(var(--completed-a), var(--completed-b));
-                --cb: Max(var(--completed-a), var(--completed-b));
-
-                // breakdown of the below super-complex brain-breaking CSS math:
-                // "clamp" is used to ensure either "-1" or "1"
-                // "calc" is used to inflat the outcome into a huge number, to get rid of any value between -1 & 1
-                // if absolute diff of both completed % is above "5" (%)
-                // ".001" bumps the value just a bit, to avoid a scenario where calc resulted in "0" (then clamp will also be "0")
-                --thumbs-too-close: Clamp(-1,
-                        1000 * (Min(1, Max(var(--cb) - var(--ca) - 5, -1)) + 0.001),
-                        1);
-                --thumb-close-to-min: Min(1, Max(var(--ca) - 2, 0)); // 2% threshold
-                --thumb-close-to-max: Min(1, Max(98 - var(--cb), 0)); // 2% threshold
-
-                @mixin thumb {
-                    appearance: none;
-                    height: var(--thumb-size);
-                    width: var(--thumb-size);
-                    transform: var(--thumb-transform);
-                    border-radius: var(--thumb-radius, 50%);
-                    background: var(--thumb-color);
-                    box-shadow: var(--thumb-shadow);
-                    border: none;
-                    pointer-events: auto;
-                    transition: 0.1s;
-                }
-                width: 100%;
-                min-width: 200px;
-                display: inline-block;
-                height: Max(var(--track-height), var(--thumb-size));
-                padding-bottom: var(--flip-y, var(--ticks-gap));
-                padding-top: calc(var(--flip-y) * var(--ticks-gap));
-                padding-bottom: calc(var(--flip-y) * var(--ticks-gap));
                 position: relative;
-                z-index: 1;
+                height: 14px;
+                border-radius: var(--srfm-border-radius);
+                text-align: left;
+                width: 100%;
+                margin-top: 2em;
 
-                &[data-ticks-position="top"] {
-                    --flip-y: 1;
-                }
-
-                .srfm-number-slider-progress {
-                    --start-end: calc(var(--thumb-size) / 2);
-                    --clip-end: calc(100% - (var(--cb)) * 1%);
-                    --clip-start: calc(var(--ca) * 1%);
-                    --clip: inset(-20px var(--clip-end) -20px var(--clip-start));
-                    position: absolute;
-                    left: var(--start-end);
-                    right: var(--start-end);
-                    top: calc(var(--ticks-gap) * var(--flip-y, 0) + var(--thumb-size) / 2 - var(--track-height) / 2);
-                    //  transform: var(--flip-y, translateY(-50%) translateZ(0));
-                    height: calc(var(--track-height));
-                    background: var(--progress-background, #eee);
-                    pointer-events: none;
-                    z-index: -1;
-                    border-radius: var(--progress-radius);
-
-                    // fill area
-                    &::before {
-                        content: "";
-                        position: absolute;
-                        // left: Clamp(0%, calc(var(--ca) * 1%), 100%); // confine to 0 or above
-                        // width: Min(100%, calc((var(--cb) - var(--ca)) * 1%)); // confine to maximum 100%
-                        left: 0;
-                        right: 0;
-                        clip-path: var(--clip);
-                        top: 0;
-                        bottom: 0;
-                        background: var(--fill-color, black);
-                        box-shadow: var(--progress-flll-shadow);
-                        z-index: 1;
-                        border-radius: inherit;
-                    }
-
-                    // shadow-effect
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        bottom: 0;
-                        left: 0;
-                        box-shadow: var(--progress-shadow);
-                        pointer-events: none;
-                        border-radius: inherit;
-                    }
-                }
-
-                &>input {
-                    -webkit-appearance: none;
-                    width: 100%;
-                    height: var(--thumb-size);
-                    margin: 0;
+                .srfm-number-slider-wrap {
                     position: absolute;
                     left: 0;
-                    top: calc(50% - Max(var(--track-height), var(--thumb-size)) / 2 + calc(var(--ticks-gap) / 2 * var(--flip-y, -1)));
-                    cursor: -webkit-grab;
-                    cursor: grab;
-                    outline: none;
-                    background: none;
+                    right: 0;
+                    height: .5em;
+                    background-color: $background-color_1;
+                    border-radius: var(--srfm-border-radius);
+                    margin: 0 0.5em;
 
-                    &:focus {
-                        border: 0;
-                    }
-
-                    &:not(:only-of-type) {
-                        pointer-events: none;
-                    }
-
-                    &::-webkit-slider-thumb {
-                        @include thumb;
-                    }
-
-                    &::-moz-range-thumb {
-                        @include thumb;
-                    }
-
-                    &::-ms-thumb {
-                        @include thumb;
-                    }
-
-                    &::-webkit-slider-runnable-track {
-                        box-shadow: none;
-                        background-color: transparent;
-                    }
-
-                    &:hover {
-                        --thumb-shadow: var(--thumb-shadow-hover);
-
-                        &+output {
-                            --value-background: var(--value-background-hover);
-                            --y-offset: -5px;
-                            color: var(--value-active-color);
-                            box-shadow: 0 0 0 3px var(--value-background);
-                        }
-                    }
-
-                    &:active {
-                        cursor: grabbing;
-                        z-index: 2; // when sliding left thumb over the right or vice-versa, make sure the moved thumb is on top
-
-                        +output {
-                            transition: 0s;
-                        }
-                    }
-
-                    &:nth-of-type(1) {
-                        --is-left-most: Clamp(0, (var(--value-a) - var(--value-b)) * 99999, 1);
-
-                        &+output {
-                            &:not(:only-of-type) {
-                                --flip: calc(var(--thumbs-too-close) * -1);
-                            }
-
-                            --value: var(--value-a);
-                            --x-offset: calc(var(--completed-a) * -1%);
-
-                            &::after {
-                                content: var(--prefix, "") var(--text-value-a) var(--suffix, "");
-                            }
-                        }
-                    }
-
-                    &:nth-of-type(2) {
-                        --is-left-most: Clamp(0, (var(--value-b) - var(--value-a)) * 99999, 1);
-
-                        &+output {
-                            --value: var(--value-b);
-                        }
-                    }
-
-                    // non-multiple range should not clip start of progress bar
-                    &:only-of-type {
-                        ~.srfm-number-slider-progress {
-                            --clip-start: 0;
-                            left: 0;
-                        }
-                    }
-
-                    &+output {
-                        --flip: -1;
-                        --x-offset: calc(var(--completed-b) * -1%);
-                        --pos: calc(((var(--value) - var(--min)) / (var(--max) - var(--min))) * 100%);
-                        pointer-events: none;
+                    .srfm-number-slider-inverse,
+                    .srfm-number-slider {
                         position: absolute;
-                        z-index: 5;
-                        background: var(--value-background);
-                        border-radius: 10px;
-                        padding: 0.2em;
-                        line-height: 5px;
-                        left: var(--pos);
-                        transform: translate(var(--x-offset),
-                                calc(150% * var(--flip) - (var(--y-offset, 0px) + var(--value-offset-y)) * var(--flip)));
-                        transition: all 0.12s ease-out, left 0s;
+                        height: .5em;
+                        border-radius: var(--srfm-border-radius);
+                    }
 
-                        &::after {
-                            content: var(--prefix, "") var(--text-value-b) var(--suffix, "");
-                            font: var(--value-font);
+                    .srfm-number-slider-inverse {
+                        right: 0;
+                    }
+
+                    .srfm-number-slider {
+                        left: 0;
+                        background-color: var(--srfm-primary-color);
+                        width: var(--value);
+                    }
+
+                    .srfm-number-slider-thumb,
+                    .srfm-number-slider-sign {
+                        width: 1.2em;
+                        height: 1.2em;
+                        border-radius: 1.2em;
+                        margin-left: -11px;
+                        left: var(--value);
+                    }
+
+                    .srfm-number-slider-thumb {
+                        position: absolute;
+                        top: -7px;
+                        text-align: left;
+                        cursor: pointer;
+                        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+                        background-color: var(--srfm-base-background-color);
+                        border-radius: 50%;
+                        outline: none;
+                        z-index: 2;
+                    }
+
+                    .srfm-number-slider-sign {
+                        opacity: 1;
+                        position: absolute;
+                        top: -35px;
+                        z-index: 3;
+                        color: var(--srfm-label-text-color);
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        transition: background-color .3s;
+
+                        >span {
+                            position: relative;
+                            top: -5px;
+                            font-size: .6em;
+                            font-weight: 500;
                         }
+                    }
+                }
+
+                input[type=range] {
+                    position: absolute;
+                    pointer-events: all;
+                    -webkit-appearance: none;
+                    z-index: 3;
+                    height: .5em;
+                    top: -2px;
+                    width: 100%;
+                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+                    filter: alpha(opacity=0);
+                    -moz-opacity: 0;
+                    -khtml-opacity: 0;
+                    opacity: 0;
+                    cursor: pointer;
+
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb {
+                        width: 24px;
+                        height: 24px;
+                        cursor: pointer;
+                    }
+                }
+
+                &:hover {
+                    .srfm-number-slider-sign {
+                        color: var(--srfm-base-background-color);
+                        background-color: var(--srfm-primary-color);
                     }
                 }
             }
-
         }
-
     }
-
 }
