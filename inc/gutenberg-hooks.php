@@ -37,6 +37,11 @@ class Gutenberg_Hooks {
 		$this->patterns = [
 			'blank-form',
 			'contact-form',
+			'newsletter-form',
+			'support-form',
+			'job-application-form',
+			'feedback-form',
+			'login-form',
 		];
 
 		// Initializing hooks.

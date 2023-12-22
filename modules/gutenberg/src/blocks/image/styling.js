@@ -507,7 +507,7 @@ export default function styling(
 	}
 
 	if ( maskShape !== 'none' ) {
-		let imagePath = `${ window?.uagb_blocks_info?.uagb_url }assets/images/masks/${ maskShape }.svg`;
+		let imagePath = `${ window?.srfm_spec_blocks_info?.uagb_url }assets/images/masks/${ maskShape }.svg`;
 		if ( maskShape === 'custom' ) {
 			imagePath = `${ maskCustomShape?.url }`;
 		}

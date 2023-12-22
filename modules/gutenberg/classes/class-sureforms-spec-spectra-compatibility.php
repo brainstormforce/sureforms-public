@@ -53,7 +53,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 
 			wp_localize_script(
 				'SRFM_block-sureforms-block-js',
-				'uagb_blocks_info',
+				'srfm_spec_blocks_info',
 				array(
 					'number_of_icon_chunks'         => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',

@@ -84,7 +84,8 @@ class Post_Types {
 	public function sureforms_render_blank_state( $post_type ) {
 
 		if ( SUREFORMS_FORMS_POST_TYPE === $post_type ) {
-			$new_form_url = admin_url( 'post-new.php?post_type=' . SUREFORMS_FORMS_POST_TYPE );
+			$page_name    = 'add-new-form';
+			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
@@ -122,7 +123,6 @@ class Post_Types {
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'SureForms Form', 'add new on admin bar', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
 			'new_item'           => __( 'New Form', 'sureforms' ),
@@ -412,6 +412,8 @@ class Post_Types {
 			'_srfm_hide_title_post_specific'          => 'boolean',
 			'_srfm_page_form_title'                   => 'boolean',
 			'_srfm_single_page_form_title'            => 'boolean',
+			'_srfm_submit_width_backend'              => 'string',
+			'_srfm_submit_alignment_backend'          => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -429,6 +431,57 @@ class Post_Types {
 				)
 			);
 		}
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_email_notification',
+			array(
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'id'            => array(
+									'type' => 'integer',
+								),
+								'status'        => array(
+									'type' => 'boolean',
+								),
+								'is_raw_format' => array(
+									'type' => 'boolean',
+								),
+								'name'          => array(
+									'type' => 'string',
+								),
+								'email_to'      => array(
+									'type' => 'string',
+								),
+								'subject'       => array(
+									'type' => 'string',
+								),
+								'email_body'    => array(
+									'type' => 'string',
+								),
+							),
+						),
+					),
+				),
+				'default'       => array(
+					array(
+						'id'            => 1,
+						'status'        => false,
+						'is_raw_format' => false,
+						'name'          => 'Admin Notification Email',
+						'email_to'      => '{admin_email}',
+						'subject'       => 'New Form Submission',
+						'email_body'    => '',
+					),
+				),
+			)
+		);
 	}
 
 	/**

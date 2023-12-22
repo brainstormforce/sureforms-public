@@ -127,6 +127,10 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/blocks/default/backend-rtl.css',
 						dest: 'assets/css/minified/blocks/default/backend.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/template-picker-rtl.css',
+						dest: 'assets/css/minified/template-picker.min-rtl.css',
+					},
 				],
 
 			},
@@ -220,7 +224,7 @@ module.exports = function ( grunt ) {
 		uglify: {
 			js: {
 				files: [
-					{
+					{ 
 						// all .js to min.js
 						expand: true,
 						src: [ '**.js' ],

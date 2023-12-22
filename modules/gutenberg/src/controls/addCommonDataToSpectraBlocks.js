@@ -9,7 +9,7 @@ function addCommonDataToSpectraBlocks( configData = {} ) {
 		usesContext: [ 'postId', 'postType' ],
 	};
 
-	if ( 'site-editor' === uagb_blocks_info.is_site_editor ) {
+	if ( 'site-editor' === srfm_spec_blocks_info.is_site_editor ) {
 		data = {};
 	}
 	return applyFilters( 'addCommonDataToSpectraBlocks', {
