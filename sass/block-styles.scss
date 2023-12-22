@@ -1,4 +1,23 @@
 
+body.post-type-sureforms_form {
+	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *, 
+	.editor-styles-wrapper :where(body .is-layout-constrained) > :first-child:first-child {
+		margin-top: 1.2em;
+	}
+}
+
+div.is-root-container.srfm-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 620px;
+}
+
+div.is-root-container#srfm-form-container {
+    .srfm-block-single {
+        margin-left: 0 !important; // This is needed to get the field width working.
+    }
+}
+
 .srfm-form-container { // This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 
@@ -10,7 +29,7 @@
 		width: calc(25% - 0.6em);
 	}
 
-	.srfm-block-width-33-3 {
+	.srfm-block-width-33-33 {
 		width: calc(33.33% - 0.6em);
 	}
 
@@ -191,4 +210,42 @@
 			}
 		}
 	}
+}
+
+.post-type-sureforms_form {
+	.edit-post-visual-editor__post-title-wrapper {
+		display: none;
+
+		@media screen and (max-width: 782px) {
+			display: block;
+		}
+	}
+
+	.edit-post-header__center {
+
+		.srfm-header-title-input {
+			width: 100%;
+			max-width: 500px;
+			margin: 0 20px;
+		}
+
+		.components-text-control__input {
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+			padding: 11px 16px;
+			margin-top: 8px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			background: rgb(249, 250, 251);
+			box-shadow: none;
+		}
+
+
+		@media screen and (max-width: 782px) {
+			display: none;
+		}
+	}
+
+
 }
