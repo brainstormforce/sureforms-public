@@ -73,8 +73,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
 			rootContainer?.classList.add( 'srfm-form-container' );
+			rootContainer.setAttribute("id", "srfm-form-container");
 		} else if ( rootContainerDiv ) {
 			rootContainerDiv?.classList.add( 'srfm-form-container' );
+			rootContainerDiv.setAttribute("id", "srfm-form-container");
 		}
 	};
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );

@@ -1,9 +1,21 @@
 body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + * {
     margin-top: 1.2em;
+} 
+
+div.is-root-container.srfm-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 620px;
+}
+
+div.is-root-container#srfm-form-container {
+    .srfm-block-single {
+        margin-left: 0 !important;
+    }
 }
 
 .srfm-form-container {
-    font-size: var(--srfm-font-size ); 
+    font-size: var(--srfm-font-size );
 
     // --srfm-primary-color : '#046bd2';
     --srfm-label-text-color : #1F2937;
@@ -27,6 +39,7 @@ body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__l
     // --srfm-error-background-color : '#FEF2F2';
      --srfm-border-radius: 8px;
      --srfm-border: 1px;
+
 
     .srfm-input-common {
         width: 100%;
@@ -60,7 +73,7 @@ body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__l
     .srfm-dropdown-common-wrap {
         select {
             max-width: 100%;
-        }
+        } 
     }
 
 

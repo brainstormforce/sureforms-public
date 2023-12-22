@@ -120,12 +120,12 @@ module.exports = function ( grunt ) {
 					// Generating RTL files from '/unminified/' into '/minified/'
 					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
 					{
-						src: 'assets/css/unminified/blocks/default/input-rtl.css',
-						dest: 'assets/css/minified/blocks/default/input.min-rtl.css',
+						src: 'assets/css/unminified/blocks/default/frontend.css',
+						dest: 'assets/css/minified/blocks/default/frontend.min-rtl.css',
 					},
 					{
-						src: 'assets/css/unminified/blocks/default/textarea-rtl.css',
-						dest: 'assets/css/minified/blocks/default/textarea.min-rtl.css',
+						src: 'assets/css/unminified/blocks/default/backend-rtl.css',
+						dest: 'assets/css/minified/blocks/default/backend.min-rtl.css',
 					},
 				],
 

@@ -49,8 +49,7 @@ class Number_Slider_Markup extends Base {
 <div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
 		<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
 		<div class="srfm-block-wrap">
-		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr($min); ?>%; --max:<?php echo esc_attr($max); ?>%; --value:<?php echo esc_attr($min); ?>%; --inverse:<?php echo esc_attr($inverse_value); ?>%;">
-			<div  class="srfm-<?php echo esc_attr( $slug ); ?>-inverse"></div>
+		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr($min); ?>%; --max:<?php echo esc_attr($max); ?>%; --value:<?php echo esc_attr($min); ?>%;">
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>"></div>
 			<span class="srfm-<?php echo esc_attr( $slug ); ?>-thumb"></span>
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>-sign">

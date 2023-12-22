@@ -12,7 +12,6 @@ function initializeNumberSlider() {
                     const currentValue = ((100/(parseInt(max)-parseInt(min)))*parseInt(value) - (100/(parseInt(max)-parseInt(min)))*parseInt(min));
                     parent.querySelector('.srfm-number-slider-sign span').textContent = value;
                     parent.style.setProperty('--value', currentValue + '%' );
-                    parent.style.setProperty('--inverse',  (100-currentValue) + '%');
                     target.setAttribute('value', value);
                 }
 			});

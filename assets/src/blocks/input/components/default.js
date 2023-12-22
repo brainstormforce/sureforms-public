@@ -20,7 +20,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				id={ `srfm-${slug}-confirm-${blockID}` }
 				type="text"
 				value={ defaultValue }
-				className={ 'srfm-input-common srfm-input-${slug}' }
+				className={ `srfm-input-common srfm-input-${slug}` }
 				placeholder={ placeholder }
 				required={ required }
 			/>

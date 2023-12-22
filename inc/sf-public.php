@@ -51,7 +51,7 @@ class SF_Public {
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
 		// Font Awesome icons.
-		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
+	//	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
 
 		// SureForms Theme styles CSS.
 		//wp_enqueue_style( SUREFORMS_SLUG . '-sureforms-frontend', $css_uri . 'srfm_theme_styles' . $file_prefix . '.css', [], SUREFORMS_VER );
@@ -60,10 +60,10 @@ class SF_Public {
 		// Extra.
 		//wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
-		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles-common', $css_uri . '/blocks/default/common' . $file_prefix . '.css', array(), SUREFORMS_VER );
-
-
+		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( SUREFORMS_SLUG . 'block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+
+
 		wp_enqueue_style( SUREFORMS_SLUG . '-form', $css_uri . 'form' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
@@ -72,7 +72,6 @@ class SF_Public {
 
 		// Flatpickr JS.
 		wp_enqueue_script( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_js.js', [], SUREFORMS_VER, true );
-
 
 		// Nice Select CSS.
 		wp_enqueue_style( 'nice-select', SUREFORMS_URL . 'assets/css/minified/vendor/nice-select2.css', [], SUREFORMS_VER );
@@ -130,14 +129,6 @@ class SF_Public {
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
 			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
 			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
-		}
-
-		$extra_blocks = ['input', 'email', 'common'];
-		$style_dep_blocks[] = array_merge( $script_dep_blocks, $extra_blocks );
-
-		if ( in_array( $block_name, isset( $style_dep_blocks[0] ) ? $style_dep_blocks[0] : '', true ) ) {
-			$css_uri      = SUREFORMS_URL . 'assets/css/' . $dir_name . '/blocks/default/';
-			wp_enqueue_style( SUREFORMS_SLUG . "-{$block_name}-block", $css_uri . $block_name . $file_prefix . '.css', [], SUREFORMS_VER );
 		}
 	}
 
