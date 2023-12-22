@@ -83,14 +83,6 @@ module.exports = function ( grunt ) {
 						dest: 'assets/css/minified/block-styles.min-rtl.css',
 					},
 					{
-						src: 'assets/css/unminified/sureforms-frontend-ui-styles-rtl.css',
-						dest: 'assets/css/minified/sureforms-frontend-ui-styles.min-rtl.css',
-					},
-					{
-						src: 'assets/css/unminified/srfm_theme_styles-rtl.css',
-						dest: 'assets/css/minified/srfm_theme_styles.min-rtl.css',
-					},
-					{
 						src: 'assets/css/unminified/form-archive-styles-rtl.css',
 						dest: 'assets/css/minified/form-archive-styles.min-rtl.css',
 					},
@@ -228,8 +220,16 @@ module.exports = function ( grunt ) {
 						// all .js to min.js
 						expand: true,
 						src: [ '**.js' ],
-						dest: 'assets/src/public/scripts/minified/blocks',
-						cwd: 'assets/src/public/scripts/unminified/blocks',
+						dest: 'assets/js/minified/',
+						cwd: 'assets/js/unminified/',
+						ext: '.min.js',
+					},
+					{ 
+						// all .js to min.js
+						expand: true,
+						src: [ '**.js' ],
+						dest: 'assets/js/minified/blocks',
+						cwd: 'assets/js/unminified/blocks',
 						ext: '.min.js',
 					},
 				],
