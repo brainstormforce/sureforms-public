@@ -42,7 +42,7 @@ class SF_Public {
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 		$js_uri = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
 		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
-		$css_vendor = SUREFORMS_URL . 'assets/css/minified/vendor/';
+		$css_vendor = SUREFORMS_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -113,7 +113,7 @@ class SF_Public {
 
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
 			$js_uri      = SUREFORMS_URL . 'assets/js/' . $dir_name . '/blocks/';
-			$js_vendor_uri      = SUREFORMS_URL . 'assets/js/minified/vendor/';
+			$js_vendor_uri      = SUREFORMS_URL . 'assets/js/minified/deps/';
 
 			if( 'phone' === $block_name ) {
 				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri .'intl/intTelInput.min.js', [], SUREFORMS_VER, true );

@@ -10,7 +10,7 @@ div.is-root-container.srfm-form-container {
 
 div.is-root-container#srfm-form-container {
     .srfm-block-single {
-        margin-left: 0 !important;
+        margin-left: 0 !important; // This is needed to get the field width working.
     }
 }
 
