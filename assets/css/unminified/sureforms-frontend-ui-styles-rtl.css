@@ -242,7 +242,8 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   justify-content: space-between;
   width: 100%;
 }
-.srfm-page-break-buttons .srfm-pre-btn, .srfm-page-break-buttons .srfm-nxt-btn {
+.srfm-page-break-buttons .srfm-pre-btn,
+.srfm-page-break-buttons .srfm-nxt-btn {
   padding: 13px 25px;
   border: none;
   background-color: var(--srfm-primary-color);
@@ -308,7 +309,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
   background-color: #ffffff;
-  border: 1.5px solid var(--Colors-gray-300, #D1D5DB);
+  border: 1.5px solid var(--Colors-gray-300, #d1d5db);
   color: var(--srfm-primary-color);
   font-weight: 700;
   border-radius: 50%;
@@ -322,7 +323,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle .srfm-circle-content {
-  color: var(--Colors-gray-300, #D1D5DB);
+  color: var(--Colors-gray-300, #d1d5db);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -347,7 +348,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   background-color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle.filled .srfm-circle-content {
-  color: var(--Colors-base-white, #FFF);
+  color: var(--Colors-base-white, #fff);
 }
 .srfm-page-break-header-container .srfm-page-break-steps {
   display: flex;
@@ -382,8 +383,8 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   position: relative;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round label {
-  background-color: #FFFFFF;
-  border: 1px solid #D1D5DB;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
   border-radius: 50%;
   cursor: pointer;
   height: 24px;
@@ -428,7 +429,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round label::before {
   content: "";
   position: absolute;
-  background-color: #D1D5DB;
+  background-color: #d1d5db;
   border-radius: 50%;
   width: 10px;
   height: 10px;
@@ -461,7 +462,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   width: 100%;
   height: 8px;
   border-radius: 50px;
-  background-color: #EAECF0;
+  background-color: #eaecf0;
   transition: width 300ms ease;
   -webkit-appearance: none;
   appearance: none;

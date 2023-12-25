@@ -11,6 +11,9 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
+import {
+	PanelRow
+} from '@wordpress/components';
 
 const Edit = ( { attributes, setAttributes } ) => {
 	const { label, preview } = attributes;
@@ -44,6 +47,14 @@ const Edit = ( { attributes, setAttributes } ) => {
 									setAttributes( { label: value } )
 								}
 							/>
+							<PanelRow>
+								<p className="srfm-settings-notice">
+									{ __(
+										'For the more options please select the Parent Form Block.',
+										'sureforms'
+									) }
+								</p>
+							</PanelRow>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
