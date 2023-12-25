@@ -44,6 +44,14 @@ module.exports = {
 			__dirname,
 			'assets/src/admin/single-form-settings/Editor.js'
 		),
+		formSubmitJS: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/form-submit.js'
+		),
+		pageBreakJS: path.resolve(
+			__dirname,
+			'assets/src/public/scripts/page-break.js'
+		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
 		flatpickr_css: path.resolve(
 			__dirname,

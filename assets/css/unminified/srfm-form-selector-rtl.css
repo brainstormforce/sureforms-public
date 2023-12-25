@@ -132,3 +132,7 @@
   width: -moz-fit-content;
   width: fit-content;
 }
+
+.srfm-progress-control {
+  margin-top: 25px;
+}

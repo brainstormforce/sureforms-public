@@ -522,7 +522,7 @@ body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container >
 		align-items: center;
 		gap: 8px;
 		align-self: stretch;
-		counter-increment: page-break;
+		// counter-increment: page-break;
 		.srfm-page-break-divider {
 			height: 1px;
 			flex: 1 0 0;
@@ -546,9 +546,9 @@ body .editor-styles-wrapper .block-editor-block-list__layout.is-root-container >
 				line-height: 20px;
 				margin: 0;
 				padding: 0;
-				&:after {
-					content: " - " counter( page-break );
-				}
+				// &:after {
+				// 	content: " - " counter( page-break );
+				// }
 			}
 		}
 	}

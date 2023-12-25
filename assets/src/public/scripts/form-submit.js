@@ -58,7 +58,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 	const fieldContainers = Array.from(
 		formContainer.querySelectorAll( '.srfm-main-container' )
 	);
-
 	for ( const container of fieldContainers ) {
 		const currentForm = container.closest( 'form' );
 		const currentFormId = currentForm.getAttribute( 'form-id' );
@@ -822,3 +821,5 @@ function onloadCallback() {
 		}
 	} );
 }
+
+export { getUniqueValidationData, fieldValidation, onloadCallback };

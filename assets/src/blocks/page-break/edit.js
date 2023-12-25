@@ -2,8 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -12,11 +11,9 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import widthOptions from '../width-options.json';
-import { FieldsPreview } from '../FieldsPreview.jsx';
 
-const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { label, fieldWidth, block_id, preview } = attributes;
+const Edit = ( { attributes, setAttributes } ) => {
+	const { label, preview } = attributes;
 
 	// show the block preview on hover.
 	// if ( preview ) {
@@ -36,17 +33,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							title={ __( 'Attributes', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
-								value={ fieldWidth }
-								options={ widthOptions }
-								onChange={ ( value ) =>
-									setAttributes( {
-										fieldWidth: Number( value ),
-									} )
-								}
-								__nextHasNoMarginBottom
-							/>
 							<SRFMTextControl
 								label={ __( 'Label', 'sureforms' ) }
 								value={ label }
@@ -76,7 +62,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<div className="srfm-page-break-wrapper">
 					<div className="srfm-page-break-divider"></div>
 					<div className="srfm-page-break-content">
-						<p>Page Break</p>
+						<p>{ label }</p>
 					</div>
 					<div className="srfm-page-break-divider"></div>
 				</div>

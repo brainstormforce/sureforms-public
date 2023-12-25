@@ -414,6 +414,8 @@ class Post_Types {
 			'_srfm_submit_width_backend'              => 'string',
 			'_srfm_submit_alignment_backend'          => 'string',
 			'_srfm_is_page_break'                     => 'boolean',
+			'_srfm_first_page_label'                  => 'string',
+			'_srfm_page_break_progress_indicator'     => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

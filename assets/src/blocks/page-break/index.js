@@ -1,8 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { RxSlider as icon } from 'react-icons/rx';
-
+import { MdInsertPageBreak as icon } from 'react-icons/md';
 /**
  * Internal dependencies
  */
