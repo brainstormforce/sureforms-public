@@ -15,12 +15,25 @@ module.exports = function ( grunt ) {
 			},
 			dist: {
 				files: [
-					/* Common Style */
 					{
 						expand: true,
 						cwd: 'sass/',
 						src: [ '**.scss' ],
 						dest: 'assets/css/unminified',
+						ext: '.css',
+					},
+					{
+						expand: true,
+						cwd: 'sass/fontend',
+						src: [ '**.scss' ],
+						dest: 'assets/css/unminified/frontend',
+						ext: '.css',
+					},
+					{
+						expand: true,
+						cwd: 'sass/backend',
+						src: [ '**.scss' ],
+						dest: 'assets/css/unminified/backend',
 						ext: '.css',
 					},
 					{
@@ -56,7 +69,7 @@ module.exports = function ( grunt ) {
 			},
 			style: {
 				expand: true,
-				src: [ 'assets/css/unminified/*.css', 'assets/css/unminified/blocks/default/*.css' ],
+				src: [ 'assets/css/unminified/*.css', 'assets/css/unminified/frontend/*.css','assets/css/unminified/backend/*.css', 'assets/css/unminified/blocks/default/*.css' ],
 			},
 
 		},
@@ -123,6 +136,38 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/template-picker-rtl.css',
 						dest: 'assets/css/minified/template-picker.min-rtl.css',
 					},
+					// Generated '.min.css' files from '.css' files.
+					// NOTE: Avoided '-rtl.css' files.
+					{
+						expand: true,
+						src: [ '**/*.css', '!**/*-rtl.css' ],
+						dest: 'assets/css/minified/frontend',
+						cwd: 'assets/css/unminified/frontend',
+						ext: '.min.css',
+					},
+
+					// Generating RTL files from '/unminified/' into '/minified/'
+					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
+					{
+						src: 'assets/css/unminified/frontend/form.css',
+						dest: 'assets/css/minified/frontend/form.min-rtl.css',
+					},
+					// Generated '.min.css' files from '.css' files.
+					// NOTE: Avoided '-rtl.css' files.
+					{
+						expand: true,
+						src: [ '**/*.css', '!**/*-rtl.css' ],
+						dest: 'assets/css/minified/backend',
+						cwd: 'assets/css/unminified/backend',
+						ext: '.min.css',
+					},
+
+					// Generating RTL files from '/unminified/' into '/minified/'
+					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
+					{
+						src: 'assets/css/unminified/backend/editor.css',
+						dest: 'assets/css/minified/backend/editor.min-rtl.css',
+					},
 				],
 
 			},
@@ -144,6 +189,20 @@ module.exports = function ( grunt ) {
 						cwd: 'assets/css/unminified/',
 						src: [ '*.css', '!*-rtl.css' ],
 						dest: 'assets/css/unminified',
+						ext: '-rtl.css',
+					},
+					{
+						expand: true,
+						cwd: 'assets/css/unminified/frontend',
+						src: [ '*.css', '!*-rtl.css' ],
+						dest: 'assets/css/unminified/frontend',
+						ext: '-rtl.css',
+					},
+					{
+						expand: true,
+						cwd: 'assets/css/unminified/backend',
+						src: [ '*.css', '!*-rtl.css' ],
+						dest: 'assets/css/unminified/backend',
 						ext: '-rtl.css',
 					},
 					{

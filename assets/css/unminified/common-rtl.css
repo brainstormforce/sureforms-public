@@ -1,0 +1,34 @@
+.srfm-form-container {
+  position: relative;
+}
+.srfm-form-container * {
+  box-sizing: border-box;
+}
+.srfm-form-container .srfm-block-width-25 {
+  width: calc(25% - 0.6em);
+}
+.srfm-form-container .srfm-block-width-33-33 {
+  width: calc(33.33% - 0.6em);
+}
+.srfm-form-container .srfm-block-width-50 {
+  width: calc(50% - 0.6em);
+}
+.srfm-form-container .srfm-block-width-100 {
+  width: 100%;
+}
+@media (max-width: 576px) {
+  .srfm-form-container .srfm-block-width-25,
+  .srfm-form-container .srfm-block-width-33-3,
+  .srfm-form-container .srfm-block-width-50 {
+    width: 100%;
+  }
+}
+.srfm-form-container .srfm-required {
+  color: var(--srfm-error-text-color);
+}
+.srfm-form-container .srfm-block-label {
+  display: block;
+}
+.srfm-form-container .srfm-input-common {
+  width: 100%;
+}

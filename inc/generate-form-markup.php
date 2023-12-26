@@ -191,9 +191,6 @@ class Generate_Form_Markup {
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
-				<div class="srfm-form-loader">
-					<div class="loader"></div>
-				</div>
 			<style>
 				<?php echo $container_id ?> {
 					--srfm-primary-color : <?php echo esc_html($primary_color_var); ?>;

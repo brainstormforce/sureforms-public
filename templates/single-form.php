@@ -83,7 +83,6 @@ use SureForms\Inc\Generate_Form_Markup;
 					<?php
 					echo esc_attr( $form_container_width . 'px' );
 					?>
-				
 			}
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
