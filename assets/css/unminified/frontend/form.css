@@ -1,6 +1,12 @@
 .srfm-form-container {
   position: relative;
 }
+.srfm-form-container .srfm-form {
+  margin: 0 -0.3em;
+}
+.srfm-form-container .srfm-form .srfm-block-single {
+  padding: 0 0.3em;
+}
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap {
   display: inline-block;
   width: 100%;

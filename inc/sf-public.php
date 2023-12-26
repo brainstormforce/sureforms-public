@@ -55,7 +55,8 @@ class SF_Public {
 		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
 		// Common styles for all meta styles.
-		wp_enqueue_style( SUREFORMS_SLUG . 'block-styles', $css_uri . 'block-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
 
 		if( is_single() ) {
 			wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
@@ -68,7 +69,7 @@ class SF_Public {
 		wp_enqueue_style( 'nice-select', $css_vendor . 'nice-select2.css', [], SUREFORMS_VER );
 		// Int-tel-input CSS.
 		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SUREFORMS_VER );
-	
+
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SUREFORMS_SLUG . '-form-submit', $js_uri . 'form-submit' . $file_prefix . '.js',  [], SUREFORMS_VER, true );
 		wp_enqueue_script( SUREFORMS_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js',  [], SUREFORMS_VER, true );

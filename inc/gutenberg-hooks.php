@@ -67,7 +67,6 @@ class Gutenberg_Hooks {
 				'sureforms/email',
 				'sureforms/textarea',
 				'sureforms/number',
-				'sureforms/switch',
 				'sureforms/checkbox',
 				'sureforms/phone',
 				'sureforms/address',

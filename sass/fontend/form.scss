@@ -2,6 +2,12 @@
 	position: relative;
 
 	.srfm-form {
+		margin: 0 -.3em;
+
+		.srfm-block-single {
+			padding: 0 .3em;
+		}
+
 		.srfm-block {
 			.srfm-dropdown-common-wrap {
 				display: inline-block;

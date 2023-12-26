@@ -5,13 +5,13 @@
   box-sizing: border-box;
 }
 .srfm-form-container .srfm-block-width-25 {
-  width: calc(25% - 0.6em);
+  width: 25%;
 }
 .srfm-form-container .srfm-block-width-33-33 {
-  width: calc(33.33% - 0.6em);
+  width: 33.33%;
 }
 .srfm-form-container .srfm-block-width-50 {
-  width: calc(50% - 0.6em);
+  width: 50%;
 }
 .srfm-form-container .srfm-block-width-100 {
   width: 100%;

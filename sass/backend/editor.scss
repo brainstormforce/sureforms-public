@@ -1,5 +1,6 @@
 body.post-type-sureforms_form {
 
+	// Sidebar Override.
 	.edit-post-sidebar {
 		> .components-panel {
 			> .components-panel__body.is-opened {
@@ -18,14 +19,33 @@ body.post-type-sureforms_form {
 		}
 	} 
 
+
+	.block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input) {
+		transition: .3s;
+
+		&:hover {
+			box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+		}
+	}
+
+	// Block override.
     .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *, 
 	.editor-styles-wrapper :where(body .is-layout-constrained) > :first-child:first-child {
 		margin-top: 1.2em;
 	}
 
-    div.is-root-container#srfm-form-container {
+	.editor-styles-wrapper {
+		width: 100%;
         max-width: 620px;
 		margin: 0 auto;
+		background-color: #fff;
+	}
+
+    div.is-root-container#srfm-form-container {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0;
+		margin: 0 -0.3em;
 
         .srfm-block-single {
             padding: 0 0.3em;
@@ -67,4 +87,51 @@ body.post-type-sureforms_form {
 			display: none;
 		}
 	}
+
+	// Plus button, Block appended.
+
+	// Add submit button below the Block Appender.
+	.block-list-appender {
+		width: calc( 100% - 20px );
+
+		.block-editor-button-block-appender.components-button.components-button {
+			box-shadow: none;
+			border: 1px dashed #959595;
+			padding: 24px;
+			svg {
+				width: 30px;
+				height: 30px;
+				color: white;
+				background-color: #555d66;
+				border-radius: 100%;
+			}
+		}
+		
+
+		.block-editor-inserter {
+			position: relative;
+			&:after {
+				max-width: var( --srfm_submit_width_backend );
+				width: 100%;
+				margin-top: 20px;
+				display: inline-block;
+				position: absolute;
+				margin-left: auto;
+				content: var( --srfm_submit_button_text );
+				line-height: 12px;
+				box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+				border: none;
+				border-radius: 6px;
+				padding: 13px 25px;
+				background: var( --srfm-primary-color );
+				color: var( --srfm-primary-text-color );
+				text-align: center;
+				right: var( --srfm_submit_alignment_backend );
+				transform: translateX( var( --srfm_submit_alignment_backend ) );
+				letter-spacing: inherit;
+				font-weight: inherit;
+			}
+		}
+	}
 }
+

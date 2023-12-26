@@ -2,7 +2,6 @@
     .srfm-form {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
 
         .srfm-block {
             margin-bottom: 1.2em;
@@ -117,39 +116,4 @@
             width: 100%;
         }
     }
-}
-
-
-.srfm-success-box {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    &.srfm-active {
-        display: flex;
-    }
-
-    .srfm-success-box-header {
-        .rfm-check-circle-icon {
-            display: block;
-            width: 2em;
-            text-align: center;
-            margin: 0 auto;
-
-            svg {
-                fill: var(--srfm-primary-color);
-            }
-        }
-
-        h2 {
-            font-size: 2em;
-            font-weight: 500;
-            color: var(--srfm-primary-color);
-        }
-    }
-
-    .srfm-success-box-subtxt {
-        font-size: 1em;
-    }    
 }
