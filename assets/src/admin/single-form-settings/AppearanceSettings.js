@@ -323,27 +323,25 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._srfm_form_styling && (
-					<Range
-						label={ __( 'Font size', 'sureforms' ) }
-						help={ __(
-							'Customize the form font size.',
-							'sureforms'
-						) }
-						value={ sureforms_keys._srfm_fontsize }
-						min={ 16 }
-						max={ 24 }
-						displayUnit={ false }
-						data={ {
-							value: sureforms_keys._srfm_fontsize,
-							label: '_srfm_fontsize',
-						} }
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_fontsize', value )
-						}
-						isFormSpecific={ true }
-					/>
-				) }
+				<Range
+					label={ __( 'Font size', 'sureforms' ) }
+					help={ __(
+						'Customize the form font size.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._srfm_fontsize }
+					min={ 16 }
+					max={ 24 }
+					displayUnit={ false }
+					data={ {
+						value: sureforms_keys._srfm_fontsize,
+						label: '_srfm_fontsize',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_fontsize', value )
+					}
+					isFormSpecific={ true }
+				/>
 				<Range
 					label={ __( 'Form Container Width(px)', 'sureforms' ) }
 					help={ __(
