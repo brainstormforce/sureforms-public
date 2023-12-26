@@ -1,5 +1,23 @@
 body.post-type-sureforms_form {
 
+	.edit-post-sidebar {
+		> .components-panel {
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				>.components-panel__body-title {
+					display: none;
+				}
+			}
+			> .components-panel__body {
+				&.edit-post-post-status.is-opened {
+					display: none;
+				}
+			}
+		}
+	} 
+
     .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *, 
 	.editor-styles-wrapper :where(body .is-layout-constrained) > :first-child:first-child {
 		margin-top: 1.2em;

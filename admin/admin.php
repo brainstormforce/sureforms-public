@@ -198,13 +198,13 @@ class Admin {
 
 		// Enqueue editor styles for post and page.
 		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type ) {
-
 			wp_enqueue_style( SUREFORMS_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 			wp_enqueue_style( 'srfm-backend-block', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
 			wp_enqueue_style( 'intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', [], SUREFORMS_VER, 'all' );
 		}
+
+		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 	}
 
 	/**

@@ -1,3 +1,13 @@
+body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.is-opened {
+  padding: 0 !important;
+  width: 100%;
+}
+body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.is-opened > .components-panel__body-title {
+  display: none;
+}
+body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.edit-post-post-status.is-opened {
+  display: none;
+}
 body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
 body.post-type-sureforms_form .editor-styles-wrapper :where(body .is-layout-constrained) > :first-child:first-child {
   margin-top: 1.2em;
