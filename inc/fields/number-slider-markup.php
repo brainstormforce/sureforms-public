@@ -43,6 +43,9 @@ class Number_Slider_Markup extends Base {
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
 		$inverse_value = $max - $min;
+		$input_label_fallback = $label ? $label : 'Number Slider';
+		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+
 		ob_start(); ?>
 
 
@@ -56,7 +59,7 @@ class Number_Slider_Markup extends Base {
 				<span><?php echo esc_attr($min); ?></span>
 			</div>
 		</div>
-		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" type="range" tabindex="0" value="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" min="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
+		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" type="range" tabindex="0" value="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" min="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
 		</div>
 		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
 		</div>

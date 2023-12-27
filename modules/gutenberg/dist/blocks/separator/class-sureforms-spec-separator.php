@@ -418,6 +418,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 
 			$main_classes = array(
 				'wp-block-uagb-separator',
+				'uagb-block',
 				'uagb-block-' . $block_id,
 				$element_type_css,
 			);

@@ -2,7 +2,6 @@ import inputAttributes from '@Blocks/input/block.json';
 import emailAttributes from '@Blocks/email/block.json';
 import numberSliderAttributes from '@Blocks/number-slider/block.json';
 import phoneAttributes from '@Blocks/phone/block.json';
-import switchAttributes from '@Blocks/switch/block.json';
 import textareaAttributes from '@Blocks/textarea/block.json';
 import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
@@ -40,7 +39,6 @@ export const blocksAttributes = {
 	upload: uploadAttributes.attributes,
 	'number-slider': numberSliderAttributes.attributes,
 	phone: phoneAttributes.attributes,
-	switch: switchAttributes.attributes,
 	textarea: textareaAttributes.attributes,
 	url: urlAttributes.attributes,
 	number: numberAttributes.attributes,

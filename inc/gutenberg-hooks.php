@@ -214,7 +214,6 @@ class Gutenberg_Hooks {
 				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
 				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
 				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'switch_preview'        => SUREFORMS_URL . 'images/field-previews/switch.svg',
 				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
 				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
 				'rating_preview'        => SUREFORMS_URL . 'images/field-previews/rating.svg',

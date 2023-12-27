@@ -47,11 +47,17 @@ body.post-type-sureforms_form {
 		padding: 0;
 		margin: 0 -0.3em;
 
-        .srfm-block-single {
-            padding: 0 0.3em;
-            margin-left: 0!important; // This is needed to get the field width working.
-            margin-right: 0!important; // This is needed to get the field width working.
-        }
+		.block-editor-block-list__block {
+			&.srfm-block-single,&[data-type="sureforms/image"],&[data-type="sureforms/separator"], &[data-type="sureforms/advanced-heading"], &[data-type="sureforms/icon"]  {
+				padding: 0 0.3em;
+				margin-left: 0!important; // This is needed to get the field width working.
+				margin-right: 0!important; // This is needed to get the field width working.
+			}
+
+			&[data-type="sureforms/image"],&[data-type="sureforms/separator"], &[data-type="sureforms/advanced-heading"], &[data-type="sureforms/icon"] {
+				width: 100%;
+			}
+		}
     }
 
     // Editor custom title.

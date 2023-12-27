@@ -14,10 +14,12 @@ function initializeTextarea() {
 						const counterDiv = areaInput.querySelector(
 							'.srfm-text-counter'
 						);
-						const remainingLength =
+						if( counterDiv ) {
+							const remainingLength =
 							maxLength - textAreaValue.length;
-						counterDiv.innerText =
-							remainingLength + '/' + maxLength;
+							counterDiv.innerText =
+								remainingLength + '/' + maxLength;
+						}
 					}
 				} );
 			}

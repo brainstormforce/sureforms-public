@@ -4,8 +4,13 @@
 	.srfm-form {
 		margin: 0 -.3em;
 
-		.srfm-block-single {
-			padding: 0 .3em;
+		.srfm-block-single, .uagb-block {
+			padding: 0 0.3em;
+		}
+
+		.uagb-block {
+			margin-bottom: 1.2em;
+			width: 100%;
 		}
 
 		.srfm-block {

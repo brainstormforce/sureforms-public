@@ -129,7 +129,8 @@ class Email_Template {
 					$value
 				);
 			} else {
-				$field_label = ucfirst( explode( 'SF-divider', $field_name )[0] );
+				$field_label = ucfirst( explode( '-srfm-', $field_name )[0] );
+		
 				$message    .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>

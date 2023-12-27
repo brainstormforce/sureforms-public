@@ -44,10 +44,13 @@ class Checkbox_Markup extends Base {
 		// html attributes
 		$aria_require_attr = $required ? 'true' : 'false';
 		$checked_attr = $checked ? 'checked' : '';
+		$input_label_fallback = $label ? $label : 'Checkbox';
+		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
 						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
 							<span class="srfm-span-wrap">
 								<svg class="srfm-check-icon" width="12px" height="10px">

@@ -431,6 +431,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 function submitFormData( form ) {
 	const site_url = sureforms_submit.site_url;
+
+	console.log(form);
+
 	const formData = new FormData( form );
 	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',

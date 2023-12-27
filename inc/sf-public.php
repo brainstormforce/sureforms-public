@@ -107,7 +107,7 @@ class SF_Public {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'sureforms/', '', $block_type );
-		$script_dep_blocks = [ 'rating', 'upload', 'switch', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+		$script_dep_blocks = [ 'rating', 'upload', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
