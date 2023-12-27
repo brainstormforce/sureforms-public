@@ -98,11 +98,18 @@ class Email_Template {
 		$field_index     = 1;
 		foreach ( $fields as $field_name => $value ) {
 			$bg_color = ( $field_index % 2 ) === 0 ? '#ffffff' : '#f2f2f2;';
-			if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
+			if ( in_array( $field_name, $excluded_fields, true ) ) {
 				continue;
 			}
-			if ( strpos( $field_name, 'SF-upload' ) !== false ) {
-				$field_label = ucfirst( explode( 'SF-upload', $field_name )[0] );
+
+			if( false === str_contains($field_name, '-lbl-') ) {
+				continue;
+			}
+
+			$label = explode( '-lbl-', $field_name )[1];
+
+			if ( strpos( $field_name, 'srfm-upload' ) !== false ) {
+				$field_label = $label ? esc_html(base64_decode( $label )) : '';
 				$message    .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>
@@ -111,8 +118,8 @@ class Email_Template {
 					$field_label,
 					$value
 				);
-			} elseif ( strpos( $field_name, 'SF-url' ) !== false ) {
-				$field_label = ucfirst( explode( 'SF-url', $field_name )[0] );
+			} elseif ( strpos( $field_name, 'srfm-url' ) !== false ) {
+				$field_label = $label ? esc_html(base64_decode( $label )) : '';
 				if (
 					substr( $value, 0, 7 ) !== 'http://' &&
 					substr( $value, 0, 8 ) !== 'https://'
@@ -129,8 +136,7 @@ class Email_Template {
 					$value
 				);
 			} else {
-				$field_label = ucfirst( explode( '-srfm-', $field_name )[0] );
-		
+				$field_label = $label ? esc_html(base64_decode( $label )) : '';
 				$message    .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>
