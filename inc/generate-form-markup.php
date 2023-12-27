@@ -188,6 +188,7 @@ class Generate_Form_Markup {
 			$border_var             = $border ? $border : '1px';
 			$border_radius_var      = $border_radius ? $border_radius : '8px';
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
+			$bg_image 				= $background_image_url ? 'url('.$background_image_url.')' : '';
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
@@ -217,6 +218,7 @@ class Generate_Form_Markup {
 					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
 					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
 					--srfm-border: <?php echo esc_html( $border_var ); ?>;
+					--srfm-bg-image: <?php echo $bg_image; ?>;
 					font-size: var(--srfm-font-size );
 				}
 			</style>

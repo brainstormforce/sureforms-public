@@ -1,5 +1,9 @@
 .srfm-form-container {
   position: relative;
+  padding: 1em;
+  background-image: var(--srfm-bg-image);
+  background-size: cover;
+  background-position: center;
 }
 .srfm-form-container * {
   box-sizing: border-box;

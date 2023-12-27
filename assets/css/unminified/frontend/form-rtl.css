@@ -4,7 +4,8 @@
 .srfm-form-container .srfm-form {
   margin: 0 -0.3em;
 }
-.srfm-form-container .srfm-form .srfm-block-single, .srfm-form-container .srfm-form .uagb-block {
+.srfm-form-container .srfm-form .srfm-block-single,
+.srfm-form-container .srfm-form .uagb-block {
   padding: 0 0.3em;
 }
 .srfm-form-container .srfm-form .uagb-block {

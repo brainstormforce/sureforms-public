@@ -1,12 +1,12 @@
 .srfm-form-container {
   font-size: var(--srfm-font-size);
-  --srfm-label-text-color: #1F2937;
-  --srfm-body-input-color: #4B5563;
-  --srfm-placeholder-color: #9CA3AF;
-  --srfm-border-color: #D1D5DB;
-  --srfm-help-color: #6B7280;
-  --srfm-base-background-color: #FFFFFF;
-  --srfm-error-text-color: #DC2626;
+  --srfm-label-text-color: #1f2937;
+  --srfm-body-input-color: #4b5563;
+  --srfm-placeholder-color: #9ca3af;
+  --srfm-border-color: #d1d5db;
+  --srfm-help-color: #6b7280;
+  --srfm-base-background-color: #ffffff;
+  --srfm-error-text-color: #dc2626;
   --srfm-border-radius: 8px;
   --srfm-border: 1px;
 }
@@ -28,7 +28,8 @@
   line-height: normal;
   color: var(--srfm-label-text-color);
 }
-.srfm-form-container .srfm-block-text.srfm-required::after, .srfm-form-container .srfm-block-label.srfm-required::after {
+.srfm-form-container .srfm-block-text.srfm-required::after,
+.srfm-form-container .srfm-block-label.srfm-required::after {
   content: " *";
   color: var(--srfm-error-text-color);
 }
@@ -229,7 +230,7 @@
   left: 0;
   right: 0;
   height: 0.5em;
-  background-color: #CCC;
+  background-color: #ccc;
   border-radius: var(--srfm-border-radius);
   margin: 0 0.5em;
 }

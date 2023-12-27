@@ -73,7 +73,7 @@ use SureForms\Inc\Generate_Form_Markup;
 	}
 	?>
 		<style>
-			#srfm-single-form-page {
+			#srfm-single-page-container {
 				--srfm-primary-text-color: 
 					<?php
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
@@ -92,7 +92,6 @@ use SureForms\Inc\Generate_Form_Markup;
 				<?php endif; ?>
 			</div>
 			<div class="srfm-form-wrapper">
-			<div class="srfm-form-inner-wrapper">
 				<?php
 					// phpcs:ignore
 					echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
@@ -130,7 +129,6 @@ use SureForms\Inc\Generate_Form_Markup;
 						$form_path = isset( $segments[1] ) ? $segments[1] : '';
 						wp_footer();
 						?>
-			</div>
 		</div>
 		</div>
 	</body>
