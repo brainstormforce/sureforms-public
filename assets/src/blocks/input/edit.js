@@ -193,9 +193,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<>
 				<InputComponent
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
+					blockID={ block_id }
+					setAttributes={ setAttributes }
+					attributes={ attributes }
 				/>
 
 				{ help !== '' && (

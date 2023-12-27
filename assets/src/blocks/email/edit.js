@@ -182,23 +182,21 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-				<EmailComponent
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
+			<EmailComponent
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+				attributes={ attributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
 				/>
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
+			) }
 		</>
 	);
 };

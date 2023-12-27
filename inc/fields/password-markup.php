@@ -35,46 +35,46 @@ class Password_Markup extends Base {
 		$error_msg           = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$is_confirm_password = isset( $attributes['isConfirmPassword'] ) ? $attributes['isConfirmPassword'] : false;
 		$confirm_label       = isset( $attributes['confirmLabel'] ) ? $attributes['confirmLabel'] : '';
-		$class_name           = isset( $attributes['className'] ) ? ' '. $attributes['className'] : '';
+		$class_name          = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id            = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$slug = 'password';
+		$slug                = 'password';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
 		// html attributes
-		$aria_require_attr = $required ? 'true' : 'false';
-		$placeholder_attr = $placeholder ? ' placeholder="'. $placeholder .'" ' : '';
+		$aria_require_attr    = $required ? 'true' : 'false';
+		$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
 		$input_label_fallback = $label ? $label : 'Password';
-		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 		$input_confirm_label_fallback = 'Password Confirm';
-		$input_confirm_label = '-lbl-' . base64_encode($input_confirm_label_fallback);
+		$input_confirm_label          = '-lbl-' . base64_encode( $input_confirm_label_fallback );
 
-	ob_start(); ?>
+		ob_start(); ?>
 		<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
-			<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post(  $placeholder_attr ); ?>/>
-				<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr ); ?>/>
+				<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
 			</div>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
 		</div>
-		<?php if( true === $is_confirm_password ) { ?>
+		<?php if ( true === $is_confirm_password ) { ?>
 			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
-				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $confirm_label, $slug .'-confirm', $block_id, $required )); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $confirm_label, $slug . '-confirm', $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_confirm_label); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post(  $placeholder_attr ); ?>/>
-					<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_confirm_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr ); ?>/>
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
 			</div>
 		<?php } ?>
 		</div>
-	<?php
+		<?php
 
-	return ob_get_clean();
+		return ob_get_clean();
 	}
 }

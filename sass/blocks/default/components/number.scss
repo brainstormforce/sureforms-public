@@ -1,12 +1,12 @@
 .srfm-form-container {
-    .srfm-form {
-        .srfm-number-block {
-            .srfm-input-number {
-                &::-webkit-inner-spin-button,
-                &::-webkit-outer-spin-button {
-                    appearance: none;
-                }
-            }
-        }
-    }
+	.srfm-form {
+		.srfm-number-block {
+			.srfm-input-number {
+				&::-webkit-inner-spin-button,
+				&::-webkit-outer-spin-button {
+					appearance: none;
+				}
+			}
+		}
+	}
 }

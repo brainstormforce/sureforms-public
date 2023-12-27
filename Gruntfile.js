@@ -69,7 +69,7 @@ module.exports = function ( grunt ) {
 			},
 			style: {
 				expand: true,
-				src: [ 'assets/css/unminified/*.css', 'assets/css/unminified/frontend/*.css','assets/css/unminified/backend/*.css', 'assets/css/unminified/blocks/default/*.css' ],
+				src: [ 'assets/css/unminified/*.css', 'assets/css/unminified/frontend/*.css', 'assets/css/unminified/backend/*.css', 'assets/css/unminified/blocks/default/*.css' ],
 			},
 
 		},
@@ -292,7 +292,7 @@ module.exports = function ( grunt ) {
 		uglify: {
 			js: {
 				files: [
-					{ 
+					{
 						// all .js to min.js
 						expand: true,
 						src: [ '**.js' ],
@@ -300,7 +300,7 @@ module.exports = function ( grunt ) {
 						cwd: 'assets/js/unminified/',
 						ext: '.min.js',
 					},
-					{ 
+					{
 						// all .js to min.js
 						expand: true,
 						src: [ '**.js' ],

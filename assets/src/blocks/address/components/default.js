@@ -19,7 +19,7 @@ export const AddressBlock = ( {
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "address";
+	const slug = 'address';
 	return (
 		<>
 			<RichText
@@ -33,38 +33,40 @@ export const AddressBlock = ( {
 			<div className="srfm-block-wrap">
 				<input
 					type="text"
-					className={`srfm-input-common srfm-input-${slug}-line-1`}
-					id={ `srfm-${slug}-line-1-${ blockID }` }
+					className={ `srfm-input-common srfm-input-${ slug }-line-1` }
+					id={ `srfm-${ slug }-line-1-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ lineOnePlaceholder }
 					readOnly
 				/>
 				<input
 					type="text"
-					className={`srfm-input-common srfm-input-${slug}-line-2`}
-					id={ `srfm-${slug}-line-2-${ blockID }` }
+					className={ `srfm-input-common srfm-input-${ slug }-line-2` }
+					id={ `srfm-${ slug }-line-2-${ blockID }` }
 					placeholder={ lineTwoPlaceholder }
 					readOnly
 				/>
 				<input
 					type="text"
-					className={`srfm-input-common srfm-input-${slug}-city`}
-					id={ `srfm-${slug}-city-${ blockID }` }
+					className={ `srfm-input-common srfm-input-${ slug }-city` }
+					id={ `srfm-${ slug }-city-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ cityPlaceholder }
 					readOnly
 				/>
 				<input
 					type="text"
-					className={`srfm-input-common srfm-input-${slug}-state`}
-					id={ `srfm-${slug}-state-${ blockID }` }
+					className={ `srfm-input-common srfm-input-${ slug }-state` }
+					id={ `srfm-${ slug }-state-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ statePlaceholder }
 					readOnly
 				/>
-				<div className={`srfm-${slug}-country-wrap srfm-dropdown-common-wrap`}>
+				<div
+					className={ `srfm-${ slug }-country-wrap srfm-dropdown-common-wrap` }
+				>
 					<select
-						id={ `srfm-${slug}-country-${ blockID }` }
+						id={ `srfm-${ slug }-country-${ blockID }` }
 						autoComplete="country-name"
 						className="srfm-input-common srfm-input-address-country srfm-dropdown-common"
 						readOnly
@@ -78,10 +80,10 @@ export const AddressBlock = ( {
 						) }
 					</select>
 				</div>
-				<input 
+				<input
 					type="text"
-					className={`srfm-input-common srfm-input-${slug}-postal-code`}
-					id={ `srfm-${slug}-postal-${ blockID }` }
+					className={ `srfm-input-common srfm-input-${ slug }-postal-code` }
+					id={ `srfm-${ slug }-postal-${ blockID }` }
 					aria-required={ required ? 'true' : 'false' }
 					placeholder={ postalPlaceholder }
 					readOnly

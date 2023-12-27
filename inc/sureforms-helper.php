@@ -95,30 +95,31 @@ class Sureforms_Helper {
 	 * @return array<mixed>
 	 * @since 0.0.1
 	 */
-	public static function GenerateCommonFormMarkup( $type, $label = '',  $slug = '', $block_id = '', $required = '',  $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
-		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="'. $duplicate_msg . '"' : '';
+	public static function GenerateCommonFormMarkup( $type, $label = '', $slug = '', $block_id = '', $required = '', $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
+		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
-		switch ($type) {
-			case "label":
-				return $label ? '<label for="srfm-'. $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ($required ? '<span class="srfm-required"> *</span>' : '') . '</label>' : '';
+		switch ( $type ) {
+			case 'label':
+				return $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 			  break;
-			case "help":
+			case 'help':
 				return $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
 			  break;
-			case "error":
-				return $required || $override ? '<div class="srfm-error-message" data-error-msg="'. $error_msg .'"' . $duplicate_msg .'>' . esc_html( $error_msg ) . '</div>' : '';
-			  	break;
-			case "is_unique":
+			case 'error':
+				return $required || $override ? '<div class="srfm-error-message" data-error-msg="' . $error_msg . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				break;
+			case 'is_unique':
 				return $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			default:
-			 return '';
-		  }
+				return '';
+		}
 	}
 
 
 	/**
 	 * Get an SVG Icon
+	 *
 	 * @since 0.0.1
 	 * @param string $icon the icon name.
 	 * @param bool   $class if the baseline class should be added.
@@ -126,18 +127,17 @@ class Sureforms_Helper {
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
 
-		$output = '<span class="srfm-icon'. $class .'" '. $html . '>';
-			if ( ! self::$srfm_svgs ) {
-				ob_start();
-				include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
-				self::$srfm_svgs = json_decode( ob_get_clean(), true );
-				self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
-			}
-
+		$output = '<span class="srfm-icon' . $class . '" ' . $html . '>';
+		if ( ! self::$srfm_svgs ) {
+			ob_start();
+			include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
+			self::$srfm_svgs = json_decode( ob_get_clean(), true );
+			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
+		}
 
 			$output .= isset( self::$srfm_svgs[ $icon ] ) ? self::$srfm_svgs[ $icon ] : '';
 			$output .= '</span>';
 
 			return $output;
-		}
+	}
 }

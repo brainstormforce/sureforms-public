@@ -35,29 +35,33 @@ class Checkbox_Markup extends Base {
 		$label_url   = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
 		$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$class_name   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$slug = 'checkbox';
+		$slug        = 'checkbox';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-		
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
 		// html attributes
-		$aria_require_attr = $required ? 'true' : 'false';
-		$checked_attr = $checked ? 'checked' : '';
+		$aria_require_attr    = $required ? 'true' : 'false';
+		$checked_attr         = $checked ? 'checked' : '';
 		$input_label_fallback = $label ? $label : 'Checkbox';
-		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
 						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
 							<span class="srfm-span-wrap">
 								<svg class="srfm-check-icon" width="12px" height="10px">
 									<use xlink:href="#srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check"></use>
 								</svg>
 							</span>
-							<span class="srfm-block-text srfm-span-wrap"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>': esc_html( $label ); ?><?php if( $required ){ ?><span class="srfm-required"> *</span><?php } ?></span>
+							<span class="srfm-block-text srfm-span-wrap"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>' : esc_html( $label ); ?>
+																					<?php
+																					if ( $required ) {
+																						?>
+								<span class="srfm-required"> *</span><?php } ?></span>
 						</label>
 						<svg class="srfm-inline-svg">
 							<symbol id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check" viewbox="0 0 12 10">
@@ -65,8 +69,8 @@ class Checkbox_Markup extends Base {
 							</symbol>
 						</svg>
 					</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>
 		<?php
 

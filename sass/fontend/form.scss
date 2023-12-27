@@ -1,10 +1,12 @@
-.srfm-form-container { // This is the parent form class. Adds specificity so that there is no conflict.
+.srfm-form-container {
+	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 
 	.srfm-form {
-		margin: 0 -.3em;
+		margin: 0 -0.3em;
 
-		.srfm-block-single, .uagb-block {
+		.srfm-block-single,
+		.uagb-block {
 			padding: 0 0.3em;
 		}
 
@@ -21,18 +23,18 @@
 				select {
 					display: block;
 				}
-				.nice-select  {
+				.nice-select {
 					width: 100%;
 
 					&.open {
 						.nice-select-dropdown {
-							transform: scale(1) translateY(0);
+							transform: scale( 1 ) translateY( 0 );
 						}
 					}
 
 					.nice-select-dropdown {
 						width: 100%;
-						transform: scale(1) translateY(1em);
+						transform: scale( 1 ) translateY( 1em );
 
 						.list {
 							margin: 0;
@@ -42,18 +44,17 @@
 			}
 
 			&.srfm-phone-block {
-
 				.iti__country-list {
 					display: block;
-					border: var(--srfm-border) solid var(--srfm-border-color);
-               		border-radius: var(--srfm-border-radius);
-					transform: translateY(0);
+					border: var( --srfm-border ) solid var( --srfm-border-color );
+					border-radius: var( --srfm-border-radius );
+					transform: translateY( 0 );
 					opacity: 1;
-					transition:  .2s cubic-bezier(0.5, 0, 0, 1.25),opacity .15s ease-out;
+					transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
 
 					&.iti__hide {
 						display: block;
-						transform: translateY(1em);
+						transform: translateY( 1em );
 						opacity: 0;
 						visibility: hidden;
 					}
@@ -67,21 +68,21 @@
 	}
 
 	.srfm-submit-button {
-			.srfm-loader {
-				display: none;
-				border: 2px solid var(--srfm-base-background-color);
-				border-radius: 50%;
-				border-top: 2px solid var(--srfm-primary-color);
-				width: 1.2em;
-				height: 1.2em;
-				-webkit-animation: spin 2s linear infinite;
-				animation: spin 2s linear infinite;
-				margin-left: 0.5em;
+		.srfm-loader {
+			display: none;
+			border: 2px solid var( --srfm-base-background-color );
+			border-radius: 50%;
+			border-top: 2px solid var( --srfm-primary-color );
+			width: 1.2em;
+			height: 1.2em;
+			-webkit-animation: spin 2s linear infinite;
+			animation: spin 2s linear infinite;
+			margin-left: 0.5em;
 
-				&.srfm-active {
-					display: block;
-				}
+			&.srfm-active {
+				display: block;
 			}
+		}
 
 		.srfm-submit-wrap {
 			display: flex;
@@ -96,34 +97,34 @@
 		justify-content: center;
 		flex-direction: column;
 		min-height: 600px;
-	
+
 		&.srfm-active {
 			display: flex;
 		}
-	
+
 		.srfm-success-box-header {
 			.srfm-check-circle-icon {
 				display: block;
 				width: 2em;
 				text-align: center;
 				margin: 0 auto;
-	
+
 				svg {
-					stroke: var(--srfm-primary-color);
+					stroke: var( --srfm-primary-color );
 				}
 			}
-	
+
 			h2 {
 				font-size: 1.5em;
 				font-weight: 500;
-				color: var(--srfm-primary-color);
+				color: var( --srfm-primary-color );
 				margin-top: 0;
 				margin-bottom: 0.2em;
 			}
 		}
-	
+
 		.srfm-success-box-description {
-			font-size: .8em;
+			font-size: 0.8em;
 
 			p {
 				margin: 0;

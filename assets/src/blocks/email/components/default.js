@@ -17,7 +17,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	return (
 		<>
-			<div className={`srfm-block srfm-${slug}-block`}>
+			<div className={ `srfm-block srfm-${ slug }-block` }>
 				<RichText
 					tagName="label"
 					value={ label }
@@ -28,37 +28,37 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 				/>
 				<div className="srfm-block-wrap">
 					<input
-						id={ `srfm-${slug}-${blockID}` }
+						id={ `srfm-${ slug }-${ blockID }` }
 						type="email"
 						value={ defaultValue }
-						className={ `srfm-input-common srfm-input-${slug}` }
+						className={ `srfm-input-common srfm-input-${ slug }` }
 						placeholder={ placeholder }
 						required={ required }
 					/>
 				</div>
 			</div>
 
-				{ isConfirmEmail && (
-					<div className={`srfm-block srfm-${slug}-confirm-block`}>
-						<label
-							className="srfm-block-label"
-							htmlFor={ `srfm-${slug}-confirm-${blockID}` }
-						>
-							{ confirmLabel }
-							{ required && label && (
-								<span className="srfm-required"> *</span>
-							) }
-						</label>
-						<div className="srfm-block-wrap">
-							<input
-								id={ `srfm-${slug}-confirm-${blockID}` }
-								type="email"
-								value={ defaultValue }
-								className={ `srfm-input-common srfm-${slug}-email-confirm` }
-								placeholder={ placeholder }
-								required={ required }
-							/>
-						</div>
+			{ isConfirmEmail && (
+				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
+					<label
+						className="srfm-block-label"
+						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
+					>
+						{ confirmLabel }
+						{ required && label && (
+							<span className="srfm-required"> *</span>
+						) }
+					</label>
+					<div className="srfm-block-wrap">
+						<input
+							id={ `srfm-${ slug }-confirm-${ blockID }` }
+							type="email"
+							value={ defaultValue }
+							className={ `srfm-input-common srfm-${ slug }-email-confirm` }
+							placeholder={ placeholder }
+							required={ required }
+						/>
+					</div>
 				</div>
 			) }
 		</>

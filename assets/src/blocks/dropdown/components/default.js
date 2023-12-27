@@ -4,14 +4,10 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
-export const DropdownComponent = ( {
-	attributes,
-	setAttributes,
-	blockID,
-} ) => {
+export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 	const { required, label, placeholder } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "dropdown";
+	const slug = 'dropdown';
 
 	return (
 		<>
@@ -25,8 +21,8 @@ export const DropdownComponent = ( {
 			/>
 			<div className="srfm-block-wrap srfm-dropdown-common-wrap">
 				<select
-					id={ `srfm-${slug}-${ blockID }` }
-					className={`srfm-input-common srfm-${slug}-input`}
+					id={ `srfm-${ slug }-${ blockID }` }
+					className={ `srfm-input-common srfm-${ slug }-input` }
 					readOnly
 				>
 					{ placeholder === '' ? (

@@ -1,10 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 
-export const TextareaComponent = ( {
-	attributes,
-	blockID,
-	setAttributes,
-} ) => {
+export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,
@@ -15,7 +11,7 @@ export const TextareaComponent = ( {
 		cols,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "textarea";
+	const slug = 'textarea';
 	return (
 		<>
 			<RichText
@@ -26,7 +22,7 @@ export const TextareaComponent = ( {
 				multiline={ false }
 				id={ blockID }
 			/>
-			<div class="srfm-block-wrap">
+			<div className="srfm-block-wrap">
 				<textarea
 					required={ required }
 					label={ label }
@@ -35,7 +31,7 @@ export const TextareaComponent = ( {
 					rows={ rows }
 					cols={ cols }
 					maxLength={ maxLength }
-					className={`srfm-input-common srfm-input-${slug}`}
+					className={ `srfm-input-common srfm-input-${ slug }` }
 				></textarea>
 			</div>
 		</>

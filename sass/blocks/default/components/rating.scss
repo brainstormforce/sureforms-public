@@ -1,42 +1,42 @@
 .srfm-form-container {
-    .srfm-form {
-        .srfm-rating-block {
-            ul {
-                display: flex;
-                flex-wrap: wrap;
-                list-style: none;
-                margin: 0;
-                padding: 0;
+	.srfm-form {
+		.srfm-rating-block {
+			ul {
+				display: flex;
+				flex-wrap: wrap;
+				list-style: none;
+				margin: 0;
+				padding: 0;
 
-                li {
-                    text-align: center;
-                    line-height: 1;
+				li {
+					text-align: center;
+					line-height: 1;
 
-                    &.srfm-fill {
-                        svg {
-                            fill: var(--srfm-primary-color);
-                            stroke: var(--srfm-primary-color);
-                            transform: scale(1.1);
-                            transition: .3s;
-                        }
-                    }
+					&.srfm-fill {
+						svg {
+							fill: var( --srfm-primary-color );
+							stroke: var( --srfm-primary-color );
+							transform: scale( 1.1 );
+							transition: 0.3s;
+						}
+					}
 
-                    .srfm-icon {
-                        display: block;
-                        width: 2.5em;
-                        cursor: pointer;
-                        padding-right: .5em;
+					.srfm-icon {
+						display: block;
+						width: 2.5em;
+						cursor: pointer;
+						padding-right: 0.5em;
 
-                        svg {
-                            stroke: var(--srfm-primary-color);
-                        }
-                    }
+						svg {
+							stroke: var( --srfm-primary-color );
+						}
+					}
 
-                    .srfm-rating-number {
-                        font-size: 0.7em;
-                    }
-                }
-            }
-        }
-    }
+					.srfm-rating-number {
+						font-size: 0.7em;
+					}
+				}
+			}
+		}
+	}
 }

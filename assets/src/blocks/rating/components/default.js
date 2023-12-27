@@ -2,48 +2,30 @@ import { RichText } from '@wordpress/block-editor';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
-export const RatingComponent = ( {
-	attributes,
-	setAttributes,
-	blockID,
-} ) => {
+export const RatingComponent = ( { attributes, setAttributes, blockID } ) => {
 	const { required, label, showNumbers, iconShape, maxValue } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 
-	const starIcon = parse( svgIcons['star'] );
-	const heartIcon = parse( svgIcons['heart'] );
-	const smileyIcon = parse( svgIcons['email'] );
+	const starIcon = parse( svgIcons.star );
+	const heartIcon = parse( svgIcons.heart );
+	const smileyIcon = parse( svgIcons.email );
 
 	let svg = '';
-	const slug = 'rating'
+	const slug = 'rating';
 	switch ( iconShape ) {
 		case 'star':
-			svg = (
-				<span class="srfm-icon srfm-star-icon">
-					{starIcon}
-				</span>
-			);
+			svg = <span className="srfm-icon srfm-star-icon">{ starIcon }</span>;
 			break;
 		case 'heart':
-			svg = (
-				<span class="srfm-icon srfm-heart-icon">
-					{heartIcon}
-				</span>
-			);
+			svg = <span className="srfm-icon srfm-heart-icon">{ heartIcon }</span>;
 			break;
 		case 'smiley':
 			svg = (
-				<span class="srfm-icon srfm-smiley-icon">
-					{smileyIcon}
-				</span>
+				<span className="srfm-icon srfm-smiley-icon">{ smileyIcon }</span>
 			);
 			break;
 		default:
-			svg = (
-				<span class="srfm-icon srfm-star-icon">
-					{starIcon}
-				</span>
-			);
+			svg = <span className="srfm-icon srfm-star-icon">{ starIcon }</span>;
 			break;
 	}
 
@@ -52,7 +34,7 @@ export const RatingComponent = ( {
 		ratingItems.push(
 			<li key={ i }>
 				{ svg }
-				<span className={`srfm-${slug}-number`}>
+				<span className={ `srfm-${ slug }-number` }>
 					{ showNumbers ? i + 1 : '' }
 				</span>
 			</li>
@@ -69,9 +51,7 @@ export const RatingComponent = ( {
 				multiline={ false }
 				id={ blockID }
 			/>
-			<ul>
-				{ ratingItems }
-			</ul>
+			<ul>{ ratingItems }</ul>
 		</>
 	);
 };

@@ -1,43 +1,44 @@
-.srfm-form-container { // This is the parent form class. Adds specificity so that there is no conflict.
+.srfm-form-container {
+	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 
-    * {
-        box-sizing: border-box;
-    }
+	* {
+		box-sizing: border-box;
+	}
 
-    .srfm-block-width-25 {
-        width: 25%;
-    }
+	.srfm-block-width-25 {
+		width: 25%;
+	}
 
-    .srfm-block-width-33-33 {
-        width: 33.33%;
-    }
+	.srfm-block-width-33-33 {
+		width: 33.33%;
+	}
 
-    .srfm-block-width-50 {
-        width: 50%;
-    }
+	.srfm-block-width-50 {
+		width: 50%;
+	}
 
-    .srfm-block-width-100 {
-        width: 100%;
-    }
+	.srfm-block-width-100 {
+		width: 100%;
+	}
 
-    .srfm-block-width-25,
-    .srfm-block-width-33-3,
-    .srfm-block-width-50 {
-        @media (max-width: 576px) {
-            width: 100%;
-        }
-    }
+	.srfm-block-width-25,
+	.srfm-block-width-33-3,
+	.srfm-block-width-50 {
+		@media ( max-width: 576px ) {
+			width: 100%;
+		}
+	}
 
-    .srfm-required {
-        color: var(--srfm-error-text-color);
-    }
+	.srfm-required {
+		color: var( --srfm-error-text-color );
+	}
 
-    .srfm-block-label {
-        display: block;
-    }
+	.srfm-block-label {
+		display: block;
+	}
 
-    .srfm-input-common {
-        width: 100%;
-    }
+	.srfm-input-common {
+		width: 100%;
+	}
 }

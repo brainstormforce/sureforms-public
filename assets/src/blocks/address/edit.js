@@ -334,24 +334,22 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-				<AddressBlock
-					countries={ countries }
-					attributes={ attributes }
-					blockID={ block_id }
-					setAttributes={ setAttributes }
+			<AddressBlock
+				countries={ countries }
+				attributes={ attributes }
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
 				/>
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
+			) }
 		</>
 	);
 };

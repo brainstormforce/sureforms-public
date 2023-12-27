@@ -188,7 +188,7 @@ class Admin {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+		$css_uri        = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
 		$vendor_css_uri = SUREFORMS_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
@@ -261,8 +261,8 @@ class Admin {
 
 		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-			$js_uri = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
-			$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+			$js_uri   = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
+			$css_uri  = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
 
 			/* RTL */
 		if ( is_rtl() ) {
@@ -338,7 +338,7 @@ class Admin {
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
 		}
-		wp_enqueue_script( 'srfm-export', $js_uri .'export'. $file_prefix .'.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 		wp_localize_script(
 			'srfm-export',
 			'sureforms_export',

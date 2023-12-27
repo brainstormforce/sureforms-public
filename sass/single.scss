@@ -1,35 +1,35 @@
-$page_title_color : #fff;
-$bg_color : #fff;
+$page_title_color: #fff;
+$bg_color: #fff;
 
 $border-radius: 6px;
-$spacing : 32px;
+$spacing: 32px;
 .single-sureforms_form {
-    .srfm-single-page-container {
-        .srfm-page-banner {
-            padding: 50px 15px;
-            text-align: center;
-            min-height: 300px;
-            .srfm-single-banner-title {
-                color: $page_title_color;
-            }
+	.srfm-single-page-container {
+		.srfm-page-banner {
+			padding: 50px 15px;
+			text-align: center;
+			min-height: 300px;
+			.srfm-single-banner-title {
+				color: $page_title_color;
+			}
 
-            @media (max-width: 921px) {
-                min-height: 250px;
-            }
-        }
+			@media ( max-width: 921px ) {
+				min-height: 250px;
+			}
+		}
 
-        .srfm-form-wrapper {
-            padding: 0px 15px 15px 15px;
-            .srfm-form-inner-wrapper {
-                max-width: 650px;
-                margin: 0 auto;
-                margin-top: -100px;
-                padding: $spacing;
-                border-radius: $border-radius;
-                background-color: $bg_color;
-                box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
-                box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-            }
-        }
-    }
+		.srfm-form-wrapper {
+			padding: 0px 15px 15px 15px;
+			.srfm-form-inner-wrapper {
+				max-width: 650px;
+				margin: 0 auto;
+				margin-top: -100px;
+				padding: $spacing;
+				border-radius: $border-radius;
+				background-color: $bg_color;
+				box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.05 );
+				box-shadow: 0px 10px 15px -3px rgba( 0, 0, 0, 0.1 );
+			}
+		}
+	}
 }

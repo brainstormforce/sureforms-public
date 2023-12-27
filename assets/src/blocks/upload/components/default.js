@@ -5,16 +5,12 @@ import { RichText } from '@wordpress/block-editor';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
-export const UploadComponent = ( {
-	attributes,
-	blockID,
-	setAttributes,
-} ) => {
+export const UploadComponent = ( { attributes, blockID, setAttributes } ) => {
 	const { required, label, fileSizeLimit, allowedFormats } = attributes;
 	const firstFive = allowedFormats.slice( 0, 5 );
 	const isRequired = required ? ' srfm-required' : '';
-	const uploadIcon = parse( svgIcons['upload'] );
-	const slug = "upload";
+	const uploadIcon = parse( svgIcons.upload );
+	const slug = 'upload';
 	return (
 		<>
 			<RichText
@@ -26,23 +22,16 @@ export const UploadComponent = ( {
 				id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
-				<span className={`srfm-icon srfm-${slug}-icon`}>
-					{uploadIcon}
+				<span className={ `srfm-icon srfm-${ slug }-icon` }>
+					{ uploadIcon }
 				</span>
-				<div className={`srfm-${slug}-wrap`}>
-					<label className={`srfm-classic-${slug}-label`}>
-						<p>
-							{ __(
-								'Click to upload the file',
-								'sureforms'
-							) }
-						</p>
+				<div className={ `srfm-${ slug }-wrap` }>
+					<label className={ `srfm-classic-${ slug }-label` }>
+						<p>{ __( 'Click to upload the file', 'sureforms' ) }</p>
 						<input
 							type="file"
-							aria-required={
-								required ? 'true' : 'false'
-							}
-							className={`srfm-input-${slug}`}
+							aria-required={ required ? 'true' : 'false' }
+							className={ `srfm-input-${ slug }` }
 						/>
 					</label>
 					<p>
@@ -61,7 +50,7 @@ export const UploadComponent = ( {
 										return ' ' + obj.value + '...';
 									}
 									return '';
-									} )
+								  } )
 								: 'All types' }
 						</span>
 						{ __( ' up to ', 'sureforms' ) }

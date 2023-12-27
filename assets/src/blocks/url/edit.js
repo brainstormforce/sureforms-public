@@ -34,23 +34,21 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 			/>
-				<UrlComponent
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
+			<UrlComponent
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+				attributes={ attributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
 				/>
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
+			) }
 		</>
 	);
 };

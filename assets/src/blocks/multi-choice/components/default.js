@@ -13,11 +13,11 @@ export const MultiChoiceComponent = ( {
 } ) => {
 	const { label, required, options } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "multi-choice";
+	const slug = 'multi-choice';
 
 	const editView = options.map( ( option, index ) => {
 		return (
-			<div key={ index } className={`srfm-multi-choice-single`}>
+			<div key={ index } className={ `srfm-multi-choice-single` }>
 				<label htmlFor={ option.optiontitle }></label>
 				<input
 					className="srfm-input-common"
@@ -50,7 +50,9 @@ export const MultiChoiceComponent = ( {
 					return (
 						<label key={ key } className="srfm-multi-choice-single">
 							<div className="srfm-block-content-wrap">
-								<span className={`srfm-icon srfm-${slug}-icon`}></span>
+								<span
+									className={ `srfm-icon srfm-${ slug }-icon` }
+								></span>
 								<p>{ option.optiontitle }</p>
 							</div>
 						</label>
@@ -74,7 +76,7 @@ export const MultiChoiceComponent = ( {
 				<>
 					<div className="srfm-block-wrap">
 						{ editView }
-						<div class={`srfm-${slug}-add-option-wrapper`}>
+						<div className={ `srfm-${ slug }-add-option-wrapper` }>
 							<Button isPrimary onClick={ addOption }>
 								{ __( ' + Add Option ', 'sureforms' ) }
 							</Button>

@@ -30,11 +30,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	return (
 		<>
-		<Settings
-			attributes={ attributes }
-			setAttributes={ setAttributes }
-			sureforms_keys={ sureforms_keys }
-		/>
+			<Settings
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+				sureforms_keys={ sureforms_keys }
+			/>
 			<NumberSliderComponent
 				attributes={ attributes }
 				blockID={ block_id }
@@ -45,9 +45,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<RichText
 					tagName="label"
 					value={ help }
-					onChange={ ( value ) =>
-						setAttributes( { help: value } )
-					}
+					onChange={ ( value ) => setAttributes( { help: value } ) }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }

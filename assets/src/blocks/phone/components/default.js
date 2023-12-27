@@ -8,7 +8,7 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const [ country, setCountry ] = useState( '' );
 
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "phone";
+	const slug = 'phone';
 	useEffect( () => {
 		fetch( 'https://ipapi.co/json' )
 			.then( ( res ) => res.json() )
@@ -33,8 +33,8 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 			<div className="srfm-block-wrap">
 				<IntlTelInput
 					containerClassName="intl-tel-input"
-					inputClassName={`srfm-input-common srfm-input-${slug}`}
-					fieldId={ `srfm-input-${slug}-${ blockID }` }
+					inputClassName={ `srfm-input-common srfm-input-${ slug }` }
+					fieldId={ `srfm-input-${ slug }-${ blockID }` }
 					placeholder={ placeholder }
 					pattern="[0-9]{10}"
 					defaultCountry={ autoCountry ? country : 'us' }

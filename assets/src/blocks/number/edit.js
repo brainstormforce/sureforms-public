@@ -250,9 +250,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 				<RichText
 					tagName="label"
 					value={ help }
-					onChange={ ( value ) =>
-						setAttributes( { help: value } )
-					}
+					onChange={ ( value ) => setAttributes( { help: value } ) }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }

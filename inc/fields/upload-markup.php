@@ -49,27 +49,32 @@ class Upload_Markup extends Base {
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname        = isset( $attributes['className'] ) ? ' '. $attributes['className'] : '';
-		$slug        = 'upload';
+		$classname        = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$slug             = 'upload';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-		$aria_require_attr = $required ? 'true' : 'false';
+		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$aria_require_attr    = $required ? 'true' : 'false';
 		$input_label_fallback = $label ? $label : 'Upload';
-		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
-				<?php echo Sureforms_Helper::fetch_svg('upload', 'srfm-'. esc_attr( $slug ) .'-icon'); ?>
+				<?php echo Sureforms_Helper::fetch_svg( 'upload', 'srfm-' . esc_attr( $slug ) . '-icon' ); ?>
 				<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap">
-					<input class="srfm-<?php echo esc_attr( $slug ); ?>-size" value="<?php echo esc_attr( $file_size ) ?>" type="hidden" />
-					<label for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?>">
-						<p><?php _e('Click to upload the file', 'sureforms'); ?></p>
-						<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo  esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" type="file" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  accept="<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
+					<input class="srfm-<?php echo esc_attr( $slug ); ?>-size" value="<?php echo esc_attr( $file_size ); ?>" type="hidden" />
+					<label for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
+						<p><?php _e( 'Click to upload the file', 'sureforms' ); ?></p>
+						<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="file" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  accept="<?php echo esc_attr( str_replace( ' ', ' .', $accepted_formats ) ); ?>">
 					</label>
 				</div>
-				<p><span><?php echo ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> <?php _e('up to ', 'sureforms' ); echo esc_attr( $file_size ? $file_size . __(' MB', 'sureforms') : __('Not Defined', 'sureforms') ); ?></p>
+				<p><span><?php echo ( 'All types' !== $allowed_formats ? esc_html( $allowed_formats ) . $many_types_symbol : __( 'All types', 'sureforms' ) ); ?></span> 
+									<?php
+									_e( 'up to ', 'sureforms' );
+									echo esc_attr( $file_size ? $file_size . __( ' MB', 'sureforms' ) : __( 'Not Defined', 'sureforms' ) );
+									?>
+				</p>
 			</div>
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>-data"></div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>

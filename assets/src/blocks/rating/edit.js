@@ -223,24 +223,24 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-	
-				<RatingComponent
-						setAttributes={ setAttributes }
-						blockID={ block_id }
-						attributes={ attributes }
+
+			<RatingComponent
+				setAttributes={ setAttributes }
+				blockID={ block_id }
+				attributes={ attributes }
+			/>
+			{ ratingBoxHelpText !== '' && (
+				<RichText
+					tagName="label"
+					value={ ratingBoxHelpText }
+					onChange={ ( value ) =>
+						setAttributes( { ratingBoxHelpText: value } )
+					}
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
 				/>
-				{ ratingBoxHelpText !== '' && (
-					<RichText
-						tagName="label"
-						value={ ratingBoxHelpText }
-						onChange={ ( value ) =>
-							setAttributes( { ratingBoxHelpText: value } )
-						}
-						className="srfm-description"
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
+			) }
 		</>
 	);
 };

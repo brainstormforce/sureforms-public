@@ -4,8 +4,8 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = "input";
-	
+	const slug = 'input';
+
 	return (
 		<>
 			<RichText
@@ -17,10 +17,10 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				id={ blockID }
 			/>
 			<input
-				id={ `srfm-${slug}-confirm-${blockID}` }
+				id={ `srfm-${ slug }-confirm-${ blockID }` }
 				type="text"
 				value={ defaultValue }
-				className={ `srfm-input-common srfm-input-${slug}` }
+				className={ `srfm-input-common srfm-input-${ slug }` }
 				placeholder={ placeholder }
 				required={ required }
 			/>

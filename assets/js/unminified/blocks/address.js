@@ -1,22 +1,38 @@
 function initializeAddress() {
-	const addressBlocks = document.querySelectorAll('.srfm-address-block');
+	const addressBlocks = document.querySelectorAll( '.srfm-address-block' );
 
-	if( addressBlocks ) {
-		addressBlocks.forEach(element => {
-			const fullAddressInput = element.querySelector('.srfm-input-address-hidden');
-			const addressLine1 = element.querySelector('.srfm-input-address-line-1');
-			const addressLine2 = element.querySelector('.srfm-input-address-line-2');
-			const city = element.querySelector('.srfm-input-address-city');
-			const state = element.querySelector('.srfm-input-address-state');
-			const country = element.querySelector('.srfm-input-address-country');
-			const postalCode = element.querySelector('.srfm-input-address-postal-code');
+	if ( addressBlocks ) {
+		addressBlocks.forEach( ( element ) => {
+			const fullAddressInput = element.querySelector(
+				'.srfm-input-address-hidden'
+			);
+			const addressLine1 = element.querySelector(
+				'.srfm-input-address-line-1'
+			);
+			const addressLine2 = element.querySelector(
+				'.srfm-input-address-line-2'
+			);
+			const city = element.querySelector( '.srfm-input-address-city' );
+			const state = element.querySelector( '.srfm-input-address-state' );
+			const country = element.querySelector(
+				'.srfm-input-address-country'
+			);
+			const postalCode = element.querySelector(
+				'.srfm-input-address-postal-code'
+			);
 
 			const updateFullAddress = () => {
-				const addressLine1Value = addressLine1?.value ? addressLine1.value.trim() : '';
-				const addressLine2Value =  addressLine2?.value ? addressLine2.value.trim() : '';
-				const cityValue =  city?.value ? city.value.trim() : '';
+				const addressLine1Value = addressLine1?.value
+					? addressLine1.value.trim()
+					: '';
+				const addressLine2Value = addressLine2?.value
+					? addressLine2.value.trim()
+					: '';
+				const cityValue = city?.value ? city.value.trim() : '';
 				const stateValue = state?.value ? state.value.trim() : '';
-				const postalCodeValue = postalCode?.value ? postalCode.value.trim() : '';
+				const postalCodeValue = postalCode?.value
+					? postalCode.value.trim()
+					: '';
 				const countryValue = country ? country?.value.trim() : '';
 
 				const addressParts = [
@@ -32,35 +48,33 @@ function initializeAddress() {
 					.filter( ( part ) => part !== '' )
 					.join( ', ' );
 
-				fullAddressInput.setAttribute('value', fullAddress );
+				fullAddressInput.setAttribute( 'value', fullAddress );
 			};
 
-			if( addressLine1 ) {
+			if ( addressLine1 ) {
 				addressLine1.addEventListener( 'change', updateFullAddress );
 			}
 
-			if( addressLine2 ) {
-				addressLine2.addEventListener( 'change', updateFullAddress )
+			if ( addressLine2 ) {
+				addressLine2.addEventListener( 'change', updateFullAddress );
 			}
 
-			if( city ) {
+			if ( city ) {
 				city.addEventListener( 'change', updateFullAddress );
 			}
 
-			if( state ) {
+			if ( state ) {
 				state.addEventListener( 'change', updateFullAddress );
 			}
 
-			if( country ) {
+			if ( country ) {
 				country.addEventListener( 'change', updateFullAddress );
 			}
 
-			if( postalCode ) {
+			if ( postalCode ) {
 				postalCode.addEventListener( 'change', updateFullAddress );
 			}
-
-		});
+		} );
 	}
-	
 }
 document.addEventListener( 'DOMContentLoaded', initializeAddress );

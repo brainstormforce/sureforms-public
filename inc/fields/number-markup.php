@@ -39,32 +39,31 @@ class Number_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-			$slug = 'number';
+			$slug        = 'number';
 
-			$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-	
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
 			// html attributes
-			$placeholder_attr = $placeholder ? ' placeholder="'. $placeholder .'" ' : '';
-			$aria_require_attr = $required ? 'true' : 'false';
-			$default_value_attr = $default ? ' value="'. $default .'" ' : '';
-			$format_attr = $format_type ? ' format-type="'. $format_type .'" ' : '';
-			$min_value_attr = $min_value ? ' min="'. $min_value .'" ' : '';
-			$max_value_attr = $max_value ? ' max="'. $max_value .'" ' : '';
+			$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+			$aria_require_attr    = $required ? 'true' : 'false';
+			$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
+			$format_attr          = $format_type ? ' format-type="' . $format_type . '" ' : '';
+			$min_value_attr       = $min_value ? ' min="' . $min_value . '" ' : '';
+			$max_value_attr       = $max_value ? ' max="' . $max_value . '" ' : '';
 			$input_label_fallback = $label ? $label : 'Number';
-			$input_label = '-lbl-' . base64_encode($input_label_fallback);
+			$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 			$type = 'none' === $format_type ? 'number' : 'text';
-			
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
-				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="<?php echo esc_attr( $type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr .''. $max_value_attr ); ?> /> 
-					<?php echo Sureforms_Helper::fetch_svg('error', 'srfm-error-icon'); ?>
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="<?php echo esc_attr( $type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> /> 
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('error', '', '', '', $required, '', $error_msg )); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 
 			</div>
 		<?php

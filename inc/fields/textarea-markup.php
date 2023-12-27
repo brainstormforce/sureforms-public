@@ -38,33 +38,33 @@ class Textarea_Markup extends Base {
 		$rows        = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
 		$cols        = isset( $attributes['cols'] ) ? $attributes['cols'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? ' '. $attributes['className'] : '';
+		$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$slug        = 'textarea';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
 		// html attributes.
-		$placeholder_attr = $placeholder ? ' placeholder="'. $placeholder .'" ' : '';
-		$max_length_attr = $max_length ? ' maxLength="'. $max_length .'" ' : '';
-		$default_value_attr = $default ? ' value="'. $default .'" ' : '';
-		$cols_attr = $cols ? ' cols="'. $cols .'" ' : '';
-		$rows_attr = $rows ? ' rows="'. $rows .'" ' : '';
+		$placeholder_attr   = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+		$max_length_attr    = $max_length ? ' maxLength="' . $max_length . '" ' : '';
+		$default_value_attr = $default ? ' value="' . $default . '" ' : '';
+		$cols_attr          = $cols ? ' cols="' . $cols . '" ' : '';
+		$rows_attr          = $rows ? ' rows="' . $rows . '" ' : '';
 
-		$aria_require_attr  = $required ? 'true' : 'false';
+		$aria_require_attr = $required ? 'true' : 'false';
 
 		$max_length_html = '' !== $max_length ? '0/' . $max_length : '';
 
 		$input_label_fallback = $label ? $label : 'Address';
-		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 		ob_start(); ?>
 		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
-				<?php if( $max_length_html ) { ?>
+				<?php if ( $max_length_html ) { ?>
 					<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>
 				<?php } ?>
-				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . ''. $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ></textarea>
+				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ></textarea>
 			</div>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>

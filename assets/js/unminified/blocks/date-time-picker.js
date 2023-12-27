@@ -1,8 +1,8 @@
 function initializeDateTime() {
-
-	const datePickerContainers = document.querySelectorAll('.srfm-datepicker-block');
+	const datePickerContainers = document.querySelectorAll(
+		'.srfm-datepicker-block'
+	);
 	if ( datePickerContainers ) {
-
 		flatpickr( '.srfm-input-datepicker-date-time', {
 			enableTime: true,
 			dateFormat: 'Y-m-d H:i',
@@ -16,17 +16,16 @@ function initializeDateTime() {
 			dateFormat: 'H:i',
 		} );
 
-		datePickerContainers.forEach(element => {
-			const selector = element.querySelector('.srfm-input-datepicker');
+		datePickerContainers.forEach( ( element ) => {
+			const selector = element.querySelector( '.srfm-input-datepicker' );
 
-			if( selector ) {
+			if ( selector ) {
 				selector.onchange = function ( e ) {
 					const formattedDate = e.target.value.replaceAll( '/', '-' );
-					selector.setAttribute('value', formattedDate);
+					selector.setAttribute( 'value', formattedDate );
 				};
 			}
-
-		});
+		} );
 	}
 }
 

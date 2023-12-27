@@ -17,12 +17,14 @@ export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
 				id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
-				<span className="srfm-protocol">{__( 'https://', 'sureforms' )}</span>
+				<span className="srfm-protocol">
+					{ __( 'https://', 'sureforms' ) }
+				</span>
 				<input
-					id={ `srfm-${slug}-${blockID}` }
+					id={ `srfm-${ slug }-${ blockID }` }
 					type="text"
 					value={ defaultValue }
-					className={ `srfm-input-common srfm-input-${slug}` }
+					className={ `srfm-input-common srfm-input-${ slug }` }
 					placeholder={ placeholder }
 					required={ required }
 				/>

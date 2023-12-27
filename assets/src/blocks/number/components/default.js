@@ -17,7 +17,7 @@ export const NumberComponent = ( {
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
-	const slug ="number";
+	const slug = 'number';
 
 	return (
 		<>
@@ -30,8 +30,8 @@ export const NumberComponent = ( {
 				id={ blockID }
 			/>
 			<input
-				className={ `srfm-input-common srfm-input-${slug}` }
-				id={ `srfm-${slug}-${blockID}` }
+				className={ `srfm-input-common srfm-input-${ slug }` }
+				id={ `srfm-${ slug }-${ blockID }` }
 				type={ formatType === 'none' ? 'number' : 'text' }
 				value={ defaultValue }
 				onChange={ handleInput }

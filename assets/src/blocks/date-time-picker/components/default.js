@@ -3,16 +3,12 @@ import { RichText } from '@wordpress/block-editor';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
-export const DateTimeComponent = ( {
-	attributes,
-	setAttributes,
-	blockID,
-} ) => {
-	const { label, required, fieldType } = attributes;	
+export const DateTimeComponent = ( { attributes, setAttributes, blockID } ) => {
+	const { label, required, fieldType } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'datepicker';
-	const calender = parse( svgIcons['calender'] );
-	const clock = parse( svgIcons['clock'] );
+	const calender = parse( svgIcons.calender );
+	const clock = parse( svgIcons.clock );
 
 	return (
 		<>
@@ -26,14 +22,22 @@ export const DateTimeComponent = ( {
 			/>
 			<div className="srfm-block-wrap srfm-with-icon">
 				{ 'time' === fieldType ? (
-					<span class={`srfm-icon srfm-${slug}-icon srfm-input-icon`}>{clock}</span>
+					<span
+						className={ `srfm-icon srfm-${ slug }-icon srfm-input-icon` }
+					>
+						{ clock }
+					</span>
 				) : (
-					<span class={`srfm-icon srfm-${slug}-icon srfm-input-icon`}>{calender}</span>
+					<span
+						className={ `srfm-icon srfm-${ slug }-icon srfm-input-icon` }
+					>
+						{ calender }
+					</span>
 				) }
 				<input
-					id={ `srfm-${slug}-${blockID}`}
+					id={ `srfm-${ slug }-${ blockID }` }
 					type="text"
-					className={ `srfm-input-common srfm-input-${slug}` }
+					className={ `srfm-input-common srfm-input-${ slug }` }
 					required={ required }
 				/>
 			</div>

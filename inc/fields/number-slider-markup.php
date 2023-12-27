@@ -41,27 +41,27 @@ class Number_Slider_Markup extends Base {
 
 		$slug = 'number-slider';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace(".","-",$field_width) : '';
-		$inverse_value = $max - $min;
+		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$inverse_value        = $max - $min;
 		$input_label_fallback = $label ? $label : 'Number Slider';
-		$input_label = '-lbl-' . base64_encode($input_label_fallback);
+		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
 
 		ob_start(); ?>
 
 
-<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ) ?>">
-		<?php echo wp_kses_post(Sureforms_Helper::GenerateCommonFormMarkup('label', $label, $slug, $block_id, $required )); ?>
+<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
 		<div class="srfm-block-wrap">
-		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr($min); ?>%; --max:<?php echo esc_attr($max); ?>%; --value:<?php echo esc_attr($min); ?>%;">
+		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr( $min ); ?>%; --max:<?php echo esc_attr( $max ); ?>%; --value:<?php echo esc_attr( $min ); ?>%;">
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>"></div>
 			<span class="srfm-<?php echo esc_attr( $slug ); ?>-thumb"></span>
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>-sign">
-				<span><?php echo esc_attr($min); ?></span>
+				<span><?php echo esc_attr( $min ); ?></span>
 			</div>
 		</div>
-		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_label); ?>" type="range" tabindex="0" value="<?php echo esc_attr($min); ?>" max="<?php echo esc_attr($max); ?>" min="<?php echo esc_attr($min); ?>" step="<?php echo esc_attr($step); ?>">
+		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="range" tabindex="0" value="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>" min="<?php echo esc_attr( $min ); ?>" step="<?php echo esc_attr( $step ); ?>">
 		</div>
-		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup('help', '', '', '', '', $help ) ); ?>
+		<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 		</div>
 		<?php
 		return ob_get_clean();
