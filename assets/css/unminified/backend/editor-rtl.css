@@ -15,7 +15,7 @@ body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-blo
   box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
 }
 body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
-body.post-type-sureforms_form .editor-styles-wrapper :where(body .is-layout-constrained) > :first-child:first-child {
+body.post-type-sureforms_form .editor-styles-wrapper #srfm-form-container > div:first-child {
   margin-top: 1.2em;
 }
 body.post-type-sureforms_form .editor-styles-wrapper {

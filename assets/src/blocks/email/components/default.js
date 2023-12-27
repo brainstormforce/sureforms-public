@@ -41,13 +41,10 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 			{ isConfirmEmail && (
 				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
 					<label
-						className="srfm-block-label"
+						className={`srfm-block-label${ isRequired }`}
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
 					>
 						{ confirmLabel }
-						{ required && label && (
-							<span className="srfm-required"> *</span>
-						) }
 					</label>
 					<div className="srfm-block-wrap">
 						<input

@@ -58,15 +58,17 @@
 						z-index: 2;
 					}
 
-					.srfm-number-slider-sign {
-						opacity: 1;
+					.srfm-number-slider-sign {					
 						position: absolute;
 						top: -35px;
-						z-index: 3;
+						width: auto;
+						padding: 0 0.3em;
 						color: var( --srfm-label-text-color );
 						align-items: center;
 						justify-content: center;
 						text-align: center;
+						opacity: 1;
+						z-index: 3;
 						transition: background-color 0.3s;
 
 						> span {

@@ -37,13 +37,15 @@
 						position: relative;
 						display: flex;
 						flex-wrap: wrap;
-						align-items: center;
+						align-items: flex-start;
 						padding: 0.625em 0.875em;
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						border-radius: var( --srfm-border-radius );
 						width: 100%;
 
 						.srfm-multi-choice-icon {
+							position: relative;
+							top: 0.3em;
 							width: 16px;
 							height: 16px;
 							border-radius: 100%;
@@ -59,6 +61,7 @@
 						p {
 							font-size: 0.7em;
 							padding-left: 0.5em;
+							width: calc(100% - 16px);
 							margin-top: 0;
 							margin-bottom: 0;
 							word-break: break-word;

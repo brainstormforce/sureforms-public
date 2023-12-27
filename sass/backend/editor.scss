@@ -28,7 +28,7 @@ body.post-type-sureforms_form {
 
 	// Block override.
 	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
-	.editor-styles-wrapper :where( body .is-layout-constrained ) > :first-child:first-child {
+	.editor-styles-wrapper #srfm-form-container > div:first-child {
 		margin-top: 1.2em;
 	}
 
@@ -100,7 +100,7 @@ body.post-type-sureforms_form {
 
 	// Plus button, Block appended.
 
-	// Add submit button below the Block Appender.
+	// Add submit button below the Block Appended.
 	.block-list-appender {
 		width: calc( 100% - 20px );
 

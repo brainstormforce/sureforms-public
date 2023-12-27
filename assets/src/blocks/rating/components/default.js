@@ -8,7 +8,7 @@ export const RatingComponent = ( { attributes, setAttributes, blockID } ) => {
 
 	const starIcon = parse( svgIcons.star );
 	const heartIcon = parse( svgIcons.heart );
-	const smileyIcon = parse( svgIcons.email );
+	const smileyIcon = parse( svgIcons.smiley );
 
 	let svg = '';
 	const slug = 'rating';

@@ -177,6 +177,8 @@
 }
 .srfm-form-container .srfm-checkbox-block-wrap .srfm-block-wrap input {
   margin: 0;
+  border: 1px solid var(--srfm-border-color);
+  box-shadow: none;
 }
 .srfm-form-container .srfm-checkbox-block-wrap .srfm-block-wrap .srfm-block-text {
   font-size: 0.7em;
@@ -309,13 +311,15 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.625em 0.875em;
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: auto;
 }
 .srfm-form-container .srfm-multi-choice-block-wrap .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap .srfm-multi-choice-icon {
+  position: relative;
+  top: 0.3em;
   width: 16px;
   height: 16px;
   border-radius: 100%;
@@ -328,6 +332,7 @@
   padding-left: 0.5em;
   margin-top: 0;
   margin-bottom: 0;
+  width: calc(100% - 16px);
   word-break: break-word;
 }
 @media (max-width: 767px) {

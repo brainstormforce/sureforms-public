@@ -27,9 +27,6 @@
     width: 100%;
   }
 }
-.srfm-form-container .srfm-required {
-  color: var(--srfm-error-text-color);
-}
 .srfm-form-container .srfm-block-label {
   display: block;
 }

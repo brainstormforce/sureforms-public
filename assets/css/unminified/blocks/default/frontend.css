@@ -176,6 +176,7 @@
   color: var(--srfm-label-text-color);
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-input-common {
+  font-family: inherit;
   font-size: 0.8em;
   font-weight: 400;
   padding: 0.625em 0.875em;
@@ -186,6 +187,10 @@
   border-radius: var(--srfm-border-radius);
   background-color: var(--srfm-base-background-color);
   outline: none;
+  transition: 0.3s;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-input-common:focus {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-primary-color);
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-input-common:-ms-input-placeholder {
   color: var(--srfm-placeholder-color);
@@ -261,13 +266,15 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.625em 0.875em;
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: 100%;
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap .srfm-multi-choice-icon {
+  position: relative;
+  top: 0.3em;
   width: 16px;
   height: 16px;
   border-radius: 100%;
@@ -281,6 +288,7 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap p {
   font-size: 0.7em;
   padding-left: 0.5em;
+  width: calc(100% - 16px);
   margin-top: 0;
   margin-bottom: 0;
   word-break: break-word;
@@ -342,14 +350,16 @@
   z-index: 2;
 }
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-sign {
-  opacity: 1;
   position: absolute;
   top: -35px;
-  z-index: 3;
+  width: auto;
+  padding: 0 0.3em;
   color: var(--srfm-label-text-color);
   align-items: center;
   justify-content: center;
   text-align: center;
+  opacity: 1;
+  z-index: 3;
   transition: background-color 0.3s;
 }
 .srfm-form-container .srfm-form .srfm-number-slider-block .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-sign > span {

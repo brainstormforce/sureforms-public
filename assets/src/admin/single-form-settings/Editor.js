@@ -149,7 +149,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					const iframeRootContainer =
 						iframeBody?.querySelector( '.is-root-container' );
 					iframeRootContainer?.classList.add(
-						'srfm-form-style-classic'
+						'srfm-form-container'
 					);
 				}
 			};
