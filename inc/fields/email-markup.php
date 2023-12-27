@@ -64,8 +64,8 @@ class Email_Markup extends Base {
 					<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 					<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', $duplicate_msg ) ); ?>
 				</div>
-				<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
-					<?php if( true === $is_confirm_email ) { ?>
+				<?php if( true === $is_confirm_email ) { ?>
+					<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
 						<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug .'-confirm', $block_id, $required ) ); ?>
 						<div class="srfm-block-wrap">
 							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="email" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr($input_confirm_label); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" <?php echo wp_kses_post($default_value_attr .' '. $placeholder_attr); ?> >
@@ -73,9 +73,9 @@ class Email_Markup extends Base {
 						</div>
 						<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
 						<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
-				</div>
+					</div>
+				<?php } ?>
 			</div>
-		<?php } ?>
 		<?php
 		return ob_get_clean();
 	}
