@@ -3,7 +3,7 @@
  */
 import { useLayoutEffect } from '@wordpress/element';
 import style from '../editor.lazy.scss';
-import Blocks from './Block'
+import Blocks from './blocks'
 
 const Sidebar = () => {
 	useLayoutEffect( () => {

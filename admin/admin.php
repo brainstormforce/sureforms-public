@@ -315,8 +315,40 @@ class Admin {
 				'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
 			)
 		);
+		$allow_quick_sidebar_blocks = array(
+			'sureforms/input',
+			'sureforms/email',
+			'sureforms/textarea',
+			'sureforms/number',
+			'sureforms/switch',
+			'sureforms/checkbox',
+			'sureforms/phone',
+			'sureforms/address',
+			'sureforms/dropdown',
+			'sureforms/multi-choice',
+			'sureforms/radio',
+			'sureforms/rating',
+			'sureforms/submit',
+			'sureforms/upload',
+			'sureforms/url',
+			'sureforms/password',
+			'sureforms/date-time-picker',
+			'sureforms/separator',
+			'sureforms/icon',
+			'sureforms/image',
+			'sureforms/advanced-heading',
+			'sureforms/number-slider',
+			'sureforms/form',
+		);
 		// Int-tel-input JS.
 		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-quick-action-siderbar', SUREFORMS_URL . 'assets/build/quickActionSidebar.js', [], SUREFORMS_VER, true );
+		wp_localize_script(
+			'srfm-quick-action-siderbar',
+			'quickSidebarBlocks',
+			array(
+				'allowed_blocks'=>$allow_quick_sidebar_blocks,
+			)
+		);
 	}
 }

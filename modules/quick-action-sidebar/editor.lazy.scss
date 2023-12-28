@@ -2,7 +2,7 @@
 .srfm-ee-quick-access {
 	// This is applied to the element directly inside the interface skeleton body.
 	display: flex;
-	height: 100vh;
+	height: auto;
 	width: 60px;
 	background: #1e1e1e;
 	color: #fff;
@@ -10,7 +10,7 @@
 	// The sidebar inside the Quick Access area.
 	&__sidebar {
 		width: 60px;
-		height: 95%;
+		height: 100%;
 		background: #1e1e1e;
 		display: flex;
 		flex-direction: column;
@@ -86,3 +86,7 @@
 		}
 	}
 }
+.edit-site-layout.is-full-canvas.is-edit-mode .edit-site-layout__view-mode-toggle.components-button {
+	border-bottom: #1e1e1e;
+}
+
