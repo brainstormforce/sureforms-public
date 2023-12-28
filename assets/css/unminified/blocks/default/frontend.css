@@ -26,6 +26,7 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;
+  line-height: normal;
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap {
   position: relative;
