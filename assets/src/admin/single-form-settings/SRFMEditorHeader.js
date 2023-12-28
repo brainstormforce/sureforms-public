@@ -5,7 +5,6 @@ import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 
 const SRFMEditorHeader = () => {
-
 	const postId = useSelect( ( select ) => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );
@@ -32,7 +31,7 @@ const SRFMEditorHeader = () => {
 			onChange={ ( value ) => {
 				setTitle( value );
 			} }
-			autoFocus={'auto-draft' === status || 'draft' === status ? true : false }
+			autoFocus={ 'auto-draft' === status || 'draft' === status ? true : false }
 			autoComplete="off"
 		/>
 	);

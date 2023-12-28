@@ -30,7 +30,7 @@ export const PasswordComponent = ( { attributes, blockID, setAttributes } ) => {
 			{ isConfirmPassword && (
 				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
 					<label
-						className={`srfm-block-label${ isRequired }`}
+						className={ `srfm-block-label${ isRequired }` }
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
 					>
 						{ confirmLabel }

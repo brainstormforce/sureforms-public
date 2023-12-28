@@ -31,11 +31,11 @@
 					height: 43px;
 					line-height: 43px;
 					width: 100%;
-					border: var(--srfm-border) solid var(--srfm-border-color);
+					border: var( --srfm-border ) solid var( --srfm-border-color );
 
 					&.open {
 						.nice-select-dropdown {
-							box-shadow: 0 0 0 1px var(--ast-border-color);
+							box-shadow: 0 0 0 1px var( --ast-border-color );
 							transform: scale( 1 ) translateY( 0 );
 						}
 					}

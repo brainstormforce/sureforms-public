@@ -223,7 +223,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-								'Confirmation Password is not the same';
+							'Confirmation Password is not the same';
 
 						if ( ! firstErrorInput ) {
 							firstErrorInput = confirmValue;
@@ -265,7 +265,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					} else if ( confirmValue !== inputValue ) {
 						confirmParent.classList.add( 'srfm-error' );
 						confirmError.textContent =
-								'Confirmation email is not the same';
+							'Confirmation email is not the same';
 
 						if ( ! firstErrorInput ) {
 							firstErrorInput = confirmValue;
@@ -309,8 +309,8 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 
-			if (  'true' === isUploadRequired  || ! uploadInput.value ) {
-				if( 'true' === isUploadRequired ) {
+			if ( 'true' === isUploadRequired || ! uploadInput.value ) {
+				if ( 'true' === isUploadRequired ) {
 					if ( errorMessage ) {
 						errorMessage.textContent =
 							errorMessage.getAttribute( 'data-error-msg' );

@@ -14,18 +14,26 @@ export const RatingComponent = ( { attributes, setAttributes, blockID } ) => {
 	const slug = 'rating';
 	switch ( iconShape ) {
 		case 'star':
-			svg = <span className="srfm-icon srfm-star-icon">{ starIcon }</span>;
+			svg = (
+				<span className="srfm-icon srfm-star-icon">{ starIcon }</span>
+			);
 			break;
 		case 'heart':
-			svg = <span className="srfm-icon srfm-heart-icon">{ heartIcon }</span>;
+			svg = (
+				<span className="srfm-icon srfm-heart-icon">{ heartIcon }</span>
+			);
 			break;
 		case 'smiley':
 			svg = (
-				<span className="srfm-icon srfm-smiley-icon">{ smileyIcon }</span>
+				<span className="srfm-icon srfm-smiley-icon">
+					{ smileyIcon }
+				</span>
 			);
 			break;
 		default:
-			svg = <span className="srfm-icon srfm-star-icon">{ starIcon }</span>;
+			svg = (
+				<span className="srfm-icon srfm-star-icon">{ starIcon }</span>
+			);
 			break;
 	}
 

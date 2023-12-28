@@ -22,13 +22,15 @@ function initializeUploadField() {
 
 					if ( file ) {
 						if ( file.size > maxFileSize ) {
-							const error = element.querySelector('.srfm-error-message');
+							const error = element.querySelector(
+								'.srfm-error-message'
+							);
 							element.classList.add( 'srfm-error' );
 							uploadInput.value = '';
-							if( error ) {
-								error.textContent = "File Size Exceeded The Limit";
+							if ( error ) {
+								error.textContent =
+									'File Size Exceeded The Limit';
 							}
-
 						} else {
 							const fileName =
 								file.name.length > 20

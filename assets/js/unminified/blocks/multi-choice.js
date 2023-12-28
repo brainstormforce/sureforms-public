@@ -37,7 +37,7 @@ function initializeMultichoice() {
 									)
 									.setAttribute( 'value', savedValues );
 							} else {
-								arr = savedValues.filter(
+								const arr = savedValues.filter(
 									( item ) => item !== getValue
 								);
 								savedValues = arr;
