@@ -50,22 +50,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const [ selected, setSelected ] = useState( [] );
 	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
 	const blockProps = useBlockProps();
-
-	function handleClick( index ) {
-		if ( singleSelection === true ) {
-			setSelected( [ index ] );
-		} else if ( selected.includes( index ) ) {
-			const updatedSelected = selected.filter(
-				( item ) => item !== index
-			);
-			setSelected( updatedSelected );
-		} else {
-			setSelected( [ ...selected, index ] );
-		}
-	}
 
 	const addOption = () => {
 		const newOptions = {

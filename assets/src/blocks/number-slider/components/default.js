@@ -6,7 +6,7 @@ export const NumberSliderComponent = ( {
 	blockID,
 	setAttributes,
 } ) => {
-	const { label, placeholder, min, max, step } = attributes;
+	const { label } = attributes;
 	const slug = 'number-slider';
 	return (
 		<>

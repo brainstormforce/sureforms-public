@@ -12,7 +12,6 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { __ } from '@wordpress/i18n';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { EmailComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -38,7 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

@@ -13,7 +13,6 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { PhoneComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -35,7 +34,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		autoCountry,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
 

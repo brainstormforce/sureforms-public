@@ -13,11 +13,13 @@ function initializeNumberSlider() {
 					.closest( '.srfm-block-wrap' )
 					.querySelector( '.srfm-number-slider-wrap' );
 				if ( parent && min && max ) {
+					/* eslint-disable no-mixed-operators */
 					const currentValue =
 						( 100 / ( parseInt( max ) - parseInt( min ) ) ) *
 							parseInt( value ) -
 						( 100 / ( parseInt( max ) - parseInt( min ) ) ) *
 							parseInt( min );
+					/* eslint-enable no-mixed-operators */
 					parent.querySelector(
 						'.srfm-number-slider-sign span'
 					).textContent = value;

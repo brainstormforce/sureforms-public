@@ -16,7 +16,6 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { CheckboxComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -38,7 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 	const blockProps = useBlockProps();
 
 	useEffect( () => {

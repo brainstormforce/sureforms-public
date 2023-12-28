@@ -13,7 +13,6 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { TextareaComponent } from './components/default';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -39,8 +38,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
-	const stylingType = sureforms_keys?._srfm_form_styling;
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

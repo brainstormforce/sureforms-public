@@ -17,14 +17,13 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { DateTimeComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
-const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
+const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
 		label,
@@ -42,7 +41,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const [ isMinPopVisible, setIsMinPopVisible ] = useState( false );
 	const [ isMaxPopVisible, setIsMaxPopVisible ] = useState( false );
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	const getFormattedDate = ( date ) => {
 		const currentDate = new Date( date );

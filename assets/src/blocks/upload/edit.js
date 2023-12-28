@@ -19,7 +19,6 @@ import Range from '@Components/range/Range.js';
 import Select from 'react-select';
 import { UploadComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -45,7 +44,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

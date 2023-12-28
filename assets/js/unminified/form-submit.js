@@ -72,12 +72,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );
-		const errorInputIcon = container.querySelector(
-			'.sf-input-error-icon'
-		);
-		const duplicateMessage = container.querySelector(
-			'.srfm-duplicate-message'
-		);
 		const isAllowDecimal = inputField.getAttribute( 'format-type' );
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );

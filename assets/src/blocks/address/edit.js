@@ -21,7 +21,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 
 import countries from './countries.json';
 
-const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
+const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		required,
 		fieldWidth,

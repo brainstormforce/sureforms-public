@@ -23,7 +23,6 @@ import InspectorTab, {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DropdownComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -43,7 +42,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ newOption, setNewOption ] = useState( '' );
 
 	function editOption( value, i ) {

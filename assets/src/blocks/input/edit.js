@@ -12,7 +12,6 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { InputComponent } from './components/default.js';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
@@ -38,7 +37,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

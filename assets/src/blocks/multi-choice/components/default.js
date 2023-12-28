@@ -45,8 +45,7 @@ export const MultiChoiceComponent = ( {
 	const OriginalView = () => {
 		return (
 			<div className="srfm-block-wrap">
-				{ options.map( ( option, key, i = 0 ) => {
-					i++;
+				{ options.map( ( option, key ) => {
 					return (
 						<label key={ key } className="srfm-multi-choice-single">
 							<div className="srfm-block-content-wrap">

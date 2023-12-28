@@ -6,7 +6,6 @@ import { useEffect } from '@wordpress/element';
 import Settings from './settings';
 import { UrlComponent } from './components/default.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
@@ -14,7 +13,6 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const { help, block_id, formId, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {

@@ -1,7 +1,3 @@
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
 export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {

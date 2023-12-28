@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { useEntityProp } from '@wordpress/core-data';
 import { TextControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
 
 const SRFMEditorHeader = () => {
 	const postId = useSelect( ( select ) => {
@@ -16,7 +15,7 @@ const SRFMEditorHeader = () => {
 		postId
 	);
 
-	const [ status, setStatus ] = useEntityProp(
+	const status = useEntityProp(
 		'postType',
 		'sureforms_form',
 		'status',
@@ -31,6 +30,7 @@ const SRFMEditorHeader = () => {
 			onChange={ ( value ) => {
 				setTitle( value );
 			} }
+			// eslint-disable-next-line jsx-a11y/no-autofocus
 			autoFocus={ 'auto-draft' === status || 'draft' === status ? true : false }
 			autoComplete="off"
 		/>

@@ -14,7 +14,6 @@ import SRFMTextControl from '@Components/text-control';
 import SRFMSelectControl from '@Components/select-control';
 import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { NumberComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';

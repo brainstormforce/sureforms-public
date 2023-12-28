@@ -1,4 +1,3 @@
-import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';

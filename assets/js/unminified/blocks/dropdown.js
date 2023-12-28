@@ -4,6 +4,7 @@ function initializeDropdown() {
 	);
 
 	dropDownSelector.forEach( ( element ) => {
+		// eslint-disable-next-line no-undef
 		NiceSelect.bind( element );
 	} );
 }

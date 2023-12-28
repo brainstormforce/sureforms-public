@@ -1,12 +1,6 @@
-import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 
-export const AddressBlock = ( {
-	attributes,
-	setAttributes,
-	countries,
-	blockID,
-} ) => {
+export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 	const {
 		required,
 		label,
