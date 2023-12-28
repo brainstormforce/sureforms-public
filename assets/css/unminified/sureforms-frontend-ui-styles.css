@@ -376,7 +376,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   left: 26px;
   transform: translateY(-50%);
   height: 2px;
-  width: 75%;
+  width: 70%;
   z-index: 0;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round {
@@ -448,7 +448,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   left: 26px;
   transform: translateY(-50%);
   height: 2px;
-  max-width: 80%;
+  max-width: 70%;
   width: 0%;
   z-index: 0;
   transition: 400ms ease;
