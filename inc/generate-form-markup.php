@@ -68,10 +68,10 @@ class Generate_Form_Markup {
 			$content = '';
 		}
 
-		$blocks             = parse_blocks( $content );
-		$block_count        = count( $blocks );
-		$color_secondary    = '';
-		$current_post_type  = get_post_type();
+		$blocks            = parse_blocks( $content );
+		$block_count       = count( $blocks );
+		$color_secondary   = '';
+		$current_post_type = get_post_type();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
@@ -124,22 +124,22 @@ class Generate_Form_Markup {
 			$info_text_color       = '';
 			$info_background_color = '';
 
-			// Success colors
+			// Success colors.
 			$success_surface_color    = '';
 			$success_text_color       = '';
 			$success_background_color = '';
 
-			// Warning colors
+			// Warning colors.
 			$success_surface_color    = '';
 			$success_text_color       = '';
 			$success_background_color = '';
 
-			// Warning colors
+			// Warning colors.
 			$warning_surface_color    = '';
 			$warning_text_color       = '';
 			$warning_background_color = '';
 
-			// Warning colors
+			// Warning colors.
 			$error_surface_color    = '';
 			$error_text_color       = '';
 			$error_background_color = '';
@@ -186,12 +186,12 @@ class Generate_Form_Markup {
 			$border_var             = $border ? $border : '1px';
 			$border_radius_var      = $border_radius ? $border_radius : '8px';
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
-			$bg_image 				= $background_image_url ? 'url('.$background_image_url.')' : '';
+			$bg_image               = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
 			<style>
-				<?php echo $container_id; ?> {
+				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-label-text-color : <?php echo esc_html( $label_text_color_var ); ?>;
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
@@ -216,7 +216,7 @@ class Generate_Form_Markup {
 					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
 					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
 					--srfm-border: <?php echo esc_html( $border_var ); ?>;
-					--srfm-bg-image: <?php echo $bg_image; ?>;
+					--srfm-bg-image: <?php echo esc_html( $bg_image ); ?>;
 					font-size: var(--srfm-font-size );
 				}
 			</style>
@@ -224,7 +224,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				 <h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
+				<h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
 				<?php
 			}
 			?>
@@ -291,7 +291,7 @@ class Generate_Form_Markup {
 			</form>
 			<div id="srfm-success-message-page-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
 			<article class="srfm-success-box-header">
-					<?php echo Sureforms_Helper::fetch_svg( 'check-circle', 'srfm-check-circle-icon' ); ?>
+					<?php echo Sureforms_Helper::fetch_svg( 'check-circle', 'srfm-check-circle-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					<h2><?php echo esc_html( $success_message_title ); ?></h2>
 				</article>
 				<article class="srfm-success-box-description">

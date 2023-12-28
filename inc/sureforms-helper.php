@@ -90,30 +90,42 @@ class Sureforms_Helper {
 	/**
 	 * Generates common markup liked label, etc
 	 *
-	 * @param string       $function function name to be applied on each element on array.
-	 * @param array<mixed> $data_array array on which function needs to be performed.
-	 * @return array<mixed>
+	 * @param string $type Type of form markup.
+	 * @param string $label Label for the form markup.
+	 * @param string $slug Slug for the form markup.
+	 * @param string $block_id Block id for the form markup.
+	 * @param bool   $required If field is required or not.
+	 * @param string $help Help for the form markup.
+	 * @param string $error_msg Error message for the form markup.
+	 * @param bool   $is_unique Check if the field is unique.
+	 * @param string $duplicate_msg Duplicate message for field.
+	 * @param bool   $override Override for error markup.
+	 * @return mixed
 	 * @since 0.0.1
 	 */
-	public static function GenerateCommonFormMarkup( $type, $label = '', $slug = '', $block_id = '', $required = '', $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
+	public static function generate_common_form_markup( $type, $label = '', $slug = '', $block_id = '', $required = '', $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
+
+		$markup = '';
 
 		switch ( $type ) {
 			case 'label':
-				return $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
-			  break;
+				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				break;
 			case 'help':
-				return $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
-			  break;
+				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
+				break;
 			case 'error':
-				return $required || $override ? '<div class="srfm-error-message" data-error-msg="' . $error_msg . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				$markup = $required || $override ? '<div class="srfm-error-message" data-error-msg="' . $error_msg . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
 				break;
 			case 'is_unique':
-				return $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
 				break;
 			default:
-				return '';
+				$markup = '';
 		}
+
+		return $markup;
 	}
 
 
@@ -122,7 +134,8 @@ class Sureforms_Helper {
 	 *
 	 * @since 0.0.1
 	 * @param string $icon the icon name.
-	 * @param bool   $class if the baseline class should be added.
+	 * @param string $class if the baseline class should be added.
+	 * @param string $html Custom attributes inside svg wrapper.
 	 */
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
@@ -139,5 +152,43 @@ class Sureforms_Helper {
 			$output .= '</span>';
 
 			return $output;
+	}
+
+	/**
+	 * Encrypt data using base64.
+	 *
+	 * @param string $input The input string which needs to be encrypted.
+	 * @since 0.0.1
+	 * @return string The encrypted string.
+	 */
+	public static function encrypt( $input ) {
+		// If the input is empty or not a string, then abandon ship.
+		if ( empty( $input ) || ! is_string( $input ) ) {
+			return '';
+		}
+
+		// Encrypt the input and return it.
+		$base_64 = base64_encode( $input ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		$encode  = rtrim( $base_64, '=' );
+		return $encode;
+	}
+
+	/**
+	 * Decrypt data using base64.
+	 *
+	 * @param string $input The input string which needs to be decrypted.
+	 * @since 0.0.1
+	 * @return string The decrypted string.
+	 */
+	public static function decrypt( $input ) {
+		// If the input is empty or not a string, then abandon ship.
+		if ( empty( $input ) || ! is_string( $input ) ) {
+			return '';
+		}
+
+		// Decrypt the input and return it.
+		$base_64 = $input . str_repeat( '=', strlen( $input ) % 4 );
+		$decode  = base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+		return $decode;
 	}
 }

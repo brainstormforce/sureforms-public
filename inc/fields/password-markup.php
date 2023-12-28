@@ -41,35 +41,35 @@ class Password_Markup extends Base {
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
-		// html attributes
+		// html attributes.
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
 		$input_label_fallback = $label ? $label : 'Password';
-		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
-		$input_confirm_label_fallback = 'Password Confirm';
-		$input_confirm_label          = '-lbl-' . base64_encode( $input_confirm_label_fallback );
+		$input_confirm_label_fallback = 'Confirm ' . $input_label_fallback;
+		$input_confirm_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_confirm_label_fallback );
 
 		ob_start(); ?>
 		<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 		<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, $required ) ); ?>
 			<div class="srfm-block-wrap">
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr ); ?>/>
-				<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
+				<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 			</div>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
 		</div>
 		<?php if ( true === $is_confirm_password ) { ?>
 			<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $confirm_label, $slug . '-confirm', $block_id, $required ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', 'Confirm ' . $label, $slug . '-confirm', $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="password" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_confirm_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr ); ?>/>
-					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg, '', '', true ) ); ?>
 			</div>
 		<?php } ?>
 		</div>

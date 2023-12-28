@@ -41,12 +41,12 @@ class Datetimepicker_Markup extends Base {
 
 			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
-			// html attributes
+			// html attributes.
 			$aria_require_attr    = $required ? 'true' : 'false';
 			$min_attr             = $min ? ' min="' . esc_attr( $min ) . '" ' : '';
 			$max_attr             = $max ? ' max="' . esc_attr( $max ) . '" ' : '';
 			$input_label_fallback = $label ? $label : 'Date & Time';
-			$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
+			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 			$input_icon = 'time' === $field_type ? '<i class="fa-solid fa-clock></i>' : '<i class="fa-regular fa-calendar"></i>';
 
@@ -65,14 +65,14 @@ class Datetimepicker_Markup extends Base {
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap srfm-with-icon">
-					<?php echo Sureforms_Helper::fetch_svg( 'calender', 'srfm-' . esc_attr( $slug ) . '-icon srfm-input-icon' ); ?>
+					<?php echo Sureforms_Helper::fetch_svg( 'calender', 'srfm-' . esc_attr( $slug ) . '-icon srfm-input-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					<input type="text" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?> srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $input_type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" value="" >
-					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>
 		<?php
 

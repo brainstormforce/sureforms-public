@@ -177,6 +177,18 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									}
 								/>
 							) }
+							<ToggleControl
+								label={ __(
+									'Allow only single selection',
+									'sureforms'
+								) }
+								checked={ singleSelection }
+								onChange={ ( checked ) =>
+									setAttributes( {
+										singleSelection: checked,
+									} )
+								}
+							/>
 							<div style={ { marginBottom: '8px' } }>
 								{ options.length > 0 && (
 									<DragDropContext
@@ -352,18 +364,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
-								}
-							/>
-							<ToggleControl
-								label={ __(
-									'Allow only single selection',
-									'sureforms'
-								) }
-								checked={ singleSelection }
-								onChange={ ( checked ) =>
-									setAttributes( {
-										singleSelection: checked,
-									} )
 								}
 							/>
 							{ 'classic' ===

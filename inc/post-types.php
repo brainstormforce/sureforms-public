@@ -13,6 +13,7 @@ use WP_Screen;
 use WP_Query;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Generate_Form_Markup;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Post Types Main Class.
@@ -501,7 +502,7 @@ class Post_Types {
 		?>
 		<table class="widefat striped">
 			<tbody>
-				<tr><th><b><?php _e( 'Fields', 'sureforms' ); ?></b></th><th><b><?php _e( 'Values', 'sureforms' ); ?></b></th></tr>
+				<tr><th><b><?php esc_html_e( 'Fields', 'sureforms' ); ?></b></th><th><b><?php esc_html_e( 'Values', 'sureforms' ); ?></b></th></tr>
 			<?php
 			foreach ( $meta_data as $field_name => $value ) :
 				if ( in_array( $field_name, $excluded_fields, true ) ) {
@@ -517,7 +518,7 @@ class Post_Types {
 				?>
 				<tr class="">
 				<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( base64_decode( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
@@ -526,7 +527,7 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
 						<?php endif; ?>
 					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( base64_decode( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
@@ -541,7 +542,7 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><b><?php echo $label ? esc_html( base64_decode( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>

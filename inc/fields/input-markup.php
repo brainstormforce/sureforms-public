@@ -43,25 +43,25 @@ class Input_Markup extends Base {
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
-		// Attributes
+		// Attributes.
 		$placeholder          = $placeholder ? $placeholder : '';
 		$max_length           = $max_text_length ? $max_text_length : '';
 		$aria_require         = $required ? 'true' : 'false';
 		$aria_unique          = $is_unique ? 'true' : 'false';
 		$default_value        = $default ? $default : '';
 		$input_label_fallback = $label ? $label : 'Text Field';
-		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
 
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
-			<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxlength="<?php echo esc_attr( $max_length ); ?>" value="<?php echo esc_attr( $default_value ); ?>" />
-					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); ?>
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' );  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg, '', $duplicate_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg, '', $duplicate_msg ) ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

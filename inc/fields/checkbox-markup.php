@@ -41,11 +41,11 @@ class Checkbox_Markup extends Base {
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
-		// html attributes
+		// html attributes.
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$checked_attr         = $checked ? 'checked' : '';
 		$input_label_fallback = $label ? $label : 'Checkbox';
-		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
@@ -69,8 +69,8 @@ class Checkbox_Markup extends Base {
 							</symbol>
 						</svg>
 					</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>
 		<?php
 

@@ -51,7 +51,7 @@ class SF_Public {
 
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
-		// Styles based on meta style
+		// Styles based on meta style.
 		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
 		// Common styles for all meta styles.

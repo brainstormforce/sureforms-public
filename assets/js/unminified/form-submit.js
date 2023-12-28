@@ -183,8 +183,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				if ( ! firstErrorInput ) {
 					firstErrorInput = phoneInput;
 				}
-			} else {
-				container.classList.remove( 'srfm-error' );
 			}
 		}
 
@@ -307,24 +305,16 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//Upload field
 		if ( container.classList.contains( 'srfm-upload-block' ) ) {
 			const uploadInput = container.querySelector( '.srfm-input-upload' );
-			const uploadInputInnerDiv =
-				container.querySelector( '.srfm-block-wrap' );
-
-			const isSizeError = container.querySelector(
-				'.srfm-upload-file-size-error'
-			);
-
-			if ( isSizeError ) {
-				isSizeError.setAttribute( 'hidden', 'true' );
-			}
 
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
 
-			if ( isUploadRequired === 'true' && ! uploadInput.value ) {
-				if ( errorMessage ) {
-					errorMessage.textContent =
-						errorMessage.getAttribute( 'data-error-msg' );
+			if (  'true' === isUploadRequired  || ! uploadInput.value ) {
+				if( 'true' === isUploadRequired ) {
+					if ( errorMessage ) {
+						errorMessage.textContent =
+							errorMessage.getAttribute( 'data-error-msg' );
+					}
 				}
 
 				if ( inputField ) {

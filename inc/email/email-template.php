@@ -8,6 +8,8 @@
 namespace SureForms\Inc\Email;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
+
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -109,7 +111,7 @@ class Email_Template {
 			$label = explode( '-lbl-', $field_name )[1];
 
 			if ( strpos( $field_name, 'srfm-upload' ) !== false ) {
-				$field_label = $label ? esc_html( base64_decode( $label ) ) : '';
+				$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
 				$message    .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>
@@ -119,7 +121,7 @@ class Email_Template {
 					$value
 				);
 			} elseif ( strpos( $field_name, 'srfm-url' ) !== false ) {
-				$field_label = $label ? esc_html( base64_decode( $label ) ) : '';
+				$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
 				if (
 					substr( $value, 0, 7 ) !== 'http://' &&
 					substr( $value, 0, 8 ) !== 'https://'
@@ -136,7 +138,7 @@ class Email_Template {
 					$value
 				);
 			} else {
-				$field_label = $label ? esc_html( base64_decode( $label ) ) : '';
+				$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
 				$message    .= sprintf(
 					'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
 						<td style="padding: 10px;">%s</td>

@@ -45,24 +45,24 @@ class Rating_Markup extends Base {
 
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$input_label_fallback = $label ? $label : 'Ratings';
-		$input_label          = '-lbl-' . base64_encode( $input_label_fallback );
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'label', $label, $slug, $block_id, $required ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, $required ) ); ?>
 				<div class="srfm-block-wrap">
 					<input type="hidden" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" value=""/>
 					<ul>
 						<?php for ( $i = 0; $i < $max_value; $i++ ) { ?>
 							<li>
-								<?php echo Sureforms_Helper::fetch_svg( esc_attr( $icon_shape ), 'srfm-' . esc_attr( $icon_shape ) . '-icon', 'data-value="' . esc_attr( strval( $i + 1 ) ) . '"' ); ?>
+								<?php echo Sureforms_Helper::fetch_svg( esc_attr( $icon_shape ), 'srfm-' . esc_attr( $icon_shape ) . '-icon', 'data-value="' . esc_attr( strval( $i + 1 ) ) . '"' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 								<span class="srfm-<?php echo esc_attr( $slug ); ?>-number"><?php echo esc_html( strval( $show_numbers ? $i + 1 : '' ) ); ?></span>
 							</li>
 						<?php } ?>
 					</ul>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'help', '', '', '', '', $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::GenerateCommonFormMarkup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', $required, '', $error_msg ) ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

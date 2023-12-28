@@ -524,6 +524,7 @@
   font-size: 0.7em;
 }
 .srfm-form-container .srfm-form .srfm-upload-block .srfm-upload-data .srfm-upload-data-right {
+  cursor: pointer;
   width: 1em;
 }
 .srfm-form-container .srfm-form .srfm-upload-block .srfm-upload-data .srfm-upload-data-right svg {

@@ -22,6 +22,13 @@ function initializeUploadField() {
 
 					if ( file ) {
 						if ( file.size > maxFileSize ) {
+							const error = element.querySelector('.srfm-error-message');
+							element.classList.add( 'srfm-error' );
+							uploadInput.value = '';
+							if( error ) {
+								error.textContent = "File Size Exceeded The Limit";
+							}
+
 						} else {
 							const fileName =
 								file.name.length > 20
@@ -64,7 +71,7 @@ function initializeUploadField() {
 	) }MB</div>
 									</div>
 								</div>
-								<div class="srfm-upload-data-right">
+								<div class="srfm-upload-data-right srfm-upload-delete">
 									${ deleteIcon }
 								</div>`;
 								if ( uploadResultContainer ) {
@@ -74,7 +81,7 @@ function initializeUploadField() {
 								}
 								const resetButton =
 									uploadResultContainer.querySelector(
-										'.srfm-upload-data-delete'
+										'.srfm-upload-delete'
 									);
 								if ( resetButton ) {
 									resetButton.addEventListener(
