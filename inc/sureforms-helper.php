@@ -145,7 +145,7 @@ class Sureforms_Helper {
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 			include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
-			/** @phpstan-ignore-next-line */
+			// phpcs:ignore /** @phpstan-ignore-next-line */
 			self::$srfm_svgs = json_decode( ob_get_clean(), true );
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
