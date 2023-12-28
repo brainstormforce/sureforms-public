@@ -100,10 +100,10 @@ class Sureforms_Helper {
 	 * @param bool   $is_unique Check if the field is unique.
 	 * @param string $duplicate_msg Duplicate message for field.
 	 * @param bool   $override Override for error markup.
-	 * @return mixed
+	 * @return string
 	 * @since 0.0.1
 	 */
-	public static function generate_common_form_markup( $type, $label = '', $slug = '', $block_id = '', $required = '', $help = '', $error_msg = '', $is_unique = '', $duplicate_msg = '', $override = '' ) {
+	public static function generate_common_form_markup( $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
 		$markup = '';
@@ -136,6 +136,7 @@ class Sureforms_Helper {
 	 * @param string $icon the icon name.
 	 * @param string $class if the baseline class should be added.
 	 * @param string $html Custom attributes inside svg wrapper.
+	 * @return string
 	 */
 	public static function fetch_svg( $icon = '', $class = '', $html = '' ) {
 		$class = $class ? ' ' . $class : '';
@@ -144,6 +145,7 @@ class Sureforms_Helper {
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 			include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
+			/** @phpstan-ignore-next-line */
 			self::$srfm_svgs = json_decode( ob_get_clean(), true );
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}

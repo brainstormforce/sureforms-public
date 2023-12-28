@@ -50,7 +50,7 @@ class Number_Slider_Markup extends Base {
 
 
 <div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
-		<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, $required ) ); ?>
+		<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 		<div class="srfm-block-wrap">
 		<div class="srfm-<?php echo esc_attr( $slug ); ?>-wrap" style="--min:<?php echo esc_attr( $min ); ?>%; --max:<?php echo esc_attr( $max ); ?>%; --value:<?php echo esc_attr( $min ); ?>%;">
 			<div class="srfm-<?php echo esc_attr( $slug ); ?>"></div>
@@ -61,7 +61,7 @@ class Number_Slider_Markup extends Base {
 		</div>
 		<input class="srfm-input-<?php echo esc_attr( $slug ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="range" tabindex="0" value="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>" min="<?php echo esc_attr( $min ); ?>" step="<?php echo esc_attr( $step ); ?>">
 		</div>
-		<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', '', $help ) ); ?>
+		<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
 		</div>
 		<?php
 		return ob_get_clean();

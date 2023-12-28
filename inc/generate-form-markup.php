@@ -111,80 +111,44 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color       = $color_text_primary;
-			$body_input_color       = '';
-			$placeholder_color      = '';
-			$border_color           = '';
-			$help_text_color        = '';
-			$base_background_color  = '';
-			$light_background_color = '';
-
-			// Info colors.
-			$info_surface_color    = '';
-			$info_text_color       = '';
-			$info_background_color = '';
-
-			// Success colors.
-			$success_surface_color    = '';
-			$success_text_color       = '';
-			$success_background_color = '';
-
-			// Warning colors.
-			$success_surface_color    = '';
-			$success_text_color       = '';
-			$success_background_color = '';
-
-			// Warning colors.
-			$warning_surface_color    = '';
-			$warning_text_color       = '';
-			$warning_background_color = '';
-
-			// Warning colors.
-			$error_surface_color    = '';
-			$error_text_color       = '';
-			$error_background_color = '';
-
-			$font_size          = '';
-			$media_query_mobile = '';
-			$border             = '';
-			$border_radius      = '';
+			$label_text_color = $color_text_primary;
 
 			// New colors.
 
-			$primary_color_var = $primary_color ? $primary_color : '#046bd2';
+			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
+			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
 
-			$label_text_color_var  = $label_text_color ? $label_text_color : '#1F2937';
-			$body_input_color_var  = $body_input_color ? $body_input_color : '#4B5563';
-			$placeholder_color_var = $placeholder_color ? $placeholder_color : '#9CA3AF';
-			$border_color_var      = $border_color ? $border_color : '#D1D5DB';
-			$help_color_var        = $help_text_color ? $help_text_color : '#6B7280';
-			$base_background_var   = $base_background_color ? $base_background_color : '#FFFFFF';
-			$light_background_var  = $light_background_color ? $light_background_color : '#F9FAFB';
+			$body_input_color_var  = '#4B5563';
+			$placeholder_color_var = '#9CA3AF';
+			$border_color_var      = '#D1D5DB';
+			$help_color_var        = '#6B7280';
+			$base_background_var   = '#FFFFFF';
+			$light_background_var  = '#F9FAFB';
 
 			// Info colors.
-			$info_surface_var          = $info_surface_color ? $info_surface_color : '#3B82F6';
-			$info_text_var             = $info_text_color ? $info_text_color : '#2563EB';
-			$info_background_color_var = $info_background_color ? $info_background_color : '#EFF6FF';
+			$info_surface_var          = '#3B82F6';
+			$info_text_var             = '#2563EB';
+			$info_background_color_var = '#EFF6FF';
 
 			// Success colors.
-			$success_surface_var          = $success_surface_color ? $success_surface_color : '#22C55E';
-			$success_text_var             = $success_text_color ? $success_text_color : '#16A34A';
-			$success_background_color_var = $success_background_color ? $success_background_color : '#F0FDF4';
+			$success_surface_var          = '#22C55E';
+			$success_text_var             = '#16A34A';
+			$success_background_color_var = '#F0FDF4';
 
 			// Warning colors.
-			$warning_surface_var          = $warning_surface_color ? $warning_surface_color : '#FACC15';
-			$warning_text_var             = $warning_text_color ? $warning_text_color : '#CA8A04';
-			$warning_background_color_var = $warning_background_color ? $warning_background_color : '#FEFCE8';
+			$warning_surface_var          = '#FACC15';
+			$warning_text_var             = '#CA8A04';
+			$warning_background_color_var = '#FEFCE8';
 
 			// Error colors.
-			$error_surface_var          = $warning_surface_color ? $warning_surface_color : '#EF4444';
-			$error_text_var             = $warning_text_color ? $warning_text_color : '#DC2626';
-			$error_background_color_var = $warning_background_color ? $warning_background_color : '#FEF2F2';
+			$error_surface_var          = '#EF4444';
+			$error_text_var             = '#DC2626';
+			$error_background_color_var = '#FEF2F2';
 
 			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
-			$media_query_mobile_var = $media_query_mobile ? $media_query_mobile : '576px';
-			$border_var             = $border ? $border : '1px';
-			$border_radius_var      = $border_radius ? $border_radius : '8px';
+			$media_query_mobile_var = '576px';
+			$border_var             = '1px';
+			$border_radius_var      = '8px';
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
 			$bg_image               = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 			?>
