@@ -129,7 +129,7 @@ class Generate_Form_Markup {
 				<!-- page-break progress header start -->
 				<?php
 				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-					self::renderPageBreakHeaderContainer( $is_page_break, $page_break_progress_type );
+					self::render_break_header_container( $is_page_break, $page_break_progress_type );
 				}
 				?>
 				<!-- page-break progress header end -->
