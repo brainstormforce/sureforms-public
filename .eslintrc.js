@@ -76,5 +76,6 @@ module.exports = {
 		getComputedStyle: true,
 		uagb_blocks_info: true,
 		SureForms: true,
+		quickSidebarBlocks: true,
 	},
 };

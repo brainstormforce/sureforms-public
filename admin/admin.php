@@ -347,7 +347,7 @@ class Admin {
 			'srfm-quick-action-siderbar',
 			'quickSidebarBlocks',
 			array(
-				'allowed_blocks'=>$allow_quick_sidebar_blocks,
+				'allowed_blocks' => $allow_quick_sidebar_blocks,
 			)
 		);
 	}

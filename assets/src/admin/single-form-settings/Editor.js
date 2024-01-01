@@ -22,6 +22,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMEditorHeader from './SRFMEditorHeader.js';
+import { attachSidebar, toggleSidebar } from '../../../../modules/quick-action-sidebar/index.js';
 
 const { select, dispatch } = wp.data;
 
@@ -251,4 +252,18 @@ const forcePanel = () => {
 
 wp.domReady( () => {
 	forcePanel();
+	//quick action sidebar
+	// If not FSE editor, attach the sidebar to the DOM.
+	const currentUrl = new URL( window.location.href );
+	if ( '/wp-admin/site-editor.php' === currentUrl.pathname ) {
+		toggleSidebar( window.location.href );
+
+		// For FSE we are adding eventlistener to remove the sidebar when the user canvas is not editable.
+		window.navigation.addEventListener( 'navigate', ( e ) => {
+			toggleSidebar( e.destination.url );
+		} );
+	} else {
+		// Attach the sidebar to the DOM.
+		attachSidebar();
+	}
 } );

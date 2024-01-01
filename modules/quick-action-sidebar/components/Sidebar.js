@@ -3,7 +3,7 @@
  */
 import { useLayoutEffect } from '@wordpress/element';
 import style from '../editor.lazy.scss';
-import Blocks from './blocks'
+import Blocks from './blocks';
 
 const Sidebar = () => {
 	useLayoutEffect( () => {
@@ -14,16 +14,15 @@ const Sidebar = () => {
 	}, [] );
 
 	return (
-		<div className='srfm-ee-quick-access__sidebar'>
-			{/* The block selection buttons will come here. */}
-			<div className='srfm-ee-quick-access__sidebar--blocks'>
+		<div className="srfm-ee-quick-access__sidebar">
+			{ /* The block selection buttons will come here. */ }
+			<div className="srfm-ee-quick-access__sidebar--blocks">
 				<Blocks />
 			</div>
-			{/* The sidebar actions will come here - like the plus sign. */}
-			<div className='srfm-ee-quick-access__sidebar--actions'>
-			</div>
+			{ /* The sidebar actions will come here - like the plus sign. */ }
+			<div className="srfm-ee-quick-access__sidebar--actions"></div>
 		</div>
 	);
-}
+};
 
 export default Sidebar;
