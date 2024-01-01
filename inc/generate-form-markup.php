@@ -128,7 +128,7 @@ class Generate_Form_Markup {
 				?>
 				<!-- page-break progress header start -->
 				<?php
-				if ( $is_page_break && $page_break_progress_type !== 'none' ) {
+				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
 					self::renderPageBreakHeaderContainer( $is_page_break, $page_break_progress_type );
 				}
 				?>
@@ -247,10 +247,11 @@ class Generate_Form_Markup {
 	}
 
 	/**
-	 * Undocumented function
+	 * Form pagination
 	 *
-	 * @param [type] $post
-	 * @since x.x.x
+	 * @param array  $post post content.
+	 * @param string $page_break_first_label label of first page break.
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public static function form_pagination( $post, $page_break_first_label ) {
@@ -262,7 +263,7 @@ class Generate_Form_Markup {
 		$new_content = '';
 		$i           = 0;
 		foreach ( $pages as $page ) {
-			if ( $i == 0 ) {
+			if ( 0 === $i ) {
 				$label = $page_break_first_label;
 			} else {
 				$label = isset( $labels[ $i - 1 ] ) ? $labels[ $i - 1 ] : 'page-break';
@@ -272,39 +273,41 @@ class Generate_Form_Markup {
 			$new_content .= '</div>';
 			$i++;
 		}
+		// phpcs:ignore
 		echo $new_content;
 	}
 
 	/**
-	 * Undocumented function
+	 * Render page break header
 	 *
-	 * @param [type] $is_page_break
-	 * @since x.x.x
+	 * @param boolean $is_page_break page break enable.
+	 * @param string  $page_break_progress_type type of progress type.
+	 * @since 0.0.1
 	 * @return void
 	 */
-	public static function renderPageBreakHeaderContainer( $is_page_break, $page_break_progress_type ) {
+	public static function render_break_header_container( $is_page_break, $page_break_progress_type ) {
 		if ( ! $is_page_break ) {
 			return;
 		}
 
 		echo '<div class="srfm-page-break-header-container" type="' . esc_attr( $page_break_progress_type ) . '">';
-		self::renderPageBreakProgressContainer( $page_break_progress_type );
+		self::render_page_break_progress_container( $page_break_progress_type );
 		echo '</div>';
 	}
 
 	/**
-	 * Undocumented function
+	 * Render page break progress section
 	 *
-	 * @param [type] $page_break_progress_type
-	 * @since x.x.x
+	 * @param string $page_break_progress_type type of progress type.
+	 * @since 0.0.1
 	 * @return void
 	 */
-	public static function renderPageBreakProgressContainer( $page_break_progress_type ) {
-		if ( $page_break_progress_type === 'steps' ) {
+	public static function render_page_break_progress_container( $page_break_progress_type ) {
+		if ( 'steps' === $page_break_progress_type ) {
 			echo '<div class="srfm-page-break-progress-container">
 					  <div class="srfm-progress"></div>
 				  </div>';
-		} elseif ( $page_break_progress_type === 'connector' ) {
+		} elseif ( 'connector' === $page_break_progress_type ) {
 			echo '<div class="srfm-page-break-steps">
 				<div class="srfm-steps-content">
 					<span class="srfm-steps-label">Step <span class="srfm-step-count"></span> of <span class="srfm-step-total"></span></span>

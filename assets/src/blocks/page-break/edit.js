@@ -11,18 +11,10 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
-import {
-	PanelRow
-} from '@wordpress/components';
+import { PanelRow } from '@wordpress/components';
 
 const Edit = ( { attributes, setAttributes } ) => {
-	const { label, preview } = attributes;
-
-	// show the block preview on hover.
-	// if ( preview ) {
-	// 	const fieldName = fieldsPreview.input_preview;
-	// 	return <FieldsPreview fieldName={ fieldName } />;
-	// }
+	const { label } = attributes;
 
 	return (
 		<>

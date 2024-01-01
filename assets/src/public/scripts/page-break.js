@@ -3,7 +3,7 @@ class PageBreakHandler {
 	constructor( form ) {
 		this.form = form;
 		this.pageBreakContainers = form.querySelectorAll( '.srfm-page-break' );
-        this.pageBreakLength = this.pageBreakContainers.length;
+		this.pageBreakLength = this.pageBreakContainers.length;
 		this.submitBtn = form.querySelector( '.srfm-submit-container' );
 		this.ajaxUrl = form.getAttribute( 'ajaxurl' );
 		this.nonce = form.getAttribute( 'nonce' );
@@ -15,14 +15,14 @@ class PageBreakHandler {
 		this.stepsParentDiv = form.querySelector(
 			'.srfm-page-break-progress-container'
 		);
-		if(this.pageBreakHeader){
-            this.connectorCount =
-			this.pageBreakHeader.querySelector( '.srfm-step-count' );
-            this.connectorTotalCount =
-			this.pageBreakHeader.querySelector( '.srfm-step-total' );
-            this.progressIndicatorType =
-			this.pageBreakHeader.getAttribute( 'type' );
-        }
+		if ( this.pageBreakHeader ) {
+			this.connectorCount =
+				this.pageBreakHeader.querySelector( '.srfm-step-count' );
+			this.connectorTotalCount =
+				this.pageBreakHeader.querySelector( '.srfm-step-total' );
+			this.progressIndicatorType =
+				this.pageBreakHeader.getAttribute( 'type' );
+		}
 		this.connectorParentDiv = form.querySelector( '.srfm-steps-container' );
 		this.currentActive = 0;
 		this.preBtn = form.querySelector( '.srfm-pre-btn' );
@@ -203,9 +203,9 @@ class PageBreakHandler {
 			if ( this.progressIndicatorType === 'connector' ) {
 				currWidth = 80;
 			}
-			this.progress.style.width =
-				( this.currentActive / ( this.wraps.length - 1 ) ) * currWidth +
-				'%';
+			this.progress.style.width = `${
+				( this.currentActive / ( this.wraps.length - 1 ) ) * currWidth
+			}%`;
 		}
 		if ( this.progressIndicatorType === 'progress-bar' ) {
 			const progressVal = Math.ceil(
