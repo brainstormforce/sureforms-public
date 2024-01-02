@@ -376,7 +376,14 @@ class Post_Types {
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $screen_id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $screen_id ) {
 			?>
-		<div id="srfm-page-header"></div>
+		<style>
+			.srfm-page-header {
+				@media screen and ( max-width: 600px ) {
+					padding-top: 46px;
+				}
+			}
+		</style>
+		<div id="srfm-page-header" class="srfm-page-header"></div>
 			<?php
 		}
 	}

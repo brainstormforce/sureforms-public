@@ -1,4 +1,5 @@
 body.post-type-sureforms_form {
+
 	// Sidebar Override.
 	.edit-post-sidebar {
 		> .components-panel {
@@ -91,6 +92,11 @@ body.post-type-sureforms_form {
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
+
+			&:focus {
+				border-color: #0284C7;
+				box-shadow: unset;
+			}
 		}
 
 		@media screen and ( max-width: 782px ) {
