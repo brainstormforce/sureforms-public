@@ -7,10 +7,12 @@ import {
 	SelectControl,
 	Button,
 	Icon,
+	TextControl
 } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
+
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -267,16 +269,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="srfm-control-label srfm-control__header">
-								{ __( 'Add New Option', 'sureforms' ) }
-							</span>
 							<div className="sureform-add-option-container">
-								<SRFMTextControl
-									data={ {
-										value: newOption,
-										label: 'option',
-									} }
-									showHeaderControls={ false }
+								<TextControl
+									label={ __( 'Add New Option', 'sureforms' ) }
 									value={ newOption }
 									onChange={ ( value ) =>
 										setNewOption( value )
@@ -286,7 +281,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption !== '' ) {
+										if ( newOption && newOption ) {
 											setAttributes( {
 												options: [
 													...options,

@@ -43,7 +43,7 @@ export default () => {
 					<GetStartedBox
 						infoType="info"
 						infoText={ __( 'Setup', 'sureforms' ) }
-						title={ __( 'Create a form', 'sureforms' ) }
+						title={ __( 'Create a Form', 'sureforms' ) }
 						description={ __(
 							'Create visually stunning, user-friendly forms.',
 							'sureforms'
@@ -55,7 +55,7 @@ export default () => {
 					<GetStartedBox
 						infoType="success"
 						infoText={ __( 'Form', 'sureforms' ) }
-						title={ __( 'All forms', 'sureforms' ) }
+						title={ __( 'All Forms', 'sureforms' ) }
 						description={ __(
 							'Take a look at the forms you have created.',
 							'sureforms'
@@ -67,7 +67,7 @@ export default () => {
 					<GetStartedBox
 						infoType="primary"
 						infoText={ __( 'Entries', 'sureforms' ) }
-						title={ __( 'View entries', 'sureforms' ) }
+						title={ __( 'View Entries', 'sureforms' ) }
 						description={ __(
 							'Access the complete list of form submissions.',
 							'sureforms'

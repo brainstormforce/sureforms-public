@@ -1,5 +1,6 @@
 .srfm-form-container {
 	font-size: var( --srfm-font-size );
+	margin-top: 2em;
 
 	// --srfm-primary-color : '#046bd2';
 	--srfm-label-text-color: #1f2937;
@@ -397,7 +398,7 @@
 				cursor: pointer;
 
 				.srfm-input-common {
-					width: calc( 100% - 2.5em );
+					width: calc( 100% - 3em );
 				}
 
 				.components-button {
@@ -418,21 +419,22 @@
 
 					.srfm-multi-choice-icon {
 						position: relative;
-						top: 0.3em;
-						width: 16px;
-						height: 16px;
+						width: 0.7em;
+						height: 0.7em;
+						top: 0.18em;
 						border-radius: 100%;
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						border-radius: 100%;
-						line-height: 0;
+						line-height: 1.5em;
 					}
 
 					p {
 						font-size: 0.7em;
+						line-height: 1.5em;
 						padding-left: 0.5em;
+						width: calc( 100% - 1em );
 						margin-top: 0;
 						margin-bottom: 0;
-						width: calc( 100% - 16px );
 						word-break: break-word;
 					}
 				}

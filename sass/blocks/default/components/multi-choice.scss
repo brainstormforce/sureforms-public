@@ -45,23 +45,28 @@
 
 						.srfm-multi-choice-icon {
 							position: relative;
-							top: 0.3em;
-							width: 16px;
-							height: 16px;
+							width: 0.7em;
+							height: 0.7em;
+							top: 0.18em;
 							border-radius: 100%;
 							border: var( --srfm-border ) solid var( --srfm-border-color );
 							border-radius: 100%;
-							line-height: 0;
+							line-height: 1.5em;
 
 							svg {
+								position: absolute;
+								top: 0;
+								width: 0.7em;
+								height: 0.7em;
 								opacity: 0;
 							}
 						}
 
 						p {
 							font-size: 0.7em;
+							line-height: 1.5em;
 							padding-left: 0.5em;
-							width: calc( 100% - 16px );
+							width: calc( 100% - 1em );
 							margin-top: 0;
 							margin-bottom: 0;
 							word-break: break-word;

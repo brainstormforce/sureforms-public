@@ -7,6 +7,7 @@ import {
 	SelectControl,
 	Button,
 	Icon,
+	TextControl
 } from '@wordpress/components';
 import {
 	InspectorControls,
@@ -305,16 +306,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="srfm-control-label srfm-control__header">
-								{ __( 'Add New Option', 'sureforms' ) }
-							</span>
 							<div className="sureform-add-option-container">
-								<SRFMTextControl
-									data={ {
-										value: newOption.optiontitle,
-										label: 'option',
-									} }
-									showHeaderControls={ false }
+								<TextControl
+									label={ __( 'Add New Option', 'sureforms' ) }
 									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
 										setNewOption( { optiontitle: value } )
@@ -324,14 +318,14 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption !== '' ) {
+										if ( newOption?.optiontitle && newOption?.optiontitle ) {
 											setAttributes( {
 												options: [
 													...options,
 													newOption,
 												],
 											} );
-											setNewOption( '' );
+											setNewOption( { optiontitle: '' } )
 										} else {
 											// TODO: May be add a tooltip here
 										}
