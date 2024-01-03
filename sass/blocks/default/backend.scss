@@ -6,7 +6,7 @@
 	--srfm-label-text-color: #1f2937;
 	--srfm-body-input-color: #4b5563;
 	--srfm-placeholder-color: #9ca3af;
-	--srfm-border-color: #d1d5db;
+	--srfm-border-color: #D0D5DD;
 	--srfm-help-color: #6b7280;
 	--srfm-base-background-color: #ffffff;
 	// --srfm-light-background-color : '#F9FAFB';
@@ -22,7 +22,7 @@
 	// --srfm-error-surface-color : '#EF4444';
 	--srfm-error-text-color: #dc2626;
 	// --srfm-error-background-color : '#FEF2F2';
-	--srfm-border-radius: 8px;
+	--srfm-border-radius: 4px;
 	--srfm-border: 1px;
 
 	.srfm-input-common {
@@ -64,7 +64,7 @@
 	.srfm-input-common {
 		font-size: 0.8em;
 		font-weight: 400;
-		padding: 0.625em 0.875em;
+		padding: 0.75em 1em;
 		padding-right: 2.2em;
 		line-height: normal;
 		color: var( --srfm-body-input-color );

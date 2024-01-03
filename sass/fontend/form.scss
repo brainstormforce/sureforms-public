@@ -28,13 +28,15 @@
 					display: block;
 				}
 				.nice-select {
-					height: 43px;
-					line-height: 43px;
+					line-height: normal;
 					width: 100%;
 					border: var( --srfm-border ) solid var( --srfm-border-color );
+					padding: 0.75em 1em;
+					height: auto;
+					font-size: .8em;
 
 					.current {
-						font-size: 1.1em;
+						line-height: normal;
 					}
 
 					&.open {

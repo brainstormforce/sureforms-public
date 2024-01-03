@@ -149,6 +149,10 @@
   border-color: var(--srfm-error-surface-color);
   background-color: var(--srfm-error-background-color);
 }
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common:focus,
+.srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-dropdown-common:focus {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-error-surface-color);
+}
 .srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-error-icon {
   display: block;
   position: absolute;
@@ -180,7 +184,7 @@
   font-family: inherit;
   font-size: 0.8em;
   font-weight: 400;
-  padding: 0.625em 0.875em;
+  padding: 0.75em 1em;
   padding-right: 2.2em;
   line-height: normal;
   color: var(--srfm-body-input-color);
