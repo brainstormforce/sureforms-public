@@ -37,18 +37,18 @@ export const UploadComponent = ( { attributes, blockID, setAttributes } ) => {
 						<span>
 							{ firstFive.length !== 0
 								? firstFive.map( ( obj, index ) => {
-										if ( index < 4 ) {
-											if (
-												firstFive.length ===
+									if ( index < 4 ) {
+										if (
+											firstFive.length ===
 												index + 1
-											) {
-												return ' ' + obj.value;
-											}
-											return ' ' + obj.value + ',';
-										} else if ( index === 4 ) {
-											return ' ' + obj.value + '...';
+										) {
+											return ' ' + obj.value;
 										}
-										return '';
+										return ' ' + obj.value + ',';
+									} else if ( index === 4 ) {
+										return ' ' + obj.value + '...';
+									}
+									return '';
 								  } )
 								: 'All types' }
 						</span>

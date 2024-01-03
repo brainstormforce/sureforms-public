@@ -15,13 +15,6 @@ const SRFMEditorHeader = () => {
 		postId
 	);
 
-	const status = useEntityProp(
-		'postType',
-		'sureforms_form',
-		'status',
-		postId
-	);
-
 	return (
 		<TextControl
 			className="srfm-header-title-input"
