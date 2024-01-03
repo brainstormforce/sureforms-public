@@ -18,6 +18,7 @@ export const UploadComponent = ( { attributes, blockID, setAttributes } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap">
 				<span className={ `srfm-icon srfm-${ slug }-icon` }>
@@ -36,18 +37,18 @@ export const UploadComponent = ( { attributes, blockID, setAttributes } ) => {
 						<span>
 							{ firstFive.length !== 0
 								? firstFive.map( ( obj, index ) => {
-									if ( index < 4 ) {
-										if (
-											firstFive.length ===
+										if ( index < 4 ) {
+											if (
+												firstFive.length ===
 												index + 1
-										) {
-											return ' ' + obj.value;
+											) {
+												return ' ' + obj.value;
+											}
+											return ' ' + obj.value + ',';
+										} else if ( index === 4 ) {
+											return ' ' + obj.value + '...';
 										}
-										return ' ' + obj.value + ',';
-									} else if ( index === 4 ) {
-										return ' ' + obj.value + '...';
-									}
-									return '';
+										return '';
 								  } )
 								: 'All types' }
 						</span>

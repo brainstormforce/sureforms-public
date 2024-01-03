@@ -7,7 +7,7 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl
+	TextControl,
 } from '@wordpress/components';
 import {
 	InspectorControls,
@@ -308,7 +308,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							</div>
 							<div className="sureform-add-option-container">
 								<TextControl
-									label={ __( 'Add New Option', 'sureforms' ) }
+									label={ __(
+										'Add New Option',
+										'sureforms'
+									) }
 									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
 										setNewOption( { optiontitle: value } )
@@ -318,14 +321,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption?.optiontitle && newOption?.optiontitle ) {
+										if (
+											newOption?.optiontitle &&
+											newOption?.optiontitle
+										) {
 											setAttributes( {
 												options: [
 													...options,
 													newOption,
 												],
 											} );
-											setNewOption( { optiontitle: '' } )
+											setNewOption( { optiontitle: '' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}
@@ -348,36 +354,36 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							/>
 							{ 'classic' ===
 							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
+								<MultiButtonsControl
+									label={ __( 'Appearance', 'sureforms' ) }
+									data={ {
+										value: style,
+										label: 'style',
+									} }
+									options={ [
+										{
+											value: 'default',
+											icon: 'Radio',
+										},
+										{
+											value: 'buttons',
+											icon: 'Buttons',
+										},
+									] }
+									showIcons={ true }
+									onChange={ ( value ) => {
+										if ( style !== value ) {
+											setAttributes( {
+												style: value,
+											} );
+										} else {
+											setAttributes( {
+												style: 'buttons',
+											} );
+										}
+									} }
+								/>
+							) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
@@ -401,6 +407,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }
+					allowedFormats={ [] }
 				/>
 			) }
 		</div>

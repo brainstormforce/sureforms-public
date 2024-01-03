@@ -7,7 +7,7 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl
+	TextControl,
 } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
@@ -271,7 +271,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							</div>
 							<div className="sureform-add-option-container">
 								<TextControl
-									label={ __( 'Add New Option', 'sureforms' ) }
+									label={ __(
+										'Add New Option',
+										'sureforms'
+									) }
 									value={ newOption }
 									onChange={ ( value ) =>
 										setNewOption( value )
@@ -327,6 +330,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }
+					allowedFormats={ [] }
 				/>
 			) }
 		</>

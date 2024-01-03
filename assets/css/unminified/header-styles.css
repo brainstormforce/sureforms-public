@@ -15,7 +15,6 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
 
 body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close {
   background-color: transparent;
-  margin-right: 20px;
 }
 
 .interface-pinned-items button.components-button:not([aria-label=Settings]) {

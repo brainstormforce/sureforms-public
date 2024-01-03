@@ -1,5 +1,4 @@
 body.post-type-sureforms_form {
-
 	// Sidebar Override.
 	.edit-post-sidebar {
 		> .components-panel {
@@ -75,6 +74,14 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.edit-post-header-toolbar__left {
+		margin-left: -10px;
+
+		.components-dropdown {
+			display: none;
+		}
+	}
+
 	.edit-post-header__center {
 		.srfm-header-title-input {
 			width: 100%;
@@ -94,7 +101,7 @@ body.post-type-sureforms_form {
 			box-shadow: none;
 
 			&:focus {
-				border-color: #0284C7;
+				border-color: #0284c7;
 				box-shadow: unset;
 			}
 		}

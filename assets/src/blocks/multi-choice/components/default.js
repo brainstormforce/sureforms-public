@@ -70,6 +70,7 @@ export const MultiChoiceComponent = ( {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			{ isSelected && (
 				<>

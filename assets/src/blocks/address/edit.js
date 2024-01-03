@@ -119,20 +119,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: lineOneLabel,
-												label: 'lineOneLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineOneLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineOneLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: lineOneLabel,
+											label: 'lineOneLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ lineOneLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												lineOneLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: lineOnePlaceholder,
@@ -153,20 +153,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: lineTwoLabel,
-												label: 'lineTwoLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineTwoLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineTwoLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: lineTwoLabel,
+											label: 'lineTwoLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ lineTwoLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												lineTwoLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: lineTwoPlaceholder,
@@ -187,20 +187,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: cityLabel,
-												label: 'cityLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ cityLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													cityLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: cityLabel,
+											label: 'cityLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ cityLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												cityLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: cityPlaceholder,
@@ -221,20 +221,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: stateLabel,
-												label: 'stateLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ stateLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													stateLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: stateLabel,
+											label: 'stateLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ stateLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												stateLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: statePlaceholder,
@@ -255,20 +255,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: postalLabel,
-												label: 'postalLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ postalLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													postalLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: postalLabel,
+											label: 'postalLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ postalLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												postalLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: postalPlaceholder,
@@ -289,20 +289,20 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							>
 								{ 'classic' ===
 								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: countryLabel,
-												label: 'countryLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ countryLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													countryLabel: value,
-												} )
-											}
-										/>
-									) }
+									<SRFMTextControl
+										data={ {
+											value: countryLabel,
+											label: 'countryLabel',
+										} }
+										label={ __( 'Label', 'sureforms' ) }
+										value={ countryLabel }
+										onChange={ ( value ) =>
+											setAttributes( {
+												countryLabel: value,
+											} )
+										}
+									/>
+								) }
 								<SRFMTextControl
 									data={ {
 										value: countryPlaceholder,
@@ -348,6 +348,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }
+					allowedFormats={ [  ] }
 				/>
 			) }
 		</>
