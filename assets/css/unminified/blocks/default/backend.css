@@ -317,6 +317,7 @@
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: auto;
+  height: 100%;
 }
 .srfm-form-container .srfm-multi-choice-block-wrap .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap .srfm-multi-choice-icon {
   position: relative;
