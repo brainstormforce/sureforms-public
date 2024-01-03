@@ -128,7 +128,7 @@ export default () => {
 									margin-left: 12px;
 								` }
 							>
-								Core
+								{ __( 'Core', 'sureforms' ) }
 							</span>
 						</article>
 						<div
