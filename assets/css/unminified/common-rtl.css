@@ -1,6 +1,6 @@
 .srfm-form-container {
   position: relative;
-  padding: 1em;
+  padding: 32px;
   background-image: var(--srfm-bg-image);
   background-size: cover;
   background-position: center;
