@@ -77,9 +77,17 @@ body.post-type-sureforms_form {
 	// Editor custom title.
 	.edit-post-visual-editor__post-title-wrapper {
 		display: none;
+	}
 
+	.editor-post-preview {
 		@media screen and ( max-width: 782px ) {
-			display: block;
+			display: none;
+		}
+	}
+
+	.edit-post-header__settings {
+		@media screen and ( max-width: 782px ) {
+			flex: none;
 		}
 	}
 
@@ -106,10 +114,6 @@ body.post-type-sureforms_form {
 				box-shadow: unset;
 			}
 		}
-
-		@media screen and ( max-width: 782px ) {
-			display: none;
-		}
 	}
 
 	// Plus button, Block appended.
@@ -122,6 +126,7 @@ body.post-type-sureforms_form {
 			box-shadow: none;
 			border: 1px dashed #959595;
 			padding: 24px;
+			background-color: #fff;
 			svg {
 				width: 30px;
 				height: 30px;

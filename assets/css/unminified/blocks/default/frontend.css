@@ -250,6 +250,7 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
   width: calc(50% - 0.3em);
   cursor: pointer;
+  background-color: var(--srfm-base-background-color);
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input {
   position: absolute;
