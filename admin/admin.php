@@ -206,6 +206,7 @@ class Admin {
 		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER, 'all' );
 		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
 		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.min.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'reactQuill', SUREFORMS_URL . 'assets/src/public/styles/dependencies/quill.snow.css', [], SUREFORMS_VER );
 	}
 
 	/**
