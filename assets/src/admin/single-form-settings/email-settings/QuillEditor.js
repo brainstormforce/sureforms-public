@@ -1,5 +1,5 @@
 import { useCallback } from '@wordpress/element';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, { modules, formats } from './EditorToolbar';
 import { TabPanel } from '@wordpress/components';
 
@@ -30,33 +30,10 @@ const Editor = ( {
 		],
 	];
 
-	const moduleVisual = {
-		toolbar: TOOLBAR_OPTIONS_VISUAL,
-	};
-
 	const onSelect = () => {};
 
-	var TOOLBAR_OPTIONS_TEXT = [
-		[
-			'bold',
-			'italic',
-			'link',
-			'underline',
-			{ list: 'ordered' },
-			{ list: 'bullet' },
-			'code',
-		],
-	];
-
-	const editorTextWrapRef = useCallback( ( wrapper ) => {
-		if ( wrapper == null ) return;
-		const textArea = document.querySelector( '#srfm-editor-html' );
-
-		new Quill( textArea, {
-			theme: 'snow',
-			modules: { toolbar: TOOLBAR_OPTIONS_TEXT },
-		} );
-	}, [] );
+	// Add inline style instead of classes.
+	Quill.register( Quill.import( 'attributors/style/align' ), true );
 
 	return (
 		<TabPanel

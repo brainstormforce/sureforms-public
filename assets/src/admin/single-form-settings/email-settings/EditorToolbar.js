@@ -87,8 +87,6 @@ export const QuillToolbar = () => (
 			<button className="ql-strike" />
 			<button className="ql-list" value="ordered" />
 			<button className="ql-list" value="bullet" />
-			<button className="ql-indent" value="-1" />
-			<button className="ql-indent" value="+1" />
 			<button className="ql-blockquote" />
 			<select className="ql-align" />
 			<select className="ql-color" />
