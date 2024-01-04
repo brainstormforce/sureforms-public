@@ -1,0 +1,128 @@
+.srfm-form-container {
+	.srfm-form {
+		display: flex;
+		flex-wrap: wrap;
+
+		.srfm-block {
+			margin-bottom: 1.2em;
+			color: var( --srfm-body-input-color );
+
+			&.srfm-error {
+				.srfm-block-wrap {
+					.srfm-input-common,
+					.srfm-dropdown-common {
+						border-color: var( --srfm-error-surface-color );
+						background-color: var( --srfm-error-background-color );
+
+						&:focus {
+							box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-error-surface-color );
+						}
+					}
+
+					.srfm-error-icon {
+						display: block;
+						position: absolute;
+						top: 50%;
+						right: 0.7em;
+						transform: translateY( -50% );
+
+						svg {
+							width: 0.8em;
+							height: 0.8em;
+
+							path {
+								stroke: var( --srfm-error-surface-color );
+							}
+						}
+					}
+				}
+
+				.srfm-error-message {
+					display: block;
+				}
+			}
+
+			.srfm-block-wrap {
+				position: relative;
+			}
+
+			.srfm-block-label {
+				font-size: 0.7em;
+				margin-bottom: 0.429em;
+				font-weight: 500;
+				line-height: normal;
+				color: var( --srfm-label-text-color );
+			}
+
+			.srfm-input-common {
+				font-family: inherit;
+				font-size: 0.8em;
+				font-weight: 400;
+				padding: 0.75em 1em;
+				padding-right: 2.2em;
+				line-height: normal;
+				color: var( --srfm-body-input-color );
+				border: var( --srfm-border ) solid var( --srfm-border-color );
+				border-radius: var( --srfm-border-radius );
+				background-color: var( --srfm-base-background-color );
+				outline: none;
+				transition: 0.3s;
+
+				&:focus {
+					box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+				}
+
+				&::placeholder {
+					color: var( --srfm-placeholder-color );
+				}
+			}
+
+			.srfm-error-icon {
+				display: none;
+			}
+
+			.srfm-error-message,
+			.srfm-description {
+				font-size: 0.7em;
+				margin-top: 0.571em;
+				font-weight: 400;
+				line-height: normal;
+			}
+
+			.srfm-description {
+				color: var( --srfm-help-color );
+			}
+
+			.srfm-error-message {
+				color: var( --srfm-error-text-color );
+			}
+
+			.srfm-with-icon {
+				.srfm-input-common {
+					padding-left: 2.4em;
+				}
+
+				.srfm-input-icon {
+					display: block;
+					position: absolute;
+					top: 50%;
+					left: 0.7em;
+					transform: translateY( -50% );
+					line-height: 0;
+
+					svg {
+						width: 0.9em;
+						height: 0.9em;
+						path {
+							stroke: var( --srfm-body-input-color );
+						}
+					}
+				}
+			}
+		}
+
+		.srfm-submit-container {
+			width: 100%;
+		}
+	}
+}

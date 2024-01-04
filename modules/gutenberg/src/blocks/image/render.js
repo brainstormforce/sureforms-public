@@ -463,6 +463,7 @@ const Render = ( props ) => {
 				className={ classnames(
 					className,
 					`wp-block-uagb-image`,
+					'uagb-block',
 					`uagb-editor-preview-mode-${ deviceType.toLowerCase() }`,
 					`uagb-block-${ block_id }`,
 					`wp-block-uagb-image--layout-${ layout }`,

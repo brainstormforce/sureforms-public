@@ -20,66 +20,6 @@ class Multichoice_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms Multichoice default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
-			$options          = isset( $attributes['options'] ) ? $attributes['options'] : array();
-			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
-			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
-			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-			$output  = '';
-			$output .= '
-		<div class="srfm-multi-choice-container srfm-main-container ' . esc_attr( $classname ) . '" id="srfm-multi-choice-container-' . esc_attr( $block_id ) . '">
-		<label class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-		<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
-		<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />
-		<input class="srfm-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">';
-		if ( is_array( $options ) ) {
-			foreach ( $options as $i => $option ) {
-				$output .= '	<div style="display: flex; align-items: center; gap:4px">
-					<input
-						style="display: ' . esc_attr( 'buttons' === $style ? 'none' : 'inherit' ) . '"
-						class="srfm-multi-choice"
-						id="srfm-multi-choice-' . esc_attr( $block_id . '-' . $i ) . '"
-						type="' . esc_attr( $single_selection ? 'radio' : 'checkbox' ) . '"
-						' . esc_attr( $single_selection ? 'name="' . esc_attr( 'sf-radio-' . $block_id ) . '"' : '' ) . '
-					/>
-					<label
-						class="srfm-multi-choice-label-' . esc_attr( $block_id ) . ' srfm-multi-choice-label-button"
-						for="srfm-multi-choice-' . esc_attr( $block_id . '-' . $i ) . '"
-						style="' . esc_attr( 'buttons' === $style ? 'background-color: white; cursor: pointer; border: 2px solid black; border-radius: 10px; padding: .5rem 1rem .5rem 1rem; width: 100%; color: black;' : '' ) . '"
-					>
-						<span
-							class="multi-choice-option"
-							id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '"
-						>
-							' . esc_html( $option['optiontitle'] ) . '
-						</span>
-					</label>
-					<span></span>
-				</div>';
-			}
-		}
-
-		$output .= '' . ( '' !== $help ? '<label class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-			<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-	</div>
-		';
-		return $output;
-
-	}
-
-	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -94,41 +34,41 @@ class Multichoice_Markup extends Base {
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
 			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$output           = '';
-			$output          .= '
-			<div class="srfm-multi-choice-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" id="srfm-multi-choice-container-' . esc_attr( $block_id ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
-				<input type="hidden" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $single_selection ) . '" id="srfm-multi-choice-selection-' . esc_attr( $block_id ) . '" />
-				<input type="hidden" value="' . esc_attr( $style ) . '" id="srfm-multi-choice-style-' . esc_attr( $block_id ) . '" />
-				<input class="srfm-multi-choice-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" name="' . esc_attr( $single_selection ? str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) : str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" type="hidden" value="">
-				<label class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
-				<div class="srfm-radio-buttons srfm-flex srfm-flex-wrap srfm-mt-2 srfm-justify-between">';
-		if ( is_array( $options ) ) {
-			foreach ( $options as $i => $option ) {
-						$output .= ' <label class="srfm-classic-radio">
-						<input type="' . esc_attr( $single_selection ? 'radio' : 'checkbox' ) . '" ' . esc_attr( $single_selection ? 'name="' . esc_attr( "sf-radio-$block_id" ) . '"' : '' ) . ' id="srfm-multi-choice-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-multi-choice">
-						<div class="srfm-flex srfm-items-center srfm-classic-radio-btn srfm-classic-multi-choice">
-							<div class="srfm-pr-[5px] rtl:srfm-pl-[5px] rtl:srfm-pr-[0] srfm-relative srfm-flex">
-								<i class="fa fa-check-circle srfm-text-base" aria-hidden="true"></i>
-								<i class="fa-regular fa-circle srfm-text-sm srfm-absolute srfm-text-gray-300" aria-hidden="true"></i>
-							</div>
-							<div> 
-								<article id="srfm-multi-choice-option-' . esc_attr( $block_id . '-' . $i ) . '" class="srfm-text-sm srfm-font-medium srfm-leading-6 srfm-text-primary_color srfm-mt-[-0.5px]">' . esc_html( $option['optiontitle'] ) . '</article>
-							</div>
-						</div>
-						</label>';
-			}
-		}
-					$output .= '
+			$slug             = 'multi-choice';
+
+			$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+			$aria_require_attr    = $required ? 'true' : 'false';
+			$type_attr            = $single_selection ? 'radio' : 'checkbox';
+			$name_attr            = $single_selection ? 'name="srfm-input-' . esc_attr( $slug ) . '-' . esc_attr( $block_id ) . '"' : '';
+			$input_label_fallback = $label ? $label : 'Multi Choice';
+			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+
+			ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="hidden" value=""/>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+				<?php if ( is_array( $options ) ) { ?>
+					<div class="srfm-block-wrap">
+						<?php foreach ( $options as $i => $option ) { ?>
+							<label class="srfm-<?php echo esc_attr( $slug ); ?>-single">
+								<input type="<?php echo esc_attr( $type_attr ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
+								<div class="srfm-block-content-wrap">
+									<?php echo Sureforms_Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $slug . '-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+									<p><?php echo isset( $option['optiontitle'] ) ? esc_html( $option['optiontitle'] ) : ''; ?></p>
+								</div>
+							</label>
+						<?php } ?>
 					</div>
-					' . ( '' !== $help ? '<p class="srfm-helper-txt" >' . esc_html( $help ) . '</p>' : '' ) . '
-					<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-				</div>
-			';
-		return $output;
+				<?php } ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+		</div>
+		<?php
+		return ob_get_clean();
 
 	}
-
 }

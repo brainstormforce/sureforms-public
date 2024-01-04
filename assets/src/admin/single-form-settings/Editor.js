@@ -29,7 +29,7 @@ const default_keys = {
 	_srfm_color1: '',
 	_srfm_textcolor1: '',
 	_srfm_color2: '',
-	_srfm_fontsize: 16,
+	_srfm_fontsize: 20,
 	_srfm_bg: '',
 	_srfm_thankyou_message: 'Form submitted successfully!',
 	_srfm_email: sfBlockData.admin_email,
@@ -74,9 +74,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
-			rootContainer?.classList.add( 'srfm-form-style-classic' );
+			rootContainer?.classList.add( 'srfm-form-container' );
+			rootContainer.setAttribute( 'id', 'srfm-form-container' );
 		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList.add( 'srfm-form-style-classic' );
+			rootContainerDiv?.classList.add( 'srfm-form-container' );
+			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
@@ -118,7 +120,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							value: sureforms_keys._srfm_color2 || 'none',
 						},
 						{
-							property: '--srfm_fontsize',
+							property: '--srfm-font-size',
 							value: sureforms_keys._srfm_fontsize
 								? `${ sureforms_keys._srfm_fontsize }px`
 								: 'none',
@@ -147,7 +149,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					const iframeRootContainer =
 						iframeBody?.querySelector( '.is-root-container' );
 					iframeRootContainer?.classList.add(
-						'srfm-form-style-classic'
+						'srfm-form-container'
 					);
 				}
 			};

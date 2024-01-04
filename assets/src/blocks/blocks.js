@@ -5,7 +5,6 @@ import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
 import * as multiChoice from '@Blocks/multi-choice';
-import * as toggle from '@Blocks/switch';
 import * as rating from '@Blocks/rating';
 import * as upload from '@Blocks/upload';
 import * as phone from '@Blocks/phone';
@@ -25,7 +24,6 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 		url,
 		textarea,
 		multiChoice,
-		toggle,
 		checkbox,
 		number,
 		sfForm,

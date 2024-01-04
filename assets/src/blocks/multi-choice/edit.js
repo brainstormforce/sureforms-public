@@ -7,6 +7,7 @@ import {
 	SelectControl,
 	Button,
 	Icon,
+	TextControl,
 } from '@wordpress/components';
 import {
 	InspectorControls,
@@ -28,8 +29,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { MultichoiceThemeStyle } from './components/MultichoiceThemeStyle';
-import { MultichoiceClassicStyle } from './components/MultichoiceClassicStyle';
+import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -51,22 +51,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const [ selected, setSelected ] = useState( [] );
 	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
 	const blockProps = useBlockProps();
-
-	function handleClick( index ) {
-		if ( singleSelection === true ) {
-			setSelected( [ index ] );
-		} else if ( selected.includes( index ) ) {
-			const updatedSelected = selected.filter(
-				( item ) => item !== index
-			);
-			setSelected( updatedSelected );
-		} else {
-			setSelected( [ ...selected, index ] );
-		}
-	}
 
 	const addOption = () => {
 		const newOptions = {
@@ -178,6 +164,18 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									}
 								/>
 							) }
+							<ToggleControl
+								label={ __(
+									'Allow only single selection',
+									'sureforms'
+								) }
+								checked={ singleSelection }
+								onChange={ ( checked ) =>
+									setAttributes( {
+										singleSelection: checked,
+									} )
+								}
+							/>
 							<div style={ { marginBottom: '8px' } }>
 								{ options.length > 0 && (
 									<DragDropContext
@@ -308,16 +306,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									</DragDropContext>
 								) }
 							</div>
-							<span className="srfm-control-label srfm-control__header">
-								{ __( 'Add New Option', 'sureforms' ) }
-							</span>
 							<div className="sureform-add-option-container">
-								<SRFMTextControl
-									data={ {
-										value: newOption.optiontitle,
-										label: 'option',
-									} }
-									showHeaderControls={ false }
+								<TextControl
+									label={ __(
+										'Add New Option',
+										'sureforms'
+									) }
 									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
 										setNewOption( { optiontitle: value } )
@@ -327,14 +321,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption !== '' ) {
+										if (
+											newOption?.optiontitle &&
+											newOption?.optiontitle
+										) {
 											setAttributes( {
 												options: [
 													...options,
 													newOption,
 												],
 											} );
-											setNewOption( '' );
+											setNewOption( { optiontitle: '' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}
@@ -353,18 +350,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
-								}
-							/>
-							<ToggleControl
-								label={ __(
-									'Allow only single selection',
-									'sureforms'
-								) }
-								checked={ singleSelection }
-								onChange={ ( checked ) =>
-									setAttributes( {
-										singleSelection: checked,
-									} )
 								}
 							/>
 							{ 'classic' ===
@@ -404,58 +389,26 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder' +
-					( isSelected ? ' sf--focus' : '' )
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<MultichoiceClassicStyle
-						blockID={ block_id }
-						attributes={ attributes }
-						isSelected={ isSelected }
-						addOption={ addOption }
-						deleteOption={ deleteOption }
-						changeOption={ changeOption }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<MultichoiceThemeStyle
-						blockID={ block_id }
-						attributes={ attributes }
-						handleClick={ handleClick }
-						selected={ selected }
-						isSelected={ isSelected }
-						addOption={ addOption }
-						deleteOption={ deleteOption }
-						changeOption={ changeOption }
-						setAttributes={ setAttributes }
-					/>
-				) }
+			<MultiChoiceComponent
+				blockID={ block_id }
+				attributes={ attributes }
+				isSelected={ isSelected }
+				addOption={ addOption }
+				deleteOption={ deleteOption }
+				changeOption={ changeOption }
+				setAttributes={ setAttributes }
+			/>
 
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</div>
 	);
 };
