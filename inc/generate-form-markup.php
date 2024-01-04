@@ -120,7 +120,7 @@ class Generate_Form_Markup {
 
 			$body_input_color_var  = '#4B5563';
 			$placeholder_color_var = '#9CA3AF';
-			$border_color_var      = '#D1D5DB';
+			$border_color_var      = '#D0D5DD';
 			$help_color_var        = '#6B7280';
 			$base_background_var   = '#FFFFFF';
 			$light_background_var  = '#F9FAFB';
@@ -148,7 +148,7 @@ class Generate_Form_Markup {
 			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
 			$media_query_mobile_var = '576px';
 			$border_var             = '1px';
-			$border_radius_var      = '8px';
+			$border_radius_var      = '4px';
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
 			$bg_image               = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 			?>

@@ -23,13 +23,15 @@
   display: block;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select {
-  height: 43px;
-  line-height: 43px;
+  line-height: normal;
   width: 100%;
   border: var(--srfm-border) solid var(--srfm-border-color);
+  padding: 0.75em 1em;
+  height: auto;
+  font-size: 0.8em;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select .current {
-  font-size: 1.1em;
+  line-height: normal;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select.open .nice-select-dropdown {
   box-shadow: 0 0 0 1px var(--ast-border-color);
