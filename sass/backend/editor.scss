@@ -26,6 +26,14 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.is-desktop-preview,.is-tablet-preview,.is-mobile-preview {
+		// Need override / !Important here. As value are added inline by wordpress.
+		background-image: var(--srfm_bg) !important;
+		background-position: center !important;
+		background-size: cover !important;
+		background-repeat: no-repeat !important;
+	}
+
 	// Block override.
 	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
 	.editor-styles-wrapper #srfm-form-container > div:first-child {
@@ -36,7 +44,7 @@ body.post-type-sureforms_form {
 		width: 100%;
 		max-width: 620px;
 		margin: 0 auto;
-		background-color: #fff;
+		background-color: transparent;
 	}
 
 	div.is-root-container#srfm-form-container {
@@ -44,6 +52,7 @@ body.post-type-sureforms_form {
 		flex-wrap: wrap;
 		padding: 0;
 		margin: 0 -0.3em;
+		margin-top: 2em;
 
 		.block-editor-block-list__block {
 			&.srfm-block-single,
