@@ -13,9 +13,7 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { TextareaClassicStyle } from './components/TextareaClassicStyle';
-import { TextareaThemeStyle } from './components/TextareaThemeStyle';
+import { TextareaComponent } from './components/default';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -40,8 +38,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
-	const stylingType = sureforms_keys?._srfm_form_styling;
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -196,44 +192,23 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={ `srfm-main-container  srfm-classic-inputs-holder srfm-block-${ block_id }` }
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === stylingType ? (
-					<TextareaClassicStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) : (
-					<TextareaThemeStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) }
-				{ textAreaHelpText !== '' && (
-					<RichText
-						tagName="label"
-						value={ textAreaHelpText }
-						onChange={ ( value ) =>
-							setAttributes( { textAreaHelpText: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<TextareaComponent
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+				attributes={ attributes }
+			/>
+			{ textAreaHelpText !== '' && (
+				<RichText
+					tagName="label"
+					value={ textAreaHelpText }
+					onChange={ ( value ) =>
+						setAttributes( { textAreaHelpText: value } )
+					}
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</>
 	);
 };

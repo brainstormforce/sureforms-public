@@ -70,18 +70,24 @@ const blockWidthWrapperProps = createHigherOrderComponent(
 			const allowedBlocks = getAllowedBlocks();
 
 			if ( allowedBlocks.includes( name ) ) {
-				if ( attributes?.fieldWidth ) {
-					if ( 'Mobile' !== useDeviceType() ) {
-						wrapperProps.style = {
-							width:
-								'calc(' + attributes.fieldWidth + '% - 20px)',
-						};
-					}
-				}
+				const fieldWidth = attributes?.fieldWidth
+					? String( attributes.fieldWidth )
+					: '100';
+				const width = fieldWidth
+					? fieldWidth.replace( '.', '-' )
+					: '100';
+				const slug = name.replace( 'sureforms/', '' );
+
 				return (
 					<BlockListBlock
 						{ ...props }
 						wrapperProps={ wrapperProps }
+						className={
+							attributes?.fieldWidth &&
+							'Mobile' !== useDeviceType()
+								? `srfm-block-single srfm-${ slug }-block-wrap srfm-block-width-${ width }`
+								: ''
+						}
 					/>
 				);
 			}
