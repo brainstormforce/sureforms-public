@@ -133,8 +133,8 @@ export default ( { loading, className } ) => {
 					<span>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							width="20"
-							height="20"
+							width="30"
+							height="30"
 							viewBox="0 0 20 20"
 							fill="none"
 						>
@@ -151,9 +151,9 @@ export default ( { loading, className } ) => {
 						css={ css`
 							color: #1e293b;
 							text-align: center;
-							font-size: 12px;
+							font-size: 14px;
 							font-weight: 500;
-							line-height: 16px;
+							line-height: 20px;
 						` }
 					>
 						{ __( 'There is no data on this view', 'sureforms' ) }
@@ -162,8 +162,8 @@ export default ( { loading, className } ) => {
 						css={ css`
 							color: #64748b;
 							text-align: center;
-							font-size: 12px;
-							line-height: 16px;
+							font-size: 14px;
+							line-height: 20px;
 						` }
 					>
 						{ __(

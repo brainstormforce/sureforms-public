@@ -15,6 +15,13 @@ const SRFMEditorHeader = () => {
 		postId
 	);
 
+	const status = useEntityProp(
+		'postType',
+		'sureforms_form',
+		'status',
+		postId
+	);
+
 	return (
 		<TextControl
 			className="srfm-header-title-input"
@@ -23,6 +30,8 @@ const SRFMEditorHeader = () => {
 			onChange={ ( value ) => {
 				setTitle( value );
 			} }
+			// eslint-disable-next-line jsx-a11y/no-autofocus
+			autoFocus={ 'auto-draft' === status || 'draft' === status ? true : false }
 			autoComplete="off"
 		/>
 	);

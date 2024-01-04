@@ -44,6 +44,7 @@ const Render = ( props ) => {
 			className={ uagbClassNames( [
 				className,
 				`wp-block-uagb-advanced-heading`,
+				'uagb-block',
 				`uagb-editor-preview-mode-${ deviceType.toLowerCase() }`,
 				`uagb-block-${ block_id }`,
 			] ) }

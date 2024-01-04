@@ -20,43 +20,6 @@ class Email_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms email default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$is_unique        = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$dulicate_msg     = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$is_confirm_email = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
-		$confirm_label    = isset( $attributes['confirmLabel'] ) ? $attributes['confirmLabel'] : '';
-		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-		return '<div class="srfm-input-email-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>
-        <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" type="email" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '" class="srfm-input-email srfm-input-field">
-        <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-        <span style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</span>' .
-		( true === $is_confirm_email ?
-			'<label for="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-text-primary srfm-confirm-email-spl">' . esc_html( $confirm_label ) . ' ' . ( $required && $label ? '<span class="!srfm-text-required_icon_color"> *</span>' : '' ) . '</label>' .
-			'<input id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" type="email" data-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-input-field srfm-input-confirm-email">'
-		: '' ) .
-		( '' !== $help ? '<label for="srfm-input-email" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-        <span style="display:none" class="srfm-error-message srfm-confirm-email-error">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</span>
-    </div>';
-
-	}
-
-	/**
 	 * Render the sureforms email classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -71,40 +34,50 @@ class Email_Markup extends Base {
 		$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$is_unique        = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$dulicate_msg     = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
+		$duplicate_msg    = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$is_confirm_email = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
 		$confirm_label    = isset( $attributes['confirmLabel'] ) ? $attributes['confirmLabel'] : '';
-		$classname        = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$class_name       = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$slug             = 'email';
 
-		return '<div class="srfm-main-container srfm-input-email-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '"  style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
-            ' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
-        </label>
-        <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
-            <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
-            </div>
-            <input type="email" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-input-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-unique="' . esc_attr( $is_unique ? 'true' : 'false' ) . '">
-        </div>
-        <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-        <p style="display:none" class="srfm-error-message srfm-duplicate-message">' . esc_html( $dulicate_msg ) . '</p>
-        ' . ( true === $is_confirm_email ? '
-        <label for="srfm-input-email-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text !srfm-mt-[24px]">
-            ' . esc_html( $confirm_label ) . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '
-        </label>
-        <div class= "srfm-relative srfm-mt-2 srfm-rounded-md srfm-shadow-sm">
-            <div class="srfm-pointer-events-none srfm-absolute srfm-inset-y-0 srfm-right-0 srfm-flex srfm-items-center srfm-pr-3">
-                <i class="fa fa-envelope srfm-text-gray-400 srfm-text-[18px]" aria-hidden="true"></i>
-            </div>
-            <input type="email" id="srfm-input-confirm-email-' . esc_attr( $block_id ) . '" class="srfm-input-confirm-email  srfm-classic-email-element" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '">
-        </div>' : '' ) . '
-		' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-        <p style="display:none" class="srfm-error-message srfm-cnf-email-required-message">' . esc_html( $error_msg ) . '</p>
-        <p style="display:none" class="srfm-error-message srfm-confirm-email-error ">' . esc_html( __( 'Email does not match', 'sureforms' ) ) . '</p>
-    </div>';
+		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$aria_require         = $required ? 'true' : 'false';
+		$aria_unique          = $is_unique ? 'true' : 'false';
+		$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
+		$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+		$input_label_fallback = $label ? $label : 'Email';
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
+		$input_confirm_label_fallback = 'Confirm ' . $input_label_fallback;
+		$input_confirm_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_confirm_label_fallback );
+
+		ob_start(); ?>
+			<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+				<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
+					<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+					<div class="srfm-block-wrap">
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="email" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
+						<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					</div>
+					<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+					<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg ) ); ?>
+				</div>
+				<?php if ( true === $is_confirm_email ) { ?>
+					<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
+						<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', 'Confirm ' . $label, $slug . '-confirm', $block_id, boolval( $required ) ) ); ?>
+						<div class="srfm-block-wrap">
+							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="email" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-confirm-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_confirm_label ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
+							<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+						</div>
+						<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+						<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg, false, '', true ) ); ?>
+					</div>
+				<?php } ?>
+			</div>
+		<?php
+		return ob_get_clean();
 	}
 
 }

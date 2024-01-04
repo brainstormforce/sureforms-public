@@ -60,6 +60,7 @@ export default function save( props ) {
 			className={ classnames(
 				props.className,
 				`wp-block-uagb-advanced-heading`,
+				'uagb-block',
 				`uagb-block-${ block_id }`
 			) }
 		>
