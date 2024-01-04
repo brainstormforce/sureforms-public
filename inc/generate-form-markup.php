@@ -310,7 +310,7 @@ class Generate_Form_Markup {
 		} elseif ( 'connector' === $page_break_progress_type ) {
 			echo '<div class="srfm-page-break-steps">
 				<div class="srfm-steps-content">
-					<span class="srfm-steps-label">Step <span class="srfm-step-count"></span> of <span class="srfm-step-total"></span></span>
+					<div class="srfm-steps-label"><div><span class="srfm-step-count"></span> / <span class="srfm-step-total"></span></div><span class="srfm-steps-page-title"></span></div>
 				</div>
 				<div class="srfm-steps-container">
 					<div class="srfm-progress"></div>

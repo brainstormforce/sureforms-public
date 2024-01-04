@@ -294,7 +294,6 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 		.srfm-text-wrap {
 			display: inline-block;
 			text-align: center;
-			width: 75px;
 		}
 
 		.srfm-text-wrap p {
@@ -318,7 +317,6 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			height: 24px;
 			width: 24px;
 			position: relative;
-			left: 20px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -356,13 +354,21 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 	.srfm-page-break-steps {
 		display: flex;
 		align-items: center;
-		gap: var( --Spacing-3, 12px );
+		justify-content: space-between;
 		.srfm-steps-content {
-			color: var( --Gray-700, #344054 );
-			font-size: 14px;
+			color: var( --Gray-700, rgb(54, 54, 54) );
+			font-size: 12px;
 			font-style: normal;
 			font-weight: 500;
-			line-height: 20px; /* 142.857% */
+			line-height: 20px;
+			.srfm-steps-label{
+				display: flex;
+				gap: 4px;
+				.srfm-steps-page-title{
+					font-size: 14px;
+					color: var(--srfm-primary-color);
+				}
+			}
 		}
 		.srfm-steps-container {
 			position: relative;

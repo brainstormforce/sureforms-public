@@ -20,6 +20,8 @@ class PageBreakHandler {
 				this.pageBreakHeader.querySelector( '.srfm-step-count' );
 			this.connectorTotalCount =
 				this.pageBreakHeader.querySelector( '.srfm-step-total' );
+			this.connectorPageTitle =
+				this.pageBreakHeader.querySelector( '.srfm-steps-page-title' );
 			this.progressIndicatorType =
 				this.pageBreakHeader.getAttribute( 'type' );
 		}
@@ -50,13 +52,13 @@ class PageBreakHandler {
 				const span = document.createElement( 'span' );
 				const spanText = document.createElement( 'span' );
 				span.classList.add( 'srfm-circle-content' );
-				spanText.classList.add( 'srfm-label-text' );
+				// spanText.classList.add( 'srfm-label-text' );
 				circle.classList.add( 'srfm-circle' );
 				span.textContent = i + 1;
-				spanText.textContent =
-					this.pageBreakContainers[ i ].getAttribute( 'data' );
+				// spanText.textContent =
+				// 	this.pageBreakContainers[ i ].getAttribute( 'data' );
 				circle.appendChild( span );
-				textWrap.append( circle, spanText );
+				textWrap.append( circle );
 				this.stepsParentDiv.appendChild( textWrap );
 			} else if ( this.progressIndicatorType === 'connector' ) {
 				const roundDiv = document.createElement( 'div' );
@@ -84,6 +86,7 @@ class PageBreakHandler {
 			if ( this.connectorCount ) {
 				this.connectorCount.textContent = '1';
 				this.connectorTotalCount.textContent = this.pageBreakLength;
+				this.connectorPageTitle.textContent = this.pageBreakContainers[ 0 ].getAttribute( 'data' );
 			}
 		}
 	}
@@ -129,6 +132,7 @@ class PageBreakHandler {
 			this.connectorCount
 		) {
 			this.connectorCount.textContent = this.currentActive + 1;
+			this.connectorPageTitle.textContent = this.pageBreakContainers[ this.currentActive ].getAttribute( 'data' );
 		}
 		this.updatePageBreakDisplay();
 		this.update();
@@ -155,6 +159,7 @@ class PageBreakHandler {
 			let currValue = this.connectorCount.textContent;
 			currValue = Number( currValue );
 			this.connectorCount.textContent = currValue - 1;
+			this.connectorPageTitle.textContent = this.pageBreakContainers[ this.currentActive ].getAttribute( 'data' );
 		}
 		this.updatePageBreakDisplay();
 		this.update();
