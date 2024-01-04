@@ -83,7 +83,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 					type="text"
 					value={ defaultValue }
 					readOnly
-					className="srfm-classic-input-element"
+					className="srfm-input-common"
 				/>
 			</div>
 		</>

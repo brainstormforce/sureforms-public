@@ -27,13 +27,17 @@ class Hidden_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function default_styling( $attributes ) {
-		$block_id = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$label    = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$default  = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-
-		return '<div class="srfm-main-container">
-            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" value="' . esc_attr( $default ) . '" type="hidden" class="srfm-hidden-input">     
-        </div>';
-
+		$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$label                = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$input_label_fallback = $label ? $label : 'Hidden Field';
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+		$default              = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
+		$slug                 = 'hidden';
+		ob_start(); ?>
+		<div class="srfm-<?php echo esc_attr( $slug ); ?>-block">
+			<input name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" value="<?php echo esc_attr( $default ); ?>" type="hidden" class="srfm-<?php echo esc_attr( $slug ); ?>-input">     
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 }

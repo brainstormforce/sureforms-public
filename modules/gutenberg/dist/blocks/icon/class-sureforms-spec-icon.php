@@ -466,6 +466,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 
 			$main_classes = array(
 				'wp-block-uagb-icon',
+				'uagb-block',
 				'uagb-icon-wrapper',
 				'uagb-block-' . $block_id,
 			);

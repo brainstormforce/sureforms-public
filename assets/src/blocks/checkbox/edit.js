@@ -16,9 +16,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { CheckboxClassicStyle } from './components/CheckboxClassicStyle';
-import { CheckboxThemeStyle } from './components/CheckboxThemeStyle';
+import { CheckboxComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -39,7 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 	const blockProps = useBlockProps();
 
 	useEffect( () => {
@@ -147,49 +144,23 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-			>
-				<div
-					style={ {
-						display: 'flex',
-						gap: '.5rem',
-						alignItems: 'center',
-					} }
-				>
-					{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-						<CheckboxClassicStyle
-							blockID={ block_id }
-							setAttributes={ setAttributes }
-							attributes={ attributes }
-						/>
-					) : (
-						<CheckboxThemeStyle
-							blockID={ block_id }
-							setAttributes={ setAttributes }
-							attributes={ attributes }
-						/>
-					) }
-				</div>
-				{ checkboxHelpText !== '' && (
-					<RichText
-						tagName="label"
-						value={ checkboxHelpText }
-						onChange={ ( value ) =>
-							setAttributes( { checkboxHelpText: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<CheckboxComponent
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+				attributes={ attributes }
+			/>
+			{ checkboxHelpText !== '' && (
+				<RichText
+					tagName="label"
+					value={ checkboxHelpText }
+					onChange={ ( value ) =>
+						setAttributes( { checkboxHelpText: value } )
+					}
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</div>
 	);
 };

@@ -1,0 +1,150 @@
+body.post-type-sureforms_form {
+	// Sidebar Override.
+	.edit-post-sidebar {
+		> .components-panel {
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				> .components-panel__body-title {
+					display: none;
+				}
+			}
+			> .components-panel__body {
+				&.edit-post-post-status.is-opened {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
+		transition: 0.3s;
+
+		&:hover {
+			box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-admin-theme-color );
+		}
+	}
+
+	// Block override.
+	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
+	.editor-styles-wrapper #srfm-form-container > div:first-child {
+		margin-top: 1.2em;
+	}
+
+	.editor-styles-wrapper {
+		width: 100%;
+		max-width: 620px;
+		margin: 0 auto;
+		background-color: #fff;
+	}
+
+	div.is-root-container#srfm-form-container {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0;
+		margin: 0 -0.3em;
+
+		.block-editor-block-list__block {
+			&.srfm-block-single,
+			&[data-type="sureforms/image"],
+			&[data-type="sureforms/separator"],
+			&[data-type="sureforms/advanced-heading"],
+			&[data-type="sureforms/icon"] {
+				padding: 0 0.3em;
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+			}
+
+			&[data-type="sureforms/image"],
+			&[data-type="sureforms/separator"],
+			&[data-type="sureforms/advanced-heading"],
+			&[data-type="sureforms/icon"] {
+				width: 100%;
+			}
+		}
+	}
+
+	// Editor custom title.
+	.edit-post-visual-editor__post-title-wrapper {
+		display: none;
+
+		@media screen and ( max-width: 782px ) {
+			display: block;
+		}
+	}
+
+	.edit-post-header__center {
+		.srfm-header-title-input {
+			width: 100%;
+			max-width: 500px;
+			margin: 0 20px;
+		}
+
+		.components-text-control__input {
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+			padding: 11px 16px;
+			margin-top: 8px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			background: rgb( 249, 250, 251 );
+			box-shadow: none;
+
+			&:focus {
+				border-color: #0284c7;
+				box-shadow: unset;
+			}
+		}
+
+		@media screen and ( max-width: 782px ) {
+			display: none;
+		}
+	}
+
+	// Plus button, Block appended.
+
+	// Add submit button below the Block Appended.
+	.block-list-appender {
+		width: calc( 100% - 20px );
+
+		.block-editor-button-block-appender.components-button.components-button {
+			box-shadow: none;
+			border: 1px dashed #959595;
+			padding: 24px;
+			svg {
+				width: 30px;
+				height: 30px;
+				color: white;
+				background-color: #555d66;
+				border-radius: 100%;
+			}
+		}
+
+		.block-editor-inserter {
+			position: relative;
+			&:after {
+				max-width: var( --srfm_submit_width_backend );
+				width: 100%;
+				margin-top: 20px;
+				display: inline-block;
+				position: absolute;
+				margin-left: auto;
+				content: var( --srfm_submit_button_text );
+				line-height: 12px;
+				box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+				border: none;
+				border-radius: 6px;
+				padding: 13px 25px;
+				background: var( --srfm-primary-color );
+				color: var( --srfm-primary-text-color );
+				text-align: center;
+				right: var( --srfm_submit_alignment_backend );
+				transform: translateX( var( --srfm_submit_alignment_backend ) );
+				letter-spacing: inherit;
+				font-weight: inherit;
+			}
+		}
+	}
+}

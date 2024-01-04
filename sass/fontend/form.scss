@@ -1,0 +1,148 @@
+.srfm-form-container {
+	// This is the parent form class. Adds specificity so that there is no conflict.
+	position: relative;
+
+	.srfm-form {
+		margin: 0 -0.3em;
+
+		.srfm-block-single,
+		.uagb-block {
+			padding: 0 0.3em;
+		}
+
+		.uagb-block {
+			margin-bottom: 1.2em;
+			width: 100%;
+		}
+
+		.srfm-required {
+			color: var( --srfm-error-text-color );
+		}
+
+		.srfm-block {
+			.srfm-dropdown-common-wrap {
+				display: inline-block;
+				width: 100%;
+
+				select {
+					display: block;
+				}
+				.nice-select {
+					line-height: normal;
+					width: 100%;
+					border: var( --srfm-border ) solid var( --srfm-border-color );
+					padding: 0.75em 1em;
+					height: auto;
+					font-size: 0.8em;
+
+					.current {
+						line-height: normal;
+					}
+
+					&.open {
+						.nice-select-dropdown {
+							box-shadow: 0 0 0 1px var( --ast-border-color );
+							transform: scale( 1 ) translateY( 0 );
+						}
+					}
+
+					.nice-select-dropdown {
+						width: 100%;
+						transform: scale( 1 ) translateY( 1em );
+
+						.list {
+							margin: 0;
+						}
+					}
+				}
+			}
+
+			&.srfm-phone-block {
+				.iti__country-list {
+					display: block;
+					border: var( --srfm-border ) solid var( --srfm-border-color );
+					border-radius: var( --srfm-border-radius );
+					transform: translateY( 0 );
+					opacity: 1;
+					transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
+
+					&.iti__hide {
+						display: block;
+						transform: translateY( 1em );
+						opacity: 0;
+						visibility: hidden;
+					}
+				}
+			}
+
+			.srfm-error-message {
+				display: none;
+			}
+		}
+	}
+
+	.srfm-submit-button {
+		.srfm-loader {
+			display: none;
+			border: 2px solid var( --srfm-base-background-color );
+			border-radius: 50%;
+			border-top: 2px solid var( --srfm-primary-color );
+			width: 1.2em;
+			height: 1.2em;
+			-webkit-animation: spin 2s linear infinite;
+			animation: spin 2s linear infinite;
+			margin-left: 0.5em;
+
+			&.srfm-active {
+				display: block;
+			}
+		}
+
+		.srfm-submit-wrap {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+	}
+
+	.srfm-success-box {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		min-height: 600px;
+
+		&.srfm-active {
+			display: flex;
+		}
+
+		.srfm-success-box-header {
+			.srfm-check-circle-icon {
+				display: block;
+				width: 2em;
+				text-align: center;
+				margin: 0 auto;
+
+				svg {
+					stroke: var( --srfm-primary-color );
+				}
+			}
+
+			h2 {
+				font-size: 1.5em;
+				font-weight: 500;
+				color: var( --srfm-primary-color );
+				margin-top: 0;
+				margin-bottom: 0.2em;
+			}
+		}
+
+		.srfm-success-box-description {
+			font-size: 0.8em;
+
+			p {
+				margin: 0;
+			}
+		}
+	}
+}
