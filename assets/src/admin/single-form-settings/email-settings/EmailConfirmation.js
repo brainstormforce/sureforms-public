@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-// import Editor from './JoditEditor';
+import Editor from './QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { generateSmartTagsDropDown } from '@Utils/Helpers';
 import { DropdownMenu } from '@wordpress/components';
@@ -143,13 +143,16 @@ const EmailConfirmation = ( props ) => {
 									>
 										{ formData.email_body }
 									</textarea>
-								) : // <Editor
-								// 	handleEmailBodyContent={
-								// 		handleOnChangeEmailBodyContent
-								// 	}
-								// 	content={ formData.email_body }
-								// />
-								null }
+								) : (
+									<Editor
+										handleEmailBodyContent={
+											handleOnChangeEmailBodyContent
+										}
+										content={ formData.email_body }
+										formData={ formData }
+										setFormData={ setFormData }
+									/>
+								) }
 							</div>
 						</div>
 					</div>
