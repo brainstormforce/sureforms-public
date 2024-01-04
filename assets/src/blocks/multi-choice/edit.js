@@ -7,7 +7,7 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl
+	TextControl,
 } from '@wordpress/components';
 import {
 	InspectorControls,
@@ -308,7 +308,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							</div>
 							<div className="sureform-add-option-container">
 								<TextControl
-									label={ __( 'Add New Option', 'sureforms' ) }
+									label={ __(
+										'Add New Option',
+										'sureforms'
+									) }
 									value={ newOption.optiontitle }
 									onChange={ ( value ) =>
 										setNewOption( { optiontitle: value } )
@@ -318,14 +321,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption?.optiontitle && newOption?.optiontitle ) {
+										if (
+											newOption?.optiontitle &&
+											newOption?.optiontitle
+										) {
 											setAttributes( {
 												options: [
 													...options,
 													newOption,
 												],
 											} );
-											setNewOption( { optiontitle: '' } )
+											setNewOption( { optiontitle: '' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}

@@ -63,7 +63,7 @@ body.post-type-sureforms_form .edit-post-header__center .components-text-control
   box-shadow: none;
 }
 body.post-type-sureforms_form .edit-post-header__center .components-text-control__input:focus {
-  border-color: #0284C7;
+  border-color: #0284c7;
   box-shadow: unset;
 }
 @media screen and (max-width: 782px) {
