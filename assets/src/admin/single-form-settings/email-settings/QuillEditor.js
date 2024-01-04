@@ -1,4 +1,3 @@
-import { useCallback } from '@wordpress/element';
 import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, { modules, formats } from './EditorToolbar';
 import { TabPanel } from '@wordpress/components';
@@ -9,27 +8,6 @@ const Editor = ( {
 	formData,
 	setFormData,
 } ) => {
-	const TOOLBAR_OPTIONS_VISUAL = [
-		[
-			{ header: [ 1, 2, 3, 4, 5, 6, false ] },
-			'bold',
-			'italic',
-			{ list: 'ordered' },
-			{ list: 'bullet' },
-			'link',
-			'blockquote',
-			{ align: [] },
-			'underline',
-			'strike',
-			{ color: [] },
-			{ background: [] },
-			'clean',
-			{ indent: '-1' },
-			{ indent: '+1' },
-			'code',
-		],
-	];
-
 	const onSelect = () => {};
 
 	// Add inline style instead of classes.

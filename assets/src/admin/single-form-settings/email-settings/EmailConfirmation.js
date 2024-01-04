@@ -97,8 +97,8 @@ const EmailConfirmation = ( props ) => {
 										dynamicSubject
 									)
 										? generateSmartTagsDropDown(
-												setDynamicSubject,
-												dynamicSubject
+											setDynamicSubject,
+											dynamicSubject
 										  )
 										: []
 								}
