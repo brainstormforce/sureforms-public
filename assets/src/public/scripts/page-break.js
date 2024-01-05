@@ -63,6 +63,9 @@ class PageBreakHandler {
 			} else if ( this.progressIndicatorType === 'connector' ) {
 				const roundDiv = document.createElement( 'div' );
 				roundDiv.className = 'srfm-round';
+				if ( i === 0 ) {
+					roundDiv.classList.add( 'active' );
+				}
 				const input = document.createElement( 'input' );
 				input.classList.add( 'srfm-round-checkbox' );
 				input.type = 'checkbox';
@@ -204,7 +207,7 @@ class PageBreakHandler {
 			} );
 		}
 		if ( this.progress ) {
-			let currWidth = 90;
+			let currWidth = 100;
 			if ( this.progressIndicatorType === 'connector' ) {
 				currWidth = 80;
 			}

@@ -227,11 +227,11 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 }
 @keyframes moveToLeft {
 	0% {
-		opacity: 1;
-	}
-	100% {
 		opacity: 0;
 		transform: translateX( -25% );
+	}
+	100% {
+		opacity: 1;
 	}
 }
 .srfm-page-break-buttons {
@@ -260,7 +260,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 
 .srfm-page-break-header-container {
 	width: 100%;
-	padding-bottom: var( --Spacing-8, 32px );
+	padding-bottom: var( --Spacing-8, 22px );
 	.srfm-page-break-progress-container {
 		display: flex;
 		justify-content: space-between;
@@ -271,10 +271,9 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			background-color: lightgrey;
 			position: absolute;
 			top: 14px;
-			left: 35px;
 			transform: translateY( -50% );
 			height: 2px;
-			width: 90%;
+			width: 100%;
 			z-index: 0;
 		}
 
@@ -282,10 +281,9 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			background-color: var( --srfm-primary-color );
 			position: absolute;
 			top: 14px;
-			left: 35px;
 			transform: translateY( -50% );
 			height: 2px;
-			max-width: 90%;
+			max-width: 100%;
 			width: 0%;
 			z-index: 0;
 			transition: 400ms ease;
