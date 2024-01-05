@@ -202,6 +202,7 @@ class Admin {
 			wp_enqueue_style( SUREFORMS_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 			wp_enqueue_style( SUREFORMS_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', array(), SUREFORMS_VER );
 			wp_enqueue_style( SUREFORMS_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', array(), SUREFORMS_VER );
 		}
 
 		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
