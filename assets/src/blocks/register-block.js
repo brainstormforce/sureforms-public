@@ -175,14 +175,3 @@ wp.hooks.addFilter(
 	'srfm/with-toolbar-button',
 	withToolbarButton
 );
-
-
-let removeFromToolbar = ['core/bold', 'core/italic', 'core/text-color', 'core/code', 'core/keyboard', 'core/image', 'core/superscript', 'core/subscript', 'core/underline', 'core/strikethrough', 'core/link' ]
-
-if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
-	domReady( () => {
-		removeFromToolbar.forEach(element => {
-			wp.richText.unregisterFormatType(element);
-		});
-	});
-}
