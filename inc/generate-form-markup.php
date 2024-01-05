@@ -91,6 +91,7 @@ class Generate_Form_Markup {
 			$is_page_break            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
 			$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
 			$page_break_first_label   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ) : '';
+			$page_break_toggle_label  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ) : '';
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
@@ -129,7 +130,7 @@ class Generate_Form_Markup {
 				<!-- page-break progress header start -->
 				<?php
 				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-					self::render_break_header_container( $is_page_break, $page_break_progress_type );
+					self::render_break_header_container( $is_page_break, $page_break_progress_type, $page_break_toggle_label );
 				}
 				?>
 				<!-- page-break progress header end -->
@@ -282,15 +283,16 @@ class Generate_Form_Markup {
 	 *
 	 * @param boolean $is_page_break page break enable.
 	 * @param string  $page_break_progress_type type of progress type.
+	 * @param string  $page_break_toggle_label is label enable.
 	 * @since 0.0.1
 	 * @return void
 	 */
-	public static function render_break_header_container( $is_page_break, $page_break_progress_type ) {
+	public static function render_break_header_container( $is_page_break, $page_break_progress_type, $page_break_toggle_label ) {
 		if ( ! $is_page_break ) {
 			return;
 		}
 
-		echo '<div class="srfm-page-break-header-container" type="' . esc_attr( $page_break_progress_type ) . '">';
+		echo '<div class="srfm-page-break-header-container" type="' . esc_attr( $page_break_progress_type ) . '" toggle-label="' . esc_attr( $page_break_toggle_label ) . '">';
 		self::render_page_break_progress_container( $page_break_progress_type );
 		echo '</div>';
 	}

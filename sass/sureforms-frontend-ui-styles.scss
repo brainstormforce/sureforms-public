@@ -260,7 +260,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 
 .srfm-page-break-header-container {
 	width: 100%;
-	padding-bottom: var( --Spacing-8, 22px );
+	padding-bottom: var( --Spacing-8, 48px );
 	.srfm-page-break-progress-container {
 		display: flex;
 		justify-content: space-between;
@@ -271,9 +271,10 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			background-color: lightgrey;
 			position: absolute;
 			top: 14px;
+			left: 44px;
 			transform: translateY( -50% );
 			height: 2px;
-			width: 100%;
+			width: calc( 100% - 100px );
 			z-index: 0;
 		}
 
@@ -281,10 +282,11 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			background-color: var( --srfm-primary-color );
 			position: absolute;
 			top: 14px;
+			left: 44px;
 			transform: translateY( -50% );
 			height: 2px;
-			max-width: 100%;
-			width: 0%;
+			max-width: calc( 100% - 100px );
+			width: 0;
 			z-index: 0;
 			transition: 400ms ease;
 		}
@@ -292,18 +294,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 		.srfm-text-wrap {
 			display: inline-block;
 			text-align: center;
-		}
-
-		.srfm-text-wrap p {
-			font-weight: 400;
-			font-size: 12px;
-			color: var( --srfm-primary-color );
-		}
-
-		.srfm-text-wrap.active p {
-			font-weight: 400;
-			color: var( --srfm-primary-color );
-			transition: 400ms ease;
+			width: 80px;
 		}
 
 		.srfm-circle {
@@ -315,6 +306,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			height: 24px;
 			width: 24px;
 			position: relative;
+			left: 20px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -328,12 +320,18 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 			}
 		}
 		.srfm-label-text {
-			color: var( --Gray-700, #344054 );
+			color: var( --Gray-700, #d1d5db );
 			font-family: Inter;
-			font-size: 14px;
+			font-size: 12px;
 			font-style: normal;
 			font-weight: 500;
 			line-height: 20px; /* 142.857% */
+		}
+		.srfm-text-wrap.active {
+			.srfm-label-text {
+				color: var( --srfm-primary-color );
+				transition: 400ms ease;
+			}
 		}
 		.srfm-text-wrap.active div.srfm-circle {
 			border-color: var( --srfm-primary-color );
@@ -354,17 +352,16 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 		align-items: center;
 		justify-content: space-between;
 		.srfm-steps-content {
-			color: var( --Gray-700, rgb(54, 54, 54) );
-			font-size: 12px;
+			color: var( --Gray-700, #d1d5db );
+			font-size: 14px;
 			font-style: normal;
 			font-weight: 500;
 			line-height: 20px;
-			.srfm-steps-label{
+			.srfm-steps-label {
 				display: flex;
-				gap: 4px;
-				.srfm-steps-page-title{
-					font-size: 14px;
-					color: var(--srfm-primary-color);
+				gap: 12px;
+				.srfm-steps-page-title {
+					color: var( --srfm-primary-color );
 				}
 			}
 		}

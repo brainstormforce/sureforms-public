@@ -416,6 +416,7 @@ class Post_Types {
 			'_srfm_is_page_break'                     => 'boolean',
 			'_srfm_first_page_label'                  => 'string',
 			'_srfm_page_break_progress_indicator'     => 'string',
+			'_srfm_page_break_toggle_label'           => 'boolean',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

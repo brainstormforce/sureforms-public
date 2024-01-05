@@ -20,10 +20,13 @@ class PageBreakHandler {
 				this.pageBreakHeader.querySelector( '.srfm-step-count' );
 			this.connectorTotalCount =
 				this.pageBreakHeader.querySelector( '.srfm-step-total' );
-			this.connectorPageTitle =
-				this.pageBreakHeader.querySelector( '.srfm-steps-page-title' );
+			this.connectorPageTitle = this.pageBreakHeader.querySelector(
+				'.srfm-steps-page-title'
+			);
 			this.progressIndicatorType =
 				this.pageBreakHeader.getAttribute( 'type' );
+			this.isShowLabel =
+				this.pageBreakHeader.getAttribute( 'toggle-label' );
 		}
 		this.connectorParentDiv = form.querySelector( '.srfm-steps-container' );
 		this.currentActive = 0;
@@ -49,16 +52,21 @@ class PageBreakHandler {
 					textWrap.classList.add( 'active' );
 				}
 				const circle = document.createElement( 'div' );
+				const labelWrap = document.createElement( 'div' );
 				const span = document.createElement( 'span' );
 				const spanText = document.createElement( 'span' );
 				span.classList.add( 'srfm-circle-content' );
-				// spanText.classList.add( 'srfm-label-text' );
+				labelWrap.classList.add( 'srfm-label-wrapper' );
+				spanText.classList.add( 'srfm-label-text' );
 				circle.classList.add( 'srfm-circle' );
 				span.textContent = i + 1;
-				// spanText.textContent =
-				// 	this.pageBreakContainers[ i ].getAttribute( 'data' );
 				circle.appendChild( span );
-				textWrap.append( circle );
+				if ( this.isShowLabel ) {
+					spanText.textContent =
+						this.pageBreakContainers[ i ].getAttribute( 'data' );
+					labelWrap.appendChild( spanText );
+				}
+				textWrap.append( circle, labelWrap );
 				this.stepsParentDiv.appendChild( textWrap );
 			} else if ( this.progressIndicatorType === 'connector' ) {
 				const roundDiv = document.createElement( 'div' );
@@ -89,7 +97,10 @@ class PageBreakHandler {
 			if ( this.connectorCount ) {
 				this.connectorCount.textContent = '1';
 				this.connectorTotalCount.textContent = this.pageBreakLength;
-				this.connectorPageTitle.textContent = this.pageBreakContainers[ 0 ].getAttribute( 'data' );
+				if ( this.isShowLabel ) {
+					this.connectorPageTitle.textContent =
+						this.pageBreakContainers[ 0 ].getAttribute( 'data' );
+				}
 			}
 		}
 	}
@@ -99,15 +110,19 @@ class PageBreakHandler {
 		this.submitBtn.style.display = 'none';
 		this.submitBtn.style.width = 'auto';
 		this.submitBtn.style.margin = '0';
-		if ( this.currentActive === 0 ) {
+		if ( this.preBtn && this.currentActive === 0 ) {
 			this.preBtn.disabled = true;
 		}
-		this.nxtBtn.addEventListener( 'click', ( e ) =>
-			this.handleNextButtonClick( e )
-		);
-		this.preBtn.addEventListener( 'click', ( e ) =>
-			this.handlePreviousButtonClick( e )
-		);
+		if ( this.nxtBtn ) {
+			this.nxtBtn.addEventListener( 'click', ( e ) =>
+				this.handleNextButtonClick( e )
+			);
+		}
+		if ( this.preBtn ) {
+			this.preBtn.addEventListener( 'click', ( e ) =>
+				this.handlePreviousButtonClick( e )
+			);
+		}
 	}
 
 	async handleNextButtonClick( e ) {
@@ -135,7 +150,12 @@ class PageBreakHandler {
 			this.connectorCount
 		) {
 			this.connectorCount.textContent = this.currentActive + 1;
-			this.connectorPageTitle.textContent = this.pageBreakContainers[ this.currentActive ].getAttribute( 'data' );
+			if ( this.isShowLabel ) {
+				this.connectorPageTitle.textContent =
+					this.pageBreakContainers[ this.currentActive ].getAttribute(
+						'data'
+					);
+			}
 		}
 		this.updatePageBreakDisplay();
 		this.update();
@@ -162,7 +182,12 @@ class PageBreakHandler {
 			let currValue = this.connectorCount.textContent;
 			currValue = Number( currValue );
 			this.connectorCount.textContent = currValue - 1;
-			this.connectorPageTitle.textContent = this.pageBreakContainers[ this.currentActive ].getAttribute( 'data' );
+			if ( this.isShowLabel ) {
+				this.connectorPageTitle.textContent =
+					this.pageBreakContainers[ this.currentActive ].getAttribute(
+						'data'
+					);
+			}
 		}
 		this.updatePageBreakDisplay();
 		this.update();
@@ -210,6 +235,10 @@ class PageBreakHandler {
 			let currWidth = 100;
 			if ( this.progressIndicatorType === 'connector' ) {
 				currWidth = 80;
+			} else {
+				const parentWidth = this.progress.parentNode.offsetWidth;
+				const reducedWidth = parentWidth - 100;
+				currWidth = ( reducedWidth / parentWidth ) * 100;
 			}
 			this.progress.style.width = `${
 				( this.currentActive / ( this.wraps.length - 1 ) ) * currWidth

@@ -261,7 +261,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
 
 .srfm-page-break-header-container {
   width: 100%;
-  padding-bottom: var(--Spacing-8, 22px);
+  padding-bottom: var(--Spacing-8, 48px);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container {
   display: flex;
@@ -274,35 +274,28 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   background-color: lightgrey;
   position: absolute;
   top: 14px;
+  left: 44px;
   transform: translateY(-50%);
   height: 2px;
-  width: 100%;
+  width: calc(100% - 100px);
   z-index: 0;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress {
   background-color: var(--srfm-primary-color);
   position: absolute;
   top: 14px;
+  left: 44px;
   transform: translateY(-50%);
   height: 2px;
-  max-width: 100%;
-  width: 0%;
+  max-width: calc(100% - 100px);
+  width: 0;
   z-index: 0;
   transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap {
   display: inline-block;
   text-align: center;
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap p {
-  font-weight: 400;
-  font-size: 12px;
-  color: var(--srfm-primary-color);
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active p {
-  font-weight: 400;
-  color: var(--srfm-primary-color);
-  transition: 400ms ease;
+  width: 80px;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
   background-color: #ffffff;
@@ -313,6 +306,7 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   height: 24px;
   width: 24px;
   position: relative;
+  left: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,12 +320,16 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   line-height: 20px;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-label-text {
-  color: var(--Gray-700, #344054);
+  color: var(--Gray-700, #d1d5db);
   font-family: Inter;
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 500;
   line-height: 20px; /* 142.857% */
+}
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active .srfm-label-text {
+  color: var(--srfm-primary-color);
+  transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle {
   border-color: var(--srfm-primary-color);
@@ -352,18 +350,17 @@ form.srfm-form .srfm-main-container.srfm-address-container {
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: var(--Gray-700, rgb(54, 54, 54));
-  font-size: 12px;
+  color: var(--Gray-700, #d1d5db);
+  font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content .srfm-steps-label {
   display: flex;
-  gap: 4px;
+  gap: 12px;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content .srfm-steps-label .srfm-steps-page-title {
-  font-size: 14px;
   color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container {
