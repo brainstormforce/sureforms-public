@@ -3,6 +3,12 @@ import { getBlockTypes, getAllowedBlocks } from './util';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 import { useDeviceType } from '@Controls/getPreviewType';
+import { BlockControls } from '@wordpress/block-editor';
+import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import domReady from '@wordpress/dom-ready'
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
 
 /**
  * Function to register blocks provided by SureForms.
@@ -99,6 +105,84 @@ const blockWidthWrapperProps = createHigherOrderComponent(
 
 addFilter(
 	'editor.BlockListBlock',
-	'uagb/with-block-with-wrapper-props',
+	'srfm/with-block-with-wrapper-props',
 	blockWidthWrapperProps
 );
+
+const withToolbarButton = createHigherOrderComponent((BlockEdit) => {
+	return (props) => {
+
+		const { name, setAttributes } = props;
+
+		const allowedBlocks = getAllowedBlocks();
+
+		const Icon = parse( svgIcons.with_two_col );
+
+		if ( allowedBlocks.includes( name ) ) {
+
+			return (
+				<>
+				<BlockControls>
+					<ToolbarGroup>
+						<ToolbarButton
+							icon={ Icon }
+							label="Full Width"
+							onClick={ () => {
+								setAttributes( {
+									fieldWidth: Number( 100 ),
+								} )
+							} }
+						/>
+						<ToolbarButton
+							icon={ Icon }
+							label="Two Columns"
+							onClick={ () => {
+								setAttributes( {
+									fieldWidth: Number( 50 ),
+								} )
+							} }
+						/>
+						<ToolbarButton
+							icon={ Icon }
+							label="Three Columns"
+							onClick={ () => {
+								setAttributes( {
+									fieldWidth: Number( 33.33 ),
+								} )
+							} }
+						/>
+						<ToolbarButton
+							icon={ Icon }
+							label="Four Columns"
+							onClick={ () => {
+								setAttributes( {
+									fieldWidth: Number( 25 ),
+								} )
+							} }
+						/>
+					</ToolbarGroup>
+				</BlockControls>
+				<BlockEdit {...props} />
+				</>
+			);
+		}
+		return <BlockEdit { ...props } />;
+	};
+}, 'withToolbarButton');
+
+wp.hooks.addFilter(
+	'editor.BlockEdit',
+	'srfm/with-toolbar-button',
+	withToolbarButton
+);
+
+
+let removeFromToolbar = ['core/bold', 'core/italic', 'core/text-color', 'core/code', 'core/keyboard', 'core/image', 'core/superscript', 'core/subscript', 'core/underline', 'core/strikethrough', 'core/link' ]
+
+if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
+	domReady( () => {
+		removeFromToolbar.forEach(element => {
+			wp.richText.unregisterFormatType(element);
+		});
+	});
+}
