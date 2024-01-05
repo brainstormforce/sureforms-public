@@ -63,19 +63,12 @@ const Edit = ( { attributes, setAttributes } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={ `srfm-main-container srfm-classic-inputs-holder srfm-block-${ block_id }` }
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
+			<>
 				<RichText
 					tagName="label"
 					value={ label }
 					onChange={ ( value ) => setAttributes( { label: value } ) }
-					className={ 'srfm-classic-label-text' }
+					className={ 'srfm-block-label' }
 					multiline={ false }
 					id={ block_id }
 				/>
@@ -85,7 +78,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 					readOnly
 					className="srfm-input-common"
 				/>
-			</div>
+			</>
 		</>
 	);
 };
