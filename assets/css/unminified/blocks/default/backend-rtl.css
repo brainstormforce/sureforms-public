@@ -88,15 +88,15 @@
   right: 0;
   transform: translateY(-50%);
   width: inherit;
-  width: 73px;
+  width: 5.5em;
   height: 100%;
   display: flex;
   align-items: center;
   border-top-right-radius: var(--srfm-border-radius);
   border-bottom-right-radius: var(--srfm-border-radius);
   border-left: var(--srfm-border) solid var(--srfm-border-color);
-  padding-right: 14px;
-  padding-left: 12px;
+  padding-right: 1em;
+  padding-left: 1em;
   font-size: 0.7em;
 }
 .is-root-container div[data-type="sureforms/url"] .srfm-input-url {
