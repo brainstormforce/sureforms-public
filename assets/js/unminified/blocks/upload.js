@@ -69,8 +69,8 @@ function initializeUploadField() {
 									<div class="srfm-upload-data-details">
 										<div class="srfm-upload-data-filename">${ fileName }</div>
 										<div class="srfm-upload-data-size"> ${ ( file.size / 1000000 ).toFixed(
-											2
-										) }MB</div>
+		2
+	) }MB</div>
 									</div>
 								</div>
 								<div class="srfm-upload-data-right srfm-upload-delete">
