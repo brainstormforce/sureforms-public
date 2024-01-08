@@ -51,6 +51,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/date-time-picker',
 		'sureforms/number-slider',
 		'sureforms/page-break',
+		'sureforms/hidden',
 	];
 	if ( exclude ) {
 		for ( let i = 0; i < types.length; i++ ) {
@@ -82,6 +83,7 @@ export const getAllowedBlocks = () => {
 		'sureforms/date-time-picker',
 		'sureforms/number-slider',
 		'sureforms/page-break',
+		'sureforms/hidden',
 	];
 
 	return getBlocks;
