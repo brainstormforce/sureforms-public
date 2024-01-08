@@ -72,7 +72,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );
-		const isAllowDecimal = inputField.getAttribute( 'format-type' );
 		if ( fieldName ) {
 			fieldName = fieldName.replace( /_/g, ' ' );
 		}
@@ -130,15 +129,12 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Radio OR Checkbox type field
 		if (
-			container.classList.contains( 'srfm-rating-block' ) ||
 			container.classList.contains( 'srfm-multi-choice-block' ) ||
-			container.classList.contains( 'srfm-checkbox-container' )
+			container.classList.contains( 'srfm-checkbox-block' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
-
 			const isCheckedRequired =
 				checkedInput[ 0 ].getAttribute( 'aria-required' );
-
 			let checkedSelected = false;
 			let visibleInput = null;
 
@@ -180,14 +176,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		// NEED TO ASK
-		if ( isAllowDecimal === 'decimal' && inputValue !== '' ) {
-			// Add .00 if no decimal point exists
-			if ( ! inputValue.includes( '.' ) ) {
-				inputField.value += '.00';
-			}
-		}
-
 		//Password field
 		if ( container.classList.contains( 'srfm-password-block-wrap' ) ) {
 			const parent = container;
@@ -205,7 +193,11 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						'.srfm-error-message'
 					);
 
-					if ( ! confirmValue && confirmError ) {
+					if (
+						! confirmValue &&
+						confirmError &&
+						isRequired === 'true'
+					) {
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
@@ -233,13 +225,15 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//Check for email
 		if ( container.classList.contains( 'srfm-email-block-wrap' ) ) {
 			const parent = container;
-
 			if ( parent ) {
 				const confirmParent = parent.querySelector(
 					'.srfm-email-confirm-block'
 				);
 
 				if ( confirmParent ) {
+					const confirmInput = confirmParent.querySelector(
+						'.srfm-input-email-confirm'
+					);
 					const confirmValue = confirmParent.querySelector(
 						'.srfm-input-email-confirm'
 					).value;
@@ -247,13 +241,17 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						'.srfm-error-message'
 					);
 
-					if ( ! confirmValue && confirmError ) {
+					if (
+						! confirmValue &&
+						confirmError &&
+						isRequired === 'true'
+					) {
 						confirmError.textContent =
 							confirmError.getAttribute( 'data-error-msg' );
 						confirmParent.classList.add( 'srfm-error' );
 
 						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
+							firstErrorInput = confirmInput;
 						}
 						validateResult = true;
 					} else if ( confirmValue !== inputValue ) {
@@ -262,7 +260,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 							'Confirmation email is not the same';
 
 						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
+							firstErrorInput = confirmInput;
 						}
 						validateResult = true;
 					} else {
@@ -302,8 +300,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 			const isUploadRequired =
 				uploadInput.getAttribute( 'aria-required' );
-
-			if ( 'true' === isUploadRequired || ! uploadInput.value ) {
+			if ( 'true' === isUploadRequired && ! uploadInput.value ) {
 				if ( 'true' === isUploadRequired ) {
 					if ( errorMessage ) {
 						errorMessage.textContent =
@@ -332,7 +329,6 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( container.classList.contains( 'srfm-number-block' ) ) {
 			const min = inputField.getAttribute( 'min' );
 			const max = inputField.getAttribute( 'max' );
-
 			if ( inputValue ) {
 				if ( min ) {
 					if ( min !== '' && Number( inputValue ) < Number( min ) ) {
@@ -364,6 +360,22 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 							.classList.remove( 'srfm-error' );
 					}
 				}
+			}
+		}
+
+		//rating field
+		if ( container.classList.contains( 'srfm-rating-block' ) ) {
+			const ratingInput = container.querySelector( '.srfm-input-rating' );
+			const ratingRequired = ratingInput.getAttribute( 'aria-required' );
+			if ( ratingRequired === 'true' && ! ratingInput.value ) {
+				ratingInput
+					.closest( '.srfm-block' )
+					.classList.add( 'srfm-error' );
+				validateResult = true;
+			} else {
+				ratingInput
+					.closest( '.srfm-block' )
+					.classList.remove( 'srfm-error' );
 			}
 		}
 	}

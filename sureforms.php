@@ -24,5 +24,6 @@ define( 'SUREFORMS_LOC', 'SureForms' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SUREFORMS_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SUREFORMS_ENTRIES_POST_TYPE', 'sureforms_entry' );
+define( 'SRFM_DEBUG', false );
 
 require_once 'plugin-loader.php';
