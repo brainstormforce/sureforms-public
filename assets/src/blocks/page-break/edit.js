@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -15,7 +15,7 @@ import { PanelRow } from '@wordpress/components';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes } ) => {
-	const { label, preview } = attributes;
+	const { label, preview, block_id } = attributes;
 	if ( preview ) {
 		const fieldName = fieldsPreview.pagebreak_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
@@ -57,23 +57,20 @@ const Edit = ( { attributes, setAttributes } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				<div className="srfm-page-break-wrapper">
-					<div className="srfm-page-break-divider"></div>
-					<div className="srfm-page-break-content">
-						<p>{ label }</p>
-					</div>
-					<div className="srfm-page-break-divider"></div>
+			<div className="srfm-page-break-wrapper">
+				<div className="srfm-page-break-divider"></div>
+				<div className="srfm-page-break-content">
+					<RichText
+						tagName="p"
+						value={ label }
+						onChange={ ( value ) =>
+							setAttributes( { label: value } )
+						}
+						multiline={ false }
+						id={ block_id }
+					/>
 				</div>
+				<div className="srfm-page-break-divider"></div>
 			</div>
 		</>
 	);
