@@ -644,7 +644,33 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 		 *
 		 * @since 0.0.1
 		 */
-		public function render_html( $attributes ) {}
+		public function render_html( $attributes ) {
+			if ( isset( $attributes['block_id'] ) ) {
+				$block_id = $attributes['block_id'];
+			}
+
+			$seperator = '';
+
+			if ( isset( $attributes['separatorStyle'] )
+				&& 'none' !== $attributes['separatorStyle']
+			) {
+				$seperator = '<div class="uagb-separator"></div>';
+			}
+
+			$heading_text = '';
+
+			if ( isset( $attributes['headingTitle'] ) ) {
+				$heading_text            = 'above-heading' === $attributes['separatorPosition'] ? $seperator : '';
+				$attributes['headingId'] = isset( $attributes['headingId'] ) ? "id='{$attributes['headingId']}'" : '';
+				$heading_text           .= sprintf(
+					'<%1$s class="uagb-heading-text" %3$s>%2$s</%1$s>',
+					esc_attr( $attributes['headingTag'] ),
+					$attributes['headingTitle'],
+					esc_attr( $attributes['headingId'] )
+				);
+				$heading_text           .= 'below-heading' === $attributes['separatorPosition'] ? $seperator : '';
+			}
+		}
 	}
 
 	/**
