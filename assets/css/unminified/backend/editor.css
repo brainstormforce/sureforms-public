@@ -21,7 +21,7 @@ body.post-type-sureforms_form .is-desktop-preview, body.post-type-sureforms_form
   background-repeat: no-repeat !important;
 }
 body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
-body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout > div:first-child {
+body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout {
   margin-top: 1.2em !important;
 }
 body.post-type-sureforms_form .editor-styles-wrapper {
