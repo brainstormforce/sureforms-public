@@ -670,6 +670,17 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				);
 				$heading_text           .= 'below-heading' === $attributes['separatorPosition'] ? $seperator : '';
 			}
+
+			$desc_text = '';
+
+			if ( isset( $attributes['headingDesc'] ) ) {
+				$desc_text  = 'above-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
+				$desc_text .= sprintf(
+					'<p class="uagb-desc-text">%1$s</p>',
+					esc_html( $attributes['headingDesc'] )
+				);
+				$desc_text .= 'below-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
+			}
 		}
 	}
 
