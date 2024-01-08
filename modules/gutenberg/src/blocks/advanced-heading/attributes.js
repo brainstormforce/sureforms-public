@@ -43,8 +43,7 @@ const attributes = {
 		default: 'below-heading',
 	},
 	headingDesc: {
-		source: 'html',
-		selector: '.uagb-desc-text',
+		type: 'string'
 	},
 	headingAlign: {
 		type: 'string',

@@ -95,8 +95,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 					'default' => 'below-heading',
 				),
 				'headingDesc'                  => array(
-					'source'   => 'html',
-					'selector' => '.uagb-desc-text',
+					'type' => 'string',
 				),
 				'headingAlign'                 => array(
 					'type'    => 'string',
