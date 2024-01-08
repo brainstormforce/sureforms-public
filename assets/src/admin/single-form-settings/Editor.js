@@ -167,12 +167,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 								: '',
 						},
 						{
-							property: ' --srfm_submit_button_text',
+							property: '--srfm_submit_button_text',
 							value: sureforms_keys._srfm_submit_button_text
-								? `${ sureforms_keys._srfm_submit_button_text }`
+								? `"${ sureforms_keys._srfm_submit_button_text }"`
 								: '',
 						},
 					];
+
 					styleProperties.forEach( ( prop ) => {
 						iframeBody.style.setProperty(
 							prop.property,
