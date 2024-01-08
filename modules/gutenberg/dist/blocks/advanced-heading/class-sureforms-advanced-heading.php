@@ -680,7 +680,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				$desc_text  = 'above-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
 				$desc_text .= sprintf(
 					'<p class="uagb-desc-text">%1$s</p>',
-					esc_html( $attributes['headingDesc'] )
+					$attributes['headingDesc']
 				);
 				$desc_text .= 'below-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
 			}
