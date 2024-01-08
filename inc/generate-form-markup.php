@@ -217,7 +217,9 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<?php
 				if ( $is_page_break ) {
-					self::form_pagination( $post, $page_break_first_label );
+					if ( $post ) {
+						self::form_pagination( $post, $page_break_first_label );
+					}
 				} else {
 					// phpcs:ignore
 					echo $content;
@@ -302,16 +304,19 @@ class Generate_Form_Markup {
 	/**
 	 * Form pagination
 	 *
-	 * @param array  $post post content.
-	 * @param string $page_break_first_label label of first page break.
+	 * @param \WP_Post $post The current WP_Post object.
+	 * @param string   $page_break_first_label label of first page break.
 	 * @since 0.0.1
 	 * @return void
 	 */
 	public static function form_pagination( $post, $page_break_first_label ) {
 		$content = $post->post_content;
 		preg_match_all( '/wp:sureforms\/page-break {"block_id":"[^"]*","label":"([^"]*)"} \/-->/', $content, $matches );
-		$labels      = $matches[1];
-		$content     = preg_replace( '/<!--\s*wp:sureforms\/page-break\s*{[^}]+?}\s*\/-->/i', '<!-- wp:sureforms/page-break /-->', $content );
+		$labels  = $matches[1];
+		$content = preg_replace( '/<!--\s*wp:sureforms\/page-break\s*{[^}]+?}\s*\/-->/i', '<!-- wp:sureforms/page-break /-->', $content );
+		if ( ! $content ) {
+			return;
+		}
 		$pages       = explode( '<!-- wp:sureforms/page-break /-->', $content );
 		$new_content = '';
 		$i           = 0;
@@ -333,9 +338,9 @@ class Generate_Form_Markup {
 	/**
 	 * Render page break header
 	 *
-	 * @param boolean $is_page_break page break enable.
-	 * @param string  $page_break_progress_type type of progress type.
-	 * @param string  $page_break_toggle_label is label enable.
+	 * @param boolean|string $is_page_break page break enable.
+	 * @param string         $page_break_progress_type type of progress type.
+	 * @param string         $page_break_toggle_label is label enable.
 	 * @since 0.0.1
 	 * @return void
 	 */
