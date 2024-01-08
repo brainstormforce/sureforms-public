@@ -13,8 +13,7 @@ import InspectorTab, {
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { AddressThemeStyle } from './components/addressThemeStyle';
-import { AddressClassicStyle } from './components/addressClassicStyle';
+import { AddressBlock } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -22,7 +21,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 
 import countries from './countries.json';
 
-const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
+const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		required,
 		fieldWidth,
@@ -335,50 +334,22 @@ const Edit = ( { clientId, attributes, setAttributes, isSelected } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder ' +
-					( isSelected ? ' sf--focus' : '' )
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<AddressClassicStyle
-						countries={ countries }
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<AddressThemeStyle
-						countries={ countries }
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) }
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' ===
-							sureforms_keys?._sureforms_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<AddressBlock
+				countries={ countries }
+				attributes={ attributes }
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</>
 	);
 };

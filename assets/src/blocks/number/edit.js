@@ -14,9 +14,7 @@ import SRFMTextControl from '@Components/text-control';
 import SRFMSelectControl from '@Components/select-control';
 import SRFMNumberControl from '@Components/number-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { NumberClassicStyle } from './components/numberClassicStyle';
-import { NumberThemeStyle } from './components/numberThemeStyle';
+import { NumberComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -39,7 +37,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		formId,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 	const [ error, setError ] = useState( false );
 
 	const handleInput = ( e ) => {
@@ -242,46 +239,22 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={ 'srfm-main-container srfm-classic-inputs-holder' }
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<NumberClassicStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						handleInput={ handleInput }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<NumberThemeStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						handleInput={ handleInput }
-						setAttributes={ setAttributes }
-					/>
-				) }
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<NumberComponent
+				attributes={ attributes }
+				blockID={ block_id }
+				handleInput={ handleInput }
+				setAttributes={ setAttributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+				/>
+			) }
 		</>
 	);
 };

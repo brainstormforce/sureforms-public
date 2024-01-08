@@ -46,25 +46,13 @@ module.exports = {
 		),
 		formSubmitJS: path.resolve(
 			__dirname,
-			'assets/src/public/scripts/form-submit.js'
+			'assets/js/unminified/form-submit.js'
 		),
 		pageBreakJS: path.resolve(
 			__dirname,
-			'assets/src/public/scripts/page-break.js'
+			'assets/js/unminified/page-break.js'
 		),
 		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		flatpickr_css: path.resolve(
-			__dirname,
-			'assets/src/public/styles/dependencies/flatpickr.min.css'
-		),
-		tailwind_frontend_styles: path.resolve(
-			__dirname,
-			'assets/src/public/styles/sureforms-tailwind.scss'
-		),
-		sureforms_backend_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
-		),
 		settings: path.resolve(
 			__dirname,
 			'assets/src/admin/settings/settings.js'
@@ -72,10 +60,6 @@ module.exports = {
 		templatePicker: path.resolve(
 			__dirname,
 			'assets/src/admin/components/template-picker/TemplatePicker.js'
-		),
-		flatpickr_js: path.resolve(
-			__dirname,
-			'assets/src/public/scripts/dependencies/flatpickr.min.js'
 		),
 		page_header: path.resolve(
 			__dirname,
@@ -95,6 +79,7 @@ module.exports = {
 			'@Controls': path.resolve( __dirname, 'assets/src/srfm-controls/' ),
 			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
 			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
+			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
 			'@Attributes': path.resolve(
 				__dirname,
 				'assets/src/blocks-attributes/'

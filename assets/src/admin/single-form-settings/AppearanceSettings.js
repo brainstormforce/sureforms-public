@@ -50,7 +50,7 @@ function AppearanceSettings( props ) {
 			sureforms_keys._srfm_color2 ? sureforms_keys._srfm_color2 : 'none'
 		);
 		root.style.setProperty(
-			'--srfm_fontsize',
+			'--srfm-font-size',
 			sureforms_keys._srfm_fontsize
 				? sureforms_keys._srfm_fontsize + 'px'
 				: 'none'
@@ -150,8 +150,8 @@ function AppearanceSettings( props ) {
 				'--srfm_submit_alignment',
 				value ? value : 'left'
 			);
-			root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
-			updateMeta( '_srfm_submit_width_backend', 'auto' );
+			root.style.setProperty( '--srfm_submit_width_backend', '100px' );
+			updateMeta( '_srfm_submit_width_backend', '100px' );
 
 			if ( value === 'left' ) {
 				root.style.setProperty(
@@ -179,7 +179,7 @@ function AppearanceSettings( props ) {
 					'--srfm_submit_alignment_backend',
 					'50%'
 				);
-				root.style.setProperty( '--srfm_submit_width_backend', '100%' );
+				root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
@@ -323,27 +323,25 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._srfm_form_styling && (
-					<Range
-						label={ __( 'Font size', 'sureforms' ) }
-						help={ __(
-							'Customize the form font size.',
-							'sureforms'
-						) }
-						value={ sureforms_keys._srfm_fontsize }
-						min={ 16 }
-						max={ 24 }
-						displayUnit={ false }
-						data={ {
-							value: sureforms_keys._srfm_fontsize,
-							label: '_srfm_fontsize',
-						} }
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_fontsize', value )
-						}
-						isFormSpecific={ true }
-					/>
-				) }
+				<Range
+					label={ __( 'Font size', 'sureforms' ) }
+					help={ __(
+						'Customize the form font size.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._srfm_fontsize }
+					min={ 16 }
+					max={ 24 }
+					displayUnit={ false }
+					data={ {
+						value: sureforms_keys._srfm_fontsize,
+						label: '_srfm_fontsize',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_fontsize', value )
+					}
+					isFormSpecific={ true }
+				/>
 				<Range
 					label={ __( 'Form Container Width(px)', 'sureforms' ) }
 					help={ __(
@@ -441,7 +439,7 @@ function AppearanceSettings( props ) {
 						} else if ( 'justify' === value ) {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '100%' );
-							updateMeta( '_srfm_submit_width_backend', '100%' );
+							updateMeta( '_srfm_submit_width_backend', 'auto' );
 						} else {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '' );

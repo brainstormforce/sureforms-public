@@ -2,7 +2,6 @@ import inputAttributes from '@Blocks/input/block.json';
 import emailAttributes from '@Blocks/email/block.json';
 import numberSliderAttributes from '@Blocks/number-slider/block.json';
 import phoneAttributes from '@Blocks/phone/block.json';
-import switchAttributes from '@Blocks/switch/block.json';
 import textareaAttributes from '@Blocks/textarea/block.json';
 import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
@@ -21,7 +20,7 @@ const default_keys = {
 	_srfm_color2: { default: '' },
 	_srfm_email: { default: sfBlockData.admin_email },
 	_srfm_submit_url: { default: '' },
-	_srfm_fontsize: { default: 16 },
+	_srfm_fontsize: { default: 20 },
 	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
 	_srfm_form_container_width: { default: 650 },
 	_srfm_thankyou_message_title: { default: 'Thank you' },
@@ -40,7 +39,6 @@ export const blocksAttributes = {
 	upload: uploadAttributes.attributes,
 	'number-slider': numberSliderAttributes.attributes,
 	phone: phoneAttributes.attributes,
-	switch: switchAttributes.attributes,
 	textarea: textareaAttributes.attributes,
 	url: urlAttributes.attributes,
 	number: numberAttributes.attributes,

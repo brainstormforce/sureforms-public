@@ -67,7 +67,6 @@ class Gutenberg_Hooks {
 				'sureforms/email',
 				'sureforms/textarea',
 				'sureforms/number',
-				'sureforms/switch',
 				'sureforms/checkbox',
 				'sureforms/phone',
 				'sureforms/address',
@@ -216,7 +215,6 @@ class Gutenberg_Hooks {
 				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
 				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
 				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'switch_preview'        => SUREFORMS_URL . 'images/field-previews/switch.svg',
 				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
 				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
 				'rating_preview'        => SUREFORMS_URL . 'images/field-previews/rating.svg',
@@ -228,6 +226,7 @@ class Gutenberg_Hooks {
 				'date_time_preview'     => SUREFORMS_URL . 'images/field-previews/date-time.svg',
 				'number_slider_preview' => SUREFORMS_URL . 'images/field-previews/number-slider.svg',
 				'sureforms_preview'     => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+				'pagebreak_preview'     => SUREFORMS_URL . 'images/field-previews/page-break.svg',
 			)
 		);
 

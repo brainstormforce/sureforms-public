@@ -12,9 +12,14 @@ import SRFMTextControl from '@Components/text-control';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { PanelRow } from '@wordpress/components';
+import { FieldsPreview } from '../FieldsPreview.jsx';
 
 const Edit = ( { attributes, setAttributes } ) => {
-	const { label } = attributes;
+	const { label, preview } = attributes;
+	if ( preview ) {
+		const fieldName = fieldsPreview.pagebreak_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

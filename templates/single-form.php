@@ -73,17 +73,7 @@ use SureForms\Inc\Generate_Form_Markup;
 	}
 	?>
 		<style>
-			#srfm-single-form-page {
-				--srfm-secondary-color: 
-				<?php
-					echo esc_attr( $color_secondary );
-				?>
-					;
-				--srfm-primary-color: 
-				<?php
-					echo empty( $color_primary ) && '' === $button_styling_from_theme ? '#0284C7' : esc_attr( $color_primary );
-				?>
-				;
+			#srfm-single-page-container {
 				--srfm-primary-text-color: 
 					<?php
 					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
@@ -95,31 +85,19 @@ use SureForms\Inc\Generate_Form_Markup;
 					?>
 			}
 		</style>
-		<div id="srfm-single-form-page">
+		<div id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $color_primary ); ?>">
-			<?php if ( '1' !== $show_title_on_single_form_page ) : ?>
-				<h2 class="srfm-page-banner-title"><?php echo esc_html( get_the_title() ); ?></h2>
-			<?php endif; ?>
+				<?php if ( '1' !== $show_title_on_single_form_page ) : ?>
+					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
+				<?php endif; ?>
 			</div>
-			<div>
-			<?php
-				// phpcs:ignore
-				echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
-				// phpcs:ignoreEnd
-			?>
-			<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
-				<i class="fa-regular fa-circle-check"></i>
-				<article class="srfm-success-box-header">
-					<?php echo esc_html( $success_message_title ); ?>
-				</article>
-				<article class="srfm-success-box-subtxt srfm-text-gray-900">
-					<?php echo esc_html( $success_message ); ?>
-				</article>
-			</div>
+			<div class="srfm-form-wrapper">
 				<?php
-				if ( isset( $success_message ) && isset( $success_message_title ) ) {
-					?>
-				<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
+					// phpcs:ignore
+					echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
+					// phpcs:ignoreEnd
+				?>
+				<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
 					<i class="fa-regular fa-circle-check"></i>
 					<article class="srfm-success-box-header">
 						<?php echo esc_html( $success_message_title ); ?>
@@ -129,17 +107,29 @@ use SureForms\Inc\Generate_Form_Markup;
 					</article>
 				</div>
 					<?php
-				}
-				?>
-				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
-					<?php
-					$page_url  = $_SERVER['REQUEST_URI'];
-					$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );
-					$segments  = explode( '/', $page_path );
-					$form_path = isset( $segments[1] ) ? $segments[1] : '';
-					wp_footer();
+					if ( isset( $success_message ) && isset( $success_message_title ) ) {
+						?>
+					<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
+						<i class="fa-regular fa-circle-check"></i>
+						<article class="srfm-success-box-header">
+							<?php echo esc_html( $success_message_title ); ?>
+						</article>
+						<article class="srfm-success-box-subtxt srfm-text-gray-900">
+							<?php echo esc_html( $success_message ); ?>
+						</article>
+					</div>
+						<?php
+					}
 					?>
-			</div>
+					<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
+						<?php
+						$page_url  = $_SERVER['REQUEST_URI'];
+						$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );
+						$segments  = explode( '/', $page_path );
+						$form_path = isset( $segments[1] ) ? $segments[1] : '';
+						wp_footer();
+						?>
+		</div>
 		</div>
 	</body>
 </html>

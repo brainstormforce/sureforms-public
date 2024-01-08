@@ -40,8 +40,9 @@ class SF_Public {
 	public function enqueue_scripts() {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-
-		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+		$js_uri      = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
+		$css_uri     = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+		$css_vendor  = SUREFORMS_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -50,31 +51,29 @@ class SF_Public {
 
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
-		// Font Awesome icons.
-		wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], SUREFORMS_VER );
+		// Styles based on meta style.
+		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
-		// SureForms Theme styles CSS.
-		wp_enqueue_style( SUREFORMS_SLUG . '-sureforms-frontend', $css_uri . 'srfm_theme_styles' . $file_prefix . '.css', [], SUREFORMS_VER );
-		wp_enqueue_style( 'srfm-tailwind-styles', SUREFORMS_URL . 'assets/build/tailwind_frontend_styles.css', [], SUREFORMS_VER, 'all' );
+		// Common styles for all meta styles.
+		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
 
-		// Extra.
-		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-styles', $css_uri . 'sureforms-frontend-ui-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		if ( is_single() ) {
+			wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		}
 
+		// Dependencies
 		// Flatpickr CSS.
-		wp_enqueue_style( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_css.css', [], SUREFORMS_VER );
-
-		// Flatpickr JS.
-		wp_enqueue_script( 'flatpickr', SUREFORMS_URL . 'assets/build/flatpickr_js.js', [], SUREFORMS_VER, true );
-
+		wp_enqueue_style( 'flatpickr', $css_vendor . 'flatpickr.min.css', [], SUREFORMS_VER );
+		// Nice Select CSS.
+		wp_enqueue_style( 'nice-select', $css_vendor . 'nice-select2.css', [], SUREFORMS_VER );
 		// Int-tel-input CSS.
-		wp_enqueue_style( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/styles/dependencies/intlTelInput.min.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SUREFORMS_VER );
 
-		// Int-tel-input JS.
-		wp_enqueue_script( 'intlTelInput', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTellnput.min.js', [], SUREFORMS_VER, true );
-		wp_enqueue_script( 'intlTelInputUtils', SUREFORMS_URL . 'assets/src/public/scripts/dependencies/intTelUtils.min.js', [], SUREFORMS_VER, true );
-		wp_enqueue_script( 'srfm-frontend-script', SUREFORMS_URL . 'assets/src/public/scripts/frontend.js', [], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-page-break-script', SUREFORMS_URL . 'assets/build/pageBreakJS.js', [ 'srfm-form-submit' ], SUREFORMS_VER, true );
 		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/build/formSubmitJS.js', [], SUREFORMS_VER, true );
+		// Frontend common and validation before submit.
+		wp_enqueue_script( SUREFORMS_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 
 		// Google reCaptcha.
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );
@@ -109,12 +108,29 @@ class SF_Public {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'sureforms/', '', $block_type );
-		$script_dep_blocks = [ 'rating', 'upload', 'switch', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+		$script_dep_blocks = [ 'rating', 'upload', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+
+		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
+		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
+
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
-			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
-			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-			$js_uri      = SUREFORMS_URL . 'assets/src/public/scripts/' . $dir_name . '/blocks/';
-			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-js", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			$js_uri        = SUREFORMS_URL . 'assets/js/' . $dir_name . '/blocks/';
+			$js_vendor_uri = SUREFORMS_URL . 'assets/js/minified/deps/';
+
+			if ( 'phone' === $block_name ) {
+				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SUREFORMS_VER, true );
+			}
+
+			if ( 'date-time-picker' === $block_name ) {
+				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-flatpickr-deps", $js_vendor_uri . 'flatpickr.min.js', [], SUREFORMS_VER, true );
+			}
+
+			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
+				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-nice-select2-deps", $js_vendor_uri . 'nice-select2.min.js', [], SUREFORMS_VER, true );
+			}
+
+			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
 		}
 	}
 

@@ -15,7 +15,14 @@ const Breadcrumbs = () => {
 
 	return (
 		<div className="srfm-header-breadcrumb-container">
-			{ ICONS.logo }
+			<div
+				className="srfm-tp-logo"
+				onClick={ () =>
+					( window.location.href = sureforms_admin.admin_url )
+				}
+			>
+				{ ICONS.logo }
+			</div>
 			{ page === 'add-new-form' && (
 				<Link
 					className="srfm-tp-breadcrumb-url"
