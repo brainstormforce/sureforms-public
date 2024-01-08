@@ -6,7 +6,6 @@ import { useDeviceType } from '@Controls/getPreviewType';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import domReady from '@wordpress/dom-ready'
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
@@ -34,20 +33,20 @@ const registerBlock = ( block ) => {
 	const additionalSettings =
 		'sureforms/form' !== metadata.name
 			? {
-				transforms: {
-					from: [
-						{
-							type: 'block',
-							blocks: getBlockTypes( metadata.name ),
-							transform: ( attributes ) => {
-								return createBlock(
-									metadata.name,
-									attributes
-								);
+					transforms: {
+						from: [
+							{
+								type: 'block',
+								blocks: getBlockTypes( metadata.name ),
+								transform: ( attributes ) => {
+									return createBlock(
+										metadata.name,
+										attributes
+									);
+								},
 							},
-						},
-					],
-				},
+						],
+					},
 			  }
 			: {};
 
@@ -109,9 +108,8 @@ addFilter(
 	blockWidthWrapperProps
 );
 
-const withToolbarButton = createHigherOrderComponent((BlockEdit) => {
-	return (props) => {
-
+const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
+	return ( props ) => {
 		const { name, setAttributes } = props;
 
 		const allowedBlocks = getAllowedBlocks();
@@ -119,111 +117,58 @@ const withToolbarButton = createHigherOrderComponent((BlockEdit) => {
 		const Icon = parse( svgIcons.with_two_col );
 
 		if ( allowedBlocks.includes( name ) ) {
-
 			return (
 				<>
-				<BlockControls>
-					<ToolbarGroup>
-						<ToolbarButton
-							icon={ Icon }
-							label="Full Width"
-							onClick={ () => {
-								setAttributes( {
-									fieldWidth: Number( 100 ),
-								} )
-							} }
-						/>
-						<ToolbarButton
-							icon={ Icon }
-							label="Two Columns"
-							onClick={ () => {
-								setAttributes( {
-									fieldWidth: Number( 50 ),
-								} )
-							} }
-						/>
-						<ToolbarButton
-							icon={ Icon }
-							label="Three Columns"
-							onClick={ () => {
-								setAttributes( {
-									fieldWidth: Number( 33.33 ),
-								} )
-							} }
-						/>
-						<ToolbarButton
-							icon={ Icon }
-							label="Four Columns"
-							onClick={ () => {
-								setAttributes( {
-									fieldWidth: Number( 25 ),
-								} )
-							} }
-						/>
-					</ToolbarGroup>
-				</BlockControls>
-				<BlockEdit {...props} />
+					<BlockControls>
+						<ToolbarGroup>
+							<ToolbarButton
+								icon={ Icon }
+								label="Full Width"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 100 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ Icon }
+								label="Two Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 50 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ Icon }
+								label="Three Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 33.33 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ Icon }
+								label="Four Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 25 ),
+									} );
+								} }
+							/>
+						</ToolbarGroup>
+					</BlockControls>
+					<BlockEdit { ...props } />
 				</>
 			);
 		}
 		return <BlockEdit { ...props } />;
 	};
-}, 'withToolbarButton');
+}, 'withToolbarButton' );
 
 wp.hooks.addFilter(
 	'editor.BlockEdit',
 	'srfm/with-toolbar-button',
 	withToolbarButton
 );
-
-
-if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
-
-	domReady( async () => {
-		const elm = await waitForElm('.block-editor-block-list__layout');
-		const appendHtml = '<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button wp-block-button__link"></div>';
-
-			if( elm ) {
-				elm.insertAdjacentHTML('afterend', appendHtml);
-			}
-
-			const CheckPreviewState = await waitForElm('.edit-post-visual-editor');
-			if( CheckPreviewState ) {
-
-			// The mutation observer
-			const ob = new MutationObserver(function() {
-				const elm1 = document.querySelector('.block-editor-block-list__layout');
-				if( elm1 ) {
-					elm1.insertAdjacentHTML('afterend', appendHtml);
-				}
-			});
-
-			ob.observe(CheckPreviewState, {
-				attributes: true,
-				attributeFilter: ["class"]
-			});
-		}
-
-	});
-}
-
-function waitForElm(selector) {
-
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                observer.disconnect();
-                resolve(document.querySelector(selector));
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-}

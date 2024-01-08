@@ -22,6 +22,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMEditorHeader from './SRFMEditorHeader.js';
+import domReady from '@wordpress/dom-ready';
 
 const { select, dispatch } = wp.data;
 
@@ -96,6 +97,34 @@ const SureformsFormSpecificSettings = ( props ) => {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
+	function waitForElm( selector ) {
+		return new Promise( ( resolve ) => {
+			if ( document.querySelector( selector ) ) {
+				return resolve( document.querySelector( selector ) );
+			}
+
+			const observer = new MutationObserver( ( mutations ) => {
+				if ( document.querySelector( selector ) ) {
+					observer.disconnect();
+					resolve( document.querySelector( selector ) );
+				}
+			} );
+
+			observer.observe( document.body, {
+				childList: true,
+				subtree: true,
+			} );
+		} );
+	}
+
+	function addSubmitButton( elm ) {
+		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+
+		if ( elm ) {
+			elm.insertAdjacentHTML( 'afterend', appendHtml );
+		}
+	}
+
 	useEffect( () => {
 		setTimeout( () => {
 			const handleIframeStyle = ( iframeBody ) => {
@@ -137,6 +166,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 								? `${ sureforms_keys._srfm_submit_width }`
 								: '',
 						},
+						{
+							property: ' --srfm_submit_button_text',
+							value: sureforms_keys._srfm_submit_button_text
+								? `${ sureforms_keys._srfm_submit_button_text }`
+								: '',
+						},
 					];
 					styleProperties.forEach( ( prop ) => {
 						iframeBody.style.setProperty(
@@ -144,13 +179,16 @@ const SureformsFormSpecificSettings = ( props ) => {
 							prop.value
 						);
 					} );
+					const elm = iframeBody.querySelector(
+						'.block-editor-block-list__layout'
+					);
+
+					addSubmitButton( elm );
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
 						iframeBody?.querySelector( '.is-root-container' );
-					iframeRootContainer?.classList.add(
-						'srfm-form-container'
-					);
+					iframeRootContainer?.classList.add( 'srfm-form-container' );
 				}
 			};
 
@@ -171,6 +209,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 					handleIframeStyle( iframeBody );
 				}
+			} else {
+				const elm = document.querySelector(
+					'.block-editor-block-list__layout'
+				);
+				addSubmitButton( elm );
 			}
 		}, 100 );
 	}, [ deviceType, sureforms_keys ] );
