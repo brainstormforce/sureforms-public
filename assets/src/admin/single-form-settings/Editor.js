@@ -118,7 +118,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}
 
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
 
 		if ( elm ) {
 			elm.insertAdjacentHTML( 'afterend', appendHtml );
