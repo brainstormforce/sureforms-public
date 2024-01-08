@@ -43,7 +43,7 @@ const attributes = {
 		default: 'below-heading',
 	},
 	headingDesc: {
-		type: 'string'
+		type: 'string',
 	},
 	headingAlign: {
 		type: 'string',
