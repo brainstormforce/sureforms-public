@@ -80,10 +80,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 					'default' => true,
 				),
 				'headingTitle'                 => array(
-					'source'   => 'html',
-					'selector' => '.uagb-heading-text',
-					'type'     => 'string',
-					'default'  => __( 'My Attractive Heading', 'sureforms' ),
+					'type'    => 'string',
+					'default' => __( 'Your Attractive Heading', 'sureforms' ),
 				),
 				'headingId'                    => array(
 					'type' => 'string',
