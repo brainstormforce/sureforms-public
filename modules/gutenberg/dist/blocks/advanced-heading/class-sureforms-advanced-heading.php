@@ -48,6 +48,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 		 * Registers the `sureforms/advanced-heading` block on server.
 		 *
 		 * @since 0.0.1
+		 *
+		 * @return void
 		 */
 		public function register_blocks() {
 
@@ -637,11 +639,15 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 		/**
 		 * Render CF HTML.
 		 *
-		 * @param array $attributes Array of block attributes.
+		 * @param array<mixed> $attributes Array of block attributes.
 		 *
 		 * @since 0.0.1
+		 *
+		 * @return string|false
 		 */
 		public function render_html( $attributes ) {
+
+			$block_id = '';
 			if ( isset( $attributes['block_id'] ) ) {
 				$block_id = $attributes['block_id'];
 			}
@@ -696,20 +702,20 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 					if ( $attributes['headingDescToggle']
 						&& 'above-heading' === $attributes['headingDescPosition']
 					) {
-						echo $desc_text;
+						echo wp_kses( $desc_text, 'post' );
 					}
 					if ( isset( $attributes['headingTitleToggle'] ) && true === $attributes['headingTitleToggle'] ) {
-						echo $heading_text;
+						echo wp_kses( $heading_text, 'post' );
 					}
 					if ( $attributes['headingDescToggle']
 						&& 'below-heading' === $attributes['headingDescPosition']
 					) {
-						echo $desc_text;
+						echo wp_kses( $desc_text, 'post' );
 					}
 					if ( ! $attributes['headingDescToggle']
 						&& ! $attributes['headingTitleToggle']
 					) {
-						echo $seperator;
+						echo wp_kses( $seperator, 'post' );
 					}
 					?>
 				</div>
