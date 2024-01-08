@@ -681,6 +681,43 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				);
 				$desc_text .= 'below-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
 			}
+
+			$main_classes = array(
+				'wp-block-uagb-advanced-heading',
+				'uagb-block',
+				'uagb-block-' . $block_id,
+			);
+
+			if ( isset( $attributes['className'] ) ) {
+				$main_classes[] = $attributes['className'];
+			}
+
+			ob_start();
+			?>
+				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+					<?php
+					if ( $attributes['headingDescToggle']
+						&& 'above-heading' === $attributes['headingDescPosition']
+					) {
+						echo $desc_text;
+					}
+					if ( isset( $attributes['headingTitleToggle'] ) && true === $attributes['headingTitleToggle'] ) {
+						echo $heading_text;
+					}
+					if ( $attributes['headingDescToggle']
+						&& 'below-heading' === $attributes['headingDescPosition']
+					) {
+						echo $desc_text;
+					}
+					if ( ! $attributes['headingDescToggle']
+						&& ! $attributes['headingTitleToggle']
+					) {
+						echo $seperator;
+					}
+					?>
+				</div>
+			<?php
+			return ob_get_clean();
 		}
 	}
 
