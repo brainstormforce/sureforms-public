@@ -14,8 +14,8 @@
 .is-root-container .srfm-input-common {
   width: 100%;
 }
-.is-root-container .srfm-block {
-  margin-bottom: 1.2em;
+.is-root-container .srfm-block-margin-top {
+  margin-top: 1.2em;
 }
 .is-root-container .srfm-block-wrap {
   position: relative;

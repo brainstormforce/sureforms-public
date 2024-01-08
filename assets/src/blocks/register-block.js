@@ -175,3 +175,60 @@ wp.hooks.addFilter(
 	'srfm/with-toolbar-button',
 	withToolbarButton
 );
+
+
+if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
+
+	domReady( async () => {
+		const elm = await waitForElm('.block-editor-block-list__layout');
+		const appendHtml = '<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button wp-block-button__link"></div>';
+
+			if( elm ) {
+				elm.insertAdjacentHTML('afterend', appendHtml);
+			}
+
+			const CheckPreviewState = await waitForElm('.edit-post-visual-editor');
+			if( CheckPreviewState ) {
+
+			// The mutation observer
+			const ob = new MutationObserver(function() {
+				const elm1 = document.querySelector('.block-editor-block-list__layout');
+				if( elm1 ) {
+					elm1.insertAdjacentHTML('afterend', appendHtml);
+				}
+			});
+
+			ob.observe(CheckPreviewState, {
+				attributes: true,
+				attributeFilter: ["class"]
+			});
+		}
+
+	});
+}
+
+function waitForElm(selector) {
+
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                observer.disconnect();
+                resolve(document.querySelector(selector));
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+function insertAfter(referenceNode, newNode) {
+	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+ }
+

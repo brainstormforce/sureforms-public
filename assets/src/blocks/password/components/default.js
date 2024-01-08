@@ -28,7 +28,7 @@ export const PasswordComponent = ( { attributes, blockID, setAttributes } ) => {
 				</div>
 			</div>
 			{ isConfirmPassword && (
-				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
+				<div className={ `srfm-block srfm-block-margin-top srfm-${ slug }-confirm-block` }>
 					<label
 						className={ `srfm-block-label${ isRequired }` }
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
