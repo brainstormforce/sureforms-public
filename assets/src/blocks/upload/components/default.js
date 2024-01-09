@@ -18,6 +18,7 @@ export const UploadComponent = ( { attributes, blockID, setAttributes } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap">
 				<span className={ `srfm-icon srfm-${ slug }-icon` }>
