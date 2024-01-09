@@ -14,10 +14,6 @@ body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-blo
 body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input):hover {
   box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
 }
-body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
-body.post-type-sureforms_form .editor-styles-wrapper #srfm-form-container > .srfm-block-single {
-  margin-top: 1.2em;
-}
 body.post-type-sureforms_form .editor-styles-wrapper {
   width: 100%;
   max-width: 620px;
@@ -45,6 +41,9 @@ body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper {
   body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper {
     display: block;
   }
+}
+body.post-type-sureforms_form .edit-post-header-toolbar__left {
+  margin-right: -10px;
 }
 body.post-type-sureforms_form .edit-post-header__center .srfm-header-title-input {
   width: 100%;
