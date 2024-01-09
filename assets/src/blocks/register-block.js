@@ -114,7 +114,10 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 
 		const allowedBlocks = getAllowedBlocks();
 
-		const Icon = parse( svgIcons.with_two_col );
+		const oneColIcon = parse( svgIcons.width_full );
+		const twoColIcon = parse( svgIcons.with_two_col );
+		const threeColIcon = parse( svgIcons.width_three_col );
+		const fourColIcon = parse( svgIcons.width_four_col );
 
 		if ( allowedBlocks.includes( name ) ) {
 			return (
@@ -122,7 +125,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 					<BlockControls>
 						<ToolbarGroup>
 							<ToolbarButton
-								icon={ Icon }
+								icon={ oneColIcon }
 								label="Full Width"
 								onClick={ () => {
 									setAttributes( {
@@ -131,7 +134,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 								} }
 							/>
 							<ToolbarButton
-								icon={ Icon }
+								icon={ twoColIcon }
 								label="Two Columns"
 								onClick={ () => {
 									setAttributes( {
@@ -140,7 +143,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 								} }
 							/>
 							<ToolbarButton
-								icon={ Icon }
+								icon={ threeColIcon }
 								label="Three Columns"
 								onClick={ () => {
 									setAttributes( {
@@ -149,7 +152,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 								} }
 							/>
 							<ToolbarButton
-								icon={ Icon }
+								icon={ fourColIcon }
 								label="Four Columns"
 								onClick={ () => {
 									setAttributes( {

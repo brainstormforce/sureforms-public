@@ -1,4 +1,13 @@
 body.post-type-sureforms_form {
+
+	.edit-post-sidebar>.components-panel>.components-panel__body {
+		display: none;
+
+		&.srfm--panel.is-opened {
+			display: block;
+		}
+	}
+
 	// Sidebar Override.
 	.edit-post-sidebar {
 		> .components-panel {
@@ -36,6 +45,7 @@ body.post-type-sureforms_form {
 		background-position: center !important;
 		background-size: cover !important;
 		background-repeat: no-repeat !important;
+		background-color: #fff !important;
 	}
 
 	.editor-styles-wrapper {
@@ -69,6 +79,7 @@ body.post-type-sureforms_form {
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
 			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
+			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
 		}
 	}
 
