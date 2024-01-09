@@ -172,4 +172,19 @@ body.post-type-sureforms_form {
 			}
 		}
 	}
+
+	.editor-post-publish-panel__content {
+		.srfm-shortcode {
+			position: relative;
+
+			.components-clipboard-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 0;
+				height: 31px;
+			}
+		}
+	}
+	
 }

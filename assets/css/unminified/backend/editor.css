@@ -132,3 +132,13 @@ body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button {
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button:after {
   content: var(--srfm_submit_button_text);
 }
+body.post-type-sureforms_form .editor-post-publish-panel__content .srfm-shortcode {
+  position: relative;
+}
+body.post-type-sureforms_form .editor-post-publish-panel__content .srfm-shortcode .components-clipboard-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  height: 31px;
+}
