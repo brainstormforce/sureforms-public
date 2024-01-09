@@ -44,8 +44,37 @@ class Create_New_Form {
 			array(
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'create_sureforms_form' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 			)
+		);
+	}
+
+	/**
+	 * Checks whether a given request has permission to create new forms.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since 0.0.1
+	 */
+	public function get_items_permissions_check( $request ) {
+		if ( current_user_can( 'edit_posts' ) ) {
+			return true;
+		}
+		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
+			/**
+			 * The post type.
+			 *
+			 * @var WP_Post_Type $post_type
+			 */
+			if ( current_user_can( $post_type->cap->edit_posts ) ) {
+				return true;
+			}
+		}
+
+		return new \WP_Error(
+			'rest_cannot_view',
+			__( 'Sorry, you are not allowed to create forms.', 'sureforms' ),
+			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
 
@@ -58,13 +87,17 @@ class Create_New_Form {
 	 * @since 0.0.1
 	 */
 	public static function create_sureforms_form( $data ) {
-		$content = $data->get_body();
-		$content = strval( json_decode( $content ) );
+
+		$form_info     = $data->get_body();
+		$form_info_obj = json_decode( $form_info );
+
+		$title   = $form_info_obj->template_name;
+		$content = $form_info_obj->form_data;
 
 		// Create a new SureForms Form with Template.
 		$post_id = wp_insert_post(
 			array(
-				'post_title'   => 'Untitled Form',
+				'post_title'   => $title,
 				'post_content' => $content,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',

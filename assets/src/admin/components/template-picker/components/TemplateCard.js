@@ -37,7 +37,9 @@ const TemplateCard = ( {
 						<div className="srfm-tc-btn-container">
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
-								onClick={ () => handleAddNewPost( formData ) }
+								onClick={ () =>
+									handleAddNewPost( formData, templateName )
+								}
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
