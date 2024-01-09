@@ -28,6 +28,7 @@ export const NumberComponent = ( {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<input
 				className={ `srfm-input-common srfm-input-${ slug }` }

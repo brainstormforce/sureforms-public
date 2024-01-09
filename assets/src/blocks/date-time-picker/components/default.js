@@ -18,6 +18,7 @@ export const DateTimeComponent = ( { attributes, setAttributes, blockID } ) => {
 				className={ `srfm-block-label ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap srfm-with-icon">
 				{ 'time' === fieldType ? (
