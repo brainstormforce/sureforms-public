@@ -205,7 +205,6 @@ input:checked + .slider:before {
 }
 
 .wrap {
-
 	.page-title-action {
 		vertical-align: baseline;
 	}
@@ -221,10 +220,10 @@ input:checked + .slider:before {
 			position: absolute;
 			left: -13px;
 			top: 50%;
-			transform: translateY(-50%);
+			transform: translateY( -50% );
 			width: 1px;
 			height: 20px;
-			background-color: #DCE0E6;
+			background-color: #dce0e6;
 		}
 	}
 }
@@ -251,4 +250,3 @@ input:checked + .slider:before {
 	margin-top: 5px;
 	margin-left: 25px;
 }
-

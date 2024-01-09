@@ -1,6 +1,5 @@
 body.post-type-sureforms_form {
-
-	.edit-post-sidebar>.components-panel>.components-panel__body {
+	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 
 		&.srfm--panel.is-opened {
@@ -39,9 +38,11 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.is-desktop-preview,.is-tablet-preview,.is-mobile-preview {
+	.is-desktop-preview,
+	.is-tablet-preview,
+	.is-mobile-preview {
 		// Need override / !Important here. As value are added inline by wordpress.
-		background-image: var(--srfm_bg) !important;
+		background-image: var( --srfm_bg ) !important;
 		background-position: center !important;
 		background-size: cover !important;
 		background-repeat: no-repeat !important;
@@ -65,7 +66,7 @@ body.post-type-sureforms_form {
 
 		.block-list-appender,
 		.block-editor-block-list__block {
-			&:not(.srfm-block-single),
+			&:not( .srfm-block-single ),
 			&[data-type="sureforms/image"],
 			&[data-type="sureforms/separator"],
 			&[data-type="sureforms/advanced-heading"],
@@ -74,7 +75,8 @@ body.post-type-sureforms_form {
 			}
 		}
 
-		.block-editor-block-list__block, .block-list-appender {
+		.block-editor-block-list__block,
+		.block-list-appender {
 			padding: 0 0.3em;
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
@@ -153,20 +155,17 @@ body.post-type-sureforms_form {
 
 		.srfm-submit-button {
 			position: absolute;
-			font-size: calc( var(--srfm-font-size) - .33em);
+			font-size: calc( var( --srfm-font-size ) - 0.33em );
 			pointer-events: none;
 			transform: translateX( var( --srfm_submit_alignment_backend ) );
 			right: var( --srfm_submit_alignment_backend );
 			transform: translateX( var( --srfm_submit_alignment_backend ) );
-			max-width: var(--srfm_submit_width_backend);
+			max-width: var( --srfm_submit_width_backend );
 			width: 100%;
-	
+
 			&:after {
 				content: var( --srfm_submit_button_text );
 			}
 		}
 	}
-
 }
-
-

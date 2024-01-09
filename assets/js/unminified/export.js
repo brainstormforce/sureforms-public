@@ -109,7 +109,7 @@ function importForm() {
 	if ( importBtn ) {
 		importBtn.addEventListener( 'click', () => {
 			if ( importContainer ) {
-				importContainer.classList.toggle("srfm-show");
+				importContainer.classList.toggle( 'srfm-show' );
 			}
 		} );
 	}
@@ -121,16 +121,17 @@ function importForm() {
 	}
 }
 
-function appendImportBtn(){
-	const element = document.querySelector('.wrap .page-title-action');
-	if (element) {
-	   let newElement = document.createElement('button');
-	   newElement.className = 'button button-secondary button-large srfm-import-btn';
-	   newElement.textContent = 'Import Form';
-	   element.parentNode.insertBefore(newElement, element.nextSibling);
+function appendImportBtn() {
+	const element = document.querySelector( '.wrap .page-title-action' );
+	if ( element ) {
+		const newElement = document.createElement( 'button' );
+		newElement.className =
+			'button button-secondary button-large srfm-import-btn';
+		newElement.textContent = 'Import Form';
+		element.parentNode.insertBefore( newElement, element.nextSibling );
 	}
- }
-document.addEventListener( 'DOMContentLoaded', function() {
+}
+document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
 	importForm();
 	bulkExport();

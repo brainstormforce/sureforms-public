@@ -1,4 +1,5 @@
-.block-editor-page.post-type-sureforms_form .is-root-container,.srfm-form-container {
+.block-editor-page.post-type-sureforms_form .is-root-container,
+.srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
 	padding: 32px;
@@ -41,9 +42,9 @@
 	.srfm-input-common {
 		width: 100%;
 	}
-	
+
 	.srfm-submit-button {
-		font-size: .7em;
+		font-size: 0.7em;
 		cursor: pointer;
 	}
 }

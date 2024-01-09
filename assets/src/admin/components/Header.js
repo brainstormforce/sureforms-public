@@ -11,7 +11,6 @@ import Logo from '../dashboard/templates/Logo';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
-	const siteUrl = sureforms_admin.site_url;
 
 	return (
 		<>
@@ -135,7 +134,7 @@ export default () => {
 								height: 20px;
 							` }
 						></div>
-						{/* <span
+						{ /* <span
 							css={ css`
 								display: flex;
 								align-items: center;
@@ -156,7 +155,7 @@ export default () => {
 									strokeLinejoin="round"
 								/>
 							</svg>
-						</span> */}
+						</span> */ }
 
 						<span
 							onClick={ () =>

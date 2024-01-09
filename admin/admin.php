@@ -379,9 +379,6 @@ class Admin {
 
 		}
 
-
-
-
 		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
 
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';

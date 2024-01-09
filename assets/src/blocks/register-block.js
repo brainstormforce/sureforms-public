@@ -5,7 +5,6 @@ import { addFilter } from '@wordpress/hooks';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
@@ -33,20 +32,20 @@ const registerBlock = ( block ) => {
 	const additionalSettings =
 		'sureforms/form' !== metadata.name
 			? {
-					transforms: {
-						from: [
-							{
-								type: 'block',
-								blocks: getBlockTypes( metadata.name ),
-								transform: ( attributes ) => {
-									return createBlock(
-										metadata.name,
-										attributes
-									);
-								},
+				transforms: {
+					from: [
+						{
+							type: 'block',
+							blocks: getBlockTypes( metadata.name ),
+							transform: ( attributes ) => {
+								return createBlock(
+									metadata.name,
+									attributes
+								);
 							},
-						],
-					},
+						},
+					],
+				},
 			  }
 			: {};
 

@@ -29,7 +29,7 @@
 		width: 100%;
 	}
 
-	.srfm-block-margin-top  {
+	.srfm-block-margin-top {
 		margin-top: 1.2em;
 	}
 
@@ -396,7 +396,7 @@
 			.srfm-multi-choice-single {
 				width: calc( 50% - 0.3em );
 				cursor: pointer;
-				background-color: var(--srfm-base-background-color);
+				background-color: var( --srfm-base-background-color );
 
 				.srfm-input-common {
 					width: calc( 100% - 3em );
