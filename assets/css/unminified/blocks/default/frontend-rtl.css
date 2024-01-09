@@ -267,6 +267,7 @@
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input:checked + .srfm-block-content-wrap {
   border-color: var(--srfm-primary-color);
+  background-color: var(--srfm-info-background-color);
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap {
   position: relative;
