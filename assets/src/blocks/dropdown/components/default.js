@@ -14,6 +14,7 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ `srfm-listbox-label ${ blockID }` }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap srfm-dropdown-common-wrap">
 				<select

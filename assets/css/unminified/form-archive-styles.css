@@ -218,7 +218,7 @@ input:checked + .slider:before {
   transform: translateY(-50%);
   width: 1px;
   height: 20px;
-  background-color: #DCE0E6;
+  background-color: #dce0e6;
 }
 
 .srfm-add-form-btn {

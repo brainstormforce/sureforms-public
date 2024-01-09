@@ -23,7 +23,9 @@ body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-blo
 body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input):hover {
   box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
 }
-body.post-type-sureforms_form .is-desktop-preview, body.post-type-sureforms_form .is-tablet-preview, body.post-type-sureforms_form .is-mobile-preview {
+body.post-type-sureforms_form .is-desktop-preview,
+body.post-type-sureforms_form .is-tablet-preview,
+body.post-type-sureforms_form .is-mobile-preview {
   background-image: var(--srfm_bg) !important;
   background-position: center !important;
   background-size: cover !important;
@@ -52,7 +54,8 @@ body.post-type-sureforms_form div.is-root-container.block-editor-block-list__lay
 body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-editor-block-list__block[data-type="sureforms/icon"] {
   width: 100%;
 }
-body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-editor-block-list__block, body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender {
+body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-editor-block-list__block,
+body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender {
   padding: 0 0.3em;
   margin-left: 0 !important;
   margin-right: 0 !important;
@@ -71,6 +74,9 @@ body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper {
   body.post-type-sureforms_form .edit-post-header__settings {
     flex: none;
   }
+}
+body.post-type-sureforms_form .edit-post-header-toolbar__left {
+  margin-left: -10px;
 }
 body.post-type-sureforms_form .edit-post-header__center .srfm-header-title-input {
   width: 100%;
