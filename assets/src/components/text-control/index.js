@@ -45,6 +45,9 @@ const SRFMTextControl = ( props ) => {
 	useEffect( () => {
 		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
 	}, [ blockNameForHook ] );
+	useEffect( () => {
+		setInputData( props?.value );
+	}, [ props ] );
 
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
@@ -89,6 +92,7 @@ const SRFMTextControl = ( props ) => {
 	const resetValues = ( defaultValues ) => {
 		if ( props?.onChange ) {
 			props?.onChange( defaultValues[ props?.data?.label ] );
+			setInputData( defaultValues[ props?.data?.label ] );
 		}
 	};
 
