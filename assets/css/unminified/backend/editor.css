@@ -8,6 +8,9 @@ body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .componen
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.edit-post-post-status.is-opened {
   display: none;
 }
+body.post-type-sureforms_form .edit-post-visual-editor__content-area {
+  padding: 0 !important;
+}
 body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input) {
   transition: 0.3s;
 }
