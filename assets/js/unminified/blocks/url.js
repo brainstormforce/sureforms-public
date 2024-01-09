@@ -23,8 +23,10 @@ function initializeURL() {
 					if ( isValidUrl ) {
 						validUrlMessage.style.display = 'none';
 						urlFiledContainer.classList.remove( 'srfm-error' );
+						urlFiledContainer.classList.remove( 'srfm-url-error' );
 					} else {
 						urlFiledContainer.classList.add( 'srfm-error' );
+						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
 						validUrlMessage.innerText = 'Please enter a valid URL.';
 					}
