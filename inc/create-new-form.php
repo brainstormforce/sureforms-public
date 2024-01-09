@@ -11,6 +11,7 @@ namespace SureForms\Inc;
 use WP_REST_Response;
 use WP_REST_Request;
 use WP_Error;
+use WP_Post_Type;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 
@@ -90,6 +91,27 @@ class Create_New_Form {
 
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
+
+		// Check if JSON decoding was successful and $form_info_obj is an object.
+		if ( json_last_error() !== JSON_ERROR_NONE || ! is_object( $form_info_obj ) ) {
+			$response = array(
+				'status'  => 'error',
+				'message' => 'Invalid JSON format.',
+			);
+			return rest_ensure_response( $response );
+		}
+
+		// Check if required properties exist in the $form_info_obj.
+		if ( ! property_exists( $form_info_obj, 'template_name' )
+			|| ! property_exists( $form_info_obj, 'form_data' )
+
+		) {
+			$response = array(
+				'status'  => 'error',
+				'message' => 'Missing required properties in form info.',
+			);
+			return rest_ensure_response( $response );
+		}
 
 		$title   = $form_info_obj->template_name;
 		$content = $form_info_obj->form_data;
