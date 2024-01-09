@@ -26,14 +26,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// Block override.
-	.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > * + *,
-	.editor-styles-wrapper #srfm-form-container > .srfm-block-single 
-	// > div:first-child
-	{
-		margin-top: 1.2em;
-	}
-
 	.editor-styles-wrapper {
 		width: 100%;
 		max-width: 620px;
