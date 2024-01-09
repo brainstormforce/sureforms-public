@@ -26,6 +26,7 @@
 		"@fonticonpicker/react-fonticonpicker": "^1.2.0",
 		"@lottiefiles/react-lottie-player": "^3.4.1",
 		"@wordpress/icons": "^2.10.1",
+		"caniuse-lite": "^1.0.30001576",
 		"classnames": "^2.2.6",
 		"prop-types": "^15.6.2",
 		"re-resizable": "^4.7.1",
