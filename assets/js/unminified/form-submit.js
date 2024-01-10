@@ -161,6 +161,21 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
+		//Url field
+		if ( container.classList.contains( 'srfm-url-block' ) ) {
+			const urlInput = container.querySelector( 'input' );
+			const urlError =
+				container.classList.contains( 'srfm-url-error' );
+
+			if ( urlError ) {
+				container.classList.add( 'srfm-error' );
+				validateResult = true;
+				if ( ! firstErrorInput ) {
+					firstErrorInput = urlInput;
+				}
+			}
+		}
+
 		//Phone field
 		if ( container.classList.contains( 'srfm-phone-block' ) ) {
 			const phoneInput = container.querySelectorAll( 'input' )[ 1 ];
