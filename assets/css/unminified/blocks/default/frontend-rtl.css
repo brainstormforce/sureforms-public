@@ -250,6 +250,7 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
   width: calc(50% - 0.3em);
   cursor: pointer;
+  background-color: var(--srfm-base-background-color);
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input {
   position: absolute;
@@ -266,6 +267,7 @@
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input:checked + .srfm-block-content-wrap {
   border-color: var(--srfm-primary-color);
+  background-color: var(--srfm-info-background-color);
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single .srfm-block-content-wrap {
   position: relative;
@@ -553,15 +555,15 @@
   right: 0;
   transform: translateY(-50%);
   width: inherit;
-  width: 73px;
+  width: 5.5em;
   height: 100%;
   display: flex;
   align-items: center;
   border-top-right-radius: var(--srfm-border-radius);
   border-bottom-right-radius: var(--srfm-border-radius);
   border-left: var(--srfm-border) solid var(--srfm-border-color);
-  padding-right: 14px;
-  padding-left: 12px;
+  padding-right: 1em;
+  padding-left: 1em;
   font-size: 0.7em;
 }
 .srfm-form-container .srfm-form .srfm-url-block .srfm-input-url {

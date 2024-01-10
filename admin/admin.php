@@ -355,18 +355,29 @@ class Admin {
 		}
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'assets/src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
+
+			wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			wp_localize_script(
+				'srfm-export',
+				'sureforms_export',
+				array(
+					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
+					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
+					'site_url'             => get_site_url(),
+					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
+				)
+			);
+
+			wp_enqueue_script( SUREFORMS_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			wp_localize_script(
+				SUREFORMS_SLUG . '-backend',
+				'sureforms_backend',
+				[
+					'site_url' => get_site_url(),
+				]
+			);
+
 		}
-		wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SUREFORMS_VER, true );
-		wp_localize_script(
-			'srfm-export',
-			'sureforms_export',
-			array(
-				'ajaxurl'              => admin_url( 'admin-ajax.php' ),
-				'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
-				'site_url'             => get_site_url(),
-				'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-			)
-		);
 
 		if ( 'sureforms_page_add-new-form' === $current_screen->id ) {
 

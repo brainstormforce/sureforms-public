@@ -44,6 +44,9 @@
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select .nice-select-dropdown .list {
   margin: 0;
 }
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select:focus {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-primary-color);
+}
 .srfm-form-container .srfm-form .srfm-block.srfm-phone-block .iti__country-list {
   display: block;
   border: var(--srfm-border) solid var(--srfm-border-color);
@@ -78,6 +81,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
 }
 .srfm-form-container .srfm-success-box {
   display: none;

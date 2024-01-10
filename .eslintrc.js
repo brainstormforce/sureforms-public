@@ -76,5 +76,6 @@ module.exports = {
 		getComputedStyle: true,
 		srfm_spec_blocks_info: true,
 		SureForms: true,
+		sureforms_backend: true,
 	},
 };

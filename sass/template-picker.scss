@@ -40,8 +40,15 @@ $sidebar_width: 290px;
 	}
 
 	.srfm-content-section {
-		height: calc( 100vh - 70px );
+		height: calc( 100vh - 50px );
 		padding-top: 70px;
+
+		@media ( max-width: 782px ) {
+			padding-top: 50px;
+			height: auto;
+			padding-left: 10px;
+			padding-right: 10px;
+		}
 	}
 
 	.srfm-tp-sp-container {

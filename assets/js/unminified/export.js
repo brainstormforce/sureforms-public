@@ -52,7 +52,6 @@ function bulkExport() {
 	}
 }
 
-document.addEventListener( 'DOMContentLoaded', bulkExport );
 let data;
 // eslint-disable-next-line no-unused-vars
 function handleFileChange( event ) {
@@ -110,7 +109,7 @@ function importForm() {
 	if ( importBtn ) {
 		importBtn.addEventListener( 'click', () => {
 			if ( importContainer ) {
-				importContainer.style.display = 'block';
+				importContainer.classList.toggle( 'srfm-show' );
 			}
 		} );
 	}
@@ -121,4 +120,19 @@ function importForm() {
 		} );
 	}
 }
-document.addEventListener( 'DOMContentLoaded', importForm );
+
+function appendImportBtn() {
+	const element = document.querySelector( '.wrap .page-title-action' );
+	if ( element ) {
+		const newElement = document.createElement( 'button' );
+		newElement.className =
+			'button button-secondary button-large srfm-import-btn';
+		newElement.textContent = 'Import Form';
+		element.parentNode.insertBefore( newElement, element.nextSibling );
+	}
+}
+document.addEventListener( 'DOMContentLoaded', function () {
+	appendImportBtn();
+	importForm();
+	bulkExport();
+} );
