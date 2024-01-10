@@ -806,6 +806,55 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				esc_attr( $attributes['linkTarget'] ),
 				$this->get_rel( $attributes['rel'] )
 			);
+
+            $main_classes = array(
+				'wp-block-uagb-image',
+				'uagb-block-' . $block_id,
+				'wp-block-uagb-image--layout-' . esc_attr( $attributes['layout'] ),
+				'wp-block-uagb-image--effect-' . esc_attr( $attributes['imageHoverEffect'] ),
+				'wp-block-uagb-image--align-' . ( $attributes['align'] ? esc_attr( $attributes['align'] ) : 'none' ),
+			);
+
+			if ( isset( $attributes['className'] ) ) {
+				$main_classes[] = $attributes['className'];
+			}
+
+			ob_start();
+			?>
+				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+					<figure class="wp-block-uagb-image__figure">
+						<?php echo wp_kses( $figure_image, 'post' ); ?>
+
+						<?php if ( 'overlay' === $attributes['layout'] ) : ?>
+							<div class="wp-block-uagb-image--layout-overlay__color-wrapper"></div>
+							<div class="wp-block-uagb-image--layout-overlay__inner <?php echo esc_attr( str_replace( ' ', '-', $attributes['overlayContentPosition'] ) ); ?>">
+								<?php echo wp_kses( $image_overlay_link, 'post' ); ?>
+
+								<?php
+								if ( 'before_title' === $attributes['separatorPosition'] ) {
+									echo wp_kses( $separator, 'post' );}
+								?>
+								<?php echo wp_kses( $image_heading, 'post' ); ?>
+								<?php
+								if ( 'after_title' === $attributes['separatorPosition'] ) {
+									echo wp_kses( $separator, 'post' );}
+								?>
+								<?php echo wp_kses( $image_caption, 'post' ); ?>
+								<?php
+								if ( 'after_sub_title' === $attributes['separatorPosition'] ) {
+									echo wp_kses( $separator, 'post' );}
+								?>
+							</div>
+						<?php else : ?>
+							<?php
+							if ( $attributes['enableCaption'] ) {
+								echo wp_kses( $image_caption, 'post' );}
+							?>
+						<?php endif; ?>
+					</figure>
+				</div>
+			<?php
+			return ob_get_clean();
         }
 
         /**
