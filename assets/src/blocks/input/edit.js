@@ -206,6 +206,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						className="srfm-description"
 						multiline={ false }
 						id={ block_id }
+						allowedFormats={ [] }
 					/>
 				) }
 			</>

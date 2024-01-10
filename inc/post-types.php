@@ -485,7 +485,7 @@ class Post_Types {
 						'name'          => 'Admin Notification Email',
 						'email_to'      => '{admin_email}',
 						'subject'       => 'New Form Submission',
-						'email_body'    => '',
+						'email_body'    => '{all_data}',
 					),
 				),
 			)
