@@ -52,7 +52,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 		 * @return void
 		 */
 		public function register_blocks() {
-            // Check if the register function exists.
+			// Check if the register function exists.
 			if ( ! function_exists( 'register_block_type' ) ) {
 				return;
 			}
@@ -727,7 +727,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 					'render_callback' => array( $this, 'render_html' ),
 				)
 			);
-        }
+		}
 
 		/**
 		 * Render CF HTML.
@@ -740,7 +740,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 		 */
 		public function render_html( $attributes ) {
 
-            $block_id = '';
+			$block_id = '';
 			if ( isset( $attributes['block_id'] ) ) {
 				$block_id = $attributes['block_id'];
 			}
@@ -807,7 +807,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				$this->get_rel( $attributes['rel'] )
 			);
 
-            $main_classes = array(
+			$main_classes = array(
 				'wp-block-uagb-image',
 				'uagb-block-' . $block_id,
 				'wp-block-uagb-image--layout-' . esc_attr( $attributes['layout'] ),
@@ -855,9 +855,9 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				</div>
 			<?php
 			return ob_get_clean();
-        }
+		}
 
-        /**
+		/**
 		 * Utility function to get link relation.
 		 *
 		 * @param string|false $rel stored in block attributes.
