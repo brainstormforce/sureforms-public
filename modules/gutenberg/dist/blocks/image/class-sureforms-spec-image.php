@@ -738,7 +738,91 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 		 *
 		 * @return string|false
 		 */
-		public function render_html( $attributes ) {}
+		public function render_html( $attributes ) {
+
+            $block_id = '';
+			if ( isset( $attributes['block_id'] ) ) {
+				$block_id = $attributes['block_id'];
+			}
+
+			$image = '<img
+            srcset="' . esc_url( $attributes['url'] ) . ( $attributes['urlTablet'] ? ', ' . esc_url( $attributes['urlTablet'] ) . ' 780w' : '' )
+			. ( $attributes['urlMobile'] ? ', ' . esc_url( $attributes['urlMobile'] ) . ' 360w' : '' ) . '"
+            sizes="(max-width: 480px) 150px"
+            src="' . esc_url( $attributes['url'] ) . '"
+            alt="' . esc_attr( $attributes['alt'] ) . '"';
+
+			if ( $attributes['id'] ) {
+				$image .= ' class="uag-image-' . esc_attr( $attributes['id'] ) . '"';
+			}
+
+			$image .= ' width="' . ( $attributes['width'] ? esc_attr( $attributes['width'] ) : esc_attr( $attributes['naturalWidth'] ) )
+				. '" height="' . ( $attributes['height'] ? esc_attr( $attributes['height'] ) : esc_attr( $attributes['naturalHeight'] ) ) . '"
+                title="' . esc_attr( $attributes['title'] ) . '"
+                loading="lazy"
+            />';
+
+			$figure_image = '';
+			if ( $attributes['href'] && '' !== $attributes['href'] ) {
+				$figure_image = '<a
+                            class="' . esc_attr( $attributes['linkClass'] ) . '"
+                            href="' . esc_url( $attributes['href'] ) . '"
+                            target="' . esc_attr( $attributes['linkTarget'] ) . '"
+                            rel="' . $this->get_rel( $attributes['rel'] ) . '">
+                            ' . $image . '
+                        </a>';
+			} else {
+				$figure_image = $image;
+			}
+
+			$image_heading = '';
+
+			if ( ! empty( $attributes['heading'] ) ) {
+
+				$heading_id    = isset( $attributes['headingId'] ) ? ' id="' . $attributes['headingId'] . '"' : '';
+				$image_heading = sprintf(
+					'<%1$s%2$s class="uagb-image-heading">%3$s</%1$s>',
+					esc_html( $attributes['headingTag'] ),
+					esc_attr( $heading_id ),
+					esc_html( $attributes['heading'] )
+				);
+			}
+
+			$image_caption = '';
+
+			if ( ! empty( $attributes['caption'] ) ) {
+				$image_caption = sprintf(
+					'<figcaption class="uagb-image-caption">%s</figcaption>',
+					esc_html( $attributes['caption'] )
+				);
+			}
+
+			$separator = 'none' !== $attributes['separatorStyle'] ? '<div class="uagb-image-separator"></div>' : '';
+
+			$image_overlay_link = sprintf(
+				'<a class="wp-block-uagb-image--layout-overlay-link %1$s" href="%2$s" target="%3$s" rel="%4$s"></a>',
+				esc_attr( $attributes['linkClass'] ),
+				esc_url( $attributes['href'] ),
+				esc_attr( $attributes['linkTarget'] ),
+				$this->get_rel( $attributes['rel'] )
+			);
+        }
+
+        /**
+		 * Utility function to get link relation.
+		 *
+		 * @param string|false $rel stored in block attributes.
+		 *
+		 * @since 0.0.1
+		 *
+		 * @return string
+		 */
+		public function get_rel( $rel ) {
+			if ( $rel ) {
+				return esc_attr( trim( $rel ) );
+			}
+			return 'noopener';
+		}
 
 	}
 
