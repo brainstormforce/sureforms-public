@@ -348,8 +348,8 @@
 }
 .srfm-form-container .srfm-page-break-block-wrap.is-selected .srfm-page-break-wrapper {
   border-radius: 6px;
-  border: 1px dashed var(--Colors-gray-300, #D0D5DD);
-  background: var(--Colors-gray-50, #F9FAFB);
+  border: 1px dashed var(--Colors-gray-300, #d0d5dd);
+  background: var(--Colors-gray-50, #f9fafb);
 }
 .srfm-form-container .srfm-page-break-block-wrap .srfm-page-break-wrapper {
   display: flex;

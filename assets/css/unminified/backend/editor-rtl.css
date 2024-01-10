@@ -46,6 +46,9 @@ body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper {
     display: block;
   }
 }
+body.post-type-sureforms_form .edit-post-header-toolbar__left {
+  margin-right: -10px;
+}
 body.post-type-sureforms_form .edit-post-header__center .srfm-header-title-input {
   width: 100%;
   max-width: 500px;
