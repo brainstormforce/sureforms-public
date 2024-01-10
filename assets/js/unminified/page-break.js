@@ -237,7 +237,15 @@ class PageBreakHandler {
 				currWidth = 80;
 			} else {
 				const parentWidth = this.progress.parentNode.offsetWidth;
-				const reducedWidth = parentWidth - 100;
+				/* eslint-disable no-mixed-operators */
+				const reducedWidth =
+					parentWidth -
+					5 *
+						parseFloat(
+							getComputedStyle( document.documentElement )
+								.fontSize
+						);
+				currWidth = ( reducedWidth / parentWidth ) * 100;
 				currWidth = ( reducedWidth / parentWidth ) * 100;
 			}
 			this.progress.style.width = `${

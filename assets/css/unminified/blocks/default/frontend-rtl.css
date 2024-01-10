@@ -634,21 +634,21 @@
   content: "";
   background-color: lightgrey;
   position: absolute;
-  top: 14px;
-  right: 44px;
+  top: 0.6em;
+  right: 2.2em;
   transform: translateY(-50%);
   height: 2px;
-  width: calc(100% - 100px);
+  width: calc(100% - 5em);
   z-index: 0;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress {
   background-color: var(--srfm-primary-color);
   position: absolute;
-  top: 14px;
-  right: 44px;
+  top: 0.6em;
+  right: 2.2em;
   transform: translateY(-50%);
   height: 2px;
-  max-width: calc(100% - 100px);
+  max-width: calc(100% - 5em);
   width: 0;
   z-index: 0;
   transition: 400ms ease;
@@ -656,7 +656,7 @@
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap {
   display: inline-block;
   text-align: center;
-  width: 80px;
+  width: 4em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
   background-color: #ffffff;
@@ -664,10 +664,10 @@
   color: var(--srfm-primary-color);
   font-weight: 700;
   border-radius: 50%;
-  height: 24px;
-  width: 24px;
+  height: 1.2em;
+  width: 1.2em;
   position: relative;
-  right: 20px;
+  right: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -678,14 +678,14 @@
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px;
+  line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-label-text {
   color: #d1d5db;
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px;
+  line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active .srfm-label-text {
   color: var(--srfm-primary-color);
@@ -714,11 +714,11 @@
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px;
+  line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content .srfm-steps-label {
   display: flex;
-  gap: 12px;
+  gap: 0.6em;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content .srfm-steps-label .srfm-steps-page-title {
   color: var(--srfm-primary-color);
@@ -726,15 +726,15 @@
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container {
   position: relative;
   display: flex;
-  gap: 32px;
+  gap: 1.6em;
   align-items: flex-start;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container::before {
   content: "";
   background-color: lightgrey;
   position: absolute;
-  top: 12px;
-  right: 24px;
+  top: 0.6em;
+  right: 1.2em;
   transform: translateY(-50%);
   height: 2px;
   width: 70%;
@@ -748,11 +748,11 @@
   border: 1px solid #d1d5db;
   border-radius: 50%;
   cursor: pointer;
-  height: 24px;
+  height: 1.2em;
   right: 0;
   position: absolute;
   top: 0;
-  width: 24px;
+  width: 1.2em;
   transition: background-color 0.3s, border-color 0.3s;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round.active label {
@@ -766,13 +766,13 @@
   border-top: none;
   border-left: none;
   content: "";
-  height: 4px;
-  right: 5px;
+  height: 0.2em;
+  right: 0.25em;
   opacity: 0;
   position: absolute;
-  top: 8px;
+  top: 0.3em;
   transform: rotate(45deg);
-  width: 12px;
+  width: 0.6em;
   transition: opacity 0.3s;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round input[type=checkbox] {
@@ -792,8 +792,8 @@
   position: absolute;
   background-color: #d1d5db;
   border-radius: 50%;
-  width: 10px;
-  height: 10px;
+  width: 0.5em;
+  height: 0.5em;
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
@@ -805,8 +805,8 @@
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-progress {
   background-color: var(--srfm-primary-color);
   position: absolute;
-  top: 12px;
-  right: 24px;
+  top: 0.6em;
+  right: 1.2em;
   transform: translateY(-50%);
   height: 2px;
   max-width: 70%;
@@ -817,12 +817,12 @@
 .srfm-page-break-header-container .srfm-page-break-progress {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.4em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress progress {
   width: 100%;
-  height: 8px;
-  border-radius: 50px;
+  height: 0.4em;
+  border-radius: 2.5em;
   background-color: #eaecf0;
   transition: width 300ms ease;
   -webkit-appearance: none;
@@ -830,15 +830,15 @@
 }
 .srfm-page-break-header-container .srfm-page-break-progress progress[value]::-webkit-progress-bar {
   width: 100%;
-  height: 8px;
-  border-radius: 50px;
+  height: 0.4em;
+  border-radius: 2.5em;
   background-color: #ddd;
   -webkit-transition: width 300ms ease;
   transition: width 300ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress progress[value]::-webkit-progress-value {
   width: 0;
-  border-radius: 50px;
+  border-radius: 2.5em;
   background-color: var(--srfm-primary-color);
   -webkit-transition: width 300ms ease;
   transition: width 300ms ease;
