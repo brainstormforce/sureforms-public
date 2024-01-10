@@ -622,7 +622,7 @@
 
 .srfm-page-break-header-container {
   width: 100%;
-  padding-bottom: var(--Spacing-8, 48px);
+  padding-bottom: 2.4em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container {
   display: flex;
@@ -660,7 +660,7 @@
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
   background-color: #ffffff;
-  border: 1.5px solid var(--Colors-gray-300, #d1d5db);
+  border: 1.5px solid #d1d5db;
   color: var(--srfm-primary-color);
   font-weight: 700;
   border-radius: 50%;
@@ -674,18 +674,18 @@
   transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle .srfm-circle-content {
-  color: var(--Colors-gray-300, #d1d5db);
-  font-size: 14px;
+  color: #d1d5db;
+  font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-label-text {
-  color: var(--Gray-700, #d1d5db);
-  font-size: 14px;
+  color: #d1d5db;
+  font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px; /* 142.857% */
+  line-height: 20px;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active .srfm-label-text {
   color: var(--srfm-primary-color);
@@ -702,7 +702,7 @@
   background-color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle.filled .srfm-circle-content {
-  color: var(--Colors-base-white, #fff);
+  color: #fff;
 }
 .srfm-page-break-header-container .srfm-page-break-steps {
   display: flex;
@@ -710,8 +710,8 @@
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: var(--Gray-700, #d1d5db);
-  font-size: 14px;
+  color: #d1d5db;
+  font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
@@ -844,9 +844,9 @@
   transition: width 300ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress span {
-  color: var(--Gray-700, #344054);
-  font-size: 14px;
+  color: #344054;
+  font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px; /* 142.857% */
+  line-height: 1em;
 }

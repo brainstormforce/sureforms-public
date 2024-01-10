@@ -53,7 +53,7 @@
 
 .srfm-page-break-header-container {
 	width: 100%;
-	padding-bottom: var( --Spacing-8, 48px );
+	padding-bottom: 2.4em;
 	.srfm-page-break-progress-container {
 		display: flex;
 		justify-content: space-between;
@@ -92,7 +92,7 @@
 
 		.srfm-circle {
 			background-color: #ffffff;
-			border: 1.5px solid var( --Colors-gray-300, #d1d5db );
+			border: 1.5px solid #d1d5db;
 			color: var( --srfm-primary-color );
 			font-weight: 700;
 			border-radius: 50%;
@@ -105,19 +105,19 @@
 			justify-content: center;
 			transition: 400ms ease;
 			.srfm-circle-content {
-				color: var( --Colors-gray-300, #d1d5db );
-				font-size: 14px;
+				color: #d1d5db;
+				font-size: 0.7em;
 				font-style: normal;
 				font-weight: 500;
 				line-height: 20px;
 			}
 		}
 		.srfm-label-text {
-			color: var( --Gray-700, #d1d5db );
-			font-size: 14px;
+			color: #d1d5db;
+			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
-			line-height: 20px; /* 142.857% */
+			line-height: 20px;
 		}
 		.srfm-text-wrap.active {
 			.srfm-label-text {
@@ -134,7 +134,7 @@
 			&.filled {
 				background-color: var( --srfm-primary-color );
 				.srfm-circle-content {
-					color: var( --Colors-base-white, #fff );
+					color: #fff;
 				}
 			}
 		}
@@ -144,8 +144,8 @@
 		align-items: center;
 		justify-content: space-between;
 		.srfm-steps-content {
-			color: var( --Gray-700, #d1d5db );
-			font-size: 14px;
+			color: #d1d5db;
+			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
 			line-height: 20px;
@@ -283,11 +283,11 @@
 		}
 
 		span {
-			color: var( --Gray-700, #344054 );
-			font-size: 14px;
+			color: #344054;
+			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
-			line-height: 20px; /* 142.857% */
+			line-height: 1em;
 		}
 	}
 }
