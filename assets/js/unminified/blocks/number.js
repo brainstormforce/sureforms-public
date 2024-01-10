@@ -1,6 +1,6 @@
 function initializeNumberField() {
 	const numberElements = Array.from(
-		document.getElementsByClassName( 'srfm-input-number-container' )
+		document.getElementsByClassName( 'srfm-number-block' )
 	);
 
 	if ( numberElements ) {

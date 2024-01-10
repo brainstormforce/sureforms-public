@@ -56,19 +56,19 @@ class Datetimepicker_Markup extends Base {
 		}
 
 		if ( 'date' === $field_type ) {
-			$input_type = ' date';
+			$input_type = 'date';
 		}
 
 		if ( 'time' === $field_type ) {
-			$input_type = ' time';
+			$input_type = 'time';
 		}
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap srfm-with-icon">
-					<?php echo Sureforms_Helper::fetch_svg( 'calender', 'srfm-' . esc_attr( $slug ) . '-icon srfm-input-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-					<input type="text" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?> srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $input_type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" value="" >
+					<?php echo Sureforms_Helper::fetch_svg( 'time' === $field_type ? 'clock' : 'calender', 'srfm-' . esc_attr( $slug ) . '-icon srfm-input-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					<input type="text" id="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?> srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $input_type ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" value="" min="<?php echo esc_attr( $min ); ?>" max="<?php echo esc_attr( $max ); ?>">
 					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
 				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
