@@ -1,4 +1,4 @@
-.srfm-form-container {
+.is-root-container {
 	font-size: var( --srfm-font-size );
 	margin-top: 2em;
 
@@ -29,8 +29,8 @@
 		width: 100%;
 	}
 
-	.srfm-block {
-		margin-bottom: 1.2em;
+	.srfm-block-margin-top {
+		margin-top: 1.2em;
 	}
 
 	.srfm-block-wrap {
@@ -113,22 +113,22 @@
 	}
 
 	// URL.
-	.srfm-url-block-wrap {
+	div[data-type="sureforms/url"] {
 		.srfm-protocol {
 			position: absolute;
 			top: 50%;
 			left: 0;
 			transform: translateY( -50% );
 			width: inherit;
-			width: 73px;
+			width: 5.5em;
 			height: 100%;
 			display: flex;
 			align-items: center;
 			border-top-left-radius: var( --srfm-border-radius );
 			border-bottom-left-radius: var( --srfm-border-radius );
 			border-right: var( --srfm-border ) solid var( --srfm-border-color );
-			padding-left: 14px;
-			padding-right: 12px;
+			padding-left: 1em;
+			padding-right: 1em;
 			font-size: 0.7em;
 		}
 
@@ -138,7 +138,7 @@
 	}
 
 	// Ratings.
-	.srfm-rating-block-wrap {
+	div[data-type="sureforms/rating"] {
 		ul {
 			display: flex;
 			flex-wrap: wrap;
@@ -169,7 +169,7 @@
 	}
 
 	// Address
-	.srfm-address-block-wrap {
+	div[data-type="sureforms/address"] {
 		.srfm-block-wrap {
 			display: flex;
 			flex-wrap: wrap;
@@ -228,7 +228,7 @@
 	}
 
 	// Number
-	.srfm-number-block-wrap {
+	div[data-type="sureforms/number"] {
 		.srfm-input-number {
 			&::-webkit-inner-spin-button,
 			&::-webkit-outer-spin-button {
@@ -238,7 +238,7 @@
 	}
 
 	//Checkbox
-	.srfm-checkbox-block-wrap {
+	div[data-type="sureforms/checkbox"] {
 		.srfm-block-wrap {
 			input {
 				margin: 0;
@@ -255,7 +255,7 @@
 	}
 
 	// Upload
-	.srfm-upload-block-wrap {
+	div[data-type="sureforms/upload"] {
 		.srfm-block-wrap {
 			background-color: var( --srfm-base-background-color );
 			text-align: center;
@@ -298,7 +298,7 @@
 	}
 
 	//Number Slider
-	.srfm-number-slider-block-wrap {
+	div[data-type="sureforms/number-slider"] {
 		$background-color_1: #ccc;
 		--value: 10%;
 
@@ -380,7 +380,7 @@
 	}
 
 	// Multi select.
-	.srfm-multi-choice-block-wrap {
+	div[data-type="sureforms/multi-choice"] {
 		&.is-selected {
 			.srfm-block-wrap {
 				pointer-events: initial;
@@ -396,6 +396,7 @@
 			.srfm-multi-choice-single {
 				width: calc( 50% - 0.3em );
 				cursor: pointer;
+				background-color: var( --srfm-base-background-color );
 
 				.srfm-input-common {
 					width: calc( 100% - 3em );

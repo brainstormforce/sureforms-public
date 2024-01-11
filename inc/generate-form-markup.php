@@ -211,11 +211,11 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?>">
-					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>">
+					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-element-button">
+							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-block-button__link">
 								<div class="srfm-submit-wrap">
 									<?php echo esc_html( $button_text ); ?>
 									<div class="srfm-loader"></div>
@@ -223,7 +223,7 @@ class Generate_Form_Markup {
 							</button>
 						<?php endif; ?>
 							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button srfm-submit-button wp-element-button" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button srfm-submit-button wp-block-button__link" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
 									<div class="srfm-submit-wrap">
 									<?php echo esc_html( $button_text ); ?>
 										<div class="srfm-loader"></div>
@@ -232,7 +232,7 @@ class Generate_Form_Markup {
 							<?php endif; ?>
 							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), array(), SUREFORMS_VER, true ); ?>
-								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button srfm-submit-button wp-element-button" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button srfm-submit-button wp-block-button__link" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
 									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>
 										<div class="srfm-loader"></div>
@@ -241,7 +241,7 @@ class Generate_Form_Markup {
 						<?php endif; ?>
 						<?php endif; ?>
 						<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-element-button">
+							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-block-button__link">
 									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>
 										<div class="srfm-loader"></div>

@@ -33,6 +33,17 @@ export default () => {
 					top: 30px;
 					cursor: pointer;
 				}
+
+				.sc-col-33 {
+					width: 33%;
+				}
+
+				@media screen and ( max-width: 480px ) {
+					.sc-col-33 {
+						width: 100%;
+					}
+				}
+
 			` }
 		>
 			<div className="sc-getstarted-inner-wrap">

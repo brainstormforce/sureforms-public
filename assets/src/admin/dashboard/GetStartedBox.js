@@ -14,6 +14,7 @@ export default ( {
 	return (
 
 		<div
+			className="sc-col-33"
 			css={ css`
 		@media screen and ( max-width: 480px ) {
 			margin-bottom: 20px;

@@ -11,7 +11,6 @@ import Logo from '../dashboard/templates/Logo';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
-	const siteUrl = sureforms_admin.site_url;
 
 	return (
 		<>
@@ -57,6 +56,24 @@ export default () => {
 								css={ css`
 									display: flex;
 									align-items: center;
+
+									sc-breadcrumbs sc-breadcrumb:nth-child(2) {
+										position: relative;
+									}
+
+									sc-breadcrumbs sc-breadcrumb:nth-child(2)::before {
+										content: "";
+										width: 3.5px;
+										height: 3.5px;
+										border: 1px solid #4B5563;
+										border-left: 0;
+										border-top: 0;
+										position: absolute;
+										left: -17px;
+										top: 9px;
+										transform: rotate(315deg);
+									}
+
 								` }
 							>
 								<ScBreadcrumbs>
@@ -76,20 +93,6 @@ export default () => {
 												</ScBreadcrumb>
 											)
 										) }
-									{ sureforms_admin.breadcrumbs[ 0 ].title &&
-										sureforms_admin.breadcrumbs[ 0 ]
-											.title === 'Forms' && (
-										<a
-											href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
-										>
-											<button className="srfm-add-form-btn">
-												{ __(
-													'Add New',
-													'sureforms'
-												) }
-											</button>
-										</a>
-									) }
 								</ScBreadcrumbs>
 							</div>
 						</h1>
@@ -101,13 +104,6 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						{ sureforms_admin.breadcrumbs[ 0 ].title &&
-							sureforms_admin.breadcrumbs[ 0 ].title ===
-								'Forms' && (
-							<button className="srfm-import-btn">
-								{ __( 'Import Form', 'sureforms' ) }
-							</button>
-						) }
 						<article
 							css={ css`
 								color: #94a3b8;
@@ -138,7 +134,7 @@ export default () => {
 								height: 20px;
 							` }
 						></div>
-						<span
+						{ /* <span
 							css={ css`
 								display: flex;
 								align-items: center;
@@ -159,7 +155,7 @@ export default () => {
 									strokeLinejoin="round"
 								/>
 							</svg>
-						</span>
+						</span> */ }
 
 						<span
 							onClick={ () =>

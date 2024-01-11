@@ -1,13 +1,12 @@
 function initializeURL() {
-	const urlFiledContainers = document.getElementsByClassName(
-		'srfm-classic-input-url-container'
-	);
+	const urlFiledContainers =
+		document.getElementsByClassName( 'srfm-url-block' );
 	if ( urlFiledContainers ) {
 		for ( const urlFiledContainer of urlFiledContainers ) {
 			const urlInput =
-				urlFiledContainer.querySelector( '.srfm-url-input' );
+				urlFiledContainer.querySelector( '.srfm-input-url' );
 			const validUrlMessage = urlFiledContainer.querySelector(
-				'.srfm-validation-url-message'
+				'.srfm-error-message'
 			);
 			if ( urlInput ) {
 				urlInput.addEventListener( 'change', () => {
@@ -20,22 +19,16 @@ function initializeURL() {
 							'(\\#[-a-z\\d_]*)?$', // fragment locator
 						'i'
 					);
-
 					const isValidUrl = pattern.test( urlInput.value );
 					if ( isValidUrl ) {
 						validUrlMessage.style.display = 'none';
-						urlInput.classList.remove(
-							'!srfm-ring-red-500',
-							'!srfm-border-red-500',
-							'placeholder:!srfm-text-red-300'
-						);
+						urlFiledContainer.classList.remove( 'srfm-error' );
+						urlFiledContainer.classList.remove( 'srfm-url-error' );
 					} else {
+						urlFiledContainer.classList.add( 'srfm-error' );
+						urlFiledContainer.classList.add( 'srfm-url-error' );
 						validUrlMessage.style.display = 'block';
-						urlInput.classList.add(
-							'!srfm-ring-red-500',
-							'!srfm-border-red-500',
-							'placeholder:!srfm-text-red-300'
-						);
+						validUrlMessage.innerText = 'Please enter a valid URL.';
 					}
 				} );
 			}
