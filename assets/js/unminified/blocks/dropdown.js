@@ -4,8 +4,11 @@ function initializeDropdown() {
 	);
 
 	dropDownSelector.forEach( ( element ) => {
-		// eslint-disable-next-line no-undef
-		NiceSelect.bind( element );
+		if ( element ) {
+			// eslint-disable-next-line no-undef
+			NiceSelect.bind( element );
+			element.style.display = 'none';
+		}
 	} );
 }
 document.addEventListener( 'DOMContentLoaded', initializeDropdown );
