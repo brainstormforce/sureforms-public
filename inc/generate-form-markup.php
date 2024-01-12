@@ -227,11 +227,11 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php if ( $is_page_break ) : ?>
-					<div class="srfm-page-break-buttons">
-						<button class="srfm-pre-btn">
+					<div class="srfm-page-break-buttons wp-block-button">
+						<button class="srfm-pre-btn wp-block-button__link">
 							Previous
 						</button>
-						<button class="srfm-nxt-btn">
+						<button class="srfm-nxt-btn wp-block-button__link">
 							Next
 						</button>
 					</div>

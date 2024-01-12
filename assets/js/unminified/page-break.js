@@ -123,6 +123,13 @@ class PageBreakHandler {
 				this.handlePreviousButtonClick( e )
 			);
 		}
+		if ( this.progressIndicatorType === 'progress-bar' ) {
+			const progressVal = Math.floor(
+				( ( this.currentActive + 1 ) / this.pageBreakLength ) * 100
+			);
+			this.progressBar.value = progressVal;
+			this.progressBarText.innerText = progressVal + '%';
+		}
 	}
 
 	async handleNextButtonClick( e ) {
@@ -253,8 +260,8 @@ class PageBreakHandler {
 			}%`;
 		}
 		if ( this.progressIndicatorType === 'progress-bar' ) {
-			const progressVal = Math.ceil(
-				( this.currentActive / ( this.pageBreakLength - 1 ) ) * 100
+			const progressVal = Math.floor(
+				( ( this.currentActive + 1 ) / this.pageBreakLength ) * 100
 			);
 			this.progressBar.value = progressVal;
 			this.progressBarText.innerText = progressVal + '%';

@@ -605,20 +605,12 @@
   justify-content: space-between;
   width: 100%;
 }
-.srfm-page-break-buttons .srfm-pre-btn,
 .srfm-page-break-buttons .srfm-nxt-btn {
-  padding: 13px 25px;
-  border: none;
-  background-color: var(--srfm-primary-color);
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-  border-radius: 0.375rem;
-  color: #ffffff;
-  min-width: 100px;
-  cursor: pointer;
+  min-width: 91px;
 }
 .srfm-page-break-buttons .srfm-pre-btn:disabled,
 .srfm-page-break-buttons .srfm-nxt-btn:disabled {
-  background-color: #4692b8;
+  background-color: #636363;
   cursor: not-allowed;
 }
 
