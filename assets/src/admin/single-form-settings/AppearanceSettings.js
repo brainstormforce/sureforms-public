@@ -150,8 +150,8 @@ function AppearanceSettings( props ) {
 				'--srfm_submit_alignment',
 				value ? value : 'left'
 			);
-			root.style.setProperty( '--srfm_submit_width_backend', '100px' );
-			updateMeta( '_srfm_submit_width_backend', '100px' );
+			root.style.setProperty( '--srfm_submit_width_backend', 'max-content' );
+			updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
 			if ( value === 'left' ) {
 				root.style.setProperty(

@@ -48,7 +48,7 @@ const default_keys = {
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
 	_srfm_submit_alignment_backend: '100%',
-	_srfm_submit_width_backend: '100px',
+	_srfm_submit_width_backend: 'max-content',
 	_srfm_is_page_break: false,
 	_srfm_first_page_label: 'Page break',
 	_srfm_page_break_progress_indicator: 'connector',
@@ -113,6 +113,14 @@ const SureformsFormSpecificSettings = ( props ) => {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
+	function addSubmitButton( elm ) {
+		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+
+		if ( elm ) {
+			elm.insertAdjacentHTML( 'afterend', appendHtml );
+		}
+	}
+
 	useEffect( () => {
 		setTimeout( () => {
 			const handleIframeStyle = ( iframeBody ) => {
@@ -154,20 +162,30 @@ const SureformsFormSpecificSettings = ( props ) => {
 								? `${ sureforms_keys._srfm_submit_width }`
 								: '',
 						},
+						{
+							property: '--srfm_submit_button_text',
+							value: sureforms_keys._srfm_submit_button_text
+								? `"${ sureforms_keys._srfm_submit_button_text }"`
+								: '',
+						},
 					];
+
 					styleProperties.forEach( ( prop ) => {
 						iframeBody.style.setProperty(
 							prop.property,
 							prop.value
 						);
 					} );
+					const elm = iframeBody.querySelector(
+						'.block-editor-block-list__layout'
+					);
+
+					addSubmitButton( elm );
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
 						iframeBody?.querySelector( '.is-root-container' );
-					iframeRootContainer?.classList.add(
-						'srfm-form-container'
-					);
+					iframeRootContainer?.classList.add( 'srfm-form-container' );
 				}
 			};
 
@@ -188,6 +206,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 					handleIframeStyle( iframeBody );
 				}
+			} else {
+				const elm = document.querySelector(
+					'.block-editor-block-list__layout'
+				);
+				addSubmitButton( elm );
 			}
 		}, 100 );
 	}, [ deviceType, sureforms_keys ] );

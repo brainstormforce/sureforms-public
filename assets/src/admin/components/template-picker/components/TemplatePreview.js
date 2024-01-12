@@ -30,7 +30,7 @@ const TemplatePreview = ( {
 				</div>
 				<button
 					className="srfm-common-btn"
-					onClick={ () => handleAddNewPost( formData ) }
+					onClick={ () => handleAddNewPost( formData, templateName ) }
 				>
 					{ __( 'Use Template', 'sureforms' ) }
 				</button>
