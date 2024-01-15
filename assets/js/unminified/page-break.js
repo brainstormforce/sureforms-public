@@ -1,4 +1,4 @@
-import { fieldValidation } from './form-submit';
+import { fieldValidation } from './validation';
 class PageBreakHandler {
 	constructor( form ) {
 		this.form = form;
