@@ -5,25 +5,34 @@ import { useSelect } from '@wordpress/data';
 import { createBlock, getBlockTypes } from '@wordpress/blocks';
 import DraggableBlock from './draggable-block';
 
-const Blocks = () => {
+const Blocks = ( {
+	defaultAllowedQuickSidebarBlocks,
+	setDefaultAllowedQuickSidebarBlocks,
+} ) => {
 	const blocks = getBlockTypes();
-	const { blockInsertionPoint, getBlockRootClientId } = useSelect(
-		( select ) => {
-			const { index } =
-				select( 'core/block-editor' ).getBlockInsertionPoint();
-			const getSelectedBlockClientId =
-				select( 'core/block-editor' ).getSelectedBlockClientId();
-			const rootClientId = select(
-				'core/block-editor'
-			).getBlockRootClientId( getSelectedBlockClientId );
-			return {
-				blockInsertionPoint: index,
-				getBlockRootClientId: rootClientId,
-			};
-		}
-	);
+	const {
+		blockInsertionPoint,
+		getBlockRootClientId,
+		getSelectedBlockAllowedBlocks,
+		getSelectedBlockClientId,
+	} = useSelect( ( select ) => {
+		const blockEditor = select( 'core/block-editor' );
+		const { index } = blockEditor.getBlockInsertionPoint();
+		const clientId = blockEditor.getSelectedBlockClientId();
+		const getSelectedBlockClientId = blockEditor.getSelectedBlockClientId();
+		const rootClientId = blockEditor.getBlockRootClientId(
+			getSelectedBlockClientId
+		);
+		const allowedBlocks = blockEditor.getAllowedBlocks( clientId );
+		return {
+			blockInsertionPoint: index,
+			getBlockRootClientId: rootClientId,
+			getSelectedBlockClientId: clientId,
+			getSelectedBlockAllowedBlocks: allowedBlocks || [],
+		};
+	} );
 	const srfmBlocks = blocks.filter( ( block ) => {
-		return quickSidebarBlocks.allowed_blocks.includes( block.name );
+		return defaultAllowedQuickSidebarBlocks.includes( block.name );
 	} );
 
 	const create = ( name ) => {
@@ -41,6 +50,10 @@ const Blocks = () => {
 						create,
 						blockInsertionPoint,
 						getBlockRootClientId,
+						getSelectedBlockClientId,
+						getSelectedBlockAllowedBlocks,
+						defaultAllowedQuickSidebarBlocks,
+						setDefaultAllowedQuickSidebarBlocks,
 					} }
 				/>
 			) ) }

@@ -48,3 +48,20 @@ export const srfmClassNames = ( classes ) =>
 
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
+
+/**
+ * A function to check if an object is not empty.
+ *
+ * @function
+ *
+ * @param {Object} obj - The object to check.
+ *
+ * @return {boolean} Returns true if the object is not empty, otherwise returns false.
+ */
+export const isObjectNotEmpty = ( obj ) => {
+	return (
+		obj &&
+		Object.keys( obj ).length > 0 &&
+		Object.getPrototypeOf( obj ) === Object.prototype
+	);
+};
