@@ -53,7 +53,7 @@
 		max-width: 100%;
 		&::before {
 			content: "";
-			background-color: lightgrey;
+			background-color: var( --srfm-border-color );
 			position: absolute;
 			top: 0.6em;
 			left: 2.2em;
@@ -84,8 +84,8 @@
 		}
 
 		.srfm-circle {
-			background-color: #ffffff;
-			border: 1.5px solid #d1d5db;
+			background-color: var( --srfm-base-background-color );
+			border: 1.5px solid var( --srfm-border-color );
 			color: var( --srfm-primary-color );
 			font-weight: 700;
 			border-radius: 50%;
@@ -98,7 +98,7 @@
 			justify-content: center;
 			transition: 400ms ease;
 			.srfm-circle-content {
-				color: #d1d5db;
+				color: var( --srfm-border-color );
 				font-size: 0.7em;
 				font-style: normal;
 				font-weight: 500;
@@ -106,7 +106,7 @@
 			}
 		}
 		.srfm-label-text {
-			color: #d1d5db;
+			color: var( --srfm-border-color );
 			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
@@ -127,7 +127,7 @@
 			&.filled {
 				background-color: var( --srfm-primary-color );
 				.srfm-circle-content {
-					color: #fff;
+					color: var( --srfm-base-background-color );
 				}
 			}
 		}
@@ -137,7 +137,7 @@
 		align-items: center;
 		justify-content: space-between;
 		.srfm-steps-content {
-			color: #d1d5db;
+			color: var( --srfm-border-color );
 			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
@@ -157,7 +157,7 @@
 			align-items: flex-start;
 			&::before {
 				content: "";
-				background-color: lightgrey;
+				background-color: var( --srfm-border-color );
 				position: absolute;
 				top: 0.6em;
 				left: 1.2em;
@@ -171,8 +171,8 @@
 			}
 
 			.srfm-round label {
-				background-color: #ffffff;
-				border: 1px solid #d1d5db;
+				background-color: var( --srfm-base-background-color );
+				border: 1px solid var( --srfm-border-color );
 				border-radius: 50%;
 				cursor: pointer;
 				height: 1.2em;
@@ -189,7 +189,7 @@
 				}
 			}
 			.srfm-round label:after {
-				border: 2px solid #fff;
+				border: 2px solid var( --srfm-base-background-color );
 				border-top: none;
 				border-right: none;
 				content: "";
@@ -221,7 +221,7 @@
 			.srfm-round label::before {
 				content: "";
 				position: absolute;
-				background-color: #d1d5db;
+				background-color: var( --srfm-border-color );
 				border-radius: 50%;
 				width: 0.5em;
 				height: 0.5em;

@@ -626,7 +626,7 @@
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container::before {
   content: "";
-  background-color: lightgrey;
+  background-color: var(--srfm-border-color);
   position: absolute;
   top: 0.6em;
   left: 2.2em;
@@ -654,8 +654,8 @@
   line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
-  background-color: #ffffff;
-  border: 1.5px solid #d1d5db;
+  background-color: var(--srfm-base-background-color);
+  border: 1.5px solid var(--srfm-border-color);
   color: var(--srfm-primary-color);
   font-weight: 700;
   border-radius: 50%;
@@ -669,14 +669,14 @@
   transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle .srfm-circle-content {
-  color: #d1d5db;
+  color: var(--srfm-border-color);
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
   line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-label-text {
-  color: #d1d5db;
+  color: var(--srfm-border-color);
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
@@ -697,7 +697,7 @@
   background-color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle.filled .srfm-circle-content {
-  color: #fff;
+  color: var(--srfm-base-background-color);
 }
 .srfm-page-break-header-container .srfm-page-break-steps {
   display: flex;
@@ -705,7 +705,7 @@
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: #d1d5db;
+  color: var(--srfm-border-color);
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
@@ -726,7 +726,7 @@
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container::before {
   content: "";
-  background-color: lightgrey;
+  background-color: var(--srfm-border-color);
   position: absolute;
   top: 0.6em;
   left: 1.2em;
@@ -739,8 +739,8 @@
   position: relative;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round label {
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
+  background-color: var(--srfm-base-background-color);
+  border: 1px solid var(--srfm-border-color);
   border-radius: 50%;
   cursor: pointer;
   height: 1.2em;
@@ -757,7 +757,7 @@
   background-color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round label:after {
-  border: 2px solid #fff;
+  border: 2px solid var(--srfm-base-background-color);
   border-top: none;
   border-right: none;
   content: "";
@@ -785,7 +785,7 @@
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round label::before {
   content: "";
   position: absolute;
-  background-color: #d1d5db;
+  background-color: var(--srfm-border-color);
   border-radius: 50%;
   width: 0.5em;
   height: 0.5em;
