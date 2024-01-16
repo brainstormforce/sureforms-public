@@ -58,6 +58,7 @@ export const RatingComponent = ( { attributes, setAttributes, blockID } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<ul>{ ratingItems }</ul>
 		</>

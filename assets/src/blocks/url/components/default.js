@@ -15,6 +15,7 @@ export const UrlComponent = ( { attributes, blockID, setAttributes } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap">
 				<span className="srfm-protocol">

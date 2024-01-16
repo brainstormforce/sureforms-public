@@ -51,7 +51,7 @@ export const srfmClassNames = ( classes ) =>
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
 
-export const handleAddNewPost = async ( formData ) => {
+export const handleAddNewPost = async ( formData, templateName ) => {
 	if ( '1' !== sureforms_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
 		return;
@@ -64,7 +64,7 @@ export const handleAddNewPost = async ( formData ) => {
 			headers: {
 				'Content-Type': 'text/html',
 			},
-			data: formData,
+			data: { form_data: formData, template_name: templateName },
 		} );
 
 		if ( response.id ) {

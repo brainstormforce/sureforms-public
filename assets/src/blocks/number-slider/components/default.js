@@ -17,6 +17,7 @@ export const NumberSliderComponent = ( {
 				className={ `srfm-block-label` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap">
 				<div className={ `srfm-${ slug }-wrap` }>

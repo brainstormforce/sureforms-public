@@ -15,6 +15,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<input
 				id={ `srfm-${ slug }-confirm-${ blockID }` }

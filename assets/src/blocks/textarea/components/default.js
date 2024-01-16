@@ -21,6 +21,7 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
+				allowedFormats={ [] }
 			/>
 			<div className="srfm-block-wrap">
 				<textarea

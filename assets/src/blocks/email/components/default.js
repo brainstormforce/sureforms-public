@@ -23,6 +23,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 					className={ `srfm-block-label${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
+					allowedFormats={ [] }
 				/>
 				<div className="srfm-block-wrap">
 					<input
@@ -37,7 +38,9 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 			</div>
 
 			{ isConfirmEmail && (
-				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
+				<div
+					className={ `srfm-block srfm-block-margin-top  srfm-${ slug }-confirm-block` }
+				>
 					<label
 						className={ `srfm-block-label${ isRequired }` }
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
