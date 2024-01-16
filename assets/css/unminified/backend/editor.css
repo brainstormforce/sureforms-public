@@ -1,3 +1,7 @@
+body.post-type-sureforms_form {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body {
   display: none;
 }
@@ -25,7 +29,8 @@ body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-blo
 }
 body.post-type-sureforms_form .is-desktop-preview,
 body.post-type-sureforms_form .is-tablet-preview,
-body.post-type-sureforms_form .is-mobile-preview {
+body.post-type-sureforms_form .is-mobile-preview,
+body.post-type-sureforms_form .block-editor-iframe__body {
   background-image: var(--srfm_bg) !important;
   background-position: center !important;
   background-size: cover !important;
@@ -45,6 +50,7 @@ body.post-type-sureforms_form div.is-root-container.block-editor-block-list__lay
   padding: 0;
   margin: 0 -0.3em;
   margin-top: 2em;
+  padding: 0.3em;
 }
 body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender:not(.srfm-block-single), body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender[data-type="sureforms/image"], body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender[data-type="sureforms/separator"], body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender[data-type="sureforms/advanced-heading"], body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-list-appender[data-type="sureforms/icon"],
 body.post-type-sureforms_form div.is-root-container.block-editor-block-list__layout .block-editor-block-list__block:not(.srfm-block-single),
@@ -116,7 +122,7 @@ body.post-type-sureforms_form .block-list-appender .block-editor-button-block-ap
 }
 body.post-type-sureforms_form .srfm-submit-btn-container {
   position: relative;
-  padding: 0 0.3em;
+  margin: 0 0.3em;
   margin-top: 1.2em;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button {
@@ -131,6 +137,11 @@ body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button {
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button:after {
   content: var(--srfm_submit_button_text);
+}
+@media (max-width: 778px) {
+  body.post-type-sureforms_form .srfm-submit-btn-container {
+    padding: 0;
+  }
 }
 body.post-type-sureforms_form .editor-post-publish-panel__content .srfm-shortcode {
   position: relative;
