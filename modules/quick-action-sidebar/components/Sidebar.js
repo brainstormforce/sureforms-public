@@ -5,13 +5,13 @@ import { useLayoutEffect, useState } from '@wordpress/element';
 import style from '../editor.lazy.scss';
 import Blocks from './blocks';
 import PopoverModal from './Modal';
+import getApiData from '@Controls/getApiData';
 
 const Sidebar = () => {
 	const [
 		defaultAllowedQuickSidebarBlocks,
 		setDefaultAllowedQuickSidebarBlocks,
 	] = useState( quickSidebarBlocks.allowed_blocks );
-	console.log( defaultAllowedQuickSidebarBlocks );
 	const [ isPopoverVisible, setPopoverVisible ] = useState( false );
 	useLayoutEffect( () => {
 		style.use();
@@ -26,12 +26,25 @@ const Sidebar = () => {
 	const closePopover = () => {
 		setPopoverVisible( false );
 	};
-	function updateDefaultAllowedQuickSidebarBlocks( value ) {
-		return {
-			...defaultAllowedQuickSidebarBlocks,
-			value,
-		};
+	function updateDefaultAllowedQuickSidebarBlocks( allowedBlocks ) {
+		setDefaultAllowedQuickSidebarBlocks( allowedBlocks );
 	}
+	// Saving the allowed blocks to the database.
+	const saveOptionToDatabase = ( allowedBlocks ) => {
+		// update allowedBlocks.
+		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
+		// Create an object with the uagb_ajax_nonce and confirmation properties.
+		const data = {
+			security: quickSidebarBlocks.srfm_ajax_nonce,
+			defaultAllowedQuickSidebarBlocks: JSON.stringify( allowedBlocks ),
+		};
+		// Call the getApiData function with the specified parameters.
+		getApiData( {
+			url: quickSidebarBlocks.srfm_ajax_url,
+			action: 'srfm_global_update_allowed_block',
+			data,
+		} );
+	};
 	return (
 		<div className="srfm-ee-quick-access">
 			<div className="srfm-ee-quick-access__sidebar">
@@ -41,9 +54,10 @@ const Sidebar = () => {
 						defaultAllowedQuickSidebarBlocks={
 							defaultAllowedQuickSidebarBlocks
 						}
-						setDefaultAllowedQuickSidebarBlocks={
-							setDefaultAllowedQuickSidebarBlocks
+						updateDefaultAllowedQuickSidebarBlocks={
+							updateDefaultAllowedQuickSidebarBlocks
 						}
+						saveOptionToDatabase={ saveOptionToDatabase }
 					/>
 				</div>
 				{ /* The sidebar actions will come here - like the plus sign. */ }
@@ -72,8 +86,8 @@ const Sidebar = () => {
 									defaultAllowedQuickSidebarBlocks={
 										defaultAllowedQuickSidebarBlocks
 									}
-									setDefaultAllowedQuickSidebarBlocks={
-										setDefaultAllowedQuickSidebarBlocks
+									saveOptionToDatabase={
+										saveOptionToDatabase
 									}
 								/>
 							) }

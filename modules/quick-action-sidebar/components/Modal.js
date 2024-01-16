@@ -5,37 +5,19 @@ import { useState } from '@wordpress/element';
 import { Popover, SearchControl, Icon } from '@wordpress/components';
 import { useDispatch, dispatch } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-import getApiData from '@Controls/getApiData';
 import { getBlockTypes } from '@wordpress/blocks';
 
 const PopoverModal = ( {
 	closePopover,
-	updateDefaultAllowedQuickSidebarBlocks,
 	defaultAllowedQuickSidebarBlocks,
-	setDefaultAllowedQuickSidebarBlocks,
+	updateDefaultAllowedQuickSidebarBlocks,
+	saveOptionToDatabase,
 } ) => {
 	const [ searchTerm, setSearchTerm ] = useState( '' );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ uniqueId, setUniqueId ] = useState( 0 );
 	const addedNoticeID = `quick-action-sidebar/add-notices-flow/added-notice/${ uniqueId }`;
 	const blocks = getBlockTypes();
-
-	// Saving the allowed blocks to the database.
-	const saveOptionToDatabase = ( allowedBlocks ) => {
-		// update allowedBlocks.
-		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
-		// Create an object with the uagb_ajax_nonce and confirmation properties.
-		const data = {
-			security: srfm_blocks_info.srfm_ajax_nonce,
-			defaultAllowedQuickSidebarBlocks: JSON.stringify( allowedBlocks ),
-		};
-		// Call the getApiData function with the specified parameters.
-		getApiData( {
-			url: srfm_blocks_info.ajax_url,
-			action: 'srfm_global_update_allowed_block',
-			data,
-		} );
-	};
 
 	const closePopup = () => {
 		// Call the callback function in the parent
@@ -51,8 +33,8 @@ const PopoverModal = ( {
 			...defaultAllowedQuickSidebarBlocks,
 			selectedBlock.name,
 		];
-		setDefaultAllowedQuickSidebarBlocks( allowedBlocks );
-		// saveOptionToDatabase( allowedBlocks );
+		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
+		saveOptionToDatabase( allowedBlocks );
 		// Increment uniqueId when removing a block
 		setUniqueId( ( prevUniqueId ) => prevUniqueId + 1 );
 
@@ -162,10 +144,7 @@ const PopoverModal = ( {
 				) && (
 					<div className="block-editor-inserter__panel-header srfm-quick-action-block-popover-header__add-to-quick-action-bar">
 						<h2 className="block-editor-inserter__panel-title">
-							{ __(
-								'Add to Quick Action Bar',
-								'sureforms'
-							) }
+							{ __( 'Add to Quick Action Bar', 'sureforms' ) }
 						</h2>
 					</div>
 				) }
@@ -205,12 +184,7 @@ const PopoverModal = ( {
 								.includes( searchTerm.toLowerCase() )
 					) && (
 					<div className="block-editor-inserter__no-results">
-						<p>
-							{ __(
-								'No results found.',
-								'sureforms'
-							) }
-						</p>
+						<p>{ __( 'No results found.', 'sureforms' ) }</p>
 					</div>
 				) }
 			</div>

@@ -7,7 +7,8 @@ import DraggableBlock from './draggable-block';
 
 const Blocks = ( {
 	defaultAllowedQuickSidebarBlocks,
-	setDefaultAllowedQuickSidebarBlocks,
+	updateDefaultAllowedQuickSidebarBlocks,
+	saveOptionToDatabase,
 } ) => {
 	const blocks = getBlockTypes();
 	const {
@@ -19,7 +20,6 @@ const Blocks = ( {
 		const blockEditor = select( 'core/block-editor' );
 		const { index } = blockEditor.getBlockInsertionPoint();
 		const clientId = blockEditor.getSelectedBlockClientId();
-		const getSelectedBlockClientId = blockEditor.getSelectedBlockClientId();
 		const rootClientId = blockEditor.getBlockRootClientId(
 			getSelectedBlockClientId
 		);
@@ -53,7 +53,8 @@ const Blocks = ( {
 						getSelectedBlockClientId,
 						getSelectedBlockAllowedBlocks,
 						defaultAllowedQuickSidebarBlocks,
-						setDefaultAllowedQuickSidebarBlocks,
+						updateDefaultAllowedQuickSidebarBlocks,
+						saveOptionToDatabase,
 					} }
 				/>
 			) ) }

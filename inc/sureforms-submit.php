@@ -37,6 +37,8 @@ class Sureforms_Submit {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 		add_action( 'wp_ajax_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		add_action( 'wp_ajax_nopriv_validation_ajax_action', [ $this, 'field_unique_validation' ] );
+		// for quick action bar.
+		add_action( 'wp_ajax_srfm_global_update_allowed_block', array( $this, 'srfm_global_update_allowed_block' ) );
 	}
 
 	/**
@@ -439,5 +441,28 @@ class Sureforms_Submit {
 		);
 
 		wp_send_json( $results );
+	}
+
+	/**
+	 * Function to save allowed block data.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function srfm_global_update_allowed_block() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error();
+		}
+
+		if ( ! check_ajax_referer( 'srfm_ajax_nonce', 'security', false ) ) {
+			wp_send_json_error();
+		}
+
+		if ( ! empty( $_POST['defaultAllowedQuickSidebarBlocks'] ) ) {
+			$srfm_default_allowed_quick_sidebar_blocks = json_decode( stripslashes( $_POST['defaultAllowedQuickSidebarBlocks'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			Sureforms_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
+			wp_send_json_success();
+		}
+		wp_send_json_error();
 	}
 }

@@ -19,9 +19,7 @@ import { isObjectNotEmpty } from '../utils/Helpers';
 const getApiData = async ( { url, action, data } ) => {
 	if ( ! isObjectNotEmpty( data ) ) {
 		return Promise.reject(
-			new Error(
-				__( 'data object is empty', 'sureforms' )
-			)
+			new Error( __( 'data object is empty', 'sureforms' ) )
 		);
 	}
 	// Create a new instance of the FormData class
