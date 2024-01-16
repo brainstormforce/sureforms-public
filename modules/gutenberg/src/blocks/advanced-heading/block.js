@@ -6,7 +6,6 @@ import UAGB_Block_Icons from '@Controls/block-icons';
 import attributes from './attributes';
 import Edit from './edit';
 import './style.scss';
-import save from './save';
 import { __ } from '@wordpress/i18n';
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import './format';
@@ -44,7 +43,9 @@ registerBlockType( 'sureforms/advanced-heading', {
 		) : (
 			<Edit { ...props } />
 		),
-	save,
+	save () {
+		return null;
+	},
 	__experimentalLabel: ( atts ) =>
 		applyFilters(
 			'uag_loop_data_source_label',
