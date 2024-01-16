@@ -112,6 +112,7 @@ body.post-type-sureforms_form .block-list-appender .block-editor-button-block-ap
   border: 1px dashed #959595;
   padding: 24px;
   background-color: #fff;
+  transition: 0.3s;
 }
 body.post-type-sureforms_form .block-list-appender .block-editor-button-block-appender.components-button.components-button svg {
   width: 30px;
@@ -119,6 +120,13 @@ body.post-type-sureforms_form .block-list-appender .block-editor-button-block-ap
   color: white;
   background-color: #555d66;
   border-radius: 100%;
+  transition: 0.3s;
+}
+body.post-type-sureforms_form .block-list-appender .block-editor-button-block-appender.components-button.components-button:hover {
+  border-color: #1e1e1e;
+}
+body.post-type-sureforms_form .block-list-appender .block-editor-button-block-appender.components-button.components-button:hover svg {
+  background-color: #1e1e1e;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container {
   position: relative;

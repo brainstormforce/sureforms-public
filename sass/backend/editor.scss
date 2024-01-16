@@ -147,12 +147,23 @@ body.post-type-sureforms_form {
 			border: 1px dashed #959595;
 			padding: 24px;
 			background-color: #fff;
+			transition: .3s;
+
 			svg {
 				width: 30px;
 				height: 30px;
 				color: white;
 				background-color: #555d66;
 				border-radius: 100%;
+				transition: .3s;
+			}
+
+			&:hover {
+				border-color: #1e1e1e;
+
+				svg {
+					background-color: #1e1e1e;
+				}
 			}
 		}
 	}
