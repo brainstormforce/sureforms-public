@@ -1,0 +1,110 @@
+.srfm-form-container {
+	.srfm-form {
+		.srfm-upload-block {
+			.srfm-block-wrap {
+				text-align: center;
+				line-height: normal;
+				border: var( --srfm-border ) dashed var( --srfm-border-color );
+				border-radius: var( --srfm-border-radius );
+				padding: 1em;
+
+				label {
+					p {
+						font-weight: 500;
+					}
+				}
+
+				p {
+					font-size: 0.7em;
+					margin-bottom: 0.5em;
+				}
+
+				.srfm-upload-icon {
+					svg {
+						width: 1.5em;
+						stroke: var( --srfm-body-input-color );
+					}
+				}
+
+				.srfm-input-upload {
+					position: absolute;
+					top: 0;
+					left: 0;
+					bottom: 0;
+					right: 0;
+					opacity: 0;
+					width: 100%;
+					height: 100%;
+					cursor: pointer;
+					z-index: 1;
+				}
+			}
+
+			.srfm-upload-data {
+				display: none;
+				flex-wrap: wrap;
+				width: 100%;
+				justify-content: space-between;
+				align-items: center;
+				border: var( --srfm-border ) dashed var( --srfm-border-color );
+				border-radius: var( --srfm-border-radius );
+				padding: 1em;
+				margin-top: 0.5em;
+
+				&.active {
+					display: flex;
+				}
+
+				.srfm-upload-data-left {
+					display: flex;
+					flex-wrap: wrap;
+					width: calc( 100% - 1em );
+
+					img,
+					svg {
+						width: 3em;
+						height: 3em;
+						object-fit: cover;
+						border-radius: var( --srfm-border-radius );
+					}
+
+					.srfm-upload-data-details {
+						padding-left: 0.5em;
+						padding-right: 0.5em;
+						width: calc( 100% - 3em );
+
+						.srfm-upload-data-filename {
+							font-size: 0.9em;
+							font-weight: 500;
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							color: var( --srfm-primary-color );
+						}
+
+						.srfm-upload-data-size {
+							font-size: 0.7em;
+						}
+					}
+				}
+
+				.srfm-upload-data-right {
+					cursor: pointer;
+					width: 1em;
+
+					svg {
+						width: 1em;
+						height: 1em;
+					}
+				}
+			}
+
+			&.srfm-error {
+				.srfm-block-wrap {
+					border-color: var( --srfm-error-surface-color );
+					background-color: var( --srfm-error-background-color );
+				}
+			}
+		}
+	}
+}

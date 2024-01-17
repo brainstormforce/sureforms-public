@@ -13,6 +13,7 @@ use WP_Screen;
 use WP_Query;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Generate_Form_Markup;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Post Types Main Class.
@@ -84,7 +85,8 @@ class Post_Types {
 	public function sureforms_render_blank_state( $post_type ) {
 
 		if ( SUREFORMS_FORMS_POST_TYPE === $post_type ) {
-			$new_form_url = admin_url( 'post-new.php?post_type=' . SUREFORMS_FORMS_POST_TYPE );
+			$page_name    = 'add-new-form';
+			$new_form_url = admin_url( 'admin.php?page=' . $page_name );
 
 			$this->get_blank_page_markup(
 				esc_html__( 'Let’s build your first form', 'sureforms' ),
@@ -122,7 +124,6 @@ class Post_Types {
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
-			'name_admin_bar'     => _x( 'SureForms Form', 'add new on admin bar', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
 			'new_item'           => __( 'New Form', 'sureforms' ),
@@ -375,7 +376,14 @@ class Post_Types {
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $screen_id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $screen_id ) {
 			?>
-		<div id="srfm-page-header"></div>
+		<style>
+			.srfm-page-header {
+				@media screen and ( max-width: 600px ) {
+					padding-top: 46px;
+				}
+			}
+		</style>
+		<div id="srfm-page-header" class="srfm-page-header"></div>
 			<?php
 		}
 	}
@@ -412,6 +420,8 @@ class Post_Types {
 			'_srfm_hide_title_post_specific'          => 'boolean',
 			'_srfm_page_form_title'                   => 'boolean',
 			'_srfm_single_page_form_title'            => 'boolean',
+			'_srfm_submit_width_backend'              => 'string',
+			'_srfm_submit_alignment_backend'          => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -429,6 +439,57 @@ class Post_Types {
 				)
 			);
 		}
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_email_notification',
+			array(
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'id'            => array(
+									'type' => 'integer',
+								),
+								'status'        => array(
+									'type' => 'boolean',
+								),
+								'is_raw_format' => array(
+									'type' => 'boolean',
+								),
+								'name'          => array(
+									'type' => 'string',
+								),
+								'email_to'      => array(
+									'type' => 'string',
+								),
+								'subject'       => array(
+									'type' => 'string',
+								),
+								'email_body'    => array(
+									'type' => 'string',
+								),
+							),
+						),
+					),
+				),
+				'default'       => array(
+					array(
+						'id'            => 1,
+						'status'        => false,
+						'is_raw_format' => false,
+						'name'          => 'Admin Notification Email',
+						'email_to'      => '{admin_email}',
+						'subject'       => 'New Form Submission',
+						'email_body'    => '{all_data}',
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -444,19 +505,27 @@ class Post_Types {
 			return;
 		}
 		$excluded_fields = [ 'srfm-honeypot-field', 'g-recaptcha-response', 'srfm-sender-email-field' ];
+
 		?>
 		<table class="widefat striped">
 			<tbody>
-				<tr><th><b>FIELD</b></th><th><b>VALUE</b></th></tr>
+				<tr><th><b><?php esc_html_e( 'Fields', 'sureforms' ); ?></b></th><th><b><?php esc_html_e( 'Values', 'sureforms' ); ?></b></th></tr>
 			<?php
 			foreach ( $meta_data as $field_name => $value ) :
-				if ( in_array( $field_name, $excluded_fields, true ) || false !== strpos( $field_name, 'sf-radio' ) ) {
+				if ( in_array( $field_name, $excluded_fields, true ) ) {
 					continue;
 				}
+
+				if ( false === str_contains( $field_name, '-lbl-' ) ) {
+					continue;
+				}
+
+				$label = explode( '-lbl-', $field_name )[1];
+
 				?>
 				<tr class="">
-				<?php if ( strpos( $field_name, 'SF-upload' ) !== false ) : ?>
-						<td><b><?php echo esc_html( explode( 'SF-upload', $field_name )[0] ); ?></b></td>
+				<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
@@ -464,8 +533,8 @@ class Post_Types {
 						<?php else : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
 						<?php endif; ?>
-					<?php elseif ( strpos( $field_name, 'SF-url' ) !== false ) : ?>
-						<td><b><?php echo esc_html( explode( 'SF-url', $field_name )[0] ); ?></b></td>
+					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
@@ -480,7 +549,7 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><b><?php echo esc_html( explode( 'SF-divider', $field_name )[0] ); ?></b></td>
+						<td><b><?php echo $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>

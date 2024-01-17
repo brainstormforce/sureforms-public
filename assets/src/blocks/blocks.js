@@ -5,7 +5,6 @@ import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
 import * as multiChoice from '@Blocks/multi-choice';
-import * as toggle from '@Blocks/switch';
 import * as rating from '@Blocks/rating';
 import * as upload from '@Blocks/upload';
 import * as phone from '@Blocks/phone';
@@ -15,6 +14,7 @@ import * as url from '@Blocks/url';
 import * as password from '@Blocks/password';
 import * as dateTimePicker from '@Blocks/date-time-picker';
 import * as numberSlider from '@Blocks/number-slider';
+import * as hidden from '@Blocks/hidden';
 
 import { registerBlocks } from './register-block';
 
@@ -25,7 +25,6 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 		url,
 		textarea,
 		multiChoice,
-		toggle,
 		checkbox,
 		number,
 		sfForm,
@@ -37,6 +36,7 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 		password,
 		dateTimePicker,
 		numberSlider,
+		hidden,
 	] );
 } else {
 	registerBlocks( [ sfForm ] );

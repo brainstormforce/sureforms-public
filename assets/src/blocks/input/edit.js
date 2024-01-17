@@ -12,9 +12,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { InputClassicStyle } from './components/InputClassicStyle';
-import { InputThemeStyle } from './components/InputThemeStyle';
+import { InputComponent } from './components/default.js';
 import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -39,7 +37,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -192,29 +189,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<InputClassicStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) : (
-					<InputThemeStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) }
+			<>
+				<InputComponent
+					blockID={ block_id }
+					setAttributes={ setAttributes }
+					attributes={ attributes }
+				/>
 
 				{ help !== '' && (
 					<RichText
@@ -223,16 +203,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						onChange={ ( value ) =>
 							setAttributes( { help: value } )
 						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
+						className="srfm-description"
 						multiline={ false }
 						id={ block_id }
+						allowedFormats={ [] }
 					/>
 				) }
-			</div>
+			</>
 		</>
 	);
 };

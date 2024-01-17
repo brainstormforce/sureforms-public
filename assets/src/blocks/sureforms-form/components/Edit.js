@@ -44,12 +44,24 @@ export default ( { attributes, setAttributes } ) => {
 
 	const status = useEntityProp( 'postType', 'sureforms_form', 'status', id );
 
-	const hasResolved = useSelect( ( select ) => {
+	const { isMissing, hasResolved } = useSelect( ( select ) => {
 		const hasResolvedValue = select( coreStore ).hasFinishedResolution(
 			'getEntityRecord',
 			[ 'postType', 'sureforms_form', id ]
 		);
-		return hasResolvedValue;
+		const form = select( coreStore ).getEntityRecord(
+			'postType',
+			'sureforms_form',
+			id
+		);
+		const canEdit =
+			select( coreStore ).canUserEditEntityRecord( 'sureforms_form' );
+		return {
+			canEdit,
+			isMissing: hasResolvedValue && ! form,
+			hasResolved: hasResolvedValue,
+			form,
+		};
 	} );
 
 	// Remove unwanted elements from the iframe and add styling for the form
@@ -69,15 +81,29 @@ export default ( { attributes, setAttributes } ) => {
 			iframeDocument.querySelector( '.srfm-single-form' );
 		const srfmSuccessMsg =
 			iframeDocument.querySelector( '.srfm-success-box' );
+		const formContainer = iframeDocument.querySelector(
+			'.srfm-form-container'
+		);
 
-		const srfmForm = iframeDocument.querySelector( '.srfm-form' );
 		const siteFooter = iframeDocument.getElementById( 'colophon' );
 		const iframeHtml = iframeDocument.querySelector(
 			'html.srfm-html.hydrated'
 		);
 
+		if ( formContainer ) {
+			formContainer.style.setProperty( 'margin-top', '0' );
+			formContainer.style.setProperty( 'box-shadow', 'none' );
+			formContainer.style.setProperty( 'max-width', '100%' );
+			formContainer.style.setProperty( 'padding', '0' );
+		}
+
 		if ( iframeHtml ) {
-			iframeHtml.style.setProperty( 'margin-top', '14px', 'important' );
+			iframeHtml.style.setProperty(
+				'background',
+				'transparent',
+				'important'
+			);
+			iframeHtml.style.setProperty( 'margin-top', '0', 'important' );
 		}
 		if ( iframeDocument.body ) {
 			const bodyStyle = iframeDocument.body.style;
@@ -110,16 +136,8 @@ export default ( { attributes, setAttributes } ) => {
 			srfmSingleForm.style.boxShadow = 'none';
 			srfmSingleForm.style.backgroundColor = 'transparent';
 			srfmSingleForm.style.width = '100%';
-			iframeRef.current.style.setProperty(
-				'margin-bottom',
-				'-44px',
-				'important'
-			);
 		}
-		if ( srfmForm ) {
-			srfmSingleForm.style.padding = '1px';
-			srfmSingleForm.style.margin = 0;
-		}
+
 		setLoading( false );
 	};
 
@@ -133,7 +151,7 @@ export default ( { attributes, setAttributes } ) => {
 	}, [ id, iframeRef, hasResolved ] );
 
 	// If form is in draft or trash then show the warning.
-	if ( 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
+	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
 			<div { ...blockProps }>
 				<Warning>

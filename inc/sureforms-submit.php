@@ -11,6 +11,7 @@ namespace SureForms\Inc;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Email\Email_Template;
+use SureForms\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 
 /**
@@ -314,38 +315,41 @@ class Sureforms_Submit {
 		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-			$response = array(
+			$response           = array(
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => array(
 					'name' => $name,
 				),
 			);
-
-			$email       = Sureforms_Helper::get_string_value( get_post_meta( intval( $id ), '_srfm_email', true ) );
-			$admin_email = explode( ', ', $email );
-
-			$subject = __( 'Notification from Sureforms Form ID:', 'sureforms' ) . $id;
-
-			$email_template = new Email_Template();
-			$message        = $email_template->render( $meta_data );
-
-			$headers = "From: $email\r\n" .
-				"Reply-To: $email\r\n" .
-				'X-Mailer: PHP/' . phpversion() . "\r\n" .
-				'Content-Type: text/html; charset=utf-8';
-			$sent    = wp_mail( $admin_email, $subject, $message, $headers );
-
-			$sender_notification = get_post_meta( intval( $id ), '_srfm_sender_notification', true );
-
-			if ( 'on' === $sender_notification && isset( $form_data['srfm-sender-email-field'] ) ) {
-				$sender_email = strval( $form_data['srfm-sender-email-field'] );
-				if ( $sender_email ) {
-					wp_mail( $sender_email, $subject, $message, $headers );
+			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
+			$smart_tags         = new SRFM_Smart_Tags();
+			$is_mail_sent       = false;
+			$emails             = [];
+			if ( is_iterable( $email_notification ) ) {
+				foreach ( $email_notification as $notification ) {
+					foreach ( $notification as $item ) {
+						if ( true === $item['status'] ) {
+							$to             = $item['email_to'];
+							$to             = $smart_tags->process_smart_tags( $to );
+							$subject        = $item['subject'];
+							$subject        = $smart_tags->process_smart_tags( $subject );
+							$email_body     = $item['email_body'];
+							$email_template = new Email_Template();
+							$message        = $email_template->render( $meta_data, $email_body );
+							$headers        = "From: $to\r\n" .
+							"Reply-To: $to\r\n" .
+							'X-Mailer: PHP/' . phpversion() . "\r\n" .
+							'Content-Type: text/html; charset=utf-8';
+							$sent           = wp_mail( $to, $subject, $message, $headers );
+							$is_mail_sent   = $sent;
+							$emails[]       = $to;
+						}
+					}
 				}
 			}
 
-			if ( $sent ) {
+			if ( $is_mail_sent ) {
 
 				$modified_message = [];
 				foreach ( $meta_data as $key => $value ) {
@@ -354,14 +358,12 @@ class Sureforms_Submit {
 				}
 
 				$form_submit_response = array(
-					'success'       => true,
-					'senders_email' => $sender_email ? esc_attr( $sender_email ) : '',
-					'admin_email'   => $email ? $admin_email : '',
-					'form_id'       => $id ? intval( $id ) : '',
-					'form_name'     => $name ? esc_attr( $name ) : '',
-					'subject'       => $subject ? esc_attr( $subject ) : '',
-					'message'       => __( 'Form submitted successfully', 'sureforms' ),
-					'data'          => $modified_message,
+					'success'   => true,
+					'form_id'   => $id ? intval( $id ) : '',
+					'emails'    => $emails,
+					'form_name' => $name ? esc_attr( $name ) : '',
+					'message'   => __( 'Form submitted successfully', 'sureforms' ),
+					'data'      => $modified_message,
 				);
 
 				do_action( 'srfm_form_submit', $form_submit_response );

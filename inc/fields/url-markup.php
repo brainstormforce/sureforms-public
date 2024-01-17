@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Url Field Markup Class.
@@ -17,31 +18,6 @@ use SureForms\Inc\Traits\Get_Instance;
  */
 class Url_Markup extends Base {
 	use Get_Instance;
-
-	/**
-	 * Render the sureforms url default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
-			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-
-			return '<div class="srfm-input-url-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '">
-    <label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-    <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-url-' . esc_attr( $block_id ) . '" type="url" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" class="srfm-url-input">
-    ' . ( '' !== $help ? '<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-    <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-</div>';
-	}
 
 	/**
 	 * Render the sureforms url classic styling
@@ -59,22 +35,33 @@ class Url_Markup extends Base {
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+			$slug        = 'url';
 
-		return '<div class="srfm-main-container srfm-frontend-inputs-holder srfm-input-url-container srfm-classic-input-url-container' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
-			<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">
-				' . esc_html( $label ) . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '
-			</label>
-			<div class="srfm-mt-2 srfm-flex srfm-rounded-md srfm-shadow-sm">
-				<span class="srfm-classic-url-prefix">https://</span>
-				<input type="text" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-url' . $block_id ) ) . '" id="srfm-input-url-' . esc_attr( $block_id ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '"
-				class="srfm-classic-url-element srfm-url-input" placeholder="' . esc_attr( $placeholder ) . '">
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
+			// html attributes.
+			$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+			$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
+			$aria_require_attr    = $required ? 'true' : 'false';
+			$input_label_fallback = $label ? $label : 'Address';
+			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+
+			ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+					<div class="srfm-block-wrap">
+						<span class="srfm-protocol"><?php esc_html_e( 'https://', 'sureforms' ); ?></span>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> />
+						<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					</div>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg, false, '', true ) ); ?>
 			</div>
-			' . ( '' !== $help ? '<label for="srfm-input-url-' . esc_attr( $block_id ) . '" class="srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) . '
-			<p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-			<p style="display:none" class="srfm-validation-url-message srfm-mt-2 srfm-text-sm srfm-text-red-600">' . esc_html( __( 'Please enter a valid URL.', 'sureforms' ) ) . '</p>
-		</div>';
+		<?php
+		return ob_get_clean();
 
 	}
 
 }
+

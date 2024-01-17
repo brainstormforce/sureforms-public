@@ -39,7 +39,6 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/email',
 		'sureforms/textarea',
 		'sureforms/number',
-		'sureforms/switch',
 		'sureforms/checkbox',
 		'sureforms/phone',
 		'sureforms/address',
@@ -51,6 +50,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/password',
 		'sureforms/date-time-picker',
 		'sureforms/number-slider',
+		'sureforms/hidden',
 	];
 	if ( exclude ) {
 		for ( let i = 0; i < types.length; i++ ) {
@@ -70,7 +70,6 @@ export const getAllowedBlocks = () => {
 		'sureforms/email',
 		'sureforms/textarea',
 		'sureforms/number',
-		'sureforms/switch',
 		'sureforms/checkbox',
 		'sureforms/phone',
 		'sureforms/address',
@@ -82,6 +81,7 @@ export const getAllowedBlocks = () => {
 		'sureforms/password',
 		'sureforms/date-time-picker',
 		'sureforms/number-slider',
+		'sureforms/hidden',
 	];
 
 	return getBlocks;

@@ -9,6 +9,7 @@
 namespace SureForms\Inc\Fields;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Sureforms Number Field Markup Class.
@@ -17,35 +18,6 @@ use SureForms\Inc\Traits\Get_Instance;
  */
 class Number_Markup extends Base {
 	use Get_Instance;
-
-	/**
-	 * Render the sureforms number default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
-			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
-			$max_value   = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';
-			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-
-			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . ' ">
-            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span style="color:red;"> *</span>' : '' ) . '</label>
-            <input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" ' . ( 'none' === $format_type ? 'step="any"' : '' ) . ' id="srfm-input-number-' . esc_attr( $block_id ) . '" type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" value="' . esc_attr( $default ) . '" placeholder="' . esc_attr( $placeholder ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-input-field srfm-number-field">
-			' . ( '' !== $help ? '<label for="srfm-input-number" class="srfm-text-secondary">' . esc_html( $help ) . '</label>' : '' ) . '
-            <span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-            <span style="display:none" class="srfm-min-max-validation-message srfm-error-message"></span>
-         </div>';
-	}
 
 	/**
 	 * Render the sureforms number classic styling
@@ -66,16 +38,33 @@ class Number_Markup extends Base {
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
-			$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+			$slug        = 'number';
 
-			return '<div class="srfm-input-number-container srfm-main-container srfm-frontend-inputs-holder ' . esc_attr( $classname ) . '" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);">
-            <label for="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' . esc_html( $label ) . ' ' . ( $required && $label ? '<span class="srfm-text-red-500"> *</span>' : '' ) . '</label>
-            <div>
-                <input type="' . ( 'none' === $format_type ? 'number' : 'text' ) . '" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-input-number-' . esc_attr( $block_id ) . '" class="srfm-classic-number-element" placeholder="' . esc_attr( $placeholder ) . '" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" value="' . esc_attr( $default ) . '" format-type="' . esc_attr( $format_type ) . '" minimum="' . esc_attr( $min_value ) . '" maximum="' . esc_attr( $max_value ) . '">
-            </div>' . ( '' !== $help ? '<p class="srfm-helper-txt" id="srfm-text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-            <p style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</p>
-            <p style="display:none" class="srfm-min-max-validation-message srfm-error-message"></p>
-        </div>';
+			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
+			// html attributes.
+			$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+			$aria_require_attr    = $required ? 'true' : 'false';
+			$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
+			$format_attr          = $format_type ? ' format-type="' . $format_type . '" ' : '';
+			$min_value_attr       = $min_value ? ' min="' . $min_value . '" ' : '';
+			$max_value_attr       = $max_value ? ' max="' . $max_value . '" ' : '';
+			$input_label_fallback = $label ? $label : 'Number';
+			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+
+		ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+				<div class="srfm-block-wrap">
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="number" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> /> 
+					<?php echo Sureforms_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+				</div>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+			</div>
+		<?php
+		return ob_get_clean();
 	}
 
 }

@@ -50,7 +50,7 @@ function AppearanceSettings( props ) {
 			sureforms_keys._srfm_color2 ? sureforms_keys._srfm_color2 : 'none'
 		);
 		root.style.setProperty(
-			'--srfm_fontsize',
+			'--srfm-font-size',
 			sureforms_keys._srfm_fontsize
 				? sureforms_keys._srfm_fontsize + 'px'
 				: 'none'
@@ -66,6 +66,24 @@ function AppearanceSettings( props ) {
 			sureforms_keys._srfm_submit_width
 				? sureforms_keys._srfm_submit_width
 				: ''
+		);
+		root.style.setProperty(
+			'--srfm_submit_alignment_backend',
+			sureforms_keys._srfm_submit_alignment_backend
+				? sureforms_keys._srfm_submit_alignment_backend
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm_submit_width_backend',
+			sureforms_keys._srfm_submit_width_backend
+				? sureforms_keys._srfm_submit_width_backend
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm_submit_button_text',
+			sureforms_keys._srfm_submit_button_text
+				? '"' + sureforms_keys._srfm_submit_button_text + '"'
+				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
 		);
 	} else {
 		sureforms_keys = default_keys;
@@ -118,13 +136,51 @@ function AppearanceSettings( props ) {
 			);
 		}
 
+		if ( option === '_srfm_submit_button_text' ) {
+			root.style.setProperty(
+				'--srfm_submit_button_text',
+				value
+					? '"' + value + '"'
+					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
+			);
+		}
+
 		if ( option === '_srfm_submit_alignment' ) {
 			root.style.setProperty(
 				'--srfm_submit_alignment',
 				value ? value : 'left'
 			);
+			root.style.setProperty( '--srfm_submit_width_backend', 'max-content' );
+			updateMeta( '_srfm_submit_width_backend', 'max-content' );
+
+			if ( value === 'left' ) {
+				root.style.setProperty(
+					'--srfm_submit_alignment_backend',
+					'100%'
+				);
+				updateMeta( '_srfm_submit_alignment_backend', '100%' );
+			}
+			if ( value === 'right' ) {
+				root.style.setProperty(
+					'--srfm_submit_alignment_backend',
+					'0%'
+				);
+				updateMeta( '_srfm_submit_alignment_backend', '0%' );
+			}
+			if ( value === 'center' ) {
+				root.style.setProperty(
+					'--srfm_submit_alignment_backend',
+					'50%'
+				);
+				updateMeta( '_srfm_submit_alignment_backend', '50%' );
+			}
 			if ( value === 'justify' ) {
-				root.style.setProperty( '--srfm_submit_width', '100%' );
+				root.style.setProperty(
+					'--srfm_submit_alignment_backend',
+					'50%'
+				);
+				root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
+				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
 
@@ -267,27 +323,25 @@ function AppearanceSettings( props ) {
 					onRemoveImage={ onRemoveRestImage }
 					isFormSpecific={ true }
 				/>
-				{ 'inherit' === sureforms_keys._srfm_form_styling && (
-					<Range
-						label={ __( 'Font size', 'sureforms' ) }
-						help={ __(
-							'Customize the form font size.',
-							'sureforms'
-						) }
-						value={ sureforms_keys._srfm_fontsize }
-						min={ 16 }
-						max={ 24 }
-						displayUnit={ false }
-						data={ {
-							value: sureforms_keys._srfm_fontsize,
-							label: '_srfm_fontsize',
-						} }
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_fontsize', value )
-						}
-						isFormSpecific={ true }
-					/>
-				) }
+				<Range
+					label={ __( 'Font size', 'sureforms' ) }
+					help={ __(
+						'Customize the form font size.',
+						'sureforms'
+					) }
+					value={ sureforms_keys._srfm_fontsize }
+					min={ 16 }
+					max={ 24 }
+					displayUnit={ false }
+					data={ {
+						value: sureforms_keys._srfm_fontsize,
+						label: '_srfm_fontsize',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_fontsize', value )
+					}
+					isFormSpecific={ true }
+				/>
 				<Range
 					label={ __( 'Form Container Width(px)', 'sureforms' ) }
 					help={ __(
@@ -340,10 +394,11 @@ function AppearanceSettings( props ) {
 						label: '_srfm_submit_button_text',
 					} }
 					label={ __( 'Submit Button Text', 'sureforms' ) }
-					placeholder={ __( 'Submit', 'sureforms' ) }
+					placeholder={ __( 'SUBMIT', 'sureforms' ) }
 					value={ sureforms_keys._srfm_submit_button_text }
 					onChange={ ( value ) => {
-						updateMeta( '_srfm_submit_button_text', value );
+						const btnText = value.toUpperCase();
+						updateMeta( '_srfm_submit_button_text', btnText );
 					} }
 					isFormSpecific={ true }
 				/>
@@ -384,6 +439,7 @@ function AppearanceSettings( props ) {
 						} else if ( 'justify' === value ) {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '100%' );
+							updateMeta( '_srfm_submit_width_backend', 'auto' );
 						} else {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '' );

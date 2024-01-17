@@ -74,8 +74,9 @@ module.exports = {
 		sureforms_admin: true,
 		flatpickr: true,
 		getComputedStyle: true,
-		uagb_blocks_info: true,
+		srfm_spec_blocks_info: true,
 		SureForms: true,
 		quickSidebarBlocks: true,
+		sureforms_backend: true,
 	},
 };

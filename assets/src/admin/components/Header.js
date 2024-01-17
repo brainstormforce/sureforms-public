@@ -56,19 +56,43 @@ export default () => {
 								css={ css`
 									display: flex;
 									align-items: center;
+
+									sc-breadcrumbs sc-breadcrumb:nth-child(2) {
+										position: relative;
+									}
+
+									sc-breadcrumbs sc-breadcrumb:nth-child(2)::before {
+										content: "";
+										width: 3.5px;
+										height: 3.5px;
+										border: 1px solid #4B5563;
+										border-left: 0;
+										border-top: 0;
+										position: absolute;
+										left: -17px;
+										top: 9px;
+										transform: rotate(315deg);
+									}
+
 								` }
 							>
 								<ScBreadcrumbs>
 									<ScBreadcrumb>
 										<Logo display="block" />
 									</ScBreadcrumb>
-									{ sureforms_admin?.breadcrumbs && sureforms_admin.breadcrumbs.length > 0 && (
-										sureforms_admin.breadcrumbs.map( ( breadcrumb, index ) => (
-											<ScBreadcrumb key={ index } href={ breadcrumb.link }>
-												{ breadcrumb.title }
-											</ScBreadcrumb>
-										) )
-									) }
+									{ sureforms_admin?.breadcrumbs &&
+										sureforms_admin.breadcrumbs.length >
+											0 &&
+										sureforms_admin.breadcrumbs.map(
+											( breadcrumb, index ) => (
+												<ScBreadcrumb
+													key={ index }
+													href={ breadcrumb.link }
+												>
+													{ breadcrumb.title }
+												</ScBreadcrumb>
+											)
+										) }
 								</ScBreadcrumbs>
 							</div>
 						</h1>
@@ -80,14 +104,6 @@ export default () => {
 							gap: 15px;
 						` }
 					>
-						{
-							sureforms_admin.breadcrumbs[ 0 ].title && sureforms_admin.breadcrumbs[ 0 ].title === 'Forms' &&
-							<button
-								className="srfm-import-btn"
-							>
-								{ __( 'Import Form', 'sureforms' ) }
-							</button>
-						}
 						<article
 							css={ css`
 								color: #94a3b8;
@@ -108,7 +124,7 @@ export default () => {
 									margin-left: 12px;
 								` }
 							>
-								Core
+								{ __( 'Core', 'sureforms' ) }
 							</span>
 						</article>
 						<div
@@ -118,7 +134,7 @@ export default () => {
 								height: 20px;
 							` }
 						></div>
-						<span
+						{ /* <span
 							css={ css`
 								display: flex;
 								align-items: center;
@@ -139,7 +155,7 @@ export default () => {
 									strokeLinejoin="round"
 								/>
 							</svg>
-						</span>
+						</span> */ }
 
 						<span
 							onClick={ () =>
@@ -236,7 +252,10 @@ export default () => {
 								margin-top: 20px;
 							` }
 						>
-							{ __( 'All caught up!! Check back for new notifications later.', 'sureforms' ) }
+							{ __(
+								'All caught up!! Check back for new notifications later.',
+								'sureforms'
+							) }
 						</article>
 						<article
 							css={ css`
@@ -246,8 +265,7 @@ export default () => {
 								color: rgb( 100, 116, 139 );
 								padding-bottom: 30px;
 							` }
-						>
-						</article>
+						></article>
 					</div>
 				</div>
 			</ScDrawer>

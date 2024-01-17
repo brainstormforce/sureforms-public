@@ -30,7 +30,7 @@ const default_keys = {
 	_srfm_color1: '',
 	_srfm_textcolor1: '',
 	_srfm_color2: '',
-	_srfm_fontsize: 16,
+	_srfm_fontsize: 20,
 	_srfm_bg: '',
 	_srfm_thankyou_message: 'Form submitted successfully!',
 	_srfm_email: sfBlockData.admin_email,
@@ -44,10 +44,12 @@ const default_keys = {
 	_srfm_form_styling: 'classic',
 	_srfm_form_container_width: 650,
 	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_submit_button_text: 'Submit',
+	_srfm_submit_button_text: 'SUBMIT',
 	_srfm_additional_classes: '',
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
+	_srfm_submit_alignment_backend: '100%',
+	_srfm_submit_width_backend: 'max-content',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -73,9 +75,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
-			rootContainer?.classList.add( 'srfm-form-style-classic' );
+			rootContainer?.classList.add( 'srfm-form-container' );
+			rootContainer.setAttribute( 'id', 'srfm-form-container' );
 		} else if ( rootContainerDiv ) {
-			rootContainerDiv?.classList.add( 'srfm-form-style-classic' );
+			rootContainerDiv?.classList.add( 'srfm-form-container' );
+			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
@@ -92,6 +96,14 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const sureforms_keys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
+	function addSubmitButton( elm ) {
+		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+
+		if ( elm ) {
+			elm.insertAdjacentHTML( 'afterend', appendHtml );
+		}
+	}
 
 	useEffect( () => {
 		setTimeout( () => {
@@ -117,7 +129,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							value: sureforms_keys._srfm_color2 || 'none',
 						},
 						{
-							property: '--srfm_fontsize',
+							property: '--srfm-font-size',
 							value: sureforms_keys._srfm_fontsize
 								? `${ sureforms_keys._srfm_fontsize }px`
 								: 'none',
@@ -134,20 +146,30 @@ const SureformsFormSpecificSettings = ( props ) => {
 								? `${ sureforms_keys._srfm_submit_width }`
 								: '',
 						},
+						{
+							property: '--srfm_submit_button_text',
+							value: sureforms_keys._srfm_submit_button_text
+								? `"${ sureforms_keys._srfm_submit_button_text }"`
+								: '',
+						},
 					];
+
 					styleProperties.forEach( ( prop ) => {
 						iframeBody.style.setProperty(
 							prop.property,
 							prop.value
 						);
 					} );
+					const elm = iframeBody.querySelector(
+						'.block-editor-block-list__layout'
+					);
+
+					addSubmitButton( elm );
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
 						iframeBody?.querySelector( '.is-root-container' );
-					iframeRootContainer?.classList.add(
-						'srfm-form-style-classic'
-					);
+					iframeRootContainer?.classList.add( 'srfm-form-container' );
 				}
 			};
 
@@ -168,6 +190,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 					handleIframeStyle( iframeBody );
 				}
+			} else {
+				const elm = document.querySelector(
+					'.block-editor-block-list__layout'
+				);
+				addSubmitButton( elm );
 			}
 		}, 100 );
 	}, [ deviceType, sureforms_keys ] );

@@ -37,6 +37,11 @@ class Gutenberg_Hooks {
 		$this->patterns = [
 			'blank-form',
 			'contact-form',
+			'newsletter-form',
+			'support-form',
+			'job-application-form',
+			'feedback-form',
+			'login-form',
 		];
 
 		// Initializing hooks.
@@ -62,7 +67,6 @@ class Gutenberg_Hooks {
 				'sureforms/email',
 				'sureforms/textarea',
 				'sureforms/number',
-				'sureforms/switch',
 				'sureforms/checkbox',
 				'sureforms/phone',
 				'sureforms/address',
@@ -81,6 +85,7 @@ class Gutenberg_Hooks {
 				'sureforms/advanced-heading',
 				'sureforms/number-slider',
 				'sureforms/form',
+				'sureforms/hidden',
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
@@ -210,7 +215,6 @@ class Gutenberg_Hooks {
 				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
 				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
 				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'switch_preview'        => SUREFORMS_URL . 'images/field-previews/switch.svg',
 				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
 				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
 				'rating_preview'        => SUREFORMS_URL . 'images/field-previews/rating.svg',

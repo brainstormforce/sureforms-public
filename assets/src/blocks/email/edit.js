@@ -12,9 +12,7 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { __ } from '@wordpress/i18n';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
-import { EmailThemeStyle } from './components/EmailThemeStyle';
-import { EmailClassicStyle } from './components/EmailClassicStyle';
+import { EmailComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -39,7 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -183,44 +180,22 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={ `srfm-main-container srfm-classic-inputs-holder srfm-block-${ block_id }` }
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<EmailClassicStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) : (
-					<EmailThemeStyle
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
-				) }
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<EmailComponent
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+				attributes={ attributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+					allowedFormats={ [] }
+				/>
+			) }
 		</>
 	);
 };

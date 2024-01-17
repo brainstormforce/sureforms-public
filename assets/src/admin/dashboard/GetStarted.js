@@ -33,6 +33,17 @@ export default () => {
 					top: 30px;
 					cursor: pointer;
 				}
+
+				.sc-col-33 {
+					width: 33%;
+				}
+
+				@media screen and ( max-width: 480px ) {
+					.sc-col-33 {
+						width: 100%;
+					}
+				}
+
 			` }
 		>
 			<div className="sc-getstarted-inner-wrap">
@@ -43,33 +54,31 @@ export default () => {
 					<GetStartedBox
 						infoType="info"
 						infoText={ __( 'Setup', 'sureforms' ) }
-						title={ __( 'Create a form', 'sureforms' ) }
+						title={ __( 'Create a Form', 'sureforms' ) }
 						description={ __(
 							'Create visually stunning, user-friendly forms.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'Create New Form', 'sureforms' ) }
-						buttonUrl={ `${ siteUrl }/wp-admin/post-new.php?post_type=sureforms_form` }
+						buttonUrl={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
 						btnFilled={ true }
 					/>
 					<GetStartedBox
 						infoType="success"
 						infoText={ __( 'Form', 'sureforms' ) }
-						title={ __( 'All forms', 'sureforms' ) }
+						title={ __( 'All Forms', 'sureforms' ) }
 						description={ __(
 							'Take a look at the forms you have created.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Forms', 'sureforms' ) }
-						buttonUrl={
-							`${ siteUrl }/wp-admin/edit.php?post_type=sureforms_form`
-						}
+						buttonUrl={ `${ siteUrl }/wp-admin/edit.php?post_type=sureforms_form` }
 						btnFilled={ false }
 					/>
 					<GetStartedBox
 						infoType="primary"
 						infoText={ __( 'Entries', 'sureforms' ) }
-						title={ __( 'View entries', 'sureforms' ) }
+						title={ __( 'View Entries', 'sureforms' ) }
 						description={ __(
 							'Access the complete list of form submissions.',
 							'sureforms'

@@ -13,11 +13,6 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
   box-shadow: none;
 }
 
-body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close {
-  margin-right: 20px;
-  width: 60px;
-}
-
 .interface-pinned-items button.components-button:not([aria-label=Settings]) {
   display: none;
 }

@@ -68,18 +68,16 @@ class Generate_Form_Markup {
 			$content = '';
 		}
 
-		$blocks             = parse_blocks( $content );
-		$block_count        = count( $blocks );
-		$color_primary      = '#0284c7';
-		$color_secondary    = '';
-		$color_text_primary = '#fff';
-		$current_post_type  = get_post_type();
+		$blocks            = parse_blocks( $content );
+		$block_count       = count( $blocks );
+		$color_secondary   = '';
+		$current_post_type = get_post_type();
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
-			$color_primary         = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ) : '#0284c7';
+			$color_primary         = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ) : '';
 			$color_secondary       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ) : '';
-			$color_text_primary    = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ) : '#fff';
+			$color_text_primary    = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ) : '';
 			$background_image_url  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ) ) : '';
 			$form_font_size        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) ? get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) : '';
 			$success_submit_type   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ) : '';
@@ -110,9 +108,87 @@ class Generate_Form_Markup {
 				default:
 					break;
 			}
+
+			$primary_color = $color_primary;
+
+			$label_text_color = $color_text_primary;
+
+			// New colors.
+
+			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
+			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
+
+			$body_input_color_var  = '#4B5563';
+			$placeholder_color_var = '#9CA3AF';
+			$border_color_var      = '#D0D5DD';
+			$help_color_var        = '#6B7280';
+			$base_background_var   = '#FFFFFF';
+			$light_background_var  = '#F9FAFB';
+
+			// Info colors.
+			$info_surface_var          = '#3B82F6';
+			$info_text_var             = '#2563EB';
+			$info_background_color_var = '#EFF6FF';
+
+			// Success colors.
+			$success_surface_var          = '#22C55E';
+			$success_text_var             = '#16A34A';
+			$success_background_color_var = '#F0FDF4';
+
+			// Warning colors.
+			$warning_surface_var          = '#FACC15';
+			$warning_text_var             = '#CA8A04';
+			$warning_background_color_var = '#FEFCE8';
+
+			// Error colors.
+			$error_surface_var          = '#EF4444';
+			$error_text_var             = '#DC2626';
+			$error_background_color_var = '#FEF2F2';
+
+			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
+			$media_query_mobile_var = '576px';
+			$border_var             = '1px';
+			$border_radius_var      = '4px';
+			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
+			$bg_image               = $background_image_url ? 'url(' . $background_image_url . ')' : '';
+			?>
+
+			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
+			<style>
+				<?php echo esc_html( $container_id ); ?> {
+					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
+					--srfm-label-text-color : <?php echo esc_html( $label_text_color_var ); ?>;
+					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
+					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
+					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
+					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
+					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
+					--srfm-info-surface-color : <?php echo esc_html( $info_surface_var ); ?>;
+					--srfm-info-text-color : <?php echo esc_html( $info_text_var ); ?>;
+					--srfm-info-background-color : <?php echo esc_html( $info_background_color_var ); ?>;
+					--srfm-success-surface-color : <?php echo esc_html( $success_surface_var ); ?>;
+					--srfm-success-text-color : <?php echo esc_html( $success_text_var ); ?>;
+					--srfm-success-background-color : <?php echo esc_html( $success_background_color_var ); ?>;
+					--srfm-warning-surface-color : <?php echo esc_html( $warning_surface_var ); ?>;
+					--srfm-warning-text-color : <?php echo esc_html( $warning_text_var ); ?>;
+					--srfm-warning-background-color : <?php echo esc_html( $warning_background_color_var ); ?>;
+					--srfm-error-surface-color : <?php echo esc_html( $error_surface_var ); ?>;
+					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
+					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
+					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;
+					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
+					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
+					--srfm-border: <?php echo esc_html( $border_var ); ?>;
+					--srfm-bg-image: <?php echo esc_html( $bg_image ); ?>;
+					font-size: var(--srfm-font-size );
+				}
+			</style>
+			<?php
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
-				?> <h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
+				?>
+				<h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
 				<?php
 			}
 			?>
@@ -135,40 +211,40 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?>">
-					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>">
+					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
 							<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<div class='g-recaptcha' data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
-							<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button !srfm-mt-[24px] !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color">
-								<div class="srfm-submit-text">
+							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-block-button__link">
+								<div class="srfm-submit-wrap">
 									<?php echo esc_html( $button_text ); ?>
-									<div style="display: none;" class="srfm-loader"></div>
+									<div class="srfm-loader"></div>
 								</div>
 							</button>
 						<?php endif; ?>
 							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-								<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
-									<div class="srfm-submit-text">
+								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button srfm-submit-button wp-block-button__link" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+									<div class="srfm-submit-wrap">
 									<?php echo esc_html( $button_text ); ?>
-										<div style="display: none;" class="srfm-loader"></div>
+										<div class="srfm-loader"></div>
 									</div>
 								</button>
 							<?php endif; ?>
 							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), array(), SUREFORMS_VER, true ); ?>
-								<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
-									<div class="srfm-submit-text">
+								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button srfm-submit-button wp-block-button__link" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>
-										<div style="display: none;" class="srfm-loader"></div>
+										<div class="srfm-loader"></div>
 									</div>
 								</button>
 						<?php endif; ?>
 						<?php endif; ?>
 						<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-							<button style="color: #ffffff; width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button !srfm-rounded-md !srfm-px-3.5 !srfm-py-2 !srfm-text-sm !font-semibold text-srfm_primary_text_color !srfm-shadow-sm hover:!opacity-80 !srfm-bg-srfm_primary_color">
-									<div class="srfm-submit-text">
+							<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn" class="srfm-button srfm-submit-button wp-block-button__link">
+									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>
-										<div style="display: none;" class="srfm-loader"></div>
+										<div class="srfm-loader"></div>
 									</div>
 								</button>
 						<?php endif; ?>
@@ -177,13 +253,13 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"> 
-				<i class="fa-regular fa-circle-check"></i>
-				<article class="srfm-success-box-header">
-					<?php echo esc_html( $success_message_title ); ?>
+			<div id="srfm-success-message-page-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
+			<article class="srfm-success-box-header">
+					<?php echo Sureforms_Helper::fetch_svg( 'check-circle', 'srfm-check-circle-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					<h2><?php echo esc_html( $success_message_title ); ?></h2>
 				</article>
-				<article class="srfm-success-box-subtxt srfm-text-gray-900">
-					<?php echo esc_html( $success_message ); ?>
+				<article class="srfm-success-box-description">
+					<p><?php echo esc_html( $success_message ); ?></p>
 				</article>
 			</div>
 			<?php
@@ -193,31 +269,7 @@ class Generate_Form_Markup {
 			$form_path = isset( $segments[1] ) ? $segments[1] : '';
 		}
 		?>
-			<style>
-				<?php echo esc_attr( '#srfm-form-' . $id . ', #srfm-success-message-page-' . $id ); ?> {
-					--srfm-secondary-color: 
-					<?php
-						echo esc_attr( $color_secondary );
-					?>
-						;
-					--srfm-primary-color: 
-					<?php
-						echo esc_attr( $color_primary );
-					?>
-						;
-					--srfm-primary-text-color:
-					<?php
-						echo esc_attr( $color_text_primary );
-					?>
-						;
-					font-size: <?php echo esc_attr( isset( $form_font_size ) ? $form_font_size . 'px;' : '' ); ?>
-
-				}
-				<?php echo esc_attr( '#srfm-form-' . $id ); ?> {
-					background-image: url('<?php echo esc_url( isset( $background_image_url ) ? $background_image_url : '' ); ?>'); 
-
-				}
-			</style>
+			</div>
 		<?php
 		return ob_get_clean();
 	}

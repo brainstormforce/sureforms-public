@@ -146,6 +146,10 @@ input:checked + .slider:before {
 	position: relative;
 	top: 10px;
 	text-align: center;
+
+	&.srfm-show {
+		display: block;
+	}
 }
 
 .srfm-import-help {
@@ -200,7 +204,31 @@ input:checked + .slider:before {
 	color: red;
 }
 
-.srfm-import-btn {
+.wrap {
+	.page-title-action {
+		vertical-align: baseline;
+	}
+
+	.srfm-import-btn {
+		position: relative;
+		top: -0.2em;
+		vertical-align: baseline;
+		margin-left: 24px;
+
+		&:before {
+			content: "";
+			position: absolute;
+			left: -13px;
+			top: 50%;
+			transform: translateY( -50% );
+			width: 1px;
+			height: 20px;
+			background-color: #dce0e6;
+		}
+	}
+}
+
+.srfm-add-form-btn {
 	display: inline-block;
 	position: relative;
 	box-sizing: border-box;
@@ -209,7 +237,6 @@ input:checked + .slider:before {
 	text-decoration: none;
 	text-shadow: none;
 	top: -3px;
-	margin-left: 4px;
 	border: 1px solid #2271b1;
 	border-radius: 3px;
 	background: #f6f7f7;
@@ -220,4 +247,6 @@ input:checked + .slider:before {
 	padding: 0 10px;
 	min-height: 30px;
 	-webkit-appearance: none;
+	margin-top: 5px;
+	margin-left: 25px;
 }

@@ -21,42 +21,6 @@ class Checkbox_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms checkbox default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$required  = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$label     = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help      = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
-		$label_url = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
-		$checked   = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
-		$error_msg = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
-		$block_id  = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-
-		return '<div class="srfm-checkbox-container srfm-main-container' . esc_attr( $classname ) . '">
-		<div>
-			<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '">
-			<span class="srfm-text-primary">
-				<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-text-primary">' .
-					( $label_url
-						? '<a class="srfm-text-primary" target="_blank" href="' . esc_url( $label_url ) . '" style="text-decoration:none;">' . esc_html( $label ) . '</a>'
-						: esc_html( $label )
-					) .
-					( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
-				'</label>
-			</span>
-		</div>' .
-		( '' !== $help ? '<label for="srfm-checkbox" class="srfm-text-secondary srfm-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-	</div>';
-
-	}
-
-	/**
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -71,27 +35,46 @@ class Checkbox_Markup extends Base {
 		$label_url   = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
 		$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$slug        = 'checkbox';
 
-		return '<div class="srfm-checkbox-container srfm-main-container srfm-classic-inputs-holder" style="width:calc(' . esc_attr( $field_width ) . '% - 20px);" >
-			<div class= "srfm-relative srfm-flex srfm-items-start srfm-flex-row srfm-gap-2">
-				<div class="srfm-flex srfm-h-6 srfm-items-center">
-					<input name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="srfm-checkbox-' . esc_attr( $block_id ) . '" ' . esc_attr( $checked ? 'checked' : '' ) . ' type="checkbox" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" class="srfm-h-4 srfm-w-4 srfm-rounded srfm-border-[#d1d5db] srfm-classic-checkbox-input">
-				</div>
-				<div class="srfm-text-sm srfm-leading-6">
-					<label for="srfm-checkbox-' . esc_attr( $block_id ) . '" class="srfm-classic-label-text">' .
-						( $label_url
-							? '<a target="_blank" href="' . esc_url( $label_url ) . '" class="srfm-underline">' . esc_html( $label ) . '</a>'
-							: esc_html( $label )
-						) .
-						( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
-					'</label>
-				</div>
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
+		// html attributes.
+		$aria_require_attr    = $required ? 'true' : 'false';
+		$checked_attr         = $checked ? 'checked' : '';
+		$input_label_fallback = $label ? $label : 'Checkbox';
+		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+
+		ob_start(); ?>
+			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+					<div class="srfm-block-wrap">
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
+						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
+							<span class="srfm-span-wrap">
+								<svg class="srfm-check-icon" width="12px" height="10px">
+									<use xlink:href="#srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check"></use>
+								</svg>
+							</span>
+							<span class="srfm-block-text srfm-span-wrap"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>' : esc_html( $label ); ?>
+																					<?php
+																					if ( $required ) {
+																						?>
+								<span class="srfm-required"> *</span><?php } ?></span>
+						</label>
+						<svg class="srfm-inline-svg">
+							<symbol id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check" viewbox="0 0 12 10">
+							<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+							</symbol>
+						</svg>
+					</div>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
-			' . ( '' !== $help ? '<p for="srfm-checkbox" class="srfm-helper-txt">' . esc_html( $help ) . '</p>' : '' ) . '
-			<span style="display:none" class="srfm-error-message">' . esc_html( $error_msg ) . '</span>
-		</div>';
+		<?php
+
+		return ob_get_clean();
 
 	}
 

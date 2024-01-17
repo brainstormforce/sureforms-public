@@ -17,10 +17,8 @@ import Range from '@Components/range/Range.js';
  * Components dependencies
  */
 import Select from 'react-select';
-import { UploadClassicStyle } from './components/UploadClassicStyle';
-import { UploadThemeStyle } from './components/UploadThemeStyle';
+import { UploadComponent } from './components/default';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -46,7 +44,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const wpUploadFormats = [ ...uploadFormats, ...customFormats ];
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -173,46 +170,22 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className={
-					'srfm-main-container srfm-classic-inputs-holder srfm-frontend-inputs-holder'
-				}
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					gap: '0.5rem',
-				} }
-			>
-				{ 'classic' === sureforms_keys?._srfm_form_styling ? (
-					<UploadClassicStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) : (
-					<UploadThemeStyle
-						attributes={ attributes }
-						blockID={ block_id }
-						setAttributes={ setAttributes }
-					/>
-				) }
-				{ help !== '' && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
-						className={
-							'classic' === sureforms_keys?._srfm_form_styling
-								? 'srfm-helper-txt'
-								: 'srfm-text-secondary'
-						}
-						multiline={ false }
-						id={ block_id }
-					/>
-				) }
-			</div>
+			<UploadComponent
+				attributes={ attributes }
+				blockID={ block_id }
+				setAttributes={ setAttributes }
+			/>
+			{ help !== '' && (
+				<RichText
+					tagName="label"
+					value={ help }
+					onChange={ ( value ) => setAttributes( { help: value } ) }
+					className="srfm-description"
+					multiline={ false }
+					id={ block_id }
+					allowedFormats={ [] }
+				/>
+			) }
 		</>
 	);
 };

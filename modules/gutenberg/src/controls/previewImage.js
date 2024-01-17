@@ -3,7 +3,7 @@ const PreviewImage = ( { image, isChildren = false } ) => {
 		console.error( __( 'Please add preview image.', 'sureforms' ) ); // eslint-disable-line
 	}
 
-	let imgUrl = uagb_blocks_info.uagb_url;
+	let imgUrl = srfm_spec_blocks_info.uagb_url;
 	imgUrl += '/assets/images/block-previews/';
 	if ( isChildren ) {
 		imgUrl += 'children/';

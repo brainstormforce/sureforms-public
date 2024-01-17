@@ -1,0 +1,209 @@
+body.post-type-sureforms_form {
+	padding-left: 10px;
+	padding-right: 10px;
+
+	.edit-post-sidebar > .components-panel > .components-panel__body {
+		display: none;
+
+		&.srfm--panel.is-opened {
+			display: block;
+		}
+	}
+
+	// Sidebar Override.
+	.edit-post-sidebar {
+		> .components-panel {
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				> .components-panel__body-title {
+					display: none;
+				}
+			}
+			> .components-panel__body {
+				&.edit-post-post-status.is-opened {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.edit-post-visual-editor__content-area {
+		padding: 0 !important;
+	}
+
+	.block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
+		transition: 0.3s;
+
+		&:hover {
+			box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-admin-theme-color );
+		}
+	}
+
+	.is-desktop-preview,
+	.is-tablet-preview,
+	.is-mobile-preview,
+	.block-editor-iframe__body {
+		// Need override / !Important here. As value are added inline by wordpress.
+		background-image: var( --srfm_bg ) !important;
+		background-position: center !important;
+		background-size: cover !important;
+		background-repeat: no-repeat !important;
+		background-color: #fff !important;
+	}
+
+	.editor-styles-wrapper {
+		position: relative;
+		width: 100%;
+		max-width: 620px;
+		margin: 0 auto;
+		background-color: transparent;
+	}
+
+	div.is-root-container.block-editor-block-list__layout {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0;
+		margin: 0 -0.3em;
+		margin-top: 2em;
+		padding: 0.3em;
+
+		.block-list-appender,
+		.block-editor-block-list__block {
+			&:not( .srfm-block-single ),
+			&[data-type="sureforms/image"],
+			&[data-type="sureforms/separator"],
+			&[data-type="sureforms/advanced-heading"],
+			&[data-type="sureforms/icon"] {
+				width: 100%;
+			}
+		}
+
+		.block-editor-block-list__block,
+		.block-list-appender {
+			padding: 0 0.3em;
+			margin-left: 0 !important; // This is needed to get the field width working.
+			margin-right: 0 !important; // This is needed to get the field width working.
+			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
+			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
+		}
+	}
+
+	// Editor custom title.
+	.edit-post-visual-editor__post-title-wrapper {
+		display: none;
+	}
+
+	.editor-post-preview {
+		@media screen and ( max-width: 782px ) {
+			display: none;
+		}
+	}
+
+	.edit-post-header__settings {
+		@media screen and ( max-width: 782px ) {
+			flex: none;
+		}
+	}
+
+	.edit-post-header-toolbar__left {
+		margin-left: -10px;
+	}
+
+	.edit-post-header__center {
+		.srfm-header-title-input {
+			width: 100%;
+			max-width: 500px;
+		}
+
+		.components-text-control__input {
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+			padding: 11px 16px;
+			margin-top: 8px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			background: rgb( 249, 250, 251 );
+			box-shadow: none;
+
+			&:focus {
+				border-color: #0284c7;
+				box-shadow: unset;
+			}
+		}
+	}
+
+	// Plus button, Block appended.
+
+	// Add submit button below the Block Appended.
+	.block-list-appender {
+		width: 100%;
+		padding: 0 0.3em;
+
+		.block-editor-button-block-appender.components-button.components-button {
+			box-shadow: none;
+			border: 1px dashed #959595;
+			padding: 24px;
+			background-color: #fff;
+			transition: 0.3s;
+
+			svg {
+				width: 30px;
+				height: 30px;
+				color: white;
+				background-color: #555d66;
+				border-radius: 100%;
+				transition: 0.3s;
+			}
+
+			&:hover {
+				border-color: #1e1e1e;
+
+				svg {
+					background-color: #1e1e1e;
+				}
+			}
+		}
+	}
+
+	.srfm-submit-btn-container {
+		position: relative;
+		margin: 0 0.3em;
+		margin-top: 1.2em;
+
+		.srfm-submit-button {
+			position: absolute;
+			font-size: calc( var( --srfm-font-size ) - 0.33em );
+			pointer-events: none;
+			transform: translateX( var( --srfm_submit_alignment_backend ) );
+			right: var( --srfm_submit_alignment_backend );
+			transform: translateX( var( --srfm_submit_alignment_backend ) );
+			max-width: var( --srfm_submit_width_backend );
+			width: 100%;
+
+			&:after {
+				content: var( --srfm_submit_button_text );
+			}
+		}
+
+		@media ( max-width: 778px ) {
+			padding: 0;
+		}
+	}
+
+	.editor-post-publish-panel__content {
+		.srfm-shortcode {
+			position: relative;
+
+			.components-clipboard-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 0;
+				height: 31px;
+			}
+		}
+	}
+}
