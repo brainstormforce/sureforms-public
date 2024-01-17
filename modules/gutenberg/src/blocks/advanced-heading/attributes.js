@@ -28,8 +28,7 @@ const attributes = {
 		default: true,
 	},
 	headingTitle: {
-		source: 'html',
-		selector: '.uagb-heading-text',
+		type: 'string',
 		default: __( 'Your Attractive Heading', 'sureforms' ),
 	},
 	headingId: {
@@ -44,8 +43,7 @@ const attributes = {
 		default: 'below-heading',
 	},
 	headingDesc: {
-		source: 'html',
-		selector: '.uagb-desc-text',
+		type: 'string',
 	},
 	headingAlign: {
 		type: 'string',
