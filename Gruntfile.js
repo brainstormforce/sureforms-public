@@ -253,7 +253,7 @@ module.exports = function ( grunt ) {
 					'!sass/**',
 					'!assets/css/unminified/**',
 					'!assets/js/unminified/**',
-					'!assets/src/**',
+					'!src/**',
 					'!modules/gutenberg/scripts/**',
 					'!modules/gutenberg/src/**',
 					'!modules/gutenberg/node_modules/**',

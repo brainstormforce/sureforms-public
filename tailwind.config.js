@@ -1,6 +1,6 @@
 module.exports = {
 	content: [
-		'./assets/src/**/*.@(js|jsx)',
+		'./src/**/*.@(js|jsx)',
 		'./inc/blocks/**/*.php',
 		'./inc/fields/**/*.php',
 		'./templates/single-form.php',
