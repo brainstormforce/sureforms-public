@@ -48,7 +48,7 @@ registerBlockType( 'sureforms/image', {
 		) : (
 			<Edit { ...props } />
 		),
-	save () {
+	save() {
 		return null;
 	},
 	__experimentalLabel: ( atts ) =>

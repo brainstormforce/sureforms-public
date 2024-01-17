@@ -1,6 +1,6 @@
 body.post-type-sureforms_form {
 	padding-left: 10px;
-    padding-right: 10px;
+	padding-right: 10px;
 
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
@@ -44,7 +44,7 @@ body.post-type-sureforms_form {
 	.is-desktop-preview,
 	.is-tablet-preview,
 	.is-mobile-preview,
-	.block-editor-iframe__body{
+	.block-editor-iframe__body {
 		// Need override / !Important here. As value are added inline by wordpress.
 		background-image: var( --srfm_bg ) !important;
 		background-position: center !important;
@@ -147,7 +147,7 @@ body.post-type-sureforms_form {
 			border: 1px dashed #959595;
 			padding: 24px;
 			background-color: #fff;
-			transition: .3s;
+			transition: 0.3s;
 
 			svg {
 				width: 30px;
@@ -155,7 +155,7 @@ body.post-type-sureforms_form {
 				color: white;
 				background-color: #555d66;
 				border-radius: 100%;
-				transition: .3s;
+				transition: 0.3s;
 			}
 
 			&:hover {
@@ -188,7 +188,7 @@ body.post-type-sureforms_form {
 			}
 		}
 
-		@media ( max-width:778px ) {
+		@media ( max-width: 778px ) {
 			padding: 0;
 		}
 	}
