@@ -164,8 +164,7 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		//Url field
 		if ( container.classList.contains( 'srfm-url-block' ) ) {
 			const urlInput = container.querySelector( 'input' );
-			const urlError =
-				container.classList.contains( 'srfm-url-error' );
+			const urlError = container.classList.contains( 'srfm-url-error' );
 
 			if ( urlError ) {
 				container.classList.add( 'srfm-error' );
@@ -201,38 +200,61 @@ async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				);
 
 				if ( confirmParent ) {
-					const confirmValue = confirmParent.querySelector(
-						'.srfm-input-password-confirm'
+					const value = parent.querySelector(
+						'.srfm-input-password'
 					).value;
-					const confirmError = confirmParent.querySelector(
-						'.srfm-error-message'
+					const confirm = confirmParent.querySelector(
+						'.srfm-input-password-confirm'
 					);
 
-					if (
-						! confirmValue &&
-						confirmError &&
-						isRequired === 'true'
-					) {
-						confirmError.textContent =
-							confirmError.getAttribute( 'data-error-msg' );
-						confirmParent.classList.add( 'srfm-error' );
+					if ( confirm ) {
+						const confirmValue = confirm.value;
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
-						}
-						validateResult = true;
-					} else if ( confirmValue !== inputValue ) {
-						confirmParent.classList.add( 'srfm-error' );
-						confirmError.textContent =
-							'Confirmation Password is not the same';
+						const confirmError = confirmParent.querySelector(
+							'.srfm-error-message'
+						);
 
-						if ( ! firstErrorInput ) {
-							firstErrorInput = confirmValue;
+						if (
+							! confirmValue &&
+							confirmError &&
+							isRequired === 'true'
+						) {
+							confirmError.textContent =
+								confirmError.getAttribute( 'data-error-msg' );
+							confirmParent.classList.add( 'srfm-error' );
+
+							if ( ! firstErrorInput ) {
+								firstErrorInput = confirmValue;
+							}
+							validateResult = true;
+						} else if ( confirmValue !== value ) {
+							confirmParent.classList.add( 'srfm-error' );
+							confirmError.textContent =
+								'Confirmation Password is not the same';
+							confirmParent.classList.remove( 'srfm-strength-1' );
+							confirmParent.classList.remove( 'srfm-strength-2' );
+							confirmParent.classList.remove( 'srfm-strength-3' );
+							confirmParent.classList.remove( 'srfm-strength-4' );
+
+							if ( ! firstErrorInput ) {
+								firstErrorInput = confirm;
+							}
+							validateResult = true;
+						} else {
+							confirmParent.classList.remove( 'srfm-error' );
 						}
-						validateResult = true;
-					} else {
-						confirmParent.classList.remove( 'srfm-error' );
 					}
+				}
+
+				if (
+					parent
+						.querySelector( '.srfm-block' )
+						.classList.contains( 'srfm-password-error' )
+				) {
+					if ( ! firstErrorInput ) {
+						firstErrorInput = parent.querySelector( 'input' );
+					}
+					validateResult = true;
 				}
 			}
 		}

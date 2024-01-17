@@ -1,11 +1,9 @@
 function initializeNumberField() {
-	const numberElements = Array.from(
-		document.getElementsByClassName( 'srfm-number-block' )
-	);
+	const numberElement = document.querySelectorAll( '.srfm-number-block' );
 
-	if ( numberElements ) {
-		for ( const numberContainer of numberElements ) {
-			const numberInput = numberContainer.querySelector( 'input' );
+	if ( numberElement ) {
+		numberElement.forEach( ( element ) => {
+			const numberInput = element.querySelector( 'input' );
 			if ( numberInput ) {
 				numberInput.addEventListener( 'input', ( e ) => {
 					const formatType =
@@ -26,7 +24,7 @@ function initializeNumberField() {
 					numberInput.value = inputValue;
 				} );
 			}
-		}
+		} );
 	}
 }
 document.addEventListener( 'DOMContentLoaded', initializeNumberField );

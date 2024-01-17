@@ -411,6 +411,31 @@
   appearance: none;
 }
 
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate .srfm-error-message {
+  display: block;
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-1 input {
+  border-color: var(--srfm-error-surface-color);
+  background-color: var(--srfm-error-background-color);
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-1 .srfm-error-message {
+  color: var(--srfm-error-text-color);
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-2 input, .srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-3 input {
+  border-color: var(--srfm-warning-surface-color);
+  background-color: var(--srfm-warning-background-color);
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-2 .srfm-error-message, .srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-3 .srfm-error-message {
+  color: var(--srfm-warning-text-color);
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-4 input {
+  border-color: var(--srfm-success-surface-color);
+  background-color: var(--srfm-success-background-color);
+}
+.srfm-form-container .srfm-form .srfm-password-block-wrap .srfm-block.srfm-password-validate.srfm-strength-4 .srfm-error-message {
+  color: var(--srfm-success-text-color);
+}
+
 .srfm-form-container .srfm-form .srfm-phone-block .iti {
   width: 100%;
 }

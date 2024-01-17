@@ -7,14 +7,11 @@ import { useEffect } from '@wordpress/element';
 import { SelectControl, ToggleControl } from '@wordpress/components';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import MultiButtonsControl from '@Components/multi-buttons-control';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { RatingComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -29,8 +26,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		fieldWidth,
 		label,
 		ratingBoxHelpText,
-		width,
-		iconColor,
 		showNumbers,
 		iconShape,
 		maxValue,
@@ -40,7 +35,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -144,57 +138,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							title={ __( 'Icon Styles', 'sureforms' ) }
 							initialOpen={ true }
 						>
-							{ 'classic' !==
-								sureforms_keys?._sureforms_form_styling && (
-								<>
-									<MultiButtonsControl
-										label={ __( 'Width', 'sureforms' ) }
-										data={ {
-											value: width,
-											label: 'width',
-										} }
-										options={ [
-											{
-												value: 'halfWidth',
-												icon: 'Half Width',
-											},
-											{
-												value: 'fullWidth',
-												icon: 'Full Width',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( width !== value ) {
-												setAttributes( {
-													width: value,
-												} );
-											} else {
-												setAttributes( {
-													width: 'fullWidth',
-												} );
-											}
-										} }
-									/>
-									<AdvancedPopColorControl
-										label={ __(
-											'Icon Color',
-											'sureforms'
-										) }
-										setAttributes={ setAttributes }
-										colorValue={ iconColor }
-										data={ {
-											value: iconColor,
-											label: 'iconColor',
-										} }
-										onColorChange={ ( value ) =>
-											setAttributes( {
-												iconColor: value,
-											} )
-										}
-									/>
-								</>
-							) }
 							<ToggleControl
 								label={ __( 'Show Numbers', 'sureforms' ) }
 								checked={ showNumbers }
