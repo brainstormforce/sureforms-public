@@ -106,7 +106,7 @@ class PageBreakHandler {
 	}
 
 	initializeFormState() {
-		this.pageBreakContainers[ this.currentActive ].style.display = 'block';
+		this.pageBreakContainers[ this.currentActive ].style.display = 'flex';
 		this.submitBtn.style.display = 'none';
 		this.submitBtn.style.width = 'auto';
 		this.submitBtn.style.margin = '0';
@@ -204,7 +204,7 @@ class PageBreakHandler {
 		for ( let i = 0; i < this.pageBreakLength; i++ ) {
 			if ( this.pageBreakContainers[ i ] ) {
 				this.pageBreakContainers[ i ].style.display =
-					i === this.currentActive ? 'block' : 'none';
+					i === this.currentActive ? 'flex' : 'none';
 			}
 			if ( i < this.currentActive ) {
 				this.pageBreakContainers[ i ].classList.add( 'left' );

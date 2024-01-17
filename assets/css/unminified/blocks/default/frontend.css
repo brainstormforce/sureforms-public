@@ -598,6 +598,7 @@
 .srfm-page-break {
   width: 100%;
   display: none;
+  flex-wrap: wrap;
   transition: 0.15s ease-in-out;
 }
 .srfm-page-break.right {
@@ -730,7 +731,7 @@
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: var(--srfm-border-color);
+  color: #a2a6ae;
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
