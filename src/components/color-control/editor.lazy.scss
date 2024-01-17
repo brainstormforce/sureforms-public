@@ -1,0 +1,82 @@
+@import "../../styles/variables";
+
+.srfm-advanced-color-settings-container {
+	display: flex;
+	align-items: center;
+
+	.srfm-beside-color-click {
+		display: flex;
+		align-items: center;
+	}
+
+	.srfm-color-icon-indicate {
+		height: auto;
+		position: relative;
+		transform: scale( 1 );
+		transition: transform 0.1s ease;
+		border-radius: 50%;
+		padding: 0;
+	}
+
+	.srfm-has-alpha {
+		background-image: linear-gradient( 45deg, #ddd 25%, transparent 0 ), linear-gradient( -45deg, #ddd 25%, transparent 0 ), linear-gradient( 45deg, transparent 75%, #ddd 0 ), linear-gradient( -45deg, transparent 75%, #ddd 0 );
+		background-size: 10px 10px;
+		background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+	}
+
+	.srfm-beside-color-label {
+		flex-grow: 1;
+		margin: 0;
+	}
+
+	.srfm-color-icon-indicate .component-color-indicator.srfm-advanced-color-indicate {
+		width: $srfm-control-circle-indicator;
+		height: $srfm-control-circle-indicator;
+		border-radius: 50%;
+		margin: 0;
+	}
+
+	.srfm-advanced-color-indicate.srfm-global-indicator::before {
+		content: "\f11f";
+		font-family: dashicons; // stylelint-disable-line font-family-no-missing-generic-family-keyword
+		position: absolute;
+		font-size: 16px;
+		top: 6px;
+		left: 7px;
+	}
+
+	.srfm-global-icon-black::before {
+		color: #000;
+	}
+
+	.srfm-global-icon-white::before {
+		color: #fff;
+	}
+}
+
+.srfm-popover-color {
+	.components-popover__content {
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+
+	.components-circular-option-picker {
+		padding: 2px 0 10px 5px;
+
+		.components-circular-option-picker__swatches {
+			margin-right: 0;
+			text-align: left;
+
+			.components-circular-option-picker__option-group {
+				padding: 0 10px;
+			}
+		}
+	}
+
+	.srfm-clear-btn-inside-picker {
+		margin: 5px 20px 20px 15px;
+		padding: 0 8px;
+		border: 1px solid #ccc;
+		box-shadow: none;
+	}
+}

@@ -1,0 +1,62 @@
+{
+	"name": "sureforms/number-slider",
+	"title": "Number Slider",
+	"description": "Displays a SureForm Number Slider Field",
+	"category": "sureforms",
+	"keywords": [ "number slider", "range slider", "range input" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Number Slider"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"valueDisplayText": {
+			"type": "string",
+			"default": "Selected Value: "
+		},
+		"min": {
+			"type": "number",
+			"default": 0
+		},
+		"max": {
+			"type": "number",
+			"default": 100
+		},
+		"step": {
+			"type": "number",
+			"default": 1
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		}
+	}
+}

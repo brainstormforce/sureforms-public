@@ -1,0 +1,67 @@
+{
+	"name": "sureforms/number",
+	"title": "Number Field",
+	"description": "Displays a SureForm Number Field",
+	"category": "sureforms",
+	"keywords": [ "number", "input", "custom", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"defaultValue": {
+			"type": "number"
+		},
+		"minValue": {
+			"type": "number"
+		},
+		"maxValue": {
+			"type": "number"
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		},
+		"placeholder": {
+			"type": "string",
+			"default": ""
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Number"
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"formatType": {
+			"type": "string",
+			"default": "none"
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		}
+	}
+}

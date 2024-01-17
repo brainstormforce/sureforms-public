@@ -1,0 +1,67 @@
+{
+	"name": "sureforms/upload",
+	"title": "Upload Field",
+	"description": "Displays a SureForm Upload Field",
+	"category": "sureforms",
+	"keywords": [ "upload", "field" ],
+	"textdomain": "sureforms",
+	"supports": {
+		"reusable": false,
+		"html": false
+	},
+	"example": {
+		"attributes": {
+			"preview": true
+		}
+	},
+	"attributes": {
+		"preview": {
+			"type": "boolean",
+			"default": false
+		},
+		"block_id": {
+			"type": "string"
+		},
+		"required": {
+			"type": "boolean"
+		},
+		"fieldWidth": {
+			"type": "number",
+			"default": 100
+		},
+		"label": {
+			"type": "string",
+			"default": "Upload"
+		},
+		"fileSizeLimit": {
+			"default": 10,
+			"type": "number"
+		},
+		"allowedFormats": {
+			"type": "array",
+			"default": [
+				{ "value": "jpg", "label": "jpg" },
+				{ "value": "jpeg", "label": "jpeg" },
+				{ "value": "gif", "label": "gif" },
+				{ "value": "png", "label": "png" },
+				{ "value": "pdf", "label": "pdf" }
+			]
+		},
+		"customFormats": {
+			"type": "array",
+			"default": []
+		},
+		"help": {
+			"type": "string",
+			"default": ""
+		},
+		"errorMsg": {
+			"type": "string",
+			"default": "This field is required."
+		},
+		"formId": {
+			"type": "number",
+			"default": ""
+		}
+	}
+}
