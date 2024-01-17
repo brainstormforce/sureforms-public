@@ -32,8 +32,6 @@ class Rating_Markup extends Base {
 		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help         = isset( $attributes['ratingBoxHelpText'] ) ? $attributes['ratingBoxHelpText'] : '';
-		$width        = isset( $attributes['width'] ) ? $attributes['width'] : '';
-		$icon_color   = isset( $attributes['iconColor'] ) ? strval( $attributes['iconColor'] ) : '';
 		$show_numbers = isset( $attributes['showNumbers'] ) ? $attributes['showNumbers'] : '';
 		$icon_shape   = isset( $attributes['iconShape'] ) ? $attributes['iconShape'] : '';
 		$max_value    = isset( $attributes['maxValue'] ) ? $attributes['maxValue'] : '';

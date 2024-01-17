@@ -37,14 +37,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"width": {
-			"type": "string",
-			"default": "fullWidth"
-		},
-		"iconColor": {
-			"type": "string",
-			"default": "#000"
-		},
 		"showNumbers": {
 			"type": "boolean"
 		},

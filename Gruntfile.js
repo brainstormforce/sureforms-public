@@ -256,6 +256,7 @@ module.exports = function ( grunt ) {
 					'!assets/src/**',
 					'!modules/gutenberg/scripts/**',
 					'!modules/gutenberg/src/**',
+					'!modules/gutenberg/node_modules/**',
 					'!modules/gutenberg/gutenberg-webpack.config.js',
 					'!modules/gutenberg/package-lock.json',
 					'!modules/gutenberg/package.json',
