@@ -448,7 +448,7 @@ class Sureforms_Submit {
 	/**
 	 * Function to save allowed block data.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function srfm_global_update_allowed_block() {

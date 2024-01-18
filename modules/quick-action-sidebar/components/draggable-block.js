@@ -5,6 +5,8 @@ import { useState, useRef } from '@wordpress/element';
 import { Icon, Draggable, Popover } from '@wordpress/components';
 import { dispatch, useDispatch, select } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
+import svgIcons from '@Svg/svgs.json';
+import parse from 'html-react-parser';
 
 const DraggableBlock = ( props ) => {
 	const {
@@ -19,11 +21,12 @@ const DraggableBlock = ( props ) => {
 		updateDefaultAllowedQuickSidebarBlocks,
 		saveOptionToDatabase,
 	} = props;
-	const [ hovering, setHovering ] = useState( false );
+	const [ hovering, setHovering ] = useState( true );
 	const isDragging = useRef( false );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ uniqueId, setUniqueId ] = useState( 0 );
 	const removedNoticeID = `quick-action-sidebar/remove-notices-flow/removed-notice/${ uniqueId }`;
+	const remove = parse( svgIcons.remove );
 	const handleMouseOver = () => {
 		setHovering( true );
 	};
@@ -108,19 +111,9 @@ const DraggableBlock = ( props ) => {
 					} }
 					className="srfm-ee-quick-access__sidebar--blocks--block--name"
 				>
-					<svg
-						className="block-title-svg"
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						width="24"
-						height="24"
-						aria-hidden="true"
-						focusable="false"
-					>
-						<path d="M13 11.8l6.1-6.3-1-1-6.1 6.2-6.1-6.2-1 1 6.1 6.3-6.5 6.7 1 1 6.5-6.6 6.5 6.6 1-1z"></path>
-					</svg>
+					{ remove }
 				</div>
-				{ block.title }
+				{ block.title && block.title }
 			</div>
 		</Popover>
 	);

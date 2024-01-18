@@ -419,7 +419,7 @@ class Admin {
 		}
 		// Quick action sidebar.
 		$default_allowed_quick_sidebar_blocks = apply_filters(
-			'srfm_quick_sidebar_allowed_blocks',
+			'sureforms_quick_sidebar_allowed_blocks',
 			array(
 				'sureforms/input',
 				'sureforms/email',
