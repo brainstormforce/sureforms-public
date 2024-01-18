@@ -7,7 +7,7 @@ import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
 import SingleFormSetting from './singleFormSettingPopup';
-import svgIcons from '../../../../images/single-form-logo.json';
+import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 function Settings( props ) {

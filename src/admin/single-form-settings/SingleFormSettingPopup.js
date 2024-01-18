@@ -1,7 +1,7 @@
 import EmailNotification from './email-settings/EmailNotification';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import svgIcons from '../../../../images/single-form-logo.json';
+import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const SingleFormSetting = ( props ) => {

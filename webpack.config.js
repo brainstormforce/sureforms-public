@@ -42,7 +42,7 @@ module.exports = {
 	entry: {
 		formEditor: path.resolve(
 			__dirname,
-			'assets/src/admin/single-form-settings/Editor.js'
+			'src/admin/single-form-settings/Editor.js'
 		),
 		formSubmitJS: path.resolve(
 			__dirname,
@@ -52,38 +52,39 @@ module.exports = {
 			__dirname,
 			'assets/js/unminified/page-break.js'
 		),
-		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
+		editor: path.resolve( __dirname, 'src/admin/editor-scripts.js' ),
 		settings: path.resolve(
 			__dirname,
-			'assets/src/admin/settings/settings.js'
+			'src/admin/settings/settings.js'
 		),
 		templatePicker: path.resolve(
 			__dirname,
-			'assets/src/admin/components/template-picker/TemplatePicker.js'
+			'src/admin/components/template-picker/TemplatePicker.js'
 		),
 		page_header: path.resolve(
 			__dirname,
-			'assets/src/admin/components/PageHeader.js'
+			'src/admin/components/PageHeader.js'
 		),
 		dashboard: path.resolve(
 			__dirname,
-			'assets/src/admin/dashboard/index.js'
+			'src/admin/dashboard/index.js'
 		),
-		blocks: path.resolve( __dirname, 'assets/src/blocks/blocks.js' ),
+		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 	},
 	resolve: {
 		alias: {
 			...defaultConfig.resolve.alias,
-			'@Admin': path.resolve( __dirname, 'assets/src/admin/' ),
-			'@Blocks': path.resolve( __dirname, 'assets/src/blocks/' ),
-			'@Controls': path.resolve( __dirname, 'assets/src/srfm-controls/' ),
-			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
-			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
+			'@Admin': path.resolve( __dirname, 'src/admin/' ),
+			'@Blocks': path.resolve( __dirname, 'src/blocks/' ),
+			'@Controls': path.resolve( __dirname, 'src/srfm-controls/' ),
+			'@Components': path.resolve( __dirname, 'src/components/' ),
+			'@Utils': path.resolve( __dirname, 'src/utils/' ),
 			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
 			'@Attributes': path.resolve(
 				__dirname,
-				'assets/src/blocks-attributes/'
+				'src/blocks-attributes/'
 			),
+			'@Image': path.resolve( __dirname, 'images/' ),
 		},
 	},
 	module: {
