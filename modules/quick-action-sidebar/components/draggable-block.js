@@ -21,7 +21,7 @@ const DraggableBlock = ( props ) => {
 		updateDefaultAllowedQuickSidebarBlocks,
 		saveOptionToDatabase,
 	} = props;
-	const [ hovering, setHovering ] = useState( true );
+	const [ hovering, setHovering ] = useState( false );
 	const isDragging = useRef( false );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ uniqueId, setUniqueId ] = useState( 0 );
