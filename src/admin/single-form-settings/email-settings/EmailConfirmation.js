@@ -3,7 +3,7 @@ import Editor from './QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { generateSmartTagsDropDown } from '@Utils/Helpers';
 import { DropdownMenu } from '@wordpress/components';
-import svgIcons from '../../../../../images/single-form-logo.json';
+import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const EmailConfirmation = ( props ) => {

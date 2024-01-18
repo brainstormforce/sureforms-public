@@ -10,7 +10,7 @@ import { Placeholder, Button, Icon } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import icon from '../../../../../images/Logo.js';
+import icon from '@Image/Logo.js';
 
 /**
  * Components

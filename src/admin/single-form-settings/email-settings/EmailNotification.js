@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
 import { ToggleControl } from '@wordpress/components';
-import svgIcons from '../../../../../images/single-form-logo.json';
+import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const EmailNotification = ( { emailNotificationData } ) => {

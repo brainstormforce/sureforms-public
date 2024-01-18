@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import icon from '../../../../images/Logo.js';
+import icon from '@Image/Logo.js';
 
 /**
  * Internal dependencies
