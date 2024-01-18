@@ -14,7 +14,7 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -444,6 +444,58 @@ function AppearanceSettings( props ) {
 							updateMeta( '_srfm_submit_alignment', value );
 							updateMeta( '_srfm_submit_width', '' );
 						}
+					} }
+				/>
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Page Break', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<SRFMTextControl
+					label={ __( 'First Page Label', 'sureforms' ) }
+					value={ sureforms_keys._srfm_first_page_label }
+					data={ {
+						value: sureforms_keys._srfm_first_page_label,
+						label: '_srfm_first_page_label',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_first_page_label', value )
+					}
+				/>
+				<SelectControl
+					label={ __( 'Progress Indicator', 'sureforms' ) }
+					value={ sureforms_keys._srfm_page_break_progress_indicator }
+					className="srfm-progress-control"
+					options={
+						[
+							{ label: 'None', value: 'none' },
+							{
+								label: 'Progress Bar',
+								value: 'progress-bar',
+							},
+							{
+								label: 'Connector',
+								value: 'connector',
+							},
+							{
+								label: 'Steps',
+								value: 'steps',
+							},
+						]
+					}
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_page_break_progress_indicator', value )
+					}
+					__nextHasNoMarginBottom
+				/>
+				<ToggleControl
+					label={ __(
+						'Show Labels',
+						'sureforms'
+					) }
+					checked={ sureforms_keys._srfm_page_break_toggle_label }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_page_break_toggle_label', value );
 					} }
 				/>
 			</SRFMAdvancedPanelBody>

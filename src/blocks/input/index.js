@@ -8,7 +8,7 @@ import { MdOutlineTextFields as icon } from 'react-icons/md';
  */
 import edit from './edit';
 import save from './save';
-import metadata from '../../../../inc/blocks/input/block.json';
+import metadata from './block.json';
 
 const { name } = metadata;
 
