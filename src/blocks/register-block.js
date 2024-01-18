@@ -23,6 +23,7 @@ export const registerBlocks = ( blocks = [] ) => {
  * @param {Object} block The block to be registered.
  */
 const registerBlock = ( block ) => {
+
 	if ( ! block ) {
 		return;
 	}
@@ -48,11 +49,10 @@ const registerBlock = ( block ) => {
 				},
 			  }
 			: {};
-
+			console.log(metadata);
 	registerBlockType(
 		{
 			...metadata,
-			textdomain: 'sureforms', // set our text domain for everything.
 		},
 		{
 			...settings,

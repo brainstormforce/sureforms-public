@@ -5,7 +5,7 @@ import phoneAttributes from '@Blocks/phone/block.json';
 import textareaAttributes from '@Blocks/textarea/block.json';
 import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
-import passwordAttributes from '@Blocks/password/block.json';
+// import passwordAttributes from '@Blocks/password/block.json';
 import ratingAttributes from '@Blocks/rating/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
 import dateTimeAttributes from '@Blocks/date-time-picker/block.json';
@@ -42,6 +42,6 @@ export const blocksAttributes = {
 	textarea: textareaAttributes.attributes,
 	url: urlAttributes.attributes,
 	number: numberAttributes.attributes,
-	password: passwordAttributes.attributes,
+	//password: passwordAttributes.attributes,
 	form_specific: default_keys,
 };

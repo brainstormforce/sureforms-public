@@ -26,7 +26,7 @@ class Multichoice_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : array();

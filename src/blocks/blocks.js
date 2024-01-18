@@ -11,33 +11,30 @@ import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
-import * as password from '@Blocks/password';
 import * as dateTimePicker from '@Blocks/date-time-picker';
 import * as numberSlider from '@Blocks/number-slider';
-import * as hidden from '@Blocks/hidden';
-
 import { registerBlocks } from './register-block';
 
+const registerBlock = [
+	text,
+	email,
+	url,
+	textarea,
+	multiChoice,
+	checkbox,
+	number,
+	sfForm,
+	rating,
+	upload,
+	phone,
+	select,
+	address,
+	dateTimePicker,
+	numberSlider,
+];
+
 if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
-	registerBlocks( [
-		text,
-		email,
-		url,
-		textarea,
-		multiChoice,
-		checkbox,
-		number,
-		sfForm,
-		rating,
-		upload,
-		phone,
-		select,
-		address,
-		password,
-		dateTimePicker,
-		numberSlider,
-		hidden,
-	] );
+	registerBlocks( registerBlock );
 } else {
 	registerBlocks( [ sfForm ] );
 }

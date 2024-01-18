@@ -26,7 +26,7 @@ class Phone_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 		$block_id     = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder  = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';

@@ -50,6 +50,15 @@ class Plugin_Loader {
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
+
+			/**
+			 * SureForms loaded.
+			 *
+			 * Fires when SureForms was fully loaded and instantiated.
+			 *
+			 * @since 0.0.1
+			 */
+			do_action( 'sureforms_core_loaded' );
 		}
 		return self::$instance;
 	}

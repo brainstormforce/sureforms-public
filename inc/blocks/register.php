@@ -23,13 +23,22 @@ class Register {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		$namespace       = 'SureForms\\Inc\\Blocks';
 		$blocks_dir = glob( SUREFORMS_DIR . 'inc/blocks/**/*.php' );
+		$this->registerBlock( $blocks_dir, $namespace );
+
+		if( defined( 'SUREFORMS_PRO_VER' ) ) {
+			$blocks_dir = glob( SUREFORMS_PRO_DIR . 'inc/blocks/**/*.php' );
+			$namespace       = 'SureFormsPro\\Inc\\Blocks';
+			$this->registerBlock( $blocks_dir, $namespace );
+		}
+	}
+
+	public static function registerBlock( $blocks_dir, $namespace ) {
 		if ( ! empty( $blocks_dir ) ) {
 			foreach ( $blocks_dir as $filename ) {
 				// Include the file.
 				require_once $filename;
-
-				$namespace       = 'SureForms\\Inc\\Blocks';
 				$classname       = ucfirst( basename( dirname( $filename ) ) );
 				$full_class_name = $namespace . '\\' . $classname . '\\Block';
 				// Check if the class exists.

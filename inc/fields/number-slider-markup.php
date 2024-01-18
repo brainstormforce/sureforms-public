@@ -26,7 +26,7 @@ class Number_Slider_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 		$block_id           = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 		$required           = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$field_width        = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';

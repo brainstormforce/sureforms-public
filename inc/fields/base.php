@@ -20,24 +20,13 @@ namespace SureForms\Inc\Fields;
 class Base {
 
 	/**
-	 * Render the sureforms input default styling block
+	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 *
 	 * @return string|boolean
 	 */
-	public function default_styling( $attributes ) {
-		return '';
-	}
-
-	/**
-	 * Render the sureforms input classic styling
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 		return '';
 	}
 }

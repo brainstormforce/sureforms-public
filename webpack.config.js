@@ -45,10 +45,7 @@ module.exports = {
 			'src/admin/single-form-settings/Editor.js'
 		),
 		editor: path.resolve( __dirname, 'src/admin/editor-scripts.js' ),
-		settings: path.resolve(
-			__dirname,
-			'src/admin/settings/settings.js'
-		),
+		settings: path.resolve( __dirname, 'src/admin/settings/settings.js' ),
 		templatePicker: path.resolve(
 			__dirname,
 			'src/admin/components/template-picker/TemplatePicker.js'
@@ -57,10 +54,7 @@ module.exports = {
 			__dirname,
 			'src/admin/components/PageHeader.js'
 		),
-		dashboard: path.resolve(
-			__dirname,
-			'src/admin/dashboard/index.js'
-		),
+		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 	},
 	resolve: {
@@ -72,10 +66,7 @@ module.exports = {
 			'@Components': path.resolve( __dirname, 'src/components/' ),
 			'@Utils': path.resolve( __dirname, 'src/utils/' ),
 			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
-			'@Attributes': path.resolve(
-				__dirname,
-				'src/blocks-attributes/'
-			),
+			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Image': path.resolve( __dirname, 'images/' ),
 		},
 	},
