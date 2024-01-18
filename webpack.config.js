@@ -44,6 +44,14 @@ module.exports = {
 			__dirname,
 			'src/admin/single-form-settings/Editor.js'
 		),
+		formSubmitJS: path.resolve(
+			__dirname,
+			'assets/js/unminified/form-submit.js'
+		),
+		pageBreakJS: path.resolve(
+			__dirname,
+			'assets/js/unminified/page-break.js'
+		),
 		editor: path.resolve( __dirname, 'src/admin/editor-scripts.js' ),
 		settings: path.resolve(
 			__dirname,
