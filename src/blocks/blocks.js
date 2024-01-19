@@ -5,15 +5,20 @@ import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
 import * as multiChoice from '@Blocks/multi-choice';
-import * as rating from '@Blocks/rating';
-import * as upload from '@Blocks/upload';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
-import * as dateTimePicker from '@Blocks/date-time-picker';
-import * as numberSlider from '@Blocks/number-slider';
-import { registerBlocks } from './register-block';
+import { registerBlocks } from '@Blocks/register-block';
+
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { addFilter } from '@wordpress/hooks';
+import { useDeviceType } from '@Controls/getPreviewType';
+import { BlockControls } from '@wordpress/block-editor';
+import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
+import { getBlockTypes } from '@Blocks/util';
 
 const registerBlock = [
 	text,
@@ -24,13 +29,9 @@ const registerBlock = [
 	checkbox,
 	number,
 	sfForm,
-	rating,
-	upload,
 	phone,
 	select,
 	address,
-	dateTimePicker,
-	numberSlider,
 ];
 
 if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
@@ -38,3 +39,118 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 } else {
 	registerBlocks( [ sfForm ] );
 }
+
+
+// Width feature for all sureforms blocks.
+const blockWidthWrapperProps = createHigherOrderComponent(
+	( BlockListBlock ) => {
+		return ( props ) => {
+			const { attributes, name } = props;
+
+			const wrapperProps = {
+				...props.wrapperProps,
+			};
+
+			const allowedBlocks = getBlockTypes();
+
+			if ( allowedBlocks.includes( name ) ) {
+				const fieldWidth = attributes?.fieldWidth
+					? String( attributes.fieldWidth )
+					: '100';
+				const width = fieldWidth
+					? fieldWidth.replace( '.', '-' )
+					: '100';
+				const slug = name.replace( 'sureforms/', '' );
+
+				return (
+					<BlockListBlock
+						{ ...props }
+						wrapperProps={ wrapperProps }
+						className={
+							attributes?.fieldWidth &&
+							'Mobile' !== useDeviceType()
+								? `srfm-block-single srfm-${ slug }-block-wrap srfm-block-width-${ width }`
+								: ''
+						}
+					/>
+				);
+			}
+			return <BlockListBlock { ...props } />;
+		};
+	},
+	'blockWidthWrapperProps'
+);
+
+addFilter(
+	'editor.BlockListBlock',
+	'srfm/with-block-with-wrapper-props',
+	blockWidthWrapperProps
+);
+
+const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
+	return ( props ) => {
+		const { name, setAttributes } = props;
+
+		const allowedBlocks = getBlockTypes();
+
+		const oneColIcon = parse( svgIcons.width_full );
+		const twoColIcon = parse( svgIcons.with_two_col );
+		const threeColIcon = parse( svgIcons.width_three_col );
+		const fourColIcon = parse( svgIcons.width_four_col );
+
+		if ( allowedBlocks.includes( name ) ) {
+			return (
+				<>
+					<BlockControls>
+						<ToolbarGroup>
+							<ToolbarButton
+								icon={ oneColIcon }
+								label="Full Width"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 100 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ twoColIcon }
+								label="Two Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 50 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ threeColIcon }
+								label="Three Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 33.33 ),
+									} );
+								} }
+							/>
+							<ToolbarButton
+								icon={ fourColIcon }
+								label="Four Columns"
+								onClick={ () => {
+									setAttributes( {
+										fieldWidth: Number( 25 ),
+									} );
+								} }
+							/>
+						</ToolbarGroup>
+					</BlockControls>
+					<BlockEdit { ...props } />
+				</>
+			);
+		}
+		return <BlockEdit { ...props } />;
+	};
+}, 'withToolbarButton' );
+
+wp.hooks.addFilter(
+	'editor.BlockEdit',
+	'srfm/with-toolbar-button',
+	withToolbarButton
+);

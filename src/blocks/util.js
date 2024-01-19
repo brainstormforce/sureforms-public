@@ -1,3 +1,7 @@
+
+
+import { applyFilters } from '@wordpress/hooks';
+
 const stripHTML = ( text ) => {
 	const { DOMParser } = window;
 	const parsedLabel = new DOMParser().parseFromString( text, 'text/html' );
@@ -33,8 +37,8 @@ const getSpacingPresetCssVar = ( value ) => {
  * @return {Array} Block Types.
  */
 const getBlockTypes = ( exclude = '' ) => {
-	// Field Transform option.
-	const types = [
+
+	let blocks = applyFilters('srfm.AllowedBlocks', [
 		'sureforms/input',
 		'sureforms/email',
 		'sureforms/textarea',
@@ -44,45 +48,18 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/address',
 		'sureforms/dropdown',
 		'sureforms/multi-choice',
-		'sureforms/rating',
-		'sureforms/upload',
 		'sureforms/url',
-		'sureforms/password',
-		'sureforms/date-time-picker',
-		'sureforms/number-slider',
-		'sureforms/hidden',
-	];
+	]);
+
 	if ( exclude ) {
-		for ( let i = 0; i < types.length; i++ ) {
-			if ( types[ i ] === exclude ) {
-				types.splice( i, 1 );
+		for ( let i = 0; i < blocks.length; i++ ) {
+			if ( blocks[ i ] === exclude ) {
+				blocks.splice( i, 1 );
 			}
 		}
 	}
-	return types;
+
+	return blocks;
 };
 
 export { stripHTML, getSpacingPresetCssVar, getBlockTypes };
-
-export const getAllowedBlocks = () => {
-	const getBlocks = [
-		'sureforms/input',
-		'sureforms/email',
-		'sureforms/textarea',
-		'sureforms/number',
-		'sureforms/checkbox',
-		'sureforms/phone',
-		'sureforms/address',
-		'sureforms/dropdown',
-		'sureforms/multi-choice',
-		'sureforms/rating',
-		'sureforms/upload',
-		'sureforms/url',
-		'sureforms/password',
-		'sureforms/date-time-picker',
-		'sureforms/number-slider',
-		'sureforms/hidden',
-	];
-
-	return getBlocks;
-};

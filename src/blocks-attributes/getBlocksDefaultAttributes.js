@@ -1,18 +1,13 @@
 import inputAttributes from '@Blocks/input/block.json';
 import emailAttributes from '@Blocks/email/block.json';
-import numberSliderAttributes from '@Blocks/number-slider/block.json';
 import phoneAttributes from '@Blocks/phone/block.json';
 import textareaAttributes from '@Blocks/textarea/block.json';
 import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
-// import passwordAttributes from '@Blocks/password/block.json';
-import ratingAttributes from '@Blocks/rating/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
-import dateTimeAttributes from '@Blocks/date-time-picker/block.json';
 import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
-import uploadAttributes from '@Blocks/upload/block.json';
 
 const default_keys = {
 	_srfm_color1: { default: '' },
@@ -30,18 +25,16 @@ const default_keys = {
 export const blocksAttributes = {
 	input: inputAttributes.attributes,
 	email: emailAttributes.attributes,
-	rating: ratingAttributes.attributes,
+
 	checkbox: checkboxAttributes.attributes,
-	'date-time-picker': dateTimeAttributes.attributes,
+
 	address: addressAttributes.attributes,
 	'multi-choice': multiChoiceAttributes.attributes,
 	dropdown: dropdownAttributes.attributes,
-	upload: uploadAttributes.attributes,
-	'number-slider': numberSliderAttributes.attributes,
+
 	phone: phoneAttributes.attributes,
 	textarea: textareaAttributes.attributes,
 	url: urlAttributes.attributes,
 	number: numberAttributes.attributes,
-	//password: passwordAttributes.attributes,
 	form_specific: default_keys,
 };
