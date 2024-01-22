@@ -432,6 +432,10 @@ class Admin {
 			$default_allowed_quick_sidebar_blocks = array();
 		}
 
+		$srfm_enable_quick_action_sidebar = get_option( 'srfm_enable_quick_action_sidebar' );
+		if ( ! $srfm_enable_quick_action_sidebar ) {
+			$srfm_enable_quick_action_sidebar = 'disabled';
+		}
 		$quick_sidebar_allowed_blocks = get_option( 'srfm_quick_sidebar_allowed_blocks' );
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
@@ -440,9 +444,10 @@ class Admin {
 			'srfm-quick-action-siderbar',
 			'quickSidebarBlocks',
 			array(
-				'allowed_blocks'  => $quick_sidebar_allowed_blocks,
-				'srfm_ajax_nonce' => $srfm_ajax_nonce,
-				'srfm_ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
+				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
+				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
+				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
 			)
 		);
 	}

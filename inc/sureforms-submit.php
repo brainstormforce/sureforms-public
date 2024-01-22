@@ -40,6 +40,7 @@ class Sureforms_Submit {
 		add_action( 'wp_ajax_nopriv_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		// for quick action bar.
 		add_action( 'wp_ajax_srfm_global_update_allowed_block', array( $this, 'srfm_global_update_allowed_block' ) );
+		add_action( 'wp_ajax_srfm_global_sidebar_enabled', array( $this, 'srfm_global_sidebar_enabled' ) );
 	}
 
 	/**
@@ -237,22 +238,24 @@ class Sureforms_Submit {
 	 * @since 0.0.1
 	 */
 	public function get_settings_form_data() {
-		$sureforms_v2_checkbox_secret  = ! empty( get_option( 'sureforms_v2_checkbox_secret' ) ) ? get_option( 'sureforms_v2_checkbox_secret' ) : '';
-		$sureforms_v2_checkbox_site    = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? get_option( 'sureforms_v2_checkbox_site' ) : '';
-		$sureforms_v2_invisible_secret = ! empty( get_option( 'sureforms_v2_invisible_secret' ) ) ? get_option( 'sureforms_v2_invisible_secret' ) : '';
-		$sureforms_v2_invisible_site   = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? get_option( 'sureforms_v2_invisible_site' ) : '';
-		$sureforms_v3_secret           = ! empty( get_option( 'sureforms_v3_secret' ) ) ? get_option( 'sureforms_v3_secret' ) : '';
-		$sureforms_v3_site             = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
-		$honeypot                      = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
+		$sureforms_v2_checkbox_secret     = ! empty( get_option( 'sureforms_v2_checkbox_secret' ) ) ? get_option( 'sureforms_v2_checkbox_secret' ) : '';
+		$sureforms_v2_checkbox_site       = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? get_option( 'sureforms_v2_checkbox_site' ) : '';
+		$sureforms_v2_invisible_secret    = ! empty( get_option( 'sureforms_v2_invisible_secret' ) ) ? get_option( 'sureforms_v2_invisible_secret' ) : '';
+		$sureforms_v2_invisible_site      = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? get_option( 'sureforms_v2_invisible_site' ) : '';
+		$sureforms_v3_secret              = ! empty( get_option( 'sureforms_v3_secret' ) ) ? get_option( 'sureforms_v3_secret' ) : '';
+		$sureforms_v3_site                = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
+		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
+		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 		// TODO: We need to change it to array and serialize it.
 		$results = array(
-			'sureforms_v2_checkbox_site'    => $sureforms_v2_checkbox_site,
-			'sureforms_v2_checkbox_secret'  => $sureforms_v2_checkbox_secret,
-			'sureforms_v2_invisible_site'   => $sureforms_v2_invisible_site,
-			'sureforms_v2_invisible_secret' => $sureforms_v2_invisible_secret,
-			'sureforms_v3_secret'           => $sureforms_v3_secret,
-			'sureforms_v3_site'             => $sureforms_v3_site,
-			'honeypot'                      => $honeypot,
+			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
+			'sureforms_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
+			'sureforms_v2_invisible_site'      => $sureforms_v2_invisible_site,
+			'sureforms_v2_invisible_secret'    => $sureforms_v2_invisible_secret,
+			'sureforms_v3_secret'              => $sureforms_v3_secret,
+			'sureforms_v3_site'                => $sureforms_v3_site,
+			'honeypot'                         => $honeypot,
+			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 		);
 
 		wp_send_json( $results );
@@ -463,6 +466,29 @@ class Sureforms_Submit {
 		if ( ! empty( $_POST['defaultAllowedQuickSidebarBlocks'] ) ) {
 			$srfm_default_allowed_quick_sidebar_blocks = json_decode( stripslashes( $_POST['defaultAllowedQuickSidebarBlocks'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			Sureforms_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
+			wp_send_json_success();
+		}
+		wp_send_json_error();
+	}
+
+	/**
+	 * Function to save enable/disable data.
+	 *
+	 * @since 0.0.1
+	 * @return void
+	 */
+	public function srfm_global_sidebar_enabled() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error();
+		}
+
+		if ( ! check_ajax_referer( 'srfm_ajax_nonce', 'security', false ) ) {
+			wp_send_json_error();
+		}
+
+		if ( ! empty( $_POST['enableQuickActionSidebar'] ) ) {
+			$srfm_enable_quick_action_sidebar = ( 'enabled' === $_POST['enableQuickActionSidebar'] ? 'enabled' : 'disabled' );
+			Sureforms_Helper::update_admin_settings_option( 'srfm_enable_quick_action_sidebar', $srfm_enable_quick_action_sidebar );
 			wp_send_json_success();
 		}
 		wp_send_json_error();

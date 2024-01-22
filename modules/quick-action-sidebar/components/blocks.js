@@ -34,7 +34,6 @@ const Blocks = ( {
 	const srfmBlocks = blocks.filter( ( block ) => {
 		return defaultAllowedQuickSidebarBlocks.includes( block.name );
 	} );
-
 	const create = ( name ) => {
 		return createBlock( name );
 	};

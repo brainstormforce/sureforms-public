@@ -33,7 +33,7 @@ const Sidebar = () => {
 	const saveOptionToDatabase = ( allowedBlocks ) => {
 		// update allowedBlocks.
 		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
-		// Create an object with the uagb_ajax_nonce and confirmation properties.
+		// Create an object with the srfm_ajax_nonce and confirmation properties.
 		const data = {
 			security: quickSidebarBlocks.srfm_ajax_nonce,
 			defaultAllowedQuickSidebarBlocks: JSON.stringify( allowedBlocks ),

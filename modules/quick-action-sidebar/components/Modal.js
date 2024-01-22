@@ -73,7 +73,7 @@ const PopoverModal = ( {
 	filteredBlocks.forEach( ( item ) => {
 		if ( defaultAllowedQuickSidebarBlocks?.includes( item.name ) ) {
 			usedArray.push( item );
-		} else {
+		} else if ( item.name !== 'sureforms/sf-form' ) {
 			unusedArray.push( item );
 		}
 	} );
