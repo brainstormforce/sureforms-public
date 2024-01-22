@@ -27,9 +27,9 @@ class Register {
 		$blocks_dir = glob( SUREFORMS_DIR . 'inc/blocks/**/*.php' );
 		$this->registerBlock( $blocks_dir, $namespace );
 
-		if( defined( 'SUREFORMS_PRO_VER' ) ) {
+		if( defined( 'SUREFORMS_PRO_VER' ) ) { 
 			$blocks_dir = glob( SUREFORMS_PRO_DIR . 'inc/blocks/**/*.php' );
-			$namespace       = 'SureFormsPro\\Inc\\Blocks';
+			$namespace       = 'SureForms_Pro\\Inc\\Blocks';
 			$this->registerBlock( $blocks_dir, $namespace );
 		}
 	}
