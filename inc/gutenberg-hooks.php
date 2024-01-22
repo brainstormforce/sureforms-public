@@ -229,33 +229,12 @@ class Gutenberg_Hooks {
 			)
 		);
 
-		$formats = array();
-		$mimes   = get_allowed_mime_types();
-		$maxsize = wp_max_upload_size() / 1048576;
-		if ( ! empty( $mimes ) ) {
-			foreach ( $mimes as $type => $mime ) {
-				$multiple = explode( '|', $type );
-				foreach ( $multiple as $single ) {
-					$formats[] = $single;
-				}
-			}
-		}
-
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
 			]
-		);
-
-		wp_localize_script(
-			'sureforms-' . $all_screen_blocks,
-			'upload_field',
-			array(
-				'upload_formats'   => $formats,
-				'upload_max_limit' => $maxsize,
-			)
 		);
 	}
 }
