@@ -63,8 +63,6 @@ class SF_Public {
 		}
 
 		// Dependencies
-		// Flatpickr CSS.
-		wp_enqueue_style( 'flatpickr', $css_vendor . 'flatpickr.min.css', [], SUREFORMS_VER );
 		// Nice Select CSS.
 		wp_enqueue_style( 'nice-select', $css_vendor . 'nice-select2.css', [], SUREFORMS_VER );
 		// Int-tel-input CSS.
@@ -107,7 +105,7 @@ class SF_Public {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'sureforms/', '', $block_type );
-		$script_dep_blocks = [ 'rating', 'upload', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+		$script_dep_blocks = [ 'address', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -119,10 +117,6 @@ class SF_Public {
 			if ( 'phone' === $block_name ) {
 				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SUREFORMS_VER, true );
 				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SUREFORMS_VER, true );
-			}
-
-			if ( 'date-time-picker' === $block_name ) {
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-flatpickr-deps", $js_vendor_uri . 'flatpickr.min.js', [], SUREFORMS_VER, true );
 			}
 
 			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
