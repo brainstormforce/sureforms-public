@@ -32,7 +32,7 @@ class SF_Public {
 	}
 
 	/**
-	 * Load Font Awesome Icons Classes.
+	 * Enqueue Script.
 	 *
 	 * @return void
 	 * @since 0.0.1

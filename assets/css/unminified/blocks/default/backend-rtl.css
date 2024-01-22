@@ -102,29 +102,6 @@
 .is-root-container div[data-type="sureforms/url"] .srfm-input-url {
   padding-right: 87px;
 }
-.is-root-container div[data-type="sureforms/rating"] ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.is-root-container div[data-type="sureforms/rating"] ul li {
-  text-align: center;
-  line-height: 1;
-}
-.is-root-container div[data-type="sureforms/rating"] ul li .srfm-icon {
-  display: block;
-  width: 2.5em;
-  cursor: pointer;
-  padding-left: 0.5em;
-}
-.is-root-container div[data-type="sureforms/rating"] ul li .srfm-icon svg {
-  stroke: var(--srfm-primary-color);
-}
-.is-root-container div[data-type="sureforms/rating"] ul li .srfm-rating-number {
-  font-size: 0.7em;
-}
 .is-root-container div[data-type="sureforms/address"] .srfm-block-wrap {
   display: flex;
   flex-wrap: wrap;
@@ -185,107 +162,6 @@
   font-size: 0.7em;
   padding-right: 8px;
   line-height: 18px;
-}
-.is-root-container div[data-type="sureforms/upload"] .srfm-block-wrap {
-  background-color: var(--srfm-base-background-color);
-  text-align: center;
-  line-height: normal;
-  border: var(--srfm-border) dashed var(--srfm-border-color);
-  border-radius: var(--srfm-border-radius);
-  padding: 1em;
-}
-.is-root-container div[data-type="sureforms/upload"] .srfm-block-wrap label p {
-  font-weight: 500;
-}
-.is-root-container div[data-type="sureforms/upload"] .srfm-block-wrap p {
-  font-size: 0.7em;
-  margin-bottom: 0.5em;
-}
-.is-root-container div[data-type="sureforms/upload"] .srfm-block-wrap .srfm-upload-icon svg {
-  width: 1.5em;
-  stroke: var(--srfm-body-input-color);
-}
-.is-root-container div[data-type="sureforms/upload"] .srfm-block-wrap .srfm-input-upload {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  z-index: 1;
-}
-.is-root-container div[data-type="sureforms/number-slider"] {
-  --value: 10%;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap {
-  position: relative;
-  height: 14px;
-  border-radius: var(--srfm-border-radius);
-  text-align: right;
-  width: 100%;
-  margin-top: 2em;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap {
-  position: absolute;
-  right: 0;
-  left: 0;
-  height: 0.5em;
-  background-color: #ccc;
-  border-radius: var(--srfm-border-radius);
-  margin: 0 0.5em;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-inverse,
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider {
-  position: absolute;
-  height: 0.5em;
-  border-radius: var(--srfm-border-radius);
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-inverse {
-  left: 0;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider {
-  right: 0;
-  background-color: var(--srfm-primary-color);
-  width: var(--value);
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-thumb,
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-sign {
-  width: 1.2em;
-  height: 1.2em;
-  border-radius: 1.2em;
-  margin-right: -11px;
-  right: var(--value);
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-thumb {
-  position: absolute;
-  top: -7px;
-  text-align: right;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  background-color: var(--srfm-base-background-color);
-  border-radius: 50%;
-  outline: none;
-  z-index: 2;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-sign {
-  opacity: 1;
-  position: absolute;
-  top: -35px;
-  z-index: 3;
-  color: var(--srfm-label-text-color);
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: background-color 0.3s;
-}
-.is-root-container div[data-type="sureforms/number-slider"] .srfm-block-wrap .srfm-number-slider-wrap .srfm-number-slider-sign > span {
-  position: relative;
-  top: -5px;
-  font-size: 0.6em;
-  font-weight: 500;
 }
 .is-root-container div[data-type="sureforms/multi-choice"].is-selected .srfm-block-wrap {
   pointer-events: initial;
