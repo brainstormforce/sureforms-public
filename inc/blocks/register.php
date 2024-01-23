@@ -37,7 +37,7 @@ class Register {
 	/**
 	 * Register Blocks
 	 *
-	 * @param string $blocks_dir Block directory.
+	 * @param array<int, string>|false $blocks_dir Block directory.
 	 * @param string $namespace Namespace.
 	 *
 	 * @return void
