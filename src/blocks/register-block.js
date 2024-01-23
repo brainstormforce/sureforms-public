@@ -111,7 +111,7 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
 		const { name, setAttributes } = props;
 
-		const allowedBlocks = getAllowedBlocks();
+		const allowedBlocks = getBlockTypes('sureforms/page-break');
 
 		const oneColIcon = parse( svgIcons.width_full );
 		const twoColIcon = parse( svgIcons.with_two_col );

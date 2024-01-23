@@ -32,6 +32,7 @@
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	padding: 0 0.3em;
 	.srfm-nxt-btn {
 		min-width: 91px;
 	}
@@ -46,7 +47,8 @@
 
 .srfm-page-break-header-container {
 	width: 100%;
-	padding-bottom: 2.4em;
+	padding: 0 0.3em;
+	padding-bottom: 1.6em;
 	.srfm-page-break-progress-container {
 		display: flex;
 		justify-content: space-between;
@@ -138,7 +140,7 @@
 		align-items: center;
 		justify-content: space-between;
 		.srfm-steps-content {
-			color: #a2a6ae;
+			color:  #4a5c5c;
 			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
@@ -156,15 +158,16 @@
 			display: flex;
 			gap: 1.6em;
 			align-items: flex-start;
+			margin-right: 0.3em;
 			&::before {
 				content: "";
 				background-color: var( --srfm-border-color );
 				position: absolute;
 				top: 0.6em;
-				left: 1.2em;
+				left: 0.2em;
 				transform: translateY( -50% );
 				height: 2px;
-				width: 70%;
+				width: 100%;
 				z-index: 0;
 			}
 			.srfm-round {
@@ -235,18 +238,18 @@
 			.srfm-round input[type="checkbox"]:checked + label::before {
 				display: none;
 			}
-		}
-		.srfm-progress {
-			background-color: var( --srfm-primary-color );
-			position: absolute;
-			top: 0.6em;
-			left: 1.2em;
-			transform: translateY( -50% );
-			height: 2px;
-			max-width: 70%;
-			width: 0%;
-			z-index: 0;
-			transition: 400ms ease;
+			.srfm-progress {
+				background-color: var( --srfm-primary-color );
+				position: absolute;
+				top: 0.6em;
+				left: 0.2em;
+				transform: translateY( -50% );
+				height: 2px;
+				max-width: 100%;
+				width: 0%;
+				z-index: 0;
+				transition: 400ms ease;
+			}
 		}
 	}
 	.srfm-page-break-progress {

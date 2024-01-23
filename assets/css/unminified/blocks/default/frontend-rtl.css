@@ -630,6 +630,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding: 0 0.3em;
 }
 .srfm-page-break-buttons .srfm-nxt-btn {
   min-width: 91px;
@@ -642,7 +643,8 @@
 
 .srfm-page-break-header-container {
   width: 100%;
-  padding-bottom: 2.4em;
+  padding: 0 0.3em;
+  padding-bottom: 1.6em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container {
   display: flex;
@@ -731,7 +733,7 @@
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: #a2a6ae;
+  color: #4a5c5c;
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
@@ -749,16 +751,17 @@
   display: flex;
   gap: 1.6em;
   align-items: flex-start;
+  margin-left: 0.3em;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container::before {
   content: "";
   background-color: var(--srfm-border-color);
   position: absolute;
   top: 0.6em;
-  right: 1.2em;
+  right: 0.2em;
   transform: translateY(-50%);
   height: 2px;
-  width: 70%;
+  width: 100%;
   z-index: 0;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round {
@@ -823,14 +826,14 @@
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round input[type=checkbox]:checked + label::before {
   display: none;
 }
-.srfm-page-break-header-container .srfm-page-break-steps .srfm-progress {
+.srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-progress {
   background-color: var(--srfm-primary-color);
   position: absolute;
   top: 0.6em;
-  right: 1.2em;
+  right: 0.2em;
   transform: translateY(-50%);
   height: 2px;
-  max-width: 70%;
+  max-width: 100%;
   width: 0%;
   z-index: 0;
   transition: 400ms ease;

@@ -3,6 +3,14 @@ class PageBreakHandler {
 	constructor( form ) {
 		this.form = form;
 		this.pageBreakContainers = form.querySelectorAll( '.srfm-page-break' );
+		if(this.pageBreakContainers){
+			let isEmptyFirst = this.pageBreakContainers[0];
+			let isChild = isEmptyFirst.querySelector('div.srfm-block');
+			if(!isChild){
+				isEmptyFirst.remove();
+				this.pageBreakContainers = form.querySelectorAll( '.srfm-page-break' );
+			}
+		}
 		this.pageBreakLength = this.pageBreakContainers.length;
 		this.submitBtn = form.querySelector( '.srfm-submit-container' );
 		this.ajaxUrl = form.getAttribute( 'ajaxurl' );
@@ -241,7 +249,7 @@ class PageBreakHandler {
 		if ( this.progress ) {
 			let currWidth = 100;
 			if ( this.progressIndicatorType === 'connector' ) {
-				currWidth = 80;
+				currWidth = 100;
 			} else {
 				const parentWidth = this.progress.parentNode.offsetWidth;
 				/* eslint-disable no-mixed-operators */

@@ -488,7 +488,8 @@ function AppearanceSettings( props ) {
 					}
 					__nextHasNoMarginBottom
 				/>
-				<ToggleControl
+				{sureforms_keys._srfm_page_break_progress_indicator !== 'progress-bar' && (
+					<ToggleControl
 					label={ __(
 						'Show Labels',
 						'sureforms'
@@ -498,6 +499,7 @@ function AppearanceSettings( props ) {
 						updateMeta( '_srfm_page_break_toggle_label', value );
 					} }
 				/>
+				)}
 			</SRFMAdvancedPanelBody>
 		</>
 	);
