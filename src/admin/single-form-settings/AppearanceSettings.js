@@ -488,18 +488,18 @@ function AppearanceSettings( props ) {
 					}
 					__nextHasNoMarginBottom
 				/>
-				{sureforms_keys._srfm_page_break_progress_indicator !== 'progress-bar' && (
+				{ sureforms_keys._srfm_page_break_progress_indicator !== 'progress-bar' && (
 					<ToggleControl
-					label={ __(
-						'Show Labels',
-						'sureforms'
-					) }
-					checked={ sureforms_keys._srfm_page_break_toggle_label }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_page_break_toggle_label', value );
-					} }
-				/>
-				)}
+						label={ __(
+							'Show Labels',
+							'sureforms'
+						) }
+						checked={ sureforms_keys._srfm_page_break_toggle_label }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_page_break_toggle_label', value );
+						} }
+					/>
+				) }
 			</SRFMAdvancedPanelBody>
 		</>
 	);

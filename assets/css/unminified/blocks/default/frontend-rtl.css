@@ -676,9 +676,10 @@
   transition: 400ms ease;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap {
-  display: inline-block;
-  text-align: center;
-  width: 4em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   line-height: 1em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
@@ -690,7 +691,6 @@
   height: 1.2em;
   width: 1.2em;
   position: relative;
-  right: 1em;
   display: flex;
   align-items: center;
   justify-content: center;

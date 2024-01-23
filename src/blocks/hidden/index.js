@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { MdVisibilityOff as icon } from 'react-icons/md';
+import { FaRegEyeSlash as icon } from 'react-icons/fa';
 
 /**
  * Internal dependencies

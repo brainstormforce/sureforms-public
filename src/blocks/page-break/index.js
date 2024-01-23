@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { MdInsertPageBreak as icon } from 'react-icons/md';
+import { MdOutlineInsertPageBreak as icon } from 'react-icons/md';
 /**
  * Internal dependencies
  */
