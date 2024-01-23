@@ -223,3 +223,40 @@
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-add-option-wrapper {
   width: 100%;
 }
+.is-root-container .srfm-page-break-block-wrap.is-selected .srfm-page-break-wrapper {
+  border-radius: 6px;
+  border: 1px dashed #d0d5dd;
+  background: #f9fafb;
+}
+.is-root-container .srfm-page-break-block-wrap .srfm-page-break-wrapper {
+  display: flex;
+  padding: 0.6em 0.4em;
+  align-items: center;
+  gap: 0.3em;
+  align-self: stretch;
+}
+.is-root-container .srfm-page-break-block-wrap .srfm-page-break-wrapper .srfm-page-break-divider {
+  height: 1px;
+  flex: 1 0 0;
+  background: #dce0e6;
+}
+.is-root-container .srfm-page-break-block-wrap .srfm-page-break-wrapper .srfm-page-break-content {
+  display: flex;
+  padding: 10px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid #dce0e6;
+  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+.is-root-container .srfm-page-break-block-wrap .srfm-page-break-wrapper .srfm-page-break-content p {
+  color: #1e293b;
+  font-size: 0.7em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1em;
+  margin: 0;
+  padding: 0;
+}

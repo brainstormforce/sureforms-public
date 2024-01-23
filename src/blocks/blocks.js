@@ -9,8 +9,8 @@ import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
+import * as pageBreak from '@Blocks/page-break';
 import { registerBlocks } from '@Blocks/register-block';
-
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 import { useDeviceType } from '@Controls/getPreviewType';
@@ -32,6 +32,7 @@ const registerBlock = [
 	phone,
 	select,
 	address,
+	pageBreak,
 ];
 
 if ( 'sureforms_form' === sfBlockData.current_screen.id ) {

@@ -85,6 +85,7 @@ class Gutenberg_Hooks {
 				'sureforms/advanced-heading',
 				'sureforms/number-slider',
 				'sureforms/form',
+				'sureforms/page-break',
 				'sureforms/hidden',
 			);
 			// Apply a filter to the $allow_block_types types array.
@@ -226,6 +227,7 @@ class Gutenberg_Hooks {
 				'date_time_preview'     => SUREFORMS_URL . 'images/field-previews/date-time.svg',
 				'number_slider_preview' => SUREFORMS_URL . 'images/field-previews/number-slider.svg',
 				'sureforms_preview'     => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+				'pagebreak_preview'     => SUREFORMS_URL . 'images/field-previews/page-break.svg',
 			)
 		);
 
