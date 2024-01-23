@@ -41,7 +41,6 @@ if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
 	registerBlocks( [ sfForm ] );
 }
 
-
 // Width feature for all sureforms blocks.
 const blockWidthWrapperProps = createHigherOrderComponent(
 	( BlockListBlock ) => {

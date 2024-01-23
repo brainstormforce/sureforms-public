@@ -1,5 +1,3 @@
-
-
 import { applyFilters } from '@wordpress/hooks';
 
 const stripHTML = ( text ) => {
@@ -37,8 +35,7 @@ const getSpacingPresetCssVar = ( value ) => {
  * @return {Array} Block Types.
  */
 const getBlockTypes = ( exclude = '' ) => {
-
-	let blocks = applyFilters('srfm.AllowedBlocks', [
+	const blocks = applyFilters( 'srfm.AllowedBlocks', [
 		'sureforms/input',
 		'sureforms/email',
 		'sureforms/textarea',
@@ -50,8 +47,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/multi-choice',
 		'sureforms/url',
 		'sureforms/page-break',
-	]);
-
+	] );
 
 	if ( exclude ) {
 		for ( let i = 0; i < blocks.length; i++ ) {

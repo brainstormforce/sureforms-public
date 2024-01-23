@@ -1,7 +1,6 @@
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { getBlockTypes } from '@Blocks/util';
 
-
 /**
  * Function to register blocks provided by SureForms.
  *
@@ -17,7 +16,6 @@ export const registerBlocks = ( blocks = [] ) => {
  * @param {Object} block The block to be registered.
  */
 const registerBlock = ( block ) => {
-
 	if ( ! block ) {
 		return;
 	}
@@ -41,7 +39,7 @@ const registerBlock = ( block ) => {
 						},
 					],
 				},
-			}
+			  }
 			: {};
 	registerBlockType(
 		{
