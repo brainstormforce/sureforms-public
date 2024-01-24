@@ -193,4 +193,18 @@ class Sureforms_Helper {
 		$decode  = base64_decode( $base_64 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 		return $decode;
 	}
+
+	/**
+	 * Update an option from the database.
+	 *
+	 * @param string $key              The option key.
+	 * @param mixed  $value            The value to update.
+	 * @param bool   $network_override Whether to allow the network_override admin setting to be overridden on subsites.
+	 * @since 1.0.0
+	 * @return bool True if the option was updated, false otherwise.
+	 */
+	public static function update_admin_settings_option( $key, $value, $network_override = false ) {
+		// Update the site-wide option if we're in the network admin, and return the updated status.
+		return $network_override && is_multisite() ? update_site_option( $key, $value ) : update_option( $key, $value );
+	}
 }

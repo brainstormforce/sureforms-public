@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMMediaPicker from '@Components/image';
@@ -15,15 +16,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
+import getApiData from '@Controls/getApiData';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { default_keys } = props;
+	const { default_keys, enableQuickActionSidebar, setEnableQuickActionSidebar } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	const root = document.documentElement;
 
 	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
@@ -215,6 +217,51 @@ function AppearanceSettings( props ) {
 	const onRemoveRestImage = () => {
 		updateMeta( '_srfm_bg', '' );
 	};
+
+	/*
+	 * function to update quick action sidebar.
+	 */
+	const saveOptionToDatabase = ( toggleStatus ) => {
+		setEnableQuickActionSidebar( toggleStatus );
+		// Create an object with the srfm_ajax_nonce and confirmation properties.
+		const data = {
+			security: quickSidebarBlocks.srfm_ajax_nonce,
+			enableQuickActionSidebar: toggleStatus,
+		};
+		// Call the getApiData function with the specified parameters.
+		getApiData( {
+			url: quickSidebarBlocks.srfm_ajax_url,
+			action: 'srfm_global_sidebar_enabled',
+			data,
+		} );
+	};
+
+	/*
+	 * Onchange handler for quick sidebar action.
+	 */
+	const toggleHandler = () => {
+		const toggleStatus = 'disabled' === enableQuickActionSidebar ? 'enabled' : 'disabled';
+		saveOptionToDatabase( toggleStatus );
+	};
+
+	useEffect( () => {
+		const fetchData = async () => {
+			try {
+				const data = await apiFetch( {
+					path: 'sureforms/v1/srfm-settings',
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+					},
+				} );
+				const { srfm_enable_quick_action_sidebar } = data;
+				setEnableQuickActionSidebar( srfm_enable_quick_action_sidebar );
+			} catch ( error ) {
+				console.error( 'Error fetching datates:', error );
+			}
+		};
+		fetchData();
+	}, [] );
 
 	return (
 		<>
@@ -497,6 +544,19 @@ function AppearanceSettings( props ) {
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_page_break_toggle_label', value );
 					} }
+				/>
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Quick Action Bar', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<ToggleControl
+					label={ __(
+						'Enable Sidebar',
+						'sureforms'
+					) }
+					checked={ 'enabled' === enableQuickActionSidebar }
+					onChange={ toggleHandler }
 				/>
 			</SRFMAdvancedPanelBody>
 		</>
