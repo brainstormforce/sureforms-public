@@ -33,7 +33,7 @@
 			"type": "array",
 			"default": [
 				{
-					"optiontitle": "Option Name 1"
+					"optionTitle": "Option 1"
 				}
 			]
 		},

@@ -18,20 +18,20 @@ export const MultiChoiceComponent = ( {
 	const editView = options.map( ( option, index ) => {
 		return (
 			<div key={ index } className={ `srfm-multi-choice-single` }>
-				<label htmlFor={ option.optiontitle }></label>
+				<label htmlFor={ option.optionTitle }></label>
 				<input
 					className="srfm-input-common"
-					aria-label={ option.optiontitle }
+					aria-label={ option.optionTitle }
 					onChange={ ( e ) =>
 						changeOption(
 							{
-								optiontitle: e.target.value,
+								optionTitle: e.target.value,
 							},
 							index
 						)
 					}
 					type="text"
-					value={ option.optiontitle }
+					value={ option.optionTitle }
 				/>
 				<Button
 					icon="trash"
@@ -52,7 +52,7 @@ export const MultiChoiceComponent = ( {
 								<span
 									className={ `srfm-icon srfm-${ slug }-icon` }
 								></span>
-								<p>{ option.optiontitle }</p>
+								<p>{ option.optionTitle }</p>
 							</div>
 						</label>
 					);

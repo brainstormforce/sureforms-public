@@ -51,18 +51,18 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const sureforms_keys = useGetSureFormsKeys( formId );
-	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
+	const [ newOption, setNewOption ] = useState( { optionTitle: '' } );
 	const blockProps = useBlockProps();
 
 	const addOption = () => {
 		const newOptions = {
-			optiontitle:
-				__( 'Option Name ', 'sureforms' ) + `${ options.length + 1 }`,
+			optionTitle:
+				__( 'Option ', 'sureforms' ) + `${ options.length + 1 }`,
 		};
 		options[ options.length ] = newOptions;
-		const addnewOptions = options.map( ( item ) => item );
+		const addNewOption = options.map( ( item ) => item );
 
-		setAttributes( { options: addnewOptions } );
+		setAttributes( { options: addNewOption } );
 	};
 
 	const changeOption = ( e, index ) => {
@@ -94,7 +94,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			return;
 		}
 		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].optiontitle = value;
+		updatedOptions[ i ].optionTitle = value;
 		setAttributes( { options: updatedOptions } );
 	}
 
@@ -266,10 +266,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option.optiontitle
+																							option.optionTitle
 																						}
 																						data={ {
-																							value: option.optiontitle,
+																							value: option.optionTitle,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -312,9 +312,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										'Add New Option',
 										'sureforms'
 									) }
-									value={ newOption.optiontitle }
+									value={ newOption.optionTitle }
 									onChange={ ( value ) =>
-										setNewOption( { optiontitle: value } )
+										setNewOption( { optionTitle: value } )
 									}
 								/>
 								<Button
@@ -322,8 +322,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									variant="secondary"
 									onClick={ () => {
 										if (
-											newOption?.optiontitle &&
-											newOption?.optiontitle
+											newOption?.optionTitle &&
+											newOption?.optionTitle
 										) {
 											setAttributes( {
 												options: [
@@ -331,7 +331,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 													newOption,
 												],
 											} );
-											setNewOption( { optiontitle: '' } );
+											setNewOption( { optionTitle: '' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}

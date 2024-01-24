@@ -58,7 +58,7 @@ class Multichoice_Markup extends Base {
 								<input type="<?php echo esc_attr( $type_attr ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
 								<div class="srfm-block-content-wrap">
 									<?php echo Sureforms_Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $slug . '-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-									<p><?php echo isset( $option['optiontitle'] ) ? esc_html( $option['optiontitle'] ) : ''; ?></p>
+									<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
 								</div>
 							</label>
 						<?php } ?>
