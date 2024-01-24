@@ -500,6 +500,30 @@ function AppearanceSettings( props ) {
 						} }
 					/>
 				) }
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_previous_button_text',
+					} }
+					label={ __( 'Previous Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_previous_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_previous_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_next_button_text',
+					} }
+					label={ __( 'Next Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_next_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_next_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
 			</SRFMAdvancedPanelBody>
 		</>
 	);

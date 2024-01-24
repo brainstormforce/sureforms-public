@@ -50,88 +50,74 @@
 	padding: 0 0.3em;
 	padding-bottom: 1.6em;
 	.srfm-page-break-progress-container {
-		display: flex;
-		justify-content: space-between;
-		position: relative;
-		max-width: 100%;
-		&::before {
-			content: "";
-			background-color: var( --srfm-border-color );
-			position: absolute;
-			top: 0.6em;
-			left: 2.2em;
-			transform: translateY( -50% );
-			height: 2px;
-			width: calc( 100% - 5em );
-			z-index: 0;
-		}
-
-		.srfm-progress {
-			background-color: var( --srfm-primary-color );
-			position: absolute;
-			top: 0.6em;
-			left: 2.2em;
-			transform: translateY( -50% );
-			height: 2px;
-			max-width: calc( 100% - 5em );
-			width: 0;
-			z-index: 0;
-			transition: 400ms ease;
-		}
-
-		.srfm-text-wrap {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-    		align-items: center;
-			line-height: 1em;
-		}
-
-		.srfm-circle {
-			background-color: var( --srfm-base-background-color );
-			border: 1.5px solid var( --srfm-border-color );
-			color: var( --srfm-primary-color );
-			font-weight: 700;
-			border-radius: 50%;
-			height: 1.2em;
-			width: 1.2em;
-			position: relative;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transition: 400ms ease;
-			.srfm-circle-content {
-				color: var( --srfm-border-color );
-				font-size: 0.7em;
-				font-style: normal;
+		width: 100%;
+		.srfm-progress-connector {
+			overflow: hidden;
+			/*CSS counters to number the steps*/
+			counter-reset: step;
+			text-align: center;
+			padding: 0;
+			display: table;
+			table-layout: fixed;
+			width: 100%;
+			li {
+				list-style-type: none;
+				display: table-cell;
+				font-size: 0.6em;
 				font-weight: 500;
-				line-height: 1em;
+				position: relative;
+				vertical-align: top;
+				width: auto;
 			}
-		}
-		.srfm-label-text {
-			color: var( --srfm-border-color );
-			font-size: 0.7em;
-			font-style: normal;
-			font-weight: 500;
-			line-height: 1em;
-		}
-		.srfm-text-wrap.active {
-			.srfm-label-text {
+			li:before {
+				content: counter( step );
+				counter-increment: step;
+				line-height: 2em;
+				display: block;
+				margin: 0 auto 5px auto;
+				background-color: var( --srfm-base-background-color );
+				border: 1.5px solid var( --srfm-border-color );
+				color: var( --srfm-border-color );
+				border-radius: 50%;
+				height: 2em;
+				width: 2em;
+				position: relative;
+				z-index: 1;
+				transition: 0.4s ease;
+			}
+			li:after {
+				content: "";
+				width: 100%;
+				height: 2px;
+				background: var( --srfm-border-color );
+				position: absolute;
+				left: -50%;
+				top: 1em;
+				z-index: 0;
+				transition: 0.4s ease;
+			}
+			li:first-child:after {
+				content: none;
+			}
+			li.active:before,
+			li.active:after {
 				color: var( --srfm-primary-color );
-				transition: 400ms ease;
+				border-color: var( --srfm-primary-color );
 			}
-		}
-		.srfm-text-wrap.active div.srfm-circle {
-			border-color: var( --srfm-primary-color );
-			color: var( --srfm-primary-color );
-			.srfm-circle-content {
-				color: var( --srfm-primary-color );
-			}
-			&.filled {
+			li.active:after {
 				background-color: var( --srfm-primary-color );
-				.srfm-circle-content {
-					color: var( --srfm-base-background-color );
-				}
+			}
+			li.filled:before,
+			li.filled:after {
+				background-color: var( --srfm-primary-color );
+				color: var( --srfm-base-background-color );
+				border-color: var( --srfm-primary-color );
+			}
+			.srfm-circle-text {
+				color: var( --srfm-border-color );
+			}
+			li.active .srfm-circle-text {
+				color: var( --srfm-primary-color );
 			}
 		}
 	}
@@ -140,7 +126,7 @@
 		align-items: center;
 		justify-content: space-between;
 		.srfm-steps-content {
-			color:  #4a5c5c;
+			color: #4a5c5c;
 			font-size: 0.7em;
 			font-style: normal;
 			font-weight: 500;
@@ -149,7 +135,7 @@
 				display: flex;
 				gap: 0.6em;
 				.srfm-steps-page-title {
-					color: var( --srfm-primary-color );
+					color: #4a5c5c;
 				}
 			}
 		}

@@ -53,6 +53,8 @@ const default_keys = {
 	_srfm_first_page_label: 'Page break',
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,
+	_srfm_previous_button_text: 'Previous',
+	_srfm_next_button_text: 'Next',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
