@@ -21,14 +21,12 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import MultiButtonsControl from '@Components/multi-buttons-control';
 /**
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -42,7 +40,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		fieldWidth,
 		label,
 		singleSelection,
-		style,
 		help,
 		block_id,
 		errorMsg,
@@ -50,8 +47,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
-	const [ newOption, setNewOption ] = useState( { optionTitle: '' } );
+	const [ newOption, setNewOption ] = useState( options );
 	const blockProps = useBlockProps();
 
 	const addOption = () => {
@@ -59,10 +55,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			optionTitle:
 				__( 'Option ', 'sureforms' ) + `${ options.length + 1 }`,
 		};
-		options[ options.length ] = newOptions;
-		const addNewOption = options.map( ( item ) => item );
 
-		setAttributes( { options: addNewOption } );
+		setAttributes( {
+			options: [ ...options, newOptions ],
+		} );
 	};
 
 	const changeOption = ( e, index ) => {
@@ -352,38 +348,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							{ 'classic' ===
-							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
