@@ -44,11 +44,11 @@ module.exports = {
 			__dirname,
 			'src/admin/single-form-settings/Editor.js'
 		),
-		formSubmitJS: path.resolve(
+		formSubmit: path.resolve(
 			__dirname,
 			'assets/js/unminified/form-submit.js'
 		),
-		pageBreakJS: path.resolve(
+		pageBreak: path.resolve(
 			__dirname,
 			'assets/js/unminified/page-break.js'
 		),

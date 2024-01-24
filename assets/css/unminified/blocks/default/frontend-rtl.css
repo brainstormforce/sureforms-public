@@ -698,21 +698,19 @@
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li:first-child:after {
   content: none;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:before,
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:after {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:before, .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:after {
   color: var(--srfm-primary-color);
   border-color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:after {
   background-color: var(--srfm-primary-color);
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:before,
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:after {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:before, .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:after {
   background-color: var(--srfm-primary-color);
   color: var(--srfm-base-background-color);
   border-color: var(--srfm-primary-color);
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector .srfm-circle-text {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li .srfm-circle-text {
   color: var(--srfm-border-color);
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active .srfm-circle-text {

@@ -70,7 +70,7 @@ class SF_Public {
 		// Int-tel-input CSS.
 		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SUREFORMS_VER );
 
-		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/build/formSubmitJS.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/build/formSubmit.js', [], SUREFORMS_VER, true );
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SUREFORMS_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 
@@ -132,7 +132,7 @@ class SF_Public {
 			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
 		}
 		if ( 'page-break' === $block_name ) {
-			wp_enqueue_script( 'srfm-page-break-script', SUREFORMS_URL . 'assets/build/pageBreakJS.js', [ 'srfm-form-submit' ], SUREFORMS_VER, true );
+			wp_enqueue_script( 'srfm-page-break-script', SUREFORMS_URL . 'assets/build/pageBreak.js', [ 'srfm-form-submit' ], SUREFORMS_VER, true );
 		}
 	}
 
