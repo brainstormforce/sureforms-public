@@ -90,6 +90,8 @@ class Generate_Form_Markup {
 			$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
 			$page_break_first_label   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ) : '';
 			$page_break_toggle_label  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ) : '';
+			$previous_btn_text        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ) : 'Previous';
+			$next_btn_text            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ) : 'Next';
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
@@ -229,10 +231,10 @@ class Generate_Form_Markup {
 				<?php if ( $is_page_break ) : ?>
 					<div class="srfm-page-break-buttons wp-block-button">
 						<button class="srfm-pre-btn wp-block-button__link">
-							Previous
+							<?php echo esc_attr( $previous_btn_text ); ?>
 						</button>
 						<button class="srfm-nxt-btn wp-block-button__link">
-							Next
+							<?php echo esc_attr( $next_btn_text ); ?>
 						</button>
 					</div>
 				<?php endif; ?>
@@ -364,7 +366,7 @@ class Generate_Form_Markup {
 	public static function render_page_break_progress_container( $page_break_progress_type ) {
 		if ( 'steps' === $page_break_progress_type ) {
 			echo '<div class="srfm-page-break-progress-container">
-					  <div class="srfm-progress"></div>
+						<ul class="srfm-progress-connector"></ul>
 				  </div>';
 		} elseif ( 'connector' === $page_break_progress_type ) {
 			echo '<div class="srfm-page-break-steps">
