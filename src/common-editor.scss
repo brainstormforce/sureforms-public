@@ -10,7 +10,7 @@
 @import "styles/variables";
 
 /* Gutenberg Reset CSS */
-.block-editor-block-inspector {
+.block-editor-block-inspector, .srfm--panel {
 	.srfm-inspector-tab {
 		.components-notice.is-warning {
 			margin-top: 20px;
@@ -18,7 +18,7 @@
 		}
 
 		.components-panel__body {
-			> div:not( .components-panel__row ):not( .srfm-select-control ) > .components-base-control {
+			> div:not( .components-panel__row ):not( .srfm-select-control ) > .components-base-control{
 				margin-bottom: $srfm-control-vertical-gap;
 			}
 			> .components-base-control {
