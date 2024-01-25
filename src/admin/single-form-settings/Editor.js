@@ -22,6 +22,7 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMEditorHeader from './SRFMEditorHeader.js';
+import { attachSidebar, toggleSidebar } from '../../../modules/quick-action-sidebar/index.js';
 
 const { select, dispatch } = wp.data;
 
@@ -53,10 +54,13 @@ const default_keys = {
 	_srfm_first_page_label: 'Page break',
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,
+	_srfm_previous_button_text: 'Previous',
+	_srfm_next_button_text: 'Next',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
+	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] = useState();
 	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
 	const { editPost } = useDispatch( editorStore );
 
@@ -235,6 +239,28 @@ const SureformsFormSpecificSettings = ( props ) => {
 		}, 100 );
 	}, [ deviceType, sureforms_keys ] );
 
+	useEffect( () => {
+		//quick action sidebar
+		// If not FSE editor, attach the sidebar to the DOM.
+		const currentUrl = new URL( window.location.href );
+		if ( '/wp-admin/site-editor.php' === currentUrl.pathname ) {
+			toggleSidebar( window.location.href );
+
+			// For FSE we are adding eventlistener to remove the sidebar when the user canvas is not editable.
+			window.navigation.addEventListener( 'navigate', ( e ) => {
+				toggleSidebar( e.destination.url );
+			} );
+		} else if ( enableQuickActionSidebar !== undefined && 'enabled' === enableQuickActionSidebar ) {
+			// Attach the sidebar to the DOM.
+			attachSidebar();
+		} else {
+			const container = document.querySelector( '.srfm-ee-quick-access' );
+			if ( container ) {
+				container.innerHTML = null;
+			}
+		}
+	}, [ enableQuickActionSidebar ] );
+
 	return (
 		<PluginDocumentSettingPanel
 			className="srfm--panel"
@@ -246,7 +272,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				defaultTab={ 'general' }
 			>
 				<InspectorTab { ...SRFMTabs.general }>
-					<AppearanceSettings default_keys={ default_keys } />
+					<AppearanceSettings default_keys={ default_keys } enableQuickActionSidebar={ enableQuickActionSidebar } setEnableQuickActionSidebar={ setEnableQuickActionSidebar } />
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<Settings default_keys={ default_keys } />

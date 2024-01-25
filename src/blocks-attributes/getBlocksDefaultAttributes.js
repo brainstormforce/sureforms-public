@@ -20,18 +20,18 @@ const default_keys = {
 	_srfm_form_container_width: { default: 650 },
 	_srfm_thankyou_message_title: { default: 'Thank you' },
 	_srfm_submit_button_text: { default: 'SUBMIT' },
+	_srfm_first_page_label: { default: 'Page break' },
+	_srfm_previous_button_text: { default: 'Previous' },
+	_srfm_next_button_text: { default: 'Next' },
 };
 
 export const blocksAttributes = {
 	input: inputAttributes.attributes,
 	email: emailAttributes.attributes,
-
 	checkbox: checkboxAttributes.attributes,
-
 	address: addressAttributes.attributes,
 	'multi-choice': multiChoiceAttributes.attributes,
 	dropdown: dropdownAttributes.attributes,
-
 	phone: phoneAttributes.attributes,
 	textarea: textareaAttributes.attributes,
 	url: urlAttributes.attributes,

@@ -3,6 +3,15 @@ class PageBreakHandler {
 	constructor( form ) {
 		this.form = form;
 		this.pageBreakContainers = form.querySelectorAll( '.srfm-page-break' );
+		if ( this.pageBreakContainers ) {
+			const isEmptyFirst = this.pageBreakContainers[ 0 ];
+			const isChild = isEmptyFirst.querySelector( 'div.srfm-block' );
+			if ( ! isChild ) {
+				isEmptyFirst.remove();
+				this.pageBreakContainers =
+					form.querySelectorAll( '.srfm-page-break' );
+			}
+		}
 		this.pageBreakLength = this.pageBreakContainers.length;
 		this.submitBtn = form.querySelector( '.srfm-submit-container' );
 		this.ajaxUrl = form.getAttribute( 'ajaxurl' );
@@ -27,6 +36,9 @@ class PageBreakHandler {
 				this.pageBreakHeader.getAttribute( 'type' );
 			this.isShowLabel =
 				this.pageBreakHeader.getAttribute( 'toggle-label' );
+			this.connectorWrapper = form.querySelector(
+				'.srfm-progress-connector'
+			);
 		}
 		this.connectorParentDiv = form.querySelector( '.srfm-steps-container' );
 		this.currentActive = 0;
@@ -46,28 +58,19 @@ class PageBreakHandler {
 	createPageBreakElements() {
 		for ( let i = 0; i < this.pageBreakLength; i++ ) {
 			if ( this.progressIndicatorType === 'steps' ) {
-				const textWrap = document.createElement( 'div' );
-				textWrap.classList.add( 'srfm-text-wrap' );
-				if ( i === 0 ) {
-					textWrap.classList.add( 'active' );
-				}
-				const circle = document.createElement( 'div' );
-				const labelWrap = document.createElement( 'div' );
-				const span = document.createElement( 'span' );
-				const spanText = document.createElement( 'span' );
-				span.classList.add( 'srfm-circle-content' );
-				labelWrap.classList.add( 'srfm-label-wrapper' );
-				spanText.classList.add( 'srfm-label-text' );
-				circle.classList.add( 'srfm-circle' );
-				span.textContent = i + 1;
-				circle.appendChild( span );
+				const liElement = document.createElement( 'li' );
+				liElement.classList.add( 'srfm-circle' );
 				if ( this.isShowLabel ) {
-					spanText.textContent =
+					const span = document.createElement( 'span' );
+					span.classList.add( 'srfm-circle-text' );
+					span.textContent =
 						this.pageBreakContainers[ i ].getAttribute( 'data' );
-					labelWrap.appendChild( spanText );
+					liElement.append( span );
 				}
-				textWrap.append( circle, labelWrap );
-				this.stepsParentDiv.appendChild( textWrap );
+				if ( i === 0 ) {
+					liElement.classList.add( 'active' );
+				}
+				this.connectorWrapper.appendChild( liElement );
 			} else if ( this.progressIndicatorType === 'connector' ) {
 				const roundDiv = document.createElement( 'div' );
 				roundDiv.className = 'srfm-round';
@@ -87,8 +90,7 @@ class PageBreakHandler {
 			}
 		}
 		if ( this.progressIndicatorType === 'steps' ) {
-			this.wraps = this.form.querySelectorAll( '.srfm-text-wrap' );
-			this.circle = this.form.querySelectorAll( '.srfm-circle' );
+			this.wraps = this.form.querySelectorAll( '.srfm-circle' );
 		} else if ( this.progressIndicatorType === 'connector' ) {
 			this.wraps = this.form.querySelectorAll( '.srfm-round' );
 			this.checkbox = this.form.querySelectorAll(
@@ -209,8 +211,8 @@ class PageBreakHandler {
 			if ( i < this.currentActive ) {
 				this.pageBreakContainers[ i ].classList.add( 'left' );
 				this.pageBreakContainers[ i ].classList.remove( 'right' );
-				if ( this.circle ) {
-					this.circle[ i ].classList.add( 'filled' );
+				if ( this.wraps && this.progressIndicatorType === 'steps' ) {
+					this.wraps[ i ].classList.add( 'filled' );
 				}
 				if ( this.checkbox ) {
 					this.checkbox[ i ].checked = true;
@@ -218,8 +220,8 @@ class PageBreakHandler {
 			} else {
 				this.pageBreakContainers[ i ].classList.add( 'right' );
 				this.pageBreakContainers[ i ].classList.remove( 'left' );
-				if ( this.circle ) {
-					this.circle[ i ].classList.remove( 'filled' );
+				if ( this.wraps && this.progressIndicatorType === 'steps' ) {
+					this.wraps[ i ].classList.remove( 'filled' );
 				}
 				if ( this.checkbox ) {
 					this.checkbox[ i ].checked = false;
@@ -241,7 +243,7 @@ class PageBreakHandler {
 		if ( this.progress ) {
 			let currWidth = 100;
 			if ( this.progressIndicatorType === 'connector' ) {
-				currWidth = 80;
+				currWidth = 100;
 			} else {
 				const parentWidth = this.progress.parentNode.offsetWidth;
 				/* eslint-disable no-mixed-operators */
@@ -272,7 +274,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	forms.forEach( ( form ) => {
 		const pageBreakHeader = new PageBreakHandler( form );
-		pageBreakHeader.createPageBreakElements();
 		pageBreakHeader.initializeFormState();
+		pageBreakHeader.createPageBreakElements();
 	} );
 } );
