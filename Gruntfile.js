@@ -240,7 +240,6 @@ module.exports = function ( grunt ) {
 					'!phpstan-baseline.neon',
 					'!phpstan.neon',
 					'!postcss.config.js',
-					'!readme.txt',
 					'!tailwind.config.js',
 					'!webpack.config.js',
 					'!node_modules/**',
