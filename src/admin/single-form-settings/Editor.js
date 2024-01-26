@@ -50,12 +50,8 @@ const default_keys = {
 	_srfm_single_page_form_title: false,
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
-	_srfm_is_page_break: false,
-	_srfm_first_page_label: 'Page break',
-	_srfm_page_break_progress_indicator: 'connector',
-	_srfm_page_break_toggle_label: false,
-	_srfm_previous_button_text: 'Previous',
-	_srfm_next_button_text: 'Next',
+	
+
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
