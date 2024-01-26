@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-26T07:16:58+01:00\n"
+"POT-Creation-Date: 2024-01-26T08:01:32+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Sorry, you are not allowed to view the form."
 msgstr ""
 
-#: inc/generate-form-markup.php:280
+#: inc/generate-form-markup.php:278
 #: templates/single-form.php:124
 msgid "There was an error trying to submit your form. Please try again."
 msgstr ""
@@ -154,7 +154,6 @@ msgstr ""
 
 #: inc/post-types.php:98
 #: inc/post-types.php:128
-#: assets/build/templatePicker.js:2
 msgid "Add New Form"
 msgstr ""
 
@@ -267,7 +266,6 @@ msgstr ""
 
 #: inc/post-types.php:166
 #: inc/post-types.php:656
-#: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
 
@@ -522,6 +520,7 @@ msgid "Separator"
 msgstr ""
 
 #: modules/gutenberg/classes/class-sureforms-spec-block-config.php:117
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5466
 #: assets/build/formEditor.js:2
 #: modules/gutenberg/build/blocks-placeholder.js:11
 #: modules/gutenberg/build/blocks.js:11
@@ -538,6 +537,7 @@ msgid "Icon"
 msgstr ""
 
 #: modules/gutenberg/classes/class-sureforms-spec-block-config.php:386
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4567
 #: modules/gutenberg/build/blocks-placeholder.js:9
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -552,6 +552,7325 @@ msgstr ""
 #: modules/gutenberg/dist/blocks/separator/class-sureforms-spec-separator.php:235
 #: modules/gutenberg/build/blocks.js:1
 msgid "Divider"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:132
+msgid "42.group"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:143
+msgid "500px"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:154
+msgid "A"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:165
+msgid "Accessible Icon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:176
+msgid "Accusoft"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:192
+msgid "Address Book"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:208
+msgid "Address Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:219
+msgid "App.net"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:230
+msgid "Adversal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:241
+msgid "affiliatetheme"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:252
+msgid "Airbnb"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:263
+msgid "Algolia"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:274
+msgid "Align Center"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:285
+msgid "Align Justify"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:296
+msgid "Align Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:307
+msgid "Align Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:318
+msgid "Alipay"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:329
+msgid "Amazon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:340
+msgid "Amazon Pay"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:351
+msgid "Amilia"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:362
+msgid "Anchor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:373
+msgid "Anchor Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:384
+msgid "Anchor Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:395
+msgid "Anchor Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:406
+msgid "Anchor Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:417
+msgid "Android"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:428
+msgid "AngelList"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:439
+msgid "Angle Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:450
+msgid "Angle Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:461
+msgid "Angle Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:472
+msgid "Angle Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:483
+msgid "Angles Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:494
+msgid "Angles Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:505
+msgid "Angles Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:516
+msgid "Angles Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:527
+msgid "Angry Creative"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:538
+msgid "Angular"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:549
+msgid "Ankh"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:560
+msgid "App Store"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:571
+msgid "iOS App Store"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:582
+msgid "Apper Systems AB"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:593
+msgid "Apple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:604
+msgid "Apple Pay"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:615
+msgid "Apple Whole"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:626
+msgid "Archway"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:637
+msgid "Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:648
+msgid "Arrow Down 1 9"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:659
+msgid "Arrow Down 9 1"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:670
+msgid "Arrow Down A Z"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:681
+msgid "Arrow Down Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:692
+msgid "Arrow Down Short Wide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:703
+msgid "Arrow Down Up Across Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:714
+msgid "Arrow Down Up Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:725
+msgid "Arrow Down Wide Short"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:736
+msgid "Arrow Down Z A"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:747
+msgid "Arrow Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:758
+msgid "Arrow Left Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:769
+msgid "Arrow Pointer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:780
+msgid "Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:791
+msgid "Arrow Right Arrow Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:802
+msgid "Arrow Right From Bracket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:813
+msgid "Arrow Right Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:824
+msgid "Arrow Right To Bracket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:835
+msgid "Arrow Right To City"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:846
+msgid "Arrow Rotate Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:857
+msgid "Arrow Rotate Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:868
+msgid "Arrow Trend Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:879
+msgid "Arrow Trend Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:890
+msgid "Arrow Turn Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:901
+msgid "Arrow Turn Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:912
+msgid "Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:923
+msgid "Arrow Up 1 9"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:934
+msgid "Arrow Up 9 1"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:945
+msgid "Arrow Up A Z"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:956
+msgid "Arrow Up From Bracket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:967
+msgid "Arrow Up From Ground Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:978
+msgid "Arrow Up From Water Pump"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:989
+msgid "Arrow Up Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1000
+msgid "Arrow Up Right Dots"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1011
+msgid "Arrow Up Right From Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1022
+msgid "Arrow Up Short Wide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1033
+msgid "Arrow Up Wide Short"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1044
+msgid "Arrow Up Z A"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1055
+msgid "Arrows Down To Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1066
+msgid "Arrows Down To People"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1077
+msgid "Arrows Left Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1088
+msgid "Arrows Left Right To Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1099
+msgid "Arrows Rotate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1110
+msgid "Arrows Spin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1121
+msgid "Arrows Split Up And Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1132
+msgid "Arrows To Circle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1143
+msgid "Arrows To Dot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1154
+msgid "Arrows To Eye"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1165
+msgid "Arrows Turn Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1176
+msgid "Arrows Turn To Dots"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1187
+msgid "Arrows Up Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1198
+msgid "Arrows Up Down Left Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1209
+msgid "Arrows Up To Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1220
+msgid "Artstation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1231
+msgid "Asterisk"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1242
+msgid "Asymmetrik, Ltd."
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1253
+msgid "At"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1264
+msgid "Atlassian"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1275
+msgid "Atom"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1286
+msgid "Audible"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1297
+msgid "Audio Description"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1308
+msgid "Austral Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1319
+msgid "Autoprefixer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1330
+msgid "avianex"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1341
+msgid "Aviato"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1352
+msgid "Award"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1363
+msgid "Amazon Web Services (AWS)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1374
+msgid "B"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1385
+msgid "Baby"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1396
+msgid "Baby Carriage"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1407
+msgid "Backward"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1418
+msgid "Backward Fast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1429
+msgid "Backward Step"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1440
+msgid "Bacon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1451
+msgid "Bacteria"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1462
+msgid "Bacterium"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1473
+msgid "Bag Shopping"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1484
+msgid "Bahai"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1495
+msgid "Baht Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1506
+msgid "Ban"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1517
+msgid "Ban Smoking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1528
+msgid "Bandage"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1539
+msgid "Bandcamp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1550
+msgid "Barcode"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1561
+msgid "Bars"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1572
+msgid "Bars Progress"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1583
+msgid "Bars Staggered"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1594
+msgid "Baseball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1605
+msgid "Baseball Bat Ball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1616
+msgid "Basket Shopping"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1627
+msgid "Basketball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1638
+msgid "Bath"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1649
+msgid "Battery Empty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1660
+msgid "Battery Full"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1671
+msgid "Battery Half"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1682
+msgid "Battery Quarter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1693
+msgid "Battery Three Quarters"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1704
+msgid "Battle.net"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1715
+msgid "Bed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1726
+msgid "Bed Pulse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1737
+msgid "Beer Mug Empty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1748
+msgid "Behance"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1759
+msgid "Behance Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1775
+msgid "Bell"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1786
+msgid "Bell Concierge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1802
+msgid "Bell Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1813
+msgid "Bezier Curve"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1824
+msgid "Bicycle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1835
+msgid "Bilibili"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1846
+msgid "BIMobject"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1857
+msgid "Binoculars"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1868
+msgid "Biohazard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1879
+msgid "Bitbucket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1890
+msgid "Bitcoin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1901
+msgid "Bitcoin Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1912
+msgid "Bity"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1923
+msgid "Font Awesome Black Tie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1934
+msgid "BlackBerry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1945
+msgid "Blender"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1956
+msgid "Blender Phone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1967
+msgid "Blog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1978
+msgid "Blogger"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:1989
+msgid "Blogger B"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2000
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2011
+msgid "Bluetooth"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2022
+msgid "Bold"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2033
+msgid "Bolt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2044
+msgid "Bolt Lightning"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2055
+msgid "Bomb"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2066
+msgid "Bone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2077
+msgid "Bong"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2088
+msgid "Book"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2099
+msgid "Book Atlas"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2110
+msgid "Book Bible"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2121
+msgid "Book Bookmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2132
+msgid "Book Journal Whills"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2143
+msgid "Book Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2154
+msgid "Book Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2165
+msgid "Book Open Reader"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2176
+msgid "Book Quran"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2187
+msgid "Book Skull"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2203
+msgid "Bookmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2214
+msgid "Bootstrap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2225
+msgid "Border All"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2236
+msgid "Border None"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2247
+msgid "Border Top Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2258
+msgid "Bore Hole"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2269
+msgid "Bots"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2280
+msgid "Bottle Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2291
+msgid "Bottle Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2302
+msgid "Bowl Food"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2313
+msgid "Bowl Rice"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2324
+msgid "Bowling Ball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2335
+msgid "Box"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2346
+msgid "Box Archive"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2357
+msgid "Box Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2368
+msgid "Box Tissue"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2379
+msgid "Boxes Packing"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2390
+msgid "Boxes Stacked"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2401
+msgid "Braille"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2412
+msgid "Brain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2423
+msgid "Brazilian Real Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2434
+msgid "Bread Slice"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2445
+msgid "Bridge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2456
+msgid "Bridge Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2467
+msgid "Bridge Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2478
+msgid "Bridge Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2489
+msgid "Bridge Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2500
+msgid "Bridge Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2511
+msgid "Briefcase"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2522
+msgid "Briefcase Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2533
+msgid "Broom"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2544
+msgid "Broom Ball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2555
+msgid "Brush"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2566
+msgid "BTC"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2577
+msgid "Bucket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2588
+msgid "Buffer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2599
+msgid "Bug"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2610
+msgid "Bug Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2621
+msgid "Bugs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2637
+msgid "Building"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2648
+msgid "Building Circle Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2659
+msgid "Building Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2670
+msgid "Building Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2681
+msgid "Building Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2692
+msgid "Building Columns"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2703
+msgid "Building Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2714
+msgid "Building Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2725
+msgid "Building Ngo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2736
+msgid "Building Shield"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2747
+msgid "Building Un"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2758
+msgid "Building User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2769
+msgid "Building Wheat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2780
+msgid "Bullhorn"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2791
+msgid "Bullseye"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2802
+msgid "Burger"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2813
+msgid "Büromöbel-Experte GmbH & Co. KG."
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2824
+msgid "Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2835
+msgid "Bus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2846
+msgid "Bus Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2857
+msgid "Business Time"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2868
+msgid "Buy n Large"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2879
+msgid "BuySellAds"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2890
+msgid "C"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2901
+msgid "Cake Candles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2912
+msgid "Calculator"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2928
+msgid "Calendar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2944
+msgid "Calendar Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2955
+msgid "Calendar Day"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2971
+msgid "Calendar Days"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:2987
+msgid "Calendar Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3003
+msgid "Calendar Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3014
+msgid "Calendar Week"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3030
+msgid "Calendar Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3041
+msgid "Camera"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3052
+msgid "Camera Retro"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3063
+msgid "Camera Rotate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3074
+msgid "Campground"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3085
+msgid "Canadian Maple Leaf"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3096
+msgid "Candy Cane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3107
+msgid "Cannabis"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3118
+msgid "Capsules"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3129
+msgid "Car"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3140
+msgid "Car Battery"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3151
+msgid "Car Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3162
+msgid "Car On"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3173
+msgid "Car Rear"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3184
+msgid "Car Side"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3195
+msgid "Car Tunnel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3206
+msgid "Caravan"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3217
+msgid "Caret Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3228
+msgid "Caret Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3239
+msgid "Caret Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3250
+msgid "Caret Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3261
+msgid "Carrot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3272
+msgid "Cart Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3283
+msgid "Cart Flatbed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3294
+msgid "Cart Flatbed Suitcase"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3305
+msgid "Cart Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3316
+msgid "Cart Shopping"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3327
+msgid "Cash Register"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3338
+msgid "Cat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3349
+msgid "Amazon Pay Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3360
+msgid "American Express Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3371
+msgid "Apple Pay Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3382
+msgid "Diner's Club Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3393
+msgid "Discover Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3404
+msgid "JCB Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3415
+msgid "MasterCard Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3426
+msgid "Paypal Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3437
+msgid "Stripe Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3448
+msgid "Visa Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3459
+msgid "Cedi Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3470
+msgid "Cent Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3481
+msgid "Centercode"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3492
+msgid "Centos"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3503
+msgid "Certificate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3514
+msgid "Chair"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3525
+msgid "Chalkboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3536
+msgid "Chalkboard User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3547
+msgid "Champagne Glasses"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3558
+msgid "Charging Station"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3569
+msgid "Chart Area"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3585
+msgid "Chart Bar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3596
+msgid "Chart Column"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3607
+msgid "Chart Gantt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3618
+msgid "Chart Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3629
+msgid "Chart Pie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3640
+msgid "Chart Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3651
+msgid "Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3662
+msgid "Check Double"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3673
+msgid "Check To Slot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3684
+msgid "Cheese"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3695
+msgid "Chess"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3711
+msgid "Chess Bishop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3722
+msgid "Chess Board"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3738
+msgid "Chess King"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3754
+msgid "Chess Knight"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3770
+msgid "Chess Pawn"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3786
+msgid "Chess Queen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3802
+msgid "Chess Rook"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3813
+msgid "Chevron Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3824
+msgid "Chevron Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3835
+msgid "Chevron Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3846
+msgid "Chevron Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3857
+msgid "Child"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3868
+msgid "Child Dress"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3879
+msgid "Child Reaching"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3890
+msgid "Child Rifle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3901
+msgid "Children"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3912
+msgid "Chrome"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3923
+msgid "Chromecast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3934
+msgid "Church"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3950
+#: modules/gutenberg/build/blocks.js:15
+msgid "Circle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3961
+msgid "Circle Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3972
+msgid "Circle Arrow Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3983
+msgid "Circle Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:3994
+msgid "Circle Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4010
+msgid "Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4021
+msgid "Circle Chevron Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4032
+msgid "Circle Chevron Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4043
+msgid "Circle Chevron Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4054
+msgid "Circle Chevron Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4065
+msgid "Circle Dollar To Slot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4081
+msgid "Circle Dot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4097
+msgid "Circle Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4108
+msgid "Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4119
+msgid "Circle H"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4130
+msgid "Circle Half Stroke"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4141
+msgid "Circle Info"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4157
+msgid "Circle Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4168
+msgid "Circle Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4179
+msgid "Circle Nodes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4190
+msgid "Circle Notch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4206
+msgid "Circle Pause"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4222
+msgid "Circle Play"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4233
+msgid "Circle Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4249
+msgid "Circle Question"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4260
+msgid "Circle Radiation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4276
+msgid "Circle Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4292
+msgid "Circle Stop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4308
+msgid "Circle Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4324
+msgid "Circle User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4340
+msgid "Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4351
+#: assets/build/blocks.js:2
+msgid "City"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4362
+msgid "Clapperboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4378
+msgid "Clipboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4389
+msgid "Clipboard Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4400
+msgid "Clipboard List"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4411
+msgid "Clipboard Question"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4422
+msgid "Clipboard User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4438
+msgid "Clock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4449
+msgid "Clock Rotate Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4465
+msgid "Clone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4481
+msgid "Closed Captioning"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4492
+msgid "Cloud"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4503
+msgid "Cloud Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4514
+msgid "Cloud Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4525
+msgid "Cloud Bolt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4536
+msgid "Cloud Meatball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4547
+msgid "Cloud Moon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4558
+msgid "Cloud Moon Rain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4569
+msgid "Cloud Rain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4580
+msgid "Cloud Showers Heavy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4591
+msgid "Cloud Showers Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4602
+msgid "Cloud Sun"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4613
+msgid "Cloud Sun Rain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4624
+msgid "Cloudflare"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4635
+msgid "cloudscale.ch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4646
+msgid "Cloudsmith"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4657
+msgid "cloudversify"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4668
+msgid "Clover"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4679
+msgid "Cmplid"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4690
+msgid "Code"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4701
+msgid "Code Branch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4712
+msgid "Code Commit"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4723
+msgid "Code Compare"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4734
+msgid "Code Fork"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4745
+msgid "Code Merge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4756
+msgid "Code Pull Request"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4767
+msgid "Codepen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4778
+msgid "Codie Pie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4789
+msgid "Coins"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4800
+msgid "Colon Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4816
+msgid "Comment"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4827
+msgid "Comment Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4843
+msgid "Comment Dots"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4854
+msgid "Comment Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4865
+msgid "Comment Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4876
+msgid "Comment Sms"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4892
+msgid "Comments"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4903
+msgid "Comments Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4914
+msgid "Compact Disc"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4930
+msgid "Compass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4941
+msgid "Compass Drafting"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4952
+msgid "Compress"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4963
+msgid "Computer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4974
+msgid "Computer Mouse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4985
+msgid "Confluence"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:4996
+msgid "Connect Develop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5007
+msgid "Contao"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5018
+msgid "Cookie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5029
+msgid "Cookie Bite"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5045
+msgid "Copy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5061
+msgid "Copyright"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5072
+msgid "Cotton Bureau"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5083
+msgid "Couch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5094
+msgid "Cow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5105
+msgid "cPanel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5116
+msgid "Creative Commons"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5127
+msgid "Creative Commons Attribution"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5138
+msgid "Creative Commons Noncommercial"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5149
+msgid "Creative Commons Noncommercial (Euro Sign)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5160
+msgid "Creative Commons Noncommercial (Yen Sign)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5171
+msgid "Creative Commons No Derivative Works"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5182
+msgid "Creative Commons Public Domain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5193
+msgid "Alternate Creative Commons Public Domain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5204
+msgid "Creative Commons Remix"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5215
+msgid "Creative Commons Share Alike"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5226
+msgid "Creative Commons Sampling"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5237
+msgid "Creative Commons Sampling +"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5248
+msgid "Creative Commons Share"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5259
+msgid "Creative Commons CC0"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5275
+msgid "Credit Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5286
+msgid "Critical Role"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5297
+#: modules/gutenberg/build/blocks.js:17
+msgid "Crop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-0.php:5308
+msgid "Crop Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:22
+msgid "Cross"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:33
+msgid "Crosshairs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:44
+msgid "Crow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:55
+msgid "Crown"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:66
+msgid "Crutch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:77
+msgid "Cruzeiro Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:88
+msgid "CSS 3 Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:99
+msgid "Alternate CSS3 Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:110
+msgid "Cube"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:121
+msgid "Cubes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:132
+msgid "Cubes Stacked"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:143
+msgid "Cuttlefish"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:154
+msgid "D"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:165
+msgid "Dungeons & Dragons"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:176
+msgid "D&D Beyond"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:187
+msgid "dailymotion"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:198
+msgid "DashCube"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:209
+msgid "Database"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:220
+msgid "Deezer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:231
+msgid "Delete Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:242
+msgid "Delicious"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:253
+msgid "Democrat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:264
+msgid "deploy.dog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:275
+msgid "Deskpro"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:286
+#: assets/build/blocks.js:2
+#: assets/build/formEditor.js:2
+#: modules/gutenberg/build/blocks.js:1
+msgid "Desktop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:297
+msgid "DEV"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:308
+msgid "deviantART"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:319
+msgid "Dharmachakra"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:330
+msgid "DHL"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:341
+msgid "Diagram Next"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:352
+msgid "Diagram Predecessor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:363
+msgid "Diagram Project"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:374
+msgid "Diagram Successor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:385
+#: modules/gutenberg/build/blocks.js:15
+msgid "Diamond"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:396
+msgid "Diamond Turn Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:407
+msgid "Diaspora"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:418
+msgid "Dice"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:429
+msgid "Dice D20"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:440
+msgid "Dice D6"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:451
+msgid "Dice Five"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:462
+msgid "Dice Four"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:473
+msgid "Dice One"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:484
+msgid "Dice Six"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:495
+msgid "Dice Three"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:506
+msgid "Dice Two"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:517
+msgid "Digg Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:528
+msgid "Digital Ocean"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:539
+msgid "Discord"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:550
+msgid "Discourse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:561
+msgid "Disease"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:572
+msgid "Display"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:583
+msgid "Divide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:594
+msgid "Dna"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:605
+msgid "DocHub"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:616
+msgid "Docker"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:627
+msgid "Dog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:638
+msgid "Dollar Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:649
+msgid "Dolly"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:660
+msgid "Dong Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:671
+msgid "Door Closed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:682
+msgid "Door Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:693
+msgid "Dove"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:704
+msgid "Down Left And Up Right To Center"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:715
+msgid "Down Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:726
+msgid "Download"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:737
+msgid "Draft2digital"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:748
+msgid "Dragon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:759
+msgid "Draw Polygon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:770
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2037
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3435
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3468
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3699
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3941
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4989
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:110
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:374
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:720
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2502
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2979
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3771
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3826
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4606
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:863
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1529
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1665
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3203
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3291
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4088
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4198
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4605
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5005
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5170
+msgid "Dribbble"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:781
+msgid "Dribbble Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:792
+msgid "Dropbox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:803
+msgid "Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:814
+msgid "Droplet Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:825
+msgid "Drum"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:836
+msgid "Drum Steelpan"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:847
+msgid "Drumstick Bite"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:858
+msgid "Drupal Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:869
+msgid "Dumbbell"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:880
+msgid "Dumpster"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:891
+msgid "Dumpster Fire"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:902
+msgid "Dungeon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:913
+msgid "Dyalog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:924
+msgid "E"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:935
+msgid "Ear Deaf"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:946
+msgid "Ear Listen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:957
+msgid "Earlybirds"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:968
+msgid "Earth Africa"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:979
+msgid "Earth Americas"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:990
+msgid "Earth Asia"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1001
+msgid "Earth Europe"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1012
+msgid "Earth Oceania"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1023
+msgid "eBay"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1034
+msgid "Edge Browser"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1045
+msgid "Edge Legacy Browser"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1056
+msgid "Egg"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1067
+msgid "Eject"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1078
+msgid "Elementor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1089
+msgid "Elevator"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1100
+msgid "Ellipsis"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1111
+msgid "Ellipsis Vertical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1122
+msgid "Ello"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1133
+msgid "Ember"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1144
+msgid "Galactic Empire"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1160
+msgid "Envelope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1171
+msgid "Envelope Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1187
+msgid "Envelope Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1198
+msgid "Envelope Open Text"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1209
+msgid "Envelopes Bulk"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1220
+msgid "Envira Gallery"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1231
+msgid "Equals"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1242
+msgid "Eraser"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1253
+msgid "Erlang"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1264
+msgid "Ethereum"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1275
+msgid "Ethernet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1286
+msgid "Etsy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1297
+msgid "Euro Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1308
+msgid "Evernote"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1319
+msgid "Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1330
+msgid "Expand"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1341
+msgid "ExpeditedSSL"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1352
+msgid "Explosion"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1368
+msgid "Eye"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1379
+msgid "Eye Dropper"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1390
+msgid "Eye Low Vision"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1406
+msgid "Eye Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1417
+msgid "F"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1433
+msgid "Face Angry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1449
+msgid "Face Dizzy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1465
+msgid "Face Flushed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1481
+msgid "Face Frown"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1497
+msgid "Face Frown Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1513
+msgid "Face Grimace"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1529
+msgid "Face Grin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1545
+msgid "Face Grin Beam"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1561
+msgid "Face Grin Beam Sweat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1577
+msgid "Face Grin Hearts"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1593
+msgid "Face Grin Squint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1609
+msgid "Face Grin Squint Tears"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1625
+msgid "Face Grin Stars"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1641
+msgid "Face Grin Tears"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1657
+msgid "Face Grin Tongue"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1673
+msgid "Face Grin Tongue Squint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1689
+msgid "Face Grin Tongue Wink"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1705
+msgid "Face Grin Wide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1721
+msgid "Face Grin Wink"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1737
+msgid "Face Kiss"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1753
+msgid "Face Kiss Beam"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1769
+msgid "Face Kiss Wink Heart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1785
+msgid "Face Laugh"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1801
+msgid "Face Laugh Beam"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1817
+msgid "Face Laugh Squint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1833
+msgid "Face Laugh Wink"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1849
+msgid "Face Meh"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1865
+msgid "Face Meh Blank"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1881
+msgid "Face Rolling Eyes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1897
+msgid "Face Sad Cry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1913
+msgid "Face Sad Tear"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1929
+msgid "Face Smile"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1945
+msgid "Face Smile Beam"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1961
+msgid "Face Smile Wink"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1977
+msgid "Face Surprise"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:1993
+msgid "Face Tired"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2004
+msgid "Facebook"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2015
+msgid "Facebook F"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2026
+msgid "Facebook Messenger"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2048
+msgid "Fan"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2059
+msgid "Fantasy Flight-games"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2070
+msgid "Faucet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2081
+msgid "Faucet Drip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2092
+msgid "Fax"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2103
+msgid "Feather"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2114
+msgid "Feather Pointed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2125
+msgid "FedEx"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2136
+msgid "Fedora"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2147
+msgid "Ferry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2158
+msgid "Figma"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2174
+msgid "File"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2185
+msgid "File Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2196
+msgid "File Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2212
+msgid "File Audio"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2223
+msgid "File Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2234
+msgid "File Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2245
+msgid "File Circle Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2256
+msgid "File Circle Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2267
+msgid "File Circle Question"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2278
+msgid "File Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2294
+msgid "File Code"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2305
+msgid "File Contract"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2316
+msgid "File Csv"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2332
+msgid "File Excel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2343
+msgid "File Export"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2359
+msgid "File Image"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2370
+msgid "File Import"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2381
+msgid "File Invoice"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2392
+msgid "File Invoice Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2408
+msgid "File Lines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2419
+msgid "File Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2435
+msgid "File Pdf"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2446
+msgid "File Pen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2462
+msgid "File Powerpoint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2473
+msgid "File Prescription"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2484
+msgid "File Shield"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2495
+msgid "File Signature"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2511
+msgid "File Video"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2522
+msgid "File Waveform"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2538
+msgid "File Word"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2554
+msgid "File Zipper"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2565
+#: modules/gutenberg/build/blocks.js:15
+msgid "Fill"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2576
+msgid "Fill Drip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2587
+msgid "Film"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2598
+msgid "Filter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2609
+msgid "Filter Circle Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2620
+msgid "Filter Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2631
+msgid "Fingerprint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2642
+msgid "Fire"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2653
+msgid "Fire Burner"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2664
+msgid "Fire Extinguisher"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2675
+msgid "Fire Flame Curved"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2686
+msgid "Fire Flame Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2697
+msgid "Firefox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2708
+msgid "Firefox Browser"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2719
+msgid "First Order"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2730
+msgid "Alternate First Order"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2741
+msgid "firstdraft"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2752
+msgid "Fish"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2763
+msgid "Fish Fins"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2779
+msgid "Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2790
+msgid "Flag Checkered"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2801
+msgid "Flag Usa"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2812
+msgid "Flask"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2823
+msgid "Flask Vial"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2834
+msgid "Flickr"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2845
+msgid "Flipboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2861
+msgid "Floppy Disk"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2872
+msgid "Florin Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2883
+msgid "Fly"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2899
+msgid "Folder"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2915
+msgid "Folder Closed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2926
+msgid "Folder Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2942
+msgid "Folder Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2953
+msgid "Folder Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2964
+msgid "Folder Tree"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2975
+msgid "Font"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:2996
+msgid "Font Awesome"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3007
+msgid "Fonticons"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3018
+msgid "Fonticons Fi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3029
+msgid "Football"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3040
+msgid "Fort Awesome"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3051
+msgid "Alternate Fort Awesome"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3062
+msgid "Forumbee"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3073
+msgid "Forward"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3084
+msgid "Forward Fast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3095
+msgid "Forward Step"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3106
+msgid "Foursquare"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3117
+msgid "Franc Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3128
+msgid "freeCodeCamp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3139
+msgid "FreeBSD"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3150
+msgid "Frog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3161
+msgid "Fulcrum"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3177
+msgid "Futbol"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3188
+msgid "G"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3199
+msgid "Galactic Republic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3210
+msgid "Galactic Senate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3221
+msgid "Gamepad"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3232
+msgid "Gas Pump"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3243
+msgid "Gauge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3254
+msgid "Gauge High"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3265
+msgid "Gauge Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3276
+msgid "Gauge Simple High"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3287
+msgid "Gavel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3298
+msgid "Gear"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3309
+msgid "Gears"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3325
+msgid "Gem"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3336
+msgid "Genderless"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3347
+msgid "Get Pocket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3358
+msgid "GG Currency"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3369
+msgid "GG Currency Circle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3380
+msgid "Ghost"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3391
+msgid "Gift"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3402
+msgid "Gifts"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3413
+msgid "Git"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3424
+msgid "Git Alt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3446
+msgid "GitHub"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3457
+msgid "Alternate GitHub"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3479
+msgid "GitKraken"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3490
+msgid "GitLab"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3501
+msgid "Gitter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3512
+msgid "Glass Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3523
+msgid "Glass Water Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3534
+msgid "Glasses"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3545
+msgid "Glide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3556
+msgid "Glide G"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3567
+msgid "Globe"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3578
+msgid "Gofore"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3589
+msgid "Go"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3600
+msgid "Golf Ball Tee"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3611
+msgid "Goodreads"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3622
+msgid "Goodreads G"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3633
+msgid "Google Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3644
+msgid "Google Drive"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3655
+msgid "Google Pay"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3666
+msgid "Google Play"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3677
+msgid "Google Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3688
+msgid "Google Plus G"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3710
+msgid "Google Wallet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3721
+msgid "Gopuram"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3732
+msgid "Graduation Cap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3743
+msgid "Gratipay (Gittip)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3754
+msgid "Grav"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3765
+msgid "Greater Than"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3776
+msgid "Greater Than Equal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3787
+msgid "Grip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3798
+msgid "Grip Lines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3809
+msgid "Grip Lines Vertical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3820
+msgid "Grip Vertical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3831
+msgid "Gripfire, Inc."
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3842
+msgid "Group Arrows Rotate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3853
+msgid "Grunt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3864
+msgid "Guarani Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3875
+msgid "Guilded"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3886
+msgid "Guitar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3897
+msgid "Gulp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3908
+msgid "Gun"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3919
+msgid "H"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3930
+msgid "Hacker News"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3952
+msgid "Hackerrank"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3963
+msgid "Hammer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3974
+msgid "Hamsa"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:3990
+msgid "Hand"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4006
+msgid "Hand Back Fist"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4017
+msgid "Hand Dots"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4028
+msgid "Hand Fist"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4039
+msgid "Hand Holding"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4050
+msgid "Hand Holding Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4061
+msgid "Hand Holding Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4072
+msgid "Hand Holding Hand"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4083
+msgid "Hand Holding Heart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4094
+msgid "Hand Holding Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4110
+msgid "Hand Lizard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4121
+msgid "Hand Middle Finger"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4137
+msgid "Hand Peace"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4153
+msgid "Hand Point Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4169
+msgid "Hand Point Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4185
+msgid "Hand Point Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4201
+msgid "Hand Point Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4217
+msgid "Hand Pointer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4233
+msgid "Hand Scissors"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4244
+msgid "Hand Sparkles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4260
+msgid "Hand Spock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4271
+msgid "Handcuffs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4282
+msgid "Hands"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4293
+msgid "Hands Asl Interpreting"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4304
+msgid "Hands Bound"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4315
+msgid "Hands Bubbles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4326
+msgid "Hands Clapping"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4337
+msgid "Hands Holding"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4348
+msgid "Hands Holding Child"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4359
+msgid "Hands Holding Circle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4370
+msgid "Hands Praying"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4386
+msgid "Handshake"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4397
+msgid "Handshake Angle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4408
+msgid "Handshake Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4419
+msgid "Handshake Simple Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4430
+msgid "Handshake Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4441
+msgid "Hanukiah"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4457
+msgid "Hard Drive"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4468
+msgid "Hashnode"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4479
+msgid "Hashtag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4490
+msgid "Hat Cowboy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4501
+msgid "Hat Cowboy Side"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4512
+msgid "Hat Wizard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4523
+msgid "Head Side Cough"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4534
+msgid "Head Side Cough Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4545
+msgid "Head Side Mask"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4556
+msgid "Head Side Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4578
+msgid "Headphones"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4589
+msgid "Headphones Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4600
+msgid "Headset"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4616
+msgid "Heart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4627
+msgid "Heart Circle Bolt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4638
+msgid "Heart Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4649
+msgid "Heart Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4660
+msgid "Heart Circle Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4671
+msgid "Heart Circle Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4682
+msgid "Heart Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4693
+msgid "Heart Crack"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4704
+msgid "Heart Pulse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4715
+msgid "Helicopter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4726
+msgid "Helicopter Symbol"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4737
+msgid "Helmet Safety"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4748
+msgid "Helmet Un"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4759
+msgid "Highlighter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4770
+msgid "Hill Avalanche"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4781
+msgid "Hill Rockslide"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4792
+msgid "Hippo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4803
+msgid "Hips"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4814
+msgid "HireAHelper"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4825
+msgid "Hive Blockchain Network"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4836
+msgid "Hockey Puck"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4847
+msgid "Holly Berry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4858
+msgid "Hooli"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4869
+msgid "Hornbill"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4880
+msgid "Horse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4891
+msgid "Horse Head"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4907
+msgid "Hospital"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4918
+msgid "Hospital User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4929
+msgid "Hot Tub Person"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4940
+msgid "Hotdog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4951
+msgid "Hotel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4962
+msgid "Hotjar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:4978
+msgid "Hourglass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5000
+msgid "Hourglass End"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5011
+msgid "Hourglass Start"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5022
+msgid "House"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5033
+msgid "House Chimney"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5044
+msgid "House Chimney Crack"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5055
+msgid "House Chimney Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5066
+msgid "House Chimney User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5077
+msgid "House Chimney Window"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5088
+msgid "House Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5099
+msgid "House Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5110
+msgid "House Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5121
+msgid "House Crack"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5132
+msgid "House Fire"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5143
+msgid "House Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5154
+msgid "House Flood Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5165
+msgid "House Flood Water Circle Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5176
+msgid "House Laptop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5187
+msgid "House Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5198
+msgid "House Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5209
+msgid "House Medical Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5220
+msgid "House Medical Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5231
+msgid "House Medical Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5242
+msgid "House Medical Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5253
+msgid "House Signal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5264
+msgid "House Tsunami"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5275
+msgid "House User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5286
+msgid "Houzz"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5297
+msgid "Hryvnia Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5308
+msgid "HTML 5 Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5319
+msgid "HubSpot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5330
+msgid "Hurricane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5341
+msgid "I"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5352
+msgid "I Cursor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5363
+msgid "Ice Cream"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5374
+msgid "Icicles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5385
+msgid "Icons"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5401
+msgid "Id Badge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5417
+msgid "Id Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5428
+msgid "Id Card Clip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5439
+msgid "iDeal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5450
+msgid "Igloo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5477
+msgid "Image Portrait"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-1.php:5493
+msgid "Images"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:22
+msgid "IMDB"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:33
+msgid "Inbox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:44
+msgid "Indent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:55
+msgid "Indian Rupee Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:66
+msgid "Industry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:88
+msgid "Info"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:99
+msgid "Instagram"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:121
+msgid "InstaLOD"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:132
+msgid "Intercom"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:143
+msgid "Internet-explorer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:154
+msgid "InVision"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:165
+msgid "ioxhost"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:176
+#: modules/gutenberg/build/blocks.js:7
+msgid "Italic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:187
+msgid "itch.io"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:198
+msgid "iTunes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:209
+msgid "Itunes Note"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:220
+msgid "J"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:231
+msgid "Jar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:242
+msgid "Jar Wheat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:253
+msgid "Java"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:264
+msgid "Jedi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:275
+msgid "Jedi Order"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:286
+msgid "Jenkis"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:297
+msgid "Jet Fighter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:308
+msgid "Jet Fighter Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:319
+msgid "Jira"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:330
+msgid "Joget"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:341
+msgid "Joint"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:352
+msgid "Joomla Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:363
+msgid "JavaScript (JS)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:385
+msgid "jsFiddle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:396
+msgid "Jug Detergent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:407
+msgid "K"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:418
+msgid "Kaaba"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:429
+msgid "Kaggle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:440
+msgid "Key"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:451
+msgid "Keybase"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:467
+msgid "Keyboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:478
+msgid "KeyCDN"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:489
+msgid "Khanda"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:500
+msgid "Kickstarter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:511
+msgid "Kickstarter K"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:522
+msgid "Kip Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:533
+msgid "Kit Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:544
+msgid "Kitchen Set"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:555
+msgid "Kiwi Bird"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:566
+msgid "KORVUE"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:577
+msgid "L"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:588
+msgid "Land Mine On"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:599
+msgid "Landmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:610
+msgid "Landmark Dome"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:621
+msgid "Landmark Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:632
+msgid "Language"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:643
+msgid "Laptop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:654
+msgid "Laptop Code"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:665
+msgid "Laptop File"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:676
+msgid "Laptop Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:687
+msgid "Laravel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:698
+msgid "Lari Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:709
+msgid "last.fm"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:731
+msgid "Layer Group"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:742
+msgid "Leaf"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:753
+msgid "Leanpub"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:764
+msgid "Left Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:775
+msgid "Left Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:791
+msgid "Lemon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:802
+msgid "Less"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:813
+msgid "Less Than"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:824
+msgid "Less Than Equal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:840
+msgid "Life Ring"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:856
+msgid "Lightbulb"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:867
+msgid "Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:878
+msgid "Lines Leaning"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:889
+#: modules/gutenberg/build/blocks.js:11
+#: modules/gutenberg/build/blocks.js:17
+msgid "Link"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:900
+msgid "Link Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:911
+msgid "LinkedIn"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:922
+msgid "LinkedIn In"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:933
+msgid "Linode"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:944
+msgid "Linux"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:955
+msgid "Lira Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:966
+msgid "List"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:977
+msgid "List Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:988
+msgid "List Ol"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:999
+msgid "List Ul"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1010
+msgid "Litecoin Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1021
+msgid "Location Arrow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1032
+msgid "Location Crosshairs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1043
+msgid "Location Dot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1054
+msgid "Location Pin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1065
+msgid "Location Pin Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1076
+msgid "Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1087
+msgid "Lock Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1098
+msgid "Locust"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1109
+msgid "Lungs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1120
+msgid "Lungs Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1131
+msgid "lyft"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1142
+msgid "M"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1153
+msgid "Magento"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1164
+msgid "Magnet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1175
+msgid "Magnifying Glass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1186
+msgid "Magnifying Glass Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1197
+msgid "Magnifying Glass Chart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1208
+msgid "Magnifying Glass Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1219
+msgid "Magnifying Glass Location"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1230
+msgid "Magnifying Glass Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1241
+msgid "Magnifying Glass Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1252
+msgid "Mailchimp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1263
+msgid "Manat Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1274
+msgid "Mandalorian"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1290
+msgid "Map"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1301
+msgid "Map Location"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1312
+msgid "Map Location Dot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1323
+msgid "Map Pin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1334
+msgid "Markdown"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1345
+msgid "Marker"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1356
+msgid "Mars"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1367
+msgid "Mars And Venus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1378
+msgid "Mars And Venus Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1389
+msgid "Mars Double"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1400
+msgid "Mars Stroke"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1411
+msgid "Mars Stroke Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1422
+msgid "Mars Stroke Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1433
+msgid "Martini Glass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1444
+msgid "Martini Glass Citrus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1455
+msgid "Martini Glass Empty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1466
+#: modules/gutenberg/build/blocks.js:15
+msgid "Mask"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1477
+msgid "Mask Face"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1488
+msgid "Mask Ventilator"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1499
+msgid "Masks Theater"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1510
+msgid "Mastodon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1521
+msgid "Mattress Pillow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1532
+msgid "MaxCDN"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1543
+msgid "Maximize"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1554
+msgid "Material Design for Bootstrap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1565
+msgid "Medal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1576
+msgid "MedApps"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1587
+msgid "Medium"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1598
+msgid "MRT"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1609
+msgid "Meetup"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1620
+msgid "Megaport"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1631
+msgid "Memory"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1642
+msgid "Mendeley"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1653
+msgid "Menorah"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1664
+msgid "Mercury"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1680
+#: assets/build/formEditor.js:2
+msgid "Message"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1691
+msgid "Meteor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1702
+msgid "Micro.blog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1713
+msgid "Microchip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1724
+msgid "Microphone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1735
+msgid "Microphone Lines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1746
+msgid "Microphone Lines Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1757
+msgid "Microphone Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1768
+msgid "Microscope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1779
+msgid "Microsoft"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1790
+msgid "Mill Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1801
+msgid "Minimize"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1812
+msgid "Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1823
+msgid "Mitten"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1834
+msgid "Mix"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1845
+msgid "Mixcloud"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1856
+msgid "Mixer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1867
+msgid "Mizuni"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1878
+#: assets/build/blocks.js:2
+#: assets/build/formEditor.js:2
+#: modules/gutenberg/build/blocks.js:1
+msgid "Mobile"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1889
+msgid "Mobile button"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1900
+msgid "Mobile Retro"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1911
+msgid "Mobile screen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1922
+msgid "Mobile Screen Button"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1933
+msgid "MODX"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1944
+msgid "Monero"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1955
+msgid "Money Bill"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1971
+msgid "Money Bill 1"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1982
+msgid "Money Bill 1 Wave"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:1993
+msgid "Money Bill Transfer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2004
+msgid "Money Bill Trend Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2015
+msgid "Money Bill Wave"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2026
+msgid "Money Bill Wheat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2037
+msgid "Money Bills"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2048
+msgid "Money Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2059
+msgid "Money Check Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2070
+msgid "Monument"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2086
+msgid "Moon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2097
+msgid "Mortar Pestle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2108
+msgid "Mosque"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2119
+msgid "Mosquito"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2130
+msgid "Mosquito Net"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2141
+msgid "Motorcycle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2152
+msgid "Mound"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2163
+msgid "Mountain"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2174
+msgid "Mountain City"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2185
+msgid "Mountain Sun"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2196
+msgid "Mug Hot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2207
+msgid "Mug Saucer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2218
+msgid "Music"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2229
+msgid "N"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2240
+msgid "Naira Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2251
+msgid "Napster"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2262
+msgid "Neos"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2273
+msgid "Network Wired"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2284
+msgid "Neuter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2300
+msgid "Newspaper"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2311
+msgid "NFC Directional"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2322
+msgid "Nfc Symbol"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2333
+msgid "Nimblr"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2344
+msgid "Node.js"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2355
+msgid "Node.js JS"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2366
+msgid "Not Equal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2382
+msgid "Note Sticky"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2393
+msgid "Notes Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2404
+msgid "npm"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2415
+msgid "NS8"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2426
+msgid "Nutritionix"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2437
+msgid "O"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2453
+msgid "Object Group"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2469
+msgid "Object Ungroup"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2480
+msgid "Octopus Deploy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2491
+msgid "Odnoklassniki"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2513
+msgid "Oil Can"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2524
+msgid "Oil Well"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2535
+msgid "Old Republic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2546
+msgid "Om"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2557
+msgid "OpenCart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2568
+msgid "OpenID"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2579
+msgid "Opera"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2590
+msgid "Optin Monster"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2601
+msgid "ORCID"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2612
+msgid "Open Source Initiative"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2623
+msgid "Otter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2634
+msgid "Outdent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2645
+#: modules/gutenberg/build/blocks.js:7
+#: modules/gutenberg/build/blocks.js:11
+msgid "P"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2656
+msgid "Padlet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2667
+msgid "page4 Corporation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2678
+msgid "Pagelines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2689
+msgid "Pager"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2700
+msgid "Paint Roller"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2711
+msgid "Paintbrush"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2722
+msgid "Palette"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2733
+msgid "Palfed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2744
+msgid "Pallet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2755
+msgid "Panorama"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2771
+msgid "Paper Plane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2782
+msgid "Paperclip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2793
+msgid "Parachute Box"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2804
+msgid "Paragraph"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2815
+msgid "Passport"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2831
+msgid "Paste"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2842
+msgid "Patreon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2853
+msgid "Pause"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2864
+msgid "Paw"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2875
+msgid "Paypal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2886
+msgid "Peace"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2897
+msgid "Pen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2908
+msgid "Pen Clip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2919
+msgid "Pen Fancy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2930
+msgid "Pen Nib"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2941
+msgid "Pen Ruler"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2957
+msgid "Pen To Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2968
+msgid "Pencil"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:2990
+msgid "People Carry Box"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3001
+msgid "People Group"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3012
+msgid "People Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3023
+msgid "People Pulling"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3034
+msgid "People Robbery"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3045
+msgid "People Roof"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3056
+msgid "Pepper Hot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3067
+msgid "PerByte"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3078
+msgid "Percent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3089
+msgid "Periscope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3100
+msgid "Person"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3111
+msgid "Person Arrow Down To Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3122
+msgid "Person Arrow Up From Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3133
+msgid "Person Biking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3144
+msgid "Person Booth"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3155
+msgid "Person Breastfeeding"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3166
+msgid "Person Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3177
+msgid "Person Cane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3188
+msgid "Person Chalkboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3199
+msgid "Person Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3210
+msgid "Person Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3221
+msgid "Person Circle Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3232
+msgid "Person Circle Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3243
+msgid "Person Circle Question"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3254
+msgid "Person Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3265
+msgid "Person Digging"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3276
+msgid "Person Dots From Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3287
+msgid "Person Dress"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3298
+msgid "Person Dress Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3309
+msgid "Person Drowning"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3320
+msgid "Person Falling"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3331
+msgid "Person Falling Burst"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3342
+msgid "Person Half Dress"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3353
+msgid "Person Harassing"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3364
+msgid "Person Hiking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3375
+msgid "Person Military Pointing"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3386
+msgid "Person Military Rifle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3397
+msgid "Person Military To Person"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3408
+msgid "Person Praying"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3419
+msgid "Person Pregnant"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3430
+msgid "Person Rays"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3441
+msgid "Person Rifle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3452
+msgid "Person Running"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3463
+msgid "Person Shelter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3474
+msgid "Person Skating"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3485
+msgid "Person Skiing"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3496
+msgid "Person Skiing Nordic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3507
+msgid "Person Snowboarding"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3518
+msgid "Person Swimming"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3529
+msgid "Person Through Window"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3540
+msgid "Person Walking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3551
+msgid "Person Walking Arrow Loop Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3562
+msgid "Person Walking Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3573
+msgid "Person Walking Dashed Line Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3584
+msgid "Person Walking Luggage"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3595
+msgid "Person Walking With Cane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3606
+msgid "Peseta Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3617
+msgid "Peso Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3628
+msgid "Phabricator"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3639
+msgid "Phoenix Framework"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3650
+msgid "Phoenix Squadron"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3661
+msgid "Phone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3672
+msgid "Phone Flip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3683
+msgid "Phone Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3694
+msgid "Phone Volume"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3705
+msgid "Photo Film"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3716
+msgid "PHP"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3727
+msgid "Pied Piper Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3738
+msgid "Alternate Pied Piper Logo (Old)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3749
+msgid "Pied Piper Hat (Old)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3760
+msgid "Pied Piper PP Logo (Old)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3782
+msgid "Piggy Bank"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3793
+msgid "Pills"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3804
+msgid "Pinterest"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3815
+msgid "Pinterest P"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3837
+msgid "Pix"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3848
+msgid "Pizza Slice"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3859
+msgid "Place Of Worship"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3870
+msgid "Plane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3881
+msgid "Plane Arrival"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3892
+msgid "Plane Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3903
+msgid "Plane Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3914
+msgid "Plane Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3925
+msgid "Plane Departure"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3936
+msgid "Plane Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3947
+msgid "Plane Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3958
+msgid "Plane Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3969
+msgid "Plant Wilt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3980
+msgid "Plate Wheat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:3991
+msgid "Play"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4002
+msgid "PlayStation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4013
+msgid "Plug"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4024
+msgid "Plug Circle Bolt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4035
+msgid "Plug Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4046
+msgid "Plug Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4057
+msgid "Plug Circle Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4068
+msgid "Plug Circle Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4079
+msgid "Plug Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4090
+msgid "Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4101
+msgid "Plus Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4112
+msgid "Podcast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4123
+msgid "Poo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4134
+msgid "Poo Storm"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4145
+msgid "Poop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4156
+msgid "Power Off"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4167
+msgid "Prescription"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4178
+msgid "Prescription Bottle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4189
+msgid "Prescription Bottle Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4200
+msgid "Print"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4211
+msgid "Product Hunt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4222
+msgid "Pump Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4233
+msgid "Pump Soap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4244
+msgid "Pushed"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4255
+msgid "Puzzle Piece"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4266
+msgid "Python"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4277
+msgid "Q"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4288
+msgid "QQ"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4299
+msgid "Qrcode"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4310
+msgid "Question"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4321
+msgid "QuinScape"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4332
+msgid "Quora"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4343
+msgid "Quote Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4354
+msgid "Quote Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4365
+msgid "R"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4376
+msgid "R Project"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4387
+msgid "Radiation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4398
+msgid "Radio"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4409
+msgid "Rainbow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4420
+msgid "Ranking Star"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4431
+msgid "Raspberry Pi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4442
+msgid "Ravelry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4453
+msgid "React"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4464
+msgid "ReactEurope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4475
+msgid "ReadMe"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4486
+msgid "Rebel Alliance"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4497
+msgid "Receipt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4508
+msgid "Record Vinyl"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4519
+msgid "Rectangle Ad"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4535
+msgid "Rectangle List"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4551
+msgid "Rectangle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4562
+msgid "Recycle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4573
+msgid "red river"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4584
+msgid "reddit Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4595
+msgid "reddit Alien"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4617
+msgid "Redhat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4633
+msgid "Registered"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4644
+msgid "Renren"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4655
+#: modules/gutenberg/build/blocks.js:15
+msgid "Repeat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4666
+msgid "Reply"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4677
+msgid "Reply All"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4688
+msgid "replyd"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4699
+msgid "Republican"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4710
+msgid "Researchgate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4721
+msgid "Resolving"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4732
+msgid "Restroom"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4743
+msgid "Retweet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4754
+msgid "Rev.io"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4765
+msgid "Ribbon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4776
+msgid "Right From Bracket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4787
+msgid "Right Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4798
+msgid "Right Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4809
+msgid "Right To Bracket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4820
+msgid "Ring"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4831
+msgid "Road"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4842
+msgid "Road Barrier"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4853
+msgid "Road Bridge"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4864
+msgid "Road Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4875
+msgid "Road Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4886
+msgid "Road Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4897
+msgid "Road Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4908
+msgid "Road Spikes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4919
+msgid "Robot"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4930
+msgid "Rocket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4941
+msgid "Rocket.Chat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4952
+msgid "Rockrms"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4963
+msgid "Rotate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4974
+msgid "Rotate Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4985
+msgid "Rotate Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:4996
+msgid "Route"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5007
+msgid "Rss"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5018
+msgid "Ruble Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5029
+msgid "Rug"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5040
+msgid "Ruler"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5051
+msgid "Ruler Combined"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5062
+msgid "Ruler Horizontal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5073
+msgid "Ruler Vertical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5084
+msgid "Rupee Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5095
+msgid "Rupiah Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5106
+msgid "Rust"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5117
+msgid "S"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5128
+msgid "Sack Dollar"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5139
+msgid "Sack Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5150
+msgid "Safari"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5161
+msgid "Sailboat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5172
+msgid "Salesforce"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-2.php:5183
+msgid "Sass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:22
+msgid "Satellite"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:33
+msgid "Satellite Dish"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:44
+msgid "Scale Balanced"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:55
+msgid "Scale Unbalanced"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:66
+msgid "Scale Unbalanced Flip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:77
+msgid "SCHLIX"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:88
+msgid "School"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:99
+msgid "School Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:110
+msgid "School Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:121
+msgid "School Circle Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:132
+msgid "School Flag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:143
+msgid "School Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:154
+msgid "Scissors"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:165
+msgid "Screenpal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:176
+msgid "Screwdriver"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:187
+msgid "Screwdriver Wrench"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:198
+msgid "Scribd"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:209
+msgid "Scroll"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:220
+msgid "Scroll Torah"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:231
+msgid "Sd Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:242
+msgid "Searchengin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:253
+msgid "Section"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:264
+msgid "Seedling"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:275
+msgid "Sellcast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:286
+msgid "Sellsy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:297
+msgid "Server"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:308
+msgid "Servicestack"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:319
+msgid "Shapes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:330
+msgid "Share"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:346
+msgid "Share From Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:357
+msgid "Share Nodes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:368
+msgid "Sheet Plastic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:379
+msgid "Shekel Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:390
+msgid "Shield"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:401
+msgid "Shield Cat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:412
+msgid "Shield Dog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:423
+msgid "Shield Halved"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:434
+msgid "Shield Heart"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:445
+msgid "Shield Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:456
+msgid "Ship"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:467
+msgid "Shirt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:478
+msgid "Shirts in Bulk"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:489
+msgid "Shoe Prints"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:500
+msgid "Shop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:511
+msgid "Shop Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:522
+msgid "Shop Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:533
+msgid "Shopify"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:544
+msgid "Shopware"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:555
+msgid "Shower"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:566
+msgid "Shrimp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:577
+msgid "Shuffle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:588
+msgid "Shuttle Space"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:599
+msgid "Sign Hanging"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:610
+msgid "Signal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:621
+msgid "Signature"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:632
+msgid "Signs Post"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:643
+msgid "Sim Card"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:654
+msgid "SimplyBuilt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:665
+msgid "Sink"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:676
+msgid "SISTRIX"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:687
+msgid "Sitemap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:698
+msgid "Sith"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:709
+msgid "Sitrox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:720
+msgid "Sketch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:731
+msgid "Skull"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:742
+msgid "Skull Crossbones"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:753
+msgid "skyatlas"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:764
+msgid "Skype"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:775
+msgid "Slack Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:786
+#: modules/gutenberg/build/blocks.js:7
+msgid "Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:797
+msgid "Sleigh"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:808
+msgid "Sliders"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:819
+msgid "Slideshare"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:830
+msgid "Smog"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:841
+msgid "Smoking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:852
+msgid "Snapchat"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:879
+msgid "Snowflake"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:890
+msgid "Snowman"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:901
+msgid "Snowplow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:912
+msgid "Soap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:923
+msgid "Socks"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:934
+msgid "Solar Panel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:945
+msgid "Sort"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:956
+msgid "Sort Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:967
+msgid "Sort Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:978
+msgid "SoundCloud"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:989
+msgid "Sourcetree"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1000
+msgid "Spa"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1011
+msgid "Spaghetti Monster Flying"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1022
+msgid "Speakap"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1033
+msgid "Speaker Deck"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1044
+msgid "Spell Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1055
+msgid "Spider"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1066
+msgid "Spinner"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1077
+msgid "Splotch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1088
+msgid "Spoon"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1099
+msgid "Spotify"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1110
+msgid "Spray Can"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1121
+msgid "Spray Can Sparkles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1137
+msgid "Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1148
+msgid "Square Arrow Up Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1164
+msgid "Square Caret Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1180
+msgid "Square Caret Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1196
+msgid "Square Caret Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1212
+msgid "Square Caret Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1228
+msgid "Square Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1239
+msgid "Square Envelope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1250
+msgid "Font Awesome in Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1261
+msgid "Font Awesome in Square with Stroke Outline"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1277
+msgid "Square Full"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1288
+msgid "Square H"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1304
+msgid "Square Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1315
+msgid "Square Nfi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1326
+msgid "Square Parking"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1337
+msgid "Square Pen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1348
+msgid "Square Person Confined"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1359
+msgid "Square Phone"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1370
+msgid "Square Phone Flip"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1386
+msgid "Square Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1397
+msgid "Square Poll Horizontal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1408
+msgid "Square Poll Vertical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1419
+msgid "Square Root Variable"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1430
+msgid "Square Rss"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1441
+msgid "Square Share Nodes"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1452
+msgid "Square Up Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1463
+msgid "Square Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1474
+msgid "Square Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1485
+msgid "Squarespace"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1496
+msgid "Stack Exchange"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1507
+msgid "Stack Overflow"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1518
+msgid "Stackpath"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1540
+msgid "Stairs"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1551
+msgid "Stamp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1567
+msgid "Star"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1578
+msgid "Star And Crescent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1594
+msgid "Star Half"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1610
+msgid "Star Half Stroke"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1621
+msgid "Star Of David"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1632
+msgid "Star Of Life"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1643
+msgid "StayLinked"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1654
+msgid "Steam"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1676
+msgid "Steam Symbol"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1687
+msgid "Sterling Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1698
+msgid "Stethoscope"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1709
+msgid "Sticker Mule"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1720
+msgid "Stop"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1731
+msgid "Stopwatch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1742
+msgid "Stopwatch 20"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1753
+msgid "Store"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1764
+msgid "Store Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1775
+msgid "Strava"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1786
+msgid "Street View"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1797
+msgid "Strikethrough"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1808
+msgid "Stripe"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1819
+msgid "Stripe S"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1830
+msgid "Stroopwafel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1841
+msgid "Studio Vinari"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1852
+msgid "StumbleUpon Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1863
+msgid "StumbleUpon Circle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1874
+msgid "Subscript"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1885
+msgid "Suitcase"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1896
+msgid "Suitcase Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1907
+msgid "Suitcase Rolling"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1923
+msgid "Sun"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1934
+msgid "Sun Plant Wilt"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1945
+msgid "Superpowers"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1956
+msgid "Superscript"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1967
+msgid "Supple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1978
+msgid "Suse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:1989
+msgid "Swatchbook"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2000
+msgid "Swift"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2011
+msgid "Symfony"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2022
+msgid "Synagogue"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2033
+msgid "Syringe"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2044
+msgid "T"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2055
+msgid "Table"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2066
+msgid "Table Cells"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2077
+msgid "Table Cells Large"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2088
+msgid "Table Columns"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2099
+msgid "Table List"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2110
+msgid "Table Tennis Paddle Ball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2121
+#: assets/build/blocks.js:2
+#: assets/build/formEditor.js:2
+#: modules/gutenberg/build/blocks.js:1
+msgid "Tablet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2132
+msgid "Tablet Button"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2143
+msgid "Tablet Screen Button"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2154
+msgid "Tablets"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2165
+msgid "Tachograph Digital"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2176
+msgid "Tag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2187
+msgid "Tags"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2198
+msgid "Tape"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2209
+msgid "Tarp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2220
+msgid "Tarp Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2231
+msgid "Taxi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2242
+msgid "TeamSpeak"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2253
+msgid "Teeth"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2264
+msgid "Teeth Open"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2275
+msgid "Telegram"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2286
+msgid "Temperature Arrow Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2297
+msgid "Temperature Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2308
+msgid "Temperature Empty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2319
+msgid "Temperature Full"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2330
+msgid "Temperature Half"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2341
+msgid "Temperature High"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2352
+msgid "Temperature Low"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2363
+msgid "Temperature Quarter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2374
+msgid "Temperature Three Quarters"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2385
+msgid "Tencent Weibo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2396
+msgid "Tenge Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2407
+msgid "Tent"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2418
+msgid "Tent Arrow Down To Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2429
+msgid "Tent Arrow Left Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2440
+msgid "Tent Arrow Turn Left"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2451
+msgid "Tent Arrows Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2462
+msgid "Tents"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2473
+msgid "Terminal"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2484
+msgid "Text Height"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2495
+msgid "Text Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2506
+msgid "Text Width"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2517
+msgid "The Red Yeti"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2528
+msgid "Themeco"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2539
+msgid "ThemeIsle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2550
+msgid "Thermometer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2561
+msgid "Think Peaks"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2577
+msgid "Thumbs Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2593
+msgid "Thumbs Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2604
+msgid "Thumbtack"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2615
+msgid "Ticket"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2626
+msgid "Ticket Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2637
+msgid "TikTok"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2648
+msgid "Timeline"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2659
+msgid "Toggle Off"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2670
+msgid "Toggle On"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2681
+msgid "Toilet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2692
+msgid "Toilet Paper"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2703
+msgid "Toilet Paper Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2714
+msgid "Toilet Portable"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2725
+msgid "Toilets Portable"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2736
+msgid "Toolbox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2747
+msgid "Tooth"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2758
+msgid "Torii Gate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2769
+msgid "Tornado"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2780
+msgid "Tower Broadcast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2791
+msgid "Tower Cell"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2802
+msgid "Tower Observation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2813
+msgid "Tractor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2824
+msgid "Trade Federation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2835
+msgid "Trademark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2846
+msgid "Traffic Light"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2857
+msgid "Trailer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2868
+msgid "Train"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2879
+msgid "Train Subway"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2890
+msgid "Train Tram"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2901
+msgid "Transgender"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2912
+msgid "Trash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2923
+msgid "Trash Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2939
+msgid "Trash Can"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2950
+msgid "Trash Can Arrow Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2961
+msgid "Tree"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2972
+msgid "Tree City"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2983
+msgid "Trello"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:2994
+msgid "Triangle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3005
+msgid "Trophy"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3016
+msgid "Trowel"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3027
+msgid "Trowel Bricks"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3038
+msgid "Truck"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3049
+msgid "Truck Arrow Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3060
+msgid "Truck Droplet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3071
+msgid "Truck Fast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3082
+msgid "Truck Field"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3093
+msgid "Truck Field Un"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3104
+msgid "Truck Front"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3115
+msgid "Truck Medical"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3126
+msgid "Truck Monster"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3137
+msgid "Truck Moving"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3148
+msgid "Truck Pickup"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3159
+msgid "Truck Plane"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3170
+msgid "Truck Ramp Box"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3181
+msgid "Tty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3192
+msgid "Tumblr"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3214
+msgid "Turkish Lira Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3225
+msgid "Turn Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3236
+msgid "Turn Up"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3247
+msgid "Tv"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3258
+msgid "Twitch"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3269
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3280
+msgid "Twitter"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3302
+msgid "Typo3"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3313
+msgid "U"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3324
+msgid "Uber"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3335
+msgid "Ubuntu"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3346
+msgid "UIkit"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3357
+msgid "Umbraco"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3368
+msgid "Umbrella"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3379
+msgid "Umbrella Beach"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3390
+msgid "Uncharted Software"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3401
+#: modules/gutenberg/build/blocks.js:7
+msgid "Underline"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3412
+msgid "Uniregistry"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3423
+msgid "Unity 3D"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3434
+msgid "Universal Access"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3445
+msgid "Unlock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3456
+msgid "Unlock Keyhole"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3467
+msgid "Unsplash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3478
+msgid "Untappd"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3489
+msgid "Up Down"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3500
+msgid "Up Down Left Right"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3511
+msgid "Up Long"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3522
+msgid "Up Right And Down Left From Center"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3533
+msgid "Up Right From Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3544
+msgid "Upload"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3555
+msgid "UPS"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3566
+msgid "USB"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3582
+msgid "User"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3593
+msgid "User Astronaut"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3604
+msgid "User Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3615
+msgid "User Clock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3626
+msgid "User Doctor"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3637
+msgid "User Gear"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3648
+msgid "User Graduate"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3659
+msgid "User Group"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3670
+msgid "User Injured"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3681
+msgid "User Large"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3692
+msgid "User Large Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3703
+msgid "User Lock"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3714
+msgid "User Minus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3725
+msgid "User Ninja"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3736
+msgid "User Nurse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3747
+msgid "User Pen"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3758
+msgid "User Plus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3769
+msgid "User Secret"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3780
+msgid "User Shield"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3791
+msgid "User Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3802
+msgid "User Tag"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3813
+msgid "User Tie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3824
+msgid "User Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3835
+msgid "Users"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3846
+msgid "Users Between Lines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3857
+msgid "Users Gear"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3868
+msgid "Users Line"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3879
+msgid "Users Rays"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3890
+msgid "Users Rectangle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3901
+msgid "Users Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3912
+msgid "Users Viewfinder"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3923
+msgid "United States Postal Service"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3934
+msgid "us-Sunnah Foundation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3945
+msgid "Utensils"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3956
+msgid "V"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3967
+msgid "Vaadin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3978
+msgid "Van Shuttle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:3989
+msgid "Vault"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4000
+msgid "Vector Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4011
+msgid "Venus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4022
+msgid "Venus Double"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4033
+msgid "Venus Mars"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4044
+msgid "Vest"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4055
+msgid "Vest Patches"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4066
+msgid "Viacoin"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4077
+msgid "Viadeo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4099
+msgid "Vial"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4110
+msgid "Vial Circle Check"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4121
+msgid "Vial Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4132
+msgid "Vials"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4143
+msgid "Viber"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4154
+msgid "Video"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4165
+msgid "Video Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4176
+msgid "Vihara"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4187
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4209
+msgid "Vimeo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4220
+msgid "Vine"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4231
+msgid "Virus"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4242
+msgid "Virus Covid"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4253
+msgid "Virus Covid Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4264
+msgid "Virus Slash"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4275
+msgid "Viruses"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4286
+msgid "VK"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4297
+msgid "VNV"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4308
+msgid "Voicemail"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4319
+msgid "Volcano"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4330
+msgid "Volleyball"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4341
+msgid "Volume High"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4352
+msgid "Volume Low"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4363
+msgid "Volume Off"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4374
+msgid "Volume Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4385
+msgid "Vr Cardboard"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4396
+msgid "Vue.js"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4407
+msgid "W"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4418
+msgid "Walkie Talkie"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4429
+msgid "Wallet"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4440
+msgid "Wand Magic"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4451
+msgid "Wand Magic Sparkles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4462
+msgid "Wand Sparkles"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4473
+msgid "Warehouse"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4484
+msgid "Watchman Monitoring"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4495
+msgid "Water"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4506
+msgid "Water Ladder"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4517
+msgid "Wave Square"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4528
+msgid "Waze"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4539
+msgid "Weebly"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4550
+msgid "Weibo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4561
+msgid "Weight Hanging"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4572
+msgid "Weight Scale"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4583
+msgid "Weixin (WeChat)"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4594
+msgid "What's App"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4616
+msgid "Wheat Awn"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4627
+msgid "Wheat Awn Circle Exclamation"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4638
+msgid "Wheelchair"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4649
+msgid "Wheelchair Move"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4660
+msgid "Whiskey Glass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4671
+msgid "WHMCS"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4682
+msgid "Wifi"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4693
+msgid "Wikipedia W"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4704
+msgid "Wind"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4720
+msgid "Window Maximize"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4736
+msgid "Window Minimize"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4752
+msgid "Window Restore"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4763
+msgid "Windows"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4774
+msgid "Wine Bottle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4785
+msgid "Wine Glass"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4796
+msgid "Wine Glass Empty"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4807
+msgid "wirsindhandwerk"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4818
+msgid "Wix"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4829
+msgid "Wizards of the Coast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4840
+msgid "Wodu"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4851
+msgid "Wolf Pack Battalion"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4862
+msgid "Won Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4873
+msgid "WordPress Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4884
+msgid "Wordpress Simple"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4895
+msgid "Worm"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4906
+msgid "WPBeginner"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4917
+msgid "WPExplorer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4928
+msgid "WPForms"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4939
+msgid "wpressr"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4950
+msgid "Wrench"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4961
+msgid "X"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4972
+msgid "X Ray"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4983
+msgid "Xbox"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:4994
+msgid "Xing"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5016
+msgid "Xmark"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5027
+msgid "Xmarks Lines"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5038
+msgid "Y"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5049
+msgid "Y Combinator"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5060
+msgid "Yahoo Logo"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5071
+msgid "Yammer"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5082
+msgid "Yandex"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5093
+msgid "Yandex International"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5104
+msgid "Yarn"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5115
+msgid "Yelp"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5126
+msgid "Yen Sign"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5137
+msgid "Yin Yang"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5148
+msgid "Yoast"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5159
+msgid "YouTube"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5181
+msgid "Z"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5192
+msgid "Zhihu"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5198
+msgid "Brands"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5202
+msgid "Business"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5206
+msgid "Communication"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5210
+msgid "Design"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5214
+msgid "Education"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5218
+msgid "Environment"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5222
+msgid "Lifestyle"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5226
+msgid "Science"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5230
+msgid "Social"
+msgstr ""
+
+#: modules/gutenberg/icons/spectra-icons-v6-3.php:5234
+msgid "Travel"
 msgstr ""
 
 #: templates/forms/blank-form.php:12
@@ -661,7 +7980,6 @@ msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:2
-#: assets/build/settings.js:2
 #: modules/gutenberg/build/blocks.js:7
 msgid "General"
 msgstr ""
@@ -679,24 +7997,6 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:7
 #: modules/gutenberg/build/blocks.js:11
 msgid "Advanced"
-msgstr ""
-
-#: assets/build/blocks.js:2
-#: assets/build/formEditor.js:2
-#: modules/gutenberg/build/blocks.js:1
-msgid "Desktop"
-msgstr ""
-
-#: assets/build/blocks.js:2
-#: assets/build/formEditor.js:2
-#: modules/gutenberg/build/blocks.js:1
-msgid "Tablet"
-msgstr ""
-
-#: assets/build/blocks.js:2
-#: assets/build/formEditor.js:2
-#: modules/gutenberg/build/blocks.js:1
-msgid "Mobile"
 msgstr ""
 
 #: assets/build/blocks.js:2
@@ -884,10 +8184,6 @@ msgid "Address Line 2"
 msgstr ""
 
 #: assets/build/blocks.js:2
-msgid "City"
-msgstr ""
-
-#: assets/build/blocks.js:2
 msgid "State"
 msgstr ""
 
@@ -897,94 +8193,6 @@ msgstr ""
 
 #: assets/build/blocks.js:2
 msgid "Country"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Get started with SureForms"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Setup"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Create a Form"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Create visually stunning, user-friendly forms."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Create New Form"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Form"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/templatePicker.js:2
-msgid "All Forms"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Take a look at the forms you have created."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "View All Forms"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "View Entries"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Access the complete list of form submissions."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "View All Entries"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "There is no data on this view"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "This is where your form views will appear"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Integrations"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Rate Us"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "We love to hear from you, we would appreciate every single review."
-msgstr ""
-
-#: assets/build/dashboard.js:2
-msgid "Submit a Review"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-msgid "Core"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-msgid "Notifications"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-msgid "All caught up!! Check back for new notifications later."
 msgstr ""
 
 #. translators: abbreviation for units
@@ -1292,10 +8500,6 @@ msgid "Redirect"
 msgstr ""
 
 #: assets/build/formEditor.js:2
-msgid "Message"
-msgstr ""
-
-#: assets/build/formEditor.js:2
 msgid "Form Submission Success Message Title"
 msgstr ""
 
@@ -1363,154 +8567,6 @@ msgstr ""
 msgid "Paste this shortcode on the page or post to render this form."
 msgstr ""
 
-#: assets/build/settings.js:2
-msgid " Settings"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid " Documentation"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Settings Saved Successfully!"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Error Saving Settings!"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "General Settings"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "A CAPTCHA serves as an anti-spam measure, safeguarding your website against spam and misuse."
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Google reCAPTCHA Settings"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Site Key v2 checkbox"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Secret Key v2 checkbox"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Site Key v2 Invisible"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Secret Key v2 Invisible"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Site Key v3"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Secret Key v3"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "To enable reCAPTCHA for your form, please follow the steps mentioned "
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "This adds a hidden field that if filled out prevents the form from submitting."
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid "Honeypot Spam Protection"
-msgstr ""
-
-#: assets/build/settings.js:2
-msgid " Save"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Select a Template"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Template Preview"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Coming Soon…"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Use Template"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Preview"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Template preview image"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Blank template image"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Back"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Search Templates…"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Form Templates"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Request template"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Can’t find it? Let us know what kind of form do you need."
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Request a Template"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Create a New Form"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Start from Scratch"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity."
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Use a Template"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Save time and jumpstart your form creation process with our extensive library of professionally designed templates."
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Create with AI"
-msgstr ""
-
-#: assets/build/templatePicker.js:2
-msgid "Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form."
-msgstr ""
-
 #: modules/gutenberg/build/blocks.js:7
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
@@ -1527,10 +8583,6 @@ msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
 msgid "Weight"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:7
-msgid "Italic"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
@@ -1576,10 +8628,6 @@ msgstr ""
 #: modules/gutenberg/build/blocks.js:11
 #: modules/gutenberg/build/blocks.js:15
 msgid "None"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:7
-msgid "Underline"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
@@ -1663,10 +8711,6 @@ msgid "Parallelogram"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
-msgid "Slash"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:7
 msgid "Leaves"
 msgstr ""
 
@@ -1722,11 +8766,6 @@ msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
 msgid "Span"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:7
-#: modules/gutenberg/build/blocks.js:11
-msgid "P"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
@@ -1961,11 +9000,6 @@ msgid "Thickness"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:11
-#: modules/gutenberg/build/blocks.js:17
-msgid "Link"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:11
 msgid "Below settings will apply to the heading text to which a link is applied."
 msgstr ""
 
@@ -2073,10 +9107,6 @@ msgid "Select Preset"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
-msgid "Fill"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
 msgid "Cover"
 msgstr ""
 
@@ -2133,19 +9163,7 @@ msgid "Enable Caption"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
-msgid "Mask"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
 msgid "Mask Shape"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
-msgid "Circle"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
-msgid "Diamond"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
@@ -2237,10 +9255,6 @@ msgid "No Repeat"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:15
-msgid "Repeat"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:15
 msgid "Repeat-X"
 msgstr ""
 
@@ -2301,10 +9315,6 @@ msgstr ""
 
 #: modules/gutenberg/build/blocks.js:17
 msgid "This image has an empty alt attribute"
-msgstr ""
-
-#: modules/gutenberg/build/blocks.js:17
-msgid "Crop"
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:17
@@ -2403,42 +9413,31 @@ msgstr ""
 msgid "icon"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block title"
 msgid "Address Field"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Address Field"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "address"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "country"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "location"
 msgstr ""
 
-#: assets/build/blocks/address/block.json
-#: assets/build/blocks/dropdown/block.json
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/phone/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/address/block.json
 #: inc/blocks/dropdown/block.json
 #: inc/blocks/input/block.json
@@ -2449,117 +9448,96 @@ msgctxt "block keyword"
 msgid "field"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block title"
 msgid "Checkbox"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Checkbox Field"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "checkbox"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "toggle"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "checkout"
 msgstr ""
 
-#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "engine"
 msgstr ""
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block title"
 msgid "Dropdown"
 msgstr ""
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Dropdown Field"
 msgstr ""
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "select"
 msgstr ""
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "dropdown"
 msgstr ""
 
-#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "options"
 msgstr ""
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block title"
 msgid "Email"
 msgstr ""
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Email Field"
 msgstr ""
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "email"
 msgstr ""
 
-#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "mail"
 msgstr ""
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block title"
 msgid "Text Field"
 msgstr ""
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Text Field"
 msgstr ""
 
-#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block keyword"
 msgid "text"
 msgstr ""
 
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
 #: inc/blocks/textarea/block.json
@@ -2567,9 +9545,6 @@ msgctxt "block keyword"
 msgid "input"
 msgstr ""
 
-#: assets/build/blocks/input/block.json
-#: assets/build/blocks/number/block.json
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
 #: inc/blocks/textarea/block.json
@@ -2577,153 +9552,127 @@ msgctxt "block keyword"
 msgid "custom"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block title"
 msgid "Multiple Choice"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Multi-Choice Field"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi-choice"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "quiz"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi"
 msgstr ""
 
-#: assets/build/blocks/multi-choice/block.json
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/multichoice/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "sureforms"
 msgstr ""
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block title"
 msgid "Number Field"
 msgstr ""
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Number Field"
 msgstr ""
 
-#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block keyword"
 msgid "number"
 msgstr ""
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block title"
 msgid "Phone Number"
 msgstr ""
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Phone Field"
 msgstr ""
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "telephone"
 msgstr ""
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "phone"
 msgstr ""
 
-#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "mobile"
 msgstr ""
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block title"
 msgid "Form"
 msgstr ""
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block description"
 msgid "Collect and Manage data effortlessly with customizable SureForm."
 msgstr ""
 
-#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "form"
 msgstr ""
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block title"
 msgid "Textarea"
 msgstr ""
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Textarea Field"
 msgstr ""
 
-#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block keyword"
 msgid "textarea"
 msgstr ""
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block title"
 msgid "URL"
 msgstr ""
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block description"
 msgid "Displays a SureForm URL Field"
 msgstr ""
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "url"
 msgstr ""
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "link"
 msgstr ""
 
-#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "website"
