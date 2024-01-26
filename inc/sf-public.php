@@ -125,9 +125,6 @@ class SF_Public {
 
 			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
 		}
-		if ( 'page-break' === $block_name ) {
-			wp_enqueue_script( 'srfm-page-break-script', SUREFORMS_URL . 'assets/build/pageBreak.js', [ 'srfm-form-submit' ], SUREFORMS_VER, true );
-		}
 	}
 
 	/**

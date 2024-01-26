@@ -9,7 +9,6 @@ import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
-import * as pageBreak from '@Blocks/page-break';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
@@ -19,6 +18,7 @@ import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import { getBlockTypes } from '@Blocks/util';
+import { applyFilters } from '@wordpress/hooks';
 
 const registerBlock = [
 	text,
@@ -32,7 +32,6 @@ const registerBlock = [
 	phone,
 	select,
 	address,
-	pageBreak,
 ];
 
 if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
@@ -91,7 +90,9 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
 		const { name, setAttributes } = props;
 
-		const allowedBlocks = getBlockTypes('sureforms/page-break');
+		const excludeBlocks = applyFilters( 'srfm.ExcludeWithToolbarButton', '' );
+
+		const allowedBlocks = getBlockTypes(excludeBlocks);
 
 		const oneColIcon = parse( svgIcons.width_full );
 		const twoColIcon = parse( svgIcons.with_two_col );

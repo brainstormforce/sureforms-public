@@ -52,10 +52,6 @@ module.exports = {
 			__dirname,
 			'./modules/quick-action-sidebar/index.js'
 		),
-		pageBreak: path.resolve(
-			__dirname,
-			'assets/js/unminified/page-break.js'
-		),
 		editor: path.resolve( __dirname, 'src/admin/editor-scripts.js' ),
 		settings: path.resolve( __dirname, 'src/admin/settings/settings.js' ),
 		templatePicker: path.resolve(

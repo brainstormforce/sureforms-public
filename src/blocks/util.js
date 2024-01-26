@@ -46,7 +46,6 @@ const getBlockTypes = ( exclude = '' ) => {
 		'sureforms/dropdown',
 		'sureforms/multi-choice',
 		'sureforms/url',
-		'sureforms/page-break',
 	] );
 
 	if ( exclude ) {
