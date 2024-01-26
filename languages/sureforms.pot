@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-26T08:01:32+01:00\n"
+"POT-Creation-Date: 2024-01-26T08:40:00+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -22,12 +22,16 @@ msgstr ""
 msgid "SureForms"
 msgstr ""
 
+#. Plugin URI of the plugin
+msgid "https://www.brainstormforce.com"
+msgstr ""
+
 #. Description of the plugin
 msgid "A simple yet powerful way to create modern forms for your website."
 msgstr ""
 
 #. Author URI of the plugin
-msgid "https://sureforms.com"
+msgid "https://brainstormforce.com/"
 msgstr ""
 
 #: admin/admin.php:83
@@ -154,6 +158,7 @@ msgstr ""
 
 #: inc/post-types.php:98
 #: inc/post-types.php:128
+#: assets/build/templatePicker.js:2
 msgid "Add New Form"
 msgstr ""
 
@@ -266,6 +271,7 @@ msgstr ""
 
 #: inc/post-types.php:166
 #: inc/post-types.php:656
+#: assets/build/dashboard.js:2
 msgid "Entries"
 msgstr ""
 
@@ -7980,6 +7986,7 @@ msgstr ""
 
 #: assets/build/blocks.js:2
 #: assets/build/formEditor.js:2
+#: assets/build/settings.js:2
 #: modules/gutenberg/build/blocks.js:7
 msgid "General"
 msgstr ""
@@ -8193,6 +8200,94 @@ msgstr ""
 
 #: assets/build/blocks.js:2
 msgid "Country"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Get started with SureForms"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Setup"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Create a Form"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Create visually stunning, user-friendly forms."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Create New Form"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Form"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/templatePicker.js:2
+msgid "All Forms"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Take a look at the forms you have created."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "View All Forms"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "View Entries"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Access the complete list of form submissions."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "View All Entries"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "There is no data on this view"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "This is where your form views will appear"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Integrations"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Rate Us"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "We love to hear from you, we would appreciate every single review."
+msgstr ""
+
+#: assets/build/dashboard.js:2
+msgid "Submit a Review"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/page_header.js:2
+msgid "Core"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/page_header.js:2
+msgid "Notifications"
+msgstr ""
+
+#: assets/build/dashboard.js:2
+#: assets/build/page_header.js:2
+msgid "All caught up!! Check back for new notifications later."
 msgstr ""
 
 #. translators: abbreviation for units
@@ -8565,6 +8660,154 @@ msgstr ""
 
 #: assets/build/formEditor.js:2
 msgid "Paste this shortcode on the page or post to render this form."
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid " Settings"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid " Documentation"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Settings Saved Successfully!"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Error Saving Settings!"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "General Settings"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "A CAPTCHA serves as an anti-spam measure, safeguarding your website against spam and misuse."
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Google reCAPTCHA Settings"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Site Key v2 checkbox"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Secret Key v2 checkbox"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Site Key v2 Invisible"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Secret Key v2 Invisible"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Site Key v3"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Secret Key v3"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "To enable reCAPTCHA for your form, please follow the steps mentioned "
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "This adds a hidden field that if filled out prevents the form from submitting."
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid "Honeypot Spam Protection"
+msgstr ""
+
+#: assets/build/settings.js:2
+msgid " Save"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Select a Template"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Template Preview"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Coming Soon…"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Use Template"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Preview"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Template preview image"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Blank template image"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Back"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Search Templates…"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Form Templates"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Request template"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Can’t find it? Let us know what kind of form do you need."
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Request a Template"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Create a New Form"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Start from Scratch"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Tailoring your form precisely to your unique needs. No coding skills required—just unleash your creativity."
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Use a Template"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Save time and jumpstart your form creation process with our extensive library of professionally designed templates."
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Create with AI"
+msgstr ""
+
+#: assets/build/templatePicker.js:2
+msgid "Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form."
 msgstr ""
 
 #: modules/gutenberg/build/blocks.js:7
@@ -9413,31 +9656,42 @@ msgstr ""
 msgid "icon"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block title"
 msgid "Address Field"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Address Field"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "address"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "country"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
 #: inc/blocks/address/block.json
 msgctxt "block keyword"
 msgid "location"
 msgstr ""
 
+#: assets/build/blocks/address/block.json
+#: assets/build/blocks/dropdown/block.json
+#: assets/build/blocks/input/block.json
+#: assets/build/blocks/number/block.json
+#: assets/build/blocks/phone/block.json
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/address/block.json
 #: inc/blocks/dropdown/block.json
 #: inc/blocks/input/block.json
@@ -9448,96 +9702,117 @@ msgctxt "block keyword"
 msgid "field"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block title"
 msgid "Checkbox"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Checkbox Field"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "checkbox"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "toggle"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "checkout"
 msgstr ""
 
+#: assets/build/blocks/checkbox/block.json
 #: inc/blocks/checkbox/block.json
 msgctxt "block keyword"
 msgid "engine"
 msgstr ""
 
+#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block title"
 msgid "Dropdown"
 msgstr ""
 
+#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Dropdown Field"
 msgstr ""
 
+#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "select"
 msgstr ""
 
+#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "dropdown"
 msgstr ""
 
+#: assets/build/blocks/dropdown/block.json
 #: inc/blocks/dropdown/block.json
 msgctxt "block keyword"
 msgid "options"
 msgstr ""
 
+#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block title"
 msgid "Email"
 msgstr ""
 
+#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Email Field"
 msgstr ""
 
+#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "email"
 msgstr ""
 
+#: assets/build/blocks/email/block.json
 #: inc/blocks/email/block.json
 msgctxt "block keyword"
 msgid "mail"
 msgstr ""
 
+#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block title"
 msgid "Text Field"
 msgstr ""
 
+#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Text Field"
 msgstr ""
 
+#: assets/build/blocks/input/block.json
 #: inc/blocks/input/block.json
 msgctxt "block keyword"
 msgid "text"
 msgstr ""
 
+#: assets/build/blocks/input/block.json
+#: assets/build/blocks/number/block.json
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
 #: inc/blocks/textarea/block.json
@@ -9545,6 +9820,9 @@ msgctxt "block keyword"
 msgid "input"
 msgstr ""
 
+#: assets/build/blocks/input/block.json
+#: assets/build/blocks/number/block.json
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/input/block.json
 #: inc/blocks/number/block.json
 #: inc/blocks/textarea/block.json
@@ -9552,127 +9830,153 @@ msgctxt "block keyword"
 msgid "custom"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block title"
 msgid "Multiple Choice"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Multi-Choice Field"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi-choice"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "quiz"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
 #: inc/blocks/multichoice/block.json
 msgctxt "block keyword"
 msgid "multi"
 msgstr ""
 
+#: assets/build/blocks/multi-choice/block.json
+#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/multichoice/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "sureforms"
 msgstr ""
 
+#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block title"
 msgid "Number Field"
 msgstr ""
 
+#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Number Field"
 msgstr ""
 
+#: assets/build/blocks/number/block.json
 #: inc/blocks/number/block.json
 msgctxt "block keyword"
 msgid "number"
 msgstr ""
 
+#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block title"
 msgid "Phone Number"
 msgstr ""
 
+#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Phone Field"
 msgstr ""
 
+#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "telephone"
 msgstr ""
 
+#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "phone"
 msgstr ""
 
+#: assets/build/blocks/phone/block.json
 #: inc/blocks/phone/block.json
 msgctxt "block keyword"
 msgid "mobile"
 msgstr ""
 
+#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block title"
 msgid "Form"
 msgstr ""
 
+#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block description"
 msgid "Collect and Manage data effortlessly with customizable SureForm."
 msgstr ""
 
+#: assets/build/blocks/sureforms-form/block.json
 #: inc/blocks/sform/block.json
 msgctxt "block keyword"
 msgid "form"
 msgstr ""
 
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block title"
 msgid "Textarea"
 msgstr ""
 
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block description"
 msgid "Displays a SureForm Textarea Field"
 msgstr ""
 
+#: assets/build/blocks/textarea/block.json
 #: inc/blocks/textarea/block.json
 msgctxt "block keyword"
 msgid "textarea"
 msgstr ""
 
+#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block title"
 msgid "URL"
 msgstr ""
 
+#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block description"
 msgid "Displays a SureForm URL Field"
 msgstr ""
 
+#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "url"
 msgstr ""
 
+#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "link"
 msgstr ""
 
+#: assets/build/blocks/url/block.json
 #: inc/blocks/url/block.json
 msgctxt "block keyword"
 msgid "website"
