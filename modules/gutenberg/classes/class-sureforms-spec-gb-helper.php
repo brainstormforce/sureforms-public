@@ -1026,7 +1026,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$icons_chunks = array();
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = SUREFORMS_DIR . "modules/gutenberg/src/controls/spectra-icons-v6-{$i}.php";
+				$json_file = SUREFORMS_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
 
 				if ( file_exists( $json_file ) ) {
 					$icons_chunks[] = include $json_file;

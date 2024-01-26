@@ -74,14 +74,14 @@ class Gutenberg_Hooks {
 				'sureforms/multi-choice',
 				'sureforms/radio',
 				'sureforms/submit',
-				
+
 				'sureforms/url',
 				'sureforms/separator',
 				'sureforms/icon',
 				'sureforms/image',
 				'sureforms/advanced-heading',
 				'sureforms/form',
-				
+
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
@@ -206,17 +206,17 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
 			array(
-				'input_preview'         => SUREFORMS_URL . 'images/field-previews/input.svg',
-				'email_preview'         => SUREFORMS_URL . 'images/field-previews/email.svg',
-				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
-				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
-				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
-				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
-				'phone_preview'         => SUREFORMS_URL . 'images/field-previews/phone.svg',
-				'dropdown_preview'      => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
-				'address_preview'       => SUREFORMS_URL . 'images/field-previews/address.svg',
-				'sureforms_preview'     => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+				'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
+				'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
+				'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
+				'textarea_preview'     => SUREFORMS_URL . 'images/field-previews/textarea.svg',
+				'multi_choice_preview' => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
+				'checkbox_preview'     => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
+				'number_preview'       => SUREFORMS_URL . 'images/field-previews/number.svg',
+				'phone_preview'        => SUREFORMS_URL . 'images/field-previews/phone.svg',
+				'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
+				'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
+				'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
 			)
 		);
 
