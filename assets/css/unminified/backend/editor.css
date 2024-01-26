@@ -67,6 +67,7 @@ body.post-type-sureforms_form div.is-root-container.block-editor-block-list__lay
   margin-right: 0 !important;
   margin-top: 1.2em !important;
   margin-bottom: 0 !important;
+  max-width: 100%;
 }
 body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper {
   display: none;

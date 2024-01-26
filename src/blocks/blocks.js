@@ -11,14 +11,13 @@ import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
-import { addFilter } from '@wordpress/hooks';
+import { addFilter, applyFilters } from '@wordpress/hooks';
 import { useDeviceType } from '@Controls/getPreviewType';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import { getBlockTypes } from '@Blocks/util';
-import { applyFilters } from '@wordpress/hooks';
 
 const registerBlock = [
 	text,
@@ -90,9 +89,12 @@ const withToolbarButton = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
 		const { name, setAttributes } = props;
 
-		const excludeBlocks = applyFilters( 'srfm.ExcludeWithToolbarButton', '' );
+		const excludeBlocks = applyFilters(
+			'srfm.ExcludeWithToolbarButton',
+			''
+		);
 
-		const allowedBlocks = getBlockTypes(excludeBlocks);
+		const allowedBlocks = getBlockTypes( excludeBlocks );
 
 		const oneColIcon = parse( svgIcons.width_full );
 		const twoColIcon = parse( svgIcons.with_two_col );
