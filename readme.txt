@@ -1,23 +1,20 @@
-# SureForms #
-**Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
-**License:** GPLv2 or later  
-**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
-**Tags:** gutenberg, blocks, gutenberg blocks, editor, block, forms  
-**Tested up to:** 6.4  
-**Requires PHP:** 7.4  
-**Stable tag:** 0.0.1  
+=== SureForms ===
+Contributors: brainstormforce
+Tags: gutenberg, blocks, gutenberg blocks, editor, block, forms
+Requires at least: 6.4
+Tested up to: 6.4
+Requires PHP: 7.4
+Stable tag: 0.0.1
+License: GPL-2.0-only
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-## Description ##
+A simple yet powerful way to add forms to your website.
 
-SureForms is a simple yet powerful forms solution for your website.
+== Description ==
 
-Composer  
-License: MIT  
-License URL: https://github.com/composer/composer/blob/main/LICENSE  
+SureForms is a powerful forms solution for your website. To take your form game to next level.
 
-Icons  
-License : Massachusetts Institute of Technology (MIT)   
-License URI : https://heroicons.com  
+== Changelog ==
 
 = 0.0.1 =
 * Initial release.
