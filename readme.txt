@@ -14,6 +14,17 @@ A simple yet powerful way to add forms to your website.
 
 SureForms is a powerful forms solution for your website. To take your form game to next level.
 
+Composer  
+License: MIT  
+License URL: https://github.com/composer/composer/blob/main/LICENSE  
+
+Icons  
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://heroicons.com  
+
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://react-icons.github.io/react-icons/  
+
 == Changelog ==
 
 = 0.0.1 =

@@ -302,7 +302,7 @@ class Post_Types {
 	 * Modify list bulk actions.
 	 *
 	 * @param array<Mixed> $bulk_actions An array of bulk action links.
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return array<Mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
@@ -807,7 +807,7 @@ class Post_Types {
 	/**
 	 * Show the import form popup
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function import_form_popup() {

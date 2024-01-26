@@ -317,7 +317,7 @@ class Admin {
 		}
 
 		// Admin Submenu Styles.
-		wp_enqueue_style( 'srfm-submenu', SUREFORMS_URL . 'src/admin/sureforms-submenu.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SUREFORMS_VER );
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $current_screen->id ) {
@@ -354,8 +354,7 @@ class Admin {
 			);
 		}
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
-			wp_enqueue_script( 'form-archive-script', SUREFORMS_URL . 'src/admin/scripts/form-archive-script.js', [], SUREFORMS_VER, true );
-
+			wp_enqueue_script( SUREFORMS_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 			wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 			wp_localize_script(
 				'srfm-export',
@@ -455,7 +454,7 @@ class Admin {
 	/**
 	 * Form Template Picker Admin Body Classes
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @param string $classes Space separated class string.
 	 */
 	public function admin_template_picker_body_class( $classes = '' ) {

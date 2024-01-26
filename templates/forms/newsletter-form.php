@@ -3,7 +3,7 @@
  * Newsletter Form pattern.
  *
  * @link       https://surecart.com
- * @since      X.X.X
+ * @since      0.0.1
  * @package    SureForms/Templates/Forms
  * @author     SureCart <https://surecart.com/>
  */
