@@ -50,7 +50,6 @@ const default_keys = {
 	_srfm_single_page_form_title: false,
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
-	
 
 };
 

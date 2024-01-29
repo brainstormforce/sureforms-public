@@ -15,7 +15,7 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import getApiData from '@Controls/getApiData';
 
@@ -269,27 +269,6 @@ function AppearanceSettings( props ) {
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
-				{ /* <SelectControl
-					label={ __( 'Form Styling', 'sureforms' ) }
-					value={ sureforms_keys._srfm_form_styling }
-					options={ [
-						{ label: 'Theme Inherited', value: 'inherit' },
-						{
-							label: 'Classic Styling',
-							value: 'classic',
-						},
-					] }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_form_styling', value );
-					} }
-					__nextHasNoMarginBottom
-				/> */ }
-				{ /* <p className="components-base-control__help">
-					{ __(
-						'Update settings to view changes on page',
-						'sureforms'
-					) }
-				</p> */ }
 				<ToggleControl
 					label={ __(
 						'Hide form title on the Page/Post',
