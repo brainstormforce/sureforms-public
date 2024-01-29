@@ -630,6 +630,7 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding: 0 0.3em;
 }
 .srfm-page-break-buttons .srfm-nxt-btn {
   min-width: 91px;
@@ -642,88 +643,78 @@
 
 .srfm-page-break-header-container {
   width: 100%;
-  padding-bottom: 2.4em;
+  padding: 0 0.3em;
+  padding-bottom: 1.6em;
 }
 .srfm-page-break-header-container .srfm-page-break-progress-container {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  max-width: 100%;
+  width: 100%;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container::before {
-  content: "";
-  background-color: var(--srfm-border-color);
-  position: absolute;
-  top: 0.6em;
-  right: 2.2em;
-  transform: translateY(-50%);
-  height: 2px;
-  width: calc(100% - 5em);
-  z-index: 0;
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress {
-  background-color: var(--srfm-primary-color);
-  position: absolute;
-  top: 0.6em;
-  right: 2.2em;
-  transform: translateY(-50%);
-  height: 2px;
-  max-width: calc(100% - 5em);
-  width: 0;
-  z-index: 0;
-  transition: 400ms ease;
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap {
-  display: inline-block;
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector {
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  counter-reset: step;
   text-align: center;
-  width: 4em;
-  line-height: 1em;
+  padding: 0;
+  display: table;
+  table-layout: fixed;
+  width: 100%;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li {
+  list-style-type: none;
+  display: table-cell;
+  font-size: 0.6em;
+  font-weight: 500;
+  position: relative;
+  vertical-align: top;
+  width: auto;
+}
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li:before {
+  content: counter(step);
+  counter-increment: step;
+  line-height: 2em;
+  display: block;
+  margin: 0 auto 5px auto;
   background-color: var(--srfm-base-background-color);
   border: 1.5px solid var(--srfm-border-color);
-  color: var(--srfm-primary-color);
-  font-weight: 700;
+  color: var(--srfm-border-color);
   border-radius: 50%;
-  height: 1.2em;
-  width: 1.2em;
+  height: 2em;
+  width: 2em;
   position: relative;
-  right: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 400ms ease;
+  z-index: 1;
+  transition: 0.4s ease;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-circle .srfm-circle-content {
-  color: var(--srfm-border-color);
-  font-size: 0.7em;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1em;
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li:after {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background: var(--srfm-border-color);
+  position: absolute;
+  right: -50%;
+  top: 1em;
+  z-index: 0;
+  transition: 0.4s ease;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-label-text {
-  color: var(--srfm-border-color);
-  font-size: 0.7em;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1em;
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li:first-child:after {
+  content: none;
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active .srfm-label-text {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:before, .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:after {
   color: var(--srfm-primary-color);
-  transition: 400ms ease;
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle {
   border-color: var(--srfm-primary-color);
-  color: var(--srfm-primary-color);
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle .srfm-circle-content {
-  color: var(--srfm-primary-color);
-}
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle.filled {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active:after {
   background-color: var(--srfm-primary-color);
 }
-.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-text-wrap.active div.srfm-circle.filled .srfm-circle-content {
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:before, .srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.filled:after {
+  background-color: var(--srfm-primary-color);
   color: var(--srfm-base-background-color);
+  border-color: var(--srfm-primary-color);
+}
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li .srfm-circle-text {
+  color: var(--srfm-border-color);
+}
+.srfm-page-break-header-container .srfm-page-break-progress-container .srfm-progress-connector li.active .srfm-circle-text {
+  color: var(--srfm-primary-color);
 }
 .srfm-page-break-header-container .srfm-page-break-steps {
   display: flex;
@@ -731,7 +722,7 @@
   justify-content: space-between;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content {
-  color: #a2a6ae;
+  color: #4a5c5c;
   font-size: 0.7em;
   font-style: normal;
   font-weight: 500;
@@ -742,23 +733,24 @@
   gap: 0.6em;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-content .srfm-steps-label .srfm-steps-page-title {
-  color: var(--srfm-primary-color);
+  color: #4a5c5c;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container {
   position: relative;
   display: flex;
   gap: 1.6em;
   align-items: flex-start;
+  margin-left: 0.3em;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container::before {
   content: "";
   background-color: var(--srfm-border-color);
   position: absolute;
   top: 0.6em;
-  right: 1.2em;
+  right: 0.2em;
   transform: translateY(-50%);
   height: 2px;
-  width: 70%;
+  width: 100%;
   z-index: 0;
 }
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round {
@@ -823,14 +815,14 @@
 .srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-round input[type=checkbox]:checked + label::before {
   display: none;
 }
-.srfm-page-break-header-container .srfm-page-break-steps .srfm-progress {
+.srfm-page-break-header-container .srfm-page-break-steps .srfm-steps-container .srfm-progress {
   background-color: var(--srfm-primary-color);
   position: absolute;
   top: 0.6em;
-  right: 1.2em;
+  right: 0.2em;
   transform: translateY(-50%);
   height: 2px;
-  max-width: 70%;
+  max-width: 100%;
   width: 0%;
   z-index: 0;
   transition: 400ms ease;

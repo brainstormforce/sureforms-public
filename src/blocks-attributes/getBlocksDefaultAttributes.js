@@ -13,6 +13,7 @@ import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
 import uploadAttributes from '@Blocks/upload/block.json';
+import pageBreakAttributes from '@Blocks/page-break/block.json';
 
 const default_keys = {
 	_srfm_color1: { default: '' },
@@ -43,6 +44,9 @@ const default_keys = {
 	_srfm_button_border_color: { default: '#000000' },
 	_srfm_button_border_width: { default: 1 },
 	_srfm_button_border_radius: { default: 0 },
+	_srfm_first_page_label: { default: 'Page break' },
+	_srfm_previous_button_text: { default: 'Previous' },
+	_srfm_next_button_text: { default: 'Next' },
 };
 
 export const blocksAttributes = {
@@ -61,5 +65,6 @@ export const blocksAttributes = {
 	url: urlAttributes.attributes,
 	number: numberAttributes.attributes,
 	password: passwordAttributes.attributes,
+	'page-break': pageBreakAttributes.attributes,
 	form_specific: default_keys,
 };

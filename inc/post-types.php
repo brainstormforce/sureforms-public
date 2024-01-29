@@ -449,6 +449,8 @@ class Post_Types {
 			'_srfm_button_border_color'               => 'string',
 			'_srfm_button_border_width'               => 'integer',
 			'_srfm_button_border_radius'              => 'integer',
+			'_srfm_previous_button_text'              => 'string',
+			'_srfm_next_button_text'                  => 'string',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

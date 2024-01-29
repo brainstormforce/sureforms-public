@@ -376,6 +376,43 @@ function GeneralSettings( props ) {
 						updateMeta( '_srfm_page_break_toggle_label', value );
 					} }
 				/>
+				{ sureforms_keys._srfm_page_break_progress_indicator !==
+					'progress-bar' && (
+					<ToggleControl
+						label={ __( 'Show Labels', 'sureforms' ) }
+						checked={ sureforms_keys._srfm_page_break_toggle_label }
+						onChange={ ( value ) => {
+							updateMeta(
+								'_srfm_page_break_toggle_label',
+								value
+							);
+						} }
+					/>
+				) }
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_previous_button_text',
+					} }
+					label={ __( 'Previous Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_previous_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_previous_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_next_button_text',
+					} }
+					label={ __( 'Next Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_next_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_next_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Quick Action Bar', 'sureforms' ) }

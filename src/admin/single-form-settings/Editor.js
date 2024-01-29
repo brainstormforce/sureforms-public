@@ -82,6 +82,8 @@ const default_keys = {
 	_srfm_button_border_color: '#000000',
 	_srfm_button_border_width: 1,
 	_srfm_button_border_radius: 0,
+	_srfm_previous_button_text: 'Previous',
+	_srfm_next_button_text: 'Next',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
