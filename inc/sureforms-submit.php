@@ -111,7 +111,7 @@ class Sureforms_Submit {
 					mkdir( dirname( $destination ), 0755, true );
 				}
 
-				// Use wp_handle_upload instead of move_uploaded_file
+				// Use wp_handle_upload instead of move_uploaded_file.
 				$uploaded_file = array(
 					'name'     => $filename,
 					'type'     => $file_type,
@@ -123,7 +123,7 @@ class Sureforms_Submit {
 				$upload_overrides = array(
 					'test_form' => false,
 				);
-				$move_file         = wp_handle_upload( $uploaded_file, $upload_overrides );
+				$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
 				remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
 				if ( $move_file && ! isset( $move_file['error'] ) ) {
 					$form_data[ $field ] = $move_file['url'];
@@ -214,7 +214,11 @@ class Sureforms_Submit {
 	}
 
 	/**
+	 * Change the upload directory
 	 *
+	 * @param array $dirs upload directory.
+	 * @return array
+	 * @since 0.0.1
 	 */
 	public function change_upload_dir( $dirs ) {
 		$dirs['subdir'] = '/sureforms';
