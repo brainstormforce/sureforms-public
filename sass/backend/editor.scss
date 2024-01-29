@@ -27,13 +27,24 @@ body.post-type-sureforms_form {
 				}
 			}
 		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+		}
 	}
 
-	.edit-post-visual-editor__content-area {
+	.editor-post-url__panel-dialog {
+		> .components-popover__content {
+			max-width: 200px;
+			width: 100%;
+		}
+	}
+
+	> .edit-post-visual-editor__content-area {
 		padding: 0 !important;
 	}
 
-	.block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
+	> .block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
 		transition: 0.3s;
 
 		&:hover {

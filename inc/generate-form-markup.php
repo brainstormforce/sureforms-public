@@ -115,18 +115,18 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = $color_text_primary;
+			$label_text_color = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_label_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_label_color', true ) ) : '#1f2937';
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
 
-			$body_input_color_var  = '#4B5563';
-			$placeholder_color_var = '#9CA3AF';
-			$border_color_var      = '#D0D5DD';
+			$body_input_color_var  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_text_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_text_color', true ) ) : '#4B5563';
+			$placeholder_color_var = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_placeholder_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_placeholder_color', true ) ) : '#9CA3AF';
+			$border_color_var      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_color', true ) ) : '#D0D5DD';
 			$help_color_var        = '#6B7280';
-			$base_background_var   = '#FFFFFF';
+			$base_background_var   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_bg_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_bg_color', true ) ) : '#FFFFFF';
 			$light_background_var  = '#F9FAFB';
 
 			// Info colors.
@@ -135,7 +135,7 @@ class Generate_Form_Markup {
 			$info_background_color_var = '#EFF6FF';
 
 			// Success colors.
-			$success_surface_var          = '#22C55E';
+			$success_surface_var          = '#10B981';
 			$success_text_var             = '#16A34A';
 			$success_background_color_var = '#F0FDF4';
 
@@ -151,8 +151,8 @@ class Generate_Form_Markup {
 
 			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
 			$media_query_mobile_var = '576px';
-			$border_var             = '1px';
-			$border_radius_var      = '4px';
+			$border_var             = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
+			$border_radius_var      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
 			$bg_image               = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 			?>

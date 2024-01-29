@@ -18,13 +18,20 @@ body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .componen
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.edit-post-post-status.is-opened {
   display: none;
 }
-body.post-type-sureforms_form .edit-post-visual-editor__content-area {
+body.post-type-sureforms_form .edit-post-sidebar button.editor-post-url__panel-toggle {
+  text-wrap: wrap;
+}
+body.post-type-sureforms_form .editor-post-url__panel-dialog > .components-popover__content {
+  max-width: 200px;
+  width: 100%;
+}
+body.post-type-sureforms_form > .edit-post-visual-editor__content-area {
   padding: 0 !important;
 }
-body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input) {
+body.post-type-sureforms_form > .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input) {
   transition: 0.3s;
 }
-body.post-type-sureforms_form .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input):hover {
+body.post-type-sureforms_form > .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input):hover {
   box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
 }
 body.post-type-sureforms_form .is-desktop-preview,

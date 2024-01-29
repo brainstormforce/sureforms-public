@@ -1,4 +1,9 @@
-import { ToggleControl, SelectControl, PanelRow, Modal } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	PanelRow,
+	Modal,
+} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -6,12 +11,14 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
-import SingleFormSetting from './singleFormSettingPopup';
+import SingleFormSetting from '../singleFormSettingPopup';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
+import PostURLPanel from '../components/Panel';
 
-function Settings( props ) {
+function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
+
 	const { default_keys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
@@ -100,6 +107,12 @@ function Settings( props ) {
 
 	return (
 		<>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Permalink', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<PostURLPanel />
+			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }
@@ -275,41 +288,38 @@ function Settings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Advanced', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SRFMTextControl
-					data={ {
-						value: sureforms_keys._srfm_additional_classes,
-						label: '_srfm_additional_classes',
-					} }
-					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
-					value={ sureforms_keys._srfm_additional_classes }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_additional_classes', value );
-					} }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help">
-					{ __(
-						' Separate multiple classes with spaces. ',
-						'sureforms'
-					) }
-				</p>
-			</SRFMAdvancedPanelBody>
 			<div className="srfm-custom-layout-panel components-panel__body">
 				<h2 className="components-panel__body-title">
-					<button className="components-button components-panel__body-toggle" onClick={ openModal }>
+					<button
+						className="components-button components-panel__body-toggle"
+						onClick={ openModal }
+					>
 						<span className="srfm-title">
-							<div> { __( 'Email Notification', 'sureforms' ) }</div>
+							<div>
+								{ __( 'Email Notification', 'sureforms' ) }
+							</div>
 						</span>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
 							<g id="heroicons-mini/ellipsis-horizontal">
 								<g id="Union">
-									<path d="M3.60156 12.0031C3.60156 11.009 4.40745 10.2031 5.40156 10.2031C6.39567 10.2031 7.20156 11.009 7.20156 12.0031C7.20156 12.9972 6.39567 13.8031 5.40156 13.8031C4.40745 13.8031 3.60156 12.9972 3.60156 12.0031Z" fill="#555D66" />
-									<path d="M10.2016 12.0031C10.2016 11.009 11.0074 10.2031 12.0016 10.2031C12.9957 10.2031 13.8016 11.009 13.8016 12.0031C13.8016 12.9972 12.9957 13.8031 12.0016 13.8031C11.0074 13.8031 10.2016 12.9972 10.2016 12.0031Z" fill="#555D66" />
-									<path d="M18.6016 10.2031C17.6074 10.2031 16.8016 11.009 16.8016 12.0031C16.8016 12.9972 17.6074 13.8031 18.6016 13.8031C19.5957 13.8031 20.4016 12.9972 20.4016 12.0031C20.4016 11.009 19.5957 10.2031 18.6016 10.2031Z" fill="#555D66" />
+									<path
+										d="M3.60156 12.0031C3.60156 11.009 4.40745 10.2031 5.40156 10.2031C6.39567 10.2031 7.20156 11.009 7.20156 12.0031C7.20156 12.9972 6.39567 13.8031 5.40156 13.8031C4.40745 13.8031 3.60156 12.9972 3.60156 12.0031Z"
+										fill="#555D66"
+									/>
+									<path
+										d="M10.2016 12.0031C10.2016 11.009 11.0074 10.2031 12.0016 10.2031C12.9957 10.2031 13.8016 11.009 13.8016 12.0031C13.8016 12.9972 12.9957 13.8031 12.0016 13.8031C11.0074 13.8031 10.2016 12.9972 10.2016 12.0031Z"
+										fill="#555D66"
+									/>
+									<path
+										d="M18.6016 10.2031C17.6074 10.2031 16.8016 11.009 16.8016 12.0031C16.8016 12.9972 17.6074 13.8031 18.6016 13.8031C19.5957 13.8031 20.4016 12.9972 20.4016 12.0031C20.4016 11.009 19.5957 10.2031 18.6016 10.2031Z"
+										fill="#555D66"
+									/>
 								</g>
 							</g>
 						</svg>
@@ -331,4 +341,4 @@ function Settings( props ) {
 	);
 }
 
-export default Settings;
+export default AdvancedSettings;
