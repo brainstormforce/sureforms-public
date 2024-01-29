@@ -107,6 +107,9 @@ class Sureforms_Submit {
 					continue;
 				}
 
+				// Handle each file.
+				$upload_dir  = wp_upload_dir();
+				$destination = $upload_dir['basedir'] . '/sureforms/' . $filename;
 				if ( ! is_dir( dirname( $destination ) ) ) {
 					mkdir( dirname( $destination ), 0755, true );
 				}
@@ -216,8 +219,8 @@ class Sureforms_Submit {
 	/**
 	 * Change the upload directory
 	 *
-	 * @param array $dirs upload directory.
-	 * @return array
+	 * @param array<mixed> $dirs upload directory.
+	 * @return array<mixed>
 	 * @since 0.0.1
 	 */
 	public function change_upload_dir( $dirs ) {
