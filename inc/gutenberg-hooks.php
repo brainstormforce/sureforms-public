@@ -74,7 +74,6 @@ class Gutenberg_Hooks {
 				'sureforms/multi-choice',
 				'sureforms/radio',
 				'sureforms/submit',
-
 				'sureforms/url',
 				'sureforms/separator',
 				'sureforms/icon',
@@ -205,7 +204,7 @@ class Gutenberg_Hooks {
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
-			array(
+			apply_filters( 'sureforms_block_preview_images', array(
 				'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
 				'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
 				'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
@@ -217,7 +216,7 @@ class Gutenberg_Hooks {
 				'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
 				'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
 				'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
-			)
+			) ),
 		);
 
 		wp_localize_script(
