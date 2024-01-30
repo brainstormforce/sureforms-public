@@ -3,14 +3,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import MultiButtonsControl from '@Components/multi-buttons-control';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faAlignLeft,
-	faAlignRight,
-	faAlignCenter,
-	faAlignJustify,
-} from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
@@ -28,38 +20,19 @@ function GeneralSettings( props ) {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const root = document.documentElement;
+	const rootContainer = document.getElementById( 'srfm-form-container' );
 
-	if ( sureforms_keys && '_srfm_submit_alignment' in sureforms_keys ) {
-		root.style.setProperty(
-			'--srfm_submit_alignment',
-			sureforms_keys._srfm_submit_alignment
-				? sureforms_keys._srfm_submit_alignment
-				: 'none'
-		);
-		root.style.setProperty(
-			'--srfm_submit_width',
-			sureforms_keys._srfm_submit_width
-				? sureforms_keys._srfm_submit_width
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm_submit_alignment_backend',
-			sureforms_keys._srfm_submit_alignment_backend
-				? sureforms_keys._srfm_submit_alignment_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm_submit_width_backend',
-			sureforms_keys._srfm_submit_width_backend
-				? sureforms_keys._srfm_submit_width_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm_submit_button_text',
-			sureforms_keys._srfm_submit_button_text
-				? '"' + sureforms_keys._srfm_submit_button_text + '"'
-				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-		);
+	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
+		if ( ! sureforms_keys._srfm_show_labels ) {
+			rootContainer.classList.add( 'srfm-hide-labels' );
+		} else {
+			rootContainer.classList.remove( 'srfm-hide-labels' );
+		}
+		if ( ! sureforms_keys._srfm_show_asterisk ) {
+			rootContainer.classList.add( 'srfm-hide-asterisk' );
+		} else {
+			rootContainer.classList.remove( 'srfm-hide-asterisk' );
+		}
 	} else {
 		sureforms_keys = default_keys;
 		editPost( {
@@ -71,54 +44,21 @@ function GeneralSettings( props ) {
 		let value_id = 0;
 		let key_id = '';
 
-		if ( option === '_srfm_submit_button_text' ) {
-			root.style.setProperty(
-				'--srfm_submit_button_text',
-				value
-					? '"' + value + '"'
-					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-			);
+		if ( option === '_srfm_show_labels' ) {
+			if ( ! value ) {
+				rootContainer.classList.add( 'srfm-hide-labels' );
+				updateMeta( '_srfm_show_asterisk', false );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-labels' );
+				updateMeta( '_srfm_show_asterisk', true );
+			}
 		}
 
-		if ( option === '_srfm_submit_alignment' ) {
-			root.style.setProperty(
-				'--srfm_submit_alignment',
-				value ? value : 'left'
-			);
-			root.style.setProperty(
-				'--srfm_submit_width_backend',
-				'max-content'
-			);
-			updateMeta( '_srfm_submit_width_backend', 'max-content' );
-
-			if ( value === 'left' ) {
-				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
-					'100%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '100%' );
-			}
-			if ( value === 'right' ) {
-				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
-					'0%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '0%' );
-			}
-			if ( value === 'center' ) {
-				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
-					'50%'
-				);
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
-			}
-			if ( value === 'justify' ) {
-				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
-					'50%'
-				);
-				root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
-				updateMeta( '_srfm_submit_alignment_backend', '50%' );
+		if ( option === '_srfm_show_asterisk' ) {
+			if ( ! value ) {
+				rootContainer.classList.add( 'srfm-hide-asterisk' );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
 		}
 
@@ -213,13 +153,15 @@ function GeneralSettings( props ) {
 						updateMeta( '_srfm_show_labels', value );
 					} }
 				/>
-				<ToggleControl
-					label={ __( 'Show Asterisk', 'sureforms' ) }
-					checked={ sureforms_keys._srfm_show_asterisk }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_show_asterisk', value );
-					} }
-				/>
+				{ sureforms_keys._srfm_show_labels && (
+					<ToggleControl
+						label={ __( 'Show Asterisk', 'sureforms' ) }
+						checked={ sureforms_keys._srfm_show_asterisk }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_show_asterisk', value );
+						} }
+					/>
+				) }
 				{ /* will be used later */ }
 				{ /* <MultiButtonsControl
 					label={ __( 'Form Position', 'sureforms' ) }
@@ -281,50 +223,6 @@ function GeneralSettings( props ) {
 						updateMeta( '_srfm_submit_button_text', btnText );
 					} }
 					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<MultiButtonsControl
-					label={ __( 'Button Alignment', 'sureforms' ) }
-					data={ {
-						value: sureforms_keys._srfm_submit_alignment,
-						label: '_srfm_submit_alignment',
-					} }
-					options={ [
-						{
-							value: 'left',
-							icon: <FontAwesomeIcon icon={ faAlignLeft } />,
-							tooltip: __( 'Left', 'sureforms' ),
-						},
-						{
-							value: 'center',
-							icon: <FontAwesomeIcon icon={ faAlignCenter } />,
-							tooltip: __( 'Center', 'sureforms' ),
-						},
-						{
-							value: 'right',
-							icon: <FontAwesomeIcon icon={ faAlignRight } />,
-							tooltip: __( 'Right', 'sureforms' ),
-						},
-						{
-							value: 'justify',
-							icon: <FontAwesomeIcon icon={ faAlignJustify } />,
-							tooltip: __( 'Full Width', 'sureforms' ),
-						},
-					] }
-					showIcons={ true }
-					onChange={ ( value ) => {
-						if ( sureforms_keys._srfm_submit_alignment === value ) {
-							updateMeta( '_srfm_submit_alignment', 'left' );
-							updateMeta( '_srfm_submit_width', '' );
-						} else if ( 'justify' === value ) {
-							updateMeta( '_srfm_submit_alignment', value );
-							updateMeta( '_srfm_submit_width', '100%' );
-							updateMeta( '_srfm_submit_width_backend', 'auto' );
-						} else {
-							updateMeta( '_srfm_submit_alignment', value );
-							updateMeta( '_srfm_submit_width', '' );
-						}
-					} }
 				/>
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody

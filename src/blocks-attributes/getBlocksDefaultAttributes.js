@@ -16,7 +16,7 @@ import uploadAttributes from '@Blocks/upload/block.json';
 import pageBreakAttributes from '@Blocks/page-break/block.json';
 
 const default_keys = {
-	_srfm_color1: { default: '' },
+	_srfm_color1: { default: '#0184C7' },
 	_srfm_textcolor1: { default: '' },
 	_srfm_color2: { default: '' },
 	_srfm_email: { default: sfBlockData.admin_email },
@@ -33,20 +33,19 @@ const default_keys = {
 	_srfm_input_border_color: { default: '#000000' },
 	_srfm_input_border_width: { default: 1 },
 	_srfm_input_border_radius: { default: 0 },
-	_srfm_message_text_color: { default: '#16A34A' },
-	_srfm_message_bg_color: { default: '#ffffff' },
-	_srfm_field_error_color: { default: '#ff0000' },
-	_srfm_field_error_surface_color: { default: '#ff0000' },
-	_srfm_field_error_bg_color: { default: '#ffffff' },
-	_srfm_button_text_color: { default: '#ffffff' },
+	_srfm_field_error_color: { default: '#DC2626' },
+	_srfm_field_error_surface_color: { default: '#EF4444' },
+	_srfm_field_error_bg_color: { default: '#FEF2F2' },
+	_srfm_button_text_color: { default: '#000000' },
 	_srfm_button_color: { default: '#000000' },
-	_srfm_button_bg_color: { default: '#ffffff' },
+	_srfm_button_bg_color: { default: '#0184C7' },
 	_srfm_button_border_color: { default: '#000000' },
 	_srfm_button_border_width: { default: 1 },
 	_srfm_button_border_radius: { default: 0 },
 	_srfm_first_page_label: { default: 'Page break' },
 	_srfm_previous_button_text: { default: 'Previous' },
 	_srfm_next_button_text: { default: 'Next' },
+	_srfm_bg_color: { default: '#ffffff' },
 };
 
 export const blocksAttributes = {

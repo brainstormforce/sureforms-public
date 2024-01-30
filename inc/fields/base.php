@@ -37,7 +37,7 @@ class Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function classic_styling( $attributes, $form_id ) {
 		return '';
 	}
 }

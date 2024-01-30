@@ -103,14 +103,16 @@ class Sureforms_Helper {
 	 * @return string
 	 * @since 0.0.1
 	 */
-	public static function generate_common_form_markup( $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
+	public static function generate_common_form_markup( $form_id, $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
-		$markup = '';
+		$markup         = '';
+		$show_labels    = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
+		$show_asterisks = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';

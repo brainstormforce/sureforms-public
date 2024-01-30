@@ -45,8 +45,20 @@
 }
 .block-editor-page.post-type-sureforms_form .is-root-container .srfm-submit-button,
 .srfm-form-container .srfm-submit-button {
+  border-radius: 0.375em;
+  font-family: inherit;
+  font-weight: var(--wp--custom--font-weight--medium);
+  line-height: var(--wp--custom--line-height--initial);
+  padding: calc(0.667em + 2px) calc(1.333em + 2px);
+  text-decoration: none;
   font-size: 0.7em;
   cursor: pointer;
+}
+.block-editor-page.post-type-sureforms_form .is-root-container .srfm-btn-bg-color,
+.srfm-form-container .srfm-btn-bg-color {
+  color: var(--srfm-btn-text-color);
+  border: var(--srfm-btn-border);
+  background-color: var(--srfm-btn-bg-color);
 }
 
 .block-editor-page.post-type-sureforms_form .is-root-container,

@@ -26,7 +26,7 @@ class Multichoice_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function classic_styling( $attributes, $form_id ) {
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : array();
@@ -50,7 +50,7 @@ class Multichoice_Markup extends Base {
 			ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="hidden" value=""/>
-			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<?php if ( is_array( $options ) ) { ?>
 					<div class="srfm-block-wrap">
 						<?php foreach ( $options as $i => $option ) { ?>

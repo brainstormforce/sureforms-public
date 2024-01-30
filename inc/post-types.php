@@ -443,7 +443,7 @@ class Post_Types {
 			'_srfm_field_error_color'                 => 'string',
 			'_srfm_field_error_surface_color'         => 'string',
 			'_srfm_field_error_bg_color'              => 'string',
-			'_srfm_submit_style'                      => 'string',
+			'_srfm_btn_bg_type'                       => 'string',
 			'_srfm_button_bg_color'                   => 'string',
 			'_srfm_button_text_color'                 => 'string',
 			'_srfm_button_border_color'               => 'string',
@@ -451,6 +451,7 @@ class Post_Types {
 			'_srfm_button_border_radius'              => 'integer',
 			'_srfm_previous_button_text'              => 'string',
 			'_srfm_next_button_text'                  => 'string',
+			'_srfm_inherit_theme_buttom'              => 'boolean',
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(

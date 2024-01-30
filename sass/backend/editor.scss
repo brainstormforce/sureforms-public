@@ -30,6 +30,8 @@ body.post-type-sureforms_form {
 
 		button.editor-post-url__panel-toggle {
 			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
 		}
 	}
 
@@ -52,6 +54,21 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.srfm-hide-labels {
+		label.srfm-block-label {
+			display: none !important;
+		}
+	}
+
+	.srfm-hide-asterisk {
+		.srfm-block-text,
+		.srfm-block-label {
+			&.srfm-required::after {
+				content: "";
+			}
+		}
+	}
+
 	.is-desktop-preview,
 	.is-tablet-preview,
 	.is-mobile-preview,
@@ -61,7 +78,7 @@ body.post-type-sureforms_form {
 		background-position: center !important;
 		background-size: cover !important;
 		background-repeat: no-repeat !important;
-		background-color: #fff !important;
+		background-color: var( --srfm-bg-color ) !important;
 	}
 
 	.editor-styles-wrapper {
@@ -183,6 +200,28 @@ body.post-type-sureforms_form {
 		position: relative;
 		margin: 0 0.3em;
 		margin-top: 1.2em;
+		.srfm-btn-bg-color {
+			border-radius: 0.375em;
+			font-family: inherit;
+			font-weight: var( --wp--custom--font-weight--medium );
+			line-height: var( --wp--custom--line-height--initial );
+			padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+			text-decoration: none;
+			color: var( --srfm-btn-text-color );
+			background-color: var( --srfm-btn-bg-color );
+			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+		}
+		.srfm-btn-bg-transparent {
+			border-radius: 0.375em;
+			font-family: inherit;
+			font-weight: var( --wp--custom--font-weight--medium );
+			line-height: var( --wp--custom--line-height--initial );
+			padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+			text-decoration: none;
+			color: var( --srfm-btn-text-color );
+			background-color: transparent;
+			border: none;
+		}
 		.srfm-submit-button {
 			position: absolute;
 			font-size: calc( var( --srfm-font-size ) - 0.33em );

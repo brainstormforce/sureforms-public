@@ -32,7 +32,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 const { select, dispatch } = wp.data;
 
 const default_keys = {
-	_srfm_color1: '',
+	_srfm_color1: '#0184C7',
 	_srfm_textcolor1: '',
 	_srfm_color2: '',
 	_srfm_fontsize: 20,
@@ -70,27 +70,28 @@ const default_keys = {
 	_srfm_input_border_color: '#000000',
 	_srfm_input_border_width: 1,
 	_srfm_input_border_radius: 0,
-	_srfm_message_text_color: '#000000',
-	_srfm_message_bg_color: '#ffffff',
-	_srfm_field_error_color: '#ff0000',
-	_srfm_field_error_surface_color: '#ff0000',
-	_srfm_field_error_bg_color: '#ffffff',
-	_srfm_button_text_color: '#ffffff',
+	_srfm_field_error_color: '#DC2626',
+	_srfm_field_error_surface_color: '#EF4444',
+	_srfm_field_error_bg_color: '#FEF2F2',
+	_srfm_button_text_color: '#000000',
 	_srfm_submit_style: 'filled',
 	_srfm_button_color: '#000000',
-	_srfm_button_bg_color: '#ffffff',
+	_srfm_button_bg_color: '#0184C7',
 	_srfm_button_border_color: '#000000',
 	_srfm_button_border_width: 1,
 	_srfm_button_border_radius: 0,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
+	_srfm_inherit_theme_buttom: true,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState();
-	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const postId = useSelect( ( select ) => {
+		return select( 'core/editor' ).getCurrentPostId();
+	}, [] );
 	const { editPost } = useDispatch( editorStore );
 
 	const rootContainer = document.querySelector( '.is-root-container' );
@@ -145,8 +146,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
+	const submitBtnContainer = document.querySelector(
+		'.srfm-submit-btn-container'
+	);
+
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button ${
+			sureforms_keys._srfm_inherit_theme_buttom
+				? 'wp-block-button__link'
+				: sureforms_keys._srfm_btn_bg_type === 'filled'
+				? 'srfm-btn-bg-color'
+				: 'srfm-btn-bg-transparent'
+		}"></button></div>`;
 
 		if ( elm ) {
 			elm.insertAdjacentHTML( 'afterend', appendHtml );
@@ -273,32 +284,26 @@ const SureformsFormSpecificSettings = ( props ) => {
 								'#ffffff',
 						},
 						{
-							property: '--srfm-button-text-color',
+							property: '--srfm-btn-text-color',
 							value:
 								sureforms_keys._srfm_button_text_color ||
-								'#ffffff',
+								'#000000',
 						},
 						{
-							property: '--srfm-button-color',
-							value:
-								sureforms_keys._srfm_button_color || '#000000',
+							property: '--srfm-btn-bg-color',
+							value: sureforms_keys._srfm_button_bg_color || '',
 						},
 						{
-							property: '--srfm-button-bg-color',
-							value:
-								sureforms_keys._srfm_button_bg_color ||
-								'#ffffff',
-						},
-						{
-							property: '--srfm-button-border-color',
+							property: '--srfm-btn-border-color',
 							value:
 								sureforms_keys._srfm_button_border_color ||
 								'#000000',
 						},
 						{
-							property: '--srfm-button-border-width',
+							property: '--srfm-btn-border-width',
 							value:
-								sureforms_keys._srfm_button_border_width || 1,
+								sureforms_keys._srfm_button_border_width +
+									'px' || '1px',
 						},
 						{
 							property: '--srfm-button-border-radius',
@@ -318,7 +323,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 						'.block-editor-block-list__layout'
 					);
 
-					addSubmitButton( elm );
+					const submitBtnContainer = iframeBody.querySelector(
+						'.srfm-submit-btn-container'
+					);
+
+					if ( ! submitBtnContainer ) {
+						addSubmitButton( elm );
+					}
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
@@ -348,7 +359,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 				const elm = document.querySelector(
 					'.block-editor-block-list__layout'
 				);
-				addSubmitButton( elm );
+
+				if ( ! submitBtnContainer ) {
+					console.log( 'addSubmitButton' );
+					addSubmitButton( elm );
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 1 ) {
+						submitBtn[ 1 ].remove();
+					}
+				}
 			}
 		}, 200 );
 	}, [ deviceType, sureforms_keys ] );

@@ -29,7 +29,7 @@ class Block extends Base {
 			$markup_class = new Multichoice_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->classic_styling( $attributes );
+			echo $markup_class->classic_styling( $attributes, $form_id );
 		}
 			return ob_get_clean();
 	}
