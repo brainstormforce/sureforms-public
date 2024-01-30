@@ -30,6 +30,10 @@ function AppearanceSettings( props ) {
 	);
 	const root = document.documentElement;
 
+	useEffect( () => {
+		updateMeta( '_srfm_is_page_break', isPageBreak );
+	}, [ isPageBreak ] );
+
 	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
 		root.style.setProperty(
 			'--srfm_bg',

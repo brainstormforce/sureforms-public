@@ -6,13 +6,13 @@ $bg_color: #fff;
 		.srfm-page-banner {
 			padding: 50px 15px;
 			text-align: center;
-			min-height: 200px;
+			min-height: 300px;
 			.srfm-single-banner-title {
 				color: $page_title_color;
 			}
 
 			@media ( max-width: 921px ) {
-				min-height: 230px;
+				min-height: 250px;
 			}
 		}
 

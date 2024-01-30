@@ -26,7 +26,7 @@ class SF_Public {
 	 */
 	public function __construct() {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
-		add_filter( 'the_content', [ $this, 'print_form' ], PHP_INT_MAX );
+
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_filter( 'render_block', array( $this, 'generate_render_script' ), 10, 2 );
 	}
@@ -159,20 +159,5 @@ class SF_Public {
 		return $template;
 	}
 
-	/**
-	 * Print form template.
-	 *
-	 * @param string $content Content.
-	 * @since 0.0.1
-	 * @return string Modified Content.
-	 */
-	public function print_form( $content ) {
-		if ( get_post_type() === SUREFORMS_FORMS_POST_TYPE ) {
-			if ( has_blocks() ) {
-				$blocks = parse_blocks( get_the_content() );
-			}
-		}
-		return $content;
-	}
 }
 
