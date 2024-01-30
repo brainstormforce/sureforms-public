@@ -362,7 +362,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 				);
 
 				if ( ! submitBtnContainer ) {
-					console.log( 'addSubmitButton' );
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'

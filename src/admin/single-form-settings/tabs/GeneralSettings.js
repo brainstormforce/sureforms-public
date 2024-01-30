@@ -1,12 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import getApiData from '@Controls/getApiData';
+import { useDeviceType } from '@Controls/getPreviewType';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -19,8 +20,43 @@ function GeneralSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-	const root = document.documentElement;
-	const rootContainer = document.getElementById( 'srfm-form-container' );
+
+	const deviceType = useDeviceType();
+	const [ rootContainer, setRootContainer ] = useState(
+		document.getElementById( 'srfm-form-container' )
+	);
+
+	console.log( rootContainer );
+
+	// if device type is desktop then
+	useEffect( () => {
+		setTimeout( () => {
+			const tabletPreview =
+				document.getElementsByClassName( 'is-tablet-preview' );
+			const mobilePreview =
+				document.getElementsByClassName( 'is-mobile-preview' );
+			if ( tabletPreview.length !== 0 || mobilePreview.length !== 0 ) {
+				const preview = tabletPreview[ 0 ] || mobilePreview[ 0 ];
+				if ( preview ) {
+					const iframe = preview.querySelector( 'iframe' );
+					const iframeDocument =
+						iframe?.contentWindow.document ||
+						iframe?.contentDocument;
+					const iframeBody = iframeDocument
+						?.querySelector( 'html' )
+						?.querySelector( 'body' );
+
+					setRootContainer(
+						iframeBody.querySelector( '.is-root-container' )
+					);
+				}
+			} else {
+				setRootContainer(
+					document.getElementById( 'srfm-form-container' )
+				);
+			}
+		}, 100 );
+	}, [ deviceType, rootContainer ] );
 
 	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
 		if ( ! sureforms_keys._srfm_show_labels ) {
