@@ -244,11 +244,25 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  margin: 0 -0.3em;
   row-gap: 0.6em;
 }
+@media (min-width: 768px) {
+  .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap.srfm-choice-width-100 .srfm-multi-choice-single {
+    width: calc(100% - 0.3em);
+  }
+  .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap.srfm-choice-width-50 .srfm-multi-choice-single {
+    width: calc(50% - 0.3em);
+  }
+  .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap.srfm-choice-width-33-33 .srfm-multi-choice-single {
+    width: calc(33% - 0.3em);
+  }
+  .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap.srfm-choice-width-25 .srfm-multi-choice-single {
+    width: calc(25% - 0.3em);
+  }
+}
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
-  width: calc(50% - 0.3em);
+  padding: 0 0.3em;
   cursor: pointer;
   background-color: var(--srfm-base-background-color);
 }

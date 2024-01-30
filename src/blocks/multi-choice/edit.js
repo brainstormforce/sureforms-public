@@ -38,6 +38,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		required,
 		options,
 		fieldWidth,
+		choiceWidth,
 		label,
 		singleSelection,
 		help,
@@ -171,6 +172,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										singleSelection: checked,
 									} )
 								}
+							/>
+							<SelectControl
+								label={ __( 'Choice Width', 'sureforms' ) }
+								value={ choiceWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										choiceWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
 							/>
 							<div style={ { marginBottom: '8px' } }>
 								{ options.length > 0 && (
