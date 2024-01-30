@@ -201,7 +201,7 @@ body.post-type-sureforms_form {
 		margin: 0 0.3em;
 		margin-top: 1.2em;
 		.srfm-btn-bg-color {
-			border-radius: 0.375em;
+			border-radius: var( --srfm-btn-border-radius );
 			font-family: inherit;
 			font-weight: var( --wp--custom--font-weight--medium );
 			line-height: var( --wp--custom--line-height--initial );

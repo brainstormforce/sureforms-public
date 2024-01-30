@@ -195,6 +195,14 @@ function StyleSettings( props ) {
 				: '1px'
 		);
 
+		// btn border radius
+		root.style.setProperty(
+			'--srfm-btn-border-radius',
+			sureforms_keys._srfm_button_border_radius
+				? sureforms_keys._srfm_button_border_radius + 'px'
+				: '4px'
+		);
+
 		// // submit button bg type
 		// if ( sureforms_keys._srfm_btn_bg_type === 'filled' ) {
 		// 	root.style.setProperty(
@@ -453,7 +461,7 @@ function StyleSettings( props ) {
 		<>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form Container', 'sureforms' ) }
-				initialOpen={ true }
+				initialOpen={ false }
 			>
 				<Range
 					label={ __( 'Form Container Width(px)', 'sureforms' ) }
@@ -917,8 +925,8 @@ function StyleSettings( props ) {
 									value={
 										sureforms_keys._srfm_button_border_radius
 									}
-									min={ 650 }
-									max={ 1000 }
+									min={ 1 }
+									max={ 100 }
 									displayUnit={ false }
 									data={ {
 										value: sureforms_keys._srfm_button_border_radius,

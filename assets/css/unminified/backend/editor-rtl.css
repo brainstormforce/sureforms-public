@@ -150,7 +150,7 @@ body.post-type-sureforms_form .srfm-submit-btn-container {
   margin-top: 1.2em;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-btn-bg-color {
-  border-radius: 0.375em;
+  border-radius: var(--srfm-btn-border-radius);
   font-family: inherit;
   font-weight: var(--wp--custom--font-weight--medium);
   line-height: var(--wp--custom--line-height--initial);

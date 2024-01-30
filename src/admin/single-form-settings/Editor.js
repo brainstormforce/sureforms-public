@@ -79,7 +79,7 @@ const default_keys = {
 	_srfm_button_bg_color: '#0184C7',
 	_srfm_button_border_color: '#000000',
 	_srfm_button_border_width: 1,
-	_srfm_button_border_radius: 0,
+	_srfm_button_border_radius: 6,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
 	_srfm_inherit_theme_buttom: true,
@@ -306,9 +306,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 									'px' || '1px',
 						},
 						{
-							property: '--srfm-button-border-radius',
+							property: '--srfm-btn-border-radius',
 							value:
-								sureforms_keys._srfm_button_border_radius || 0,
+								sureforms_keys._srfm_button_border_radius +
+									'px' || '6px',
 						},
 					];
 

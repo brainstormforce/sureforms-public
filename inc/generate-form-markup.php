@@ -98,10 +98,12 @@ class Generate_Form_Markup {
 			$btn_text_color   = get_post_meta( intval( $id ), '_srfm_button_text_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_text_color', true ) ) : '#000000';
 			$btn_bg_type      = get_post_meta( intval( $id ), '_srfm_btn_bg_type', true ) ? strval( get_post_meta( intval( $id ), '_srfm_btn_bg_type', true ) ) : '';
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color     = get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ) : '#0184C7';
-				$btn_border_color = get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ) : '#00000';
-				$btn_border_width = get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ) : '1px';
-				$btn_border       = $btn_border_width . 'px solid ' . $btn_border_color;
+				$btn_bg_color      = get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ) : '#0184C7';
+				$btn_border_color  = get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ) : '#00000';
+				$btn_border_width  = get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ) : '1px';
+				$btn_border_radius = get_post_meta( intval( $id ), '_srfm_button_border_radius', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_radius', true ) ) : '6px';
+				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
+				$btn_border_radius = $btn_border_radius . 'px';
 			} else {
 				$btn_bg_color = '';
 				$btn_border   = 'none';
@@ -213,6 +215,7 @@ class Generate_Form_Markup {
 					--srfm-btn-text-color: <?php echo esc_html( $btn_text_color ); ?>;
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
+					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
 				}
 			</style>
 			<?php
