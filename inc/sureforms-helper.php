@@ -209,4 +209,18 @@ class Sureforms_Helper {
 		// Update the site-wide option if we're in the network admin, and return the updated status.
 		return $network_override && is_multisite() ? update_site_option( $key, $value ) : update_option( $key, $value );
 	}
+
+	/**
+	 * Update an option from the database.
+	 *
+	 * @param string $key              The option key.
+	 * @param mixed  $value            The value to update.
+	 * @param bool   $network_override Whether to allow the network_override admin setting to be overridden on subsites.
+	 * @since 1.0.0
+	 * @return bool True if the option was updated, false otherwise.
+	 */
+	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : $default;
+		return $meta_value;
+	}
 }

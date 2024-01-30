@@ -75,54 +75,53 @@ class Generate_Form_Markup {
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
-			$color_primary            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ) : '';
-			$color_secondary          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ) : '';
-			$color_text_primary       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ) : '';
-			$form_font_size           = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) ? get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) : '';
-			$success_submit_type      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ) : '';
-			$success_message_title    = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ) : '';
-			$success_message          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ) : '';
-			$success_url              = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ) : '';
-			$classname                = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ) : '';
-			$styling                  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
-			$is_page_break            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
-			$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
-			$page_break_first_label   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ) : '';
-			$page_break_toggle_label  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ) : '';
-			$previous_btn_text        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ) : 'Previous';
-			$next_btn_text            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ) : 'Next';
+			$color_primary            = Sureforms_Helper::get_meta_value( $id, '_srfm_color1' );
+			$form_font_size           = Sureforms_Helper::get_meta_value( $id, '_srfm_fontsize' );
+			$success_submit_type      = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_type' );
+			$success_message_title    = Sureforms_Helper::get_meta_value( $id, '_srfm_thankyou_message_title' );
+			$success_message          = Sureforms_Helper::get_meta_value( $id, '_srfm_thankyou_message' );
+			$success_url              = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_url' );
+			$classname                = Sureforms_Helper::get_meta_value( $id, '_srfm_additional_classes' );
+			$styling                  = Sureforms_Helper::get_meta_value( $id, '_srfm_form_styling' );
+			$is_page_break            = Sureforms_Helper::get_meta_value( $id, '_srfm_is_page_break' );
+			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
+			$page_break_first_label   = Sureforms_Helper::get_meta_value( $id, '_srfm_first_page_label' );
+			$page_break_toggle_label  = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_toggle_label' );
+			$previous_btn_text        = Sureforms_Helper::get_meta_value( $id, '_srfm_previous_button_text', 'Previous' );
+			$next_btn_text            = Sureforms_Helper::get_meta_value( $id, '_srfm_next_button_text', 'Next' );
+
 			// Submit button.
-			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
-			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
-			$btn_from_theme   = get_post_meta( intval( $id ), '_srfm_inherit_theme_buttom', true ) ? strval( get_post_meta( intval( $id ), '_srfm_inherit_theme_buttom', true ) ) : '';
-			$btn_text_color   = get_post_meta( intval( $id ), '_srfm_button_text_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_text_color', true ) ) : '#000000';
-			$btn_bg_type      = get_post_meta( intval( $id ), '_srfm_btn_bg_type', true ) ? strval( get_post_meta( intval( $id ), '_srfm_btn_bg_type', true ) ) : '';
+			$button_text      = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_alignment = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_alignment' );
+			$btn_from_theme   = Sureforms_Helper::get_meta_value( $id, '_srfm_inherit_theme_buttom' );
+			$btn_text_color   = Sureforms_Helper::get_meta_value( $id, '_srfm_button_text_color', '#000000' );
+			$btn_bg_type      = Sureforms_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_bg_color', true ) ) : '#0184C7';
-				$btn_border_color  = get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_color', true ) ) : '#00000';
-				$btn_border_width  = get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_width', true ) ) : '1px';
-				$btn_border_radius = get_post_meta( intval( $id ), '_srfm_button_border_radius', true ) ? strval( get_post_meta( intval( $id ), '_srfm_button_border_radius', true ) ) : '6px';
+				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', '#0184C7' );
+				$btn_border_color  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_color', '#000000' );
+				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', '1px' );
+				$btn_border_radius = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_radius', '6px' );
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
 				$btn_border_radius = $btn_border_radius . 'px';
 			} else {
 				$btn_bg_color = '';
 				$btn_border   = 'none';
 			}
-			$bg_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg_type', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg_type', true ) ) : 'image';
+			$bg_type = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_type', 'image' );
 
 			if ( 'image' === $bg_type ) {
-				$background_image_url = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ) ) : '';
+				$background_image_url = Sureforms_Helper::get_meta_value( $id, '_srfm_bg' );
 				$bg_image             = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 				$bg_color             = '#ffffff';
 			} else {
-				$background_color = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg_color', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg_color', true ) ) ) : '';
+				$background_color = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_color' );
 				$bg_image         = 'none';
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
 			$full               = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version  = get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $id ), '_srfm_form_recaptcha', true ) ) : '';
-			$show_title_on_page = get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ? strval( get_post_meta( intval( $id ), '_srfm_page_form_title', true ) ) : '';
+			$recaptcha_version  = Sureforms_Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+			$show_title_on_page = Sureforms_Helper::get_meta_value( $id, '_srfm_page_form_title' );
 
 			$google_captcha_site_key = '';
 			switch ( $recaptcha_version ) {
@@ -141,18 +140,18 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_label_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_label_color', true ) ) : '#1f2937';
+			$label_text_color = Sureforms_Helper::get_meta_value( $id, '_srfm_label_color', '#1f2937' );
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
 
-			$body_input_color_var  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_text_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_text_color', true ) ) : '#4B5563';
-			$placeholder_color_var = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_placeholder_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_placeholder_color', true ) ) : '#9CA3AF';
-			$border_color_var      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_border_color', true ) ) : '#D0D5DD';
+			$body_input_color_var  = Sureforms_Helper::get_meta_value( $id, '_srfm_input_text_color', '#4B5563' );
+			$placeholder_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_input_placeholder_color', '#9CA3AF' );
+			$border_color_var      = Sureforms_Helper::get_meta_value( $id, '_srfm_input_border_color', '#D0D5DD' );
 			$help_color_var        = '#6B7280';
-			$base_background_var   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_bg_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_input_bg_color', true ) ) : '#FFFFFF';
+			$base_background_var   = Sureforms_Helper::get_meta_value( $id, '_srfm_input_bg_color', '#FFFFFF' );
 			$light_background_var  = '#F9FAFB';
 
 			// Info colors.
@@ -171,9 +170,9 @@ class Generate_Form_Markup {
 			$warning_background_color_var = '#FEFCE8';
 
 			// Error colors.
-			$error_surface_var          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_surface_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_surface_color', true ) ) : '#EF4444';
-			$error_text_var             = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_color', true ) ) : '#DC2626';
-			$error_background_color_var = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_bg_color', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_field_error_bg_color', true ) ) : '#FEF2F2';
+			$error_surface_var          = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_surface_color', '#EF4444' );
+			$error_text_var             = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_color', '#DC2626' );
+			$error_background_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_bg_color', '#FEF2F2' );
 
 			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
 			$media_query_mobile_var = '576px';
@@ -226,7 +225,7 @@ class Generate_Form_Markup {
 				<?php
 			}
 			?>
-				<form method="post" id="srfm-form-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'classic' === $styling ? 'srfm-form-style-classic ' : '' ); ?><?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?><?php // echo esc_attr( '' !== $background_image_url ? 'srfm-form-background' : '' ); ?>"
+				<form method="post" id="srfm-form-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'classic' === $styling ? 'srfm-form-style-classic ' : '' ); ?><?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
 				form-id="<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
