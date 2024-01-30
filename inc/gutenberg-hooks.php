@@ -204,19 +204,22 @@ class Gutenberg_Hooks {
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
-			apply_filters( 'sureforms_block_preview_images', array(
-				'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
-				'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
-				'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
-				'textarea_preview'     => SUREFORMS_URL . 'images/field-previews/textarea.svg',
-				'multi_choice_preview' => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'checkbox_preview'     => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
-				'number_preview'       => SUREFORMS_URL . 'images/field-previews/number.svg',
-				'phone_preview'        => SUREFORMS_URL . 'images/field-previews/phone.svg',
-				'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
-				'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
-				'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
-			) ),
+			apply_filters(
+				'sureforms_block_preview_images',
+				array(
+					'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SUREFORMS_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SUREFORMS_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SUREFORMS_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+				)
+			),
 		);
 
 		wp_localize_script(

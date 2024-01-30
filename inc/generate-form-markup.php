@@ -75,23 +75,21 @@ class Generate_Form_Markup {
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
-			$color_primary            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ) : '';
-			$color_secondary          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ) : '';
-			$color_text_primary       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ) : '';
-			$background_image_url     = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ) ) : '';
-			$form_font_size           = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) ? get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) : '';
-			$success_submit_type      = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ) : '';
-			$success_message_title    = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ) : '';
-			$success_message          = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ) : '';
-			$success_url              = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ) : '';
-			$classname                = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ) : '';
-			$styling                  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
-			$is_page_break            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
-			$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
-			$page_break_first_label   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ) : '';
-			$page_break_toggle_label  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ) : '';
-			$previous_btn_text        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ) : 'Previous';
-			$next_btn_text            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ) : 'Next';
+			$color_primary         = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color1', true ) ) : '';
+			$color_secondary       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_color2', true ) ) : '';
+			$color_text_primary    = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_textcolor1', true ) ) : '';
+			$background_image_url  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ? rawurldecode( Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_bg', true ) ) ) : '';
+			$form_font_size        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) ? get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_fontsize', true ) : '';
+			$success_submit_type   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_type', true ) ) : '';
+			$success_message_title = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message_title', true ) ) : '';
+			$success_message       = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_thankyou_message', true ) ) : '';
+			$success_url           = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_submit_url', true ) ) : '';
+			$classname             = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_additional_classes', true ) ) : '';
+			$styling               = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
+			if ( defined( 'SUREFORMS_PRO_VER' ) ) {
+				$is_page_break            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
+				$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
+			}
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
@@ -207,7 +205,7 @@ class Generate_Form_Markup {
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
 					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-						do_action( 'sureforms_page_break_header', $is_page_break, $page_break_progress_type, $page_break_toggle_label );
+						do_action( 'sureforms_page_break_header', $id );
 					}
 				}
 				?>
@@ -220,7 +218,7 @@ class Generate_Form_Markup {
 				<?php
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
-					do_action( 'sureforms_page_break_pagination', $post, $page_break_first_label );
+					do_action( 'sureforms_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
 					echo $content;
@@ -229,8 +227,8 @@ class Generate_Form_Markup {
 				?>
 
 				<?php
-				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
-					do_action( 'sureforms_page_break_btn', $is_page_break, $previous_btn_text, $next_btn_text );
+				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
+					do_action( 'sureforms_page_break_btn', $id );
 				}
 				?>
 				<?php if ( 0 !== $block_count ) : ?>

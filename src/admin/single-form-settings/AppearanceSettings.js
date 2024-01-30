@@ -15,13 +15,15 @@ import {
 	faAlignJustify,
 } from '@fortawesome/free-solid-svg-icons';
 import SRFMTextControl from '@Components/text-control';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import getApiData from '@Controls/getApiData';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { default_keys, enableQuickActionSidebar, setEnableQuickActionSidebar } = props;
+	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -473,6 +475,84 @@ function AppearanceSettings( props ) {
 					} }
 				/>
 			</SRFMAdvancedPanelBody>
+			{ isPageBreak && <SRFMAdvancedPanelBody
+				title={ __( 'Page Break', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<SRFMTextControl
+					label={ __( 'First Page Label', 'sureforms' ) }
+					value={ sureforms_keys._srfm_first_page_label }
+					data={ {
+						value: sureforms_keys._srfm_first_page_label,
+						label: '_srfm_first_page_label',
+					} }
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_first_page_label', value )
+					}
+				/>
+				<SelectControl
+					label={ __( 'Progress Indicator', 'sureforms' ) }
+					value={ sureforms_keys._srfm_page_break_progress_indicator }
+					className="srfm-progress-control"
+					options={
+						[
+							{ label: 'None', value: 'none' },
+							{
+								label: 'Progress Bar',
+								value: 'progress-bar',
+							},
+							{
+								label: 'Connector',
+								value: 'connector',
+							},
+							{
+								label: 'Steps',
+								value: 'steps',
+							},
+						]
+					}
+					onChange={ ( value ) =>
+						updateMeta( '_srfm_page_break_progress_indicator', value )
+					}
+					__nextHasNoMarginBottom
+				/>
+				{ sureforms_keys._srfm_page_break_progress_indicator !== 'progress-bar' && (
+					<ToggleControl
+						label={ __(
+							'Show Labels',
+							'sureforms'
+						) }
+						checked={ sureforms_keys._srfm_page_break_toggle_label }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_page_break_toggle_label', value );
+						} }
+					/>
+				) }
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_previous_button_text',
+					} }
+					label={ __( 'Previous Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_previous_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_previous_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<SRFMTextControl
+					data={ {
+						value: sureforms_keys._srfm_previous_button_text,
+						label: '_srfm_next_button_text',
+					} }
+					label={ __( 'Next Button Text', 'sureforms' ) }
+					value={ sureforms_keys._srfm_next_button_text }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_next_button_text', value );
+					} }
+					isFormSpecific={ true }
+				/>
+			</SRFMAdvancedPanelBody> }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Quick Action Bar', 'sureforms' ) }
 				initialOpen={ false }
