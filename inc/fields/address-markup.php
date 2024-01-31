@@ -91,7 +91,7 @@ class Address_Markup extends Base {
 				if ( is_array( $data ) ) {
 					?>
 				<div class="srfm-address-country-wrap srfm-dropdown-common-wrap">
-					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country srfm-dropdown-common" autocomplete="country-name">
+					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country srfm-dropdown-common" autocomplete="country-name" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>">
 					<?php if ( $country_placeholder ) { ?>
 							<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
 						<?php } ?>
