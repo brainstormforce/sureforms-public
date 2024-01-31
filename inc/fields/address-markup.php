@@ -44,7 +44,7 @@ class Address_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$options              = isset( $attributes['options'] ) ? $attributes['options'] : '';
 			$field_width          = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
@@ -91,7 +91,7 @@ class Address_Markup extends Base {
 				if ( is_array( $data ) ) {
 					?>
 				<div class="srfm-address-country-wrap srfm-dropdown-common-wrap">
-					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country srfm-dropdown-common" autocomplete="country-name">
+					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-country srfm-dropdown-common" autocomplete="country-name" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>">
 					<?php if ( $country_placeholder ) { ?>
 							<option value="" selected disabled hidden><?php echo esc_attr( $country_placeholder ); ?></option>
 						<?php } ?>

@@ -296,11 +296,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			) {
 				if ( ! addressInput[ i ].value && 2 !== i ) {
 					container.classList.add( 'srfm-error' );
-					validateResult = true;
 
 					if ( ! firstErrorInput ) {
 						firstErrorInput = addressInput[ i ];
 					}
+
+					validateResult = true;
+					break;
 				} else {
 					container.classList.remove( 'srfm-error' );
 				}

@@ -56,6 +56,7 @@ const default_keys = {
 	_srfm_page_break_toggle_label: false,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
+
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -121,7 +122,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
 
 		if ( elm ) {
-			elm.insertAdjacentHTML( 'afterend', appendHtml );
+			if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
+				elm.insertAdjacentHTML( 'afterend', appendHtml );
+			}
 		}
 	}
 
@@ -170,6 +173,24 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm_submit_button_text',
 							value: sureforms_keys._srfm_submit_button_text
 								? `"${ sureforms_keys._srfm_submit_button_text }"`
+								: '',
+						},
+						{
+							property: '--srfm_submit_alignment',
+							value: sureforms_keys._srfm_submit_alignment
+								? `${ sureforms_keys._srfm_submit_alignment }`
+								: '',
+						},
+						{
+							property: '--srfm_submit_alignment_backend',
+							value: sureforms_keys._srfm_submit_alignment_backend
+								? `${ sureforms_keys._srfm_submit_alignment_backend }`
+								: '',
+						},
+						{
+							property: '--srfm_submit_width_backend',
+							value: sureforms_keys._srfm_submit_width_backend
+								? `${ sureforms_keys._srfm_submit_width_backend }`
 								: '',
 						},
 					];

@@ -24,7 +24,7 @@ class Generate_Form_Markup {
 	/**
 	 * Constructor
 	 *
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
@@ -88,10 +88,6 @@ class Generate_Form_Markup {
 			$styling                  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_form_styling', true ) ) : '';
 			$is_page_break            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_is_page_break', true ) ) : '';
 			$page_break_progress_type = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_progress_indicator', true ) ) : '';
-			$page_break_first_label   = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_first_page_label', true ) ) : '';
-			$page_break_toggle_label  = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_page_break_toggle_label', true ) ) : '';
-			$previous_btn_text        = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_previous_button_text', true ) ) : 'Previous';
-			$next_btn_text            = get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $id ), '_srfm_next_button_text', true ) ) : 'Next';
 			// Submit button.
 			$button_text      = get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_button_text', true ) ) : '';
 			$button_alignment = get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $id ), '_srfm_submit_alignment', true ) ) : '';
@@ -204,40 +200,35 @@ class Generate_Form_Markup {
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
 					$honeypot_spam = get_option( 'honeypot' );
-				?>
-				<!-- page-break progress header start -->
-				<?php
-				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-					self::render_break_header_container( $is_page_break, $page_break_progress_type, $page_break_toggle_label );
+
+				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
+					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
+						do_action( 'sureforms_page_break_header', $id );
+					}
 				}
 				?>
-				<!-- page-break progress header end -->
+
 				<input type="hidden" value="<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" name="form-id">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
 				<?php if ( '1' === $honeypot_spam ) : ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
 				<?php endif; ?>
 				<?php
-				if ( $is_page_break ) {
-					if ( $post ) {
-						self::form_pagination( $post, $page_break_first_label );
-					}
+
+				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
+					do_action( 'sureforms_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
 					echo $content;
 					// phpcs:ignoreEnd
 				}
 				?>
-				<?php if ( $is_page_break ) : ?>
-					<div class="srfm-page-break-buttons wp-block-button">
-						<button class="srfm-pre-btn wp-block-button__link">
-							<?php echo esc_attr( $previous_btn_text ); ?>
-						</button>
-						<button class="srfm-nxt-btn wp-block-button__link">
-							<?php echo esc_attr( $next_btn_text ); ?>
-						</button>
-					</div>
-				<?php endif; ?>
+
+				<?php
+				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
+					do_action( 'sureforms_page_break_btn', $id );
+				}
+				?>
 				<?php if ( 0 !== $block_count ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?>">
 					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
@@ -303,85 +294,5 @@ class Generate_Form_Markup {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Form pagination
-	 *
-	 * @param \WP_Post $post The current WP_Post object.
-	 * @param string   $page_break_first_label label of first page break.
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public static function form_pagination( $post, $page_break_first_label ) {
-		$content = $post->post_content;
-		preg_match_all( '/wp:sureforms\/page-break {"block_id":"[^"]*","label":"([^"]*)"} \/-->/', $content, $matches );
-		$labels  = $matches[1];
-		$content = preg_replace( '/<!--\s*wp:sureforms\/page-break\s*{[^}]+?}\s*\/-->/i', '<!-- wp:sureforms/page-break /-->', $content );
-		if ( ! $content ) {
-			return;
-		}
-		$pages       = explode( '<!-- wp:sureforms/page-break /-->', $content );
-		$new_content = '';
-		$i           = 0;
-		foreach ( $pages as $page ) {
-			if ( 0 === $i ) {
-				$label = $page_break_first_label;
-			} else {
-				$label = isset( $labels[ $i - 1 ] ) ? $labels[ $i - 1 ] : 'page-break';
-			}
-			$new_content .= '<div class="srfm-page-break" data="' . $label . '">';
-			$new_content .= apply_filters( 'the_content', $page );
-			$new_content .= '</div>';
-			$i++;
-		}
-		// phpcs:ignore
-		echo $new_content;
-	}
 
-	/**
-	 * Render page break header
-	 *
-	 * @param boolean|string $is_page_break page break enable.
-	 * @param string         $page_break_progress_type type of progress type.
-	 * @param string         $page_break_toggle_label is label enable.
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public static function render_break_header_container( $is_page_break, $page_break_progress_type, $page_break_toggle_label ) {
-		if ( ! $is_page_break ) {
-			return;
-		}
-
-		echo '<div class="srfm-page-break-header-container" type="' . esc_attr( $page_break_progress_type ) . '" toggle-label="' . esc_attr( $page_break_toggle_label ) . '">';
-		self::render_page_break_progress_container( $page_break_progress_type );
-		echo '</div>';
-	}
-
-	/**
-	 * Render page break progress section
-	 *
-	 * @param string $page_break_progress_type type of progress type.
-	 * @since 0.0.1
-	 * @return void
-	 */
-	public static function render_page_break_progress_container( $page_break_progress_type ) {
-		if ( 'steps' === $page_break_progress_type ) {
-			echo '<div class="srfm-page-break-progress-container">
-						<ul class="srfm-progress-connector"></ul>
-				  </div>';
-		} elseif ( 'connector' === $page_break_progress_type ) {
-			echo '<div class="srfm-page-break-steps">
-				<div class="srfm-steps-content">
-					<div class="srfm-steps-label"><div><span class="srfm-step-count"></span> / <span class="srfm-step-total"></span></div><span class="srfm-steps-page-title"></span></div>
-				</div>
-				<div class="srfm-steps-container">
-					<div class="srfm-progress"></div>
-				</div>
-			</div>';
-		} else {
-			echo '<div class="srfm-page-break-progress">
-			<progress class="srfm-page-break-indicator" max="100" value="0"></progress>
-			<span class="srfm-progress-bar-text">0%</span>
-			</div>';
-		}
-	}
 }

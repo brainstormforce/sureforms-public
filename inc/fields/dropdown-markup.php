@@ -26,7 +26,7 @@ class Dropdown_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';

@@ -22,11 +22,17 @@ import getApiData from '@Controls/getApiData';
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { default_keys, enableQuickActionSidebar, setEnableQuickActionSidebar } = props;
+	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const root = document.documentElement;
+
+	useEffect( () => {
+		updateMeta( '_srfm_is_page_break', isPageBreak );
+	}, [ isPageBreak ] );
 
 	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
 		root.style.setProperty(
@@ -269,27 +275,6 @@ function AppearanceSettings( props ) {
 				title={ __( 'General', 'sureforms' ) }
 				initialOpen={ true }
 			>
-				{ /* <SelectControl
-					label={ __( 'Form Styling', 'sureforms' ) }
-					value={ sureforms_keys._srfm_form_styling }
-					options={ [
-						{ label: 'Theme Inherited', value: 'inherit' },
-						{
-							label: 'Classic Styling',
-							value: 'classic',
-						},
-					] }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_form_styling', value );
-					} }
-					__nextHasNoMarginBottom
-				/> */ }
-				{ /* <p className="components-base-control__help">
-					{ __(
-						'Update settings to view changes on page',
-						'sureforms'
-					) }
-				</p> */ }
 				<ToggleControl
 					label={ __(
 						'Hide form title on the Page/Post',
@@ -494,7 +479,7 @@ function AppearanceSettings( props ) {
 					} }
 				/>
 			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
+			{ isPageBreak && <SRFMAdvancedPanelBody
 				title={ __( 'Page Break', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -571,7 +556,7 @@ function AppearanceSettings( props ) {
 					} }
 					isFormSpecific={ true }
 				/>
-			</SRFMAdvancedPanelBody>
+			</SRFMAdvancedPanelBody> }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Quick Action Bar', 'sureforms' ) }
 				initialOpen={ false }

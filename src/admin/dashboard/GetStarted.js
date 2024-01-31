@@ -21,12 +21,13 @@ export default () => {
 					}
 				}
 				.sc-get-started-main-title {
-					font-size: 28px;
+					font-size: 24px;
 					font-weight: 600;
-					line-height: 28px;
+					line-height: 24px;
 					text-align: left;
 					margin: 0px 0px 1.2em 0px;
 				}
+
 				.sc-getstarted-close-icon {
 					position: absolute;
 					right: 30px;
@@ -35,6 +36,8 @@ export default () => {
 				}
 
 				.sc-col-33 {
+					display: flex;
+					flex-wrap: wrap;
 					width: 33%;
 				}
 
@@ -54,9 +57,9 @@ export default () => {
 					<GetStartedBox
 						infoType="info"
 						infoText={ __( 'Setup', 'sureforms' ) }
-						title={ __( 'Create a Form', 'sureforms' ) }
+						title={ __( 'Create a form', 'sureforms' ) }
 						description={ __(
-							'Create visually stunning, user-friendly forms.',
+							'Effortlessly design visually stunning forms with our user-friendly form builder.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'Create New Form', 'sureforms' ) }
@@ -66,9 +69,9 @@ export default () => {
 					<GetStartedBox
 						infoType="success"
 						infoText={ __( 'Form', 'sureforms' ) }
-						title={ __( 'All Forms', 'sureforms' ) }
+						title={ __( 'All forms', 'sureforms' ) }
 						description={ __(
-							'Take a look at the forms you have created.',
+							'Check out your created forms easily edit and customize settings as needed.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Forms', 'sureforms' ) }
@@ -78,9 +81,9 @@ export default () => {
 					<GetStartedBox
 						infoType="primary"
 						infoText={ __( 'Entries', 'sureforms' ) }
-						title={ __( 'View Entries', 'sureforms' ) }
+						title={ __( 'View entries', 'sureforms' ) }
 						description={ __(
-							'Access the complete list of form submissions.',
+							'Explore your entire form submission list and effortlessly manage each entry.',
 							'sureforms'
 						) }
 						buttonLabel={ __( 'View All Entries', 'sureforms' ) }

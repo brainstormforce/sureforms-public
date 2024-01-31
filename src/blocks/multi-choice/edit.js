@@ -21,14 +21,12 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import MultiButtonsControl from '@Components/multi-buttons-control';
 /**
  * Component Dependencies
  */
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { MultiChoiceComponent } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -40,9 +38,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		required,
 		options,
 		fieldWidth,
+		choiceWidth,
 		label,
 		singleSelection,
-		style,
 		help,
 		block_id,
 		errorMsg,
@@ -50,19 +48,18 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
-	const [ newOption, setNewOption ] = useState( { optiontitle: '' } );
+	const [ newOption, setNewOption ] = useState( options );
 	const blockProps = useBlockProps();
 
 	const addOption = () => {
 		const newOptions = {
-			optiontitle:
-				__( 'Option Name ', 'sureforms' ) + `${ options.length + 1 }`,
+			optionTitle:
+				__( 'Option ', 'sureforms' ) + `${ options.length + 1 }`,
 		};
-		options[ options.length ] = newOptions;
-		const addnewOptions = options.map( ( item ) => item );
 
-		setAttributes( { options: addnewOptions } );
+		setAttributes( {
+			options: [ ...options, newOptions ],
+		} );
 	};
 
 	const changeOption = ( e, index ) => {
@@ -94,7 +91,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			return;
 		}
 		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].optiontitle = value;
+		updatedOptions[ i ].optionTitle = value;
 		setAttributes( { options: updatedOptions } );
 	}
 
@@ -175,6 +172,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										singleSelection: checked,
 									} )
 								}
+							/>
+							<SelectControl
+								label={ __( 'Choice Width', 'sureforms' ) }
+								value={ choiceWidth }
+								options={ widthOptions }
+								onChange={ ( value ) =>
+									setAttributes( {
+										choiceWidth: Number( value ),
+									} )
+								}
+								__nextHasNoMarginBottom
 							/>
 							<div style={ { marginBottom: '8px' } }>
 								{ options.length > 0 && (
@@ -266,10 +274,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option.optiontitle
+																							option.optionTitle
 																						}
 																						data={ {
-																							value: option.optiontitle,
+																							value: option.optionTitle,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -312,9 +320,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										'Add New Option',
 										'sureforms'
 									) }
-									value={ newOption.optiontitle }
+									value={ newOption.optionTitle }
 									onChange={ ( value ) =>
-										setNewOption( { optiontitle: value } )
+										setNewOption( { optionTitle: value } )
 									}
 								/>
 								<Button
@@ -322,8 +330,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									variant="secondary"
 									onClick={ () => {
 										if (
-											newOption?.optiontitle &&
-											newOption?.optiontitle
+											newOption?.optionTitle &&
+											newOption?.optionTitle
 										) {
 											setAttributes( {
 												options: [
@@ -331,7 +339,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 													newOption,
 												],
 											} );
-											setNewOption( { optiontitle: '' } );
+											setNewOption( { optionTitle: '' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}
@@ -352,38 +360,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									setAttributes( { help: value } )
 								}
 							/>
-							{ 'classic' ===
-							sureforms_keys?._srfm_form_styling ? null : (
-									<MultiButtonsControl
-										label={ __( 'Appearance', 'sureforms' ) }
-										data={ {
-											value: style,
-											label: 'style',
-										} }
-										options={ [
-											{
-												value: 'default',
-												icon: 'Radio',
-											},
-											{
-												value: 'buttons',
-												icon: 'Buttons',
-											},
-										] }
-										showIcons={ true }
-										onChange={ ( value ) => {
-											if ( style !== value ) {
-												setAttributes( {
-													style: value,
-												} );
-											} else {
-												setAttributes( {
-													style: 'buttons',
-												} );
-											}
-										} }
-									/>
-								) }
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>

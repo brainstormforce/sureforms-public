@@ -1,8 +1,8 @@
 === SureForms ===
 Contributors: brainstormforce
-Tags:
-Requires at least: 5.9
-Tested up to: 6.3.1
+Tags: gutenberg, blocks, gutenberg blocks, editor, block, forms
+Requires at least: 6.4
+Tested up to: 6.4
 Requires PHP: 7.4
 Stable tag: 0.0.1
 License: GPL-2.0-only
@@ -12,6 +12,20 @@ A simple yet powerful way to add forms to your website.
 
 == Description ==
 
-SureForms is a powerful forms solution for your website.
+SureForms is a powerful forms solution for your website. To take your form game to next level.
+
+Composer  
+License: MIT  
+License URL: https://github.com/composer/composer/blob/main/LICENSE  
+
+Icons  
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://heroicons.com  
+
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://react-icons.github.io/react-icons/  
 
 == Changelog ==
+
+= 0.0.1 =
+* Initial release.

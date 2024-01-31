@@ -73,20 +73,14 @@ class Gutenberg_Hooks {
 				'sureforms/dropdown',
 				'sureforms/multi-choice',
 				'sureforms/radio',
-				'sureforms/rating',
 				'sureforms/submit',
-				'sureforms/upload',
 				'sureforms/url',
-				'sureforms/password',
-				'sureforms/date-time-picker',
 				'sureforms/separator',
 				'sureforms/icon',
 				'sureforms/image',
 				'sureforms/advanced-heading',
-				'sureforms/number-slider',
 				'sureforms/form',
-				'sureforms/page-break',
-				'sureforms/hidden',
+
 			);
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
@@ -210,38 +204,23 @@ class Gutenberg_Hooks {
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
-			array(
-				'input_preview'         => SUREFORMS_URL . 'images/field-previews/input.svg',
-				'email_preview'         => SUREFORMS_URL . 'images/field-previews/email.svg',
-				'url_preview'           => SUREFORMS_URL . 'images/field-previews/url.svg',
-				'textarea_preview'      => SUREFORMS_URL . 'images/field-previews/textarea.svg',
-				'multi_choice_preview'  => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-				'checkbox_preview'      => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
-				'number_preview'        => SUREFORMS_URL . 'images/field-previews/number.svg',
-				'rating_preview'        => SUREFORMS_URL . 'images/field-previews/rating.svg',
-				'upload_preview'        => SUREFORMS_URL . 'images/field-previews/upload.svg',
-				'phone_preview'         => SUREFORMS_URL . 'images/field-previews/phone.svg',
-				'dropdown_preview'      => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
-				'address_preview'       => SUREFORMS_URL . 'images/field-previews/address.svg',
-				'password_preview'      => SUREFORMS_URL . 'images/field-previews/password.svg',
-				'date_time_preview'     => SUREFORMS_URL . 'images/field-previews/date-time.svg',
-				'number_slider_preview' => SUREFORMS_URL . 'images/field-previews/number-slider.svg',
-				'sureforms_preview'     => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
-				'pagebreak_preview'     => SUREFORMS_URL . 'images/field-previews/page-break.svg',
-			)
+			apply_filters(
+				'sureforms_block_preview_images',
+				array(
+					'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SUREFORMS_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SUREFORMS_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SUREFORMS_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+				)
+			),
 		);
-
-		$formats = array();
-		$mimes   = get_allowed_mime_types();
-		$maxsize = wp_max_upload_size() / 1048576;
-		if ( ! empty( $mimes ) ) {
-			foreach ( $mimes as $type => $mime ) {
-				$multiple = explode( '|', $type );
-				foreach ( $multiple as $single ) {
-					$formats[] = $single;
-				}
-			}
-		}
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
@@ -249,15 +228,6 @@ class Gutenberg_Hooks {
 			[
 				'font_awesome_5_polyfill' => array(),
 			]
-		);
-
-		wp_localize_script(
-			'sureforms-' . $all_screen_blocks,
-			'upload_field',
-			array(
-				'upload_formats'   => $formats,
-				'upload_max_limit' => $maxsize,
-			)
 		);
 	}
 }

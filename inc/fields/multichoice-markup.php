@@ -26,7 +26,7 @@ class Multichoice_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : array();
@@ -37,6 +37,7 @@ class Multichoice_Markup extends Base {
 			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+			$choice_width     = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
 			$output           = '';
 			$slug             = 'multi-choice';
 
@@ -46,19 +47,20 @@ class Multichoice_Markup extends Base {
 			$name_attr            = $single_selection ? 'name="srfm-input-' . esc_attr( $slug ) . '-' . esc_attr( $block_id ) . '"' : '';
 			$input_label_fallback = $label ? $label : 'Multi Choice';
 			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+			$choice_width_attr    = $choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $choice_width ) : '';
 
 			ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
 			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="hidden" value=""/>
 			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<?php if ( is_array( $options ) ) { ?>
-					<div class="srfm-block-wrap">
+					<div class="srfm-block-wrap <?php echo esc_attr( $choice_width_attr ); ?>">
 						<?php foreach ( $options as $i => $option ) { ?>
 							<label class="srfm-<?php echo esc_attr( $slug ); ?>-single">
 								<input type="<?php echo esc_attr( $type_attr ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
 								<div class="srfm-block-content-wrap">
 									<?php echo Sureforms_Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $slug . '-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-									<p><?php echo isset( $option['optiontitle'] ) ? esc_html( $option['optiontitle'] ) : ''; ?></p>
+									<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
 								</div>
 							</label>
 						<?php } ?>

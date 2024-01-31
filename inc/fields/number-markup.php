@@ -26,7 +26,7 @@ class Number_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
+	public function default( $attributes ) {
 			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
