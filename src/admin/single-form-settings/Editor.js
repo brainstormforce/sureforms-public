@@ -155,8 +155,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureforms_keys._srfm_inherit_theme_buttom
 				? 'wp-block-button__link'
 				: sureforms_keys._srfm_btn_bg_type === 'filled'
-				? 'srfm-btn-bg-color'
-				: 'srfm-btn-bg-transparent'
+					? 'srfm-btn-bg-color'
+					: 'srfm-btn-bg-transparent'
 		}"></button></div>`;
 
 		if ( elm ) {

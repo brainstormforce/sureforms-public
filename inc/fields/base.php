@@ -7,6 +7,7 @@
  * @package SureForms
  * @since 0.0.1
  */
+
 namespace SureForms\Inc\Fields;
 
 /**
@@ -21,6 +22,7 @@ class Base {
 	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
