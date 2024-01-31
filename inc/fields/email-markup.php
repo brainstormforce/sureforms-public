@@ -26,7 +26,7 @@ class Email_Markup extends Base {
 	 * @param int|string   $form_id form id.
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes, $form_id ) {
+	public function default( $attributes, $form_id ) {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';

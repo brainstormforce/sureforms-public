@@ -10,7 +10,8 @@
 @import "styles/variables";
 
 /* Gutenberg Reset CSS */
-.block-editor-block-inspector {
+.block-editor-block-inspector,
+.srfm--panel {
 	.srfm-inspector-tab {
 		.components-notice.is-warning {
 			margin-top: 20px;

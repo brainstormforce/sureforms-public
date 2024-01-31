@@ -147,6 +147,7 @@ class Sureforms_Helper {
 		$output = '<span class="srfm-icon' . $class . '" ' . $html . '>';
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
+
 			include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 			// phpcs:ignore /** @phpstan-ignore-next-line */
 			self::$srfm_svgs = json_decode( ob_get_clean(), true );

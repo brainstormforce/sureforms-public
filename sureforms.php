@@ -1,9 +1,10 @@
 <?php
 /**
  * Plugin Name: SureForms
+ * Plugin URI: https://www.brainstormforce.com
  * Description: A simple yet powerful way to create modern forms for your website.
  * Author: SureForms
- * Author URI: https://sureforms.com
+ * Author URI: https://brainstormforce.com/
  * Version: 0.0.1
  * License: GPL v2
  * Text Domain: sureforms

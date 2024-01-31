@@ -26,13 +26,13 @@ class SF_Public {
 	 */
 	public function __construct() {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
-		add_filter( 'the_content', [ $this, 'print_form' ], PHP_INT_MAX );
+
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_filter( 'render_block', array( $this, 'generate_render_script' ), 10, 2 );
 	}
 
 	/**
-	 * Load Font Awesome Icons Classes.
+	 * Enqueue Script.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -63,8 +63,6 @@ class SF_Public {
 		}
 
 		// Dependencies
-		// Flatpickr CSS.
-		wp_enqueue_style( 'flatpickr', $css_vendor . 'flatpickr.min.css', [], SUREFORMS_VER );
 		// Nice Select CSS.
 		wp_enqueue_style( 'nice-select', $css_vendor . 'nice-select2.css', [], SUREFORMS_VER );
 		// Int-tel-input CSS.
@@ -107,7 +105,7 @@ class SF_Public {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'sureforms/', '', $block_type );
-		$script_dep_blocks = [ 'rating', 'upload', 'address', 'date-time-picker', 'checkbox', 'dropdown', 'multi-choice', 'number-slider', 'number', 'textarea', 'url', 'password', 'phone' ];
+		$script_dep_blocks = [ 'address', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -121,18 +119,14 @@ class SF_Public {
 				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SUREFORMS_VER, true );
 			}
 
-			if ( 'date-time-picker' === $block_name ) {
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-flatpickr-deps", $js_vendor_uri . 'flatpickr.min.js', [], SUREFORMS_VER, true );
-			}
-
 			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
+				wp_enqueue_script( SUREFORMS_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SUREFORMS_VER, true );
 				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-nice-select2-deps", $js_vendor_uri . 'nice-select2.min.js', [], SUREFORMS_VER, true );
 			}
 
-			wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
-		}
-		if ( 'page-break' === $block_name ) {
-			wp_enqueue_script( 'srfm-page-break-script', SUREFORMS_URL . 'assets/build/pageBreak.js', [ 'srfm-form-submit' ], SUREFORMS_VER, true );
+			if ( 'dropdown' !== $block_name ) {
+				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			}
 		}
 	}
 
@@ -168,20 +162,5 @@ class SF_Public {
 		return $template;
 	}
 
-	/**
-	 * Print form template.
-	 *
-	 * @param string $content Content.
-	 * @since 0.0.1
-	 * @return string Modified Content.
-	 */
-	public function print_form( $content ) {
-		if ( get_post_type() === SUREFORMS_FORMS_POST_TYPE ) {
-			if ( has_blocks() ) {
-				$blocks = parse_blocks( get_the_content() );
-			}
-		}
-		return $content;
-	}
 }
 

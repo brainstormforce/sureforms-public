@@ -155,12 +155,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureforms_keys._srfm_inherit_theme_buttom
 				? 'wp-block-button__link'
 				: sureforms_keys._srfm_btn_bg_type === 'filled'
-					? 'srfm-btn-bg-color'
-					: 'srfm-btn-bg-transparent'
+				? 'srfm-btn-bg-color'
+				: 'srfm-btn-bg-transparent'
 		}"></button></div>`;
 
 		if ( elm ) {
-			elm.insertAdjacentHTML( 'afterend', appendHtml );
+			if (
+				! elm
+					.closest( 'body' )
+					.querySelector( '.srfm-submit-btn-container' )
+			) {
+				elm.insertAdjacentHTML( 'afterend', appendHtml );
+			}
 		}
 	}
 
@@ -310,6 +316,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 							value:
 								sureforms_keys._srfm_button_border_radius +
 									'px' || '6px',
+						},
+						{
+							property: '--srfm_submit_alignment_backend',
+							value: sureforms_keys._srfm_submit_alignment_backend
+								? `${ sureforms_keys._srfm_submit_alignment_backend }`
+								: '',
+						},
+						{
+							property: '--srfm_submit_width_backend',
+							value: sureforms_keys._srfm_submit_width_backend
+								? `${ sureforms_keys._srfm_submit_width_backend }`
+								: '',
 						},
 					];
 

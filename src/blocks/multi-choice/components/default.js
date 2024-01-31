@@ -11,27 +11,34 @@ export const MultiChoiceComponent = ( {
 	deleteOption,
 	setAttributes,
 } ) => {
-	const { label, required, options } = attributes;
+	const { label, required, options, choiceWidth } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
+	const defaultChoiceWidth = '100';
+	const choiceWidthString = choiceWidth
+		? String( choiceWidth )
+		: defaultChoiceWidth;
+	const choiceWidthClass = choiceWidth
+		? choiceWidthString.replace( '.', '-' )
+		: defaultChoiceWidth;
 
 	const editView = options.map( ( option, index ) => {
 		return (
 			<div key={ index } className={ `srfm-multi-choice-single` }>
-				<label htmlFor={ option.optiontitle }></label>
+				<label htmlFor={ option.optionTitle }></label>
 				<input
 					className="srfm-input-common"
-					aria-label={ option.optiontitle }
+					aria-label={ option.optionTitle }
 					onChange={ ( e ) =>
 						changeOption(
 							{
-								optiontitle: e.target.value,
+								optionTitle: e.target.value,
 							},
 							index
 						)
 					}
 					type="text"
-					value={ option.optiontitle }
+					value={ option.optionTitle }
 				/>
 				<Button
 					icon="trash"
@@ -44,7 +51,9 @@ export const MultiChoiceComponent = ( {
 
 	const OriginalView = () => {
 		return (
-			<div className="srfm-block-wrap">
+			<div
+				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }` }
+			>
 				{ options.map( ( option, key ) => {
 					return (
 						<label key={ key } className="srfm-multi-choice-single">
@@ -52,7 +61,7 @@ export const MultiChoiceComponent = ( {
 								<span
 									className={ `srfm-icon srfm-${ slug }-icon` }
 								></span>
-								<p>{ option.optiontitle }</p>
+								<p>{ option.optionTitle }</p>
 							</div>
 						</label>
 					);
@@ -74,7 +83,9 @@ export const MultiChoiceComponent = ( {
 			/>
 			{ isSelected && (
 				<>
-					<div className="srfm-block-wrap">
+					<div
+						className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }` }
+					>
 						{ editView }
 						<div className={ `srfm-${ slug }-add-option-wrapper` }>
 							<Button isPrimary onClick={ addOption }>

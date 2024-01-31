@@ -24,7 +24,7 @@ class Load_Form_Defaults {
 	/**
 	 * Constructor
 	 *
-	 * @since  X.X.X
+	 * @since  0.0.1
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );

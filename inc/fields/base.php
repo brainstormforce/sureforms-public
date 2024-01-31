@@ -7,7 +7,6 @@
  * @package SureForms
  * @since 0.0.1
  */
-
 namespace SureForms\Inc\Fields;
 
 /**
@@ -18,27 +17,14 @@ namespace SureForms\Inc\Fields;
  * @since 0.0.1
  */
 class Base {
-
 	/**
-	 * Render the sureforms input default styling block
+	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 *
 	 * @return string|boolean
 	 */
-	public function default_styling( $attributes ) {
-		return '';
-	}
-
-	/**
-	 * Render the sureforms input classic styling
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
-	 *
-	 * @return string|boolean
-	 */
-	public function classic_styling( $attributes, $form_id ) {
+	public function default( $attributes, $form_id ) {
 		return '';
 	}
 }

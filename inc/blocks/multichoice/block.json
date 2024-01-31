@@ -33,13 +33,17 @@
 			"type": "array",
 			"default": [
 				{
-					"optiontitle": "Option Name 1"
+					"optionTitle": "Option 1"
 				}
 			]
 		},
 		"fieldWidth": {
 			"type": "number",
 			"default": 100
+		},
+		"choiceWidth": { 
+			"type": "number",
+			"default": 50
 		},
 		"label": {
 			"default": "Multi Choice",

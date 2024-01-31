@@ -27,7 +27,7 @@ class Textarea_Markup extends Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes, $form_id ) {
+	public function default( $attributes, $form_id ) {
 		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;

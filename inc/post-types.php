@@ -302,7 +302,7 @@ class Post_Types {
 	 * Modify list bulk actions.
 	 *
 	 * @param array<Mixed> $bulk_actions An array of bulk action links.
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return array<Mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
@@ -395,63 +395,60 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function register_post_metas() {
-		$metas = array(
-			'_srfm_color1'                            => 'string',
-			'_srfm_textcolor1'                        => 'string',
-			'_srfm_color2'                            => 'string',
-			'_srfm_fontsize'                          => 'integer',
-			'_srfm_bg'                                => 'string',
-			'_srfm_bg_id'                             => 'integer',
-			'_srfm_thankyou_message'                  => 'string',
-			'_srfm_email'                             => 'string',
-			'_srfm_submit_type'                       => 'string',
-			'_srfm_submit_url'                        => 'string',
-			'_srfm_sender_notification'               => 'string',
-			'_srfm_form_recaptcha'                    => 'string',
-			'_srfm_submit_alignment'                  => 'string',
-			'_srfm_submit_width'                      => 'string',
-			'_srfm_submit_styling_inherit_from_theme' => 'boolean',
-			'_srfm_form_class_name'                   => 'string',
-			'_srfm_form_styling'                      => 'string',
-			'_srfm_form_container_width'              => 'integer',
-			'_srfm_thankyou_message_title'            => 'string',
-			'_srfm_submit_button_text'                => 'string',
-			'_srfm_additional_classes'                => 'string',
-			'_srfm_hide_title_post_specific'          => 'boolean',
-			'_srfm_page_form_title'                   => 'boolean',
-			'_srfm_single_page_form_title'            => 'boolean',
-			'_srfm_submit_width_backend'              => 'string',
-			'_srfm_submit_alignment_backend'          => 'string',
-			'_srfm_is_page_break'                     => 'boolean',
-			'_srfm_first_page_label'                  => 'string',
-			'_srfm_page_break_progress_indicator'     => 'string',
-			'_srfm_page_break_toggle_label'           => 'boolean',
-			'_srfm_show_labels'                       => 'boolean',
-			'_srfm_show_asterisk'                     => 'boolean',
-			'_srfm_form_position'                     => 'string',
-			'_srfm_bg_type'                           => 'string',
-			'_srfm_bg_color'                          => 'string',
-			'_srfm_label_color'                       => 'string',
-			'_srfm_input_text_color'                  => 'string',
-			'_srfm_input_placeholder_color'           => 'string',
-			'_srfm_input_bg_color'                    => 'string',
-			'_srfm_input_border_color'                => 'string',
-			'_srfm_input_border_width'                => 'integer',
-			'_srfm_input_border_radius'               => 'integer',
-			'_srfm_message_text_color'                => 'string',
-			'_srfm_message_bg_color'                  => 'string',
-			'_srfm_field_error_color'                 => 'string',
-			'_srfm_field_error_surface_color'         => 'string',
-			'_srfm_field_error_bg_color'              => 'string',
-			'_srfm_btn_bg_type'                       => 'string',
-			'_srfm_button_bg_color'                   => 'string',
-			'_srfm_button_text_color'                 => 'string',
-			'_srfm_button_border_color'               => 'string',
-			'_srfm_button_border_width'               => 'integer',
-			'_srfm_button_border_radius'              => 'integer',
-			'_srfm_previous_button_text'              => 'string',
-			'_srfm_next_button_text'                  => 'string',
-			'_srfm_inherit_theme_buttom'              => 'boolean',
+		$metas = apply_filters(
+			'sureforms_register_post_meta',
+			array(
+				'_srfm_color1'                            => 'string',
+				'_srfm_textcolor1'                        => 'string',
+				'_srfm_color2'                            => 'string',
+				'_srfm_fontsize'                          => 'integer',
+				'_srfm_bg'                                => 'string',
+				'_srfm_bg_id'                             => 'integer',
+				'_srfm_thankyou_message'                  => 'string',
+				'_srfm_email'                             => 'string',
+				'_srfm_submit_type'                       => 'string',
+				'_srfm_submit_url'                        => 'string',
+				'_srfm_sender_notification'               => 'string',
+				'_srfm_form_recaptcha'                    => 'string',
+				'_srfm_submit_alignment'                  => 'string',
+				'_srfm_submit_width'                      => 'string',
+				'_srfm_submit_styling_inherit_from_theme' => 'boolean',
+				'_srfm_form_class_name'                   => 'string',
+				'_srfm_form_styling'                      => 'string',
+				'_srfm_form_container_width'              => 'integer',
+				'_srfm_thankyou_message_title'            => 'string',
+				'_srfm_submit_button_text'                => 'string',
+				'_srfm_additional_classes'                => 'string',
+				'_srfm_hide_title_post_specific'          => 'boolean',
+				'_srfm_page_form_title'                   => 'boolean',
+				'_srfm_single_page_form_title'            => 'boolean',
+				'_srfm_submit_width_backend'              => 'string',
+				'_srfm_submit_alignment_backend'          => 'string',
+				'_srfm_show_labels'                       => 'boolean',
+				'_srfm_show_asterisk'                     => 'boolean',
+				'_srfm_form_position'                     => 'string',
+				'_srfm_bg_type'                           => 'string',
+				'_srfm_bg_color'                          => 'string',
+				'_srfm_label_color'                       => 'string',
+				'_srfm_input_text_color'                  => 'string',
+				'_srfm_input_placeholder_color'           => 'string',
+				'_srfm_input_bg_color'                    => 'string',
+				'_srfm_input_border_color'                => 'string',
+				'_srfm_input_border_width'                => 'integer',
+				'_srfm_input_border_radius'               => 'integer',
+				'_srfm_message_text_color'                => 'string',
+				'_srfm_message_bg_color'                  => 'string',
+				'_srfm_field_error_color'                 => 'string',
+				'_srfm_field_error_surface_color'         => 'string',
+				'_srfm_field_error_bg_color'              => 'string',
+				'_srfm_btn_bg_type'                       => 'string',
+				'_srfm_button_bg_color'                   => 'string',
+				'_srfm_button_text_color'                 => 'string',
+				'_srfm_button_border_color'               => 'string',
+				'_srfm_button_border_width'               => 'integer',
+				'_srfm_button_border_radius'              => 'integer',
+				'_srfm_inherit_theme_buttom'              => 'boolean',
+			)
 		);
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
@@ -831,7 +828,7 @@ class Post_Types {
 	/**
 	 * Show the import form popup
 	 *
-	 * @since x.x.x
+	 * @since 0.0.1
 	 * @return void
 	 */
 	public function import_form_popup() {
