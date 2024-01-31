@@ -77,8 +77,8 @@ function GeneralSettings( props ) {
 	}
 
 	function updateMeta( option, value ) {
-		let value_id = 0;
-		let key_id = '';
+		const value_id = 0;
+		const key_id = '';
 
 		if ( option === '_srfm_show_labels' ) {
 			if ( ! value ) {

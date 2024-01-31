@@ -23,6 +23,7 @@ class Textarea_Markup extends Base {
 	 * Render the sureforms textarea classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */

@@ -90,16 +90,17 @@ class Sureforms_Helper {
 	/**
 	 * Generates common markup liked label, etc
 	 *
-	 * @param string $type Type of form markup.
-	 * @param string $label Label for the form markup.
-	 * @param string $slug Slug for the form markup.
-	 * @param string $block_id Block id for the form markup.
-	 * @param bool   $required If field is required or not.
-	 * @param string $help Help for the form markup.
-	 * @param string $error_msg Error message for the form markup.
-	 * @param bool   $is_unique Check if the field is unique.
-	 * @param string $duplicate_msg Duplicate message for field.
-	 * @param bool   $override Override for error markup.
+	 * @param int|string $form_id form id.
+	 * @param string     $type Type of form markup.
+	 * @param string     $label Label for the form markup.
+	 * @param string     $slug Slug for the form markup.
+	 * @param string     $block_id Block id for the form markup.
+	 * @param bool       $required If field is required or not.
+	 * @param string     $help Help for the form markup.
+	 * @param string     $error_msg Error message for the form markup.
+	 * @param bool       $is_unique Check if the field is unique.
+	 * @param string     $duplicate_msg Duplicate message for field.
+	 * @param bool       $override Override for error markup.
 	 * @return string
 	 * @since 0.0.1
 	 */
@@ -213,14 +214,16 @@ class Sureforms_Helper {
 	/**
 	 * Update an option from the database.
 	 *
-	 * @param string $key              The option key.
-	 * @param mixed  $value            The value to update.
-	 * @param bool   $network_override Whether to allow the network_override admin setting to be overridden on subsites.
+	 * @param int|string $post_id post id / form id.
+	 * @param string     $key meta key name.
+	 * @param bool       $single single or multiple.
+	 * @param mixed      $default default value.
+	 *
 	 * @since 1.0.0
-	 * @return bool True if the option was updated, false otherwise.
+	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
-		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : $default;
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 		return $meta_value;
 	}
 }

@@ -23,7 +23,7 @@ class Email_Markup extends Base {
 	 * Render the sureforms email classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 *
+	 * @param int|string   $form_id form id.
 	 * @return string|boolean
 	 */
 	public function classic_styling( $attributes, $form_id ) {

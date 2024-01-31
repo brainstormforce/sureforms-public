@@ -25,7 +25,7 @@ export default function PostURLPanel() {
 
 	return (
 		<PostURLCheck>
-			<PostPanelRow label={ __( 'URL' ) } ref={ setPopoverAnchor }>
+			<PostPanelRow label={ __( 'URL', 'sureforms' ) } ref={ setPopoverAnchor }>
 				<Dropdown
 					popoverProps={ popoverProps }
 					className="editor-post-url__panel-dropdown"
@@ -51,7 +51,7 @@ function PostURLToggle( { isOpen, onClick } ) {
 			variant="tertiary"
 			aria-expanded={ isOpen }
 			// translators: %s: Current post URL.
-			aria-label={ sprintf( __( 'Change URL: %s' ), label ) }
+			aria-label={ sprintf( __( 'Change URL: %s', 'sureforms' ), label ) }
 			onClick={ onClick }
 		>
 			{ label }

@@ -87,27 +87,27 @@ class Generate_Form_Markup {
 			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			$page_break_first_label   = Sureforms_Helper::get_meta_value( $id, '_srfm_first_page_label' );
 			$page_break_toggle_label  = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_toggle_label' );
-			$previous_btn_text        = Sureforms_Helper::get_meta_value( $id, '_srfm_previous_button_text', 'Previous' );
-			$next_btn_text            = Sureforms_Helper::get_meta_value( $id, '_srfm_next_button_text', 'Next' );
+			$previous_btn_text        = Sureforms_Helper::get_meta_value( $id, '_srfm_previous_button_text', true, 'Previous' );
+			$next_btn_text            = Sureforms_Helper::get_meta_value( $id, '_srfm_next_button_text', true, 'Next' );
 
 			// Submit button.
-			$button_text      = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_button_text' );
-			$button_alignment = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme   = Sureforms_Helper::get_meta_value( $id, '_srfm_inherit_theme_buttom' );
-			$btn_text_color   = Sureforms_Helper::get_meta_value( $id, '_srfm_button_text_color', '#000000' );
-			$btn_bg_type      = Sureforms_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$button_text       = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_alignment  = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_alignment' );
+			$btn_from_theme    = Sureforms_Helper::get_meta_value( $id, '_srfm_inherit_theme_buttom' );
+			$btn_text_color    = Sureforms_Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
+			$btn_bg_type       = Sureforms_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', '#0184C7' );
-				$btn_border_color  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_color', '#000000' );
-				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', '1px' );
-				$btn_border_radius = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_radius', '6px' );
+				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0184C7' );
+				$btn_border_color  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
+				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', true, '1px' );
+				$btn_border_radius = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
-				$btn_border_radius = $btn_border_radius . 'px';
 			} else {
 				$btn_bg_color = '';
 				$btn_border   = 'none';
 			}
-			$bg_type = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_type', 'image' );
+			$bg_type = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
 
 			if ( 'image' === $bg_type ) {
 				$background_image_url = Sureforms_Helper::get_meta_value( $id, '_srfm_bg' );
@@ -140,18 +140,18 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = Sureforms_Helper::get_meta_value( $id, '_srfm_label_color', '#1f2937' );
+			$label_text_color = Sureforms_Helper::get_meta_value( $id, '_srfm_label_color', true, '#1f2937' );
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
 
-			$body_input_color_var  = Sureforms_Helper::get_meta_value( $id, '_srfm_input_text_color', '#4B5563' );
-			$placeholder_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_input_placeholder_color', '#9CA3AF' );
-			$border_color_var      = Sureforms_Helper::get_meta_value( $id, '_srfm_input_border_color', '#D0D5DD' );
+			$body_input_color_var  = Sureforms_Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
+			$placeholder_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
+			$border_color_var      = Sureforms_Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
 			$help_color_var        = '#6B7280';
-			$base_background_var   = Sureforms_Helper::get_meta_value( $id, '_srfm_input_bg_color', '#FFFFFF' );
+			$base_background_var   = Sureforms_Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
 			$light_background_var  = '#F9FAFB';
 
 			// Info colors.
@@ -170,9 +170,9 @@ class Generate_Form_Markup {
 			$warning_background_color_var = '#FEFCE8';
 
 			// Error colors.
-			$error_surface_var          = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_surface_color', '#EF4444' );
-			$error_text_var             = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_color', '#DC2626' );
-			$error_background_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_bg_color', '#FEF2F2' );
+			$error_surface_var          = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_surface_color', true, '#EF4444' );
+			$error_text_var             = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_color', true, '#DC2626' );
+			$error_background_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
 			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
 			$media_query_mobile_var = '576px';

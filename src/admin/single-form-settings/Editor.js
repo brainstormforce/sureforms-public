@@ -89,7 +89,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
 		useState();
-	const postId = useSelect( ( select ) => {
+	const postId = useSelect( () => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );
 	const { editPost } = useDispatch( editorStore );
@@ -155,8 +155,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureforms_keys._srfm_inherit_theme_buttom
 				? 'wp-block-button__link'
 				: sureforms_keys._srfm_btn_bg_type === 'filled'
-				? 'srfm-btn-bg-color'
-				: 'srfm-btn-bg-transparent'
+					? 'srfm-btn-bg-color'
+					: 'srfm-btn-bg-transparent'
 		}"></button></div>`;
 
 		if ( elm ) {
@@ -324,11 +324,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 						'.block-editor-block-list__layout'
 					);
 
-					const submitBtnContainer = iframeBody.querySelector(
+					const submitBtnContainerIframe = iframeBody.querySelector(
 						'.srfm-submit-btn-container'
 					);
 
-					if ( ! submitBtnContainer ) {
+					if ( ! submitBtnContainerIframe ) {
 						addSubmitButton( elm );
 					}
 

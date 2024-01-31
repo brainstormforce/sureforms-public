@@ -23,6 +23,7 @@ class Dropdown_Markup extends Base {
 	 * Render the sureforms dropdown classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */

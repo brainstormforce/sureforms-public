@@ -23,6 +23,7 @@ class Input_Markup extends Base {
 	 * Render input markup
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */

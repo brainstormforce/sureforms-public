@@ -23,6 +23,7 @@ class Number_Slider_Markup extends Base {
 	 * Render the sureforms number slider classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
