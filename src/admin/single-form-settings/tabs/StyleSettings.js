@@ -72,6 +72,13 @@ function StyleSettings( props ) {
 				? sureforms_keys._srfm_input_text_color
 				: '#4B5563'
 		);
+		// error color
+		root.style.setProperty(
+			'--srfm-error-text-color',
+			sureforms_keys._srfm_field_error_color
+				? sureforms_keys._srfm_field_error_color
+				: '#dc2626'
+		);
 		// form container background color
 		root.style.setProperty(
 			'--srfm-bg-color',
@@ -98,7 +105,7 @@ function StyleSettings( props ) {
 			'--srfm-border-color',
 			sureforms_keys._srfm_input_border_color
 				? sureforms_keys._srfm_input_border_color
-				: '#d0d5dd'
+				: '#D0D5DD'
 		);
 		// input border width
 		root.style.setProperty(
@@ -203,6 +210,15 @@ function StyleSettings( props ) {
 				: '4px'
 		);
 
+		// help text color
+
+		root.style.setProperty(
+			'--srfm-help-color',
+			sureforms_keys._srfm_help_color
+				? sureforms_keys._srfm_help_color
+				: '#6b7280'
+		);
+
 		// // submit button bg type
 		// if ( sureforms_keys._srfm_btn_bg_type === 'filled' ) {
 		// 	root.style.setProperty(
@@ -258,6 +274,14 @@ function StyleSettings( props ) {
 			);
 		}
 
+		// help text color
+		if ( option === '_srfm_help_color' ) {
+			root.style.setProperty(
+				'--srfm-help-color',
+				value ? value : '#6b7280'
+			);
+		}
+
 		if ( option === '_srfm_input_text_color' ) {
 			root.style.setProperty(
 				'--srfm-body-input-color',
@@ -282,7 +306,7 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_input_border_color' ) {
 			root.style.setProperty(
 				'--srfm-border-color',
-				value ? value : '#d0d5dd'
+				value ? value : '#D0D5DD'
 			);
 		}
 
@@ -318,6 +342,14 @@ function StyleSettings( props ) {
 			root.style.setProperty(
 				'--srfm_fontsize',
 				value ? value + 'px' : 'none'
+			);
+		}
+
+		// error color
+		if ( option === '_srfm_field_error_color' ) {
+			root.style.setProperty(
+				'--srfm-error-text-color',
+				value ? value : '#dc2626'
 			);
 		}
 
@@ -480,7 +512,7 @@ function StyleSettings( props ) {
 				/>
 				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
-					label={ __( 'Primary color', 'sureforms' ) }
+					label={ __( 'Primary Color', 'sureforms' ) }
 					colorValue={ sureforms_keys._srfm_color1 }
 					data={ {
 						value: sureforms_keys._srfm_color1,
@@ -563,7 +595,7 @@ function StyleSettings( props ) {
 				) }
 				<p className="components-base-control__help" />
 				<Range
-					label={ __( 'Font size', 'sureforms' ) }
+					label={ __( 'Font Size', 'sureforms' ) }
 					value={ sureforms_keys._srfm_fontsize }
 					min={ 16 }
 					max={ 24 }
@@ -579,7 +611,7 @@ function StyleSettings( props ) {
 				/>
 				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
-					label={ __( 'Label color', 'sureforms' ) }
+					label={ __( 'Label Color', 'sureforms' ) }
 					colorValue={ sureforms_keys._srfm_label_color }
 					data={ {
 						value: sureforms_keys._srfm_label_color,
@@ -591,6 +623,22 @@ function StyleSettings( props ) {
 						}
 					} }
 					value={ sureforms_keys._srfm_label_color }
+					isFormSpecific={ true }
+				/>
+				<p className="components-base-control__help" />
+				<AdvancedPopColorControl
+					label={ __( 'Help Text Color', 'sureforms' ) }
+					colorValue={ sureforms_keys._srfm_help_color }
+					data={ {
+						value: sureforms_keys._srfm_help_color,
+						label: '_srfm_help_color',
+					} }
+					onColorChange={ ( colorValue ) => {
+						if ( colorValue !== sureforms_keys._srfm_help_color ) {
+							updateMeta( '_srfm_help_color', colorValue );
+						}
+					} }
+					value={ sureforms_keys._srfm_help_color }
 					isFormSpecific={ true }
 				/>
 			</SRFMAdvancedPanelBody>
@@ -679,7 +727,7 @@ function StyleSettings( props ) {
 				/>
 				<p className="components-base-control__help" />
 				<Range
-					label={ __( 'Border width', 'sureforms' ) }
+					label={ __( 'Border Width', 'sureforms' ) }
 					value={ sureforms_keys._srfm_input_border_width }
 					min={ 1 }
 					max={ 10 }
@@ -711,11 +759,11 @@ function StyleSettings( props ) {
 				/>
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Error Message', 'sureforms' ) }
+				title={ __( 'Error', 'sureforms' ) }
 				initialOpen={ false }
 			>
 				<AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
+					label={ __( 'Color', 'sureforms' ) }
 					colorValue={ sureforms_keys._srfm_field_error_color }
 					data={ {
 						value: sureforms_keys._srfm_field_error_color,
@@ -783,7 +831,7 @@ function StyleSettings( props ) {
 				initialOpen={ false }
 			>
 				<ToggleControl
-					label={ __( 'Inherit Button from theme', 'sureforms' ) }
+					label={ __( 'Inherit From Theme', 'sureforms' ) }
 					checked={ sureforms_keys._srfm_inherit_theme_buttom }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_inherit_theme_buttom', value );
@@ -900,7 +948,7 @@ function StyleSettings( props ) {
 								/>
 								<p className="components-base-control__help" />
 								<Range
-									label={ __( 'Border width', 'sureforms' ) }
+									label={ __( 'Border Width', 'sureforms' ) }
 									value={
 										sureforms_keys._srfm_button_border_width
 									}

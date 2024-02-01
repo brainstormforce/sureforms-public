@@ -355,6 +355,7 @@
 }
 
 .srfm-form-container .srfm-form .srfm-url-block .srfm-protocol {
+  color: var(--srfm-label-text-color);
   position: absolute;
   top: 50%;
   right: 0;

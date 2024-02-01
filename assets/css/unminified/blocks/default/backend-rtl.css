@@ -1,8 +1,6 @@
 .is-root-container {
   font-size: var(--srfm-font-size);
   margin-top: 2em;
-  --srfm-help-color: #6b7280;
-  --srfm-error-text-color: #dc2626;
 }
 .is-root-container .srfm-input-common {
   width: 100%;
@@ -76,6 +74,7 @@
   color: var(--srfm-help-color);
 }
 .is-root-container div[data-type="sureforms/url"] .srfm-protocol {
+  color: var(--srfm-label-text-color);
   position: absolute;
   top: 50%;
   right: 0;

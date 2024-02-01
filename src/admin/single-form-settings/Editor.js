@@ -67,7 +67,7 @@ const default_keys = {
 	_srfm_input_text_color: '#4B5563',
 	_srfm_input_placeholder_color: '#9CA3AF',
 	_srfm_input_bg_color: '#ffffff',
-	_srfm_input_border_color: '#000000',
+	_srfm_input_border_color: '#D0D5DD',
 	_srfm_input_border_width: 1,
 	_srfm_input_border_radius: 0,
 	_srfm_field_error_color: '#DC2626',
@@ -155,8 +155,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureforms_keys._srfm_inherit_theme_buttom
 				? 'wp-block-button__link'
 				: sureforms_keys._srfm_btn_bg_type === 'filled'
-					? 'srfm-btn-bg-color'
-					: 'srfm-btn-bg-transparent'
+				? 'srfm-btn-bg-color'
+				: 'srfm-btn-bg-transparent'
 		}"></button></div>`;
 
 		if ( elm ) {

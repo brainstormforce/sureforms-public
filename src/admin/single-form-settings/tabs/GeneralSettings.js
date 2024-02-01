@@ -188,7 +188,7 @@ function GeneralSettings( props ) {
 				<p className="components-base-control__help" />
 				<ToggleControl
 					label={ __(
-						'Hide form title on the Page/Post',
+						'Hide Form Title on the Page/Post',
 						'sureforms'
 					) }
 					checked={ sureforms_keys._srfm_page_form_title }
@@ -198,7 +198,7 @@ function GeneralSettings( props ) {
 				/>
 				<ToggleControl
 					label={ __(
-						'Hide form title on the Single Form page',
+						'Hide Form Title on the Single Form Page',
 						'sureforms'
 					) }
 					checked={ sureforms_keys._srfm_single_page_form_title }

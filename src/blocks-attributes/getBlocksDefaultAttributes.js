@@ -24,7 +24,7 @@ const default_keys = {
 	_srfm_input_text_color: { default: '#4B5563' },
 	_srfm_input_placeholder_color: { default: '#9CA3AF' },
 	_srfm_input_bg_color: { default: '#ffffff' },
-	_srfm_input_border_color: { default: '#000000' },
+	_srfm_input_border_color: { default: '#D0D5DD' },
 	_srfm_input_border_width: { default: 1 },
 	_srfm_input_border_radius: { default: 0 },
 	_srfm_field_error_color: { default: '#DC2626' },

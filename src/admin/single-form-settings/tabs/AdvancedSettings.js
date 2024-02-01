@@ -119,7 +119,7 @@ function AdvancedSettings( props ) {
 			>
 				<ToggleControl
 					label={ __(
-						'Turn toggle on to redirect to a URL',
+						'Turn Toggle on to Redirect to a URL',
 						'sureforms'
 					) }
 					checked={ 'url' === sureforms_keys._srfm_submit_type }
@@ -183,7 +183,7 @@ function AdvancedSettings( props ) {
 				) : (
 					<SRFMTextControl
 						label={ __(
-							'Customize the Thankyou page URL',
+							'Customize the Thankyou Page URL',
 							'sureforms'
 						) }
 						value={ sureforms_keys._srfm_submit_url }
@@ -216,7 +216,7 @@ function AdvancedSettings( props ) {
 				</PanelRow>
 				<SelectControl
 					label={ __(
-						'Select the reCAPTCHA Version to use',
+						'Select the reCAPTCHA Version to Use',
 						'sureforms'
 					) }
 					value={ sureforms_keys._srfm_form_recaptcha }
