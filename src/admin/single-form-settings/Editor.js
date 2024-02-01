@@ -160,13 +160,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 			isInheritThemeButton ? 'wp-block-button' : ''
 		}">
 		<button class="srfm-button srfm-submit-button ${
-			isInheritThemeButton
-				? 'wp-block-button__link'
-				: sureforms_keys._srfm_btn_bg_type &&
+	isInheritThemeButton
+		? 'wp-block-button__link'
+		: sureforms_keys._srfm_btn_bg_type &&
 				  ! isInheritThemeButton === 'filled'
-				? 'srfm-btn-bg-color'
-				: 'srfm-btn-bg-transparent'
-		}"></button>
+			? 'srfm-btn-bg-color'
+			: 'srfm-btn-bg-transparent'
+}"></button>
 		</div>`;
 
 		if ( elm ) {
