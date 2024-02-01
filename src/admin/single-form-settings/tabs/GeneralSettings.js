@@ -15,7 +15,7 @@ function GeneralSettings( props ) {
 		default_keys,
 		enableQuickActionSidebar,
 		setEnableQuickActionSidebar,
-		isPageBreak
+		isPageBreak,
 	} = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
