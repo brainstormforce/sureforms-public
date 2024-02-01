@@ -21,6 +21,7 @@ const default_keys = {
 	_srfm_thankyou_message_title: { default: 'Thank you' },
 	_srfm_submit_button_text: { default: 'SUBMIT' },
 	_srfm_label_color: { default: '#1f2937' },
+	_srfm_help_color: { default: '#6b7280' },
 	_srfm_input_text_color: { default: '#4B5563' },
 	_srfm_input_placeholder_color: { default: '#9CA3AF' },
 	_srfm_input_bg_color: { default: '#ffffff' },

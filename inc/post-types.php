@@ -430,6 +430,7 @@ class Post_Types {
 				'_srfm_bg_type'                           => 'string',
 				'_srfm_bg_color'                          => 'string',
 				'_srfm_label_color'                       => 'string',
+				'_srfm_help_color'                        => 'string',
 				'_srfm_input_text_color'                  => 'string',
 				'_srfm_input_placeholder_color'           => 'string',
 				'_srfm_input_bg_color'                    => 'string',

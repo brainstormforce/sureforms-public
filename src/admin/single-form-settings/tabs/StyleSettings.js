@@ -219,18 +219,6 @@ function StyleSettings( props ) {
 				: '#6b7280'
 		);
 
-		// // submit button bg type
-		// if ( sureforms_keys._srfm_btn_bg_type === 'filled' ) {
-		// 	root.style.setProperty(
-		// 		'--srfm-btn-bg-color',
-		// 		sureforms_keys._srfm_button_bg_color
-		// 			? sureforms_keys._srfm_button_bg_color
-		// 			: ''
-		// 	);
-		// } else {
-		// 	root.style.setProperty( '--srfm-btn-bg-color', 'transparent' );
-		// }
-
 		root.style.setProperty(
 			'--srfm-btn-bg-color',
 			sureforms_keys._srfm_button_bg_color

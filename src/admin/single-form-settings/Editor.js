@@ -64,6 +64,7 @@ const default_keys = {
 	_srfm_show_asterisk: true,
 	_srfm_bg_type: 'image',
 	_srfm_label_color: '#1f2937',
+	_srfm_help_color: '#6b7280',
 	_srfm_input_text_color: '#4B5563',
 	_srfm_input_placeholder_color: '#9CA3AF',
 	_srfm_input_bg_color: '#ffffff',
@@ -160,13 +161,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 			isInheritThemeButton ? 'wp-block-button' : ''
 		}">
 		<button class="srfm-button srfm-submit-button ${
-	isInheritThemeButton
-		? 'wp-block-button__link'
-		: sureforms_keys._srfm_btn_bg_type &&
+			isInheritThemeButton
+				? 'wp-block-button__link'
+				: sureforms_keys._srfm_btn_bg_type &&
 				  ! isInheritThemeButton === 'filled'
-			? 'srfm-btn-bg-color'
-			: 'srfm-btn-bg-transparent'
-}"></button>
+				? 'srfm-btn-bg-color'
+				: 'srfm-btn-bg-transparent'
+		}"></button>
 		</div>`;
 
 		if ( elm ) {
