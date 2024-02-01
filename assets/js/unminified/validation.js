@@ -285,9 +285,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Address field
 		if ( container.classList.contains( 'srfm-address-block' ) ) {
-			const addressInput = container.querySelectorAll( 'input,select' );
+			const addressInput = container.querySelectorAll( 'input:not([aria-haspopup="listbox"])' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
+
+			console.log(addressInput);
 
 			for (
 				let i = 1;

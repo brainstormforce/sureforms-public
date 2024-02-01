@@ -25,40 +25,40 @@
 				display: inline-block;
 				width: 100%;
 
-				select {
-					display: block;
-				}
-				.nice-select {
-					line-height: normal;
-					width: 100%;
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					padding: 0.75em 1em;
-					height: auto;
-					font-size: 0.8em;
+				.srfm-dropdown-common {
 
-					.current {
-						line-height: normal;
-					}
-
-					&.open {
-						.nice-select-dropdown {
-							box-shadow: 0 0 0 1px var( --ast-border-color );
-							transform: scale( 1 ) translateY( 0 );
-						}
-					}
-
-					.nice-select-dropdown {
-						width: 100%;
-						transform: scale( 1 ) translateY( 1em );
-
-						.list {
-							margin: 0;
-						}
-					}
-
-					&:focus {
+					&.input-active  {
 						box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
 					}
+
+					.ts-control {
+						line-height: normal;
+						width: 100%;
+						border: var( --srfm-border ) solid var( --srfm-border-color );
+						height: auto;
+						font-size: initial;
+						padding: 0.75em 1em !important;
+						background-color: transparent;
+
+						input {
+							line-height: normal;
+							font-size: initial;
+
+							&::placeholder {
+								color: var( --srfm-placeholder-color );
+								opacity: 1; /* Firefox */
+							}
+						}
+					}
+
+					.ts-dropdown {
+						margin-top: 0;
+					}
+
+				}
+
+				select {
+					display: block;
 				}
 			}
 

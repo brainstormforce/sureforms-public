@@ -6,8 +6,11 @@ function initializeDropdown() {
 	dropDownSelector.forEach( ( element ) => {
 		if ( element ) {
 			// eslint-disable-next-line no-undef
-			NiceSelect.bind( element );
-			element.style.display = 'none';
+			// NiceSelect.bind( element );
+			// element.style.display = 'none';
+
+			const config = {};
+			new TomSelect( element, config );
 		}
 	} );
 }

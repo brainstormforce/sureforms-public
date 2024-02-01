@@ -64,7 +64,7 @@ class SF_Public {
 
 		// Dependencies
 		// Nice Select CSS.
-		wp_enqueue_style( 'nice-select', $css_vendor . 'nice-select2.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'tom-select', $css_vendor . 'tom-select.css', [], SUREFORMS_VER );
 		// Int-tel-input CSS.
 		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SUREFORMS_VER );
 
@@ -121,7 +121,7 @@ class SF_Public {
 
 			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
 				wp_enqueue_script( SUREFORMS_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SUREFORMS_VER, true );
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-nice-select2-deps", $js_vendor_uri . 'nice-select2.min.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SUREFORMS_SLUG . "-tom-select", $js_vendor_uri . 'tom-select.min.js', [], SUREFORMS_VER, true );
 			}
 
 			if ( 'dropdown' !== $block_name ) {

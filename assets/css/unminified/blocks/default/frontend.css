@@ -35,6 +35,10 @@
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-input-address-country {
   border-radius: 0;
   border-bottom: 0;
+  padding: 0;
+}
+.srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-input-address-country .ts-control {
+  border: 0;
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-address-icon {
   position: absolute;

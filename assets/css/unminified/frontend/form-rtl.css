@@ -20,33 +20,35 @@
   display: inline-block;
   width: 100%;
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap select {
-  display: block;
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common.input-active {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-primary-color);
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select {
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control {
   line-height: normal;
   width: 100%;
   border: var(--srfm-border) solid var(--srfm-border-color);
-  padding: 0.75em 1em;
   height: auto;
-  font-size: 0.8em;
+  font-size: initial;
+  padding: 0.75em 1em !important;
+  background-color: transparent;
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select .current {
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input {
   line-height: normal;
+  font-size: initial;
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select.open .nice-select-dropdown {
-  box-shadow: 0 0 0 1px var(--ast-border-color);
-  transform: scale(1) translateY(0);
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input:-ms-input-placeholder {
+  color: var(--srfm-placeholder-color);
+  opacity: 1; /* Firefox */
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select .nice-select-dropdown {
-  width: 100%;
-  transform: scale(1) translateY(1em);
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input::placeholder {
+  color: var(--srfm-placeholder-color);
+  opacity: 1; /* Firefox */
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select .nice-select-dropdown .list {
-  margin: 0;
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-dropdown {
+  margin-top: 0;
 }
-.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .nice-select:focus {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-primary-color);
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap select {
+  display: block;
 }
 .srfm-form-container .srfm-form .srfm-block.srfm-phone-block .iti__country-list {
   display: block;
