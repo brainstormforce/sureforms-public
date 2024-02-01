@@ -300,7 +300,7 @@
   height: 0.7em;
   top: 0.18em;
   border-radius: 100%;
-  border: var(--srfm-border) solid var(--srfm-border-color);
+  border: 1px solid var(--srfm-border-color);
   border-radius: 100%;
   line-height: 1.5em;
 }
@@ -355,6 +355,7 @@
 }
 
 .srfm-form-container .srfm-form .srfm-url-block .srfm-protocol {
+  color: var(--srfm-label-text-color);
   position: absolute;
   top: 50%;
   right: 0;

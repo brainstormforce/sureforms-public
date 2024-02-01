@@ -1,15 +1,6 @@
 .is-root-container {
   font-size: var(--srfm-font-size);
   margin-top: 2em;
-  --srfm-label-text-color: #1f2937;
-  --srfm-body-input-color: #4b5563;
-  --srfm-placeholder-color: #9ca3af;
-  --srfm-border-color: #d0d5dd;
-  --srfm-help-color: #6b7280;
-  --srfm-base-background-color: #ffffff;
-  --srfm-error-text-color: #dc2626;
-  --srfm-border-radius: 4px;
-  --srfm-border: 1px;
 }
 .is-root-container .srfm-input-common {
   width: 100%;
@@ -83,6 +74,7 @@
   color: var(--srfm-help-color);
 }
 .is-root-container div[data-type="sureforms/url"] .srfm-protocol {
+  color: var(--srfm-label-text-color);
   position: absolute;
   top: 50%;
   left: 0;
@@ -216,7 +208,7 @@
   height: 0.7em;
   top: 0.18em;
   border-radius: 100%;
-  border: var(--srfm-border) solid var(--srfm-border-color);
+  border: 1px solid var(--srfm-border-color);
   border-radius: 100%;
   line-height: 1.5em;
 }

@@ -14,24 +14,30 @@ import { useState, useEffect, createRoot } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
-import AppearanceSettings from './AppearanceSettings.js';
-import Settings from './Settings.js';
+import GeneralSettings from './tabs/GeneralSettings.js';
+import StyleSettings from './tabs/StyleSettings.js';
+import AdvancedSettings from './tabs/AdvancedSettings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMEditorHeader from './SRFMEditorHeader.js';
-import { attachSidebar, toggleSidebar } from '../../../modules/quick-action-sidebar/index.js';
+import {
+	attachSidebar,
+	toggleSidebar,
+} from '../../../modules/quick-action-sidebar/index.js';
+import { useDeviceType } from '@Controls/getPreviewType';
 
 const { select, dispatch } = wp.data;
 
 const default_keys = {
-	_srfm_color1: '',
+	_srfm_color1: '#0184C7',
 	_srfm_textcolor1: '',
 	_srfm_color2: '',
 	_srfm_fontsize: 20,
 	_srfm_bg: '',
+	_srfm_bg_color: '#ffffff',
 	_srfm_thankyou_message: 'Form submitted successfully!',
 	_srfm_email: sfBlockData.admin_email,
 	_srfm_submit_type: 'message',
@@ -54,30 +60,50 @@ const default_keys = {
 	_srfm_first_page_label: 'Page break',
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,
+	_srfm_show_labels: true,
+	_srfm_show_asterisk: true,
+	_srfm_bg_type: 'image',
+	_srfm_label_color: '#1f2937',
+	_srfm_help_color: '#6b7280',
+	_srfm_input_text_color: '#4B5563',
+	_srfm_input_placeholder_color: '#9CA3AF',
+	_srfm_input_bg_color: '#ffffff',
+	_srfm_input_border_color: '#D0D5DD',
+	_srfm_input_border_width: 1,
+	_srfm_input_border_radius: 0,
+	_srfm_field_error_color: '#DC2626',
+	_srfm_field_error_surface_color: '#EF4444',
+	_srfm_field_error_bg_color: '#FEF2F2',
+	_srfm_button_text_color: '#ffffff',
+	_srfm_submit_style: 'filled',
+	_srfm_btn_bg_type: 'filled',
+	_srfm_button_color: '#000000',
+	_srfm_button_bg_color: '#0184C7',
+	_srfm_button_border_color: '#ffffff',
+	_srfm_button_border_width: 1,
+	_srfm_button_border_radius: 6,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
+	_srfm_inherit_theme_buttom: false,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
-	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] = useState();
-	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
+		useState();
+	const postId = useSelect( () => {
+		return select( 'core/editor' ).getCurrentPostId();
+	}, [] );
 	const { editPost } = useDispatch( editorStore );
 
 	const rootContainer = document.querySelector( '.is-root-container' );
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
-	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
-	const sureforms_keys = useSelect( () =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
+	const isPageBreak = blocks.some(
+		( block ) => block.name === 'sureforms/page-break'
 	);
-	const { deviceType } = useSelect( () => {
-		return {
-			deviceType:
-				select(
-					'core/edit-post'
-				)?.__experimentalGetPreviewDeviceType() || 'Desktop',
-		};
-	}, [] );
+
+	const deviceType = useDeviceType();
+
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;
@@ -101,7 +127,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
+
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+
 	useEffect( () => {
 		updateMeta( '_srfm_is_page_break', isPageBreak );
 	}, [ isPageBreak ] );
@@ -110,16 +138,30 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const headerCenterContainer = document.querySelector(
 		'.edit-post-header__center'
 	);
+
 	if ( headerCenterContainer ) {
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
 	}
 
+	const sureforms_keys = useSelect( () =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
+
+	const submitBtnContainer = document.querySelector(
+		'.srfm-submit-btn-container'
+	);
+
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+		console.log( sureforms_keys._srfm_btn_bg_type );
+		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button srfm-btn-bg-color"></button></div>`;
 
 		if ( elm ) {
-			if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
+			if (
+				! elm
+					.closest( 'body' )
+					.querySelector( '.srfm-submit-btn-container' )
+			) {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 			}
 		}
@@ -173,10 +215,104 @@ const SureformsFormSpecificSettings = ( props ) => {
 								: '',
 						},
 						{
-							property: '--srfm_submit_alignment',
-							value: sureforms_keys._srfm_submit_alignment
-								? `${ sureforms_keys._srfm_submit_alignment }`
-								: '',
+							property: '--srfm-label-text-color',
+							value:
+								sureforms_keys._srfm_label_color || '#1f2937',
+						},
+						{
+							property: '--srfm-body-input-color',
+							value:
+								sureforms_keys._srfm_input_text_color ||
+								'#4B5563',
+						},
+
+						{
+							property: '--srfm-placeholder-color',
+							value:
+								sureforms_keys._srfm_input_placeholder_color ||
+								'#9CA3AF',
+						},
+						{
+							property: '--srfm-base-background-color',
+							value:
+								sureforms_keys._srfm_input_bg_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-border-color',
+							value:
+								sureforms_keys._srfm_input_border_color ||
+								'#d0d5dd',
+						},
+						{
+							property: '--srfm-border',
+							value:
+								sureforms_keys._srfm_input_border_width +
+									'px' || '1px',
+						},
+						{
+							property: '--srfm-border-radius',
+							value:
+								sureforms_keys._srfm_input_border_radius +
+									'px' || '4px',
+						},
+						{
+							property: '--srfm-message-text-color',
+							value:
+								sureforms_keys._srfm_message_text_color ||
+								'#000000',
+						},
+						{
+							property: '--srfm-message-bg-color',
+							value:
+								sureforms_keys._srfm_message_bg_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-field-error-color',
+							value:
+								sureforms_keys._srfm_field_error_color ||
+								'#ff0000',
+						},
+						{
+							property: '--srfm-field-error-surface-color',
+							value:
+								sureforms_keys._srfm_field_error_surface_color ||
+								'#ff0000',
+						},
+						{
+							property: '--srfm-field-error-bg-color',
+							value:
+								sureforms_keys._srfm_field_error_bg_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-btn-text-color',
+							value:
+								sureforms_keys._srfm_button_text_color ||
+								'#000000',
+						},
+						{
+							property: '--srfm-btn-bg-color',
+							value: sureforms_keys._srfm_button_bg_color || '',
+						},
+						{
+							property: '--srfm-btn-border-color',
+							value:
+								sureforms_keys._srfm_button_border_color ||
+								'#000000',
+						},
+						{
+							property: '--srfm-btn-border-width',
+							value:
+								sureforms_keys._srfm_button_border_width +
+									'px' || '1px',
+						},
+						{
+							property: '--srfm-btn-border-radius',
+							value:
+								sureforms_keys._srfm_button_border_radius +
+									'px' || '6px',
 						},
 						{
 							property: '--srfm_submit_alignment_backend',
@@ -198,11 +334,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 							prop.value
 						);
 					} );
+
 					const elm = iframeBody.querySelector(
 						'.block-editor-block-list__layout'
 					);
 
-					addSubmitButton( elm );
+					const submitBtnContainerIframe = iframeBody.querySelector(
+						'.srfm-submit-btn-container'
+					);
+
+					if ( ! submitBtnContainerIframe ) {
+						addSubmitButton( elm );
+					}
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
@@ -232,9 +375,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 				const elm = document.querySelector(
 					'.block-editor-block-list__layout'
 				);
-				addSubmitButton( elm );
+
+				if ( ! submitBtnContainer ) {
+					addSubmitButton( elm );
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 1 ) {
+						submitBtn[ 1 ].remove();
+					}
+				}
 			}
-		}, 100 );
+		}, 200 );
 	}, [ deviceType, sureforms_keys ] );
 
 	useEffect( () => {
@@ -248,7 +400,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.navigation.addEventListener( 'navigate', ( e ) => {
 				toggleSidebar( e.destination.url );
 			} );
-		} else if ( enableQuickActionSidebar !== undefined && 'enabled' === enableQuickActionSidebar ) {
+		} else if (
+			enableQuickActionSidebar !== undefined &&
+			'enabled' === enableQuickActionSidebar
+		) {
 			// Attach the sidebar to the DOM.
 			attachSidebar();
 		} else {
@@ -266,14 +421,24 @@ const SureformsFormSpecificSettings = ( props ) => {
 			title={ __( 'Form Options', 'sureforms' ) }
 		>
 			<InspectorTabs
-				tabs={ [ 'general', 'advance' ] }
+				tabs={ [ 'general', 'style', 'advance' ] }
 				defaultTab={ 'general' }
 			>
 				<InspectorTab { ...SRFMTabs.general }>
-					<AppearanceSettings default_keys={ default_keys } enableQuickActionSidebar={ enableQuickActionSidebar } setEnableQuickActionSidebar={ setEnableQuickActionSidebar } isPageBreak={ isPageBreak } />
+					<GeneralSettings
+						default_keys={ default_keys }
+						enableQuickActionSidebar={ enableQuickActionSidebar }
+						setEnableQuickActionSidebar={
+							setEnableQuickActionSidebar
+						}
+						isPageBreak={ isPageBreak }
+					/>
+				</InspectorTab>
+				<InspectorTab { ...SRFMTabs.style }>
+					<StyleSettings default_keys={ default_keys } />
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<Settings default_keys={ default_keys } />
+					<AdvancedSettings default_keys={ default_keys } />
 				</InspectorTab>
 			</InspectorTabs>
 			<PluginPostPublishPanel>
