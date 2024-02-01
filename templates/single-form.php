@@ -20,35 +20,27 @@ use SureForms\Inc\Generate_Form_Markup;
 	<?php
 		$custom_post_id                   = get_the_ID();
 		$sureforms_color1_val             = get_post_meta( intval( $custom_post_id ), '_srfm_color1', true );
-		$sureforms_textcolor1_val         = get_post_meta( intval( $custom_post_id ), '_srfm_textcolor1', true );
-		$sureforms_color2_val             = get_post_meta( intval( $custom_post_id ), '_srfm_color2', true );
-		$sureforms_bg_val                 = get_post_meta( intval( $custom_post_id ), '_srfm_bg', true );
+		$sureforms_bg_val                 = get_post_meta( intval( $custom_post_id ), '_srfm_bg_image', true );
 		$sureforms_fontsize_val           = get_post_meta( intval( $custom_post_id ), '_srfm_fontsize', true );
 		$sureforms_submit_type_val        = get_post_meta( intval( $custom_post_id ), '_srfm_submit_type', true );
 		$sureforms_thankyou_message_title = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message_title', true );
 		$sureforms_thankyou_message_val   = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message', true );
 		$sureforms_submit_url_val         = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
-		$button_styling_from_theme_val    = get_post_meta( intval( $custom_post_id ), '_srfm_submit_styling_inherit_from_theme', true );
-		$sureforms_form_class_name        = get_post_meta( intval( $custom_post_id ), '_srfm_form_class_name', true );
 		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 		$submit_button_text               = get_post_meta( intval( $custom_post_id ), '_srfm_submit_button_text', true );
 		$show_title_on_single_form_page   = get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
 
-		$color_primary             = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
-		$color_textprimary         = $sureforms_textcolor1_val ? strval( $sureforms_textcolor1_val ) : '#fff';
-		$color_secondary           = $sureforms_color2_val ? strval( $sureforms_color2_val ) : '';
-		$background_image_url      = $sureforms_bg_val ? rawurldecode( strval( $sureforms_bg_val ) ) : '';
-		$form_font_size            = $sureforms_fontsize_val ? $sureforms_fontsize_val : '';
-		$success_submit_type       = $sureforms_submit_type_val ? strval( $sureforms_submit_type_val ) : '';
-		$success_message_title     = $sureforms_thankyou_message_title ? strval( $sureforms_thankyou_message_title ) : '';
-		$success_message           = $sureforms_thankyou_message_val ? strval( $sureforms_thankyou_message_val ) : '';
-		$success_url               = $sureforms_submit_url_val ? strval( $sureforms_submit_url_val ) : '';
-		$button_styling_from_theme = $button_styling_from_theme_val ? strval( $button_styling_from_theme_val ) : '';
+		$color_primary         = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
+		$background_image_url  = $sureforms_bg_val ? rawurldecode( strval( $sureforms_bg_val ) ) : '';
+		$form_font_size        = $sureforms_fontsize_val ? $sureforms_fontsize_val : '';
+		$success_submit_type   = $sureforms_submit_type_val ? strval( $sureforms_submit_type_val ) : '';
+		$success_message_title = $sureforms_thankyou_message_title ? strval( $sureforms_thankyou_message_title ) : '';
+		$success_message       = $sureforms_thankyou_message_val ? strval( $sureforms_thankyou_message_val ) : '';
+		$success_url           = $sureforms_submit_url_val ? strval( $sureforms_submit_url_val ) : '';
 
 		// Submit button.
 		$button_text      = $submit_button_text ? strval( $submit_button_text ) : '';
 		$button_alignment = get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
-		$styling          = get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_styling', true ) ) : '';
 
 	if ( 'justify' === $button_alignment ) {
 		$full = true;
@@ -74,11 +66,6 @@ use SureForms\Inc\Generate_Form_Markup;
 	?>
 		<style>
 			#srfm-single-page-container {
-				--srfm-primary-text-color: 
-					<?php
-					echo empty( $color_textprimary ) && '' === $button_styling_from_theme ? '#ffffff' : esc_attr( $color_textprimary );
-					?>
-				;
 				--srfm-form-container-width: 
 					<?php
 					echo esc_attr( $form_container_width . 'px' );

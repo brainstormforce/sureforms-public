@@ -74,7 +74,7 @@ body.post-type-sureforms_form {
 	.is-mobile-preview,
 	.block-editor-iframe__body {
 		// Need override / !Important here. As value are added inline by wordpress.
-		background-image: var( --srfm_bg ) !important;
+		background-image: var( --srfm-bg-image ) !important;
 		background-position: center !important;
 		background-size: cover !important;
 		background-repeat: no-repeat !important;
@@ -227,14 +227,14 @@ body.post-type-sureforms_form {
 			position: absolute;
 			font-size: calc( var( --srfm-font-size ) - 0.33em );
 			pointer-events: none;
-			transform: translateX( var( --srfm_submit_alignment_backend ) );
-			right: var( --srfm_submit_alignment_backend );
-			transform: translateX( var( --srfm_submit_alignment_backend ) );
-			max-width: var( --srfm_submit_width_backend );
+			transform: translateX( var( --srfm-submit-alignment-backend ) );
+			right: var( --srfm-submit-alignment-backend );
+			transform: translateX( var( --srfm-submit-alignment-backend ) );
+			max-width: var( --srfm-submit-width-backend );
 			width: 100%;
 
 			&:after {
-				content: var( --srfm_submit_button_text );
+				content: var( --srfm-submit-button-text );
 			}
 		}
 
