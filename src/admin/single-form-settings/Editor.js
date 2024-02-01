@@ -73,11 +73,11 @@ const default_keys = {
 	_srfm_field_error_color: '#DC2626',
 	_srfm_field_error_surface_color: '#EF4444',
 	_srfm_field_error_bg_color: '#FEF2F2',
-	_srfm_button_text_color: '#000000',
+	_srfm_button_text_color: '#ffffff',
 	_srfm_submit_style: 'filled',
 	_srfm_button_color: '#000000',
 	_srfm_button_bg_color: '#0184C7',
-	_srfm_button_border_color: '#000000',
+	_srfm_button_border_color: '#ffffff',
 	_srfm_button_border_width: 1,
 	_srfm_button_border_radius: 6,
 	_srfm_previous_button_text: 'Previous',
@@ -150,14 +150,24 @@ const SureformsFormSpecificSettings = ( props ) => {
 		'.srfm-submit-btn-container'
 	);
 
+	console.log( sureforms_keys._srfm_inherit_theme_buttom );
+
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button ${
-			sureforms_keys._srfm_inherit_theme_buttom
+		const isInheritThemeButton =
+			! sureforms_keys._srfm_inherit_theme_buttom;
+
+		const appendHtml = `<div class="srfm-submit-btn-container ${
+			isInheritThemeButton ? 'wp-block-button' : ''
+		}">
+		<button class="srfm-button srfm-submit-button ${
+			isInheritThemeButton
 				? 'wp-block-button__link'
-				: sureforms_keys._srfm_btn_bg_type === 'filled'
+				: sureforms_keys._srfm_btn_bg_type &&
+				  ! isInheritThemeButton === 'filled'
 				? 'srfm-btn-bg-color'
 				: 'srfm-btn-bg-transparent'
-		}"></button></div>`;
+		}"></button>
+		</div>`;
 
 		if ( elm ) {
 			if (
