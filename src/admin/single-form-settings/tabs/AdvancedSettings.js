@@ -11,10 +11,10 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
-import SingleFormSetting from '../singleFormSettingPopup';
+import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import PostURLPanel from '../components/Panel';
+import PostURLPanel from '../components/form-permalink/Panel';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -22,6 +22,7 @@ function AdvancedSettings( props ) {
 	const { default_keys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
+
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
 	const [ sureformsV2CheckboxSecret, setSureformsV2CheckboxSecret ] =
@@ -42,8 +43,9 @@ function AdvancedSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-	if ( sureforms_keys && '_srfm_sender_notification' in sureforms_keys ) {
-		if ( ! sureforms_keys._srfm_sender_notification ) {
+
+	if ( sureforms_keys && '_srfm_submit_type' in sureforms_keys ) {
+		if ( ! sureforms_keys._srfm_submit_type ) {
 			sureforms_keys = default_keys;
 			editPost( {
 				meta: sureforms_keys,
@@ -55,6 +57,7 @@ function AdvancedSettings( props ) {
 			meta: sureforms_keys,
 		} );
 	}
+
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;
@@ -62,6 +65,8 @@ function AdvancedSettings( props ) {
 			meta: option_array,
 		} );
 	}
+
+	// Fetch the reCAPTCHA keys from the Global Settings
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
@@ -130,11 +135,7 @@ function AdvancedSettings( props ) {
 						);
 					} }
 				/>
-				<p className="components-base-control__help">
-					{ 'url' === sureforms_keys._srfm_submit_type
-						? __( 'Redirect', 'sureforms' )
-						: __( 'Message', 'sureforms' ) }
-				</p>
+				<p className="components-base-control__help" />
 				{ 'message' === sureforms_keys._srfm_submit_type ? (
 					<>
 						<SRFMTextControl
@@ -334,7 +335,7 @@ function AdvancedSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSetting sureformsKeys={ sureforms_keys } />
+					<SingleFormSettingsPopup sureformsKeys={ sureforms_keys } />
 				</Modal>
 			) }
 		</>
