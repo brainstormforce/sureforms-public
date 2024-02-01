@@ -88,17 +88,6 @@ const default_keys = {
 	_srfm_thankyou_message: 'Form submitted successfully!',
 	_srfm_submit_url: '',
 	_srfm_form_recaptcha: 'none',
-
-	// Not being used
-	// _srfm_textcolor1: '',
-	// _srfm_color2: '',
-	// _srfm_sender_notification: 'off',
-	// _srfm_email: sfBlockData.admin_email,
-	// _srfm_submit_styling_inherit_from_theme: false,
-	// _srfm_form_styling: 'classic',
-	// _srfm_button_color: '#000000',
-	// _srfm_submit_style: 'filled',
-	// _srfm_inherit_theme_buttom: false,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
