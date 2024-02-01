@@ -24,10 +24,11 @@ class Checkbox_Markup extends Base {
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes ) {
+	public function default( $attributes, $form_id ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -69,8 +70,8 @@ class Checkbox_Markup extends Base {
 							</symbol>
 						</svg>
 					</div>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
 		<?php
 

@@ -90,27 +90,30 @@ class Sureforms_Helper {
 	/**
 	 * Generates common markup liked label, etc
 	 *
-	 * @param string $type Type of form markup.
-	 * @param string $label Label for the form markup.
-	 * @param string $slug Slug for the form markup.
-	 * @param string $block_id Block id for the form markup.
-	 * @param bool   $required If field is required or not.
-	 * @param string $help Help for the form markup.
-	 * @param string $error_msg Error message for the form markup.
-	 * @param bool   $is_unique Check if the field is unique.
-	 * @param string $duplicate_msg Duplicate message for field.
-	 * @param bool   $override Override for error markup.
+	 * @param int|string $form_id form id.
+	 * @param string     $type Type of form markup.
+	 * @param string     $label Label for the form markup.
+	 * @param string     $slug Slug for the form markup.
+	 * @param string     $block_id Block id for the form markup.
+	 * @param bool       $required If field is required or not.
+	 * @param string     $help Help for the form markup.
+	 * @param string     $error_msg Error message for the form markup.
+	 * @param bool       $is_unique Check if the field is unique.
+	 * @param string     $duplicate_msg Duplicate message for field.
+	 * @param bool       $override Override for error markup.
 	 * @return string
 	 * @since 0.0.1
 	 */
-	public static function generate_common_form_markup( $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
+	public static function generate_common_form_markup( $form_id, $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
-		$markup = '';
+		$markup         = '';
+		$show_labels    = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
+		$show_asterisks = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
@@ -207,5 +210,21 @@ class Sureforms_Helper {
 	public static function update_admin_settings_option( $key, $value, $network_override = false ) {
 		// Update the site-wide option if we're in the network admin, and return the updated status.
 		return $network_override && is_multisite() ? update_site_option( $key, $value ) : update_option( $key, $value );
+	}
+
+	/**
+	 * Update an option from the database.
+	 *
+	 * @param int|string $post_id post id / form id.
+	 * @param string     $key meta key name.
+	 * @param bool       $single single or multiple.
+	 * @param mixed      $default default value.
+	 *
+	 * @since 1.0.0
+	 * @return string Meta value.
+	 */
+	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
+		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
+		return $meta_value;
 	}
 }

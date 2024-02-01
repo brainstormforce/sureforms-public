@@ -18,15 +18,15 @@ namespace SureForms\Inc\Fields;
  * @since 0.0.1
  */
 class Base {
-
 	/**
 	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes ) {
+	public function default( $attributes, $form_id ) {
 		return '';
 	}
 }
