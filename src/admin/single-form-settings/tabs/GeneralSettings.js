@@ -67,15 +67,17 @@ function GeneralSettings( props ) {
 	}, [ deviceType, rootContainer ] );
 
 	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
-		if ( ! sureforms_keys._srfm_show_labels ) {
-			rootContainer.classList.add( 'srfm-hide-labels' );
-		} else {
-			rootContainer.classList.remove( 'srfm-hide-labels' );
-		}
-		if ( ! sureforms_keys._srfm_show_asterisk ) {
-			rootContainer.classList.add( 'srfm-hide-asterisk' );
-		} else {
-			rootContainer.classList.remove( 'srfm-hide-asterisk' );
+		if( rootContainer ) {
+			if ( ! sureforms_keys._srfm_show_labels ) {
+				rootContainer.classList.add( 'srfm-hide-labels' );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-labels' );
+			}
+			if ( ! sureforms_keys._srfm_show_asterisk ) {
+				rootContainer.classList.add( 'srfm-hide-asterisk' );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-asterisk' );
+			}
 		}
 	} else {
 		sureforms_keys = default_keys;
