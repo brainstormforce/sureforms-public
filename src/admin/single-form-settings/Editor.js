@@ -153,7 +153,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 
 	function addSubmitButton( elm ) {
-		console.log( sureforms_keys._srfm_btn_bg_type );
 		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button srfm-btn-bg-color"></button></div>`;
 
 		if ( elm ) {
