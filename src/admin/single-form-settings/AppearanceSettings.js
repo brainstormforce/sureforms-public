@@ -21,18 +21,12 @@ import getApiData from '@Controls/getApiData';
 
 function AppearanceSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { default_keys, enableQuickActionSidebar, setEnableQuickActionSidebar } = props;
-	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
-	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
+	const { default_keys, enableQuickActionSidebar, setEnableQuickActionSidebar, isPageBreak } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const root = document.documentElement;
-
-	useEffect( () => {
-		updateMeta( '_srfm_is_page_break', isPageBreak );
-	}, [ isPageBreak ] );
 
 	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
 		root.style.setProperty(

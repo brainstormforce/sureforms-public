@@ -56,7 +56,6 @@ const default_keys = {
 	_srfm_page_break_toggle_label: false,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
-
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -68,7 +67,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const rootContainer = document.querySelector( '.is-root-container' );
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
-
+	const sureforms_keys = useSelect( () =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
 	const { deviceType } = useSelect( () => {
 		return {
 			deviceType:
@@ -113,10 +114,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
 	}
-
-	const sureforms_keys = useSelect( () =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
-	);
 
 	function addSubmitButton( elm ) {
 		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
@@ -273,7 +270,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				defaultTab={ 'general' }
 			>
 				<InspectorTab { ...SRFMTabs.general }>
-					<AppearanceSettings default_keys={ default_keys } enableQuickActionSidebar={ enableQuickActionSidebar } setEnableQuickActionSidebar={ setEnableQuickActionSidebar } />
+					<AppearanceSettings default_keys={ default_keys } enableQuickActionSidebar={ enableQuickActionSidebar } setEnableQuickActionSidebar={ setEnableQuickActionSidebar } isPageBreak={ isPageBreak } />
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<Settings default_keys={ default_keys } />
