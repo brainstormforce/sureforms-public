@@ -67,7 +67,7 @@ function GeneralSettings( props ) {
 	}, [ deviceType, rootContainer ] );
 
 	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
-		if( rootContainer ) {
+		if ( rootContainer ) {
 			if ( ! sureforms_keys._srfm_show_labels ) {
 				rootContainer.classList.add( 'srfm-hide-labels' );
 			} else {
