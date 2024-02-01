@@ -76,6 +76,7 @@ const default_keys = {
 	_srfm_field_error_bg_color: '#FEF2F2',
 	_srfm_button_text_color: '#ffffff',
 	_srfm_submit_style: 'filled',
+	_srfm_btn_bg_type: 'filled',
 	_srfm_button_color: '#000000',
 	_srfm_button_bg_color: '#0184C7',
 	_srfm_button_border_color: '#ffffff',
@@ -83,7 +84,7 @@ const default_keys = {
 	_srfm_button_border_radius: 6,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
-	_srfm_inherit_theme_buttom: true,
+	_srfm_inherit_theme_buttom: false,
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
@@ -151,24 +152,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 		'.srfm-submit-btn-container'
 	);
 
-	console.log( sureforms_keys._srfm_inherit_theme_buttom );
-
 	function addSubmitButton( elm ) {
-		const isInheritThemeButton =
-			! sureforms_keys._srfm_inherit_theme_buttom;
-
-		const appendHtml = `<div class="srfm-submit-btn-container ${
-			isInheritThemeButton ? 'wp-block-button' : ''
-		}">
-		<button class="srfm-button srfm-submit-button ${
-			isInheritThemeButton
-				? 'wp-block-button__link'
-				: sureforms_keys._srfm_btn_bg_type &&
-				  ! isInheritThemeButton === 'filled'
-				? 'srfm-btn-bg-color'
-				: 'srfm-btn-bg-transparent'
-		}"></button>
-		</div>`;
+		console.log( sureforms_keys._srfm_btn_bg_type );
+		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button srfm-btn-bg-color"></button></div>`;
 
 		if ( elm ) {
 			if (
