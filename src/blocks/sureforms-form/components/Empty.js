@@ -36,6 +36,7 @@ export default ( { setAttributes } ) => {
 						setFormId={ setFormId }
 						label="title"
 						id="id"
+						formId={ formId }
 						selectedVal={ value }
 						handleChange={ ( val ) => setValue( val ) }
 					/>

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 const SelectForm = ( {
 	label,
 	id,
+	formId,
 	selectedVal,
 	handleChange,
 	setForm,
@@ -22,6 +23,12 @@ const SelectForm = ( {
 		try {
 			response = await apiFetch( {
 				path: 'sureforms/v1/forms-data',
+			} );
+			// if in the response object title is '' then set title to '(no title)'
+			response.forEach( ( form ) => {
+				if ( form.title === '' ) {
+					form.title = __( '(no title)', 'sureforms' );
+				}
 			} );
 			setFormsData( response );
 		} catch ( error ) {
@@ -91,7 +98,7 @@ const SelectForm = ( {
 							handleChange( null );
 						} }
 						onClick={ toggle }
-						placeholder={ __( 'Select a form', 'sureforms' ) }
+						placeholder={ __( 'Select a Form', 'sureforms' ) }
 					/>
 				</div>
 				<div
@@ -114,6 +121,7 @@ const SelectForm = ( {
 					filter( formsData ).map( ( option, index ) => (
 						<div
 							onClick={ () => {
+								console.log( option );
 								selectOption( option );
 								const queryParams = {
 									id: option.id,
@@ -125,10 +133,11 @@ const SelectForm = ( {
 								setForm( formMarkup );
 							} }
 							className={ `srfm-form-single-option ${
-								option[ label ] === selectedVal
+								option[ id ] === formId
 									? 'srfm-form-selected'
 									: ''
 							}` }
+							// className={ `srfm-form-single-option` }
 							key={ `${ id }-${ index }` }
 						>
 							{ option[ label ] }
