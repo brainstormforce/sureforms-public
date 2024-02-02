@@ -4,15 +4,13 @@ $bg_color: #fff;
 .single-sureforms_form {
 	.srfm-single-page-container {
 		.srfm-page-banner {
-			padding: 50px 15px;
+			padding: 58px 15px 112px 15px;
 			text-align: center;
-			min-height: 300px;
 			.srfm-single-banner-title {
+				max-width: var(--srfm-form-container-width);
+				margin: 0 auto;
 				color: $page_title_color;
-			}
 
-			@media ( max-width: 921px ) {
-				min-height: 250px;
 			}
 		}
 
@@ -21,7 +19,7 @@ $bg_color: #fff;
 			.srfm-form-container {
 				max-width: var( --srfm-form-container-width );
 				margin: 0 auto;
-				margin-top: -100px;
+				margin-top: -70px;
 				border-radius: var( --srfm-border-radius );
 				background-color: $bg_color;
 				box-shadow: 0px 4px 6px -2px rgba( 0, 0, 0, 0.05 );
