@@ -7,10 +7,9 @@ $bg_color: #fff;
 			padding: 58px 15px 112px 15px;
 			text-align: center;
 			.srfm-single-banner-title {
-				max-width: var(--srfm-form-container-width);
+				max-width: var( --srfm-form-container-width );
 				margin: 0 auto;
 				color: $page_title_color;
-
 			}
 		}
 
