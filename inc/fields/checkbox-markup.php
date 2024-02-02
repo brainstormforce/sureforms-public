@@ -33,7 +33,6 @@ class Checkbox_Markup extends Base {
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
-		$label_url   = isset( $attributes['labelUrl'] ) ? $attributes['labelUrl'] : '';
 		$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
@@ -47,6 +46,12 @@ class Checkbox_Markup extends Base {
 		$checked_attr         = $checked ? 'checked' : '';
 		$input_label_fallback = $label ? $label : 'Checkbox';
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+		$allowed_tags         = array(
+			'a' => array(
+				'href'   => array(),
+				'target' => array(),
+			),
+		);
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
@@ -58,7 +63,7 @@ class Checkbox_Markup extends Base {
 									<use xlink:href="#srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-check"></use>
 								</svg>
 							</span>
-							<span class="srfm-block-text srfm-span-wrap"><?php echo $label_url ? '<a class="srfm-block-url" target="_blank" href="' . esc_url( $label_url ) . '">' . esc_html( $label ) . '</a>' : esc_html( $label ); ?>
+							<span class="srfm-block-text srfm-span-wrap"><?php echo wp_kses( $label, $allowed_tags ); ?>
 																					<?php
 																					if ( $required ) {
 																						?>

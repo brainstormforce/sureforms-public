@@ -25,10 +25,8 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
-		label,
 		checked: isChecked,
 		required,
-		labelUrl,
 		checkboxHelpText,
 		block_id,
 		errorMsg,
@@ -74,17 +72,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								value={ label }
-								onChange={ ( value ) => {
-									setAttributes( { label: value } );
-								} }
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -105,19 +92,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									}
 								/>
 							) }
-							<SRFMTextControl
-								data={ {
-									value: labelUrl,
-									label: 'labelUrl',
-								} }
-								type="url"
-								label={ __( 'Label Url', 'sureforms' ) }
-								placeholder="https://example.com/"
-								value={ labelUrl }
-								onChange={ ( value ) =>
-									setAttributes( { labelUrl: value } )
-								}
-							/>
 							<ToggleControl
 								label={ __(
 									'Checked by default',

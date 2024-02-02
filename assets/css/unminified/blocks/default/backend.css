@@ -154,6 +154,7 @@
   font-size: 0.7em;
   padding-left: 8px;
   line-height: 18px;
+  pointer-events: all;
 }
 .is-root-container div[data-type="sureforms/multi-choice"].is-selected .srfm-block-wrap {
   pointer-events: initial;
