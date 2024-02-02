@@ -12,7 +12,6 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { useGetSureFormsKeys } from '../../blocks-attributes/getMetakeys';
 import { AddressBlock } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
@@ -45,7 +44,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		help,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const sureforms_keys = useGetSureFormsKeys( formId );
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -117,22 +115,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'Address Line 1', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: lineOneLabel,
-												label: 'lineOneLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineOneLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineOneLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: lineOneLabel,
+										label: 'lineOneLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ lineOneLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											lineOneLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: lineOnePlaceholder,
@@ -151,22 +146,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'Address Line 2', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: lineTwoLabel,
-												label: 'lineTwoLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ lineTwoLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													lineTwoLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: lineTwoLabel,
+										label: 'lineTwoLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ lineTwoLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											lineTwoLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: lineTwoPlaceholder,
@@ -185,22 +177,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'City', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: cityLabel,
-												label: 'cityLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ cityLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													cityLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: cityLabel,
+										label: 'cityLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ cityLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											cityLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: cityPlaceholder,
@@ -219,22 +208,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'State', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: stateLabel,
-												label: 'stateLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ stateLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													stateLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: stateLabel,
+										label: 'stateLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ stateLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											stateLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: statePlaceholder,
@@ -253,22 +239,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'Postal Code', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: postalLabel,
-												label: 'postalLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ postalLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													postalLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: postalLabel,
+										label: 'postalLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ postalLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											postalLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: postalPlaceholder,
@@ -287,22 +270,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								title={ __( 'Country', 'sureforms' ) }
 								initialOpen={ false }
 							>
-								{ 'classic' ===
-								sureforms_keys?._srfm_form_styling ? null : (
-										<SRFMTextControl
-											data={ {
-												value: countryLabel,
-												label: 'countryLabel',
-											} }
-											label={ __( 'Label', 'sureforms' ) }
-											value={ countryLabel }
-											onChange={ ( value ) =>
-												setAttributes( {
-													countryLabel: value,
-												} )
-											}
-										/>
-									) }
+								<SRFMTextControl
+									data={ {
+										value: countryLabel,
+										label: 'countryLabel',
+									} }
+									label={ __( 'Label', 'sureforms' ) }
+									value={ countryLabel }
+									onChange={ ( value ) =>
+										setAttributes( {
+											countryLabel: value,
+										} )
+									}
+								/>
 								<SRFMTextControl
 									data={ {
 										value: countryPlaceholder,

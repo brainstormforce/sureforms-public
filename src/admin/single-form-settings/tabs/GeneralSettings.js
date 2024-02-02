@@ -22,11 +22,11 @@ function GeneralSettings( props ) {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'sureforms/page-break'
 	);
+	const root = document.documentElement;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	const deviceType = useDeviceType();
 	const [ rootContainer, setRootContainer ] = useState(
 		document.getElementById( 'srfm-form-container' )
@@ -36,7 +36,7 @@ function GeneralSettings( props ) {
 		updateMeta( '_srfm_is_page_break', isPageBreak );
 	}, [ isPageBreak ] );
 
-	// if device type is desktop then
+	// if device type is desktop then change the root container
 	useEffect( () => {
 		setTimeout( () => {
 			const tabletPreview =
@@ -79,6 +79,13 @@ function GeneralSettings( props ) {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
 		}
+		// Button text
+		root.style.setProperty(
+			'--srfm-submit-button-text',
+			sureforms_keys._srfm_submit_button_text
+				? '"' + sureforms_keys._srfm_submit_button_text + '"'
+				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
+		);
 	} else {
 		sureforms_keys = default_keys;
 		editPost( {
@@ -86,6 +93,9 @@ function GeneralSettings( props ) {
 		} );
 	}
 
+	/*
+	 * function to update post metas.
+	 */
 	function updateMeta( option, value ) {
 		const value_id = 0;
 		const key_id = '';
@@ -106,6 +116,16 @@ function GeneralSettings( props ) {
 			} else {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
+		}
+
+		// Button
+		if ( option === '_srfm_submit_button_text' ) {
+			root.style.setProperty(
+				'--srfm-submit-button-text',
+				value
+					? '"' + value + '"'
+					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
+			);
 		}
 
 		const option_array = {};

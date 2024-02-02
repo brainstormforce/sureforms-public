@@ -47,7 +47,7 @@ body.post-type-sureforms_form .is-desktop-preview,
 body.post-type-sureforms_form .is-tablet-preview,
 body.post-type-sureforms_form .is-mobile-preview,
 body.post-type-sureforms_form .block-editor-iframe__body {
-  background-image: var(--srfm_bg) !important;
+  background-image: var(--srfm-bg-image) !important;
   background-position: center !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
@@ -176,14 +176,14 @@ body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button {
   position: absolute;
   font-size: calc(var(--srfm-font-size) - 0.33em);
   pointer-events: none;
-  transform: translateX(var(--srfm_submit_alignment_backend));
-  right: var(--srfm_submit_alignment_backend);
-  transform: translateX(var(--srfm_submit_alignment_backend));
-  max-width: var(--srfm_submit_width_backend);
+  transform: translateX(var(--srfm-submit-alignment-backend));
+  right: var(--srfm-submit-alignment-backend);
+  transform: translateX(var(--srfm-submit-alignment-backend));
+  max-width: var(--srfm-submit-width-backend);
   width: 100%;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button:after {
-  content: var(--srfm_submit_button_text);
+  content: var(--srfm-submit-button-text);
 }
 @media (max-width: 778px) {
   body.post-type-sureforms_form .srfm-submit-btn-container {
