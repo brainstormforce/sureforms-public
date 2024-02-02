@@ -26,10 +26,7 @@ export default ( { setAttributes } ) => {
 		<div { ...useBlockProps() }>
 			<Placeholder
 				icon={ icon }
-				label={ __(
-					'Get started by selecting a SureForm.',
-					'sureforms'
-				) }
+				label={ __( 'Get Started by Selecting a Form.', 'sureforms' ) }
 				className="srfm-select-form-placeholder"
 			>
 				<div className="srfm-select-form-container">

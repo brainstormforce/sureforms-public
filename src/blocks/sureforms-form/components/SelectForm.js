@@ -91,7 +91,7 @@ const SelectForm = ( {
 							handleChange( null );
 						} }
 						onClick={ toggle }
-						placeholder={ __( 'Select a SureForm', 'sureforms' ) }
+						placeholder={ __( 'Select a form', 'sureforms' ) }
 					/>
 				</div>
 				<div
