@@ -84,12 +84,6 @@ class Generate_Form_Markup {
 			$classname                = Sureforms_Helper::get_meta_value( $id, '_srfm_additional_classes' );
 			$is_page_break            = Sureforms_Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
-			$page_break_first_label   = Sureforms_Helper::get_meta_value( $id, '_srfm_first_page_label' );
-			$page_break_toggle_label  = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_toggle_label' );
-			$previous_btn_text        = Sureforms_Helper::get_meta_value( $id, '_srfm_previous_button_text', true, 'Previous' );
-			$next_btn_text            = Sureforms_Helper::get_meta_value( $id, '_srfm_next_button_text', true, 'Next' );
-			$is_page_break            = Sureforms_Helper::get_meta_value( $id, '_srfm_is_page_break' );
-			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			// Submit button.
 			$button_text       = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$button_alignment  = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_alignment' );
