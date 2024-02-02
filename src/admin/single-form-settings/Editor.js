@@ -14,69 +14,99 @@ import { useState, useEffect, createRoot } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
-import AppearanceSettings from './AppearanceSettings.js';
-import Settings from './Settings.js';
+import GeneralSettings from './tabs/GeneralSettings.js';
+import StyleSettings from './tabs/StyleSettings.js';
+import AdvancedSettings from './tabs/AdvancedSettings.js';
 
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import SRFMEditorHeader from './SRFMEditorHeader.js';
-import { attachSidebar, toggleSidebar } from '../../../modules/quick-action-sidebar/index.js';
+import SRFMEditorHeader from './components/SRFMEditorHeader.js';
+import {
+	attachSidebar,
+	toggleSidebar,
+} from '../../../modules/quick-action-sidebar/index.js';
+import { useDeviceType } from '@Controls/getPreviewType';
 
 const { select, dispatch } = wp.data;
 
 const default_keys = {
-	_srfm_color1: '',
-	_srfm_textcolor1: '',
-	_srfm_color2: '',
-	_srfm_fontsize: 20,
-	_srfm_bg: '',
-	_srfm_thankyou_message: 'Form submitted successfully!',
-	_srfm_email: sfBlockData.admin_email,
-	_srfm_submit_type: 'message',
-	_srfm_submit_url: '',
-	_srfm_sender_notification: 'off',
-	_srfm_form_recaptcha: 'none',
-	_srfm_submit_alignment: 'left',
-	_srfm_submit_width: '',
-	_srfm_submit_styling_inherit_from_theme: false,
-	_srfm_form_styling: 'classic',
-	_srfm_form_container_width: 650,
-	_srfm_thankyou_message_title: 'Thank you',
-	_srfm_submit_button_text: 'SUBMIT',
-	_srfm_additional_classes: '',
+	// General Tab
+	// General
+	_srfm_show_labels: true,
+	_srfm_show_asterisk: true,
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
-	_srfm_submit_alignment_backend: '100%',
-	_srfm_submit_width_backend: 'max-content',
+	// Submit Button
+	_srfm_submit_button_text: 'SUBMIT',
+	// Page Break
 	_srfm_is_page_break: false,
 	_srfm_first_page_label: 'Page break',
 	_srfm_page_break_progress_indicator: 'connector',
 	_srfm_page_break_toggle_label: false,
 	_srfm_previous_button_text: 'Previous',
 	_srfm_next_button_text: 'Next',
+	// Style Tab
+	// Form Container
+	_srfm_form_container_width: 650,
+	_srfm_color1: '#0184C7',
+	_srfm_bg_type: 'image',
+	_srfm_bg_image: '',
+	_srfm_bg_color: '#ffffff',
+	_srfm_fontsize: 20,
+	_srfm_label_color: '#1f2937',
+	_srfm_help_color: '#6b7280',
+	// Input Fields
+	_srfm_input_text_color: '#4B5563',
+	_srfm_input_placeholder_color: '#9CA3AF',
+	_srfm_input_bg_color: '#ffffff',
+	_srfm_input_border_color: '#D0D5DD',
+	_srfm_input_border_width: 1,
+	_srfm_input_border_radius: 4,
+	// Error
+	_srfm_field_error_color: '#DC2626',
+	_srfm_field_error_surface_color: '#EF4444',
+	_srfm_field_error_bg_color: '#FEF2F2',
+	// Submit Button
+	_srfm_button_text_color: '#ffffff',
+	_srfm_btn_bg_type: 'filled',
+	_srfm_button_bg_color: '#0184C7',
+	_srfm_button_border_color: '#ffffff',
+	_srfm_button_border_width: 1,
+	_srfm_button_border_radius: 6,
+	_srfm_submit_alignment: 'left',
+	_srfm_submit_width: '',
+	_srfm_submit_alignment_backend: '100%',
+	_srfm_submit_width_backend: 'max-content',
+	_srfm_additional_classes: '',
 
+	// Advanced Tab
+	// Success Message
+	_srfm_submit_type: 'message',
+	_srfm_thankyou_message_title: 'Thank you',
+	_srfm_thankyou_message: 'Form submitted successfully!',
+	_srfm_submit_url: '',
+	_srfm_form_recaptcha: 'none',
 };
 
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
-	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] = useState();
-	const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
+		useState();
+	const postId = useSelect( () => {
+		return select( 'core/editor' ).getCurrentPostId();
+	}, [] );
 	const { editPost } = useDispatch( editorStore );
 
 	const rootContainer = document.querySelector( '.is-root-container' );
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
-	const isPageBreak = blocks.some( ( block ) => block.name === 'sureforms/page-break' );
+	const isPageBreak = blocks.some(
+		( block ) => block.name === 'sureforms/page-break'
+	);
 
-	const { deviceType } = useSelect( () => {
-		return {
-			deviceType:
-				select(
-					'core/edit-post'
-				)?.__experimentalGetPreviewDeviceType() || 'Desktop',
-		};
-	}, [] );
+	const deviceType = useDeviceType();
+
 	function updateMeta( option, value ) {
 		const option_array = {};
 		option_array[ option ] = value;
@@ -100,7 +130,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
+
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+
 	useEffect( () => {
 		updateMeta( '_srfm_is_page_break', isPageBreak );
 	}, [ isPageBreak ] );
@@ -109,6 +141,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const headerCenterContainer = document.querySelector(
 		'.edit-post-header__center'
 	);
+
 	if ( headerCenterContainer ) {
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
@@ -118,11 +151,19 @@ const SureformsFormSpecificSettings = ( props ) => {
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
+	const submitBtnContainer = document.querySelector(
+		'.srfm-submit-btn-container'
+	);
+
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container wp-block-button"><button class="srfm-button srfm-submit-button wp-block-button__link"></button></div>`;
+		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button srfm-btn-bg-color"></button></div>`;
 
 		if ( elm ) {
-			if ( ! elm.closest( 'body' ).querySelector( '.srfm-submit-btn-container' ) ) {
+			if (
+				! elm
+					.closest( 'body' )
+					.querySelector( '.srfm-submit-btn-container' )
+			) {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 			}
 		}
@@ -133,65 +174,150 @@ const SureformsFormSpecificSettings = ( props ) => {
 			const handleIframeStyle = ( iframeBody ) => {
 				if ( iframeBody ) {
 					const styleProperties = [
-						{
-							property: '--srfm_bg',
-							value: sureforms_keys._srfm_bg
-								? `url(${ sureforms_keys._srfm_bg })`
-								: 'none',
-						},
+						// Form Container
 						{
 							property: '--srfm-primary-color',
-							value: sureforms_keys._srfm_color1 || '#0284C7',
+							value: sureforms_keys._srfm_color1 || '#0184C7',
 						},
 						{
-							property: '--srfm-primary-text-color',
-							value: sureforms_keys._srfm_textcolor1 || '#fff',
-						},
-						{
-							property: '--srfm-secondary-color',
-							value: sureforms_keys._srfm_color2 || 'none',
+							property: '--srfm-bg-image',
+							value: sureforms_keys._srfm_bg_image
+								? `url(${ sureforms_keys._srfm_bg_image })`
+								: '',
 						},
 						{
 							property: '--srfm-font-size',
 							value: sureforms_keys._srfm_fontsize
 								? `${ sureforms_keys._srfm_fontsize }px`
-								: 'none',
+								: '20px',
 						},
 						{
-							property: '--srfm_submit_alignment',
+							property: '--srfm-label-text-color',
+							value:
+								sureforms_keys._srfm_label_color || '#1f2937',
+						},
+						{
+							property: '--srfm-help-color',
+							value: sureforms_keys._srfm_help_color || '#6b7280',
+						},
+						// Input
+						{
+							property: '--srfm-body-input-color',
+							value:
+								sureforms_keys._srfm_input_text_color ||
+								'#4B5563',
+						},
+
+						{
+							property: '--srfm-placeholder-color',
+							value:
+								sureforms_keys._srfm_input_placeholder_color ||
+								'#9CA3AF',
+						},
+						{
+							property: '--srfm-base-background-color',
+							value:
+								sureforms_keys._srfm_input_bg_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-border-color',
+							value:
+								sureforms_keys._srfm_input_border_color ||
+								'#D0D5DD',
+						},
+						{
+							property: '--srfm-border',
+							value:
+								sureforms_keys._srfm_input_border_width +
+									'px' || '1px',
+						},
+						{
+							property: '--srfm-border-radius',
+							value:
+								sureforms_keys._srfm_input_border_radius +
+									'px' || '4px',
+						},
+						// Error
+						{
+							property: '--srfm-error-text-color',
+							value: sureforms_keys._srfm_field_error_color
+								? `${ sureforms_keys._srfm_field_error_color }`
+								: '#DC2626',
+						},
+						{
+							property: '--srfm-field-error-surface-color',
+							value:
+								sureforms_keys._srfm_field_error_surface_color ||
+								'#EF4444',
+						},
+						{
+							property: '--srfm-field-error-bg-color',
+							value:
+								sureforms_keys._srfm_field_error_bg_color ||
+								'#FEF2F2',
+						},
+						// Submit Button
+						{
+							property: '--srfm-btn-text-color',
+							value:
+								sureforms_keys._srfm_button_text_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-btn-bg-color',
+							value:
+								sureforms_keys._srfm_button_bg_color ||
+								'#0184C7',
+						},
+						{
+							property: '--srfm-btn-border-color',
+							value:
+								sureforms_keys._srfm_button_border_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-btn-border-width',
+							value:
+								sureforms_keys._srfm_button_border_width +
+									'px' || '1px',
+						},
+						{
+							property: '--srfm-btn-border-radius',
+							value:
+								sureforms_keys._srfm_button_border_radius +
+									'px' || '6px',
+						},
+						{
+							property: '--srfm-submit-alignment-backend',
+							value: sureforms_keys._srfm_submit_alignment_backend
+								? `${ sureforms_keys._srfm_submit_alignment_backend }`
+								: '100%',
+						},
+						{
+							property: '--srfm-submit-width-backend',
+							value: sureforms_keys._srfm_submit_width_backend
+								? `${ sureforms_keys._srfm_submit_width_backend }`
+								: 'max-content',
+						},
+
+						{
+							property: '--srfm-submit-alignment',
 							value: sureforms_keys._srfm_submit_alignment
 								? `${ sureforms_keys._srfm_submit_alignment }`
-								: 'none',
+								: 'left',
 						},
 						{
-							property: '--srfm_submit_width',
+							property: '--srfm-submit-width',
 							value: sureforms_keys._srfm_submit_width
 								? `${ sureforms_keys._srfm_submit_width }`
 								: '',
 						},
 						{
-							property: '--srfm_submit_button_text',
+							property: '--srfm-submit-button-text',
 							value: sureforms_keys._srfm_submit_button_text
 								? `"${ sureforms_keys._srfm_submit_button_text }"`
-								: '',
-						},
-						{
-							property: '--srfm_submit_alignment',
-							value: sureforms_keys._srfm_submit_alignment
-								? `${ sureforms_keys._srfm_submit_alignment }`
-								: '',
-						},
-						{
-							property: '--srfm_submit_alignment_backend',
-							value: sureforms_keys._srfm_submit_alignment_backend
-								? `${ sureforms_keys._srfm_submit_alignment_backend }`
-								: '',
-						},
-						{
-							property: '--srfm_submit_width_backend',
-							value: sureforms_keys._srfm_submit_width_backend
-								? `${ sureforms_keys._srfm_submit_width_backend }`
-								: '',
+								: 'SUBMIT',
 						},
 					];
 
@@ -201,11 +327,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 							prop.value
 						);
 					} );
+
 					const elm = iframeBody.querySelector(
 						'.block-editor-block-list__layout'
 					);
 
-					addSubmitButton( elm );
+					const submitBtnContainerIframe = iframeBody.querySelector(
+						'.srfm-submit-btn-container'
+					);
+
+					if ( ! submitBtnContainerIframe ) {
+						addSubmitButton( elm );
+					}
 
 					// Add the styling class when the device type is changed
 					const iframeRootContainer =
@@ -235,9 +368,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 				const elm = document.querySelector(
 					'.block-editor-block-list__layout'
 				);
-				addSubmitButton( elm );
+
+				if ( ! submitBtnContainer ) {
+					addSubmitButton( elm );
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 1 ) {
+						submitBtn[ 1 ].remove();
+					}
+				}
 			}
-		}, 100 );
+		}, 200 );
 	}, [ deviceType, sureforms_keys ] );
 
 	useEffect( () => {
@@ -251,7 +393,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.navigation.addEventListener( 'navigate', ( e ) => {
 				toggleSidebar( e.destination.url );
 			} );
-		} else if ( enableQuickActionSidebar !== undefined && 'enabled' === enableQuickActionSidebar ) {
+		} else if (
+			enableQuickActionSidebar !== undefined &&
+			'enabled' === enableQuickActionSidebar
+		) {
 			// Attach the sidebar to the DOM.
 			attachSidebar();
 		} else {
@@ -269,14 +414,23 @@ const SureformsFormSpecificSettings = ( props ) => {
 			title={ __( 'Form Options', 'sureforms' ) }
 		>
 			<InspectorTabs
-				tabs={ [ 'general', 'advance' ] }
+				tabs={ [ 'general', 'style', 'advance' ] }
 				defaultTab={ 'general' }
 			>
 				<InspectorTab { ...SRFMTabs.general }>
-					<AppearanceSettings default_keys={ default_keys } enableQuickActionSidebar={ enableQuickActionSidebar } setEnableQuickActionSidebar={ setEnableQuickActionSidebar } />
+					<GeneralSettings
+						default_keys={ default_keys }
+						enableQuickActionSidebar={ enableQuickActionSidebar }
+						setEnableQuickActionSidebar={
+							setEnableQuickActionSidebar
+						}
+					/>
+				</InspectorTab>
+				<InspectorTab { ...SRFMTabs.style }>
+					<StyleSettings default_keys={ default_keys } />
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<Settings default_keys={ default_keys } />
+					<AdvancedSettings default_keys={ default_keys } />
 				</InspectorTab>
 			</InspectorTabs>
 			<PluginPostPublishPanel>

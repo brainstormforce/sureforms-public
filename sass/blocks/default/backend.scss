@@ -3,12 +3,12 @@
 	margin-top: 2em;
 
 	// --srfm-primary-color : '#046bd2';
-	--srfm-label-text-color: #1f2937;
-	--srfm-body-input-color: #4b5563;
-	--srfm-placeholder-color: #9ca3af;
-	--srfm-border-color: #d0d5dd;
-	--srfm-help-color: #6b7280;
-	--srfm-base-background-color: #ffffff;
+	// --srfm-label-text-color: #1f2937;
+	// --srfm-body-input-color: #4b5563;
+	// --srfm-placeholder-color: #9ca3af;
+	// --srfm-border-color: #d0d5dd;
+	// --srfm-help-color: #6b7280;
+	// --srfm-base-background-color: #ffffff;
 	// --srfm-light-background-color : '#F9FAFB';
 	// --srfm-info-surface-color : '#3B82F6';
 	// --srfm-info-text-color : '#2563EB';
@@ -20,10 +20,10 @@
 	// --srfm-warning-text-color : '#CA8A04';
 	// --srfm-warning-background-color :'#FEFCE8';
 	// --srfm-error-surface-color : '#EF4444';
-	--srfm-error-text-color: #dc2626;
+	// --srfm-error-text-color: #dc2626;
 	// --srfm-error-background-color : '#FEF2F2';
-	--srfm-border-radius: 4px;
-	--srfm-border: 1px;
+	// --srfm-border-radius: 4px;
+	// --srfm-border: 1px;
 
 	.srfm-input-common {
 		width: 100%;
@@ -115,6 +115,7 @@
 	// URL.
 	div[data-type="sureforms/url"] {
 		.srfm-protocol {
+			color: var( --srfm-label-text-color );
 			position: absolute;
 			top: 50%;
 			left: 0;
@@ -295,7 +296,7 @@
 						height: 0.7em;
 						top: 0.18em;
 						border-radius: 100%;
-						border: var( --srfm-border ) solid var( --srfm-border-color );
+						border: 1px solid var( --srfm-border-color );
 						border-radius: 100%;
 						line-height: 1.5em;
 					}

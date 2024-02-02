@@ -30,7 +30,7 @@ class Block extends Base {
 			$markup_class = new Input_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->default( $attributes );
+			echo $markup_class->default( $attributes, $form_id );
 		}
 		return ob_get_clean();
 	}

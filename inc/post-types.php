@@ -11,6 +11,7 @@ namespace SureForms\Inc;
 use WP_REST_Response;
 use WP_Screen;
 use WP_Query;
+use WP_Admin_Bar;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Generate_Form_Markup;
 use SureForms\Inc\Sureforms_Helper;
@@ -42,11 +43,10 @@ class Post_Types {
 		add_action( 'in_admin_header', [ $this, 'embed_page_header' ] );
 		add_action( 'admin_head', [ $this, 'sureforms_remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'sureforms_modify_entries_list_row_actions' ], 10, 2 );
-		add_filter( 'default_title', [ $this, 'sureforms_default_cpt_title_filter' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
-	}
+		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 ); }
 
 	/**
 	 * Add SureForms menu.
@@ -221,6 +221,27 @@ class Post_Types {
 	}
 
 	/**
+	 * Customize the URL of new form in the admin bar.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
+	 *
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public function custom_admin_bar_menu_url( $wp_admin_bar ) {
+		$menu_item_id = 'new-' . SUREFORMS_FORMS_POST_TYPE;
+		$menu_item    = $wp_admin_bar->get_node( $menu_item_id );
+
+		if ( $menu_item && isset( $menu_item->id ) && isset( $menu_item->href ) && $menu_item->id === $menu_item_id ) {
+			$menu_item->href = admin_url( 'admin.php?page=add-new-form' );
+
+			// Use WP_Admin_Bar methods to modify the menu.
+			$wp_admin_bar->remove_node( $menu_item_id );
+			$wp_admin_bar->add_node( (array) $menu_item );
+		}
+	}
+
+	/**
 	 * Modify post update message for Entry post type.
 	 *
 	 * @param string $messages Post type.
@@ -237,24 +258,6 @@ class Post_Types {
 		}
 
 		return $messages;
-	}
-
-	/**
-	 * Default Form CPT Form title.
-	 *
-	 * @param string   $title Post title.
-	 * @param \WP_Post $post The current WP_Post object.
-	 * @return string
-	 * @since  0.0.1
-	 */
-	public function sureforms_default_cpt_title_filter( $title, $post ) {
-		$post_type = $post->post_type;
-
-		if ( SUREFORMS_FORMS_POST_TYPE === $post_type && empty( $title ) ) {
-			$title = __( 'Untitled Form', 'sureforms' );
-		}
-
-		return $title;
 	}
 
 	/**
@@ -398,34 +401,59 @@ class Post_Types {
 		$metas = apply_filters(
 			'sureforms_register_post_meta',
 			array(
-				'_srfm_color1'                            => 'string',
-				'_srfm_textcolor1'                        => 'string',
-				'_srfm_color2'                            => 'string',
-				'_srfm_fontsize'                          => 'integer',
-				'_srfm_bg'                                => 'string',
-				'_srfm_bg_id'                             => 'integer',
-				'_srfm_thankyou_message'                  => 'string',
-				'_srfm_email'                             => 'string',
-				'_srfm_submit_type'                       => 'string',
-				'_srfm_submit_url'                        => 'string',
-				'_srfm_sender_notification'               => 'string',
-				'_srfm_form_recaptcha'                    => 'string',
-				'_srfm_submit_alignment'                  => 'string',
-				'_srfm_submit_width'                      => 'string',
-				'_srfm_submit_styling_inherit_from_theme' => 'boolean',
-				'_srfm_form_class_name'                   => 'string',
-				'_srfm_form_styling'                      => 'string',
-				'_srfm_form_container_width'              => 'integer',
-				'_srfm_thankyou_message_title'            => 'string',
-				'_srfm_submit_button_text'                => 'string',
-				'_srfm_additional_classes'                => 'string',
-				'_srfm_hide_title_post_specific'          => 'boolean',
-				'_srfm_page_form_title'                   => 'boolean',
-				'_srfm_single_page_form_title'            => 'boolean',
-				'_srfm_submit_width_backend'              => 'string',
-				'_srfm_submit_alignment_backend'          => 'string',
+				// General tab metas.
+				'_srfm_show_labels'               => 'boolean',
+				'_srfm_show_asterisk'             => 'boolean',
+				'_srfm_page_form_title'           => 'boolean',
+				'_srfm_single_page_form_title'    => 'boolean',
+				'_srfm_submit_button_text'        => 'string',
+
+				// Styling tab metas.
+				// Form Container.
+				'_srfm_form_container_width'      => 'integer',
+				'_srfm_color1'                    => 'string',
+				'_srfm_bg_type'                   => 'string',
+				'_srfm_bg_image'                  => 'string',
+				'_srfm_bg_color'                  => 'string',
+				'_srfm_fontsize'                  => 'integer',
+				'_srfm_label_color'               => 'string',
+				'_srfm_help_color'                => 'string',
+				// Input Fields.
+				'_srfm_input_text_color'          => 'string',
+				'_srfm_input_placeholder_color'   => 'string',
+				'_srfm_input_bg_color'            => 'string',
+				'_srfm_input_border_color'        => 'string',
+				'_srfm_input_border_width'        => 'integer',
+				'_srfm_input_border_radius'       => 'integer',
+				// Error.
+				'_srfm_field_error_color'         => 'string',
+				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_bg_color'      => 'string',
+				// Submit Button.
+				'_srfm_button_text_color'         => 'string',
+				'_srfm_btn_bg_type'               => 'string',
+				'_srfm_button_bg_color'           => 'string',
+				'_srfm_button_border_color'       => 'string',
+				'_srfm_button_border_width'       => 'integer',
+				'_srfm_submit_width_backend'      => 'string',
+				'_srfm_button_border_radius'      => 'integer',
+				'_srfm_submit_alignment'          => 'string',
+				'_srfm_submit_alignment_backend'  => 'string',
+				'_srfm_submit_width'              => 'string',
+				// Additional Classes.
+				'_srfm_additional_classes'        => 'string',
+
+				// Advanced tab metas.
+				// Success Message.
+				'_srfm_submit_type'               => 'string',
+				'_srfm_thankyou_message_title'    => 'string',
+				'_srfm_thankyou_message'          => 'string',
+				'_srfm_submit_url'                => 'string',
+				// Security.
+				'_srfm_form_recaptcha'            => 'string',
 			)
 		);
+
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
 				'post',
@@ -442,6 +470,8 @@ class Post_Types {
 				)
 			);
 		}
+
+		// Email notification Metas.
 		register_post_meta(
 			'sureforms_form',
 			'_srfm_email_notification',

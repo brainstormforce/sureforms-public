@@ -23,10 +23,11 @@ class Dropdown_Markup extends Base {
 	 * Render the sureforms dropdown classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes ) {
+	public function default( $attributes, $form_id ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$options     = isset( $attributes['options'] ) ? $attributes['options'] : '';
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
@@ -46,7 +47,7 @@ class Dropdown_Markup extends Base {
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 				<?php
 
@@ -63,8 +64,8 @@ class Dropdown_Markup extends Base {
 				</select>
 				<?php } ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
 
 		<?php
