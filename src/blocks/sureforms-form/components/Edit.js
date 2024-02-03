@@ -95,6 +95,10 @@ export default ( { attributes, setAttributes } ) => {
 			formContainer.style.setProperty( 'box-shadow', 'none' );
 			formContainer.style.setProperty( 'max-width', '100%' );
 			formContainer.style.setProperty( 'padding', '0' );
+			formContainer.style.setProperty(
+				'background-color',
+				'transparent'
+			);
 		}
 
 		if ( iframeHtml ) {
@@ -217,14 +221,13 @@ export default ( { attributes, setAttributes } ) => {
 					</PanelRow>
 					<PanelRow>
 						<Button
-							isSecondary
+							variant="secondary"
+							text={ __( 'Change Form', 'sureforms' ) }
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
 							className="srfm-change-form-btn"
-						>
-							{ __( 'Change Form', 'sureforms' ) }
-						</Button>
+						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>

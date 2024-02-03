@@ -73,7 +73,7 @@ const default_keys = {
 	_srfm_btn_bg_type: 'filled',
 	_srfm_button_bg_color: '#0184C7',
 	_srfm_button_border_color: '#ffffff',
-	_srfm_button_border_width: 1,
+	_srfm_button_border_width: 0,
 	_srfm_button_border_radius: 6,
 	_srfm_submit_alignment: 'left',
 	_srfm_submit_width: '',
@@ -280,7 +280,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-btn-border-width',
 							value:
 								sureforms_keys._srfm_button_border_width +
-									'px' || '1px',
+									'px' || '0px',
 						},
 						{
 							property: '--srfm-btn-border-radius',

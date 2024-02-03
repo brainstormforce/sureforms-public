@@ -106,7 +106,7 @@ function StyleSettings( props ) {
 		// Input
 		// Input text color
 		root.style.setProperty(
-			'-srfm-body-input-color',
+			'--srfm-body-input-color',
 			sureforms_keys._srfm_input_text_color
 				? sureforms_keys._srfm_input_text_color
 				: '#4B5563'
@@ -183,7 +183,7 @@ function StyleSettings( props ) {
 			'--srfm-btn-border-width',
 			sureforms_keys._srfm_button_border_width
 				? sureforms_keys._srfm_button_border_width + 'px'
-				: '1px'
+				: '0px'
 		);
 		// btn border radius
 		root.style.setProperty(
@@ -377,7 +377,7 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_button_border_width' ) {
 			root.style.setProperty(
 				'--srfm-btn-border-width',
-				value ? value + 'px' : '1px'
+				value ? value + 'px' : '0px'
 			);
 		}
 		if ( option === '_srfm_button_border_color' ) {
@@ -878,7 +878,7 @@ function StyleSettings( props ) {
 						<Range
 							label={ __( 'Border Width', 'sureforms' ) }
 							value={ sureforms_keys._srfm_button_border_width }
-							min={ 1 }
+							min={ 0 }
 							max={ 10 }
 							displayUnit={ false }
 							data={ {

@@ -43,13 +43,19 @@ export default ( { setAttributes } ) => {
 					<div className="srfm-select-form-button">
 						<Button
 							variant="primary"
+							text={ __( 'Choose', 'sureforms' ) }
 							onClick={ () => {
 								setAttributes( { id: formId } );
 							} }
-						>
-							{ __( 'Choose', 'sureforms' ) }
-							<Icon icon={ 'arrow-right' }></Icon>
-						</Button>
+						/>
+						<Button
+							variant="secondary"
+							text={ __( 'Add New', 'sureforms' ) }
+							onClick={ () => {
+								window.location.href =
+									sfBlockData.template_picker_url;
+							} }
+						/>
 					</div>
 				</div>
 			</Placeholder>

@@ -190,6 +190,7 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
+				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
 				'plugin_url'             => SUREFORMS_URL,
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),

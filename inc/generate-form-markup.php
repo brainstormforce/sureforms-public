@@ -94,7 +94,7 @@ class Generate_Form_Markup {
 			if ( 'filled' === $btn_bg_type ) {
 				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0184C7' );
 				$btn_border_color  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
-				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', true, '1px' );
+				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
 				$btn_border_radius = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
 			} else {

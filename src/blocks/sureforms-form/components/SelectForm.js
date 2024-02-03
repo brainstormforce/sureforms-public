@@ -50,6 +50,7 @@ const SelectForm = ( {
 			console.log( error );
 		}
 	};
+
 	useEffect( () => {
 		fetchForms();
 		document.addEventListener( 'click', toggle );
@@ -121,7 +122,6 @@ const SelectForm = ( {
 					filter( formsData ).map( ( option, index ) => (
 						<div
 							onClick={ () => {
-								console.log( option );
 								selectOption( option );
 								const queryParams = {
 									id: option.id,
@@ -137,7 +137,6 @@ const SelectForm = ( {
 									? 'srfm-form-selected'
 									: ''
 							}` }
-							// className={ `srfm-form-single-option` }
 							key={ `${ id }-${ index }` }
 						>
 							{ option[ label ] }
