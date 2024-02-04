@@ -183,10 +183,10 @@ const PopoverModal = ( {
 								.toLowerCase()
 								.includes( searchTerm.toLowerCase() )
 					) && (
-						<div className="block-editor-inserter__no-results">
-							<p>{ __( 'No results found.', 'sureforms' ) }</p>
-						</div>
-					) }
+					<div className="block-editor-inserter__no-results">
+						<p>{ __( 'No results found.', 'sureforms' ) }</p>
+					</div>
+				) }
 			</div>
 		</Popover>
 	);

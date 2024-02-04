@@ -6,7 +6,7 @@ import { jsx } from '@emotion/react';
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { Placeholder, Button, Icon } from '@wordpress/components';
+import { Placeholder, Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
