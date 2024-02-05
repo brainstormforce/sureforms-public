@@ -80,7 +80,6 @@ class Gutenberg_Hooks {
 				'sureforms/icon',
 				'sureforms/image',
 				'sureforms/advanced-heading',
-				'sureforms/form',
 
 			);
 			// Apply a filter to the $allow_block_types types array.
