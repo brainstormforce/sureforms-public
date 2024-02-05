@@ -31,6 +31,10 @@ const EmailNotification = ( { emailNotificationData } ) => {
 		updateMeta( '_srfm_email_notification', allData );
 	};
 	const handleUpdateEmailData = ( newData ) => {
+		const { email_body, email_to, subject } = newData;
+		if ( ! email_body || ! email_to || ! subject ) {
+			return;
+		}
 		let currEmailData = emailNotificationData;
 		if ( ! newData.id ) {
 			const currId = emailNotificationData.length + 1;
@@ -63,8 +67,11 @@ const EmailNotification = ( { emailNotificationData } ) => {
 		} );
 		updateMeta( '_srfm_email_notification', updatedData );
 	};
+	const handleBackNotifation = () => {
+		setShowConfirmation( false );
+	};
 	if ( showConfirmation ) {
-		return <EmailConfirmation handleConfirmEmail={ handleUpdateEmailData } data={ currData } />;
+		return <EmailConfirmation handleConfirmEmail={ handleUpdateEmailData } handleBackNotifation={ handleBackNotifation } data={ currData } />;
 	}
 	return (
 		<div className="srfm-modal-content">
@@ -82,81 +89,89 @@ const EmailNotification = ( { emailNotificationData } ) => {
 						<h5>{ __( 'Notification', 'sureforms' ) }</h5>
 					</div>
 					<div className="srfm-modal-separator"></div>
-					<div className="srfm-modal-inner-box-table">
-						<div className="srfm-modal-table-wrapper">
-							<table>
-								<thead>
-									<tr className="srfm-modal-row">
-										<th className="srfm-modal-col-first">
-											<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-second">
-											<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-third">
-											<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-fourth">
-											<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{
-										emailNotificationData && emailNotificationData.map( ( el, i ) => {
-											return (
-												<div key={ el.id } className="srfm-modal-row-body">
-													<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
-														<td className="srfm-modal-col-first">
-															<ToggleControl
-																checked={ el.status }
-																onChange={ () => {
-																	handleToggle( el );
-																} }
-															/>
-														</td>
-														<td className="srfm-modal-col-second">
-															<span>{ el.name }</span>
-														</td>
-														<td className="srfm-modal-col-third">
-															<span>{ el.subject }</span>
-														</td>
-														<td className="srfm-modal-col-fourth">
-															<button onClick={ () => handleDuplicate( el ) } className="srfm-cursor-pointer">
-																{ plusIcons }
-															</button>
-															<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
-																{ editIcons }
-															</button>
-															<button onClick={ () => handleDelete( el ) } className="srfm-cursor-pointer">
-																{ deleteIcons }
-															</button>
-														</td>
-													</tr>
-												</div>
-											);
-										} )
-									}
-								</tbody>
-								<tfoot>
-									<tr className="srfm-modal-row">
-										<th className="srfm-modal-col-first">
-											<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-second">
-											<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-third">
-											<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
-										</th>
-										<th className="srfm-modal-col-fourth">
-											<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
-										</th>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
-					</div>
+					{
+						emailNotificationData.length === 0 ? (
+							<div className="srfm-empty-data">
+								<p>{ __( 'No data', 'sureforms' ) }</p>
+							</div>
+						) : (
+							<div className="srfm-modal-inner-box-table">
+								<div className="srfm-modal-table-wrapper">
+									<table>
+										<thead>
+											<tr className="srfm-modal-row">
+												<th className="srfm-modal-col-first">
+													<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-second">
+													<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-third">
+													<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-fourth">
+													<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{
+												emailNotificationData && emailNotificationData.map( ( el, i ) => {
+													return (
+														<div key={ el.id } className="srfm-modal-row-body">
+															<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
+																<td className="srfm-modal-col-first">
+																	<ToggleControl
+																		checked={ el.status }
+																		onChange={ () => {
+																			handleToggle( el );
+																		} }
+																	/>
+																</td>
+																<td className="srfm-modal-col-second">
+																	<span>{ el.name }</span>
+																</td>
+																<td className="srfm-modal-col-third">
+																	<span>{ el.subject }</span>
+																</td>
+																<td className="srfm-modal-col-fourth">
+																	<button onClick={ () => handleDuplicate( el ) } className="srfm-cursor-pointer">
+																		{ plusIcons }
+																	</button>
+																	<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
+																		{ editIcons }
+																	</button>
+																	<button onClick={ () => handleDelete( el ) } className="srfm-cursor-pointer">
+																		{ deleteIcons }
+																	</button>
+																</td>
+															</tr>
+														</div>
+													);
+												} )
+											}
+										</tbody>
+										<tfoot>
+											<tr className="srfm-modal-row">
+												<th className="srfm-modal-col-first">
+													<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-second">
+													<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-third">
+													<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
+												</th>
+												<th className="srfm-modal-col-fourth">
+													<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
+												</th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						)
+					}
 				</div>
 			</div>
 		</div>

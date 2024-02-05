@@ -53,12 +53,13 @@ class Generate_Form_Markup {
 	 *
 	 * @param int|string $id Contains form ID.
 	 * @param boolean    $hide_title_current_page Boolean to show/hide form title.
+	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $hide_title_current_page = false, $post_type = 'post' ) {
+	public static function get_form_markup( $id, $hide_title_current_page = false, $sf_classname = '', $post_type = 'post' ) {
 		$id = isset( $_GET['id'] ) && wp_verify_nonce( $_GET['srfm_form_markup_nonce'], 'srfm_form_markup' ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
 
 		$post = get_post( Sureforms_Helper::get_integer_value( $id ) );
@@ -175,7 +176,7 @@ class Generate_Form_Markup {
 			$container_id           = '.srfm-form-container-' . Sureforms_Helper::get_string_value( $id );
 			?>
 
-			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>">
+			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?>">
 			<style>
 				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;

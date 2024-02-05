@@ -7,7 +7,13 @@
   border-bottom: 1px solid var(--colors-gray-200, #e5e7eb);
   background: var(--base-white, #fff);
 }
-.srfm-header-settings-modal .components-modal__header .components-modal__header-heading {
+.srfm-header-settings-modal .components-modal__header .components-modal__header-heading-container {
+  gap: 10px;
+}
+.srfm-header-settings-modal .components-modal__header .components-modal__header-heading-container .components-modal__icon-container {
+  display: inline-flex;
+}
+.srfm-header-settings-modal .components-modal__header .components-modal__header-heading-container .components-modal__header-heading {
   color: var(--dashboard-heading, #1e293b);
   /* Dashboard/Headings/H6 */
   font-family: Inter;
@@ -92,6 +98,15 @@
   align-items: center;
   align-self: stretch;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-heading .srfm-modal-inner-heading-text {
+  display: flex;
+  align-items: center;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-heading .srfm-modal-inner-heading-text .srfm-back-btn {
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-heading .srfm-modal-inner-heading-text h4 {
   color: var(--dashboard-heading, #1e293b);
   font-size: 18px;
@@ -125,6 +140,12 @@
   border: 1px solid #dce0e6;
   background: #fff;
   box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-empty-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-text h5 {
   color: var(--dashboard-heading, #1e293b);
@@ -162,7 +183,7 @@
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown {
   position: absolute;
-  top: 0;
+  top: 3px;
   left: 0;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon {
@@ -175,6 +196,9 @@
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-label .srfm-required {
+  color: var(--srfm-error-text-color);
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-input {
   display: flex;
@@ -209,6 +233,9 @@
   font-style: normal;
   font-weight: 500;
   line-height: 20px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-modal-area-header .srfm-modal-area-header-text .srfm-required-body {
+  color: var(--srfm-error-text-color);
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box .srfm-modal-area-header .srfm-modal-area-header-checkbox {
   display: flex;
@@ -315,6 +342,9 @@
   align-items: flex-start;
   width: 10%;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-first .components-toggle-control {
+  margin: 0;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-second {
   display: flex;
   width: 30%;
@@ -344,6 +374,8 @@
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data {
   align-self: stretch;
+  align-items: center;
+  height: 40px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data.odd {
   background: #f6f7f7;
