@@ -157,14 +157,30 @@ export default ( { attributes, setAttributes } ) => {
 	// If form is in draft or trash then show the warning.
 	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
-			<div { ...blockProps }>
-				<Warning>
-					{ __(
-						'This form has been deleted or is unavailable.',
-						'sureforms'
-					) }
-				</Warning>
-			</div>
+			<>
+				<InspectorControls>
+					<PanelBody>
+						<PanelRow>
+							<Button
+								variant="secondary"
+								text={ __( 'Change Form', 'sureforms' ) }
+								onClick={ () => {
+									setAttributes( { id: undefined } );
+								} }
+								className="srfm-change-form-btn"
+							/>
+						</PanelRow>
+					</PanelBody>
+				</InspectorControls>
+				<div { ...blockProps }>
+					<Warning>
+						{ __(
+							'This form has been deleted or is unavailable.',
+							'sureforms'
+						) }
+					</Warning>
+				</div>
+			</>
 		);
 	}
 
