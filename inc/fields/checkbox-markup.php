@@ -45,7 +45,7 @@ class Checkbox_Markup extends Base {
 		// html attributes.
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$checked_attr         = $checked ? 'checked' : '';
-		$input_label_fallback = $label ? $label : 'Checkbox';
+		$input_label_fallback = $label ? $label : __( 'Checkbox', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>

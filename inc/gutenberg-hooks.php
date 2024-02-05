@@ -41,7 +41,8 @@ class Gutenberg_Hooks {
 			'support-form',
 			'job-application-form',
 			'feedback-form',
-			'login-form',
+			// Will be used in future.
+			// 'login-form',.
 		];
 
 		// Initializing hooks.
