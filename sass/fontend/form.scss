@@ -31,13 +31,27 @@
 					}
 
 					.ts-control {
+						position: relative;
 						line-height: normal;
 						width: 100%;
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						background-color: var( --srfm-base-background-color );
 						height: auto;
 						font-size: initial;
-						padding: 0.75em 1em !important;
+						padding: 0.75em 2em 0.75em 1em !important;
+
+						&::after {
+							content: "";
+							position: absolute;
+							width: 0.5em;
+							height: 0.5em;
+							border: 1px solid var( --srfm-body-input-color );
+							border-left: 0;
+							border-top: 0;
+							transform: rotate( 45deg );
+							right: 1em;
+							top: 1em;
+						}
 
 						input {
 							line-height: normal;
