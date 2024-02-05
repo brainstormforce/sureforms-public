@@ -36,7 +36,6 @@
 				.srfm-multi-choice-single {
 					padding: 0 0.3em;
 					cursor: pointer;
-					background-color: var( --srfm-base-background-color );
 
 					input {
 						position: absolute;
@@ -67,6 +66,7 @@
 						flex-wrap: wrap;
 						align-items: flex-start;
 						padding: 0.625em 0.875em;
+						background-color: var( --srfm-base-background-color );
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						border-radius: var( --srfm-border-radius );
 						width: 100%;

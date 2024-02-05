@@ -4,6 +4,16 @@
 			.iti {
 				width: 100%;
 
+				.iti__flag-container {
+					.iti__arrow {
+						border-top-color: var( --srfm-body-input-color );
+
+						&.iti__arrow--up {
+							border-bottom-color: var( --srfm-body-input-color );
+						}
+					}
+				}
+
 				.srfm-input-phone {
 					padding-left: 3.2em;
 				}

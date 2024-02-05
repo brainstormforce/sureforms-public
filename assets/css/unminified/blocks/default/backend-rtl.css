@@ -61,6 +61,7 @@
 .is-root-container .srfm-with-icon .srfm-input-icon svg {
   width: 0.9em;
   height: 0.9em;
+  stroke: var(--srfm-body-input-color);
 }
 .is-root-container .srfm-with-icon .srfm-input-icon svg path {
   stroke: var(--srfm-body-input-color);
@@ -181,7 +182,6 @@
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-single {
   padding: 0 0.3em;
   cursor: pointer;
-  background-color: var(--srfm-base-background-color);
 }
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-single .srfm-input-common {
   width: calc(100% - 3em);
@@ -197,6 +197,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   padding: 0.625em 0.875em;
+  background-color: var(--srfm-base-background-color);
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: auto;
@@ -228,4 +229,8 @@
 }
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-add-option-wrapper {
   width: 100%;
+}
+.is-root-container div[data-type="sureforms/phone"] .flag-container .arrow:after {
+  background-color: transparent;
+  color: var(--srfm-body-input-color);
 }

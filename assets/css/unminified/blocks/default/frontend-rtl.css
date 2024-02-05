@@ -268,7 +268,6 @@
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single {
   padding: 0 0.3em;
   cursor: pointer;
-  background-color: var(--srfm-base-background-color);
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap .srfm-multi-choice-single input {
   position: absolute;
@@ -293,6 +292,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   padding: 0.625em 0.875em;
+  background-color: var(--srfm-base-background-color);
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: 100%;
@@ -337,6 +337,12 @@
 
 .srfm-form-container .srfm-form .srfm-phone-block .iti {
   width: 100%;
+}
+.srfm-form-container .srfm-form .srfm-phone-block .iti .iti__flag-container .iti__arrow {
+  border-top-color: var(--srfm-body-input-color);
+}
+.srfm-form-container .srfm-form .srfm-phone-block .iti .iti__flag-container .iti__arrow.iti__arrow--up {
+  border-bottom-color: var(--srfm-body-input-color);
 }
 .srfm-form-container .srfm-form .srfm-phone-block .iti .srfm-input-phone {
   padding-right: 3.2em;
