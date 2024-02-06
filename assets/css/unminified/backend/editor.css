@@ -30,7 +30,7 @@ body.post-type-sureforms_form .editor-post-url__panel-dialog > .components-popov
   max-width: 200px;
   width: 100%;
 }
-body.post-type-sureforms_form > .edit-post-visual-editor__content-area {
+body.post-type-sureforms_form .edit-post-visual-editor .edit-post-visual-editor__content-area {
   padding: 0 !important;
 }
 body.post-type-sureforms_form > .block-editor-block-list__layout .block-editor-block-list__block:not(.editor-post-title__input) {

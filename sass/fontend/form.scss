@@ -6,8 +6,18 @@
 	background-position: center;
 	background-color: var( --srfm-bg-color );
 
+	// Astra Addon site builder compatibility.
+	div[class^="astra-advanced-hook"] {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+	
+
 	.srfm-form-title {
+		padding: 0.0.3em;
 		margin-top: 0;
+		margin-bottom: 1em;
 	}
 
 	.srfm-form {

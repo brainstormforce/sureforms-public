@@ -5,8 +5,15 @@
   background-position: center;
   background-color: var(--srfm-bg-color);
 }
+.srfm-form-container div[class^=astra-advanced-hook] {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
 .srfm-form-container .srfm-form-title {
+  padding: 0 0.3em;
   margin-top: 0;
+  margin-bottom: 1em;
 }
 .srfm-form-container .srfm-form .srfm-block-single,
 .srfm-form-container .srfm-form .srfm-submit-container,

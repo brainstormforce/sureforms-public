@@ -87,6 +87,8 @@ export default ( { attributes, setAttributes } ) => {
 		const formContainerWrapper =
 			iframeDocument.querySelector( '.srfm-form-wrapper' );
 
+		const formOuterContainerSelector = iframeDocument.querySelector( '.srfm-single-page-container' );
+
 		const siteFooter = iframeDocument.getElementById( 'colophon' );
 		const iframeHtml = iframeDocument.querySelector(
 			'html.srfm-html.hydrated'
@@ -131,10 +133,13 @@ export default ( { attributes, setAttributes } ) => {
 			srfmSuccessMsg.remove();
 		}
 
+		if( formOuterContainerSelector ) {
+			const iframeHalfScrollHeight = formOuterContainerSelector.offsetHeight;
+			iframeRef.current.height = iframeHalfScrollHeight + 'px';
+		}
+
 		// Combine element removal
 		if ( srfmSingleForm ) {
-			const iframeHalfScrollHeight = srfmSingleForm.scrollHeight;
-			iframeRef.current.height = iframeHalfScrollHeight + 'px';
 			srfmSingleForm.style.boxShadow = 'none';
 			srfmSingleForm.style.backgroundColor = 'transparent';
 			srfmSingleForm.style.width = '100%';
