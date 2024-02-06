@@ -69,6 +69,7 @@ const default_keys = {
 	_srfm_field_error_surface_color: '#EF4444',
 	_srfm_field_error_bg_color: '#FEF2F2',
 	// Submit Button
+	_srfm_inherit_theme_button: true,
 	_srfm_button_text_color: '#ffffff',
 	_srfm_btn_bg_type: 'filled',
 	_srfm_button_bg_color: '#0184C7',
@@ -156,7 +157,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 
 	function addSubmitButton( elm ) {
-		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button srfm-btn-bg-color"></button></div>`;
+		const inheritClass = 'wp-block-button__link';
+		const customClass = 'srfm-btn-bg-color';
+		const btnClass = ( sureforms_keys?._srfm_inherit_theme_button && sureforms_keys._srfm_inherit_theme_button ) ? inheritClass : customClass;
+		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (

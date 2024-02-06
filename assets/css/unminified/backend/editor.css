@@ -141,7 +141,7 @@ body.post-type-sureforms_form .block-list-appender .block-editor-button-block-ap
 }
 body.post-type-sureforms_form .srfm-submit-btn-container {
   position: relative;
-  max-width: calc(620px - 0.6em);
+  max-width: calc(620px - 0em);
   margin: 0 auto;
   padding: 0 0.3em;
   margin-top: 1.2em;
@@ -156,17 +156,6 @@ body.post-type-sureforms_form .srfm-submit-btn-container .srfm-btn-bg-color {
   color: var(--srfm-btn-text-color);
   background-color: var(--srfm-btn-bg-color);
   border: var(--srfm-btn-border-width) solid var(--srfm-btn-border-color);
-}
-body.post-type-sureforms_form .srfm-submit-btn-container .srfm-btn-bg-transparent {
-  border-radius: 0.375em;
-  font-family: inherit;
-  font-weight: var(--wp--custom--font-weight--medium);
-  line-height: var(--wp--custom--line-height--initial);
-  padding: calc(0.667em + 2px) calc(1.333em + 2px);
-  text-decoration: none;
-  color: var(--srfm-btn-text-color);
-  background-color: transparent;
-  border: none;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button {
   position: absolute;
@@ -183,7 +172,14 @@ body.post-type-sureforms_form .srfm-submit-btn-container .srfm-submit-button:aft
 }
 @media (max-width: 778px) {
   body.post-type-sureforms_form .srfm-submit-btn-container {
-    padding: 0;
+    max-width: calc(620px - 0.6em);
+  }
+}
+@media (max-width: 360px) {
+  body.post-type-sureforms_form .srfm-submit-btn-container {
+    max-width: calc(620px - 0em);
+    margin-left: 0.3em;
+    margin-right: 0.3em;
   }
 }
 body.post-type-sureforms_form .editor-post-publish-panel__content .srfm-shortcode {

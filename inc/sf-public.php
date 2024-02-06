@@ -121,7 +121,7 @@ class SF_Public {
 
 			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
 				wp_enqueue_script( SUREFORMS_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SUREFORMS_VER, true );
-				wp_enqueue_script( SUREFORMS_SLUG . "-tom-select", $js_vendor_uri . 'tom-select.min.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SUREFORMS_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SUREFORMS_VER, true );
 			}
 
 			if ( 'dropdown' !== $block_name ) {

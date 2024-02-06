@@ -215,6 +215,7 @@
   line-height: 1.5em;
   padding-right: 0.5em;
   width: calc(100% - 1em);
+  color: var(--srfm-body-input-color);
   margin-top: 0;
   margin-bottom: 0;
   word-break: break-word;
@@ -231,19 +232,23 @@
   background-color: transparent;
   color: var(--srfm-body-input-color);
 }
-.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap, .is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap {
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap {
   position: relative;
   width: 100%;
   color: var(--srfm-placeholder-color);
 }
-.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap, .is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap {
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap {
   border-bottom: 0;
   border-radius: 0;
 }
-.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap .srfm-input-common, .is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap .srfm-input-common {
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap .srfm-input-common,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap .srfm-input-common {
   width: 100%;
 }
-.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap::after, .is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap::after {
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap::after,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap::after {
   content: "";
   position: absolute;
   width: 0.5em;
