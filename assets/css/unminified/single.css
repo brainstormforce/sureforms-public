@@ -8,7 +8,7 @@
   color: #fff;
 }
 .single-sureforms_form .srfm-single-page-container .srfm-form-wrapper {
-  padding: 0px 15px 15px 15px;
+  padding: 0 1em;
 }
 .single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
   max-width: var(--srfm-form-container-width);

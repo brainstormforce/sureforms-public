@@ -84,6 +84,8 @@ export default ( { attributes, setAttributes } ) => {
 		const formContainer = iframeDocument.querySelector(
 			'.srfm-form-container'
 		);
+		const formContainerWrapper =
+			iframeDocument.querySelector( '.srfm-form-wrapper' );
 
 		const siteFooter = iframeDocument.getElementById( 'colophon' );
 		const iframeHtml = iframeDocument.querySelector(
@@ -94,7 +96,7 @@ export default ( { attributes, setAttributes } ) => {
 			formContainer.style.setProperty( 'margin-top', '0' );
 			formContainer.style.setProperty( 'box-shadow', 'none' );
 			formContainer.style.setProperty( 'max-width', '100%' );
-			formContainer.style.setProperty( 'padding', '0' );
+			formContainerWrapper.style.setProperty( 'padding', '0' );
 		}
 
 		if ( iframeHtml ) {

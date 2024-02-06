@@ -4,10 +4,13 @@
 	background-image: var( --srfm-bg-image );
 	background-size: cover;
 	background-position: center;
+	background-color: var( --srfm-bg-color );
+
+	.srfm-form-title {
+		margin-top: 0;
+	}
 
 	.srfm-form {
-		margin: 0 -0.3em;
-
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block {

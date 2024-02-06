@@ -1,6 +1,5 @@
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
-
 	* {
 		box-sizing: border-box;
 	}
@@ -55,6 +54,7 @@
 	}
 }
 
+.srfm-form-container,
 .block-editor-page.post-type-sureforms_form .is-root-container,
 body.single-sureforms_form .srfm-form-container {
 	padding: 32px;

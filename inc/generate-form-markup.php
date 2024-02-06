@@ -215,7 +215,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				<h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
+				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
 				<?php
 			}
 			?>

@@ -3,9 +3,10 @@
   background-image: var(--srfm-bg-image);
   background-size: cover;
   background-position: center;
+  background-color: var(--srfm-bg-color);
 }
-.srfm-form-container .srfm-form {
-  margin: 0 -0.3em;
+.srfm-form-container .srfm-form-title {
+  margin-top: 0;
 }
 .srfm-form-container .srfm-form .srfm-block-single,
 .srfm-form-container .srfm-form .srfm-submit-container,
