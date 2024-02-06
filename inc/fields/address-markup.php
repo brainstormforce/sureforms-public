@@ -71,7 +71,7 @@ class Address_Markup extends Base {
 			$city_placeholder_attr     = $city_placeholder ? ' placeholder="' . esc_attr( $city_placeholder ) . '" ' : '';
 			$state_placeholder_attr    = $state_placeholder ? ' placeholder="' . esc_attr( $state_placeholder ) . '" ' : '';
 			$postal_placeholder_attr   = $postal_placeholder ? ' placeholder="' . esc_attr( $postal_placeholder ) . '" ' : '';
-			$input_label_fallback      = $label ? $label : 'Address';
+			$input_label_fallback      = $label ? $label : __( 'Address', 'sureforms' );
 			$input_label               = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 			$aria_require_attr = $required ? 'true' : 'false';

@@ -47,7 +47,7 @@ class SRFM_Smart_Tags {
 			return self::process_smart_tags( $block_content );
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'sureforms/sf-form' === $block['blockName'] ) ) {
+		if ( isset( $block['blockName'] ) && ( 'sureforms/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
 				return self::process_smart_tags( $block_content );
 			}

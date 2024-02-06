@@ -42,7 +42,7 @@ class Dropdown_Markup extends Base {
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 		$aria_require         = $required ? 'true' : 'false';
 		$placeholder_html     = $placeholder ? $placeholder : 'Select option';
-		$input_label_fallback = $label ? $label : 'Dropdown';
+		$input_label_fallback = $label ? $label : __( 'Dropdown', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>

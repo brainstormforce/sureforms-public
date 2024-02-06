@@ -18,7 +18,8 @@ const Breadcrumbs = () => {
 			<div
 				className="srfm-tp-logo"
 				onClick={ () =>
-					( window.location.href = sureforms_admin.admin_url )
+					( window.location.href =
+						sureforms_admin.admin_url + '?page=sureforms_menu' )
 				}
 			>
 				{ ICONS.logo }

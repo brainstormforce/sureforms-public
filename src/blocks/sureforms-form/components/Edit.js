@@ -94,11 +94,18 @@ export default ( { attributes, setAttributes } ) => {
 			'html.srfm-html.hydrated'
 		);
 
+		if( formContainerWrapper ) {
+			formContainerWrapper.style.setProperty( 'padding', '0' );
+		}
+
 		if ( formContainer ) {
 			formContainer.style.setProperty( 'margin-top', '0' );
 			formContainer.style.setProperty( 'box-shadow', 'none' );
 			formContainer.style.setProperty( 'max-width', '100%' );
-			formContainerWrapper.style.setProperty( 'padding', '0' );
+			formContainer.style.setProperty(
+				'background-color',
+				'transparent'
+			);
 		}
 
 		if ( iframeHtml ) {
@@ -160,14 +167,30 @@ export default ( { attributes, setAttributes } ) => {
 	// If form is in draft or trash then show the warning.
 	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
-			<div { ...blockProps }>
-				<Warning>
-					{ __(
-						'This form has been deleted or is unavailable.',
-						'sureforms'
-					) }
-				</Warning>
-			</div>
+			<>
+				<InspectorControls>
+					<PanelBody>
+						<PanelRow>
+							<Button
+								variant="secondary"
+								text={ __( 'Change Form', 'sureforms' ) }
+								onClick={ () => {
+									setAttributes( { id: undefined } );
+								} }
+								className="srfm-change-form-btn"
+							/>
+						</PanelRow>
+					</PanelBody>
+				</InspectorControls>
+				<div { ...blockProps }>
+					<Warning>
+						{ __(
+							'This form has been deleted or is unavailable.',
+							'sureforms'
+						) }
+					</Warning>
+				</div>
+			</>
 		);
 	}
 
@@ -224,14 +247,13 @@ export default ( { attributes, setAttributes } ) => {
 					</PanelRow>
 					<PanelRow>
 						<Button
-							isSecondary
+							variant="secondary"
+							text={ __( 'Change Form', 'sureforms' ) }
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
 							className="srfm-change-form-btn"
-						>
-							{ __( 'Change Form', 'sureforms' ) }
-						</Button>
+						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>

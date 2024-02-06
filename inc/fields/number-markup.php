@@ -51,7 +51,7 @@ class Number_Markup extends Base {
 			$format_attr          = $format_type ? ' format-type="' . $format_type . '" ' : '';
 			$min_value_attr       = $min_value ? ' min="' . $min_value . '" ' : '';
 			$max_value_attr       = $max_value ? ' max="' . $max_value . '" ' : '';
-			$input_label_fallback = $label ? $label : 'Number';
+			$input_label_fallback = $label ? $label : __( 'Number', 'sureforms' );
 			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
