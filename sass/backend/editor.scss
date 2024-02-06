@@ -1,4 +1,13 @@
 body.post-type-sureforms_form {
+
+	&.block-editor-iframe__body { 
+		background-image: var( --srfm-bg-image ) !important;
+		background-position: center !important;
+		background-size: cover !important;
+		background-repeat: no-repeat !important;
+		background-color: var( --srfm-bg-color ) !important;
+	}
+
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 

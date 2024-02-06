@@ -1,10 +1,5 @@
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
-	// This is the parent form class. Adds specificity so that there is no conflict.
-	position: relative;
-	background-image: var( --srfm-bg-image );
-	background-size: cover;
-	background-position: center;
 
 	* {
 		box-sizing: border-box;

@@ -1,5 +1,8 @@
 .srfm-form-container {
   position: relative;
+  background-image: var(--srfm-bg-image);
+  background-size: cover;
+  background-position: center;
 }
 .srfm-form-container .srfm-form {
   margin: 0 -0.3em;
