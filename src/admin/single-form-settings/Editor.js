@@ -29,6 +29,8 @@ import {
 } from '../../../modules/quick-action-sidebar/index.js';
 import { useDeviceType } from '@Controls/getPreviewType';
 
+import ProPanel from './components/pro-panel/index.js';
+
 const { select, dispatch } = wp.data;
 
 const default_keys = {
@@ -406,6 +408,47 @@ const SureformsFormSpecificSettings = ( props ) => {
 			}
 		}
 	}, [ enableQuickActionSidebar ] );
+
+	// Check if the user is a pro user and enable/disable the pro panel
+	const [ isPro, setIsPro ] = useState( sfBlockData.is_pro_active );
+
+	useEffect( () => {
+		const checkAndRenderCustomComponent = () => {
+			const targetElement = document.querySelector(
+				'.block-editor-inserter__block-list'
+			);
+
+			if ( targetElement && ! isPro ) {
+				// Check if the custom component is already present
+				const customComponent =
+					targetElement.querySelector( '.your-custom-class' );
+
+				if ( ! customComponent ) {
+					const newDiv = document.createElement( 'div' );
+					newDiv.className = 'your-custom-class';
+					// add padding to the custom component 1em
+					newDiv.style.padding = '1em';
+					targetElement.appendChild( newDiv );
+
+					// Render your custom React component inside the new div
+					ReactDOM.render( <ProPanel />, newDiv );
+				}
+			}
+		};
+
+		// Set up MutationObserver to watch for changes in the DOM
+		const observer = new MutationObserver( checkAndRenderCustomComponent );
+
+		// Set up the configuration of the MutationObserver
+		const observerConfig = { childList: true, subtree: true };
+
+		// Start observing the target element
+		const targetNode = document.body; // You can set a more specific target if needed
+		observer.observe( targetNode, observerConfig );
+
+		// Cleanup the observer on component unmount
+		return () => observer.disconnect();
+	}, [] );
 
 	return (
 		<PluginDocumentSettingPanel
