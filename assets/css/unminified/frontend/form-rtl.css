@@ -1,9 +1,6 @@
 .srfm-form-container {
   position: relative;
-  background-image: var(--srfm-bg-image);
-  background-size: cover;
-  background-position: center;
-  background-color: var(--srfm-bg-color);
+  padding: 0;
 }
 .srfm-form-container div[class^=astra-advanced-hook] {
   display: flex;
@@ -14,6 +11,9 @@
   padding: 0 0.3em;
   margin-top: 0;
   margin-bottom: 1em;
+}
+.srfm-form-container .srfm-form {
+  margin: 0 -0.3em;
 }
 .srfm-form-container .srfm-form .srfm-block-single,
 .srfm-form-container .srfm-form .srfm-submit-container,

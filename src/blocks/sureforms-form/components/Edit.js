@@ -87,14 +87,16 @@ export default ( { attributes, setAttributes } ) => {
 		const formContainerWrapper =
 			iframeDocument.querySelector( '.srfm-form-wrapper' );
 
-		const formOuterContainerSelector = iframeDocument.querySelector( '.srfm-single-page-container' );
+		const formOuterContainerSelector = iframeDocument.querySelector(
+			'.srfm-single-page-container'
+		);
 
 		const siteFooter = iframeDocument.getElementById( 'colophon' );
 		const iframeHtml = iframeDocument.querySelector(
 			'html.srfm-html.hydrated'
 		);
 
-		if( formContainerWrapper ) {
+		if ( formContainerWrapper ) {
 			formContainerWrapper.style.setProperty( 'padding', '0' );
 		}
 
@@ -102,10 +104,12 @@ export default ( { attributes, setAttributes } ) => {
 			formContainer.style.setProperty( 'margin-top', '0' );
 			formContainer.style.setProperty( 'box-shadow', 'none' );
 			formContainer.style.setProperty( 'max-width', '100%' );
+			formContainer.style.setProperty( 'padding', '0' );
 			formContainer.style.setProperty(
 				'background-color',
 				'transparent'
 			);
+			formContainer.style.setProperty( 'background-image', 'none' );
 		}
 
 		if ( iframeHtml ) {
@@ -140,8 +144,9 @@ export default ( { attributes, setAttributes } ) => {
 			srfmSuccessMsg.remove();
 		}
 
-		if( formOuterContainerSelector ) {
-			const iframeHalfScrollHeight = formOuterContainerSelector.offsetHeight;
+		if ( formOuterContainerSelector ) {
+			const iframeHalfScrollHeight =
+				formOuterContainerSelector.offsetHeight;
 			iframeRef.current.height = iframeHalfScrollHeight + 'px';
 		}
 

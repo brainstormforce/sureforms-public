@@ -69,7 +69,7 @@ const default_keys = {
 	_srfm_field_error_surface_color: '#EF4444',
 	_srfm_field_error_bg_color: '#FEF2F2',
 	// Submit Button
-	_srfm_inherit_theme_button: true,
+	_srfm_inherit_theme_button: false,
 	_srfm_button_text_color: '#ffffff',
 	_srfm_btn_bg_type: 'filled',
 	_srfm_button_bg_color: '#0184C7',
@@ -187,6 +187,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-bg-image',
 							value: sureforms_keys._srfm_bg_image
 								? `url(${ sureforms_keys._srfm_bg_image })`
+								: '',
+						},
+						{
+							property: '--srfm-bg-color',
+							value: sureforms_keys._srfm_bg_color
+								? sureforms_keys._srfm_bg_color
 								: '',
 						},
 						{

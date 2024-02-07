@@ -25,7 +25,7 @@ function StyleSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-	const root = document.documentElement;
+	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-button' )
@@ -77,7 +77,7 @@ function StyleSettings( props ) {
 		}
 	}
 
-	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
+	if ( sureforms_keys ) {
 		// Form Container
 		// Primary color
 		root.style.setProperty(
@@ -259,6 +259,7 @@ function StyleSettings( props ) {
 				value ? 'url(' + value + ')' : 'none'
 			);
 		}
+
 		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(
 				'--srfm-primary-color',

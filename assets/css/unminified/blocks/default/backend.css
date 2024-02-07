@@ -152,6 +152,7 @@
   font-size: 0.7em;
   padding-left: 8px;
   line-height: 18px;
+  color: var(--srfm-body-input-color);
 }
 .is-root-container div[data-type="sureforms/multi-choice"].is-selected .srfm-block-wrap {
   pointer-events: initial;

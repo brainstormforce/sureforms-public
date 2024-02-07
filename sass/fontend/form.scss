@@ -1,10 +1,7 @@
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
-	background-image: var( --srfm-bg-image );
-	background-size: cover;
-	background-position: center;
-	background-color: var( --srfm-bg-color );
+	padding: 0;
 
 	// Astra Addon site builder compatibility.
 	div[class^="astra-advanced-hook"] {
@@ -12,15 +9,16 @@
 		flex-wrap: wrap;
 		width: 100%;
 	}
-	
 
 	.srfm-form-title {
-		padding: 0.0.3em;
+		padding: 0.3em;
 		margin-top: 0;
 		margin-bottom: 1em;
 	}
 
 	.srfm-form {
+		margin: 0 -0.3em; // Can be removed later if required. Due to alignment issues in iframe preview.
+
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block {
