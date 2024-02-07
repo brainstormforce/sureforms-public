@@ -1,103 +1,95 @@
 import { __ } from '@wordpress/i18n';
-import { MdOutlineCalendarMonth } from 'react-icons/md';
+import {
+	MdOutlineCalendarMonth,
+	MdOutlineInsertPageBreak,
+	MdOutlinePassword,
+	MdOutlineStarBorder,
+	MdOutlineCloudUpload,
+} from 'react-icons/md';
 import { FaRegEyeSlash } from 'react-icons/fa';
 import { RxSlider } from 'react-icons/rx';
-import { MdOutlineInsertPageBreak } from 'react-icons/md';
-import { MdOutlinePassword } from 'react-icons/md';
-import { MdOutlineStarBorder } from 'react-icons/md';
-import { MdOutlineCloudUpload } from 'react-icons/md';
-import { FiShieldOff } from 'react-icons/fi';
 
 const IconBlock = ( { icon, label } ) => (
-	<div
-		style={ {
-			textAlign: 'center',
-		} }
-	>
-		<p style={ { fontSize: '24px', marginBottom: '10px' } }>{ icon }</p>
-		<p>{ label }</p>
+	<div className="block-editor-block-types-list__list-item">
+		<button
+			type="button"
+			tabIndex="-1"
+			role="option"
+			className="components-button block-editor-block-types-list__item"
+			disabled
+		>
+			<span className="block-editor-block-types-list__item-icon">
+				<span className="block-editor-block-icon">{ icon }</span>
+			</span>
+			<span className="block-editor-block-types-list__item-title">
+				<span className="components-truncate">{ label }</span>
+			</span>
+		</button>
 	</div>
 );
 
 const IconGrid = () => (
-	<div
-		style={ {
-			color: '#A6A6A6',
-			display: 'grid',
-			gridTemplateColumns: 'repeat(3, 1fr)',
-			gap: '10px',
-		} }
-	>
-		<IconBlock
-			icon={ <MdOutlineCalendarMonth /> }
-			label={ __( 'Date & Time', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <FaRegEyeSlash /> }
-			label={ __( 'Hidden', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <RxSlider /> }
-			label={ __( 'Slider', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <MdOutlineInsertPageBreak /> }
-			label={ __( 'Page Break', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <MdOutlinePassword /> }
-			label={ __( 'Password', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <MdOutlineStarBorder /> }
-			label={ __( 'Rating', 'sureforms' ) }
-		/>
-		<IconBlock
-			icon={ <MdOutlineCloudUpload /> }
-			label={ __( 'Upload', 'sureforms' ) }
-		/>
+	<div className="block-editor-inserter__panel-content">
+		<div className="block-editor-block-types-list">
+			<div role="presentation">
+				<IconBlock
+					icon={ <MdOutlineCalendarMonth /> }
+					label={ __( 'Date & Time', 'sureforms' ) }
+				/>
+				<IconBlock
+					icon={ <FaRegEyeSlash /> }
+					label={ __( 'Hidden', 'sureforms' ) }
+				/>
+				<IconBlock
+					icon={ <RxSlider /> }
+					label={ __( 'Slider', 'sureforms' ) }
+				/>
+			</div>
+			<div role="presentation">
+				<IconBlock
+					icon={ <MdOutlineInsertPageBreak /> }
+					label={ __( 'Page Break', 'sureforms' ) }
+				/>
+				<IconBlock
+					icon={ <MdOutlinePassword /> }
+					label={ __( 'Password', 'sureforms' ) }
+				/>
+				<IconBlock
+					icon={ <MdOutlineStarBorder /> }
+					label={ __( 'Rating', 'sureforms' ) }
+				/>
+			</div>
+			<div role="presentation">
+				<IconBlock
+					icon={ <MdOutlineCloudUpload /> }
+					label={ __( 'Upload', 'sureforms' ) }
+				/>
+			</div>
+		</div>
 	</div>
 );
 
 const index = () => {
 	return (
-		<div>
-			<h3
-				style={ {
-					fontSize: '20px',
-					fontWeight: 'bold',
-					display: 'flex',
-					alignItems: 'center',
-					gap: '5px',
-				} }
-			>
-				{ __( 'Pro Fields', 'sureforms' ) }
-				<FiShieldOff />
-			</h3>
-			<a
-				href="https://sureforms.com/pricing"
-				target="_blank"
-				style={ { textDecoration: 'none' } }
-			>
+		<>
+			<div className="block-editor-inserter__panel-header">
+				<h2 className="block-editor-inserter__panel-title">
+					{ __( 'Pro Fields', 'sureforms' ) }
+				</h2>
+			</div>
+			<div className="srfm-upgrade-pro-btn-container">
 				<button
-					style={ {
-						backgroundColor: '#1E1E1E',
-						color: '#fff',
-						padding: '8px 15px',
-						fontSize: '12px',
-						width: '100%',
-						border: 'none',
-						borderRadius: '5px',
-						cursor: 'pointer',
-						transition: 'background-color 0.3s',
+					style={ {} }
+					className="srfm-upgrade-pro-btn"
+					onClick={ () => {
+						window.open( '/', '_blank' );
 					} }
 				>
 					{ __( 'Upgrade to unlock the Pro Fields', 'sureforms' ) }
 				</button>
-			</a>
-
+			</div>
 			<IconGrid />
-		</div>
+		</>
 	);
 };
 
