@@ -307,12 +307,24 @@ class Sureforms_Submit {
 		}
 
 		$new_post = array(
-			'post_title'  => $first_field_value,
 			'post_status' => 'publish',
 			'post_type'   => 'sureforms_entry',
 		);
 
 		$post_id = wp_insert_post( $new_post );
+
+		if ( empty( $first_field_value ) && $post_id ) {
+			$post_title = __( 'Entry #', 'sureforms' ) . $post_id;
+		} else {
+			$post_title = $first_field_value;
+		}
+
+		$post_args = array(
+			'ID'         => $post_id,
+			'post_title' => $post_title,
+		);
+
+		wp_update_post( $post_args );
 
 		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
 		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
