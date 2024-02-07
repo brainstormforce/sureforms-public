@@ -296,6 +296,7 @@
   align-items: flex-start;
   gap: 20px;
   align-self: stretch;
+  position: relative;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper {
   display: flex;
@@ -384,4 +385,75 @@
   cursor: pointer;
   border: none;
   background: none;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover {
+  background: #fff;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  color: #606266;
+  font-size: 14px;
+  line-height: 1.4;
+  min-width: 150px;
+  padding: 12px;
+  position: absolute;
+  text-align: justify;
+  word-break: break-all;
+  width: 192px;
+  transform-origin: center bottom;
+  z-index: 999;
+  left: 616px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover p {
+  padding: 0;
+  margin: 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover .srfm-popover-text {
+  margin-bottom: 10px;
+  text-align: center;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover .srfm-popover-btn {
+  display: flex;
+  justify-content: space-around;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover .srfm-popover-btn .popover-btn {
+  align-items: center;
+  display: inline-flex;
+  transition: 0.3s;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 7px 15px;
+  -webkit-appearance: none;
+  background: #fff;
+  border: 1px solid #dadbdd;
+  box-sizing: border-box;
+  color: #606266;
+  cursor: pointer;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  text-align: center;
+  white-space: nowrap;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover .srfm-popover-btn .popover-btn.srfm-confirm-btn {
+  background-color: #ff6154;
+  border-color: #ff6154;
+  color: #fff;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-el-popover:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-right: auto;
+  margin-left: auto;
+  top: 100%;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #fff;
+  border-right: 10px solid transparent;
+  border-bottom: 0 solid transparent;
+  border-left: 10px solid transparent;
 }

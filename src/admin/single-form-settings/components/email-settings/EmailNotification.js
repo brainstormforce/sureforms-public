@@ -10,6 +10,7 @@ import parse from 'html-react-parser';
 const EmailNotification = ( { emailNotificationData } ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
+	const [ isPopup, setIsPopup ] = useState( null );
 	const { editPost } = useDispatch( editorStore );
 	const plusIcons = parse( svgIcons.plus );
 	const editIcons = parse( svgIcons.edit );
@@ -117,6 +118,7 @@ const EmailNotification = ( { emailNotificationData } ) => {
 										<tbody>
 											{
 												emailNotificationData && emailNotificationData.map( ( el, i ) => {
+													const top = -22 + ( i * 40 );
 													return (
 														<div key={ el.id } className="srfm-modal-row-body">
 															<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
@@ -141,11 +143,20 @@ const EmailNotification = ( { emailNotificationData } ) => {
 																	<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
 																		{ editIcons }
 																	</button>
-																	<button onClick={ () => handleDelete( el ) } className="srfm-cursor-pointer">
+																	<button onClick={ () => setIsPopup( el.id ) } className="srfm-cursor-pointer">
 																		{ deleteIcons }
 																	</button>
 																</td>
 															</tr>
+															{
+																isPopup === el.id && <div className="srfm-el-popover" style={ { top } }>
+																	<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
+																	<div className="srfm-popover-btn">
+																		<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
+																		<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
+																	</div>
+																</div>
+															}
 														</div>
 													);
 												} )
