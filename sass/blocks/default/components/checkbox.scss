@@ -32,6 +32,7 @@
 
 				.srfm-block-text {
 					font-size: 0.7em;
+					color: var( --srfm-label-text-color );
 				}
 
 				.srfm-block-url {
@@ -42,7 +43,6 @@
 					-webkit-user-select: none;
 					user-select: none;
 					cursor: pointer;
-					border-radius: 6px;
 					overflow: hidden;
 					transition: all 0.2s ease;
 					display: inline-block;

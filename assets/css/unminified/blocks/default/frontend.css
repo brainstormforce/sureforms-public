@@ -60,6 +60,7 @@
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-block-text {
   font-size: 0.7em;
+  color: var(--srfm-label-text-color);
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-block-url {
   color: var(--srfm-primary-color);
@@ -69,7 +70,6 @@
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
-  border-radius: 6px;
   overflow: hidden;
   transition: all 0.2s ease;
   display: inline-block;
