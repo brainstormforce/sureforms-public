@@ -176,6 +176,7 @@ class Gutenberg_Hooks {
 	 */
 	public function block_editor_assets() {
 		$all_screen_blocks = 'blocks';
+		$screen            = get_current_screen();
 
 		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
@@ -193,7 +194,7 @@ class Gutenberg_Hooks {
 				'plugin_url'             => SUREFORMS_URL,
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),
-				'current_screen'         => get_current_screen(),
+				'current_screen'         => $screen,
 				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
@@ -227,6 +228,7 @@ class Gutenberg_Hooks {
 			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
+				'is_site_editor'          => $screen?->id,
 			]
 		);
 	}

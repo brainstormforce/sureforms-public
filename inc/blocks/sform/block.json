@@ -11,13 +11,8 @@
 		"reusable": false,
 		"html": false
 	},
-	"example": {
-		"attributes": {
-			"preview": true
-		}
-	},
 	"attributes": {
-		"preview": {
+		"isPreview": {
 			"type": "boolean",
 			"default": false
 		},

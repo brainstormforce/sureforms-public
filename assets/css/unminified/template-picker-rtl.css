@@ -241,6 +241,7 @@
   flex-wrap: wrap;
   padding-bottom: 0.75em;
   color: #1e293b;
+  align-items: center;
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-sidebar .srfm-req-template-container .srfm-req-template-title-container svg {
   width: 16px;
