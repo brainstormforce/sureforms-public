@@ -9,6 +9,7 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ToggleControl } from '@wordpress/components';
 import {
 	faAlignLeft,
 	faAlignRight,
@@ -24,7 +25,7 @@ function StyleSettings( props ) {
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-	const root = document.documentElement;
+	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
 		document.querySelector( '.srfm-submit-button' )
@@ -51,14 +52,32 @@ function StyleSettings( props ) {
 					setSubmitBtn(
 						iframeBody.querySelector( '.srfm-submit-button' )
 					);
+					submitButtonInherit();
 				}
 			} else {
 				setSubmitBtn( document.querySelector( '.srfm-submit-button' ) );
+				submitButtonInherit();
 			}
 		}, 1000 );
-	}, [ deviceType, submitBtn ] );
+	}, [ deviceType, submitBtn, sureforms_keys._srfm_inherit_theme_button ] );
 
-	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
+	function submitButtonInherit() {
+		const inheritClass = 'wp-block-button__link';
+		const customClass = 'srfm-btn-bg-color';
+		const btnClass = ( sureforms_keys?._srfm_inherit_theme_button && sureforms_keys._srfm_inherit_theme_button ) ? inheritClass : customClass;
+
+		if ( submitBtn ) {
+			if ( submitBtn.classList.contains( inheritClass ) ) {
+				submitBtn.classList.remove( inheritClass );
+			}
+			if ( submitBtn.classList.contains( customClass ) ) {
+				submitBtn.classList.remove( customClass );
+			}
+			submitBtn.classList.add( btnClass );
+		}
+	}
+
+	if ( sureforms_keys ) {
 		// Form Container
 		// Primary color
 		root.style.setProperty(
@@ -240,6 +259,7 @@ function StyleSettings( props ) {
 				value ? 'url(' + value + ')' : 'none'
 			);
 		}
+
 		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(
 				'--srfm-primary-color',
@@ -770,17 +790,15 @@ function StyleSettings( props ) {
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				{ /* Will be used later */ }
-				{ /* <ToggleControl
+
+				{ <ToggleControl
 					label={ __( 'Inherit From Theme', 'sureforms' ) }
-					checked={ sureforms_keys._srfm_inherit_theme_buttom }
+					checked={ sureforms_keys._srfm_inherit_theme_button }
 					onChange={ ( value ) => {
-						updateMeta( '_srfm_inherit_theme_buttom', value );
+						updateMeta( '_srfm_inherit_theme_button', value );
 					} }
-				/>
-				<p className="components-base-control__help" />
-				{ ! sureforms_keys._srfm_inherit_theme_buttom && (
-					<> */ }
+				/> }
+
 				<AdvancedPopColorControl
 					label={ __( 'Text Color', 'sureforms' ) }
 					colorValue={ sureforms_keys._srfm_button_text_color }

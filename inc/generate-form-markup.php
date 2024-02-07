@@ -87,7 +87,7 @@ class Generate_Form_Markup {
 			// Submit button.
 			$button_text       = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$button_alignment  = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme    = Sureforms_Helper::get_meta_value( $id, '_srfm_inherit_theme_buttom' );
+			$btn_from_theme    = Sureforms_Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 			$btn_text_color    = Sureforms_Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
 			$btn_bg_type       = Sureforms_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			$btn_border_radius = '6px';
@@ -215,7 +215,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				<h1 class="srfm-form-title"><?php echo esc_html( $title ); ?></h1> 
+				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
 				<?php
 			}
 			?>

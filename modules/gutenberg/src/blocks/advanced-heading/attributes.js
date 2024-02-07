@@ -63,6 +63,7 @@ const attributes = {
 	},
 	headingColor: {
 		type: 'string',
+		default: '#000',
 	},
 	headingGradientColor: {
 		type: 'string',
@@ -71,6 +72,7 @@ const attributes = {
 	},
 	subHeadingColor: {
 		type: 'string',
+		default: '#000',
 	},
 	separatorColor: {
 		type: 'string',

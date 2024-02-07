@@ -7,6 +7,7 @@ function initializePhoneField() {
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
+			autoPlaceholder: false,
 		};
 
 		if ( isAutoCountry === 'true' ) {
