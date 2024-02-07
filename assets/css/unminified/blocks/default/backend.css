@@ -147,6 +147,7 @@
   margin: 0;
   border: 1px solid var(--srfm-border-color);
   box-shadow: none;
+  background-color: var(--srfm-base-background-color);
 }
 .is-root-container div[data-type="sureforms/checkbox"] .srfm-block-wrap .srfm-block-text {
   font-size: 0.7em;

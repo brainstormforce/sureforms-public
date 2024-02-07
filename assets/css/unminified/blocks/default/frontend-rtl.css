@@ -89,6 +89,7 @@
   border-radius: 4px;
   transform: scale(1);
   border: 1px solid var(--srfm-border-color);
+  background-color: var(--srfm-base-background-color);
   transition: all 0.2s ease;
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx .srfm-span-wrap:first-child svg {
@@ -364,6 +365,9 @@
   resize: none;
 }
 
+.srfm-form-container .srfm-form .srfm-url-block.srfm-error .srfm-protocol {
+  border-color: var(--srfm-error-surface-color);
+}
 .srfm-form-container .srfm-form .srfm-url-block .srfm-protocol {
   color: var(--srfm-label-text-color);
   position: absolute;

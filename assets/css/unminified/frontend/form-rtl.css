@@ -12,9 +12,6 @@
   margin-top: 0;
   margin-bottom: 1em;
 }
-.srfm-form-container .srfm-form {
-  margin: 0 -0.3em;
-}
 .srfm-form-container .srfm-form .srfm-block-single,
 .srfm-form-container .srfm-form .srfm-submit-container,
 .srfm-form-container .srfm-form .uagb-block {
@@ -31,6 +28,9 @@
   display: inline-block;
   width: 100%;
 }
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common {
+  border-radius: var(--srfm-border-radius);
+}
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common.input-active {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px var(--srfm-primary-color);
 }
@@ -39,6 +39,7 @@
   line-height: normal;
   width: 100%;
   border: var(--srfm-border) solid var(--srfm-border-color);
+  border-radius: var(--srfm-border-radius);
   background-color: var(--srfm-base-background-color);
   height: auto;
   font-size: initial;
