@@ -7,13 +7,14 @@ import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const EmailConfirmation = ( props ) => {
-	const { data, handleConfirmEmail } = props;
+	const { data, handleConfirmEmail, handleBackNotifation } = props;
 	const dropdownIcon = parse( svgIcons.verticalDot );
+	const backArrow = parse( svgIcons[ 'left-arrow' ] );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
 		status: data.status || false,
 		is_raw_format: data.is_raw_format || false,
-		name: data.name,
+		name: data.name || 'New Notification',
 		email_to: data.email_to,
 		subject: data.subject,
 		email_body: data.email_body,
@@ -30,9 +31,10 @@ const EmailConfirmation = ( props ) => {
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
-					<span className="srfm-modal-inner-heading-text">
+					<div className="srfm-modal-inner-heading-text">
+						<span onClick={ handleBackNotifation } className="srfm-back-btn">{ backArrow }</span>
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
-					</span>
+					</div>
 					<button
 						onClick={ () => handleConfirmEmail( formData ) }
 						className="srfm-modal-inner-heading-button"
@@ -47,9 +49,11 @@ const EmailConfirmation = ( props ) => {
 					<div className="srfm-modal-separator"></div>
 					<div className="srfm-modal-inner-box-content">
 						<div className="srfm-modal-input-box">
-							<label className="srfm-modal-label">
-								{ __( 'Name', 'sureforms' ) }
-							</label>
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Name', 'sureforms' ) }
+								</label>
+							</div>
 							<input
 								onChange={ ( e ) =>
 									setFormData( {
@@ -62,9 +66,12 @@ const EmailConfirmation = ( props ) => {
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
-							<label className="srfm-modal-label">
-								{ __( 'Send Email To', 'sureforms' ) }
-							</label>
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Send Email To', 'sureforms' ) }
+								</label>
+								<span className="srfm-required"> *</span>
+							</div>
 							<input
 								onChange={ ( e ) =>
 									setFormData( {
@@ -77,9 +84,12 @@ const EmailConfirmation = ( props ) => {
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
-							<label className="srfm-modal-label">
-								{ __( 'Subject', 'sureforms' ) }
-							</label>
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Subject', 'sureforms' ) }
+								</label>
+								<span className="srfm-required"> *</span>
+							</div>
 							<input
 								onChange={ ( e ) =>
 									setDynamicSubject( e.target.value )
@@ -107,7 +117,7 @@ const EmailConfirmation = ( props ) => {
 						<div className="srfm-modal-area-box">
 							<div className="srfm-modal-area-header">
 								<div className="srfm-modal-area-header-text">
-									<p>{ __( 'Email Body', 'sureforms' ) }</p>
+									<p>{ __( 'Email Body', 'sureforms' ) }<span className="srfm-required-body"> *</span></p>
 								</div>
 								<div className="srfm-modal-area-header-checkbox">
 									<input

@@ -235,6 +235,7 @@ class Gutenberg_Hooks {
 			'srfm_blocks_info',
 			[
 				'font_awesome_5_polyfill' => array(),
+				'collapse_panels'         => 'enabled',
 				'is_site_editor'          => $screen?->id,
 			]
 		);
