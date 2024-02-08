@@ -60,6 +60,7 @@
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input {
   line-height: normal;
   font-size: initial;
+  height: auto;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input:-ms-input-placeholder {
   color: var(--srfm-placeholder-color);
