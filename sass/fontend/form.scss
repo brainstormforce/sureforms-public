@@ -71,7 +71,9 @@
 						input {
 							line-height: normal;
 							font-size: initial;
-
+							height: auto;
+							width: auto;
+							
 							&::placeholder {
 								color: var( --srfm-placeholder-color );
 								opacity: 1; /* Firefox */
