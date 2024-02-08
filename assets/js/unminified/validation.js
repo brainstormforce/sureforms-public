@@ -285,16 +285,25 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 		//Address field
 		if ( container.classList.contains( 'srfm-address-block' ) ) {
-			const addressInput = container.querySelectorAll( 'input,select' );
+			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
+
+			const selectWrap = container.querySelector( '.ts-wrapper' );
+			let hasItem = '';
+			if ( selectWrap ) {
+				hasItem = selectWrap.classList.contains( 'has-items' );
+			}
 
 			for (
 				let i = 1;
 				i < addressInput.length && isAddressRequired === 'true';
 				i++
 			) {
-				if ( ! addressInput[ i ].value && 2 !== i ) {
+				if (
+					( ! addressInput[ i ].value && 2 !== i && 5 !== i ) ||
+					( 5 === i && ! hasItem )
+				) {
 					container.classList.add( 'srfm-error' );
 
 					if ( ! firstErrorInput ) {

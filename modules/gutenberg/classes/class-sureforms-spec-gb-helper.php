@@ -176,7 +176,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 */
 		public function generate_render_styles( $block_content, $block ) {
 
-			if ( isset( $block['blockName'] ) && ( 'sureforms/sf-form' === $block['blockName'] ) ) {
+			if ( isset( $block['blockName'] ) && ( 'sureforms/form' === $block['blockName'] ) ) {
 
 				if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
 					self::form_content_by_id( $block['attrs']['id'] );
@@ -355,7 +355,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 				$count = count( $blocks );
 				for ( $i = 0; $i < $count; $i++ ) {
-					if ( isset( $blocks[ $i ]['blockName'] ) && 'sureforms/sf-form' === $blocks[ $i ]['blockName'] ) {
+					if ( isset( $blocks[ $i ]['blockName'] ) && 'sureforms/form' === $blocks[ $i ]['blockName'] ) {
 						if ( isset( $blocks[ $i ]['attrs']['id'] ) && $blocks[ $i ]['attrs']['id'] ) {
 							$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
 							if ( $form_post ) {

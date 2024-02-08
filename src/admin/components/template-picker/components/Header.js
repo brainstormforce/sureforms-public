@@ -14,9 +14,7 @@ const Header = () => {
 			{ /** Close Icon */ }
 			<div
 				className="srfm-tp-header-close"
-				onClick={ () =>
-					( window.location.href = sureforms_admin.admin_url )
-				}
+				onClick={ () => window.history.back() }
 			>
 				<div>{ ICONS.close }</div>
 			</div>

@@ -146,7 +146,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				'separatorColor'                 =>
 				array(
 					'type'    => 'string',
-					'default' => '#333',
+					'default' => '#000',
 				),
 				'separatorHeight'                =>
 				array(
@@ -352,7 +352,8 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				),
 				'elementColor'                   =>
 				array(
-					'type' => 'string',
+					'type'    => 'string',
+					'default' => '#000',
 				),
 				'elementIconWidth'               =>
 				array(

@@ -43,6 +43,11 @@
 					.srfm-input-address-country {
 						border-radius: 0;
 						border-bottom: 0;
+						padding: 0;
+
+						.ts-control {
+							border: 0;
+						}
 					}
 
 					.srfm-address-icon {

@@ -76,5 +76,6 @@ module.exports = {
 		SureForms: true,
 		quickSidebarBlocks: true,
 		sureforms_backend: true,
+		TomSelect: true,
 	},
 };

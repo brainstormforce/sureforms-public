@@ -45,7 +45,7 @@ class Phone_Markup extends Base {
 
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$placeholder_attr     = $placeholder ? 'placeholder="' . $placeholder . '" ' : '';
-		$input_label_fallback = $label ? $label : 'Phone';
+		$input_label_fallback = $label ? $label : __( 'Phone', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
