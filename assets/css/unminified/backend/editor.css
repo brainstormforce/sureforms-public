@@ -111,6 +111,22 @@ body.post-type-sureforms_form .edit-post-header__center .components-text-control
   border-color: #0284c7;
   box-shadow: unset;
 }
+body.post-type-sureforms_form .srfm-upgrade-pro-btn-container {
+  text-align: center;
+}
+body.post-type-sureforms_form .srfm-upgrade-pro-btn {
+  background-color: #1e1e1e;
+  color: #fff;
+  padding: 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 16px;
+  max-width: 280px;
+  width: 100%;
+}
 body.post-type-sureforms_form .block-list-appender {
   width: 100%;
   padding: 0 0.3em;
