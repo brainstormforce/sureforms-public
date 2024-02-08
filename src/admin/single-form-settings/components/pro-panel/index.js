@@ -33,35 +33,35 @@ const IconGrid = () => (
 		<div className="block-editor-block-types-list">
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineCalendarMonth /> }
+					icon={ <MdOutlineCalendarMonth size={ 24 } /> }
 					label={ __( 'Date & Time', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <FaRegEyeSlash /> }
+					icon={ <FaRegEyeSlash size={ 24 } /> }
 					label={ __( 'Hidden', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <RxSlider /> }
+					icon={ <RxSlider size={ 24 } /> }
 					label={ __( 'Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineInsertPageBreak /> }
+					icon={ <MdOutlineInsertPageBreak size={ 24 } /> }
 					label={ __( 'Page Break', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <MdOutlinePassword /> }
+					icon={ <MdOutlinePassword size={ 24 } /> }
 					label={ __( 'Password', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <MdOutlineStarBorder /> }
+					icon={ <MdOutlineStarBorder size={ 24 } /> }
 					label={ __( 'Rating', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineCloudUpload /> }
+					icon={ <MdOutlineCloudUpload size={ 24 } /> }
 					label={ __( 'Upload', 'sureforms' ) }
 				/>
 			</div>
