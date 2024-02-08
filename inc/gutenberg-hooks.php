@@ -41,7 +41,8 @@ class Gutenberg_Hooks {
 			'support-form',
 			'job-application-form',
 			'feedback-form',
-			'login-form',
+			// Will be used in future.
+			// 'login-form',.
 		];
 
 		// Initializing hooks.
@@ -79,7 +80,6 @@ class Gutenberg_Hooks {
 				'sureforms/icon',
 				'sureforms/image',
 				'sureforms/advanced-heading',
-				'sureforms/form',
 
 			);
 			// Apply a filter to the $allow_block_types types array.
@@ -190,6 +190,7 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
+				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
 				'plugin_url'             => SUREFORMS_URL,
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),

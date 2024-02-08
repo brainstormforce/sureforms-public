@@ -14,6 +14,10 @@ use SureForms\Inc\Email\Email_Template;
 use SureForms\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 
+if ( ! function_exists( 'wp_handle_upload' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+}
+
 /**
  * Sureforms Submit Class.
  *
@@ -92,9 +96,8 @@ class Sureforms_Submit {
 			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
-			// Access the uploaded file.
+			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
 			foreach ( $_FILES as $field => $file ) {
-				// Access the uploaded file properties.
 				$filename  = $file['name'];
 				$temp_path = $file['tmp_name'];
 				$file_size = $file['size'];
@@ -103,15 +106,33 @@ class Sureforms_Submit {
 				if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
 					continue;
 				}
+
 				// Handle each file.
 				$upload_dir  = wp_upload_dir();
-				$destination = $upload_dir['basedir'] . '/sure-forms/' . $filename;
+				$destination = $upload_dir['basedir'] . '/sureforms/' . $filename;
 				if ( ! is_dir( dirname( $destination ) ) ) {
 					mkdir( dirname( $destination ), 0755, true );
 				}
-				move_uploaded_file( $temp_path, $destination );
-				$file_url            = $upload_dir['baseurl'] . '/sure-forms/' . $filename;
-				$form_data[ $field ] = $file_url;
+
+				// Use wp_handle_upload instead of move_uploaded_file.
+				$uploaded_file = array(
+					'name'     => $filename,
+					'type'     => $file_type,
+					'tmp_name' => $temp_path,
+					'error'    => $file['error'],
+					'size'     => $file_size,
+				);
+
+				$upload_overrides = array(
+					'test_form' => false,
+				);
+				$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
+				remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+				if ( $move_file && ! isset( $move_file['error'] ) ) {
+					$form_data[ $field ] = $move_file['url'];
+				} else {
+					return wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
+				}
 			}
 		}
 
@@ -193,6 +214,20 @@ class Sureforms_Submit {
 			return new \WP_Error( 'spam_detected', 'Spam Detected', array( 'status' => 403 ) );
 		}
 
+	}
+
+	/**
+	 * Change the upload directory
+	 *
+	 * @param array<mixed> $dirs upload directory.
+	 * @return array<mixed>
+	 * @since 0.0.1
+	 */
+	public function change_upload_dir( $dirs ) {
+		$dirs['subdir'] = '/sureforms';
+		$dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+		$dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+		return $dirs;
 	}
 
 	/**
