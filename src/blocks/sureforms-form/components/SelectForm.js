@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 const SelectForm = ( {
 	label,
 	id,
+	formId,
 	selectedVal,
 	handleChange,
 	setForm,
@@ -22,6 +23,12 @@ const SelectForm = ( {
 		try {
 			response = await apiFetch( {
 				path: 'sureforms/v1/forms-data',
+			} );
+			// if in the response object title is '' then set title to '(no title)'
+			response.forEach( ( form ) => {
+				if ( form.title === '' ) {
+					form.title = __( '(no title)', 'sureforms' );
+				}
 			} );
 			setFormsData( response );
 		} catch ( error ) {
@@ -43,6 +50,7 @@ const SelectForm = ( {
 			console.log( error );
 		}
 	};
+
 	useEffect( () => {
 		fetchForms();
 		document.addEventListener( 'click', toggle );
@@ -91,7 +99,7 @@ const SelectForm = ( {
 							handleChange( null );
 						} }
 						onClick={ toggle }
-						placeholder={ __( 'Select a SureForm', 'sureforms' ) }
+						placeholder={ __( 'Select a Form', 'sureforms' ) }
 					/>
 				</div>
 				<div
@@ -106,7 +114,7 @@ const SelectForm = ( {
 					isOpen ? 'srfm-form-arrow-open' : ''
 				}` }
 			>
-				{ formsData.length === 0 ? (
+				{ formsData.length === 0 || filter().length === 0 ? (
 					<div className="srfm-form-single-option">
 						{ __( 'No forms found…', 'sureforms' ) }
 					</div>
@@ -125,7 +133,7 @@ const SelectForm = ( {
 								setForm( formMarkup );
 							} }
 							className={ `srfm-form-single-option ${
-								option[ label ] === selectedVal
+								option[ id ] === formId
 									? 'srfm-form-selected'
 									: ''
 							}` }

@@ -1,10 +1,22 @@
 .srfm-form-container {
 	// This is the parent form class. Adds specificity so that there is no conflict.
 	position: relative;
+	padding: 0;
+
+	// Astra Addon site builder compatibility.
+	div[class^="astra-advanced-hook"] {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	.srfm-form-title {
+		padding: 0.3em;
+		margin-top: 0;
+		margin-bottom: 1em;
+	}
 
 	.srfm-form {
-		margin: 0 -0.3em;
-
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block {
@@ -25,40 +37,57 @@
 				display: inline-block;
 				width: 100%;
 
-				select {
-					display: block;
-				}
-				.nice-select {
-					line-height: normal;
-					width: 100%;
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					padding: 0.75em 1em;
-					height: auto;
-					font-size: 0.8em;
+				.srfm-dropdown-common {
+					border-radius: var( --srfm-border-radius );
 
-					.current {
-						line-height: normal;
-					}
-
-					&.open {
-						.nice-select-dropdown {
-							box-shadow: 0 0 0 1px var( --ast-border-color );
-							transform: scale( 1 ) translateY( 0 );
-						}
-					}
-
-					.nice-select-dropdown {
-						width: 100%;
-						transform: scale( 1 ) translateY( 1em );
-
-						.list {
-							margin: 0;
-						}
-					}
-
-					&:focus {
+					&.input-active {
 						box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
 					}
+
+					.ts-control {
+						position: relative;
+						line-height: normal;
+						width: 100%;
+						border: var( --srfm-border ) solid var( --srfm-border-color );
+						border-radius: var( --srfm-border-radius );
+						background-color: var( --srfm-base-background-color );
+						height: auto;
+						font-size: initial;
+						padding: 0.75em 2em 0.75em 1em !important;
+
+						&::after {
+							content: "";
+							position: absolute;
+							width: 0.5em;
+							height: 0.5em;
+							border: 1px solid var( --srfm-body-input-color );
+							border-left: 0;
+							border-top: 0;
+							transform: rotate( 45deg );
+							right: 1em;
+							top: 1em;
+						}
+
+						input {
+							line-height: normal;
+							font-size: initial;
+							height: auto;
+							width: auto;
+							
+							&::placeholder {
+								color: var( --srfm-placeholder-color );
+								opacity: 1; /* Firefox */
+							}
+						}
+					}
+
+					.ts-dropdown {
+						margin-top: 0;
+					}
+				}
+
+				select {
+					display: block;
 				}
 			}
 

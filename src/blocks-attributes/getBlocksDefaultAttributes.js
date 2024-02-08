@@ -40,7 +40,7 @@ const default_keys = {
 	_srfm_button_text_color: { default: '#ffffff' },
 	_srfm_button_bg_color: { default: '#0184C7' },
 	_srfm_button_border_color: { default: '#ffffff' },
-	_srfm_button_border_width: { default: 1 },
+	_srfm_button_border_width: { default: 0 },
 	_srfm_button_border_radius: { default: 6 },
 	// Advanced Tab
 	_srfm_thankyou_message_title: { default: 'Thank you' },

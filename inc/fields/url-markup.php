@@ -45,7 +45,7 @@ class Url_Markup extends Base {
 			$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
 			$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
 			$aria_require_attr    = $required ? 'true' : 'false';
-			$input_label_fallback = $label ? $label : 'Address';
+			$input_label_fallback = $label ? $label : __( 'Url', 'sureforms' );
 			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 			ob_start(); ?>

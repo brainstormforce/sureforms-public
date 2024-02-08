@@ -1,9 +1,9 @@
 {
 	"$schema": "https://json.schemastore.org/block.json",
 	"apiVersion": 2,
-	"name": "sureforms/sf-form",
+	"name": "sureforms/form",
 	"title": "Form",
-	"description": "Collect and Manage data effortlessly with customizable SureForm.",
+	"description": "Collect and Manage data effortlessly with customizable SureForms.",
 	"category": "sureforms",
 	"keywords": [ "form", "sureforms", "form" ],
 	"textdomain": "sureforms",
@@ -11,13 +11,8 @@
 		"reusable": false,
 		"html": false
 	},
-	"example": {
-		"attributes": {
-			"preview": true
-		}
-	},
 	"attributes": {
-		"preview": {
+		"isPreview": {
 			"type": "boolean",
 			"default": false
 		},

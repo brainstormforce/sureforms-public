@@ -1,6 +1,12 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-url-block {
+			&.srfm-error {
+				.srfm-protocol {
+					border-color: var( --srfm-error-surface-color );
+				}
+			}
+
 			.srfm-protocol {
 				color: var( --srfm-label-text-color );
 				position: absolute;

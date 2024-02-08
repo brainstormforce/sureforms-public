@@ -84,17 +84,32 @@ export default ( { attributes, setAttributes } ) => {
 		const formContainer = iframeDocument.querySelector(
 			'.srfm-form-container'
 		);
+		const formContainerWrapper =
+			iframeDocument.querySelector( '.srfm-form-wrapper' );
+
+		const formOuterContainerSelector = iframeDocument.querySelector(
+			'.srfm-single-page-container'
+		);
 
 		const siteFooter = iframeDocument.getElementById( 'colophon' );
 		const iframeHtml = iframeDocument.querySelector(
 			'html.srfm-html.hydrated'
 		);
 
+		if ( formContainerWrapper ) {
+			formContainerWrapper.style.setProperty( 'padding', '0' );
+		}
+
 		if ( formContainer ) {
 			formContainer.style.setProperty( 'margin-top', '0' );
 			formContainer.style.setProperty( 'box-shadow', 'none' );
 			formContainer.style.setProperty( 'max-width', '100%' );
 			formContainer.style.setProperty( 'padding', '0' );
+			formContainer.style.setProperty(
+				'background-color',
+				'transparent'
+			);
+			formContainer.style.setProperty( 'background-image', 'none' );
 		}
 
 		if ( iframeHtml ) {
@@ -129,10 +144,14 @@ export default ( { attributes, setAttributes } ) => {
 			srfmSuccessMsg.remove();
 		}
 
+		if ( formOuterContainerSelector ) {
+			const iframeHalfScrollHeight =
+				formOuterContainerSelector.offsetHeight;
+			iframeRef.current.height = iframeHalfScrollHeight + 'px';
+		}
+
 		// Combine element removal
 		if ( srfmSingleForm ) {
-			const iframeHalfScrollHeight = srfmSingleForm.scrollHeight;
-			iframeRef.current.height = iframeHalfScrollHeight + 'px';
 			srfmSingleForm.style.boxShadow = 'none';
 			srfmSingleForm.style.backgroundColor = 'transparent';
 			srfmSingleForm.style.width = '100%';
@@ -153,14 +172,30 @@ export default ( { attributes, setAttributes } ) => {
 	// If form is in draft or trash then show the warning.
 	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
 		return (
-			<div { ...blockProps }>
-				<Warning>
-					{ __(
-						'This form has been deleted or is unavailable.',
-						'sureforms'
-					) }
-				</Warning>
-			</div>
+			<>
+				<InspectorControls>
+					<PanelBody>
+						<PanelRow>
+							<Button
+								variant="secondary"
+								text={ __( 'Change Form', 'sureforms' ) }
+								onClick={ () => {
+									setAttributes( { id: undefined } );
+								} }
+								className="srfm-change-form-btn"
+							/>
+						</PanelRow>
+					</PanelBody>
+				</InspectorControls>
+				<div { ...blockProps }>
+					<Warning>
+						{ __(
+							'This form has been deleted or is unavailable.',
+							'sureforms'
+						) }
+					</Warning>
+				</div>
+			</>
 		);
 	}
 
@@ -217,14 +252,13 @@ export default ( { attributes, setAttributes } ) => {
 					</PanelRow>
 					<PanelRow>
 						<Button
-							isSecondary
+							variant="secondary"
+							text={ __( 'Change Form', 'sureforms' ) }
 							onClick={ () => {
 								setAttributes( { id: undefined } );
 							} }
 							className="srfm-change-form-btn"
-						>
-							{ __( 'Change Form', 'sureforms' ) }
-						</Button>
+						/>
 					</PanelRow>
 				</PanelBody>
 			</InspectorControls>

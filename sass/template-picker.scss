@@ -39,6 +39,12 @@ $sidebar_width: 290px;
 		padding: 0px;
 	}
 
+	#bsf-optin-notice,
+	#uagb-admin-rating,
+	.notice-error {
+		display: none;
+	}
+
 	.srfm-content-section {
 		height: calc( 100vh - 50px );
 		padding-top: 70px;

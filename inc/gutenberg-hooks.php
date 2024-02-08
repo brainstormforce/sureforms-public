@@ -41,7 +41,8 @@ class Gutenberg_Hooks {
 			'support-form',
 			'job-application-form',
 			'feedback-form',
-			'login-form',
+			// Will be used in future.
+			// 'login-form',.
 		];
 
 		// Initializing hooks.
@@ -79,7 +80,6 @@ class Gutenberg_Hooks {
 				'sureforms/icon',
 				'sureforms/image',
 				'sureforms/advanced-heading',
-				'sureforms/form',
 
 			);
 			// Apply a filter to the $allow_block_types types array.
@@ -176,6 +176,7 @@ class Gutenberg_Hooks {
 	 */
 	public function block_editor_assets() {
 		$all_screen_blocks = 'blocks';
+		$screen            = get_current_screen();
 
 		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
@@ -186,17 +187,24 @@ class Gutenberg_Hooks {
 			);
 		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SUREFORMS_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
 
+		$plugin_path = 'sureforms-pro/sureforms-pro.php';
+
+		// Check if the sureforms-pro plugin is active.
+		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
+
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
+				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
 				'plugin_url'             => SUREFORMS_URL,
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),
-				'current_screen'         => get_current_screen(),
+				'current_screen'         => $screen,
 				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
+				'is_pro_active'          => $is_pro_active,
 			]
 		);
 
@@ -228,6 +236,7 @@ class Gutenberg_Hooks {
 			[
 				'font_awesome_5_polyfill' => array(),
 				'collapse_panels'         => 'enabled',
+				'is_site_editor'          => $screen?->id,
 			]
 		);
 	}

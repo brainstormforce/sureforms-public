@@ -50,7 +50,7 @@ class Input_Markup extends Base {
 		$aria_require         = $required ? 'true' : 'false';
 		$aria_unique          = $is_unique ? 'true' : 'false';
 		$default_value        = $default ? $default : '';
-		$input_label_fallback = $label ? $label : 'Text Field';
+		$input_label_fallback = $label ? $label : __( 'Text Field', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>

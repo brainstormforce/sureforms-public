@@ -55,7 +55,7 @@ class Textarea_Markup extends Base {
 
 		$max_length_html = '' !== $max_length ? '0/' . $max_length : '';
 
-		$input_label_fallback = $label ? $label : 'Address';
+		$input_label_fallback = $label ? $label : __( 'Textarea', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>

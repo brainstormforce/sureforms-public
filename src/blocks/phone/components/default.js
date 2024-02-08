@@ -37,6 +37,7 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 					inputClassName={ `srfm-input-common srfm-input-${ slug }` }
 					fieldId={ `srfm-input-${ slug }-${ blockID }` }
 					placeholder={ placeholder }
+					autoPlaceholder={ false }
 					pattern="[0-9]{10}"
 					defaultCountry={ autoCountry ? country : 'us' }
 				/>

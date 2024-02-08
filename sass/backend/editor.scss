@@ -1,7 +1,4 @@
 body.post-type-sureforms_form {
-	padding-left: 10px;
-	padding-right: 10px;
-
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 
@@ -42,7 +39,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	> .edit-post-visual-editor__content-area {
+	.edit-post-visual-editor .edit-post-visual-editor__content-area {
 		padding: 0 !important;
 	}
 
@@ -69,22 +66,18 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.is-desktop-preview,
-	.is-tablet-preview,
-	.is-mobile-preview,
-	.block-editor-iframe__body {
-		// Need override / !Important here. As value are added inline by wordpress.
-		background-image: var( --srfm-bg-image ) !important;
-		background-position: center !important;
-		background-size: cover !important;
-		background-repeat: no-repeat !important;
-		background-color: var( --srfm-bg-color ) !important;
-	}
-
+	&.block-editor-iframe__body,
 	.editor-styles-wrapper {
 		position: relative;
 		width: 100%;
-		background-color: transparent;
+		background-image: var( --srfm-bg-image );
+		background-position: center;
+		background-size: cover;
+		background-color: var( --srfm-bg-color );
+	}
+
+	&.block-editor-iframe__body {
+		border: 0;
 	}
 
 	div.is-root-container.block-editor-block-list__layout {
@@ -162,6 +155,25 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// Pro panel preview styles.
+	.srfm-upgrade-pro-btn-container {
+		text-align: center;
+	}
+
+	.srfm-upgrade-pro-btn {
+		background-color: #1e1e1e;
+		color: #fff;
+		padding: 10px;
+		font-size: 12px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+		margin-top: 16px;
+		max-width: 280px;
+		width: 100%;
+	}
+
 	// Plus button, Block appended.
 
 	// Add submit button below the Block Appended.
@@ -197,10 +209,11 @@ body.post-type-sureforms_form {
 
 	.srfm-submit-btn-container {
 		position: relative;
-		max-width: calc( 620px - 0.6em );
+		max-width: calc( 620px - 0em );
 		margin: 0 auto;
 		padding: 0 0.3em;
 		margin-top: 1.2em;
+
 		.srfm-btn-bg-color {
 			border-radius: var( --srfm-btn-border-radius );
 			font-family: inherit;
@@ -211,17 +224,6 @@ body.post-type-sureforms_form {
 			color: var( --srfm-btn-text-color );
 			background-color: var( --srfm-btn-bg-color );
 			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
-		}
-		.srfm-btn-bg-transparent {
-			border-radius: 0.375em;
-			font-family: inherit;
-			font-weight: var( --wp--custom--font-weight--medium );
-			line-height: var( --wp--custom--line-height--initial );
-			padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
-			text-decoration: none;
-			color: var( --srfm-btn-text-color );
-			background-color: transparent;
-			border: none;
 		}
 		.srfm-submit-button {
 			position: absolute;
@@ -239,7 +241,13 @@ body.post-type-sureforms_form {
 		}
 
 		@media ( max-width: 778px ) {
-			padding: 0;
+			max-width: calc( 620px - 0.6em );
+		}
+
+		@media ( max-width: 360px ) {
+			max-width: calc( 620px - 0em );
+			margin-left: 0.3em;
+			margin-right: 0.3em;
 		}
 	}
 
