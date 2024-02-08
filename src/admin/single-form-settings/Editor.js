@@ -480,6 +480,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						setEnableQuickActionSidebar={
 							setEnableQuickActionSidebar
 						}
+						isPageBreak={ isPageBreak }
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>

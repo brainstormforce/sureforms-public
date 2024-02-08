@@ -15,13 +15,8 @@ function GeneralSettings( props ) {
 		default_keys,
 		enableQuickActionSidebar,
 		setEnableQuickActionSidebar,
+		isPageBreak,
 	} = props;
-	const blocks = useSelect( ( select ) =>
-		select( 'core/block-editor' ).getBlocks()
-	);
-	const isPageBreak = blocks.some(
-		( block ) => block.name === 'sureforms/page-break'
-	);
 	const root = document.documentElement.querySelector( 'body' );
 
 	let sureforms_keys = useSelect( ( select ) =>
@@ -32,11 +27,7 @@ function GeneralSettings( props ) {
 		document.getElementById( 'srfm-form-container' )
 	);
 
-	useEffect( () => {
-		updateMeta( '_srfm_is_page_break', isPageBreak );
-	}, [ isPageBreak ] );
-
-	// if device type is desktop then change the root container
+	// if device type is desktop then
 	useEffect( () => {
 		setTimeout( () => {
 			const tabletPreview =
