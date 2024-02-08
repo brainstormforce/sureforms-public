@@ -30,7 +30,7 @@ function StyleSettings( props ) {
 		document.querySelector( '.srfm-submit-button' )
 	);
 
-	// if device type is desktop then
+	// if device type is desktop then change the submit button
 	useEffect( () => {
 		setTimeout( () => {
 			const tabletPreview =
@@ -59,132 +59,118 @@ function StyleSettings( props ) {
 	}, [ deviceType, submitBtn ] );
 
 	if ( sureforms_keys && '_srfm_color1' in sureforms_keys ) {
-		root.style.setProperty(
-			'--srfm-label-text-color',
-			sureforms_keys._srfm_label_color
-				? sureforms_keys._srfm_label_color
-				: 'none'
-		);
-		root.style.setProperty(
-			'-srfm-body-input-color',
-			sureforms_keys._srfm_input_text_color
-				? sureforms_keys._srfm_input_text_color
-				: '#4B5563'
-		);
-		// error color
-		root.style.setProperty(
-			'--srfm-error-text-color',
-			sureforms_keys._srfm_field_error_color
-				? sureforms_keys._srfm_field_error_color
-				: '#dc2626'
-		);
-		// form container background color
-		root.style.setProperty(
-			'--srfm-bg-color',
-			sureforms_keys._srfm_bg_color
-				? sureforms_keys._srfm_bg_color
-				: '#ffffff'
-		);
-		// placeholder color
-		root.style.setProperty(
-			'--srfm-placeholder-color',
-			sureforms_keys._srfm_input_placeholder_color
-				? sureforms_keys._srfm_input_placeholder_color
-				: '#9ca3af'
-		);
-		// input background color
-		root.style.setProperty(
-			'--srfm-base-background-color',
-			sureforms_keys._srfm_input_bg_color
-				? sureforms_keys._srfm_input_bg_color
-				: '#ffffff'
-		);
-		// input border color
-		root.style.setProperty(
-			'--srfm-border-color',
-			sureforms_keys._srfm_input_border_color
-				? sureforms_keys._srfm_input_border_color
-				: '#D0D5DD'
-		);
-		// input border width
-		root.style.setProperty(
-			'--srfm-border',
-			sureforms_keys._srfm_input_border_width
-				? sureforms_keys._srfm_input_border_width + 'px'
-				: '1px'
-		);
-		// border radius
-		root.style.setProperty(
-			'--srfm-border-radius',
-			sureforms_keys._srfm_input_border_radius
-				? sureforms_keys._srfm_input_border_radius + 'px'
-				: '4px'
-		);
-		root.style.setProperty(
-			'--srfm_bg',
-			sureforms_keys._srfm_bg
-				? 'url(' + sureforms_keys._srfm_bg + ')'
-				: 'none'
-		);
+		// Form Container
+		// Primary color
 		root.style.setProperty(
 			'--srfm-primary-color',
 			sureforms_keys._srfm_color1
 				? sureforms_keys._srfm_color1
 				: '#0284C7'
 		);
+		// Label color
 		root.style.setProperty(
-			'--srfm-primary-text-color',
-			sureforms_keys._srfm_textcolor1
-				? sureforms_keys._srfm_textcolor1
-				: '#fff'
+			'--srfm-label-text-color',
+			sureforms_keys._srfm_label_color
+				? sureforms_keys._srfm_label_color
+				: 'none'
 		);
+		// Help text color
 		root.style.setProperty(
-			'--srfm-secondary-color',
-			sureforms_keys._srfm_color2 ? sureforms_keys._srfm_color2 : 'none'
+			'--srfm-help-color',
+			sureforms_keys._srfm_help_color
+				? sureforms_keys._srfm_help_color
+				: '#6b7280'
 		);
+		// Background image
+		root.style.setProperty(
+			'--srfm-bg-image',
+			sureforms_keys._srfm_bg_image
+				? 'url(' + sureforms_keys._srfm_bg_image + ')'
+				: 'none'
+		);
+		// Background color
+		root.style.setProperty(
+			'--srfm-bg-color',
+			sureforms_keys._srfm_bg_color
+				? sureforms_keys._srfm_bg_color
+				: '#ffffff'
+		);
+		// Font Size
 		root.style.setProperty(
 			'--srfm-font-size',
 			sureforms_keys._srfm_fontsize
 				? sureforms_keys._srfm_fontsize + 'px'
 				: 'none'
 		);
+
+		// Input
+		// Input text color
+		root.style.setProperty(
+			'-srfm-body-input-color',
+			sureforms_keys._srfm_input_text_color
+				? sureforms_keys._srfm_input_text_color
+				: '#4B5563'
+		);
+		// Input placeholder color
+		root.style.setProperty(
+			'--srfm-placeholder-color',
+			sureforms_keys._srfm_input_placeholder_color
+				? sureforms_keys._srfm_input_placeholder_color
+				: '#9ca3af'
+		);
+		// Input background color
+		root.style.setProperty(
+			'--srfm-base-background-color',
+			sureforms_keys._srfm_input_bg_color
+				? sureforms_keys._srfm_input_bg_color
+				: '#ffffff'
+		);
+		// Input border color
+		root.style.setProperty(
+			'--srfm-border-color',
+			sureforms_keys._srfm_input_border_color
+				? sureforms_keys._srfm_input_border_color
+				: '#D0D5DD'
+		);
+		// Input border width
+		root.style.setProperty(
+			'--srfm-border',
+			sureforms_keys._srfm_input_border_width
+				? sureforms_keys._srfm_input_border_width + 'px'
+				: '1px'
+		);
+		// Input border radius
+		root.style.setProperty(
+			'--srfm-border-radius',
+			sureforms_keys._srfm_input_border_radius
+				? sureforms_keys._srfm_input_border_radius + 'px'
+				: '4px'
+		);
+
+		// Error
+		// Error color & asterisk color
+		root.style.setProperty(
+			'--srfm-error-text-color',
+			sureforms_keys._srfm_field_error_color
+				? sureforms_keys._srfm_field_error_color
+				: '#dc2626'
+		);
+
+		// Button
+		// Button text color
 		root.style.setProperty(
 			'--srfm-btn-text-color',
 			sureforms_keys._srfm_button_text_color
 				? sureforms_keys._srfm_button_text_color
 				: '#000000'
 		);
+		// Button bg Color
 		root.style.setProperty(
-			'--srfm_submit_alignment',
-			sureforms_keys._srfm_submit_alignment
-				? sureforms_keys._srfm_submit_alignment
-				: 'none'
-		);
-		root.style.setProperty(
-			'--srfm_submit_width',
-			sureforms_keys._srfm_submit_width
-				? sureforms_keys._srfm_submit_width
+			'--srfm-btn-bg-color',
+			sureforms_keys._srfm_button_bg_color
+				? sureforms_keys._srfm_button_bg_color
 				: ''
 		);
-		root.style.setProperty(
-			'--srfm_submit_alignment_backend',
-			sureforms_keys._srfm_submit_alignment_backend
-				? sureforms_keys._srfm_submit_alignment_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm_submit_width_backend',
-			sureforms_keys._srfm_submit_width_backend
-				? sureforms_keys._srfm_submit_width_backend
-				: ''
-		);
-		root.style.setProperty(
-			'--srfm_submit_button_text',
-			sureforms_keys._srfm_submit_button_text
-				? '"' + sureforms_keys._srfm_submit_button_text + '"'
-				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-		);
-
 		// btn border color
 		root.style.setProperty(
 			'--srfm-btn-border-color',
@@ -192,7 +178,6 @@ function StyleSettings( props ) {
 				? sureforms_keys._srfm_button_border_color
 				: '#000000'
 		);
-
 		// btn border width
 		root.style.setProperty(
 			'--srfm-btn-border-width',
@@ -200,7 +185,6 @@ function StyleSettings( props ) {
 				? sureforms_keys._srfm_button_border_width + 'px'
 				: '1px'
 		);
-
 		// btn border radius
 		root.style.setProperty(
 			'--srfm-btn-border-radius',
@@ -208,20 +192,29 @@ function StyleSettings( props ) {
 				? sureforms_keys._srfm_button_border_radius + 'px'
 				: '4px'
 		);
-
-		// help text color
-
+		// Button alignment
 		root.style.setProperty(
-			'--srfm-help-color',
-			sureforms_keys._srfm_help_color
-				? sureforms_keys._srfm_help_color
-				: '#6b7280'
+			'--srfm-submit-alignment',
+			sureforms_keys._srfm_submit_alignment
+				? sureforms_keys._srfm_submit_alignment
+				: 'none'
 		);
-
 		root.style.setProperty(
-			'--srfm-btn-bg-color',
-			sureforms_keys._srfm_button_bg_color
-				? sureforms_keys._srfm_button_bg_color
+			'--srfm-submit-width',
+			sureforms_keys._srfm_submit_width
+				? sureforms_keys._srfm_submit_width
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm-submit-alignment-backend',
+			sureforms_keys._srfm_submit_alignment_backend
+				? sureforms_keys._srfm_submit_alignment_backend
+				: ''
+		);
+		root.style.setProperty(
+			'--srfm-submit-width-backend',
+			sureforms_keys._srfm_submit_width_backend
+				? sureforms_keys._srfm_submit_width_backend
 				: ''
 		);
 	} else {
@@ -235,33 +228,36 @@ function StyleSettings( props ) {
 		let value_id = 0;
 		let key_id = '';
 
-		if ( option === '_srfm_bg' ) {
+		// Form Container
+		if ( option === '_srfm_bg_image' ) {
 			if ( value ) {
 				value_id = value.id;
 				value = value.sizes.full.url;
 			}
 			key_id = option + '_id';
 			root.style.setProperty(
-				'--srfm_bg',
+				'--srfm-bg-image',
 				value ? 'url(' + value + ')' : 'none'
 			);
 		}
-
 		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(
 				'--srfm-primary-color',
 				value ? value : '#0284C7'
 			);
 		}
-
+		if ( option === '_srfm_fontsize' ) {
+			root.style.setProperty(
+				'--srfm_fontsize',
+				value ? value + 'px' : 'none'
+			);
+		}
 		if ( option === '_srfm_label_color' ) {
 			root.style.setProperty(
 				'--srfm-label-text-color',
 				value ? value : '#0284C7'
 			);
 		}
-
-		// help text color
 		if ( option === '_srfm_help_color' ) {
 			root.style.setProperty(
 				'--srfm-help-color',
@@ -269,41 +265,37 @@ function StyleSettings( props ) {
 			);
 		}
 
+		// Input
 		if ( option === '_srfm_input_text_color' ) {
 			root.style.setProperty(
 				'--srfm-body-input-color',
 				value ? value : '#4b5563'
 			);
 		}
-
 		if ( option === '_srfm_input_placeholder_color' ) {
 			root.style.setProperty(
 				'--srfm-placeholder-color',
 				value ? value : '#9ca3af'
 			);
 		}
-
 		if ( option === '_srfm_input_bg_color' ) {
 			root.style.setProperty(
 				'--srfm-base-background-color',
 				value ? value : '#ffffff'
 			);
 		}
-
 		if ( option === '_srfm_input_border_color' ) {
 			root.style.setProperty(
 				'--srfm-border-color',
 				value ? value : '#D0D5DD'
 			);
 		}
-
 		if ( option === '_srfm_input_border_width' ) {
 			root.style.setProperty(
 				'--srfm-border',
 				value ? value + 'px' : '1px'
 			);
 		}
-
 		if ( option === '_srfm_input_border_radius' ) {
 			root.style.setProperty(
 				'--srfm-border-radius',
@@ -311,28 +303,7 @@ function StyleSettings( props ) {
 			);
 		}
 
-		if ( option === '_srfm_textcolor1' ) {
-			root.style.setProperty(
-				'--srfm-primary-text-color',
-				value ? value : '#fff'
-			);
-		}
-
-		if ( option === '_srfm_color2' ) {
-			root.style.setProperty(
-				'--srfm-secondary-color',
-				value ? value : ''
-			);
-		}
-
-		if ( option === '_srfm_fontsize' ) {
-			root.style.setProperty(
-				'--srfm_fontsize',
-				value ? value + 'px' : 'none'
-			);
-		}
-
-		// error color
+		// Error color & asterisk color
 		if ( option === '_srfm_field_error_color' ) {
 			root.style.setProperty(
 				'--srfm-error-text-color',
@@ -340,103 +311,75 @@ function StyleSettings( props ) {
 			);
 		}
 
-		if ( option === '_srfm_submit_button_text' ) {
-			root.style.setProperty(
-				'--srfm_submit_button_text',
-				value
-					? '"' + value + '"'
-					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-			);
-		}
-
 		if ( option === '_srfm_submit_alignment' ) {
 			root.style.setProperty(
-				'--srfm_submit_alignment',
+				'--srfm-submit-alignment',
 				value ? value : 'left'
 			);
 			root.style.setProperty(
-				'--srfm_submit_width_backend',
+				'--srfm-submit-width-backend',
 				'max-content'
 			);
 			updateMeta( '_srfm_submit_width_backend', 'max-content' );
 
 			if ( value === 'left' ) {
 				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
+					'--srfm-submit-alignment-backend',
 					'100%'
 				);
 				updateMeta( '_srfm_submit_alignment_backend', '100%' );
 			}
 			if ( value === 'right' ) {
 				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
+					'--srfm-submit-alignment-backend',
 					'0%'
 				);
 				updateMeta( '_srfm_submit_alignment_backend', '0%' );
 			}
 			if ( value === 'center' ) {
 				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
+					'--srfm-submit-alignment-backend',
 					'50%'
 				);
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 			if ( value === 'justify' ) {
 				root.style.setProperty(
-					'--srfm_submit_alignment_backend',
+					'--srfm-submit-alignment-backend',
 					'50%'
 				);
-				root.style.setProperty( '--srfm_submit_width_backend', 'auto' );
+				root.style.setProperty( '--srfm-submit-width-backend', 'auto' );
 				updateMeta( '_srfm_submit_alignment_backend', '50%' );
 			}
 		}
 
-		//submit button inherit theme
-		if ( option === '_srfm_inherit_theme_buttom' ) {
-			submitBtn.classList.toggle( 'wp-block-button__link' );
-			if ( value ) {
-				submitBtn.classList.remove( 'srfm-btn-bg-color' );
-				submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
-			} else {
-				updateMeta( '_srfm_btn_bg_type', 'filled' );
-				submitBtn.classList.add( 'srfm-btn-bg-color' );
-			}
-		}
-
-		// button text color
+		// Button
 		if ( option === '_srfm_button_text_color' ) {
 			root.style.setProperty(
 				'--srfm-btn-text-color',
 				value ? value : '#000000'
 			);
 		}
-
-		// submit button bg type
-		if ( option === '_srfm_btn_bg_type' ) {
-			if ( value === 'transparent' ) {
-				submitBtn.classList.add( 'srfm-btn-bg-transparent' );
-			} else {
-				submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
-				submitBtn.classList.add( 'srfm-btn-bg-color' );
-			}
-		}
-
-		// submit button background color
+		// Will be used later
+		// if ( option === '_srfm_btn_bg_type' ) {
+		// 	if ( value === 'transparent' ) {
+		// 		submitBtn.classList.add( 'srfm-btn-bg-transparent' );
+		// 	} else {
+		// 		submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
+		// 		submitBtn.classList.add( 'srfm-btn-bg-color' );
+		// 	}
+		// }
 		if ( option === '_srfm_button_bg_color' ) {
 			submitBtn.classList.add( 'srfm-btn-bg-color' );
 			submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
 			root.style.setProperty( '--srfm-btn-bg-color', value ? value : '' );
 		}
-
-		// submit button border width
 		if ( option === '_srfm_button_border_width' ) {
 			root.style.setProperty(
 				'--srfm-btn-border-width',
 				value ? value + 'px' : '1px'
 			);
 		}
-
-		// submit button border color
 		if ( option === '_srfm_button_border_color' ) {
 			root.style.setProperty(
 				'--srfm-btn-border-color',
@@ -466,14 +409,14 @@ function StyleSettings( props ) {
 		if ( ! media.type || 'image' !== media.type ) {
 			imageUrl = null;
 		}
-		updateMeta( '_srfm_bg', imageUrl );
+		updateMeta( '_srfm_bg_image', imageUrl );
 	};
 
 	/*
 	 * Event to set Image as null while removing it.
 	 */
 	const onRemoveRestImage = () => {
-		updateMeta( '_srfm_bg', '' );
+		updateMeta( '_srfm_bg_image', '' );
 	};
 
 	return (
@@ -483,7 +426,7 @@ function StyleSettings( props ) {
 				initialOpen={ false }
 			>
 				<Range
-					label={ __( 'Form Container Width(px)', 'sureforms' ) }
+					label={ __( 'Form Container Width', 'sureforms' ) }
 					value={ sureforms_keys._srfm_form_container_width }
 					min={ 650 }
 					max={ 1000 }
@@ -534,7 +477,7 @@ function StyleSettings( props ) {
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_bg_type', value );
 						if ( value === 'color' ) {
-							updateMeta( '_srfm_bg', '' );
+							updateMeta( '_srfm_bg_image', '' );
 							updateMeta(
 								'_srfm_bg_color',
 								sureforms_keys._srfm_bg_color
@@ -544,9 +487,9 @@ function StyleSettings( props ) {
 						} else {
 							updateMeta( '_srfm_bg_color', '' );
 							updateMeta(
-								'_srfm_bg',
-								sureforms_keys._srfm_bg
-									? sureforms_keys._srfm_bg
+								'_srfm_bg_image',
+								sureforms_keys._srfm_bg_image
+									? sureforms_keys._srfm_bg_image
 									: ''
 							);
 						}
@@ -557,7 +500,7 @@ function StyleSettings( props ) {
 					<SRFMMediaPicker
 						label={ __( 'Background Image', 'sureforms' ) }
 						onSelectImage={ onSelectRestImage }
-						backgroundImage={ sureforms_keys._srfm_bg }
+						backgroundImage={ sureforms_keys._srfm_bg_image }
 						onRemoveImage={ onRemoveRestImage }
 						isFormSpecific={ true }
 					/>
@@ -596,22 +539,32 @@ function StyleSettings( props ) {
 					}
 					isFormSpecific={ true }
 				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Label Color', 'sureforms' ) }
-					colorValue={ sureforms_keys._srfm_label_color }
-					data={ {
-						value: sureforms_keys._srfm_label_color,
-						label: '_srfm_label_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureforms_keys._srfm_label_color ) {
-							updateMeta( '_srfm_label_color', colorValue );
-						}
-					} }
-					value={ sureforms_keys._srfm_label_color }
-					isFormSpecific={ true }
-				/>
+				{ sureforms_keys._srfm_show_labels && (
+					<>
+						<p className="components-base-control__help" />
+						<AdvancedPopColorControl
+							label={ __( 'Label Color', 'sureforms' ) }
+							colorValue={ sureforms_keys._srfm_label_color }
+							data={ {
+								value: sureforms_keys._srfm_label_color,
+								label: '_srfm_label_color',
+							} }
+							onColorChange={ ( colorValue ) => {
+								if (
+									colorValue !==
+									sureforms_keys._srfm_label_color
+								) {
+									updateMeta(
+										'_srfm_label_color',
+										colorValue
+									);
+								}
+							} }
+							value={ sureforms_keys._srfm_label_color }
+							isFormSpecific={ true }
+						/>{ ' ' }
+					</>
+				) }
 				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
 					label={ __( 'Help Text Color', 'sureforms' ) }

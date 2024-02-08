@@ -17,11 +17,10 @@ function GeneralSettings( props ) {
 		setEnableQuickActionSidebar,
 		isPageBreak,
 	} = props;
-
+	const root = document.documentElement;
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	const deviceType = useDeviceType();
 	const [ rootContainer, setRootContainer ] = useState(
 		document.getElementById( 'srfm-form-container' )
@@ -58,16 +57,25 @@ function GeneralSettings( props ) {
 	}, [ deviceType, rootContainer ] );
 
 	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
-		if ( ! sureforms_keys._srfm_show_labels ) {
-			rootContainer.classList.add( 'srfm-hide-labels' );
-		} else {
-			rootContainer.classList.remove( 'srfm-hide-labels' );
+		if ( rootContainer ) {
+			if ( ! sureforms_keys._srfm_show_labels ) {
+				rootContainer.classList.add( 'srfm-hide-labels' );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-labels' );
+			}
+			if ( ! sureforms_keys._srfm_show_asterisk ) {
+				rootContainer.classList.add( 'srfm-hide-asterisk' );
+			} else {
+				rootContainer.classList.remove( 'srfm-hide-asterisk' );
+			}
 		}
-		if ( ! sureforms_keys._srfm_show_asterisk ) {
-			rootContainer.classList.add( 'srfm-hide-asterisk' );
-		} else {
-			rootContainer.classList.remove( 'srfm-hide-asterisk' );
-		}
+		// Button text
+		root.style.setProperty(
+			'--srfm-submit-button-text',
+			sureforms_keys._srfm_submit_button_text
+				? '"' + sureforms_keys._srfm_submit_button_text + '"'
+				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
+		);
 	} else {
 		sureforms_keys = default_keys;
 		editPost( {
@@ -75,6 +83,9 @@ function GeneralSettings( props ) {
 		} );
 	}
 
+	/*
+	 * function to update post metas.
+	 */
 	function updateMeta( option, value ) {
 		const value_id = 0;
 		const key_id = '';
@@ -95,6 +106,16 @@ function GeneralSettings( props ) {
 			} else {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
+		}
+
+		// Button
+		if ( option === '_srfm_submit_button_text' ) {
+			root.style.setProperty(
+				'--srfm-submit-button-text',
+				value
+					? '"' + value + '"'
+					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
+			);
 		}
 
 		const option_array = {};

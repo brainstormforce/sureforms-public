@@ -17,7 +17,6 @@ use SureForms\Admin\Admin;
 use SureForms\Inc\Blocks\Register;
 use SureForms\Inc\SF_Public;
 use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Load_Form_Defaults;
 use SureForms\Inc\Activator;
 use SureForms\Inc\SF_Admin_Ajax;
 use SureForms\Inc\SRFM_Export;
@@ -114,7 +113,6 @@ class Plugin_Loader {
 		Register::get_instance();
 		SF_Public::get_instance();
 		Sureforms_Helper::get_instance();
-		Load_Form_Defaults::get_instance();
 		Activator::get_instance();
 		SF_Admin_Ajax::get_instance();
 		Forms_Data::get_instance();

@@ -31,7 +31,7 @@ class Generate_Form_Markup {
 	}
 
 	/**
-	 * Add custom API Route load-form-defaults
+	 * Add custom API Route to generate form markup.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -82,13 +82,6 @@ class Generate_Form_Markup {
 			$success_message          = Sureforms_Helper::get_meta_value( $id, '_srfm_thankyou_message' );
 			$success_url              = Sureforms_Helper::get_meta_value( $id, '_srfm_submit_url' );
 			$classname                = Sureforms_Helper::get_meta_value( $id, '_srfm_additional_classes' );
-			$styling                  = Sureforms_Helper::get_meta_value( $id, '_srfm_form_styling' );
-			$is_page_break            = Sureforms_Helper::get_meta_value( $id, '_srfm_is_page_break' );
-			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
-			$page_break_first_label   = Sureforms_Helper::get_meta_value( $id, '_srfm_first_page_label' );
-			$page_break_toggle_label  = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_toggle_label' );
-			$previous_btn_text        = Sureforms_Helper::get_meta_value( $id, '_srfm_previous_button_text', true, 'Previous' );
-			$next_btn_text            = Sureforms_Helper::get_meta_value( $id, '_srfm_next_button_text', true, 'Next' );
 			$is_page_break            = Sureforms_Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Sureforms_Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			// Submit button.
@@ -111,7 +104,7 @@ class Generate_Form_Markup {
 			$bg_type = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
 
 			if ( 'image' === $bg_type ) {
-				$background_image_url = Sureforms_Helper::get_meta_value( $id, '_srfm_bg' );
+				$background_image_url = Sureforms_Helper::get_meta_value( $id, '_srfm_bg_image' );
 				$bg_image             = $background_image_url ? 'url(' . $background_image_url . ')' : '';
 				$bg_color             = '#ffffff';
 			} else {
@@ -142,6 +135,7 @@ class Generate_Form_Markup {
 			$primary_color = $color_primary;
 
 			$label_text_color = Sureforms_Helper::get_meta_value( $id, '_srfm_label_color', true, '#1f2937' );
+			$help_color_var   = Sureforms_Helper::get_meta_value( $id, '_srfm_help_color', true, '#6b7280' );
 
 			// New colors.
 
@@ -151,7 +145,6 @@ class Generate_Form_Markup {
 			$body_input_color_var  = Sureforms_Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
 			$placeholder_color_var = Sureforms_Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
 			$border_color_var      = Sureforms_Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
-			$help_color_var        = '#6B7280';
 			$base_background_var   = Sureforms_Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
 			$light_background_var  = '#F9FAFB';
 
@@ -226,7 +219,7 @@ class Generate_Form_Markup {
 				<?php
 			}
 			?>
-				<form method="post" id="srfm-form-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'classic' === $styling ? 'srfm-form-style-classic ' : '' ); ?><?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
+				<form method="post" id="srfm-form-<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
 				form-id="<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
