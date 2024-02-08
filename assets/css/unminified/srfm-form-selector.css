@@ -72,7 +72,8 @@
   outline: none;
   padding: 8px 52px 8px 10px;
   transition: all 200ms ease;
-  width: 380px;
+  max-width: 380px;
+  width: 100%;
 }
 .srfm-form-select-dropdown .srfm-form-select-value input:focus {
   border-color: #0e4372;
