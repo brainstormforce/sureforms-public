@@ -33,7 +33,10 @@
   background-color: #fff;
   color: #0184c7;
   border: 1px solid #0184c7;
-  box-shadow: none !important;
+}
+
+.components-button.is-secondary:hover:not(:disabled) {
+  box-shadow: none;
 }
 
 .srfm-form-select-dropdown {
