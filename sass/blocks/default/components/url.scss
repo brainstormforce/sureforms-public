@@ -1,10 +1,9 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-url-block {
-
 			&.srfm-error {
 				.srfm-protocol {
-					border-color: var(--srfm-error-surface-color);
+					border-color: var( --srfm-error-surface-color );
 				}
 			}
 

@@ -33,35 +33,41 @@ const IconGrid = () => (
 		<div className="block-editor-block-types-list">
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineCalendarMonth size={ 24 } /> }
+					icon={
+						<MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />
+					}
 					label={ __( 'Date & Time', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <FaRegEyeSlash size={ 24 } /> }
+					icon={ <FaRegEyeSlash size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Hidden', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <RxSlider size={ 24 } /> }
+					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineInsertPageBreak size={ 24 } /> }
+					icon={
+						<MdOutlineInsertPageBreak size={ 24 } color="#B4B4B4" />
+					}
 					label={ __( 'Page Break', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <MdOutlinePassword size={ 24 } /> }
+					icon={ <MdOutlinePassword size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Password', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <MdOutlineStarBorder size={ 24 } /> }
+					icon={ <MdOutlineStarBorder size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Rating', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
 				<IconBlock
-					icon={ <MdOutlineCloudUpload size={ 24 } /> }
+					icon={
+						<MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />
+					}
 					label={ __( 'Upload', 'sureforms' ) }
 				/>
 			</div>

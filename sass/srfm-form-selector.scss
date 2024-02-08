@@ -1,4 +1,44 @@
 // Form select dropdown styling
+.wp-block-sureforms-form {
+	.components-placeholder.components-placeholder {
+		box-shadow: none;
+		border: 1px solid #0e4372;
+	}
+	svg {
+		width: 200px;
+		height: 36px;
+		margin-bottom: 8px;
+	}
+	.is-primary {
+		background-color: #0e4372;
+		color: #fff;
+		border: none;
+		padding: 10px 20px;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		&:hover {
+			background-color: #0184c7;
+		}
+	}
+	.is-secondary {
+		background-color: #fff;
+		color: #0e4372;
+		border: 1px solid #0e4372;
+		padding: 10px 20px;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		&:hover {
+			background-color: #fff;
+			color: #0184c7;
+			border: 1px solid #0184c7;
+			box-shadow: none !important;
+		}
+		box-shadow: none;
+	}
+}
+
 .srfm-form-select-dropdown {
 	position: relative;
 	color: #333;
@@ -34,7 +74,11 @@
 		outline: none;
 		padding: 8px 52px 8px 10px;
 		transition: all 200ms ease;
-		width: 100%;
+		width: 380px;
+		&:focus {
+			border-color: #0e4372;
+			box-shadow: none;
+		}
 	}
 
 	.srfm-form-select-options {
@@ -55,6 +99,7 @@
 
 	.srfm-form-select-options.srfm-form-arrow-open {
 		display: block;
+		margin-top: 1px;
 	}
 
 	.srfm-form-single-option {
@@ -81,7 +126,7 @@
 	display: flex;
 	margin: auto;
 	flex-direction: column;
-	gap: 16px;
+	gap: 24px;
 }
 
 .srfm-select-form-button {
