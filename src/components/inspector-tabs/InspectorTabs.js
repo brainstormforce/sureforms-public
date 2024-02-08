@@ -100,7 +100,10 @@ const InspectorTabs = ( props ) => {
 			currentTab !== srfmSettingState[ blockName ]?.selectedTab
 		) {
 			setCurrentTab(
-				srfmSettingState[ blockName ]?.selectedTab || 'general'
+				// Can be used later when we add a style tab for each block.
+				// srfmSettingState[ blockName ]?.selectedTab || 'general'
+				// Making it static to select the General Tab always.
+				'general'
 			);
 			if ( sidebarPanel ) {
 				sidebarPanel.setAttribute(
