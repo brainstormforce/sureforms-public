@@ -189,11 +189,7 @@ class Gutenberg_Hooks {
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
 		// Check if the sureforms-pro plugin is active.
-		if ( is_plugin_active( $plugin_path ) ) {
-			$is_pro_active = true;
-		} else {
-			$is_pro_active = false;
-		}
+		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
