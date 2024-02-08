@@ -160,14 +160,14 @@ export default ( { attributes, setAttributes } ) => {
 		setLoading( false );
 	};
 
-	useEffect( () => {
-		if ( iframeRef && iframeRef.current ) {
-			setLoading( true );
-			iframeRef.current.onload = () => {
-				removeContentFromIframe();
-			};
-		}
-	}, [ id, iframeRef, hasResolved ] );
+	// useEffect( () => {
+	// 	if ( iframeRef && iframeRef.current ) {
+	// 		setLoading( true );
+	// 		iframeRef.current.onload = () => {
+	// 			removeContentFromIframe();
+	// 		};
+	// 	}
+	// }, [ id, iframeRef, hasResolved ] );
 
 	// If form is in draft or trash then show the warning.
 	if ( isMissing || 'trash' === status[ 0 ] || 'draft' === status[ 0 ] ) {
@@ -274,7 +274,7 @@ export default ( { attributes, setAttributes } ) => {
 							loading={ 'eager' }
 							ref={ iframeRef }
 							title="srfm-iframe"
-							src={ formUrl }
+							src={ formUrl + '?form_preview=true' }
 							width={ '100%' }
 						/>
 					</div>

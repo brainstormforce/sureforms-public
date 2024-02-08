@@ -7,6 +7,13 @@
 
 use SureForms\Inc\Generate_Form_Markup;
 
+
+$form_preview = '';
+
+if (isset($_GET['form_preview'])) {
+	$form_preview = boolval($_GET['form_preview']);
+}
+
 ?>
 <!DOCTYPE html>
 <html class="srfm-html" <?php language_attributes(); ?>>
@@ -41,6 +48,10 @@ use SureForms\Inc\Generate_Form_Markup;
 		// Submit button.
 		$button_text      = $submit_button_text ? strval( $submit_button_text ) : '';
 		$button_alignment = get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
+
+	if( ! $form_preview  ) {
+
+
 
 	if ( 'justify' === $button_alignment ) {
 		$full = true;
@@ -118,5 +129,26 @@ use SureForms\Inc\Generate_Form_Markup;
 						?>
 		</div>
 		</div>
+
+		<?php } else { ?>
+			<style>
+				html {
+					margin-top: 0;
+				}
+
+				body.single.single-sureforms_form {
+					background-color: transparent;
+				}
+			</style>
+			<?php
+
+			show_admin_bar(false);
+
+			// phpcs:ignore
+			echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
+			// phpcs:ignoreEnd
+
+			wp_footer();
+		 } ?>
 	</body>
 </html>
