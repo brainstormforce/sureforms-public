@@ -10,7 +10,7 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, createRoot } from '@wordpress/element';
+import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
@@ -28,6 +28,8 @@ import {
 	toggleSidebar,
 } from '../../../modules/quick-action-sidebar/index.js';
 import { useDeviceType } from '@Controls/getPreviewType';
+
+import ProPanel from './components/pro-panel/index.js';
 
 const { select, dispatch } = wp.data;
 
@@ -416,6 +418,50 @@ const SureformsFormSpecificSettings = ( props ) => {
 			}
 		}
 	}, [ enableQuickActionSidebar ] );
+
+	// Check if the user is a pro user and enable/disable the pro panel
+	// eslint-disable-next-line no-unused-vars
+	const [ isPro, setIsPro ] = useState( sfBlockData.is_pro_active );
+
+	// add pro panel to the block inserter
+	useEffect( () => {
+		const checkAndRenderCustomComponent = () => {
+			const targetElement = document.querySelector(
+				'.block-editor-inserter__block-list'
+			);
+
+			if ( targetElement && ! isPro ) {
+				// Check if the custom component is already present
+				const customComponent = targetElement.querySelector(
+					'.upgrade-pro-container'
+				);
+
+				if ( ! customComponent ) {
+					const newDiv = document.createElement( 'div' );
+					newDiv.className = 'upgrade-pro-container';
+					targetElement.appendChild( newDiv );
+					render( <ProPanel />, newDiv );
+				}
+			}
+		};
+
+		// Set up MutationObserver to watch for changes in the DOM
+		const MutationObserver =
+			window.MutationObserver ||
+			window.WebKitMutationObserver ||
+			window.MozMutationObserver;
+		const observer = new MutationObserver( checkAndRenderCustomComponent );
+
+		// Set up the configuration of the MutationObserver
+		const observerConfig = { childList: true, subtree: true };
+
+		// Start observing the target element
+		const targetNode = document.body;
+		observer.observe( targetNode, observerConfig );
+
+		// Cleanup the observer on component unmount
+		return () => observer.disconnect();
+	}, [] );
 
 	return (
 		<PluginDocumentSettingPanel

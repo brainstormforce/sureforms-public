@@ -114,7 +114,7 @@ const SelectForm = ( {
 					isOpen ? 'srfm-form-arrow-open' : ''
 				}` }
 			>
-				{ formsData.length === 0 ? (
+				{ formsData.length === 0 || filter().length === 0 ? (
 					<div className="srfm-form-single-option">
 						{ __( 'No forms found…', 'sureforms' ) }
 					</div>

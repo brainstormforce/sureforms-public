@@ -187,6 +187,11 @@ class Gutenberg_Hooks {
 			);
 		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SUREFORMS_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
 
+		$plugin_path = 'sureforms-pro/sureforms-pro.php';
+
+		// Check if the sureforms-pro plugin is active.
+		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
+
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
@@ -199,6 +204,7 @@ class Gutenberg_Hooks {
 				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
+				'is_pro_active'          => $is_pro_active,
 			]
 		);
 
