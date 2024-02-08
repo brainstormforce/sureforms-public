@@ -2,7 +2,7 @@
   box-shadow: none;
   border: 1px solid #0e4372;
 }
-.wp-block-sureforms-form svg {
+.wp-block-sureforms-form svg[data-type=sureforms-logo] {
   width: 200px;
   height: 36px;
   margin-bottom: 8px;
