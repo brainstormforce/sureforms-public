@@ -116,14 +116,16 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 					'default' => 'classic',
 				),
 				'headingColor'                 => array(
-					'type' => 'string',
+					'type'    => 'string',
+					'default' => '#000',
 				),
 				'headingGradientColor'         => array(
 					'type'    => 'string',
 					'default' => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
 				),
 				'subHeadingColor'              => array(
-					'type' => 'string',
+					'type'    => 'string',
+					'default' => '#000',
 				),
 				'separatorColor'               => array(
 					'type'    => 'string',

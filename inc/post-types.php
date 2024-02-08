@@ -440,6 +440,7 @@ class Post_Types {
 				'_srfm_submit_alignment'          => 'string',
 				'_srfm_submit_alignment_backend'  => 'string',
 				'_srfm_submit_width'              => 'string',
+				'_srfm_inherit_theme_button'      => 'boolean',
 				// Additional Classes.
 				'_srfm_additional_classes'        => 'string',
 

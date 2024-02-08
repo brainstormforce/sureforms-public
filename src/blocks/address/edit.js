@@ -32,13 +32,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		cityPlaceholder,
 		statePlaceholder,
 		postalPlaceholder,
-		lineOneLabel,
-		lineTwoLabel,
-		cityLabel,
-		stateLabel,
-		countryLabel,
 		countryPlaceholder,
-		postalLabel,
 		formId,
 		preview,
 		help,
@@ -111,192 +105,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									}
 								/>
 							) }
-							<SRFMAdvancedPanelBody
-								title={ __( 'Address Line 1', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: lineOneLabel,
-										label: 'lineOneLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ lineOneLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											lineOneLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: lineOnePlaceholder,
-										label: 'lineOnePlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ lineOnePlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											lineOnePlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
-							<SRFMAdvancedPanelBody
-								title={ __( 'Address Line 2', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: lineTwoLabel,
-										label: 'lineTwoLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ lineTwoLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											lineTwoLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: lineTwoPlaceholder,
-										label: 'lineTwoPlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ lineTwoPlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											lineTwoPlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
-							<SRFMAdvancedPanelBody
-								title={ __( 'City', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: cityLabel,
-										label: 'cityLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ cityLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											cityLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: cityPlaceholder,
-										label: 'cityPlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ cityPlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											cityPlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
-							<SRFMAdvancedPanelBody
-								title={ __( 'State', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: stateLabel,
-										label: 'stateLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ stateLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											stateLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: statePlaceholder,
-										label: 'statePlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ statePlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											statePlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
-							<SRFMAdvancedPanelBody
-								title={ __( 'Postal Code', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: postalLabel,
-										label: 'postalLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ postalLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											postalLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: postalPlaceholder,
-										label: 'postalPlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ postalPlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											postalPlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
-							<SRFMAdvancedPanelBody
-								title={ __( 'Country', 'sureforms' ) }
-								initialOpen={ false }
-							>
-								<SRFMTextControl
-									data={ {
-										value: countryLabel,
-										label: 'countryLabel',
-									} }
-									label={ __( 'Label', 'sureforms' ) }
-									value={ countryLabel }
-									onChange={ ( value ) =>
-										setAttributes( {
-											countryLabel: value,
-										} )
-									}
-								/>
-								<SRFMTextControl
-									data={ {
-										value: countryPlaceholder,
-										label: 'countryPlaceholder',
-									} }
-									label={ __( 'Placeholder', 'sureforms' ) }
-									value={ countryPlaceholder }
-									onChange={ ( value ) =>
-										setAttributes( {
-											countryPlaceholder: value,
-										} )
-									}
-								/>
-							</SRFMAdvancedPanelBody>
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
@@ -307,6 +115,114 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'Address Line 1', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: lineOnePlaceholder,
+									label: 'lineOnePlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ lineOnePlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										lineOnePlaceholder: value,
+									} )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'Address Line 2', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: lineTwoPlaceholder,
+									label: 'lineTwoPlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ lineTwoPlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										lineTwoPlaceholder: value,
+									} )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'City', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: cityPlaceholder,
+									label: 'cityPlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ cityPlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										cityPlaceholder: value,
+									} )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'State', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: statePlaceholder,
+									label: 'statePlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ statePlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										statePlaceholder: value,
+									} )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'Postal Code', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: postalPlaceholder,
+									label: 'postalPlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ postalPlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										postalPlaceholder: value,
+									} )
+								}
+							/>
+						</SRFMAdvancedPanelBody>
+						<SRFMAdvancedPanelBody
+							title={ __( 'Country', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<SRFMTextControl
+								data={ {
+									value: countryPlaceholder,
+									label: 'countryPlaceholder',
+								} }
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ countryPlaceholder }
+								onChange={ ( value ) =>
+									setAttributes( {
+										countryPlaceholder: value,
+									} )
 								}
 							/>
 						</SRFMAdvancedPanelBody>

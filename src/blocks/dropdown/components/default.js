@@ -16,20 +16,15 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 				id={ `srfm-listbox-label ${ blockID }` }
 				allowedFormats={ [] }
 			/>
-			<div className="srfm-block-wrap srfm-dropdown-common-wrap">
-				<select
-					id={ `srfm-${ slug }-${ blockID }` }
+			<div className={ `srfm-block-wrap srfm-dropdown-common-wrap` }>
+				<input
+					type="text"
 					className={ `srfm-input-common srfm-${ slug }-input` }
+					id={ `srfm-${ slug }-state-${ blockID }` }
+					aria-required={ required ? 'true' : 'false' }
+					placeholder={ placeholder }
 					readOnly
-				>
-					{ placeholder === '' ? (
-						''
-					) : (
-						<option value="" selected disabled hidden>
-							{ placeholder }
-						</option>
-					) }
-				</select>
+				/>
 			</div>
 		</>
 	);
