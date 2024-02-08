@@ -57,23 +57,18 @@ export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 					placeholder={ statePlaceholder }
 					readOnly
 				/>
+
 				<div
 					className={ `srfm-${ slug }-country-wrap srfm-dropdown-common-wrap` }
 				>
-					<select
-						id={ `srfm-${ slug }-country-${ blockID }` }
-						autoComplete="country-name"
-						className="srfm-input-common srfm-input-address-country srfm-dropdown-common"
+					<input
+						type="text"
+						className={ `srfm-input-common srfm-input-address-country srfm-dropdown-common` }
+						id={ `srfm-${ slug }-state-${ blockID }` }
+						aria-required={ required ? 'true' : 'false' }
+						placeholder={ countryPlaceholder }
 						readOnly
-					>
-						{ countryPlaceholder === '' ? (
-							''
-						) : (
-							<option value="" selected disabled hidden>
-								{ countryPlaceholder }
-							</option>
-						) }
-					</select>
+					/>
 				</div>
 				<input
 					type="text"

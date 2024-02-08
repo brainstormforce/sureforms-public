@@ -47,7 +47,7 @@ class Email_Markup extends Base {
 		$aria_unique          = $is_unique ? 'true' : 'false';
 		$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
 		$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
-		$input_label_fallback = $label ? $label : 'Email';
+		$input_label_fallback = $label ? $label : __( 'Email', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 		$input_confirm_label_fallback = 'Confirm ' . $input_label_fallback;

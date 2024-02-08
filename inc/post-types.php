@@ -440,6 +440,7 @@ class Post_Types {
 				'_srfm_submit_alignment'          => 'string',
 				'_srfm_submit_alignment_backend'  => 'string',
 				'_srfm_submit_width'              => 'string',
+				'_srfm_inherit_theme_button'      => 'boolean',
 				// Additional Classes.
 				'_srfm_additional_classes'        => 'string',
 
@@ -785,7 +786,7 @@ class Post_Types {
 			if ( is_array( $terms ) && count( $terms ) > 0 ) {
 				$form_id   = intval( $terms[0]->slug );
 				$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
-				echo '<p>' . esc_html( $form_name ) . '</p>';
+				echo '<p>' . esc_html( $form_name . ' #' . $form_id ) . '</p>';
 			} else {
 				?>
 				<p><?php echo esc_html__( 'SureForms Form', 'sureforms' ); ?></p>

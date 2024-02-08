@@ -46,7 +46,7 @@ class Multichoice_Markup extends Base {
 			$aria_require_attr    = $required ? 'true' : 'false';
 			$type_attr            = $single_selection ? 'radio' : 'checkbox';
 			$name_attr            = $single_selection ? 'name="srfm-input-' . esc_attr( $slug ) . '-' . esc_attr( $block_id ) . '"' : '';
-			$input_label_fallback = $label ? $label : 'Multi Choice';
+			$input_label_fallback = $label ? $label : __( 'Multi Choice', 'sureforms' );
 			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 			$choice_width_attr    = $choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $choice_width ) : '';
 

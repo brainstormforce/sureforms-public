@@ -77,7 +77,7 @@ const attributes = {
 	},
 	separatorColor: {
 		type: 'string',
-		default: '#333',
+		default: '#000',
 	},
 	separatorHeight: {
 		type: 'number',
@@ -240,6 +240,7 @@ const attributes = {
 	},
 	elementColor: {
 		type: 'string',
+		default: '#000',
 	},
 	elementIconWidth: {
 		type: 'number',

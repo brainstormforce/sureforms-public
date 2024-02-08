@@ -25,9 +25,6 @@
   content: " *";
   color: var(--srfm-error-text-color);
 }
-.is-root-container .srfm-dropdown-common-wrap select {
-  max-width: 100%;
-}
 .is-root-container .srfm-input-common {
   font-size: 0.8em;
   font-weight: 400;
@@ -61,6 +58,7 @@
 .is-root-container .srfm-with-icon .srfm-input-icon svg {
   width: 0.9em;
   height: 0.9em;
+  stroke: var(--srfm-body-input-color);
 }
 .is-root-container .srfm-with-icon .srfm-input-icon svg path {
   stroke: var(--srfm-body-input-color);
@@ -149,12 +147,14 @@
   margin: 0;
   border: 1px solid var(--srfm-border-color);
   box-shadow: none;
+  background-color: var(--srfm-base-background-color);
 }
 .is-root-container div[data-type="sureforms/checkbox"] .srfm-block-wrap .srfm-block-text {
   font-size: 0.7em;
   padding-right: 8px;
   line-height: 18px;
   pointer-events: all;
+  color: var(--srfm-label-text-color);
 }
 .is-root-container div[data-type="sureforms/multi-choice"].is-selected .srfm-block-wrap {
   pointer-events: initial;
@@ -165,24 +165,23 @@
   margin: 0 -0.3em;
   row-gap: 0.6em;
 }
-@media (min-width: 768px) {
+@media (min-width: 431px) {
   .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap.srfm-choice-width-100 .srfm-multi-choice-single {
-    width: calc(100% - 0.3em);
+    width: 100%;
   }
   .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap.srfm-choice-width-50 .srfm-multi-choice-single {
-    width: calc(50% - 0.3em);
+    width: 50%;
   }
   .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap.srfm-choice-width-33-33 .srfm-multi-choice-single {
-    width: calc(33% - 0.3em);
+    width: 33%;
   }
   .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap.srfm-choice-width-25 .srfm-multi-choice-single {
-    width: calc(25% - 0.3em);
+    width: 25%;
   }
 }
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-single {
   padding: 0 0.3em;
   cursor: pointer;
-  background-color: var(--srfm-base-background-color);
 }
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-single .srfm-input-common {
   width: calc(100% - 3em);
@@ -198,6 +197,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   padding: 0.625em 0.875em;
+  background-color: var(--srfm-base-background-color);
   border: var(--srfm-border) solid var(--srfm-border-color);
   border-radius: var(--srfm-border-radius);
   width: auto;
@@ -218,15 +218,49 @@
   line-height: 1.5em;
   padding-right: 0.5em;
   width: calc(100% - 1em);
+  color: var(--srfm-body-input-color);
   margin-top: 0;
   margin-bottom: 0;
   word-break: break-word;
 }
-@media (max-width: 767px) {
+@media (max-width: 430px) {
   .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-single {
     width: 100%;
   }
 }
 .is-root-container div[data-type="sureforms/multi-choice"] .srfm-block-wrap .srfm-multi-choice-add-option-wrapper {
   width: 100%;
+}
+.is-root-container div[data-type="sureforms/phone"] .flag-container .arrow:after {
+  background-color: transparent;
+  color: var(--srfm-body-input-color);
+}
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap {
+  position: relative;
+  width: 100%;
+  color: var(--srfm-placeholder-color);
+}
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap input[type=text].srfm-address-country-wrap {
+  border-bottom: 0;
+  border-radius: 0;
+}
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap .srfm-input-common,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap .srfm-input-common {
+  width: 100%;
+}
+.is-root-container div[data-type="sureforms/address"] .srfm-dropdown-common-wrap::after,
+.is-root-container div[data-type="sureforms/dropdown"] .srfm-dropdown-common-wrap::after {
+  content: "";
+  position: absolute;
+  width: 0.5em;
+  height: 0.5em;
+  font-size: 0.8em;
+  border: 1px solid var(--srfm-body-input-color);
+  border-right: 0;
+  border-top: 0;
+  transform: rotate(-45deg);
+  left: 1em;
+  top: 1em;
 }

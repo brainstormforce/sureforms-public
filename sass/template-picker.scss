@@ -39,6 +39,12 @@ $sidebar_width: 290px;
 		padding: 0px;
 	}
 
+	#bsf-optin-notice,
+	#uagb-admin-rating,
+	.notice-error {
+		display: none;
+	}
+
 	.srfm-content-section {
 		height: calc( 100vh - 50px );
 		padding-top: 70px;
@@ -291,6 +297,7 @@ $sidebar_width: 290px;
 					flex-wrap: wrap;
 					padding-bottom: 0.75em;
 					color: $heading_color;
+					align-items: center;
 
 					svg {
 						width: 16px;

@@ -22,7 +22,7 @@ function GeneralSettings( props ) {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'sureforms/page-break'
 	);
-	const root = document.documentElement;
+	const root = document.documentElement.querySelector( 'body' );
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
