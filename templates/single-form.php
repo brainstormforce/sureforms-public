@@ -10,8 +10,10 @@ use SureForms\Inc\Generate_Form_Markup;
 
 $form_preview = '';
 
-if (isset($_GET['form_preview'])) {
-	$form_preview = boolval($_GET['form_preview']);
+$form_preview_attr = $_GET['form_preview']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+if ( isset( $form_preview_attr ) && $form_preview_attr ) {
+	$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 }
 
 ?>
@@ -49,32 +51,32 @@ if (isset($_GET['form_preview'])) {
 		$button_text      = $submit_button_text ? strval( $submit_button_text ) : '';
 		$button_alignment = get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
 
-	if( ! $form_preview  ) {
+	if ( ! $form_preview ) {
 
 
 
-	if ( 'justify' === $button_alignment ) {
-		$full = true;
-	} else {
-		$full = false;
-	}
+		if ( 'justify' === $button_alignment ) {
+			$full = true;
+		} else {
+			$full = false;
+		}
 
 		$recaptcha_version       = get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
 		$google_captcha_site_key = '';
-	switch ( $recaptcha_version ) {
-		case 'v2-checkbox':
-			$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
-			break;
-		case 'v2-invisible':
-			$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
-			break;
-		case 'v3-reCAPTCHA':
-			$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
-			break;
-		default:
-			break;
-	}
-	?>
+		switch ( $recaptcha_version ) {
+			case 'v2-checkbox':
+				$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
+				break;
+			case 'v2-invisible':
+				$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
+				break;
+			case 'v3-reCAPTCHA':
+				$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
+				break;
+			default:
+				break;
+		}
+		?>
 		<style>
 			#srfm-single-page-container {
 				--srfm-form-container-width: 
@@ -132,8 +134,8 @@ if (isset($_GET['form_preview'])) {
 
 		<?php } else { ?>
 			<style>
-				html {
-					margin-top: 0;
+				html.srfm-html {
+					margin-top: 0 !important; /* Needs to be important to remove margin-top added by WordPress admin bar  */
 				}
 
 				body.single.single-sureforms_form {
@@ -142,13 +144,14 @@ if (isset($_GET['form_preview'])) {
 			</style>
 			<?php
 
-			show_admin_bar(false);
+			show_admin_bar( false );
 
 			// phpcs:ignore
 			echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
 			// phpcs:ignoreEnd
 
 			wp_footer();
-		 } ?>
+		}
+		?>
 	</body>
 </html>
