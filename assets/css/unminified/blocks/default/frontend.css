@@ -248,6 +248,9 @@
 .srfm-form-container .srfm-form .srfm-submit-container {
   width: 100%;
 }
+.srfm-form-container .srfm-form .srfm-submit-container.hide {
+  display: none;
+}
 
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap {
   display: flex;

@@ -24,9 +24,6 @@
   background-position: center;
   background-color: var(--srfm-bg-color);
 }
-.single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container.hide {
-  display: none;
-}
 @media (max-width: 576px) {
   .single-sureforms_form .srfm-single-page-container .srfm-form-wrapper .srfm-form-container {
     padding: 24px;
