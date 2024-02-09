@@ -65,6 +65,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 					'tablet_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'mobile_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'category'                      => 'sureforms',
+					'srfm_url'                      => SUREFORMS_URL,
 				)
 			);
 

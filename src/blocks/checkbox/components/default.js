@@ -24,7 +24,6 @@ export const CheckboxComponent = ( { attributes, setAttributes, blockID } ) => {
 				className={ `srfm-block-text srfm-span-wrap ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
-				allowedFormats={ [] }
 			/>
 		</div>
 	);

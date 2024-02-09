@@ -149,6 +149,9 @@
   margin-bottom: 1.2em;
   color: var(--srfm-body-input-color);
 }
+.srfm-form-container .srfm-form .srfm-block label {
+  font-size: 1em;
+}
 .srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-input-common,
 .srfm-form-container .srfm-form .srfm-block.srfm-error .srfm-block-wrap .srfm-dropdown-common {
   border-color: var(--srfm-error-surface-color);

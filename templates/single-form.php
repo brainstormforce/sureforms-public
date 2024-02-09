@@ -92,7 +92,7 @@ if (isset($_GET['form_preview'])) {
 			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
-					echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
+					echo Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
 				<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 

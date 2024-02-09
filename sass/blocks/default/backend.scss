@@ -209,13 +209,14 @@
 				margin: 0;
 				border: 1px solid var( --srfm-border-color );
 				box-shadow: none;
-				background-color: var(--srfm-base-background-color);
+				background-color: var( --srfm-base-background-color );
 			}
 
 			.srfm-block-text {
 				font-size: 0.7em;
 				padding-left: 8px;
 				line-height: 18px;
+				pointer-events: all;
 				color: var( --srfm-label-text-color );
 			}
 		}

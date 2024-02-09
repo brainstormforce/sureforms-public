@@ -31,10 +31,6 @@
 			"type": "string",
 			"default": "Checkbox"
 		},
-		"labelUrl": {
-			"type": "string",
-			"default": ""
-		},
 		"required": {
 			"type": "boolean"
 		},
