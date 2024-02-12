@@ -105,7 +105,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const sureforms_keys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-	console.log(sureforms_keys)
+
 	const blockCount = useSelect( () =>
 		select( blockEditorStore ).getBlockCount()
 	);
@@ -143,10 +143,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
-		// console.log('before',sureforms_keys._srfm_is_page_break)
-		if(sureforms_keys._srfm_is_page_break === undefined) return;
+		if ( sureforms_keys._srfm_is_page_break === undefined ) {
+			return;
+		}
 		updateMeta( '_srfm_is_page_break', isPageBreak );
-		// console.log('after',sureforms_keys._srfm_is_page_break)
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
