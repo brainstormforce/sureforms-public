@@ -398,58 +398,62 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function register_post_metas() {
-		$metas = array(
-			// General tab metas.
-			'_srfm_show_labels'               => 'boolean',
-			'_srfm_show_asterisk'             => 'boolean',
-			'_srfm_page_form_title'           => 'boolean',
-			'_srfm_single_page_form_title'    => 'boolean',
-			'_srfm_submit_button_text'        => 'string',
 
-			// Styling tab metas.
-			// Form Container.
-			'_srfm_form_container_width'      => 'integer',
-			'_srfm_color1'                    => 'string',
-			'_srfm_bg_type'                   => 'string',
-			'_srfm_bg_image'                  => 'string',
-			'_srfm_bg_color'                  => 'string',
-			'_srfm_fontsize'                  => 'integer',
-			'_srfm_label_color'               => 'string',
-			'_srfm_help_color'                => 'string',
-			// Input Fields.
-			'_srfm_input_text_color'          => 'string',
-			'_srfm_input_placeholder_color'   => 'string',
-			'_srfm_input_bg_color'            => 'string',
-			'_srfm_input_border_color'        => 'string',
-			'_srfm_input_border_width'        => 'integer',
-			'_srfm_input_border_radius'       => 'integer',
-			// Error.
-			'_srfm_field_error_color'         => 'string',
-			'_srfm_field_error_surface_color' => 'string',
-			'_srfm_field_error_bg_color'      => 'string',
-			// Submit Button.
-			'_srfm_button_text_color'         => 'string',
-			'_srfm_btn_bg_type'               => 'string',
-			'_srfm_button_bg_color'           => 'string',
-			'_srfm_button_border_color'       => 'string',
-			'_srfm_button_border_width'       => 'integer',
-			'_srfm_submit_width_backend'      => 'string',
-			'_srfm_button_border_radius'      => 'integer',
-			'_srfm_submit_alignment'          => 'string',
-			'_srfm_submit_alignment_backend'  => 'string',
-			'_srfm_submit_width'              => 'string',
-			'_srfm_inherit_theme_button'      => 'boolean',
-			// Additional Classes.
-			'_srfm_additional_classes'        => 'string',
+		$metas = apply_filters(
+			'sureforms_register_post_meta',
+			array(
+				// General tab metas.
+				'_srfm_show_labels'               => 'boolean',
+				'_srfm_show_asterisk'             => 'boolean',
+				'_srfm_page_form_title'           => 'boolean',
+				'_srfm_single_page_form_title'    => 'boolean',
+				'_srfm_submit_button_text'        => 'string',
 
-			// Advanced tab metas.
-			// Success Message.
-			'_srfm_submit_type'               => 'string',
-			'_srfm_thankyou_message_title'    => 'string',
-			'_srfm_thankyou_message'          => 'string',
-			'_srfm_submit_url'                => 'string',
-			// Security.
-			'_srfm_form_recaptcha'            => 'string',
+				// Styling tab metas.
+				// Form Container.
+				'_srfm_form_container_width'      => 'integer',
+				'_srfm_color1'                    => 'string',
+				'_srfm_bg_type'                   => 'string',
+				'_srfm_bg_image'                  => 'string',
+				'_srfm_bg_color'                  => 'string',
+				'_srfm_fontsize'                  => 'integer',
+				'_srfm_label_color'               => 'string',
+				'_srfm_help_color'                => 'string',
+				// Input Fields.
+				'_srfm_input_text_color'          => 'string',
+				'_srfm_input_placeholder_color'   => 'string',
+				'_srfm_input_bg_color'            => 'string',
+				'_srfm_input_border_color'        => 'string',
+				'_srfm_input_border_width'        => 'integer',
+				'_srfm_input_border_radius'       => 'integer',
+				// Error.
+				'_srfm_field_error_color'         => 'string',
+				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_bg_color'      => 'string',
+				// Submit Button.
+				'_srfm_button_text_color'         => 'string',
+				'_srfm_btn_bg_type'               => 'string',
+				'_srfm_button_bg_color'           => 'string',
+				'_srfm_button_border_color'       => 'string',
+				'_srfm_button_border_width'       => 'integer',
+				'_srfm_submit_width_backend'      => 'string',
+				'_srfm_button_border_radius'      => 'integer',
+				'_srfm_submit_alignment'          => 'string',
+				'_srfm_submit_alignment_backend'  => 'string',
+				'_srfm_submit_width'              => 'string',
+				'_srfm_inherit_theme_button'      => 'boolean',
+				// Additional Classes.
+				'_srfm_additional_classes'        => 'string',
+
+				// Advanced tab metas.
+				// Success Message.
+				'_srfm_submit_type'               => 'string',
+				'_srfm_thankyou_message_title'    => 'string',
+				'_srfm_thankyou_message'          => 'string',
+				'_srfm_submit_url'                => 'string',
+				// Security.
+				'_srfm_form_recaptcha'            => 'string',
+			)
 		);
 
 		foreach ( $metas as $meta => $type ) {
