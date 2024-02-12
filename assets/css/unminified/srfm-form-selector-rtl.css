@@ -2,8 +2,13 @@
   box-shadow: none;
   border: 1px solid #0e4372;
 }
-.wp-block-sureforms-form svg {
-  width: 200px;
+.wp-block-sureforms-form .components-placeholder__label {
+  justify-content: center;
+  width: 100%;
+}
+.wp-block-sureforms-form .components-placeholder__label svg[data-type=sureforms-logo] {
+  max-width: 200px;
+  width: 100%;
   height: 36px;
   margin-bottom: 8px;
 }
@@ -121,6 +126,8 @@
   margin: auto;
   flex-direction: column;
   gap: 24px;
+  max-width: 380px;
+  width: 100%;
 }
 
 .srfm-select-form-button {
