@@ -10,9 +10,9 @@ use SureForms\Inc\Generate_Form_Markup;
 
 $form_preview = '';
 
-$form_preview_attr = $_GET['form_preview']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$form_preview_attr = isset( $_GET['form_preview'] ) ? $_GET['form_preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-if ( isset( $form_preview_attr ) && $form_preview_attr ) {
+if ( $form_preview_attr ) {
 	$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 }
 
