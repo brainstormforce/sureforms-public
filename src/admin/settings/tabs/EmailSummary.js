@@ -18,12 +18,10 @@ const EmailSummary = () => {
 	useEffect( () => {
 		const fetchEmailSummaryOptions = async () => {
 			try {
-				setLoading( true );
 				const response = await apiFetch( {
 					path: 'sureforms/v1/get-email-summary-options',
 				} );
 				setFormData( response );
-				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching email summary options:', error );
 			}

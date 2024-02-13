@@ -33,7 +33,8 @@ class Email_Summaries {
 	public function __construct() {
 		add_action( 'srfm_weekly_scheduled_events', array( $this, 'send_entries_to_admin' ) );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-		add_action( 'init', [ $this, 'convert_local_to_utc' ] );
+		// add_action( 'init', [ $this, 'schedule_weekly_entries_email' ] );
+
 	}
 
 	/**
@@ -203,7 +204,7 @@ class Email_Summaries {
 		// Check if email summary options exist and if email summary is enabled
 		if ( is_wp_error( $email_summary_options ) || ! isset( $email_summary_options['enable_email_summary'] ) || ! $email_summary_options['enable_email_summary'] ) {
 			// Log an error or handle the absence of options or if email summary is not enabled
-			error_log( 'Email summary options not found or email summary is not enabled' );
+			wp_send_json_error( 'Email summary options not found or email summary is not enabled' );
 			return;
 		}
 
@@ -214,7 +215,7 @@ class Email_Summaries {
 
 		// If no recipients are specified, return
 		if ( empty( $recipients ) ) {
-			error_log( 'No recipients specified for email summary' );
+			wp_send_json_error( 'No recipients specified for email summary' );
 			return;
 		}
 
@@ -240,7 +241,7 @@ class Email_Summaries {
 		// Check if email summary options exist and if email summary is enabled
 		if ( is_wp_error( $email_summary_options ) || ! isset( $email_summary_options['enable_email_summary'] ) || ! $email_summary_options['enable_email_summary'] ) {
 			// Log an error or handle the absence of options or if email summary is not enabled
-			error_log( 'Email summary options not found or email summary is not enabled' );
+			wp_send_json_error( 'Email summary options not found or email summary is not enabled' );
 			return;
 		}
 
@@ -258,11 +259,21 @@ class Email_Summaries {
 		// Convert the current time to the user's timezone
 		$current_time_user_timezone = strtotime( date( 'Y-m-d H:i:s', $current_time ) );
 
-		// Converted 9:00 AM to UTC
-		$time = self::convert_local_to_utc();
+		// time in UTC
+		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
+
+		// Check if the time is in the correct format and represents a valid UTC time
+		if ( ! preg_match('/^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time) ) {
+			// Log an error and change the time to 09:00:00
+			wp_send_json_error( 'Invalid time format the time has been changed to 09:00:00' );
+			// $time = '09:00:00';
+			return;
+		}
 
 		// Calculate the timestamp for the selected day at 9:00 AM in the user's timezone
-		$next_day_user_timezone = strtotime( "next $day $time", $current_time_user_timezone );
+		// $next_day_user_timezone = strtotime( "next $day $time", $current_time_user_timezone );
+		// Added just for testing.
+		$next_day_user_timezone = strtotime( "$day $time", $current_time_user_timezone );
 
 		// Convert the calculated time back to the server's timezone
 		$scheduled_time = strtotime( date( 'Y-m-d H:i:s', $next_day_user_timezone ) );
@@ -271,21 +282,6 @@ class Email_Summaries {
 		if ( false === as_has_scheduled_action( 'srfm_weekly_scheduled_events' ) ) {
 			as_schedule_recurring_action( $scheduled_time, WEEK_IN_SECONDS, 'srfm_weekly_scheduled_events', array(), 'sureforms', true );
 		}
-	}
-
-	/**
-	 * Convert the User's local 09:00: AM time to UTC.
-	 *
-	 * @return string UTC time string.
-	 * @since 0.0.1
-	 */
-	public function convert_local_to_utc() {
-		$local_time         = '09:00:00';
-		$wp_timezone_offset = get_option( 'gmt_offset' );
-		$wp_timezone        = timezone_name_from_abbr( '', (int) $wp_timezone_offset * 3600, 0 );
-		$local_time         = new DateTime( $local_time, new DateTimeZone( $wp_timezone ) );
-		$utc_time           = $local_time->setTimezone( new DateTimeZone( 'UTC' ) );
-		return $utc_time->format( 'H:i:s' );
 	}
 
 }
