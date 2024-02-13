@@ -34,6 +34,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		duplicateMsg,
 		formId,
 		preview,
+		isConditionalLogic
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -186,7 +187,23 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<SRFMAdvancedPanelBody
+							title={ __( 'Conditional Logic', 'sureforms' ) }
+							initialOpen={ false }
+						>
+							<ToggleControl
+								label={ __(
+									'Enable Conditional Logic',
+									'sureforms'
+								) }
+								checked={ isConditionalLogic }
+								onChange={ ( value ) => {
+									setAttributes({isConditionalLogic:value})
+								} }
+							/>
+						</SRFMAdvancedPanelBody>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<>
