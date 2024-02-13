@@ -100,6 +100,7 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		// Load the action scheduler before plugin loads.
 		require_once SUREFORMS_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );

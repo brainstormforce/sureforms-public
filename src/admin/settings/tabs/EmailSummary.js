@@ -127,7 +127,6 @@ const EmailSummary = () => {
 									</div>
 									<div className="srfm-w-[600px] srfm-mt-4">
 										<textarea
-											// type="text"
 											className="srfm-input srfm-w-full srfm-rounded-md srfm-border-gray-300 srfm-shadow-sm"
 											placeholder={ __(
 												'Enter Email Addresses Separated by Comma',
