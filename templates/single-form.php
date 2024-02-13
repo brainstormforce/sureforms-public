@@ -141,6 +141,10 @@ if ( $form_preview_attr ) {
 				body.single.single-sureforms_form {
 					background-color: transparent;
 				}
+
+				.srfm-form-container ~ div { 
+					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */
+				}
 			</style>
 			<?php
 
