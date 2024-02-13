@@ -17,7 +17,7 @@
   transition: all 0.3s ease;
 }
 .wp-block-sureforms-form .is-primary:hover {
-  background-color: #0184c7;
+  background-color: #0e4372;
 }
 .wp-block-sureforms-form .is-secondary {
   background-color: #fff;
@@ -31,8 +31,8 @@
 }
 .wp-block-sureforms-form .is-secondary:hover {
   background-color: #fff;
-  color: #0184c7;
-  border: 1px solid #0184c7;
+  color: #0e4372;
+  border: 1px solid #0e4372;
 }
 
 .components-button.is-secondary:hover:not(:disabled) {
