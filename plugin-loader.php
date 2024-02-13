@@ -23,6 +23,7 @@ use SureForms\Inc\SRFM_Export;
 use SureForms\Inc\SRFM_Smart_Tags;
 use SureForms\Inc\Generate_Form_Markup;
 use SureForms\Inc\Create_New_Form;
+use SureForms\Inc\Email_Summaries;
 
 /**
  * Plugin_Loader
@@ -99,6 +100,7 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		require_once SUREFORMS_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
 
@@ -120,6 +122,7 @@ class Plugin_Loader {
 		SRFM_Smart_Tags::get_instance();
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
+		Email_Summaries::get_instance();
 
 		/**
 		 * The code that runs during plugin activation

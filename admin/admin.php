@@ -349,7 +349,8 @@ class Admin {
 				'settings',
 				'sureforms_admin',
 				[
-					'site_url' => get_site_url(),
+					'site_url'    => get_site_url(),
+					'admin_email' => get_option( 'admin_email' ),
 				]
 			);
 		}

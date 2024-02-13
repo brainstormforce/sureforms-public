@@ -27,5 +27,8 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
+  },
+  "require": {
+    "woocommerce/action-scheduler": "^3.7"
   }
 }
