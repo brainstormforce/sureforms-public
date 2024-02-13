@@ -4,10 +4,15 @@
 		box-shadow: none;
 		border: 1px solid #0e4372;
 	}
-	svg[data-type="sureforms-logo"] {
-		width: 200px;
-		height: 36px;
-		margin-bottom: 8px;
+	.components-placeholder__label {
+		justify-content: center;
+		width: 100%;
+		svg[data-type="sureforms-logo"] {
+			max-width: 200px;
+			width: 100%;
+			height: 36px;
+			margin-bottom: 8px;
+		}
 	}
 	.is-primary {
 		background-color: #0e4372;
@@ -121,16 +126,13 @@
 	}
 }
 
-.srfm-select-form-placeholder {
-	display: flex !important;
-	align-items: center !important;
-}
-
 .srfm-select-form-container {
 	display: flex;
 	margin: auto;
 	flex-direction: column;
 	gap: 24px;
+	max-width: 380px;
+	width: 100%;
 }
 
 .srfm-select-form-button {
