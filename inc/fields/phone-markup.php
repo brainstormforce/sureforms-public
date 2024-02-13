@@ -48,7 +48,7 @@ class Phone_Markup extends Base {
 		$input_label_fallback = $label ? $label : __( 'Phone', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
-		$unique_slug = 'srfm-'. $slug . '-' . $block_id . $input_label;
+		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 		ob_start(); ?>
 		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">

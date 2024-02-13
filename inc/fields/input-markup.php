@@ -53,7 +53,7 @@ class Input_Markup extends Base {
 		$input_label_fallback = $label ? $label : __( 'Text Field', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
-		$unique_slug = 'srfm-'. $slug . '-' . $block_id . $input_label;
+		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 		ob_start(); ?>
 
