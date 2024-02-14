@@ -93,7 +93,7 @@ class Generate_Form_Markup {
 			$btn_bg_type       = Sureforms_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0184C7' );
+				$btn_bg_color      = Sureforms_Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0e4372' );
 				$btn_border_color  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
 				$btn_border_radius = Sureforms_Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
