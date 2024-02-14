@@ -14,7 +14,13 @@ const Header = () => {
 			{ /** Close Icon */ }
 			<div
 				className="srfm-tp-header-close"
-				onClick={ () => window.history.back() }
+				onClick={ () => {
+					if ( window.history.length > 1 ) {
+						window.history.back();
+					} else {
+						window.close();
+					}
+				} }
 			>
 				<div>{ ICONS.close }</div>
 			</div>

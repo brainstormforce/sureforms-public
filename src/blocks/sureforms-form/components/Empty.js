@@ -30,6 +30,7 @@ export default ( { setAttributes } ) => {
 						viewBox="0 0 142 24"
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
+						data-type="sureforms-logo"
 					>
 						<path
 							fill-rule="evenodd"
@@ -90,8 +91,10 @@ export default ( { setAttributes } ) => {
 							variant="secondary"
 							text={ __( 'Add New', 'sureforms' ) }
 							onClick={ () => {
-								window.location.href =
-									sfBlockData.template_picker_url;
+								// open in a new tab
+								window.open( sfBlockData.template_picker_url );
+								// window.location.href =
+								// 	sfBlockData.template_picker_url;
 							} }
 						/>
 					</div>

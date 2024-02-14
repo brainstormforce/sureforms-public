@@ -65,96 +65,19 @@ export default ( { attributes, setAttributes } ) => {
 	} );
 
 	// Remove unwanted elements from the iframe and add styling for the form
-	const removeContentFromIframe = () => {
+	const modifyIframeContent = () => {
 		const iframeDocument = iframeRef.current.contentDocument;
 
 		if ( ! iframeDocument ) {
 			return;
 		}
 
-		const wpAdminBar = iframeDocument.getElementById( 'wpadminbar' );
-		const siteDesktopHeader =
-			iframeDocument.querySelector( '.site-header' );
-		const srfmSinglePageBanner =
-			iframeDocument.querySelector( '.srfm-page-banner' );
-		const srfmSingleForm =
-			iframeDocument.querySelector( '.srfm-single-form' );
-		const srfmSuccessMsg =
-			iframeDocument.querySelector( '.srfm-success-box' );
-		const formContainer = iframeDocument.querySelector(
+		const formOuterContainerSelector = iframeDocument.querySelector(
 			'.srfm-form-container'
 		);
-		const formContainerWrapper =
-			iframeDocument.querySelector( '.srfm-form-wrapper' );
-
-		const formOuterContainerSelector = iframeDocument.querySelector(
-			'.srfm-single-page-container'
-		);
-
-		const siteFooter = iframeDocument.getElementById( 'colophon' );
-		const iframeHtml = iframeDocument.querySelector(
-			'html.srfm-html.hydrated'
-		);
-
-		if ( formContainerWrapper ) {
-			formContainerWrapper.style.setProperty( 'padding', '0' );
-		}
-
-		if ( formContainer ) {
-			formContainer.style.setProperty( 'margin-top', '0' );
-			formContainer.style.setProperty( 'box-shadow', 'none' );
-			formContainer.style.setProperty( 'max-width', '100%' );
-			formContainer.style.setProperty( 'padding', '0' );
-			formContainer.style.setProperty(
-				'background-color',
-				'transparent'
-			);
-			formContainer.style.setProperty( 'background-image', 'none' );
-		}
-
-		if ( iframeHtml ) {
-			iframeHtml.style.setProperty(
-				'background',
-				'transparent',
-				'important'
-			);
-			iframeHtml.style.setProperty( 'margin-top', '0', 'important' );
-		}
-		if ( iframeDocument.body ) {
-			const bodyStyle = iframeDocument.body.style;
-			bodyStyle.pointerEvents = 'none';
-			bodyStyle.backgroundColor = 'transparent';
-			bodyStyle.overflow = 'hidden';
-		}
-
-		// Combine style changes
-		if ( wpAdminBar ) {
-			wpAdminBar.remove();
-		}
-		if ( siteFooter ) {
-			siteFooter.remove();
-		}
-		if ( siteDesktopHeader ) {
-			siteDesktopHeader.remove();
-		}
-		if ( srfmSinglePageBanner ) {
-			srfmSinglePageBanner.remove();
-		}
-		if ( srfmSuccessMsg ) {
-			srfmSuccessMsg.remove();
-		}
 
 		if ( formOuterContainerSelector ) {
-			const iframeHalfScrollHeight =
-				formOuterContainerSelector.offsetHeight;
-			iframeRef.current.height = iframeHalfScrollHeight + 'px';
-		}
-
-		// Combine element removal
-		if ( srfmSingleForm ) {
-			srfmSingleForm.style.boxShadow = 'none';
-			srfmSingleForm.style.backgroundColor = 'transparent';
-			srfmSingleForm.style.width = '100%';
+			iframeRef.current.height = formOuterContainerSelector.offsetHeight;
 		}
 
 		setLoading( false );
@@ -163,8 +86,9 @@ export default ( { attributes, setAttributes } ) => {
 	useEffect( () => {
 		if ( iframeRef && iframeRef.current ) {
 			setLoading( true );
+
 			iframeRef.current.onload = () => {
-				removeContentFromIframe();
+				modifyIframeContent();
 			};
 		}
 	}, [ id, iframeRef, hasResolved ] );
@@ -274,7 +198,7 @@ export default ( { attributes, setAttributes } ) => {
 							loading={ 'eager' }
 							ref={ iframeRef }
 							title="srfm-iframe"
-							src={ formUrl }
+							src={ formUrl + `?form_preview=true` }
 							width={ '100%' }
 						/>
 					</div>
