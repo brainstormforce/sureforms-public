@@ -28,6 +28,7 @@ $bg_color: var( --srfm-bg-color );
 				background-size: cover;
 				background-position: center;
 				background-color: var( --srfm-bg-color );
+				
 				&.hide {
 					display: none;
 				}

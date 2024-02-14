@@ -64,7 +64,11 @@ function StyleSettings( props ) {
 	function submitButtonInherit() {
 		const inheritClass = 'wp-block-button__link';
 		const customClass = 'srfm-btn-bg-color';
-		const btnClass = ( sureforms_keys?._srfm_inherit_theme_button && sureforms_keys._srfm_inherit_theme_button ) ? inheritClass : customClass;
+		const btnClass =
+			sureforms_keys?._srfm_inherit_theme_button &&
+			sureforms_keys._srfm_inherit_theme_button
+				? inheritClass
+				: customClass;
 
 		if ( submitBtn ) {
 			if ( submitBtn.classList.contains( inheritClass ) ) {
@@ -790,148 +794,146 @@ function StyleSettings( props ) {
 				title={ __( 'Submit Button', 'sureforms' ) }
 				initialOpen={ false }
 			>
-
-				{ <ToggleControl
+				<ToggleControl
 					label={ __( 'Inherit From Theme', 'sureforms' ) }
 					checked={ sureforms_keys._srfm_inherit_theme_button }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_inherit_theme_button', value );
 					} }
-				/> }
-
-				<AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
-					colorValue={ sureforms_keys._srfm_button_text_color }
-					data={ {
-						value: sureforms_keys._srfm_button_text_color,
-						label: '_srfm_button_text_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !==
-							sureforms_keys._srfm_button_text_color
-						) {
-							updateMeta( '_srfm_button_text_color', colorValue );
-						}
-					} }
-					value={ sureforms_keys._srfm_button_text_color }
-					isFormSpecific={ true }
 				/>
-				{ /* Will be used later */ }
-				{ /* <p className="components-base-control__help" />
-				<MultiButtonsControl
-					label={ __( 'Button Style', 'sureforms' ) }
-					data={ {
-						value: sureforms_keys._srfm_btn_bg_type,
-						label: '_srfm_btn_bg_type',
-					} }
-					options={ [
-						{
-							value: 'filled',
-							label: __( 'Filled', 'sureforms' ),
-						},
-						{
-							value: 'transparent',
-							label: __( 'Transparent', 'sureforms' ),
-						},
-					] }
-					showIcons={ false }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_btn_bg_type', value );
-					} }
-				/> */ }
-				{ sureforms_keys._srfm_btn_bg_type === 'filled' && (
+				{ ! sureforms_keys._srfm_inherit_theme_button && (
 					<>
-						<p className="components-base-control__help" />
 						<AdvancedPopColorControl
-							label={ __( 'Background Color', 'sureforms' ) }
-							colorValue={ sureforms_keys._srfm_button_bg_color }
-							data={ {
-								value: sureforms_keys._srfm_button_bg_color,
-								label: '_srfm_button_bg_color',
-							} }
-							onColorChange={ ( colorValue ) => {
-								if (
-									colorValue !==
-									sureforms_keys._srfm_button_bg_color
-								) {
-									updateMeta(
-										'_srfm_button_bg_color',
-										colorValue
-									);
-								}
-							} }
-							value={ sureforms_keys._srfm_button_bg_color }
-							isFormSpecific={ true }
-						/>
-					</>
-				) }
-				{ sureforms_keys._srfm_btn_bg_type === 'filled' && (
-					<>
-						<p className="components-base-control__help" />
-						<AdvancedPopColorControl
-							label={ __( 'Border Color', 'sureforms' ) }
+							label={ __( 'Text Color', 'sureforms' ) }
 							colorValue={
-								sureforms_keys._srfm_button_border_color
+								sureforms_keys._srfm_button_text_color
 							}
 							data={ {
-								value: sureforms_keys._srfm_button_border_color,
-								label: '_srfm_button_border_color',
+								value: sureforms_keys._srfm_button_text_color,
+								label: '_srfm_button_text_color',
 							} }
 							onColorChange={ ( colorValue ) => {
 								if (
 									colorValue !==
-									sureforms_keys._srfm_button_border_color
+									sureforms_keys._srfm_button_text_color
 								) {
 									updateMeta(
-										'_srfm_button_border_color',
+										'_srfm_button_text_color',
 										colorValue
 									);
 								}
 							} }
-							value={ sureforms_keys._srfm_button_border_color }
+							value={ sureforms_keys._srfm_button_text_color }
 							isFormSpecific={ true }
 						/>
-						<p className="components-base-control__help" />
-						<Range
-							label={ __( 'Border Width', 'sureforms' ) }
-							value={ sureforms_keys._srfm_button_border_width }
-							min={ 0 }
-							max={ 10 }
-							displayUnit={ false }
-							data={ {
-								value: sureforms_keys._srfm_button_border_width,
-								label: '_srfm_button_border_width',
-							} }
-							onChange={ ( value ) =>
-								updateMeta( '_srfm_button_border_width', value )
-							}
-							isFormSpecific={ true }
-						/>
-						<p className="components-base-control__help" />
-						<Range
-							label={ __( 'Border Radius', 'sureforms' ) }
-							value={ sureforms_keys._srfm_button_border_radius }
-							min={ 1 }
-							max={ 100 }
-							displayUnit={ false }
-							data={ {
-								value: sureforms_keys._srfm_button_border_radius,
-								label: '_srfm_button_border_radius',
-							} }
-							onChange={ ( value ) =>
-								updateMeta(
-									'_srfm_button_border_radius',
-									value
-								)
-							}
-							isFormSpecific={ true }
-						/>
+						{ sureforms_keys._srfm_btn_bg_type === 'filled' && (
+							<>
+								<p className="components-base-control__help" />
+								<AdvancedPopColorControl
+									label={ __(
+										'Background Color',
+										'sureforms'
+									) }
+									colorValue={
+										sureforms_keys._srfm_button_bg_color
+									}
+									data={ {
+										value: sureforms_keys._srfm_button_bg_color,
+										label: '_srfm_button_bg_color',
+									} }
+									onColorChange={ ( colorValue ) => {
+										if (
+											colorValue !==
+											sureforms_keys._srfm_button_bg_color
+										) {
+											updateMeta(
+												'_srfm_button_bg_color',
+												colorValue
+											);
+										}
+									} }
+									value={
+										sureforms_keys._srfm_button_bg_color
+									}
+									isFormSpecific={ true }
+								/>
+							</>
+						) }
+						{ sureforms_keys._srfm_btn_bg_type === 'filled' && (
+							<>
+								<p className="components-base-control__help" />
+								<AdvancedPopColorControl
+									label={ __( 'Border Color', 'sureforms' ) }
+									colorValue={
+										sureforms_keys._srfm_button_border_color
+									}
+									data={ {
+										value: sureforms_keys._srfm_button_border_color,
+										label: '_srfm_button_border_color',
+									} }
+									onColorChange={ ( colorValue ) => {
+										if (
+											colorValue !==
+											sureforms_keys._srfm_button_border_color
+										) {
+											updateMeta(
+												'_srfm_button_border_color',
+												colorValue
+											);
+										}
+									} }
+									value={
+										sureforms_keys._srfm_button_border_color
+									}
+									isFormSpecific={ true }
+								/>
+								<p className="components-base-control__help" />
+								<Range
+									label={ __( 'Border Width', 'sureforms' ) }
+									value={
+										sureforms_keys._srfm_button_border_width
+									}
+									min={ 0 }
+									max={ 10 }
+									displayUnit={ false }
+									data={ {
+										value: sureforms_keys._srfm_button_border_width,
+										label: '_srfm_button_border_width',
+									} }
+									onChange={ ( value ) =>
+										updateMeta(
+											'_srfm_button_border_width',
+											value
+										)
+									}
+									isFormSpecific={ true }
+								/>
+								<p className="components-base-control__help" />
+								<Range
+									label={ __( 'Border Radius', 'sureforms' ) }
+									value={
+										sureforms_keys._srfm_button_border_radius
+									}
+									min={ 1 }
+									max={ 100 }
+									displayUnit={ false }
+									data={ {
+										value: sureforms_keys._srfm_button_border_radius,
+										label: '_srfm_button_border_radius',
+									} }
+									onChange={ ( value ) =>
+										updateMeta(
+											'_srfm_button_border_radius',
+											value
+										)
+									}
+									isFormSpecific={ true }
+								/>
+							</>
+						) }{ ' ' }
 					</>
 				) }
 				<p className="components-base-control__help" />
-				{ /* </>
-				) } */ }
 				<MultiButtonsControl
 					label={ __( 'Button Alignment', 'sureforms' ) }
 					data={ {
