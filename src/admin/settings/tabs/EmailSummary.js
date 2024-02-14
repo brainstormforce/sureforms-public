@@ -89,6 +89,12 @@ const EmailSummary = () => {
 										'sureforms'
 									) }
 								</h3>
+								<p className="components-base-control__help">
+									{ __(
+										'Enable Email Summaries to receive a summary of form submissions on a weekly.',
+										'sureforms'
+									) }
+								</p>
 							</div>
 							<div className="srfm-w-[600px] srfm-mt-4">
 								<Fragment>
@@ -122,6 +128,12 @@ const EmailSummary = () => {
 												'sureforms'
 											) }
 										</h3>
+										<p className="components-base-control__help">
+											{ __(
+												'Email addresses to send the summary to. Add a list of email addresses separated by a comma.',
+												'sureforms'
+											) }
+										</p>
 									</div>
 									<div className="srfm-w-[600px] srfm-mt-4">
 										<textarea
@@ -144,6 +156,15 @@ const EmailSummary = () => {
 												'sureforms'
 											) }
 										</h3>
+										<p
+											className="components-base-control__help"
+											dangerouslySetInnerHTML={ {
+												__html: __(
+													`Select the day of the week to send the summary. The email will be sent at 09:00:00 UTC. You can change the time by using the <code>srfm_weekly_scheduled_events_time</code> filter.`,
+													'sureforms'
+												),
+											} }
+										></p>
 									</div>
 									<div className="srfm-w-[600px] srfm-mt-4">
 										<select

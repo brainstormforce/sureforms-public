@@ -14,8 +14,6 @@ use WP_Error;
 use WP_Post_Type;
 use SureForms\Inc\Traits\Get_Instance;
 use WP_Query;
-use DateTime;
-use DateTimeZone;
 
 /**
  * Create New Form.
@@ -34,7 +32,6 @@ class Email_Summaries {
 		add_action( 'srfm_weekly_scheduled_events', array( $this, 'send_entries_to_admin' ) );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 		// add_action( 'init', [ $this, 'schedule_weekly_entries_email' ] );
-
 	}
 
 	/**
@@ -139,6 +136,12 @@ class Email_Summaries {
 		$schedule_reports     = isset( $form_info_obj->schedule_reports ) ? $form_info_obj->schedule_reports : '';
 
 		// Save data in a single option using the Options API.
+		$prev_email_summary_options = get_option( 'srfm_email_summary_options' );
+
+		 // Check if the previously saved schedule day matches the currently selected day
+		 $prev_schedule_day = isset( $prev_email_summary_options['schedule_reports'] ) ? $prev_email_summary_options['schedule_reports'] : 'Monday';
+
+		// Save data in a single option using the Options API.
 		update_option(
 			'srfm_email_summary_options',
 			array(
@@ -148,12 +151,17 @@ class Email_Summaries {
 			)
 		);
 
-		as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
+		// time in UTC and filter to change the time.
+		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 
-		if ( $enable_email_summary ) {
-			self::schedule_weekly_entries_email();
-			// send email confirmation to email that summaries has been scheculed at what time
-			// self::send_entries_to_admin();
+		if ( $enable_email_summary || strtolower( $prev_schedule_day ) !== strtolower( $schedule_reports ) || $time !== '09:00:00' ) {
+			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
+			self::schedule_weekly_entries_email( $time );
+		}
+		
+		if ( ! $enable_email_summary ){
+			// If email summary is not enabled, unschedule all actions.
+			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
 		}
 
 		// Return success response.
@@ -235,7 +243,7 @@ class Email_Summaries {
 	 * @return \error|void
 	 * @since 0.0.1
 	 */
-	public function schedule_weekly_entries_email() {
+	public function schedule_weekly_entries_email( $time ) {
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
 
 		// Check if email summary options exist and if email summary is enabled
@@ -259,15 +267,11 @@ class Email_Summaries {
 		// Convert the current time to the user's timezone
 		$current_time_user_timezone = strtotime( date( 'Y-m-d H:i:s', $current_time ) );
 
-		// time in UTC
-		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
-
 		// Check if the time is in the correct format and represents a valid UTC time
-		if ( ! preg_match('/^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time) ) {
+		if ( ! preg_match( '/^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time ) ) {
 			// Log an error and change the time to 09:00:00
-			wp_send_json_error( 'Invalid time format the time has been changed to 09:00:00' );
-			// $time = '09:00:00';
-			return;
+			error_log( 'The time is not in the correct format' );
+			$time = '09:00:00';
 		}
 
 		// Calculate the timestamp for the selected day at 9:00 AM in the user's timezone

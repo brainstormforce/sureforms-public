@@ -3,7 +3,6 @@
 
 namespace Action_Scheduler\Migration;
 
-
 use ActionScheduler_Store as Store;
 
 /**
@@ -73,14 +72,20 @@ class BatchFetcher {
 		];
 
 		foreach ( $priorities as $status ) {
-			yield wp_parse_args( [
-				'status'       => $status,
-				'date_compare' => '<=',
-			], $args );
-			yield wp_parse_args( [
-				'status'       => $status,
-				'date_compare' => '>=',
-			], $args );
+			yield wp_parse_args(
+				[
+					'status'       => $status,
+					'date_compare' => '<=',
+				],
+				$args
+			);
+			yield wp_parse_args(
+				[
+					'status'       => $status,
+					'date_compare' => '>=',
+				],
+				$args
+			);
 		}
 	}
 }

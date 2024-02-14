@@ -78,7 +78,7 @@ class ActionScheduler_HybridStore extends Store {
 			/** @var \wpdb $wpdb */
 			global $wpdb;
 			/**
-			 * A default date of '0000-00-00 00:00:00' is invalid in MySQL 5.7 when configured with 
+			 * A default date of '0000-00-00 00:00:00' is invalid in MySQL 5.7 when configured with
 			 * sql_mode including both STRICT_TRANS_TABLES and NO_ZERO_DATE.
 			 */
 			$default_date = new DateTime( 'tomorrow' );
@@ -154,7 +154,7 @@ class ActionScheduler_HybridStore extends Store {
 	 * If any are found, migrate them immediately. Then the secondary
 	 * store will contain the canonical results.
 	 *
-	 * @param array $query
+	 * @param array  $query
 	 * @param string $query_type Whether to select or count the results. Default, select.
 	 *
 	 * @return int[]
@@ -376,7 +376,8 @@ class ActionScheduler_HybridStore extends Store {
 		return null;
 	}
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/*
+	 * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * All claim-related functions should operate solely
 	 * on the primary store.
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
