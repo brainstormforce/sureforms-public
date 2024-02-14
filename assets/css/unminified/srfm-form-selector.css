@@ -116,11 +116,6 @@
   color: #333;
 }
 
-.srfm-select-form-placeholder {
-  display: flex !important;
-  align-items: center !important;
-}
-
 .srfm-select-form-container {
   display: flex;
   margin: auto;
