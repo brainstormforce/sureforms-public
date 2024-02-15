@@ -29,9 +29,8 @@ class Email_Summaries {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		add_action( 'srfm_weekly_scheduled_events', array( $this, 'send_entries_to_admin' ) );
+		add_action( 'srfm_weekly_scheduled_events', [ $this, 'send_entries_to_admin' ] );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
-		// add_action( 'init', [ $this, 'schedule_weekly_entries_email' ] );
 	}
 
 	/**
@@ -62,7 +61,7 @@ class Email_Summaries {
 	}
 
 	/**
-	 * Checks whether a given request has permission to create new forms.
+	 * Checks whether a given request has permissions.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
@@ -72,6 +71,7 @@ class Email_Summaries {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
+
 		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
 			/**
 			 * The post type.
@@ -93,19 +93,11 @@ class Email_Summaries {
 	/**
 	 * Get email summary options.
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */
 	public function get_email_summary_options() {
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
-
-		// Check if data exists
-		if ( $email_summary_options === false ) {
-			// Return a 404 response if data doesn't exist
-			return new WP_Error( 'no_data', 'Email summary options not found', array( 'status' => 404 ) );
-		}
-
-		// Return the email summary data
 		return new WP_REST_Response( $email_summary_options, 200 );
 	}
 
@@ -118,30 +110,17 @@ class Email_Summaries {
 	 * @since 0.0.1
 	 */
 	public function save_email_summary_options( $data ) {
-		// self::send_entries_to_admin();
-		// Retrieve the request body.
-		$form_info = $data->get_body();
-
-		// Convert JSON data to PHP object.
+		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 
-		// Check if the JSON data is decoded successfully.
 		if ( ! is_object( $form_info_obj ) ) {
 			return new WP_Error( 'invalid_json', 'Invalid JSON data', array( 'status' => 400 ) );
 		}
 
-		// Extract data from the decoded JSON object.
 		$enable_email_summary = isset( $form_info_obj->enable_email_summary ) ? $form_info_obj->enable_email_summary : false;
 		$emails_send_to       = isset( $form_info_obj->emails_send_to ) ? $form_info_obj->emails_send_to : array();
 		$schedule_reports     = isset( $form_info_obj->schedule_reports ) ? $form_info_obj->schedule_reports : '';
 
-		// Save data in a single option using the Options API.
-		$prev_email_summary_options = get_option( 'srfm_email_summary_options' );
-
-		 // Check if the previously saved schedule day matches the currently selected day
-		 $prev_schedule_day = isset( $prev_email_summary_options['schedule_reports'] ) ? $prev_email_summary_options['schedule_reports'] : 'Monday';
-
-		// Save data in a single option using the Options API.
 		update_option(
 			'srfm_email_summary_options',
 			array(
@@ -151,20 +130,15 @@ class Email_Summaries {
 			)
 		);
 
-		// time in UTC and filter to change the time.
 		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 
-		if ( $enable_email_summary || strtolower( $prev_schedule_day ) !== strtolower( $schedule_reports ) || $time !== '09:00:00' ) {
+		if ( $enable_email_summary ) {
 			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
 			self::schedule_weekly_entries_email( $time );
-		}
-		
-		if ( ! $enable_email_summary ){
-			// If email summary is not enabled, unschedule all actions.
+		} else {
 			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
 		}
 
-		// Return success response.
 		return new WP_REST_Response( 'Email summary options saved successfully', 200 );
 	}
 
@@ -172,32 +146,85 @@ class Email_Summaries {
 	 * Function to get the total number of entries for the last week.
 	 *
 	 * @since 0.0.1
-	 * @return int
+	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
-		$one_week_ago = strtotime( '-1 week' );
-		$today        = current_time( 'timestamp' );
+		// Define the post type we want to query.
+		$post_type = 'sureforms_form';
 
 		$args = array(
-			'post_type'      => 'sureforms_entry', // Replace with your custom post type
-			'date_query'     => array(
-				array(
-					'after'     => date( 'Y-m-d H:i:s', $one_week_ago ),
-					'before'    => date( 'Y-m-d H:i:s', $today ),
-					'inclusive' => true,
-				),
-			),
+			'post_type'      => $post_type,
 			'posts_per_page' => -1,
-			'no_found_rows'  => true,
 		);
 
 		$query = new WP_Query( $args );
 
-		$entries_count = $query->post_count;
+		$admin_user_name = get_user_by( 'id', 1 )->display_name;
+		$table_html      = '<b>' . __( 'Hello', 'sureforms' ) . ' ' . $admin_user_name . ',</b><br><br>';
+		$table_html     .= '<span>' . __( 'Let\'s see how your forms performed in the last week', 'sureforms' ) . '</span><br><br>';
+		$table_html     .= '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
+		$table_html     .= '<thead>';
+		$table_html     .= '<tr style="background-color: #333; color: #fff; text-align: left;">';
+		$table_html     .= '<th style="padding: 10px;">' . __( 'Form Name', 'sureforms' ) . '</th>';
+		$table_html     .= '<th style="padding: 10px;">' . __( 'Entries', 'sureforms' ) . '</th>';
+		$table_html     .= '</tr>';
+		$table_html     .= '</thead>';
+		$table_html     .= '<tbody>';
 
-		return $entries_count;
+		if ( $query->have_posts() ) {
+			$row_index = 0;
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				global $post;
+
+				$post_id_formatted = strval( $post->ID );
+
+				$previous_week_start = date( 'Y-m-d', strtotime( '-1 week last monday' ) );
+				$previous_week_end   = date( 'Y-m-d', strtotime( '-1 week next sunday' ) );
+
+				$taxonomy      = 'sureforms_tax';
+				$entries_args  = array(
+					'post_type'  => SUREFORMS_ENTRIES_POST_TYPE,
+					'tax_query'  => array(
+						array(
+							'taxonomy' => $taxonomy,
+							'field'    => 'slug',
+							'terms'    => $post_id_formatted,
+						),
+					),
+					'date_query' => array(
+						array(
+							'after'     => $previous_week_start,
+							'before'    => $previous_week_end,
+							'inclusive' => true,
+						),
+					),
+				);
+				$entries_query = new WP_Query( $entries_args );
+				$entry_count   = $entries_query->post_count;
+
+				$bg_color = $row_index % 2 === 0 ? '#ffffff' : '#f2f2f2;';
+
+				$table_html .= '<tr style="background-color: ' . $bg_color . ';">';
+				$table_html .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
+				$table_html .= '<td style="padding: 10px;">' . esc_html( $entry_count ) . '</td>';
+				$table_html .= '</tr>';
+
+				$row_index++;
+			}
+		} else {
+			$table_html .= '<tr>';
+			$table_html .= '<td colspan="2" style="padding: 10px;">' . __( 'No forms found.', 'sureforms' ) . '</td>';
+			$table_html .= '</tr>';
+		}
+
+		$table_html .= '</tbody>';
+		$table_html .= '</table>';
+
+		wp_reset_postdata();
+
+		return $table_html;
 	}
-
 
 	/**
 	 * Function to send the entries to admin mail.
@@ -230,8 +257,11 @@ class Email_Summaries {
 		$site_title = get_bloginfo( 'name' );
 
 		$subject = 'SureForms Email Summary - ' . $site_title;
-		$message = 'The total number of entries for the last week are <b>' . $entries_count . '</b>';
-		$headers = 'From: ' . get_option( 'admin_email' );
+		$message = $entries_count;
+		$headers = array(
+			'Content-Type: text/html; charset=UTF-8',
+			'From: ' . get_option( 'admin_email' ),
+		);
 
 		wp_mail( $recipients, $subject, $message, $headers );
 	}
@@ -275,9 +305,7 @@ class Email_Summaries {
 		}
 
 		// Calculate the timestamp for the selected day at 9:00 AM in the user's timezone
-		// $next_day_user_timezone = strtotime( "next $day $time", $current_time_user_timezone );
-		// Added just for testing.
-		$next_day_user_timezone = strtotime( "$day $time", $current_time_user_timezone );
+		$next_day_user_timezone = strtotime( "next $day $time", $current_time_user_timezone );
 
 		// Convert the calculated time back to the server's timezone
 		$scheduled_time = strtotime( date( 'Y-m-d H:i:s', $next_day_user_timezone ) );

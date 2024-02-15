@@ -322,7 +322,6 @@ abstract class ActionScheduler {
 	final private function __construct() {}
 
 	/** Deprecated **/
-
 	public static function get_datetime_object( $when = null, $timezone = 'UTC' ) {
 		_deprecated_function( __METHOD__, '2.0', 'wcs_add_months()' );
 		return as_get_datetime_object( $when, $timezone );
