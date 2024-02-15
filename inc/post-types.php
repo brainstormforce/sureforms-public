@@ -523,7 +523,9 @@ class Post_Types {
 					),
 				),
 			)
-		);		
+		);
+		//conditional logic
+		do_action( 'sureforms_register_conditional_logic_post_meta');
 	}
 
 	/**
