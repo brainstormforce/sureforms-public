@@ -101,7 +101,7 @@ class Plugin_Loader {
 	 */
 	public function __construct() {
 		// Load the action scheduler before plugin loads.
-		require_once SUREFORMS_DIR . 'libraries/action-scheduler/action-scheduler.php';
+		require_once SUREFORMS_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
 
