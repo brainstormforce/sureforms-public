@@ -1,6 +1,6 @@
 <?php
 /**
- * Create new Form with Template and return the form ID.
+ * Email Summaries.
  *
  * @package sureforms.
  * @since 0.0.1
@@ -12,12 +12,12 @@ use WP_REST_Response;
 use WP_REST_Request;
 use WP_Error;
 use WP_Post_Type;
-use SureForms\Inc\Traits\Get_Instance;
 use WP_Query;
+use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 
 /**
- * Create New Form.
+ * Email Summary Class.
  *
  * @since 0.0.1
  */
@@ -35,7 +35,7 @@ class Email_Summaries {
 	}
 
 	/**
-	 * Add custom API Route create-new-form.
+	 * Add custom API Route gettting and saving email summary options.
 	 *
 	 * @return void
 	 * @since 0.0.1
@@ -62,7 +62,7 @@ class Email_Summaries {
 	}
 
 	/**
-	 * Checks whether a given request has permissions.
+	 * Checks whether a given request has permissions to edit email summary options.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
@@ -103,7 +103,7 @@ class Email_Summaries {
 	}
 
 	/**
-	 * Create new form from selected templates
+	 * Save the email summary options.
 	 *
 	 * @param \WP_REST_Request $data Form Markup Data.
 	 *
@@ -137,13 +137,13 @@ class Email_Summaries {
 			self::schedule_weekly_entries_email();
 		}
 
-		return new WP_REST_Response( 'Email summary options saved successfully', 200 );
+		return new WP_REST_Response( 'Email Summary options saved successfully', 200 );
 	}
 
 	/**
 	 * Unschedule the action.
 	 *
-	 * @param string $hook Action hook name.
+	 * @param string $hook Event hook name.
 	 * @return void
 	 * @since 0.0.1
 	 */
@@ -158,10 +158,8 @@ class Email_Summaries {
 	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
-		$post_type = 'sureforms_form';
-
 		$args = array(
-			'post_type'      => $post_type,
+			'post_type'      => SUREFORMS_FORMS_POST_TYPE,
 			'posts_per_page' => -1,
 		);
 
@@ -243,7 +241,7 @@ class Email_Summaries {
 	 * @return void
 	 */
 	public function send_entries_to_admin( $email_summary_options ) {
-		$entries_count = self::get_total_entries_for_week();
+		$entries_count_table = self::get_total_entries_for_week();
 
 		$recipients_string = '';
 
@@ -255,8 +253,8 @@ class Email_Summaries {
 
 		$site_title = get_bloginfo( 'name' );
 
-		$subject = 'SureForms Email Summary - ' . $site_title;
-		$message = $entries_count;
+		$subject = __( 'SureForms Email Summary - ', 'sureforms' ) . $site_title;
+		$message = $entries_count_table;
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . get_option( 'admin_email' ),
@@ -266,9 +264,9 @@ class Email_Summaries {
 	}
 
 	/**
-	 * Schedule the action to run today at 9:00 AM.
+	 * Schedule the event action to run weekly.
 	 *
-	 * @return \error|void
+	 * @return void
 	 * @since 0.0.1
 	 */
 	public function schedule_weekly_entries_email() {
@@ -280,7 +278,7 @@ class Email_Summaries {
 			wp_clear_scheduled_hook( 'srfm_weekly_scheduled_events' );
 		}
 
-		$day = 'Monday';
+		$day = __( 'Monday', 'sureforms' );
 
 		if ( is_array( $email_summary_options ) && isset( $email_summary_options['schedule_reports'] ) && is_string( $email_summary_options['schedule_reports'] ) ) {
 			$day = Sureforms_Helper::get_string_value( $email_summary_options['schedule_reports'] );
@@ -310,7 +308,5 @@ class Email_Summaries {
 			);
 		}
 	}
-
-
 
 }
