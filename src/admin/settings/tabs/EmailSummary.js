@@ -62,10 +62,19 @@ const EmailSummary = () => {
 
 	const handleChange = ( e ) => {
 		const { name, value, checked } = e.target;
-		setFormData( {
-			...formData,
-			[ name ]: name === 'enable_email_summary' ? checked : value,
-		} );
+		if ( name === 'enable_email_summary' && checked ) {
+			setFormData( {
+				enable_email_summary: true,
+				emails_send_to:
+					formData.emails_send_to || sureforms_admin.admin_email,
+				schedule_reports: formData.schedule_reports || 'Monday',
+			} );
+		} else {
+			setFormData( {
+				...formData,
+				[ name ]: name === 'enable_email_summary' ? checked : value,
+			} );
+		}
 	};
 
 	return (
