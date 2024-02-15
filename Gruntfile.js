@@ -352,4 +352,11 @@ module.exports = function ( grunt ) {
 		'compress',
 		'clean:main',
 	] );
+
+	// Grunt release no clean
+	grunt.registerTask( 'release-no-clean', [
+		'clean:main',
+		'clean:zip',
+		'copy:main',
+	] );
 };
