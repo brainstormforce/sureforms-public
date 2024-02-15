@@ -158,6 +158,7 @@ const EmailSummary = () => {
 													formData.emails_send_to
 												}
 												onChange={ handleChange }
+												required
 											/>
 										</div>
 									</div>

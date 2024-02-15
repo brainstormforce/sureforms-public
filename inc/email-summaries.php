@@ -14,6 +14,7 @@ use WP_Error;
 use WP_Post_Type;
 use SureForms\Inc\Traits\Get_Instance;
 use WP_Query;
+use SureForms\Inc\Sureforms_Helper;
 
 /**
  * Create New Form.
@@ -132,11 +133,11 @@ class Email_Summaries {
 
 		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 
+		// @phpstan-ignore-next-line.
+		as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
+
 		if ( $enable_email_summary ) {
-			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
 			self::schedule_weekly_entries_email( $time );
-		} else {
-			as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
 		}
 
 		return new WP_REST_Response( 'Email summary options saved successfully', 200 );
@@ -149,7 +150,6 @@ class Email_Summaries {
 	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
-		// Define the post type we want to query.
 		$post_type = 'sureforms_form';
 
 		$args = array(
@@ -159,17 +159,18 @@ class Email_Summaries {
 
 		$query = new WP_Query( $args );
 
-		$admin_user_name = get_user_by( 'id', 1 )->display_name;
-		$table_html      = '<b>' . __( 'Hello', 'sureforms' ) . ' ' . $admin_user_name . ',</b><br><br>';
-		$table_html     .= '<span>' . __( 'Let\'s see how your forms performed in the last week', 'sureforms' ) . '</span><br><br>';
-		$table_html     .= '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
-		$table_html     .= '<thead>';
-		$table_html     .= '<tr style="background-color: #333; color: #fff; text-align: left;">';
-		$table_html     .= '<th style="padding: 10px;">' . __( 'Form Name', 'sureforms' ) . '</th>';
-		$table_html     .= '<th style="padding: 10px;">' . __( 'Entries', 'sureforms' ) . '</th>';
-		$table_html     .= '</tr>';
-		$table_html     .= '</thead>';
-		$table_html     .= '<tbody>';
+		$admin_user_name = get_user_by( 'id', 1 ) ? get_user_by( 'id', 1 )->display_name : 'Admin';
+
+		$table_html  = '<b>' . __( 'Hello', 'sureforms' ) . ' ' . $admin_user_name . ',</b><br><br>';
+		$table_html .= '<span>' . __( 'Let\'s see how your forms performed in the last week', 'sureforms' ) . '</span><br><br>';
+		$table_html .= '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
+		$table_html .= '<thead>';
+		$table_html .= '<tr style="background-color: #333; color: #fff; text-align: left;">';
+		$table_html .= '<th style="padding: 10px;">' . __( 'Form Name', 'sureforms' ) . '</th>';
+		$table_html .= '<th style="padding: 10px;">' . __( 'Entries', 'sureforms' ) . '</th>';
+		$table_html .= '</tr>';
+		$table_html .= '</thead>';
+		$table_html .= '<tbody>';
 
 		if ( $query->have_posts() ) {
 			$row_index = 0;
@@ -179,8 +180,8 @@ class Email_Summaries {
 
 				$post_id_formatted = strval( $post->ID );
 
-				$previous_week_start = date( 'Y-m-d', strtotime( '-1 week last monday' ) );
-				$previous_week_end   = date( 'Y-m-d', strtotime( '-1 week next sunday' ) );
+				$previous_week_start = gmdate( 'Y-m-d', strtotime( '-1 week last monday' ) );
+				$previous_week_end   = gmdate( 'Y-m-d', strtotime( '-1 week next sunday' ) );
 
 				$taxonomy      = 'sureforms_tax';
 				$entries_args  = array(
@@ -203,11 +204,11 @@ class Email_Summaries {
 				$entries_query = new WP_Query( $entries_args );
 				$entry_count   = $entries_query->post_count;
 
-				$bg_color = $row_index % 2 === 0 ? '#ffffff' : '#f2f2f2;';
+				$bg_color = 0 === $row_index % 2 ? '#ffffff' : '#f2f2f2;';
 
 				$table_html .= '<tr style="background-color: ' . $bg_color . ';">';
 				$table_html .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
-				$table_html .= '<td style="padding: 10px;">' . esc_html( $entry_count ) . '</td>';
+				$table_html .= '<td style="padding: 10px;">' . esc_html( Sureforms_Helper::get_string_value( $entry_count ) ) . '</td>';
 				$table_html .= '</tr>';
 
 				$row_index++;
@@ -229,35 +230,25 @@ class Email_Summaries {
 	/**
 	 * Function to send the entries to admin mail.
 	 *
+	 * @param array<mixed>|bool $email_summary_options Email Summary Options.
 	 * @since 0.0.1
-	 * @return \error|void
+	 * @return void
 	 */
-	public function send_entries_to_admin() {
-		$entries_count         = self::get_total_entries_for_week();
-		$email_summary_options = get_option( 'srfm_email_summary_options' );
+	public function send_entries_to_admin( $email_summary_options ) {
+		$entries_count = self::get_total_entries_for_week();
 
-		// Check if email summary options exist and if email summary is enabled
-		if ( is_wp_error( $email_summary_options ) || ! isset( $email_summary_options['enable_email_summary'] ) || ! $email_summary_options['enable_email_summary'] ) {
-			// Log an error or handle the absence of options or if email summary is not enabled
-			wp_send_json_error( 'Email summary options not found or email summary is not enabled' );
-			return;
+		$recipients_string = '';
+
+		if ( is_array( $email_summary_options ) && isset( $email_summary_options['emails_send_to'] ) && is_string( $email_summary_options['emails_send_to'] ) ) {
+			$recipients_string = $email_summary_options['emails_send_to'];
 		}
 
-		// Get the recipients' email addresses
-		$recipients_string = isset( $email_summary_options['emails_send_to'] ) ? $email_summary_options['emails_send_to'] : array();
-
-		$recipients = explode( ',', $recipients_string );
-
-		// If no recipients are specified, return
-		if ( empty( $recipients ) ) {
-			wp_send_json_error( 'No recipients specified for email summary' );
-			return;
-		}
+		$recipients = $recipients_string ? explode( ',', $recipients_string ) : [];
 
 		$site_title = get_bloginfo( 'name' );
 
 		$subject = 'SureForms Email Summary - ' . $site_title;
-		$message = $entries_count;
+		$message = "Total entries for the week: $entries_count";
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . get_option( 'admin_email' ),
@@ -266,54 +257,53 @@ class Email_Summaries {
 		wp_mail( $recipients, $subject, $message, $headers );
 	}
 
-
 	/**
 	 * Schedule the action to run today at 9:00 AM.
 	 *
+	 * @param string $time Time to schedule the action.
 	 * @return \error|void
 	 * @since 0.0.1
 	 */
 	public function schedule_weekly_entries_email( $time ) {
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
 
-		// Check if email summary options exist and if email summary is enabled
-		if ( is_wp_error( $email_summary_options ) || ! isset( $email_summary_options['enable_email_summary'] ) || ! $email_summary_options['enable_email_summary'] ) {
-			// Log an error or handle the absence of options or if email summary is not enabled
-			wp_send_json_error( 'Email summary options not found or email summary is not enabled' );
-			return;
-		}
-
-		// Clear old cron schedule.
 		if ( wp_next_scheduled( 'srfm_weekly_scheduled_events' ) ) {
 			wp_clear_scheduled_hook( 'srfm_weekly_scheduled_events' );
 		}
 
-		// Get the day saved in options, defaulting to Monday if not set
-		$day = isset( $email_summary_options['schedule_reports'] ) ? $email_summary_options['schedule_reports'] : 'Monday';
+		$day = 'Monday';
 
-		// Get current timestamp.
-		$current_time = current_time( 'timestamp' );
+		if ( is_array( $email_summary_options ) && isset( $email_summary_options['schedule_reports'] ) && is_string( $email_summary_options['schedule_reports'] ) ) {
+			$day = Sureforms_Helper::get_string_value( $email_summary_options['schedule_reports'] );
+		}
 
-		// Convert the current time to the user's timezone
-		$current_time_user_timezone = strtotime( date( 'Y-m-d H:i:s', $current_time ) );
+		$current_time               = time();
+		$current_time_user_timezone = Sureforms_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $current_time ) ) );
 
-		// Check if the time is in the correct format and represents a valid UTC time
 		if ( ! preg_match( '/^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time ) ) {
-			// Log an error and change the time to 09:00:00
-			error_log( 'The time is not in the correct format' );
 			$time = '09:00:00';
 		}
 
-		// Calculate the timestamp for the selected day at 9:00 AM in the user's timezone
-		$next_day_user_timezone = strtotime( "next $day $time", $current_time_user_timezone );
+		$next_day_user_timezone = Sureforms_Helper::get_integer_value( strtotime( "next $day $time", $current_time_user_timezone ) );
 
-		// Convert the calculated time back to the server's timezone
-		$scheduled_time = strtotime( date( 'Y-m-d H:i:s', $next_day_user_timezone ) );
+		$scheduled_time = strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) );
 
-		// Create new schedule using Action Scheduler.
+		// @phpstan-ignore-next-line
 		if ( false === as_has_scheduled_action( 'srfm_weekly_scheduled_events' ) ) {
-			as_schedule_recurring_action( $scheduled_time, WEEK_IN_SECONDS, 'srfm_weekly_scheduled_events', array(), 'sureforms', true );
+			// @phpstan-ignore-next-line
+			as_schedule_recurring_action(
+				$scheduled_time,
+				WEEK_IN_SECONDS,
+				'srfm_weekly_scheduled_events',
+				[
+					'email_summary_options' => $email_summary_options,
+				],
+				'sureforms',
+				true
+			);
 		}
 	}
+
+
 
 }
