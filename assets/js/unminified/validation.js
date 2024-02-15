@@ -37,7 +37,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 	let firstErrorInput = null;
 	let uniqueEntryData = null;
 	const uniqueFields = document.querySelectorAll(
-		'input[aria-unique="true"]'
+		'input[data-unique="true"]'
 	);
 	if ( uniqueFields.length !== 0 ) {
 		const uniqueValue = {};
@@ -67,7 +67,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 		const inputField = container.querySelector( 'input, textarea,select' );
 		const isRequired = inputField.getAttribute( 'aria-required' );
-		const isUnique = inputField.getAttribute( 'aria-unique' );
+		const isUnique = inputField.getAttribute( 'data-unique' );
 		let fieldName = inputField.getAttribute( 'name' );
 		const inputValue = inputField.value;
 		const errorMessage = container.querySelector( '.srfm-error-message' );

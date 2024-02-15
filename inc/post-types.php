@@ -396,6 +396,7 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function register_post_metas() {
+
 		$metas = apply_filters(
 			'sureforms_register_post_meta',
 			array(
