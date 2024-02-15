@@ -13,6 +13,9 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
+import {
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -35,7 +38,6 @@ const { select, dispatch } = wp.data;
 
 const default_keys = {
 	// General Tab
-	// General
 	_srfm_show_labels: true,
 	_srfm_show_asterisk: true,
 	_srfm_page_form_title: false,
@@ -100,14 +102,19 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const postId = useSelect( () => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );
-	const { editPost } = useDispatch( editorStore );
+	const sureforms_keys = useSelect( () =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
 
+	const blockCount = useSelect( () =>
+		select( blockEditorStore ).getBlockCount()
+	);
+	const { editPost } = useDispatch( editorStore );
 	const rootContainer = document.querySelector( '.is-root-container' );
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'sureforms/page-break'
 	);
-
 	const deviceType = useDeviceType();
 
 	function updateMeta( option, value ) {
@@ -117,7 +124,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 			meta: option_array,
 		} );
 	}
-
 	// Find the main Editor Container
 	const rootContainerDiv = document.querySelector(
 		'.edit-post-visual-editor__content-area'
@@ -137,8 +143,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
+		if ( sureforms_keys._srfm_is_page_break === undefined ) {
+			return;
+		}
 		updateMeta( '_srfm_is_page_break', isPageBreak );
-	}, [ isPageBreak ] );
+	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
 	const headerCenterContainer = document.querySelector(
@@ -150,14 +159,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 		root.render( <SRFMEditorHeader /> );
 	}
 
-	const sureforms_keys = useSelect( () =>
-		select( editorStore ).getEditedPostAttribute( 'meta' )
-	);
-
 	const submitBtnContainer = document.querySelector(
 		'.srfm-submit-btn-container'
 	);
-
 	function addSubmitButton( elm ) {
 		const inheritClass = 'wp-block-button__link';
 		const customClass = 'srfm-btn-bg-color';
