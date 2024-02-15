@@ -139,6 +139,8 @@ class Plugin_Loader {
 			SUREFORMS_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
+				$email_summaries = new Email_Summaries();
+				$email_summaries->unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}

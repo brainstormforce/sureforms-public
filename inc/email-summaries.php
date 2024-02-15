@@ -131,16 +131,25 @@ class Email_Summaries {
 			)
 		);
 
-		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
-
-		// @phpstan-ignore-next-line.
-		as_unschedule_all_actions( 'srfm_weekly_scheduled_events' );
+		self::unschedule_events( 'srfm_weekly_scheduled_events' );
 
 		if ( $enable_email_summary ) {
-			self::schedule_weekly_entries_email( $time );
+			self::schedule_weekly_entries_email();
 		}
 
 		return new WP_REST_Response( 'Email summary options saved successfully', 200 );
+	}
+
+	/**
+	 * Unschedule the action.
+	 *
+	 * @param string $hook Action hook name.
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public function unschedule_events( $hook ) {
+		// @phpstan-ignore-next-line.
+		as_unschedule_all_actions( $hook );
 	}
 
 	/**
@@ -260,12 +269,13 @@ class Email_Summaries {
 	/**
 	 * Schedule the action to run today at 9:00 AM.
 	 *
-	 * @param string $time Time to schedule the action.
 	 * @return \error|void
 	 * @since 0.0.1
 	 */
-	public function schedule_weekly_entries_email( $time ) {
+	public function schedule_weekly_entries_email() {
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
+
+		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 
 		if ( wp_next_scheduled( 'srfm_weekly_scheduled_events' ) ) {
 			wp_clear_scheduled_hook( 'srfm_weekly_scheduled_events' );
