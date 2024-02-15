@@ -19,8 +19,6 @@ parameters:
 		- %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
 		- tests/php/stubs/sf-constants.php
 		- tests/php/stubs/sf-stubs.php
-		- inc/lib/browser/browser.php
-
 	paths:
 		- sureforms.php
 		- plugin-loader.php

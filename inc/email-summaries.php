@@ -148,7 +148,6 @@ class Email_Summaries {
 	 * @since 0.0.1
 	 */
 	public function unschedule_events( $hook ) {
-		// @phpstan-ignore-next-line.
 		as_unschedule_all_actions( $hook );
 	}
 
@@ -296,11 +295,9 @@ class Email_Summaries {
 
 		$next_day_user_timezone = Sureforms_Helper::get_integer_value( strtotime( "next $day $time", $current_time_user_timezone ) );
 
-		$scheduled_time = strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) );
+		$scheduled_time = Sureforms_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) ) );
 
-		// @phpstan-ignore-next-line
 		if ( false === as_has_scheduled_action( 'srfm_weekly_scheduled_events' ) ) {
-			// @phpstan-ignore-next-line
 			as_schedule_recurring_action(
 				$scheduled_time,
 				WEEK_IN_SECONDS,

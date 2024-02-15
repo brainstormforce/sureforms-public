@@ -27,5 +27,8 @@
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
+	},
+	"require": {
+		"wp-cli/wp-cli-bundle": "^2.10"
 	}
 }
