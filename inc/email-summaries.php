@@ -248,7 +248,7 @@ class Email_Summaries {
 		$site_title = get_bloginfo( 'name' );
 
 		$subject = 'SureForms Email Summary - ' . $site_title;
-		$message = "Total entries for the week: $entries_count";
+		$message = $entries_count;
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . get_option( 'admin_email' ),
