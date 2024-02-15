@@ -153,7 +153,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const sureforms_keys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
-
 	const submitBtnContainer = document.querySelector(
 		'.srfm-submit-btn-container'
 	);

@@ -18,6 +18,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { applyFilters } from '@wordpress/hooks';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -34,11 +35,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		duplicateMsg,
 		formId,
 		preview,
-		isConditionalLogic
 	} = attributes;
-
 	const currentFormId = useGetCurrentFormId( clientId );
-
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -50,6 +48,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = fieldsPreview.input_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+	const conditionalSettings = applyFilters( 'srfm.conditional_logic.tab_advance',attributes,setAttributes);
 
 	return (
 		<>
@@ -188,21 +187,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Conditional Logic', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<ToggleControl
-								label={ __(
-									'Enable Conditional Logic',
-									'sureforms'
-								) }
-								checked={ isConditionalLogic }
-								onChange={ ( value ) => {
-									setAttributes({isConditionalLogic:value})
-								} }
-							/>
-						</SRFMAdvancedPanelBody>
+						{ conditionalSettings }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

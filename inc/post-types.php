@@ -523,47 +523,7 @@ class Post_Types {
 					),
 				),
 			)
-		);
-
-		//Conditional Logic
-		register_post_meta(
-			'sureforms_form',
-			'_srfm_conditional_logic',
-			array(
-				'type' => 'array', // Expecting an array
-				'single' => true,
-				'auth_callback' => '__return_true',
-				'show_in_rest' => array(
-					'schema' => array(
-						'type' => 'array', // Expecting an array of arrays
-						'items' => array(
-							'type' => 'array', // An array inside the main array
-							'items' => array(
-								'type' => 'object', // Objects inside the inner array
-								'properties' => array(
-									'logic' => array(
-										'type' => 'array',
-										'items' => array(
-											'type' => 'object',
-											'properties' => array(
-												'field' => array('type' => 'string'),
-												'operator' => array('type' => 'string'),
-												'value' => array('type' => 'string'),
-												'type' => array('type' => 'string')
-											),
-											'required' => array('field', 'operator', 'value', 'type')
-										)
-									),
-									'action' => array('type' => 'string')
-								),
-								'required' => array('logic', 'action')
-							)
-						)
-					)
-				)
-			)
-		);
-		
+		);		
 	}
 
 	/**
