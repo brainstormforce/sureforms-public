@@ -675,10 +675,24 @@ class Post_Types {
 				$device_name  = '';
 			}
 			?>
-			<p><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b><?php echo esc_html( $form_name ); ?></p>
-			<p><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>"><?php echo esc_html( $user_ip ); ?></a></p>
-			<p><b><?php echo esc_html( __( 'Browser:', 'sureforms' ) ); ?></b><?php echo esc_html( $browser_name ); ?></p>
-			<p><b><?php echo esc_html( __( 'Device:', 'sureforms' ) ); ?></b><?php echo esc_html( $device_name ); ?></p>
+			<table style="border-collapse: separate; border-spacing: 5px 5px;">
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $form_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b></td>
+				<td><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>"><?php echo esc_html( $user_ip ); ?></a></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Browser:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $browser_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Device:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $device_name ); ?></td>
+			</tr>
+			</table>
 			<?php
 		} else {
 			?>
