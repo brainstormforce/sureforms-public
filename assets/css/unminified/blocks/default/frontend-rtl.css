@@ -149,6 +149,9 @@
   margin-bottom: 1.2em;
   color: var(--srfm-body-input-color);
 }
+.srfm-form-container .srfm-form .srfm-block.conditional-logic.show {
+  display: none;
+}
 .srfm-form-container .srfm-form .srfm-block label {
   font-size: 1em;
 }

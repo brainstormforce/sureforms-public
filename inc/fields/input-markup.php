@@ -29,6 +29,7 @@ class Input_Markup extends Base {
 	 */
 	public function default( $attributes, $form_id ) {
 		$block_id        = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
+		$form_id        = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
@@ -52,10 +53,11 @@ class Input_Markup extends Base {
 		$default_value        = $default ? $default : '';
 		$input_label_fallback = $label ? $label : __( 'Text Field', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+		$conditional_class = apply_filters('sureforms_conditional_logic_classes',$form_id,$block_id);
 
 		ob_start(); ?>
 
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr($conditional_class) ?>">
 			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" aria-unique="<?php echo esc_attr( $aria_unique ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxlength="<?php echo esc_attr( $max_length ); ?>" value="<?php echo esc_attr( $default_value ); ?>" />
