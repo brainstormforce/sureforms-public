@@ -675,11 +675,10 @@ class Post_Types {
 				$device_name  = '';
 			}
 			?>
-		<p><?php echo __( '<b>Form Name:</b>', 'sureforms' ) . esc_html( $form_name ); ?></p>
-		<p><?php echo __( '<b>User IP:</b>', 'sureforms' ); ?><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>">
-			<?php echo esc_html( $user_ip ); ?></a></p>
-		<p><?php echo __( '<b>Browser:</b>', 'sureforms' ) . esc_html( $browser_name ); ?></p>
-		<p><?php echo __( '<b>Device:</b>', 'sureforms' ) . esc_html( $device_name ); ?></p>
+			<p><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b><?php echo esc_html( $form_name ); ?></p>
+			<p><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>"><?php echo esc_html( $user_ip ); ?></a></p>
+			<p><b><?php echo esc_html( __( 'Browser:', 'sureforms' ) ); ?></b><?php echo esc_html( $browser_name ); ?></p>
+			<p><b><?php echo esc_html( __( 'Device:', 'sureforms' ) ); ?></b><?php echo esc_html( $device_name ); ?></p>
 			<?php
 		} else {
 			?>
