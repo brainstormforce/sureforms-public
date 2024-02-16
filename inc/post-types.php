@@ -46,7 +46,8 @@ class Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'sureforms_entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
-		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 ); }
+		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 ); 
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect'] );}
 
 	/**
 	 * Add SureForms menu.
@@ -408,6 +409,7 @@ class Post_Types {
 				'_srfm_page_form_title'           => 'boolean',
 				'_srfm_single_page_form_title'    => 'boolean',
 				'_srfm_submit_button_text'        => 'string',
+				'_srfm_instant_form'              => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
@@ -857,6 +859,26 @@ class Post_Types {
 			</div>
 			<?php
 		}
+	}
+
+	public function srfm_instant_form_redirect() {
+
+		$form_id = get_the_ID();
+
+		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
+		
+		$form_preview = '';
+	
+		$form_preview_attr = isset($_GET['preview']) ? $_GET['preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	
+		if ( $form_preview_attr ) {
+			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
+		}
+	
+	  if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! $is_instant_form ) :
+		wp_redirect( home_url(), 301 );
+		exit;
+	  endif;
 	}
 
 }

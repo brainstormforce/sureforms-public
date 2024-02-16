@@ -8,6 +8,7 @@ import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import getApiData from '@Controls/getApiData';
 import { useDeviceType } from '@Controls/getPreviewType';
+import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -335,7 +336,7 @@ function GeneralSettings( props ) {
 					/>
 				</SRFMAdvancedPanelBody>
 			) }
-			<SRFMAdvancedPanelBody
+			{ /* <SRFMAdvancedPanelBody
 				title={ __( 'Quick Action Bar', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -344,6 +345,19 @@ function GeneralSettings( props ) {
 					checked={ 'enabled' === enableQuickActionSidebar }
 					onChange={ toggleHandler }
 				/>
+			</SRFMAdvancedPanelBody> */ }
+			<SRFMAdvancedPanelBody
+				title={ __( 'Instant Form', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<ToggleControl
+					label={ __( 'Enable Instant Form', 'sureforms' ) }
+					checked={ sureforms_keys._srfm_instant_form }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_instant_form', value );
+					} }
+				/>
+				{ sureforms_keys._srfm_instant_form && <PostURLPanel /> }
 			</SRFMAdvancedPanelBody>
 		</>
 	);
