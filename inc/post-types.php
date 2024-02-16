@@ -525,6 +525,36 @@ class Post_Types {
 				),
 			)
 		);
+
+		register_post_meta(
+			'sureforms_entry',
+			'_srfm_submission_info',
+			array(
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'user_ip'      => array(
+									'type' => 'string',
+								),
+								'browser_name' => array(
+									'type' => 'string',
+								),
+								'device_name'  => array(
+									'type' => 'string',
+								),
+							),
+						),
+					),
+				),
+			)
+		);
+
 	}
 
 	/**
@@ -612,7 +642,7 @@ class Post_Types {
 		);
 		add_meta_box(
 			'sureform_form_name_meta',
-			'Form Name',
+			'Submission Info',
 			array( $this, 'sureforms_form_name_meta_callback' ),
 			'sureforms_entry',
 			'side',
@@ -632,10 +662,24 @@ class Post_Types {
 		$taxonomy = 'sureforms_tax';
 		$terms    = wp_get_post_terms( $post_id, $taxonomy );
 		if ( is_array( $terms ) && count( $terms ) > 0 ) {
-			$form_id   = intval( $terms[0]->slug );
-			$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+			$form_id         = intval( $terms[0]->slug );
+			$form_name       = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+			$submission_info = get_post_meta( $post_id, '_srfm_submission_info', true );
+			if ( is_array( $submission_info ) && count( $submission_info ) > 0 ) {
+				$user_ip      = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
+				$browser_name = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
+				$device_name  = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
+			} else {
+				$user_ip      = '';
+				$browser_name = '';
+				$device_name  = '';
+			}
 			?>
-		<p><?php echo esc_html( $form_name ); ?></p>
+		<p><?php echo __( '<b>Form Name:</b>', 'sureforms' ) . esc_html( $form_name ); ?></p>
+		<p><?php echo __( '<b>User IP:</b>', 'sureforms' ); ?><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>">
+			<?php echo esc_html( $user_ip ); ?></a></p>
+		<p><?php echo __( '<b>Browser:</b>', 'sureforms' ) . esc_html( $browser_name ); ?></p>
+		<p><?php echo __( '<b>Device:</b>', 'sureforms' ) . esc_html( $device_name ); ?></p>
 			<?php
 		} else {
 			?>
