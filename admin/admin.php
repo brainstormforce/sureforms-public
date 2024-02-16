@@ -287,7 +287,7 @@ class Admin {
 			$file_prefix .= '-rtl';
 		}
 
-		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SUREFORMS_ENTRIES_POST_TYPE === $current_screen->post_type ) {
+		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SUREFORMS_ENTRIES_POST_TYPE === $current_screen->post_type || 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			$asset_handle = 'dashboard';
 
 			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', array(), SUREFORMS_VER );
@@ -314,6 +314,10 @@ class Admin {
 			);
 			wp_enqueue_style( 'srfm-dashboard', SUREFORMS_URL . 'assets/build/dashboard.css', [], SUREFORMS_VER, 'all' );
 
+		}
+
+		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
+			wp_enqueue_style( SUREFORMS_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', array(), SUREFORMS_VER );
 		}
 
 		// Admin Submenu Styles.
@@ -349,7 +353,10 @@ class Admin {
 				'settings',
 				'sureforms_admin',
 				[
-					'site_url' => get_site_url(),
+					'site_url'                => get_site_url(),
+					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
+					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
+					'plugin_version'          => SUREFORMS_VER,
 				]
 			);
 		}

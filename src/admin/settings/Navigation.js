@@ -1,27 +1,36 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
-
-// settings icons.
-import GeneralIcon from './settingsIcon.js';
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
 
+export const navigation = [
+	{
+		name: __( 'General', 'sureforms' ),
+		slug: 'general-settings',
+		icon: parse( svgIcons.vertical_settings ),
+	},
+	{
+		name: __( 'Email', 'sureforms' ),
+		slug: 'email-settings',
+		icon: parse( svgIcons.email ),
+	},
+	{
+		name: __( 'Security', 'sureforms' ),
+		slug: 'security-settings',
+		icon: parse( svgIcons.lock ),
+	},
+];
+
 const Navigation = () => {
 	const activatedTab = useQuery();
-	const navigation = [
-		{
-			name: __( 'General', 'sureforms' ),
-			slug: 'general-settings',
-			icon: <GeneralIcon />,
-		},
-	];
+	
 	return (
-		<nav
-			className="srfm-flex srfm-flex-col srfm-max-w-[300px] srfm-min-h-full srfm-p-[20px] srfm-gap-[2px] srfm-w-[20%] srfm-bg-[#FBFBFC] srfm-shadow-md"
-			style={ { borderRight: '1px solid #E4E7EB' } }
-		>
+		<div className='srfm-settings-sidebar'>
+		<nav>
 			{ navigation.map( ( item ) => (
 				<Link
 					to={ {
@@ -29,21 +38,37 @@ const Navigation = () => {
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }
-					className={ `srfm-no-underline srfm-group srfm-p-2 srfm-cursor-pointer srfm-rounded-md srfm-transition-colors srfm-duration-300 srfm-ease-in-out hover:srfm-bg-wpcolor focus:srfm-bg-wpcolor focus:srfm-text-[#FBFBFC] focus:srfm-ring-0 ${
+					className={ `srfm-settings-sidebar-category ${
 						activatedTab.get( 'tab' ) === item.slug
-							? 'srfm-bg-wpcolor srfm-text-[#FBFBFC]'
-							: 'srfm-text-[#111827]'
+							? 'active'
+							: ''
 					}` }
 				>
-					<div className="srfm-flex srfm-justify-start srfm-gap-2">
 						{ item.icon }
-						<span className="truncate srfm-text-[16px] group-hover:srfm-text-[#FBFBFC] srfm-transition-colors srfm-duration-300 srfm-ease-in-out">
+						<span>
 							{ item.name }
 						</span>
-					</div>
 				</Link>
 			) ) }
 		</nav>
+		<div className="srfm-notice-container">
+			<div className="srfm-notice-title-container">
+				{ parse(svgIcons.message) }
+				<div className="srfm-notice-title">
+					{ __( 'Want More?', 'sureforms' ) }
+				</div>
+			</div>
+			<div className="srfm-notice-body">
+				{ __(
+					'Unlock revenue boosting features when you upgrade to Pro',
+					'sureforms'
+				) }
+			</div>
+			<button className="button button-primary srfm-notice-btn">
+				{ __( 'Upgrade to Premium', 'sureforms' ) }
+			</button>
+		</div>
+	</div>
 	);
 };
 

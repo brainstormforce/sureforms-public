@@ -1,0 +1,351 @@
+
+$heading_color: #0F172A;
+$text_color: #1E293B;
+$help_color: #6B7280;
+$border_color: #DCE0E6;
+$bg_color: #FFFFFF;
+$primary_color: #125D9F;
+$option_active_bg_color:  #F2FAFC;
+$label_color:  #1E293B;
+$box_shadow: #0D131E1A;
+$option_bg_color:  #fff;
+$content_color:  #475569;
+$btn_text_color: #FFFFFF;
+$placeholder_color: #9CA3AF;
+
+
+
+.sureforms_page_sureforms_form_settings {
+    #wpfooter {
+        display: none;
+    }
+    
+    #wpbody-content {
+        margin-left: 0;
+    }
+}
+.srfm-settings-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    font-size: 20px;
+
+    .srfm-settings-sidebar {
+        position: fixed;
+        width: 250px;
+        height: 100%;
+        padding: 1em;
+        background-color: #fff;
+        border-right: 1px solid #e5e7eb;
+
+        nav {
+            margin-bottom: 1.6em;
+        }
+
+        .srfm-settings-sidebar-category {
+            display: flex;
+            align-items: center;
+            padding: .5em;
+            text-decoration: none;
+
+            &:focus {
+                box-shadow: none;
+            }
+
+            svg, path {
+                stroke: $content_color;
+            }
+
+            svg {
+                margin-right: 0.4em;
+            }
+
+            span {
+                font-size: 0.7em;
+                line-height: 1em;
+                font-weight: 500;
+                color: $content_color;
+            }
+
+            &.active {
+                background-color: $option_active_bg_color;
+
+                svg, path {
+                    stroke: $label_color;
+                }
+
+                span {
+                    color: $label_color;
+                }
+            }
+        }
+
+        .srfm-notice-container {
+            padding: 0.8em;
+            border: 1px solid #125D9F;
+            border-radius: 6px;
+
+
+            .srfm-notice-title-container {
+                display: flex;
+                flex-wrap: wrap;
+                padding-bottom: 0.6em;
+                color: $heading_color;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 8px;
+
+                    path {
+                        stroke: $primary_color;
+                    }
+                }
+
+                .srfm-notice-title {
+                    width: calc( 100% - 24px );
+                    font-size: 0.7em;
+                    font-weight: 500;
+                }
+            }
+
+            .srfm-notice-body {
+                padding-bottom: 0.85em;
+                font-size: 0.7em;
+                color: $content_color;
+            }
+
+            .srfm-notice-btn {
+                padding: 0.64em;
+                font-size: 0.7em;
+                font-weight: 500;
+                background: $primary_color;
+                color: $btn_text_color;
+                border-radius: 6px;
+                line-height: normal;
+                border: 0;
+                width: 100%;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .srfm-settings-page-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: calc(100% - 290px);
+        margin-left: 290px;
+        padding: 1.85em .5em;
+
+        .srfm-settings-page-inner {
+            width: 100%;
+            max-width: 768px;
+            margin: 0 auto;
+
+
+            .srfm-page-heading {
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 1.5em;
+
+
+                .srfm-page-icon {
+                    margin-right: 0.4em;
+
+                    span {
+                        font-size: 0.9em;
+                        font-weight: 600;
+                        line-height: 1.4em;
+                    }
+                }
+            }
+
+            .srfm-section-container {
+                background-color: $bg_color;
+                margin-bottom: 1.2em;
+                box-shadow: 0px 1px 2px 0px $box_shadow;
+                border: 1px solid $border_color;
+                border-radius: 4px;
+
+                .srfm-content-title {
+                    font-size: 0.8em;
+                    line-height: 1.5em;
+                    font-weight: 600;
+                    color: $heading_color;
+                    padding: 1em 1.5em;
+                    border-bottom: 1px solid $border_color;
+                }
+
+                .srfm-section-content {
+                    padding: 1.5em;
+
+                    .srfm-col-6 {
+                        width: 50%;
+                    }
+
+                    .components-base-control {
+                        font-size: 20px;
+                        margin-bottom: 1em;
+                        // Toggle control.
+                        &.components-toggle-control {
+
+                            .components-form-toggle.is-checked .components-form-toggle__track {
+                                background-color: $primary_color;
+                            }
+
+                            label {
+                                font-size: 0.7em;
+                                font-weight: 500;
+                                color: $label_color;
+                            }
+
+                            .components-base-control__help {
+                                font-size: 0.6em;
+                                margin-top:  0.2em;
+                                margin-left: 4em;
+                                color: $help_color;
+                            }
+                        }
+
+                        &.srfm-components-input-control,
+                        .srfm-components-select-control {
+                            gap: 0;
+
+                            label {
+                                color: $label_color;
+                                font-size: 0.7em;
+                                line-height: normal;
+                                text-transform: none;
+                                margin-bottom: 0.3em;
+                            }
+                            .components-text-control__input,
+                            .components-select-control__input {
+                                font-size: 0.8em;
+                                border: 1px solid $border_color;
+                                border-radius: 0.25em;
+                                padding: 0.75em 1em;
+
+                                &::placeholder {
+                                    color: $placeholder_color;
+                                }
+                            }
+
+                            .components-select-control__input  {
+                                height: auto;
+                                line-height: normal;
+                            }
+
+                            .components-input-control__backdrop {
+                                border: 1px solid $border_color;
+                                border-radius: 0.25em;
+                            }
+                        }
+
+                        &:nth-last-child(1) {
+                            margin-bottom: 0;
+                        }
+                    }
+
+                    .srfm-style-1-tabs {
+                       > .components-tab-panel__tabs {
+                            border-bottom: 1px solid $border_color;
+                            .components-tab-panel__tabs-item {
+                                font-size: 0.7em;
+                                color: $content_color;
+
+                                &.active-tab {
+                                    color: $primary_color;
+                                    border-bottom: 2px solid $primary_color;
+                                }
+                            }
+                        }
+
+                        .components-tab-panel__tab-content {
+
+                            .srfm-sub-section-heading {
+                                max-width: 560px;
+                                margin-bottom: 1em;
+
+                                h2 {
+                                    font-size: 0.8em;
+                                    line-height: normal;
+                                    font-weight: 500;
+                                    margin-bottom: 0.5em;
+                                }
+    
+                                p {
+                                    font-size: 0.7em;
+                                    line-height: normal;
+                                }
+
+                                .srfm-link {
+                                    a {
+                                        font-size: 0.7em;
+                                        color: $primary_color;
+
+                                        &:nth-last-child(1) {
+                                            margin-left: .3em;
+                                            padding-left: .3em;
+                                            border-left: 1px solid $border_color;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .srfm-sub-section-content {
+                                padding: 1.2em;
+                                border: 1px solid $border_color;
+                                border-radius: 0.2em;
+                            }
+                           
+                        }
+                    }
+
+                    .srfm-style-2-tabs {
+                        > .components-tab-panel__tabs {
+                            margin-bottom: 0.8em;
+
+                            .components-tab-panel__tabs-item {
+                                position: relative;
+                                font-size: 0.7em;
+                                border: 1px solid $border_color;
+                                border-radius: 6px;
+                                margin-right: 0.85em;
+                                padding-left: 2.429em;
+                                color: $content_color;
+
+                                &:hover {
+                                    color: $content_color;
+                                }
+
+                                &:before {
+                                    content: '';
+                                    position: absolute;
+                                    left: 0.715em;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                    width: 1.142em;
+                                    height: 1.142em;
+                                    border: 1px solid $border_color;
+                                    border-radius: 100%
+                                }
+
+                                &.active-tab {
+                                    color: $primary_color;
+                                    border-color: $primary_color;
+
+                                    &:before {
+                                        box-shadow: inset 0px 0px 0px 0.3em $primary_color;
+                                    }
+                                }
+
+                               
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}

@@ -281,6 +281,9 @@ class Sureforms_Submit {
 		$sureforms_v3_site                = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
+
+		$ip_logging = ! empty( get_option( 'srfm_global_ip_logging' ) ) ? get_option( 'srfm_global_ip_logging' ) : false;
+
 		// TODO: We need to change it to array and serialize it.
 		$results = array(
 			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,

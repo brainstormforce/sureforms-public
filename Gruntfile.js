@@ -172,6 +172,10 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/backend/admin.css',
 						dest: 'assets/css/minified/backend/admin.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/backend/settings.css',
+						dest: 'assets/css/minified/backend/settings.min-rtl.css',
+					},
 				],
 
 			},
