@@ -6,8 +6,8 @@
 		.srfm-block {
 			margin-bottom: 1.2em;
 			color: var( --srfm-body-input-color );
-			&.conditional-logic{
-				&.show{
+			&.conditional-logic {
+				&.show {
 					display: none;
 				}
 			}

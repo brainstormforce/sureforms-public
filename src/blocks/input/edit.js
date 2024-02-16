@@ -48,7 +48,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = fieldsPreview.input_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
-	const conditionalSettings = applyFilters( 'srfm.conditional_logic.tab_advance',attributes,setAttributes);
+	const conditionalSettings = applyFilters(
+		'srfm.conditional_logic.tab_advance',
+		attributes,
+		setAttributes
+	);
 
 	return (
 		<>

@@ -40,7 +40,7 @@ class Email_Markup extends Base {
 		$confirm_label    = isset( $attributes['confirmLabel'] ) ? $attributes['confirmLabel'] : '';
 		$class_name       = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$form_id        = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
+		$form_id          = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
 		$slug             = 'email';
 
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -53,10 +53,10 @@ class Email_Markup extends Base {
 
 		$input_confirm_label_fallback = 'Confirm ' . $input_label_fallback;
 		$input_confirm_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_confirm_label_fallback );
-		$conditional_class = apply_filters('sureforms_conditional_logic_classes',$form_id,$block_id);
+		$conditional_class            = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr($conditional_class) ?>">
+			<div class="srfm-block-single srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
 					<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 					<div class="srfm-block-wrap">

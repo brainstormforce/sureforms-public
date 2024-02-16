@@ -61,7 +61,7 @@ class Generate_Form_Markup {
 	 */
 	public static function get_form_markup( $id, $hide_title_current_page = false, $sf_classname = '', $post_type = 'post' ) {
 		$id = isset( $_GET['id'] ) && wp_verify_nonce( $_GET['srfm_form_markup_nonce'], 'srfm_form_markup' ) ? Sureforms_Helper::get_string_value( $_GET['id'] ) : Sureforms_Helper::get_integer_value( $id );
-		do_action('sureforms_localize_conditional_logic_data',$id);
+		do_action( 'sureforms_localize_conditional_logic_data', $id );
 		$post = get_post( Sureforms_Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {
 			$content = apply_filters( 'the_content', $post->post_content );
