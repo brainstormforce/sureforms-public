@@ -2,8 +2,13 @@
   box-shadow: none;
   border: 1px solid #0e4372;
 }
-.wp-block-sureforms-form svg {
-  width: 200px;
+.wp-block-sureforms-form .components-placeholder__label {
+  justify-content: center;
+  width: 100%;
+}
+.wp-block-sureforms-form .components-placeholder__label svg[data-type=sureforms-logo] {
+  max-width: 200px;
+  width: 100%;
   height: 36px;
   margin-bottom: 8px;
 }
@@ -17,7 +22,7 @@
   transition: all 0.3s ease;
 }
 .wp-block-sureforms-form .is-primary:hover {
-  background-color: #0184c7;
+  background-color: #0e4372;
 }
 .wp-block-sureforms-form .is-secondary {
   background-color: #fff;
@@ -31,8 +36,8 @@
 }
 .wp-block-sureforms-form .is-secondary:hover {
   background-color: #fff;
-  color: #0184c7;
-  border: 1px solid #0184c7;
+  color: #0e4372;
+  border: 1px solid #0e4372;
 }
 
 .components-button.is-secondary:hover:not(:disabled) {
@@ -111,16 +116,13 @@
   color: #333;
 }
 
-.srfm-select-form-placeholder {
-  display: flex !important;
-  align-items: center !important;
-}
-
 .srfm-select-form-container {
   display: flex;
   margin: auto;
   flex-direction: column;
   gap: 24px;
+  max-width: 380px;
+  width: 100%;
 }
 
 .srfm-select-form-button {
