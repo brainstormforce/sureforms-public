@@ -12,6 +12,7 @@ const EmailSummary = () => {
 		enable_email_summary: false,
 		emails_send_to: sureforms_admin.admin_email,
 		schedule_reports: 'Monday',
+		email_summary_test: false,
 	} );
 	const [ loading, setLoading ] = useState( false );
 	const [ isFetching, setIsFetching ] = useState( false );
@@ -62,18 +63,31 @@ const EmailSummary = () => {
 
 	const handleChange = ( e ) => {
 		const { name, value, checked } = e.target;
-		if ( name === 'enable_email_summary' && checked ) {
-			setFormData( {
-				enable_email_summary: true,
-				emails_send_to:
-					formData.emails_send_to || sureforms_admin.admin_email,
-				schedule_reports: formData.schedule_reports || 'Monday',
-			} );
+		if ( name === 'enable_email_summary' ) {
+			setFormData( ( prevFormData ) => ( {
+				...prevFormData,
+				enable_email_summary: checked,
+				...( checked
+					? {}
+					: {
+						emails_send_to:
+								formData.emails_send_to ||
+								sureforms_admin.admin_email,
+						schedule_reports:
+								formData.schedule_reports || 'Monday',
+						email_summary_test: false,
+					  } ),
+			} ) );
+		} else if ( name === 'es-test' ) {
+			setFormData( ( prevFormData ) => ( {
+				...prevFormData,
+				email_summary_test: checked,
+			} ) );
 		} else {
-			setFormData( {
-				...formData,
-				[ name ]: name === 'enable_email_summary' ? checked : value,
-			} );
+			setFormData( ( prevFormData ) => ( {
+				...prevFormData,
+				[ name ]: value,
+			} ) );
 		}
 	};
 
@@ -243,6 +257,35 @@ const EmailSummary = () => {
 												</option>
 											</select>
 										</div>
+									</div>
+									<div className="srfm-w-[600px] srfm-mt-4">
+										<Fragment>
+											<div className="srfm-mb-4">
+												<label
+													htmlFor="srfm-es-test-checkbox"
+													className="toggle-button"
+												>
+													<input
+														id="srfm-es-test-checkbox"
+														type="checkbox"
+														name="es-test"
+														checked={
+															formData.email_summary_test
+														}
+														onChange={
+															handleChange
+														}
+													/>
+													<span className="slider"></span>
+												</label>
+												<span className="srfm-ml-4">
+													{ __(
+														'Send a test Email Summary on save',
+														'sureforms'
+													) }
+												</span>
+											</div>
+										</Fragment>
 									</div>
 								</>
 							) }

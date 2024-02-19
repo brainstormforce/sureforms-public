@@ -121,6 +121,7 @@ class Email_Summaries {
 		$enable_email_summary = isset( $form_info_obj->enable_email_summary ) ? $form_info_obj->enable_email_summary : false;
 		$emails_send_to       = isset( $form_info_obj->emails_send_to ) ? $form_info_obj->emails_send_to : array();
 		$schedule_reports     = isset( $form_info_obj->schedule_reports ) ? $form_info_obj->schedule_reports : '';
+		$email_summary_test   = isset( $form_info_obj->email_summary_test ) ? $form_info_obj->email_summary_test : false;
 
 		update_option(
 			'srfm_email_summary_options',
@@ -128,13 +129,14 @@ class Email_Summaries {
 				'enable_email_summary' => $enable_email_summary,
 				'emails_send_to'       => $emails_send_to,
 				'schedule_reports'     => $schedule_reports,
+				'email_summary_test'   => $email_summary_test,
 			)
 		);
 
-		self::unschedule_events( 'srfm_weekly_scheduled_events' );
+		$this->unschedule_events( 'srfm_weekly_scheduled_events' );
 
 		if ( $enable_email_summary ) {
-			self::schedule_weekly_entries_email();
+			$this->schedule_weekly_entries_email();
 		}
 
 		return new WP_REST_Response( 'Email Summary options saved successfully', 200 );
@@ -241,7 +243,7 @@ class Email_Summaries {
 	 * @return void
 	 */
 	public function send_entries_to_admin( $email_summary_options ) {
-		$entries_count_table = self::get_total_entries_for_week();
+		$entries_count_table = $this->get_total_entries_for_week();
 
 		$recipients_string = '';
 
@@ -271,6 +273,11 @@ class Email_Summaries {
 	 */
 	public function schedule_weekly_entries_email() {
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
+		$email_summary_test    = is_array( $email_summary_options ) && isset( $email_summary_options['email_summary_test'] ) ? $email_summary_options['email_summary_test'] : false;
+
+		if ( $email_summary_test ) {
+			$this->send_entries_to_admin( $email_summary_options );
+		}
 
 		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 
