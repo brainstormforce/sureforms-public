@@ -6,7 +6,8 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import getApiData from '@Controls/getApiData';
+// Might be used later
+// import getApiData from '@Controls/getApiData';
 import { useDeviceType } from '@Controls/getPreviewType';
 import PostURLPanel from '../components/form-permalink/Panel';
 
@@ -14,7 +15,8 @@ function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const {
 		default_keys,
-		enableQuickActionSidebar,
+		// might be used later
+		// enableQuickActionSidebar,
 		setEnableQuickActionSidebar,
 		isPageBreak,
 	} = props;
@@ -131,32 +133,34 @@ function GeneralSettings( props ) {
 		} );
 	}
 
+	// Might be used later
 	/*
 	 * function to update quick action sidebar.
 	 */
-	const saveOptionToDatabase = ( toggleStatus ) => {
-		setEnableQuickActionSidebar( toggleStatus );
-		// Create an object with the srfm_ajax_nonce and confirmation properties.
-		const data = {
-			security: quickSidebarBlocks.srfm_ajax_nonce,
-			enableQuickActionSidebar: toggleStatus,
-		};
-		// Call the getApiData function with the specified parameters.
-		getApiData( {
-			url: quickSidebarBlocks.srfm_ajax_url,
-			action: 'srfm_global_sidebar_enabled',
-			data,
-		} );
-	};
+	// const saveOptionToDatabase = ( toggleStatus ) => {
+	// 	setEnableQuickActionSidebar( toggleStatus );
+	// 	// Create an object with the srfm_ajax_nonce and confirmation properties.
+	// 	const data = {
+	// 		security: quickSidebarBlocks.srfm_ajax_nonce,
+	// 		enableQuickActionSidebar: toggleStatus,
+	// 	};
+	// 	// Call the getApiData function with the specified parameters.
+	// 	getApiData( {
+	// 		url: quickSidebarBlocks.srfm_ajax_url,
+	// 		action: 'srfm_global_sidebar_enabled',
+	// 		data,
+	// 	} );
+	// };
 
+	// Might be used later
 	/*
 	 * Onchange handler for quick sidebar action.
 	 */
-	const toggleHandler = () => {
-		const toggleStatus =
-			'disabled' === enableQuickActionSidebar ? 'enabled' : 'disabled';
-		saveOptionToDatabase( toggleStatus );
-	};
+	// const toggleHandler = () => {
+	// 	const toggleStatus =
+	// 		'disabled' === enableQuickActionSidebar ? 'enabled' : 'disabled';
+	// 	saveOptionToDatabase( toggleStatus );
+	// };
 
 	useEffect( () => {
 		const fetchData = async () => {
