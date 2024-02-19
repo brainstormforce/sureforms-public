@@ -8,7 +8,7 @@
  * @author     Sureforms <https://sureforms.com/>
  */
 
- if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
