@@ -33,14 +33,14 @@ const EmailPage = () => {
 						setEmailSummaries(! emailSummaries )
 					}
 				/>
-                <TextControl
+                { emailSummaries && <TextControl
                     label={__('Email Send To', 'sureforms')}
                     type="text"
                     className="srfm-components-input-control srfm-col-6"
                     value={ emailSentTo }
                     onChange={ handleOnChange }
-                />
-                <SelectControl
+                />}
+                { emailSummaries && <SelectControl
                     label={__('Schedule Reports', 'sureforms')}
                     value="Monday"
                     className="srfm-components-select-control srfm-col-6"
@@ -48,7 +48,7 @@ const EmailPage = () => {
                         setScheduleReport( { [ option ]: value } )
                     }
                     options={ option }
-                />
+                />}
             </>
         )
     }
