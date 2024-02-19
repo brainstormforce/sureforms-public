@@ -8,6 +8,10 @@
  * @author     Sureforms <https://sureforms.com/>
  */
 
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 return [
 	'title'            => __( 'Contact Form', 'sureforms' ),
 	'info'             => __( 'A basic Contact Form', 'sureforms' ),

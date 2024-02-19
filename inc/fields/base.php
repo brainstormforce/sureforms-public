@@ -10,6 +10,10 @@
 
 namespace SureForms\Inc\Fields;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Field Base Class
  *

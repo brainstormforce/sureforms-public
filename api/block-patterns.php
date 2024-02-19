@@ -17,6 +17,10 @@ use WP_REST_Response;
 use WP_REST_Server;
 use WP_Block_Patterns_Registry;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Core class used to access block patterns via the REST API.
  *

@@ -43,6 +43,10 @@
  */
 
  namespace SureForms\Inc\Services\Browser;
+
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
  
 class Browser {
 

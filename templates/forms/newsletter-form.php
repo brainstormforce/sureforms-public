@@ -8,6 +8,10 @@
  * @author     SureCart <https://surecart.com/>
  */
 
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 return [
 	'title'            => __( 'Newsletter Form', 'sureforms' ),
 	'info'             => __( 'Creates a Newsletter Form', 'sureforms' ),

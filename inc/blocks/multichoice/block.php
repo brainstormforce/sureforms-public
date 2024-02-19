@@ -11,6 +11,10 @@ use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Fields\Multichoice_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Multichoice Block.
  */

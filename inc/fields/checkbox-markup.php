@@ -11,6 +11,9 @@ namespace SureForms\Inc\Fields;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Sureforms Checkbox Markup Class.

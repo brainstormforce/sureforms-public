@@ -10,6 +10,11 @@ namespace SureForms\Inc;
 use Sureforms_Spec_Gb_Helper;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\SRFM_Smart_Tags;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Gutenberg hooks handler class.
  *

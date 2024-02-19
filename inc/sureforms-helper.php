@@ -10,6 +10,10 @@ namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Sureforms Helper Class.
  *

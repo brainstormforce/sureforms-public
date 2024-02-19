@@ -11,6 +11,10 @@ use WP_REST_Response;
 use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Generate_Form_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Sureforms_Form Block.
  */

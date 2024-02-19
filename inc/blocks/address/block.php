@@ -11,6 +11,9 @@ use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Fields\Address_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Address Block.

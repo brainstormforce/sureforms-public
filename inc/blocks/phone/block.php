@@ -11,6 +11,10 @@ use SureForms\Inc\Blocks\Base;
 use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Fields\Phone_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Phone Block.
  */

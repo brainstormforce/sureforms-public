@@ -10,6 +10,10 @@
 
 namespace SureForms\Inc\Blocks;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Block base class.
  */

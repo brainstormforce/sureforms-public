@@ -7,6 +7,9 @@
 
 use SureForms\Inc\Generate_Form_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 $form_preview = '';
 

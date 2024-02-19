@@ -24,6 +24,10 @@ use SureForms\Inc\SRFM_Smart_Tags;
 use SureForms\Inc\Generate_Form_Markup;
 use SureForms\Inc\Create_New_Form;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Plugin_Loader
  *

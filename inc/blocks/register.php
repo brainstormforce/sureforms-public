@@ -9,6 +9,10 @@ namespace SureForms\Inc\Blocks;
 
 use SureForms\Inc\Traits\Get_Instance;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Manage Blocks registrations.
  *
