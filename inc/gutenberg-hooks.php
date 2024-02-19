@@ -236,7 +236,7 @@ class Gutenberg_Hooks {
 			[
 				'font_awesome_5_polyfill' => array(),
 				'collapse_panels'         => 'enabled',
-				'is_site_editor'          => $screen?->id,
+				'is_site_editor'          => $screen ? $screen->id : null,
 			]
 		);
 	}
