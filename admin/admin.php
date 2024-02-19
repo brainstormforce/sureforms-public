@@ -444,7 +444,7 @@ class Admin {
 			'quickSidebarBlocks',
 			array(
 				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
-				'srfm_enable_quick_action_sidebar' => 'enabled',
+				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
 				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
 			)

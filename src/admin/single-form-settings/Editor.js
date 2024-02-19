@@ -413,8 +413,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 				toggleSidebar( e.destination.url );
 			} );
 		} else if (
-			enableQuickActionSidebar !== undefined &&
-			'enabled' === enableQuickActionSidebar
+			enableQuickActionSidebar !== undefined
+			// Can be used later to enable/disable the sidebar
+			// && 'enabled' === enableQuickActionSidebar
 		) {
 			// Attach the sidebar to the DOM.
 			attachSidebar();
