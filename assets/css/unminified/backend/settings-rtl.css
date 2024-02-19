@@ -4,6 +4,11 @@
 .sureforms_page_sureforms_form_settings #wpbody-content {
   margin-right: 0;
 }
+.sureforms_page_sureforms_form_settings #bsf-optin-notice,
+.sureforms_page_sureforms_form_settings #uagb-admin-rating,
+.sureforms_page_sureforms_form_settings .notice-error {
+  display: none;
+}
 
 .srfm-settings-wrap {
   display: flex;

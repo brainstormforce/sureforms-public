@@ -23,6 +23,9 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
+	const defaultErrorValue = sfBlockData?.get_default_dynamic_block_option?.srfm_url_block_required_text ? sfBlockData.get_default_dynamic_block_option.srfm_url_block_required_text : ''
+	const currentErrorMessage = errorMsg ? errorMsg : defaultErrorValue;
+
 	return (
 		<InspectorControls>
 			<InspectorTabs
@@ -88,7 +91,7 @@ export default ( { attributes, setAttributes } ) => {
 						{ required && (
 							<SRFMTextControl
 								label={ __( 'Error message', 'sureforms' ) }
-								value={ errorMsg }
+								value={ currentErrorMessage }
 								data={ {
 									value: errorMsg,
 									label: 'errorMsg',

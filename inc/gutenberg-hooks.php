@@ -8,6 +8,7 @@
 namespace SureForms\Inc;
 
 use Sureforms_Spec_Gb_Helper;
+use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\SRFM_Smart_Tags;
 /**
@@ -196,15 +197,16 @@ class Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'sfBlockData',
 			[
-				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
-				'plugin_url'             => SUREFORMS_URL,
-				'admin_email'            => get_option( 'admin_email' ),
-				'post_url'               => admin_url( 'post.php' ),
-				'current_screen'         => $screen,
-				'smart_tags_array'       => SRFM_Smart_Tags::smart_tag_list(),
-				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
-				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
-				'is_pro_active'          => $is_pro_active,
+				'template_picker_url'              => admin_url( '/admin.php?page=add-new-form' ),
+				'plugin_url'                       => SUREFORMS_URL,
+				'admin_email'                      => get_option( 'admin_email' ),
+				'post_url'                         => admin_url( 'post.php' ),
+				'current_screen'                   => $screen,
+				'smart_tags_array'                 => SRFM_Smart_Tags::smart_tag_list(),
+				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
+				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
+				'is_pro_active'                    => $is_pro_active,
+				'get_default_dynamic_block_option' => get_option( 'get_default_dynamic_block_option', Sureforms_Helper::default_dynamic_block_option() ),
 			]
 		);
 

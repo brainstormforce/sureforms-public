@@ -23,6 +23,12 @@ $placeholder_color: #9CA3AF;
     #wpbody-content {
         margin-left: 0;
     }
+
+    #bsf-optin-notice,
+	#uagb-admin-rating,
+	.notice-error {
+		display: none;
+	}
 }
 .srfm-settings-wrap {
     display: flex;

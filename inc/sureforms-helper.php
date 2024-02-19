@@ -204,7 +204,7 @@ class Sureforms_Helper {
 	 * @param string $key              The option key.
 	 * @param mixed  $value            The value to update.
 	 * @param bool   $network_override Whether to allow the network_override admin setting to be overridden on subsites.
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 * @return bool True if the option was updated, false otherwise.
 	 */
 	public static function update_admin_settings_option( $key, $value, $network_override = false ) {
@@ -220,11 +220,50 @@ class Sureforms_Helper {
 	 * @param bool       $single single or multiple.
 	 * @param mixed      $default default value.
 	 *
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {
 		$meta_value = get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ? self::get_string_value( get_post_meta( self::get_integer_value( $post_id ), $key, $single ) ) : self::get_string_value( $default );
 		return $meta_value;
+	}
+
+
+	/**
+	 * default dynamic block value.
+	 *
+	 * @since 0.0.1
+	 * @return string Meta value.
+	 */
+	public static function default_dynamic_block_option() {
+		$default_dynamic_values = array(
+			'srfm_url_block_required_text'          => __( 'This field is required.', 'sureforms' ),
+			'srfm_input_block_required_text'        => __( 'This field is required.', 'sureforms' ),
+			'srfm_input_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+			'srfm_address_block_required_text'      => __( 'This field is required.', 'sureforms' ),
+			'srfm_phone_block_required_text'        => __( 'This field is required.', 'sureforms' ),
+			'srfm_phone_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+			'srfm_number_block_required_text'       => __( 'This field is required..', 'sureforms' ),
+			'srfm_textarea_block_required_text'     => __( 'This field is required.', 'sureforms' ),
+			'srfm_multi_choice_block_required_text' => __( 'This field is required.', 'sureforms' ),
+			'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
+			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
+			'srfm_email_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+		);
+
+		return $default_dynamic_values;
+	}
+
+	/**
+	 * Get default dynamic block value.
+	 *
+	 * @param string $key meta key name.
+	 * @since 0.0.1
+	 * @return string Meta value.
+	 */
+	public static function get_default_dynamic_block_option( $key ) {
+		$default_dynamic_values = self::default_dynamic_block_option();
+
+		return get_option( 'get_default_dynamic_block_option', $default_dynamic_values )[ $key ];
 	}
 }
