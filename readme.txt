@@ -25,6 +25,18 @@ License URI : https://heroicons.com
 License : Massachusetts Institute of Technology (MIT)   
 License URI : https://react-icons.github.io/react-icons/  
 
+intTelInput ( PHP )
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://github.com/jackocnr/intl-tel-input  
+
+intTelInput ( REACT )
+License : Massachusetts Institute of Technology (MIT)   
+License URI : https://github.com/patw0929/react-intl-tel-input  
+
+Tom Select
+License :  Apache License, Version 2.  
+License URI : https://github.com/orchidjs/tom-select  
+
 == Changelog ==
 
 = 0.0.1 =

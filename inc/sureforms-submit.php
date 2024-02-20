@@ -43,8 +43,8 @@ class Sureforms_Submit {
 		add_action( 'wp_ajax_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		add_action( 'wp_ajax_nopriv_validation_ajax_action', [ $this, 'field_unique_validation' ] );
 		// for quick action bar.
-		add_action( 'wp_ajax_srfm_global_update_allowed_block', array( $this, 'srfm_global_update_allowed_block' ) );
-		add_action( 'wp_ajax_srfm_global_sidebar_enabled', array( $this, 'srfm_global_sidebar_enabled' ) );
+		add_action( 'wp_ajax_srfm_global_update_allowed_block', [ $this, 'srfm_global_update_allowed_block' ] );
+		add_action( 'wp_ajax_srfm_global_sidebar_enabled', [ $this, 'srfm_global_sidebar_enabled' ] );
 	}
 
 	/**
@@ -57,29 +57,29 @@ class Sureforms_Submit {
 		register_rest_route(
 			$this->namespace,
 			'/submit-form',
-			array(
+			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
 				'permission_callback' => '__return_true',
-			)
+			]
 		);
 		register_rest_route(
 			$this->namespace,
 			'/srfm-settings',
-			array(
+			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
 				'permission_callback' => '__return_true',
-			)
+			]
 		);
 		register_rest_route(
 			$this->namespace,
 			'/srfm-settings',
-			array(
+			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
 				'permission_callback' => '__return_true',
-			)
+			]
 		);
 	}
 
@@ -115,17 +115,17 @@ class Sureforms_Submit {
 				}
 
 				// Use wp_handle_upload instead of move_uploaded_file.
-				$uploaded_file = array(
+				$uploaded_file = [
 					'name'     => $filename,
 					'type'     => $file_type,
 					'tmp_name' => $temp_path,
 					'error'    => $file['error'],
 					'size'     => $file_size,
-				);
+				];
 
-				$upload_overrides = array(
+				$upload_overrides = [
 					'test_form' => false,
-				);
+				];
 				$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
 				remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
 				if ( $move_file && ! isset( $move_file['error'] ) ) {
@@ -166,17 +166,17 @@ class Sureforms_Submit {
 						$json_string = wp_remote_retrieve_body( $response );
 						$data        = (array) json_decode( $json_string, true );
 					} else {
-						$data = array();
+						$data = [];
 					}
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
 				if ( isset( $sureforms_captcha_data['success'] ) && true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
 			} else {
 				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
@@ -195,23 +195,23 @@ class Sureforms_Submit {
 						$json_string = wp_remote_retrieve_body( $response );
 						$data        = (array) json_decode( $json_string, true );
 					} else {
-						$data = array();
+						$data = [];
 					}
 					$sureforms_captcha_data = $data;
 
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
 				if ( true === $sureforms_captcha_data['success'] ) {
 					return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 				} else {
-					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', array( 'status' => 403 ) );
+					return new \WP_Error( 'recaptcha_error', 'reCAPTCHA error.', [ 'status' => 403 ] );
 				}
 			} else {
 				return rest_ensure_response( $this->handle_form_entry( $form_data ) );
 			}
 		} else {
-			return new \WP_Error( 'spam_detected', 'Spam Detected', array( 'status' => 403 ) );
+			return new \WP_Error( 'spam_detected', 'Spam Detected', [ 'status' => 403 ] );
 		}
 
 	}
@@ -243,7 +243,7 @@ class Sureforms_Submit {
 			return wp_send_json_error( __( 'Data is not found.', 'sureforms' ) );
 		}
 
-		$options_to_update = array(
+		$options_to_update = [
 			'sureforms_v2_checkbox_secret',
 			'sureforms_v2_checkbox_site',
 			'sureforms_v2_invisible_secret',
@@ -251,7 +251,7 @@ class Sureforms_Submit {
 			'sureforms_v3_site',
 			'sureforms_v3_secret',
 			'honeypot_toggle',
-		);
+		];
 
 		foreach ( $options_to_update as $option_key ) {
 			if ( isset( $data[ $option_key ] ) ) {
@@ -282,7 +282,7 @@ class Sureforms_Submit {
 		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 		// TODO: We need to change it to array and serialize it.
-		$results = array(
+		$results = [
 			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
 			'sureforms_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
 			'sureforms_v2_invisible_site'      => $sureforms_v2_invisible_site,
@@ -291,7 +291,7 @@ class Sureforms_Submit {
 			'sureforms_v3_site'                => $sureforms_v3_site,
 			'honeypot'                         => $honeypot,
 			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
-		);
+		];
 
 		wp_send_json( $results );
 	}
@@ -313,7 +313,7 @@ class Sureforms_Submit {
 		preg_match_all( $pattern, $form_markup, $matches );
 		$labels = $matches[1];
 
-		$meta_data = array();
+		$meta_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
@@ -341,10 +341,10 @@ class Sureforms_Submit {
 			$first_field_value = $form_data[ $key ];
 		}
 
-		$new_post = array(
+		$new_post = [
 			'post_status' => 'publish',
 			'post_type'   => 'sureforms_entry',
-		);
+		];
 
 		$post_id = wp_insert_post( $new_post );
 
@@ -354,10 +354,10 @@ class Sureforms_Submit {
 			$post_title = $first_field_value;
 		}
 
-		$post_args = array(
+		$post_args = [
 			'ID'         => $post_id,
 			'post_title' => $post_title,
-		);
+		];
 
 		wp_update_post( $post_args );
 
@@ -365,13 +365,13 @@ class Sureforms_Submit {
 		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-			$response           = array(
+			$response           = [
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
-				'data'    => array(
+				'data'    => [
 					'name' => $name,
-				),
-			);
+				],
+			];
 			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 			$smart_tags         = new SRFM_Smart_Tags();
 			$is_mail_sent       = false;
@@ -407,14 +407,14 @@ class Sureforms_Submit {
 					$modified_message[ $only_key ] = esc_attr( $value );
 				}
 
-				$form_submit_response = array(
+				$form_submit_response = [
 					'success'   => true,
 					'form_id'   => $id ? intval( $id ) : '',
 					'emails'    => $emails,
 					'form_name' => $name ? esc_attr( $name ) : '',
 					'message'   => __( 'Form submitted successfully', 'sureforms' ),
 					'data'      => $modified_message,
-				);
+				];
 
 				do_action( 'srfm_form_submit', $form_submit_response );
 
@@ -423,10 +423,10 @@ class Sureforms_Submit {
 				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
 			}
 		} else {
-			$response = array(
+			$response = [
 				'success' => false,
 				'message' => __( 'Error submitting form', 'sureforms' ),
-			);
+			];
 		}
 
 		return $response;
@@ -443,9 +443,9 @@ class Sureforms_Submit {
 		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'unique_validation_nonce' ) ) {
 			$error_message = 'Nonce verification failed.';
 
-			$error_data = array(
+			$error_data = [
 				'error' => $error_message,
-			);
+			];
 			wp_send_json_error( $error_data );
 		}
 		global $wpdb;
@@ -454,9 +454,9 @@ class Sureforms_Submit {
 
 		if ( ! $meta_value ) {
 			$error_message = 'Invalid form ID.';
-			$error_data    = array(
+			$error_data    = [
 				'error' => $error_message,
-			);
+			];
 			wp_send_json_error( $error_data );
 		}
 
@@ -469,7 +469,7 @@ class Sureforms_Submit {
 			)
 		);
 
-		$all_form_entries = array();
+		$all_form_entries = [];
 		$keys             = array_keys( $_POST );
 		$length           = count( $keys );
 
@@ -481,16 +481,16 @@ class Sureforms_Submit {
 			foreach ( $post_ids as $post_id ) {
 				$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
-					$obj = array( $key => 'not unique' );
+					$obj = [ $key => 'not unique' ];
 					array_push( $all_form_entries, $obj );
 					break;
 				}
 			}
 		}
 
-		$results = array(
+		$results = [
 			'data' => $all_form_entries,
-		);
+		];
 
 		wp_send_json( $results );
 	}

@@ -43,7 +43,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 		public function __construct() {
 
 			// Hook: Editor assets.
-			add_action( 'enqueue_block_editor_assets', array( $this, 'spectra_editor_assets' ) );
+			add_action( 'enqueue_block_editor_assets', [ $this, 'spectra_editor_assets' ] );
 		}
 
 		/**
@@ -54,19 +54,19 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 			wp_localize_script(
 				'SRFM_block-sureforms-block-js',
 				'srfm_spec_blocks_info',
-				array(
+				[
 					'number_of_icon_chunks'         => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',
 					'load_font_awesome_5'           => 'disabled',
-					'uag_select_font_globally'      => array(),
-					'uag_load_select_font_globally' => array(),
-					'font_awesome_5_polyfill'       => array(),
-					'spectra_custom_fonts'          => apply_filters( 'spectra_system_fonts', array() ),
+					'uag_select_font_globally'      => [],
+					'uag_load_select_font_globally' => [],
+					'font_awesome_5_polyfill'       => [],
+					'spectra_custom_fonts'          => apply_filters( 'spectra_system_fonts', [] ),
 					'tablet_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'mobile_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'category'                      => 'sureforms',
 					'srfm_url'                      => SUREFORMS_URL,
-				)
+				]
 			);
 
 			// Add svg icons in chunks.

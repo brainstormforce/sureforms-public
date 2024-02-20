@@ -31,7 +31,7 @@ class Admin {
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'sureforms_enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'sureforms_enqueue_header_styles' ] );
-		add_action( 'admin_body_class', array( $this, 'admin_template_picker_body_class' ) );
+		add_action( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
 	}
 
 	/**
@@ -52,7 +52,7 @@ class Admin {
 		}
 
 		if ( 'sureforms_form' === $current_screen->id ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', [], SUREFORMS_VER );
 		}
 	}
 
@@ -84,7 +84,7 @@ class Admin {
 			__( 'Dashboard', 'sureforms' ),
 			$capability,
 			$menu_slug,
-			array( $this, 'render_dashboard' )
+			[ $this, 'render_dashboard' ]
 		);
 	}
 
@@ -198,14 +198,14 @@ class Admin {
 
 		// Enqueue editor styles for post and page.
 		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', [], SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', [], SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', [], SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SUREFORMS_VER );
 		}
 
-		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SUREFORMS_VER );
 		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
 	}
 
@@ -217,50 +217,50 @@ class Admin {
 	 */
 	public function get_breadcrumbs_for_current_page() {
 		global $post, $pagenow;
-		$breadcrumbs = array();
+		$breadcrumbs = [];
 
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$page_title    = get_admin_page_title();
-			$breadcrumbs[] = array(
+			$breadcrumbs[] = [
 				'title' => $page_title,
 				'link'  => '',
-			);
-		} elseif ( $post && in_array( $pagenow, array( 'post.php', 'post-new.php', 'edit.php' ), true ) ) {
+			];
+		} elseif ( $post && in_array( $pagenow, [ 'post.php', 'post-new.php', 'edit.php' ], true ) ) {
 			$post_type_obj = get_post_type_object( get_post_type() );
 			if ( $post_type_obj ) {
 				$post_type_plural = $post_type_obj->labels->name;
-				$breadcrumbs[]    = array(
+				$breadcrumbs[]    = [
 					'title' => $post_type_plural,
 					'link'  => admin_url( 'edit.php?post_type=' . $post_type_obj->name ),
-				);
+				];
 
 				if ( 'edit.php' === $pagenow && ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					$breadcrumbs[ count( $breadcrumbs ) - 1 ]['link'] = '';
 				} else {
-					$breadcrumbs[] = array(
+					$breadcrumbs[] = [
 						/* Translators: Post Title. */
 						'title' => sprintf( __( 'Edit %1$s', 'sureforms' ), get_the_title() ),
 						'link'  => get_edit_post_link( $post->ID ),
-					);
+					];
 				}
 			}
 		} else {
 			$current_screen = get_current_screen();
 			if ( $current_screen && 'sureforms_form' === $current_screen->post_type ) {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => 'Forms',
 					'link'  => '',
-				);
+				];
 			} elseif ( $current_screen && 'sureforms_entry' === $current_screen->post_type ) {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => 'Entries',
 					'link'  => '',
-				);
+				];
 			} else {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => '',
 					'link'  => '',
-				);
+				];
 			}
 		}
 
@@ -290,7 +290,7 @@ class Admin {
 		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SUREFORMS_ENTRIES_POST_TYPE === $current_screen->post_type ) {
 			$asset_handle = 'dashboard';
 
-			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', array(), SUREFORMS_VER );
+			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SUREFORMS_VER );
 
 			$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
@@ -317,8 +317,8 @@ class Admin {
 		}
 
 		// Admin Submenu Styles.
-		wp_enqueue_style( SUREFORMS_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', array(), SUREFORMS_VER );
-		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SUREFORMS_VER );
+		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SUREFORMS_VER );
 
 		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
@@ -331,7 +331,7 @@ class Admin {
 				'version'      => SUREFORMS_VER,
 			];
 			wp_enqueue_script( 'srfm-form-page-header', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
-			wp_enqueue_style( SUREFORMS_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', [], SUREFORMS_VER );
 		}
 		if ( 'sureforms_page_' . SUREFORMS_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
 			$asset_handle = 'settings';
@@ -359,12 +359,12 @@ class Admin {
 			wp_localize_script(
 				'srfm-export',
 				'sureforms_export',
-				array(
+				[
 					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-				)
+				]
 			);
 
 			wp_enqueue_script( SUREFORMS_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
@@ -390,7 +390,7 @@ class Admin {
 				$file_prefix .= '-rtl';
 			}
 
-			wp_enqueue_style( SUREFORMS_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SUREFORMS_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', [], SUREFORMS_VER );
 
 			$sureforms_admin = 'templatePicker';
 
@@ -419,16 +419,16 @@ class Admin {
 		// Quick action sidebar.
 		$default_allowed_quick_sidebar_blocks = apply_filters(
 			'sureforms_quick_sidebar_allowed_blocks',
-			array(
+			[
 				'sureforms/input',
 				'sureforms/email',
 				'sureforms/textarea',
 				'sureforms/number',
 				'sureforms/address',
-			)
+			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {
-			$default_allowed_quick_sidebar_blocks = array();
+			$default_allowed_quick_sidebar_blocks = [];
 		}
 
 		$srfm_enable_quick_action_sidebar = get_option( 'srfm_enable_quick_action_sidebar' );
@@ -442,12 +442,12 @@ class Admin {
 		wp_localize_script(
 			'srfm-quick-action-siderbar',
 			'quickSidebarBlocks',
-			array(
+			[
 				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
 				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
 				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
-			)
+			]
 		);
 	}
 
