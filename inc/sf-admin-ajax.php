@@ -47,14 +47,14 @@ class SF_Admin_Ajax {
 	 */
 	public function required_plugin_activate() {
 
-		$response_data = array( 'message' => $this->get_error_msg( 'permission' ) );
+		$response_data = [ 'message' => $this->get_error_msg( 'permission' ) ];
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( $response_data );
 		}
 
 		if ( empty( $_POST ) ) {
-			$response_data = array( 'message' => $this->get_error_msg( 'invalid' ) );
+			$response_data = [ 'message' => $this->get_error_msg( 'invalid' ) ];
 			wp_send_json_error( $response_data );
 		}
 
@@ -62,16 +62,16 @@ class SF_Admin_Ajax {
 		 * Nonce verification.
 		 */
 		if ( ! check_ajax_referer( 'sf_plugin_manager_nonce', 'security', false ) ) {
-			$response_data = array( 'message' => $this->get_error_msg( 'nonce' ) );
+			$response_data = [ 'message' => $this->get_error_msg( 'nonce' ) ];
 			wp_send_json_error( $response_data );
 		}
 
 		if ( ! current_user_can( 'install_plugins' ) || ! isset( $_POST['init'] ) || ! sanitize_text_field( wp_unslash( $_POST['init'] ) ) ) {
 			wp_send_json_error(
-				array(
+				[
 					'success' => false,
 					'message' => __( 'No plugin specified', 'sureforms' ),
-				)
+				]
 			);
 		}
 
@@ -81,18 +81,18 @@ class SF_Admin_Ajax {
 
 		if ( is_wp_error( $activate ) ) {
 			wp_send_json_error(
-				array(
+				[
 					'success' => false,
 					'message' => $activate->get_error_message(),
-				)
+				]
 			);
 		}
 
 		wp_send_json_success(
-			array(
+			[
 				'success' => true,
 				'message' => __( 'Plugin Successfully Activated', 'sureforms' ),
-			)
+			]
 		);
 	}
 
@@ -133,7 +133,7 @@ class SF_Admin_Ajax {
 			wp_localize_script(
 				'sureforms-integration',
 				'sf_admin',
-				array(
+				[
 					'ajax_url'               => admin_url( 'admin-ajax.php' ),
 					'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
 					'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
@@ -144,7 +144,7 @@ class SF_Admin_Ajax {
 					'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 					'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 					'isRTL'                  => is_rtl(),
-				)
+				]
 			);
 	}
 
@@ -160,8 +160,8 @@ class SF_Admin_Ajax {
 
 		return apply_filters(
 			'sureforms_integrated_plugins',
-			array(
-				array(
+			[
+				[
 					'title'       => __( 'Spectra', 'sureforms' ),
 					'subtitle'    => __( 'Free WordPress Page Builder Plugin.', 'sureforms' ),
 					'isPro'       => false,
@@ -170,8 +170,8 @@ class SF_Admin_Ajax {
 					'path'        => 'ultimate-addons-for-gutenberg/ultimate-addons-for-gutenberg.php',
 					'redirection' => admin_url( 'options-general.php?page=spectra' ),
 					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/spectra.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/spectra.svg' ) : '' ),
-				),
-				array(
+				],
+				[
 					'title'       => __( 'SureCart', 'sureforms' ),
 					'subtitle'    => __( 'Simplifying selling online with WordPress.', 'sureforms' ),
 					'isPro'       => false,
@@ -180,8 +180,8 @@ class SF_Admin_Ajax {
 					'slug'        => 'surecart',
 					'path'        => 'surecart/surecart.php',
 					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/surecart.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/surecart.svg' ) : '' ),
-				),
-				array(
+				],
+				[
 					'title'       => __( 'SureTriggers', 'sureforms' ),
 					'subtitle'    => __( 'Automate your WordPress setup.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
@@ -189,8 +189,8 @@ class SF_Admin_Ajax {
 					'path'        => 'suretriggers/suretriggers.php',
 					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
 					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/suretriggers.svg' ) : '' ),
-				),
-			)
+				],
+			]
 		);
 	}
 

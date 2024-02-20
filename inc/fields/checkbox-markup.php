@@ -46,12 +46,12 @@ class Checkbox_Markup extends Base {
 		$checked_attr         = $checked ? 'checked' : '';
 		$input_label_fallback = $label ? $label : __( 'Checkbox', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
-		$allowed_tags         = array(
-			'a' => array(
-				'href'   => array(),
-				'target' => array(),
-			),
-		);
+		$allowed_tags         = [
+			'a' => [
+				'href'   => [],
+				'target' => [],
+			],
+		];
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">

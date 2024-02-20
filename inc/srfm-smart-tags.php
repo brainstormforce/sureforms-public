@@ -29,7 +29,7 @@ class SRFM_Smart_Tags {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		add_filter( 'render_block', array( $this, 'render_form' ), 10, 2 );
+		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
 	}
 
 	/**

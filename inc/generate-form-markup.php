@@ -40,11 +40,11 @@ class Generate_Form_Markup {
 		register_rest_route(
 			'sureforms/v1',
 			'/generate-form-markup',
-			array(
+			[
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'get_form_markup' ],
 				'permission_callback' => '__return_true',
-			)
+			]
 		);
 	}
 
@@ -277,7 +277,7 @@ class Generate_Form_Markup {
 								</button>
 							<?php endif; ?>
 							<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
-								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), array(), SUREFORMS_VER, true ); ?>
+								<?php wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SUREFORMS_VER, true ); ?>
 								<button style=" width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="g-recaptcha srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
 									<div class="srfm-submit-wrap">
 										<?php echo esc_html( $button_text ); ?>

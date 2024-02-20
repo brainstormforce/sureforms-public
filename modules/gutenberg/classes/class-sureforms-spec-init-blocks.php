@@ -58,10 +58,10 @@ class Sureforms_Spec_Init_Blocks {
 	public function __construct() {
 
 		// Hook: Frontend assets.
-		add_action( 'enqueue_block_assets', array( $this, 'block_assets' ) );
+		add_action( 'enqueue_block_assets', [ $this, 'block_assets' ] );
 
 		// Hook: Editor assets.
-		add_action( 'enqueue_block_editor_assets', array( $this, 'editor_assets' ) );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 
 	}
 
@@ -78,7 +78,7 @@ class Sureforms_Spec_Init_Blocks {
 			wp_enqueue_style(
 				'SRFM_block-sureforms-style-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/build/style-blocks.css',
-				is_admin() ? array( 'wp-editor' ) : null, // Dependency to include the CSS after it.
+				is_admin() ? [ 'wp-editor' ] : null, // Dependency to include the CSS after it.
 				SUREFORMS_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
 			);
 
@@ -99,11 +99,11 @@ class Sureforms_Spec_Init_Blocks {
 			$script_dep_path = SUREFORMS_DIR . 'modules/gutenberg/build/blocks.asset.php';
 			$script_info     = file_exists( $script_dep_path )
 				? include $script_dep_path
-				: array(
-					'dependencies' => array(),
+				: [
+					'dependencies' => [],
 					'version'      => SUREFORMS_VER,
-				);
-			$script_dep      = array_merge( $script_info['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ) );
+				];
+			$script_dep      = array_merge( $script_info['dependencies'], [ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ] );
 			$script_ver      = $script_info['version'];
 
 			// Register block editor script for backend.
@@ -121,7 +121,7 @@ class Sureforms_Spec_Init_Blocks {
 			wp_enqueue_style(
 				'SRFM_block-sureforms-block-editor-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/build/blocks.style.css',
-				array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
+				[ 'wp-edit-blocks' ], // Dependency to include the CSS after it.
 				SUREFORMS_VER // Version: File modification time.
 			);
 
@@ -129,7 +129,7 @@ class Sureforms_Spec_Init_Blocks {
 			wp_enqueue_style(
 				'SRFM_block-common-editor-css', // Handle.
 				SUREFORMS_URL . 'modules/gutenberg/dist/editor.css',
-				array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
+				[ 'wp-edit-blocks' ], // Dependency to include the CSS after it.
 				SUREFORMS_VER // Version: File modification time.
 			);
 

@@ -50,15 +50,15 @@ class Sureforms_Spec_Filesystem {
 			 */
 			$context = apply_filters( 'request_filesystem_credentials_context', false );
 
-			add_filter( 'filesystem_method', array( $this, 'filesystem_method' ) );
-			add_filter( 'request_filesystem_credentials', array( $this, 'request_filesystem_credentials' ) );
+			add_filter( 'filesystem_method', [ $this, 'filesystem_method' ] );
+			add_filter( 'request_filesystem_credentials', [ $this, 'request_filesystem_credentials' ] );
 
 			$creds = request_filesystem_credentials( site_url(), '', true, $context, null );
 
 			WP_Filesystem( $creds, $context );
 
-			remove_filter( 'filesystem_method', array( $this, 'filesystem_method' ) );
-			remove_filter( 'request_filesystem_credentials', array( $this, 'request_filesystem_credentials' ) );
+			remove_filter( 'filesystem_method', [ $this, 'filesystem_method' ] );
+			remove_filter( 'request_filesystem_credentials', [ $this, 'request_filesystem_credentials' ] );
 		}
 
 		// Set the permission constants if not already set.
