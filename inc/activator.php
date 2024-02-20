@@ -33,7 +33,7 @@ class Activator {
 		 */
 		delete_option( 'rewrite_rules' );
 
-		update_option( '__sureforms_do_redirect', true );
+		update_option( '__srfm_do_redirect', true );
 
 	}
 }

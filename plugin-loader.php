@@ -134,7 +134,7 @@ class SRFM_Plugin_Loader {
 		register_deactivation_hook(
 			SRFM_FILE,
 			function () {
-				update_option( '__sureforms_do_redirect', false );
+				update_option( '__srfm_do_redirect', false );
 			}
 		);
 	}
@@ -147,11 +147,11 @@ class SRFM_Plugin_Loader {
 	 */
 	public function activation_redirect() {
 
-		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__sureforms_do_redirect' ) );
+		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
 		if ( $do_redirect ) {
 
-			update_option( '__sureforms_do_redirect', false );
+			update_option( '__srfm_do_redirect', false );
 
 			if ( ! is_multisite() ) {
 				wp_safe_redirect(

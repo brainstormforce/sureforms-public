@@ -80,26 +80,26 @@ function AdvancedSettings( props ) {
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
-						data.sureforms_v2_checkbox_secret &&
-							data.sureforms_v2_checkbox_secret
+						data.srfm_v2_checkbox_secret &&
+							data.srfm_v2_checkbox_secret
 					);
 					setSureformsV2CheckboxSite(
-						data.sureforms_v2_checkbox_site &&
-							data.sureforms_v2_checkbox_site
+						data.srfm_v2_checkbox_site &&
+							data.srfm_v2_checkbox_site
 					);
 					setSureformsV2InvisibleSecret(
-						data.sureforms_v2_invisible_secret &&
-							data.sureforms_v2_invisible_secret
+						data.srfm_v2_invisible_secret &&
+							data.srfm_v2_invisible_secret
 					);
 					setSureformsV2InvisibleSite(
-						data.sureforms_v2_invisible_site &&
-							data.sureforms_v2_invisible_site
+						data.srfm_v2_invisible_site &&
+							data.srfm_v2_invisible_site
 					);
 					setSureformsV3Secret(
-						data.sureforms_v3_secret && data.sureforms_v3_secret
+						data.srfm_v3_secret && data.srfm_v3_secret
 					);
 					setSureformsV3Site(
-						data.sureforms_v3_site && data.sureforms_v3_site
+						data.srfm_v3_site && data.srfm_v3_site
 					);
 				}
 			} catch ( error ) {

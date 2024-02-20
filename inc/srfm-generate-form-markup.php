@@ -121,13 +121,13 @@ class SRFM_Generate_Form_Markup {
 			$google_captcha_site_key = '';
 			switch ( $recaptcha_version ) {
 				case 'v2-checkbox':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? strval( get_option( 'srfm_v2_checkbox_site' ) ) : '';
 					break;
 				case 'v2-invisible':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? strval( get_option( 'srfm_v2_invisible_site' ) ) : '';
 					break;
 				case 'v3-reCAPTCHA':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'srfm_v3_site' ) ) ? strval( get_option( 'srfm_v3_site' ) ) : '';
 					break;
 				default:
 					break;
@@ -225,7 +225,7 @@ class SRFM_Generate_Form_Markup {
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
-					$honeypot_spam = get_option( 'honeypot' );
+					$honeypot_spam = get_option( 'srfm_honeypot' );
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
 					if ( $is_page_break && 'none' !== $page_break_progress_type ) {

@@ -143,15 +143,15 @@ class SRFM_Submit {
 		$selected_captcha_type = get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v2_checkbox_secret' );
+			$google_captcha_secret_key = get_option( 'srfm_v2_checkbox_secret' );
 
 		} elseif ( 'v2-invisible' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v2_invisible_secret' );
+			$google_captcha_secret_key = get_option( 'srfm_v2_invisible_secret' );
 
 		} elseif ( 'v3-reCAPTCHA' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v3_secret' );
+			$google_captcha_secret_key = get_option( 'srfm_v3_secret' );
 		}
-		$honeypot_spam = get_option( 'honeypot' );
+		$honeypot_spam = get_option( 'srfm_honeypot' );
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
@@ -244,19 +244,19 @@ class SRFM_Submit {
 		}
 
 		$options_to_update = array(
-			'sureforms_v2_checkbox_secret',
-			'sureforms_v2_checkbox_site',
-			'sureforms_v2_invisible_secret',
-			'sureforms_v2_invisible_site',
-			'sureforms_v3_site',
-			'sureforms_v3_secret',
-			'honeypot_toggle',
+			'srfm_v2_checkbox_secret',
+			'srfm_v2_checkbox_site',
+			'srfm_v2_invisible_secret',
+			'srfm_v2_invisible_site',
+			'srfm_v3_site',
+			'srfm_v3_secret',
+			'srfm_honeypot_toggle',
 		);
 
 		foreach ( $options_to_update as $option_key ) {
 			if ( isset( $data[ $option_key ] ) ) {
-				if ( 'honeypot_toggle' === $option_key ) {
-					update_option( 'honeypot', $data[ $option_key ] );
+				if ( 'srfm_honeypot_toggle' === $option_key ) {
+					update_option( 'srfm_honeypot', $data[ $option_key ] );
 				} else {
 					update_option( $option_key, $data[ $option_key ] );
 				}
@@ -273,23 +273,23 @@ class SRFM_Submit {
 	 * @since 0.0.1
 	 */
 	public function get_settings_form_data() {
-		$sureforms_v2_checkbox_secret     = ! empty( get_option( 'sureforms_v2_checkbox_secret' ) ) ? get_option( 'sureforms_v2_checkbox_secret' ) : '';
-		$sureforms_v2_checkbox_site       = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? get_option( 'sureforms_v2_checkbox_site' ) : '';
-		$sureforms_v2_invisible_secret    = ! empty( get_option( 'sureforms_v2_invisible_secret' ) ) ? get_option( 'sureforms_v2_invisible_secret' ) : '';
-		$sureforms_v2_invisible_site      = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? get_option( 'sureforms_v2_invisible_site' ) : '';
-		$sureforms_v3_secret              = ! empty( get_option( 'sureforms_v3_secret' ) ) ? get_option( 'sureforms_v3_secret' ) : '';
-		$sureforms_v3_site                = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
-		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
+		$sureforms_v2_checkbox_secret     = ! empty( get_option( 'srfm_v2_checkbox_secret' ) ) ? get_option( 'srfm_v2_checkbox_secret' ) : '';
+		$sureforms_v2_checkbox_site       = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? get_option( 'srfm_v2_checkbox_site' ) : '';
+		$sureforms_v2_invisible_secret    = ! empty( get_option( 'srfm_v2_invisible_secret' ) ) ? get_option( 'srfm_v2_invisible_secret' ) : '';
+		$sureforms_v2_invisible_site      = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? get_option( 'srfm_v2_invisible_site' ) : '';
+		$sureforms_v3_secret              = ! empty( get_option( 'srfm_v3_secret' ) ) ? get_option( 'srfm_v3_secret' ) : '';
+		$sureforms_v3_site                = ! empty( get_option( 'srfm_v3_site' ) ) ? get_option( 'srfm_v3_site' ) : '';
+		$honeypot                         = ! empty( get_option( 'srfm_honeypot' ) ) ? get_option( 'srfm_honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 		// TODO: We need to change it to array and serialize it.
 		$results = array(
-			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
-			'sureforms_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
-			'sureforms_v2_invisible_site'      => $sureforms_v2_invisible_site,
-			'sureforms_v2_invisible_secret'    => $sureforms_v2_invisible_secret,
-			'sureforms_v3_secret'              => $sureforms_v3_secret,
-			'sureforms_v3_site'                => $sureforms_v3_site,
-			'honeypot'                         => $honeypot,
+			'srfm_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
+			'srfm_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
+			'srfm_v2_invisible_site'      => $sureforms_v2_invisible_site,
+			'srfm_v2_invisible_secret'    => $sureforms_v2_invisible_secret,
+			'srfm_v3_secret'              => $sureforms_v3_secret,
+			'srfm_v3_site'                => $sureforms_v3_site,
+			'srfm_honeypot'                         => $honeypot,
 			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 		);
 
@@ -329,7 +329,7 @@ class SRFM_Submit {
 		$first_input = isset( $labels[0] ) ? str_replace( ' ', '_', $labels[0] ) : '';
 		$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		$honeypot_value = get_option( 'honeypot' );
+		$honeypot_value = get_option( 'srfm_honeypot' );
 
 		$honeypot = ! empty( $honeypot_value ) ? $honeypot_value : '';
 
