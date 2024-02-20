@@ -254,6 +254,7 @@ class Post_Types {
 		$post_type = get_post_type( $post_ID );
 
 		if ( SUREFORMS_ENTRIES_POST_TYPE === $post_type ) {
+			/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
 			$messages['post'][1] = __( 'Entry updated.', 'sureforms' );
 		}
 
