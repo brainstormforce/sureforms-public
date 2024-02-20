@@ -23,7 +23,7 @@ class SRFM_Register {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		$namespace  = 'SureForms\\Inc\\Blocks';
+		$namespace  = 'SRFM\\Inc\\Blocks';
 		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
 		$this->register_block( $blocks_dir, $namespace );
 
@@ -49,10 +49,12 @@ class SRFM_Register {
 				// Include the file.
 				require_once $filename;
 				$classname       = ucfirst( basename( dirname( $filename ) ) );
-				$full_class_name = $namespace . '\\' . $classname . '\\Block';
+				$full_class_name = $namespace . '\\' . $classname . '\\SRFM_Block';
+
 				// Check if the class exists.
 				if ( class_exists( $full_class_name ) ) {
 					$block = new $full_class_name();
+
 					// Check if the register method exists.
 					if ( method_exists( $block, 'register' ) ) {
 						// Call register on the block object.

@@ -1,19 +1,18 @@
 <?php
 /**
- * PHP render form Address Block.
+ * PHP render form URL Block.
  *
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\SRFM_Address;
+namespace SRFM\Inc\Blocks\Url;
 
 use SRFM\Inc\Blocks\SRFM_Base;
 use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Fields\SRFM_Address_Markup;
-
+use SRFM\Inc\Fields\SRFM_Url_Markup;
 
 /**
- * Address Block.
+ * URL Block.
  */
 class SRFM_Block extends SRFM_Base {
 	/**
@@ -25,13 +24,15 @@ class SRFM_Block extends SRFM_Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
+		$sureforms_helper_instance = new SRFM_Helper();
+
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$markup_class = new SRFM_Address_Markup();
+			$markup_class = new SRFM_Url_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->default( $attributes, $form_id );
+			echo $markup_class->default( $attributes, $form_id  );
 		}
-		return ob_get_clean();
+			return ob_get_clean();
 	}
 }

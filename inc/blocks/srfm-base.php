@@ -10,6 +10,7 @@
 
 namespace SRFM\Inc\Blocks;
 
+
 /**
  * Block base class.
  */
@@ -128,5 +129,6 @@ abstract class SRFM_Base {
 	 */
 	public function render( $attributes, $content ) {
 		return '';
+	
 	}
 }

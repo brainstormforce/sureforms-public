@@ -8,7 +8,7 @@
  * @since 0.0.1
  */
 
-namespace SRFM\Inc\SRFM_Fields;
+namespace SRFM\Inc\Fields;
 
 /**
  * Field Base Class

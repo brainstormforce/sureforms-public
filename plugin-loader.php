@@ -110,7 +110,7 @@ class SRFM_Plugin_Loader {
 		SRFM_Submit::get_instance();
 		Block_Patterns::get_instance();
 		SRFM_Gutenberg_Hooks::get_instance();
-		// SRFM_Register::get_instance();
+		SRFM_Register::get_instance();
 		SRFM_Public::get_instance();
 		SRFM_Helper::get_instance();
 		Activator::get_instance();

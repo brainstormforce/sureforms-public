@@ -16,7 +16,7 @@
  * Set constants
  */
 define( 'SRFM_FILE', __FILE__ );
-define( 'SRFM_BASE', plugin_basename( SRFM_FILE ) );
+define( 'SRFM_BASENAME', plugin_basename( SRFM_FILE ) );
 define( 'SRFM_DIR', plugin_dir_path( SRFM_FILE ) );
 define( 'SRFM_URL', plugins_url( '/', SRFM_FILE ) );
 define( 'SRFM_VER', '0.0.1' );

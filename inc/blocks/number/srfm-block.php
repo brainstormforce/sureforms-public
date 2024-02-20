@@ -5,7 +5,7 @@
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\SRFM_Number;
+namespace SRFM\Inc\Blocks\Number;
 
 use SRFM\Inc\Blocks\SRFM_Base;
 use SRFM\Inc\SRFM_Helper;
