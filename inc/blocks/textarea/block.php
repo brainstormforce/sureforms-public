@@ -25,7 +25,7 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new Textarea_Markup();
 			ob_start();
 			// phpcs:ignore

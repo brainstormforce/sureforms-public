@@ -27,7 +27,7 @@ class Block extends Base {
 		$sureforms_helper_instance = new Sureforms_Helper();
 
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? Sureforms_Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new Url_Markup();
 			ob_start();
 			// phpcs:ignore

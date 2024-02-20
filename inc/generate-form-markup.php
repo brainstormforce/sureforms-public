@@ -121,13 +121,13 @@ class Generate_Form_Markup {
 			$google_captcha_site_key = '';
 			switch ( $recaptcha_version ) {
 				case 'v2-checkbox':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? Sureforms_Helper::get_string_value( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
 					break;
 				case 'v2-invisible':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? Sureforms_Helper::get_string_value( get_option( 'sureforms_v2_invisible_site' ) ) : '';
 					break;
 				case 'v3-reCAPTCHA':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
+					$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? Sureforms_Helper::get_string_value( get_option( 'sureforms_v3_site' ) ) : '';
 					break;
 				default:
 					break;
