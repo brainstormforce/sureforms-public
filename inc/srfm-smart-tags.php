@@ -398,7 +398,9 @@ class SRFM_Smart_Tags {
 		$param = str_replace( '}', '', $param );
 
 		if ( $param && strpos( $value, 'get_input:' ) ) {
-			parse_str( $_SERVER['QUERY_STRING'], $parameters );
+			$var = Sureforms_Helper::get_string_value( filter_var( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_URL ) );
+			parse_str( $var, $parameters );
+			// parse_str( $_SERVER['QUERY_STRING'], $parameters );
 			return isset( $parameters[ $param ] ) ? $parameters[ $param ] : '';
 		}
 
