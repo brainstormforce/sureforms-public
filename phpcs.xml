@@ -20,6 +20,7 @@
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/modules/gutenberg/build/*</exclude-pattern>
 	<exclude-pattern>*/modules/gutenberg/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/modules/gutenberg/icons/*</exclude-pattern>
 
 	<!-- PHP 5.6 and higher. -->
     <config name="testVersion" value="5.6-"/>
