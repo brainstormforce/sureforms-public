@@ -6,10 +6,10 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Services\Browser\Browser;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Services\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

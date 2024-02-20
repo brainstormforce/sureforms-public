@@ -5,16 +5,16 @@
  * @package SureForms.
  */
 
-namespace SureForms\Inc\Blocks\Input;
+namespace SRFM\Inc\Blocks\SRFM_Input;
 
-use SureForms\Inc\Blocks\Base;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Fields\Input_Markup;
+use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Fields\SRFM_Input_Markup;
 
 /**
  * Address Block.
  */
-class Block extends Base {
+class SRFM_Block extends SRFM_Base {
 
 	/**
 	 * Render the block
@@ -27,7 +27,7 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$markup_class = new Input_Markup();
+			$markup_class = new SRFM_Input_Markup();
 			ob_start();
 			// phpcs:ignore
 			echo $markup_class->default( $attributes, $form_id );

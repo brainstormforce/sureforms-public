@@ -59,16 +59,16 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Loader' ) ) {
 
 			$is_spectra_active = is_plugin_active( 'ultimate-addons-for-gutenberg/ultimate-addons-for-gutenberg.php' );
 
-			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-gb-helper.php';
-			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-init-blocks.php';
+			require_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-gb-helper.php';
+			require_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-init-blocks.php';
 
-			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-spectra-compatibility.php';
+			require_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-spectra-compatibility.php';
 
-			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/advanced-heading/class-sureforms-advanced-heading.php';
-			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/icon/class-sureforms-spec-icon.php';
-			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/image/class-sureforms-spec-image.php';
-			require_once SUREFORMS_DIR . 'modules/gutenberg/dist/blocks/separator/class-sureforms-spec-separator.php';
-			require_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-filesystem.php';
+			require_once SRFM_DIR . 'modules/gutenberg/dist/blocks/advanced-heading/class-sureforms-advanced-heading.php';
+			require_once SRFM_DIR . 'modules/gutenberg/dist/blocks/icon/class-sureforms-spec-icon.php';
+			require_once SRFM_DIR . 'modules/gutenberg/dist/blocks/image/class-sureforms-spec-image.php';
+			require_once SRFM_DIR . 'modules/gutenberg/dist/blocks/separator/class-sureforms-spec-separator.php';
+			require_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-filesystem.php';
 		}
 
 	}

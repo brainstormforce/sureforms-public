@@ -5,16 +5,16 @@
  * @package SureForms
  */
 
-namespace SureForms\Inc\Blocks;
+namespace SRFM\Inc\Blocks;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * Manage Blocks registrations.
  *
  * @since 0.0.1
  */
-class Register {
+class SRFM_Register {
 	use Get_Instance;
 
 	/**
@@ -24,7 +24,7 @@ class Register {
 	 */
 	public function __construct() {
 		$namespace  = 'SureForms\\Inc\\Blocks';
-		$blocks_dir = glob( SUREFORMS_DIR . 'inc/blocks/**/*.php' );
+		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
 		$this->register_block( $blocks_dir, $namespace );
 
 		if ( defined( 'SUREFORMS_PRO_VER' ) ) {

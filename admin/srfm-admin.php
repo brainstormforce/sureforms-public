@@ -5,15 +5,15 @@
  * @package sureforms.
  */
 
-namespace SureForms\Admin;
+namespace SRFM\Admin;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 /**
  * Admin handler class.
  *
  * @since 0.0.1
  */
-class Admin {
+class SRFM_Admin {
 
 	use Get_Instance;
 
@@ -26,11 +26,11 @@ class Admin {
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ], 9 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		add_action( 'admin_menu', [ $this, 'sureforms_settings_page' ] );
-		add_action( 'admin_menu', [ $this, 'sureforms_add_new_form' ] );
+		add_action( 'admin_menu', [ $this, 'settings_page' ] );
+		add_action( 'admin_menu', [ $this, 'add_new_form' ] );
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
-		add_action( 'enqueue_block_assets', [ $this, 'sureforms_enqueue_styles' ] );
-		add_action( 'admin_head', [ $this, 'sureforms_enqueue_header_styles' ] );
+		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
+		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
 		add_action( 'admin_body_class', array( $this, 'admin_template_picker_body_class' ) );
 	}
 
@@ -39,12 +39,12 @@ class Admin {
 	 *
 	 * @since 0.0.1
 	 */
-	public function sureforms_enqueue_header_styles() {
+	public function enqueue_header_styles() {
 		$current_screen = get_current_screen();
 		$file_prefix    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name       = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-		$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+		$css_uri = SRFM_URL . 'assets/css/' . $dir_name . '/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -52,7 +52,7 @@ class Admin {
 		}
 
 		if ( 'sureforms_form' === $current_screen->id ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SRFM_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', array(), SRFM_VER );
 		}
 	}
 
@@ -66,7 +66,7 @@ class Admin {
 		$capability = 'manage_options';
 		$menu_slug  = 'sureforms_menu';
 
-		$logo = file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/icon.svg' );
+		$logo = file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/icon.svg' );
 		add_menu_page(
 			__( 'SureForms', 'sureforms' ),
 			__( 'SureForms', 'sureforms' ),
@@ -94,14 +94,14 @@ class Admin {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function sureforms_settings_page() {
+	public function settings_page() {
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Settings', 'sureforms' ),
 			__( 'Settings', 'sureforms' ),
 			'edit_others_posts',
 			'sureforms_form_settings',
-			[ $this, 'sureforms_settings_page_callback' ],
+			[ $this, 'settings_page_callback' ],
 		);
 
 		// Get the current submenu page.
@@ -129,7 +129,7 @@ class Admin {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function sureforms_settings_page_callback() {
+	public function settings_page_callback() {
 		echo '<div id="srfm-settings-container"></div>';
 	}
 
@@ -139,14 +139,14 @@ class Admin {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function sureforms_add_new_form() {
+	public function add_new_form() {
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'New Form', 'sureforms' ),
 			__( 'New Form', 'sureforms' ),
 			'edit_others_posts',
 			'add-new-form',
-			[ $this, 'sureforms_add_new_form_callback' ],
+			[ $this, 'add_new_form_callback' ],
 			2
 		);
 	}
@@ -157,7 +157,7 @@ class Admin {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function sureforms_add_new_form_callback() {
+	public function add_new_form_callback() {
 		echo '<div id="srfm-add-new-form-container"></div>';
 	}
 
@@ -182,14 +182,14 @@ class Admin {
 	 *
 	 * @since 0.0.1
 	 */
-	public function sureforms_enqueue_styles() {
+	public function enqueue_styles() {
 		$current_screen = get_current_screen();
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-		$css_uri        = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
-		$vendor_css_uri = SUREFORMS_URL . 'assets/css/minified/deps/';
+		$css_uri        = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$vendor_css_uri = SRFM_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -197,16 +197,16 @@ class Admin {
 		}
 
 		// Enqueue editor styles for post and page.
-		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', array(), SUREFORMS_VER );
-			wp_enqueue_style( SUREFORMS_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', array(), SUREFORMS_VER );
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
+			wp_enqueue_style( SRFM_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', array(), SRFM_VER );
 		}
 
-		wp_enqueue_style( SUREFORMS_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SUREFORMS_VER );
-		wp_enqueue_style( 'srfm-common-editor', SUREFORMS_URL . 'assets/build/common-editor.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SRFM_VER );
+		wp_enqueue_style( 'srfm-common-editor', SRFM_URL . 'assets/build/common-editor.css', [], SRFM_VER, 'all' );
 	}
 
 	/**
@@ -279,29 +279,29 @@ class Admin {
 
 		$file_prefix  = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-			$js_uri   = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
-			$css_uri  = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+			$js_uri   = SRFM_URL . 'assets/js/' . $dir_name . '/';
+			$css_uri  = SRFM_URL . 'assets/css/' . $dir_name . '/';
 
 			/* RTL */
 		if ( is_rtl() ) {
 			$file_prefix .= '-rtl';
 		}
 
-		if ( SUREFORMS_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SUREFORMS_ENTRIES_POST_TYPE === $current_screen->post_type ) {
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type ) {
 			$asset_handle = 'dashboard';
 
-			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', array(), SUREFORMS_VER );
+			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', array(), SRFM_VER );
 
-			$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'sureforms-' . $asset_handle, SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
+			wp_enqueue_script( 'sureforms-' . $asset_handle, SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 
-			wp_localize_script( 'sureforms-' . $asset_handle, 'scIcons', [ 'path' => SUREFORMS_URL . 'assets/build/icon-assets' ] );
+			wp_localize_script( 'sureforms-' . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
 			wp_localize_script(
 				'sureforms-' . $asset_handle,
 				'sureforms_admin',
@@ -309,42 +309,42 @@ class Admin {
 					'site_url'                => get_site_url(),
 					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-					'plugin_version'          => SUREFORMS_VER,
+					'plugin_version'          => SRFM_VER,
 				]
 			);
-			wp_enqueue_style( 'srfm-dashboard', SUREFORMS_URL . 'assets/build/dashboard.css', [], SUREFORMS_VER, 'all' );
+			wp_enqueue_style( 'srfm-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
 
 		}
 
 		// Admin Submenu Styles.
-		wp_enqueue_style( SUREFORMS_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', array(), SUREFORMS_VER );
-		wp_enqueue_style( SUREFORMS_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', array(), SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SRFM_VER );
 
-		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SUREFORMS_ENTRIES_POST_TYPE === $current_screen->id ) {
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
 
-			$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'srfm-form-page-header', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
-			wp_enqueue_style( SUREFORMS_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_script( 'srfm-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SRFM_VER );
 		}
-		if ( 'sureforms_page_' . SUREFORMS_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
+		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
 			$asset_handle = 'settings';
 
-			$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'settings', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
-			wp_enqueue_style( 'srfm-setting-styles', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SUREFORMS_VER, 'all' );
+			wp_enqueue_script( 'settings', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( 'srfm-setting-styles', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SRFM_VER, 'all' );
 			wp_localize_script(
 				'settings',
 				'sureforms_admin',
@@ -353,9 +353,9 @@ class Admin {
 				]
 			);
 		}
-		if ( 'edit-' . SUREFORMS_FORMS_POST_TYPE === $current_screen->id ) {
-			wp_enqueue_script( SUREFORMS_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SUREFORMS_VER, true );
-			wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SUREFORMS_VER, true );
+		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
+			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
 				'srfm-export',
 				'sureforms_export',
@@ -367,9 +367,9 @@ class Admin {
 				)
 			);
 
-			wp_enqueue_script( SUREFORMS_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
-				SUREFORMS_SLUG . '-backend',
+				SRFM_SLUG . '-backend',
 				'sureforms_backend',
 				[
 					'site_url' => get_site_url(),
@@ -383,33 +383,33 @@ class Admin {
 			$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 			$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-			$css_uri = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
+			$css_uri = SRFM_URL . 'assets/css/' . $dir_name . '/';
 
 			/* RTL */
 			if ( is_rtl() ) {
 				$file_prefix .= '-rtl';
 			}
 
-			wp_enqueue_style( SUREFORMS_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SRFM_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', array(), SRFM_VER );
 
 			$sureforms_admin = 'templatePicker';
 
-			$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $sureforms_admin . '.asset.php';
+			$script_asset_path = SRFM_DIR . 'assets/build/' . $sureforms_admin . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'srfm-template-picker', SUREFORMS_URL . 'assets/build/' . $sureforms_admin . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
+			wp_enqueue_script( 'srfm-template-picker', SRFM_URL . 'assets/build/' . $sureforms_admin . '.js', $script_info['dependencies'], SRFM_VER, true );
 
 			wp_localize_script(
 				'srfm-template-picker',
 				'sureforms_admin',
 				[
 					'site_url'                     => get_site_url(),
-					'plugin_url'                   => SUREFORMS_URL,
-					'preview_images_url'           => SUREFORMS_URL . 'images/template-previews/',
+					'plugin_url'                   => SRFM_URL,
+					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
 					'admin_url'                    => admin_url( 'admin.php' ),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
@@ -438,7 +438,7 @@ class Admin {
 		$quick_sidebar_allowed_blocks = get_option( 'srfm_quick_sidebar_allowed_blocks' );
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
-		wp_enqueue_script( 'srfm-quick-action-siderbar', SUREFORMS_URL . 'assets/build/quickActionSidebar.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
 		wp_localize_script(
 			'srfm-quick-action-siderbar',
 			'quickSidebarBlocks',

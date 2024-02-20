@@ -7,9 +7,9 @@
  * @package sureforms
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -24,7 +24,7 @@ if ( ! function_exists( 'get_plugins' ) ) {
  *
  * @since 0.0.1
  */
-class SF_Admin_Ajax {
+class SRFM_Admin_Ajax {
 
 	use Get_Instance;
 
@@ -122,14 +122,14 @@ class SF_Admin_Ajax {
 	 */
 	public function localize_script_integration() {
 		$asset_handle      = 'dashboard';
-		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $asset_handle . '.asset.php';
+		$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info   = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'sureforms-integration', SUREFORMS_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
+			wp_enqueue_script( 'sureforms-integration', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_localize_script(
 				'sureforms-integration',
 				'sf_admin',
@@ -169,7 +169,7 @@ class SF_Admin_Ajax {
 					'slug'        => 'ultimate-addons-for-gutenberg',
 					'path'        => 'ultimate-addons-for-gutenberg/ultimate-addons-for-gutenberg.php',
 					'redirection' => admin_url( 'options-general.php?page=spectra' ),
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/spectra.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/spectra.svg' ) : '' ),
+					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/spectra.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/spectra.svg' ) : '' ),
 				),
 				array(
 					'title'       => __( 'SureCart', 'sureforms' ),
@@ -179,7 +179,7 @@ class SF_Admin_Ajax {
 					'redirection' => admin_url( 'admin.php?page=' . esc_attr( $surecart_redirection ) ),
 					'slug'        => 'surecart',
 					'path'        => 'surecart/surecart.php',
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/surecart.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/surecart.svg' ) : '' ),
+					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' ) : '' ),
 				),
 				array(
 					'title'       => __( 'SureTriggers', 'sureforms' ),
@@ -188,7 +188,7 @@ class SF_Admin_Ajax {
 					'slug'        => 'suretriggers',
 					'path'        => 'suretriggers/suretriggers.php',
 					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SUREFORMS_FILE ) . 'images/suretriggers.svg' ) : '' ),
+					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) : '' ),
 				),
 			)
 		);

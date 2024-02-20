@@ -5,17 +5,17 @@
  * @package SureForms.
  */
 
-namespace SureForms\Inc\Blocks\Checkbox;
+namespace SRFM\Inc\Blocks\SRFM_Checkbox;
 
-use SureForms\Inc\Blocks\Base;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Fields\Checkbox_Markup;
+use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Fields\SRFM_Checkbox_Markup;
 
 
 /**
  * Address Block.
  */
-class Block extends Base {
+class SRFM_Block extends SRFM_Base {
 	/**
 	 * Render form checkbox block
 	 *
@@ -27,7 +27,7 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$markup_class = new Checkbox_Markup();
+			$markup_class = new SRFM_Checkbox_Markup();
 			ob_start();
 			// phpcs:ignore
 			echo $markup_class->default( $attributes, $form_id );

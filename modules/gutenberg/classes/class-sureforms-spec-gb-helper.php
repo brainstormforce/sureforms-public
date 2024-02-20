@@ -129,9 +129,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
 
 			self::$block_list = Sureforms_Spec_Block_Config::get_block_attributes();
 
@@ -932,7 +932,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$css = '';
 
-			$block_static_css_path = SUREFORMS_DIR . 'modules/gutenberg/assets/css/blocks/' . $block_name . '.css';
+			$block_static_css_path = SRFM_DIR . 'modules/gutenberg/assets/css/blocks/' . $block_name . '.css';
 
 			if ( file_exists( $block_static_css_path ) ) {
 
@@ -1026,7 +1026,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$icons_chunks = array();
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = SUREFORMS_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
+				$json_file = SRFM_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
 
 				if ( file_exists( $json_file ) ) {
 					$icons_chunks[] = include $json_file;

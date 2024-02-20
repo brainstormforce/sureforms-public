@@ -6,30 +6,30 @@
  * @since 0.0.1
  */
 
-namespace SureForms;
+namespace SRFM;
 
-use SureForms\Inc\Post_Types;
-use SureForms\Inc\Sureforms_Submit;
-use SureForms\Inc\Gutenberg_Hooks;
-use SureForms\API\Block_Patterns;
-use SureForms\Inc\Forms_Data;
-use SureForms\Admin\Admin;
-use SureForms\Inc\Blocks\Register;
-use SureForms\Inc\SF_Public;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Activator;
-use SureForms\Inc\SF_Admin_Ajax;
-use SureForms\Inc\SRFM_Export;
-use SureForms\Inc\SRFM_Smart_Tags;
-use SureForms\Inc\Generate_Form_Markup;
-use SureForms\Inc\Create_New_Form;
+use SRFM\Inc\SRFM_Post_Types;
+use SRFM\Inc\SRFM_Submit;
+use SRFM\Inc\SRFM_Gutenberg_Hooks;
+use SRFM\API\Block_Patterns;
+use SRFM\Inc\SRFM_Forms_Data;
+use SRFM\Admin\SRFM_Admin;
+use SRFM\Inc\Blocks\SRFM_Register;
+use SRFM\Inc\SRFM_Public;
+use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Activator;
+use SRFM\Inc\SRFM_Admin_Ajax;
+use SRFM\Inc\SRFM_Export;
+use SRFM\Inc\SRFM_Smart_Tags;
+use SRFM\Inc\SRFM_Generate_Form_Markup;
+use SRFM\Inc\SRFM_Create_New_Form;
 
 /**
  * Plugin_Loader
  *
  * @since 0.0.1
  */
-class Plugin_Loader {
+class SRFM_Plugin_Loader {
 
 	/**
 	 * Instance
@@ -83,7 +83,7 @@ class Plugin_Loader {
 
 			$filename = strtolower( $filename );
 
-			$file = SUREFORMS_DIR . $filename . '.php';
+			$file = SRFM_DIR . $filename . '.php';
 
 			// if the file is readable, include it.
 			if ( is_readable( $file ) ) {
@@ -105,34 +105,34 @@ class Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'plugins_loaded', array( $this, 'load_plugin' ), 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
-		add_action( 'admin_init', [ $this, 'sureforms_activation_redirect' ] );
-		Post_Types::get_instance();
-		Sureforms_Submit::get_instance();
+		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
+		SRFM_Post_Types::get_instance();
+		SRFM_Submit::get_instance();
 		Block_Patterns::get_instance();
-		Gutenberg_Hooks::get_instance();
-		Register::get_instance();
-		SF_Public::get_instance();
-		Sureforms_Helper::get_instance();
+		SRFM_Gutenberg_Hooks::get_instance();
+		// SRFM_Register::get_instance();
+		SRFM_Public::get_instance();
+		SRFM_Helper::get_instance();
 		Activator::get_instance();
-		SF_Admin_Ajax::get_instance();
-		Forms_Data::get_instance();
+		SRFM_Admin_Ajax::get_instance();
+		SRFM_Forms_Data::get_instance();
 		SRFM_Export::get_instance();
 		SRFM_Smart_Tags::get_instance();
-		Generate_Form_Markup::get_instance();
-		Create_New_Form::get_instance();
+		SRFM_Generate_Form_Markup::get_instance();
+		SRFM_Create_New_Form::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
 		 */
 		register_activation_hook(
-			SUREFORMS_FILE,
+			SRFM_FILE,
 			function () {
 				Activator::activate();
 			}
 		);
 
 		register_deactivation_hook(
-			SUREFORMS_FILE,
+			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
 			}
@@ -145,7 +145,7 @@ class Plugin_Loader {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function sureforms_activation_redirect() {
+	public function activation_redirect() {
 
 		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__sureforms_do_redirect' ) );
 
@@ -176,7 +176,7 @@ class Plugin_Loader {
 	 */
 	public function load_classes() {
 		if ( is_admin() ) {
-			Admin::get_instance();
+			SRFM_Admin::get_instance();
 		}
 	}
 
@@ -191,7 +191,7 @@ class Plugin_Loader {
 	 */
 	public function load_textdomain() {
 		// Default languages directory.
-		$lang_dir = SUREFORMS_DIR . 'languages/';
+		$lang_dir = SRFM_DIR . 'languages/';
 
 		/**
 		 * Filters the languages directory path to use for plugin.
@@ -255,7 +255,7 @@ class Plugin_Loader {
 	 * @return void
 	 */
 	public function load_core_files() {
-		include_once SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
+		include_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
 	}
 }
 
@@ -264,4 +264,4 @@ class Plugin_Loader {
 /**
  * Kicking this off by calling 'get_instance()' method
  */
-Plugin_Loader::get_instance();
+SRFM_Plugin_Loader::get_instance();

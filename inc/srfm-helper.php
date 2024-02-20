@@ -6,16 +6,16 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * Sureforms Helper Class.
  *
  * @since 0.0.1
  */
-class Sureforms_Helper {
+class SRFM_Helper {
 	use Get_Instance;
 
 	/**
@@ -108,8 +108,8 @@ class Sureforms_Helper {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
 		$markup         = '';
-		$show_labels    = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
-		$show_asterisks = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
+		$show_labels    = get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
+		$show_asterisks = get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
 
 		switch ( $type ) {
 			case 'label':
@@ -148,7 +148,7 @@ class Sureforms_Helper {
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 
-			include_once SUREFORMS_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
+			include_once SRFM_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
 			// phpcs:ignore /** @phpstan-ignore-next-line */
 			self::$srfm_svgs = json_decode( ob_get_clean(), true );
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );

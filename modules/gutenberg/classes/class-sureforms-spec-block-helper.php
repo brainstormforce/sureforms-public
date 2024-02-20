@@ -399,7 +399,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Helper' ) ) {
 			};
 
 			if ( 'none' !== $attr['maskShape'] ) {
-				$image_path = SUREFORMS_URL . 'assets/images/masks/' . $attr['maskShape'] . '.svg';
+				$image_path = SRFM_URL . 'assets/images/masks/' . $attr['maskShape'] . '.svg';
 				if ( 'custom' === $attr['maskShape'] ) {
 					$image_path = $attr['maskCustomShape']['url'];
 				}

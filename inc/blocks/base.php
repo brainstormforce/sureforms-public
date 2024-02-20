@@ -8,12 +8,12 @@
  * @author     SureCart <https://surecart.com/>
  */
 
-namespace SureForms\Inc\Blocks;
+namespace SRFM\Inc\Blocks;
 
 /**
  * Block base class.
  */
-abstract class Base {
+abstract class SRFM_Base {
 	/**
 	 * Optional directory to .json block data files.
 	 *

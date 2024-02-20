@@ -6,9 +6,9 @@
  * @since 0.0.1
  */
 
-namespace SureForms\API;
+namespace SRFM\API;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post_Type;
 use WP_REST_Controller;

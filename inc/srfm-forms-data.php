@@ -6,19 +6,19 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
 use WP_REST_Response;
 use WP_Error;
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 /**
  * Load Defaults Class.
  *
  * @since 0.0.1
  */
-class Forms_Data {
+class SRFM_Forms_Data {
 	use Get_Instance;
 
 	/**
@@ -42,7 +42,7 @@ class Forms_Data {
 			'/forms-data',
 			array(
 				'methods'             => 'GET',
-				'callback'            => [ $this, 'load_sureforms_forms' ],
+				'callback'            => [ $this, 'load_forms' ],
 				'permission_callback' => [ $this, 'get_form_permissions_check' ],
 			)
 		);
@@ -73,7 +73,7 @@ class Forms_Data {
 	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */
-	public function load_sureforms_forms() {
+	public function load_forms() {
 		$args = array(
 			'post_type'      => 'sureforms_form',
 			'post_status'    => 'publish',

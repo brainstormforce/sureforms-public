@@ -8,7 +8,7 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc\Fields;
+namespace SRFM\Inc\SRFM_Fields;
 
 /**
  * Field Base Class
@@ -17,7 +17,7 @@ namespace SureForms\Inc\Fields;
  *
  * @since 0.0.1
  */
-class Base {
+class SRFM_Base {
 	/**
 	 * Render the sureforms default
 	 *

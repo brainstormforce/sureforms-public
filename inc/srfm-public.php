@@ -7,15 +7,15 @@
  * @package SureForms
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 /**
  * Public Class
  *
  * @since 0.0.1
  */
-class SF_Public {
+class SRFM_Public {
 
 	use Get_Instance;
 
@@ -40,9 +40,9 @@ class SF_Public {
 	public function enqueue_scripts() {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
-		$js_uri      = SUREFORMS_URL . 'assets/js/' . $dir_name . '/';
-		$css_uri     = SUREFORMS_URL . 'assets/css/' . $dir_name . '/';
-		$css_vendor  = SUREFORMS_URL . 'assets/css/minified/deps/';
+		$js_uri      = SRFM_URL . 'assets/js/' . $dir_name . '/';
+		$css_uri     = SRFM_URL . 'assets/css/' . $dir_name . '/';
+		$css_vendor  = SRFM_URL . 'assets/css/minified/deps/';
 
 		/* RTL */
 		if ( is_rtl() ) {
@@ -52,37 +52,37 @@ class SF_Public {
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
 		// Styles based on meta style.
-		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
+		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SRFM_VER );
 
 		// Common styles for all meta styles.
-		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
-		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SUREFORMS_VER, 'all' );
+		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 
 		if ( is_single() ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SRFM_VER );
 		}
 
 		// Dependencies
 		// Nice Select CSS.
-		wp_enqueue_style( 'tom-select', $css_vendor . 'tom-select.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
 		// Int-tel-input CSS.
-		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SUREFORMS_VER );
+		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
 
-		wp_enqueue_script( 'srfm-form-submit', SUREFORMS_URL . 'assets/build/formSubmit.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'srfm-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
 		// Frontend common and validation before submit.
-		wp_enqueue_script( SUREFORMS_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SRFM_VER, true );
 
 		// Google reCaptcha.
-		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SUREFORMS_VER, true );
+		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
 		if ( ! empty( $is_set_v2_site_key ) ) {
-			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ 'srfm-form-submit-js' ], SUREFORMS_VER, true );
+			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ 'srfm-form-submit-js' ], SRFM_VER, true );
 		}
 
 		$is_rtl = is_rtl();
 
 		wp_localize_script(
-			SUREFORMS_SLUG . '-frontend-script',
-			SUREFORMS_LOC,
+			SRFM_SLUG . '-frontend-script',
+			SRFM_LOC,
 			array(
 				'isRTL' => $is_rtl,
 			)
@@ -111,21 +111,21 @@ class SF_Public {
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
 		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
-			$js_uri        = SUREFORMS_URL . 'assets/js/' . $dir_name . '/blocks/';
-			$js_vendor_uri = SUREFORMS_URL . 'assets/js/minified/deps/';
+			$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
+			$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
 
 			if ( 'phone' === $block_name ) {
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SUREFORMS_VER, true );
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
 			}
 
 			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
-				wp_enqueue_script( SUREFORMS_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SUREFORMS_VER, true );
-				wp_enqueue_script( SUREFORMS_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
+				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 			}
 
 			if ( 'dropdown' !== $block_name ) {
-				wp_enqueue_script( SUREFORMS_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SUREFORMS_VER, true );
+				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 		}
 	}
@@ -154,9 +154,9 @@ class SF_Public {
 	 * @since 0.0.1
 	 */
 	public function page_template( $template ) {
-		if ( is_singular( SUREFORMS_FORMS_POST_TYPE ) ) {
+		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
 			$file_name = 'single-form.php';
-			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SUREFORMS_DIR . '/templates/' . $file_name;
+			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SRFM_DIR . '/templates/' . $file_name;
 			$template  = apply_filters( 'sureforms_form_template', $template );
 		}
 		return $template;

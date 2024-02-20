@@ -6,17 +6,17 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc\Fields;
+namespace SRFM\Inc\SRFM_Fields;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 /**
  * Sureforms Dropdown Markup Class.
  *
  * @since 0.0.1
  */
-class Dropdown_Markup extends Base {
+class SRFM_Dropdown_Markup extends SRFM_Base {
 	use Get_Instance;
 
 	/**
@@ -43,11 +43,11 @@ class Dropdown_Markup extends Base {
 		$aria_require         = $required ? 'true' : 'false';
 		$placeholder_html     = $placeholder ? $placeholder : 'Select option';
 		$input_label_fallback = $label ? $label : __( 'Dropdown', 'sureforms' );
-		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+		$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
+				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 				<?php
 
@@ -64,8 +64,8 @@ class Dropdown_Markup extends Base {
 				</select>
 				<?php } ?>
 				</div>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
 
 		<?php

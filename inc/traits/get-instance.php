@@ -5,7 +5,7 @@
  * @package sureforms
  */
 
-namespace SureForms\Inc\Traits;
+namespace SRFM\Inc\Traits;
 
 /**
  * Trait Get_Instance.

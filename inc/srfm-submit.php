@@ -6,12 +6,12 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Email\Email_Template;
-use SureForms\Inc\SRFM_Smart_Tags;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Email\SRFM_Email_Template;
+use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 
 if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -23,7 +23,7 @@ if ( ! function_exists( 'wp_handle_upload' ) ) {
  *
  * @since 0.0.1
  */
-class Sureforms_Submit {
+class SRFM_Submit {
 	use Get_Instance;
 
 	/**
@@ -91,7 +91,7 @@ class Sureforms_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
-		$form_data = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
+		$form_data = SRFM_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
@@ -140,7 +140,7 @@ class Sureforms_Submit {
 			return wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
-		$selected_captcha_type = get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
+		$selected_captcha_type = get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
 			$google_captcha_secret_key = get_option( 'sureforms_v2_checkbox_secret' );
@@ -238,7 +238,7 @@ class Sureforms_Submit {
 	 * @since 0.0.1
 	 */
 	public function handle_settings_form_submission( $request ) {
-		$data = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
+		$data = SRFM_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
 		if ( empty( $data ) || ! is_array( $data ) ) {
 			return wp_send_json_error( __( 'Data is not found.', 'sureforms' ) );
 		}
@@ -512,7 +512,7 @@ class Sureforms_Submit {
 
 		if ( ! empty( $_POST['defaultAllowedQuickSidebarBlocks'] ) ) {
 			$srfm_default_allowed_quick_sidebar_blocks = json_decode( stripslashes( $_POST['defaultAllowedQuickSidebarBlocks'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			Sureforms_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
+			SRFM_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
 			wp_send_json_success();
 		}
 		wp_send_json_error();
@@ -535,7 +535,7 @@ class Sureforms_Submit {
 
 		if ( ! empty( $_POST['enableQuickActionSidebar'] ) ) {
 			$srfm_enable_quick_action_sidebar = ( 'enabled' === $_POST['enableQuickActionSidebar'] ? 'enabled' : 'disabled' );
-			Sureforms_Helper::update_admin_settings_option( 'srfm_enable_quick_action_sidebar', $srfm_enable_quick_action_sidebar );
+			SRFM_Helper::update_admin_settings_option( 'srfm_enable_quick_action_sidebar', $srfm_enable_quick_action_sidebar );
 			wp_send_json_success();
 		}
 		wp_send_json_error();

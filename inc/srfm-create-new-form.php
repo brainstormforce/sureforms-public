@@ -6,21 +6,21 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
 use WP_REST_Response;
 use WP_REST_Request;
 use WP_Error;
 use WP_Post_Type;
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 /**
  * Create New Form.
  *
  * @since 0.0.1
  */
-class Create_New_Form {
+class SRFM_Create_New_Form {
 	use Get_Instance;
 
 	/**
@@ -44,7 +44,7 @@ class Create_New_Form {
 			'/create-new-form',
 			array(
 				'methods'             => 'POST',
-				'callback'            => [ $this, 'create_sureforms_form' ],
+				'callback'            => [ $this, 'create_form' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 			)
 		);
@@ -87,7 +87,7 @@ class Create_New_Form {
 	 * @return WP_Error|WP_REST_Response
 	 * @since 0.0.1
 	 */
-	public static function create_sureforms_form( $data ) {
+	public static function create_form( $data ) {
 
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );

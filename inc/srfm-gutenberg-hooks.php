@@ -5,17 +5,17 @@
  * @package sureforms.
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use Sureforms_Spec_Gb_Helper;
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\SRFM_Smart_Tags;
+use SRFM_Spec_Gb_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\SRFM_Smart_Tags;
 /**
  * Gutenberg hooks handler class.
  *
  * @since 0.0.1
  */
-class Gutenberg_Hooks {
+class SRFM_Gutenberg_Hooks {
 
 	/**
 	 * Block patterns to register.
@@ -123,7 +123,7 @@ class Gutenberg_Hooks {
 
 		// loop through patterns and register.
 		foreach ( $this->patterns as $block_pattern ) {
-			$pattern_file = plugin_dir_path( SUREFORMS_FILE ) . 'templates/forms/' . $block_pattern . '.php';
+			$pattern_file = plugin_dir_path( SRFM_FILE ) . 'templates/forms/' . $block_pattern . '.php';
 			if ( is_readable( $pattern_file ) ) {
 				register_block_pattern(
 					'sureforms/' . $block_pattern,
@@ -143,26 +143,26 @@ class Gutenberg_Hooks {
 		$form_editor_script = 'formEditor';
 
 		$screen     = get_current_screen();
-		$post_types = array( SUREFORMS_FORMS_POST_TYPE );
+		$post_types = array( SRFM_FORMS_POST_TYPE );
 
 		if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
 			return;
 		}
 
-		$script_asset_path = SUREFORMS_DIR . 'assets/build/' . $form_editor_script . '.asset.php';
+		$script_asset_path = SRFM_DIR . 'assets/build/' . $form_editor_script . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: array(
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			);
-		wp_enqueue_script( 'sureforms-' . $form_editor_script, SUREFORMS_URL . 'assets/build/' . $form_editor_script . '.js', $script_info['dependencies'], SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-' . $form_editor_script, SRFM_URL . 'assets/build/' . $form_editor_script . '.js', $script_info['dependencies'], SRFM_VER, true );
 
 		wp_localize_script(
 			'sureforms-' . $form_editor_script,
 			'sfBlockData',
 			[
-				'plugin_url'  => SUREFORMS_URL,
+				'plugin_url'  => SRFM_URL,
 				'admin_email' => get_option( 'admin_email' ),
 			]
 		);
@@ -178,14 +178,14 @@ class Gutenberg_Hooks {
 		$all_screen_blocks = 'blocks';
 		$screen            = get_current_screen();
 
-		$blocks_asset_path = SUREFORMS_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
+		$blocks_asset_path = SRFM_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
 			? include $blocks_asset_path
 			: array(
 				'dependencies' => [],
-				'version'      => SUREFORMS_VER,
+				'version'      => SRFM_VER,
 			);
-		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SUREFORMS_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SUREFORMS_VER, true );
+		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SRFM_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SRFM_VER, true );
 
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
@@ -197,7 +197,7 @@ class Gutenberg_Hooks {
 			'sfBlockData',
 			[
 				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
-				'plugin_url'             => SUREFORMS_URL,
+				'plugin_url'             => SRFM_URL,
 				'admin_email'            => get_option( 'admin_email' ),
 				'post_url'               => admin_url( 'post.php' ),
 				'current_screen'         => $screen,
@@ -215,17 +215,17 @@ class Gutenberg_Hooks {
 			apply_filters(
 				'sureforms_block_preview_images',
 				array(
-					'input_preview'        => SUREFORMS_URL . 'images/field-previews/input.svg',
-					'email_preview'        => SUREFORMS_URL . 'images/field-previews/email.svg',
-					'url_preview'          => SUREFORMS_URL . 'images/field-previews/url.svg',
-					'textarea_preview'     => SUREFORMS_URL . 'images/field-previews/textarea.svg',
-					'multi_choice_preview' => SUREFORMS_URL . 'images/field-previews/multi-choice.svg',
-					'checkbox_preview'     => SUREFORMS_URL . 'images/field-previews/checkbox.svg',
-					'number_preview'       => SUREFORMS_URL . 'images/field-previews/number.svg',
-					'phone_preview'        => SUREFORMS_URL . 'images/field-previews/phone.svg',
-					'dropdown_preview'     => SUREFORMS_URL . 'images/field-previews/dropdown.svg',
-					'address_preview'      => SUREFORMS_URL . 'images/field-previews/address.svg',
-					'sureforms_preview'    => SUREFORMS_URL . 'images/field-previews/sureforms.svg',
+					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SRFM_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SRFM_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SRFM_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SRFM_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SRFM_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
 				)
 			),
 		);
