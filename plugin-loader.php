@@ -103,7 +103,7 @@ class SRFM_Plugin_Loader {
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-		add_action( 'plugins_loaded', array( $this, 'load_plugin' ), 99 );
+		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
 		SRFM_Post_Types::get_instance();
@@ -156,10 +156,10 @@ class SRFM_Plugin_Loader {
 			if ( ! is_multisite() ) {
 				wp_safe_redirect(
 					add_query_arg(
-						array(
+						[
 							'page'                     => 'sureforms_menu',
 							'srfm-activation-redirect' => true,
-						),
+						],
 						admin_url( 'admin.php' )
 					)
 				);

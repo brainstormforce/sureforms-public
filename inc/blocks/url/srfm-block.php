@@ -27,7 +27,7 @@ class SRFM_Block extends SRFM_Base {
 		$sureforms_helper_instance = new SRFM_Helper();
 
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new SRFM_Url_Markup();
 			ob_start();
 			// phpcs:ignore

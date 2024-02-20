@@ -27,7 +27,7 @@ class SRFM_Block extends SRFM_Base {
 		$upload_dir = wp_upload_dir();
 
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new SRFM_Phone_Markup();
 			ob_start();
 			// phpcs:ignore

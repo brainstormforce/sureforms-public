@@ -63,7 +63,7 @@ class SRFM_Gutenberg_Hooks {
 	 */
 	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
 		if ( ! empty( $editor_context->post->post_type ) && 'sureforms_form' === $editor_context->post->post_type ) {
-			$allow_block_types = array(
+			$allow_block_types = [
 				'sureforms/input',
 				'sureforms/email',
 				'sureforms/textarea',
@@ -81,7 +81,7 @@ class SRFM_Gutenberg_Hooks {
 				'sureforms/image',
 				'sureforms/advanced-heading',
 
-			);
+			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
 			return $allow_block_types;
@@ -143,7 +143,7 @@ class SRFM_Gutenberg_Hooks {
 		$form_editor_script = 'formEditor';
 
 		$screen     = get_current_screen();
-		$post_types = array( SRFM_FORMS_POST_TYPE );
+		$post_types = [ SRFM_FORMS_POST_TYPE ];
 
 		if ( is_null( $screen ) || ! in_array( $screen->post_type, $post_types, true ) ) {
 			return;
@@ -152,10 +152,10 @@ class SRFM_Gutenberg_Hooks {
 		$script_asset_path = SRFM_DIR . 'assets/build/' . $form_editor_script . '.asset.php';
 		$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
-			: array(
+			: [
 				'dependencies' => [],
 				'version'      => SRFM_VER,
-			);
+			];
 		wp_enqueue_script( 'sureforms-' . $form_editor_script, SRFM_URL . 'assets/build/' . $form_editor_script . '.js', $script_info['dependencies'], SRFM_VER, true );
 
 		wp_localize_script(
@@ -181,10 +181,10 @@ class SRFM_Gutenberg_Hooks {
 		$blocks_asset_path = SRFM_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
 			? include $blocks_asset_path
-			: array(
+			: [
 				'dependencies' => [],
 				'version'      => SRFM_VER,
-			);
+			];
 		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SRFM_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SRFM_VER, true );
 
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
@@ -214,7 +214,7 @@ class SRFM_Gutenberg_Hooks {
 			'fieldsPreview',
 			apply_filters(
 				'sureforms_block_preview_images',
-				array(
+				[
 					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
 					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
 					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
@@ -226,7 +226,7 @@ class SRFM_Gutenberg_Hooks {
 					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
 					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
 					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
-				)
+				]
 			),
 		);
 
@@ -234,9 +234,9 @@ class SRFM_Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'srfm_blocks_info',
 			[
-				'font_awesome_5_polyfill' => array(),
+				'font_awesome_5_polyfill' => [],
 				'collapse_panels'         => 'enabled',
-				'is_site_editor'          => $screen?->id,
+				'is_site_editor'          => $screen ? $screen->id : null,
 			]
 		);
 	}

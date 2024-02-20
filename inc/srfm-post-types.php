@@ -120,7 +120,7 @@ class SRFM_Post_Types {
 	 * @since 0.0.1
 	 */
 	public function register_post_types() {
-		$form_labels = array(
+		$form_labels = [
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
@@ -137,23 +137,23 @@ class SRFM_Post_Types {
 			'not_found_in_trash' => __( 'No forms found in Trash.', 'sureforms' ),
 			'item_published'     => __( 'Form published.', 'sureforms' ),
 			'item_updated'       => __( 'Form updated.', 'sureforms' ),
-		);
+		];
 		register_post_type(
 			SRFM_FORMS_POST_TYPE,
-			array(
+			[
 				'labels'            => $form_labels,
-				'rewrite'           => array( 'slug' => 'form' ),
+				'rewrite'           => [ 'slug' => 'form' ],
 				'public'            => true,
 				'show_in_rest'      => true,
 				'has_archive'       => false,
 				'show_ui'           => true,
-				'supports'          => array( 'title', 'author', 'editor', 'custom-fields' ),
+				'supports'          => [ 'title', 'author', 'editor', 'custom-fields' ],
 				'show_in_menu'      => 'sureforms_menu',
 				'show_in_nav_menus' => true,
-			)
+			]
 		);
 
-		$result_labels = array(
+		$result_labels = [
 			'name'               => _x( 'Entries', 'post type general name', 'sureforms' ),
 			'singular_name'      => _x( 'Entry', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Entries', 'admin menu', 'sureforms' ),
@@ -168,42 +168,42 @@ class SRFM_Post_Types {
 			'parent_item_colon'  => __( 'Parent Entries:', 'sureforms' ),
 			'not_found'          => __( 'No results found.', 'sureforms' ),
 			'not_found_in_trash' => __( 'No results found in Trash.', 'sureforms' ),
-		);
+		];
 		register_post_type(
 			SRFM_ENTRIES_POST_TYPE,
-			array(
+			[
 				'labels'              => $result_labels,
-				'supports'            => array( 'title' ),
+				'supports'            => [ 'title' ],
 				'public'              => false,
 				'show_in_rest'        => true,
 				'exclude_from_search' => true,
 				'publicly_queryable'  => false,
 				'has_archive'         => true,
 				'capability_type'     => 'post',
-				'capabilities'        => array(
+				'capabilities'        => [
 					'create_posts' => 'do_not_allow',
-				),
+				],
 				'map_meta_cap'        => true,
 				'show_ui'             => true,
 				'show_in_menu'        => 'sureforms_menu',
-			)
+			]
 		);
 		register_taxonomy(
 			'sureforms_tax',
 			'sureforms_entry',
-			array(
+			[
 				'label'             => __( 'Form ID', 'sureforms' ),
 				'hierarchical'      => true,
-				'capabilities'      => array(
+				'capabilities'      => [
 					'assign_terms' => 'god',
 					'edit_terms'   => 'god',
 					'manage_terms' => 'god',
-				),
+				],
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'show_in_nav_menus' => false,
 				'show_ui'           => false,
-			)
+			]
 		);
 		// will be used later.
 		// register_post_status(
@@ -254,6 +254,7 @@ class SRFM_Post_Types {
 		$post_type = get_post_type( $post_ID );
 
 		if ( SRFM_ENTRIES_POST_TYPE === $post_type ) {
+			/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
 			$messages['post'][1] = __( 'Entry updated.', 'sureforms' );
 		}
 
@@ -401,7 +402,7 @@ class SRFM_Post_Types {
 
 		$metas = apply_filters(
 			'sureforms_register_post_meta',
-			array(
+			[
 				// General tab metas.
 				'_srfm_show_labels'               => 'boolean',
 				'_srfm_show_asterisk'             => 'boolean',
@@ -453,14 +454,14 @@ class SRFM_Post_Types {
 				'_srfm_submit_url'                => 'string',
 				// Security.
 				'_srfm_form_recaptcha'            => 'string',
-			)
+			]
 		);
 
 		foreach ( $metas as $meta => $type ) {
 			register_meta(
 				'post',
 				$meta,
-				array(
+				[
 					'object_subtype'    => SRFM_FORMS_POST_TYPE,
 					'show_in_rest'      => true,
 					'single'            => true,
@@ -469,7 +470,7 @@ class SRFM_Post_Types {
 					'auth_callback'     => function() {
 						return current_user_can( 'edit_posts' );
 					},
-				)
+				]
 			);
 		}
 
@@ -477,43 +478,43 @@ class SRFM_Post_Types {
 		register_post_meta(
 			'sureforms_form',
 			'_srfm_email_notification',
-			array(
+			[
 				'single'        => true,
 				'type'          => 'array',
 				'auth_callback' => '__return_true',
-				'show_in_rest'  => array(
-					'schema' => array(
+				'show_in_rest'  => [
+					'schema' => [
 						'type'  => 'array',
-						'items' => array(
+						'items' => [
 							'type'       => 'object',
-							'properties' => array(
-								'id'            => array(
+							'properties' => [
+								'id'            => [
 									'type' => 'integer',
-								),
-								'status'        => array(
+								],
+								'status'        => [
 									'type' => 'boolean',
-								),
-								'is_raw_format' => array(
+								],
+								'is_raw_format' => [
 									'type' => 'boolean',
-								),
-								'name'          => array(
+								],
+								'name'          => [
 									'type' => 'string',
-								),
-								'email_to'      => array(
+								],
+								'email_to'      => [
 									'type' => 'string',
-								),
-								'subject'       => array(
+								],
+								'subject'       => [
 									'type' => 'string',
-								),
-								'email_body'    => array(
+								],
+								'email_body'    => [
 									'type' => 'string',
-								),
-							),
-						),
-					),
-				),
-				'default'       => array(
-					array(
+								],
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
 						'id'            => 1,
 						'status'        => false,
 						'is_raw_format' => false,
@@ -521,9 +522,9 @@ class SRFM_Post_Types {
 						'email_to'      => '{admin_email}',
 						'subject'       => 'New Form Submission',
 						'email_body'    => '{all_data}',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 
@@ -563,7 +564,7 @@ class SRFM_Post_Types {
 						<td><b><?php echo $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
-						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), array( 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ), true ) ) : ?>
+						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true ) ) : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><img style="max-width:100px; height:auto;" src="<?php echo esc_url( $value ); ?>" alt="img" /></a></td>
 						<?php else : ?>
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
@@ -605,7 +606,7 @@ class SRFM_Post_Types {
 		add_meta_box(
 			'sureform_entry_meta',
 			'Form Data',
-			array( $this, 'sureforms_meta_box_callback' ),
+			[ $this, 'sureforms_meta_box_callback' ],
 			'sureforms_entry',
 			'normal',
 			'high'
@@ -613,7 +614,7 @@ class SRFM_Post_Types {
 		add_meta_box(
 			'sureform_form_name_meta',
 			'Form Name',
-			array( $this, 'sureforms_form_name_meta_callback' ),
+			[ $this, 'sureforms_form_name_meta_callback' ],
 			'sureforms_entry',
 			'side',
 			'low'
@@ -653,9 +654,9 @@ class SRFM_Post_Types {
 	 */
 	public function forms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
-			array(
+			[
 				'id' => '',
-			),
+			],
 			$atts
 		);
 
@@ -678,14 +679,14 @@ class SRFM_Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_form_columns( $columns ) {
-		$columns = array(
+		$columns = [
 			'cb'        => $columns['cb'],
 			'title'     => $columns['title'],
 			'sureforms' => __( 'Shortcode', 'sureforms' ),
 			'entries'   => __( 'Entries', 'sureforms' ),
 			'author'    => $columns['author'],
 			'date'      => $columns['date'],
-		);
+		];
 		return $columns;
 	}
 
@@ -716,16 +717,16 @@ class SRFM_Post_Types {
 
 			$taxonomy = 'sureforms_tax';
 
-			$args = array(
+			$args = [
 				'post_type' => SRFM_ENTRIES_POST_TYPE,
-				'tax_query' => array(
-					array(
+				'tax_query' => [
+					[
 						'taxonomy' => $taxonomy,
 						'field'    => 'slug',
 						'terms'    => $post_id_formatted,
-					),
-				),
-			);
+					],
+				],
+			];
 
 			$key   = 'sureforms_entries_count_' . $post_id_formatted;
 			$query = wp_cache_get( $key );
@@ -757,13 +758,13 @@ class SRFM_Post_Types {
 	 * @since 0.0.1
 	 */
 	public function custom_entry_columns( $columns ) {
-		$columns = array(
+		$columns = [
 			'cb'        => $columns['cb'],
 			'title'     => __( 'First Field', 'sureforms' ),
 			'form_name' => __( 'Form Name', 'sureforms' ),
 			'entry_id'  => __( 'ID', 'sureforms' ),
 			'date'      => __( 'Submitted On', 'sureforms' ),
-		);
+		];
 		return $columns;
 	}
 
@@ -807,12 +808,12 @@ class SRFM_Post_Types {
 
 		if ( ! is_null( $screen ) && 'edit-sureforms_entry' === $screen->id ) {
 			$forms = get_posts(
-				array(
+				[
 					'post_type'      => SRFM_FORMS_POST_TYPE,
 					'posts_per_page' => -1,
 					'orderby'        => 'title',
 					'order'          => 'ASC',
-				)
+				]
 			);
 
 			if ( ! empty( $forms ) ) {

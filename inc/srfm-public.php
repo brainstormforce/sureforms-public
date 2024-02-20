@@ -28,7 +28,7 @@ class SRFM_Public {
 		add_filter( 'template_include', [ $this, 'page_template' ], PHP_INT_MAX );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		add_filter( 'render_block', array( $this, 'generate_render_script' ), 10, 2 );
+		add_filter( 'render_block', [ $this, 'generate_render_script' ], 10, 2 );
 	}
 
 	/**
@@ -52,14 +52,14 @@ class SRFM_Public {
 		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
 
 		// Styles based on meta style.
-		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
 
 		// Common styles for all meta styles.
 		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 
 		if ( is_single() ) {
-			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// Dependencies
@@ -83,16 +83,16 @@ class SRFM_Public {
 		wp_localize_script(
 			SRFM_SLUG . '-frontend-script',
 			SRFM_LOC,
-			array(
+			[
 				'isRTL' => $is_rtl,
-			)
+			]
 		);
 		wp_localize_script(
 			'srfm-form-submit',
 			'sureforms_submit',
-			array(
+			[
 				'site_url' => site_url(),
-			)
+			]
 		);
 	}
 

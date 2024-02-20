@@ -31,7 +31,7 @@ class SRFM_Address_Markup extends SRFM_Base {
 			$json_string = wp_remote_retrieve_body( $response );
 			$data        = json_decode( $json_string, true );
 		} else {
-			$data = array();
+			$data = [];
 		}
 
 		return $data;

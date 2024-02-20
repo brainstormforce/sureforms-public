@@ -31,7 +31,7 @@ class SRFM_Admin {
 		add_filter( 'plugin_action_links', [ $this, 'add_settings_link' ], 10, 2 );
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
-		add_action( 'admin_body_class', array( $this, 'admin_template_picker_body_class' ) );
+		add_action( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
 	}
 
 	/**
@@ -52,7 +52,7 @@ class SRFM_Admin {
 		}
 
 		if ( 'sureforms_form' === $current_screen->id ) {
-			wp_enqueue_style( SRFM_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-editor-header-styles', $css_uri . 'header-styles' . $file_prefix . '.css', [], SRFM_VER );
 		}
 	}
 
@@ -84,7 +84,7 @@ class SRFM_Admin {
 			__( 'Dashboard', 'sureforms' ),
 			$capability,
 			$menu_slug,
-			array( $this, 'render_dashboard' )
+			[ $this, 'render_dashboard' ]
 		);
 	}
 
@@ -217,50 +217,50 @@ class SRFM_Admin {
 	 */
 	public function get_breadcrumbs_for_current_page() {
 		global $post, $pagenow;
-		$breadcrumbs = array();
+		$breadcrumbs = [];
 
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$page_title    = get_admin_page_title();
-			$breadcrumbs[] = array(
+			$breadcrumbs[] = [
 				'title' => $page_title,
 				'link'  => '',
-			);
-		} elseif ( $post && in_array( $pagenow, array( 'post.php', 'post-new.php', 'edit.php' ), true ) ) {
+			];
+		} elseif ( $post && in_array( $pagenow, [ 'post.php', 'post-new.php', 'edit.php' ], true ) ) {
 			$post_type_obj = get_post_type_object( get_post_type() );
 			if ( $post_type_obj ) {
 				$post_type_plural = $post_type_obj->labels->name;
-				$breadcrumbs[]    = array(
+				$breadcrumbs[]    = [
 					'title' => $post_type_plural,
 					'link'  => admin_url( 'edit.php?post_type=' . $post_type_obj->name ),
-				);
+				];
 
 				if ( 'edit.php' === $pagenow && ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					$breadcrumbs[ count( $breadcrumbs ) - 1 ]['link'] = '';
 				} else {
-					$breadcrumbs[] = array(
+					$breadcrumbs[] = [
 						/* Translators: Post Title. */
 						'title' => sprintf( __( 'Edit %1$s', 'sureforms' ), get_the_title() ),
 						'link'  => get_edit_post_link( $post->ID ),
-					);
+					];
 				}
 			}
 		} else {
 			$current_screen = get_current_screen();
 			if ( $current_screen && 'sureforms_form' === $current_screen->post_type ) {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => 'Forms',
 					'link'  => '',
-				);
+				];
 			} elseif ( $current_screen && 'sureforms_entry' === $current_screen->post_type ) {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => 'Entries',
 					'link'  => '',
-				);
+				];
 			} else {
-				$breadcrumbs[] = array(
+				$breadcrumbs[] = [
 					'title' => '',
 					'link'  => '',
-				);
+				];
 			}
 		}
 
@@ -359,12 +359,12 @@ class SRFM_Admin {
 			wp_localize_script(
 				'srfm-export',
 				'sureforms_export',
-				array(
+				[
 					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-				)
+				]
 			);
 
 			wp_enqueue_script( SRFM_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SRFM_VER, true );
@@ -419,16 +419,16 @@ class SRFM_Admin {
 		// Quick action sidebar.
 		$default_allowed_quick_sidebar_blocks = apply_filters(
 			'sureforms_quick_sidebar_allowed_blocks',
-			array(
+			[
 				'sureforms/input',
 				'sureforms/email',
 				'sureforms/textarea',
 				'sureforms/number',
 				'sureforms/address',
-			)
+			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {
-			$default_allowed_quick_sidebar_blocks = array();
+			$default_allowed_quick_sidebar_blocks = [];
 		}
 
 		$srfm_enable_quick_action_sidebar = get_option( 'srfm_enable_quick_action_sidebar' );
@@ -442,12 +442,12 @@ class SRFM_Admin {
 		wp_localize_script(
 			'srfm-quick-action-siderbar',
 			'quickSidebarBlocks',
-			array(
+			[
 				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
 				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 				'srfm_ajax_nonce'                  => $srfm_ajax_nonce,
 				'srfm_ajax_url'                    => admin_url( 'admin-ajax.php' ),
-			)
+			]
 		);
 	}
 

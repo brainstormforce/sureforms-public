@@ -39,7 +39,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 		public function __construct() {
 
 			// Activation hook.
-			add_action( 'init', array( $this, 'register_blocks' ) );
+			add_action( 'init', [ $this, 'register_blocks' ] );
 		}
 
 		/**
@@ -55,369 +55,369 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 			}
 
 			$attr = array_merge(
-				array(
+				[
 					'icon'                             =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'circle-check',
-					),
+					],
 					'iconSize'                         =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 40,
-					),
+					],
 					'iconSizeTablet'                   =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconSizeMobile'                   =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconSizeUnit'                     =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'align'                            =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'center',
-					),
+					],
 					'alignTablet'                      =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'alignMobile'                      =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'iconColor'                        =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '#333',
-					),
+					],
 					'iconBorderColor'                  =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'iconBackgroundColorType'          =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'classic',
-					),
+					],
 					'iconBackgroundColor'              =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'iconBackgroundGradientColor'      =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-					),
+					],
 					'iconHoverColor'                   =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'iconHoverBackgroundColorType'     =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'classic',
-					),
+					],
 					'iconHoverBackgroundColor'         =>
-					array(
+					[
 						'type' => 'string',
-					),
+					],
 					'iconHoverBackgroundGradientColor' =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-					),
+					],
 					'rotation'                         =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'rotationUnit'                     =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'deg',
-					),
+					],
 					'block_id'                         =>
-					array(
+					[
 						'type' => 'string',
-					),
+					],
 					'link'                             =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '',
-					),
+					],
 					'target'                           =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => false,
-					),
+					],
 					'disableLink'                      =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => false,
-					),
+					],
 					'iconTopPadding'                   =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 5,
-					),
+					],
 					'iconRightPadding'                 =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 5,
-					),
+					],
 					'iconLeftPadding'                  =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 5,
-					),
+					],
 					'iconBottomPadding'                =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 5,
-					),
+					],
 					'iconTopTabletPadding'             =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconRightTabletPadding'           =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconLeftTabletPadding'            =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBottomTabletPadding'          =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconTopMobilePadding'             =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconRightMobilePadding'           =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconLeftMobilePadding'            =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBottomMobilePadding'          =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconPaddingUnit'                  =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconTabletPaddingUnit'            =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconMobilePaddingUnit'            =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconPaddingLink'                  =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => false,
-					),
+					],
 					'iconTopMargin'                    =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconRightMargin'                  =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconLeftMargin'                   =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBottomMargin'                 =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconTopTabletMargin'              =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconRightTabletMargin'            =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconLeftTabletMargin'             =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBottomTabletMargin'           =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconTopMobileMargin'              =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconRightMobileMargin'            =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconLeftMobileMargin'             =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBottomMobileMargin'           =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconMarginUnit'                   =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconTabletMarginUnit'             =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconMobileMarginUnit'             =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'px',
-					),
+					],
 					'iconMarginLink'                   =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => false,
-					),
+					],
 					'isPreview'                        =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => false,
-					),
+					],
 					'iconBorderStyle'                  =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'default',
-					),
+					],
 					'useSeparateBoxShadows'            =>
-					array(
+					[
 						'type'    => 'boolean',
 						'default' => true,
-					),
+					],
 					'iconShadowColor'                  =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '#00000070',
-					),
+					],
 					'iconShadowHOffset'                =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconShadowVOffset'                =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconShadowBlur'                   =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowColor'               =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '#00000070',
-					),
+					],
 					'iconBoxShadowHOffset'             =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowVOffset'             =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowBlur'                =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBoxShadowSpread'              =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBoxShadowPosition'            =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'outset',
-					),
+					],
 					'iconShadowColorHover'             =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => '#00000070',
-					),
+					],
 					'iconShadowHOffsetHover'           =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconShadowVOffsetHover'           =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconShadowBlurHover'              =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowColorHover'          =>
-					array(
+					[
 						'type' => 'string',
-					),
+					],
 					'iconBoxShadowHOffsetHover'        =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowVOffsetHover'        =>
-					array(
+					[
 						'type'    => 'number',
 						'default' => 0,
-					),
+					],
 					'iconBoxShadowBlurHover'           =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBoxShadowSpreadHover'         =>
-					array(
+					[
 						'type' => 'number',
-					),
+					],
 					'iconBoxShadowPositionHover'       =>
-					array(
+					[
 						'type'    => 'string',
 						'default' => 'outset',
-					),
-				),
+					],
+				],
 			);
 
 			$icon_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
@@ -428,10 +428,10 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 
 			register_block_type(
 				'sureforms/icon',
-				array(
+				[
 					'attributes'      => $attributes,
-					'render_callback' => array( $this, 'render_html' ),
-				)
+					'render_callback' => [ $this, 'render_html' ],
+				]
 			);
 		}
 
@@ -464,12 +464,12 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 				$link_url = $link_url ? $link_url : $link_url;
 			}
 
-			$main_classes = array(
+			$main_classes = [
 				'wp-block-uagb-icon',
 				'uagb-block',
 				'uagb-icon-wrapper',
 				'uagb-block-' . $block_id,
-			);
+			];
 
 			if ( isset( $attributes['className'] ) ) {
 				$main_classes[] = $attributes['className'];

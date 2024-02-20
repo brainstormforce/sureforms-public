@@ -40,11 +40,11 @@ class SRFM_Forms_Data {
 		register_rest_route(
 			'sureforms/v1',
 			'/forms-data',
-			array(
+			[
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'load_forms' ],
 				'permission_callback' => [ $this, 'get_form_permissions_check' ],
-			)
+			]
 		);
 	}
 
@@ -74,22 +74,22 @@ class SRFM_Forms_Data {
 	 * @since 0.0.1
 	 */
 	public function load_forms() {
-		$args = array(
+		$args = [
 			'post_type'      => 'sureforms_form',
 			'post_status'    => 'publish',
 			'posts_per_page' => -1, // Retrieve all posts.
-		);
+		];
 
 		$form_posts = get_posts( $args );
 
-		$data = array();
+		$data = [];
 
 		foreach ( $form_posts as $post ) {
-			$data[] = array(
+			$data[] = [
 				'id'      => $post->ID,
 				'title'   => $post->post_title,
 				'content' => $post->post_content,
-			);
+			];
 		}
 
 		return new WP_REST_Response( $data );

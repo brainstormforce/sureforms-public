@@ -39,7 +39,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @since 0.0.1
 		 * @var current_block_list
 		 */
-		public static $current_block_list = array();
+		public static $current_block_list = [];
 
 		/**
 		 * Page Blocks Variable
@@ -79,7 +79,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @since 0.0.1
 		 * @var array
 		 */
-		public $static_css_blocks = array();
+		public $static_css_blocks = [];
 
 		/**
 		 * Google fonts to enqueue
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @since 0.0.1
 		 * @var array
 		 */
-		public static $gfonts = array();
+		public static $gfonts = [];
 
 		/**
 		 * As our svg icon is too long array so we will divide that into number of icon chunks.
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @var array
 		 * @since 0.0.1
 		 */
-		public static $icon_array_merged = array();
+		public static $icon_array_merged = [];
 
 		/**
 		 *  Initiator
@@ -135,9 +135,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			self::$block_list = Sureforms_Spec_Block_Config::get_block_attributes();
 
-			add_action( 'wp', array( $this, 'wp_actions' ), 10 );
+			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
 
-			add_filter( 'render_block', array( $this, 'generate_render_styles' ), 10, 2 );
+			add_filter( 'render_block', [ $this, 'generate_render_styles' ], 10, 2 );
 		}
 
 		/**
@@ -148,10 +148,10 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @return void
 		 */
 		public function form_content_by_id( $id ) {
-			$args = array(
+			$args = [
 				'p'         => $id,
 				'post_type' => 'sureforms_form',
-			);
+			];
 			$loop = new WP_Query( $args );
 
 			if ( isset( $loop->posts[0] ) && $loop->posts[0] ) {
@@ -204,10 +204,10 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 */
 		public function wp_actions() {
 			$this->generate_assets();
-			add_action( 'wp_enqueue_scripts', array( $this, 'block_assets' ), 10 );
-			add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 120 );
-			add_action( 'wp_head', array( $this, 'print_stylesheet' ), 80 );
-			add_action( 'wp_footer', array( $this, 'print_script' ), 1000 );
+			add_action( 'wp_enqueue_scripts', [ $this, 'block_assets' ], 10 );
+			add_action( 'wp_head', [ $this, 'frontend_gfonts' ], 120 );
+			add_action( 'wp_head', [ $this, 'print_stylesheet' ], 80 );
+			add_action( 'wp_footer', [ $this, 'print_script' ], 1000 );
 		}
 
 		/**
@@ -223,7 +223,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				return;
 			}
 			$link    = '';
-			$subsets = array();
+			$subsets = [];
 			foreach ( self::$gfonts as $key => $gfont_values ) {
 				if ( ! empty( $link ) ) {
 					$link .= '%7C'; // Append a new font to the string.
@@ -258,25 +258,25 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @return array
 		 */
 		public static function alignment_css( $align ) {
-			$align_css = array();
+			$align_css = [];
 			switch ( $align ) {
 				case 'left':
-					$align_css = array(
+					$align_css = [
 						'margin-left'  => 0,
 						'margin-right' => 'auto',
-					);
+					];
 					break;
 				case 'center':
-					$align_css = array(
+					$align_css = [
 						'margin-left'  => 'auto',
 						'margin-right' => 'auto',
-					);
+					];
 					break;
 				case 'right':
-					$align_css = array(
+					$align_css = [
 						'margin-right' => 0,
 						'margin-left'  => 'auto',
-					);
+					];
 					break;
 			}
 			return $align_css;
@@ -321,7 +321,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 */
 		public function generate_assets() {
 
-			$this_post = array();
+			$this_post = [];
 
 			global $post;
 			$this_post = $post;
@@ -403,9 +403,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			foreach ( $block_list_for_assets as $key => $curr_block_name ) {
 
-				$js_assets = ( isset( $blocks[ $curr_block_name ]['js_assets'] ) ) ? $blocks[ $curr_block_name ]['js_assets'] : array();
+				$js_assets = ( isset( $blocks[ $curr_block_name ]['js_assets'] ) ) ? $blocks[ $curr_block_name ]['js_assets'] : [];
 
-				$css_assets = ( isset( $blocks[ $curr_block_name ]['css_assets'] ) ) ? $blocks[ $curr_block_name ]['css_assets'] : array();
+				$css_assets = ( isset( $blocks[ $curr_block_name ]['css_assets'] ) ) ? $blocks[ $curr_block_name ]['css_assets'] : [];
 
 				foreach ( $js_assets as $asset_handle => $val ) {
 					// Scripts.
@@ -505,10 +505,10 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				$mob_styling_css .= '}';
 			}
 
-			return array(
+			return [
 				'css' => $desktop . $tab_styling_css . $mob_styling_css,
 				'js'  => $js,
-			);
+			];
 		}
 
 		/**
@@ -523,13 +523,13 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 */
 		public static function get_typography_css( $attr, $slug, $selector, $combined_selectors ) {
 
-			$typo_css_desktop = array();
-			$typo_css_tablet  = array();
-			$typo_css_mobile  = array();
+			$typo_css_desktop = [];
+			$typo_css_tablet  = [];
+			$typo_css_mobile  = [];
 
-			$already_selectors_desktop = ( isset( $combined_selectors['desktop'][ $selector ] ) ) ? $combined_selectors['desktop'][ $selector ] : array();
-			$already_selectors_tablet  = ( isset( $combined_selectors['tablet'][ $selector ] ) ) ? $combined_selectors['tablet'][ $selector ] : array();
-			$already_selectors_mobile  = ( isset( $combined_selectors['mobile'][ $selector ] ) ) ? $combined_selectors['mobile'][ $selector ] : array();
+			$already_selectors_desktop = ( isset( $combined_selectors['desktop'][ $selector ] ) ) ? $combined_selectors['desktop'][ $selector ] : [];
+			$already_selectors_tablet  = ( isset( $combined_selectors['tablet'][ $selector ] ) ) ? $combined_selectors['tablet'][ $selector ] : [];
+			$already_selectors_mobile  = ( isset( $combined_selectors['mobile'][ $selector ] ) ) ? $combined_selectors['mobile'][ $selector ] : [];
 
 			$family_slug     = ( '' === $slug ) ? 'fontFamily' : $slug . 'FontFamily';
 			$weight_slug     = ( '' === $slug ) ? 'fontWeight' : $slug . 'FontWeight';
@@ -548,7 +548,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			$text_decoration = isset( $attr[ $decoration_slug ] ) ? $attr[ $decoration_slug ] : 'none';
 			$font_style      = isset( $attr[ $style_slug ] ) ? $attr[ $style_slug ] : 'normal';
 
-			$typo_css_desktop[ $selector ] = array(
+			$typo_css_desktop[ $selector ] = [
 				'font-family'     => $attr[ $family_slug ],
 				'text-transform'  => $text_transform,
 				'text-decoration' => $text_decoration,
@@ -557,36 +557,36 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				'font-size'       => ( isset( $attr[ $f_sz_slug ] ) ) ? self::get_css_value( $attr[ $f_sz_slug ], $attr[ $f_sz_type_slug ] ) : '',
 				'line-height'     => ( isset( $attr[ $l_ht_slug ] ) ) ? self::get_css_value( $attr[ $l_ht_slug ], $attr[ $l_ht_type_slug ] ) : '',
 				'letter-spacing'  => ( isset( $attr[ $l_sp_slug ] ) ) ? self::get_css_value( $attr[ $l_sp_slug ], $attr[ $l_sp_type_slug ] ) : '',
-			);
+			];
 
 			$typo_css_desktop[ $selector ] = array_merge(
 				$typo_css_desktop[ $selector ],
 				$already_selectors_desktop
 			);
 
-			$typo_css_tablet[ $selector ] = array(
+			$typo_css_tablet[ $selector ] = [
 				'font-size'      => ( isset( $attr[ $f_sz_slug . 'Tablet' ] ) ) ? self::get_css_value( $attr[ $f_sz_slug . 'Tablet' ], $attr[ $f_sz_type_slug ] ) : '',
 				'line-height'    => ( isset( $attr[ $l_ht_slug . 'Tablet' ] ) ) ? self::get_css_value( $attr[ $l_ht_slug . 'Tablet' ], $attr[ $l_ht_type_slug ] ) : '',
 				'letter-spacing' => ( isset( $attr[ $l_sp_slug . 'Tablet' ] ) ) ? self::get_css_value( $attr[ $l_sp_slug . 'Tablet' ], $attr[ $l_sp_type_slug ] ) : '',
-			);
+			];
 
 			$typo_css_tablet[ $selector ] = array_merge(
 				$typo_css_tablet[ $selector ],
 				$already_selectors_tablet
 			);
 
-			$typo_css_mobile[ $selector ] = array(
+			$typo_css_mobile[ $selector ] = [
 				'font-size'      => ( isset( $attr[ $f_sz_slug . 'Mobile' ] ) ) ? self::get_css_value( $attr[ $f_sz_slug . 'Mobile' ], $attr[ $f_sz_type_slug ] ) : '',
 				'line-height'    => ( isset( $attr[ $l_ht_slug . 'Mobile' ] ) ) ? self::get_css_value( $attr[ $l_ht_slug . 'Mobile' ], $attr[ $l_ht_type_slug ] ) : '',
 				'letter-spacing' => ( isset( $attr[ $l_sp_slug . 'Mobile' ] ) ) ? self::get_css_value( $attr[ $l_sp_slug . 'Mobile' ], $attr[ $l_sp_type_slug ] ) : '',
-			);
+			];
 
 			$typo_css_mobile[ $selector ] = array_merge(
 				$typo_css_mobile[ $selector ],
 				$already_selectors_mobile
 			);
 
-			return array(
+			return [
 				'desktop' => array_merge(
 					$combined_selectors['desktop'],
 					$typo_css_desktop
@@ -599,7 +599,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 					$combined_selectors['mobile'],
 					$typo_css_mobile
 				),
-			);
+			];
 		}
 
 		/**
@@ -637,11 +637,11 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 */
 		public static function generate_all_css( $combined_selectors, $id ) {
 
-			return array(
+			return [
 				'desktop' => self::generate_css( $combined_selectors['desktop'], $id ),
 				'tablet'  => self::generate_css( $combined_selectors['tablet'], $id ),
 				'mobile'  => self::generate_css( $combined_selectors['mobile'], $id ),
-			);
+			];
 		}
 
 		/**
@@ -767,10 +767,10 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			if ( true === $load_google_font ) {
 				if ( ! array_key_exists( $font_family, self::$gfonts ) ) {
-					$add_font                     = array(
+					$add_font                     = [
 						'fontfamily'   => $font_family,
-						'fontvariants' => ( isset( $font_weight ) && ! empty( $font_weight ) ? array( $font_weight ) : array() ),
-					);
+						'fontvariants' => ( isset( $font_weight ) && ! empty( $font_weight ) ? [ $font_weight ] : [] ),
+					];
 					self::$gfonts[ $font_family ] = $add_font;
 				} else {
 					if ( isset( $font_weight ) && ! empty( $font_weight ) && ! in_array( $font_weight, self::$gfonts[ $font_family ]['fontvariants'], true ) ) {
@@ -791,7 +791,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			$block = (array) $block;
 
 			$name     = $block['blockName'];
-			$css      = array();
+			$css      = [];
 			$js       = '';
 			$block_id = '';
 
@@ -840,9 +840,9 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 				if ( isset( $block_css_arr[ $name ] ) && ! in_array( $block_css_arr[ $name ]['name'], $this->static_css_blocks, true ) ) {
 
-					$common_css = array(
+					$common_css = [
 						'common' => $this->get_block_static_css( $block_css_arr[ $name ]['name'] ),
-					);
+					];
 					$css       += $common_css;
 				}
 
@@ -889,10 +889,10 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				self::$current_block_list = array_unique( self::$current_block_list );
 			}
 
-			return array(
+			return [
 				'css' => $css,
 				'js'  => $js,
-			);
+			];
 
 		}
 
@@ -910,7 +910,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				return $selectors;
 			}
 
-			$combined_selectors = array();
+			$combined_selectors = [];
 
 			foreach ( $selectors as $key => $selector ) {
 				$hook_prefix                = ( 'desktop' === $key ) ? '' : '_' . $key;
@@ -954,60 +954,60 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * @param array $default_args  default attributes args.
 		 * @return array
 		 */
-		public function generate_php_border_attribute( $prefix, $default_args = array() ) {
+		public function generate_php_border_attribute( $prefix, $default_args = [] ) {
 
-			$border_attr = array();
+			$border_attr = [];
 
-			$device = array( '', 'Tablet', 'Mobile' );
+			$device = [ '', 'Tablet', 'Mobile' ];
 
 			foreach ( $device as $slug => $data ) {
 
-				$border_attr[ "{$prefix}BorderTopWidth{$data}" ]          = array(
+				$border_attr[ "{$prefix}BorderTopWidth{$data}" ]          = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderLeftWidth{$data}" ]         = array(
+				];
+				$border_attr[ "{$prefix}BorderLeftWidth{$data}" ]         = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderRightWidth{$data}" ]        = array(
+				];
+				$border_attr[ "{$prefix}BorderRightWidth{$data}" ]        = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderBottomWidth{$data}" ]       = array(
+				];
+				$border_attr[ "{$prefix}BorderBottomWidth{$data}" ]       = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderTopLeftRadius{$data}" ]     = array(
+				];
+				$border_attr[ "{$prefix}BorderTopLeftRadius{$data}" ]     = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderTopRightRadius{$data}" ]    = array(
+				];
+				$border_attr[ "{$prefix}BorderTopRightRadius{$data}" ]    = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderBottomLeftRadius{$data}" ]  = array(
+				];
+				$border_attr[ "{$prefix}BorderBottomLeftRadius{$data}" ]  = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderBottomRightRadius{$data}" ] = array(
+				];
+				$border_attr[ "{$prefix}BorderBottomRightRadius{$data}" ] = [
 					'type' => 'number',
-				);
-				$border_attr[ "{$prefix}BorderRadiusUnit{$data}" ]        = array(
+				];
+				$border_attr[ "{$prefix}BorderRadiusUnit{$data}" ]        = [
 					'type' => 'number',
-				);
+				];
 			}
 
-			$border_attr[ "{$prefix}BorderStyle" ]      = array(
+			$border_attr[ "{$prefix}BorderStyle" ]      = [
 				'type' => 'string',
-			);
-			$border_attr[ "{$prefix}BorderColor" ]      = array(
+			];
+			$border_attr[ "{$prefix}BorderColor" ]      = [
 				'type' => 'string',
-			);
-			$border_attr[ "{$prefix}BorderHColor" ]     = array(
+			];
+			$border_attr[ "{$prefix}BorderHColor" ]     = [
 				'type' => 'string',
-			);
-			$border_attr[ "{$prefix}BorderLink" ]       = array(
+			];
+			$border_attr[ "{$prefix}BorderLink" ]       = [
 				'type'    => 'boolean',
 				'default' => true,
-			);
-			$border_attr[ "{$prefix}BorderRadiusLink" ] = array(
+			];
+			$border_attr[ "{$prefix}BorderRadiusLink" ] = [
 				'type'    => 'boolean',
 				'default' => true,
-			);
+			];
 
 			return $border_attr;
 		}
@@ -1024,7 +1024,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				return self::$icon_json;
 			}
 
-			$icons_chunks = array();
+			$icons_chunks = [];
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
 				$json_file = SRFM_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
 
@@ -1034,7 +1034,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			}
 
 			if ( empty( $icons_chunks ) ) {
-				return array();
+				return [];
 			}
 
 			self::$icon_json = $icons_chunks;
@@ -1066,7 +1066,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				$json = self::$icon_array_merged;
 			}
 
-			$icon_brand_or_solid = isset( $json[ $icon ]['svg']['brands'] ) ? $json[ $icon ]['svg']['brands'] : ( isset( $json[ $icon ]['svg']['solid'] ) ? $json[ $icon ]['svg']['solid'] : array() );
+			$icon_brand_or_solid = isset( $json[ $icon ]['svg']['brands'] ) ? $json[ $icon ]['svg']['brands'] : ( isset( $json[ $icon ]['svg']['solid'] ) ? $json[ $icon ]['svg']['solid'] : [] );
 			$path                = isset( $icon_brand_or_solid['path'] ) ? $icon_brand_or_solid['path'] : '';
 			$view                = isset( $icon_brand_or_solid['width'] ) && isset( $icon_brand_or_solid['height'] ) ? '0 0 ' . $icon_brand_or_solid['width'] . ' ' . $icon_brand_or_solid['height'] : null;
 

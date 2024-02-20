@@ -42,11 +42,11 @@ class SRFM_Create_New_Form {
 		register_rest_route(
 			'sureforms/v1',
 			'/create-new-form',
-			array(
+			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'create_form' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-			)
+			]
 		);
 	}
 
@@ -94,10 +94,10 @@ class SRFM_Create_New_Form {
 
 		// Check if JSON decoding was successful and $form_info_obj is an object.
 		if ( json_last_error() !== JSON_ERROR_NONE || ! is_object( $form_info_obj ) ) {
-			$response = array(
+			$response = [
 				'status'  => 'error',
 				'message' => 'Invalid JSON format.',
-			);
+			];
 			return rest_ensure_response( $response );
 		}
 
@@ -106,10 +106,10 @@ class SRFM_Create_New_Form {
 			|| ! property_exists( $form_info_obj, 'form_data' )
 
 		) {
-			$response = array(
+			$response = [
 				'status'  => 'error',
 				'message' => 'Missing required properties in form info.',
-			);
+			];
 			return rest_ensure_response( $response );
 		}
 
@@ -118,26 +118,26 @@ class SRFM_Create_New_Form {
 
 		// Create a new SureForms Form with Template.
 		$post_id = wp_insert_post(
-			array(
+			[
 				'post_title'   => $title,
 				'post_content' => $content,
 				'post_status'  => 'draft',
 				'post_type'    => 'sureforms_form',
-			)
+			]
 		);
 
 		if ( ! empty( $post_id ) ) {
-			$response = array(
+			$response = [
 				'status'  => 'success',
 				'message' => 'SureForms Form created successfully',
 				'id'      => $post_id,
-			);
+			];
 			return rest_ensure_response( $response );
 		} else {
-			$response = array(
+			$response = [
 				'status'  => 'error',
 				'message' => 'Error creating SureForms Form',
-			);
+			];
 			return rest_ensure_response( $response );
 		}
 	}

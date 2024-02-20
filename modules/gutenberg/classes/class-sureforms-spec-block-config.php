@@ -53,13 +53,13 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 			$high_light_border_attribute = self::generate_border_attribute( 'highLight' );
 
 			if ( null === self::$block_attributes ) {
-				self::$block_attributes = array(
-					'sureforms/separator'        => array(
+				self::$block_attributes = [
+					'sureforms/separator'        => [
 						'slug'        => '',
 						'title'       => __( 'Separator', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
-						'attributes'  => array(
+						'attributes'  => [
 							'separatorAlign'               => 'center',
 							'separatorAlignTablet'         => 'center',
 							'separatorAlignMobile'         => 'center',
@@ -110,15 +110,15 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 							'elementIconWidthTablet'       => '',
 							'elementIconWidthMobile'       => '',
 							'elementIconWidthType'         => 'px',
-						),
-					),
-					'sureforms/image'            => array(
+						],
+					],
+					'sureforms/image'            => [
 						'slug'        => '',
 						'title'       => __( 'Image', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
-							array(
+							[
 								'height'                   => '',
 								'width'                    => '',
 								'widthTablet'              => '',
@@ -280,20 +280,20 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 								// For Global Block Styles.
 								'globalBlockStyleName'     => '',
 								'globalBlockStyleId'       => '',
-							),
+							],
 							$image_attribute,
 							$overlay_attribute,
 						),
-					),
+					],
 
-					'sureforms/icon'             => array(
+					'sureforms/icon'             => [
 						'slug'        => '',
 						'title'       => __( 'Icon', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
 							$icon_border_attribute,
-							array(
+							[
 								// Size.
 								'icon'                     => '',
 								'iconSize'                 => 40,
@@ -377,18 +377,18 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 								// For Global Block Styles.
 								'globalBlockStyleName'     => '',
 								'globalBlockStyleId'       => '',
-							),
+							],
 						),
-					),
+					],
 
-					'sureforms/advanced-heading' => array(
+					'sureforms/advanced-heading' => [
 						'slug'        => '',
 						'title'       => __( 'Heading', 'sureforms' ),
 						'description' => '',
 						'default'     => true,
 						'attributes'  => array_merge(
 							$high_light_border_attribute,
-							array(
+							[
 								'classMigrate'             => false,
 								'blockBackground'          => '',
 								'blockBackgroundType'      => 'classic',
@@ -547,12 +547,12 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 								// For Global Block Styles.
 								'globalBlockStyleName'     => '',
 								'globalBlockStyleId'       => '',
-							),
+							],
 						),
 
-					),
+					],
 
-				);
+				];
 			}
 			return apply_filters( 'sureforms_gutenberg_blocks_attributes', self::$block_attributes );
 		}
@@ -567,7 +567,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 		public static function get_block_assets() {
 
 			if ( null === self::$block_assets ) {
-				self::$block_assets = array();
+				self::$block_assets = [];
 			}
 
 			return self::$block_assets;
@@ -584,21 +584,21 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 		public static function get_block_assets_css() {
 
 			if ( null === self::$block_assets_css ) {
-				self::$block_assets_css = array(
-					'sureforms/separator'        => array(
+				self::$block_assets_css = [
+					'sureforms/separator'        => [
 						'name' => 'separator',
-					),
-					'sureforms/image'            => array(
+					],
+					'sureforms/image'            => [
 						'name' => 'image',
-					),
-					'sureforms/icon'             => array(
+					],
+					'sureforms/icon'             => [
 						'name' => 'icon',
-					),
-					'sureforms/advanced-heading' => array(
+					],
+					'sureforms/advanced-heading' => [
 						'name' => 'advanced-heading',
-					),
+					],
 
-				);
+				];
 			}
 			return self::$block_assets_css;
 		}
@@ -611,7 +611,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 		 * @return array
 		 */
 		public static function generate_border_attribute( $prefix ) {
-			$defaults = array(
+			$defaults = [
 				// Width.
 				'borderTopWidth'                => '',
 				'borderRightWidth'              => '',
@@ -647,11 +647,11 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 				'borderColor'                   => '',
 				'borderHColor'                  => '',
 
-			);
+			];
 
-			$border_attr = array();
+			$border_attr = [];
 
-			$device = array( '', 'Tablet', 'Mobile' );
+			$device = [ '', 'Tablet', 'Mobile' ];
 
 			foreach ( $device as $slug => $data ) {
 
