@@ -95,7 +95,7 @@ class Sureforms_Submit {
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
 			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
 			foreach ( $_FILES as $field => $file ) {
 				$filename  = $file['name'];
@@ -156,7 +156,7 @@ class Sureforms_Submit {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
-					$ipaddress        = $_SERVER['REMOTE_ADDR'];
+					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
 					$url              = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $captcha_response . '&ip=' . $ipaddress;
 
@@ -185,7 +185,7 @@ class Sureforms_Submit {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
 					$secret_key       = $google_captcha_secret_key;
-					$ipaddress        = $_SERVER['REMOTE_ADDR'];
+					$ipaddress        = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 					$captcha_response = $form_data['g-recaptcha-response'];
 					$url              = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $captcha_response . '&ip=' . $ipaddress;
 
@@ -281,8 +281,7 @@ class Sureforms_Submit {
 		$sureforms_v3_site                = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
-		// TODO: We need to change it to array and serialize it.
-		$results = [
+		$results                          = [
 			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
 			'sureforms_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
 			'sureforms_v2_invisible_site'      => $sureforms_v2_invisible_site,
@@ -439,17 +438,16 @@ class Sureforms_Submit {
 	 * @return void
 	 */
 	public function field_unique_validation() {
-
-		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'unique_validation_nonce' ) ) {
+		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'unique_validation_nonce' ) ) {
 			$error_message = 'Nonce verification failed.';
-
-			$error_data = [
+			$error_data    = [
 				'error' => $error_message,
 			];
 			wp_send_json_error( $error_data );
 		}
+
 		global $wpdb;
-		$id         = isset( $_POST['id'] ) ? $_POST['id'] : '';
+		$id         = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
 		$meta_value = $id;
 
 		if ( ! $meta_value ) {
@@ -460,11 +458,13 @@ class Sureforms_Submit {
 			wp_send_json_error( $error_data );
 		}
 
+		$_POST = array_map( 'wp_unslash', $_POST );
+
 		$post_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT post_id
-			FROM {$wpdb->postmeta}
-			WHERE meta_value = %s",
+				FROM {$wpdb->postmeta}
+				WHERE meta_value = %s",
 				$meta_value
 			)
 		);
@@ -494,6 +494,7 @@ class Sureforms_Submit {
 
 		wp_send_json( $results );
 	}
+
 
 	/**
 	 * Function to save allowed block data.

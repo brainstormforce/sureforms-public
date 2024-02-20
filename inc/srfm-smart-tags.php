@@ -229,27 +229,25 @@ class SRFM_Smart_Tags {
 	 * @return string
 	 */
 	public function get_the_user_ip() {
-
 		$ip = '';
 		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_FORWARDED'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_FORWARDED_FOR'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_FORWARDED_FOR'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_FORWARDED'] ) ) {
-			$ip = $_SERVER['HTTP_FORWARDED'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_FORWARDED'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP );
 		} else {
 			$ip = 'UNKNOWN';
 		}
 
 		return apply_filters( 'sureforms_get_the_ip', $ip );
 	}
-
 
 	/**
 	 * Parse Date Properties.
@@ -335,7 +333,8 @@ class SRFM_Smart_Tags {
 		}
 
 		if ( '{embed_post_url}' === $value && isset( $_SERVER['REQUEST_URI'] ) ) {
-			return site_url( esc_attr( $_SERVER['REQUEST_URI'] ) );
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			return esc_url( site_url( $request_uri ) );
 		}
 
 		if ( '{embed_post_title}' === $value ) {
@@ -383,7 +382,6 @@ class SRFM_Smart_Tags {
 	 * @return array<mixed>|string
 	 */
 	public static function parse_request_param( $value ) {
-
 		if ( ! $value ) {
 			return '';
 		}
@@ -397,15 +395,17 @@ class SRFM_Smart_Tags {
 
 		$param = str_replace( '}', '', $param );
 
-		if ( $param && strpos( $value, 'get_input:' ) ) {
-			$var = Sureforms_Helper::get_string_value( filter_var( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_URL ) );
+		if ( $param && strpos( $value, 'get_input:' ) !== false ) {
+			$var = '';
+			if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+				$var = Sureforms_Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
+			}
 			parse_str( $var, $parameters );
-			// parse_str( $_SERVER['QUERY_STRING'], $parameters );
-			return isset( $parameters[ $param ] ) ? $parameters[ $param ] : '';
+			return isset( $parameters[ $param ] ) ? sanitize_text_field( $parameters[ $param ] ) : '';
 		}
 
-		if ( $param && strpos( $value, 'get_cookie:' ) ) {
-			return isset( $_COOKIE[ $param ] ) ? $_COOKIE[ $param ] : '';
+		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
+			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
 		}
 
 		return '';

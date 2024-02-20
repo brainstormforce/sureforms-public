@@ -36,7 +36,7 @@ class SRFM_Export {
 	 * @return void
 	 */
 	public function handle_export_form() {
-		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'export_form_nonce' ) ) {
+		if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'export_form_nonce' ) ) {
 			$error_message = 'Nonce verification failed.';
 
 			$error_data = [
@@ -44,7 +44,12 @@ class SRFM_Export {
 			];
 			wp_send_json_error( $error_data );
 		}
-		$post_ids = explode( ',', $_POST['post_id'] );
+
+		if ( isset( $_POST['post_id'] ) ) {
+			$post_ids = explode( ',', sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
+		} else {
+			$post_ids = [];
+		}
 
 		$posts = [];
 
@@ -59,6 +64,7 @@ class SRFM_Export {
 		}
 		wp_send_json( $posts );
 	}
+
 
 	/**
 	 * Handle Import Form
