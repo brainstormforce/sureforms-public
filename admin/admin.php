@@ -312,7 +312,7 @@ class Admin {
 					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SUREFORMS_VER,
-					'global_settings_nonce' => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 			wp_enqueue_style( 'srfm-dashboard', SUREFORMS_URL . 'assets/build/dashboard.css', [], SUREFORMS_VER, 'all' );
@@ -368,7 +368,7 @@ class Admin {
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
-					'import_form_nonce' => ( current_user_can( 'edit_posts' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'import_form_nonce'    => ( current_user_can( 'edit_posts' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 

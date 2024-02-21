@@ -204,7 +204,7 @@ class Gutenberg_Hooks {
 				'srfm_form_markup_nonce' => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'          => $is_pro_active,
-				'form_selector_nonce' => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+				'form_selector_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			]
 		);
 

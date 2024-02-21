@@ -92,7 +92,7 @@ class SF_Public {
 			'sureforms_submit',
 			[
 				'site_url' => site_url(),
-				'nonce'    =>  wp_create_nonce( 'wp_rest' ),
+				'nonce'    => wp_create_nonce( 'wp_rest' ),
 			]
 		);
 	}

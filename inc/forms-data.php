@@ -71,7 +71,7 @@ class Forms_Data {
 	 * Handle Form status
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
-	 * 
+	 *
 	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */

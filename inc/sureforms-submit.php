@@ -293,6 +293,8 @@ class Sureforms_Submit {
 	/**
 	 * Get Settings Form Data
 	 *
+	 * @param \WP_REST_Request $request Request object or array containing form data.
+	 *
 	 * @return void
 	 * @since 0.0.1
 	 */
