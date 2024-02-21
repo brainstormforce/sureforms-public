@@ -159,7 +159,7 @@ class SRFM_Admin_Ajax {
 		$surecart_redirection = empty( $sc_api_token ) ? 'sc-getting-started' : 'sc-dashboard';
 
 		return apply_filters(
-			'sureforms_integrated_plugins',
+			'srfm_integrated_plugins',
 			[
 				[
 					'title'       => __( 'Spectra', 'sureforms' ),

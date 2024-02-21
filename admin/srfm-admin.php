@@ -198,14 +198,14 @@ class SRFM_Admin {
 
 		// Enqueue editor styles for post and page.
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {
-			wp_enqueue_style( SRFM_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', array(), SRFM_VER );
-			wp_enqueue_style( SRFM_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', array(), SRFM_VER );
-			wp_enqueue_style( SRFM_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', array(), SRFM_VER );
-			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', array(), SRFM_VER );
-			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-editor', $css_uri . 'backend/editor' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-backend-blocks', $css_uri . 'blocks/default/backend' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
 		}
 
-		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', array(), SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
 		wp_enqueue_style( 'srfm-common-editor', SRFM_URL . 'assets/build/common-editor.css', [], SRFM_VER, 'all' );
 	}
 
@@ -290,7 +290,7 @@ class SRFM_Admin {
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type ) {
 			$asset_handle = 'dashboard';
 
-			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', array(), SRFM_VER );
+			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
 
 			$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
 			$script_info       = file_exists( $script_asset_path )
@@ -317,8 +317,8 @@ class SRFM_Admin {
 		}
 
 		// Admin Submenu Styles.
-		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', array(), SRFM_VER );
-		wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', array(), SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
@@ -331,7 +331,7 @@ class SRFM_Admin {
 				'version'      => SRFM_VER,
 			];
 			wp_enqueue_script( 'srfm-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', [], SRFM_VER );
 		}
 		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
 			$asset_handle = 'settings';
@@ -390,7 +390,7 @@ class SRFM_Admin {
 				$file_prefix .= '-rtl';
 			}
 
-			wp_enqueue_style( SRFM_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', array(), SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-template-picker', $css_uri . 'template-picker' . $file_prefix . '.css', [], SRFM_VER );
 
 			$sureforms_admin = 'templatePicker';
 
@@ -418,7 +418,7 @@ class SRFM_Admin {
 		}
 		// Quick action sidebar.
 		$default_allowed_quick_sidebar_blocks = apply_filters(
-			'sureforms_quick_sidebar_allowed_blocks',
+			'srfm_quick_sidebar_allowed_blocks',
 			[
 				'sureforms/input',
 				'sureforms/email',

@@ -83,7 +83,7 @@ class SRFM_Gutenberg_Hooks {
 
 			];
 			// Apply a filter to the $allow_block_types types array.
-			$allow_block_types = apply_filters( 'sureforms_allowed_block_types', $allow_block_types, $editor_context );
+			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
 			return $allow_block_types;
 		}
 	}
@@ -119,7 +119,7 @@ class SRFM_Gutenberg_Hooks {
 		 *
 		 * @param array<mixed> $patterns List of block patterns by name.
 		 */
-		$this->patterns = apply_filters( 'sureforms_block_patterns', $this->patterns );
+		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
 
 		// loop through patterns and register.
 		foreach ( $this->patterns as $block_pattern ) {
@@ -213,7 +213,7 @@ class SRFM_Gutenberg_Hooks {
 			'sureforms-' . $all_screen_blocks,
 			'fieldsPreview',
 			apply_filters(
-				'sureforms_block_preview_images',
+				'srfm_block_preview_images',
 				[
 					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
 					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',

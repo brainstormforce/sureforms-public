@@ -35,11 +35,11 @@
 	<!-- <rule ref="WordPress-VIP-Go"/> -->
 	<rule ref="PHPCompatibilityWP"/>
 	<rule ref="Generic.Commenting.Todo"/>
-	<!-- <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array" value="srfm"/>
 		</properties>
-	</rule> -->
+	</rule>
  	 <rule ref="WordPress-Core">
 	    <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
     </rule>

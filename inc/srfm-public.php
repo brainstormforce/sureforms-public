@@ -157,7 +157,7 @@ class SRFM_Public {
 		if ( is_singular( SRFM_FORMS_POST_TYPE ) ) {
 			$file_name = 'single-form.php';
 			$template  = locate_template( $file_name ) ? locate_template( $file_name ) : SRFM_DIR . '/templates/' . $file_name;
-			$template  = apply_filters( 'sureforms_form_template', $template );
+			$template  = apply_filters( 'srfm_form_template', $template );
 		}
 		return $template;
 	}

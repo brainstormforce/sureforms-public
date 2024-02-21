@@ -401,7 +401,7 @@ class SRFM_Post_Types {
 	public function register_post_metas() {
 
 		$metas = apply_filters(
-			'sureforms_register_post_meta',
+			'srfm_register_post_meta',
 			[
 				// General tab metas.
 				'_srfm_show_labels'               => 'boolean',

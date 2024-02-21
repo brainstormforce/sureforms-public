@@ -229,7 +229,7 @@ class SRFM_Generate_Form_Markup {
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
 					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-						do_action( 'sureforms_page_break_header', $id );
+						do_action( 'srfm_page_break_header', $id );
 					}
 				}
 				?>
@@ -242,7 +242,7 @@ class SRFM_Generate_Form_Markup {
 				<?php
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
-					do_action( 'sureforms_page_break_pagination', $post, $id );
+					do_action( 'srfm_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
 					echo $content;
@@ -252,7 +252,7 @@ class SRFM_Generate_Form_Markup {
 
 				<?php
 				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
-					do_action( 'sureforms_page_break_btn', $id );
+					do_action( 'srfm_page_break_btn', $id );
 				}
 				?>
 				<?php if ( 0 !== $block_count ) : ?>

@@ -10,7 +10,6 @@
 
 namespace SRFM\Inc\Blocks;
 
-
 /**
  * Block base class.
  */
@@ -42,7 +41,7 @@ abstract class SRFM_Base {
 		register_block_type_from_metadata(
 			$this->get_dir(),
 			apply_filters(
-				'sureforms_block_registration_args',
+				'srfm_block_registration_args',
 				[ 'render_callback' => [ $this, 'pre_render' ] ],
 			),
 		);
@@ -129,6 +128,6 @@ abstract class SRFM_Base {
 	 */
 	public function render( $attributes, $content ) {
 		return '';
-	
+
 	}
 }

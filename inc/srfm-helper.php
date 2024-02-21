@@ -108,8 +108,8 @@ class SRFM_Helper {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
 		$markup         = '';
-		$show_labels    = get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
-		$show_asterisks = get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
+		$show_labels    = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
+		$show_asterisks = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
 
 		switch ( $type ) {
 			case 'label':

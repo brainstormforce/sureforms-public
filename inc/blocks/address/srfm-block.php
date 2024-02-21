@@ -24,7 +24,6 @@ class SRFM_Block extends SRFM_Base {
 	 *
 	 * @return string|boolean
 	 */
-	
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';

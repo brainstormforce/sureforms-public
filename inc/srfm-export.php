@@ -96,7 +96,7 @@ class SRFM_Export {
 					}
 					// Update post meta.
 					foreach ( $post_meta as $meta_key => $meta_value ) {
-						update_post_meta( $post_id, $meta_key, $meta_value[0] );
+						add_post_meta( $post_id, $meta_key, $meta_value[0] );
 					}
 				} else {
 					http_response_code( 400 );

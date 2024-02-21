@@ -283,13 +283,13 @@ class SRFM_Submit {
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 		// TODO: We need to change it to array and serialize it.
 		$results = [
-			'srfm_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
-			'srfm_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
-			'srfm_v2_invisible_site'      => $sureforms_v2_invisible_site,
-			'srfm_v2_invisible_secret'    => $sureforms_v2_invisible_secret,
-			'srfm_v3_secret'              => $sureforms_v3_secret,
-			'srfm_v3_site'                => $sureforms_v3_site,
-			'srfm_honeypot'                         => $honeypot,
+			'srfm_v2_checkbox_site'            => $sureforms_v2_checkbox_site,
+			'srfm_v2_checkbox_secret'          => $sureforms_v2_checkbox_secret,
+			'srfm_v2_invisible_site'           => $sureforms_v2_invisible_site,
+			'srfm_v2_invisible_secret'         => $sureforms_v2_invisible_secret,
+			'srfm_v3_secret'                   => $sureforms_v3_secret,
+			'srfm_v3_site'                     => $sureforms_v3_site,
+			'srfm_honeypot'                    => $honeypot,
 			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
 		];
 

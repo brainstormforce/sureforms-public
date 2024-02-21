@@ -247,7 +247,7 @@ class SRFM_Smart_Tags {
 			$ip = 'UNKNOWN';
 		}
 
-		return apply_filters( 'sureforms_get_the_ip', $ip );
+		return apply_filters( 'srfm_get_the_ip', $ip );
 	}
 
 
