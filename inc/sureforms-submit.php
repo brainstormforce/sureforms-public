@@ -490,6 +490,7 @@ class Sureforms_Submit {
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $post_ids as $post_id ) {
+				$post_id     = Sureforms_Helper::get_integer_value( $post_id );
 				$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];

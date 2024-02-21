@@ -10,7 +10,7 @@ use SureForms\Inc\Generate_Form_Markup;
 
 $form_preview = '';
 
-$form_preview_attr = isset( $_GET['form_preview'] ) ? $_GET['form_preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$form_preview_attr = isset( $_GET['form_preview'] ) ? sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 if ( $form_preview_attr ) {
 	$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
@@ -122,7 +122,7 @@ if ( $form_preview_attr ) {
 					?>
 					<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 						<?php
-						$page_url  = $_SERVER['REQUEST_URI'];
+						$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 						$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );
 						$segments  = explode( '/', $page_path );
 						$form_path = isset( $segments[1] ) ? $segments[1] : '';

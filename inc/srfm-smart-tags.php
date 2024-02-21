@@ -401,7 +401,7 @@ class SRFM_Smart_Tags {
 				$var = Sureforms_Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? sanitize_text_field( $parameters[ $param ] ) : '';
+			return isset( $parameters[ $param ] ) ? sanitize_text_field( Sureforms_Helper::get_string_value( $parameters[ $param ] ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
