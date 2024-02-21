@@ -848,7 +848,6 @@ class Post_Types {
 				<div class="srfm-import-wrap">
 					<p class="srfm-import-help"><?php echo esc_html__( 'Select the SureForms Forms export file(.json) you would like to import.', 'sureforms' ); ?></p>
 					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
-						<?php wp_nonce_field( 'srfm_import_nonce', '_wpnonce' ); ?>
 						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
 						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>
 					</form>

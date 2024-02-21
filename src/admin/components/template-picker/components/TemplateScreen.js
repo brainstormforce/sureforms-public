@@ -17,6 +17,10 @@ const TemplateScreen = () => {
 	const getPatterns = async () => {
 		const newPatterns = await apiFetch( {
 			path: '/sureforms/v1/form-patterns',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': sureforms_admin.template_picker_nonce,
+			},
 		} );
 
 		// Generate and store colors based on the template title

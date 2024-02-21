@@ -117,6 +117,7 @@ const Component = ( { path } ) => {
 				body: JSON.stringify( formData ),
 				headers: {
 					'content-type': 'application/json',
+					'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 				},
 			} );
 			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
@@ -140,6 +141,7 @@ const Component = ( { path } ) => {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 					},
 				} );
 
@@ -389,7 +391,8 @@ const Component = ( { path } ) => {
 										) }
 										<a
 											target="_blank"
-											href="https://www.google.com/recaptcha/admin/create" rel="noreferrer"
+											href="https://www.google.com/recaptcha/admin/create"
+											rel="noreferrer"
 										>
 											here
 										</a>

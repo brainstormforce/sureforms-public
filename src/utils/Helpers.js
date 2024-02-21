@@ -21,9 +21,9 @@ export function getImageSize( sizes ) {
 export function getIdFromString( label ) {
 	return label
 		? label
-			.toLowerCase()
-			.replace( /[^a-zA-Z ]/g, '' )
-			.replace( /\s+/g, '-' )
+				.toLowerCase()
+				.replace( /[^a-zA-Z ]/g, '' )
+				.replace( /\s+/g, '-' )
 		: '';
 }
 
@@ -63,6 +63,7 @@ export const handleAddNewPost = async ( formData, templateName ) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'text/html',
+				'X-WP-Nonce': sureforms_admin.template_picker_nonce,
 			},
 			data: { form_data: formData, template_name: templateName },
 		} );

@@ -70,10 +70,24 @@ class Forms_Data {
 	/**
 	 * Handle Form status
 	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * 
 	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */
-	public function load_sureforms_forms() {
+	public function load_sureforms_forms( $request ) {
+
+		$nonce = Sureforms_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$args = [
 			'post_type'      => 'sureforms_form',
 			'post_status'    => 'publish',

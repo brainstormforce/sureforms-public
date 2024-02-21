@@ -67,6 +67,7 @@ function handleFileChange( event ) {
 	};
 	reader.readAsText( file );
 }
+
 const handleImportForm = () => {
 	if ( ! data ) {
 		return;
@@ -79,6 +80,7 @@ const handleImportForm = () => {
 		body: JSON.stringify( data ),
 		headers: {
 			'Content-Type': 'application/json',
+			'X-WP-Nonce': sureforms_export.import_form_nonce,
 		},
 	} )
 		.then( ( response ) => {
