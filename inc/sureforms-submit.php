@@ -298,15 +298,14 @@ class Sureforms_Submit {
 	/**
 	 * Send Email and Create Entry.
 	 *
-	 * @param array $form_data Request object or array containing form data.
+	 * @param array<string> $form_data Request object or array containing form data.
 	 * @since 0.0.1
-	 * @return array Array containing the response data.
-	 * @phpstan-ignore-next-line
+	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
 
 		$id           = wp_kses_post( $form_data['form-id'] );
-		$form_markup  = get_the_content( null, false, $form_data['form-id'] );
+		$form_markup  = get_the_content( null, false, Sureforms_Helper::get_integer_value( $form_data['form-id'] ) );
 		$sender_email = '';
 		$pattern      = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );

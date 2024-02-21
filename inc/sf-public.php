@@ -133,10 +133,9 @@ class SF_Public {
 	/**
 	 * Render function.
 	 *
-	 * @param string $block_content Entire Block Content.
-	 * @param array  $block Block Properties As An Array.
+	 * @param string        $block_content Entire Block Content.
+	 * @param array<string> $block Block Properties As An Array.
 	 * @return string
-	 * @phpstan-ignore-next-line
 	 */
 	public function generate_render_script( $block_content, $block ) {
 
