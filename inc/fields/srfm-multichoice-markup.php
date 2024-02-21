@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SRFM_\Inc\Fields;
+namespace SRFM\Inc\Fields;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;

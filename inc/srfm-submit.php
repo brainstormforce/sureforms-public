@@ -384,7 +384,7 @@ class SRFM_Submit {
 							$subject        = $item['subject'];
 							$subject        = $smart_tags->process_smart_tags( $subject );
 							$email_body     = $item['email_body'];
-							$email_template = new Email_Template();
+							$email_template = new SRFM_Email_Template();
 							$message        = $email_template->render( $meta_data, $email_body );
 							$headers        = "From: $to\r\n" .
 							"Reply-To: $to\r\n" .
@@ -463,7 +463,7 @@ class SRFM_Submit {
 		$taxonomy = 'sureforms_tax';
 
 		$args  = [
-			'post_type' => SUREFORMS_ENTRIES_POST_TYPE,
+			'post_type' => SRFM_ENTRIES_POST_TYPE,
 			'tax_query'  // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
 			=> [
 				[
@@ -490,7 +490,7 @@ class SRFM_Submit {
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $post_ids as $post_id ) {
-				$post_id     = Sureforms_Helper::get_integer_value( $post_id );
+				$post_id     = SRFM_Helper::get_integer_value( $post_id );
 				$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];

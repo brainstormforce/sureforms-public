@@ -49,7 +49,7 @@ class SRFM_Public {
 			$file_prefix .= '-rtl';
 		}
 
-		$is_set_v2_site_key = get_option( 'sureforms_v2_invisible_site' );
+		$is_set_v2_site_key = get_option( 'srfm_v2_invisible_site' );
 
 		// Styles based on meta style.
 		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );

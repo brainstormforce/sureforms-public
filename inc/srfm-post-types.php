@@ -664,7 +664,7 @@ class SRFM_Post_Types {
 		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id );
+			$content = SRFM_Generate_Form_Markup::get_form_markup( $id );
 			return $content;
 		}
 

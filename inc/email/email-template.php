@@ -5,7 +5,7 @@
  * @package SureForms.
  */
 
-namespace SRFM\Inc\SRFM_Email;
+namespace SRFM\Inc\Email;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;

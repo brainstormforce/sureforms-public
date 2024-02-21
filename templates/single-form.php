@@ -55,9 +55,9 @@ if ( $srfm_form_preview_attr ) {
 
 
 		if ( 'justify' === $srfm_button_alignment ) {
-			$full = true;
+			$srfm_full = true;
 		} else {
-			$full = false;
+			$srfm_full = false;
 		}
 
 		$srfm_recaptcha_version       = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
@@ -122,10 +122,10 @@ if ( $srfm_form_preview_attr ) {
 					?>
 					<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 						<?php
-						$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-						$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );
-						$segments  = explode( '/', $page_path );
-						$form_path = isset( $segments[1] ) ? $segments[1] : '';
+						$srfm_page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+						$srfm_page_path = strval( wp_parse_url( $srfm_page_url, PHP_URL_PATH ) );
+						$srfm_segments  = explode( '/', $srfm_page_path );
+						$srfm_form_path = isset( $srfm_segments[1] ) ? $srfm_segments[1] : '';
 						wp_footer();
 						?>
 		</div>
