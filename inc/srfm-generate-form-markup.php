@@ -60,7 +60,12 @@ class SRFM_Generate_Form_Markup {
 	 * @since 0.0.1
 	 */
 	public static function get_form_markup( $id, $hide_title_current_page = false, $sf_classname = '', $post_type = 'post' ) {
-		$id = isset( $_GET['id'] ) && wp_verify_nonce( $_GET['srfm_form_markup_nonce'], 'srfm_form_markup' ) ? SRFM_Helper::get_string_value( $_GET['id'] ) : SRFM_Helper::get_integer_value( $id );
+		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
+			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
+			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? SRFM_Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
+		} else {
+			$id = SRFM_Helper::get_integer_value( $id );
+		}
 
 		$post = get_post( SRFM_Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {
@@ -309,7 +314,7 @@ class SRFM_Generate_Form_Markup {
 				</article>
 			</div>
 			<?php
-			$page_url  = $_SERVER['REQUEST_URI'];
+			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = SRFM_Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
 			$segments  = explode( '/', $path );
 			$form_path = isset( $segments[1] ) ? $segments[1] : '';

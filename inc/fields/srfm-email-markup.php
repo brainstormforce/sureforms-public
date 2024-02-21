@@ -26,7 +26,7 @@ class SRFM_Email_Markup extends SRFM_Base {
 	 * @param int|string   $form_id form id.
 	 * @return string|boolean
 	 */
-	public function default( $attributes, $form_id ) {
+	public function markup( $attributes, $form_id ) {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -65,7 +65,7 @@ class SRFM_Email_Markup extends SRFM_Base {
 						<?php echo SRFM_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					</div>
 					<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-					<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg ) ); ?>
+					<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
 				</div>
 				<?php if ( true === $is_confirm_email ) { ?>
 					<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">

@@ -96,15 +96,14 @@ class SRFM_Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function register_block_categories( $categories ) {
-		return [
-			...[
-				[
-					'slug'  => 'sureforms',
-					'title' => esc_html__( 'SureForms', 'sureforms' ),
-				],
+		$custom_categories = [
+			[
+				'slug'  => 'sureforms',
+				'title' => esc_html__( 'SureForms', 'sureforms' ),
 			],
-			...$categories,
 		];
+
+		return array_merge( $custom_categories, $categories );
 	}
 
 	/**
@@ -227,7 +226,7 @@ class SRFM_Gutenberg_Hooks {
 					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
 					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
-			),
+			)
 		);
 
 		wp_localize_script(

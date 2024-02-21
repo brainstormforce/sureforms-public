@@ -42,8 +42,8 @@ abstract class SRFM_Base {
 			$this->get_dir(),
 			apply_filters(
 				'srfm_block_registration_args',
-				[ 'render_callback' => [ $this, 'pre_render' ] ],
-			),
+				[ 'render_callback' => [ $this, 'pre_render' ] ]
+			)
 		);
 	}
 

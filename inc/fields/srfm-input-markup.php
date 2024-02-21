@@ -27,7 +27,7 @@ class SRFM_Input_Markup extends SRFM_Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes, $form_id ) {
+	public function markup( $attributes, $form_id ) {
 		$block_id        = isset( $attributes['block_id'] ) ? SRFM_Helper::get_string_value( $attributes['block_id'] ) : '';
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
@@ -64,7 +64,7 @@ class SRFM_Input_Markup extends SRFM_Base {
 					<?php echo SRFM_Helper::fetch_svg( 'error', 'srfm-error-icon' );  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
 				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg ) ); ?>
+				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

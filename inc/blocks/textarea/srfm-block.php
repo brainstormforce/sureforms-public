@@ -29,7 +29,7 @@ class SRFM_Block extends SRFM_Base {
 			$markup_class = new SRFM_Textarea_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->default( $attributes, $form_id );
+			echo $markup_class->markup( $attributes, $form_id );
 		}
 		return ob_get_clean();
 	}

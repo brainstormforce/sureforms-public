@@ -28,7 +28,7 @@ class SRFM_Checkbox_Markup extends SRFM_Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes, $form_id ) {
+	public function markup( $attributes, $form_id ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';

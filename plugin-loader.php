@@ -57,7 +57,7 @@ class SRFM_Plugin_Loader {
 			 *
 			 * @since 0.0.1
 			 */
-			do_action( 'sureforms_core_loaded' );
+			do_action( 'srfm_core_loaded' );
 		}
 		return self::$instance;
 	}
@@ -147,7 +147,7 @@ class SRFM_Plugin_Loader {
 	 */
 	public function activation_redirect() {
 
-		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
+		$do_redirect = apply_filters( 'srfm_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
 		if ( $do_redirect ) {
 
@@ -198,7 +198,7 @@ class SRFM_Plugin_Loader {
 		 *
 		 * @param string $lang_dir The languages directory path.
 		 */
-		$lang_dir = apply_filters( 'sureforms_languages_directory', $lang_dir );
+		$lang_dir = apply_filters( 'srfm_languages_directory', $lang_dir );
 
 		// Traditional WordPress plugin locale filter.
 		global $wp_version;

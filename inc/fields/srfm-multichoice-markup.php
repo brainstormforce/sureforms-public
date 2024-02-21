@@ -27,7 +27,7 @@ class SRFM_Multichoice_Markup extends SRFM_Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes, $form_id ) {
+	public function markup( $attributes, $form_id ) {
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : [];

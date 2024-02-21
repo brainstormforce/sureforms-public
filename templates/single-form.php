@@ -8,12 +8,12 @@
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 
 
-$form_preview = '';
+$srfm_form_preview = '';
 
-$form_preview_attr = isset( $_GET['form_preview'] ) ? $_GET['form_preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$srfm_form_preview_attr = isset( $_GET['form_preview'] ) ? sanitize_text_field( wp_unslash( $_GET['form_preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-if ( $form_preview_attr ) {
-	$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
+if ( $srfm_form_preview_attr ) {
+	$srfm_form_preview = filter_var( $srfm_form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 }
 
 ?>
@@ -26,51 +26,51 @@ if ( $form_preview_attr ) {
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$custom_post_id                   = get_the_ID();
-		$sureforms_color1_val             = get_post_meta( intval( $custom_post_id ), '_srfm_color1', true );
-		$sureforms_bg_val                 = get_post_meta( intval( $custom_post_id ), '_srfm_bg_image', true );
-		$sureforms_fontsize_val           = get_post_meta( intval( $custom_post_id ), '_srfm_fontsize', true );
-		$sureforms_submit_type_val        = get_post_meta( intval( $custom_post_id ), '_srfm_submit_type', true );
-		$sureforms_thankyou_message_title = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message_title', true );
-		$sureforms_thankyou_message_val   = get_post_meta( intval( $custom_post_id ), '_srfm_thankyou_message', true );
-		$sureforms_submit_url_val         = get_post_meta( intval( $custom_post_id ), '_srfm_submit_url', true );
-		$form_container_width             = get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
-		$submit_button_text               = get_post_meta( intval( $custom_post_id ), '_srfm_submit_button_text', true );
-		$show_title_on_single_form_page   = get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$srfm_custom_post_id                 = get_the_ID();
+		$srfm_color1_val                     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
+		$srfm_bg_val                         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
+		$srfm_fontsize_val                   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
+		$srfm_submit_type_val                = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_type', true );
+		$srfm_thankyou_message_title         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message_title', true );
+		$srfm_thankyou_message_val           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message', true );
+		$srfm_submit_url_val                 = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_url', true );
+		$srfm_form_container_width           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
+		$srfm_submit_button_text             = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_button_text', true );
+		$srfm_show_title_on_single_form_page = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
 
-		$color_primary         = $sureforms_color1_val ? strval( $sureforms_color1_val ) : '#0284c7';
-		$background_image_url  = $sureforms_bg_val ? rawurldecode( strval( $sureforms_bg_val ) ) : '';
-		$form_font_size        = $sureforms_fontsize_val ? $sureforms_fontsize_val : '';
-		$success_submit_type   = $sureforms_submit_type_val ? strval( $sureforms_submit_type_val ) : '';
-		$success_message_title = $sureforms_thankyou_message_title ? strval( $sureforms_thankyou_message_title ) : '';
-		$success_message       = $sureforms_thankyou_message_val ? strval( $sureforms_thankyou_message_val ) : '';
-		$success_url           = $sureforms_submit_url_val ? strval( $sureforms_submit_url_val ) : '';
+		$srfm_color_primary         = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
+		$srfm_background_image_url  = $srfm_bg_val ? rawurldecode( strval( $srfm_bg_val ) ) : '';
+		$srfm_form_font_size        = $srfm_fontsize_val ? $srfm_fontsize_val : '';
+		$srfm_success_submit_type   = $srfm_submit_type_val ? strval( $srfm_submit_type_val ) : '';
+		$srfm_success_message_title = $srfm_thankyou_message_title ? strval( $srfm_thankyou_message_title ) : '';
+		$srfm_success_message       = $srfm_thankyou_message_val ? strval( $srfm_thankyou_message_val ) : '';
+		$srfm_success_url           = $srfm_submit_url_val ? strval( $srfm_submit_url_val ) : '';
 
 		// Submit button.
-		$button_text      = $submit_button_text ? strval( $submit_button_text ) : '';
-		$button_alignment = get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
+		$srfm_button_text      = $srfm_submit_button_text ? strval( $srfm_submit_button_text ) : '';
+		$srfm_button_alignment = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_alignment', true ) ) : '';
 
-	if ( ! $form_preview ) {
+	if ( ! $srfm_form_preview ) {
 
 
 
-		if ( 'justify' === $button_alignment ) {
+		if ( 'justify' === $srfm_button_alignment ) {
 			$full = true;
 		} else {
 			$full = false;
 		}
 
-		$recaptcha_version       = get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
-		$google_captcha_site_key = '';
-		switch ( $recaptcha_version ) {
+		$srfm_recaptcha_version       = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
+		$srfm_google_captcha_site_key = '';
+		switch ( $srfm_recaptcha_version ) {
 			case 'v2-checkbox':
-				$google_captcha_site_key = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? strval( get_option( 'srfm_v2_checkbox_site' ) ) : '';
+				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? strval( get_option( 'srfm_v2_checkbox_site' ) ) : '';
 				break;
 			case 'v2-invisible':
-				$google_captcha_site_key = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? strval( get_option( 'srfm_v2_invisible_site' ) ) : '';
+				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? strval( get_option( 'srfm_v2_invisible_site' ) ) : '';
 				break;
 			case 'v3-reCAPTCHA':
-				$google_captcha_site_key = ! empty( get_option( 'srfm_v3_site' ) ) ? strval( get_option( 'srfm_v3_site' ) ) : '';
+				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v3_site' ) ) ? strval( get_option( 'srfm_v3_site' ) ) : '';
 				break;
 			default:
 				break;
@@ -80,41 +80,41 @@ if ( $form_preview_attr ) {
 			#srfm-single-page-container {
 				--srfm-form-container-width: 
 					<?php
-					echo esc_attr( $form_container_width . 'px' );
+					echo esc_attr( $srfm_form_container_width . 'px' );
 					?>
 			}
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
-			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $color_primary ); ?>">
-				<?php if ( '1' !== $show_title_on_single_form_page ) : ?>
+			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $srfm_color_primary ); ?>">
+				<?php if ( '1' !== $srfm_show_title_on_single_form_page ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>
 			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
-					echo SRFM_Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false,'', 'sureforms_form' );
+					echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
-				<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
+				<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
 					<i class="fa-regular fa-circle-check"></i>
 					<article class="srfm-success-box-header">
-						<?php echo esc_html( $success_message_title ); ?>
+						<?php echo esc_html( $srfm_success_message_title ); ?>
 					</article>
 					<article class="srfm-success-box-subtxt srfm-text-gray-900">
-						<?php echo esc_html( $success_message ); ?>
+						<?php echo esc_html( $srfm_success_message ); ?>
 					</article>
 				</div>
 					<?php
-					if ( isset( $success_message ) && isset( $success_message_title ) ) {
+					if ( isset( $srfm_success_message ) && isset( $srfm_success_message_title ) ) {
 						?>
-					<div id="srfm-success-message-page-<?php echo esc_attr( $custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
+					<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
 						<i class="fa-regular fa-circle-check"></i>
 						<article class="srfm-success-box-header">
-							<?php echo esc_html( $success_message_title ); ?>
+							<?php echo esc_html( $srfm_success_message_title ); ?>
 						</article>
 						<article class="srfm-success-box-subtxt srfm-text-gray-900">
-							<?php echo esc_html( $success_message ); ?>
+							<?php echo esc_html( $srfm_success_message ); ?>
 						</article>
 					</div>
 						<?php
@@ -122,7 +122,7 @@ if ( $form_preview_attr ) {
 					?>
 					<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 						<?php
-						$page_url  = $_SERVER['REQUEST_URI'];
+						$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 						$page_path = strval( wp_parse_url( $page_url, PHP_URL_PATH ) );
 						$segments  = explode( '/', $page_path );
 						$form_path = isset( $segments[1] ) ? $segments[1] : '';
@@ -150,7 +150,7 @@ if ( $form_preview_attr ) {
 			show_admin_bar( false );
 
 			// phpcs:ignore
-			echo SRFM_Generate_Form_Markup::get_form_markup( absint( $custom_post_id ), false, 'sureforms_form' );
+			echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
 			// phpcs:ignoreEnd
 
 			wp_footer();

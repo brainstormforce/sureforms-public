@@ -95,19 +95,20 @@ class SRFM_Admin {
 	 * @since 0.0.1
 	 */
 	public function settings_page() {
+		$callback = [ $this, 'settings_page_callback' ];
 		add_submenu_page(
 			'sureforms_menu',
 			__( 'Settings', 'sureforms' ),
 			__( 'Settings', 'sureforms' ),
 			'edit_others_posts',
 			'sureforms_form_settings',
-			[ $this, 'settings_page_callback' ],
+			$callback
 		);
 
 		// Get the current submenu page.
-		$submenu_page = isset( $_GET['page'] ) ? $_GET['page'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$submenu_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
 
-		if ( ! isset( $_GET['tab'] ) && 'sureforms_form_settings' === $submenu_page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET['tab'] ) && 'sureforms_form_settings' === $submenu_page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
 			wp_safe_redirect( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) );
 			exit;
 		}
