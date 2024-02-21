@@ -460,14 +460,25 @@ class Sureforms_Submit {
 
 		$_POST = array_map( 'wp_unslash', $_POST );
 
-		$post_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT post_id
-				FROM {$wpdb->postmeta}
-				WHERE meta_value = %s",
-				$meta_value
-			)
-		);
+		$taxonomy = 'sureforms_tax';
+
+		$args  = [
+			'post_type' => SUREFORMS_ENTRIES_POST_TYPE,
+			'tax_query'  // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+			=> [
+				[
+					'taxonomy' => $taxonomy,
+					'field'    => 'slug',
+					'terms'    => $id,
+				],
+			],
+			'fields'    => 'ids',
+		];
+		$query = new \WP_Query( $args );
+
+		$post_ids = $query->posts;
+
+		wp_reset_postdata();
 
 		$all_form_entries = [];
 		$keys             = array_keys( $_POST );
@@ -475,7 +486,7 @@ class Sureforms_Submit {
 
 		for ( $i = 3; $i < $length; $i++ ) {
 			$key   = $keys[ $i ];
-			$value = $_POST[ $key ];
+			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $post_ids as $post_id ) {
@@ -512,7 +523,7 @@ class Sureforms_Submit {
 		}
 
 		if ( ! empty( $_POST['defaultAllowedQuickSidebarBlocks'] ) ) {
-			$srfm_default_allowed_quick_sidebar_blocks = json_decode( stripslashes( $_POST['defaultAllowedQuickSidebarBlocks'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$srfm_default_allowed_quick_sidebar_blocks = json_decode( sanitize_text_field( wp_unslash( $_POST['defaultAllowedQuickSidebarBlocks'] ) ), true );
 			Sureforms_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
 			wp_send_json_success();
 		}

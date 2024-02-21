@@ -719,7 +719,8 @@ class Post_Types {
 
 			$args = [
 				'post_type' => SUREFORMS_ENTRIES_POST_TYPE,
-				'tax_query' => [
+				'tax_query' // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+				=> [
 					[
 						'taxonomy' => $taxonomy,
 						'field'    => 'slug',
@@ -817,11 +818,9 @@ class Post_Types {
 			);
 
 			if ( ! empty( $forms ) ) {
-				// Nonce Verification is not needed in this case.
-				$selected = isset( $_GET['sureforms_tax'] ) ? $_GET['sureforms_tax'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
+				$selected = isset( $_GET['sureforms_tax'] ) ? sanitize_key( wp_unslash( $_GET['sureforms_tax'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce Verification is not needed in this case. We are not getting the nonce value.
 				echo '<select name="sureforms_tax" id="srfm-tax-filter">';
-				echo '<option value="">All Form Entries</option>';
+				echo '<option value="">' . esc_html__( ' All Form Entries', 'sureforms' ) . '</option>';
 
 				foreach ( $forms as $form ) {
 					$selected_attr = selected( $selected, $form->ID, false );

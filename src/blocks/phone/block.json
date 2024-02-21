@@ -46,7 +46,7 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value need to be unique."
+			"default": "Value needs to be unique."
 		},
 		"errorMsg": {
 			"type": "string",

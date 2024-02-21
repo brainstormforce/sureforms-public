@@ -26,7 +26,7 @@ class Base {
 	 *
 	 * @return string|boolean
 	 */
-	public function default( $attributes, $form_id ) {
+	public function markup( $attributes, $form_id ) {
 		return '';
 	}
 }
