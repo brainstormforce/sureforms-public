@@ -15,3 +15,6 @@ A simple yet powerful way to add forms to your website.
 SureForms is a powerful forms solution for your website.
 
 ## Changelog ##
+
+= 0.0.1 =
+* Initial release.
