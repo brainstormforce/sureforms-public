@@ -102,9 +102,10 @@ class Block_Patterns extends WP_REST_Controller {
 		$filtered = array_filter(
 			$patterns,
 			static function( $pattern ) {
-				return in_array( 'sureforms_form', $pattern['categories'] ?? [], true );
+				return in_array( 'sureforms_form', isset( $pattern['categories'] ) ? $pattern['categories'] : [], true );
 			}
 		);
+
 		foreach ( $filtered as $pattern ) {
 			$prepared_pattern = $this->prepare_item_for_response( $pattern, $request );
 			if ( ! is_wp_error( $prepared_pattern ) ) {
