@@ -293,7 +293,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 			$js_uri = SRFM_URL . 'modules/gutenberg/assets/js/';
 
-			wp_enqueue_script( SRFM_SLUG . '-gutenberg', $js_uri . 'gutenberg.js', [], SRFM_VER );
+			wp_enqueue_script( SRFM_SLUG . '-gutenberg', $js_uri . 'gutenberg.js', [], SRFM_VER, true );
 
 			$srfm_inline_js = self::$script;
 			if ( $srfm_inline_js ) {
