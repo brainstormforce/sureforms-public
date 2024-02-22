@@ -9,7 +9,7 @@
 namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Services\Browser\Browser;
+use SureForms\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

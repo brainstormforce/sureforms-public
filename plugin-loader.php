@@ -23,6 +23,7 @@ use SureForms\Inc\SRFM_Export;
 use SureForms\Inc\SRFM_Smart_Tags;
 use SureForms\Inc\Generate_Form_Markup;
 use SureForms\Inc\Create_New_Form;
+use SureForms\Inc\Email_Summaries;
 
 /**
  * Plugin_Loader
@@ -99,6 +100,8 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		// Load the action scheduler before plugin loads.
+		require_once SUREFORMS_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
 
@@ -120,6 +123,7 @@ class Plugin_Loader {
 		SRFM_Smart_Tags::get_instance();
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
+		Email_Summaries::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
@@ -135,6 +139,8 @@ class Plugin_Loader {
 			SUREFORMS_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
+				$email_summaries = new Email_Summaries();
+				$email_summaries->unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}

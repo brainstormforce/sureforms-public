@@ -6,6 +6,7 @@ import { useState, useEffect, Fragment } from '@wordpress/element';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiFetch from '@wordpress/api-fetch';
+import EmailSummary from './tabs/EmailSummary.js';
 
 const Component = ( { path } ) => {
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
@@ -506,6 +507,10 @@ const Component = ( { path } ) => {
 				</div>
 			</div>
 		);
+	}
+
+	if ( 'email-summary' === path ) {
+		return <EmailSummary />;
 	}
 	return null;
 };

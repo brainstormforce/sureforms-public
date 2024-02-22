@@ -26,6 +26,14 @@ class Activator {
 	 */
 	public static function activate() {
 
+		$email_summary_options = get_option( 'srfm_email_summary_options' );
+		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['enable_email_summary'] : '';
+
+		if ( $enable_email_summary ) {
+			$email_summaries = new Email_Summaries();
+			$email_summaries->schedule_weekly_entries_email();
+		}
+
 		/**
 		 * Reset rewrite rules to avoid go to permalinks page
 		 * through deleting the database options to force WP to do it

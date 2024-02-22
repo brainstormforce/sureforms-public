@@ -8,8 +8,6 @@
 
 namespace SureForms\Inc;
 
-use WP_REST_Response;
-use WP_Screen;
 use WP_Query;
 use WP_Admin_Bar;
 use SureForms\Inc\Traits\Get_Instance;
