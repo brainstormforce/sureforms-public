@@ -21,12 +21,13 @@ const Component = ( { path } ) => {
 
 	const [ formData, setFormData ] = useState( {} );
 	const [ honeyPot, setHoneyPot ] = useState( false );
+	const [ isIpLog, setIsIpLog ] = useState( false );
 
 	const onSelect = () => {};
 
 	const handleChange = ( e ) => {
 		const { name, value, type, checked } = e.target;
-		const newValue = type === 'checkbox' ? checked : value;
+		const newValue = value;
 
 		if ( name === 'sureforms_v2_checkbox_secret' ) {
 			setSureformsV2CheckboxSecret( newValue );
@@ -37,6 +38,7 @@ const Component = ( { path } ) => {
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v3_secret: sureformsV3Secret,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'sureforms_v2_checkbox_site' ) {
@@ -48,6 +50,7 @@ const Component = ( { path } ) => {
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v3_secret: sureformsV3Secret,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'sureforms_v2_invisible_secret' ) {
@@ -59,6 +62,7 @@ const Component = ( { path } ) => {
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v3_secret: sureformsV3Secret,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'sureforms_v2_invisible_site' ) {
@@ -70,6 +74,7 @@ const Component = ( { path } ) => {
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v3_secret: sureformsV3Secret,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'sureforms_v3_secret' ) {
@@ -81,6 +86,7 @@ const Component = ( { path } ) => {
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'sureforms_v3_site' ) {
@@ -92,9 +98,12 @@ const Component = ( { path } ) => {
 				sureforms_v3_secret: sureformsV3Secret,
 				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
 				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'honeypot_toggle' ) {
+			const honeyPotValue = type === 'checkbox' ? checked : value;
+
 			setHoneyPot( ! honeyPot );
 			setFormData( () => ( {
 				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
@@ -103,7 +112,21 @@ const Component = ( { path } ) => {
 				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				sureforms_v3_site: sureformsV3Site,
 				sureforms_v3_secret: sureformsV3Secret,
-				[ name ]: newValue,
+				srfm_ip_log: isIpLog,
+				[ name ]: honeyPotValue,
+			} ) );
+		} else if ( name === 'ip_toggle' ) {
+			const ipValue = type === 'checkbox' ? checked : value;
+			setIsIpLog( ! isIpLog );
+			setFormData( () => ( {
+				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
+				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
+				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
+				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				sureforms_v3_site: sureformsV3Site,
+				sureforms_v3_secret: sureformsV3Secret,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: ipValue,
 			} ) );
 		}
 	};
@@ -167,6 +190,7 @@ const Component = ( { path } ) => {
 						data.sureforms_v3_site && data.sureforms_v3_site
 					);
 					setHoneyPot( data.honeypot && data.honeypot );
+					setIsIpLog( data.srfm_ip_log && data.srfm_ip_log );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching datates:', error );
@@ -389,7 +413,8 @@ const Component = ( { path } ) => {
 										) }
 										<a
 											target="_blank"
-											href="https://www.google.com/recaptcha/admin/create" rel="noreferrer"
+											href="https://www.google.com/recaptcha/admin/create"
+											rel="noreferrer"
 										>
 											here
 										</a>
@@ -427,6 +452,44 @@ const Component = ( { path } ) => {
 													type="checkbox"
 													name="honeypot_toggle"
 													checked={ honeyPot }
+													onChange={ handleChange }
+												/>
+												<span className="slider"></span>
+											</label>
+										</div>
+									</Fragment>
+								</div>
+							</div>
+
+							{ /* Honeypot Spam Protection Settings might be used later*/ }
+							<div className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10">
+								<div className="srfm-max-w-[250px]">
+									<BaseControl
+										help={ __(
+											'Shows the IP address of the user who submitted the form. It shows in the Entry Data',
+											'sureforms'
+										) }
+									>
+										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
+											{ __(
+												'Enable IP Logging',
+												'sureforms'
+											) }
+										</h3>
+									</BaseControl>
+								</div>
+								<div className="srfm-w-[600px] srfm-mt-4">
+									<Fragment>
+										<div className="srfm-mb-4 ">
+											<label
+												htmlFor="srfm-ip-checkbox-input"
+												className="toggle-button"
+											>
+												<input
+													id="srfm-ip-checkbox-input"
+													type="checkbox"
+													name="ip_toggle"
+													checked={ isIpLog }
 													onChange={ handleChange }
 												/>
 												<span className="slider"></span>
