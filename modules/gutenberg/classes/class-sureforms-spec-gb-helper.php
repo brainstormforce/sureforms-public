@@ -246,7 +246,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 			}
 
 			if ( isset( $link ) && ! empty( $link ) ) {
-				echo '<link id="srfm_show_google_fonts" href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet, Generic.Commenting.DocComment.MissingShort
+				wp_enqueue_style( 'srfm-google-fonts', '//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ), [], SRFM_VER, 'all' );
 			}
 		}
 
@@ -291,11 +291,15 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 				return;
 			}
 
-			ob_start();
-			?>
-			<script type="text/javascript" id="srfm-script-frontend"><?php echo self::$script; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
-			<?php
-			ob_end_flush();
+			$js_uri = SRFM_URL . 'modules/gutenberg/assets/js/';
+
+			wp_enqueue_script( SRFM_SLUG . '-gutenberg', $js_uri . 'gutenberg.js', [], SRFM_VER );
+
+			$srfm_inline_js = self::$script;
+			if ( $srfm_inline_js ) {
+				wp_add_inline_script( SRFM_SLUG . '-gutenberg', $srfm_inline_js );
+			}
+
 		}
 
 		/**
@@ -307,11 +311,15 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 				return;
 			}
 
-			ob_start();
-			?>
-			<style id="srfm-style-frontend"><?php echo self::$stylesheet; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
-			<?php
-			ob_end_flush();
+			$css_uri = SRFM_URL . 'modules/gutenberg/assets/css/';
+
+			wp_enqueue_style( SRFM_SLUG . '-gutenberg', $css_uri . 'gutenberg.css', [], SRFM_VER );
+
+			$srfm_inline_css = self::$stylesheet;
+			if ( $srfm_inline_css ) {
+				wp_add_inline_style( SRFM_SLUG . '-gutenberg', $srfm_inline_css );
+			}
+
 		}
 
 		/**
