@@ -16,6 +16,10 @@ use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Post Types Main Class.
  *

@@ -7,6 +7,9 @@
 
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 $srfm_form_preview = '';
 

@@ -24,6 +24,10 @@ use SRFM\Inc\SRFM_Smart_Tags;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Create_New_Form;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Plugin_Loader
  *

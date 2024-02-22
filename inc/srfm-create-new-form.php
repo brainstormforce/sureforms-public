@@ -15,6 +15,10 @@ use WP_Post_Type;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Create New Form.
  *

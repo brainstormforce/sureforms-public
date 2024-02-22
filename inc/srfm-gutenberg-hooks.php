@@ -10,6 +10,11 @@ namespace SRFM\Inc;
 use SRFM_Spec_Gb_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Smart_Tags;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Gutenberg hooks handler class.
  *

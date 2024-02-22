@@ -14,6 +14,10 @@ use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! function_exists( 'wp_handle_upload' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 }

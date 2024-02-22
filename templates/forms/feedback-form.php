@@ -8,6 +8,10 @@
  * @author     Sureforms <https://sureforms.com/>
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 return [
 	'title'            => __( 'Feedback Form / Survey Form', 'sureforms' ),
 	'info'             => __( 'Form for conducting surveys', 'sureforms' ),

@@ -10,6 +10,11 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Public Class
  *

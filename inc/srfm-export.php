@@ -10,6 +10,11 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Load Defaults Class.
  *
