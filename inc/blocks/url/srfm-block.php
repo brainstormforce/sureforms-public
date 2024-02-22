@@ -28,7 +28,6 @@ class SRFM_Block extends SRFM_Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
-		$sureforms_helper_instance = new SRFM_Helper();
 
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';

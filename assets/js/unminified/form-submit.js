@@ -66,6 +66,9 @@ function submitFormData( form ) {
 	const formData = new FormData( form );
 	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
+		headers: {
+			'X-WP-Nonce': sureforms_submit.nonce,
+		},
 		body: formData,
 	} )
 		.then( ( response ) => {

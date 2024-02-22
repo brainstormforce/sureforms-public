@@ -23,6 +23,10 @@ const SelectForm = ( {
 		try {
 			response = await apiFetch( {
 				path: 'sureforms/v1/forms-data',
+				headers: {
+					'content-type': 'application/json',
+					'X-WP-Nonce': sfBlockData.forms_data_nonce,
+				},
 			} );
 			// if in the response object title is '' then set title to '(no title)'
 			response.forEach( ( form ) => {
@@ -44,6 +48,10 @@ const SelectForm = ( {
 					sfBlockData.get_form_markup_url,
 					queryParams
 				),
+				headers: {
+					'content-type': 'application/json',
+					'X-WP-Nonce': sfBlockData.generate_form_markup_nonce,
+				},
 			} );
 			return response;
 		} catch ( error ) {
