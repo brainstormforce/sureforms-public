@@ -16,7 +16,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Block_Patterns_Registry;
-use SureForms\Inc\SRFM_Helper;
+use SRFM\Inc\SRFM_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

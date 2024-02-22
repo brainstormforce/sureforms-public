@@ -323,8 +323,8 @@ class SRFM_Submit {
 		$sureforms_v3_site                = ! empty( get_option( 'srfm_v3_site' ) ) ? get_option( 'srfm_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'srfm_honeypot' ) ) ? get_option( 'srfm_honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
-		
-		$results                          = [
+
+		$results = [
 			'srfm_v2_checkbox_site'            => $sureforms_v2_checkbox_site,
 			'srfm_v2_checkbox_secret'          => $sureforms_v2_checkbox_secret,
 			'srfm_v2_invisible_site'           => $sureforms_v2_invisible_site,
