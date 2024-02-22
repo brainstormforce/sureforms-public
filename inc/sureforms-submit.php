@@ -13,7 +13,7 @@ use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Email\Email_Template;
 use SureForms\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
-use SureForms\Inc\Services\Browser\Browser;
+use SureForms\Inc\Lib\Browser\Browser;
 
 if ( ! function_exists( 'wp_handle_upload' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
