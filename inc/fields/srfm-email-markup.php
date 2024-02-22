@@ -11,6 +11,10 @@ namespace SRFM\Inc\Fields;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * SureForms Email Markup Class.
  *

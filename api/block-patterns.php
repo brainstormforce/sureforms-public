@@ -16,6 +16,11 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Block_Patterns_Registry;
+use SRFM\Inc\SRFM_Helper;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Core class used to access block patterns via the REST API.
@@ -97,6 +102,18 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @since 0.0.1
 	 */
 	public function get_items( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$response = [];
 		$patterns = WP_Block_Patterns_Registry::get_instance()->get_all_registered();
 		$filtered = array_filter(

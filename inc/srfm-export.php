@@ -10,6 +10,11 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Load Defaults Class.
  *
@@ -69,10 +74,24 @@ class SRFM_Export {
 	/**
 	 * Handle Import Form
 	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 *
 	 * @since 0.0.1
 	 * @return void
 	 */
-	public function handle_import_form() {
+	public function handle_import_form( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		// Get the raw POST data.
 		$post_data = file_get_contents( 'php://input' );
 		if ( ! $post_data ) {

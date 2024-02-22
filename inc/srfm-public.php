@@ -10,6 +10,11 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Public Class
  *
@@ -92,6 +97,7 @@ class SRFM_Public {
 			'sureforms_submit',
 			[
 				'site_url' => site_url(),
+				'nonce'    => wp_create_nonce( 'wp_rest' ),
 			]
 		);
 	}

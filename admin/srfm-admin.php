@@ -8,6 +8,10 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 /**
  * Admin handler class.
  *
@@ -311,6 +315,7 @@ class SRFM_Admin {
 					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SRFM_VER,
+					'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 			wp_enqueue_style( 'srfm-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
@@ -350,7 +355,8 @@ class SRFM_Admin {
 				'settings',
 				'sureforms_admin',
 				[
-					'site_url' => get_site_url(),
+					'site_url'              => get_site_url(),
+					'global_settings_nonce' => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 		}
@@ -365,6 +371,7 @@ class SRFM_Admin {
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
 					'site_url'             => get_site_url(),
 					'srfm_import_endpoint' => '/wp-json/sureforms/v1/sureforms_import',
+					'import_form_nonce'    => ( current_user_can( 'edit_posts' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 
@@ -414,6 +421,7 @@ class SRFM_Admin {
 					'admin_url'                    => admin_url( 'admin.php' ),
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
+					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 		}

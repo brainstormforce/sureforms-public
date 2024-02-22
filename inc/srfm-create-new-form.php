@@ -15,6 +15,10 @@ use WP_Post_Type;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Create New Form.
  *
@@ -88,6 +92,17 @@ class SRFM_Create_New_Form {
 	 * @since 0.0.1
 	 */
 	public static function create_form( $data ) {
+
+		$nonce = SRFM_Helper::get_string_value( $data->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
 
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );

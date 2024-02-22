@@ -14,6 +14,10 @@ use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! function_exists( 'wp_handle_upload' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 }
@@ -91,6 +95,18 @@ class SRFM_Submit {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_form_submission( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$form_data = SRFM_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
@@ -238,6 +254,18 @@ class SRFM_Submit {
 	 * @since 0.0.1
 	 */
 	public function handle_settings_form_submission( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$data = SRFM_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
 		if ( empty( $data ) || ! is_array( $data ) ) {
 			return wp_send_json_error( __( 'Data is not found.', 'sureforms' ) );
@@ -269,10 +297,24 @@ class SRFM_Submit {
 	/**
 	 * Get Settings Form Data
 	 *
+	 * @param \WP_REST_Request $request Request object or array containing form data.
+	 *
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function get_settings_form_data() {
+	public function get_settings_form_data( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$sureforms_v2_checkbox_secret     = ! empty( get_option( 'srfm_v2_checkbox_secret' ) ) ? get_option( 'srfm_v2_checkbox_secret' ) : '';
 		$sureforms_v2_checkbox_site       = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? get_option( 'srfm_v2_checkbox_site' ) : '';
 		$sureforms_v2_invisible_secret    = ! empty( get_option( 'srfm_v2_invisible_secret' ) ) ? get_option( 'srfm_v2_invisible_secret' ) : '';
@@ -281,7 +323,8 @@ class SRFM_Submit {
 		$sureforms_v3_site                = ! empty( get_option( 'srfm_v3_site' ) ) ? get_option( 'srfm_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'srfm_honeypot' ) ) ? get_option( 'srfm_honeypot' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
-		$results                          = [
+
+		$results = [
 			'srfm_v2_checkbox_site'            => $sureforms_v2_checkbox_site,
 			'srfm_v2_checkbox_secret'          => $sureforms_v2_checkbox_secret,
 			'srfm_v2_invisible_site'           => $sureforms_v2_invisible_site,

@@ -13,6 +13,10 @@ use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Load Defaults Class.
  *
@@ -70,10 +74,24 @@ class SRFM_Forms_Data {
 	/**
 	 * Handle Form status
 	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */
-	public function load_forms() {
+	public function load_forms( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$args = [
 			'post_type'      => 'sureforms_form',
 			'post_status'    => 'publish',

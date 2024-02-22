@@ -11,6 +11,10 @@ use WP_REST_Response;
 use SRFM\Inc\Blocks\SRFM_Base;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Sureforms_Form Block.
  */

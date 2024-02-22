@@ -11,6 +11,10 @@ use SRFM\Inc\Blocks\SRFM_Base;
 use SRFM\Inc\SRFM_Helper;
 use SRFM\Inc\Fields\SRFM_Phone_Markup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Phone Block.
  */
