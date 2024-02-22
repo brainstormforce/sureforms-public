@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
+if ( ! class_exists( 'SRFM_Spec_Block_JS' ) ) {
 
 	/**
 	 * Class Sureforms_Spec_Block_JS.
 	 */
-	class Sureforms_Spec_Block_JS {
+	class SRFM_Spec_Block_JS {
 
 		/**
 		 * Adds Google fonts for Next Step Button.
@@ -28,7 +28,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
 			$element_text_font_family      = isset( $attr['elementTextFontFamily'] ) ? $attr['elementTextFontFamily'] : '';
 			$element_text_font_weight      = isset( $attr['elementTextFontWeight'] ) ? $attr['elementTextFontWeight'] : '';
 
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $element_text_load_google_font, $element_text_font_family, $element_text_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $element_text_load_google_font, $element_text_font_family, $element_text_font_weight );
 		}
 
 		/**
@@ -51,9 +51,9 @@ if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
 			$highlight_head_font_family      = isset( $attr['highLightFontFamily'] ) ? $attr['highLightFontFamily'] : '';
 			$highlight_head_font_weight      = isset( $attr['highLightFontWeight'] ) ? $attr['highLightFontWeight'] : '';
 
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $head_load_google_font, $head_font_family, $head_font_weight );
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $subhead_load_google_font, $subhead_font_family, $subhead_font_weight );
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $highlight_head_load_google_font, $highlight_head_font_family, $highlight_head_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $head_load_google_font, $head_font_family, $head_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $subhead_load_google_font, $subhead_font_family, $subhead_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $highlight_head_load_google_font, $highlight_head_font_family, $highlight_head_font_weight );
 		}
 
 		/**
@@ -72,8 +72,8 @@ if ( ! class_exists( 'Sureforms_Spec_Block_JS' ) ) {
 			$caption_font_family      = isset( $attr['captionFontFamily'] ) ? $attr['captionFontFamily'] : '';
 			$caption_font_weight      = isset( $attr['captionFontWeight'] ) ? $attr['captionFontWeight'] : '';
 
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $heading_load_google_font, $heading_font_family, $heading_font_weight );
-			Sureforms_Spec_Gb_Helper::blocks_google_font( $caption_load_google_font, $caption_font_family, $caption_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $heading_load_google_font, $heading_font_family, $heading_font_weight );
+			SRFM_Spec_Gb_Helper::blocks_google_font( $caption_load_google_font, $caption_font_family, $caption_font_weight );
 		}
 	}
 }

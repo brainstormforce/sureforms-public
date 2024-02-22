@@ -13,11 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Sureforms_Spec_Init_Blocks.
+ * SRFM_Spec_Init_Blocks.
  *
  * @package Sureforms
  */
-class Sureforms_Spec_Init_Blocks {
+class SRFM_Spec_Init_Blocks {
 
 	/**
 	 * Member Variable
@@ -138,7 +138,7 @@ class Sureforms_Spec_Init_Blocks {
 }
 
 /**
- *  Prepare if class 'Sureforms_Spec_Init_Blocks' exist.
+ *  Prepare if class 'SRFM_Spec_Init_Blocks' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
-Sureforms_Spec_Init_Blocks::get_instance();
+SRFM_Spec_Init_Blocks::get_instance();
