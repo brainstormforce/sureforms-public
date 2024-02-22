@@ -27,82 +27,81 @@ const Component = ( { path } ) => {
 	const handleChange = ( e ) => {
 		const { name, value, type, checked } = e.target;
 		const newValue = type === 'checkbox' ? checked : value;
-
-		if ( name === 'sureforms_v2_checkbox_secret' ) {
+		if ( name === 'srfm_v2_checkbox_secret' ) {
 			setSureformsV2CheckboxSecret( newValue );
 			setFormData( () => ( {
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'sureforms_v2_checkbox_site' ) {
+		} else if ( name === 'srfm_v2_checkbox_site' ) {
 			setSureformsV2CheckboxSite( newValue );
 			setFormData( () => ( {
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'sureforms_v2_invisible_secret' ) {
+		} else if ( name === 'srfm_v2_invisible_secret' ) {
 			setSureformsV2InvisibleSecret( newValue );
 			setFormData( () => ( {
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'sureforms_v2_invisible_site' ) {
+		} else if ( name === 'srfm_v2_invisible_site' ) {
 			setSureformsV2InvisibleSite( newValue );
 			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'sureforms_v3_secret' ) {
+		} else if ( name === 'srfm_v3_secret' ) {
 			setSureformsV3Secret( newValue );
 			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'sureforms_v3_site' ) {
+		} else if ( name === 'srfm_v3_site' ) {
 			setSureformsV3Site( newValue );
 			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_secret: sureformsV3Secret,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_secret: sureformsV3Secret,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_honeypot_toggle: honeyPot,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'honeypot_toggle' ) {
+		} else if ( name === 'srfm_honeypot_toggle' ) {
 			setHoneyPot( ! honeyPot );
 			setFormData( () => ( {
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
 				[ name ]: newValue,
 			} ) );
 		}
@@ -145,28 +144,28 @@ const Component = ( { path } ) => {
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
-						data.sureforms_v2_checkbox_secret &&
-							data.sureforms_v2_checkbox_secret
+						data.srfm_v2_checkbox_secret &&
+							data.srfm_v2_checkbox_secret
 					);
 					setSureformsV2CheckboxSite(
-						data.sureforms_v2_checkbox_site &&
-							data.sureforms_v2_checkbox_site
+						data.srfm_v2_checkbox_site &&
+							data.srfm_v2_checkbox_site
 					);
 					setSureformsV2InvisibleSecret(
-						data.sureforms_v2_invisible_secret &&
-							data.sureforms_v2_invisible_secret
+						data.srfm_v2_invisible_secret &&
+							data.srfm_v2_invisible_secret
 					);
 					setSureformsV2InvisibleSite(
-						data.sureforms_v2_invisible_site &&
-							data.sureforms_v2_invisible_site
+						data.srfm_v2_invisible_site &&
+							data.srfm_v2_invisible_site
 					);
 					setSureformsV3Secret(
-						data.sureforms_v3_secret && data.sureforms_v3_secret
+						data.srfm_v3_secret && data.srfm_v3_secret
 					);
 					setSureformsV3Site(
-						data.sureforms_v3_site && data.sureforms_v3_site
+						data.srfm_v3_site && data.srfm_v3_site
 					);
-					setHoneyPot( data.honeypot && data.honeypot );
+					setHoneyPot( data.srfm_honeypot && data.srfm_honeypot );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching datates:', error );
@@ -248,7 +247,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_site"
+																		name="srfm_v2_checkbox_site"
 																		id="srfm_v2_checkbox_site"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -268,7 +267,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_checkbox_secret"
+																		name="srfm_v2_checkbox_secret"
 																		id="srfm_v2_checkbox_secret"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -293,7 +292,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_site"
+																		name="srfm_v2_invisible_site"
 																		id="srfm_v2_invisible_site"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -313,7 +312,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v2_invisible_secret"
+																		name="srfm_v2_invisible_secret"
 																		id="srfm_v2_invisible_secret"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -338,7 +337,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4 ">
 																	<input
 																		type="text"
-																		name="sureforms_v3_site"
+																		name="srfm_v3_site"
 																		id="srfm_v3_site"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -358,7 +357,7 @@ const Component = ( { path } ) => {
 																<div className="srfm-mb-4">
 																	<input
 																		type="text"
-																		name="sureforms_v3_secret"
+																		name="srfm_v3_secret"
 																		id="srfm_v3_secret"
 																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
 																		placeholder={ __(
@@ -425,7 +424,7 @@ const Component = ( { path } ) => {
 												<input
 													id="srfm-honeypot-checkbox-input"
 													type="checkbox"
-													name="honeypot_toggle"
+													name="srfm_honeypot_toggle"
 													checked={ honeyPot }
 													onChange={ handleChange }
 												/>

@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
+if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
 
 	/**
-	 * Class Sureforms_Advanced_Image.
+	 * Class SRFM_Advanced_Image.
 	 */
-	class Sureforms_Advanced_Image {
+	class SRFM_Advanced_Image {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var Sureforms_Advanced_Image|null
+		 * @var SRFM_Advanced_Image|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return Sureforms_Advanced_Image The instance of the Sureforms_Advanced_Image class.
+		 * @return SRFM_Advanced_Image The instance of the SRFM_Advanced_Image class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 		public function __construct() {
 
 			// Activation hook.
-			add_action( 'init', array( $this, 'register_blocks' ) );
+			add_action( 'init', [ $this, 'register_blocks' ] );
 		}
 
 		/**
@@ -57,675 +57,675 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				return;
 			}
 
-			$attr = array(
-				'block_id'                    => array(
+			$attr = [
+				'block_id'                    => [
 					'type' => 'string',
-				),
-				'isPreview'                   => array(
+				],
+				'isPreview'                   => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'layout'                      => array(
+				],
+				'layout'                      => [
 					'type'    => 'string',
 					'default' => 'default',
-				),
-				'url'                         => array(
+				],
+				'url'                         => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'urlTablet'                   => array(
+				],
+				'urlTablet'                   => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'urlMobile'                   => array(
+				],
+				'urlMobile'                   => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'alt'                         => array(
+				],
+				'alt'                         => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'enableCaption'               => array(
+				],
+				'enableCaption'               => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'caption'                     => array(
+				],
+				'caption'                     => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'align'                       => array(
+				],
+				'align'                       => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'alignTablet'                 => array(
+				],
+				'alignTablet'                 => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'alignMobile'                 => array(
+				],
+				'alignMobile'                 => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'id'                          => array(
+				],
+				'id'                          => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'href'                        => array(
+				],
+				'href'                        => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'rel'                         => array(
+				],
+				'rel'                         => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'linkClass'                   => array(
+				],
+				'linkClass'                   => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'linkDestination'             => array(
+				],
+				'linkDestination'             => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'title'                       => array(
+				],
+				'title'                       => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'width'                       => array(
+				],
+				'width'                       => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'widthTablet'                 => array(
+				],
+				'widthTablet'                 => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'widthMobile'                 => array(
+				],
+				'widthMobile'                 => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'height'                      => array(
+				],
+				'height'                      => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'heightTablet'                => array(
+				],
+				'heightTablet'                => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'heightMobile'                => array(
+				],
+				'heightMobile'                => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'naturalWidth'                => array(
+				],
+				'naturalWidth'                => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'naturalHeight'               => array(
+				],
+				'naturalHeight'               => [
 					'type'    => 'integer',
 					'default' => '',
-				),
-				'linkTarget'                  => array(
+				],
+				'linkTarget'                  => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'sizeSlug'                    => array(
+				],
+				'sizeSlug'                    => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'sizeSlugTablet'              => array(
+				],
+				'sizeSlugTablet'              => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'sizeSlugMobile'              => array(
+				],
+				'sizeSlugMobile'              => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'imageTopMargin'              => array(
+				],
+				'imageTopMargin'              => [
 					'type' => 'number',
-				),
-				'imageRightMargin'            => array(
+				],
+				'imageRightMargin'            => [
 					'type' => 'number',
-				),
-				'imageLeftMargin'             => array(
+				],
+				'imageLeftMargin'             => [
 					'type' => 'number',
-				),
-				'imageBottomMargin'           => array(
+				],
+				'imageBottomMargin'           => [
 					'type' => 'number',
-				),
-				'imageTopMarginTablet'        => array(
+				],
+				'imageTopMarginTablet'        => [
 					'type' => 'number',
-				),
-				'imageRightMarginTablet'      => array(
+				],
+				'imageRightMarginTablet'      => [
 					'type' => 'number',
-				),
-				'imageLeftMarginTablet'       => array(
+				],
+				'imageLeftMarginTablet'       => [
 					'type' => 'number',
-				),
-				'imageBottomMarginTablet'     => array(
+				],
+				'imageBottomMarginTablet'     => [
 					'type' => 'number',
-				),
-				'imageTopMarginMobile'        => array(
+				],
+				'imageTopMarginMobile'        => [
 					'type' => 'number',
-				),
-				'imageRightMarginMobile'      => array(
+				],
+				'imageRightMarginMobile'      => [
 					'type' => 'number',
-				),
-				'imageLeftMarginMobile'       => array(
+				],
+				'imageLeftMarginMobile'       => [
 					'type' => 'number',
-				),
-				'imageBottomMarginMobile'     => array(
+				],
+				'imageBottomMarginMobile'     => [
 					'type' => 'number',
-				),
-				'imageMarginUnit'             => array(
+				],
+				'imageMarginUnit'             => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'imageMarginUnitTablet'       => array(
+				],
+				'imageMarginUnitTablet'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'imageMarginUnitMobile'       => array(
+				],
+				'imageMarginUnitMobile'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'imageMarginLink'             => array(
+				],
+				'imageMarginLink'             => [
 					'type'    => 'boolean',
 					'default' => true,
-				),
-				'captionText'                 => array(
+				],
+				'captionText'                 => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'captionShowOn'               => array(
+				],
+				'captionShowOn'               => [
 					'type'    => 'string',
 					'default' => 'hover',
-				),
-				'captionLoadGoogleFonts'      => array(
+				],
+				'captionLoadGoogleFonts'      => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'captionColor'                => array(
+				],
+				'captionColor'                => [
 					'type' => 'string',
-				),
-				'captionAlign'                => array(
+				],
+				'captionAlign'                => [
 					'type'    => 'string',
 					'default' => 'center',
-				),
-				'captionFontFamily'           => array(
+				],
+				'captionFontFamily'           => [
 					'type'    => 'string',
 					'default' => 'Default',
-				),
-				'captionFontWeight'           => array(
+				],
+				'captionFontWeight'           => [
 					'type' => 'string',
-				),
-				'captionFontStyle'            => array(
+				],
+				'captionFontStyle'            => [
 					'type'    => 'string',
 					'default' => 'normal',
-				),
-				'captionTransform'            => array(
+				],
+				'captionTransform'            => [
 					'type' => 'string',
-				),
-				'captionDecoration'           => array(
+				],
+				'captionDecoration'           => [
 					'type' => 'string',
-				),
-				'captionFontSizeType'         => array(
+				],
+				'captionFontSizeType'         => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionFontSizeTypeTablet'   => array(
+				],
+				'captionFontSizeTypeTablet'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionFontSizeTypeMobile'   => array(
+				],
+				'captionFontSizeTypeMobile'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionLineHeightType'       => array(
+				],
+				'captionLineHeightType'       => [
 					'type'    => 'string',
 					'default' => 'em',
-				),
-				'captionFontSize'             => array(
+				],
+				'captionFontSize'             => [
 					'type' => 'number',
-				),
-				'captionFontSizeTablet'       => array(
+				],
+				'captionFontSizeTablet'       => [
 					'type' => 'number',
-				),
-				'captionFontSizeMobile'       => array(
+				],
+				'captionFontSizeMobile'       => [
 					'type' => 'number',
-				),
-				'captionLineHeight'           => array(
+				],
+				'captionLineHeight'           => [
 					'type' => 'number',
-				),
-				'captionLineHeightTablet'     => array(
+				],
+				'captionLineHeightTablet'     => [
 					'type' => 'number',
-				),
-				'captionLineHeightMobile'     => array(
+				],
+				'captionLineHeightMobile'     => [
 					'type' => 'number',
-				),
-				'captionTopMargin'            => array(
+				],
+				'captionTopMargin'            => [
 					'type' => 'number',
-				),
-				'captionRightMargin'          => array(
+				],
+				'captionRightMargin'          => [
 					'type' => 'number',
-				),
-				'captionLeftMargin'           => array(
+				],
+				'captionLeftMargin'           => [
 					'type' => 'number',
-				),
-				'captionBottomMargin'         => array(
+				],
+				'captionBottomMargin'         => [
 					'type' => 'number',
-				),
-				'captionTopMarginTablet'      => array(
+				],
+				'captionTopMarginTablet'      => [
 					'type' => 'number',
-				),
-				'captionRightMarginTablet'    => array(
+				],
+				'captionRightMarginTablet'    => [
 					'type' => 'number',
-				),
-				'captionLeftMarginTablet'     => array(
+				],
+				'captionLeftMarginTablet'     => [
 					'type' => 'number',
-				),
-				'captionBottomMarginTablet'   => array(
+				],
+				'captionBottomMarginTablet'   => [
 					'type' => 'number',
-				),
-				'captionTopMarginMobile'      => array(
+				],
+				'captionTopMarginMobile'      => [
 					'type' => 'number',
-				),
-				'captionRightMarginMobile'    => array(
+				],
+				'captionRightMarginMobile'    => [
 					'type' => 'number',
-				),
-				'captionLeftMarginMobile'     => array(
+				],
+				'captionLeftMarginMobile'     => [
 					'type' => 'number',
-				),
-				'captionBottomMarginMobile'   => array(
+				],
+				'captionBottomMarginMobile'   => [
 					'type' => 'number',
-				),
-				'captionMarginUnit'           => array(
+				],
+				'captionMarginUnit'           => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionMarginUnitTablet'     => array(
+				],
+				'captionMarginUnitTablet'     => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionMarginUnitMobile'     => array(
+				],
+				'captionMarginUnitMobile'     => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionMarginLink'           => array(
+				],
+				'captionMarginLink'           => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// heading.
-				'heading'                     => array(
+				'heading'                     => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'headingShowOn'               => array(
+				],
+				'headingShowOn'               => [
 					'type'    => 'string',
 					'default' => 'always',
-				),
-				'headingTag'                  => array(
+				],
+				'headingTag'                  => [
 					'type'    => 'string',
 					'default' => 'h2',
-				),
-				'headingId'                   => array(
+				],
+				'headingId'                   => [
 					'type' => 'string',
-				),
-				'headingLoadGoogleFonts'      => array(
+				],
+				'headingLoadGoogleFonts'      => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'headingColor'                => array(
+				],
+				'headingColor'                => [
 					'type'    => 'string',
 					'default' => '#fff',
-				),
-				'headingFontFamily'           => array(
+				],
+				'headingFontFamily'           => [
 					'type'    => 'string',
 					'default' => 'Default',
-				),
-				'headingFontWeight'           => array(
+				],
+				'headingFontWeight'           => [
 					'type' => 'string',
-				),
-				'headingFontStyle'            => array(
+				],
+				'headingFontStyle'            => [
 					'type'    => 'string',
 					'default' => 'normal',
-				),
-				'headingTransform'            => array(
+				],
+				'headingTransform'            => [
 					'type' => 'string',
-				),
-				'headingDecoration'           => array(
+				],
+				'headingDecoration'           => [
 					'type' => 'string',
-				),
-				'headingFontSizeType'         => array(
+				],
+				'headingFontSizeType'         => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingFontSizeTypeTablet'   => array(
+				],
+				'headingFontSizeTypeTablet'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingFontSizeTypeMobile'   => array(
+				],
+				'headingFontSizeTypeMobile'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingLineHeightType'       => array(
+				],
+				'headingLineHeightType'       => [
 					'type'    => 'string',
 					'default' => 'em',
-				),
-				'headingFontSize'             => array(
+				],
+				'headingFontSize'             => [
 					'type' => 'number',
-				),
-				'headingFontSizeTablet'       => array(
+				],
+				'headingFontSizeTablet'       => [
 					'type' => 'number',
-				),
-				'headingFontSizeMobile'       => array(
+				],
+				'headingFontSizeMobile'       => [
 					'type' => 'number',
-				),
-				'headingLineHeight'           => array(
+				],
+				'headingLineHeight'           => [
 					'type' => 'number',
-				),
-				'headingLineHeightTablet'     => array(
+				],
+				'headingLineHeightTablet'     => [
 					'type' => 'number',
-				),
-				'headingLineHeightMobile'     => array(
+				],
+				'headingLineHeightMobile'     => [
 					'type' => 'number',
-				),
-				'headingTopMargin'            => array(
+				],
+				'headingTopMargin'            => [
 					'type' => 'number',
-				),
-				'headingRightMargin'          => array(
+				],
+				'headingRightMargin'          => [
 					'type' => 'number',
-				),
-				'headingLeftMargin'           => array(
+				],
+				'headingLeftMargin'           => [
 					'type' => 'number',
-				),
-				'headingBottomMargin'         => array(
+				],
+				'headingBottomMargin'         => [
 					'type' => 'number',
-				),
-				'headingTopMarginTablet'      => array(
+				],
+				'headingTopMarginTablet'      => [
 					'type' => 'number',
-				),
-				'headingRightMarginTablet'    => array(
+				],
+				'headingRightMarginTablet'    => [
 					'type' => 'number',
-				),
-				'headingLeftMarginTablet'     => array(
+				],
+				'headingLeftMarginTablet'     => [
 					'type' => 'number',
-				),
-				'headingBottomMarginTablet'   => array(
+				],
+				'headingBottomMarginTablet'   => [
 					'type' => 'number',
-				),
-				'headingTopMarginMobile'      => array(
+				],
+				'headingTopMarginMobile'      => [
 					'type' => 'number',
-				),
-				'headingRightMarginMobile'    => array(
+				],
+				'headingRightMarginMobile'    => [
 					'type' => 'number',
-				),
-				'headingLeftMarginMobile'     => array(
+				],
+				'headingLeftMarginMobile'     => [
 					'type' => 'number',
-				),
-				'headingBottomMarginMobile'   => array(
+				],
+				'headingBottomMarginMobile'   => [
 					'type' => 'number',
-				),
-				'headingMarginUnit'           => array(
+				],
+				'headingMarginUnit'           => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingMarginUnitTablet'     => array(
+				],
+				'headingMarginUnitTablet'     => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingMarginUnitMobile'     => array(
+				],
+				'headingMarginUnitMobile'     => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headingMarginLink'           => array(
+				],
+				'headingMarginLink'           => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// overlay.
-				'overlayPositionFromEdge'     => array(
+				'overlayPositionFromEdge'     => [
 					'type'    => 'number',
 					'default' => 15,
-				),
-				'overlayPositionFromEdgeUnit' => array(
+				],
+				'overlayPositionFromEdgeUnit' => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'overlayContentPosition'      => array(
+				],
+				'overlayContentPosition'      => [
 					'type'    => 'string',
 					'default' => 'center center',
-				),
-				'overlayBackground'           => array(
+				],
+				'overlayBackground'           => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'overlayOpacity'              => array(
+				],
+				'overlayOpacity'              => [
 					'type'    => 'float',
 					'default' => 0.2,
-				),
-				'overlayHoverOpacity'         => array(
+				],
+				'overlayHoverOpacity'         => [
 					'type'    => 'number',
 					'default' => 1,
-				),
+				],
 				// separator.
-				'separatorShowOn'             => array(
+				'separatorShowOn'             => [
 					'type'    => 'string',
 					'default' => 'hover',
-				),
-				'separatorStyle'              => array(
+				],
+				'separatorStyle'              => [
 					'type'    => 'string',
 					'default' => 'none',
-				),
-				'separatorColor'              => array(
+				],
+				'separatorColor'              => [
 					'type'    => 'string',
 					'default' => '#fff',
-				),
-				'separatorPosition'           => array(
+				],
+				'separatorPosition'           => [
 					'type'    => 'string',
 					'default' => 'after_title',
-				),
-				'separatorWidth'              => array(
+				],
+				'separatorWidth'              => [
 					'type'    => 'number',
 					'default' => 30,
-				),
-				'separatorWidthType'          => array(
+				],
+				'separatorWidthType'          => [
 					'type'    => 'string',
 					'default' => '%',
-				),
-				'separatorThickness'          => array(
+				],
+				'separatorThickness'          => [
 					'type'    => 'number',
 					'default' => 2,
-				),
-				'separatorThicknessUnit'      => array(
+				],
+				'separatorThicknessUnit'      => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'separatorTopMargin'          => array(
+				],
+				'separatorTopMargin'          => [
 					'type' => 'number',
-				),
-				'separatorRightMargin'        => array(
+				],
+				'separatorRightMargin'        => [
 					'type' => 'number',
-				),
-				'separatorLeftMargin'         => array(
+				],
+				'separatorLeftMargin'         => [
 					'type' => 'number',
-				),
-				'separatorBottomMargin'       => array(
+				],
+				'separatorBottomMargin'       => [
 					'type' => 'number',
-				),
-				'separatorTopMarginTablet'    => array(
+				],
+				'separatorTopMarginTablet'    => [
 					'type' => 'number',
-				),
-				'separatorRightMarginTablet'  => array(
+				],
+				'separatorRightMarginTablet'  => [
 					'type' => 'number',
-				),
-				'separatorLeftMarginTablet'   => array(
+				],
+				'separatorLeftMarginTablet'   => [
 					'type' => 'number',
-				),
-				'separatorBottomMarginTablet' => array(
+				],
+				'separatorBottomMarginTablet' => [
 					'type' => 'number',
-				),
-				'separatorTopMarginMobile'    => array(
+				],
+				'separatorTopMarginMobile'    => [
 					'type' => 'number',
-				),
-				'separatorRightMarginMobile'  => array(
+				],
+				'separatorRightMarginMobile'  => [
 					'type' => 'number',
-				),
-				'separatorLeftMarginMobile'   => array(
+				],
+				'separatorLeftMarginMobile'   => [
 					'type' => 'number',
-				),
-				'separatorBottomMarginMobile' => array(
+				],
+				'separatorBottomMarginMobile' => [
 					'type' => 'number',
-				),
-				'separatorMarginUnit'         => array(
+				],
+				'separatorMarginUnit'         => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'separatorMarginUnitTablet'   => array(
+				],
+				'separatorMarginUnitTablet'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'separatorMarginUnitMobile'   => array(
+				],
+				'separatorMarginUnitMobile'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'separatorMarginLink'         => array(
+				],
+				'separatorMarginLink'         => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// effect.
-				'imageHoverEffect'            => array(
+				'imageHoverEffect'            => [
 					'type'    => 'string',
 					'default' => 'static',
-				),
-				'objectFit'                   => array(
+				],
+				'objectFit'                   => [
 					'type' => 'string',
-				),
-				'objectFitTablet'             => array(
+				],
+				'objectFitTablet'             => [
 					'type' => 'string',
-				),
-				'objectFitMobile'             => array(
+				],
+				'objectFitMobile'             => [
 					'type' => 'string',
-				),
-				'useSeparateBoxShadows'       => array(
+				],
+				'useSeparateBoxShadows'       => [
 					'type'    => 'boolean',
 					'default' => true,
-				),
-				'imageBoxShadowColor'         => array(
+				],
+				'imageBoxShadowColor'         => [
 					'type'    => 'string',
 					'default' => '#00000070',
-				),
-				'imageBoxShadowHOffset'       => array(
+				],
+				'imageBoxShadowHOffset'       => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'imageBoxShadowVOffset'       => array(
+				],
+				'imageBoxShadowVOffset'       => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'imageBoxShadowBlur'          => array(
+				],
+				'imageBoxShadowBlur'          => [
 					'type' => 'number',
-				),
-				'imageBoxShadowSpread'        => array(
+				],
+				'imageBoxShadowSpread'        => [
 					'type' => 'number',
-				),
-				'imageBoxShadowPosition'      => array(
+				],
+				'imageBoxShadowPosition'      => [
 					'type'    => 'string',
 					'default' => 'outset',
-				),
-				'imageBoxShadowColorHover'    => array(
+				],
+				'imageBoxShadowColorHover'    => [
 					'type' => 'string',
-				),
-				'imageBoxShadowHOffsetHover'  => array(
+				],
+				'imageBoxShadowHOffsetHover'  => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'imageBoxShadowVOffsetHover'  => array(
+				],
+				'imageBoxShadowVOffsetHover'  => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'imageBoxShadowBlurHover'     => array(
+				],
+				'imageBoxShadowBlurHover'     => [
 					'type' => 'number',
-				),
-				'imageBoxShadowSpreadHover'   => array(
+				],
+				'imageBoxShadowSpreadHover'   => [
 					'type' => 'number',
-				),
-				'imageBoxShadowPositionHover' => array(
+				],
+				'imageBoxShadowPositionHover' => [
 					'type'    => 'string',
 					'default' => 'outset',
-				),
+				],
 				// mask.
-				'maskShape'                   => array(
+				'maskShape'                   => [
 					'type'    => 'string',
 					'default' => 'none',
-				),
-				'maskCustomShape'             => array(
+				],
+				'maskCustomShape'             => [
 					'type'    => 'object',
-					'default' => array(
+					'default' => [
 						'url' => '',
 						'alt' => 'mask shape',
-					),
-				),
-				'maskSize'                    => array(
+					],
+				],
+				'maskSize'                    => [
 					'type'    => 'string',
 					'default' => 'auto',
-				),
-				'maskPosition'                => array(
+				],
+				'maskPosition'                => [
 					'type'    => 'string',
 					'default' => 'center center',
-				),
-				'maskRepeat'                  => array(
+				],
+				'maskRepeat'                  => [
 					'type'    => 'string',
 					'default' => 'no-repeat',
-				),
-				'headingLetterSpacing'        => array(
+				],
+				'headingLetterSpacing'        => [
 					'type' => 'number',
-				),
-				'headingLetterSpacingTablet'  => array(
+				],
+				'headingLetterSpacingTablet'  => [
 					'type' => 'number',
-				),
-				'headingLetterSpacingMobile'  => array(
+				],
+				'headingLetterSpacingMobile'  => [
 					'type' => 'number',
-				),
-				'headingLetterSpacingType'    => array(
+				],
+				'headingLetterSpacingType'    => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'captionLetterSpacing'        => array(
+				],
+				'captionLetterSpacing'        => [
 					'type' => 'number',
-				),
-				'captionLetterSpacingTablet'  => array(
+				],
+				'captionLetterSpacingTablet'  => [
 					'type' => 'number',
-				),
-				'captionLetterSpacingMobile'  => array(
+				],
+				'captionLetterSpacingMobile'  => [
 					'type' => 'number',
-				),
-				'captionLetterSpacingType'    => array(
+				],
+				'captionLetterSpacingType'    => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'customHeightSetDesktop'      => array(
+				],
+				'customHeightSetDesktop'      => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'customHeightSetTablet'       => array(
+				],
+				'customHeightSetTablet'       => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'customHeightSetMobile'       => array(
+				],
+				'customHeightSetMobile'       => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-			);
+				],
+			];
 
-			$advaned_image_border_attr         = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
-			$advaned_image_border_overlay_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
+			$advaned_image_border_attr         = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
+			$advaned_image_border_overlay_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
 
 			$attr = array_merge( $advaned_image_border_attr, $advaned_image_border_overlay_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_image_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_image_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/image',
-				array(
+				[
 					'attributes'      => $attributes,
-					'render_callback' => array( $this, 'render_html' ),
-				)
+					'render_callback' => [ $this, 'render_html' ],
+				]
 			);
 		}
 
@@ -807,13 +807,13 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				$this->get_rel( $attributes['rel'] )
 			);
 
-			$main_classes = array(
+			$main_classes = [
 				'wp-block-uagb-image',
 				'uagb-block-' . $block_id,
 				'wp-block-uagb-image--layout-' . esc_attr( $attributes['layout'] ),
 				'wp-block-uagb-image--effect-' . esc_attr( $attributes['imageHoverEffect'] ),
 				'wp-block-uagb-image--align-' . ( $attributes['align'] ? esc_attr( $attributes['align'] ) : 'none' ),
-			);
+			];
 
 			if ( isset( $attributes['className'] ) ) {
 				$main_classes[] = $attributes['className'];
@@ -876,8 +876,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Advanced_Image' exist.
+	 *  Prepare if class 'SRFM_Advanced_Image' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Advanced_Image::get_instance();
+	SRFM_Advanced_Image::get_instance();
 }

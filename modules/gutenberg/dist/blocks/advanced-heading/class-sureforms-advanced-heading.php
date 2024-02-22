@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
+if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 
 	/**
-	 * Class Sureforms_Advanced_Heading.
+	 * Class SRFM_Advanced_Heading.
 	 */
-	class Sureforms_Advanced_Heading {
+	class SRFM_Advanced_Heading {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var Sureforms_Advanced_Heading|null
+		 * @var SRFM_Advanced_Heading|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return Sureforms_Advanced_Heading The instance of the Sureforms_Advanced_Heading class.
+		 * @return SRFM_Advanced_Heading The instance of the SRFM_Advanced_Heading class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 		public function __construct() {
 
 			// Activation hook.
-			add_action( 'init', array( $this, 'register_blocks' ) );
+			add_action( 'init', [ $this, 'register_blocks' ] );
 		}
 
 		/**
@@ -58,583 +58,583 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				return;
 			}
 
-			$attr = array(
-				'block_id'                     => array(
+			$attr = [
+				'block_id'                     => [
 					'type' => 'string',
-				),
-				'classMigrate'                 => array(
+				],
+				'classMigrate'                 => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'blockBackgroundType'          => array(
+				],
+				'blockBackgroundType'          => [
 					'type'    => 'string',
 					'default' => 'classic',
-				),
-				'blockGradientBackground'      => array(
+				],
+				'blockGradientBackground'      => [
 					'type'    => 'string',
 					'default' => 'linear-gradient(90deg, rgb(6, 147, 227) 0%, rgb(155, 81, 224) 100%)',
-				),
-				'blockBackground'              => array(
+				],
+				'blockBackground'              => [
 					'type' => 'string',
-				),
-				'headingTitleToggle'           => array(
+				],
+				'headingTitleToggle'           => [
 					'type'    => 'boolean',
 					'default' => true,
-				),
-				'headingTitle'                 => array(
+				],
+				'headingTitle'                 => [
 					'type'    => 'string',
 					'default' => __( 'Your Attractive Heading', 'sureforms' ),
-				),
-				'headingId'                    => array(
+				],
+				'headingId'                    => [
 					'type' => 'string',
-				),
-				'headingDescToggle'            => array(
+				],
+				'headingDescToggle'            => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'headingDescPosition'          => array(
+				],
+				'headingDescPosition'          => [
 					'type'    => 'string',
 					'default' => 'below-heading',
-				),
-				'headingDesc'                  => array(
+				],
+				'headingDesc'                  => [
 					'type' => 'string',
-				),
-				'headingAlign'                 => array(
+				],
+				'headingAlign'                 => [
 					'type'    => 'string',
 					'default' => 'left',
-				),
-				'headingAlignTablet'           => array(
+				],
+				'headingAlignTablet'           => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'headingAlignMobile'           => array(
+				],
+				'headingAlignMobile'           => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'headingColorType'             => array(
+				],
+				'headingColorType'             => [
 					'type'    => 'string',
 					'default' => 'classic',
-				),
-				'headingColor'                 => array(
+				],
+				'headingColor'                 => [
 					'type'    => 'string',
 					'default' => '#000',
-				),
-				'headingGradientColor'         => array(
+				],
+				'headingGradientColor'         => [
 					'type'    => 'string',
 					'default' => 'linear-gradient(90deg, rgb(155, 81, 224) 0%, rgb(6, 147, 227) 100%)',
-				),
-				'subHeadingColor'              => array(
+				],
+				'subHeadingColor'              => [
 					'type'    => 'string',
 					'default' => '#000',
-				),
-				'separatorColor'               => array(
+				],
+				'separatorColor'               => [
 					'type'    => 'string',
 					'default' => '#0170b9',
-				),
-				'headingTag'                   => array(
+				],
+				'headingTag'                   => [
 					'type'    => 'string',
 					'default' => 'h2',
-				),
-				'level'                        => array(
+				],
+				'level'                        => [
 					'type'    => 'number',
 					'default' => 2,
-				),
-				'separatorStyle'               => array(
+				],
+				'separatorStyle'               => [
 					'type'    => 'string',
 					'default' => 'none',
-				),
-				'separatorPosition'            => array(
+				],
+				'separatorPosition'            => [
 					'type'    => 'string',
 					'default' => 'below-heading',
-				),
-				'separatorHeight'              => array(
+				],
+				'separatorHeight'              => [
 					'type'    => 'number',
 					'default' => 2,
-				),
-				'separatorHeightType'          => array(
+				],
+				'separatorHeightType'          => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'separatorWidth'               => array(
+				],
+				'separatorWidth'               => [
 					'type'    => 'number',
 					'default' => 12,
-				),
-				'separatorWidthTablet'         => array(
+				],
+				'separatorWidthTablet'         => [
 					'type' => 'number',
-				),
-				'separatorWidthMobile'         => array(
+				],
+				'separatorWidthMobile'         => [
 					'type' => 'number',
-				),
-				'separatorWidthType'           => array(
+				],
+				'separatorWidthType'           => [
 					'type'    => 'string',
 					'default' => '%',
-				),
-				'headSpace'                    => array(
+				],
+				'headSpace'                    => [
 					'type'    => 'number',
 					'default' => 15,
-				),
-				'headSpaceMobile'              => array(
+				],
+				'headSpaceMobile'              => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'headSpaceTablet'              => array(
+				],
+				'headSpaceTablet'              => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'headSpaceType'                => array(
+				],
+				'headSpaceType'                => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'subHeadSpace'                 => array(
+				],
+				'subHeadSpace'                 => [
 					'type'    => 'number',
 					'default' => 15,
-				),
-				'subHeadSpaceMobile'           => array(
+				],
+				'subHeadSpaceMobile'           => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'subHeadSpaceTablet'           => array(
+				],
+				'subHeadSpaceTablet'           => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'subHeadSpaceType'             => array(
+				],
+				'subHeadSpaceType'             => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headFontFamily'               => array(
+				],
+				'headFontFamily'               => [
 					'type'    => 'string',
 					'default' => 'Default',
-				),
-				'headFontWeight'               => array(
+				],
+				'headFontWeight'               => [
 					'type' => 'string',
-				),
-				'headFontStyle'                => array(
+				],
+				'headFontStyle'                => [
 					'type'    => 'string',
 					'default' => 'normal',
-				),
-				'headTransform'                => array(
+				],
+				'headTransform'                => [
 					'type' => 'string',
-				),
-				'headDecoration'               => array(
+				],
+				'headDecoration'               => [
 					'type' => 'string',
-				),
-				'headFontSizeType'             => array(
+				],
+				'headFontSizeType'             => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headFontSizeTypeMobile'       => array(
+				],
+				'headFontSizeTypeMobile'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headFontSizeTypeTablet'       => array(
+				],
+				'headFontSizeTypeTablet'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headLineHeightType'           => array(
+				],
+				'headLineHeightType'           => [
 					'type'    => 'string',
 					'default' => 'em',
-				),
-				'headFontSize'                 => array(
+				],
+				'headFontSize'                 => [
 					'type' => 'number',
-				),
-				'headFontSizeTablet'           => array(
+				],
+				'headFontSizeTablet'           => [
 					'type' => 'number',
-				),
-				'headFontSizeMobile'           => array(
+				],
+				'headFontSizeMobile'           => [
 					'type' => 'number',
-				),
-				'headLineHeight'               => array(
+				],
+				'headLineHeight'               => [
 					'type' => 'number',
-				),
-				'headLineHeightTablet'         => array(
+				],
+				'headLineHeightTablet'         => [
 					'type' => 'number',
-				),
-				'headLineHeightMobile'         => array(
+				],
+				'headLineHeightMobile'         => [
 					'type' => 'number',
-				),
-				'headLetterSpacing'            => array(
+				],
+				'headLetterSpacing'            => [
 					'type' => 'number',
-				),
-				'headLetterSpacingTablet'      => array(
+				],
+				'headLetterSpacingTablet'      => [
 					'type' => 'number',
-				),
-				'headLetterSpacingMobile'      => array(
+				],
+				'headLetterSpacingMobile'      => [
 					'type' => 'number',
-				),
-				'headLetterSpacingType'        => array(
+				],
+				'headLetterSpacingType'        => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headShadowColor'              => array(
+				],
+				'headShadowColor'              => [
 					'type'    => 'string',
 					'default' => '',
-				),
-				'headShadowHOffset'            => array(
+				],
+				'headShadowHOffset'            => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'headShadowVOffset'            => array(
+				],
+				'headShadowVOffset'            => [
 					'type'    => 'number',
 					'default' => 0,
-				),
-				'headShadowBlur'               => array(
+				],
+				'headShadowBlur'               => [
 					'type'    => 'number',
 					'default' => 10,
-				),
+				],
 				// sub headline.
-				'subHeadFontFamily'            => array(
+				'subHeadFontFamily'            => [
 					'type'    => 'string',
 					'default' => 'Default',
-				),
-				'subHeadFontWeight'            => array(
+				],
+				'subHeadFontWeight'            => [
 					'type' => 'string',
-				),
-				'subHeadFontStyle'             => array(
+				],
+				'subHeadFontStyle'             => [
 					'type'    => 'string',
 					'default' => 'normal',
-				),
-				'subHeadTransform'             => array(
+				],
+				'subHeadTransform'             => [
 					'type' => 'string',
-				),
-				'subHeadDecoration'            => array(
+				],
+				'subHeadDecoration'            => [
 					'type' => 'string',
-				),
-				'subHeadFontSize'              => array(
+				],
+				'subHeadFontSize'              => [
 					'type' => 'number',
-				),
-				'subHeadFontSizeType'          => array(
+				],
+				'subHeadFontSizeType'          => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'subHeadFontSizeTypeMobile'    => array(
+				],
+				'subHeadFontSizeTypeMobile'    => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'subHeadFontSizeTypeTablet'    => array(
+				],
+				'subHeadFontSizeTypeTablet'    => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'subHeadFontSizeTablet'        => array(
+				],
+				'subHeadFontSizeTablet'        => [
 					'type' => 'number',
-				),
-				'subHeadFontSizeMobile'        => array(
+				],
+				'subHeadFontSizeMobile'        => [
 					'type' => 'number',
-				),
-				'subHeadLineHeight'            => array(
+				],
+				'subHeadLineHeight'            => [
 					'type' => 'number',
-				),
-				'subHeadLineHeightType'        => array(
+				],
+				'subHeadLineHeightType'        => [
 					'type'    => 'string',
 					'default' => 'em',
-				),
-				'subHeadLineHeightTablet'      => array(
+				],
+				'subHeadLineHeightTablet'      => [
 					'type' => 'number',
-				),
-				'subHeadLineHeightMobile'      => array(
+				],
+				'subHeadLineHeightMobile'      => [
 					'type' => 'number',
-				),
-				'subHeadLetterSpacing'         => array(
+				],
+				'subHeadLetterSpacing'         => [
 					'type' => 'number',
-				),
-				'subHeadLetterSpacingTablet'   => array(
+				],
+				'subHeadLetterSpacingTablet'   => [
 					'type' => 'number',
-				),
-				'subHeadLetterSpacingMobile'   => array(
+				],
+				'subHeadLetterSpacingMobile'   => [
 					'type' => 'number',
-				),
-				'subHeadLetterSpacingType'     => array(
+				],
+				'subHeadLetterSpacingType'     => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
+				],
 				// separator.
-				'separatorSpace'               => array(
+				'separatorSpace'               => [
 					'type'    => 'number',
 					'default' => 15,
-				),
-				'separatorSpaceTablet'         => array(
+				],
+				'separatorSpaceTablet'         => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'separatorSpaceMobile'         => array(
+				],
+				'separatorSpaceMobile'         => [
 					'type'    => 'number',
 					'default' => '',
-				),
-				'separatorSpaceType'           => array(
+				],
+				'separatorSpaceType'           => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'headLoadGoogleFonts'          => array(
+				],
+				'headLoadGoogleFonts'          => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'subHeadLoadGoogleFonts'       => array(
+				],
+				'subHeadLoadGoogleFonts'       => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'separatorHoverColor'          => array(
+				],
+				'separatorHoverColor'          => [
 					'type' => 'string',
-				),
-				'isPreview'                    => array(
+				],
+				'isPreview'                    => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// padding.
-				'blockTopPadding'              => array(
+				'blockTopPadding'              => [
 					'type' => 'number',
-				),
-				'blockRightPadding'            => array(
+				],
+				'blockRightPadding'            => [
 					'type' => 'number',
-				),
-				'blockLeftPadding'             => array(
+				],
+				'blockLeftPadding'             => [
 					'type' => 'number',
-				),
-				'blockBottomPadding'           => array(
+				],
+				'blockBottomPadding'           => [
 					'type' => 'number',
-				),
-				'blockTopPaddingTablet'        => array(
+				],
+				'blockTopPaddingTablet'        => [
 					'type' => 'number',
-				),
-				'blockRightPaddingTablet'      => array(
+				],
+				'blockRightPaddingTablet'      => [
 					'type' => 'number',
-				),
-				'blockLeftPaddingTablet'       => array(
+				],
+				'blockLeftPaddingTablet'       => [
 					'type' => 'number',
-				),
-				'blockBottomPaddingTablet'     => array(
+				],
+				'blockBottomPaddingTablet'     => [
 					'type' => 'number',
-				),
-				'blockTopPaddingMobile'        => array(
+				],
+				'blockTopPaddingMobile'        => [
 					'type' => 'number',
-				),
-				'blockRightPaddingMobile'      => array(
+				],
+				'blockRightPaddingMobile'      => [
 					'type' => 'number',
-				),
-				'blockLeftPaddingMobile'       => array(
+				],
+				'blockLeftPaddingMobile'       => [
 					'type' => 'number',
-				),
-				'blockBottomPaddingMobile'     => array(
+				],
+				'blockBottomPaddingMobile'     => [
 					'type' => 'number',
-				),
-				'blockPaddingUnit'             => array(
+				],
+				'blockPaddingUnit'             => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockPaddingUnitTablet'       => array(
+				],
+				'blockPaddingUnitTablet'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockPaddingUnitMobile'       => array(
+				],
+				'blockPaddingUnitMobile'       => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockPaddingLink'             => array(
+				],
+				'blockPaddingLink'             => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// margin.
-				'blockTopMargin'               => array(
+				'blockTopMargin'               => [
 					'type' => 'number',
-				),
-				'blockRightMargin'             => array(
+				],
+				'blockRightMargin'             => [
 					'type' => 'number',
-				),
-				'blockLeftMargin'              => array(
+				],
+				'blockLeftMargin'              => [
 					'type' => 'number',
-				),
-				'blockBottomMargin'            => array(
+				],
+				'blockBottomMargin'            => [
 					'type' => 'number',
-				),
-				'blockTopMarginTablet'         => array(
+				],
+				'blockTopMarginTablet'         => [
 					'type' => 'number',
-				),
-				'blockRightMarginTablet'       => array(
+				],
+				'blockRightMarginTablet'       => [
 					'type' => 'number',
-				),
-				'blockLeftMarginTablet'        => array(
+				],
+				'blockLeftMarginTablet'        => [
 					'type' => 'number',
-				),
-				'blockBottomMarginTablet'      => array(
+				],
+				'blockBottomMarginTablet'      => [
 					'type' => 'number',
-				),
-				'blockTopMarginMobile'         => array(
+				],
+				'blockTopMarginMobile'         => [
 					'type' => 'number',
-				),
-				'blockRightMarginMobile'       => array(
+				],
+				'blockRightMarginMobile'       => [
 					'type' => 'number',
-				),
-				'blockLeftMarginMobile'        => array(
+				],
+				'blockLeftMarginMobile'        => [
 					'type' => 'number',
-				),
-				'blockBottomMarginMobile'      => array(
+				],
+				'blockBottomMarginMobile'      => [
 					'type' => 'number',
-				),
-				'blockMarginUnit'              => array(
+				],
+				'blockMarginUnit'              => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockMarginUnitTablet'        => array(
+				],
+				'blockMarginUnitTablet'        => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockMarginUnitMobile'        => array(
+				],
+				'blockMarginUnitMobile'        => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'blockMarginLink'              => array(
+				],
+				'blockMarginLink'              => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
+				],
 				// link.
-				'linkColor'                    => array(
+				'linkColor'                    => [
 					'type' => 'string',
-				),
-				'linkHColor'                   => array(
+				],
+				'linkHColor'                   => [
 					'type' => 'string',
-				),
+				],
 				// Highlight.
-				'highLightColor'               => array(
+				'highLightColor'               => [
 					'type'    => 'string',
 					'default' => '#fff',
-				),
-				'highLightBackground'          => array(
+				],
+				'highLightBackground'          => [
 					'type'    => 'string',
 					'default' => '#007cba',
-				),
-				'highLightLoadGoogleFonts'     => array(
+				],
+				'highLightLoadGoogleFonts'     => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'highLightFontFamily'          => array(
+				],
+				'highLightFontFamily'          => [
 					'type'    => 'string',
 					'default' => 'default',
-				),
-				'highLightFontWeight'          => array(
+				],
+				'highLightFontWeight'          => [
 					'type'    => 'string',
 					'default' => 'Default',
-				),
-				'highLightFontStyle'           => array(
+				],
+				'highLightFontStyle'           => [
 					'type'    => 'string',
 					'default' => 'normal',
-				),
-				'highLightTransform'           => array(
+				],
+				'highLightTransform'           => [
 					'type' => 'string',
-				),
-				'highLightDecoration'          => array(
+				],
+				'highLightDecoration'          => [
 					'type' => 'string',
-				),
-				'highLightFontSizeType'        => array(
+				],
+				'highLightFontSizeType'        => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightFontSizeTypeMobile'  => array(
+				],
+				'highLightFontSizeTypeMobile'  => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightFontSizeTypeTablet'  => array(
+				],
+				'highLightFontSizeTypeTablet'  => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightLineHeightType'      => array(
+				],
+				'highLightLineHeightType'      => [
 					'type'    => 'string',
 					'default' => 'em',
-				),
-				'highLightFontSize'            => array(
+				],
+				'highLightFontSize'            => [
 					'type' => 'number',
-				),
-				'highLightFontSizeTablet'      => array(
+				],
+				'highLightFontSizeTablet'      => [
 					'type' => 'number',
-				),
-				'highLightFontSizeMobile'      => array(
+				],
+				'highLightFontSizeMobile'      => [
 					'type' => 'number',
-				),
-				'highLightLineHeight'          => array(
+				],
+				'highLightLineHeight'          => [
 					'type' => 'number',
-				),
-				'highLightLineHeightTablet'    => array(
+				],
+				'highLightLineHeightTablet'    => [
 					'type' => 'number',
-				),
-				'highLightLineHeightMobile'    => array(
+				],
+				'highLightLineHeightMobile'    => [
 					'type' => 'number',
-				),
-				'highLightLetterSpacing'       => array(
+				],
+				'highLightLetterSpacing'       => [
 					'type' => 'number',
-				),
-				'highLightLetterSpacingTablet' => array(
+				],
+				'highLightLetterSpacingTablet' => [
 					'type' => 'number',
-				),
-				'highLightLetterSpacingMobile' => array(
+				],
+				'highLightLetterSpacingMobile' => [
 					'type' => 'number',
-				),
-				'highLightLetterSpacingType'   => array(
+				],
+				'highLightLetterSpacingType'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightTopPadding'          => array(
+				],
+				'highLightTopPadding'          => [
 					'type' => 'number',
-				),
-				'highLightRightPadding'        => array(
+				],
+				'highLightRightPadding'        => [
 					'type' => 'number',
-				),
-				'highLightLeftPadding'         => array(
+				],
+				'highLightLeftPadding'         => [
 					'type' => 'number',
-				),
-				'highLightBottomPadding'       => array(
+				],
+				'highLightBottomPadding'       => [
 					'type' => 'number',
-				),
-				'highLightTopPaddingTablet'    => array(
+				],
+				'highLightTopPaddingTablet'    => [
 					'type' => 'number',
-				),
-				'highLightRightPaddingTablet'  => array(
+				],
+				'highLightRightPaddingTablet'  => [
 					'type' => 'number',
-				),
-				'highLightLeftPaddingTablet'   => array(
+				],
+				'highLightLeftPaddingTablet'   => [
 					'type' => 'number',
-				),
-				'highLightBottomPaddingTablet' => array(
+				],
+				'highLightBottomPaddingTablet' => [
 					'type' => 'number',
-				),
-				'highLightTopPaddingMobile'    => array(
+				],
+				'highLightTopPaddingMobile'    => [
 					'type' => 'number',
-				),
-				'highLightRightPaddingMobile'  => array(
+				],
+				'highLightRightPaddingMobile'  => [
 					'type' => 'number',
-				),
-				'highLightLeftPaddingMobile'   => array(
+				],
+				'highLightLeftPaddingMobile'   => [
 					'type' => 'number',
-				),
-				'highLightBottomPaddingMobile' => array(
+				],
+				'highLightBottomPaddingMobile' => [
 					'type' => 'number',
-				),
-				'highLightPaddingUnit'         => array(
+				],
+				'highLightPaddingUnit'         => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightPaddingUnitTablet'   => array(
+				],
+				'highLightPaddingUnitTablet'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightPaddingUnitMobile'   => array(
+				],
+				'highLightPaddingUnitMobile'   => [
 					'type'    => 'string',
 					'default' => 'px',
-				),
-				'highLightPaddingLink'         => array(
+				],
+				'highLightPaddingLink'         => [
 					'type'    => 'boolean',
 					'default' => false,
-				),
-			);
+				],
+			];
 
-			$advaned_heading_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
+			$advaned_heading_border_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
 
 			$attr = array_merge( $advaned_heading_border_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_advaned_heading_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_advaned_heading_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/advanced-heading',
-				array(
+				[
 					'attributes'      => $attributes,
-					'render_callback' => array( $this, 'render_html' ),
-				)
+					'render_callback' => [ $this, 'render_html' ],
+				]
 			);
 		}
 
@@ -687,11 +687,11 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				$desc_text .= 'below-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
 			}
 
-			$main_classes = array(
+			$main_classes = [
 				'wp-block-uagb-advanced-heading',
 				'uagb-block',
 				'uagb-block-' . $block_id,
-			);
+			];
 
 			if ( isset( $attributes['className'] ) ) {
 				$main_classes[] = $attributes['className'];
@@ -727,8 +727,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Advanced_Heading' exist.
+	 *  Prepare if class 'SRFM_Advanced_Heading' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Advanced_Heading::get_instance();
+	SRFM_Advanced_Heading::get_instance();
 }
