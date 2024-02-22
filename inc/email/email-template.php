@@ -153,7 +153,17 @@ class Email_Template {
 					</tr>
 					<tr class="field-value">
 						<td style="font-size: 14px;color: #475569;padding: 8px 16px 16px 16px;padding-bottom: 10px;">
-						<?php echo wp_kses( $value, [ 'a' => [ 'href' => [], 'target' => [] ] ] ); ?>
+						<?php
+						echo wp_kses(
+							$value,
+							[
+								'a' => [
+									'href'   => [],
+									'target' => [],
+								],
+							]
+						);
+						?>
 						</td>
 					</tr>
 
