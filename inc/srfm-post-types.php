@@ -254,7 +254,7 @@ class SRFM_Post_Types {
 		$post_type = get_post_type( $post_ID );
 
 		if ( SRFM_ENTRIES_POST_TYPE === $post_type ) {
-			/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
+			// @phpstan-ignore-next-line -- False positive
 			$messages['post'][1] = __( 'Entry updated.', 'sureforms' );
 		}
 

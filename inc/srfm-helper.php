@@ -148,17 +148,17 @@ class SRFM_Helper {
 		if ( ! self::$srfm_svgs ) {
 			ob_start();
 
-			include_once SRFM_DIR . 'assets/svg/svgs.json'; // phpcs:ignore WPThemeReview.CoreFunctionality.FileInclude.FileIncludeFound
-			// phpcs:ignore /** @phpstan-ignore-next-line */
-			self::$srfm_svgs = json_decode( ob_get_clean(), true );
+			include_once SRFM_DIR . 'assets/svg/svgs.json';
+			self::$srfm_svgs = json_decode( self::get_string_value( ob_get_clean() ), true );
 			self::$srfm_svgs = apply_filters( 'srfm_svg_icons', self::$srfm_svgs );
 		}
 
-			$output .= isset( self::$srfm_svgs[ $icon ] ) ? self::$srfm_svgs[ $icon ] : '';
-			$output .= '</span>';
+		$output .= isset( self::$srfm_svgs[ $icon ] ) ? self::$srfm_svgs[ $icon ] : '';
+		$output .= '</span>';
 
-			return $output;
+		return $output;
 	}
+
 
 	/**
 	 * Encrypt data using base64.
