@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
+if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 
 	/**
-	 * Class Sureforms_Spec_Icon.
+	 * Class SRFM_Spec_Icon.
 	 */
-	class Sureforms_Spec_Icon {
+	class SRFM_Spec_Icon {
 
 		/**
 		 * Member Variable
@@ -418,11 +418,11 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 				],
 			];
 
-			$icon_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
+			$icon_border_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
 
 			$attr = array_merge( $icon_border_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_icon_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_icon_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/icon',
@@ -482,7 +482,7 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 						$href = $link_url || $hash;
 						echo "<a rel='noopener noreferrer' href='" . esc_attr( $href ) . "' target='" . esc_attr( $target_val ) . "'></a>";
 					} else {
-						Sureforms_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, Generic.Commenting.DocComment.MissingShort
+						SRFM_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, Generic.Commenting.DocComment.MissingShort
 					}
 					?>
 					</span>
@@ -493,8 +493,8 @@ if ( ! class_exists( 'Sureforms_Spec_Icon' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Spec_Icon' exist.
+	 *  Prepare if class 'SRFM_Spec_Icon' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Spec_Icon::get_instance();
+	SRFM_Spec_Icon::get_instance();
 }

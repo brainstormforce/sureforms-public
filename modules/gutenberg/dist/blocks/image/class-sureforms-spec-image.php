@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
+if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
 
 	/**
-	 * Class Sureforms_Advanced_Image.
+	 * Class SRFM_Advanced_Image.
 	 */
-	class Sureforms_Advanced_Image {
+	class SRFM_Advanced_Image {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var Sureforms_Advanced_Image|null
+		 * @var SRFM_Advanced_Image|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return Sureforms_Advanced_Image The instance of the Sureforms_Advanced_Image class.
+		 * @return SRFM_Advanced_Image The instance of the SRFM_Advanced_Image class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -713,12 +713,12 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 				],
 			];
 
-			$advaned_image_border_attr         = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
-			$advaned_image_border_overlay_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
+			$advaned_image_border_attr         = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
+			$advaned_image_border_overlay_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
 
 			$attr = array_merge( $advaned_image_border_attr, $advaned_image_border_overlay_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_image_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_image_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/image',
@@ -876,8 +876,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Image' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Advanced_Image' exist.
+	 *  Prepare if class 'SRFM_Advanced_Image' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Advanced_Image::get_instance();
+	SRFM_Advanced_Image::get_instance();
 }

@@ -6,10 +6,15 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Load Defaults Class.
  *
@@ -76,7 +81,7 @@ class SRFM_Export {
 	 */
 	public function handle_import_form( $request ) {
 
-		$nonce = Sureforms_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -94,34 +99,35 @@ class SRFM_Export {
 		}
 		$data      = json_decode( $post_data, true );
 		$responses = [];
-		if ( is_iterable( $data ) ) {
-			foreach ( $data as $form_data ) {
-				$post_content = $form_data['post']['post_content'];
-				$post_title   = $form_data['post']['post_title'];
-				$post_meta    = $form_data['post_meta'];
-				$post_type    = $form_data['post']['post_type'];
-				// Check if sureforms/form exists in post_content.
-				if ( 'sureforms_form' === $post_type ) {
-					$new_post = [
-						'post_title'   => $post_title,
-						'post_content' => $post_content,
-						'post_status'  => 'draft',
-						'post_type'    => 'sureforms_form',
-					];
+		if ( ! is_iterable( $data ) ) {
+			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
+		}
+		foreach ( $data as $form_data ) {
+			$post_content = $form_data['post']['post_content'];
+			$post_title   = $form_data['post']['post_title'];
+			$post_meta    = $form_data['post_meta'];
+			$post_type    = $form_data['post']['post_type'];
+			// Check if sureforms/form exists in post_content.
+			if ( 'sureforms_form' === $post_type ) {
+				$new_post = [
+					'post_title'   => $post_title,
+					'post_content' => $post_content,
+					'post_status'  => 'draft',
+					'post_type'    => 'sureforms_form',
+				];
 
-					$post_id = wp_insert_post( $new_post );
-					if ( ! $post_id ) {
-						http_response_code( 400 );
-						wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
-					}
-					// Update post meta.
-					foreach ( $post_meta as $meta_key => $meta_value ) {
-						update_post_meta( $post_id, $meta_key, $meta_value[0] );
-					}
-				} else {
+				$post_id = wp_insert_post( $new_post );
+				if ( ! $post_id ) {
 					http_response_code( 400 );
 					wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 				}
+				// Update post meta.
+				foreach ( $post_meta as $meta_key => $meta_value ) {
+					add_post_meta( $post_id, $meta_key, $meta_value[0] );
+				}
+			} else {
+				http_response_code( 400 );
+				wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 			}
 		}
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace SureForms {
+namespace SRFM {
 	/**
 	 * Plugin_Loader
 	 *
 	 * @since 0.0.1
 	 */
-	class Plugin_Loader {
+	class SRFM_Plugin_Loader {
 
 		/**
 		 * Initiator
@@ -53,7 +53,7 @@ namespace SureForms {
 	}
 }
 
-namespace SureForms\Inc\Blocks {
+namespace SRFM\Inc\Blocks {
 	/**
 	 * Block base class.
 	 */
@@ -134,7 +134,7 @@ namespace SureForms\Inc\Blocks {
 	}
 }
 
-namespace SureForms\Inc\Traits {
+namespace SRFM\Inc\Traits {
 	/**
 	 * Trait Get_Instance.
 	 */
@@ -157,15 +157,15 @@ namespace SureForms\Inc\Traits {
 	}
 }
 
-namespace SureForms\Inc {
+namespace SRFM\Inc {
 	/**
 	 * Post Types Main Class.
 	 *
 	 * @since 0.0.1
 	 */
-	class Post_Types {
+	class SRFM_Post_Types {
 
-		use \SureForms\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\Get_Instance;
 		/**
 		 * Constructor
 		 *
@@ -184,15 +184,15 @@ namespace SureForms\Inc {
 	}
 }
 
-namespace SureForms\Admin {
+namespace SRFM\Admin {
 	/**
 	 * Gutenberg hooks handler class.
 	 *
 	 * @since 0.0.1
 	 */
-	class Gutenberg_Hooks {
+	class SRFM_Gutenberg_Hooks {
 
-		use \SureForms\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\Get_Instance;
 		/**
 		 * Class constructor.
 		 *
@@ -215,9 +215,9 @@ namespace SureForms\Admin {
 	 *
 	 * @since 0.0.1
 	 */
-	class Admin {
+	class SRFM_Admin {
 
-		use \SureForms\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\Get_Instance;
 		/**
 		 * Class constructor.
 		 *
@@ -260,12 +260,12 @@ namespace {
 	/**
 	 * Set constants
 	 */
-	\define( 'SUREFORMS_FILE', __FILE__ );
-	\define( 'SUREFORMS_BASE', \plugin_basename( \SUREFORMS_FILE ) );
-	\define( 'SUREFORMS_DIR', \plugin_dir_path( \SUREFORMS_FILE ) );
-	\define( 'SUREFORMS_URL', \plugins_url( '/', \SUREFORMS_FILE ) );
-	\define( 'SUREFORMS_VER', '0.0.1' );
+	\define( 'SRFM_FILE', __FILE__ );
+	\define( 'SRFM_BASE', \plugin_basename( \SRFM_FILE ) );
+	\define( 'SRFM_DIR', \plugin_dir_path( \SRFM_FILE ) );
+	\define( 'SRFM_URL', \plugins_url( '/', \SRFM_FILE ) );
+	\define( 'SRFM_VER', '0.0.1' );
 	// ------ ADDITIONAL CONSTANTS ------- //
-	\define( 'SUREFORMS_FORMS_POST_TYPE', 'sureforms_form' );
-	\define( 'SUREFORMS_ENTRIES_POST_TYPE', 'sureforms_entry' );
+	\define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
+	\define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
 }

@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
+if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 
 	/**
-	 * Class Sureforms_Advanced_Heading.
+	 * Class SRFM_Advanced_Heading.
 	 */
-	class Sureforms_Advanced_Heading {
+	class SRFM_Advanced_Heading {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var Sureforms_Advanced_Heading|null
+		 * @var SRFM_Advanced_Heading|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return Sureforms_Advanced_Heading The instance of the Sureforms_Advanced_Heading class.
+		 * @return SRFM_Advanced_Heading The instance of the SRFM_Advanced_Heading class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -623,11 +623,11 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 				],
 			];
 
-			$advaned_heading_border_attr = Sureforms_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
+			$advaned_heading_border_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
 
 			$attr = array_merge( $advaned_heading_border_attr, $attr );
 
-			$attributes = apply_filters( 'sureforms_gutenberg_advaned_heading_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_advaned_heading_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/advanced-heading',
@@ -727,8 +727,8 @@ if ( ! class_exists( 'Sureforms_Advanced_Heading' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Advanced_Heading' exist.
+	 *  Prepare if class 'SRFM_Advanced_Heading' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Advanced_Heading::get_instance();
+	SRFM_Advanced_Heading::get_instance();
 }

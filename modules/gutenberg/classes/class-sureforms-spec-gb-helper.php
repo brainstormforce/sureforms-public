@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
+if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 	/**
-	 * Class Sureforms_Spec_Gb_Helper.
+	 * Class SRFM_Spec_Gb_Helper.
 	 */
-	final class Sureforms_Spec_Gb_Helper {
+	final class SRFM_Spec_Gb_Helper {
 
 
 		/**
@@ -129,11 +129,11 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
-			require SUREFORMS_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
 
-			self::$block_list = Sureforms_Spec_Block_Config::get_block_attributes();
+			self::$block_list = SRFM_Spec_Block_Config::get_block_attributes();
 
 			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
 
@@ -161,7 +161,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				 *
 				 * @param \WP_Post $this_post The global post.
 				 */
-				$this_post = apply_filters( 'sureforms_post_for_stylesheet', $loop->posts[0] );
+				$this_post = apply_filters( 'srfm_post_for_stylesheet', $loop->posts[0] );
 
 				$this->get_generated_stylesheet( $this_post );
 			}
@@ -218,7 +218,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			if ( empty( self::$gfonts ) ) {
 				return;
 			}
-			$show_google_fonts = apply_filters( 'sureforms_blocks_show_google_fonts', true );
+			$show_google_fonts = apply_filters( 'srfm_blocks_show_google_fonts', true );
 			if ( ! $show_google_fonts ) {
 				return;
 			}
@@ -335,7 +335,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 			 *
 			 * @param \WP_Post $this_post The global post.
 			 */
-			$this_post = apply_filters( 'sureforms_post_for_stylesheet', $this_post );
+			$this_post = apply_filters( 'srfm_post_for_stylesheet', $this_post );
 
 			$this->get_generated_stylesheet( $this_post );
 
@@ -399,7 +399,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$block_list_for_assets = self::$current_block_list;
 
-			$blocks = Sureforms_Spec_Block_Config::get_block_attributes();
+			$blocks = SRFM_Spec_Block_Config::get_block_attributes();
 
 			foreach ( $block_list_for_assets as $key => $curr_block_name ) {
 
@@ -812,22 +812,22 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 				switch ( $name ) {
 					case 'sureforms/separator':
-						$css = Sureforms_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_separator_gfont( $blockattr );
+						$css = SRFM_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
+						SRFM_Spec_Block_JS::blocks_separator_gfont( $blockattr );
 						break;
 
 					case 'sureforms/image':
-						$css = Sureforms_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_image_gfont( $blockattr );
+						$css = SRFM_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
+						SRFM_Spec_Block_JS::blocks_image_gfont( $blockattr );
 						break;
 
 					case 'sureforms/icon':
-						$css = Sureforms_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
+						$css = SRFM_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
 						break;
 
 					case 'sureforms/advanced-heading':
-						$css = Sureforms_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
-						Sureforms_Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
+						$css = SRFM_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
+						SRFM_Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
 						break;
 
 					default:
@@ -836,7 +836,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 				}
 
 				// Add static css here.
-				$block_css_arr = Sureforms_Spec_Block_Config::get_block_assets_css();
+				$block_css_arr = SRFM_Spec_Block_Config::get_block_assets_css();
 
 				if ( isset( $block_css_arr[ $name ] ) && ! in_array( $block_css_arr[ $name ]['name'], $this->static_css_blocks, true ) ) {
 
@@ -914,7 +914,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			foreach ( $selectors as $key => $selector ) {
 				$hook_prefix                = ( 'desktop' === $key ) ? '' : '_' . $key;
-				$combined_selectors[ $key ] = apply_filters( 'spectra_' . $block_name . $hook_prefix . '_styling', $selector, $attr );
+				$combined_selectors[ $key ] = apply_filters( 'srfm_' . $block_name . $hook_prefix . '_styling', $selector, $attr );
 			}
 
 			return $combined_selectors;
@@ -932,7 +932,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$css = '';
 
-			$block_static_css_path = SUREFORMS_DIR . 'modules/gutenberg/assets/css/blocks/' . $block_name . '.css';
+			$block_static_css_path = SRFM_DIR . 'modules/gutenberg/assets/css/blocks/' . $block_name . '.css';
 
 			if ( file_exists( $block_static_css_path ) ) {
 
@@ -1026,7 +1026,7 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 
 			$icons_chunks = [];
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = SUREFORMS_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
+				$json_file = SRFM_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
 
 				if ( file_exists( $json_file ) ) {
 					$icons_chunks[] = include $json_file;
@@ -1080,8 +1080,8 @@ if ( ! class_exists( 'Sureforms_Spec_Gb_Helper' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Spec_Gb_Helper' exist.
+	 *  Prepare if class 'SRFM_Spec_Gb_Helper' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Spec_Gb_Helper::get_instance();
+	SRFM_Spec_Gb_Helper::get_instance();
 }
