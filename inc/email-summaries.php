@@ -94,11 +94,33 @@ class Email_Summaries {
 	/**
 	 * Get email summary options.
 	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
 	 * @return WP_REST_Response
 	 * @since 0.0.1
 	 */
-	public function get_email_summary_options() {
+	public function get_email_summary_options( $request ) {
+
+		$nonce = Sureforms_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
+		if ( ! is_array( $email_summary_options ) ) {
+			$email_summary_options = array(
+				'enable_email_summary' => false,
+				'emails_send_to'       => get_option( 'admin_email' ),
+				'schedule_reports'     => 'Monday',
+				'email_summary_test'   => false,
+			);
+		}
 		return new WP_REST_Response( $email_summary_options, 200 );
 	}
 
@@ -111,6 +133,18 @@ class Email_Summaries {
 	 * @since 0.0.1
 	 */
 	public function save_email_summary_options( $data ) {
+
+		$nonce = Sureforms_Helper::get_string_value( $data->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 
