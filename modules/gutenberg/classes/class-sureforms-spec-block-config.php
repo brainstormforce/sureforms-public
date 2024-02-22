@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
+if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 
 	/**
-	 * Class Sureforms_Spec_Block_Config.
+	 * Class SRFM_Spec_Block_Config.
 	 */
-	class Sureforms_Spec_Block_Config {
+	class SRFM_Spec_Block_Config {
 
 		/**
 		 * Block Attributes
@@ -560,7 +560,7 @@ if ( ! class_exists( 'Sureforms_Spec_Block_Config' ) ) {
 
 				];
 			}
-			return apply_filters( 'sureforms_gutenberg_blocks_attributes', self::$block_attributes );
+			return apply_filters( 'srfm_gutenberg_blocks_attributes', self::$block_attributes );
 		}
 
 		/**

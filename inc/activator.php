@@ -6,9 +6,9 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 /**
  * Activation Class.
@@ -33,7 +33,7 @@ class Activator {
 		 */
 		delete_option( 'rewrite_rules' );
 
-		update_option( '__sureforms_do_redirect', true );
+		update_option( '__srfm_do_redirect', true );
 
 	}
 }

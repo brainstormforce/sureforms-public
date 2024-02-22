@@ -9,12 +9,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
+if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 
 	/**
 	 * Class for Spectra compatibility
 	 */
-	class Sureforms_Spec_Spectra_Compatibility {
+	class SRFM_Spec_Spectra_Compatibility {
 
 		/**
 		 * Member Variable
@@ -55,17 +55,17 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 				'SRFM_block-sureforms-block-js',
 				'srfm_spec_blocks_info',
 				[
-					'number_of_icon_chunks'         => Sureforms_Spec_Gb_Helper::$number_of_icon_chunks,
+					'number_of_icon_chunks'         => SRFM_Spec_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',
 					'load_font_awesome_5'           => 'disabled',
 					'uag_select_font_globally'      => [],
 					'uag_load_select_font_globally' => [],
 					'font_awesome_5_polyfill'       => [],
-					'spectra_custom_fonts'          => apply_filters( 'spectra_system_fonts', [] ),
+					'spectra_custom_fonts'          => apply_filters( 'srfm_system_fonts', [] ),
 					'tablet_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'mobile_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'category'                      => 'sureforms',
-					'srfm_url'                      => SUREFORMS_URL,
+					'srfm_url'                      => SRFM_URL,
 				]
 			);
 
@@ -81,7 +81,7 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 		 * @return void
 		 */
 		public function add_svg_icon_assets() {
-			$localize_icon_chunks = Sureforms_Spec_Gb_Helper::backend_load_font_awesome_icons();
+			$localize_icon_chunks = SRFM_Spec_Gb_Helper::backend_load_font_awesome_icons();
 
 			if ( ! $localize_icon_chunks ) {
 				return;
@@ -96,6 +96,6 @@ if ( ! class_exists( 'Sureforms_Spec_Spectra_Compatibility' ) ) :
 	/**
 	 * Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Spec_Spectra_Compatibility::get_instance();
+	SRFM_Spec_Spectra_Compatibility::get_instance();
 
 endif;

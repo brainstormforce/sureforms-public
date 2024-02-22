@@ -6,10 +6,10 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Services\Browser\Browser;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Services\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -64,7 +64,7 @@ class SRFM_Smart_Tags {
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
-		return get_post_type( Sureforms_Helper::get_integer_value( $id ) ) ? true : false;
+		return get_post_type( SRFM_Helper::get_integer_value( $id ) ) ? true : false;
 	}
 
 	/**
@@ -121,7 +121,7 @@ class SRFM_Smart_Tags {
 
 			$replace = '';
 			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
-				$replace = Sureforms_Helper::get_string_value( self::smart_tags_callback( $match ) );
+				$replace = SRFM_Helper::get_string_value( self::smart_tags_callback( $match ) );
 			}
 
 			$content = str_replace( $match, $replace, $content );
@@ -244,7 +244,7 @@ class SRFM_Smart_Tags {
 			$ip = 'UNKNOWN';
 		}
 
-		return apply_filters( 'sureforms_get_the_ip', $ip );
+		return apply_filters( 'srfm_get_the_ip', $ip );
 	}
 
 	/**
@@ -266,7 +266,7 @@ class SRFM_Smart_Tags {
 			$format = 'd/m/Y';
 		}
 
-		$date = gmdate( $format, Sureforms_Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
+		$date = gmdate( $format, SRFM_Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
 		return $date ? $date : '';
 	}
 
@@ -395,10 +395,10 @@ class SRFM_Smart_Tags {
 		if ( $param && strpos( $value, 'get_input:' ) !== false ) {
 			$var = '';
 			if ( isset( $_SERVER['QUERY_STRING'] ) ) {
-				$var = Sureforms_Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
+				$var = SRFM_Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
 			}
 			parse_str( $var, $parameters );
-			return isset( $parameters[ $param ] ) ? sanitize_text_field( Sureforms_Helper::get_string_value( $parameters[ $param ] ) ) : '';
+			return isset( $parameters[ $param ] ) ? sanitize_text_field( SRFM_Helper::get_string_value( $parameters[ $param ] ) ) : '';
 		}
 
 		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {

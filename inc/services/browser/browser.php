@@ -42,7 +42,7 @@
  * http://apptools.com/phptools/browser/
  */
 
- namespace SureForms\Inc\Services\Browser;
+ namespace SRFM\Inc\Services\Browser;
  
 class Browser {
 

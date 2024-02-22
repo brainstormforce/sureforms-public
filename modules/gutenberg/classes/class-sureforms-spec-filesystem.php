@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Sureforms_Spec_Filesystem.
+ * Class SRFM_Spec_Filesystem.
  */
-class Sureforms_Spec_Filesystem {
+class SRFM_Spec_Filesystem {
 
 	/**
 	 * Member Variable
@@ -95,7 +95,7 @@ class Sureforms_Spec_Filesystem {
  *  Prepare if class 'SRFM_Filesystem' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
-Sureforms_Spec_Filesystem::get_instance();
+SRFM_Spec_Filesystem::get_instance();
 
 /**
  * Filesystem class
@@ -103,5 +103,5 @@ Sureforms_Spec_Filesystem::get_instance();
  * @since 0.0.1
  */
 function srfm_filesystem() {
-	return Sureforms_Spec_Filesystem::get_instance()->get_filesystem();
+	return SRFM_Spec_Filesystem::get_instance()->get_filesystem();
 }

@@ -13,7 +13,7 @@ return [
 	'info'             => __( 'User login form', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => 'Registration Forms',
-	'postTypes'        => SUREFORMS_FORMS_POST_TYPE,
+	'postTypes'        => SRFM_FORMS_POST_TYPE,
 	'content'          => '<!-- wp:sureforms/input {"block_id":"a9d3f6bc","label":"Email","formId":21} /--><!-- wp:sureforms/password {"block_id":"6cb53a65","formId":21} /-->',
 	'id'               => 'form-7',
 	'isPro'            => false,

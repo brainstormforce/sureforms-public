@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
+if ( ! class_exists( 'SRFM_Spec_Separator' ) ) {
 
 	/**
-	 * Class Sureforms_Spec_Separator.
+	 * Class SRFM_Spec_Separator.
 	 */
-	class Sureforms_Spec_Separator {
+	class SRFM_Spec_Separator {
 
 		/**
 		 * Member Variable
@@ -377,7 +377,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 				],
 			];
 
-			$attributes = apply_filters( 'sureforms_gutenberg_separator_attributes_filters', $attr );
+			$attributes = apply_filters( 'srfm_gutenberg_separator_attributes_filters', $attr );
 
 			register_block_type(
 				'sureforms/separator',
@@ -437,7 +437,7 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 					<div class="wp-block-uagb-separator-element">
 						<?php
 						if ( 'icon' === $element_type ) {
-							Sureforms_Spec_Gb_Helper::render_svg_html( $separator_icon );
+							SRFM_Spec_Gb_Helper::render_svg_html( $separator_icon );
 						} elseif ( 'text' === $element_type ) {
 							echo wp_kses_post( $custom_tag );
 						}
@@ -451,8 +451,8 @@ if ( ! class_exists( 'Sureforms_Spec_Separator' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'Sureforms_Spec_Separator' exist.
+	 *  Prepare if class 'SRFM_Spec_Separator' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	Sureforms_Spec_Separator::get_instance();
+	SRFM_Spec_Separator::get_instance();
 }
