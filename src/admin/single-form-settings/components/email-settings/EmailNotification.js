@@ -98,6 +98,7 @@ const EmailNotification = ( { emailNotificationData } ) => {
 						) : (
 							<div className="srfm-modal-inner-box-table">
 								<div className="srfm-modal-table-wrapper">
+									<div class="srfm-responsive-table">
 									<table>
 										<thead>
 											<tr className="srfm-modal-row">
@@ -179,6 +180,7 @@ const EmailNotification = ( { emailNotificationData } ) => {
 											</tr>
 										</tfoot>
 									</table>
+									</div>
 								</div>
 							</div>
 						)
