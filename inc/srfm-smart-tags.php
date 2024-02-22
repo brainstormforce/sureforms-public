@@ -64,7 +64,7 @@ class SRFM_Smart_Tags {
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
-		return get_post_type( Sureforms_Helper::get_integer_value( $id ) ) ? true : false;
+		return get_post_type( SRFM_Helper::get_integer_value( $id ) ) ? true : false;
 	}
 
 	/**
@@ -121,7 +121,7 @@ class SRFM_Smart_Tags {
 
 			$replace = '';
 			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
-				$replace = Sureforms_Helper::get_string_value( self::smart_tags_callback( $match ) );
+				$replace = SRFM_Helper::get_string_value( self::smart_tags_callback( $match ) );
 			}
 
 			$content = str_replace( $match, $replace, $content );
@@ -266,7 +266,7 @@ class SRFM_Smart_Tags {
 			$format = 'd/m/Y';
 		}
 
-		$date = gmdate( $format, Sureforms_Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
+		$date = gmdate( $format, SRFM_Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
 		return $date ? $date : '';
 	}
 
