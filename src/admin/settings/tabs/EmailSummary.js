@@ -23,6 +23,10 @@ const EmailSummary = () => {
 			try {
 				const response = await apiFetch( {
 					path: 'sureforms/v1/get-email-summary-options',
+					headers: {
+						'content-type': 'application/json',
+						'X-WP-Nonce': sureforms_admin.email_summary_nonce,
+					},
 				} );
 				setFormData( response );
 			} catch ( error ) {
@@ -45,6 +49,7 @@ const EmailSummary = () => {
 				body: JSON.stringify( formData ),
 				headers: {
 					'content-type': 'application/json',
+					'X-WP-Nonce': sureforms_admin.email_summary_nonce,
 				},
 			} );
 			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
