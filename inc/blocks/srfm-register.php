@@ -29,12 +29,14 @@ class SRFM_Register {
 	public function __construct() {
 		$namespace  = 'SRFM\\Inc\\Blocks';
 		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
-		$this->register_block( $blocks_dir, $namespace );
+		$base       = 'SRFM_Block';
+		$this->register_block( $blocks_dir, $namespace, $base );
 
-		if ( defined( 'SUREFORMS_PRO_VER' ) ) {
-			$blocks_dir = glob( SUREFORMS_PRO_DIR . 'inc/blocks/**/*.php' );
-			$namespace  = 'SureForms_Pro\\Inc\\Blocks';
-			$this->register_block( $blocks_dir, $namespace );
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
+			$namespace  = 'SRFM_PRO\\Inc\\Blocks';
+			$base       = 'SRFM_PRO_Block';
+			$this->register_block( $blocks_dir, $namespace, $base );
 		}
 	}
 
@@ -43,17 +45,17 @@ class SRFM_Register {
 	 *
 	 * @param array<int, string>|false $blocks_dir Block directory.
 	 * @param string                   $namespace Namespace.
-	 *
+	 * @param string                   $base Base.
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public static function register_block( $blocks_dir, $namespace ) {
+	public static function register_block( $blocks_dir, $namespace, $base ) {
 		if ( ! empty( $blocks_dir ) ) {
 			foreach ( $blocks_dir as $filename ) {
 				// Include the file.
 				require_once $filename;
 				$classname       = ucfirst( basename( dirname( $filename ) ) );
-				$full_class_name = $namespace . '\\' . $classname . '\\SRFM_Block';
+				$full_class_name = $namespace . '\\' . $classname . '\\' . $base;
 
 				// Check if the class exists.
 				if ( class_exists( $full_class_name ) ) {
