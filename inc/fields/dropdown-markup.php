@@ -37,6 +37,7 @@ class Dropdown_Markup extends Base {
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$form_id    = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$slug        = 'dropdown';
 
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -44,9 +45,10 @@ class Dropdown_Markup extends Base {
 		$placeholder_html     = $placeholder ? $placeholder : 'Select option';
 		$input_label_fallback = $label ? $label : __( 'Dropdown', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+		$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap srfm-dropdown-common-wrap">
 				<?php

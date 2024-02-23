@@ -60,6 +60,7 @@ class Address_Markup extends Base {
 			$country_placeholder  = isset( $attributes['countryPlaceholder'] ) ? $attributes['countryPlaceholder'] : '';
 			$class_name           = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$form_id             = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$slug                 = 'address';
 
@@ -75,11 +76,12 @@ class Address_Markup extends Base {
 			$input_label               = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
 			$aria_require_attr = $required ? 'true' : 'false';
+			$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 			$data = $this->get_countries();
 
 		ob_start(); ?>
-		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+		<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr($conditional_class);?>">
 			<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-hidden-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>"/>
 			<div class="srfm-block-wrap">

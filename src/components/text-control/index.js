@@ -166,6 +166,7 @@ const SRFMTextControl = ( props ) => {
 									value={ inputData }
 									onChange={ handleOnChange }
 									onBlur={ handleOnBlur }
+									disabled={props?.disabled}
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
 									placeholder={ props?.placeholder }
@@ -242,6 +243,7 @@ SRFMTextControl.defaultProps = {
 	help: false,
 	isFormSpecific: false,
 	withSmartTagDropdown: false,
+	disabled:false
 };
 
 export default SRFMTextControl;

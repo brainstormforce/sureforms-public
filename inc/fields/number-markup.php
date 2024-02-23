@@ -29,6 +29,7 @@ class Number_Markup extends Base {
 	 */
 	public function default( $attributes, $form_id ) {
 			$block_id    = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
+			$form_id    = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
@@ -53,11 +54,12 @@ class Number_Markup extends Base {
 			$max_value_attr       = $max_value ? ' max="' . $max_value . '" ' : '';
 			$input_label_fallback = $label ? $label : __( 'Number', 'sureforms' );
 			$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
+			$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 			$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<?php echo wp_kses_post( Sureforms_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="number" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> /> 

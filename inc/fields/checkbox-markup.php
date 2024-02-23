@@ -37,6 +37,7 @@ class Checkbox_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$form_id    = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$slug        = 'checkbox';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -52,9 +53,10 @@ class Checkbox_Markup extends Base {
 				'target' => array(),
 			),
 		);
+		$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 					<div class="srfm-block-wrap">
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
 						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">

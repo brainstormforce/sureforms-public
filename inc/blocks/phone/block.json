@@ -59,6 +59,10 @@
 		"autoCountry": {
 			"type": "boolean",
 			"default": false
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
 		}
 	}
 }
