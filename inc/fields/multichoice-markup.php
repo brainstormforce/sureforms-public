@@ -34,7 +34,7 @@ class Multichoice_Markup extends Base {
 			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
-			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_multi_choice_block_required_text' );
 			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';

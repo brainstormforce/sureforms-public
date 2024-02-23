@@ -249,6 +249,7 @@ class Sureforms_Helper {
 			'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+			'srfm_dropdown_block_required_text'          => __( 'This field is require.', 'sureforms' ),
 		);
 
 		return $default_dynamic_values;

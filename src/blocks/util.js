@@ -59,4 +59,18 @@ const getBlockTypes = ( exclude = '' ) => {
 	return blocks;
 };
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes };
+
+/**
+ * Generate Validation Message.
+ *
+ * @param {string} defaults message.
+ *
+ * @return {string} message.
+ */
+const validationMessage = ( defaultMessage, message ) => {
+	const defaultErrorMsg = sfBlockData?.get_default_dynamic_block_option?.[defaultMessage] ? sfBlockData.get_default_dynamic_block_option[defaultMessage] : ''
+	const msg = message ? message : defaultErrorMsg;
+	return msg;
+};
+
+export { stripHTML, getSpacingPresetCssVar, getBlockTypes, validationMessage };

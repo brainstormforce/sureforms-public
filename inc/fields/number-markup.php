@@ -37,7 +37,7 @@ class Number_Markup extends Base {
 			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
+			$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_number_block_required_text' );
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$slug        = 'number';

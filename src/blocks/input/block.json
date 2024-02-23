@@ -36,7 +36,7 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value need to be unique."
+			"default": ""
 		},
 		"placeholder": {
 			"type": "string",

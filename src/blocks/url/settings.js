@@ -11,6 +11,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
+import { validationMessage } from '@Blocks/util';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -22,9 +23,12 @@ export default ( { attributes, setAttributes } ) => {
 		errorMsg,
 		fieldWidth,
 	} = attributes;
+	
 
-	const defaultErrorValue = sfBlockData?.get_default_dynamic_block_option?.srfm_url_block_required_text ? sfBlockData.get_default_dynamic_block_option.srfm_url_block_required_text : ''
-	const currentErrorMessage = errorMsg ? errorMsg : defaultErrorValue;
+	//const defaultErrorValue = sfBlockData?.get_default_dynamic_block_option?.srfm_url_block_required_text ? sfBlockData.get_default_dynamic_block_option.srfm_url_block_required_text : ''
+	const currentErrorMessage = validationMessage('srfm_url_block_required_text', errorMsg);
+
+	console.log(currentErrorMessage);
 
 	return (
 		<InspectorControls>
