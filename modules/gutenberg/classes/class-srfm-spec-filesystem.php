@@ -64,12 +64,12 @@ class SRFM_Spec_Filesystem {
 		// Set the permission constants if not already set.
 		if ( ! defined( 'FS_CHMOD_DIR' ) ) {
 			// phpcs:ignore
-			define( 'FS_CHMOD_DIR', 0755 );
+			define( 'FS_CHMOD_DIR', 0755 ); // ignore statement added to avoid WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, it's pre defined constant in bootstrap.php file
 			// phpcs:ignoreEnd
 		}
 		if ( ! defined( 'FS_CHMOD_FILE' ) ) {
 			// phpcs:ignore
-			define( 'FS_CHMOD_FILE', 0644 );
+			define( 'FS_CHMOD_FILE', 0644 ); // ignore statement added to avoid WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, it's pre defined constant in bootstrap.php file
 			// phpcs:ignoreEnd
 		}
 

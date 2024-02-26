@@ -2,7 +2,7 @@
 	"name": "srfm/address",
 	"title": "Address Field",
 	"description": "Displays a SureForm Address Field",
-	"category": "srfm",
+	"category": "sureforms",
 	"keywords": [ "address", "country", "location", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

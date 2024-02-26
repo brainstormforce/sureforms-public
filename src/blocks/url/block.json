@@ -2,7 +2,7 @@
 	"name": "srfm/url",
 	"title": "URL",
 	"description": "Displays a SureForm URL Field",
-	"category": "srfm",
+	"category": "sureforms",
 	"keywords": [ "url", "link", "website" ],
 	"textdomain": "sureforms",
 	"supports": {

@@ -4,7 +4,7 @@
 	"name": "srfm/form",
 	"title": "Form",
 	"description": "Collect and Manage data effortlessly with customizable SureForms.",
-	"category": "srfm",
+	"category": "sureforms",
 	"keywords": [ "form", "sureforms", "form" ],
 	"textdomain": "sureforms",
 	"supports": {

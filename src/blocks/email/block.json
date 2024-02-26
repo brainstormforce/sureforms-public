@@ -2,7 +2,7 @@
 	"name": "srfm/email",
 	"title": "Email",
 	"description": "Displays a SureForm Email Field",
-	"category": "srfm",
+	"category": "sureforms",
 	"keywords": [ "email", "mail" ],
 	"textdomain": "sureforms",
 	"supports": {

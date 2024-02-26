@@ -3,7 +3,7 @@
 	"name": "srfm/checkbox",
 	"title": "Checkbox",
 	"description": "Displays a SureForm Checkbox Field",
-	"category": "srfm",
+	"category": "sureforms",
 	"keywords": [ "checkbox", "toggle", "checkout", "engine" ],
 	"textdomain": "sureforms",
 	"supports": {
