@@ -194,7 +194,7 @@ class SRFM_Gutenberg_Hooks {
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
 		// Check if the sureforms-pro plugin is active.
-		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
+		$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,
