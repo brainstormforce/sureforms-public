@@ -425,7 +425,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	// Check if the user is a pro user and enable/disable the pro panel
 	// eslint-disable-next-line no-unused-vars
-	const [ isPro, setIsPro ] = useState( sfBlockData.is_pro_active );
+	const [ isPro, setIsPro ] = useState( srfm_block_data.is_pro_active );
 
 	// add pro panel to the block inserter
 	useEffect( () => {

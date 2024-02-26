@@ -25,7 +25,6 @@ define( 'SRFM_DIR', plugin_dir_path( SRFM_FILE ) );
 define( 'SRFM_URL', plugins_url( '/', SRFM_FILE ) );
 define( 'SRFM_VER', '0.0.1' );
 define( 'SRFM_SLUG', 'srfm' );
-define( 'SRFM_LOC', 'SureForms' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );

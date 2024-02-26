@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 function exportForm( postId ) {
 	const xhr = new XMLHttpRequest();
-	xhr.open( 'POST', sureforms_export.ajaxurl, true );
+	xhr.open( 'POST', srfm_export.ajaxurl, true );
 	xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 	xhr.onload = function () {
 		if ( xhr.status >= 200 && xhr.status < 400 ) {
@@ -23,7 +23,7 @@ function exportForm( postId ) {
 		console.log( 'Connection Error!' );
 	};
 	xhr.send(
-		`action=export_form&post_id=${ postId }&nonce=${ sureforms_export.srfm_export_nonce }`
+		`action=export_form&post_id=${ postId }&nonce=${ srfm_export.srfm_export_nonce }`
 	);
 }
 
@@ -72,15 +72,15 @@ const handleImportForm = () => {
 	if ( ! data ) {
 		return;
 	}
-	const site_url = sureforms_export.site_url;
-	const endpoint = sureforms_export.srfm_import_endpoint;
+	const site_url = srfm_export.site_url;
+	const endpoint = srfm_export.srfm_import_endpoint;
 	const path = site_url + endpoint;
 	fetch( path, {
 		method: 'POST',
 		body: JSON.stringify( data ),
 		headers: {
 			'Content-Type': 'application/json',
-			'X-WP-Nonce': sureforms_export.import_form_nonce,
+			'X-WP-Nonce': srfm_export.import_form_nonce,
 		},
 	} )
 		.then( ( response ) => {

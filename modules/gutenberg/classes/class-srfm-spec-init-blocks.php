@@ -76,7 +76,7 @@ class SRFM_Spec_Init_Blocks {
 
 			// Register block styles for both frontend + backend.
 			wp_enqueue_style(
-				'SRFM_block-srfm-style-css', // Handle.
+				'srfm-block-srfm-style-css', // Handle.
 				SRFM_URL . 'modules/gutenberg/build/style-blocks.css',
 				is_admin() ? [ 'wp-editor' ] : null, // Dependency to include the CSS after it.
 				SRFM_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
@@ -108,18 +108,18 @@ class SRFM_Spec_Init_Blocks {
 
 			// Register block editor script for backend.
 			wp_enqueue_script(
-				'SRFM_block-srfm-block-js', // Handle.
+				'srfm-spec-block-js', // Handle.
 				SRFM_URL . 'modules/gutenberg/build/blocks.js',
 				$script_dep, // Dependencies, defined above.
 				$script_ver, // Version: filemtime — Gets file modification time.
 				true // Enqueue the script in the footer.
 			);
 
-			wp_set_script_translations( 'SRFM_block-srfm-block-js', 'sureforms' );
+			wp_set_script_translations( 'srfm-spec-block-js', 'sureforms' );
 
 			// Register block editor styles for backend.
 			wp_enqueue_style(
-				'SRFM_block-srfm-block-editor-css', // Handle.
+				'srfm-block-srfm-block-editor-css', // Handle.
 				SRFM_URL . 'modules/gutenberg/build/blocks.style.css',
 				[ 'wp-edit-blocks' ], // Dependency to include the CSS after it.
 				SRFM_VER // Version: File modification time.
@@ -127,7 +127,7 @@ class SRFM_Spec_Init_Blocks {
 
 			// Common Editor style.
 			wp_enqueue_style(
-				'SRFM_block-common-editor-css', // Handle.
+				'srfm-block-common-editor-css', // Handle.
 				SRFM_URL . 'modules/gutenberg/dist/editor.css',
 				[ 'wp-edit-blocks' ], // Dependency to include the CSS after it.
 				SRFM_VER // Version: File modification time.

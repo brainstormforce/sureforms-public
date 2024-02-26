@@ -15,7 +15,7 @@ const TemplatePreview = ( {
 				<Link
 					className="srfm-ts-sidebar-back-btn"
 					to={ {
-						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=add-new-form&method=template`,
 					} }
 				>

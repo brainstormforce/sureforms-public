@@ -129,10 +129,10 @@ class SRFM_Admin_Ajax {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'sureforms-integration', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-integration', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_localize_script(
-				'sureforms-integration',
-				'sf_admin',
+				SRFM_SLUG . '-integration',
+				SRFM_SLUG . '_admin',
 				[
 					'ajax_url'               => admin_url( 'admin-ajax.php' ),
 					'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),

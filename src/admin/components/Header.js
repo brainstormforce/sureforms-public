@@ -80,10 +80,10 @@ export default () => {
 									<ScBreadcrumb>
 										<Logo display="block" />
 									</ScBreadcrumb>
-									{ sureforms_admin?.breadcrumbs &&
-										sureforms_admin.breadcrumbs.length >
+									{ srfm_admin?.breadcrumbs &&
+										srfm_admin.breadcrumbs.length >
 											0 &&
-										sureforms_admin.breadcrumbs.map(
+										srfm_admin.breadcrumbs.map(
 											( breadcrumb, index ) => (
 												<ScBreadcrumb
 													key={ index }
@@ -115,7 +115,7 @@ export default () => {
 							` }
 						>
 							{ ' ' }
-							{ 'V:' + sureforms_admin?.plugin_version }
+							{ 'V:' + srfm_admin?.plugin_version }
 							<span
 								css={ css`
 									padding: 2px 5px 3px 6px;

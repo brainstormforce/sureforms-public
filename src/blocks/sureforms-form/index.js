@@ -15,12 +15,9 @@ import { applyFilters } from '@wordpress/hooks';
 
 // To remove the preview in the site editor.
 let formCommonData = {};
-formCommonData = applyFilters(
-	'srfm/form',
-	addCommonData( formCommonData )
-);
+formCommonData = applyFilters( 'srfm/form', addCommonData( formCommonData ) );
 
-const fieldName = fieldsPreview.sureforms_preview;
+const fieldName = srfm_fields_preview.sureforms_preview;
 
 export { metadata };
 export const settings = {

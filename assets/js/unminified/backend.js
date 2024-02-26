@@ -1,4 +1,4 @@
-const siteUrl = sureforms_backend.site_url;
+const siteUrl = srfm_backend.site_url;
 
 document.addEventListener( 'DOMContentLoaded', function () {
 	changeAddNewUrl();
