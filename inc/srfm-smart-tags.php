@@ -81,7 +81,7 @@ class SRFM_Smart_Tags {
 			'{ip}'                     => __( 'IP Address', 'sureforms' ),
 			'{http_referer}'           => __( 'HTTP Referer URL', 'sureforms' ),
 			'{date_mdy}'               => __( 'Date (mm/dd/yyyy)', 'sureforms' ),
-			'{date_dmy}'               => __( 'Date (dd/mm/yyyy', 'sureforms' ),
+			'{date_dmy}'               => __( 'Date (dd/mm/yyyy)', 'sureforms' ),
 			'{user_id}'                => __( 'User ID', 'sureforms' ),
 			'{user_display_name}'      => __( 'User Display Name', 'sureforms' ),
 			'{user_first_name}'        => __( 'User First Name', 'sureforms' ),
