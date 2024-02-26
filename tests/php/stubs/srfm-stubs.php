@@ -138,7 +138,7 @@ namespace SRFM\Inc\Traits {
 	/**
 	 * Trait Get_Instance.
 	 */
-	trait Get_Instance {
+	trait SRFM_Get_Instance {
 
 		/**
 		 * Instance object.
@@ -165,7 +165,7 @@ namespace SRFM\Inc {
 	 */
 	class SRFM_Post_Types {
 
-		use \SRFM\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\SRFM_Get_Instance;
 		/**
 		 * Constructor
 		 *
@@ -192,7 +192,7 @@ namespace SRFM\Admin {
 	 */
 	class SRFM_Gutenberg_Hooks {
 
-		use \SRFM\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\SRFM_Get_Instance;
 		/**
 		 * Class constructor.
 		 *
@@ -217,7 +217,7 @@ namespace SRFM\Admin {
 	 */
 	class SRFM_Admin {
 
-		use \SRFM\Inc\Traits\Get_Instance;
+		use \SRFM\Inc\Traits\SRFM_Get_Instance;
 		/**
 		 * Class constructor.
 		 *

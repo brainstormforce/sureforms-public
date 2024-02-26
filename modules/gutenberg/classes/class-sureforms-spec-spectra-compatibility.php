@@ -64,7 +64,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 					'spectra_custom_fonts'          => apply_filters( 'srfm_system_fonts', [] ),
 					'tablet_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'mobile_breakpoint'             => SRFM_TABLET_BREAKPOINT,
-					'category'                      => 'sureforms',
+					'category'                      => 'srfm',
 					'srfm_url'                      => SRFM_URL,
 				]
 			);

@@ -16,7 +16,7 @@ import { applyFilters } from '@wordpress/hooks';
 // To remove the preview in the site editor.
 let formCommonData = {};
 formCommonData = applyFilters(
-	'sureforms/form',
+	'srfm/form',
 	addCommonData( formCommonData )
 );
 

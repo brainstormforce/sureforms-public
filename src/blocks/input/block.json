@@ -1,8 +1,8 @@
 {
-	"name": "sureforms/input",
+	"name": "srfm/input",
 	"title": "Text Field",
 	"description": "Displays a SureForm Text Field",
-	"category": "sureforms",
+	"category": "srfm",
 	"keywords": [ "text", "input", "custom", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

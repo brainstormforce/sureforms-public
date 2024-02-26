@@ -630,7 +630,7 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 			$attributes = apply_filters( 'srfm_gutenberg_advaned_heading_attributes_filters', $attr );
 
 			register_block_type(
-				'sureforms/advanced-heading',
+				'srfm/advanced-heading',
 				[
 					'attributes'      => $attributes,
 					'render_callback' => [ $this, 'render_html' ],

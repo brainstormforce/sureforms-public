@@ -1,9 +1,9 @@
 {
 	"apiVersion": 2,
-	"name": "sureforms/multi-choice",
+	"name": "srfm/multi-choice",
 	"title": "Multiple Choice",
 	"description": "Displays a SureForm Multi-Choice Field",
-	"category": "sureforms",
+	"category": "srfm",
 	"keywords": [ "multi-choice", "quiz", "multi", "sureforms" ],
 	"textdomain": "sureforms",
 	"supports": {

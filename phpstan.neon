@@ -17,12 +17,12 @@ parameters:
 	scanFiles:
 	bootstrapFiles:
 		- %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
-		- tests/php/stubs/sf-constants.php
-		- tests/php/stubs/sf-stubs.php
+		- tests/php/stubs/srfm-constants.php
+		- tests/php/stubs/srfm-stubs.php
 		- inc/services/browser/browser.php
 	paths:
 		- sureforms.php
-		- plugin-loader.php
+		- srfm-plugin-loader.php
 		- inc
 		- api
 

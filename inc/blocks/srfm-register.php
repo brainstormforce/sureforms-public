@@ -7,7 +7,7 @@
 
 namespace SRFM\Inc\Blocks;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Register {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -31,8 +31,8 @@ class SRFM_Register {
 		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
 		$this->register_block( $blocks_dir, $namespace );
 
-		if ( defined( 'SUREFORMS_PRO_VER' ) ) {
-			$blocks_dir = glob( SUREFORMS_PRO_DIR . 'inc/blocks/**/*.php' );
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
 			$namespace  = 'SureForms_Pro\\Inc\\Blocks';
 			$this->register_block( $blocks_dir, $namespace );
 		}

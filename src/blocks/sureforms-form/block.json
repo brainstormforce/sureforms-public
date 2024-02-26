@@ -1,10 +1,10 @@
 {
 	"$schema": "https://json.schemastore.org/block.json",
 	"apiVersion": 2,
-	"name": "sureforms/form",
+	"name": "srfm/form",
 	"title": "Form",
 	"description": "Collect and Manage data effortlessly with customizable SureForms.",
-	"category": "sureforms",
+	"category": "srfm",
 	"keywords": [ "form", "sureforms", "form" ],
 	"textdomain": "sureforms",
 	"supports": {

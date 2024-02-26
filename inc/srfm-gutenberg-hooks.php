@@ -8,7 +8,7 @@
 namespace SRFM\Inc;
 
 use SRFM_Spec_Gb_Helper;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Smart_Tags;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ class SRFM_Gutenberg_Hooks {
 	 */
 	protected $patterns = [];
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -69,22 +69,22 @@ class SRFM_Gutenberg_Hooks {
 	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
 		if ( ! empty( $editor_context->post->post_type ) && 'sureforms_form' === $editor_context->post->post_type ) {
 			$allow_block_types = [
-				'sureforms/input',
-				'sureforms/email',
-				'sureforms/textarea',
-				'sureforms/number',
-				'sureforms/checkbox',
-				'sureforms/phone',
-				'sureforms/address',
-				'sureforms/dropdown',
-				'sureforms/multi-choice',
-				'sureforms/radio',
-				'sureforms/submit',
-				'sureforms/url',
-				'sureforms/separator',
-				'sureforms/icon',
-				'sureforms/image',
-				'sureforms/advanced-heading',
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/checkbox',
+				'srfm/phone',
+				'srfm/address',
+				'srfm/dropdown',
+				'srfm/multi-choice',
+				'srfm/radio',
+				'srfm/submit',
+				'srfm/url',
+				'srfm/separator',
+				'srfm/icon',
+				'srfm/image',
+				'srfm/advanced-heading',
 
 			];
 			// Apply a filter to the $allow_block_types types array.
@@ -130,7 +130,7 @@ class SRFM_Gutenberg_Hooks {
 			$pattern_file = plugin_dir_path( SRFM_FILE ) . 'templates/forms/' . $block_pattern . '.php';
 			if ( is_readable( $pattern_file ) ) {
 				register_block_pattern(
-					'sureforms/' . $block_pattern,
+					'srfm/' . $block_pattern,
 					require $pattern_file
 				);
 			}
@@ -194,7 +194,7 @@ class SRFM_Gutenberg_Hooks {
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
 		// Check if the sureforms-pro plugin is active.
-		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
+		$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
 
 		wp_localize_script(
 			'sureforms-' . $all_screen_blocks,

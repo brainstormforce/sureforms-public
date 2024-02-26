@@ -18,7 +18,7 @@ return [
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Basic Forms', 'sureforms' ),
 	'postTypes'        => SRFM_FORMS_POST_TYPE,
-	'content'          => '<!-- wp:sureforms/input {"block_id":"e8a489f7","required":true,"label":"Name","formId":17} /--><!-- wp:sureforms/email {"block_id":"a5728450","required":true,"formId":17} /--><!-- wp:sureforms/input {"block_id":"9ec2463e","required":true,"label":"Subject","formId":17} /--><!-- wp:sureforms/textarea {"block_id":"4afb9556","required":true,"label":"Message","formId":17} /-->',
+	'content'          => '<!-- wp:srfm/input {"block_id":"e8a489f7","required":true,"label":"Name","formId":17} /--><!-- wp:srfm/email {"block_id":"a5728450","required":true,"formId":17} /--><!-- wp:srfm/input {"block_id":"9ec2463e","required":true,"label":"Subject","formId":17} /--><!-- wp:srfm/textarea {"block_id":"4afb9556","required":true,"label":"Message","formId":17} /-->',
 	'id'               => 'form-2',
 	'isPro'            => false,
 ];

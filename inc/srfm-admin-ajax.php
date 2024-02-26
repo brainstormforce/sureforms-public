@@ -9,7 +9,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -26,7 +26,7 @@ if ( ! function_exists( 'get_plugins' ) ) {
  */
 class SRFM_Admin_Ajax {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor

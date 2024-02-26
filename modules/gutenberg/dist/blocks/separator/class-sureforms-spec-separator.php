@@ -380,7 +380,7 @@ if ( ! class_exists( 'SRFM_Spec_Separator' ) ) {
 			$attributes = apply_filters( 'srfm_gutenberg_separator_attributes_filters', $attr );
 
 			register_block_type(
-				'sureforms/separator',
+				'srfm/separator',
 				[
 					'attributes'      => $attributes,
 					'render_callback' => [ $this, 'render_html' ],

@@ -8,7 +8,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
@@ -28,7 +28,7 @@ if ( ! function_exists( 'wp_handle_upload' ) ) {
  * @since 0.0.1
  */
 class SRFM_Submit {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Namespace.
@@ -402,8 +402,8 @@ class SRFM_Submit {
 
 		wp_update_post( $post_args );
 
-		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
+		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [
@@ -533,7 +533,7 @@ class SRFM_Submit {
 
 			foreach ( $post_ids as $post_id ) {
 				$post_id     = SRFM_Helper::get_integer_value( $post_id );
-				$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
+				$meta_values = get_post_meta( $post_id, 'srfm_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];
 					array_push( $all_form_entries, $obj );

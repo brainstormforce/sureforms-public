@@ -8,7 +8,7 @@
 
 namespace SRFM\API;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use WP_Error;
 use WP_Post_Type;
 use WP_REST_Controller;
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Block_Patterns extends WP_REST_Controller {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class Constructor

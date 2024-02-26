@@ -25,14 +25,14 @@ const RendererDesc = ( props ) => {
 			context
 		);
 		if ( renderedMarkup !== '' ) {
-			allowedFormats = [ 'sureforms/dynamic-content' ];
+			allowedFormats = [ 'srfm/dynamic-content' ];
 			headingDesc = renderedMarkup;
 		}
 	}
 
 	const propsOnSplit = ( value ) =>
 		value
-			? createBlock( 'sureforms/advanced-heading', {
+			? createBlock( 'srfm/advanced-heading', {
 				...attributes,
 				headingDesc: value,
 			  } )

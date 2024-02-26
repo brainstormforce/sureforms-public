@@ -58,7 +58,7 @@ const blockWidthWrapperProps = createHigherOrderComponent(
 				const width = fieldWidth
 					? fieldWidth.replace( '.', '-' )
 					: '100';
-				const slug = name.replace( 'sureforms/', '' );
+				const slug = name.replace( 'srfm/', '' );
 
 				return (
 					<BlockListBlock

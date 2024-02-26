@@ -25,7 +25,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Helper' ) ) {
 		 */
 		public static function get_icon_css( $attr, $id ) {
 
-			$defaults = SRFM_Spec_Gb_Helper::$block_list['sureforms/icon']['attributes'];
+			$defaults = SRFM_Spec_Gb_Helper::$block_list['srfm/icon']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -187,7 +187,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Helper' ) ) {
 		 */
 		public static function get_image_css( $attr, $id ) {
 
-			$defaults = SRFM_Spec_Gb_Helper::$block_list['sureforms/image']['attributes'];
+			$defaults = SRFM_Spec_Gb_Helper::$block_list['srfm/image']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -535,7 +535,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Helper' ) ) {
 		 * @return array The Widget List.
 		 */
 		public static function get_advanced_heading_css( $attr, $id ) {
-			$defaults = SRFM_Spec_Gb_Helper::$block_list['sureforms/advanced-heading']['attributes'];
+			$defaults = SRFM_Spec_Gb_Helper::$block_list['srfm/advanced-heading']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 
@@ -825,7 +825,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Helper' ) ) {
 		 */
 		public static function get_separator_css( $attr, $id ) {
 
-			$defaults = SRFM_Spec_Gb_Helper::$block_list['sureforms/separator']['attributes'];
+			$defaults = SRFM_Spec_Gb_Helper::$block_list['srfm/separator']['attributes'];
 
 			$attr = array_merge( $defaults, $attr );
 

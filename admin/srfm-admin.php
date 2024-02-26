@@ -7,7 +7,7 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SRFM_Admin {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -429,11 +429,11 @@ class SRFM_Admin {
 		$default_allowed_quick_sidebar_blocks = apply_filters(
 			'srfm_quick_sidebar_allowed_blocks',
 			[
-				'sureforms/input',
-				'sureforms/email',
-				'sureforms/textarea',
-				'sureforms/number',
-				'sureforms/address',
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/address',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {

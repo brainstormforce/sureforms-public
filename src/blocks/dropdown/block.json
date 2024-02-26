@@ -1,8 +1,8 @@
 {
-	"name": "sureforms/dropdown",
+	"name": "srfm/dropdown",
 	"title": "Dropdown",
 	"description": "Displays a SureForm Dropdown Field",
-	"category": "sureforms",
+	"category": "srfm",
 	"keywords": [ "select", "dropdown", "options", "field" ],
 	"textdomain": "sureforms",
 	"supports": {

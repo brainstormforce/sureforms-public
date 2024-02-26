@@ -30,4 +30,4 @@ define( 'SRFM_LOC', 'SureForms' );
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
 
-require_once 'plugin-loader.php';
+require_once 'srfm-plugin-loader.php';

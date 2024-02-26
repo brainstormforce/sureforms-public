@@ -9,7 +9,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SRFM_Public {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -110,7 +110,7 @@ class SRFM_Public {
 	 * @return void
 	 */
 	public function enqueue_srfm_script( $block_type ) {
-		$block_name        = str_replace( 'sureforms/', '', $block_type );
+		$block_name        = str_replace( 'srfm/', '', $block_type );
 		$script_dep_blocks = [ 'address', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';

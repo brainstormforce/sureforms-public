@@ -12,7 +12,7 @@ use WP_REST_Response;
 use WP_Screen;
 use WP_Query;
 use WP_Admin_Bar;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Helper;
 
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Post_Types {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -540,7 +540,7 @@ class SRFM_Post_Types {
 	 * @since 0.0.1
 	 */
 	public function sureforms_meta_box_callback( \WP_Post $post ) {
-		$meta_data = get_post_meta( $post->ID, 'sureforms_entry_meta', true );
+		$meta_data = get_post_meta( $post->ID, 'srfm_entry_meta', true );
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
