@@ -52,7 +52,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 		public function spectra_editor_assets() {
 
 			wp_localize_script(
-				'SRFM_block-sureforms-block-js',
+				'SRFM_block-srfm-block-js',
 				'srfm_spec_blocks_info',
 				[
 					'number_of_icon_chunks'         => SRFM_Spec_Gb_Helper::$number_of_icon_chunks,
@@ -64,7 +64,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 					'spectra_custom_fonts'          => apply_filters( 'srfm_system_fonts', [] ),
 					'tablet_breakpoint'             => SRFM_TABLET_BREAKPOINT,
 					'mobile_breakpoint'             => SRFM_TABLET_BREAKPOINT,
-					'category'                      => 'srfm',
+					'category'                      => 'sureforms',
 					'srfm_url'                      => SRFM_URL,
 				]
 			);
@@ -88,7 +88,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 			}
 
 			foreach ( $localize_icon_chunks as $chunk_index => $value ) {
-				wp_localize_script( 'SRFM_block-sureforms-block-js', "uagb_svg_icons_{$chunk_index}", $value );
+				wp_localize_script( 'SRFM_block-srfm-block-js', "uagb_svg_icons_{$chunk_index}", $value );
 			}
 		}
 

@@ -259,7 +259,7 @@ class SRFM_Plugin_Loader {
 	 * @return void
 	 */
 	public function load_core_files() {
-		include_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
+		include_once SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-loader.php';
 	}
 }
 
