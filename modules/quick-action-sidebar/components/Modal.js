@@ -73,7 +73,7 @@ const PopoverModal = ( {
 	filteredBlocks.forEach( ( item ) => {
 		if ( defaultAllowedQuickSidebarBlocks?.includes( item.name ) ) {
 			usedArray.push( item );
-		} else if ( item.name !== 'sureforms/form' ) {
+		} else if ( item.name !== 'srfm/form' ) {
 			unusedArray.push( item );
 		}
 	} );
@@ -81,7 +81,7 @@ const PopoverModal = ( {
 	const addToSidebar = () => {
 		return unusedArray.map(
 			( item, index ) =>
-				item?.name?.includes( 'sureforms/' ) &&
+				item?.name?.includes( 'srfm/' ) &&
 				! item.parent && (
 					<div
 						key={ index }
@@ -105,7 +105,7 @@ const PopoverModal = ( {
 	const alreadyPresentInSidebar = () => {
 		return usedArray.map(
 			( item, index ) =>
-				item?.name?.includes( 'sureforms/' ) &&
+				item?.name?.includes( 'srfm/' ) &&
 				! item.parent && (
 					<div key={ index } className="srfm-block-wrap">
 						<div className="srfm-ee-quick-access__sidebar--blocks--block--icon">
@@ -136,7 +136,7 @@ const PopoverModal = ( {
 			<div className="srfm-block-container">
 				{ unusedArray.some(
 					( item ) =>
-						item?.name?.includes( 'sureforms/' ) &&
+						item?.name?.includes( 'srfm/' ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -151,7 +151,7 @@ const PopoverModal = ( {
 				{ addToSidebar() }
 				{ usedArray.some(
 					( item ) =>
-						item?.name?.includes( 'sureforms/' ) &&
+						item?.name?.includes( 'srfm/' ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -169,7 +169,7 @@ const PopoverModal = ( {
 				{ alreadyPresentInSidebar() }
 				{ ! unusedArray.some(
 					( item ) =>
-						item?.name?.includes( 'sureforms/' ) &&
+						item?.name?.includes( 'srfm/' ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -177,7 +177,7 @@ const PopoverModal = ( {
 				) &&
 					! usedArray.some(
 						( item ) =>
-							item?.name?.includes( 'sureforms/' ) &&
+							item?.name?.includes( 'srfm/' ) &&
 							! item.parent &&
 							item.title
 								.toLowerCase()

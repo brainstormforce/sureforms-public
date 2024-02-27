@@ -22,7 +22,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.url_preview;
+		const fieldName = srfm_fields_preview.url_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 

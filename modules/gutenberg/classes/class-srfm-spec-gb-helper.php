@@ -129,9 +129,9 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-config.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-helper.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-js.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-config.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-helper.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-js.php';
 
 			self::$block_list = SRFM_Spec_Block_Config::get_block_attributes();
 
@@ -176,7 +176,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 		 */
 		public function generate_render_styles( $block_content, $block ) {
 
-			if ( isset( $block['blockName'] ) && ( 'sureforms/form' === $block['blockName'] ) ) {
+			if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 
 				if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
 					self::form_content_by_id( $block['attrs']['id'] );
@@ -363,7 +363,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 				$count = count( $blocks );
 				for ( $i = 0; $i < $count; $i++ ) {
-					if ( isset( $blocks[ $i ]['blockName'] ) && 'sureforms/form' === $blocks[ $i ]['blockName'] ) {
+					if ( isset( $blocks[ $i ]['blockName'] ) && 'srfm/form' === $blocks[ $i ]['blockName'] ) {
 						if ( isset( $blocks[ $i ]['attrs']['id'] ) && $blocks[ $i ]['attrs']['id'] ) {
 							$form_post = get_post( $blocks[ $i ]['attrs']['id'] );
 							if ( $form_post ) {
@@ -814,26 +814,26 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 				self::$current_block_list[] = $name;
 
-				if ( strpos( $name, 'sureforms/' ) !== false ) {
+				if ( strpos( $name, 'srfm/' ) !== false ) {
 					self::$srfm_flag = true;
 				}
 
 				switch ( $name ) {
-					case 'sureforms/separator':
+					case 'srfm/separator':
 						$css = SRFM_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
 						SRFM_Spec_Block_JS::blocks_separator_gfont( $blockattr );
 						break;
 
-					case 'sureforms/image':
+					case 'srfm/image':
 						$css = SRFM_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
 						SRFM_Spec_Block_JS::blocks_image_gfont( $blockattr );
 						break;
 
-					case 'sureforms/icon':
+					case 'srfm/icon':
 						$css = SRFM_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
 						break;
 
-					case 'sureforms/advanced-heading':
+					case 'srfm/advanced-heading':
 						$css = SRFM_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
 						SRFM_Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
 						break;
@@ -1034,7 +1034,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 			$icons_chunks = [];
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = SRFM_DIR . "modules/gutenberg/icons/spectra-icons-v6-{$i}.php";
+				$json_file = SRFM_DIR . "modules/gutenberg/icons/srfm-icons-v6-{$i}.php";
 
 				if ( file_exists( $json_file ) ) {
 					$icons_chunks[] = include $json_file;

@@ -465,7 +465,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 
 			if ( null === self::$block_attributes ) {
 				self::$block_attributes = [
-					'sureforms/separator'        => [
+					'srfm/separator'        => [
 						'slug'        => '',
 						'title'       => __( 'Separator', 'sureforms' ),
 						'description' => '',
@@ -523,7 +523,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 							'elementIconWidthType'         => 'px',
 						],
 					],
-					'sureforms/image'            => [
+					'srfm/image'            => [
 						'slug'        => '',
 						'title'       => __( 'Image', 'sureforms' ),
 						'description' => '',
@@ -535,7 +535,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 						),
 					],
 
-					'sureforms/icon'             => [
+					'srfm/icon'             => [
 						'slug'        => '',
 						'title'       => __( 'Icon', 'sureforms' ),
 						'description' => '',
@@ -546,7 +546,7 @@ if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 						),
 					],
 
-					'sureforms/advanced-heading' => [
+					'srfm/advanced-heading' => [
 						'slug'        => '',
 						'title'       => __( 'Heading', 'sureforms' ),
 						'description' => '',
@@ -591,16 +591,16 @@ if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
 
 			if ( null === self::$block_assets_css ) {
 				self::$block_assets_css = [
-					'sureforms/separator'        => [
+					'srfm/separator'        => [
 						'name' => 'separator',
 					],
-					'sureforms/image'            => [
+					'srfm/image'            => [
 						'name' => 'image',
 					],
-					'sureforms/icon'             => [
+					'srfm/icon'             => [
 						'name' => 'icon',
 					],
-					'sureforms/advanced-heading' => [
+					'srfm/advanced-heading' => [
 						'name' => 'advanced-heading',
 					],
 

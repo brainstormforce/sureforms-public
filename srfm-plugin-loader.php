@@ -17,7 +17,7 @@ use SRFM\Admin\SRFM_Admin;
 use SRFM\Inc\Blocks\SRFM_Register;
 use SRFM\Inc\SRFM_Public;
 use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Activator;
+use SRFM\Inc\SRFM_Activator;
 use SRFM\Inc\SRFM_Admin_Ajax;
 use SRFM\Inc\SRFM_Export;
 use SRFM\Inc\SRFM_Smart_Tags;
@@ -117,7 +117,7 @@ class SRFM_Plugin_Loader {
 		SRFM_Register::get_instance();
 		SRFM_Public::get_instance();
 		SRFM_Helper::get_instance();
-		Activator::get_instance();
+		SRFM_Activator::get_instance();
 		SRFM_Admin_Ajax::get_instance();
 		SRFM_Forms_Data::get_instance();
 		SRFM_Export::get_instance();
@@ -131,7 +131,7 @@ class SRFM_Plugin_Loader {
 		register_activation_hook(
 			SRFM_FILE,
 			function () {
-				Activator::activate();
+				SRFM_Activator::activate();
 			}
 		);
 
@@ -220,7 +220,7 @@ class SRFM_Plugin_Loader {
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
-		$locale = apply_filters( 'plugin_locale', $get_locale, 'sureforms' );
+		$locale = apply_filters( 'plugin_locale', $get_locale, 'sureforms' );//phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 		$mofile = sprintf( '%1$s-%2$s.mo', 'sureforms', $locale );
 
 		// Setup paths to current locale file.
@@ -259,7 +259,7 @@ class SRFM_Plugin_Loader {
 	 * @return void
 	 */
 	public function load_core_files() {
-		include_once SRFM_DIR . 'modules/gutenberg/classes/class-sureforms-spec-block-loader.php';
+		include_once SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-loader.php';
 	}
 }
 

@@ -721,7 +721,7 @@ if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
 			$attributes = apply_filters( 'srfm_gutenberg_image_attributes_filters', $attr );
 
 			register_block_type(
-				'sureforms/image',
+				'srfm/image',
 				[
 					'attributes'      => $attributes,
 					'render_callback' => [ $this, 'render_html' ],

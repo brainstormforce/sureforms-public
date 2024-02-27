@@ -8,7 +8,7 @@
 namespace SRFM\Inc;
 
 use SRFM_Spec_Gb_Helper;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Smart_Tags;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ class SRFM_Gutenberg_Hooks {
 	 */
 	protected $patterns = [];
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -69,22 +69,22 @@ class SRFM_Gutenberg_Hooks {
 	public function disable_forms_wrapper_block( $allowed_block_types, $editor_context ) {
 		if ( ! empty( $editor_context->post->post_type ) && 'sureforms_form' === $editor_context->post->post_type ) {
 			$allow_block_types = [
-				'sureforms/input',
-				'sureforms/email',
-				'sureforms/textarea',
-				'sureforms/number',
-				'sureforms/checkbox',
-				'sureforms/phone',
-				'sureforms/address',
-				'sureforms/dropdown',
-				'sureforms/multi-choice',
-				'sureforms/radio',
-				'sureforms/submit',
-				'sureforms/url',
-				'sureforms/separator',
-				'sureforms/icon',
-				'sureforms/image',
-				'sureforms/advanced-heading',
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/checkbox',
+				'srfm/phone',
+				'srfm/address',
+				'srfm/dropdown',
+				'srfm/multi-choice',
+				'srfm/radio',
+				'srfm/submit',
+				'srfm/url',
+				'srfm/separator',
+				'srfm/icon',
+				'srfm/image',
+				'srfm/advanced-heading',
 
 			];
 			// Apply a filter to the $allow_block_types types array.
@@ -130,7 +130,7 @@ class SRFM_Gutenberg_Hooks {
 			$pattern_file = plugin_dir_path( SRFM_FILE ) . 'templates/forms/' . $block_pattern . '.php';
 			if ( is_readable( $pattern_file ) ) {
 				register_block_pattern(
-					'sureforms/' . $block_pattern,
+					'srfm/' . $block_pattern,
 					require $pattern_file
 				);
 			}
@@ -144,7 +144,7 @@ class SRFM_Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function form_editor_screen_assets() {
-		$form_editor_script = 'formEditor';
+		$form_editor_script = '-formEditor';
 
 		$screen     = get_current_screen();
 		$post_types = [ SRFM_FORMS_POST_TYPE ];
@@ -153,18 +153,18 @@ class SRFM_Gutenberg_Hooks {
 			return;
 		}
 
-		$script_asset_path = SRFM_DIR . 'assets/build/' . $form_editor_script . '.asset.php';
+		$script_asset_path = SRFM_DIR . 'assets/build/formEditor.asset.php';
 		$script_info       = file_exists( $script_asset_path )
 			? include $script_asset_path
 			: [
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-		wp_enqueue_script( 'sureforms-' . $form_editor_script, SRFM_URL . 'assets/build/' . $form_editor_script . '.js', $script_info['dependencies'], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'], SRFM_VER, true );
 
 		wp_localize_script(
-			'sureforms-' . $form_editor_script,
-			'sfBlockData',
+			SRFM_SLUG . $form_editor_script,
+			SRFM_SLUG . '_block_data',
 			[
 				'plugin_url'  => SRFM_URL,
 				'admin_email' => get_option( 'admin_email' ),
@@ -179,26 +179,26 @@ class SRFM_Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function block_editor_assets() {
-		$all_screen_blocks = 'blocks';
+		$all_screen_blocks = '-blocks';
 		$screen            = get_current_screen();
 
-		$blocks_asset_path = SRFM_DIR . 'assets/build/' . $all_screen_blocks . '.asset.php';
+		$blocks_asset_path = SRFM_DIR . 'assets/build/blocks.asset.php';
 		$blocks_info       = file_exists( $blocks_asset_path )
 			? include $blocks_asset_path
 			: [
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-		wp_enqueue_script( 'sureforms-' . $all_screen_blocks, SRFM_URL . 'assets/build/' . $all_screen_blocks . '.js', $blocks_info['dependencies'], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . $all_screen_blocks, SRFM_URL . 'assets/build/blocks.js', $blocks_info['dependencies'], SRFM_VER, true );
 
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
 		// Check if the sureforms-pro plugin is active.
-		$is_pro_active = defined( 'SUREFORMS_PRO_VER' ) ? true : false;
+		$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
 
 		wp_localize_script(
-			'sureforms-' . $all_screen_blocks,
-			'sfBlockData',
+			SRFM_SLUG . $all_screen_blocks,
+			SRFM_SLUG . '_block_data',
 			[
 				'template_picker_url'    => admin_url( '/admin.php?page=add-new-form' ),
 				'plugin_url'             => SRFM_URL,
@@ -215,8 +215,8 @@ class SRFM_Gutenberg_Hooks {
 
 		// Localizing the field preview image links.
 		wp_localize_script(
-			'sureforms-' . $all_screen_blocks,
-			'fieldsPreview',
+			SRFM_SLUG . $all_screen_blocks,
+			SRFM_SLUG . '_fields_preview',
 			apply_filters(
 				'srfm_block_preview_images',
 				[
@@ -236,8 +236,8 @@ class SRFM_Gutenberg_Hooks {
 		);
 
 		wp_localize_script(
-			'sureforms-' . $all_screen_blocks,
-			'srfm_blocks_info',
+			SRFM_SLUG . $all_screen_blocks,
+			SRFM_SLUG . '_blocks_info',
 			[
 				'font_awesome_5_polyfill' => [],
 				'collapse_panels'         => 'enabled',

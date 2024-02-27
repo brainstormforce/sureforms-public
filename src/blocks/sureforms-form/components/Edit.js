@@ -156,7 +156,7 @@ export default ( { attributes, setAttributes } ) => {
 								'sureforms'
 							) }
 							<a
-								href={ `${ sfBlockData.post_url }?post=${ id }&action=edit` }
+								href={ `${ srfm_block_data.post_url }?post=${ id }&action=edit` }
 								target="_blank"
 								rel="noreferrer"
 							>

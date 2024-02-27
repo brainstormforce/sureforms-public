@@ -116,7 +116,7 @@ const Component = ( { path } ) => {
 				body: JSON.stringify( formData ),
 				headers: {
 					'content-type': 'application/json',
-					'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} );
 			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
@@ -140,7 +140,7 @@ const Component = ( { path } ) => {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
-						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 

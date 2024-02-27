@@ -425,7 +425,7 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 			$attributes = apply_filters( 'srfm_gutenberg_icon_attributes_filters', $attr );
 
 			register_block_type(
-				'sureforms/icon',
+				'srfm/icon',
 				[
 					'attributes'      => $attributes,
 					'render_callback' => [ $this, 'render_html' ],

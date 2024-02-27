@@ -48,7 +48,7 @@ class SRFM_Spec_Filesystem {
 			 *
 			 * @see request_filesystem_credentials_context
 			 */
-			$context = apply_filters( 'request_filesystem_credentials_context', false );
+			$context = apply_filters( 'request_filesystem_credentials_context', false );//phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 
 			add_filter( 'filesystem_method', [ $this, 'filesystem_method' ] );
 			add_filter( 'request_filesystem_credentials', [ $this, 'request_filesystem_credentials' ] );
@@ -63,10 +63,14 @@ class SRFM_Spec_Filesystem {
 
 		// Set the permission constants if not already set.
 		if ( ! defined( 'FS_CHMOD_DIR' ) ) {
-			define( 'FS_CHMOD_DIR', 0755 );
+			// phpcs:ignore
+			define( 'FS_CHMOD_DIR', 0755 ); // ignore statement added to avoid WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, it's pre defined constant in bootstrap.php file
+			// phpcs:ignoreEnd
 		}
 		if ( ! defined( 'FS_CHMOD_FILE' ) ) {
-			define( 'FS_CHMOD_FILE', 0644 );
+			// phpcs:ignore
+			define( 'FS_CHMOD_FILE', 0644 ); // ignore statement added to avoid WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, it's pre defined constant in bootstrap.php file
+			// phpcs:ignoreEnd
 		}
 
 		return $wp_filesystem;

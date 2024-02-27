@@ -33,7 +33,7 @@ const registerBlock = [
 	address,
 ];
 
-if ( 'sureforms_form' === sfBlockData.current_screen.id ) {
+if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 	registerBlocks( registerBlock );
 } else {
 	registerBlocks( [ sfForm ] );
@@ -58,7 +58,7 @@ const blockWidthWrapperProps = createHigherOrderComponent(
 				const width = fieldWidth
 					? fieldWidth.replace( '.', '-' )
 					: '100';
-				const slug = name.replace( 'sureforms/', '' );
+				const slug = name.replace( 'srfm/', '' );
 
 				return (
 					<BlockListBlock

@@ -23,7 +23,7 @@ const registerBlock = ( block ) => {
 	const { metadata, settings } = block;
 
 	const additionalSettings =
-		'sureforms/form' !== metadata.name
+		'srfm/form' !== metadata.name
 			? {
 				transforms: {
 					from: [

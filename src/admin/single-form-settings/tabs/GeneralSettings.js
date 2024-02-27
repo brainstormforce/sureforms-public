@@ -137,12 +137,12 @@ function GeneralSettings( props ) {
 		setEnableQuickActionSidebar( toggleStatus );
 		// Create an object with the srfm_ajax_nonce and confirmation properties.
 		const data = {
-			security: quickSidebarBlocks.srfm_ajax_nonce,
+			security: srfm_quick_sidebar_blocks.srfm_ajax_nonce,
 			enableQuickActionSidebar: toggleStatus,
 		};
 		// Call the getApiData function with the specified parameters.
 		getApiData( {
-			url: quickSidebarBlocks.srfm_ajax_url,
+			url: srfm_quick_sidebar_blocks.srfm_ajax_url,
 			action: 'srfm_global_sidebar_enabled',
 			data,
 		} );
@@ -165,7 +165,7 @@ function GeneralSettings( props ) {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
-						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 				const { srfm_enable_quick_action_sidebar } = data;

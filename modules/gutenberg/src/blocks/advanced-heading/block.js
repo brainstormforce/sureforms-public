@@ -16,10 +16,10 @@ import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 let headingCommonData = {};
 headingCommonData = applyFilters(
-	'sureforms/advanced-heading',
+	'srfm/advanced-heading',
 	addCommonDataToSpectraBlocks( headingCommonData )
 );
-registerBlockType( 'sureforms/advanced-heading', {
+registerBlockType( 'srfm/advanced-heading', {
 	...headingCommonData,
 	title: __( 'Heading', 'sureforms' ),
 	description: __(
@@ -59,7 +59,7 @@ registerBlockType( 'sureforms/advanced-heading', {
 				type: 'block',
 				blocks: [ 'core/heading' ],
 				transform: ( attribute ) => {
-					return createBlock( 'sureforms/advanced-heading', {
+					return createBlock( 'srfm/advanced-heading', {
 						headingTitle: attribute.content,
 						headingAlign: attribute.textAlign,
 						headingColor: colourNameToHex( attribute.textColor ),
@@ -73,7 +73,7 @@ registerBlockType( 'sureforms/advanced-heading', {
 				type: 'block',
 				blocks: [ 'core/quote' ],
 				transform: ( attribute ) => {
-					return createBlock( 'sureforms/advanced-heading', {
+					return createBlock( 'srfm/advanced-heading', {
 						headingTitle: attribute.value,
 						headingDesc: attribute.citation,
 						headingAlign: attribute.align,
@@ -88,7 +88,7 @@ registerBlockType( 'sureforms/advanced-heading', {
 				type: 'block',
 				blocks: [ 'core/paragraph' ],
 				transform: ( attribute ) => {
-					return createBlock( 'sureforms/advanced-heading', {
+					return createBlock( 'srfm/advanced-heading', {
 						headingTitle: attribute.content,
 						headingAlign: attribute.align,
 						headingColor: colourNameToHex( attribute.textColor ),
@@ -110,7 +110,7 @@ registerBlockType( 'sureforms/advanced-heading', {
 					} );
 
 					return newitems.map( ( text ) =>
-						createBlock( 'sureforms/advanced-heading', {
+						createBlock( 'srfm/advanced-heading', {
 							headingTitle: text.text,
 							headingColor: colourNameToHex(
 								_attributes.textColor
