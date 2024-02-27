@@ -23,7 +23,7 @@ use SureForms\Inc\SRFM_Export;
 use SureForms\Inc\SRFM_Smart_Tags;
 use SureForms\Inc\Generate_Form_Markup;
 use SureForms\Inc\Create_New_Form;
-use SureForms\Inc\Global_Settings\SRFM_General_Settings;
+use SureForms\Inc\Global_Settings\SRFM_Global_Settings;
 use SureForms\Inc\Global_Settings\Email_Summary;
 
 /**
@@ -122,7 +122,7 @@ class Plugin_Loader {
 		SRFM_Smart_Tags::get_instance();
 		Generate_Form_Markup::get_instance();
 		Create_New_Form::get_instance();
-		SRFM_General_Settings::get_instance();
+		SRFM_Global_Settings::get_instance();
 		Email_Summary::get_instance();
 
 		/**

@@ -189,6 +189,7 @@ function onloadCallback() {
 		} = extractFormAttributesAndElements( form );
 		let isRecaptchaRender = false;
 		if ( recaptchaType === 'v2-invisible' ) {
+			console.log( 'v2-invisible' );
 			grecaptcha.render( submitBtn, {
 				sitekey: siteKey,
 				callback: () => {

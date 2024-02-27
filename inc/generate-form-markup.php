@@ -119,15 +119,22 @@ class Generate_Form_Markup {
 			$show_title_on_page = Sureforms_Helper::get_meta_value( $id, '_srfm_page_form_title' );
 
 			$google_captcha_site_key = '';
+
+			if ( 'none' !== $recaptcha_version ) {
+				$global_setting_options = get_option( 'srfm_security_settings_options' );
+			} else {
+				$global_setting_options = [];
+			}
+
 			switch ( $recaptcha_version ) {
 				case 'v2-checkbox':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
+					$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
 					break;
 				case 'v2-invisible':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
+					$google_captcha_site_key = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
 					break;
 				case 'v3-reCAPTCHA':
-					$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
+					$google_captcha_site_key = isset( $global_setting_options['srfm_v3_site_key'] ) ? $global_setting_options['srfm_v3_site_key'] : '';
 					break;
 				default:
 					break;
@@ -225,7 +232,6 @@ class Generate_Form_Markup {
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
-					// $honeypot_spam = get_option( 'srfm_honeypot' );
 					$global_setting_options = get_option( 'srfm_general_settings_options' );
 					$honeypot_spam          = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
@@ -271,7 +277,7 @@ class Generate_Form_Markup {
 							</button>
 						<?php endif; ?>
 							<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
-								<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?> . '" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
+								<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>" id="srfm-submit-btn">
 									<div class="srfm-submit-wrap">
 									<?php echo esc_html( $button_text ); ?>
 										<div class="srfm-loader"></div>

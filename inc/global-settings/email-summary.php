@@ -72,7 +72,7 @@ class Email_Summary {
 		$response = new WP_REST_Response( [ 'message' => __( 'Test email sent successfully.', 'sureforms' ) ], 200 );
 		return $response;
 	}
-	
+
 	/**
 	 * Unschedule the action.
 	 *
@@ -202,7 +202,7 @@ class Email_Summary {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function schedule_weekly_entries_email( $send_test_email = false) {
+	public function schedule_weekly_entries_email( $send_test_email = false ) {
 		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
 
 		if ( $send_test_email ) {

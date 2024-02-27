@@ -54,20 +54,24 @@ const Component = ( { path } ) => {
 		srfm_v3_secret_key: '',
 	} );
 
+	const options_to_fetch = [
+		'srfm_general_settings_options',
+		'srfm_email_summary_settings_options',
+		'srfm_security_settings_options',
+	];
+
 	// Fetch global settings.
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
 				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-global-settings',
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ options_to_fetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
 						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 					},
 				} );
-
-				console.log( data );
 
 				const {
 					srfm_general_settings_options,

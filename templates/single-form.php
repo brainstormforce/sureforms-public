@@ -61,21 +61,26 @@ if ( $form_preview_attr ) {
 			$full = false;
 		}
 
-		$recaptcha_version       = get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
-		$google_captcha_site_key = '';
-		switch ( $recaptcha_version ) {
-			case 'v2-checkbox':
-				$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? strval( get_option( 'sureforms_v2_checkbox_site' ) ) : '';
-				break;
-			case 'v2-invisible':
-				$google_captcha_site_key = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? strval( get_option( 'sureforms_v2_invisible_site' ) ) : '';
-				break;
-			case 'v3-reCAPTCHA':
-				$google_captcha_site_key = ! empty( get_option( 'sureforms_v3_site' ) ) ? strval( get_option( 'sureforms_v3_site' ) ) : '';
-				break;
-			default:
-				break;
-		}
+		// $recaptcha_version       = get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
+		// $google_captcha_site_key = '';
+		// if ( 'none' !== $recaptcha_version ) {
+		// 	$global_setting_options = get_option( 'srfm_security_settings_options' );
+		// } else {
+		// 	$global_setting_options = [];
+		// }
+		// switch ( $recaptcha_version ) {
+		// 	case 'v2-checkbox':
+		// 		$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
+		// 		break;
+		// 	case 'v2-invisible':
+		// 		$google_captcha_site_key = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
+		// 		break;
+		// 	case 'v3-reCAPTCHA':
+		// 		$google_captcha_site_key = isset( $global_setting_options['srfm_v3_site_key'] ) ? $global_setting_options['srfm_v3_site_key'] : '';
+		// 		break;
+		// 	default:
+		// 		break;
+		// }
 		?>
 		<style>
 			#srfm-single-page-container {

@@ -67,40 +67,42 @@ function AdvancedSettings( props ) {
 	}
 
 	// Fetch the reCAPTCHA keys from the Global Settings
+	const options_to_fetch = [ 'srfm_security_settings_options' ];
+
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
 				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-settings',
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ options_to_fetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 					},
 				} );
-
-				if ( data ) {
-					setSureformsV2CheckboxSecret(
-						data.sureforms_v2_checkbox_secret &&
-							data.sureforms_v2_checkbox_secret
-					);
+				if ( data.srfm_security_settings_options ) {
+					const {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+					} = data.srfm_security_settings_options;
 					setSureformsV2CheckboxSite(
-						data.sureforms_v2_checkbox_site &&
-							data.sureforms_v2_checkbox_site
+						srfm_v2_checkbox_site_key || ''
 					);
-					setSureformsV2InvisibleSecret(
-						data.sureforms_v2_invisible_secret &&
-							data.sureforms_v2_invisible_secret
+					setSureformsV2CheckboxSecret(
+						srfm_v2_checkbox_secret_key || ''
 					);
 					setSureformsV2InvisibleSite(
-						data.sureforms_v2_invisible_site &&
-							data.sureforms_v2_invisible_site
+						srfm_v2_invisible_site_key || ''
 					);
-					setSureformsV3Secret(
-						data.sureforms_v3_secret && data.sureforms_v3_secret
+					setSureformsV2InvisibleSecret(
+						srfm_v2_invisible_secret_key || ''
 					);
-					setSureformsV3Site(
-						data.sureforms_v3_site && data.sureforms_v3_site
-					);
+					setSureformsV3Site( srfm_v3_site_key || '' );
+					setSureformsV3Secret( srfm_v3_secret_key || '' );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );

@@ -125,16 +125,20 @@ class Sureforms_Submit {
 		$current_form_id       = $form_data['form-id'];
 		$selected_captcha_type = get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
+		if ( 'none' !== $selected_captcha_type ) {
+			$global_setting_options = get_option( 'srfm_security_settings_options' );
+		} else {
+			$global_setting_options = [];
+		}
+	
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v2_checkbox_secret' );
+			$google_captcha_secret_key = isset( $global_setting_options['srfm_v2_checkbox_secret_key'] ) ? $global_setting_options['srfm_v2_checkbox_secret_key'] : '';
 
 		} elseif ( 'v2-invisible' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v2_invisible_secret' );
-
+			$google_captcha_secret_key = isset( $global_setting_options['srfm_v2_invisible_secret_key'] ) ? $global_setting_options['srfm_v2_invisible_secret_key'] : '';
 		} elseif ( 'v3-reCAPTCHA' === $selected_captcha_type ) {
-			$google_captcha_secret_key = get_option( 'sureforms_v3_secret' );
+			$google_captcha_secret_key = isset( $global_setting_options['srfm_v3_secret_key'] ) ? $global_setting_options['srfm_v3_secret_key'] : '';
 		}
-		$honeypot_spam = get_option( 'srfm_honeypot' );
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
@@ -253,7 +257,6 @@ class Sureforms_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		$global_setting_options = get_option( 'srfm_general_settings_options' );
 		$honeypot               = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 		if ( $honeypot ) {
