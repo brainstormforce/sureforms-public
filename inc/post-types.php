@@ -879,7 +879,7 @@ class Post_Types {
 
 		$form_preview = '';
 
-		$form_preview_attr = isset( $_GET['preview'] ) ? $_GET['preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$form_preview_attr = isset( $_GET['preview'] ) ? $_GET['preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		if ( $form_preview_attr ) {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
