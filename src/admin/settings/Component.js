@@ -1,220 +1,233 @@
 import { __ } from '@wordpress/i18n';
-// settings icons.
-import parse from 'html-react-parser';
-import svgIcons from '@Svg/svgs.json';
-import { BaseControl, TabPanel } from '@wordpress/components';
-import { useState, useEffect, Fragment } from '@wordpress/element';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { navigation } from './Navigation';
+import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import GeneralPage from './pages/General'
-import EmailPage from './pages/Email'
-import SecurityPage from './pages/Security'
+import { Snackbar } from '@wordpress/components';
+
+import { MdOutlineDone } from 'react-icons/md';
+import { useDebouncedCallback } from 'use-debounce';
+
+import { navigation } from './Navigation';
+import GeneralPage from './pages/General';
+import EmailPage from './pages/Email';
+import SecurityPage from './pages/Security';
 
 const Component = ( { path } ) => {
-	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
-		useState( '' );
-	const [ sureformsV2CheckboxSecret, setSureformsV2CheckboxSecret ] =
-		useState( '' );
-	const [ sureformsV2InvisibleSite, setSureformsV2InvisibleSite ] =
-		useState( '' );
-	const [ sureformsV2InvisibleSecret, setSureformsV2InvisibleSecret ] =
-		useState( '' );
-	const [ sureformsV3Site, setSureformsV3Site ] = useState( '' );
-	const [ sureformsV3Secret, setSureformsV3Secret ] = useState( '' );
-
-	const [ formData, setFormData ] = useState( {} );
-	const [ honeyPot, setHoneyPot ] = useState( false );
-
 	const [ pageTitle, setPageTitle ] = useState( '' );
 	const [ pageIcon, setPageIcon ] = useState( '' );
+	const [ isSaved, setIsSaved ] = useState( false );
 
-	const onSelect = () => {};
-
-	const handleChange = ( e ) => {
-		const { name, value, type, checked } = e.target;
-		const newValue = type === 'checkbox' ? checked : value;
-
-		if ( name === 'sureforms_v2_checkbox_secret' ) {
-			setSureformsV2CheckboxSecret( newValue );
-			setFormData( () => ( {
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'sureforms_v2_checkbox_site' ) {
-			setSureformsV2CheckboxSite( newValue );
-			setFormData( () => ( {
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'sureforms_v2_invisible_secret' ) {
-			setSureformsV2InvisibleSecret( newValue );
-			setFormData( () => ( {
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'sureforms_v2_invisible_site' ) {
-			setSureformsV2InvisibleSite( newValue );
-			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'sureforms_v3_secret' ) {
-			setSureformsV3Secret( newValue );
-			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'sureforms_v3_site' ) {
-			setSureformsV3Site( newValue );
-			setFormData( () => ( {
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_secret: sureformsV3Secret,
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'honeypot_toggle' ) {
-			setHoneyPot( ! honeyPot );
-			setFormData( () => ( {
-				sureforms_v2_invisible_site: sureformsV2InvisibleSite,
-				sureforms_v2_invisible_secret: sureformsV2InvisibleSecret,
-				sureforms_v2_checkbox_site: sureformsV2CheckboxSite,
-				sureforms_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				sureforms_v3_site: sureformsV3Site,
-				sureforms_v3_secret: sureformsV3Secret,
-				[ name ]: newValue,
-			} ) );
+	useEffect( () => {
+		if ( path ) {
+			navigation.map( ( single ) => {
+				const slug = single?.slug && single.slug ? single.slug : '';
+				const title = single?.name && single.name ? single.name : '';
+				const icon = single?.icon && single.icon ? single.icon : '';
+				if ( slug ) {
+					if ( slug === path ) {
+						setPageTitle( title );
+						setPageIcon( icon );
+					}
+				}
+			} );
 		}
-	};
+	}, [ path ] );
 
-	const handleSubmit = async ( e ) => {
-		e.preventDefault();
-		try {
-			await apiFetch( {
-				path: 'sureforms/v1/srfm-settings',
-				method: 'POST',
-				body: JSON.stringify( formData ),
-				headers: {
-					'content-type': 'application/json',
-				},
-			} );
-			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
-				position: 'bottom-right',
-				hideProgressBar: true,
-			} );
-		} catch ( error ) {
-			toast.error( __( 'Error Saving Settings!', 'sureforms' ), {
-				position: 'bottom-right',
-				hideProgressBar: true,
-			} );
-			console.error( error );
-		}
-	};
+	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
+		srfm_ip_log: false,
+		srfm_honeypot: false,
+		srfm_form_analytics: false,
+		srfm_gdpr: false,
+	} );
 
+	const [ emailTabOptions, setEmailTabOptions ] = useState( {
+		srfm_email_summary: false,
+		srfm_emails_send_to: sureforms_admin.admin_email,
+		srfm_schedule_report: 'Monday',
+	} );
+
+	const [ securitytabOptions, setSecurityTabOptions ] = useState( {
+		srfm_v2_checkbox_site_key: '',
+		srfm_v2_checkbox_secret_key: '',
+		srfm_v2_invisible_site_key: '',
+		srfm_v2_invisible_secret_key: '',
+		srfm_v3_site_key: '',
+		srfm_v3_secret_key: '',
+	} );
+
+	// Fetch global settings.
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
 				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-settings',
+					path: 'sureforms/v1/srfm-global-settings',
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 					},
 				} );
 
-				if ( data ) {
-					setSureformsV2CheckboxSecret(
-						data.sureforms_v2_checkbox_secret &&
-							data.sureforms_v2_checkbox_secret
-					);
-					setSureformsV2CheckboxSite(
-						data.sureforms_v2_checkbox_site &&
-							data.sureforms_v2_checkbox_site
-					);
-					setSureformsV2InvisibleSecret(
-						data.sureforms_v2_invisible_secret &&
-							data.sureforms_v2_invisible_secret
-					);
-					setSureformsV2InvisibleSite(
-						data.sureforms_v2_invisible_site &&
-							data.sureforms_v2_invisible_site
-					);
-					setSureformsV3Secret(
-						data.sureforms_v3_secret && data.sureforms_v3_secret
-					);
-					setSureformsV3Site(
-						data.sureforms_v3_site && data.sureforms_v3_site
-					);
-					setHoneyPot( data.honeypot && data.honeypot );
+				console.log( data );
+
+				const {
+					srfm_general_settings_options,
+					srfm_email_summary_settings_options,
+				} = data;
+
+				if ( srfm_general_settings_options ) {
+					const {
+						srfm_ip_log,
+						srfm_honeypot,
+						srfm_form_analytics,
+						srfm_gdpr,
+					} = srfm_general_settings_options;
+					setGeneralTabOptions( {
+						srfm_ip_log,
+						srfm_honeypot,
+						srfm_form_analytics,
+						srfm_gdpr,
+					} );
+				}
+
+				if ( srfm_email_summary_settings_options ) {
+					const {
+						srfm_email_summary,
+						srfm_email_sent_to,
+						srfm_schedule_report,
+					} = srfm_email_summary_settings_options;
+					setEmailTabOptions( {
+						srfm_email_summary,
+						srfm_email_sent_to,
+						srfm_schedule_report,
+					} );
+				}
+
+				if ( data.srfm_security_settings_options ) {
+					const {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+					} = data.srfm_security_settings_options;
+					setSecurityTabOptions( {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+					} );
 				}
 			} catch ( error ) {
-				console.error( 'Error fetching datates:', error );
+				console.error( 'Error fetching data:', error );
 			}
 		};
 
 		fetchData();
 	}, [] );
 
-
-	useEffect( () => {
-		if( path ) {
-			navigation.map( ( single ) => {
-				const slug = single?.slug && single.slug ? single.slug : ''
-				const title = single?.name && single.name ? single.name : ''
-				const icon = single?.icon && single.icon ? single.icon : ''
-				if( slug ) {
-					if( slug === path ) {
-						setPageTitle(title);
-						setPageIcon(icon);
-					}
-				}
-			})
+	// Save global settings.
+	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
+		setIsSaved( false );
+		try {
+			apiFetch( {
+				path: 'sureforms/v1/srfm-global-settings',
+				method: 'POST',
+				body: JSON.stringify( newFormData ),
+				headers: {
+					'content-type': 'application/json',
+					'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+				},
+			} ).then( () => {
+				setIsSaved( true );
+				setTimeout( () => {
+					setIsSaved( false );
+				}, 1500 );
+			} );
+		} catch ( error ) {
+			console.error( error );
 		}
-	
-	}, [path] );
-	
+	}, 1000 );
+
+	// Handle global settings change.
+	function updateGlobalSettings( setting, value, tab ) {
+		let updatedTabOptions;
+
+		if ( tab === 'email-settings' ) {
+			updatedTabOptions = {
+				...emailTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setEmailTabOptions( updatedTabOptions );
+		} else if ( tab === 'general-settings' ) {
+			updatedTabOptions = {
+				...generalTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setGeneralTabOptions( updatedTabOptions );
+		} else if ( tab === 'security-settings' ) {
+			updatedTabOptions = {
+				...securitytabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setSecurityTabOptions( updatedTabOptions );
+		} else {
+			return;
+		}
+
+		debouncedSave( updatedTabOptions );
+	}
+
 	return (
 		<>
-		<div class="srfm-page-heading">
-			<div class="srfm-page-icon">
-				{pageIcon}
+			<div class="srfm-page-heading">
+				<div class="srfm-page-icon">{ pageIcon }</div>
+				<span>{ pageTitle }</span>
+				{ isSaved && (
+					<Snackbar onDismiss={ () => setIsSaved( false ) }>
+						<div
+							style={ {
+								display: 'flex',
+								alignItems: 'center',
+								gap: '.5rem',
+							} }
+						>
+							<MdOutlineDone fill="green" size={ 24 } />
+							<span>
+								{ __(
+									'Settings Saved Successfully!',
+									'sureforms'
+								) }
+							</span>
+						</div>
+					</Snackbar>
+				) }
 			</div>
-			<span>{pageTitle}</span>
-		</div>
-		<div class="srfm-page-content">
-			{ 'general-settings' === path && <GeneralPage/> }
-			{ 'email-settings' === path && <EmailPage/> }
-			{ 'security-settings' === path && <SecurityPage/> }
-		</div>
+			<div class="srfm-page-content">
+				{ 'general-settings' === path && (
+					<GeneralPage
+						generalTabOptions={ generalTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'email-settings' === path && (
+					<EmailPage
+						emailTabOptions={ emailTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'security-settings' === path && (
+					<SecurityPage
+						securitytabOptions={ securitytabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+			</div>
 		</>
 	);
 };

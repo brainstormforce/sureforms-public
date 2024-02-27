@@ -225,7 +225,9 @@ class Generate_Form_Markup {
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
-					$honeypot_spam = get_option( 'honeypot' );
+					// $honeypot_spam = get_option( 'srfm_honeypot' );
+					$global_setting_options = get_option( 'srfm_general_settings_options' );
+					$honeypot_spam          = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
 					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
@@ -236,7 +238,7 @@ class Generate_Form_Markup {
 
 				<input type="hidden" value="<?php echo esc_attr( Sureforms_Helper::get_string_value( $id ) ); ?>" name="form-id">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
-				<?php if ( '1' === $honeypot_spam ) : ?>
+				<?php if ( $honeypot_spam ) : ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
 				<?php endif; ?>
 				<?php

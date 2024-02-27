@@ -13,6 +13,7 @@ use SureForms\Inc\Sureforms_Helper;
 use SureForms\Inc\Email\Email_Template;
 use SureForms\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
+use SureForms\Inc\Lib\Browser\Browser;
 
 if ( ! function_exists( 'wp_handle_upload' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -60,24 +61,6 @@ class Sureforms_Submit {
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_form_submission' ],
-				'permission_callback' => '__return_true',
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'/srfm-settings',
-			array(
-				'methods'             => WP_REST_Server::EDITABLE,
-				'callback'            => [ $this, 'handle_settings_form_submission' ],
-				'permission_callback' => '__return_true',
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'/srfm-settings',
-			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_settings_form_data' ],
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -151,7 +134,7 @@ class Sureforms_Submit {
 		} elseif ( 'v3-reCAPTCHA' === $selected_captcha_type ) {
 			$google_captcha_secret_key = get_option( 'sureforms_v3_secret' );
 		}
-		$honeypot_spam = get_option( 'honeypot' );
+		$honeypot_spam = get_option( 'srfm_honeypot' );
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {
@@ -231,75 +214,6 @@ class Sureforms_Submit {
 	}
 
 	/**
-	 * Handle Settings Form Submission
-	 *
-	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
-	 * @since 0.0.1
-	 */
-	public function handle_settings_form_submission( $request ) {
-		$data = Sureforms_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_json_params() );
-		if ( empty( $data ) || ! is_array( $data ) ) {
-			return wp_send_json_error( __( 'Data is not found.', 'sureforms' ) );
-		}
-
-		$options_to_update = array(
-			'sureforms_v2_checkbox_secret',
-			'sureforms_v2_checkbox_site',
-			'sureforms_v2_invisible_secret',
-			'sureforms_v2_invisible_site',
-			'sureforms_v3_site',
-			'sureforms_v3_secret',
-			'honeypot_toggle',
-		);
-
-		foreach ( $options_to_update as $option_key ) {
-			if ( isset( $data[ $option_key ] ) ) {
-				if ( 'honeypot_toggle' === $option_key ) {
-					update_option( 'honeypot', $data[ $option_key ] );
-				} else {
-					update_option( $option_key, $data[ $option_key ] );
-				}
-			}
-		}
-
-		return rest_ensure_response( 'success' );
-	}
-
-	/**
-	 * Get Settings Form Data
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	public function get_settings_form_data() {
-		$sureforms_v2_checkbox_secret     = ! empty( get_option( 'sureforms_v2_checkbox_secret' ) ) ? get_option( 'sureforms_v2_checkbox_secret' ) : '';
-		$sureforms_v2_checkbox_site       = ! empty( get_option( 'sureforms_v2_checkbox_site' ) ) ? get_option( 'sureforms_v2_checkbox_site' ) : '';
-		$sureforms_v2_invisible_secret    = ! empty( get_option( 'sureforms_v2_invisible_secret' ) ) ? get_option( 'sureforms_v2_invisible_secret' ) : '';
-		$sureforms_v2_invisible_site      = ! empty( get_option( 'sureforms_v2_invisible_site' ) ) ? get_option( 'sureforms_v2_invisible_site' ) : '';
-		$sureforms_v3_secret              = ! empty( get_option( 'sureforms_v3_secret' ) ) ? get_option( 'sureforms_v3_secret' ) : '';
-		$sureforms_v3_site                = ! empty( get_option( 'sureforms_v3_site' ) ) ? get_option( 'sureforms_v3_site' ) : '';
-		$honeypot                         = ! empty( get_option( 'honeypot' ) ) ? get_option( 'honeypot' ) : '';
-		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
-
-		$ip_logging = ! empty( get_option( 'srfm_global_ip_logging' ) ) ? get_option( 'srfm_global_ip_logging' ) : false;
-
-		// TODO: We need to change it to array and serialize it.
-		$results = array(
-			'sureforms_v2_checkbox_site'       => $sureforms_v2_checkbox_site,
-			'sureforms_v2_checkbox_secret'     => $sureforms_v2_checkbox_secret,
-			'sureforms_v2_invisible_site'      => $sureforms_v2_invisible_site,
-			'sureforms_v2_invisible_secret'    => $sureforms_v2_invisible_secret,
-			'sureforms_v3_secret'              => $sureforms_v3_secret,
-			'sureforms_v3_site'                => $sureforms_v3_site,
-			'honeypot'                         => $honeypot,
-			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
-		);
-
-		wp_send_json( $results );
-	}
-
-	/**
 	 * Send Email and Create Entry.
 	 *
 	 * @param array $form_data Request object or array containing form data.
@@ -308,6 +222,14 @@ class Sureforms_Submit {
 	 * @phpstan-ignore-next-line
 	 */
 	public function handle_form_entry( $form_data ) {
+
+		$global_setting_options = get_option( 'srfm_general_settings_options' );
+		$srfm_ip_log            = isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
+
+		$user_ip      = $srfm_ip_log ? $_SERVER['REMOTE_ADDR'] : '';
+		$browser      = new Browser();
+		$browser_name = $browser->getBrowser();
+		$device_name  = $browser->getPlatform();
 
 		$id           = wp_kses_post( $form_data['form-id'] );
 		$form_markup  = get_the_content( null, false, $form_data['form-id'] );
@@ -329,14 +251,12 @@ class Sureforms_Submit {
 			$meta_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
-		$first_input = isset( $labels[0] ) ? str_replace( ' ', '_', $labels[0] ) : '';
-		$name        = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		$honeypot_value = get_option( 'honeypot' );
+		$global_setting_options = get_option( 'srfm_general_settings_options' );
+		$honeypot               = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
-		$honeypot = ! empty( $honeypot_value ) ? $honeypot_value : '';
-
-		if ( '1' === $honeypot ) {
+		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );
 			$first_field_value = $form_data[ $key ];
 		} else {
@@ -367,6 +287,12 @@ class Sureforms_Submit {
 		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
 		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
+			$srfm_submission_info[] = array(
+				'user_ip'      => $user_ip,
+				'browser_name' => $browser_name,
+				'device_name'  => $device_name,
+			);
+			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = array(
 				'success' => true,

@@ -9,6 +9,8 @@
 namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
+use WP_REST_Request;
+use WP_Error;
 
 /**
  * Sureforms Helper Class.
@@ -249,7 +251,7 @@ class Sureforms_Helper {
 			'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
-			'srfm_dropdown_block_required_text'          => __( 'This field is require.', 'sureforms' ),
+			'srfm_dropdown_block_required_text'     => __( 'This field is require.', 'sureforms' ),
 		);
 
 		return $default_dynamic_values;
@@ -266,5 +268,35 @@ class Sureforms_Helper {
 		$default_dynamic_values = self::default_dynamic_block_option();
 
 		return get_option( 'get_default_dynamic_block_option', $default_dynamic_values )[ $key ];
+	}
+
+	/**
+	 * Checks whether a given request has permissions to edit global settings options.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since 0.0.1
+	 */
+	public static function get_items_permissions_check( $request ) {
+		if ( current_user_can( 'edit_posts' ) ) {
+			return true;
+		}
+
+		foreach ( get_post_types( [ 'show_in_rest' => true ], 'objects' ) as $post_type ) {
+			/**
+			 * The post type.
+			 *
+			 * @var WP_Post_Type $post_type
+			 */
+			if ( current_user_can( $post_type->cap->edit_posts ) ) {
+				return true;
+			}
+		}
+
+		return new WP_Error(
+			'rest_cannot_view',
+			__( 'Sorry, you are not allowed to perform this action.', 'sureforms' ),
+			[ 'status' => \rest_authorization_required_code() ]
+		);
 	}
 }

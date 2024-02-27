@@ -357,6 +357,7 @@ class Admin {
 					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SUREFORMS_VER,
+					'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 		}

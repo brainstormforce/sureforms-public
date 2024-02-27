@@ -9,6 +9,7 @@
 namespace SureForms\Inc;
 
 use SureForms\Inc\Traits\Get_Instance;
+use SureForms\Inc\Global_Settings\Email_Summary;
 
 /**
  * Activation Class.
@@ -25,6 +26,16 @@ class Activator {
 	 * @return void
 	 */
 	public static function activate() {
+
+		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
+		$enable_email_summary  = isset( $email_summary_options['srfm_email_summary'] ) ? $email_summary_options['srfm_email_summary'] : false;
+
+		$send_test_email = false;
+
+		if ( $enable_email_summary ) {
+			$email_summaries = new Email_Summary();
+			$email_summaries->schedule_weekly_entries_email( $send_test_email );
+		}
 
 		/**
 		 * Reset rewrite rules to avoid go to permalinks page
