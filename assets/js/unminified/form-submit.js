@@ -170,6 +170,7 @@ function extractFormAttributesAndElements( form ) {
 }
 
 // eslint-disable-next-line no-unused-vars
+// v-2 invisible recaptcha callback
 function onloadCallback() {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 
@@ -189,7 +190,6 @@ function onloadCallback() {
 		} = extractFormAttributesAndElements( form );
 		let isRecaptchaRender = false;
 		if ( recaptchaType === 'v2-invisible' ) {
-			console.log( 'v2-invisible' );
 			grecaptcha.render( submitBtn, {
 				sitekey: siteKey,
 				callback: () => {
@@ -226,3 +226,6 @@ function onloadCallback() {
 		}
 	} );
 }
+
+// directly assign onloadCallback into the global space:
+window.onloadCallback = onloadCallback;
