@@ -13,9 +13,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import {
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -42,6 +40,7 @@ const default_keys = {
 	_srfm_show_asterisk: true,
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
+	_srfm_instant_form: false,
 	// Submit Button
 	_srfm_submit_button_text: 'SUBMIT',
 	// Page Break
@@ -165,7 +164,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 	function addSubmitButton( elm ) {
 		const inheritClass = 'wp-block-button__link';
 		const customClass = 'srfm-btn-bg-color';
-		const btnClass = ( sureforms_keys?._srfm_inherit_theme_button && sureforms_keys._srfm_inherit_theme_button ) ? inheritClass : customClass;
+		const btnClass =
+			sureforms_keys?._srfm_inherit_theme_button &&
+			sureforms_keys._srfm_inherit_theme_button
+				? inheritClass
+				: customClass;
 		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
@@ -409,10 +412,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.navigation.addEventListener( 'navigate', ( e ) => {
 				toggleSidebar( e.destination.url );
 			} );
-		} else if (
-			enableQuickActionSidebar !== undefined &&
-			'enabled' === enableQuickActionSidebar
-		) {
+		} else if ( enableQuickActionSidebar !== undefined ) {
 			// Attach the sidebar to the DOM.
 			attachSidebar();
 		} else {

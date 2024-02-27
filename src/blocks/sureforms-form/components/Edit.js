@@ -130,7 +130,7 @@ export default ( { attributes, setAttributes } ) => {
 					<PanelRow>
 						<ToggleControl
 							label={ __(
-								'Hide title on this page',
+								'Hide Form Title on This Page',
 								'sureforms'
 							) }
 							checked={ hideTitle }
@@ -198,7 +198,10 @@ export default ( { attributes, setAttributes } ) => {
 							loading={ 'eager' }
 							ref={ iframeRef }
 							title="srfm-iframe"
-							src={ formUrl + `?form_preview=true` }
+							src={
+								formUrl +
+								`?preview_id=${ id }&preview=true&form_preview=true`
+							}
 							width={ '100%' }
 						/>
 					</div>

@@ -445,26 +445,99 @@ function StyleSettings( props ) {
 
 	return (
 		<>
+			{ sureforms_keys._srfm_instant_form && (
+				<SRFMAdvancedPanelBody
+					title={ __( 'Intstant Form', 'sureforms' ) }
+					initialOpen={ false }
+				>
+					<Range
+						label={ __( 'Form Container Width', 'sureforms' ) }
+						value={ sureforms_keys._srfm_form_container_width }
+						min={ 650 }
+						max={ 1000 }
+						displayUnit={ false }
+						data={ {
+							value: sureforms_keys._srfm_form_container_width,
+							label: '_srfm_form_container_width',
+						} }
+						onChange={ ( value ) =>
+							updateMeta( '_srfm_form_container_width', value )
+						}
+						isFormSpecific={ true }
+					/>
+					<p className="components-base-control__help" />
+					<MultiButtonsControl
+						label={ __( 'Background Type', 'sureforms' ) }
+						data={ {
+							value: sureforms_keys._srfm_bg_type,
+							label: '_srfm_bg_type',
+						} }
+						options={ [
+							{
+								value: 'image',
+								label: __( 'Image', 'sureforms' ),
+							},
+							{
+								value: 'color',
+								label: __( 'Color', 'sureforms' ),
+							},
+						] }
+						showIcons={ false }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_bg_type', value );
+							if ( value === 'color' ) {
+								updateMeta( '_srfm_bg_image', '' );
+								updateMeta(
+									'_srfm_bg_color',
+									sureforms_keys._srfm_bg_color
+										? sureforms_keys._srfm_bg_color
+										: '#ffffff'
+								);
+							} else {
+								updateMeta( '_srfm_bg_color', '' );
+								updateMeta(
+									'_srfm_bg_image',
+									sureforms_keys._srfm_bg_image
+										? sureforms_keys._srfm_bg_image
+										: ''
+								);
+							}
+						} }
+					/>
+					<p className="components-base-control__help" />
+					{ sureforms_keys._srfm_bg_type === 'image' ? (
+						<SRFMMediaPicker
+							label={ __( 'Background Image', 'sureforms' ) }
+							onSelectImage={ onSelectRestImage }
+							backgroundImage={ sureforms_keys._srfm_bg_image }
+							onRemoveImage={ onRemoveRestImage }
+							isFormSpecific={ true }
+						/>
+					) : (
+						<AdvancedPopColorControl
+							label={ __( 'Background Color', 'sureforms' ) }
+							colorValue={ sureforms_keys._srfm_bg_color }
+							data={ {
+								value: sureforms_keys._srfm_bg_color,
+								label: '_srfm_bg_color',
+							} }
+							onColorChange={ ( colorValue ) => {
+								if (
+									colorValue !== sureforms_keys._srfm_bg_color
+								) {
+									updateMeta( '_srfm_bg_color', colorValue );
+								}
+							} }
+							value={ sureforms_keys._srfm_bg_color }
+							isFormSpecific={ true }
+						/>
+					) }
+				</SRFMAdvancedPanelBody>
+			) }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form Container', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<Range
-					label={ __( 'Form Container Width', 'sureforms' ) }
-					value={ sureforms_keys._srfm_form_container_width }
-					min={ 650 }
-					max={ 1000 }
-					displayUnit={ false }
-					data={ {
-						value: sureforms_keys._srfm_form_container_width,
-						label: '_srfm_form_container_width',
-					} }
-					onChange={ ( value ) =>
-						updateMeta( '_srfm_form_container_width', value )
-					}
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
 					label={ __( 'Primary Color', 'sureforms' ) }
 					colorValue={ sureforms_keys._srfm_color1 }
@@ -480,73 +553,7 @@ function StyleSettings( props ) {
 					value={ sureforms_keys._srfm_color1 }
 					isFormSpecific={ true }
 				/>
-				<p className="components-base-control__help" />
-				<MultiButtonsControl
-					label={ __( 'Background Type', 'sureforms' ) }
-					data={ {
-						value: sureforms_keys._srfm_bg_type,
-						label: '_srfm_bg_type',
-					} }
-					options={ [
-						{
-							value: 'image',
-							label: __( 'Image', 'sureforms' ),
-						},
-						{
-							value: 'color',
-							label: __( 'Color', 'sureforms' ),
-						},
-					] }
-					showIcons={ false }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_bg_type', value );
-						if ( value === 'color' ) {
-							updateMeta( '_srfm_bg_image', '' );
-							updateMeta(
-								'_srfm_bg_color',
-								sureforms_keys._srfm_bg_color
-									? sureforms_keys._srfm_bg_color
-									: '#ffffff'
-							);
-						} else {
-							updateMeta( '_srfm_bg_color', '' );
-							updateMeta(
-								'_srfm_bg_image',
-								sureforms_keys._srfm_bg_image
-									? sureforms_keys._srfm_bg_image
-									: ''
-							);
-						}
-					} }
-				/>
-				<p className="components-base-control__help" />
-				{ sureforms_keys._srfm_bg_type === 'image' ? (
-					<SRFMMediaPicker
-						label={ __( 'Background Image', 'sureforms' ) }
-						onSelectImage={ onSelectRestImage }
-						backgroundImage={ sureforms_keys._srfm_bg_image }
-						onRemoveImage={ onRemoveRestImage }
-						isFormSpecific={ true }
-					/>
-				) : (
-					<AdvancedPopColorControl
-						label={ __( 'Background Color', 'sureforms' ) }
-						colorValue={ sureforms_keys._srfm_bg_color }
-						data={ {
-							value: sureforms_keys._srfm_bg_color,
-							label: '_srfm_bg_color',
-						} }
-						onColorChange={ ( colorValue ) => {
-							if (
-								colorValue !== sureforms_keys._srfm_bg_color
-							) {
-								updateMeta( '_srfm_bg_color', colorValue );
-							}
-						} }
-						value={ sureforms_keys._srfm_bg_color }
-						isFormSpecific={ true }
-					/>
-				) }
+
 				<p className="components-base-control__help" />
 				<Range
 					label={ __( 'Font Size', 'sureforms' ) }
