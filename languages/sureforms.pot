@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-28T09:35:06+01:00\n"
+"POT-Creation-Date: 2024-02-28T10:56:43+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -66,9 +66,9 @@ msgstr ""
 #: inc/srfm-email-summaries.php:142
 #: inc/srfm-export.php:89
 #: inc/srfm-forms-data.php:89
-#: inc/srfm-submit.php:105
-#: inc/srfm-submit.php:264
-#: inc/srfm-submit.php:316
+#: inc/srfm-submit.php:122
+#: inc/srfm-submit.php:281
+#: inc/srfm-submit.php:333
 msgid "Nonce verification failed."
 msgstr ""
 
@@ -582,40 +582,44 @@ msgstr ""
 msgid "Cookie Value"
 msgstr ""
 
-#: inc/srfm-submit.php:113
+#: inc/srfm-submit.php:102
+msgid "Sorry, you cannot access this route"
+msgstr ""
+
+#: inc/srfm-submit.php:130
 msgid "Form data is not found."
 msgstr ""
 
-#: inc/srfm-submit.php:151
+#: inc/srfm-submit.php:168
 msgid "File is not uploaded"
 msgstr ""
 
-#: inc/srfm-submit.php:157
+#: inc/srfm-submit.php:174
 msgid "Form Id is missing."
 msgstr ""
 
-#: inc/srfm-submit.php:272
+#: inc/srfm-submit.php:289
 msgid "Data is not found."
 msgstr ""
 
-#: inc/srfm-submit.php:406
+#: inc/srfm-submit.php:423
 msgid "Entry #"
 msgstr ""
 
-#: inc/srfm-submit.php:430
-#: inc/srfm-submit.php:475
+#: inc/srfm-submit.php:447
+#: inc/srfm-submit.php:492
 msgid "Form submitted successfully"
 msgstr ""
 
-#: inc/srfm-submit.php:481
+#: inc/srfm-submit.php:498
 msgid "Email sent successfully."
 msgstr ""
 
-#: inc/srfm-submit.php:483
+#: inc/srfm-submit.php:500
 msgid "Failed to send form data."
 msgstr ""
 
-#: inc/srfm-submit.php:488
+#: inc/srfm-submit.php:505
 msgid "Error submitting form"
 msgstr ""
 

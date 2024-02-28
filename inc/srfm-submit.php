@@ -14,6 +14,8 @@ use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
+use WP_Error;
+use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -74,7 +76,7 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
-				'permission_callback' => [ $this, 'handle_settings_form_submission_permissions_check' ],
+				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
 		register_rest_route(
@@ -83,36 +85,25 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
-				'permission_callback' => [ $this, 'get_settings_form_data_permissions_check' ],
+				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
 	}
 
 	/**
-	 * Checks whether a given request has permission to change settings.
+	 * Check whether a given request has permission access route.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 * @since 0.0.1
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
 	 */
-	public function handle_settings_form_submission_permissions_check( $request ) {
-		if ( current_user_can( 'manage_options' ) ) {
-			return true;
+	public function permissions_check( $request ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
 		}
+		return true;
 	}
 
-	/**
-	 * Checks whether a given request has permission to get settings.
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 * @since 0.0.1
-	 */
-	public function get_settings_form_data_permissions_check( $request ) {
-		if ( current_user_can( 'manage_options' ) ) {
-			return true;
-		}
-	}
 
 	/**
 	 * Handle Form Submission

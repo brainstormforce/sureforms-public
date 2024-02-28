@@ -163,5 +163,5 @@ License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE
 
 = 0.0.2 =
 * New: Introduced Email summaries.  
-* Fix: Bug fixes 
+* Fix: Bug fixes. 
 

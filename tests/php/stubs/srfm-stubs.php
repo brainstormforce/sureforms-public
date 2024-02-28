@@ -8709,6 +8709,16 @@ namespace SRFM\Inc {
         {
         }
         /**
+         * Check whether a given request has permission access route.
+         *
+         * @since 0.0.1
+         * @param  WP_REST_Request $request Full details about the request.
+         * @return WP_Error|boolean
+         */
+        public function permissions_check($request)
+        {
+        }
+        /**
          * Handle Form Submission
          *
          * @param \WP_REST_Request $request Request object or array containing form data.
