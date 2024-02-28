@@ -4,7 +4,11 @@ import { useState } from '@wordpress/element';
 
 import ContentSection from '../components/ContentSection';
 
-const GeneralPage = ( { generalTabOptions, updateGlobalSettings } ) => {
+const GeneralPage = ( {
+	generalTabOptions,
+	updateGlobalSettings,
+	dynamicBlockOptions,
+} ) => {
 	const miscellaneousContent = () => {
 		return (
 			<>
@@ -73,30 +77,20 @@ const GeneralPage = ( { generalTabOptions, updateGlobalSettings } ) => {
 	};
 
 	const validationContent = () => {
-		const [ requiredField, setRequiredField ] = useState( '' );
-		const [ emailField, setEmailField ] = useState( '' );
-
-		const handleOnChange = () => {
-			return false;
-		};
-
 		return (
 			<>
 				<TextControl
 					label={ __( 'Required Field', 'sureforms' ) }
 					type="text"
 					className="srfm-components-input-control"
-					value={ requiredField }
-					onChange={ handleOnChange }
-					placeholder={ __( 'This field is required', 'sureforms' ) }
-				/>
-				<TextControl
-					label={ __( 'Required Field', 'sureforms' ) }
-					type="text"
-					className="srfm-components-input-control"
-					value={ emailField }
-					onChange={ handleOnChange }
-					placeholder={ __( 'This field is required', 'sureforms' ) }
+					value={ dynamicBlockOptions.srfm_url_block_required_text }
+					onChange={ ( value ) => {
+						updateGlobalSettings(
+							'srfm_url_block_required_text',
+							value,
+							'general-settings-dynamic-opt'
+						);
+					} }
 				/>
 			</>
 		);

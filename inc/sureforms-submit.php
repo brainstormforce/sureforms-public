@@ -130,7 +130,7 @@ class Sureforms_Submit {
 		} else {
 			$global_setting_options = [];
 		}
-	
+
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
 			$google_captcha_secret_key = isset( $global_setting_options['srfm_v2_checkbox_secret_key'] ) ? $global_setting_options['srfm_v2_checkbox_secret_key'] : '';
 
@@ -257,7 +257,7 @@ class Sureforms_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		$honeypot               = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
+		$honeypot = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );

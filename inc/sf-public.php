@@ -51,7 +51,7 @@ class SF_Public {
 
 		$global_setting_options = get_option( 'srfm_security_settings_options' );
 		$is_set_v2_site_key     = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
-		
+
 		// Styles based on meta style.
 		wp_enqueue_style( SUREFORMS_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', array(), SUREFORMS_VER );
 

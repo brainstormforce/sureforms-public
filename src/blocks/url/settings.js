@@ -23,12 +23,12 @@ export default ( { attributes, setAttributes } ) => {
 		errorMsg,
 		fieldWidth,
 	} = attributes;
-	
 
 	//const defaultErrorValue = sfBlockData?.get_default_dynamic_block_option?.srfm_url_block_required_text ? sfBlockData.get_default_dynamic_block_option.srfm_url_block_required_text : ''
-	const currentErrorMessage = validationMessage('srfm_url_block_required_text', errorMsg);
-
-	console.log(currentErrorMessage);
+	const currentErrorMessage = validationMessage(
+		'srfm_url_block_required_text',
+		errorMsg
+	);
 
 	return (
 		<InspectorControls>
@@ -100,9 +100,9 @@ export default ( { attributes, setAttributes } ) => {
 									value: errorMsg,
 									label: 'errorMsg',
 								} }
-								onChange={ ( value ) =>
-									setAttributes( { errorMsg: value } )
-								}
+								onChange={ ( value ) => {
+									setAttributes( { errorMsg: value } );
+								} }
 							/>
 						) }
 						<SRFMTextControl

@@ -54,10 +54,67 @@ const Component = ( { path } ) => {
 		srfm_v3_secret_key: '',
 	} );
 
+	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {
+		// srfm_url_block_required_text: __(
+		// 	'This field is required.',
+		// 	'sureforms'
+		// ),
+		srfm_url_block_required_text: '',
+		srfm_input_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_input_block_unique_text: __(
+			'Value need to be unique.',
+			'sureforms'
+		),
+		srfm_address_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_phone_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_phone_block_unique_text: __(
+			'Value need to be unique.',
+			'sureforms'
+		),
+		srfm_number_block_required_text: __(
+			'This field is required..',
+			'sureforms'
+		),
+		srfm_textarea_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_multi_choice_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_checkbox_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_email_block_required_text: __(
+			'This field is required.',
+			'sureforms'
+		),
+		srfm_email_block_unique_text: __(
+			'Value need to be unique.',
+			'sureforms'
+		),
+		srfm_dropdown_block_required_text: __(
+			'This field is require.',
+			'sureforms'
+		),
+	} );
+
 	const options_to_fetch = [
 		'srfm_general_settings_options',
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
+		'get_default_dynamic_block_option',
 	];
 
 	// Fetch global settings.
@@ -124,6 +181,15 @@ const Component = ( { path } ) => {
 						srfm_v3_secret_key,
 					} );
 				}
+
+				if ( data.get_default_dynamic_block_option ) {
+					// const { srfm_default_dynamic_block } =
+					// 	data.get_default_dynamic_block_option;
+					setDynamicBlockOptions( {
+						...data.get_default_dynamic_block_option,
+					} );
+				}
+				// console.log( data );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
 			}
@@ -131,6 +197,7 @@ const Component = ( { path } ) => {
 
 		fetchData();
 	}, [] );
+	console.log( dynamicBlockOptions );
 
 	// Save global settings.
 	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
@@ -180,6 +247,13 @@ const Component = ( { path } ) => {
 				[ setting ]: value,
 			};
 			setSecurityTabOptions( updatedTabOptions );
+		} else if ( tab === 'general-settings-dynamic-opt' ) {
+			updatedTabOptions = {
+				...dynamicBlockOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setDynamicBlockOptions( updatedTabOptions );
 		} else {
 			return;
 		}
@@ -217,6 +291,7 @@ const Component = ( { path } ) => {
 					<GeneralPage
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
+						dynamicBlockOptions={ dynamicBlockOptions }
 					/>
 				) }
 				{ 'email-settings' === path && (
