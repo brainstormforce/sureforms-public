@@ -34,7 +34,7 @@ class SRFM_Activator {
 		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['enable_email_summary'] : '';
 
 		if ( $enable_email_summary ) {
-			$email_summaries = new Email_Summaries();
+			$email_summaries = new SRFM_Email_Summaries();
 			$email_summaries->schedule_weekly_entries_email();
 		}
 
