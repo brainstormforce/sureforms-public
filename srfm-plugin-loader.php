@@ -23,6 +23,7 @@ use SRFM\Inc\SRFM_Export;
 use SRFM\Inc\SRFM_Smart_Tags;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Create_New_Form;
+use SRFM\Inc\SRFM_Email_Summaries;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -103,6 +104,8 @@ class SRFM_Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		// Load the action scheduler before plugin loads.
+		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
 
@@ -124,6 +127,7 @@ class SRFM_Plugin_Loader {
 		SRFM_Smart_Tags::get_instance();
 		SRFM_Generate_Form_Markup::get_instance();
 		SRFM_Create_New_Form::get_instance();
+		SRFM_Email_Summaries::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
@@ -139,6 +143,8 @@ class SRFM_Plugin_Loader {
 			SRFM_FILE,
 			function () {
 				update_option( '__srfm_do_redirect', false );
+				$email_summaries = new SRFM_Email_Summaries();
+				$email_summaries->unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}

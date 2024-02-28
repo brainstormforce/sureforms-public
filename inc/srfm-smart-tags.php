@@ -9,7 +9,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\Services\Browser\Browser;
+use SRFM\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

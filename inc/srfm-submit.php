@@ -13,6 +13,7 @@ use SRFM\Inc\SRFM_Helper;
 use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
+use SureForms\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -279,12 +280,15 @@ class SRFM_Submit {
 			'srfm_v3_site',
 			'srfm_v3_secret',
 			'srfm_honeypot_toggle',
+			'srfm_ip_log',
 		];
 
 		foreach ( $options_to_update as $option_key ) {
 			if ( isset( $data[ $option_key ] ) ) {
 				if ( 'srfm_honeypot_toggle' === $option_key ) {
 					update_option( 'srfm_honeypot', $data[ $option_key ] );
+				} elseif ( 'srfm_ip_log' === $option_key ) {
+					update_option( 'srfm_ip_log', $data[ $option_key ] );
 				} else {
 					update_option( $option_key, $data[ $option_key ] );
 				}
@@ -322,6 +326,7 @@ class SRFM_Submit {
 		$sureforms_v3_secret              = ! empty( get_option( 'srfm_v3_secret' ) ) ? get_option( 'srfm_v3_secret' ) : '';
 		$sureforms_v3_site                = ! empty( get_option( 'srfm_v3_site' ) ) ? get_option( 'srfm_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'srfm_honeypot' ) ) ? get_option( 'srfm_honeypot' ) : '';
+		$srfm_ip_log                      = ! empty( get_option( 'srfm_ip_log' ) ) ? get_option( 'srfm_ip_log' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 
 		$results = [
@@ -333,6 +338,7 @@ class SRFM_Submit {
 			'srfm_v3_site'                     => $sureforms_v3_site,
 			'srfm_honeypot'                    => $honeypot,
 			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
+			'srfm_ip_log'                      => $srfm_ip_log,
 		];
 
 		wp_send_json( $results );
@@ -346,6 +352,13 @@ class SRFM_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
+
+		$srfm_ip_log = get_option( 'srfm_ip_log' );
+
+		$user_ip      = $srfm_ip_log ? $_SERVER['REMOTE_ADDR'] : '';
+		$browser      = new Browser();
+		$browser_name = $browser->getBrowser();
+		$device_name  = $browser->getPlatform();
 
 		$id           = wp_kses_post( $form_data['form-id'] );
 		$form_markup  = get_the_content( null, false, SRFM_Helper::get_integer_value( $form_data['form-id'] ) );
@@ -405,6 +418,12 @@ class SRFM_Submit {
 		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
 		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
+			$srfm_submission_info[] = array(
+				'user_ip'      => $user_ip,
+				'browser_name' => $browser_name,
+				'device_name'  => $device_name,
+			);
+			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [
 				'success' => true,

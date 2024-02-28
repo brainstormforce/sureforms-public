@@ -244,7 +244,6 @@ namespace SRFM\Admin {
 		}
 	}
 }
-
 namespace {
 	/**
 	 * Plugin Name: SureForms

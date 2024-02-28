@@ -16,6 +16,11 @@ const Navigation = () => {
 			slug: 'general-settings',
 			icon: <GeneralIcon />,
 		},
+		{
+			name: __( 'Email Summary', 'sureforms' ),
+			slug: 'email-summary',
+			icon: <GeneralIcon />,
+		},
 	];
 	return (
 		<nav

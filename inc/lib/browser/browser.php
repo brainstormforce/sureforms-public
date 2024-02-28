@@ -42,7 +42,7 @@
  * http://apptools.com/phptools/browser/
  */
 
-namespace SRFM\Inc\Services\Browser;
+namespace SRFM\Inc\Lib\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

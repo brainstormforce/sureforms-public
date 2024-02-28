@@ -6,6 +6,7 @@ import { useState, useEffect, Fragment } from '@wordpress/element';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiFetch from '@wordpress/api-fetch';
+import EmailSummary from './tabs/EmailSummary.js';
 
 const Component = ( { path } ) => {
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
@@ -21,12 +22,14 @@ const Component = ( { path } ) => {
 
 	const [ formData, setFormData ] = useState( {} );
 	const [ honeyPot, setHoneyPot ] = useState( false );
+	const [ isIpLog, setIsIpLog ] = useState( false );
 
 	const onSelect = () => {};
 
 	const handleChange = ( e ) => {
 		const { name, value, type, checked } = e.target;
-		const newValue = type === 'checkbox' ? checked : value;
+		const newValue = value;
+
 		if ( name === 'srfm_v2_checkbox_secret' ) {
 			setSureformsV2CheckboxSecret( newValue );
 			setFormData( () => ( {
@@ -35,7 +38,8 @@ const Component = ( { path } ) => {
 				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v3_secret: sureformsV3Secret,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'srfm_v2_checkbox_site' ) {
@@ -46,7 +50,8 @@ const Component = ( { path } ) => {
 				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v3_secret: sureformsV3Secret,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'srfm_v2_invisible_secret' ) {
@@ -57,7 +62,8 @@ const Component = ( { path } ) => {
 				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v3_secret: sureformsV3Secret,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'srfm_v2_invisible_site' ) {
@@ -68,7 +74,8 @@ const Component = ( { path } ) => {
 				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v3_secret: sureformsV3Secret,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'srfm_v3_secret' ) {
@@ -79,7 +86,8 @@ const Component = ( { path } ) => {
 				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
 		} else if ( name === 'srfm_v3_site' ) {
@@ -90,10 +98,13 @@ const Component = ( { path } ) => {
 				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				srfm_v3_secret: sureformsV3Secret,
 				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_honeypot_toggle: honeyPot,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: isIpLog,
 				[ name ]: newValue,
 			} ) );
-		} else if ( name === 'srfm_honeypot_toggle' ) {
+		} else if ( name === 'honeypot_toggle' ) {
+			const honeyPotValue = type === 'checkbox' ? checked : value;
+
 			setHoneyPot( ! honeyPot );
 			setFormData( () => ( {
 				srfm_v2_invisible_site: sureformsV2InvisibleSite,
@@ -102,7 +113,21 @@ const Component = ( { path } ) => {
 				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
 				srfm_v3_site: sureformsV3Site,
 				srfm_v3_secret: sureformsV3Secret,
-				[ name ]: newValue,
+				srfm_ip_log: isIpLog,
+				[ name ]: honeyPotValue,
+			} ) );
+		} else if ( name === 'ip_toggle' ) {
+			const ipValue = type === 'checkbox' ? checked : value;
+			setIsIpLog( ! isIpLog );
+			setFormData( () => ( {
+				srfm_v2_invisible_site: sureformsV2InvisibleSite,
+				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
+				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
+				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
+				srfm_v3_site: sureformsV3Site,
+				srfm_v3_secret: sureformsV3Secret,
+				honeypot_toggle: honeyPot,
+				srfm_ip_log: ipValue,
 			} ) );
 		}
 	};
@@ -150,8 +175,7 @@ const Component = ( { path } ) => {
 							data.srfm_v2_checkbox_secret
 					);
 					setSureformsV2CheckboxSite(
-						data.srfm_v2_checkbox_site &&
-							data.srfm_v2_checkbox_site
+						data.srfm_v2_checkbox_site && data.srfm_v2_checkbox_site
 					);
 					setSureformsV2InvisibleSecret(
 						data.srfm_v2_invisible_secret &&
@@ -168,6 +192,7 @@ const Component = ( { path } ) => {
 						data.srfm_v3_site && data.srfm_v3_site
 					);
 					setHoneyPot( data.srfm_honeypot && data.srfm_honeypot );
+					setIsIpLog( data.srfm_ip_log && data.srfm_ip_log );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching datates:', error );
@@ -437,6 +462,44 @@ const Component = ( { path } ) => {
 									</Fragment>
 								</div>
 							</div>
+
+							{ /* Honeypot Spam Protection Settings might be used later*/ }
+							<div className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10">
+								<div className="srfm-max-w-[250px]">
+									<BaseControl
+										help={ __(
+											'Shows the IP address of the user who submitted the form. It shows in the Entry Data',
+											'sureforms'
+										) }
+									>
+										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
+											{ __(
+												'Enable IP Logging',
+												'sureforms'
+											) }
+										</h3>
+									</BaseControl>
+								</div>
+								<div className="srfm-w-[600px] srfm-mt-4">
+									<Fragment>
+										<div className="srfm-mb-4 ">
+											<label
+												htmlFor="srfm-ip-checkbox-input"
+												className="toggle-button"
+											>
+												<input
+													id="srfm-ip-checkbox-input"
+													type="checkbox"
+													name="ip_toggle"
+													checked={ isIpLog }
+													onChange={ handleChange }
+												/>
+												<span className="slider"></span>
+											</label>
+										</div>
+									</Fragment>
+								</div>
+							</div>
 						</div>
 						<button type="submit" className="button-primary">
 							{ __( ' Save', 'sureforms' ) }
@@ -445,6 +508,10 @@ const Component = ( { path } ) => {
 				</div>
 			</div>
 		);
+	}
+
+	if ( 'email-summary' === path ) {
+		return <EmailSummary />;
 	}
 	return null;
 };
