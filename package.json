@@ -1,7 +1,7 @@
 {
 	"name": "sureforms",
-	"version": "0.0.1",
-	"description": "Forms Plugin",
+	"version": "0.0.2",
+	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
 		"start": "wp-scripts start",
