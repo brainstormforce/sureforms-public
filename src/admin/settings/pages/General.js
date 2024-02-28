@@ -119,9 +119,13 @@ const GeneralPage = ( {
 						.replace( 'srfm_', '' )
 						.replace( /_/g, ' ' );
 					fieldLabel = fieldLabel.replace( /text/g, '' );
-					fieldLabel =
-						fieldLabel.charAt( 0 ).toUpperCase() +
-						fieldLabel.slice( 1 );
+					fieldLabel = fieldLabel
+						.split( ' ' )
+						.map(
+							( word ) =>
+								word.charAt( 0 ).toUpperCase() + word.slice( 1 )
+						)
+						.join( ' ' );
 					return (
 						<TextControl
 							key={ field }
