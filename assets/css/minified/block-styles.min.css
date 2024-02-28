@@ -396,11 +396,11 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
 body.post-type-sureforms_form .srfm-shortcode {
 	display: flex;
 }
-[data-type="sureforms/form"] .block-editor-inner-blocks .block-editor-block-list__layout .wp-block {
+[data-type="srfm/form"] .block-editor-inner-blocks .block-editor-block-list__layout .wp-block {
 	padding: 5px;
 	margin-top: 1em;
 }
-[data-type="sureforms/form"] .block-editor-inner-blocks .block-editor-block-list__layout .wp-block:not( :last-child ) {
+[data-type="srfm/form"] .block-editor-inner-blocks .block-editor-block-list__layout .wp-block:not( :last-child ) {
 	margin-bottom: 20px;
 }
 p.components-base-control__help {

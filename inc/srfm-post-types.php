@@ -927,7 +927,7 @@ class SRFM_Post_Types {
 	 */
 	public function srfm_instant_form_redirect() {
 
-		$form_id = Sureforms_Helper::get_integer_value( get_the_ID() );
+		$form_id = SRFM_Helper::get_integer_value( get_the_ID() );
 
 		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
 

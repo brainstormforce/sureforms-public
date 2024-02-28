@@ -210,6 +210,7 @@ class SRFM_Gutenberg_Hooks {
 				'get_form_markup_url'    => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'          => $is_pro_active,
 				'form_selector_nonce'    => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+				'is_admin_user'          => current_user_can( 'manage_options' ),
 			]
 		);
 

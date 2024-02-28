@@ -67,6 +67,10 @@ class SRFM_Admin {
 	 * @since 0.0.1
 	 */
 	public function add_menu_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$capability = 'manage_options';
 		$menu_slug  = 'sureforms_menu';
 
