@@ -74,7 +74,7 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'handle_settings_form_submission_permissions_check' ],
 			]
 		);
 		register_rest_route(
@@ -83,9 +83,35 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'get_settings_form_data_permissions_check' ],
 			]
 		);
+	}
+
+	/**
+	 * Checks whether a given request has permission to change settings.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since 0.0.1
+	 */
+	public function handle_settings_form_submission_permissions_check( $request ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+	}
+
+	/**
+	 * Checks whether a given request has permission to get settings.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since 0.0.1
+	 */
+	public function get_settings_form_data_permissions_check( $request ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
 	}
 
 	/**
