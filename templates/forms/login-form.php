@@ -4,7 +4,7 @@
  *
  * @link       https://sureforms.com
  * @since      0.0.1
- * @package    SureForms/Templates/Forms
+ * @package    SRFM/Templates/Forms
  * @author     Sureforms <https://sureforms.com/>
  */
 

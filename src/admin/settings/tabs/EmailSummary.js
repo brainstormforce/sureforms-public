@@ -10,7 +10,7 @@ import { Spinner } from '@wordpress/components';
 const EmailSummary = () => {
 	const [ formData, setFormData ] = useState( {
 		enable_email_summary: false,
-		emails_send_to: sureforms_admin.admin_email,
+		emails_send_to: srfm_admin.admin_email,
 		schedule_reports: 'Monday',
 		email_summary_test: false,
 	} );
@@ -25,7 +25,7 @@ const EmailSummary = () => {
 					path: 'sureforms/v1/get-email-summary-options',
 					headers: {
 						'content-type': 'application/json',
-						'X-WP-Nonce': sureforms_admin.email_summary_nonce,
+						'X-WP-Nonce': srfm_admin.email_summary_nonce,
 					},
 				} );
 				setFormData( response );
@@ -49,7 +49,7 @@ const EmailSummary = () => {
 				body: JSON.stringify( formData ),
 				headers: {
 					'content-type': 'application/json',
-					'X-WP-Nonce': sureforms_admin.email_summary_nonce,
+					'X-WP-Nonce': srfm_admin.email_summary_nonce,
 				},
 			} );
 			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
@@ -77,7 +77,7 @@ const EmailSummary = () => {
 					: {
 						emails_send_to:
 								formData.emails_send_to ||
-								sureforms_admin.admin_email,
+								srfm_admin.admin_email,
 						schedule_reports:
 								formData.schedule_reports || 'Monday',
 						email_summary_test: false,

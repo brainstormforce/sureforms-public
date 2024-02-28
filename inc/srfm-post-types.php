@@ -534,30 +534,30 @@ class SRFM_Post_Types {
 		register_post_meta(
 			'sureforms_entry',
 			'_srfm_submission_info',
-			array(
+			[
 				'single'        => true,
 				'type'          => 'array',
 				'auth_callback' => '__return_true',
-				'show_in_rest'  => array(
-					'schema' => array(
+				'show_in_rest'  => [
+					'schema' => [
 						'type'  => 'array',
-						'items' => array(
+						'items' => [
 							'type'       => 'object',
-							'properties' => array(
-								'user_ip'      => array(
+							'properties' => [
+								'user_ip'      => [
 									'type' => 'string',
-								),
-								'browser_name' => array(
+								],
+								'browser_name' => [
 									'type' => 'string',
-								),
-								'device_name'  => array(
+								],
+								'device_name'  => [
 									'type' => 'string',
-								),
-							),
-						),
-					),
-				),
-			)
+								],
+							],
+						],
+					],
+				],
+			]
 		);
 
 	}
@@ -780,7 +780,7 @@ class SRFM_Post_Types {
 
 			$args = [
 				'post_type' => SRFM_ENTRIES_POST_TYPE,
-				'tax_query' // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+				'tax_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
 				=> [
 					[
 						'taxonomy' => $taxonomy,
@@ -937,7 +937,7 @@ class SRFM_Post_Types {
 
 		$form_preview = '';
 
-		$form_preview_attr = isset( $_GET['preview'] ) ? $_GET['preview'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
+		$form_preview_attr = isset( $_GET['preview'] ) ? sanitize_text_field( wp_unslash( $_GET['preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 
 		if ( $form_preview_attr ) {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );

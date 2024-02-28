@@ -13,7 +13,7 @@ use SRFM\Inc\SRFM_Helper;
 use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
-use SureForms\Inc\Lib\Browser\Browser;
+use SRFM\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -355,7 +355,7 @@ class SRFM_Submit {
 
 		$srfm_ip_log = get_option( 'srfm_ip_log' );
 
-		$user_ip      = $srfm_ip_log ? $_SERVER['REMOTE_ADDR'] : '';
+		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 		$browser      = new Browser();
 		$browser_name = $browser->getBrowser();
 		$device_name  = $browser->getPlatform();
@@ -418,11 +418,11 @@ class SRFM_Submit {
 		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
 		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
-			$srfm_submission_info[] = array(
+			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
 				'browser_name' => $browser_name,
 				'device_name'  => $device_name,
-			);
+			];
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [
@@ -525,7 +525,7 @@ class SRFM_Submit {
 
 		$args  = [
 			'post_type' => SRFM_ENTRIES_POST_TYPE,
-			'tax_query'  // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+			'tax_query'  // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
 			=> [
 				[
 					'taxonomy' => $taxonomy,

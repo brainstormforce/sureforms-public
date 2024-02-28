@@ -70,7 +70,6 @@ module.exports = {
 		srfm_carousel_height: true,
 		scroll: true,
 		srfm_admin: true,
-		sureforms_admin: true,
 		getComputedStyle: true,
 		srfm_spec_blocks_info: true,
 		SureForms: true,

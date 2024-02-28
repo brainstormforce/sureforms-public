@@ -44,20 +44,20 @@ class SRFM_Email_Summaries {
 		register_rest_route(
 			'sureforms/v1',
 			'/save-email-summaries-options',
-			array(
+			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'save_email_summary_options' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-			)
+			]
 		);
 		register_rest_route(
 			'sureforms/v1',
 			'/get-email-summary-options',
-			array(
+			[
 				'methods'             => 'GET',
 				'callback'            => [ $this, 'get_email_summary_options' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-			)
+			]
 		);
 	}
 
@@ -114,12 +114,12 @@ class SRFM_Email_Summaries {
 
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
 		if ( ! is_array( $email_summary_options ) ) {
-			$email_summary_options = array(
+			$email_summary_options = [
 				'enable_email_summary' => false,
 				'emails_send_to'       => get_option( 'admin_email' ),
 				'schedule_reports'     => 'Monday',
 				'email_summary_test'   => false,
-			);
+			];
 		}
 		return new WP_REST_Response( $email_summary_options, 200 );
 	}
@@ -149,22 +149,22 @@ class SRFM_Email_Summaries {
 		$form_info_obj = json_decode( $form_info );
 
 		if ( ! is_object( $form_info_obj ) ) {
-			return new WP_Error( 'invalid_json', 'Invalid JSON data', array( 'status' => 400 ) );
+			return new WP_Error( 'invalid_json', 'Invalid JSON data', [ 'status' => 400 ] );
 		}
 
 		$enable_email_summary = isset( $form_info_obj->enable_email_summary ) ? $form_info_obj->enable_email_summary : false;
-		$emails_send_to       = isset( $form_info_obj->emails_send_to ) ? $form_info_obj->emails_send_to : array();
+		$emails_send_to       = isset( $form_info_obj->emails_send_to ) ? $form_info_obj->emails_send_to : [];
 		$schedule_reports     = isset( $form_info_obj->schedule_reports ) ? $form_info_obj->schedule_reports : '';
 		$email_summary_test   = isset( $form_info_obj->email_summary_test ) ? $form_info_obj->email_summary_test : false;
 
 		update_option(
 			'srfm_email_summary_options',
-			array(
+			[
 				'enable_email_summary' => $enable_email_summary,
 				'emails_send_to'       => $emails_send_to,
 				'schedule_reports'     => $schedule_reports,
 				'email_summary_test'   => $email_summary_test,
-			)
+			]
 		);
 
 		$this->unschedule_events( 'srfm_weekly_scheduled_events' );
@@ -194,10 +194,10 @@ class SRFM_Email_Summaries {
 	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
-		$args = array(
-			'post_type'      => SUREFORMS_FORMS_POST_TYPE,
+		$args = [
+			'post_type'      => SRFM_FORMS_POST_TYPE,
 			'posts_per_page' => -1,
-		);
+		];
 
 		$query = new WP_Query( $args );
 
@@ -226,23 +226,23 @@ class SRFM_Email_Summaries {
 				$previous_week_end   = gmdate( 'Y-m-d', strtotime( '-1 week next sunday' ) );
 
 				$taxonomy      = 'sureforms_tax';
-				$entries_args  = array(
-					'post_type'  => SUREFORMS_ENTRIES_POST_TYPE,
-					'tax_query'  => array(
-						array(
+				$entries_args  = [
+					'post_type'  => SRFM_ENTRIES_POST_TYPE,
+					'tax_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
+						[
 							'taxonomy' => $taxonomy,
 							'field'    => 'slug',
 							'terms'    => $post_id_formatted,
-						),
-					),
-					'date_query' => array(
-						array(
+						],
+					],
+					'date_query' => [
+						[
 							'after'     => $previous_week_start,
 							'before'    => $previous_week_end,
 							'inclusive' => true,
-						),
-					),
-				);
+						],
+					],
+				];
 				$entries_query = new WP_Query( $entries_args );
 				$entry_count   = $entries_query->post_count;
 
@@ -291,10 +291,10 @@ class SRFM_Email_Summaries {
 
 		$subject = __( 'SureForms Email Summary - ', 'sureforms' ) . $site_title;
 		$message = $entries_count_table;
-		$headers = array(
+		$headers = [
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . get_option( 'admin_email' ),
-		);
+		];
 
 		wp_mail( $recipients, $subject, $message, $headers );
 	}

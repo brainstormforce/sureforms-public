@@ -19,7 +19,6 @@ parameters:
 		- %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
 		- tests/php/stubs/srfm-constants.php
 		- tests/php/stubs/srfm-stubs.php
-		- inc/lib/browser/browser.php
 	paths:
 		- sureforms.php
 		- srfm-plugin-loader.php
