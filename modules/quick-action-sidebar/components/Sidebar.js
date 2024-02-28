@@ -11,7 +11,7 @@ const Sidebar = () => {
 	const [
 		defaultAllowedQuickSidebarBlocks,
 		setDefaultAllowedQuickSidebarBlocks,
-	] = useState( quickSidebarBlocks.allowed_blocks );
+	] = useState( srfm_quick_sidebar_blocks.allowed_blocks );
 	const [ isPopoverVisible, setPopoverVisible ] = useState( false );
 	useLayoutEffect( () => {
 		style.use();
@@ -35,12 +35,12 @@ const Sidebar = () => {
 		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
 		// Create an object with the srfm_ajax_nonce and confirmation properties.
 		const data = {
-			security: quickSidebarBlocks.srfm_ajax_nonce,
+			security: srfm_quick_sidebar_blocks.srfm_ajax_nonce,
 			defaultAllowedQuickSidebarBlocks: JSON.stringify( allowedBlocks ),
 		};
 		// Call the getApiData function with the specified parameters.
 		getApiData( {
-			url: quickSidebarBlocks.srfm_ajax_url,
+			url: srfm_quick_sidebar_blocks.srfm_ajax_url,
 			action: 'srfm_global_update_allowed_block',
 			data,
 		} );

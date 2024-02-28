@@ -52,7 +52,7 @@ export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
 
 export const handleAddNewPost = async ( formData, templateName ) => {
-	if ( '1' !== sureforms_admin.capability ) {
+	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
 		return;
 	}
@@ -63,6 +63,7 @@ export const handleAddNewPost = async ( formData, templateName ) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'text/html',
+				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
 			data: { form_data: formData, template_name: templateName },
 		} );
@@ -71,7 +72,7 @@ export const handleAddNewPost = async ( formData, templateName ) => {
 			const postId = response.id;
 
 			// Redirect to the newly created post
-			window.location.href = `${ sureforms_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
+			window.location.href = `${ srfm_admin.site_url }/wp-admin/post.php?post=${ postId }&action=edit`;
 		} else {
 			console.error( 'Error creating sureforms_form:', response.message );
 		}
@@ -92,7 +93,7 @@ export const randomNiceColor = () => {
 };
 
 export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
-	const smartTagList = sfBlockData.smart_tags_array;
+	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
 		return;
 	}

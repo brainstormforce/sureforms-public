@@ -5,10 +5,10 @@
  * @package SureForms.
  */
 
-namespace SureForms\Inc\Email;
+namespace SRFM\Inc\Email;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class Email_Template {
+class SRFM_Email_Template {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class Constructor
@@ -108,7 +108,7 @@ class Email_Template {
 				$label    = explode( '-lbl-', $field_name )[1];
 
 				if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
-					$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
+					$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
 					$url_value   = strpos( $field_name, 'srfm-url' ) !== false ? '<a href="' . esc_url( $value ) . '">' . esc_url( $value ) . '</a>' : '<a href="' . esc_url( $value ) . '">View</a>';
 					$table_data .= sprintf(
 						'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
@@ -119,7 +119,7 @@ class Email_Template {
 						$url_value
 					);
 				} else {
-					$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
+					$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
 					$table_data .= sprintf(
 						'<tr style="background-color: ' . esc_attr( $bg_color ) . '">
                         <td style="padding: 10px;">%s</td>

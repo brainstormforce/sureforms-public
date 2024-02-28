@@ -1,6 +1,7 @@
 # Dependency directories
 vendor/
 node_modules/
+sureforms/
 
 # Logs
 *.log

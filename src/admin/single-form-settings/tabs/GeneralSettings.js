@@ -133,6 +133,7 @@ function GeneralSettings( props ) {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 				const { srfm_enable_quick_action_sidebar } = data;

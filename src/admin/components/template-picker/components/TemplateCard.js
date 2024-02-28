@@ -12,7 +12,7 @@ const TemplateCard = ( {
 	color,
 } ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
-	const blankImg = sureforms_admin.preview_images_url + 'blank.svg';
+	const blankImg = srfm_admin.preview_images_url + 'blank.svg';
 
 	const handleMouseEnter = () => {
 		setHoverClass( ' hovered' );
@@ -45,7 +45,7 @@ const TemplateCard = ( {
 							</button>
 							<Link
 								to={ {
-									location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
 								} }
 							>
@@ -65,7 +65,7 @@ const TemplateCard = ( {
 				</div>
 			) : (
 				<Link
-					to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
+					to={ `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
 					reloadDocument
 					className="srfm-ts-blank-form"
 				>

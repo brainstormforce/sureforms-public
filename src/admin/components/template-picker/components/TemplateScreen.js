@@ -17,6 +17,10 @@ const TemplateScreen = () => {
 	const getPatterns = async () => {
 		const newPatterns = await apiFetch( {
 			path: '/sureforms/v1/form-patterns',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': srfm_admin.template_picker_nonce,
+			},
 		} );
 
 		// Generate and store colors based on the template title
@@ -79,7 +83,7 @@ const TemplateScreen = () => {
 						templateName={ title }
 						formData={ content }
 						info={ info }
-						templatePreview={ `${ sureforms_admin.preview_images_url }contact-form.png` }
+						templatePreview={ `${ srfm_admin.preview_images_url }contact-form.png` }
 					/>
 				</>
 			);
@@ -187,7 +191,7 @@ const TemplateScreen = () => {
 								templateName={ filteredTemplateTitle }
 								templateId={ filteredTemplateId }
 								templatePreview={
-									sureforms_admin.preview_images_url +
+									srfm_admin.preview_images_url +
 									'contact-form.png'
 								}
 								formData={ template.content }
