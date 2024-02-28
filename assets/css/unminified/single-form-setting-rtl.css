@@ -376,7 +376,6 @@
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data {
   align-self: stretch;
   align-items: center;
-  height: 40px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row-body .srfm-modal-row-data.odd {
   background: #f6f7f7;
