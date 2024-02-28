@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -51,15 +51,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const currentErrorMessage = validationMessage(
-		'srfm_input_block_required_text',
-		errorMsg
-	);
+	const [currentErrorMsg, setCurrentErrorMsg] = useState();
+	const [currentUniqueMessage, setCurrentUniqueMessage] = useState();
 
-	const currentUniqueMessage = validationMessage(
-		'srfm_input_block_unique_text',
-		defaultValue
-	);
+	useEffect(() => {
+		setCurrentErrorMsg(validationMessage('srfm_input_block_required_text', errorMsg ));
+		setCurrentUniqueMessage(validationMessage('srfm_input_block_unique_text', defaultValue));
+	}, []);
 
 	return (
 		<>
@@ -129,13 +127,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ currentErrorMessage }
+									value={ currentErrorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
+									onChange={ ( value ) =>  {
+										setCurrentErrorMsg(value);
 										setAttributes( { errorMsg: value } )
+									}
 									}
 								/>
 							) }
@@ -160,8 +160,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage(value);
 										setAttributes( { duplicateMsg: value } )
+									}
+										
+										
 									}
 								/>
 							) }
