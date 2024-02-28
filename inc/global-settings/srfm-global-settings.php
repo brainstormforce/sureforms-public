@@ -208,7 +208,20 @@ class SRFM_Global_Settings {
 		// $default_dynamic_block_option = get_option( 'get_default_dynamic_block_option' );
 
 		$default_dynamic_block_option = array(
-			'srfm_url_block_required_text' => $setting_options['srfm_url_block_required_text'],
+			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
+			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
+			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
+			'srfm_address_block_required_text'      => $setting_options['srfm_address_block_required_text'],
+			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
+			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
+			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],
+			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
+			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
+			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
+			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
+			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
+			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
+
 		);
 
 		$is_option_saved = update_option( 'get_default_dynamic_block_option', $default_dynamic_block_option );
@@ -302,21 +315,7 @@ class SRFM_Global_Settings {
 			);
 		} 
 		if ( empty( $global_setting_options['get_default_dynamic_block_option'] ) ){
-			$global_setting_options['get_default_dynamic_block_option'] = array(
-				'srfm_url_block_required_text'          => __( 'This field is required.', 'sureforms' ),
-				'srfm_input_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-				'srfm_input_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
-				'srfm_address_block_required_text'      => __( 'This field is required.', 'sureforms' ),
-				'srfm_phone_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-				'srfm_phone_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
-				'srfm_number_block_required_text'       => __( 'This field is required..', 'sureforms' ),
-				'srfm_textarea_block_required_text'     => __( 'This field is required.', 'sureforms' ),
-				'srfm_multi_choice_block_required_text' => __( 'This field is required.', 'sureforms' ),
-				'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
-				'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-				'srfm_email_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
-				'srfm_dropdown_block_required_text'     => __( 'This field is require.', 'sureforms' ),
-			);
+			$global_setting_options['get_default_dynamic_block_option'] = Sureforms_Helper::default_dynamic_block_option();
 		} 
 		if ( empty( $global_setting_options['srfm_email_summary_settings_options'] ) ){
 			$global_setting_options['srfm_email_summary_settings_options'] = array(

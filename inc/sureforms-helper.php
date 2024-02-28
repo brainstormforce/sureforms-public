@@ -241,17 +241,17 @@ class Sureforms_Helper {
 		$default_dynamic_values = array(
 			'srfm_url_block_required_text'          => __( 'This field is required.', 'sureforms' ),
 			'srfm_input_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_input_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+			'srfm_input_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
 			'srfm_address_block_required_text'      => __( 'This field is required.', 'sureforms' ),
 			'srfm_phone_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_phone_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
+			'srfm_phone_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
 			'srfm_number_block_required_text'       => __( 'This field is required..', 'sureforms' ),
 			'srfm_textarea_block_required_text'     => __( 'This field is required.', 'sureforms' ),
 			'srfm_multi_choice_block_required_text' => __( 'This field is required.', 'sureforms' ),
 			'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_email_block_unique_text'          => __( 'Value need to be unique.', 'sureforms' ),
-			'srfm_dropdown_block_required_text'     => __( 'This field is require.', 'sureforms' ),
+			'srfm_email_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
+			'srfm_dropdown_block_required_text'     => __( 'This field is required.', 'sureforms' ),
 		);
 
 		return $default_dynamic_values;

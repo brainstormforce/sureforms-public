@@ -15,6 +15,7 @@ const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
 	const [ pageIcon, setPageIcon ] = useState( '' );
 	const [ isSaved, setIsSaved ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
 
 	useEffect( () => {
 		if ( path ) {
@@ -54,61 +55,7 @@ const Component = ( { path } ) => {
 		srfm_v3_secret_key: '',
 	} );
 
-	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {
-		// srfm_url_block_required_text: __(
-		// 	'This field is required.',
-		// 	'sureforms'
-		// ),
-		srfm_url_block_required_text: '',
-		srfm_input_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_input_block_unique_text: __(
-			'Value need to be unique.',
-			'sureforms'
-		),
-		srfm_address_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_phone_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_phone_block_unique_text: __(
-			'Value need to be unique.',
-			'sureforms'
-		),
-		srfm_number_block_required_text: __(
-			'This field is required..',
-			'sureforms'
-		),
-		srfm_textarea_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_multi_choice_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_checkbox_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_email_block_required_text: __(
-			'This field is required.',
-			'sureforms'
-		),
-		srfm_email_block_unique_text: __(
-			'Value need to be unique.',
-			'sureforms'
-		),
-		srfm_dropdown_block_required_text: __(
-			'This field is require.',
-			'sureforms'
-		),
-	} );
+	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 
 	const options_to_fetch = [
 		'srfm_general_settings_options',
@@ -120,6 +67,7 @@ const Component = ( { path } ) => {
 	// Fetch global settings.
 	useEffect( () => {
 		const fetchData = async () => {
+			setLoading( true );
 			try {
 				const data = await apiFetch( {
 					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ options_to_fetch }`,
@@ -183,13 +131,11 @@ const Component = ( { path } ) => {
 				}
 
 				if ( data.get_default_dynamic_block_option ) {
-					// const { srfm_default_dynamic_block } =
-					// 	data.get_default_dynamic_block_option;
 					setDynamicBlockOptions( {
 						...data.get_default_dynamic_block_option,
 					} );
 				}
-				// console.log( data );
+				setLoading( false );
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
 			}
@@ -289,6 +235,7 @@ const Component = ( { path } ) => {
 			<div class="srfm-page-content">
 				{ 'general-settings' === path && (
 					<GeneralPage
+						loading={ loading }
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 						dynamicBlockOptions={ dynamicBlockOptions }
