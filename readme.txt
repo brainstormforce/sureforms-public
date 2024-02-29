@@ -156,6 +156,10 @@ ipapi
 License : Massachusetts Institute of Technology (MIT)  
 License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE  
 
+Action Scheduler  
+License : GNU General Public License v3.0  
+License URI : https://github.com/woocommerce/action-scheduler/blob/trunk/license.txt  
+
 == Changelog ==
 
 = 0.0.1 =
