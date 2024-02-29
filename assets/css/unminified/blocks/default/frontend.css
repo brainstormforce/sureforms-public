@@ -152,6 +152,15 @@
 .srfm-form-container .srfm-form .srfm-block.conditional-logic.show {
   display: none;
 }
+.srfm-form-container .srfm-form .srfm-block.conditional-logic.hide {
+  display: block;
+}
+.srfm-form-container .srfm-form .srfm-block.conditional-logic.move-up-to-down {
+  animation: moveUpToDown 0.3s ease-out forwards;
+}
+.srfm-form-container .srfm-form .srfm-block.conditional-logic.move-down-to-up {
+  animation: moveDownToUp 0.3s ease-out forwards;
+}
 .srfm-form-container .srfm-form .srfm-block label {
   font-size: 1em;
 }
@@ -255,6 +264,26 @@
   display: none;
 }
 
+@keyframes moveUpToDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes moveDownToUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap {
   display: flex;
   flex-wrap: wrap;
