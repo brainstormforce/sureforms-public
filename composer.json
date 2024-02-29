@@ -26,7 +26,7 @@
 		"test": "vendor/bin/phpunit",
 		"phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
 		"gen-stubs": "vendor/bin/generate-stubs sureforms/ --out=tests/php/stubs/srfm-stubs.php",
-		"update-stubs": "rm -f tests/php/stubs/srfm-stubs.php && grunt release-no-clean && composer gen-stubs",
+		"update-stubs": "rm -f tests/php/stubs/srfm-stubs.php && grunt release-no-clean && composer gen-stubs  && rm -rf sureforms",
 		"commit:hook:pre": [
 			"cp .scripts/git-hooks/pre-commit .git/hooks/",
 			"chmod +x .git/hooks/pre-commit",

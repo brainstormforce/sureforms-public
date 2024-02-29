@@ -7,6 +7,10 @@
  * @link        https://wpspectra.com/
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Returns font awesome icons array
  */
