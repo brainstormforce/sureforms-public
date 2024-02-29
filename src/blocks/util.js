@@ -69,7 +69,7 @@ const getBlockTypes = ( exclude = '' ) => {
  */
 const validationMessage = ( defaultMessage, message ) => {
 	const defaultErrorMsg = sfBlockData?.get_default_dynamic_block_option?.[defaultMessage] ? sfBlockData.get_default_dynamic_block_option[defaultMessage] : ''
-	const msg = message ? message : defaultErrorMsg;
+	const msg = message && message !== defaultErrorMsg ? message : defaultErrorMsg;
 	return msg;
 };
 

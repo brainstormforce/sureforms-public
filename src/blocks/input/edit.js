@@ -51,10 +51,17 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const currentUniqueMessage = validationMessage(
-		'srfm_input_block_unique_text',
-		duplicateMsg
-	);
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
+	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_input_block_required_text', errorMsg )
+		);
+		setCurrentUniqueMessage(
+			validationMessage( 'srfm_input_block_unique_text', defaultValue )
+		);
+	}, [] );
 
 	const [ currentErrorMessage, setCurrentErrorMessage ] = useState( '' );
 	useEffect( () => {
@@ -133,14 +140,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ currentErrorMessage }
+									value={ currentErrorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
@@ -164,9 +172,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { duplicateMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage( value );
+										setAttributes( {
+											duplicateMsg: value,
+										} );
+									} }
 								/>
 							) }
 							<SRFMTextControl
