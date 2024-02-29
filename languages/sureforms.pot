@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-29T09:21:35+01:00\n"
+"POT-Creation-Date: 2024-02-29T12:14:36+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -199,47 +199,47 @@ msgstr ""
 msgid "Plugin Successfully Activated"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:140
+#: inc/srfm-admin-ajax.php:131
 msgid "Activating..."
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:141
+#: inc/srfm-admin-ajax.php:132
 msgid "Activated"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:142
+#: inc/srfm-admin-ajax.php:133
 msgid "Activate"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:144
+#: inc/srfm-admin-ajax.php:135
 msgid "Installing..."
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:145
+#: inc/srfm-admin-ajax.php:136
 msgid "Installed"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:165
+#: inc/srfm-admin-ajax.php:156
 msgid "Spectra"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:166
+#: inc/srfm-admin-ajax.php:157
 msgid "Free WordPress Page Builder Plugin."
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:175
+#: inc/srfm-admin-ajax.php:166
 msgid "SureCart"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:176
+#: inc/srfm-admin-ajax.php:167
 msgid "Simplifying selling online with WordPress."
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:185
+#: inc/srfm-admin-ajax.php:176
 msgid "SureTriggers"
 msgstr ""
 
-#: inc/srfm-admin-ajax.php:186
+#: inc/srfm-admin-ajax.php:177
 msgid "Automate your WordPress setup."
 msgstr ""
 

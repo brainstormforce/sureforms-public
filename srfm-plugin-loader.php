@@ -249,7 +249,7 @@ class SRFM_Plugin_Loader {
 	/**
 	 * Loads plugin files.
 	 *
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 *
 	 * @return void
 	 */
@@ -260,7 +260,7 @@ class SRFM_Plugin_Loader {
 	/**
 	 * Load Core Files.
 	 *
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 *
 	 * @return void
 	 */

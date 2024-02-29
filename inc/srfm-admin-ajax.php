@@ -36,14 +36,14 @@ class SRFM_Admin_Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
-		add_action( 'init', [ $this, 'localize_script_integration' ] );
+		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
 
 	/**
 	 * Required Plugin Activate
 	 *
 	 * @return void
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 */
 	public function required_plugin_activate() {
 
@@ -101,7 +101,7 @@ class SRFM_Admin_Ajax {
 	 *
 	 * @param string $type Message type.
 	 * @return string
-	 * @since 1.0.0
+	 * @since 0.0.3
 	 */
 	public function get_error_msg( $type ) {
 
@@ -117,35 +117,26 @@ class SRFM_Admin_Ajax {
 	/**
 	 * Localize the variables required for integration plugins.
 	 *
-	 * @return void
-	 * @since 1.0.0
+	 * @param array<mixed> $values localized values.
+	 * @return array<mixed>
+	 * @since 0.0.1
 	 */
-	public function localize_script_integration() {
-		$asset_handle      = 'dashboard';
-		$script_asset_path = SRFM_DIR . 'assets/build/' . $asset_handle . '.asset.php';
-			$script_info   = file_exists( $script_asset_path )
-			? include $script_asset_path
-			: [
-				'dependencies' => [],
-				'version'      => SRFM_VER,
-			];
-			wp_enqueue_script( SRFM_SLUG . '-integration', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_localize_script(
-				SRFM_SLUG . '-integration',
-				SRFM_SLUG . '_admin',
-				[
-					'ajax_url'               => admin_url( 'admin-ajax.php' ),
-					'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
-					'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
-					'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
-					'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
-					'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
-					'integrations'           => self::sureforms_get_integration(),
-					'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
-					'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
-					'isRTL'                  => is_rtl(),
-				]
-			);
+	public function localize_script_integration( $values ) {
+		return array_merge(
+			$values,
+			[
+				'ajax_url'               => admin_url( 'admin-ajax.php' ),
+				'sfPluginManagerNonce'   => wp_create_nonce( 'sf_plugin_manager_nonce' ),
+				'plugin_installer_nonce' => wp_create_nonce( 'updates' ),
+				'plugin_activating_text' => __( 'Activating...', 'sureforms' ),
+				'plugin_activated_text'  => __( 'Activated', 'sureforms' ),
+				'plugin_activate_text'   => __( 'Activate', 'sureforms' ),
+				'integrations'           => self::sureforms_get_integration(),
+				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
+				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
+				'isRTL'                  => is_rtl(),
+			]
+		);
 	}
 
 	/**
@@ -206,7 +197,7 @@ class SRFM_Admin_Ajax {
 	/**
 	 * Get plugin status
 	 *
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 *
 	 * @param  string $plugin_init_file Plguin init file.
 	 * @return string

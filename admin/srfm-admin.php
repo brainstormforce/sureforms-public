@@ -314,13 +314,16 @@ class SRFM_Admin {
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
-				[
-					'site_url'                => get_site_url(),
-					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-					'plugin_version'          => SRFM_VER,
-					'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
-				]
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					[
+						'site_url'                => get_site_url(),
+						'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
+						'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
+						'plugin_version'          => SRFM_VER,
+						'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					]
+				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
 
