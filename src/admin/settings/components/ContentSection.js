@@ -1,13 +1,20 @@
 import { __ } from '@wordpress/i18n';
+import Skeleton from 'react-loading-skeleton';
 
-const ContentSection = ({title, content}) => {
+const ContentSection = ( { loading, title, content } ) => {
 	return (
-        <>
-            <div className="srfm-section-container">
-                <div className="srfm-content-title">{title}</div>
-                <div className="srfm-section-content">{content}</div>
-            </div>
-        </>
+		<>
+			<div className="srfm-section-container">
+				<div className="srfm-content-title">
+					{ loading ? (
+						<Skeleton count={ 1 } height={ 30 } width={ 200 } />
+					) : (
+						title
+					) }
+				</div>
+				<div className="srfm-section-content">{ content }</div>
+			</div>
+		</>
 	);
 };
 

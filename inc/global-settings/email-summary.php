@@ -10,8 +10,6 @@ namespace SureForms\Inc\Global_Settings;
 
 use WP_REST_Response;
 use WP_REST_Request;
-use WP_Error;
-use WP_Post_Type;
 use WP_Query;
 use SureForms\Inc\Traits\Get_Instance;
 use SureForms\Inc\Sureforms_Helper;
@@ -64,7 +62,6 @@ class Email_Summary {
 	public function send_test_email( $request ) {
 		$email_send_to = $request->get_body();
 		$email_send_to = json_decode( $email_send_to, true );
-		// define get_email_summary_options.
 		$get_email_summary_options = array(
 			'srfm_email_sent_to' => $email_send_to['srfm_email_sent_to'],
 		);

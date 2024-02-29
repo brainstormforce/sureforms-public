@@ -5,6 +5,7 @@ import { Snackbar } from '@wordpress/components';
 
 import { MdOutlineDone } from 'react-icons/md';
 import { useDebouncedCallback } from 'use-debounce';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
@@ -145,6 +146,8 @@ const Component = ( { path } ) => {
 	}, [] );
 	console.log( dynamicBlockOptions );
 
+	console.log( sureforms_admin.global_settings_nonce );
+
 	// Save global settings.
 	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
 		setIsSaved( false );
@@ -243,12 +246,14 @@ const Component = ( { path } ) => {
 				) }
 				{ 'email-settings' === path && (
 					<EmailPage
+						loading={ loading }
 						emailTabOptions={ emailTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
 				{ 'security-settings' === path && (
 					<SecurityPage
+						loading={ loading }
 						securitytabOptions={ securitytabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
 					/>

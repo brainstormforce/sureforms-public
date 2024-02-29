@@ -2,8 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { ToggleControl, TextControl } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import Skeleton from 'react-loading-skeleton';
 
 const GeneralPage = ( {
 	loading,
@@ -16,10 +15,9 @@ const GeneralPage = ( {
 			<>
 				{ loading ? (
 					<Skeleton
-						style={ {
-							marginBottom: '1rem',
-						} }
-						count={ 4 }
+						style={ { marginBottom: '1rem' } }
+						count={ 5 }
+						height={ 25 }
 					/>
 				) : (
 					<>
@@ -114,38 +112,49 @@ const GeneralPage = ( {
 
 		return (
 			<>
-				{ validationFields.map( ( field ) => {
-					let fieldLabel = field
-						.replace( 'srfm_', '' )
-						.replace( /_/g, ' ' );
-					fieldLabel = fieldLabel.replace( /text/g, '' );
-					fieldLabel = fieldLabel
-						.split( ' ' )
-						.map(
-							( word ) =>
-								word.charAt( 0 ).toUpperCase() + word.slice( 1 )
-						)
-						.join( ' ' );
-					return (
-						<TextControl
-							key={ field }
-							label={ __(
-								`${ fieldLabel } Error Message`,
-								'sureforms'
-							) }
-							type="text"
-							className="srfm-components-input-control"
-							value={ dynamicBlockOptions[ field ] }
-							onChange={ ( value ) => {
-								updateGlobalSettings(
-									field,
-									value,
-									'general-settings-dynamic-opt'
-								);
-							} }
-						/>
-					);
-				} ) }
+				{ loading ? (
+					<Skeleton
+						style={ { marginBottom: '1rem' } }
+						count={ 5 }
+						height={ 25 }
+					/>
+				) : (
+					<>
+						{ validationFields.map( ( field ) => {
+							let fieldLabel = field
+								.replace( 'srfm_', '' )
+								.replace( /_/g, ' ' );
+							fieldLabel = fieldLabel.replace( /text/g, '' );
+							fieldLabel = fieldLabel
+								.split( ' ' )
+								.map(
+									( word ) =>
+										word.charAt( 0 ).toUpperCase() +
+										word.slice( 1 )
+								)
+								.join( ' ' );
+							return (
+								<TextControl
+									key={ field }
+									label={ __(
+										`${ fieldLabel } Error Message`,
+										'sureforms'
+									) }
+									type="text"
+									className="srfm-components-input-control"
+									value={ dynamicBlockOptions[ field ] }
+									onChange={ ( value ) => {
+										updateGlobalSettings(
+											field,
+											value,
+											'general-settings-dynamic-opt'
+										);
+									} }
+								/>
+							);
+						} ) }
+					</>
+				) }
 			</>
 		);
 	};
@@ -153,10 +162,12 @@ const GeneralPage = ( {
 	return (
 		<>
 			<ContentSection
+				loading={ loading }
 				title={ __( 'Miscellaneous', 'sureforms' ) }
 				content={ miscellaneousContent() }
 			/>
 			<ContentSection
+				loading={ loading }
 				title={ __( 'Validations', 'sureforms' ) }
 				content={ validationContent() }
 			/>

@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -51,15 +51,19 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const currentErrorMessage = validationMessage(
-		'srfm_input_block_required_text',
-		errorMsg
-	);
-
 	const currentUniqueMessage = validationMessage(
 		'srfm_input_block_unique_text',
-		defaultValue
+		duplicateMsg
 	);
+
+	const [ currentErrorMessage, setCurrentErrorMessage ] = useState( '' );
+	useEffect( () => {
+		const currentErrorMessage = validationMessage(
+			'srfm_input_block_required_text',
+			errorMsg
+		);
+		setCurrentErrorMessage( currentErrorMessage );
+	}, [ errorMsg ] );
 
 	return (
 		<>
