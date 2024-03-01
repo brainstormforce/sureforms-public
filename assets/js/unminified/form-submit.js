@@ -81,7 +81,8 @@ function submitFormData( form ) {
 			'X-WP-Nonce': srfm_submit.nonce,
 		},
 		body: filteredFormData,
-	} ).then( ( response ) => {
+	} )
+		.then( ( response ) => {
 			if ( response.ok ) {
 				return response;
 			}
