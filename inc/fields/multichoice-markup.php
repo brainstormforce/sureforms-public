@@ -33,13 +33,11 @@ class Multichoice_Markup extends Base {
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : array();
 			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$style            = isset( $attributes['style'] ) ? $attributes['style'] : '';
-			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_multi_choice_block_required_text' );
+			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_multi_choice_block_required_text' );
 			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$choice_width     = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
-			$output           = '';
 			$slug             = 'multi-choice';
 
 			$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';

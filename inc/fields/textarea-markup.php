@@ -38,7 +38,7 @@ class Textarea_Markup extends Base {
 		$max_length  = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
 		$rows        = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
 		$cols        = isset( $attributes['cols'] ) ? $attributes['cols'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_textarea_block_required_text' );
+		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_textarea_block_required_text' );
 		$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$slug        = 'textarea';
 

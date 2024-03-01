@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
@@ -17,6 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { validationMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -37,6 +38,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
+	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -49,6 +52,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = fieldsPreview.email_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_email_block_required_text', errorMsg )
+		);
+		setCurrentUniqueMessage(
+			validationMessage( 'srfm_email_block_unique_text', defaultValue )
+		);
+	}, [] );
 
 	return (
 		<>
@@ -118,14 +130,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
@@ -144,14 +157,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										'Validation Message for Duplicate ',
 										'sureforms'
 									) }
-									value={ duplicateMsg }
+									value={ currentUniqueMessage }
 									data={ {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { duplicateMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage( value );
+										setAttributes( {
+											duplicateMsg: value,
+										} );
+									} }
 								/>
 							) }
 							<ToggleControl

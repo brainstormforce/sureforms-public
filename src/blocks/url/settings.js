@@ -95,12 +95,13 @@ export default ( { attributes, setAttributes } ) => {
 						{ required && (
 							<SRFMTextControl
 								label={ __( 'Error message', 'sureforms' ) }
-								value={ currentErrorMessage }
 								data={ {
 									value: errorMsg,
 									label: 'errorMsg',
 								} }
+								value={ currentErrorMsg }
 								onChange={ ( value ) => {
+									setCurrentErrorMsg( value );
 									setAttributes( { errorMsg: value } );
 								} }
 							/>

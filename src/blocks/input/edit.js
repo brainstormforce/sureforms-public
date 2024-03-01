@@ -38,6 +38,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
+	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -51,9 +53,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
-	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage( 'srfm_input_block_required_text', errorMsg )
@@ -62,15 +61,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			validationMessage( 'srfm_input_block_unique_text', defaultValue )
 		);
 	}, [] );
-
-	const [ currentErrorMessage, setCurrentErrorMessage ] = useState( '' );
-	useEffect( () => {
-		const currentErrorMessage = validationMessage(
-			'srfm_input_block_required_text',
-			errorMsg
-		);
-		setCurrentErrorMessage( currentErrorMessage );
-	}, [ errorMsg ] );
 
 	return (
 		<>
@@ -140,11 +130,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ currentErrorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
+									value={ currentErrorMsg }
 									onChange={ ( value ) => {
 										setCurrentErrorMsg( value );
 										setAttributes( { errorMsg: value } );

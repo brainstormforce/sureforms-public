@@ -8,7 +8,7 @@ import {
 	RichText,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -21,6 +21,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { validationMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -36,6 +37,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const blockProps = useBlockProps();
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -48,6 +50,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = fieldsPreview.checkbox_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_checkbox_block_required_text', errorMsg )
+		);
+	}, [] );
 
 	return (
 		<div { ...blockProps }>
@@ -86,10 +94,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										label: 'errorMsg',
 									} }
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl

@@ -34,8 +34,9 @@ class Phone_Markup extends Base {
 		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help         = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
-		$is_unique    = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
+		// $duplicate_msg   = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
+		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
+		// $is_unique    = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
 		$dulicate_msg = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$classname    = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';

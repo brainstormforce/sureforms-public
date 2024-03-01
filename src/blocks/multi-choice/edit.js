@@ -21,6 +21,8 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { validationMessage } from '@Blocks/util';
+
 /**
  * Component Dependencies
  */
@@ -50,6 +52,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
 	const blockProps = useBlockProps();
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	const addOption = () => {
 		const newOptions = {
@@ -107,6 +110,15 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage(
+				'srfm_multi_choice_block_required_text',
+				errorMsg
+			)
+		);
+	}, [] );
+
 	return (
 		<div { ...blockProps }>
 			<InspectorControls>
@@ -155,10 +167,11 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										label: 'errorMsg',
 									} }
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl

@@ -37,7 +37,7 @@
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "This field is required."
+			"default": ""
 		},
 		"placeholder": {
 			"type": "string",

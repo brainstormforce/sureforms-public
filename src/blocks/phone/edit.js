@@ -17,6 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { validationMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -36,6 +37,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
+	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 
 	function handleChange( e ) {
 		setCode( e.target.value );
@@ -52,6 +55,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = fieldsPreview.phone_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_phone_block_required_text', errorMsg )
+		);
+		setCurrentUniqueMessage(
+			validationMessage( 'srfm_phone_block_unique_text', duplicateMsg )
+		);
+	}, [] );
 
 	return (
 		<>
@@ -108,14 +120,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
@@ -134,14 +147,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										'Validation Message for Duplicate ',
 										'sureforms'
 									) }
-									value={ duplicateMsg }
+									value={ currentUniqueMessage }
 									data={ {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { duplicateMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage( value );
+										setAttributes( {
+											duplicateMsg: value,
+										} );
+									} }
 								/>
 							) }
 							<ToggleControl

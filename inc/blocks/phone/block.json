@@ -46,11 +46,11 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value need to be unique."
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "This field is required."
+			"default": ""
 		},
 		"formId": {
 			"type": "number",

@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -19,6 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { validationMessage } from '@Blocks/util';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -38,6 +39,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -50,6 +52,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = fieldsPreview.textarea_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_textarea_block_required_text', errorMsg )
+		);
+	}, [] );
 
 	return (
 		<>
@@ -119,14 +127,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<SRFMNumberControl

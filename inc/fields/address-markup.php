@@ -47,11 +47,11 @@ class Address_Markup extends Base {
 	 */
 	public function default( $attributes, $form_id ) {
 			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$options              = isset( $attributes['options'] ) ? $attributes['options'] : '';
 			$field_width          = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label                = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg            = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_address_block_required_text' );
+			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_address_block_required_text' );
+
 			$line_one_placeholder = isset( $attributes['lineOnePlaceholder'] ) ? $attributes['lineOnePlaceholder'] : '';
 			$line_two_placeholder = isset( $attributes['lineTwoPlaceholder'] ) ? $attributes['lineTwoPlaceholder'] : '';
 			$city_placeholder     = isset( $attributes['cityPlaceholder'] ) ? $attributes['cityPlaceholder'] : '';

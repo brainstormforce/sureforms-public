@@ -19,6 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { validationMessage } from '@Blocks/util';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -38,6 +39,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	const handleInput = ( e ) => {
 		let inputValue = e.target.value;
@@ -66,6 +68,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = fieldsPreview.number_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_number_block_required_text', errorMsg )
+		);
+	}, [] );
 
 	return (
 		<>
@@ -137,14 +145,15 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<SRFMNumberControl

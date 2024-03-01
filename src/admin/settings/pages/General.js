@@ -137,7 +137,12 @@ const GeneralPage = ( {
 								<TextControl
 									key={ field }
 									label={ __(
-										`${ fieldLabel } Error Message`,
+										`${
+											'Area Block Required ' ===
+											fieldLabel
+												? 'Textarea Block Required'
+												: fieldLabel
+										} Error Message`,
 										'sureforms'
 									) }
 									type="text"

@@ -18,6 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { validationMessage } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -45,6 +46,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -73,6 +75,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = fieldsPreview.dropdown_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	useEffect( () => {
+		setCurrentErrorMsg(
+			validationMessage( 'srfm_dropdown_block_required_text', errorMsg )
+		);
+	}, [] );
 
 	return (
 		<>
@@ -133,10 +141,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										label: 'errorMsg',
 									} }
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<div style={ { marginBottom: '8px' } }>

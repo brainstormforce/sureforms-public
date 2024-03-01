@@ -32,13 +32,11 @@ class Input_Markup extends Base {
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		// $duplicate_msg   = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_input_block_unique_text' );
 		$duplicate_msg   = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_input_block_unique_text' );
 		$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$field_width     = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		// $error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_input_block_required_text' );
 		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_input_block_required_text' );
 
 		$max_text_length = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
