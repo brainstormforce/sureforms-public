@@ -478,13 +478,17 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
 					<span class="uagb-svg-wrapper">
 					<?php
-					if ( $disable_link && $link_url ) {
-						$href = $link_url || $hash;
-						echo "<a rel='noopener noreferrer' href='" . esc_attr( $href ) . "' target='" . esc_attr( $target_val ) . "'></a>";
-					} else {
-						SRFM_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, Generic.Commenting.DocComment.MissingShort
-					}
-					?>
+					$link_condition = $disable_link && $link_url;
+
+					if ( $link_condition ) {
+							$href = $link_url ? $link_url : $hash;
+						?>
+						<a rel="noopener noreferrer" href="<?php echo esc_attr( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
+					<?php } ?>
+						<?php SRFM_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); ?>
+					<?php if ( $link_condition ) { ?>
+						</a>
+					<?php } ?>
 					</span>
 				</div>
 			<?php
