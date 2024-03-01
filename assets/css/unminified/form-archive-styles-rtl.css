@@ -243,3 +243,7 @@ input:checked + .slider:before {
   margin-top: 5px;
   margin-right: 25px;
 }
+
+.post-type-sureforms_form .quick-edit-row .inline-edit-col-left .inline-edit-group.wp-clearfix {
+  display: none;
+}

@@ -14,7 +14,6 @@ import apiFetch from '@wordpress/api-fetch';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import PostURLPanel from '../components/form-permalink/Panel';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -114,12 +113,6 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Permalink', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<PostURLPanel />
-			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }

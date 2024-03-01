@@ -250,3 +250,14 @@ input:checked + .slider:before {
 	margin-top: 5px;
 	margin-left: 25px;
 }
+
+.post-type-sureforms_form {
+	.quick-edit-row {
+		.inline-edit-col-left {
+			// As password protected option is not requires. We just removed it from form archive.
+			.inline-edit-group.wp-clearfix {
+				display: none;
+			}
+		}
+	}
+}

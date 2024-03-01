@@ -42,8 +42,12 @@
  * http://apptools.com/phptools/browser/
  */
 
- namespace SureForms\Inc\Lib\Browser;
- 
+namespace SRFM\Inc\Lib\Browser;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 class Browser {
 
 	private $_agent        = '';

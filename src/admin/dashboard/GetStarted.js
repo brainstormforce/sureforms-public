@@ -6,7 +6,7 @@ import { ScCard, ScFlex } from '@surecart/components-react';
 import GetStartedBox from './GetStartedBox';
 
 export default () => {
-	const siteUrl = sureforms_admin.site_url;
+	const siteUrl = srfm_admin.site_url;
 
 	return (
 		<ScCard

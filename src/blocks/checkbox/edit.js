@@ -47,7 +47,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.checkbox_preview;
+		const fieldName = srfm_fields_preview.checkbox_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 

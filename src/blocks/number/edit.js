@@ -65,7 +65,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.number_preview;
+		const fieldName = srfm_fields_preview.number_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 

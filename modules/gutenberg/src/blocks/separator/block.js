@@ -11,10 +11,10 @@ import PreviewImage from '@Controls/previewImage';
 import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 const separatorCommonData = applyFilters(
-	'sureforms/separator',
+	'srfm/separator',
 	addCommonDataToSpectraBlocks( {} )
 );
-registerBlockType( 'sureforms/separator', {
+registerBlockType( 'srfm/separator', {
 	...separatorCommonData,
 	apiVersion: 2,
 	title: __( 'Separator', 'sureforms' ),

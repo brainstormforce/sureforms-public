@@ -1,18 +1,18 @@
-.wp-block-sureforms-form .components-placeholder.components-placeholder {
+.wp-block-srfm-form .components-placeholder.components-placeholder {
   box-shadow: none;
   border: 1px solid #0e4372;
 }
-.wp-block-sureforms-form .components-placeholder__label {
+.wp-block-srfm-form .components-placeholder__label {
   justify-content: center;
   width: 100%;
 }
-.wp-block-sureforms-form .components-placeholder__label svg[data-type=sureforms-logo] {
+.wp-block-srfm-form .components-placeholder__label svg[data-type=sureforms-logo] {
   max-width: 200px;
   width: 100%;
   height: 36px;
   margin-bottom: 8px;
 }
-.wp-block-sureforms-form .is-primary {
+.wp-block-srfm-form .is-primary {
   background-color: #0e4372;
   color: #fff;
   border: none;
@@ -21,10 +21,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.wp-block-sureforms-form .is-primary:hover {
-  background-color: #0184c7;
+.wp-block-srfm-form .is-primary:hover {
+  background-color: #0e4372;
 }
-.wp-block-sureforms-form .is-secondary {
+.wp-block-srfm-form .is-secondary {
   background-color: #fff;
   color: #0e4372;
   border: 1px solid #0e4372;
@@ -34,10 +34,10 @@
   transition: all 0.3s ease;
   box-shadow: none;
 }
-.wp-block-sureforms-form .is-secondary:hover {
+.wp-block-srfm-form .is-secondary:hover {
   background-color: #fff;
-  color: #0184c7;
-  border: 1px solid #0184c7;
+  color: #0e4372;
+  border: 1px solid #0e4372;
 }
 
 .components-button.is-secondary:hover:not(:disabled) {

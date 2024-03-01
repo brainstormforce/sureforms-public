@@ -40,7 +40,7 @@ const TemplatePicker = () => {
 								<div className="srfm-tp-sp-methods">
 									<Link
 										className="srfm-single-card"
-										to={ `${ sureforms_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
+										to={ `${ srfm_admin.site_url }/wp-admin/post-new.php?post_type=sureforms_form` }
 										reloadDocument
 									>
 										<StartingPoint
@@ -58,7 +58,7 @@ const TemplatePicker = () => {
 									<Link
 										className="srfm-single-card"
 										to={ {
-											location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+											location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 											search: `?page=add-new-form&method=template`,
 										} }
 									>

@@ -49,7 +49,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	// show the block preview on hover
 	if ( preview ) {
-		const fieldName = fieldsPreview.textarea_preview;
+		const fieldName = srfm_fields_preview.textarea_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 

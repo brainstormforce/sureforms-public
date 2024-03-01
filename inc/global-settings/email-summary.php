@@ -6,21 +6,21 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc\Global_Settings;
+namespace SRFM\Inc\SRFM_Global_Settings;
 
 use WP_REST_Response;
 use WP_REST_Request;
 use WP_Query;
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 /**
  * Email Summary Class.
  *
  * @since 0.0.1
  */
-class Email_Summary {
-	use Get_Instance;
+class SRFM_Email_Summary {
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -40,7 +40,7 @@ class Email_Summary {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$sureforms_helper = new Sureforms_Helper();
+		$sureforms_helper = new SRFM_Helper();
 		register_rest_route(
 			'sureforms/v1',
 			'/send-test-email-summary',
@@ -89,7 +89,7 @@ class Email_Summary {
 	 */
 	public function get_total_entries_for_week() {
 		$args = array(
-			'post_type'      => SUREFORMS_FORMS_POST_TYPE,
+			'post_type'      => SRFM_FORMS_POST_TYPE,
 			'posts_per_page' => -1,
 		);
 
@@ -121,7 +121,7 @@ class Email_Summary {
 
 				$taxonomy      = 'sureforms_tax';
 				$entries_args  = array(
-					'post_type'  => SUREFORMS_ENTRIES_POST_TYPE,
+					'post_type'  => SRFM_ENTRIES_POST_TYPE,
 					'tax_query'  => array(
 						array(
 							'taxonomy' => $taxonomy,
@@ -144,7 +144,7 @@ class Email_Summary {
 
 				$table_html .= '<tr style="background-color: ' . $bg_color . ';">';
 				$table_html .= '<td style="padding: 10px;">' . esc_html( get_the_title() ) . '</td>';
-				$table_html .= '<td style="padding: 10px;">' . esc_html( Sureforms_Helper::get_string_value( $entry_count ) ) . '</td>';
+				$table_html .= '<td style="padding: 10px;">' . esc_html( SRFM_Helper::get_string_value( $entry_count ) ) . '</td>';
 				$table_html .= '</tr>';
 
 				$row_index++;
@@ -215,19 +215,19 @@ class Email_Summary {
 		$day = __( 'Monday', 'sureforms' );
 
 		if ( is_array( $email_summary_options ) && isset( $email_summary_options['srfm_schedule_report'] ) && is_string( $email_summary_options['srfm_schedule_report'] ) ) {
-			$day = Sureforms_Helper::get_string_value( $email_summary_options['srfm_schedule_report'] );
+			$day = SRFM_Helper::get_string_value( $email_summary_options['srfm_schedule_report'] );
 		}
 
 		$current_time               = time();
-		$current_time_user_timezone = Sureforms_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $current_time ) ) );
+		$current_time_user_timezone = SRFM_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $current_time ) ) );
 
 		if ( ! preg_match( '/^([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time ) ) {
 			$time = '09:00:00';
 		}
 
-		$next_day_user_timezone = Sureforms_Helper::get_integer_value( strtotime( "next $day $time", $current_time_user_timezone ) );
+		$next_day_user_timezone = SRFM_Helper::get_integer_value( strtotime( "next $day $time", $current_time_user_timezone ) );
 
-		$scheduled_time = Sureforms_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) ) );
+		$scheduled_time = SRFM_Helper::get_integer_value( strtotime( gmdate( 'Y-m-d H:i:s', $next_day_user_timezone ) ) );
 
 		if ( false === as_has_scheduled_action( 'srfm_weekly_scheduled_events' ) ) {
 			as_schedule_recurring_action(

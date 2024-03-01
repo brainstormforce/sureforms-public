@@ -7,11 +7,11 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc\Global_Settings;
+namespace SureForms\Inc\SRFM_Global_Settings;
 
-use SureForms\Inc\Global_Settings\Email_Summary;
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\SRFM_Global_Settings\SRFM_Email_Summary;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 use WP_REST_Server;
 use WP_REST_Response;
 use WP_REST_Request;
@@ -23,7 +23,7 @@ use WP_Error;
  * @since 0.0.1
  */
 class SRFM_Global_Settings {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Namespace.
@@ -75,20 +75,8 @@ class SRFM_Global_Settings {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		// add_action( 'init', [ $this, 'srfm_update_dynamic_options' ] );
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 	}
-
-	/**
-	 * Update Dynamic Options
-	 *
-	 * @return void
-	 * @since 0.0.1
-	 */
-	// public function srfm_update_dynamic_options() {
-	// 	$dynmic_options = Sureforms_Helper::default_dynamic_block_option();
-	// 	update_option( 'get_default_dynamic_block_option', $dynmic_options );
-	// }
 
 	/**
 	 * Add custom API Route submit-form
@@ -97,7 +85,7 @@ class SRFM_Global_Settings {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$sureforms_helper = new Sureforms_Helper();
+		$sureforms_helper = new SRFM_Helper();
 		register_rest_route(
 			$this->namespace,
 			'/srfm-global-settings',
@@ -120,14 +108,15 @@ class SRFM_Global_Settings {
 
 	/**
 	 * Handle Settings Form Submission
-	 *
-	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
+	 * 
+	 * @param WP_REST_Request $request Request object.
+	 * @return void
+	 * 
 	 * @since 0.0.1
 	 */
 	public static function srfm_save_global_settings( $request ) {
 
-		$nonce = Sureforms_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -142,10 +131,7 @@ class SRFM_Global_Settings {
 
 		$tab = $setting_options['srfm_tab'];
 
-		// remove tab from the options
 		unset( $setting_options['srfm_tab'] );
-
-		// $is_option_saved = false;
 
 		switch ( $tab ) {
 			case 'general-settings':
@@ -165,7 +151,6 @@ class SRFM_Global_Settings {
 				break;
 		}
 
-		// return new \WP_REST_Response( $is_option_saved, 200 );
 		if ( $is_option_saved ) {
 			wp_send_json_success(
 				[
@@ -244,7 +229,7 @@ class SRFM_Global_Settings {
 			)
 		);
 
-		$email_summary = new Email_Summary();
+		$email_summary = new SRFM_Email_Summary();
 
 		$email_summary->unschedule_events( 'srfm_weekly_scheduled_events' );
 
@@ -289,7 +274,7 @@ class SRFM_Global_Settings {
 	 */
 	public static function srfm_get_general_settings( $request ) {
 
-		$nonce = Sureforms_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -315,7 +300,7 @@ class SRFM_Global_Settings {
 			);
 		} 
 		if ( empty( $global_setting_options['get_default_dynamic_block_option'] ) ){
-			$global_setting_options['get_default_dynamic_block_option'] = Sureforms_Helper::default_dynamic_block_option();
+			$global_setting_options['get_default_dynamic_block_option'] = SRFM_Helper::default_dynamic_block_option();
 		} 
 		if ( empty( $global_setting_options['srfm_email_summary_settings_options'] ) ){
 			$global_setting_options['srfm_email_summary_settings_options'] = array(
