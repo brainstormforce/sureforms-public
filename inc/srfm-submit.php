@@ -259,16 +259,10 @@ class SRFM_Submit {
 	 */
 	public function handle_form_entry( $form_data ) {
 
-<<<<<<< HEAD:inc/sureforms-submit.php
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 		$srfm_ip_log            = isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
-		$user_ip      = $srfm_ip_log ? $_SERVER['REMOTE_ADDR'] : '';
-=======
-		$srfm_ip_log = get_option( 'srfm_ip_log' );
-
 		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
->>>>>>> 29633ba6ba939d2dee8b78458bfa40a0c19c99cc:inc/srfm-submit.php
 		$browser      = new Browser();
 		$browser_name = $browser->getBrowser();
 		$device_name  = $browser->getPlatform();
@@ -295,11 +289,7 @@ class SRFM_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-<<<<<<< HEAD:inc/sureforms-submit.php
 		$honeypot = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
-=======
-		$honeypot_value = get_option( 'srfm_honeypot' );
->>>>>>> 29633ba6ba939d2dee8b78458bfa40a0c19c99cc:inc/srfm-submit.php
 
 		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );
@@ -332,19 +322,11 @@ class SRFM_Submit {
 		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
 		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
-<<<<<<< HEAD:inc/sureforms-submit.php
-			$srfm_submission_info[] = array(
-				'user_ip'      => $user_ip,
-				'browser_name' => $browser_name,
-				'device_name'  => $device_name,
-			);
-=======
 			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
 				'browser_name' => $browser_name,
 				'device_name'  => $device_name,
 			];
->>>>>>> 29633ba6ba939d2dee8b78458bfa40a0c19c99cc:inc/srfm-submit.php
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [

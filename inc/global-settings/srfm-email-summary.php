@@ -6,7 +6,7 @@
  * @since 0.0.1
  */
 
-namespace SRFM\Inc\SRFM_Global_Settings;
+namespace SRFM\Inc\Global_Settings;
 
 use WP_REST_Response;
 use WP_REST_Request;
@@ -44,11 +44,11 @@ class SRFM_Email_Summary {
 		register_rest_route(
 			'sureforms/v1',
 			'/send-test-email-summary',
-			array(
+			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'send_test_email' ],
 				'permission_callback' => [ $sureforms_helper, 'get_items_permissions_check' ],
-			)
+			]
 		);
 	}
 
@@ -60,11 +60,11 @@ class SRFM_Email_Summary {
 	 * @since 0.0.1
 	 */
 	public function send_test_email( $request ) {
-		$email_send_to = $request->get_body();
-		$email_send_to = json_decode( $email_send_to, true );
-		$get_email_summary_options = array(
+		$email_send_to             = $request->get_body();
+		$email_send_to             = json_decode( $email_send_to, true );
+		$get_email_summary_options = [
 			'srfm_email_sent_to' => $email_send_to['srfm_email_sent_to'],
-		);
+		];
 		self::send_entries_to_admin( $get_email_summary_options );
 		$response = new WP_REST_Response( [ 'message' => __( 'Test email sent successfully.', 'sureforms' ) ], 200 );
 		return $response;
@@ -88,10 +88,10 @@ class SRFM_Email_Summary {
 	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
-		$args = array(
+		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
 			'posts_per_page' => -1,
-		);
+		];
 
 		$query = new WP_Query( $args );
 
@@ -120,23 +120,23 @@ class SRFM_Email_Summary {
 				$previous_week_end   = gmdate( 'Y-m-d', strtotime( '-1 week next sunday' ) );
 
 				$taxonomy      = 'sureforms_tax';
-				$entries_args  = array(
+				$entries_args  = [
 					'post_type'  => SRFM_ENTRIES_POST_TYPE,
-					'tax_query'  => array(
-						array(
+					'tax_query'  => [
+						[
 							'taxonomy' => $taxonomy,
 							'field'    => 'slug',
 							'terms'    => $post_id_formatted,
-						),
-					),
-					'date_query' => array(
-						array(
+						],
+					],
+					'date_query' => [
+						[
 							'after'     => $previous_week_start,
 							'before'    => $previous_week_end,
 							'inclusive' => true,
-						),
-					),
-				);
+						],
+					],
+				];
 				$entries_query = new WP_Query( $entries_args );
 				$entry_count   = $entries_query->post_count;
 

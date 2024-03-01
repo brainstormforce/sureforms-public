@@ -23,8 +23,8 @@ use SRFM\Inc\SRFM_Export;
 use SRFM\Inc\SRFM_Smart_Tags;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Create_New_Form;
-use SRFM\Inc\SRFM_Global_Settings\SRFM_Global_Settings;
-use SRFM\Inc\SRFM_Global_Settings\SRFM_Email_Summary;
+use SRFM\Inc\Global_Settings\SRFM_Global_Settings;
+use SRFM\Inc\Global_Settings\SRFM_Email_Summary;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

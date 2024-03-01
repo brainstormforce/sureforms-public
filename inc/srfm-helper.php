@@ -242,7 +242,7 @@ class SRFM_Helper {
 	 * @return string[] Meta value.
 	 */
 	public static function default_dynamic_block_option() {
-		$default_dynamic_values = array(
+		$default_dynamic_values = [
 			'srfm_url_block_required_text'          => __( 'This field is required.', 'sureforms' ),
 			'srfm_input_block_required_text'        => __( 'This field is required.', 'sureforms' ),
 			'srfm_input_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
@@ -256,7 +256,7 @@ class SRFM_Helper {
 			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
 			'srfm_email_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
 			'srfm_dropdown_block_required_text'     => __( 'This field is required.', 'sureforms' ),
-		);
+		];
 
 		return $default_dynamic_values;
 	}

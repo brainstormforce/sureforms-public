@@ -330,7 +330,7 @@ class SRFM_Admin {
 		}
 
 		if ( 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
-			wp_enqueue_style( SUREFORMS_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', array(), SUREFORMS_VER );
+			wp_enqueue_style( SRFM_SLUG . '-settings', $css_uri . 'backend/settings' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		// Admin Submenu Styles.

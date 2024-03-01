@@ -50,10 +50,10 @@ class SRFM_Address_Markup extends SRFM_Base {
 	 * @return string|boolean
 	 */
 	public function markup( $attributes, $form_id ) {
-			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$field_width          = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-			$label                = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
+			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
+			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
 			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_address_block_required_text' );
 
 			$line_one_placeholder = isset( $attributes['lineOnePlaceholder'] ) ? $attributes['lineOnePlaceholder'] : '';

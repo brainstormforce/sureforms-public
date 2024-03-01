@@ -44,7 +44,7 @@ const Component = ( { path } ) => {
 	} );
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
-		srfm_emails_send_to: sureforms_admin.admin_email,
+		srfm_emails_send_to: srfm_admin.admin_email,
 		srfm_schedule_report: 'Monday',
 	} );
 	const [ securitytabOptions, setSecurityTabOptions ] = useState( {
@@ -75,7 +75,7 @@ const Component = ( { path } ) => {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
-						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 
@@ -155,7 +155,7 @@ const Component = ( { path } ) => {
 				body: JSON.stringify( newFormData ),
 				headers: {
 					'content-type': 'application/json',
-					'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} ).then( () => {
 				setShowNotification( true );

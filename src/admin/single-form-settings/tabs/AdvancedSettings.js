@@ -76,7 +76,7 @@ function AdvancedSettings( props ) {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
-						'X-WP-Nonce': sureforms_admin.global_settings_nonce,
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 				if ( data.srfm_security_settings_options ) {
