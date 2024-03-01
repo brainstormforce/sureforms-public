@@ -36,7 +36,8 @@
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category:focus {
   box-shadow: none;
 }
-.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category svg, .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category path {
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category svg,
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category path {
   stroke: #475569;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category svg {
@@ -49,24 +50,25 @@
   color: #475569;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active {
-  background-color: #F2FAFC;
+  background-color: #f2fafc;
 }
-.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active svg, .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active path {
-  stroke: #1E293B;
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active svg,
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active path {
+  stroke: #1e293b;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category.active span {
-  color: #1E293B;
+  color: #1e293b;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container {
   padding: 0.8em;
-  border: 1px solid #125D9F;
+  border: 1px solid #125d9f;
   border-radius: 6px;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container .srfm-notice-title-container {
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 0.6em;
-  color: #0F172A;
+  color: #0f172a;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container .srfm-notice-title-container svg {
   width: 16px;
@@ -74,7 +76,7 @@
   margin-right: 8px;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container .srfm-notice-title-container svg path {
-  stroke: #125D9F;
+  stroke: #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container .srfm-notice-title-container .srfm-notice-title {
   width: calc(100% - 24px);
@@ -90,8 +92,8 @@
   padding: 0.64em;
   font-size: 0.7em;
   font-weight: 500;
-  background: #125D9F;
-  color: #FFFFFF;
+  background: #125d9f;
+  color: #ffffff;
   border-radius: 6px;
   line-height: normal;
   border: 0;
@@ -124,19 +126,19 @@
   line-height: 1.4em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   margin-bottom: 1.2em;
   box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1019607843);
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 4px;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-content-title {
   font-size: 0.8em;
   line-height: 1.5em;
   font-weight: 600;
-  color: #0F172A;
+  color: #0f172a;
   padding: 1em 1.5em;
-  border-bottom: 1px solid #DCE0E6;
+  border-bottom: 1px solid #dce0e6;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content {
   padding: 1.5em;
@@ -149,18 +151,18 @@
   margin-bottom: 1em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.components-toggle-control .components-form-toggle.is-checked .components-form-toggle__track {
-  background-color: #125D9F;
+  background-color: #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.components-toggle-control label {
   font-size: 0.7em;
   font-weight: 500;
-  color: #1E293B;
+  color: #1e293b;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.components-toggle-control .components-base-control__help {
   font-size: 0.6em;
   margin-top: 0.2em;
   margin-left: 4em;
-  color: #6B7280;
+  color: #6b7280;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control {
@@ -168,7 +170,7 @@
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control label,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control label {
-  color: #1E293B;
+  color: #1e293b;
   font-size: 0.7em;
   line-height: normal;
   text-transform: none;
@@ -179,18 +181,18 @@
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input {
   font-size: 0.8em;
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 0.25em;
   padding: 0.75em 1em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-text-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input:-ms-input-placeholder {
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-text-control__input::placeholder,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input::placeholder,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input::placeholder,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input::placeholder {
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input {
@@ -199,22 +201,22 @@
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-input-control__backdrop,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-input-control__backdrop {
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 0.25em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control:nth-last-child(1) {
   margin-bottom: 0;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs > .components-tab-panel__tabs {
-  border-bottom: 1px solid #DCE0E6;
+  border-bottom: 1px solid #dce0e6;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs > .components-tab-panel__tabs .components-tab-panel__tabs-item {
   font-size: 0.7em;
   color: #475569;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs > .components-tab-panel__tabs .components-tab-panel__tabs-item.active-tab {
-  color: #125D9F;
-  border-bottom: 2px solid #125D9F;
+  color: #125d9f;
+  border-bottom: 2px solid #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs .components-tab-panel__tab-content .srfm-sub-section-heading {
   max-width: 560px;
@@ -232,16 +234,18 @@
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs .components-tab-panel__tab-content .srfm-sub-section-heading .srfm-link a {
   font-size: 0.7em;
-  color: #125D9F;
+  color: #125d9f;
+  text-decoration: none;
+  box-shadow: none;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs .components-tab-panel__tab-content .srfm-sub-section-heading .srfm-link a:nth-last-child(1) {
   margin-left: 0.3em;
   padding-left: 0.3em;
-  border-left: 1px solid #DCE0E6;
+  border-left: 1px solid #dce0e6;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-1-tabs .components-tab-panel__tab-content .srfm-sub-section-content {
   padding: 1.2em;
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 0.2em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-2-tabs > .components-tab-panel__tabs {
@@ -250,7 +254,7 @@
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-2-tabs > .components-tab-panel__tabs .components-tab-panel__tabs-item {
   position: relative;
   font-size: 0.7em;
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 6px;
   margin-right: 0.85em;
   padding-left: 2.429em;
@@ -267,13 +271,26 @@
   transform: translateY(-50%);
   width: 1.142em;
   height: 1.142em;
-  border: 1px solid #DCE0E6;
+  border: 1px solid #dce0e6;
   border-radius: 100%;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-2-tabs > .components-tab-panel__tabs .components-tab-panel__tabs-item.active-tab {
-  color: #125D9F;
-  border-color: #125D9F;
+  color: #125d9f;
+  border-color: #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-style-2-tabs > .components-tab-panel__tabs .components-tab-panel__tabs-item.active-tab:before {
-  box-shadow: inset 0px 0px 0px 0.3em #125D9F;
+  box-shadow: inset 0px 0px 0px 0.3em #125d9f;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .srfm-email-test-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.64em;
+  font-size: 0.7em;
+  font-weight: 500;
+  background: #125d9f;
+  color: #fff;
+  border-radius: 6px;
+  line-height: normal;
+  border: 0;
+  cursor: pointer;
 }

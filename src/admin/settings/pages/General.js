@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { ToggleControl, TextControl } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
-import Skeleton from 'react-loading-skeleton';
 
 const GeneralPage = ( {
 	loading,
@@ -13,82 +12,66 @@ const GeneralPage = ( {
 	const miscellaneousContent = () => {
 		return (
 			<>
-				{ loading ? (
-					<Skeleton
-						style={ { marginBottom: '1rem' } }
-						count={ 5 }
-						height={ 25 }
-					/>
-				) : (
-					<>
-						<ToggleControl
-							label={ __( 'Enable IP Logging', 'sureforms' ) }
-							help={ __(
-								"If this option is turned on, the user's IP address will not be saved with the form data",
-								'sureforms'
-							) }
-							checked={ generalTabOptions.srfm_ip_log }
-							onChange={ ( value ) =>
-								updateGlobalSettings(
-									'srfm_ip_log',
-									value,
-									'general-settings'
-								)
-							}
-						/>
-						<ToggleControl
-							label={ __(
-								'Enable Honeypot Security',
-								'sureforms'
-							) }
-							help={ __(
-								'Enable Honeypot Security for better spam protection',
-								'sureforms'
-							) }
-							checked={ generalTabOptions.srfm_honeypot }
-							onChange={ ( value ) =>
-								updateGlobalSettings(
-									'srfm_honeypot',
-									value,
-									'general-settings'
-								)
-							}
-						/>
-						<ToggleControl
-							label={ __(
-								'Enable Form Analytics ',
-								'sureforms'
-							) }
-							help={ __(
-								'Enable this to prevent tracking unique views and submission counts.',
-								'sureforms'
-							) }
-							checked={ generalTabOptions.srfm_form_analytics }
-							onChange={ ( value ) =>
-								updateGlobalSettings(
-									'srfm_form_analytics',
-									value,
-									'general-settings'
-								)
-							}
-						/>
-						<ToggleControl
-							label={ __( 'GDPR Enhancements', 'sureforms' ) }
-							help={ __(
-								'Enable GDPR related features and enhancements.',
-								'sureforms'
-							) }
-							checked={ generalTabOptions.srfm_gdpr }
-							onChange={ ( value ) =>
-								updateGlobalSettings(
-									'srfm_gdpr',
-									value,
-									'general-settings'
-								)
-							}
-						/>
-					</>
-				) }
+				<ToggleControl
+					label={ __( 'Enable IP Logging', 'sureforms' ) }
+					help={ __(
+						"If this option is turned on, the user's IP address will not be saved with the form data",
+						'sureforms'
+					) }
+					checked={ generalTabOptions.srfm_ip_log }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_ip_log',
+							value,
+							'general-settings'
+						)
+					}
+				/>
+				<ToggleControl
+					label={ __( 'Enable Honeypot Security', 'sureforms' ) }
+					help={ __(
+						'Enable Honeypot Security for better spam protection',
+						'sureforms'
+					) }
+					checked={ generalTabOptions.srfm_honeypot }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_honeypot',
+							value,
+							'general-settings'
+						)
+					}
+				/>
+				<ToggleControl
+					label={ __( 'Enable Form Analytics ', 'sureforms' ) }
+					help={ __(
+						'Enable this to prevent tracking unique views and submission counts.',
+						'sureforms'
+					) }
+					checked={ generalTabOptions.srfm_form_analytics }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_form_analytics',
+							value,
+							'general-settings'
+						)
+					}
+				/>
+				<ToggleControl
+					label={ __( 'GDPR Enhancements', 'sureforms' ) }
+					help={ __(
+						'Enable GDPR related features and enhancements.',
+						'sureforms'
+					) }
+					checked={ generalTabOptions.srfm_gdpr }
+					onChange={ ( value ) =>
+						updateGlobalSettings(
+							'srfm_gdpr',
+							value,
+							'general-settings'
+						)
+					}
+				/>
 			</>
 		);
 	};
@@ -112,54 +95,42 @@ const GeneralPage = ( {
 
 		return (
 			<>
-				{ loading ? (
-					<Skeleton
-						style={ { marginBottom: '1rem' } }
-						count={ 5 }
-						height={ 25 }
-					/>
-				) : (
-					<>
-						{ validationFields.map( ( field ) => {
-							let fieldLabel = field
-								.replace( 'srfm_', '' )
-								.replace( /_/g, ' ' );
-							fieldLabel = fieldLabel.replace( /text/g, '' );
-							fieldLabel = fieldLabel
-								.split( ' ' )
-								.map(
-									( word ) =>
-										word.charAt( 0 ).toUpperCase() +
-										word.slice( 1 )
-								)
-								.join( ' ' );
-							return (
-								<TextControl
-									key={ field }
-									label={ __(
-										`${
-											'Area Block Required ' ===
-											fieldLabel
-												? 'Textarea Block Required'
-												: fieldLabel
-										} Error Message`,
-										'sureforms'
-									) }
-									type="text"
-									className="srfm-components-input-control"
-									value={ dynamicBlockOptions[ field ] }
-									onChange={ ( value ) => {
-										updateGlobalSettings(
-											field,
-											value,
-											'general-settings-dynamic-opt'
-										);
-									} }
-								/>
-							);
-						} ) }
-					</>
-				) }
+				{ validationFields.map( ( field ) => {
+					let fieldLabel = field
+						.replace( 'srfm_', '' )
+						.replace( /_/g, ' ' );
+					fieldLabel = fieldLabel.replace( /text/g, '' );
+					fieldLabel = fieldLabel
+						.split( ' ' )
+						.map(
+							( word ) =>
+								word.charAt( 0 ).toUpperCase() + word.slice( 1 )
+						)
+						.join( ' ' );
+					return (
+						<TextControl
+							key={ field }
+							label={ __(
+								`${
+									'Area Block Required ' === fieldLabel
+										? 'Textarea Block Required'
+										: fieldLabel
+								} Error Message`,
+								'sureforms'
+							) }
+							type="text"
+							className="srfm-components-input-control"
+							value={ dynamicBlockOptions[ field ] }
+							onChange={ ( value ) => {
+								updateGlobalSettings(
+									field,
+									value,
+									'general-settings-dynamic-opt'
+								);
+							} }
+						/>
+					);
+				} ) }
 			</>
 		);
 	};

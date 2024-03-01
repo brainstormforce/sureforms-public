@@ -15,8 +15,9 @@ import SecurityPage from './pages/Security';
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
 	const [ pageIcon, setPageIcon ] = useState( '' );
-	const [ isSaved, setIsSaved ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
+	const [ showNotification, setShowNotification ] = useState( false );
+	const [ notificationMessage, setNotificationMessage ] = useState( '' );
 
 	useEffect( () => {
 		if ( path ) {
@@ -34,19 +35,18 @@ const Component = ( { path } ) => {
 		}
 	}, [ path ] );
 
+	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
 		srfm_honeypot: false,
 		srfm_form_analytics: false,
 		srfm_gdpr: false,
 	} );
-
 	const [ emailTabOptions, setEmailTabOptions ] = useState( {
 		srfm_email_summary: false,
 		srfm_emails_send_to: sureforms_admin.admin_email,
 		srfm_schedule_report: 'Monday',
 	} );
-
 	const [ securitytabOptions, setSecurityTabOptions ] = useState( {
 		srfm_v2_checkbox_site_key: '',
 		srfm_v2_checkbox_secret_key: '',
@@ -55,9 +55,9 @@ const Component = ( { path } ) => {
 		srfm_v3_site_key: '',
 		srfm_v3_secret_key: '',
 	} );
-
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 
+	// Options to fetch from API.
 	const options_to_fetch = [
 		'srfm_general_settings_options',
 		'srfm_email_summary_settings_options',
@@ -144,13 +144,10 @@ const Component = ( { path } ) => {
 
 		fetchData();
 	}, [] );
-	console.log( dynamicBlockOptions );
-
-	console.log( sureforms_admin.global_settings_nonce );
 
 	// Save global settings.
 	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
-		setIsSaved( false );
+		setShowNotification( false );
 		try {
 			apiFetch( {
 				path: 'sureforms/v1/srfm-global-settings',
@@ -161,9 +158,12 @@ const Component = ( { path } ) => {
 					'X-WP-Nonce': sureforms_admin.global_settings_nonce,
 				},
 			} ).then( () => {
-				setIsSaved( true );
+				setShowNotification( true );
+				setNotificationMessage(
+					__( 'Settings Saved Successfully!', 'sureforms' )
+				);
 				setTimeout( () => {
-					setIsSaved( false );
+					setShowNotification( false );
 				}, 1500 );
 			} );
 		} catch ( error ) {
@@ -215,8 +215,8 @@ const Component = ( { path } ) => {
 			<div class="srfm-page-heading">
 				<div class="srfm-page-icon">{ pageIcon }</div>
 				<span>{ pageTitle }</span>
-				{ isSaved && (
-					<Snackbar onDismiss={ () => setIsSaved( false ) }>
+				{ showNotification && (
+					<Snackbar onDismiss={ () => setShowNotification( false ) }>
 						<div
 							style={ {
 								display: 'flex',
@@ -225,12 +225,7 @@ const Component = ( { path } ) => {
 							} }
 						>
 							<MdOutlineDone fill="green" size={ 24 } />
-							<span>
-								{ __(
-									'Settings Saved Successfully!',
-									'sureforms'
-								) }
-							</span>
+							<span>{ notificationMessage }</span>
 						</div>
 					</Snackbar>
 				) }
@@ -249,6 +244,8 @@ const Component = ( { path } ) => {
 						loading={ loading }
 						emailTabOptions={ emailTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
+						setShowNotification={ setShowNotification }
+						setNotificationMessage={ setNotificationMessage }
 					/>
 				) }
 				{ 'security-settings' === path && (

@@ -185,10 +185,10 @@ class Email_Summary {
 
 		$subject = __( 'SureForms Email Summary - ', 'sureforms' ) . $site_title;
 		$message = $entries_count_table;
-		$headers = array(
+		$headers = [
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . get_option( 'admin_email' ),
-		);
+		];
 
 		wp_mail( $recipients, $subject, $message, $headers );
 	}

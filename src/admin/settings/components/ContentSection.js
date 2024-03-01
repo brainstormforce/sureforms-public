@@ -12,7 +12,17 @@ const ContentSection = ( { loading, title, content } ) => {
 						title
 					) }
 				</div>
-				<div className="srfm-section-content">{ content }</div>
+				<div className="srfm-section-content">
+					{ loading ? (
+						<Skeleton
+							style={ { marginBottom: '1rem' } }
+							count={ 5 }
+							height={ 25 }
+						/>
+					) : (
+						content
+					) }
+				</div>
 			</div>
 		</>
 	);
