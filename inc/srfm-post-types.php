@@ -8,11 +8,9 @@
 
 namespace SRFM\Inc;
 
-use WP_REST_Response;
-use WP_Screen;
 use WP_Query;
 use WP_Admin_Bar;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 use SRFM\Inc\SRFM_Helper;
 
@@ -26,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Post_Types {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -50,7 +48,8 @@ class SRFM_Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
-		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 ); }
+		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 );
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
 
 	/**
 	 * Add SureForms menu.
@@ -413,6 +412,7 @@ class SRFM_Post_Types {
 				'_srfm_page_form_title'           => 'boolean',
 				'_srfm_single_page_form_title'    => 'boolean',
 				'_srfm_submit_button_text'        => 'string',
+				'_srfm_instant_form'              => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
@@ -530,6 +530,36 @@ class SRFM_Post_Types {
 				],
 			]
 		);
+
+		register_post_meta(
+			'sureforms_entry',
+			'_srfm_submission_info',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'user_ip'      => [
+									'type' => 'string',
+								],
+								'browser_name' => [
+									'type' => 'string',
+								],
+								'device_name'  => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
 	}
 
 	/**
@@ -540,7 +570,7 @@ class SRFM_Post_Types {
 	 * @since 0.0.1
 	 */
 	public function sureforms_meta_box_callback( \WP_Post $post ) {
-		$meta_data = get_post_meta( $post->ID, 'sureforms_entry_meta', true );
+		$meta_data = get_post_meta( $post->ID, 'srfm_entry_meta', true );
 		if ( ! is_array( $meta_data ) ) {
 			return;
 		}
@@ -617,7 +647,7 @@ class SRFM_Post_Types {
 		);
 		add_meta_box(
 			'sureform_form_name_meta',
-			'Form Name',
+			'Submission Info',
 			[ $this, 'sureforms_form_name_meta_callback' ],
 			'sureforms_entry',
 			'side',
@@ -637,10 +667,37 @@ class SRFM_Post_Types {
 		$taxonomy = 'sureforms_tax';
 		$terms    = wp_get_post_terms( $post_id, $taxonomy );
 		if ( is_array( $terms ) && count( $terms ) > 0 ) {
-			$form_id   = intval( $terms[0]->slug );
-			$form_name = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+			$form_id         = intval( $terms[0]->slug );
+			$form_name       = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
+			$submission_info = get_post_meta( $post_id, '_srfm_submission_info', true );
+			if ( is_array( $submission_info ) && count( $submission_info ) > 0 ) {
+				$user_ip      = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
+				$browser_name = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
+				$device_name  = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
+			} else {
+				$user_ip      = '';
+				$browser_name = '';
+				$device_name  = '';
+			}
 			?>
-		<p><?php echo esc_html( $form_name ); ?></p>
+			<table style="border-collapse: separate; border-spacing: 5px 5px;">
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $form_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b></td>
+				<td><a target="_blank" rel="noopener" href="https://ipinfo.io/<?php echo esc_html( $user_ip ); ?>"><?php echo esc_html( $user_ip ); ?></a></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Browser:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $browser_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Device:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $device_name ); ?></td>
+			</tr>
+			</table>
 			<?php
 		} else {
 			?>
@@ -723,7 +780,7 @@ class SRFM_Post_Types {
 
 			$args = [
 				'post_type' => SRFM_ENTRIES_POST_TYPE,
-				'tax_query' // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+				'tax_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
 				=> [
 					[
 						'taxonomy' => $taxonomy,
@@ -859,6 +916,36 @@ class SRFM_Post_Types {
 				</div>
 			</div>
 			<?php
+		}
+	}
+
+	/**
+	 * Redirect to home page if instant form is not enabled.
+	 *
+	 * @since 0.0.1
+	 * @return void
+	 */
+	public function srfm_instant_form_redirect() {
+
+		$form_id = SRFM_Helper::get_integer_value( get_the_ID() );
+
+		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
+
+		if ( $is_instant_form ) {
+			return;
+		}
+
+		$form_preview = '';
+
+		$form_preview_attr = isset( $_GET['preview'] ) ? sanitize_text_field( wp_unslash( $_GET['preview'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
+
+		if ( $form_preview_attr ) {
+			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
+		}
+
+		if ( is_singular( 'sureforms_form' ) && ! $form_preview ) {
+			wp_safe_redirect( home_url() );
+			return;
 		}
 	}
 

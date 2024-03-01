@@ -19,7 +19,7 @@ const Breadcrumbs = () => {
 				className="srfm-tp-logo"
 				onClick={ () =>
 					( window.location.href =
-						sureforms_admin.admin_url + '?page=sureforms_menu' )
+						srfm_admin.admin_url + '?page=sureforms_menu' )
 				}
 			>
 				{ ICONS.logo }
@@ -28,7 +28,7 @@ const Breadcrumbs = () => {
 				<Link
 					className="srfm-tp-breadcrumb-url"
 					to={ {
-						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=add-new-form`,
 					} }
 				>
@@ -42,7 +42,7 @@ const Breadcrumbs = () => {
 				<Link
 					className="srfm-tp-breadcrumb-url"
 					to={ {
-						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=add-new-form&method=template`,
 					} }
 				>

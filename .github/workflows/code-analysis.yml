@@ -42,7 +42,7 @@ jobs:
                   tools: composer, cs2pr, phpcs
 
             - name: Install dependencies
-              run: composer install --prefer-dist --no-progress && npm install --legacy-peer-deps
+              run: composer install --prefer-dist --no-progress --ignore-platform-reqs && npm install --legacy-peer-deps
 
             # - name: PHPCS check
             #   if: always()

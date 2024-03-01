@@ -253,9 +253,9 @@ module.exports = function ( grunt ) {
 					'!config/**',
 					'!tests/**',
 					'!bin/**',
-					'!sass/**',
-					'!assets/css/unminified/**',
-					'!assets/js/unminified/**',
+					//'!sass/**',
+					//'!assets/css/unminified/**',
+					//'!assets/js/unminified/**',
 					// '!src/**',
 					'!modules/gutenberg/scripts/**',
 					// '!modules/gutenberg/src/**',
@@ -351,5 +351,12 @@ module.exports = function ( grunt ) {
 		'copy',
 		'compress',
 		'clean:main',
+	] );
+
+	// Grunt release no clean
+	grunt.registerTask( 'release-no-clean', [
+		'clean:main',
+		'clean:zip',
+		'copy:main',
 	] );
 };

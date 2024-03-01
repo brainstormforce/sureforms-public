@@ -13,10 +13,10 @@ import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 let iconCommonData = {};
 iconCommonData = applyFilters(
-	'sureforms/icon',
+	'srfm/icon',
 	addCommonDataToSpectraBlocks( iconCommonData )
 );
-registerBlockType( 'sureforms/icon', {
+registerBlockType( 'srfm/icon', {
 	...iconCommonData,
 	apiVersion: 2,
 	title: __( 'Icon', 'sureforms' ),

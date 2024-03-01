@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Services\Browser\Browser;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Smart_Tags {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ class SRFM_Smart_Tags {
 			return self::process_smart_tags( $block_content );
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'sureforms/form' === $block['blockName'] ) ) {
+		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
 				return self::process_smart_tags( $block_content );
 			}

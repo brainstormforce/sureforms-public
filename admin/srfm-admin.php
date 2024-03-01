@@ -7,7 +7,7 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SRFM_Admin {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -67,6 +67,10 @@ class SRFM_Admin {
 	 * @since 0.0.1
 	 */
 	public function add_menu_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$capability = 'manage_options';
 		$menu_slug  = 'sureforms_menu';
 
@@ -211,7 +215,7 @@ class SRFM_Admin {
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
-		wp_enqueue_style( 'srfm-common-editor', SRFM_URL . 'assets/build/common-editor.css', [], SRFM_VER, 'all' );
+		wp_enqueue_style( SRFM_SLUG . '-common-editor', SRFM_URL . 'assets/build/common-editor.css', [], SRFM_VER, 'all' );
 	}
 
 	/**
@@ -293,7 +297,7 @@ class SRFM_Admin {
 		}
 
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type ) {
-			$asset_handle = 'dashboard';
+			$asset_handle = SRFM_SLUG . '-dashboard';
 
 			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );
 
@@ -304,21 +308,24 @@ class SRFM_Admin {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'sureforms-' . $asset_handle, SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/dashboard.js', $script_info['dependencies'], SRFM_VER, true );
 
-			wp_localize_script( 'sureforms-' . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
+			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
 			wp_localize_script(
-				'sureforms-' . $asset_handle,
-				'sureforms_admin',
-				[
-					'site_url'                => get_site_url(),
-					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-					'plugin_version'          => SRFM_VER,
-					'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
-				]
+				SRFM_SLUG . $asset_handle,
+				SRFM_SLUG . '_admin',
+				apply_filters(
+					SRFM_SLUG . '_admin_filter',
+					[
+						'site_url'                => get_site_url(),
+						'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
+						'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
+						'plugin_version'          => SRFM_VER,
+						'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					]
+				)
 			);
-			wp_enqueue_style( 'srfm-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
+			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
 
 		}
 
@@ -336,7 +343,7 @@ class SRFM_Admin {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'srfm-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-form-page-header', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_enqueue_style( SRFM_SLUG . '-form-archive-styles', $css_uri . 'form-archive-styles' . $file_prefix . '.css', [], SRFM_VER );
 		}
 		if ( 'sureforms_page_' . SRFM_FORMS_POST_TYPE . '_settings' === $current_screen->base ) {
@@ -349,23 +356,24 @@ class SRFM_Admin {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'settings', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
-			wp_enqueue_style( 'srfm-setting-styles', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SRFM_VER, 'all' );
+			wp_enqueue_script( SRFM_SLUG . '-settings', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_style( SRFM_SLUG . '-setting-styles', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SRFM_VER, 'all' );
 			wp_localize_script(
-				'settings',
-				'sureforms_admin',
+				SRFM_SLUG . '-settings',
+				SRFM_SLUG . '_admin',
 				[
-					'site_url'              => get_site_url(),
-					'global_settings_nonce' => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'site_url'            => get_site_url(),
+					'admin_email'         => get_option( 'admin_email' ),
+					'email_summary_nonce' => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				]
 			);
 		}
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( 'srfm-export', $js_uri . 'export' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
-				'srfm-export',
-				'sureforms_export',
+				SRFM_SLUG . '-export',
+				SRFM_SLUG . '_export',
 				[
 					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
 					'srfm_export_nonce'    => wp_create_nonce( 'export_form_nonce' ),
@@ -378,7 +386,7 @@ class SRFM_Admin {
 			wp_enqueue_script( SRFM_SLUG . '-backend', $js_uri . 'backend' . $file_prefix . '.js', [], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . '-backend',
-				'sureforms_backend',
+				SRFM_SLUG . '_backend',
 				[
 					'site_url' => get_site_url(),
 				]
@@ -409,11 +417,11 @@ class SRFM_Admin {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
-			wp_enqueue_script( 'srfm-template-picker', SRFM_URL . 'assets/build/' . $sureforms_admin . '.js', $script_info['dependencies'], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-template-picker', SRFM_URL . 'assets/build/' . $sureforms_admin . '.js', $script_info['dependencies'], SRFM_VER, true );
 
 			wp_localize_script(
-				'srfm-template-picker',
-				'sureforms_admin',
+				SRFM_SLUG . '-template-picker',
+				SRFM_SLUG . '_admin',
 				[
 					'site_url'                     => get_site_url(),
 					'plugin_url'                   => SRFM_URL,
@@ -429,11 +437,11 @@ class SRFM_Admin {
 		$default_allowed_quick_sidebar_blocks = apply_filters(
 			'srfm_quick_sidebar_allowed_blocks',
 			[
-				'sureforms/input',
-				'sureforms/email',
-				'sureforms/textarea',
-				'sureforms/number',
-				'sureforms/address',
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/address',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {
@@ -447,10 +455,10 @@ class SRFM_Admin {
 		$quick_sidebar_allowed_blocks = get_option( 'srfm_quick_sidebar_allowed_blocks' );
 		$quick_sidebar_allowed_blocks = ! empty( $quick_sidebar_allowed_blocks ) && is_array( $quick_sidebar_allowed_blocks ) ? $quick_sidebar_allowed_blocks : $default_allowed_quick_sidebar_blocks;
 		$srfm_ajax_nonce              = wp_create_nonce( 'srfm_ajax_nonce' );
-		wp_enqueue_script( 'srfm-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-quick-action-siderbar', SRFM_URL . 'assets/build/quickActionSidebar.js', [], SRFM_VER, true );
 		wp_localize_script(
-			'srfm-quick-action-siderbar',
-			'quickSidebarBlocks',
+			SRFM_SLUG . '-quick-action-siderbar',
+			SRFM_SLUG . '_quick_sidebar_blocks',
 			[
 				'allowed_blocks'                   => $quick_sidebar_allowed_blocks,
 				'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,

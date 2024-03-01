@@ -9,7 +9,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SRFM_Public {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -60,8 +60,8 @@ class SRFM_Public {
 		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
 
 		// Common styles for all meta styles.
-		wp_enqueue_style( 'srfm-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
-		wp_enqueue_style( 'srfm-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER, 'all' );
+		wp_enqueue_style( SRFM_SLUG . '-form', $css_uri . 'frontend/form' . $file_prefix . '.css', [], SRFM_VER, 'all' );
 
 		if ( is_single() ) {
 			wp_enqueue_style( SRFM_SLUG . '-single', $css_uri . 'single' . $file_prefix . '.css', [], SRFM_VER );
@@ -69,11 +69,11 @@ class SRFM_Public {
 
 		// Dependencies
 		// Nice Select CSS.
-		wp_enqueue_style( 'tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-tom-select', $css_vendor . 'tom-select.css', [], SRFM_VER );
 		// Int-tel-input CSS.
-		wp_enqueue_style( 'intlTelInput', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
+		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
 
-		wp_enqueue_script( 'srfm-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SRFM_VER, true );
 
@@ -83,18 +83,9 @@ class SRFM_Public {
 			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ 'srfm-form-submit-js' ], SRFM_VER, true );
 		}
 
-		$is_rtl = is_rtl();
-
 		wp_localize_script(
-			SRFM_SLUG . '-frontend-script',
-			SRFM_LOC,
-			[
-				'isRTL' => $is_rtl,
-			]
-		);
-		wp_localize_script(
-			'srfm-form-submit',
-			'sureforms_submit',
+			SRFM_SLUG . '-form-submit',
+			SRFM_SLUG . '_submit',
 			[
 				'site_url' => site_url(),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
@@ -110,7 +101,7 @@ class SRFM_Public {
 	 * @return void
 	 */
 	public function enqueue_srfm_script( $block_type ) {
-		$block_name        = str_replace( 'sureforms/', '', $block_type );
+		$block_name        = str_replace( 'srfm/', '', $block_type );
 		$script_dep_blocks = [ 'address', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';

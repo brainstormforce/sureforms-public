@@ -8,7 +8,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Helper {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Sureforms SVGs.
@@ -74,7 +74,7 @@ class SRFM_Helper {
 	 * @param string       $function function name to be applied on each element on array.
 	 * @param array<mixed> $data_array array on which function needs to be performed.
 	 * @return array<mixed>
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 */
 	public static function sanitize_recursively( $function, $data_array ) {
 		$response = [];
@@ -208,7 +208,7 @@ class SRFM_Helper {
 	 * @param string $key              The option key.
 	 * @param mixed  $value            The value to update.
 	 * @param bool   $network_override Whether to allow the network_override admin setting to be overridden on subsites.
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 * @return bool True if the option was updated, false otherwise.
 	 */
 	public static function update_admin_settings_option( $key, $value, $network_override = false ) {
@@ -224,7 +224,7 @@ class SRFM_Helper {
 	 * @param bool       $single single or multiple.
 	 * @param mixed      $default default value.
 	 *
-	 * @since 1.0.0
+	 * @since 0.0.1
 	 * @return string Meta value.
 	 */
 	public static function get_meta_value( $post_id, $key, $single = true, $default = '' ) {

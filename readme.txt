@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, gutenberg blocks, editor, block, forms
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 0.0.1
+Stable tag: 0.0.3
 License: GPL-2.0-only
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -156,7 +156,23 @@ ipapi
 License : Massachusetts Institute of Technology (MIT)  
 License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE  
 
+Action Scheduler  
+License : GNU General Public License v3.0  
+License URI : https://github.com/woocommerce/action-scheduler/blob/trunk/license.txt  
+
+Browser.php  
+License : Massachusetts Institute of Technology (MIT)  
+License URI : https://github.com/cbschuld/Browser.php/blob/master/LICENSE.md  
+
 == Changelog ==
 
 = 0.0.1 =
 * Initial release.
+
+= 0.0.2 =
+* New: Introduced Email summaries.  
+* Fix: Bug fixes. 
+
+= 0.0.3 =  
+* Fix: Bug fixes. 
+

@@ -59,7 +59,7 @@ export default function Image( {
 					multiSelectedClientIds.length &&
 					multiSelectedClientIds.every(
 						( _clientId ) =>
-							getBlockName( _clientId ) === 'sureforms/image'
+							getBlockName( _clientId ) === 'srfm/image'
 					),
 			};
 		},

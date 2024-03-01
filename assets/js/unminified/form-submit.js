@@ -61,13 +61,13 @@ document.addEventListener( 'DOMContentLoaded', function () {
 } );
 
 function submitFormData( form ) {
-	const site_url = sureforms_submit.site_url;
+	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
 	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		headers: {
-			'X-WP-Nonce': sureforms_submit.nonce,
+			'X-WP-Nonce': srfm_submit.nonce,
 		},
 		body: formData,
 	} )

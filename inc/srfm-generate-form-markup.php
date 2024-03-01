@@ -10,7 +10,7 @@ namespace SRFM\Inc;
 
 use WP_REST_Response;
 use WP_Error;
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Generate_Form_Markup {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -73,7 +73,7 @@ class SRFM_Generate_Form_Markup {
 
 		$post = get_post( SRFM_Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {
-			$content = apply_filters( 'the_content', $post->post_content );
+			$content = apply_filters( 'the_content', $post->post_content ); //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 		} else {
 			$content = '';
 		}
@@ -236,7 +236,7 @@ class SRFM_Generate_Form_Markup {
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
 					$honeypot_spam = get_option( 'srfm_honeypot' );
 
-				if ( defined( 'SUREFORMS_PRO_VER' ) ) {
+				if ( defined( 'SRFM_PRO_VER' ) ) {
 					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
 						do_action( 'srfm_page_break_header', $id );
 					}
@@ -250,7 +250,7 @@ class SRFM_Generate_Form_Markup {
 				<?php endif; ?>
 				<?php
 
-				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
+				if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
@@ -260,7 +260,7 @@ class SRFM_Generate_Form_Markup {
 				?>
 
 				<?php
-				if ( defined( 'SUREFORMS_PRO_VER' ) && $is_page_break ) {
+				if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
 					do_action( 'srfm_page_break_btn', $id );
 				}
 				?>

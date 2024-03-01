@@ -31,7 +31,7 @@ const alignmentCSS = ( align ) => {
 };
 
 function styling( attributes, clientId, name, deviceType ) {
-	const blockName = name.replace( 'sureforms/', '' );
+	const blockName = name.replace( 'srfm/', '' );
 	const previewType = deviceType.toLowerCase();
 	const {
 		block_id,

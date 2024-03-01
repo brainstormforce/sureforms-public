@@ -8,11 +8,14 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use SRFM\Inc\SRFM_Helper;
 use SRFM\Inc\Email\SRFM_Email_Template;
 use SRFM\Inc\SRFM_Smart_Tags;
 use WP_REST_Server;
+use SRFM\Inc\Lib\Browser\Browser;
+use WP_Error;
+use WP_REST_Request;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -28,7 +31,7 @@ if ( ! function_exists( 'wp_handle_upload' ) ) {
  * @since 0.0.1
  */
 class SRFM_Submit {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Namespace.
@@ -73,7 +76,7 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_settings_form_submission' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
 		register_rest_route(
@@ -82,10 +85,25 @@ class SRFM_Submit {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_settings_form_data' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
 	}
+
+	/**
+	 * Check whether a given request has permission access route.
+	 *
+	 * @since 0.0.1
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function permissions_check( $request ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
+		}
+		return true;
+	}
+
 
 	/**
 	 * Handle Form Submission
@@ -279,12 +297,15 @@ class SRFM_Submit {
 			'srfm_v3_site',
 			'srfm_v3_secret',
 			'srfm_honeypot_toggle',
+			'srfm_ip_log',
 		];
 
 		foreach ( $options_to_update as $option_key ) {
 			if ( isset( $data[ $option_key ] ) ) {
 				if ( 'srfm_honeypot_toggle' === $option_key ) {
 					update_option( 'srfm_honeypot', $data[ $option_key ] );
+				} elseif ( 'srfm_ip_log' === $option_key ) {
+					update_option( 'srfm_ip_log', $data[ $option_key ] );
 				} else {
 					update_option( $option_key, $data[ $option_key ] );
 				}
@@ -322,6 +343,7 @@ class SRFM_Submit {
 		$sureforms_v3_secret              = ! empty( get_option( 'srfm_v3_secret' ) ) ? get_option( 'srfm_v3_secret' ) : '';
 		$sureforms_v3_site                = ! empty( get_option( 'srfm_v3_site' ) ) ? get_option( 'srfm_v3_site' ) : '';
 		$honeypot                         = ! empty( get_option( 'srfm_honeypot' ) ) ? get_option( 'srfm_honeypot' ) : '';
+		$srfm_ip_log                      = ! empty( get_option( 'srfm_ip_log' ) ) ? get_option( 'srfm_ip_log' ) : '';
 		$srfm_enable_quick_action_sidebar = ! empty( get_option( 'srfm_enable_quick_action_sidebar' ) ) ? get_option( 'srfm_enable_quick_action_sidebar' ) : false;
 
 		$results = [
@@ -333,6 +355,7 @@ class SRFM_Submit {
 			'srfm_v3_site'                     => $sureforms_v3_site,
 			'srfm_honeypot'                    => $honeypot,
 			'srfm_enable_quick_action_sidebar' => $srfm_enable_quick_action_sidebar,
+			'srfm_ip_log'                      => $srfm_ip_log,
 		];
 
 		wp_send_json( $results );
@@ -346,6 +369,13 @@ class SRFM_Submit {
 	 * @return array<mixed> Array containing the response data.
 	 */
 	public function handle_form_entry( $form_data ) {
+
+		$srfm_ip_log = get_option( 'srfm_ip_log' );
+
+		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+		$browser      = new Browser();
+		$browser_name = $browser->getBrowser();
+		$device_name  = $browser->getPlatform();
 
 		$id           = wp_kses_post( $form_data['form-id'] );
 		$form_markup  = get_the_content( null, false, SRFM_Helper::get_integer_value( $form_data['form-id'] ) );
@@ -402,9 +432,15 @@ class SRFM_Submit {
 
 		wp_update_post( $post_args );
 
-		update_post_meta( $post_id, 'sureforms_entry_meta', $meta_data );
-		add_post_meta( $post_id, 'sureforms_entry_meta_form_id', $id, true );
+		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
+			$srfm_submission_info[] = [
+				'user_ip'      => $user_ip,
+				'browser_name' => $browser_name,
+				'device_name'  => $device_name,
+			];
+			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [
 				'success' => true,
@@ -506,7 +542,7 @@ class SRFM_Submit {
 
 		$args  = [
 			'post_type' => SRFM_ENTRIES_POST_TYPE,
-			'tax_query'  // phpcs:WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- warning can be ignored.
+			'tax_query'  // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. -- We require tax_query for this function to work.
 			=> [
 				[
 					'taxonomy' => $taxonomy,
@@ -533,7 +569,7 @@ class SRFM_Submit {
 
 			foreach ( $post_ids as $post_id ) {
 				$post_id     = SRFM_Helper::get_integer_value( $post_id );
-				$meta_values = get_post_meta( $post_id, 'sureforms_entry_meta', true );
+				$meta_values = get_post_meta( $post_id, 'srfm_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];
 					array_push( $all_form_entries, $obj );

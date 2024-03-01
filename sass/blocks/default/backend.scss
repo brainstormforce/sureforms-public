@@ -107,7 +107,7 @@
 	}
 
 	// URL.
-	div[data-type="sureforms/url"] {
+	div[data-type="srfm/url"] {
 		.srfm-protocol {
 			color: var( --srfm-label-text-color );
 			position: absolute;
@@ -133,7 +133,7 @@
 	}
 
 	// Address
-	div[data-type="sureforms/address"] {
+	div[data-type="srfm/address"] {
 		.srfm-block-wrap {
 			display: flex;
 			flex-wrap: wrap;
@@ -192,7 +192,7 @@
 	}
 
 	// Number
-	div[data-type="sureforms/number"] {
+	div[data-type="srfm/number"] {
 		.srfm-input-number {
 			&::-webkit-inner-spin-button,
 			&::-webkit-outer-spin-button {
@@ -202,7 +202,7 @@
 	}
 
 	//Checkbox
-	div[data-type="sureforms/checkbox"] {
+	div[data-type="srfm/checkbox"] {
 		.srfm-block-wrap {
 			input {
 				margin: 0;
@@ -222,7 +222,7 @@
 	}
 
 	// Multi select.
-	div[data-type="sureforms/multi-choice"] {
+	div[data-type="srfm/multi-choice"] {
 		&.is-selected {
 			.srfm-block-wrap {
 				pointer-events: initial;
@@ -322,7 +322,7 @@
 	}
 
 	// Phone.
-	div[data-type="sureforms/phone"] {
+	div[data-type="srfm/phone"] {
 		.flag-container {
 			.arrow {
 				&:after {
@@ -334,8 +334,8 @@
 	}
 
 	// Select / Dropdown
-	div[data-type="sureforms/address"],
-	div[data-type="sureforms/dropdown"] {
+	div[data-type="srfm/address"],
+	div[data-type="srfm/dropdown"] {
 		.srfm-dropdown-common-wrap {
 			position: relative;
 			width: 100%;

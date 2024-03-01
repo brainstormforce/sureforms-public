@@ -25,7 +25,7 @@ const SelectForm = ( {
 				path: 'sureforms/v1/forms-data',
 				headers: {
 					'content-type': 'application/json',
-					'X-WP-Nonce': sfBlockData.forms_data_nonce,
+					'X-WP-Nonce': srfm_block_data.forms_data_nonce,
 				},
 			} );
 			// if in the response object title is '' then set title to '(no title)'
@@ -45,12 +45,12 @@ const SelectForm = ( {
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs(
-					sfBlockData.get_form_markup_url,
+					srfm_block_data.get_form_markup_url,
 					queryParams
 				),
 				headers: {
 					'content-type': 'application/json',
-					'X-WP-Nonce': sfBlockData.generate_form_markup_nonce,
+					'X-WP-Nonce': srfm_block_data.generate_form_markup_nonce,
 				},
 			} );
 			return response;
@@ -134,7 +134,7 @@ const SelectForm = ( {
 								const queryParams = {
 									id: option.id,
 									srfm_form_markup_nonce:
-										sfBlockData.srfm_form_markup_nonce,
+										srfm_block_data.srfm_form_markup_nonce,
 								};
 								const formMarkup = getFormMarkup( queryParams );
 								setFormId( option.id );

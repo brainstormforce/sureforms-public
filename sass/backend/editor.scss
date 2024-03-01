@@ -96,10 +96,10 @@ body.post-type-sureforms_form {
 		.block-list-appender,
 		.block-editor-block-list__block {
 			&:not( .srfm-block-single ),
-			&[data-type="sureforms/image"],
-			&[data-type="sureforms/separator"],
-			&[data-type="sureforms/advanced-heading"],
-			&[data-type="sureforms/icon"] {
+			&[data-type="srfm/image"],
+			&[data-type="srfm/separator"],
+			&[data-type="srfm/advanced-heading"],
+			&[data-type="srfm/icon"] {
 				width: 100%;
 			}
 		}
