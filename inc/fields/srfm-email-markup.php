@@ -38,8 +38,8 @@ class SRFM_Email_Markup extends SRFM_Base {
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
 		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
-		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_email_block_required_text' );
+		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
+		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_email_block_required_text' );
 
 		$is_confirm_email = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
 		$class_name       = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';

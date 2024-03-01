@@ -19,7 +19,7 @@ export default () => {
 					position: sticky;
 					background-color: rgba( 255, 255, 255, 0.75 );
 					backdrop-filter: blur( 5px );
-					top: 32px;
+					top: 0;
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {
@@ -57,23 +57,24 @@ export default () => {
 									display: flex;
 									align-items: center;
 
-									sc-breadcrumbs sc-breadcrumb:nth-child(2) {
+									sc-breadcrumbs
+										sc-breadcrumb:nth-child( 2 ) {
 										position: relative;
 									}
 
-									sc-breadcrumbs sc-breadcrumb:nth-child(2)::before {
-										content: "";
+									sc-breadcrumbs
+										sc-breadcrumb:nth-child( 2 )::before {
+										content: '';
 										width: 3.5px;
 										height: 3.5px;
-										border: 1px solid #4B5563;
+										border: 1px solid #4b5563;
 										border-left: 0;
 										border-top: 0;
 										position: absolute;
 										left: -17px;
 										top: 9px;
-										transform: rotate(315deg);
+										transform: rotate( 315deg );
 									}
-
 								` }
 							>
 								<ScBreadcrumbs>
@@ -81,8 +82,7 @@ export default () => {
 										<Logo display="block" />
 									</ScBreadcrumb>
 									{ srfm_admin?.breadcrumbs &&
-										srfm_admin.breadcrumbs.length >
-											0 &&
+										srfm_admin.breadcrumbs.length > 0 &&
 										srfm_admin.breadcrumbs.map(
 											( breadcrumb, index ) => (
 												<ScBreadcrumb

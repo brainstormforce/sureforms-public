@@ -54,7 +54,7 @@ class SRFM_Address_Markup extends SRFM_Base {
 			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_address_block_required_text' );
+			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_address_block_required_text' );
 
 			$line_one_placeholder = isset( $attributes['lineOnePlaceholder'] ) ? $attributes['lineOnePlaceholder'] : '';
 			$line_two_placeholder = isset( $attributes['lineTwoPlaceholder'] ) ? $attributes['lineTwoPlaceholder'] : '';

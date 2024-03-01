@@ -24,7 +24,7 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
-	//const defaultErrorValue = sfBlockData?.get_default_dynamic_block_option?.srfm_url_block_required_text ? sfBlockData.get_default_dynamic_block_option.srfm_url_block_required_text : ''
+	//const defaultErrorValue = srfm_block_data?.get_default_dynamic_block_option?.srfm_url_block_required_text ? srfm_block_data.get_default_dynamic_block_option.srfm_url_block_required_text : ''
 	const currentErrorMessage = validationMessage(
 		'srfm_url_block_required_text',
 		errorMsg

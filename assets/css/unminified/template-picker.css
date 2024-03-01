@@ -339,6 +339,7 @@
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-cards-container .srfm-ts-preview-wrap {
   position: relative;
+  width: 100%;
 }
 .srfm-template-picker .srfm-ts-main-container .srfm-ts-cards-container .srfm-ts-preview-wrap .srfm-tc-btn-container {
   opacity: 0;

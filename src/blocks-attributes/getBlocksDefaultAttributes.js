@@ -98,6 +98,7 @@ export const blocksAttributes = {
 function getDefaultMessage( optionName ) {
 	return {
 		type: 'string',
-		default: sfBlockData?.get_default_dynamic_block_option?.[ optionName ],
+		default:
+			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
 	};
 }

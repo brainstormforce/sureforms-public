@@ -37,7 +37,7 @@ class SRFM_Dropdown_Markup extends SRFM_Base {
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Sureforms_Helper::get_default_dynamic_block_option( 'srfm_dropdown_block_required_text' );
+		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_dropdown_block_required_text' );
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';

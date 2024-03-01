@@ -59,7 +59,6 @@ const getBlockTypes = ( exclude = '' ) => {
 	return blocks;
 };
 
-
 /**
  * Generate Validation Message.
  *
@@ -68,8 +67,13 @@ const getBlockTypes = ( exclude = '' ) => {
  * @return {string} message.
  */
 const validationMessage = ( defaultMessage, message ) => {
-	const defaultErrorMsg = sfBlockData?.get_default_dynamic_block_option?.[defaultMessage] ? sfBlockData.get_default_dynamic_block_option[defaultMessage] : ''
-	const msg = message && message !== defaultErrorMsg ? message : defaultErrorMsg;
+	const defaultErrorMsg = srfm_block_data?.get_default_dynamic_block_option?.[
+		defaultMessage
+	]
+		? srfm_block_data.get_default_dynamic_block_option[ defaultMessage ]
+		: '';
+	const msg =
+		message && message !== defaultErrorMsg ? message : defaultErrorMsg;
 	return msg;
 };
 
