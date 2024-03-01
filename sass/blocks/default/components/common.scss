@@ -20,7 +20,7 @@
 
 						.ts-control {
 							background-color: var( --srfm-error-background-color );
-							border-color: var(--srfm-error-surface-color);
+							border-color: var( --srfm-error-surface-color );
 						}
 
 						&:focus {
@@ -28,7 +28,7 @@
 						}
 					}
 
-					.srfm-input-common:not(.srfm-dropdown-common){
+					.srfm-input-common:not( .srfm-dropdown-common ) {
 						padding-right: 2.2em;
 					}
 

@@ -65,10 +65,11 @@ export default ( { attributes, setAttributes } ) => {
 								setAttributes( { placeholder: value } )
 							}
 						/>
+
 						<SRFMTextControl
 							label={ __( 'Default Value', 'sureforms' ) }
 							className="srfm-with-dropdown"
-							value={ defaultValue }
+							value={ defaultValue ? defaultValue : '' }
 							withSmartTagDropdown={ true }
 							data={ {
 								value: defaultValue,

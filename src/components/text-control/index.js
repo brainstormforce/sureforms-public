@@ -31,7 +31,7 @@ const SRFMTextControl = ( props ) => {
 	const [ inputData, setInputData ] = useState( props?.value );
 	// Add and remove the CSS on the drop and remove of the component.
 
-	const VerticalEllipsis  = parse( svgIcons.vertical_ellipsis );
+	const VerticalEllipsis = parse( svgIcons.vertical_ellipsis );
 
 	useLayoutEffect( () => {
 		styles.use();
