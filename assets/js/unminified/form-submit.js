@@ -64,12 +64,23 @@ function submitFormData( form ) {
 	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
+	const filteredFormData = new FormData();
+
+	for ( const [ key, value ] of formData.entries() ) {
+		if (
+			! key.includes( 'srfm-email-confirm' ) &&
+			! key.includes( 'srfm-password-confirm' )
+		) {
+			filteredFormData.append( key, value );
+		}
+	}
+
 	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': srfm_submit.nonce,
 		},
-		body: formData,
+		body: filteredFormData,
 	} )
 		.then( ( response ) => {
 			if ( response.ok ) {
