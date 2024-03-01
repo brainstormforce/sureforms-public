@@ -62,7 +62,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 
 function submitFormData( form ) {
-	const site_url = sureforms_submit.site_url;
+	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
@@ -75,6 +75,9 @@ function submitFormData( form ) {
 
 	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
+		headers: {
+			'X-WP-Nonce': srfm_submit.nonce,
+		},
 		body: filteredFormData,
 	} )
 		.then( ( response ) => {

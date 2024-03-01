@@ -13,10 +13,10 @@ import { applyFilters } from '@wordpress/hooks';
 import addCommonDataToSpectraBlocks from '@Controls/addCommonDataToSpectraBlocks';
 let imageCommonData = {};
 imageCommonData = applyFilters(
-	'sureforms/image',
+	'srfm/image',
 	addCommonDataToSpectraBlocks( imageCommonData )
 );
-registerBlockType( 'sureforms/image', {
+registerBlockType( 'srfm/image', {
 	...imageCommonData,
 	title: __( 'Image', 'sureforms' ),
 	description: __(
@@ -64,7 +64,7 @@ registerBlockType( 'sureforms/image', {
 				type: 'block',
 				blocks: [ 'core/image' ],
 				transform: ( { url, sizeSlug } ) => {
-					return createBlock( 'sureforms/image', {
+					return createBlock( 'srfm/image', {
 						url,
 						sizeSlug,
 					} );
@@ -74,7 +74,7 @@ registerBlockType( 'sureforms/image', {
 				type: 'block',
 				blocks: [ 'core/post-featured-image' ],
 				transform: ( { sizeSlug } ) => {
-					return createBlock( 'sureforms/image', {
+					return createBlock( 'srfm/image', {
 						useDynamicData: true,
 						dynamicContentType: 'featured-image',
 						sizeSlug,

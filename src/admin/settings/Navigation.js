@@ -16,6 +16,11 @@ const Navigation = () => {
 			slug: 'general-settings',
 			icon: <GeneralIcon />,
 		},
+		{
+			name: __( 'Email Summary', 'sureforms' ),
+			slug: 'email-summary',
+			icon: <GeneralIcon />,
+		},
 	];
 	return (
 		<nav
@@ -25,7 +30,7 @@ const Navigation = () => {
 			{ navigation.map( ( item ) => (
 				<Link
 					to={ {
-						location: `${ sureforms_admin.site_url }/wp-admin/admin.php`,
+						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 						search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 					} }
 					key={ item.name }

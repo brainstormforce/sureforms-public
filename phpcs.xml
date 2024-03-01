@@ -15,13 +15,17 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/lib/*</exclude-pattern>
+	<exclude-pattern>*/src/srfm-controls*</exclude-pattern>
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/form-builder/*</exclude-pattern>
 	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/modules/gutenberg/build/*</exclude-pattern>
+	<exclude-pattern>*/modules/gutenberg/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/modules/gutenberg/icons/*</exclude-pattern>
+
 
 	<!-- PHP 5.6 and higher. -->
     <config name="testVersion" value="5.6-"/>
-
 	<!-- Arguments - extension, parallel, colors, show porgress, Show sniff codes in all reports -->
 	<arg name="extensions" value="php"/>
 	<arg name="parallel" value="20"/>
@@ -30,9 +34,23 @@
 	<arg value="s"/>
 
 	<!-- Rules -->
-	<rule ref="WordPress-Core" />
-	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
+	<!-- <rule ref="WordPress-VIP-Go"/> -->
+	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="Generic.Commenting.Todo"/>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array" value="srfm"/>
+		</properties>
+	</rule>
+ 	 <rule ref="WordPress-Core">
+	    <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+    </rule>
+
+     <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+    </rule>
+	<rule ref="WordPress-Docs" />
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -42,12 +60,8 @@
 		</properties>
 	</rule>
 
-	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">CyclomaticComplexity
 		<severity>0</severity>
 	</rule>
-
-	<!-- Exclude rules -->
-	<rule ref="WordPress-Core">
-		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-	</rule>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
 </ruleset>

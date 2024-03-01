@@ -1,6 +1,6 @@
 export default ( { display } ) => {
 	return (
-		<a href={ sureforms_admin?.sureforms_dashboard_url }>
+		<a href={ srfm_admin?.sureforms_dashboard_url }>
 			<svg
 				style={ { display } }
 				xmlns="http://www.w3.org/2000/svg"

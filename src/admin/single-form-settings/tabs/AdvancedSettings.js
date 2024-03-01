@@ -14,7 +14,6 @@ import apiFetch from '@wordpress/api-fetch';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import PostURLPanel from '../components/form-permalink/Panel';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -75,31 +74,32 @@ function AdvancedSettings( props ) {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 
 				if ( data ) {
 					setSureformsV2CheckboxSecret(
-						data.sureforms_v2_checkbox_secret &&
-							data.sureforms_v2_checkbox_secret
+						data.srfm_v2_checkbox_secret &&
+							data.srfm_v2_checkbox_secret
 					);
 					setSureformsV2CheckboxSite(
-						data.sureforms_v2_checkbox_site &&
-							data.sureforms_v2_checkbox_site
+						data.srfm_v2_checkbox_site &&
+							data.srfm_v2_checkbox_site
 					);
 					setSureformsV2InvisibleSecret(
-						data.sureforms_v2_invisible_secret &&
-							data.sureforms_v2_invisible_secret
+						data.srfm_v2_invisible_secret &&
+							data.srfm_v2_invisible_secret
 					);
 					setSureformsV2InvisibleSite(
-						data.sureforms_v2_invisible_site &&
-							data.sureforms_v2_invisible_site
+						data.srfm_v2_invisible_site &&
+							data.srfm_v2_invisible_site
 					);
 					setSureformsV3Secret(
-						data.sureforms_v3_secret && data.sureforms_v3_secret
+						data.srfm_v3_secret && data.srfm_v3_secret
 					);
 					setSureformsV3Site(
-						data.sureforms_v3_site && data.sureforms_v3_site
+						data.srfm_v3_site && data.srfm_v3_site
 					);
 				}
 			} catch ( error ) {
@@ -112,12 +112,6 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Permalink', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<PostURLPanel />
-			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Success Message Settings', 'sureforms' ) }
 				initialOpen={ false }

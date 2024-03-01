@@ -1,5 +1,5 @@
 {
-	"name": "sureforms/input",
+	"name": "srfm/input",
 	"title": "Text Field",
 	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
@@ -36,7 +36,7 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value need to be unique."
+			"default": "Value needs to be unique."
 		},
 		"placeholder": {
 			"type": "string",

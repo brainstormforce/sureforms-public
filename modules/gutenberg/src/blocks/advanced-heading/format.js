@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { ToolbarGroup, Button, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 
-const FORMAT_TYPE = 'sureforms/advanced-heading-highlight';
+const FORMAT_TYPE = 'srfm/advanced-heading-highlight';
 
 function HighlightFormat( { isActive, onChange, value } ) {
 	const selectedBlock = useSelect( ( select ) => {
@@ -14,7 +14,7 @@ function HighlightFormat( { isActive, onChange, value } ) {
 	return (
 		<BlockControls>
 			{ selectedBlock &&
-				selectedBlock.name === 'sureforms/advanced-heading' && (
+				selectedBlock.name === 'srfm/advanced-heading' && (
 				<ToolbarGroup
 					className="uag-highlight-toolbar"
 					label="Options"

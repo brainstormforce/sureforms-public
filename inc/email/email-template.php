@@ -5,10 +5,10 @@
  * @package SureForms.
  */
 
-namespace SureForms\Inc\Email;
+namespace SRFM\Inc\Email;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\SRFM_Helper;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class Email_Template {
+class SRFM_Email_Template {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class Constructor
@@ -166,7 +166,6 @@ class Email_Template {
 						?>
 						</td>
 					</tr>
-
 					<?php } ?>
 				</tbody>
 			</table>

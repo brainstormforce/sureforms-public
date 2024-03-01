@@ -1,31 +1,44 @@
 {
-  "name": "brainstormforce/sureforms",
-  "description": "A starter plugin code",
-  "require-dev": {
-    "squizlabs/php_codesniffer": "^3.5",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-    "phpcompatibility/php-compatibility": "^9.3",
-    "wp-coding-standards/wpcs": "^2.2",
-    "phpstan/phpstan": "^1.10",
-    "szepeviktor/phpstan-wordpress": "^1.1",
-    "php-stubs/generator": "^0.8.3"
-  },
-  "scripts": {
-    "format": "vendor/bin/phpcbf",
-    "lint": "vendor/bin/phpcs",
-    "test": "vendor/bin/phpunit",
-    "phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
-    "gen-stubs": "vendor/bin/generate-stubs artifact/sureforms/ --out=tests/php/stubs/sf-stubs.php",
-    "update-stubs": "rm -f tests/php/stubs/sf-stubs.php && bash ./bin/build-zip.sh no-clean && composer gen-stubs",
-    "commit:hook:pre": [
-      "cp .scripts/git-hooks/pre-commit .git/hooks/",
-      "chmod +x .git/hooks/pre-commit",
-      "echo 'pre-commit hook copied'"
-    ]
-  },
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  }
+	"name": "brainstormforce/sureforms",
+	"description": "A simple yet powerful way to add forms to your website.",
+	"type": "project",
+	"license": "GPL-2.0+",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"extra": {
+		"installer-disable": "true"
+	},
+	"require-dev": {
+		"codeinwp/phpcs-ruleset": "dev-main",
+		"phpunit/phpunit": "^9.0.0",
+		"squizlabs/php_codesniffer": "^3.5",
+		"yoast/phpunit-polyfills": "^2.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+		"phpcompatibility/php-compatibility": "^9.3",
+		"wp-coding-standards/wpcs": "^2.3",
+		"phpstan/phpstan": "^1.10",
+		"szepeviktor/phpstan-wordpress": "^1.1",
+		"php-stubs/generator": "^0.8.3"
+	},
+	"scripts": {
+		"format": "vendor/bin/phpcbf",
+		"lint": "vendor/bin/phpcs",
+		"test": "vendor/bin/phpunit",
+		"phpstan": "vendor/bin/phpstan --memory-limit=2048M analyse",
+		"gen-stubs": "vendor/bin/generate-stubs sureforms/ --out=tests/php/stubs/srfm-stubs.php",
+		"update-stubs": "rm -f tests/php/stubs/srfm-stubs.php && grunt release-no-clean && composer gen-stubs  && rm -rf sureforms",
+		"commit:hook:pre": [
+			"cp .scripts/git-hooks/pre-commit .git/hooks/",
+			"chmod +x .git/hooks/pre-commit",
+			"echo 'pre-commit hook copied'"
+		]
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"require": {
+		"wp-cli/wp-cli-bundle": "^2.10"
+	}
 }

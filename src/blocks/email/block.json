@@ -1,5 +1,5 @@
 {
-	"name": "sureforms/email",
+	"name": "srfm/email",
 	"title": "Email",
 	"description": "Displays a SureForm Email Field",
 	"category": "sureforms",
@@ -52,7 +52,7 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value need to be unique."
+			"default": "Value needs to be unique."
 		},
 		"errorMsg": {
 			"type": "string",

@@ -6,17 +6,12 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import getApiData from '@Controls/getApiData';
 import { useDeviceType } from '@Controls/getPreviewType';
+import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const {
-		default_keys,
-		enableQuickActionSidebar,
-		setEnableQuickActionSidebar,
-		isPageBreak,
-	} = props;
+	const { default_keys, setEnableQuickActionSidebar, isPageBreak } = props;
 	const root = document.documentElement.querySelector( 'body' );
 
 	let sureforms_keys = useSelect( ( select ) =>
@@ -130,33 +125,6 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	/*
-	 * function to update quick action sidebar.
-	 */
-	const saveOptionToDatabase = ( toggleStatus ) => {
-		setEnableQuickActionSidebar( toggleStatus );
-		// Create an object with the srfm_ajax_nonce and confirmation properties.
-		const data = {
-			security: quickSidebarBlocks.srfm_ajax_nonce,
-			enableQuickActionSidebar: toggleStatus,
-		};
-		// Call the getApiData function with the specified parameters.
-		getApiData( {
-			url: quickSidebarBlocks.srfm_ajax_url,
-			action: 'srfm_global_sidebar_enabled',
-			data,
-		} );
-	};
-
-	/*
-	 * Onchange handler for quick sidebar action.
-	 */
-	const toggleHandler = () => {
-		const toggleStatus =
-			'disabled' === enableQuickActionSidebar ? 'enabled' : 'disabled';
-		saveOptionToDatabase( toggleStatus );
-	};
-
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
@@ -165,6 +133,7 @@ function GeneralSettings( props ) {
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
+						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
 				const { srfm_enable_quick_action_sidebar } = data;
@@ -336,14 +305,17 @@ function GeneralSettings( props ) {
 				</SRFMAdvancedPanelBody>
 			) }
 			<SRFMAdvancedPanelBody
-				title={ __( 'Quick Action Bar', 'sureforms' ) }
+				title={ __( 'Instant Form', 'sureforms' ) }
 				initialOpen={ false }
 			>
 				<ToggleControl
-					label={ __( 'Enable Sidebar', 'sureforms' ) }
-					checked={ 'enabled' === enableQuickActionSidebar }
-					onChange={ toggleHandler }
+					label={ __( 'Enable Instant Form', 'sureforms' ) }
+					checked={ sureforms_keys._srfm_instant_form }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_instant_form', value );
+					} }
 				/>
+				{ sureforms_keys._srfm_instant_form && <PostURLPanel /> }
 			</SRFMAdvancedPanelBody>
 		</>
 	);
