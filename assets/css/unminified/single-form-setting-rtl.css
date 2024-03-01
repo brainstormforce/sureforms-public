@@ -90,7 +90,7 @@
   align-items: center;
   gap: 24px;
   width: 100%;
-  max-width: 768px;
+  max-width: 800px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-heading {
   display: flex;
@@ -188,6 +188,9 @@
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon {
   min-height: 41px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon:focus:not(:disabled) {
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-modal-label {
   width: 144px;
@@ -308,11 +311,17 @@
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.04);
   width: 100%;
   overflow-x: auto;
+  box-sizing: border-box;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper table {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-responsive-table {
+  display: inline-block;
+  min-width: 100%;
+  box-sizing: border-box;
+  width: 748px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-responsive-table > table {
   width: 100%;
   border-collapse: collapse;
-  width: 716px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper thead {
   border-bottom: 1px solid #dce0e6;
@@ -357,11 +366,11 @@
   flex: auto;
   padding: 8px 10px;
   align-items: flex-start;
-  width: 45%;
+  width: 40%;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-table .srfm-modal-table-wrapper .srfm-modal-row .srfm-modal-col-fourth {
   display: flex;
-  width: 15%;
+  width: 20%;
   padding: 8px 10px;
   align-items: flex-start;
   gap: 16px;

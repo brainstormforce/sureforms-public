@@ -89,7 +89,7 @@ body.post-type-sureforms_form {
 		display: flex;
 		flex-wrap: wrap;
 		padding: 0;
-		max-width: calc( 620px + 0.6em );
+		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
 		margin: 0 auto;
 		margin-top: 2em;
 
