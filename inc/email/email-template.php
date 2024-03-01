@@ -38,7 +38,7 @@ class SRFM_Email_Template {
 	 * Get email header.
 	 *
 	 * @since 0.0.1
-	 * @return string
+	 * @return string|false
 	 */
 	public function get_header() {
 		ob_start(); ?>
@@ -79,7 +79,7 @@ class SRFM_Email_Template {
 	 * Get email footer.
 	 *
 	 * @since 0.0.1
-	 * @return string footer tags.
+	 * @return string|false footer tags.
 	 */
 	public function get_footer() {
 		// Translators: Site URL.
@@ -140,10 +140,10 @@ class SRFM_Email_Template {
 						$label       = explode( '-lbl-', $field_name )[1];
 						$field_label = '';
 						if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
-							$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
+							$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
 							$value       = strpos( $field_name, 'srfm-url' ) !== false ? '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>' : '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_html__( 'View', 'sureforms' ) . '</a>';
 						} else {
-							$field_label = $label ? esc_html( Sureforms_Helper::decrypt( $label ) ) : '';
+							$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
 						}
 						?>
 					<tr class="field-label">
@@ -170,8 +170,9 @@ class SRFM_Email_Template {
 				</tbody>
 			</table>
 			<?php
-				$table_data = ob_get_clean();
-			$message        = str_replace( '{all_data}', $table_data, $message );
+				$table_data         = ob_get_clean();
+				$current_table_data = $table_data ? $table_data : ''; // This is done as str_replace expects array|string but ob_get_clean() returns string|false.
+			$message                = str_replace( '{all_data}', $current_table_data, $message );
 		}
 		$message .= $this->get_footer();
 		return $message;

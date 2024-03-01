@@ -60,16 +60,18 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	}
 } );
 
-
 function submitFormData( form ) {
 	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
 	const filteredFormData = new FormData();
 
-	for (let [key, value] of formData.entries()) {
-		if (!key.includes('srfm-email-confirm') && !key.includes('srfm-password-confirm')) {
-			filteredFormData.append(key, value);
+	for ( const [ key, value ] of formData.entries() ) {
+		if (
+			! key.includes( 'srfm-email-confirm' ) &&
+			! key.includes( 'srfm-password-confirm' )
+		) {
+			filteredFormData.append( key, value );
 		}
 	}
 
