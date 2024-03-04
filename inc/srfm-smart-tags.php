@@ -6,10 +6,10 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Services\Browser\Browser;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Lib\Browser\Browser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class SRFM_Smart_Tags {
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Constructor
@@ -29,7 +29,7 @@ class SRFM_Smart_Tags {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		add_filter( 'render_block', array( $this, 'render_form' ), 10, 2 );
+		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
 	}
 
 	/**
@@ -47,7 +47,7 @@ class SRFM_Smart_Tags {
 			return self::process_smart_tags( $block_content );
 		}
 
-		if ( isset( $block['blockName'] ) && ( 'sureforms/form' === $block['blockName'] ) ) {
+		if ( isset( $block['blockName'] ) && ( 'srfm/form' === $block['blockName'] ) ) {
 			if ( isset( $block['attrs']['id'] ) && $block['attrs']['id'] ) {
 				return self::process_smart_tags( $block_content );
 			}
@@ -64,8 +64,7 @@ class SRFM_Smart_Tags {
 	 * @return bool
 	 */
 	public function check_form_by_id( $id ) {
-		/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
-		return get_post_type( $id ) ? true : false;
+		return get_post_type( SRFM_Helper::get_integer_value( $id ) ) ? true : false;
 	}
 
 	/**
@@ -122,10 +121,9 @@ class SRFM_Smart_Tags {
 
 			$replace = '';
 			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
-				$replace = self::smart_tags_callback( $match );
+				$replace = SRFM_Helper::get_string_value( self::smart_tags_callback( $match ) );
 			}
 
-			/** @phpstan-ignore-next-line */ // phpcs:ignore -- False positive
 			$content = str_replace( $match, $replace, $content );
 		}
 
@@ -229,27 +227,25 @@ class SRFM_Smart_Tags {
 	 * @return string
 	 */
 	public function get_the_user_ip() {
-
 		$ip = '';
 		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_FORWARDED'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_FORWARDED_FOR'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_FORWARDED_FOR'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['HTTP_FORWARDED'] ) ) {
-			$ip = $_SERVER['HTTP_FORWARDED'];
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_FORWARDED'] ), FILTER_VALIDATE_IP );
 		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP );
 		} else {
 			$ip = 'UNKNOWN';
 		}
 
-		return apply_filters( 'sureforms_get_the_ip', $ip );
+		return apply_filters( 'srfm_get_the_ip', $ip );
 	}
-
 
 	/**
 	 * Parse Date Properties.
@@ -270,8 +266,7 @@ class SRFM_Smart_Tags {
 			$format = 'd/m/Y';
 		}
 
-		/** @phpstan-ignore-next-line */  // phpcs:ignore -- False positive
-		$date = gmdate( $format, strtotime( current_time( 'mysql' ) ) );
+		$date = gmdate( $format, SRFM_Helper::get_integer_value( strtotime( current_time( 'mysql' ) ) ) );
 		return $date ? $date : '';
 	}
 
@@ -335,7 +330,8 @@ class SRFM_Smart_Tags {
 		}
 
 		if ( '{embed_post_url}' === $value && isset( $_SERVER['REQUEST_URI'] ) ) {
-			return site_url( esc_attr( $_SERVER['REQUEST_URI'] ) );
+			$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			return esc_url( site_url( $request_uri ) );
 		}
 
 		if ( '{embed_post_title}' === $value ) {
@@ -383,7 +379,6 @@ class SRFM_Smart_Tags {
 	 * @return array<mixed>|string
 	 */
 	public static function parse_request_param( $value ) {
-
 		if ( ! $value ) {
 			return '';
 		}
@@ -397,13 +392,17 @@ class SRFM_Smart_Tags {
 
 		$param = str_replace( '}', '', $param );
 
-		if ( $param && strpos( $value, 'get_input:' ) ) {
-			parse_str( $_SERVER['QUERY_STRING'], $parameters );
-			return isset( $parameters[ $param ] ) ? $parameters[ $param ] : '';
+		if ( $param && strpos( $value, 'get_input:' ) !== false ) {
+			$var = '';
+			if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+				$var = SRFM_Helper::get_string_value( filter_var( wp_unslash( $_SERVER['QUERY_STRING'] ), FILTER_SANITIZE_URL ) );
+			}
+			parse_str( $var, $parameters );
+			return isset( $parameters[ $param ] ) ? sanitize_text_field( SRFM_Helper::get_string_value( $parameters[ $param ] ) ) : '';
 		}
 
-		if ( $param && strpos( $value, 'get_cookie:' ) ) {
-			return isset( $_COOKIE[ $param ] ) ? $_COOKIE[ $param ] : '';
+		if ( $param && strpos( $value, 'get_cookie:' ) !== false ) {
+			return isset( $_COOKIE[ $param ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $param ] ) ) : '';
 		}
 
 		return '';

@@ -89,17 +89,17 @@ body.post-type-sureforms_form {
 		display: flex;
 		flex-wrap: wrap;
 		padding: 0;
-		max-width: calc( 620px + 0.6em );
+		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
 		margin: 0 auto;
 		margin-top: 2em;
 
 		.block-list-appender,
 		.block-editor-block-list__block {
 			&:not( .srfm-block-single ),
-			&[data-type="sureforms/image"],
-			&[data-type="sureforms/separator"],
-			&[data-type="sureforms/advanced-heading"],
-			&[data-type="sureforms/icon"] {
+			&[data-type="srfm/image"],
+			&[data-type="srfm/separator"],
+			&[data-type="srfm/advanced-heading"],
+			&[data-type="srfm/icon"] {
 				width: 100%;
 			}
 		}

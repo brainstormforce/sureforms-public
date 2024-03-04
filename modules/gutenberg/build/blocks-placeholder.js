@@ -6,7 +6,7 @@
  * It is auto-generated.
  */
 
-registerBlockType( 'sureforms/advanced-heading', { title: __( 'Heading', 'sureforms' ) } );
-registerBlockType( 'sureforms/icon', { title: __( 'Icon', 'sureforms' ) } );
-registerBlockType( 'sureforms/image', { title: __( 'Image', 'sureforms' ) } );
-registerBlockType( 'sureforms/separator', { title: __( 'Separator', 'sureforms' ) } );
+registerBlockType( 'srfm/advanced-heading', { title: __( 'Heading', 'sureforms' ) } );
+registerBlockType( 'srfm/icon', { title: __( 'Icon', 'sureforms' ) } );
+registerBlockType( 'srfm/image', { title: __( 'Image', 'sureforms' ) } );
+registerBlockType( 'srfm/separator', { title: __( 'Separator', 'sureforms' ) } );

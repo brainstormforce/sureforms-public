@@ -104,7 +104,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.multi_choice_preview;
+		const fieldName = srfm_fields_preview.multi_choice_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 

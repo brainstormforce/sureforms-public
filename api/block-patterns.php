@@ -6,9 +6,9 @@
  * @since 0.0.1
  */
 
-namespace SureForms\API;
+namespace SRFM\API;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\SRFM_Get_Instance;
 use WP_Error;
 use WP_Post_Type;
 use WP_REST_Controller;
@@ -16,6 +16,11 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Block_Patterns_Registry;
+use SRFM\Inc\SRFM_Helper;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Core class used to access block patterns via the REST API.
@@ -25,7 +30,7 @@ use WP_Block_Patterns_Registry;
  */
 class Block_Patterns extends WP_REST_Controller {
 
-	use Get_Instance;
+	use SRFM_Get_Instance;
 
 	/**
 	 * Class Constructor
@@ -49,14 +54,14 @@ class Block_Patterns extends WP_REST_Controller {
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
-			array(
-				array(
+			[
+				[
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				),
-				'schema' => array( $this, 'get_public_item_schema' ),
-			)
+					'callback'            => [ $this, 'get_items' ],
+					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
 		);
 	}
 
@@ -97,14 +102,27 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @since 0.0.1
 	 */
 	public function get_items( $request ) {
+
+		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
 		$response = [];
 		$patterns = WP_Block_Patterns_Registry::get_instance()->get_all_registered();
 		$filtered = array_filter(
 			$patterns,
 			static function( $pattern ) {
-				return in_array( 'sureforms_form', $pattern['categories'] ?? [], true );
+				return in_array( 'sureforms_form', isset( $pattern['categories'] ) ? $pattern['categories'] : [], true );
 			}
 		);
+
 		foreach ( $filtered as $pattern ) {
 			$prepared_pattern = $this->prepare_item_for_response( $pattern, $request );
 			if ( ! is_wp_error( $prepared_pattern ) ) {
@@ -124,7 +142,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$fields = $this->get_fields_for_response( $request );
-		$keys   = array(
+		$keys   = [
 			'name'             => 'name',
 			'title'            => 'title',
 			'info'             => 'info',
@@ -138,8 +156,8 @@ class Block_Patterns extends WP_REST_Controller {
 			'keywords'         => 'keywords',
 			'content'          => 'content',
 			'inserter'         => 'inserter',
-		);
-		$data   = array();
+		];
+		$data   = [];
 		foreach ( $keys as $item_key => $rest_key ) {
 			if ( isset( $item[ $item_key ] ) && rest_is_field_included( $rest_key, $fields ) ) {
 				$data[ $rest_key ] = $item[ $item_key ];
@@ -159,91 +177,91 @@ class Block_Patterns extends WP_REST_Controller {
 	 * @since 0.0.1
 	 */
 	public function get_item_schema() {
-		$schema = array(
+		$schema = [
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'block-pattern',
 			'type'       => 'object',
-			'properties' => array(
-				'name'             => array(
+			'properties' => [
+				'name'             => [
 					'description' => __( 'The pattern name.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'title'            => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'title'            => [
 					'description' => __( 'The pattern title, in human readable format.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'info'             => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'info'             => [
 					'description' => __( 'The pattern basic description', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'description'      => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'description'      => [
 					'description' => __( 'The pattern detailed description.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'viewport_width'   => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'viewport_width'   => [
 					'description' => __( 'The pattern viewport width for inserter preview.', 'sureforms' ),
 					'type'        => 'number',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'block_types'      => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'block_types'      => [
 					'description' => __( 'Block types that the pattern is intended to be used with.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'categories'       => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'categories'       => [
 					'description' => __( 'The pattern category slugs.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'templateCategory' => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'templateCategory' => [
 					'description' => __( 'The pattern template category.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'id'               => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'id'               => [
 					'description' => __( 'The pattern template id.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'isPro'            => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'isPro'            => [
 					'description' => __( 'Wether pattern is pro or not.', 'sureforms' ),
 					'type'        => 'boolean',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'keywords'         => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'keywords'         => [
 					'description' => __( 'The pattern keywords.', 'sureforms' ),
 					'type'        => 'array',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'content'          => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'content'          => [
 					'description' => __( 'The pattern content.', 'sureforms' ),
 					'type'        => 'string',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-				'inserter'         => array(
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'inserter'         => [
 					'description' => __( 'Determines whether the pattern is visible in inserter.', 'sureforms' ),
 					'type'        => 'boolean',
 					'readonly'    => true,
-					'context'     => array( 'view', 'edit', 'embed' ),
-				),
-			),
-		);
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+			],
+		];
 
 		return $this->add_additional_fields_schema( $schema );
 	}

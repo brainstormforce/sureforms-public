@@ -27,19 +27,19 @@ export default () => {
 				);
 				formData.append(
 					'_ajax_nonce',
-					sf_admin.plugin_installer_nonce
+					srfm_admin.plugin_installer_nonce
 				);
 				formData.append( 'slug', e.target.dataset.slug );
 
-				e.target.innerText = sf_admin.plugin_installing_text;
+				e.target.innerText = srfm_admin.plugin_installing_text;
 
 				apiFetch( {
-					url: sf_admin.ajax_url,
+					url: srfm_admin.ajax_url,
 					method: 'POST',
 					body: formData,
 				} ).then( ( data ) => {
 					if ( data.success ) {
-						e.target.innerText = sf_admin.plugin_installed_text;
+						e.target.innerText = srfm_admin.plugin_installed_text;
 						activatePlugin( e );
 					}
 				} );
@@ -53,17 +53,17 @@ export default () => {
 	const activatePlugin = ( e ) => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
-		formData.append( 'security', sf_admin.sfPluginManagerNonce );
+		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
 		formData.append( 'init', e.target.dataset.init );
-		e.target.innerText = sf_admin.plugin_activating_text;
+		e.target.innerText = srfm_admin.plugin_activating_text;
 		apiFetch( {
-			url: sf_admin.ajax_url,
+			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
 		} ).then( ( data ) => {
 			if ( data.success ) {
 				e.target.style.color = '#16A34A';
-				e.target.innerText = sf_admin.plugin_activated_text;
+				e.target.innerText = srfm_admin.plugin_activated_text;
 				window.location = e.target.dataset.redirection;
 			}
 		} );
@@ -119,7 +119,7 @@ export default () => {
 							{ __( 'Integrations', 'sureforms' ) }
 						</p>
 					</ScStackedListRow>
-					{ sf_admin?.integrations.map( ( plugin, index ) => {
+					{ srfm_admin?.integrations?.map( ( plugin, index ) => {
 						return (
 							<IntegrationsBox
 								key={ index }
@@ -128,7 +128,7 @@ export default () => {
 								descriptions={ plugin.subtitle }
 								statusText={
 									'Installed' === plugin.status
-										? sf_admin.plugin_activate_text
+										? srfm_admin.plugin_activate_text
 										: plugin.status
 								}
 								statusColor={

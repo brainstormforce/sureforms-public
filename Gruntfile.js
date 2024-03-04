@@ -253,12 +253,12 @@ module.exports = function ( grunt ) {
 					'!config/**',
 					'!tests/**',
 					'!bin/**',
-					'!sass/**',
-					'!assets/css/unminified/**',
-					'!assets/js/unminified/**',
-					'!src/**',
+					//'!sass/**',
+					//'!assets/css/unminified/**',
+					//'!assets/js/unminified/**',
+					// '!src/**',
 					'!modules/gutenberg/scripts/**',
-					'!modules/gutenberg/src/**',
+					// '!modules/gutenberg/src/**',
 					'!modules/gutenberg/node_modules/**',
 					'!modules/gutenberg/gutenberg-webpack.config.js',
 					'!modules/gutenberg/package-lock.json',
@@ -351,5 +351,12 @@ module.exports = function ( grunt ) {
 		'copy',
 		'compress',
 		'clean:main',
+	] );
+
+	// Grunt release no clean
+	grunt.registerTask( 'release-no-clean', [
+		'clean:main',
+		'clean:zip',
+		'copy:main',
 	] );
 };

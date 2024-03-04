@@ -48,7 +48,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	// show the block preview on hover.
 	if ( preview ) {
-		const fieldName = fieldsPreview.address_preview;
+		const fieldName = srfm_fields_preview.address_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 	const conditionalSettings = applyFilters(

@@ -36,16 +36,16 @@ const getSpacingPresetCssVar = ( value ) => {
  */
 const getBlockTypes = ( exclude = '' ) => {
 	const blocks = applyFilters( 'srfm.AllowedBlocks', [
-		'sureforms/input',
-		'sureforms/email',
-		'sureforms/textarea',
-		'sureforms/number',
-		'sureforms/checkbox',
-		'sureforms/phone',
-		'sureforms/address',
-		'sureforms/dropdown',
-		'sureforms/multi-choice',
-		'sureforms/url',
+		'srfm/input',
+		'srfm/email',
+		'srfm/textarea',
+		'srfm/number',
+		'srfm/checkbox',
+		'srfm/phone',
+		'srfm/address',
+		'srfm/dropdown',
+		'srfm/multi-choice',
+		'srfm/url',
 	] );
 
 	if ( exclude ) {

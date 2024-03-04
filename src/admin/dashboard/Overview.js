@@ -6,7 +6,7 @@ import EntriesView from './EntriesView';
 import Integrations from './Integrations';
 
 export default ( {} ) => {
-	const siteUrl = sureforms_admin.site_url;
+	const siteUrl = srfm_admin.site_url;
 	return (
 		<div
 			css={ css`

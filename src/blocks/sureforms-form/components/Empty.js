@@ -92,9 +92,11 @@ export default ( { setAttributes } ) => {
 							text={ __( 'Add New', 'sureforms' ) }
 							onClick={ () => {
 								// open in a new tab
-								window.open( sfBlockData.template_picker_url );
+								window.open(
+									srfm_block_data.template_picker_url
+								);
 								// window.location.href =
-								// 	sfBlockData.template_picker_url;
+								// 	srfm_block_data.template_picker_url;
 							} }
 						/>
 					</div>

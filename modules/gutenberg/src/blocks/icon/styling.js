@@ -15,7 +15,7 @@ function styling(
 	deviceType,
 	gbsSelector = false
 ) {
-	const blockName = name.replace( 'sureforms/', '' );
+	const blockName = name.replace( 'srfm/', '' );
 	const previewType = deviceType.toLowerCase();
 	const {
 		block_id,
