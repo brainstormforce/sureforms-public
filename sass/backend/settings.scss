@@ -27,20 +27,9 @@ $placeholder_color: #9ca3af;
 		display: none;
 	}
 
-	.components-snackbar {
-		position: fixed;
-		right: 20px;
-		top: 120px;
-		font-size: 16px;
-		background-color: white;
-		color: black;
-		border-radius: 4px;
-
-		.srfm-snackbar-inner-container {
-			display: flex;
-			align-items: center;
-			gap: 0.5em;
-		}
+	.srfm-toast-container {
+		top: 135px !important;
+		font-size: 0.7em;
 	}
 }
 .srfm-settings-wrap {
@@ -153,7 +142,6 @@ $placeholder_color: #9ca3af;
 	.srfm-settings-page-container {
 		display: flex;
 		flex-wrap: wrap;
-		width: calc( 100% - 290px );
 		margin-left: 290px;
 		padding: 1.85em 0.5em;
 

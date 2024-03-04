@@ -77,6 +77,7 @@
 		"react-apexcharts": "^1.4.1",
 		"react-beautiful-dnd": "^13.1.1",
 		"react-dom": "^18.2.0",
+		"react-hot-toast": "^2.4.1",
 		"react-icons": "^4.8.0",
 		"react-intl-tel-input": "^8.2.0",
 		"react-loading-skeleton": "^3.4.0",

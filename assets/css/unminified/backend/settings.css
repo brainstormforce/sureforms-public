@@ -9,19 +9,9 @@
 .sureforms_page_sureforms_form_settings .notice-error {
   display: none;
 }
-.sureforms_page_sureforms_form_settings .components-snackbar {
-  position: fixed;
-  right: 20px;
-  top: 120px;
-  font-size: 16px;
-  background-color: white;
-  color: black;
-  border-radius: 4px;
-}
-.sureforms_page_sureforms_form_settings .components-snackbar .srfm-snackbar-inner-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
+.sureforms_page_sureforms_form_settings .srfm-toast-container {
+  top: 135px !important;
+  font-size: 0.7em;
 }
 
 .srfm-settings-wrap {
@@ -117,7 +107,6 @@
 .srfm-settings-wrap .srfm-settings-page-container {
   display: flex;
   flex-wrap: wrap;
-  width: calc(100% - 290px);
   margin-left: 290px;
   padding: 1.85em 0.5em;
 }

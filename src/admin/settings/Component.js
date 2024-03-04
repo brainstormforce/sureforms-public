@@ -1,11 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { Snackbar } from '@wordpress/components';
 
-import { MdOutlineDone } from 'react-icons/md';
 import { useDebouncedCallback } from 'use-debounce';
 import 'react-loading-skeleton/dist/skeleton.css';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
@@ -16,8 +15,6 @@ const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
 	const [ pageIcon, setPageIcon ] = useState( '' );
 	const [ loading, setLoading ] = useState( false );
-	const [ showNotification, setShowNotification ] = useState( false );
-	const [ notificationMessage, setNotificationMessage ] = useState( '' );
 
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
@@ -148,7 +145,6 @@ const Component = ( { path } ) => {
 
 	// Save global settings.
 	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
-		setShowNotification( false );
 		try {
 			apiFetch( {
 				path: 'sureforms/v1/srfm-global-settings',
@@ -159,12 +155,14 @@ const Component = ( { path } ) => {
 					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} ).then( () => {
-				setShowNotification( true );
-				setNotificationMessage(
-					__( 'Settings Saved Successfully!', 'sureforms' )
+				toast.success(
+					__( 'Settings Saved Successfully!', 'sureforms' ),
+					{
+						duration: 1500,
+					}
 				);
 				setTimeout( () => {
-					setShowNotification( false );
+					toast.dismiss();
 				}, 1500 );
 			} );
 		} catch ( error ) {
@@ -213,14 +211,10 @@ const Component = ( { path } ) => {
 
 	return (
 		<>
-			{ showNotification && (
-				<Snackbar onDismiss={ () => setShowNotification( false ) }>
-					<div className="srfm-snackbar-inner-container">
-						<MdOutlineDone fill="green" size={ 24 } />
-						<span>{ notificationMessage }</span>
-					</div>
-				</Snackbar>
-			) }
+			<Toaster
+				containerClassName="srfm-toast-container"
+				position="top-right"
+			/>
 			<div className="srfm-page-heading">
 				<div className="srfm-page-icon">{ pageIcon }</div>
 				<span>{ pageTitle }</span>
@@ -239,8 +233,6 @@ const Component = ( { path } ) => {
 						loading={ loading }
 						emailTabOptions={ emailTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
-						setShowNotification={ setShowNotification }
-						setNotificationMessage={ setNotificationMessage }
 					/>
 				) }
 				{ 'security-settings' === path && (

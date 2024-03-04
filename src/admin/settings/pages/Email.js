@@ -7,16 +7,11 @@ import {
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import toast from 'react-hot-toast';
 
 import ContentSection from '../components/ContentSection';
 
-const EmailPage = ( {
-	loading,
-	emailTabOptions,
-	updateGlobalSettings,
-	setShowNotification,
-	setNotificationMessage,
-} ) => {
+const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 	const EmailSummariesContent = () => {
 		const [ sendingTestEmail, setSendingTestEmail ] = useState( false );
 
@@ -86,16 +81,15 @@ const EmailPage = ( {
 										},
 									} );
 									setSendingTestEmail( false );
-									setShowNotification( true );
-									setNotificationMessage(
+									toast.success(
 										__(
-											'Test email sent successfully',
+											'Test Email Summary Sent Successfully!',
 											'sureforms'
 										)
 									);
 
 									setTimeout( () => {
-										setShowNotification( false );
+										toast.dismiss();
 									}, 1500 );
 								} catch ( error ) {
 									console.error(
