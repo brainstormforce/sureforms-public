@@ -26,6 +26,16 @@ $placeholder_color: #9ca3af;
 	.notice-error {
 		display: none;
 	}
+
+	.components-snackbar {
+		position: fixed;
+		right: 20px;
+		top: 120px;
+		font-size: 16px;
+		background-color: white;
+		color: black;
+		border-radius: 4px;
+	}
 }
 .srfm-settings-wrap {
 	display: flex;
@@ -192,6 +202,7 @@ $placeholder_color: #9ca3af;
 						&.components-toggle-control {
 							.components-form-toggle.is-checked .components-form-toggle__track {
 								background-color: $primary_color;
+								box-shadow: none;
 							}
 
 							label {
@@ -206,6 +217,10 @@ $placeholder_color: #9ca3af;
 								margin-left: 4em;
 								color: $help_color;
 							}
+						}
+
+						.components-form-toggle .components-form-toggle__input:focus + .components-form-toggle__track {
+							box-shadow: none;
 						}
 
 						&.srfm-components-input-control,
@@ -226,8 +241,25 @@ $placeholder_color: #9ca3af;
 								border-radius: 0.25em;
 								padding: 0.75em 1em;
 
+								&:focus {
+									border: 1px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
+								}
+
 								&::placeholder {
 									color: $placeholder_color;
+								}
+							}
+
+							.components-textarea-control__input {
+								font-size: 0.8em;
+								border: 1px solid $border_color;
+								border-radius: 0.25em;
+								padding: 0.75em 1em;
+
+								&:focus {
+									border: 1px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
 								}
 							}
 

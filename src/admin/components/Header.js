@@ -19,7 +19,7 @@ export default () => {
 					position: sticky;
 					background-color: rgba( 255, 255, 255, 0.75 );
 					backdrop-filter: blur( 5px );
-					top: 0;
+					top: 32px;
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {

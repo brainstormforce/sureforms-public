@@ -3,7 +3,6 @@ import {
 	ToggleControl,
 	SelectControl,
 	TextareaControl,
-	Button,
 	Spinner,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';

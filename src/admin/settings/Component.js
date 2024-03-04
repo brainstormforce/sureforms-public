@@ -212,23 +212,23 @@ const Component = ( { path } ) => {
 
 	return (
 		<>
+			{ showNotification && (
+				<Snackbar onDismiss={ () => setShowNotification( false ) }>
+					<div
+						style={ {
+							display: 'flex',
+							alignItems: 'center',
+							gap: '.5rem',
+						} }
+					>
+						<MdOutlineDone fill="green" size={ 24 } />
+						<span>{ notificationMessage }</span>
+					</div>
+				</Snackbar>
+			) }
 			<div class="srfm-page-heading">
 				<div class="srfm-page-icon">{ pageIcon }</div>
 				<span>{ pageTitle }</span>
-				{ showNotification && (
-					<Snackbar onDismiss={ () => setShowNotification( false ) }>
-						<div
-							style={ {
-								display: 'flex',
-								alignItems: 'center',
-								gap: '.5rem',
-							} }
-						>
-							<MdOutlineDone fill="green" size={ 24 } />
-							<span>{ notificationMessage }</span>
-						</div>
-					</Snackbar>
-				) }
 			</div>
 			<div class="srfm-page-content">
 				{ 'general-settings' === path && (

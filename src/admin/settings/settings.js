@@ -1,7 +1,7 @@
 import { render } from '@wordpress/element';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import FormPageHeader from '../components/PageHeader';
-// import Header from './Header';
+
 import Navigation from './Navigation';
 import Component from './Component';
 
@@ -42,4 +42,4 @@ export default Settings;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-}() );
+} )();

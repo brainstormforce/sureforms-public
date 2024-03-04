@@ -9,6 +9,15 @@
 .sureforms_page_sureforms_form_settings .notice-error {
   display: none;
 }
+.sureforms_page_sureforms_form_settings .components-snackbar {
+  position: fixed;
+  right: 20px;
+  top: 120px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+}
 
 .srfm-settings-wrap {
   display: flex;
@@ -152,6 +161,7 @@
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.components-toggle-control .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #125d9f;
+  box-shadow: none;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.components-toggle-control label {
   font-size: 0.7em;
@@ -163,6 +173,9 @@
   margin-top: 0.2em;
   margin-left: 4em;
   color: #6b7280;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .components-form-toggle .components-form-toggle__input:focus + .components-form-toggle__track {
+  box-shadow: none;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control {
@@ -185,6 +198,13 @@
   border-radius: 0.25em;
   padding: 0.75em 1em;
 }
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-text-control__input:focus,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input:focus,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input:focus,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input:focus {
+  border: 1px solid #125d9f;
+  box-shadow: 0 0 0 0.5px #125d9f;
+}
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-text-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input:-ms-input-placeholder, .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input:-ms-input-placeholder {
   color: #9ca3af;
 }
@@ -193,6 +213,18 @@
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-text-control__input::placeholder,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input::placeholder {
   color: #9ca3af;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-textarea-control__input,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-textarea-control__input {
+  font-size: 0.8em;
+  border: 1px solid #dce0e6;
+  border-radius: 0.25em;
+  padding: 0.75em 1em;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-textarea-control__input:focus,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-textarea-control__input:focus {
+  border: 1px solid #125d9f;
+  box-shadow: 0 0 0 0.5px #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input {
