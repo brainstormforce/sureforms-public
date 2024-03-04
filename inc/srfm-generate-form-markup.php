@@ -70,7 +70,7 @@ class SRFM_Generate_Form_Markup {
 		} else {
 			$id = SRFM_Helper::get_integer_value( $id );
 		}
-		do_action( 'sureforms_localize_conditional_logic_data', $id );
+		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( SRFM_Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {
 			$content = apply_filters( 'the_content', $post->post_content ); //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook

@@ -27,11 +27,10 @@ class SRFM_Checkbox_Markup extends SRFM_Base {
 	 * Render the sureforms checkbox classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
@@ -43,8 +42,8 @@ class SRFM_Checkbox_Markup extends SRFM_Base {
 		$form_id     = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$slug        = 'checkbox';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-		$conditional_class = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
+		$block_width       = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 		// html attributes.
 		$aria_require_attr    = $required ? 'true' : 'false';

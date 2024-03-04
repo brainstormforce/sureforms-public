@@ -27,7 +27,6 @@ class SRFM_Input_Markup extends SRFM_Base {
 	 * Render input markup
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
@@ -58,8 +57,8 @@ class SRFM_Input_Markup extends SRFM_Base {
 		$input_label_fallback = $label ? $label : __( 'Text Field', 'sureforms' );
 		$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
 
-		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
+		$unique_slug       = 'srfm-' . $slug . '-' . $block_id . $input_label;
+		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
 

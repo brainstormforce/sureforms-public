@@ -27,10 +27,9 @@ class SRFM_Email_Markup extends SRFM_Base {
 	 * Render the sureforms email classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 		$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$default          = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$placeholder      = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -57,9 +56,9 @@ class SRFM_Email_Markup extends SRFM_Base {
 
 		$input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $input_label_fallback;
 		$input_confirm_label          = '-lbl-' . SRFM_Helper::encrypt( $input_confirm_label_fallback );
-		$conditional_class            = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
-		$unique_slug         = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$unique_confirm_slug = 'srfm-' . $slug . '-confirm-' . $block_id . $input_confirm_label;
+		$conditional_class            = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
+		$unique_slug                  = 'srfm-' . $slug . '-' . $block_id . $input_label;
+		$unique_confirm_slug          = 'srfm-' . $slug . '-confirm-' . $block_id . $input_confirm_label;
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">

@@ -45,11 +45,10 @@ class SRFM_Address_Markup extends SRFM_Base {
 	 * Render the sureforms address classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 			$required             = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$options              = isset( $attributes['options'] ) ? $attributes['options'] : '';
 			$field_width          = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
@@ -80,7 +79,7 @@ class SRFM_Address_Markup extends SRFM_Base {
 			$input_label               = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
 
 			$aria_require_attr = $required ? 'true' : 'false';
-			$conditional_class = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
+			$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 			$data = $this->get_countries();
 

@@ -27,7 +27,6 @@ class SRFM_Url_Markup extends SRFM_Base {
 	 * Render the sureforms url classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
@@ -52,8 +51,8 @@ class SRFM_Url_Markup extends SRFM_Base {
 			$aria_require_attr    = $required ? 'true' : 'false';
 			$input_label_fallback = $label ? $label : __( 'Url', 'sureforms' );
 			$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
-			$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
-			$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
+			$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
+			$unique_slug          = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 			ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
