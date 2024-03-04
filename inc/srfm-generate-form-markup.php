@@ -135,18 +135,20 @@ class SRFM_Generate_Form_Markup {
 				$global_setting_options = [];
 			}
 
-			switch ( $recaptcha_version ) {
-				case 'v2-checkbox':
-					$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
-					break;
-				case 'v2-invisible':
-					$google_captcha_site_key = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
-					break;
-				case 'v3-reCAPTCHA':
-					$google_captcha_site_key = isset( $global_setting_options['srfm_v3_site_key'] ) ? $global_setting_options['srfm_v3_site_key'] : '';
-					break;
-				default:
-					break;
+			if ( is_array( $global_setting_options ) ) {
+				switch ( $recaptcha_version ) {
+					case 'v2-checkbox':
+						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
+						break;
+					case 'v2-invisible':
+						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_invisible_site_key'] ) ? $global_setting_options['srfm_v2_invisible_site_key'] : '';
+						break;
+					case 'v3-reCAPTCHA':
+						$google_captcha_site_key = isset( $global_setting_options['srfm_v3_site_key'] ) ? $global_setting_options['srfm_v3_site_key'] : '';
+						break;
+					default:
+						break;
+				}
 			}
 
 			$primary_color = $color_primary;

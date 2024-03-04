@@ -63,17 +63,17 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	// show the block preview on hover.
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.number_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage( 'srfm_number_block_required_text', errorMsg )
 		);
 	}, [] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.number_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

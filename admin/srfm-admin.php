@@ -296,7 +296,7 @@ class SRFM_Admin {
 			$file_prefix .= '-rtl';
 		}
 
-		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type || 'sureforms_page_sureforms_form_settings' === $current_screen->id  ) {
+		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type || 'sureforms_page_sureforms_form_settings' === $current_screen->id ) {
 			$asset_handle = SRFM_SLUG . '-dashboard';
 
 			wp_enqueue_style( $asset_handle . '-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap', [], SRFM_VER );

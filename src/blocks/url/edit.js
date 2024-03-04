@@ -9,7 +9,6 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { validationMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const { help, block_id, formId, preview } = attributes;
@@ -26,12 +25,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const fieldName = srfm_fields_preview.url_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
-
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_textarea_block_required_text', errorMsg )
-		);
-	}, [] );
 
 	return (
 		<>

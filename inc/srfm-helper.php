@@ -236,7 +236,7 @@ class SRFM_Helper {
 
 
 	/**
-	 * default dynamic block value.
+	 * Default dynamic block value.
 	 *
 	 * @since 0.0.1
 	 * @return string[] Meta value.

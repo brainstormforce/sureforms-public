@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Sureforms Global Settings - General Tab.
+ * Sureforms Global Settings.
  *
  * @package sureforms.
  * @since 0.0.1
@@ -31,43 +30,6 @@ class SRFM_Global_Settings {
 	 * @var string
 	 */
 	protected $namespace = 'sureforms/v1';
-
-	/**
-	 * General Tab Options.
-	 *
-	 * @var array<string>
-	 */
-	private static $general_tab_options = [
-		'srfm_ip_log',
-		'srfm_honeypot',
-		'srfm_form_analytics',
-		'srfm_gdpr',
-	];
-
-	/**
-	 * Email Summary Tab Options.
-	 *
-	 * @var array<string>
-	 */
-	private static $email_summary_tab_options = [
-		'srfm_email_summary',
-		'srfm_email_sent_to',
-		'srfm_schedule_report',
-	];
-
-	/**
-	 * Security Tab Options.
-	 *
-	 * @var array<string>
-	 */
-	private static $security_tab_options = [
-		'srfm_v2_checkbox_site_key',
-		'srfm_v2_checkbox_secret_key',
-		'srfm_v2_invisible_site_key',
-		'srfm_v2_invisible_secret_key',
-		'srfm_v3_site_key',
-		'srfm_v3_secret_key',
-	];
 
 	/**
 	 * Constructor
@@ -168,6 +130,13 @@ class SRFM_Global_Settings {
 		}
 	}
 
+	/**
+	 * Save General Settings
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 0.0.1
+	 */
 	public static function srfm_save_general_settings( $setting_options ) {
 
 		$srfm_ip_log         = isset( $setting_options['srfm_ip_log'] ) ? $setting_options['srfm_ip_log'] : false;
@@ -188,9 +157,14 @@ class SRFM_Global_Settings {
 		return $is_option_saved;
 	}
 
+	/**
+	 * Save General Settings Dynamic Options
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 0.0.1
+	 */
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
-
-		// $default_dynamic_block_option = get_option( 'get_default_dynamic_block_option' );
 
 		$default_dynamic_block_option = [
 			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
@@ -214,6 +188,13 @@ class SRFM_Global_Settings {
 		return $is_option_saved;
 	}
 
+	/**
+	 * Save Email Summary Settings
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 0.0.1
+	 */
 	public static function srfm_save_email_summary_settings( $setting_options ) {
 
 		$srfm_email_summary   = isset( $setting_options['srfm_email_summary'] ) ? $setting_options['srfm_email_summary'] : false;
@@ -240,7 +221,13 @@ class SRFM_Global_Settings {
 		return $is_option_saved;
 	}
 
-	// save security settings
+	/**
+	 * Save Security Settings
+	 *
+	 * @param array<mixed> $setting_options Setting options.
+	 * @return bool
+	 * @since 0.0.1
+	 */
 	public static function srfm_save_security_settings( $setting_options ) {
 
 		$srfm_v2_checkbox_site_key    = isset( $setting_options['srfm_v2_checkbox_site_key'] ) ? $setting_options['srfm_v2_checkbox_site_key'] : '';
@@ -285,7 +272,7 @@ class SRFM_Global_Settings {
 			);
 		}
 
-		$options_to_get = $_GET['options_to_fetch'];
+		$options_to_get = $request->get_param( 'options_to_fetch' );
 
 		$options_to_get = explode( ',', $options_to_get );
 

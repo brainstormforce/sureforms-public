@@ -47,17 +47,17 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	// show the block preview on hover
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.textarea_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage( 'srfm_textarea_block_required_text', errorMsg )
 		);
 	}, [] );
+
+	// show the block preview on hover
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.textarea_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

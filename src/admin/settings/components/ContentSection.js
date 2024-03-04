@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import Skeleton from 'react-loading-skeleton';
 
 const ContentSection = ( { loading, title, content } ) => {

@@ -32,19 +32,19 @@ class SRFM_Phone_Markup extends SRFM_Base {
 	 * @return string|boolean
 	 */
 	public function markup( $attributes, $form_id ) {
-		$block_id    = isset( $attributes['block_id'] ) ? SRFM_Helper::get_string_value( $attributes['block_id'] ) : '';
-		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		// $duplicate_msg   = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
-		$error_msg = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
-		// $is_unique    = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$dulicate_msg = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-		$classname    = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
-		$slug         = 'phone';
+		$block_id      = isset( $attributes['block_id'] ) ? SRFM_Helper::get_string_value( $attributes['block_id'] ) : '';
+		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
+		$placeholder   = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
+		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
+		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
+		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
+		$dulicate_msg  = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
+		$classname     = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$auto_country  = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
+		$slug          = 'phone';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 

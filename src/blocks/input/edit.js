@@ -47,12 +47,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	// show the block preview on hover.
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.input_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage( 'srfm_input_block_required_text', errorMsg )
@@ -61,6 +55,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			validationMessage( 'srfm_input_block_unique_text', defaultValue )
 		);
 	}, [] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.input_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>

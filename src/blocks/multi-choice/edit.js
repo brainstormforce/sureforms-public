@@ -104,12 +104,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	// show the block preview on hover.
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.multi_choice_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage(
@@ -118,6 +112,12 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			)
 		);
 	}, [] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.multi_choice_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<div { ...blockProps }>

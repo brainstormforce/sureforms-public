@@ -62,8 +62,8 @@ const getBlockTypes = ( exclude = '' ) => {
 /**
  * Generate Validation Message.
  *
- * @param {string} defaults message.
- *
+ * @param {string} defaultMessage Default error message.
+ * @param {string} message        Custom error message.
  * @return {string} message.
  */
 const validationMessage = ( defaultMessage, message ) => {

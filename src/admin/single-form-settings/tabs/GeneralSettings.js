@@ -5,13 +5,12 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import apiFetch from '@wordpress/api-fetch';
 import { useDeviceType } from '@Controls/getPreviewType';
 import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { default_keys, setEnableQuickActionSidebar, isPageBreak } = props;
+	const { default_keys, isPageBreak } = props;
 	const root = document.documentElement.querySelector( 'body' );
 
 	let sureforms_keys = useSelect( ( select ) =>

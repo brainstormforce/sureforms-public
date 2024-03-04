@@ -110,14 +110,15 @@ const GeneralPage = ( {
 					return (
 						<TextControl
 							key={ field }
-							label={ __(
-								`${
-									'Area Block Required ' === fieldLabel
-										? 'Textarea Block Required'
-										: fieldLabel
-								} Error Message`,
-								'sureforms'
-							) }
+							label={ `${
+								( fieldLabel === 'Area Block Required '
+									? __(
+										'Textarea Block Required',
+										'sureforms'
+									  )
+									: fieldLabel ) +
+								__( ' Error Message', 'sureforms' )
+							}` }
 							type="text"
 							className="srfm-components-input-control"
 							value={ dynamicBlockOptions[ field ] }

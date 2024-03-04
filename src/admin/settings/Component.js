@@ -52,7 +52,7 @@ const Component = ( { path } ) => {
 	// set page title and icon based on the path.
 	useEffect( () => {
 		if ( path ) {
-			navigation.map( ( single ) => {
+			navigation.forEach( ( single ) => {
 				const slug = single?.slug && single.slug ? single.slug : '';
 				const title = single?.name && single.name ? single.name : '';
 				const icon = single?.icon && single.icon ? single.icon : '';
@@ -221,11 +221,11 @@ const Component = ( { path } ) => {
 					</div>
 				</Snackbar>
 			) }
-			<div class="srfm-page-heading">
-				<div class="srfm-page-icon">{ pageIcon }</div>
+			<div className="srfm-page-heading">
+				<div className="srfm-page-icon">{ pageIcon }</div>
 				<span>{ pageTitle }</span>
 			</div>
-			<div class="srfm-page-content">
+			<div className="srfm-page-content">
 				{ 'general-settings' === path && (
 					<GeneralPage
 						loading={ loading }

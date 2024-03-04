@@ -60,9 +60,15 @@ class SRFM_Email_Summary {
 	 * @since 0.0.1
 	 */
 	public function send_test_email( $request ) {
-		$email_send_to             = $request->get_body();
-		$email_send_to             = json_decode( $email_send_to, true );
-		$email_send_to             = $email_send_to['srfm_email_sent_to'] ? $email_send_to['srfm_email_sent_to'] : '';
+		$data = $request->get_body();
+		$data = json_decode( $data, true );
+
+		$email_send_to = '';
+
+		if ( is_array( $data ) && isset( $data['srfm_email_sent_to'] ) && is_string( $data['srfm_email_sent_to'] ) ) {
+			$email_send_to = $data['srfm_email_sent_to'];
+		}
+
 		$get_email_summary_options = [
 			'srfm_email_sent_to' => $email_send_to,
 		];
@@ -123,7 +129,7 @@ class SRFM_Email_Summary {
 				$taxonomy      = 'sureforms_tax';
 				$entries_args  = [
 					'post_type'  => SRFM_ENTRIES_POST_TYPE,
-					'tax_query'  => [
+					'tax_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query. --We require tax_query for this function to work.
 						[
 							'taxonomy' => $taxonomy,
 							'field'    => 'slug',
@@ -200,12 +206,8 @@ class SRFM_Email_Summary {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function schedule_weekly_entries_email( $send_test_email = false ) {
+	public function schedule_weekly_entries_email() {
 		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
-
-		if ( $send_test_email ) {
-			$this->send_entries_to_admin( $email_summary_options );
-		}
 
 		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
 

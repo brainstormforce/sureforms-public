@@ -45,17 +45,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	// show the block preview on hover.
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.checkbox_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	useEffect( () => {
 		setCurrentErrorMsg(
 			validationMessage( 'srfm_checkbox_block_required_text', errorMsg )
 		);
 	}, [] );
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.checkbox_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<div { ...blockProps }>

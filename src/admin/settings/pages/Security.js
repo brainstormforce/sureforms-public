@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl } from '@wordpress/components';
-import { TabPanel } from '@wordpress/components';
+import { TextControl, TabPanel } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -28,8 +27,8 @@ const SecurityPage = ( {
 						},
 					] }
 				>
-					{ ( tab ) => {
-						switch ( tab.name ) {
+					{ ( securityTab ) => {
+						switch ( securityTab.name ) {
 							case 'srfm-captcha-tab-1':
 								return (
 									<>
@@ -50,6 +49,7 @@ const SecurityPage = ( {
 												<a
 													href="https://www.google.com/recaptcha/admin/create"
 													target="_blank"
+													rel="noreferrer"
 												>
 													{ __(
 														'Get Keys',
@@ -90,8 +90,10 @@ const SecurityPage = ( {
 													},
 												] }
 											>
-												{ ( tab ) => {
-													switch ( tab.name ) {
+												{ ( recaptchaTab ) => {
+													switch (
+														recaptchaTab.name
+													) {
 														case 'srfm-captcha-tab-1':
 															return (
 																<>
