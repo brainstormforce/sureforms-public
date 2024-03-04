@@ -88,9 +88,17 @@ React Select
 License :  Massachusetts Institute of Technology (MIT)  
 License URI : https://github.com/JedWatson/react-select/blob/master/LICENSE  
 
-React Toastify  
+React Hot Toast  
 License :  Massachusetts Institute of Technology (MIT)  
-License URI : https://github.com/fkhadra/react-toastify/blob/main/LICENSE  
+License URI : https://github.com/timolins/react-hot-toast/blob/main/LICENSE   
+
+React Loading Skeleton  
+License :  Massachusetts Institute of Technology (MIT)  
+License URI : https://github.com/dvtng/react-loading-skeleton/blob/master/LICENSE  
+
+Use Debounce  
+License :  Massachusetts Institute of Technology (MIT)  
+License URI : https://github.com/xnimorz/use-debounce/blob/master/LICENSE  
 
 Webfontloader  
 License : Apache License, Version 2.0  
