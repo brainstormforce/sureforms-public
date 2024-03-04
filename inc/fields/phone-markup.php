@@ -29,7 +29,7 @@ class Phone_Markup extends Base {
 	 */
 	public function default( $attributes, $form_id ) {
 		$block_id     = isset( $attributes['block_id'] ) ? strval( $attributes['block_id'] ) : '';
-		$form_id     = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
+		$form_id      = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
 		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder  = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';

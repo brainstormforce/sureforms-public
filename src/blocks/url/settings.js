@@ -120,7 +120,7 @@ export default ( { attributes, setAttributes } ) => {
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance }>
-					{conditionalSettings}
+					{ conditionalSettings }
 				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>

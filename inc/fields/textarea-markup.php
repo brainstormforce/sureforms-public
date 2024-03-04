@@ -29,7 +29,7 @@ class Textarea_Markup extends Base {
 	 */
 	public function default( $attributes, $form_id ) {
 		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
-		$form_id         = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
+		$form_id     = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -59,8 +59,8 @@ class Textarea_Markup extends Base {
 		$input_label_fallback = $label ? $label : __( 'Textarea', 'sureforms' );
 		$input_label          = '-lbl-' . Sureforms_Helper::encrypt( $input_label_fallback );
 
-		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$conditional_class    = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
+		$unique_slug       = 'srfm-' . $slug . '-' . $block_id . $input_label;
+		$conditional_class = apply_filters( 'sureforms_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">

@@ -37,7 +37,7 @@ class Checkbox_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$form_id    = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+		$form_id     = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$slug        = 'checkbox';
 
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';

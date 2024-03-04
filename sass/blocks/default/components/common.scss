@@ -10,13 +10,13 @@
 				&.show {
 					display: none;
 				}
-				&.hide{
+				&.hide {
 					display: block;
 				}
-				&.move-up-to-down{
+				&.move-up-to-down {
 					animation: moveUpToDown 0.3s ease-out forwards;
 				}
-				&.move-down-to-up{
+				&.move-down-to-up {
 					animation: moveDownToUp 0.3s ease-out forwards;
 				}
 			}
@@ -140,7 +140,7 @@
 
 		.srfm-submit-container {
 			width: 100%;
-			&.hide{
+			&.hide {
 				display: none;
 			}
 		}
@@ -149,21 +149,21 @@
 
 @keyframes moveUpToDown {
 	0% {
-	  opacity: 0;
-	  transform: translateY(-100%);
+		opacity: 0;
+		transform: translateY( -100% );
 	}
 	100% {
-	  opacity: 1;
-	  transform: translateY(0);
+		opacity: 1;
+		transform: translateY( 0 );
 	}
-  }
-  @keyframes moveDownToUp {
+}
+@keyframes moveDownToUp {
 	0% {
-	  opacity: 1;
-	  transform: translateY(0);
+		opacity: 1;
+		transform: translateY( 0 );
 	}
 	100% {
-	  opacity: 0;
-	  transform: translateY(-100%);
+		opacity: 0;
+		transform: translateY( -100% );
 	}
-  }
+}

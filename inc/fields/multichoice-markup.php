@@ -37,7 +37,7 @@ class Multichoice_Markup extends Base {
 			$error_msg        = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-			$form_id         = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+			$form_id          = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$choice_width     = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
 			$output           = '';

@@ -186,7 +186,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
-						{conditionalSettings}
+						{ conditionalSettings }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

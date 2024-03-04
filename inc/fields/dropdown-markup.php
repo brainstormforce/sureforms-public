@@ -37,7 +37,7 @@ class Dropdown_Markup extends Base {
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$form_id    = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+		$form_id     = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$slug        = 'dropdown';
 
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
