@@ -9,7 +9,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Global_Settings\SRFM_Email_Summary;
+use SRFM\Inc\Global_Settings\SRFM_Email_Summary;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.

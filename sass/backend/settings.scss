@@ -35,6 +35,12 @@ $placeholder_color: #9ca3af;
 		background-color: white;
 		color: black;
 		border-radius: 4px;
+
+		.srfm-snackbar-inner-container {
+			display: flex;
+			align-items: center;
+			gap: 0.5em;
+		}
 	}
 }
 .srfm-settings-wrap {
@@ -155,6 +161,10 @@ $placeholder_color: #9ca3af;
 			width: 100%;
 			max-width: 768px;
 			margin: 0 auto;
+
+			.srfm-skeleton-container {
+				margin-bottom: 1em;
+			}
 
 			.srfm-page-heading {
 				display: flex;

@@ -125,26 +125,6 @@ function GeneralSettings( props ) {
 		} );
 	}
 
-	useEffect( () => {
-		const fetchData = async () => {
-			try {
-				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-settings',
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json',
-						'X-WP-Nonce': srfm_admin.global_settings_nonce,
-					},
-				} );
-				const { srfm_enable_quick_action_sidebar } = data;
-				setEnableQuickActionSidebar( srfm_enable_quick_action_sidebar );
-			} catch ( error ) {
-				console.error( 'Error fetching datates:', error );
-			}
-		};
-		fetchData();
-	}, [] );
-
 	return (
 		<>
 			<SRFMAdvancedPanelBody

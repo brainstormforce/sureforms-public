@@ -18,6 +18,11 @@
   color: black;
   border-radius: 4px;
 }
+.sureforms_page_sureforms_form_settings .components-snackbar .srfm-snackbar-inner-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
 
 .srfm-settings-wrap {
   display: flex;
@@ -120,6 +125,9 @@
   width: 100%;
   max-width: 768px;
   margin: 0 auto;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-skeleton-container {
+  margin-bottom: 1em;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-page-heading {
   display: flex;

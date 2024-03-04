@@ -215,13 +215,7 @@ const Component = ( { path } ) => {
 		<>
 			{ showNotification && (
 				<Snackbar onDismiss={ () => setShowNotification( false ) }>
-					<div
-						style={ {
-							display: 'flex',
-							alignItems: 'center',
-							gap: '.5rem',
-						} }
-					>
+					<div className="srfm-snackbar-inner-container">
 						<MdOutlineDone fill="green" size={ 24 } />
 						<span>{ notificationMessage }</span>
 					</div>

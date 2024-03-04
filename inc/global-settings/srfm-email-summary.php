@@ -62,8 +62,9 @@ class SRFM_Email_Summary {
 	public function send_test_email( $request ) {
 		$email_send_to             = $request->get_body();
 		$email_send_to             = json_decode( $email_send_to, true );
+		$email_send_to             = $email_send_to['srfm_email_sent_to'] ? $email_send_to['srfm_email_sent_to'] : '';
 		$get_email_summary_options = [
-			'srfm_email_sent_to' => $email_send_to['srfm_email_sent_to'],
+			'srfm_email_sent_to' => $email_send_to,
 		];
 		self::send_entries_to_admin( $get_email_summary_options );
 		$response = new WP_REST_Response( [ 'message' => __( 'Test email sent successfully.', 'sureforms' ) ], 200 );

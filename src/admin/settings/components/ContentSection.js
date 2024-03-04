@@ -14,11 +14,14 @@ const ContentSection = ( { loading, title, content } ) => {
 				</div>
 				<div className="srfm-section-content">
 					{ loading ? (
-						<Skeleton
-							style={ { marginBottom: '1rem' } }
-							count={ 5 }
-							height={ 25 }
-						/>
+						<>
+							<Skeleton
+								className="srfm-skeleton-container"
+								count={ 3 }
+								height={ 25 }
+							/>
+							<Skeleton count={ 1 } height={ 25 } />
+						</>
 					) : (
 						content
 					) }
