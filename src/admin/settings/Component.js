@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 
 import { useDebouncedCallback } from 'use-debounce';
 import 'react-loading-skeleton/dist/skeleton.css';
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
 
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
@@ -155,6 +155,7 @@ const Component = ( { path } ) => {
 					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
 			} ).then( () => {
+				toast.dismiss();
 				toast.success(
 					__( 'Settings Saved Successfully!', 'sureforms' ),
 					{
@@ -214,7 +215,19 @@ const Component = ( { path } ) => {
 			<Toaster
 				containerClassName="srfm-toast-container"
 				position="top-right"
-			/>
+			>
+				{ ( t ) => (
+					<ToastBar
+						toast={ t }
+						style={ {
+							...t.style,
+							animation: t.visible
+								? 'slide-in-left 0.5s ease'
+								: 'slide-out-right 0.5s ease',
+						} }
+					/>
+				) }
+			</Toaster>
 			<div className="srfm-page-heading">
 				<div className="srfm-page-icon">{ pageIcon }</div>
 				<span>{ pageTitle }</span>
