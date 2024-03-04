@@ -19,22 +19,6 @@ const Component = ( { path } ) => {
 	const [ showNotification, setShowNotification ] = useState( false );
 	const [ notificationMessage, setNotificationMessage ] = useState( '' );
 
-	useEffect( () => {
-		if ( path ) {
-			navigation.map( ( single ) => {
-				const slug = single?.slug && single.slug ? single.slug : '';
-				const title = single?.name && single.name ? single.name : '';
-				const icon = single?.icon && single.icon ? single.icon : '';
-				if ( slug ) {
-					if ( slug === path ) {
-						setPageTitle( title );
-						setPageIcon( icon );
-					}
-				}
-			} );
-		}
-	}, [ path ] );
-
 	// Global settings states.
 	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
 		srfm_ip_log: false,
@@ -64,6 +48,23 @@ const Component = ( { path } ) => {
 		'srfm_security_settings_options',
 		'get_default_dynamic_block_option',
 	];
+
+	// set page title and icon based on the path.
+	useEffect( () => {
+		if ( path ) {
+			navigation.map( ( single ) => {
+				const slug = single?.slug && single.slug ? single.slug : '';
+				const title = single?.name && single.name ? single.name : '';
+				const icon = single?.icon && single.icon ? single.icon : '';
+				if ( slug ) {
+					if ( slug === path ) {
+						setPageTitle( title );
+						setPageIcon( icon );
+					}
+				}
+			} );
+		}
+	}, [ path ] );
 
 	// Fetch global settings.
 	useEffect( () => {
