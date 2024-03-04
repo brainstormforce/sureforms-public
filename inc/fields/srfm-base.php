@@ -26,11 +26,10 @@ class SRFM_Base {
 	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param string       $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 		return '';
 	}
 }
