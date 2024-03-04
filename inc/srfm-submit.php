@@ -165,12 +165,12 @@ class SRFM_Submit {
 		}
 
 		if ( 'v2-checkbox' === $selected_captcha_type ) {
-			$google_captcha_secret_key = isset( $global_setting_options['srfm_v2_checkbox_secret_key'] ) ? $global_setting_options['srfm_v2_checkbox_secret_key'] : '';
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v2_checkbox_secret_key'] ) ? $global_setting_options['srfm_v2_checkbox_secret_key'] : '';
 
 		} elseif ( 'v2-invisible' === $selected_captcha_type ) {
-			$google_captcha_secret_key = isset( $global_setting_options['srfm_v2_invisible_secret_key'] ) ? $global_setting_options['srfm_v2_invisible_secret_key'] : '';
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v2_invisible_secret_key'] ) ? $global_setting_options['srfm_v2_invisible_secret_key'] : '';
 		} elseif ( 'v3-reCAPTCHA' === $selected_captcha_type ) {
-			$google_captcha_secret_key = isset( $global_setting_options['srfm_v3_secret_key'] ) ? $global_setting_options['srfm_v3_secret_key'] : '';
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v3_secret_key'] ) ? $global_setting_options['srfm_v3_secret_key'] : '';
 		}
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -260,7 +260,7 @@ class SRFM_Submit {
 	public function handle_form_entry( $form_data ) {
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
-		$srfm_ip_log            = isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
+		$srfm_ip_log            = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
 		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 		$browser      = new Browser();
@@ -289,7 +289,7 @@ class SRFM_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		$honeypot = isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
+		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
 		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );

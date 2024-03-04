@@ -274,6 +274,8 @@ class SRFM_Global_Settings {
 
 		$options_to_get = $request->get_param( 'options_to_fetch' );
 
+		$options_to_get = SRFM_Helper::get_string_value( $options_to_get );
+
 		$options_to_get = explode( ',', $options_to_get );
 
 		$global_setting_options = get_options( $options_to_get );

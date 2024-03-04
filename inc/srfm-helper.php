@@ -11,6 +11,7 @@ namespace SRFM\Inc;
 use SRFM\Inc\Traits\SRFM_Get_Instance;
 use WP_Error;
 use WP_REST_Request;
+use WP_Post_Type;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -270,8 +271,13 @@ class SRFM_Helper {
 	 */
 	public static function get_default_dynamic_block_option( $key ) {
 		$default_dynamic_values = self::default_dynamic_block_option();
+		$option                 = get_option( 'get_default_dynamic_block_option', $default_dynamic_values );
 
-		return get_option( 'get_default_dynamic_block_option', $default_dynamic_values )[ $key ];
+		if ( is_array( $option ) && array_key_exists( $key, $option ) ) {
+			return $option[ $key ];
+		} else {
+			return '';
+		}
 	}
 
 	/**
