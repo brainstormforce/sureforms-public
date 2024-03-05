@@ -114,6 +114,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		setAttributes
 	);
 
+	const isPro = srfm_block_data.is_pro_active;
+
 	return (
 		<div { ...blockProps }>
 			<InspectorControls>
@@ -371,7 +373,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
-						{ conditionalSettings }
+						{ isPro && conditionalSettings }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

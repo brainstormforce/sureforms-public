@@ -29,6 +29,7 @@ export default ( { attributes, setAttributes } ) => {
 		attributes,
 		setAttributes
 	);
+	const isPro = srfm_block_data.is_pro_active;
 
 	return (
 		<InspectorControls>
@@ -120,7 +121,7 @@ export default ( { attributes, setAttributes } ) => {
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance }>
-					{ conditionalSettings }
+					{ isPro && conditionalSettings }
 				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>

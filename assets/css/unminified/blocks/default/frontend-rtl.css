@@ -151,15 +151,20 @@
 }
 .srfm-form-container .srfm-form .srfm-block.conditional-logic.show {
   display: none;
+  font-size: 1px;
+  transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 }
 .srfm-form-container .srfm-form .srfm-block.conditional-logic.hide {
   display: block;
+  transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 }
 .srfm-form-container .srfm-form .srfm-block.conditional-logic.move-up-to-down {
-  animation: moveUpToDown 0.3s ease-out forwards;
+  animation: moveUpToDown 320ms ease-out;
+  font-size: inherit;
 }
 .srfm-form-container .srfm-form .srfm-block.conditional-logic.move-down-to-up {
-  animation: moveDownToUp 0.3s ease-out forwards;
+  animation: moveDownToUp 320ms ease-out;
+  font-size: 1px;
 }
 .srfm-form-container .srfm-form .srfm-block label {
   font-size: 1em;
@@ -267,21 +272,21 @@
 @keyframes moveUpToDown {
   0% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translate3d(0, -20px, 0) scaleY(0.5);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
 }
 @keyframes moveDownToUp {
   0% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
   100% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translate3d(0, -20px, 0) scaleY(0.5);
   }
 }
 .srfm-form-container .srfm-form .srfm-multi-choice-block .srfm-block-wrap {
