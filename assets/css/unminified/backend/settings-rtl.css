@@ -227,11 +227,18 @@
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input {
   height: auto;
   line-height: normal;
+  border: 1px solid #dce0e6;
+  box-shadow: 0 0 0 0.5px #dce0e6;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-select-control__input:focus,
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-select-control__input:focus {
+  border: 1.5px solid #125d9f;
+  box-shadow: 0 0 0 0.5px #125d9f;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control.srfm-components-input-control .components-input-control__backdrop,
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control .srfm-components-select-control .components-input-control__backdrop {
-  border: 1px solid #dce0e6;
-  border-radius: 0.25em;
+  border: none;
+  box-shadow: none;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-section-container .srfm-section-content .components-base-control:nth-last-child(1) {
   margin-bottom: 0;

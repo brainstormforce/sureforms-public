@@ -97,7 +97,7 @@ const default_keys = {
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
-		useState();
+		useState( 'enabled' );
 	const postId = useSelect( () => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );

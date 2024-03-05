@@ -264,11 +264,20 @@ $placeholder_color: #9ca3af;
 							.components-select-control__input {
 								height: auto;
 								line-height: normal;
+								border: 1px solid $border_color;
+								box-shadow: 0 0 0 0.5px $border_color;
+
+								&:focus {
+									border: 1.5px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
+								}
 							}
 
 							.components-input-control__backdrop {
-								border: 1px solid $border_color;
-								border-radius: 0.25em;
+								// border: 1px solid $border_color;
+								// border-radius: 0.25em;
+								border: none;
+								box-shadow: none;
 							}
 						}
 
