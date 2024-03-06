@@ -281,7 +281,7 @@ class SRFM_Helper {
 	}
 
 	/**
-	 * Checks whether a given request has permissions to edit global settings options.
+	 * Checks whether a given request has appropriate permissions.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.

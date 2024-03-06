@@ -17,7 +17,7 @@ use WP_REST_Request;
 use WP_Error;
 
 /**
- * Sureforms Global Settings - General Tab.
+ * Sureforms Global Settings.
  *
  * @since 0.0.1
  */
@@ -69,7 +69,7 @@ class SRFM_Global_Settings {
 	}
 
 	/**
-	 * Handle Settings Form Submission
+	 * Save global settings options.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return void

@@ -3,7 +3,7 @@
  * Email Summaries.
  *
  * @package sureforms.
- * @since 0.0.1
+ * @since 0.0.2
  */
 
 namespace SRFM\Inc\Global_Settings;
@@ -17,7 +17,7 @@ use SRFM\Inc\SRFM_Helper;
 /**
  * Email Summary Class.
  *
- * @since 0.0.1
+ * @since 0.0.2
  */
 class SRFM_Email_Summary {
 	use SRFM_Get_Instance;
@@ -29,15 +29,14 @@ class SRFM_Email_Summary {
 	 */
 	public function __construct() {
 		add_action( 'srfm_weekly_scheduled_events', [ $this, 'send_entries_to_admin' ] );
-
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
 	}
 
 	/**
-	 * Add custom API Route gettting and saving email summary options.
+	 * API endpoint to send test email.
 	 *
 	 * @return void
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 */
 	public function register_custom_endpoint() {
 		$sureforms_helper = new SRFM_Helper();
@@ -57,7 +56,7 @@ class SRFM_Email_Summary {
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 */
 	public function send_test_email( $request ) {
 		$data = $request->get_body();
@@ -72,8 +71,11 @@ class SRFM_Email_Summary {
 		$get_email_summary_options = [
 			'srfm_email_sent_to' => $email_send_to,
 		];
+
 		self::send_entries_to_admin( $get_email_summary_options );
+
 		$response = new WP_REST_Response( [ 'message' => __( 'Test email sent successfully.', 'sureforms' ) ], 200 );
+
 		return $response;
 	}
 
@@ -82,7 +84,7 @@ class SRFM_Email_Summary {
 	 *
 	 * @param string $hook Event hook name.
 	 * @return void
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 */
 	public function unschedule_events( $hook ) {
 		as_unschedule_all_actions( $hook );
@@ -91,7 +93,7 @@ class SRFM_Email_Summary {
 	/**
 	 * Function to get the total number of entries for the last week.
 	 *
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 * @return string HTML table with entries count.
 	 */
 	public function get_total_entries_for_week() {
@@ -174,7 +176,7 @@ class SRFM_Email_Summary {
 	 * Function to send the entries to admin mail.
 	 *
 	 * @param array<mixed>|bool $email_summary_options Email Summary Options.
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public function send_entries_to_admin( $email_summary_options ) {
@@ -204,12 +206,12 @@ class SRFM_Email_Summary {
 	 * Schedule the event action to run weekly.
 	 *
 	 * @return void
-	 * @since 0.0.1
+	 * @since 0.0.2
 	 */
 	public function schedule_weekly_entries_email() {
 		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
 
-		$time = apply_filters( 'srfm_weekly_scheduled_events_time', '09:00:00' );
+		$time = apply_filters( 'srfm_weekly_email_summary_time', '09:00:00' );
 
 		if ( wp_next_scheduled( 'srfm_weekly_scheduled_events' ) ) {
 			wp_clear_scheduled_hook( 'srfm_weekly_scheduled_events' );

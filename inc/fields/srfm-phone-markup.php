@@ -38,7 +38,7 @@ class SRFM_Phone_Markup extends SRFM_Base {
 		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
+		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_unique_text' );
 		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
 		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
 		$dulicate_msg  = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
