@@ -186,7 +186,7 @@
   left: 2px;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon {
-  min-height: 41px;
+  min-height: 2.5em;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-input-box .srfm-scroll-dropdown .has-icon:focus:not(:disabled) {
   box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
