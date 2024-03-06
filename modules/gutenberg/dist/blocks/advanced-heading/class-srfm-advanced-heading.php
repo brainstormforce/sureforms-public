@@ -650,8 +650,12 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 		public function render_html( $attributes ) {
 
 			$block_id = '';
+			$form_id  = '';
 			if ( isset( $attributes['block_id'] ) ) {
 				$block_id = $attributes['block_id'];
+			}
+			if ( isset( $attributes['formId'] ) ) {
+				$form_id = $attributes['formId'];
 			}
 
 			$seperator = '';
@@ -687,10 +691,13 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 				$desc_text .= 'below-sub-heading' === $attributes['separatorPosition'] ? $seperator : '';
 			}
 
+			$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
+
 			$main_classes = [
 				'wp-block-uagb-advanced-heading',
 				'uagb-block',
 				'uagb-block-' . $block_id,
+				$conditional_class,
 			];
 
 			if ( isset( $attributes['className'] ) ) {
@@ -699,7 +706,7 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 
 			ob_start();
 			?>
-				<div class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
 					<?php
 					if ( $attributes['headingDescToggle']
 						&& 'above-heading' === $attributes['headingDescPosition']

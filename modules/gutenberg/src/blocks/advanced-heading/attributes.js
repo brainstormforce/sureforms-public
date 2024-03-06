@@ -568,6 +568,14 @@ const attributes = {
 		type: 'boolean',
 		default: false,
 	},
+	isConditionalLogic: {
+		type: 'boolean',
+		default: false,
+	},
+	formId: {
+		type: 'number',
+		default: '',
+	},
 	...highLightBorderAttributes,
 };
 

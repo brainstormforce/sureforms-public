@@ -145,26 +145,26 @@
   display: flex;
   flex-wrap: wrap;
 }
-.srfm-form-container .srfm-form .srfm-block {
-  margin-bottom: 1.2em;
-  color: var(--srfm-body-input-color);
-}
-.srfm-form-container .srfm-form .srfm-block.conditional-logic.show {
+.srfm-form-container .srfm-form .conditional-logic.show {
   display: none;
   font-size: 1px;
   transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 }
-.srfm-form-container .srfm-form .srfm-block.conditional-logic.hide {
+.srfm-form-container .srfm-form .conditional-logic.hide {
   display: block;
   transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 }
-.srfm-form-container .srfm-form .srfm-block.conditional-logic.move-up-to-down {
+.srfm-form-container .srfm-form .conditional-logic.move-up-to-down {
   animation: moveUpToDown 320ms ease-out;
   font-size: inherit;
 }
-.srfm-form-container .srfm-form .srfm-block.conditional-logic.move-down-to-up {
+.srfm-form-container .srfm-form .conditional-logic.move-down-to-up {
   animation: moveDownToUp 320ms ease-out;
   font-size: 1px;
+}
+.srfm-form-container .srfm-form .srfm-block {
+  margin-bottom: 1.2em;
+  color: var(--srfm-body-input-color);
 }
 .srfm-form-container .srfm-form .srfm-block label {
   font-size: 1em;

@@ -2,29 +2,29 @@
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
+		.conditional-logic {
+			&.show {
+				display: none;
+				font-size: 1px;
+				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
+			}
+			&.hide {
+				display: block;
+				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
+			}
+			&.move-up-to-down {
+				animation: moveUpToDown 320ms ease-out;
+				font-size: inherit;
+			}
+			&.move-down-to-up {
+				animation: moveDownToUp 320ms ease-out;
+				font-size: 1px;
+			}
+		}
 
 		.srfm-block {
 			margin-bottom: 1.2em;
 			color: var( --srfm-body-input-color );
-			&.conditional-logic {
-				&.show {
-					display: none;
-					font-size: 1px;
-					transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
-				}
-				&.hide {
-					display: block;
-					transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
-				}
-				&.move-up-to-down {
-					animation: moveUpToDown 320ms ease-out;
-					font-size: inherit;
-				}
-				&.move-down-to-up {
-					animation: moveDownToUp 320ms ease-out;
-					font-size: 1px;
-				}
-			}
 			label {
 				font-size: 1em;
 			}

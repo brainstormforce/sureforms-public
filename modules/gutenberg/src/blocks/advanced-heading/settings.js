@@ -21,6 +21,7 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import { applyFilters } from '@wordpress/hooks';
 
 const Settings = ( props ) => {
 	const { attributes, deviceType, setAttributes } = props;
@@ -183,6 +184,12 @@ const Settings = ( props ) => {
 		highLightPaddingUnitMobile,
 		highLightPaddingLink,
 	} = attributes;
+	const conditionalSettings = applyFilters(
+		'srfm.conditional_logic.tab_advance',
+		attributes,
+		setAttributes
+	);
+	const isPro = srfm_block_data.is_pro_active;
 
 	let separatorPositionOptions = [
 		{
@@ -1308,6 +1315,9 @@ const Settings = ( props ) => {
 						{ highLightStylePanel() }
 						{ backgroundStylePanel() }
 						{ spacingStylePanel() }
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.advance }>
+						{ isPro && conditionalSettings }
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
