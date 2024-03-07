@@ -43,7 +43,7 @@
   background-color: var(--srfm-base-background-color);
   height: auto;
   font-size: initial;
-  padding: 0.75em 2em 0.75em 1em !important;
+  padding: 0.75em 2.2em 0.75em 1em !important;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control::after {
   content: "";
@@ -57,11 +57,17 @@
   right: 1em;
   top: 1em;
 }
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control .item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input {
   line-height: normal;
   font-size: initial;
   height: auto;
   width: auto;
+  min-width: auto;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input:-ms-input-placeholder {
   color: var(--srfm-placeholder-color);
@@ -70,6 +76,12 @@
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input::placeholder {
   color: var(--srfm-placeholder-color);
   opacity: 1; /* Firefox */
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input:-ms-input-placeholder {
+  text-overflow: ellipsis;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input:placeholder-shown {
+  text-overflow: ellipsis;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-dropdown {
   margin-top: 0;
