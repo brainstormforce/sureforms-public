@@ -231,7 +231,7 @@ class SRFM_Generate_Form_Markup {
 			}
 			?>
 			<?php
-			if ( '' === $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
+			if ( ! $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
 				?>
 				<div class="srfm-instant-form-wrn-ctn">
 					<div class="srfm-svg-container">
