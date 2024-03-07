@@ -14,7 +14,7 @@
 }
 .srfm-form-container .srfm-instant-form-wrn-ctn {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   border: 1px solid #fec84b;
   border-radius: 0.75em;
   background-color: #fffcf5;
@@ -25,7 +25,6 @@
   max-width: 36px;
   width: 100%;
   flex: none;
-  margin-bottom: 3.5em;
 }
 .srfm-form-container .srfm-instant-form-wrn-ctn .srfm-wrn-text-ctn {
   display: flex;
