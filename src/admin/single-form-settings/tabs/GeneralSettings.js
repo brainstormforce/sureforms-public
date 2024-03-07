@@ -13,7 +13,7 @@ function GeneralSettings( props ) {
 	const { defaultKeys, isPageBreak } = props;
 	const root = document.documentElement.querySelector( 'body' );
 
-	let sureforms_keys = useSelect( ( select ) =>
+	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 	const deviceType = useDeviceType();
@@ -51,14 +51,14 @@ function GeneralSettings( props ) {
 		}, 100 );
 	}, [ deviceType, rootContainer ] );
 
-	if ( sureforms_keys && '_srfm_show_labels' in sureforms_keys ) {
+	if ( sureformsKeys && '_srfm_show_labels' in sureformsKeys ) {
 		if ( rootContainer ) {
-			if ( ! sureforms_keys._srfm_show_labels ) {
+			if ( ! sureformsKeys._srfm_show_labels ) {
 				rootContainer.classList.add( 'srfm-hide-labels' );
 			} else {
 				rootContainer.classList.remove( 'srfm-hide-labels' );
 			}
-			if ( ! sureforms_keys._srfm_show_asterisk ) {
+			if ( ! sureformsKeys._srfm_show_asterisk ) {
 				rootContainer.classList.add( 'srfm-hide-asterisk' );
 			} else {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
@@ -67,14 +67,14 @@ function GeneralSettings( props ) {
 		// Button text
 		root.style.setProperty(
 			'--srfm-submit-button-text',
-			sureforms_keys._srfm_submit_button_text
-				? '"' + sureforms_keys._srfm_submit_button_text + '"'
+			sureformsKeys._srfm_submit_button_text
+				? '"' + sureformsKeys._srfm_submit_button_text + '"'
 				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
 		);
 	} else {
-		sureforms_keys = defaultKeys;
+		sureformsKeys = defaultKeys;
 		editPost( {
-			meta: sureforms_keys,
+			meta: sureformsKeys,
 		} );
 	}
 
@@ -132,15 +132,15 @@ function GeneralSettings( props ) {
 			>
 				<ToggleControl
 					label={ __( 'Show Labels', 'sureforms' ) }
-					checked={ sureforms_keys._srfm_show_labels }
+					checked={ sureformsKeys._srfm_show_labels }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_show_labels', value );
 					} }
 				/>
-				{ sureforms_keys._srfm_show_labels && (
+				{ sureformsKeys._srfm_show_labels && (
 					<ToggleControl
 						label={ __( 'Show Asterisk', 'sureforms' ) }
-						checked={ sureforms_keys._srfm_show_asterisk }
+						checked={ sureformsKeys._srfm_show_asterisk }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_show_asterisk', value );
 						} }
@@ -152,7 +152,7 @@ function GeneralSettings( props ) {
 						'Hide Form Title on the Page/Post',
 						'sureforms'
 					) }
-					checked={ sureforms_keys._srfm_page_form_title }
+					checked={ sureformsKeys._srfm_page_form_title }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_page_form_title', value );
 					} }
@@ -162,7 +162,7 @@ function GeneralSettings( props ) {
 						'Hide Form Title on the Single Form Page',
 						'sureforms'
 					) }
-					checked={ sureforms_keys._srfm_single_page_form_title }
+					checked={ sureformsKeys._srfm_single_page_form_title }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_single_page_form_title', value );
 					} }
@@ -174,12 +174,12 @@ function GeneralSettings( props ) {
 			>
 				<SRFMTextControl
 					data={ {
-						value: sureforms_keys._srfm_submit_button_text,
+						value: sureformsKeys._srfm_submit_button_text,
 						label: '_srfm_submit_button_text',
 					} }
 					label={ __( 'Submit Button Text', 'sureforms' ) }
 					placeholder={ __( 'SUBMIT', 'sureforms' ) }
-					value={ sureforms_keys._srfm_submit_button_text }
+					value={ sureformsKeys._srfm_submit_button_text }
 					onChange={ ( value ) => {
 						const btnText = value.toUpperCase();
 						updateMeta( '_srfm_submit_button_text', btnText );
@@ -194,9 +194,9 @@ function GeneralSettings( props ) {
 				>
 					<SRFMTextControl
 						label={ __( 'First Page Label', 'sureforms' ) }
-						value={ sureforms_keys._srfm_first_page_label }
+						value={ sureformsKeys._srfm_first_page_label }
 						data={ {
-							value: sureforms_keys._srfm_first_page_label,
+							value: sureformsKeys._srfm_first_page_label,
 							label: '_srfm_first_page_label',
 						} }
 						onChange={ ( value ) =>
@@ -206,7 +206,7 @@ function GeneralSettings( props ) {
 					<SelectControl
 						label={ __( 'Progress Indicator', 'sureforms' ) }
 						value={
-							sureforms_keys._srfm_page_break_progress_indicator
+							sureformsKeys._srfm_page_break_progress_indicator
 						}
 						className="srfm-progress-control"
 						options={ [
@@ -234,7 +234,7 @@ function GeneralSettings( props ) {
 					/>
 					<ToggleControl
 						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={ sureforms_keys._srfm_page_break_toggle_label }
+						checked={ sureformsKeys._srfm_page_break_toggle_label }
 						onChange={ ( value ) => {
 							updateMeta(
 								'_srfm_page_break_toggle_label',
@@ -242,12 +242,12 @@ function GeneralSettings( props ) {
 							);
 						} }
 					/>
-					{ sureforms_keys._srfm_page_break_progress_indicator !==
+					{ sureformsKeys._srfm_page_break_progress_indicator !==
 						'progress-bar' && (
 						<ToggleControl
 							label={ __( 'Show Labels', 'sureforms' ) }
 							checked={
-								sureforms_keys._srfm_page_break_toggle_label
+								sureformsKeys._srfm_page_break_toggle_label
 							}
 							onChange={ ( value ) => {
 								updateMeta(
@@ -259,11 +259,11 @@ function GeneralSettings( props ) {
 					) }
 					<SRFMTextControl
 						data={ {
-							value: sureforms_keys._srfm_previous_button_text,
+							value: sureformsKeys._srfm_previous_button_text,
 							label: '_srfm_previous_button_text',
 						} }
 						label={ __( 'Previous Button Text', 'sureforms' ) }
-						value={ sureforms_keys._srfm_previous_button_text }
+						value={ sureformsKeys._srfm_previous_button_text }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_previous_button_text', value );
 						} }
@@ -271,11 +271,11 @@ function GeneralSettings( props ) {
 					/>
 					<SRFMTextControl
 						data={ {
-							value: sureforms_keys._srfm_previous_button_text,
+							value: sureformsKeys._srfm_previous_button_text,
 							label: '_srfm_next_button_text',
 						} }
 						label={ __( 'Next Button Text', 'sureforms' ) }
-						value={ sureforms_keys._srfm_next_button_text }
+						value={ sureformsKeys._srfm_next_button_text }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_next_button_text', value );
 						} }
@@ -289,12 +289,12 @@ function GeneralSettings( props ) {
 			>
 				<ToggleControl
 					label={ __( 'Enable Instant Form', 'sureforms' ) }
-					checked={ sureforms_keys._srfm_instant_form }
+					checked={ sureformsKeys._srfm_instant_form }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_instant_form', value );
 					} }
 				/>
-				{ sureforms_keys._srfm_instant_form && <PostURLPanel /> }
+				{ sureformsKeys._srfm_instant_form && <PostURLPanel /> }
 			</SRFMAdvancedPanelBody>
 		</>
 	);

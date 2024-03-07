@@ -19,7 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useReqErrMessage } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -46,7 +46,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
+		'required',
 		'srfm_textarea_block_required_text',
 		errorMsg
 	);

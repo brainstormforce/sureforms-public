@@ -39,21 +39,21 @@ function AdvancedSettings( props ) {
 	const openModal = () => setOpen( true );
 	const closeModal = () => setOpen( false );
 
-	let sureforms_keys = useSelect( ( select ) =>
+	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-	if ( sureforms_keys && '_srfm_submit_type' in sureforms_keys ) {
-		if ( ! sureforms_keys._srfm_submit_type ) {
-			sureforms_keys = defaultKeys;
+	if ( sureformsKeys && '_srfm_submit_type' in sureformsKeys ) {
+		if ( ! sureformsKeys._srfm_submit_type ) {
+			sureformsKeys = defaultKeys;
 			editPost( {
-				meta: sureforms_keys,
+				meta: sureformsKeys,
 			} );
 		}
 	} else {
-		sureforms_keys = defaultKeys;
+		sureformsKeys = defaultKeys;
 		editPost( {
-			meta: sureforms_keys,
+			meta: sureformsKeys,
 		} );
 	}
 
@@ -122,7 +122,7 @@ function AdvancedSettings( props ) {
 						'Turn Toggle on to Redirect to a URL',
 						'sureforms'
 					) }
-					checked={ 'url' === sureforms_keys._srfm_submit_type }
+					checked={ 'url' === sureformsKeys._srfm_submit_type }
 					onChange={ ( value ) => {
 						updateMeta(
 							'_srfm_submit_type',
@@ -131,11 +131,11 @@ function AdvancedSettings( props ) {
 					} }
 				/>
 				<p className="components-base-control__help" />
-				{ 'message' === sureforms_keys._srfm_submit_type ? (
+				{ 'message' === sureformsKeys._srfm_submit_type ? (
 					<>
 						<SRFMTextControl
 							data={ {
-								value: sureforms_keys._srfm_thankyou_message_title,
+								value: sureformsKeys._srfm_thankyou_message_title,
 								label: '_srfm_thankyou_message_title',
 							} }
 							label={ __(
@@ -143,9 +143,7 @@ function AdvancedSettings( props ) {
 								'sureforms'
 							) }
 							placeholder={ __( 'Thank you', 'sureforms' ) }
-							value={
-								sureforms_keys._srfm_thankyou_message_title
-							}
+							value={ sureformsKeys._srfm_thankyou_message_title }
 							onChange={ ( value ) => {
 								updateMeta(
 									'_srfm_thankyou_message_title',
@@ -158,7 +156,7 @@ function AdvancedSettings( props ) {
 						<SRFMTextControl
 							variant="textarea"
 							data={ {
-								value: sureforms_keys._srfm_thankyou_message,
+								value: sureformsKeys._srfm_thankyou_message,
 								label: '_srfm_thankyou_message',
 							} }
 							label={ __(
@@ -169,7 +167,7 @@ function AdvancedSettings( props ) {
 								'Form submitted successfully.',
 								'sureforms'
 							) }
-							value={ sureforms_keys._srfm_thankyou_message }
+							value={ sureformsKeys._srfm_thankyou_message }
 							onChange={ ( value ) => {
 								updateMeta( '_srfm_thankyou_message', value );
 							} }
@@ -182,7 +180,7 @@ function AdvancedSettings( props ) {
 							'Customize the Thankyou Page URL',
 							'sureforms'
 						) }
-						value={ sureforms_keys._srfm_submit_url }
+						value={ sureformsKeys._srfm_submit_url }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_submit_url', value );
 						} }
@@ -191,7 +189,7 @@ function AdvancedSettings( props ) {
 							'sureforms'
 						) }
 						data={ {
-							value: sureforms_keys._srfm_submit_url,
+							value: sureformsKeys._srfm_submit_url,
 							label: '_srfm_submit_url',
 						} }
 						isFormSpecific={ true }
@@ -215,7 +213,7 @@ function AdvancedSettings( props ) {
 						'Select the reCAPTCHA Version to Use',
 						'sureforms'
 					) }
-					value={ sureforms_keys._srfm_form_recaptcha }
+					value={ sureformsKeys._srfm_form_recaptcha }
 					options={ [
 						{ label: 'None', value: 'none' },
 						{
@@ -330,7 +328,7 @@ function AdvancedSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSettingsPopup sureformsKeys={ sureforms_keys } />
+					<SingleFormSettingsPopup sureformsKeys={ sureformsKeys } />
 				</Modal>
 			) }
 		</>

@@ -19,7 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useReqErrMessage } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -62,7 +62,8 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
+		'required',
 		'srfm_number_block_required_text',
 		errorMsg
 	);

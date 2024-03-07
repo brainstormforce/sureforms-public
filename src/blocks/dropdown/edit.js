@@ -18,7 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useReqErrMessage } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -69,7 +69,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
+		'required',
 		'srfm_dropdown_block_required_text',
 		errorMsg
 	);

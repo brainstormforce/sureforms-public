@@ -11,7 +11,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
-import { useReqErrMessage } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -24,7 +24,8 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
+		'required',
 		'srfm_url_block_required_text',
 		errorMsg
 	);

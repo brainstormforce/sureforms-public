@@ -82,31 +82,26 @@ const validationMessage = ( key, message ) => {
  * @param {string} errorMsg Custom error message.
  * @return {Object} currentErrorMsg, setCurrentErrorMsg.
  */
-const useReqErrMessage = ( key, errorMsg ) => {
+const useErrMessage = ( type, key, message ) => {
 	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
-
-	useEffect( () => {
-		setCurrentErrorMsg( validationMessage( key, errorMsg ) );
-	}, [] );
-
-	return { currentErrorMsg, setCurrentErrorMsg };
-};
-
-/**
- * Generate Unique Error Message.
- *
- * @param {string} key      Default error message key
- * @param {string} errorMsg Custom error message.
- * @return {Object} currentUniqueMessage, setCurrentUniqueMessage.
- */
-const useUniqueErrMessage = ( key, errorMsg ) => {
 	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 
 	useEffect( () => {
-		setCurrentUniqueMessage( validationMessage( key, errorMsg ) );
-	}, [] );
+		if ( type === 'required' ) {
+			setCurrentErrorMsg( validationMessage( key, message ) );
+		} else if ( type === 'unique' ) {
+			setCurrentUniqueMessage( validationMessage( key, message ) );
+		}
+	}, [ type, key, message ] );
 
-	return { currentUniqueMessage, setCurrentUniqueMessage };
+	switch ( type ) {
+		case 'required':
+			return { currentErrorMsg, setCurrentErrorMsg };
+		case 'unique':
+			return { currentUniqueMessage, setCurrentUniqueMessage };
+		default:
+			return '';
+	}
 };
 
 export {
@@ -114,6 +109,5 @@ export {
 	getSpacingPresetCssVar,
 	getBlockTypes,
 	validationMessage,
-	useReqErrMessage,
-	useUniqueErrMessage,
+	useErrMessage,
 };

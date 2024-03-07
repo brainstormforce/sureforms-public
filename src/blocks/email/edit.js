@@ -17,7 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useReqErrMessage, useUniqueErrMessage } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -45,13 +45,19 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
+		'required',
 		'srfm_email_block_required_text',
 		errorMsg
 	);
 
-	const { currentUniqueMessage, setCurrentUniqueMessage } =
-		useUniqueErrMessage( 'srfm_email_block_unique_text', duplicateMsg );
+	const { currentUniqueMessage, setCurrentUniqueMessage } = useErrMessage(
+		'unique',
+		'srfm_email_block_unique_text',
+		duplicateMsg
+	);
+
+	console.log( 'currentErrorMsg', currentErrorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {

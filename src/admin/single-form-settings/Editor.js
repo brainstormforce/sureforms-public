@@ -101,7 +101,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const postId = useSelect( () => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );
-	const sureforms_keys = useSelect( () =>
+	const sureformsKeys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
@@ -142,7 +142,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
-		if ( sureforms_keys._srfm_is_page_break === undefined ) {
+		if ( sureformsKeys._srfm_is_page_break === undefined ) {
 			return;
 		}
 		updateMeta( '_srfm_is_page_break', isPageBreak );
@@ -165,8 +165,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 		const inheritClass = 'wp-block-button__link';
 		const customClass = 'srfm-btn-bg-color';
 		const btnClass =
-			sureforms_keys?._srfm_inherit_theme_button &&
-			sureforms_keys._srfm_inherit_theme_button
+			sureformsKeys?._srfm_inherit_theme_button &&
+			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
 		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
@@ -190,152 +190,150 @@ const SureformsFormSpecificSettings = ( props ) => {
 						// Form Container
 						{
 							property: '--srfm-primary-color',
-							value: sureforms_keys._srfm_color1 || '#0e4372',
+							value: sureformsKeys._srfm_color1 || '#0e4372',
 						},
 						{
 							property: '--srfm-bg-image',
-							value: sureforms_keys._srfm_bg_image
-								? `url(${ sureforms_keys._srfm_bg_image })`
+							value: sureformsKeys._srfm_bg_image
+								? `url(${ sureformsKeys._srfm_bg_image })`
 								: '',
 						},
 						{
 							property: '--srfm-bg-color',
-							value: sureforms_keys._srfm_bg_color
-								? sureforms_keys._srfm_bg_color
+							value: sureformsKeys._srfm_bg_color
+								? sureformsKeys._srfm_bg_color
 								: '',
 						},
 						{
 							property: '--srfm-font-size',
-							value: sureforms_keys._srfm_fontsize
-								? `${ sureforms_keys._srfm_fontsize }px`
+							value: sureformsKeys._srfm_fontsize
+								? `${ sureformsKeys._srfm_fontsize }px`
 								: '20px',
 						},
 						{
 							property: '--srfm-label-text-color',
-							value:
-								sureforms_keys._srfm_label_color || '#1f2937',
+							value: sureformsKeys._srfm_label_color || '#1f2937',
 						},
 						{
 							property: '--srfm-help-color',
-							value: sureforms_keys._srfm_help_color || '#6b7280',
+							value: sureformsKeys._srfm_help_color || '#6b7280',
 						},
 						// Input
 						{
 							property: '--srfm-body-input-color',
 							value:
-								sureforms_keys._srfm_input_text_color ||
+								sureformsKeys._srfm_input_text_color ||
 								'#4B5563',
 						},
 
 						{
 							property: '--srfm-placeholder-color',
 							value:
-								sureforms_keys._srfm_input_placeholder_color ||
+								sureformsKeys._srfm_input_placeholder_color ||
 								'#9CA3AF',
 						},
 						{
 							property: '--srfm-base-background-color',
 							value:
-								sureforms_keys._srfm_input_bg_color ||
-								'#ffffff',
+								sureformsKeys._srfm_input_bg_color || '#ffffff',
 						},
 						{
 							property: '--srfm-border-color',
 							value:
-								sureforms_keys._srfm_input_border_color ||
+								sureformsKeys._srfm_input_border_color ||
 								'#D0D5DD',
 						},
 						{
 							property: '--srfm-border',
 							value:
-								sureforms_keys._srfm_input_border_width +
-									'px' || '1px',
+								sureformsKeys._srfm_input_border_width + 'px' ||
+								'1px',
 						},
 						{
 							property: '--srfm-border-radius',
 							value:
-								sureforms_keys._srfm_input_border_radius +
+								sureformsKeys._srfm_input_border_radius +
 									'px' || '4px',
 						},
 						// Error
 						{
 							property: '--srfm-error-text-color',
-							value: sureforms_keys._srfm_field_error_color
-								? `${ sureforms_keys._srfm_field_error_color }`
+							value: sureformsKeys._srfm_field_error_color
+								? `${ sureformsKeys._srfm_field_error_color }`
 								: '#DC2626',
 						},
 						{
 							property: '--srfm-field-error-surface-color',
 							value:
-								sureforms_keys._srfm_field_error_surface_color ||
+								sureformsKeys._srfm_field_error_surface_color ||
 								'#EF4444',
 						},
 						{
 							property: '--srfm-field-error-bg-color',
 							value:
-								sureforms_keys._srfm_field_error_bg_color ||
+								sureformsKeys._srfm_field_error_bg_color ||
 								'#FEF2F2',
 						},
 						// Submit Button
 						{
 							property: '--srfm-btn-text-color',
 							value:
-								sureforms_keys._srfm_button_text_color ||
+								sureformsKeys._srfm_button_text_color ||
 								'#ffffff',
 						},
 						{
 							property: '--srfm-btn-bg-color',
 							value:
-								sureforms_keys._srfm_button_bg_color ||
+								sureformsKeys._srfm_button_bg_color ||
 								'#0e4372',
 						},
 						{
 							property: '--srfm-btn-border-color',
 							value:
-								sureforms_keys._srfm_button_border_color ||
+								sureformsKeys._srfm_button_border_color ||
 								'#ffffff',
 						},
 						{
 							property: '--srfm-btn-border-width',
 							value:
-								sureforms_keys._srfm_button_border_width +
+								sureformsKeys._srfm_button_border_width +
 									'px' || '0px',
 						},
 						{
 							property: '--srfm-btn-border-radius',
 							value:
-								sureforms_keys._srfm_button_border_radius +
+								sureformsKeys._srfm_button_border_radius +
 									'px' || '6px',
 						},
 						{
 							property: '--srfm-submit-alignment-backend',
-							value: sureforms_keys._srfm_submit_alignment_backend
-								? `${ sureforms_keys._srfm_submit_alignment_backend }`
+							value: sureformsKeys._srfm_submit_alignment_backend
+								? `${ sureformsKeys._srfm_submit_alignment_backend }`
 								: '100%',
 						},
 						{
 							property: '--srfm-submit-width-backend',
-							value: sureforms_keys._srfm_submit_width_backend
-								? `${ sureforms_keys._srfm_submit_width_backend }`
+							value: sureformsKeys._srfm_submit_width_backend
+								? `${ sureformsKeys._srfm_submit_width_backend }`
 								: 'max-content',
 						},
 
 						{
 							property: '--srfm-submit-alignment',
-							value: sureforms_keys._srfm_submit_alignment
-								? `${ sureforms_keys._srfm_submit_alignment }`
+							value: sureformsKeys._srfm_submit_alignment
+								? `${ sureformsKeys._srfm_submit_alignment }`
 								: 'left',
 						},
 						{
 							property: '--srfm-submit-width',
-							value: sureforms_keys._srfm_submit_width
-								? `${ sureforms_keys._srfm_submit_width }`
+							value: sureformsKeys._srfm_submit_width
+								? `${ sureformsKeys._srfm_submit_width }`
 								: '',
 						},
 						{
 							property: '--srfm-submit-button-text',
-							value: sureforms_keys._srfm_submit_button_text
-								? `"${ sureforms_keys._srfm_submit_button_text }"`
+							value: sureformsKeys._srfm_submit_button_text
+								? `"${ sureformsKeys._srfm_submit_button_text }"`
 								: 'SUBMIT',
 						},
 					];
@@ -399,7 +397,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureforms_keys ] );
+	}, [ deviceType, sureformsKeys ] );
 
 	useEffect( () => {
 		//quick action sidebar
