@@ -943,7 +943,7 @@ class SRFM_Post_Types {
 			$form_preview = filter_var( $form_preview_attr, FILTER_VALIDATE_BOOLEAN );
 		}
 
-		if ( is_singular( 'sureforms_form' ) && ! $form_preview ) {
+		if ( is_singular( 'sureforms_form' ) && ! $form_preview && ! current_user_can( 'manage_options' ) ) {
 			wp_safe_redirect( home_url() );
 			return;
 		}

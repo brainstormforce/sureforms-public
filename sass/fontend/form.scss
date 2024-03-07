@@ -16,6 +16,43 @@
 		margin-bottom: 1em;
 	}
 
+	.srfm-instant-form-wrn-ctn {
+		display: flex;
+		align-items: flex-start;
+		border: 1px solid #fec84b;
+		border-radius: 0.75em;
+		background-color: #fffcf5;
+		padding: 0.75em;
+		margin-bottom: 1.2em;
+
+		.srfm-svg-container {
+			max-width: 36px;
+			width: 100%;
+			flex: none;
+		}
+
+		.srfm-wrn-text-ctn {
+			display: flex;
+			flex-direction: column;
+			margin-left: 0.5em;
+			gap: 0.25em;
+		}
+
+		.srfm-wrn-title {
+			font-size: 0.875em;
+			font-weight: 600;
+			color: #b54708;
+			line-height: 1.25em;
+		}
+
+		.srfm-wrn-description {
+			font-size: 0.875em;
+			font-weight: 400;
+			color: #b54708;
+			line-height: 1.25em;
+		}
+	}
+
 	.srfm-form {
 		.srfm-block-single,
 		.srfm-submit-container,

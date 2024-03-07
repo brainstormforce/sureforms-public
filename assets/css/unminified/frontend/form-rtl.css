@@ -12,6 +12,38 @@
   margin-top: 0;
   margin-bottom: 1em;
 }
+.srfm-form-container .srfm-instant-form-wrn-ctn {
+  display: flex;
+  align-items: flex-start;
+  border: 1px solid #fec84b;
+  border-radius: 0.75em;
+  background-color: #fffcf5;
+  padding: 0.75em;
+  margin-bottom: 1.2em;
+}
+.srfm-form-container .srfm-instant-form-wrn-ctn .srfm-svg-container {
+  max-width: 36px;
+  width: 100%;
+  flex: none;
+}
+.srfm-form-container .srfm-instant-form-wrn-ctn .srfm-wrn-text-ctn {
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.5em;
+  gap: 0.25em;
+}
+.srfm-form-container .srfm-instant-form-wrn-ctn .srfm-wrn-title {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b54708;
+  line-height: 1.25em;
+}
+.srfm-form-container .srfm-instant-form-wrn-ctn .srfm-wrn-description {
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #b54708;
+  line-height: 1.25em;
+}
 .srfm-form-container .srfm-form .srfm-block-single,
 .srfm-form-container .srfm-form .srfm-submit-container,
 .srfm-form-container .srfm-form .uagb-block {
