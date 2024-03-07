@@ -100,6 +100,7 @@ class SRFM_Generate_Form_Markup {
 			$btn_from_theme    = SRFM_Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 			$btn_text_color    = SRFM_Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
 			$btn_bg_type       = SRFM_Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$instant_form      = SRFM_Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
 				$btn_bg_color      = SRFM_Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0e4372' );
@@ -228,6 +229,30 @@ class SRFM_Generate_Form_Markup {
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
 				<?php
 			}
+			?>
+			<?php
+				if ( '' === $instant_form && current_user_can( 'manage_options' )  ) {
+					ob_start();
+				?>
+					<div class="srfm-instant-form-wrn-ctn">
+						<div class="srfm-wrn-inner-ctn">
+							<svg width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'><g opacity='0.3'><rect x='5.49935' y='5.50008' width='25' height='25' rx='12.5' stroke='#DC6803' stroke-width='1.66667'/></g><g opacity='0.1'><rect x='1.33333' y='1.33333' width='33.3333' height='33.3333' rx='16.6667' stroke='#DC6803' stroke-width='1.66667'/></g><g clip-path='url(#clip0_6924_257)'><path d='M17.9993 14.6667V18.0001M17.9993 21.3334H18.0077M26.3327 18.0001C26.3327 22.6025 22.6017 26.3334 17.9993 26.3334C13.397 26.3334 9.66602 22.6025 9.66602 18.0001C9.66602 13.3977 13.397 9.66675 17.9993 9.66675C22.6017 9.66675 26.3327 13.3977 26.3327 18.0001Z' stroke='#DC6803' stroke-width='1.66667' stroke-linecap='round' stroke-linejoin='round'/></g><defs><clipPath id='clip0_6924_257'><rect width='20' height='20' fill='white' transform='translate(8 8)'/></clipPath></defs></svg>
+							<div class="srfm-wrn-text-ctn">
+								<span class="srfm-wrn-title">
+									<?php echo __( 'Please Enable Instant forms', 'sureforms' ); ?>
+								</span>
+								<span class="srfm-wrn-description">
+								<?php echo __( 'To view the forms in the frontend you have to activate the instant form from the editor.', 'sureforms' ); ?>
+								</span>
+								<span class="srfm-wrn-title">
+									<?php echo __( 'Learn More', 'sureforms' ); ?>
+								</span>
+							</div>
+						</div>
+					</div>
+				<?php
+					echo ob_get_clean();
+				}
 			?>
 				<form method="post" id="srfm-form-<?php echo esc_attr( SRFM_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
 				form-id="<?php echo esc_attr( SRFM_Helper::get_string_value( $id ) ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
