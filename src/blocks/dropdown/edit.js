@@ -70,7 +70,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}, [ formId, setAttributes, currentFormId ] );
 
 	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
-		'srfm_url_block_required_text',
+		'srfm_dropdown_block_required_text',
 		errorMsg
 	);
 
