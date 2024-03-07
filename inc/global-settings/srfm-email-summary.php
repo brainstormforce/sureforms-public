@@ -76,7 +76,7 @@ class SRFM_Email_Summary {
 
 		return new WP_REST_Response(
 			[
-				'data'   => __( 'Test Email Sent Successfully.', 'sureforms' ),
+				'data' => __( 'Test Email Sent Successfully.', 'sureforms' ),
 			]
 		);
 	}

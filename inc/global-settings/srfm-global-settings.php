@@ -83,7 +83,7 @@ class SRFM_Global_Settings {
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
 				[
-					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'data' => __( 'Nonce verification failed.', 'sureforms' ),
 				]
 			);
 		}
@@ -117,7 +117,7 @@ class SRFM_Global_Settings {
 		} else {
 			return new WP_REST_Response(
 				[
-					'data'   => __( 'Settings Saved Successfully.', 'sureforms' ),
+					'data' => __( 'Settings Saved Successfully.', 'sureforms' ),
 				]
 			);
 		}
@@ -252,7 +252,7 @@ class SRFM_Global_Settings {
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
 				[
-					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'data' => __( 'Nonce verification failed.', 'sureforms' ),
 				]
 			);
 		}
