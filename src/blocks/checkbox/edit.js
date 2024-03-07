@@ -8,7 +8,7 @@ import {
 	RichText,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';

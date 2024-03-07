@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {

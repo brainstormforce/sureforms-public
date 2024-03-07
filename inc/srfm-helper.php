@@ -246,7 +246,7 @@ class SRFM_Helper {
 
 		$comman_err_msg = [
 			'required' => __( 'This field is required.', 'sureforms' ),
-			'unique'   => __( 'Value needs to be unique.','sureforms'),
+			'unique'   => __( 'Value needs to be unique.', 'sureforms' ),
 		];
 
 		$default_dynamic_values = [

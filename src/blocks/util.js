@@ -63,8 +63,8 @@ const getBlockTypes = ( exclude = '' ) => {
 /**
  * Generate Validation Message.
  *
- * @param {string} defaultMessage Default error message.
- * @param {string} message        Custom error message.
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
  * @return {string} message.
  */
 const validationMessage = ( key, message ) => {
@@ -75,6 +75,13 @@ const validationMessage = ( key, message ) => {
 	return srfm_block_data?.get_default_dynamic_block_option?.[ key ] ?? '';
 };
 
+/**
+ * Generate Required Error Message.
+ *
+ * @param {string} key      Default error message key
+ * @param {string} errorMsg Custom error message.
+ * @return {Object} currentErrorMsg, setCurrentErrorMsg.
+ */
 const useReqErrMessage = ( key, errorMsg ) => {
 	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
@@ -85,6 +92,13 @@ const useReqErrMessage = ( key, errorMsg ) => {
 	return { currentErrorMsg, setCurrentErrorMsg };
 };
 
+/**
+ * Generate Unique Error Message.
+ *
+ * @param {string} key      Default error message key
+ * @param {string} errorMsg Custom error message.
+ * @return {Object} currentUniqueMessage, setCurrentUniqueMessage.
+ */
 const useUniqueErrMessage = ( key, errorMsg ) => {
 	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 

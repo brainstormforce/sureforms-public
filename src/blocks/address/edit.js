@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';

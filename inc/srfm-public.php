@@ -55,7 +55,10 @@ class SRFM_Public {
 		}
 
 		$security_setting_options = get_option( 'srfm_security_settings_options' );
-		$is_set_v2_site_key	      = isset( $security_setting_options['srfm_v2_invisible_site_key'] ) && ! empty( $security_setting_options['srfm_v2_invisible_site_key'] );
+		$is_set_v2_site_key       = false;
+		if ( is_array( $security_setting_options ) && isset( $security_setting_options['srfm_v2_invisible_site_key'] ) && ! empty( $security_setting_options['srfm_v2_invisible_site_key'] ) ) {
+			$is_set_v2_site_key = true;
+		}
 
 		// Styles based on meta style.
 		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
