@@ -54,7 +54,8 @@ class SRFM_Public {
 			$file_prefix .= '-rtl';
 		}
 
-		$is_set_v2_site_key = get_option( 'srfm_v2_invisible_site' );
+		$security_setting_options = get_option( 'srfm_security_settings_options' );
+		$is_set_v2_site_key	      = isset( $security_setting_options['srfm_v2_invisible_site_key'] ) && ! empty( $security_setting_options['srfm_v2_invisible_site_key'] );
 
 		// Styles based on meta style.
 		wp_enqueue_style( SRFM_SLUG . '-frontend-default', $css_uri . '/blocks/default/frontend' . $file_prefix . '.css', [], SRFM_VER );
@@ -79,8 +80,8 @@ class SRFM_Public {
 
 		// Google reCaptcha.
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-		if ( ! empty( $is_set_v2_site_key ) ) {
-			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ 'srfm-form-submit-js' ], SRFM_VER, true );
+		if ( $is_set_v2_site_key ) {
+			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
 		}
 
 		wp_localize_script(

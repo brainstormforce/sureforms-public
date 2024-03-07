@@ -187,7 +187,7 @@ function extractFormAttributesAndElements( form ) {
 // v-2 invisible recaptcha callback
 function onloadCallback() {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
-
+	console.log( 'forms', forms );
 	forms.forEach( ( form ) => {
 		const {
 			formId,

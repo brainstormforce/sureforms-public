@@ -21,7 +21,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { validationMessage } from '@Blocks/util';
+import { useReqErrMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -37,7 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	const currentFormId = useGetCurrentFormId( clientId );
 	const blockProps = useBlockProps();
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -45,11 +44,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_checkbox_block_required_text', errorMsg )
-		);
-	}, [] );
+	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+		'srfm_url_block_required_text',
+		errorMsg
+	);
 
 	// show the block preview on hover.
 	if ( preview ) {

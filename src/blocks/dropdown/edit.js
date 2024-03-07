@@ -18,7 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { validationMessage } from '@Blocks/util';
+import { useReqErrMessage } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -46,7 +46,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -70,11 +69,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_dropdown_block_required_text', errorMsg )
-		);
-	}, [] );
+	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+		'srfm_url_block_required_text',
+		errorMsg
+	);
 
 	// show the block preview on hover.
 	if ( preview ) {

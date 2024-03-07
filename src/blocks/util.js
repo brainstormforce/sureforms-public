@@ -1,4 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
+import { useState, useEffect } from '@wordpress/element';
 
 const stripHTML = ( text ) => {
 	const { DOMParser } = window;
@@ -66,15 +67,39 @@ const getBlockTypes = ( exclude = '' ) => {
  * @param {string} message        Custom error message.
  * @return {string} message.
  */
-const validationMessage = ( defaultMessage, message ) => {
-	const defaultErrorMsg = srfm_block_data?.get_default_dynamic_block_option?.[
-		defaultMessage
-	]
-		? srfm_block_data.get_default_dynamic_block_option[ defaultMessage ]
-		: '';
-	const msg =
-		message && message !== defaultErrorMsg ? message : defaultErrorMsg;
-	return msg;
+const validationMessage = ( key, message ) => {
+	if ( message ) {
+		return message;
+	}
+
+	return srfm_block_data?.get_default_dynamic_block_option?.[ key ] ?? '';
 };
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes, validationMessage };
+const useReqErrMessage = ( key, errorMsg ) => {
+	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
+
+	useEffect( () => {
+		setCurrentErrorMsg( validationMessage( key, errorMsg ) );
+	}, [] );
+
+	return { currentErrorMsg, setCurrentErrorMsg };
+};
+
+const useUniqueErrMessage = ( key, errorMsg ) => {
+	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
+
+	useEffect( () => {
+		setCurrentUniqueMessage( validationMessage( key, errorMsg ) );
+	}, [] );
+
+	return { currentUniqueMessage, setCurrentUniqueMessage };
+};
+
+export {
+	stripHTML,
+	getSpacingPresetCssVar,
+	getBlockTypes,
+	validationMessage,
+	useReqErrMessage,
+	useUniqueErrMessage,
+};

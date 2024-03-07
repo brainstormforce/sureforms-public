@@ -19,7 +19,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { validationMessage } from '@Blocks/util';
+import { useReqErrMessage } from '@Blocks/util';
 
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -39,7 +39,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
 
 	const handleInput = ( e ) => {
 		let inputValue = e.target.value;
@@ -63,11 +62,10 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_number_block_required_text', errorMsg )
-		);
-	}, [] );
+	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+		'srfm_number_block_required_text',
+		errorMsg
+	);
 
 	// show the block preview on hover.
 	if ( preview ) {

@@ -243,20 +243,26 @@ class SRFM_Helper {
 	 * @return string[] Meta value.
 	 */
 	public static function default_dynamic_block_option() {
+
+		$comman_err_msg = [
+			'required' => __( 'This field is required.', 'sureforms' ),
+			'unique'   => __( 'Value needs to be unique.','sureforms'),
+		];
+
 		$default_dynamic_values = [
-			'srfm_url_block_required_text'          => __( 'This field is required.', 'sureforms' ),
-			'srfm_input_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_input_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
-			'srfm_address_block_required_text'      => __( 'This field is required.', 'sureforms' ),
-			'srfm_phone_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_phone_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
-			'srfm_number_block_required_text'       => __( 'This field is required..', 'sureforms' ),
-			'srfm_textarea_block_required_text'     => __( 'This field is required.', 'sureforms' ),
-			'srfm_multi_choice_block_required_text' => __( 'This field is required.', 'sureforms' ),
-			'srfm_checkbox_block_required_text'     => __( 'This field is required.', 'sureforms' ),
-			'srfm_email_block_required_text'        => __( 'This field is required.', 'sureforms' ),
-			'srfm_email_block_unique_text'          => __( 'Value needs to be unique.', 'sureforms' ),
-			'srfm_dropdown_block_required_text'     => __( 'This field is required.', 'sureforms' ),
+			'srfm_url_block_required_text'          => $comman_err_msg['required'],
+			'srfm_input_block_required_text'        => $comman_err_msg['required'],
+			'srfm_input_block_unique_text'          => $comman_err_msg['unique'],
+			'srfm_address_block_required_text'      => $comman_err_msg['required'],
+			'srfm_phone_block_required_text'        => $comman_err_msg['required'],
+			'srfm_phone_block_unique_text'          => $comman_err_msg['unique'],
+			'srfm_number_block_required_text'       => $comman_err_msg['required'],
+			'srfm_textarea_block_required_text'     => $comman_err_msg['required'],
+			'srfm_multi_choice_block_required_text' => $comman_err_msg['required'],
+			'srfm_checkbox_block_required_text'     => $comman_err_msg['required'],
+			'srfm_email_block_required_text'        => $comman_err_msg['required'],
+			'srfm_email_block_unique_text'          => $comman_err_msg['unique'],
+			'srfm_dropdown_block_required_text'     => $comman_err_msg['required'],
 		];
 
 		return $default_dynamic_values;

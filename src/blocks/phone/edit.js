@@ -17,7 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { validationMessage } from '@Blocks/util';
+import { useReqErrMessage, useUniqueErrMessage } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -37,8 +37,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	// eslint-disable-next-line no-unused-vars
 	const [ code, setCode ] = useState( null );
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
-	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
 
 	function handleChange( e ) {
 		setCode( e.target.value );
@@ -50,14 +48,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_phone_block_required_text', errorMsg )
-		);
-		setCurrentUniqueMessage(
-			validationMessage( 'srfm_phone_block_unique_text', duplicateMsg )
-		);
-	}, [] );
+	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+		'srfm_phone_block_required_text',
+		errorMsg
+	);
+
+	const { currentUniqueMessage, setCurrentUniqueMessage } =
+		useUniqueErrMessage( 'srfm_phone_block_unique_text', duplicateMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {

@@ -164,14 +164,23 @@ class SRFM_Submit {
 			$global_setting_options = [];
 		}
 
-		if ( 'v2-checkbox' === $selected_captcha_type ) {
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v2_checkbox_secret_key'] ) ? $global_setting_options['srfm_v2_checkbox_secret_key'] : '';
-
-		} elseif ( 'v2-invisible' === $selected_captcha_type ) {
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v2_invisible_secret_key'] ) ? $global_setting_options['srfm_v2_invisible_secret_key'] : '';
-		} elseif ( 'v3-reCAPTCHA' === $selected_captcha_type ) {
-			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_v3_secret_key'] ) ? $global_setting_options['srfm_v3_secret_key'] : '';
+		switch ($selected_captcha_type) {
+			case 'v2-checkbox':
+				$key = 'srfm_v2_checkbox_secret_key';
+				break;
+			case 'v2-invisible':
+				$key = 'srfm_v2_invisible_secret_key';
+				break;
+			case 'v3-reCAPTCHA':
+				$key = 'srfm_v3_secret_key';
+				break;
+			default:
+				$key = '';
+				break;
 		}
+		
+		$google_captcha_secret_key = is_array($global_setting_options) && isset($global_setting_options[$key]) ? $global_setting_options[$key] : '';		
+
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
 				if ( isset( $form_data['sureforms_form_submit'] ) ) {

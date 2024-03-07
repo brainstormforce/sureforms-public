@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -12,7 +11,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
-import { validationMessage } from '@Blocks/util';
+import { useReqErrMessage } from '@Blocks/util';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -25,13 +24,10 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
-
-	useEffect( () => {
-		setCurrentErrorMsg(
-			validationMessage( 'srfm_url_block_required_text', errorMsg )
-		);
-	}, [] );
+	const { currentErrorMsg, setCurrentErrorMsg } = useReqErrMessage(
+		'srfm_url_block_required_text',
+		errorMsg
+	);
 
 	return (
 		<InspectorControls>
