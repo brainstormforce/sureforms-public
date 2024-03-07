@@ -179,11 +179,8 @@
 							position: relative;
 							.srfm-scroll-dropdown {
 								position: absolute;
-								top: 0;
-								right: 0;
+								right: 2px;
 								.has-icon {
-									min-height: 41px;
-
 									&:focus:not( :disabled ) {
 										box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) );
 									}

@@ -128,8 +128,8 @@ if ( $srfm_form_preview_attr ) {
 					background-color: transparent;
 				}
 
-				.srfm-form-container ~ div { 
-					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */
+				.srfm-form-container ~ div, .srfm-instant-form-wrn-ctn { 
+					display: none !important; /* Needs to be important to remove any blocks added by external plugins in wp_footer() */	
 				}
 			</style>
 			<?php
