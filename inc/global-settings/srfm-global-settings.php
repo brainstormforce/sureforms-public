@@ -72,7 +72,7 @@ class SRFM_Global_Settings {
 	 * Save global settings options.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return void
+	 * @return WP_REST_Response|WP_Error
 	 *
 	 * @since 0.0.1
 	 */
@@ -84,7 +84,6 @@ class SRFM_Global_Settings {
 			wp_send_json_error(
 				[
 					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
-					'status' => false,
 				]
 			);
 		}
@@ -113,18 +112,12 @@ class SRFM_Global_Settings {
 				break;
 		}
 
-		if ( $is_option_saved ) {
-			wp_send_json_success(
-				[
-					'data'   => __( 'Settings saved successfully.', 'sureforms' ),
-					'status' => true,
-				]
-			);
+		if ( ! $is_option_saved ) {
+			return new WP_Error( 'Error Saving Settings!', 'Global Settings' );
 		} else {
-			wp_send_json_error(
+			return new WP_REST_Response(
 				[
-					'data'   => __( 'Failed to save settings.', 'sureforms' ),
-					'status' => false,
+					'data'   => __( 'Settings Saved Successfully.', 'sureforms' ),
 				]
 			);
 		}
@@ -144,7 +137,7 @@ class SRFM_Global_Settings {
 		$srfm_form_analytics = isset( $setting_options['srfm_form_analytics'] ) ? $setting_options['srfm_form_analytics'] : false;
 		$srfm_gdpr           = isset( $setting_options['srfm_gdpr'] ) ? $setting_options['srfm_gdpr'] : false;
 
-		$is_option_saved = update_option(
+		return update_option(
 			'srfm_general_settings_options',
 			[
 				'srfm_ip_log'         => $srfm_ip_log,
@@ -154,7 +147,6 @@ class SRFM_Global_Settings {
 			]
 		);
 
-		return $is_option_saved;
 	}
 
 	/**
@@ -183,9 +175,8 @@ class SRFM_Global_Settings {
 
 		];
 
-		$is_option_saved = update_option( 'get_default_dynamic_block_option', $default_dynamic_block_option );
+		return update_option( 'get_default_dynamic_block_option', $default_dynamic_block_option );
 
-		return $is_option_saved;
 	}
 
 	/**
@@ -201,7 +192,13 @@ class SRFM_Global_Settings {
 		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
 		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : 'Monday';
 
-		$is_option_saved = update_option(
+		SRFM_Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+
+		if ( $srfm_email_summary ) {
+			SRFM_Email_Summary::schedule_weekly_entries_email();
+		}
+
+		return update_option(
 			'srfm_email_summary_settings_options',
 			[
 				'srfm_email_summary'   => $srfm_email_summary,
@@ -209,16 +206,6 @@ class SRFM_Global_Settings {
 				'srfm_schedule_report' => $srfm_schedule_report,
 			]
 		);
-
-		$email_summary = new SRFM_Email_Summary();
-
-		$email_summary->unschedule_events( 'srfm_weekly_scheduled_events' );
-
-		if ( $srfm_email_summary ) {
-			$email_summary->schedule_weekly_entries_email();
-		}
-
-		return $is_option_saved;
 	}
 
 	/**
@@ -237,7 +224,7 @@ class SRFM_Global_Settings {
 		$srfm_v3_site_key             = isset( $setting_options['srfm_v3_site_key'] ) ? $setting_options['srfm_v3_site_key'] : '';
 		$srfm_v3_secret_key           = isset( $setting_options['srfm_v3_secret_key'] ) ? $setting_options['srfm_v3_secret_key'] : '';
 
-		$is_option_saved = update_option(
+		return update_option(
 			'srfm_security_settings_options',
 			[
 				'srfm_v2_checkbox_site_key'    => $srfm_v2_checkbox_site_key,
@@ -249,7 +236,6 @@ class SRFM_Global_Settings {
 			]
 		);
 
-		return $is_option_saved;
 	}
 
 	/**
@@ -267,7 +253,6 @@ class SRFM_Global_Settings {
 			wp_send_json_error(
 				[
 					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
-					'status' => false,
 				]
 			);
 		}

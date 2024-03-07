@@ -10,7 +10,7 @@ import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { default_keys, isPageBreak } = props;
+	const { defaultKeys, isPageBreak } = props;
 	const root = document.documentElement.querySelector( 'body' );
 
 	let sureforms_keys = useSelect( ( select ) =>
@@ -72,7 +72,7 @@ function GeneralSettings( props ) {
 				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
 		);
 	} else {
-		sureforms_keys = default_keys;
+		sureforms_keys = defaultKeys;
 		editPost( {
 			meta: sureforms_keys,
 		} );

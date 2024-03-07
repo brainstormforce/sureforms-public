@@ -9,7 +9,7 @@ import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
 
-const default_keys = {
+const defaultKeys = {
 	// General Tab
 	// Submit button
 	_srfm_submit_button_text: { default: 'SUBMIT' },
@@ -92,7 +92,7 @@ export const blocksAttributes = {
 		...numberAttributes.attributes,
 		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
 	},
-	form_specific: default_keys,
+	form_specific: defaultKeys,
 };
 
 function getDefaultMessage( optionName ) {

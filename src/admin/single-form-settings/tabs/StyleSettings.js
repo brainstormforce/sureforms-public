@@ -20,7 +20,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { default_keys } = props;
+	const { defaultKeys } = props;
 
 	let sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -241,7 +241,7 @@ function StyleSettings( props ) {
 				: ''
 		);
 	} else {
-		sureforms_keys = default_keys;
+		sureforms_keys = defaultKeys;
 		editPost( {
 			meta: sureforms_keys,
 		} );

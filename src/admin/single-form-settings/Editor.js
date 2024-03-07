@@ -34,7 +34,7 @@ import ProPanel from './components/pro-panel/index.js';
 
 const { select, dispatch } = wp.data;
 
-const default_keys = {
+const defaultKeys = {
 	// General Tab
 	_srfm_show_labels: true,
 	_srfm_show_asterisk: true,
@@ -479,7 +479,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			>
 				<InspectorTab { ...SRFMTabs.general }>
 					<GeneralSettings
-						default_keys={ default_keys }
+						defaultKeys={ defaultKeys }
 						enableQuickActionSidebar={ enableQuickActionSidebar }
 						setEnableQuickActionSidebar={
 							setEnableQuickActionSidebar
@@ -488,10 +488,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings default_keys={ default_keys } />
+					<StyleSettings defaultKeys={ defaultKeys } />
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<AdvancedSettings default_keys={ default_keys } />
+					<AdvancedSettings defaultKeys={ defaultKeys } />
 				</InspectorTab>
 			</InspectorTabs>
 			<PluginPostPublishPanel>

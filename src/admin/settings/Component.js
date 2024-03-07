@@ -39,7 +39,7 @@ const Component = ( { path } ) => {
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 
 	// Options to fetch from API.
-	const options_to_fetch = [
+	const optionsToFetch = [
 		'srfm_general_settings_options',
 		'srfm_email_summary_settings_options',
 		'srfm_security_settings_options',
@@ -69,7 +69,7 @@ const Component = ( { path } ) => {
 			setLoading( true );
 			try {
 				const data = await apiFetch( {
-					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ options_to_fetch }`,
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ optionsToFetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
@@ -154,14 +154,11 @@ const Component = ( { path } ) => {
 					'content-type': 'application/json',
 					'X-WP-Nonce': srfm_admin.global_settings_nonce,
 				},
-			} ).then( () => {
+			} ).then( ( response ) => {
 				toast.dismiss();
-				toast.success(
-					__( 'Settings Saved Successfully!', 'sureforms' ),
-					{
-						duration: 1500,
-					}
-				);
+				toast.success( response?.data, {
+					duration: 1500,
+				} );
 				setTimeout( () => {
 					toast.dismiss();
 				}, 1500 );

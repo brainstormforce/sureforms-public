@@ -79,18 +79,16 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 											srfm_email_sent_to:
 												emailTabOptions.srfm_email_sent_to,
 										},
-									} );
-									setSendingTestEmail( false );
-									toast.success(
-										__(
-											'Test Email Summary Sent Successfully!',
-											'sureforms'
-										)
-									);
-
-									setTimeout( () => {
+									} ).then( ( response ) => {
+										setSendingTestEmail( false );
 										toast.dismiss();
-									}, 1500 );
+										toast.success( response?.data, {
+											duration: 1500,
+										} );
+										setTimeout( () => {
+											toast.dismiss();
+										}, 1500 );
+									} );
 								} catch ( error ) {
 									console.error(
 										'Error Sending Test Email Summary:',

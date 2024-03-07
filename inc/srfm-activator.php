@@ -31,12 +31,11 @@ class SRFM_Activator {
 	 */
 	public static function activate() {
 
-		$email_summary_options = get_option( 'srfm_email_summary_options' );
-		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['enable_email_summary'] : '';
+		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
+		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['srfm_email_summary'] : '';
 
 		if ( $enable_email_summary ) {
-			$email_summary = new SRFM_Email_Summary();
-			$email_summary->schedule_weekly_entries_email();
+			SRFM_Email_Summary::schedule_weekly_entries_email();
 		}
 
 		/**

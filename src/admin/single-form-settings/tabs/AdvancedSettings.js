@@ -18,7 +18,7 @@ import parse from 'html-react-parser';
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
-	const { default_keys } = props;
+	const { defaultKeys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
 
@@ -45,13 +45,13 @@ function AdvancedSettings( props ) {
 
 	if ( sureforms_keys && '_srfm_submit_type' in sureforms_keys ) {
 		if ( ! sureforms_keys._srfm_submit_type ) {
-			sureforms_keys = default_keys;
+			sureforms_keys = defaultKeys;
 			editPost( {
 				meta: sureforms_keys,
 			} );
 		}
 	} else {
-		sureforms_keys = default_keys;
+		sureforms_keys = defaultKeys;
 		editPost( {
 			meta: sureforms_keys,
 		} );
@@ -66,13 +66,13 @@ function AdvancedSettings( props ) {
 	}
 
 	// Fetch the reCAPTCHA keys from the Global Settings
-	const options_to_fetch = [ 'srfm_security_settings_options' ];
+	const optionsToFetch = [ 'srfm_security_settings_options' ];
 
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
 				const data = await apiFetch( {
-					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ options_to_fetch }`,
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ optionsToFetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',

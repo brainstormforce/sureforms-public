@@ -74,9 +74,11 @@ class SRFM_Email_Summary {
 
 		self::send_entries_to_admin( $get_email_summary_options );
 
-		$response = new WP_REST_Response( [ 'message' => __( 'Test email sent successfully.', 'sureforms' ) ], 200 );
-
-		return $response;
+		return new WP_REST_Response(
+			[
+				'data'   => __( 'Test Email Sent Successfully.', 'sureforms' ),
+			]
+		);
 	}
 
 	/**
@@ -86,7 +88,7 @@ class SRFM_Email_Summary {
 	 * @return void
 	 * @since 0.0.2
 	 */
-	public function unschedule_events( $hook ) {
+	public static function unschedule_events( $hook ) {
 		as_unschedule_all_actions( $hook );
 	}
 
@@ -96,7 +98,7 @@ class SRFM_Email_Summary {
 	 * @since 0.0.2
 	 * @return string HTML table with entries count.
 	 */
-	public function get_total_entries_for_week() {
+	public static function get_total_entries_for_week() {
 		$args = [
 			'post_type'      => SRFM_FORMS_POST_TYPE,
 			'posts_per_page' => -1,
@@ -179,8 +181,8 @@ class SRFM_Email_Summary {
 	 * @since 0.0.2
 	 * @return void
 	 */
-	public function send_entries_to_admin( $email_summary_options ) {
-		$entries_count_table = $this->get_total_entries_for_week();
+	public static function send_entries_to_admin( $email_summary_options ) {
+		$entries_count_table = self::get_total_entries_for_week();
 
 		$recipients_string = '';
 
@@ -208,7 +210,7 @@ class SRFM_Email_Summary {
 	 * @return void
 	 * @since 0.0.2
 	 */
-	public function schedule_weekly_entries_email() {
+	public static function schedule_weekly_entries_email() {
 		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
 
 		$time = apply_filters( 'srfm_weekly_email_summary_time', '09:00:00' );

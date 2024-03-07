@@ -145,8 +145,7 @@ class SRFM_Plugin_Loader {
 			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
-				$email_summary = new SRFM_Email_Summary();
-				$email_summary->unschedule_events( 'srfm_weekly_scheduled_events' );
+				SRFM_Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}
