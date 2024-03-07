@@ -94,7 +94,7 @@
 						background-color: var( --srfm-base-background-color );
 						height: auto;
 						font-size: initial;
-						padding: 0.75em 2em 0.75em 1em !important;
+						padding: 0.75em 2.2em 0.75em 1em !important;
 
 						&::after {
 							content: "";
@@ -109,15 +109,26 @@
 							top: 1em;
 						}
 
+						.item {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						}
+
 						input {
 							line-height: normal;
 							font-size: initial;
 							height: auto;
 							width: auto;
+							min-width: auto;
 
 							&::placeholder {
 								color: var( --srfm-placeholder-color );
 								opacity: 1; /* Firefox */
+							}
+
+							&:placeholder-shown {
+								text-overflow: ellipsis;
 							}
 						}
 					}

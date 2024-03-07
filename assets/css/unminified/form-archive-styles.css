@@ -201,7 +201,9 @@ input:checked + .slider:before {
   color: red;
 }
 
-.wrap .page-title-action {
+.wrap .srfm-add-new-btn {
+  position: relative;
+  top: -3px;
   vertical-align: baseline;
 }
 .wrap .srfm-import-btn {

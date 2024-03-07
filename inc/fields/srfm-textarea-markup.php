@@ -49,11 +49,10 @@ class SRFM_Textarea_Markup extends SRFM_Base {
 		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 
 		// html attributes.
-		$placeholder_attr   = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
-		$max_length_attr    = $max_length ? ' maxLength="' . $max_length . '" ' : '';
-		$default_value_attr = $default ? ' value="' . $default . '" ' : '';
-		$cols_attr          = $cols ? ' cols="' . $cols . '" ' : '';
-		$rows_attr          = $rows ? ' rows="' . $rows . '" ' : '';
+		$placeholder_attr = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+		$max_length_attr  = $max_length ? ' maxLength="' . $max_length . '" ' : '';
+		$cols_attr        = $cols ? ' cols="' . $cols . '" ' : '';
+		$rows_attr        = $rows ? ' rows="' . $rows . '" ' : '';
 
 		$aria_require_attr = $required ? 'true' : 'false';
 
@@ -71,7 +70,7 @@ class SRFM_Textarea_Markup extends SRFM_Base {
 				<?php if ( $max_length_html ) { ?>
 					<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>
 				<?php } ?>
-				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ></textarea>
+				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ><?php echo esc_html( $default ); ?></textarea>
 			</div>
 			<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
 			<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
