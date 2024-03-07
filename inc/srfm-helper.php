@@ -35,17 +35,16 @@ class SRFM_Helper {
 	/**
 	 * Get common error message.
 	 *
-	 * @param string $key key name.
-	 * @since 0.0.1
+	 * @since 0.0.3
 	 * @return array<string>
 	 */
 	public static function get_common_err_msg() {
-		return array(
+		return [
 			'required' => __( 'This field is required.', 'sureforms' ),
 			'unique'   => __( 'Value needs to be unique.', 'sureforms' ),
-		);
+		];
 	}
-	
+
 
 	/**
 	 * Checks if current value is string or else returns default value

@@ -78,9 +78,10 @@ const validationMessage = ( key, message ) => {
 /**
  * Generate Required Error Message.
  *
- * @param {string} key      Default error message key
- * @param {string} errorMsg Custom error message.
- * @return {Object} currentErrorMsg, setCurrentErrorMsg.
+ * @param {string} type    Type of error message.
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
+ * @return {Object} currentErrorMsg, setCurrentErrorMsg, currentUniqueMessage, setCurrentUniqueMessage.
  */
 const useErrMessage = ( type, key, message ) => {
 	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
