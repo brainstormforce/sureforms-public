@@ -231,28 +231,26 @@ class SRFM_Generate_Form_Markup {
 			}
 			?>
 			<?php
-				if ( '' === $instant_form && current_user_can( 'manage_options' )  ) {
-					ob_start();
+			if ( '' === $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
 				?>
 				<div class="srfm-instant-form-wrn-ctn">
 					<div class="srfm-svg-container">
-						<?php echo SRFM_Helper::fetch_svg( 'instant-form-warning', '' ); ?>
+					<?php echo SRFM_Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
 					</div>
 					<div class="srfm-wrn-text-ctn">
 						<span class="srfm-wrn-title">
-							<?php echo __( 'Please Enable Instant Form', 'sureforms' ); ?>
+						<?php echo esc_html__( 'Please Enable Instant Form', 'sureforms' ); ?>
 						</span>
 						<span class="srfm-wrn-description">
-							<?php echo __( 'To view the forms in the frontend you have to activate the instant form from the editor.', 'sureforms' ); ?>
+						<?php echo esc_html__( 'To view the forms in the frontend you have to activate the instant form from the editor.', 'sureforms' ); ?>
 						</span>
 						<span class="srfm-wrn-title">
-							<?php echo __( 'Learn More', 'sureforms' ); ?>
+						<?php echo esc_html__( 'Learn More', 'sureforms' ); ?>
 						</span>
 					</div>
 				</div>
-				<?php
-					echo ob_get_clean();
-				}
+			<?php
+			}
 			?>
 				<form method="post" id="srfm-form-<?php echo esc_attr( SRFM_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
 				form-id="<?php echo esc_attr( SRFM_Helper::get_string_value( $id ) ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
