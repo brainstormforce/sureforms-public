@@ -249,7 +249,7 @@ class SRFM_Generate_Form_Markup {
 						</span>
 					</div>
 				</div>
-			<?php
+				<?php
 			}
 			?>
 				<form method="post" id="srfm-form-<?php echo esc_attr( SRFM_Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
