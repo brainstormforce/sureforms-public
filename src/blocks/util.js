@@ -83,26 +83,14 @@ const validationMessage = ( key, message ) => {
  * @param {string} message Custom error message.
  * @return {Object} currentErrorMsg, setCurrentErrorMsg, currentUniqueMessage, setCurrentUniqueMessage.
  */
-const useErrMessage = ( type, key, message ) => {
-	const [ currentErrorMsg, setCurrentErrorMsg ] = useState();
-	const [ currentUniqueMessage, setCurrentUniqueMessage ] = useState();
+const useErrMessage = ( key, message ) => {
+	const [ currentMessage, setCurrentMessage ] = useState();
 
 	useEffect( () => {
-		if ( type === 'required' ) {
-			setCurrentErrorMsg( validationMessage( key, message ) );
-		} else if ( type === 'unique' ) {
-			setCurrentUniqueMessage( validationMessage( key, message ) );
-		}
-	}, [ type, key, message ] );
+		setCurrentMessage( validationMessage( key, message ) );
+	}, [ key, message ] );
 
-	switch ( type ) {
-		case 'required':
-			return { currentErrorMsg, setCurrentErrorMsg };
-		case 'unique':
-			return { currentUniqueMessage, setCurrentUniqueMessage };
-		default:
-			return '';
-	}
+	return { currentMessage, setCurrentMessage };
 };
 
 export {

@@ -46,11 +46,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
-		'required',
-		'srfm_textarea_block_required_text',
-		errorMsg
-	);
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_textarea_block_required_text', errorMsg );
 
 	// show the block preview on hover
 	if ( preview ) {

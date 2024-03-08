@@ -62,11 +62,10 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
-		'required',
-		'srfm_number_block_required_text',
-		errorMsg
-	);
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_number_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {

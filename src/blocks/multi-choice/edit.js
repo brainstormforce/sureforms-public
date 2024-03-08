@@ -103,11 +103,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
-		'required',
-		'srfm_multi_choice_block_required_text',
-		errorMsg
-	);
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_multi_choice_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {

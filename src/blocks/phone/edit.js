@@ -48,17 +48,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
-		'required',
-		'srfm_phone_block_required_text',
-		errorMsg
-	);
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_phone_block_required_text', errorMsg );
 
-	const { currentUniqueMessage, setCurrentUniqueMessage } = useErrMessage(
-		'unique',
-		'srfm_phone_block_unique_text',
-		duplicateMsg
-	);
+	const {
+		currentMessage: currentUniqueMessage,
+		setCurrentMessage: setCurrentUniqueMessage,
+	} = useErrMessage( 'srfm_phone_block_unique_text', duplicateMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {

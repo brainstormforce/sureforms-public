@@ -24,11 +24,10 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
-	const { currentErrorMsg, setCurrentErrorMsg } = useErrMessage(
-		'required',
-		'srfm_url_block_required_text',
-		errorMsg
-	);
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_url_block_required_text', errorMsg );
 
 	return (
 		<InspectorControls>
