@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Email_Markup extends SRFM_Base {
+class SRFM_Email_Markup extends Base {
 	use SRFM_Get_Instance;
 
 	/**

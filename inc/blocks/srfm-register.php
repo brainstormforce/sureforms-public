@@ -29,7 +29,7 @@ class SRFM_Register {
 	public function __construct() {
 		$namespace  = 'SRFM\\Inc\\Blocks';
 		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
-		$base       = 'SRFM_Block';
+		$base       = 'Block';
 		$this->register_block( $blocks_dir, $namespace, $base );
 
 		if ( defined( 'SRFM_PRO_VER' ) ) {

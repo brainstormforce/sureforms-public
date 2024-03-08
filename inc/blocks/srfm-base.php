@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Block base class.
  */
-abstract class SRFM_Base {
+abstract class Base {
 	/**
 	 * Optional directory to .json block data files.
 	 *

@@ -1,26 +1,26 @@
 <?php
 /**
- * PHP render form dropdown Block.
+ * PHP render for Text Block.
  *
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\Dropdown;
+namespace SRFM\Inc\Blocks\Checkbox;
 
-use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\Blocks\Base;
 use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Fields\SRFM_Dropdown_Markup;
+use SRFM\Inc\Fields\SRFM_Checkbox_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Dropdown Block.
+ * Address Block.
  */
-class SRFM_Block extends SRFM_Base {
+class Block extends Base {
 	/**
-	 * Render the block
+	 * Render form checkbox block
 	 *
 	 * @param array<mixed> $attributes Block attributes.
 	 * @param string       $content Post content.
@@ -30,7 +30,7 @@ class SRFM_Block extends SRFM_Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
-			$markup_class = new SRFM_Dropdown_Markup();
+			$markup_class = new SRFM_Checkbox_Markup();
 			ob_start();
 			// phpcs:ignore
 			echo $markup_class->markup( $attributes, $form_id );

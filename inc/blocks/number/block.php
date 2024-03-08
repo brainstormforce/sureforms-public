@@ -1,24 +1,24 @@
 <?php
 /**
- * PHP render form Phone Block.
+ * PHP render form Number Block.
  *
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\Phone;
+namespace SRFM\Inc\Blocks\Number;
 
-use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\Blocks\Base;
 use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Fields\SRFM_Phone_Markup;
+use SRFM\Inc\Fields\SRFM_Number_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Phone Block.
+ * Address Block.
  */
-class SRFM_Block extends SRFM_Base {
+class Block extends Base {
 	/**
 	 * Render the block
 	 *
@@ -30,10 +30,10 @@ class SRFM_Block extends SRFM_Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
-			$markup_class = new SRFM_Phone_Markup();
+			$markup_class = new SRFM_Number_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->markup( $attributes, $form_id  );
+			echo $markup_class->markup( $attributes, $form_id );
 		}
 		return ob_get_clean();
 	}

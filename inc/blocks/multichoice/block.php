@@ -1,24 +1,24 @@
 <?php
 /**
- * PHP render form Address Block.
+ * PHP render form Multichoice Block.
  *
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\Address;
+namespace SRFM\Inc\Blocks\Multichoice;
 
-use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\Blocks\Base;
 use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Fields\SRFM_Address_Markup;
+use SRFM\Inc\Fields\SRFM_Multichoice_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Address Block.
+ * Multichoice Block.
  */
-class SRFM_Block extends SRFM_Base {
+class Block extends Base {
 	/**
 	 * Render the block
 	 *
@@ -30,11 +30,11 @@ class SRFM_Block extends SRFM_Base {
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
 			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
-			$markup_class = new SRFM_Address_Markup();
+			$markup_class = new SRFM_Multichoice_Markup();
 			ob_start();
 			// phpcs:ignore
 			echo $markup_class->markup( $attributes, $form_id );
 		}
-		return ob_get_clean();
+			return ob_get_clean();
 	}
 }

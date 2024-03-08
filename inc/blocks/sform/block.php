@@ -8,7 +8,7 @@
 namespace SRFM\Inc\Blocks\Sform;
 
 use WP_REST_Response;
-use SRFM\Inc\Blocks\SRFM_Base;
+use SRFM\Inc\Blocks\Base;
 use SRFM\Inc\SRFM_Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sureforms_Form Block.
  */
-class SRFM_Block extends SRFM_Base {
+class Block extends Base {
 	/**
 	 * Render the block.
 	 *

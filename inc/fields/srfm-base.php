@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Base {
+class Base {
 	/**
 	 * Render the sureforms default
 	 *

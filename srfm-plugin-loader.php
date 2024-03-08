@@ -13,7 +13,7 @@ use SRFM\Inc\SRFM_Submit;
 use SRFM\Inc\SRFM_Gutenberg_Hooks;
 use SRFM\API\Block_Patterns;
 use SRFM\Inc\SRFM_Forms_Data;
-use SRFM\Admin\SRFM_Admin;
+use SRFM\Admin\Admin;
 use SRFM\Inc\Blocks\SRFM_Register;
 use SRFM\Inc\SRFM_Public;
 use SRFM\Inc\SRFM_Helper;
@@ -187,7 +187,7 @@ class SRFM_Plugin_Loader {
 	 */
 	public function load_classes() {
 		if ( is_admin() ) {
-			SRFM_Admin::get_instance();
+			Admin::get_instance();
 		}
 	}
 

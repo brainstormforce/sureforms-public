@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Admin {
+class Admin {
 
 	use SRFM_Get_Instance;
 

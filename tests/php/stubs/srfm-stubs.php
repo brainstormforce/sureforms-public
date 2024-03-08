@@ -29,7 +29,7 @@ namespace SRFM\Admin {
      *
      * @since 0.0.1
      */
-    class SRFM_Admin
+    class Admin
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -224,7 +224,7 @@ namespace SRFM\Inc\Blocks {
     /**
      * Block base class.
      */
-    abstract class SRFM_Base
+    abstract class Base
     {
         /**
          * Optional directory to .json block data files.
@@ -310,7 +310,7 @@ namespace SRFM\Inc\Blocks\Address {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -329,7 +329,7 @@ namespace SRFM\Inc\Blocks\Checkbox {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render form checkbox block
@@ -348,7 +348,7 @@ namespace SRFM\Inc\Blocks\Dropdown {
     /**
      * Dropdown Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -367,7 +367,7 @@ namespace SRFM\Inc\Blocks\Email {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -386,7 +386,7 @@ namespace SRFM\Inc\Blocks\Input {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -405,7 +405,7 @@ namespace SRFM\Inc\Blocks\Multichoice {
     /**
      * Multichoice Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -424,7 +424,7 @@ namespace SRFM\Inc\Blocks\Number {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -443,7 +443,7 @@ namespace SRFM\Inc\Blocks\Phone {
     /**
      * Phone Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -462,7 +462,7 @@ namespace SRFM\Inc\Blocks\Sform {
     /**
      * Sureforms_Form Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block.
@@ -512,7 +512,7 @@ namespace SRFM\Inc\Blocks\Textarea {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -531,7 +531,7 @@ namespace SRFM\Inc\Blocks\Url {
     /**
      * URL Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -603,7 +603,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Base
+    class Base
     {
         /**
          * Render the sureforms default
@@ -622,7 +622,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Address_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Address_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -650,7 +650,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Checkbox_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Checkbox_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -670,7 +670,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Dropdown_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Dropdown_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -690,7 +690,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Email_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Email_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -709,7 +709,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Input_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Input_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -729,7 +729,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Multichoice_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Multichoice_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -749,7 +749,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Number_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Number_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -769,7 +769,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Phone_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Phone_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -789,7 +789,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Textarea_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Textarea_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
@@ -809,7 +809,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Url_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class SRFM_Url_Markup extends \SRFM\Inc\Fields\Base
     {
         use \SRFM\Inc\Traits\SRFM_Get_Instance;
         /**
