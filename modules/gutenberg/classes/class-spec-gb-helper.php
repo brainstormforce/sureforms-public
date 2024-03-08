@@ -129,9 +129,9 @@ if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-config.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-helper.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-js.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-config.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-helper.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-js.php';
 
 			self::$block_list = Spec_Block_Config::get_block_attributes();
 

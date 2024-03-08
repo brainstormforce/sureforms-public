@@ -76,7 +76,7 @@ class Spec_Init_Blocks {
 
 			// Register block styles for both frontend + backend.
 			wp_enqueue_style(
-				'srfm-block-srfm-style-css', // Handle.
+				'srfm-block-style-css', // Handle.
 				SRFM_URL . 'modules/gutenberg/build/style-blocks.css',
 				is_admin() ? [ 'wp-editor' ] : null, // Dependency to include the CSS after it.
 				SRFM_VER // filemtime( plugin_dir_path( __DIR__ ) . 'build/style-blocks.css' ) // Version: File modification time.
@@ -119,7 +119,7 @@ class Spec_Init_Blocks {
 
 			// Register block editor styles for backend.
 			wp_enqueue_style(
-				'srfm-block-srfm-block-editor-css', // Handle.
+				'srfm-block-block-editor-css', // Handle.
 				SRFM_URL . 'modules/gutenberg/build/blocks.style.css',
 				[ 'wp-edit-blocks' ], // Dependency to include the CSS after it.
 				SRFM_VER // Version: File modification time.
