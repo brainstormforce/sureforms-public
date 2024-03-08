@@ -8,10 +8,10 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Email\SRFM_Email_Template;
-use SRFM\Inc\SRFM_Smart_Tags;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Email\Email_Template;
+use SRFM\Inc\Smart_Tags;
 use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
 use WP_Error;
@@ -30,8 +30,8 @@ if ( ! function_exists( 'wp_handle_upload' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Submit {
-	use SRFM_Get_Instance;
+class Form_Submit {
+	use Get_Instance;
 
 	/**
 	 * Namespace.
@@ -96,7 +96,7 @@ class SRFM_Submit {
 	 */
 	public function handle_form_submission( $request ) {
 
-		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -107,7 +107,7 @@ class SRFM_Submit {
 			);
 		}
 
-		$form_data = SRFM_Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
+		$form_data = Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
@@ -156,7 +156,7 @@ class SRFM_Submit {
 			return wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
-		$selected_captcha_type = get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? SRFM_Helper::get_string_value( get_post_meta( SRFM_Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
+		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
 		if ( 'none' !== $selected_captcha_type ) {
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
@@ -277,7 +277,7 @@ class SRFM_Submit {
 		$device_name  = $browser->getPlatform();
 
 		$id           = wp_kses_post( $form_data['form-id'] );
-		$form_markup  = get_the_content( null, false, SRFM_Helper::get_integer_value( $form_data['form-id'] ) );
+		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
 		$sender_email = '';
 		$pattern      = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
@@ -346,7 +346,7 @@ class SRFM_Submit {
 				],
 			];
 			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-			$smart_tags         = new SRFM_Smart_Tags();
+			$smart_tags         = new Smart_Tags();
 			$is_mail_sent       = false;
 			$emails             = [];
 			if ( is_iterable( $email_notification ) ) {
@@ -358,7 +358,7 @@ class SRFM_Submit {
 							$subject        = $item['subject'];
 							$subject        = $smart_tags->process_smart_tags( $subject );
 							$email_body     = $item['email_body'];
-							$email_template = new SRFM_Email_Template();
+							$email_template = new Email_Template();
 							$message        = $email_template->render( $meta_data, $email_body );
 							$headers        = "From: $to\r\n" .
 							"Reply-To: $to\r\n" .
@@ -464,7 +464,7 @@ class SRFM_Submit {
 			$key   = str_replace( '_', ' ', $keys[ $i ] );
 
 			foreach ( $post_ids as $post_id ) {
-				$post_id     = SRFM_Helper::get_integer_value( $post_id );
+				$post_id     = Helper::get_integer_value( $post_id );
 				$meta_values = get_post_meta( $post_id, 'srfm_entry_meta', true );
 				if ( is_array( $meta_values ) && isset( $meta_values[ $key ] ) && $meta_values[ $key ] === $value ) {
 					$obj = [ $key => 'not unique' ];
@@ -499,7 +499,7 @@ class SRFM_Submit {
 
 		if ( ! empty( $_POST['defaultAllowedQuickSidebarBlocks'] ) ) {
 			$srfm_default_allowed_quick_sidebar_blocks = json_decode( sanitize_text_field( wp_unslash( $_POST['defaultAllowedQuickSidebarBlocks'] ) ), true );
-			SRFM_Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
+			Helper::update_admin_settings_option( 'srfm_quick_sidebar_allowed_blocks', $srfm_default_allowed_quick_sidebar_blocks );
 			wp_send_json_success();
 		}
 		wp_send_json_error();
@@ -522,7 +522,7 @@ class SRFM_Submit {
 
 		if ( ! empty( $_POST['enableQuickActionSidebar'] ) ) {
 			$srfm_enable_quick_action_sidebar = ( 'enabled' === $_POST['enableQuickActionSidebar'] ? 'enabled' : 'disabled' );
-			SRFM_Helper::update_admin_settings_option( 'srfm_enable_quick_action_sidebar', $srfm_enable_quick_action_sidebar );
+			Helper::update_admin_settings_option( 'srfm_enable_quick_action_sidebar', $srfm_enable_quick_action_sidebar );
 			wp_send_json_success();
 		}
 		wp_send_json_error();

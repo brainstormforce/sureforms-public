@@ -2,10 +2,10 @@
 /**
  * Newsletter Form pattern.
  *
- * @link       https://surecart.com
+ * @link       https://sureforms.com
  * @since      0.0.1
  * @package    SRFM/Templates/Forms
- * @author     SureCart <https://surecart.com/>
+ * @author     SureCart <https://sureforms.com/>
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

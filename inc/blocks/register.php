@@ -7,7 +7,7 @@
 
 namespace SRFM\Inc\Blocks;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Register {
-	use SRFM_Get_Instance;
+class Register {
+	use Get_Instance;
 
 	/**
 	 * Constructor
@@ -35,7 +35,7 @@ class SRFM_Register {
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
 			$namespace  = 'SRFM_PRO\\Inc\\Blocks';
-			$base       = 'SRFM_PRO_Block';
+			$base       = 'Block';
 			$this->register_block( $blocks_dir, $namespace, $base );
 		}
 	}

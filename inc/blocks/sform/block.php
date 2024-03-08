@@ -9,7 +9,7 @@ namespace SRFM\Inc\Blocks\Sform;
 
 use WP_REST_Response;
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\SRFM_Generate_Form_Markup;
+use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -47,7 +47,7 @@ class Block extends Base {
 			return '';
 		}
 
-		$content = SRFM_Generate_Form_Markup::get_form_markup( absint( $id ), $hide_title_current_page, $sf_classname );
+		$content = Generate_Form_Markup::get_form_markup( absint( $id ), $hide_title_current_page, $sf_classname );
 
 		return $content;
 	}

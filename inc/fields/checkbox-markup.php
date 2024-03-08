@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Checkbox_Markup extends Base {
-	use SRFM_Get_Instance;
+class Checkbox_Markup extends Base {
+	use Get_Instance;
 
 	/**
 	 * Render the sureforms checkbox classic styling
@@ -37,7 +37,7 @@ class SRFM_Checkbox_Markup extends Base {
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
 		$checked     = isset( $attributes['checked'] ) ? $attributes['checked'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_checkbox_block_required_text' );
+		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_checkbox_block_required_text' );
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$slug        = 'checkbox';
@@ -48,7 +48,7 @@ class SRFM_Checkbox_Markup extends Base {
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$checked_attr         = $checked ? 'checked' : '';
 		$input_label_fallback = $label ? $label : __( 'Checkbox', 'sureforms' );
-		$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
+		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 		$allowed_tags         = [
 			'a' => [
 				'href'   => [],
@@ -78,8 +78,8 @@ class SRFM_Checkbox_Markup extends Base {
 							</symbol>
 						</svg>
 					</div>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
 		<?php
 

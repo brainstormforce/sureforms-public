@@ -8,9 +8,9 @@
 
 namespace SRFM\Inc\Global_Settings;
 
-use SRFM\Inc\Global_Settings\SRFM_Email_Summary;
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 use WP_REST_Server;
 use WP_REST_Response;
 use WP_REST_Request;
@@ -21,8 +21,8 @@ use WP_Error;
  *
  * @since 0.0.1
  */
-class SRFM_Global_Settings {
-	use SRFM_Get_Instance;
+class Global_Settings {
+	use Get_Instance;
 
 	/**
 	 * Namespace.
@@ -47,7 +47,7 @@ class SRFM_Global_Settings {
 	 * @since 0.0.1
 	 */
 	public function register_custom_endpoint() {
-		$sureforms_helper = new SRFM_Helper();
+		$sureforms_helper = new Helper();
 		register_rest_route(
 			$this->namespace,
 			'/srfm-global-settings',
@@ -78,7 +78,7 @@ class SRFM_Global_Settings {
 	 */
 	public static function srfm_save_global_settings( $request ) {
 
-		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -192,10 +192,10 @@ class SRFM_Global_Settings {
 		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
 		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : 'Monday';
 
-		SRFM_Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+		Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
 
 		if ( $srfm_email_summary ) {
-			SRFM_Email_Summary::schedule_weekly_entries_email();
+			Email_Summary::schedule_weekly_entries_email();
 		}
 
 		return update_option(
@@ -247,7 +247,7 @@ class SRFM_Global_Settings {
 	 */
 	public static function srfm_get_general_settings( $request ) {
 
-		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(
@@ -259,7 +259,7 @@ class SRFM_Global_Settings {
 
 		$options_to_get = $request->get_param( 'options_to_fetch' );
 
-		$options_to_get = SRFM_Helper::get_string_value( $options_to_get );
+		$options_to_get = Helper::get_string_value( $options_to_get );
 
 		$options_to_get = explode( ',', $options_to_get );
 
@@ -274,7 +274,7 @@ class SRFM_Global_Settings {
 			];
 		}
 		if ( empty( $global_setting_options['get_default_dynamic_block_option'] ) ) {
-			$global_setting_options['get_default_dynamic_block_option'] = SRFM_Helper::default_dynamic_block_option();
+			$global_setting_options['get_default_dynamic_block_option'] = Helper::default_dynamic_block_option();
 		}
 		if ( empty( $global_setting_options['srfm_email_summary_settings_options'] ) ) {
 			$global_setting_options['srfm_email_summary_settings_options'] = [

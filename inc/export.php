@@ -8,7 +8,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_REST_Server;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Export {
-	use SRFM_Get_Instance;
+class Export {
+	use Get_Instance;
 
 	/**
 	 * Constructor
@@ -81,7 +81,7 @@ class SRFM_Export {
 	 */
 	public function handle_import_form( $request ) {
 
-		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(

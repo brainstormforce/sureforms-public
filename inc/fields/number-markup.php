@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Number_Markup extends Base {
-	use SRFM_Get_Instance;
+class Number_Markup extends Base {
+	use Get_Instance;
 
 	/**
 	 * Render the sureforms number classic styling
@@ -32,7 +32,7 @@ class SRFM_Number_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function markup( $attributes, $form_id ) {
-			$block_id    = isset( $attributes['block_id'] ) ? SRFM_Helper::get_string_value( $attributes['block_id'] ) : '';
+			$block_id    = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$min_value   = isset( $attributes['minValue'] ) ? $attributes['minValue'] : '';
@@ -41,7 +41,7 @@ class SRFM_Number_Markup extends Base {
 			$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 			$help        = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_number_block_required_text' );
+			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_number_block_required_text' );
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 			$slug        = 'number';
@@ -56,19 +56,19 @@ class SRFM_Number_Markup extends Base {
 			$min_value_attr       = $min_value ? ' min="' . $min_value . '" ' : '';
 			$max_value_attr       = $max_value ? ' max="' . $max_value . '" ' : '';
 			$input_label_fallback = $label ? $label : __( 'Number', 'sureforms' );
-			$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
+			$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 
 			$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 		ob_start(); ?>
 			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="number" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> /> 
-					<?php echo SRFM_Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

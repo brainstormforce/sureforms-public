@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\Global_Settings\SRFM_Email_Summary;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Global_Settings\Email_Summary;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Activator {
-	use SRFM_Get_Instance;
+class Activator {
+	use Get_Instance;
 
 	/**
 	 * Activation handler function.
@@ -35,7 +35,7 @@ class SRFM_Activator {
 		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['srfm_email_summary'] : '';
 
 		if ( $enable_email_summary ) {
-			SRFM_Email_Summary::schedule_weekly_entries_email();
+			Email_Summary::schedule_weekly_entries_email();
 		}
 
 		/**

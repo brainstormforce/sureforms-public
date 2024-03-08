@@ -10,9 +10,9 @@ namespace SRFM\Inc;
 
 use WP_Query;
 use WP_Admin_Bar;
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Generate_Form_Markup;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,8 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Post_Types {
-	use SRFM_Get_Instance;
+class Post_Types {
+	use Get_Instance;
 
 	/**
 	 * Constructor
@@ -595,7 +595,7 @@ class SRFM_Post_Types {
 				?>
 				<tr class="">
 				<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true ) ) : ?>
@@ -604,7 +604,7 @@ class SRFM_Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
 						<?php endif; ?>
 					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
@@ -619,7 +619,7 @@ class SRFM_Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><b><?php echo $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : ''; ?><b></td>
+						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>
@@ -725,7 +725,7 @@ class SRFM_Post_Types {
 		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = SRFM_Generate_Form_Markup::get_form_markup( $id );
+			$content = Generate_Form_Markup::get_form_markup( $id );
 			return $content;
 		}
 
@@ -927,7 +927,7 @@ class SRFM_Post_Types {
 	 */
 	public function srfm_instant_form_redirect() {
 
-		$form_id = SRFM_Helper::get_integer_value( get_the_ID() );
+		$form_id = Helper::get_integer_value( get_the_ID() );
 
 		$is_instant_form = get_post_meta( $form_id, '_srfm_instant_form', true );
 

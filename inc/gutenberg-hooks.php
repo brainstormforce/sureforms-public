@@ -8,9 +8,9 @@
 namespace SRFM\Inc;
 
 use SRFM_Spec_Gb_Helper;
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Smart_Tags;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Gutenberg_Hooks {
+class Gutenberg_Hooks {
 
 	/**
 	 * Block patterns to register.
@@ -30,7 +30,7 @@ class SRFM_Gutenberg_Hooks {
 	 */
 	protected $patterns = [];
 
-	use SRFM_Get_Instance;
+	use Get_Instance;
 
 	/**
 	 * Class constructor.
@@ -206,11 +206,11 @@ class SRFM_Gutenberg_Hooks {
 				'admin_email'                      => get_option( 'admin_email' ),
 				'post_url'                         => admin_url( 'post.php' ),
 				'current_screen'                   => $screen,
-				'smart_tags_array'                 => SRFM_Smart_Tags::smart_tag_list(),
+				'smart_tags_array'                 => Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                    => $is_pro_active,
-				'get_default_dynamic_block_option' => get_option( 'get_default_dynamic_block_option', SRFM_Helper::default_dynamic_block_option() ),
+				'get_default_dynamic_block_option' => get_option( 'get_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'              => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                    => current_user_can( 'manage_options' ),
 			]

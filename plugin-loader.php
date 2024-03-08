@@ -8,23 +8,23 @@
 
 namespace SRFM;
 
-use SRFM\Inc\SRFM_Post_Types;
-use SRFM\Inc\SRFM_Submit;
-use SRFM\Inc\SRFM_Gutenberg_Hooks;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Form_Submit;
+use SRFM\Inc\Gutenberg_Hooks;
 use SRFM\API\Block_Patterns;
-use SRFM\Inc\SRFM_Forms_Data;
+use SRFM\Inc\Forms_Data;
 use SRFM\Admin\Admin;
-use SRFM\Inc\Blocks\SRFM_Register;
-use SRFM\Inc\SRFM_Public;
-use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\SRFM_Activator;
-use SRFM\Inc\SRFM_Admin_Ajax;
-use SRFM\Inc\SRFM_Export;
-use SRFM\Inc\SRFM_Smart_Tags;
-use SRFM\Inc\SRFM_Generate_Form_Markup;
-use SRFM\Inc\SRFM_Create_New_Form;
-use SRFM\Inc\Global_Settings\SRFM_Global_Settings;
-use SRFM\Inc\Global_Settings\SRFM_Email_Summary;
+use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Frontend_Assets;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Activator;
+use SRFM\Inc\Admin_Ajax;
+use SRFM\Inc\Export;
+use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Global_Settings\Global_Settings;
+use SRFM\Inc\Global_Settings\Email_Summary;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Plugin_Loader {
+class Plugin_Loader {
 
 	/**
 	 * Instance
@@ -114,22 +114,22 @@ class SRFM_Plugin_Loader {
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
-		SRFM_Post_Types::get_instance();
-		SRFM_Submit::get_instance();
+		Post_Types::get_instance();
+		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
-		SRFM_Gutenberg_Hooks::get_instance();
-		SRFM_Register::get_instance();
-		SRFM_Public::get_instance();
-		SRFM_Helper::get_instance();
-		SRFM_Activator::get_instance();
-		SRFM_Admin_Ajax::get_instance();
-		SRFM_Forms_Data::get_instance();
-		SRFM_Export::get_instance();
-		SRFM_Smart_Tags::get_instance();
-		SRFM_Generate_Form_Markup::get_instance();
-		SRFM_Create_New_Form::get_instance();
-		SRFM_Global_Settings::get_instance();
-		SRFM_Email_Summary::get_instance();
+		Gutenberg_Hooks::get_instance();
+		Register::get_instance();
+		Frontend_Assets::get_instance();
+		Helper::get_instance();
+		Activator::get_instance();
+		Admin_Ajax::get_instance();
+		Forms_Data::get_instance();
+		Export::get_instance();
+		Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
+		Global_Settings::get_instance();
+		Email_Summary::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
@@ -137,7 +137,7 @@ class SRFM_Plugin_Loader {
 		register_activation_hook(
 			SRFM_FILE,
 			function () {
-				SRFM_Activator::activate();
+				Activator::activate();
 			}
 		);
 
@@ -145,7 +145,7 @@ class SRFM_Plugin_Loader {
 			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
-				SRFM_Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}
@@ -275,4 +275,4 @@ class SRFM_Plugin_Loader {
 /**
  * Kicking this off by calling 'get_instance()' method
  */
-SRFM_Plugin_Loader::get_instance();
+Plugin_Loader::get_instance();

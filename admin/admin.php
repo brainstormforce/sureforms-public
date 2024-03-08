@@ -7,7 +7,7 @@
 
 namespace SRFM\Admin;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Admin {
 
-	use SRFM_Get_Instance;
+	use Get_Instance;
 
 	/**
 	 * Class constructor.

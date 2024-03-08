@@ -8,8 +8,8 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Phone_Markup extends Base {
-	use SRFM_Get_Instance;
+class Phone_Markup extends Base {
+	use Get_Instance;
 
 	/**
 	 * Render the sureforms phone classic styling
@@ -32,14 +32,14 @@ class SRFM_Phone_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function markup( $attributes, $form_id ) {
-		$block_id      = isset( $attributes['block_id'] ) ? SRFM_Helper::get_string_value( $attributes['block_id'] ) : '';
+		$block_id      = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder   = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_unique_text' );
-		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : SRFM_Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
+		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Helper::get_default_dynamic_block_option( 'srfm_phone_block_unique_text' );
+		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_phone_block_required_text' );
 		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
 		$classname     = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$auto_country  = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
@@ -52,18 +52,18 @@ class SRFM_Phone_Markup extends Base {
 		$aria_require_attr    = $required ? 'true' : 'false';
 		$placeholder_attr     = $placeholder ? 'placeholder="' . $placeholder . '" ' : '';
 		$input_label_fallback = $label ? $label : __( 'Phone', 'sureforms' );
-		$input_label          = '-lbl-' . SRFM_Helper::encrypt( $input_label_fallback );
+		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 
 		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 		ob_start(); ?>
 		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap">
 					<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" auto-country="<?php echo esc_attr( $auto_country ? 'true' : 'false' ); ?>" value="" data-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post( $placeholder_attr ); ?>>
 				</div>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( SRFM_Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

@@ -8,8 +8,8 @@
 namespace SRFM\Inc\Blocks\Dropdown;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\SRFM_Helper;
-use SRFM\Inc\Fields\SRFM_Dropdown_Markup;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Fields\Dropdown_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -29,8 +29,8 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? SRFM_Helper::get_integer_value( $attributes['formId'] ) : '';
-			$markup_class = new SRFM_Dropdown_Markup();
+			$form_id      = isset( $attributes['formId'] ) ? Helper::get_integer_value( $attributes['formId'] ) : '';
+			$markup_class = new Dropdown_Markup();
 			ob_start();
 			// phpcs:ignore
 			echo $markup_class->markup( $attributes, $form_id );
