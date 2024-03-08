@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Spec_Block_Loader' ) ) {
+if ( ! class_exists( 'Spec_Block_Loader' ) ) {
 
 	/**
-	 * Class SRFM_Spec_Block_Loader.
+	 * Class Spec_Block_Loader.
 	 */
-	final class SRFM_Spec_Block_Loader {
+	final class Spec_Block_Loader {
 
 		/**
 		 * Member Variable
@@ -72,6 +72,6 @@ if ( ! class_exists( 'SRFM_Spec_Block_Loader' ) ) {
 		}
 
 	}
-	SRFM_Spec_Block_Loader::get_instance();
+	Spec_Block_Loader::get_instance();
 }
 

@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
+if ( ! class_exists( 'Advanced_Heading' ) ) {
 
 	/**
-	 * Class SRFM_Advanced_Heading.
+	 * Class Advanced_Heading.
 	 */
-	class SRFM_Advanced_Heading {
+	class Advanced_Heading {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var SRFM_Advanced_Heading|null
+		 * @var Advanced_Heading|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return SRFM_Advanced_Heading The instance of the SRFM_Advanced_Heading class.
+		 * @return Advanced_Heading The instance of the Advanced_Heading class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -623,7 +623,7 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 				],
 			];
 
-			$advaned_heading_border_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
+			$advaned_heading_border_attr = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'highLight' );
 
 			$attr = array_merge( $advaned_heading_border_attr, $attr );
 
@@ -727,8 +727,8 @@ if ( ! class_exists( 'SRFM_Advanced_Heading' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'SRFM_Advanced_Heading' exist.
+	 *  Prepare if class 'Advanced_Heading' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	SRFM_Advanced_Heading::get_instance();
+	Advanced_Heading::get_instance();
 }

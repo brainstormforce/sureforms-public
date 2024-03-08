@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
+if ( ! class_exists( 'Spec_Icon' ) ) {
 
 	/**
-	 * Class SRFM_Spec_Icon.
+	 * Class Spec_Icon.
 	 */
-	class SRFM_Spec_Icon {
+	class Spec_Icon {
 
 		/**
 		 * Member Variable
@@ -418,7 +418,7 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 				],
 			];
 
-			$icon_border_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
+			$icon_border_attr = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
 
 			$attr = array_merge( $icon_border_attr, $attr );
 
@@ -485,7 +485,7 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 						?>
 						<a rel="noopener noreferrer" href="<?php echo esc_attr( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
 					<?php } ?>
-						<?php SRFM_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); ?>
+						<?php Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); ?>
 					<?php if ( $link_condition ) { ?>
 						</a>
 					<?php } ?>
@@ -497,8 +497,8 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'SRFM_Spec_Icon' exist.
+	 *  Prepare if class 'Spec_Icon' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	SRFM_Spec_Icon::get_instance();
+	Spec_Icon::get_instance();
 }
