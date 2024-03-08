@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -17,7 +18,10 @@ export const TextareaComponent = ( { attributes, blockID, setAttributes } ) => {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					const decodedValue = decodeHtmlEntities( value );
+					setAttributes( { label: decodedValue } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }

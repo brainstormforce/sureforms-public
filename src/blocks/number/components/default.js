@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const NumberComponent = ( {
 	attributes,
@@ -24,7 +25,10 @@ export const NumberComponent = ( {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					const decodedValue = decodeHtmlEntities( value );
+					setAttributes( { label: decodedValue } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }

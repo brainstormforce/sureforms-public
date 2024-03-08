@@ -18,6 +18,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -200,9 +201,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					<RichText
 						tagName="label"
 						value={ help }
-						onChange={ ( value ) =>
-							setAttributes( { help: value } )
-						}
+						onChange={ ( value ) => {
+							const decodedValue = decodeHtmlEntities( value );
+							setAttributes( { help: decodedValue } );
+						} }
 						className="srfm-description"
 						multiline={ false }
 						id={ block_id }

@@ -1,6 +1,7 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const MultiChoiceComponent = ( {
 	attributes,
@@ -75,7 +76,10 @@ export const MultiChoiceComponent = ( {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					const decodedValue = decodeHtmlEntities( value );
+					setAttributes( { label: decodedValue } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }

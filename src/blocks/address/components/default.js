@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 	const {
@@ -19,7 +20,10 @@ export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					const decodedValue = decodeHtmlEntities( value );
+					setAttributes( { label: decodedValue } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }

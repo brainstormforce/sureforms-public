@@ -59,4 +59,14 @@ const getBlockTypes = ( exclude = '' ) => {
 	return blocks;
 };
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes };
+/**
+ * Modified the string value.
+ *
+ * @param {string} str - The input string to be modified.
+ * @return {string} modified value.
+ */
+function decodeHtmlEntities( str ) {
+	return str.replace( /&amp;/g, '&' );
+}
+
+export { stripHTML, getSpacingPresetCssVar, getBlockTypes, decodeHtmlEntities };
