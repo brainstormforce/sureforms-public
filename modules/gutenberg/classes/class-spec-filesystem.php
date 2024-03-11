@@ -96,7 +96,7 @@ class Spec_Filesystem {
 }
 
 /**
- *  Prepare if class 'SRFM_Filesystem' exist.
+ *  Prepare if class 'Spec_Filesystem' exist.
  *  Kicking this off by calling 'get_instance()' method
  */
 Spec_Filesystem::get_instance();
