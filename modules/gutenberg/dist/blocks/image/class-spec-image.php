@@ -9,24 +9,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
+if ( ! class_exists( 'Advanced_Image' ) ) {
 
 	/**
-	 * Class SRFM_Advanced_Image.
+	 * Class Advanced_Image.
 	 */
-	class SRFM_Advanced_Image {
+	class Advanced_Image {
 
 		/**
 		 * Member Variable
 		 *
-		 * @var SRFM_Advanced_Image|null
+		 * @var Advanced_Image|null
 		 */
 		private static $instance;
 
 		/**
 		 *  Initiator
 		 *
-		 * @return SRFM_Advanced_Image The instance of the SRFM_Advanced_Image class.
+		 * @return Advanced_Image The instance of the Advanced_Image class.
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
@@ -713,8 +713,8 @@ if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
 				],
 			];
 
-			$advaned_image_border_attr         = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
-			$advaned_image_border_overlay_attr = SRFM_Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
+			$advaned_image_border_attr         = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
+			$advaned_image_border_overlay_attr = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'overlay' );
 
 			$attr = array_merge( $advaned_image_border_attr, $advaned_image_border_overlay_attr, $attr );
 
@@ -876,8 +876,8 @@ if ( ! class_exists( 'SRFM_Advanced_Image' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'SRFM_Advanced_Image' exist.
+	 *  Prepare if class 'Advanced_Image' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	SRFM_Advanced_Image::get_instance();
+	Advanced_Image::get_instance();
 }

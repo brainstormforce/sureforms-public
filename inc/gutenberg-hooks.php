@@ -7,7 +7,7 @@
 
 namespace SRFM\Inc;
 
-use SRFM_Spec_Gb_Helper;
+use Spec_Gb_Helper;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Smart_Tags;
 use SRFM\Inc\Helper;

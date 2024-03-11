@@ -8801,9 +8801,9 @@ namespace SRFM\Inc {
 }
 namespace {
     /**
-     * Class SRFM_Spec_Block_Config.
+     * Class Spec_Block_Config.
      */
-    class SRFM_Spec_Block_Config
+    class Spec_Block_Config
     {
         /**
          * Block Attributes
@@ -8866,9 +8866,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Block_Helper.
+     * Class Spec_Block_Helper.
      */
-    class SRFM_Spec_Block_Helper
+    class Spec_Block_Helper
     {
         /**
          * Get Icon Block CSS
@@ -8961,7 +8961,7 @@ namespace {
     /**
      * Class Sureforms_Spec_Block_JS.
      */
-    class SRFM_Spec_Block_JS
+    class Spec_Block_JS
     {
         /**
          * Adds Google fonts for Next Step Button.
@@ -8992,9 +8992,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Block_Loader.
+     * Class Spec_Block_Loader.
      */
-    final class SRFM_Spec_Block_Loader
+    final class Spec_Block_Loader
     {
         /**
          *  Initiator
@@ -9020,9 +9020,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Filesystem.
+     * Class Spec_Filesystem.
      */
-    class SRFM_Spec_Filesystem
+    class Spec_Filesystem
     {
         /**
          *  Initiator
@@ -9056,9 +9056,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Gb_Helper.
+     * Class Spec_Gb_Helper.
      */
-    final class SRFM_Spec_Gb_Helper
+    final class Spec_Gb_Helper
     {
         /**
          * Member Variable
@@ -9390,11 +9390,11 @@ namespace {
         }
     }
     /**
-     * SRFM_Spec_Init_Blocks.
+     * Spec_Init_Blocks.
      *
      * @package Sureforms
      */
-    class SRFM_Spec_Init_Blocks
+    class Spec_Init_Blocks
     {
         /**
          * Store Json variable
@@ -9442,7 +9442,7 @@ namespace {
     /**
      * Class for Spectra compatibility
      */
-    class SRFM_Spec_Spectra_Compatibility
+    class Spec_Spectra_Compatibility
     {
         /**
          * Initiator
@@ -9478,14 +9478,14 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Advanced_Heading.
+     * Class Advanced_Heading.
      */
-    class SRFM_Advanced_Heading
+    class Advanced_Heading
     {
         /**
          *  Initiator
          *
-         * @return SRFM_Advanced_Heading The instance of the SRFM_Advanced_Heading class.
+         * @return Advanced_Heading The instance of the Advanced_Heading class.
          */
         public static function get_instance()
         {
@@ -9520,9 +9520,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Icon.
+     * Class Spec_Icon.
      */
-    class SRFM_Spec_Icon
+    class Spec_Icon
     {
         /**
          *  Initiator
@@ -9556,14 +9556,14 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Advanced_Image.
+     * Class Advanced_Image.
      */
-    class SRFM_Advanced_Image
+    class Advanced_Image
     {
         /**
          *  Initiator
          *
-         * @return SRFM_Advanced_Image The instance of the SRFM_Advanced_Image class.
+         * @return Advanced_Image The instance of the Advanced_Image class.
          */
         public static function get_instance()
         {
@@ -9610,9 +9610,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Separator.
+     * Class Spec_Separator.
      */
-    class SRFM_Spec_Separator
+    class Spec_Separator
     {
         /**
          *  Initiator

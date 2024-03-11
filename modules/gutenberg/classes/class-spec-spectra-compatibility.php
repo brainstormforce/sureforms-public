@@ -9,12 +9,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
+if ( ! class_exists( 'Spec_Spectra_Compatibility' ) ) :
 
 	/**
 	 * Class for Spectra compatibility
 	 */
-	class SRFM_Spec_Spectra_Compatibility {
+	class Spec_Spectra_Compatibility {
 
 		/**
 		 * Member Variable
@@ -55,7 +55,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 				'srfm-spec-block-js',
 				'srfm_spec_blocks_info',
 				[
-					'number_of_icon_chunks'         => SRFM_Spec_Gb_Helper::$number_of_icon_chunks,
+					'number_of_icon_chunks'         => Spec_Gb_Helper::$number_of_icon_chunks,
 					'collapse_panels'               => 'disabled',
 					'load_font_awesome_5'           => 'disabled',
 					'uag_select_font_globally'      => [],
@@ -81,7 +81,7 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 		 * @return void
 		 */
 		public function add_svg_icon_assets() {
-			$localize_icon_chunks = SRFM_Spec_Gb_Helper::backend_load_font_awesome_icons();
+			$localize_icon_chunks = Spec_Gb_Helper::backend_load_font_awesome_icons();
 
 			if ( ! $localize_icon_chunks ) {
 				return;
@@ -96,6 +96,6 @@ if ( ! class_exists( 'SRFM_Spec_Spectra_Compatibility' ) ) :
 	/**
 	 * Kicking this off by calling 'get_instance()' method
 	 */
-	SRFM_Spec_Spectra_Compatibility::get_instance();
+	Spec_Spectra_Compatibility::get_instance();
 
 endif;

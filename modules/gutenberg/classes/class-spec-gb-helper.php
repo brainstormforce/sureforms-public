@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
+if ( ! class_exists( 'Spec_Gb_Helper' ) ) {
 
 	/**
-	 * Class SRFM_Spec_Gb_Helper.
+	 * Class Spec_Gb_Helper.
 	 */
-	final class SRFM_Spec_Gb_Helper {
+	final class Spec_Gb_Helper {
 
 
 		/**
@@ -129,11 +129,11 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-config.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-helper.php';
-			require SRFM_DIR . 'modules/gutenberg/classes/class-srfm-spec-block-js.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-config.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-helper.php';
+			require SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-js.php';
 
-			self::$block_list = SRFM_Spec_Block_Config::get_block_attributes();
+			self::$block_list = Spec_Block_Config::get_block_attributes();
 
 			add_action( 'wp', [ $this, 'wp_actions' ], 10 );
 
@@ -407,7 +407,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 			$block_list_for_assets = self::$current_block_list;
 
-			$blocks = SRFM_Spec_Block_Config::get_block_attributes();
+			$blocks = Spec_Block_Config::get_block_attributes();
 
 			foreach ( $block_list_for_assets as $key => $curr_block_name ) {
 
@@ -820,22 +820,22 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 				switch ( $name ) {
 					case 'srfm/separator':
-						$css = SRFM_Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
-						SRFM_Spec_Block_JS::blocks_separator_gfont( $blockattr );
+						$css = Spec_Block_Helper::get_separator_css( $blockattr, $block_id );
+						Spec_Block_JS::blocks_separator_gfont( $blockattr );
 						break;
 
 					case 'srfm/image':
-						$css = SRFM_Spec_Block_Helper::get_image_css( $blockattr, $block_id );
-						SRFM_Spec_Block_JS::blocks_image_gfont( $blockattr );
+						$css = Spec_Block_Helper::get_image_css( $blockattr, $block_id );
+						Spec_Block_JS::blocks_image_gfont( $blockattr );
 						break;
 
 					case 'srfm/icon':
-						$css = SRFM_Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
+						$css = Spec_Block_Helper::get_icon_css( $blockattr, $block_id );
 						break;
 
 					case 'srfm/advanced-heading':
-						$css = SRFM_Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
-						SRFM_Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
+						$css = Spec_Block_Helper::get_advanced_heading_css( $blockattr, $block_id );
+						Spec_Block_JS::blocks_advanced_heading_gfont( $blockattr );
 						break;
 
 					default:
@@ -844,7 +844,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 				}
 
 				// Add static css here.
-				$block_css_arr = SRFM_Spec_Block_Config::get_block_assets_css();
+				$block_css_arr = Spec_Block_Config::get_block_assets_css();
 
 				if ( isset( $block_css_arr[ $name ] ) && ! in_array( $block_css_arr[ $name ]['name'], $this->static_css_blocks, true ) ) {
 
@@ -1034,7 +1034,7 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 
 			$icons_chunks = [];
 			for ( $i = 0; $i < self::$number_of_icon_chunks; $i++ ) {
-				$json_file = SRFM_DIR . "modules/gutenberg/icons/srfm-icons-v6-{$i}.php";
+				$json_file = SRFM_DIR . "modules/gutenberg/icons/icons-v6-{$i}.php";
 
 				if ( file_exists( $json_file ) ) {
 					$icons_chunks[] = include $json_file;
@@ -1088,8 +1088,8 @@ if ( ! class_exists( 'SRFM_Spec_Gb_Helper' ) ) {
 	}
 
 	/**
-	 *  Prepare if class 'SRFM_Spec_Gb_Helper' exist.
+	 *  Prepare if class 'Spec_Gb_Helper' exist.
 	 *  Kicking this off by calling 'get_instance()' method
 	 */
-	SRFM_Spec_Gb_Helper::get_instance();
+	Spec_Gb_Helper::get_instance();
 }

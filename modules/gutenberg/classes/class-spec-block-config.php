@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if ( ! class_exists( 'SRFM_Spec_Block_Config' ) ) {
+if ( ! class_exists( 'Spec_Block_Config' ) ) {
 
 	/**
-	 * Class SRFM_Spec_Block_Config.
+	 * Class Spec_Block_Config.
 	 */
-	class SRFM_Spec_Block_Config {
+	class Spec_Block_Config {
 
 		/**
 		 * Block Attributes
