@@ -5,7 +5,7 @@ Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 7.4
 Stable tag: 0.0.3
-License: GPL-2.0-only
+License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A simple yet powerful way to add forms to your website.
@@ -170,7 +170,11 @@ License URI : https://github.com/woocommerce/action-scheduler/blob/trunk/license
 
 Browser.php  
 License : Massachusetts Institute of Technology (MIT)  
-License URI : https://github.com/cbschuld/Browser.php/blob/master/LICENSE.md  
+License URI : https://github.com/cbschuld/Browser.php/blob/master/LICENSE.md 
+
+https://ipapi.co/json  
+License : Massachusetts Institute of Technology (MIT)  
+License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE  
 
 == Changelog ==
 
@@ -183,4 +187,3 @@ License URI : https://github.com/cbschuld/Browser.php/blob/master/LICENSE.md
 
 = 0.0.3 =  
 * Fix: Bug fixes. 
-

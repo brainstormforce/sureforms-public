@@ -242,9 +242,32 @@ class Generate_Form_Markup {
 			<?php
 			if ( ! $instant_form && current_user_can( 'manage_options' ) && is_singular( 'sureforms_form' ) ) {
 				?>
+<<<<<<< Updated upstream:inc/generate-form-markup.php
 				<div class="srfm-instant-form-wrn-ctn">
 					<div class="srfm-svg-container">
 					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
+=======
+					<div class="srfm-instant-form-wrn-ctn">
+						<div class="srfm-wrn-inner-ctn">
+
+							<div class="srfm-wrn-text-ctn">
+								<div>
+									<svg width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'>
+										<g opacity='0.3'><rect x='5.49935' y='5.50008' width='25' height='25' rx='12.5' stroke='#DC6803' stroke-width='1.66667'/></g><g opacity='0.1'><rect x='1.33333' y='1.33333' width='33.3333' height='33.3333' rx='16.6667' stroke='#DC6803' stroke-width='1.66667'/></g><g clip-path='url(#clip0_6924_257)'><path d='M17.9993 14.6667V18.0001M17.9993 21.3334H18.0077M26.3327 18.0001C26.3327 22.6025 22.6017 26.3334 17.9993 26.3334C13.397 26.3334 9.66602 22.6025 9.66602 18.0001C9.66602 13.3977 13.397 9.66675 17.9993 9.66675C22.6017 9.66675 26.3327 13.3977 26.3327 18.0001Z' stroke='#DC6803' stroke-width='1.66667' stroke-linecap='round' stroke-linejoin='round'/></g><defs><clipPath id='clip0_6924_257'><rect width='20' height='20' fill='white' transform='translate(8 8)'/></clipPath></defs>
+									</svg>
+									<span class="srfm-wrn-title">
+										<?php echo __( 'Please Enable Instant Form', 'sureforms' ); ?>
+									</span>
+								</div>
+								<span class="srfm-wrn-description">
+								<?php echo __( 'To view the forms in the frontend you have to activate the instant form from the editor.', 'sureforms' ); ?>
+								</span>
+								<span class="srfm-wrn-title">
+									<?php echo __( 'Learn More', 'sureforms' ); ?>
+								</span>
+							</div>
+						</div>
+>>>>>>> Stashed changes:inc/srfm-generate-form-markup.php
 					</div>
 					<div class="srfm-wrn-text-ctn">
 						<span class="srfm-wrn-title">
