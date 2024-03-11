@@ -173,6 +173,8 @@ License : Massachusetts Institute of Technology (MIT)
 License URI : https://github.com/cbschuld/Browser.php/blob/master/LICENSE.md 
 
 https://ipapi.co/json  
+Terms : https://ipapi.co/terms/  
+Privacy : https://ipapi.co/privacy/
 License : Massachusetts Institute of Technology (MIT)  
 License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE  
 
