@@ -180,12 +180,17 @@ License URI : https://github.com/ipapi-co/ipapi/blob/master/LICENSE
 
 == Changelog ==
 
-= 0.0.1 =
-* Initial release.
+= 0.0.3 =  
+* Fix: Bug fixes. 
 
 = 0.0.2 =
 * New: Introduced Email summaries.  
 * Fix: Bug fixes. 
 
+<<<<<<< Updated upstream
 = 0.0.3 =  
 * Fix: Bug fixes. 
+=======
+= 0.0.1 =
+* Initial release.
+>>>>>>> Stashed changes
