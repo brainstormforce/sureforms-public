@@ -66,7 +66,10 @@ const getBlockTypes = ( exclude = '' ) => {
  * @return {string} modified value.
  */
 function decodeHtmlEntities( str ) {
-	return str.replace( /&amp;/g, '&' );
+	if ( str.includes( '&amp;' ) ) {
+		return str.replace( /&amp;/g, '&' );
+	}
+	return str;
 }
 
 export { stripHTML, getSpacingPresetCssVar, getBlockTypes, decodeHtmlEntities };
