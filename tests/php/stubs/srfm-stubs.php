@@ -10052,7 +10052,7 @@ namespace {
      *
      * @since 0.0.1
      */
-    function srfm_filesystem()
+    function spec_filesystem()
     {
     }
     /**

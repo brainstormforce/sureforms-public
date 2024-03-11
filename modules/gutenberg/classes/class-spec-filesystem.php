@@ -106,6 +106,6 @@ Spec_Filesystem::get_instance();
  *
  * @since 0.0.1
  */
-function srfm_filesystem() {
+function spec_filesystem() {
 	return Spec_Filesystem::get_instance()->get_filesystem();
 }
