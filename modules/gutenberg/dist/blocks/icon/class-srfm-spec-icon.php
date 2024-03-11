@@ -481,7 +481,7 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 					$link_condition = $disable_link && $link_url;
 
 					if ( $link_condition ) {
-							$href = $link_url ? $link_url : $hash;
+							$href = $link_url ? esc_url( $link_url ): $hash;
 						?>
 						<a rel="noopener noreferrer" href="<?php echo esc_attr( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
 					<?php } ?>
