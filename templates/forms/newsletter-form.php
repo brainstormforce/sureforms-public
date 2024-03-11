@@ -4,8 +4,8 @@
  *
  * @link       https://sureforms.com
  * @since      0.0.1
- * @package    SRFM/Templates/Forms
- * @author     SureCart <https://sureforms.com/>
+ * @package    SureForms/Templates/Forms
+ * @author     SureForms <https://sureforms.com/>
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

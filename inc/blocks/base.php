@@ -2,10 +2,10 @@
 /**
  * The blocks base file.
  *
- * @link       https://surecart.com
+ * @link       https://sureforms.com
  * @since      0.0.1
  * @package    SureForms
- * @author     SureCart <https://surecart.com/>
+ * @author     SureForms <https://sureforms.com/>
  */
 
 namespace SRFM\Inc\Blocks;
