@@ -26,15 +26,15 @@ To improve the user experience, SureForms may use the following 3rd party servic
 
 ## Changelog
 
-= 0.0.1 =
+= 0.0.3 =
 
--   Initial release.
+-   Fix: Bug fixes.
 
 = 0.0.2 =
 
 -   New: Introduced Email summaries.
 -   Fix: Bug fixes.
 
-= 0.0.3 =
+= 0.0.1 =
 
--   Fix: Bug fixes.
+-   Initial release.
