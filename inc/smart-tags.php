@@ -360,11 +360,11 @@ class Smart_Tags {
 		$browser = new Browser();
 
 		if ( '{browser_name}' === $value ) {
-			return $browser->getBrowser();
+			return sanitize_text_field( $browser->getBrowser() );
 		}
 
 		if ( '{browser_platform}' === $value ) {
-			return $browser->getPlatform();
+			return sanitize_text_field( $browser->getPlatform() );
 		}
 
 		return '';

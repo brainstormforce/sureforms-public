@@ -2,7 +2,7 @@
 Contributors: brainstormforce
 Tags: gutenberg, blocks, gutenberg blocks, editor, block, forms
 Requires at least: 6.4
-Tested up to: 6.4
+Tested up to: 6.4.3
 Requires PHP: 7.4
 Stable tag: 0.0.3
 License: GPLv2 or later
