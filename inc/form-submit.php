@@ -273,8 +273,8 @@ class Form_Submit {
 
 		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 		$browser      = new Browser();
-		$browser_name = $browser->getBrowser();
-		$device_name  = $browser->getPlatform();
+		$browser_name = sanitize_text_field( $browser->getBrowser() );
+		$device_name  = sanitize_text_field( $browser->getPlatform() );
 
 		$id           = wp_kses_post( $form_data['form-id'] );
 		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );

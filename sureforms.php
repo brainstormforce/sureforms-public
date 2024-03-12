@@ -6,7 +6,7 @@
  * Author: SureForms
  * Author URI: https://brainstormforce.com/
  * Version: 0.0.3
- * License: GPL v2
+ * License: GPLv2 or later
  * Text Domain: sureforms
  *
  * @package sureforms
