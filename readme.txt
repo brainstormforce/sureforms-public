@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, gutenberg blocks, editor, block, forms
 Requires at least: 6.4
 Tested up to: 6.4.3
 Requires PHP: 7.4
-Stable tag: 0.0.3
+Stable tag: 0.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,10 @@ To improve the user experience, SureForms may use the following 3rd party servic
 - reCAPTCHA – is used for spam prevention and to ensure that the submissions made through the form are done by real human users [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 
 == Changelog ==
+
+= 0.0.4 =
+
+-   Plugin review required changes.
 
 = 0.0.3 =  
 * Fix: Bug fixes. 
