@@ -203,8 +203,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					tagName="label"
 					value={ textAreaHelpText }
 					onChange={ ( value ) => {
-						const decodedValue = decodeHtmlEntities( value );
-						setAttributes( { textAreaHelpText: decodedValue } );
+						setAttributes( {
+							textAreaHelpText: decodeHtmlEntities( value ),
+						} );
 					} }
 					className="srfm-description"
 					multiline={ false }

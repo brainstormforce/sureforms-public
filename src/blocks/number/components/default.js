@@ -26,8 +26,7 @@ export const NumberComponent = ( {
 				tagName="label"
 				value={ label }
 				onChange={ ( value ) => {
-					const decodedValue = decodeHtmlEntities( value );
-					setAttributes( { label: decodedValue } );
+					setAttributes( { label: decodeHtmlEntities( value ) } );
 				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }

@@ -66,8 +66,9 @@ const getBlockTypes = ( exclude = '' ) => {
  * @return {string} modified value.
  */
 function decodeHtmlEntities( str ) {
-	if ( str.includes( '&amp;' ) ) {
-		return str.replace( /&amp;/g, '&' );
+	if ( str.includes( '&amp;' ) || str.includes( '&lt;' ) ) {
+		str = str.replace( /&amp;/g, '&' );
+		str = str.replace( /&lt;/g, '<' );
 	}
 	return str;
 }

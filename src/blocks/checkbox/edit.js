@@ -129,8 +129,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					tagName="label"
 					value={ checkboxHelpText }
 					onChange={ ( value ) => {
-						const decodedValue = decodeHtmlEntities( value );
-						setAttributes( { checkboxHelpText: decodedValue } );
+						setAttributes( {
+							checkboxHelpText: decodeHtmlEntities( value ),
+						} );
 					} }
 					className="srfm-description"
 					multiline={ false }

@@ -251,8 +251,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 					tagName="label"
 					value={ help }
 					onChange={ ( value ) => {
-						const decodedValue = decodeHtmlEntities( value );
-						setAttributes( { help: decodedValue } );
+						setAttributes( { help: decodeHtmlEntities( value ) } );
 					} }
 					className="srfm-description"
 					multiline={ false }
