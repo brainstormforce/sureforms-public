@@ -483,7 +483,7 @@ if ( ! class_exists( 'SRFM_Spec_Icon' ) ) {
 					if ( $link_condition ) {
 							$href = $link_url ? $link_url : $hash;
 						?>
-						<a rel="noopener noreferrer" href="<?php echo esc_attr( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
+						<a rel="noopener noreferrer" href="<?php echo esc_url( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
 					<?php } ?>
 						<?php SRFM_Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); ?>
 					<?php if ( $link_condition ) { ?>
