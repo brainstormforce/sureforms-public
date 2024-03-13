@@ -36,6 +36,9 @@ class SRFM_Admin {
 		add_action( 'enqueue_block_assets', [ $this, 'enqueue_styles' ] );
 		add_action( 'admin_head', [ $this, 'enqueue_header_styles' ] );
 		add_action( 'admin_body_class', [ $this, 'admin_template_picker_body_class' ] );
+
+		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
+		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 	}
 
 	/**
@@ -480,5 +483,21 @@ class SRFM_Admin {
 
 		return $classes;
 
+	}
+
+	/**
+	 * Disable spectra's quick action bar in sureforms CPT.
+	 *
+	 * @param string $status current status of the quick action bar.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function restrict_spectra_quick_action_bar( $status ){
+		$screen = get_current_screen();
+		if( 'disabled' !== $status && isset( $screen->id ) && 'sureforms_form' === $screen->id ){
+			$status = 'disabled';
+		}
+
+		return $status;
 	}
 }
