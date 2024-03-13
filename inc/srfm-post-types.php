@@ -49,7 +49,11 @@ class SRFM_Post_Types {
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 );
-		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
+
+		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
+		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
+	}
 
 	/**
 	 * Add SureForms menu.
@@ -280,7 +284,7 @@ class SRFM_Post_Types {
 				.misc-pub-visibility {
 					display: none !important;
 				}
-			</style> 
+			</style>
 			<?php
 		}
 	}
@@ -947,6 +951,22 @@ class SRFM_Post_Types {
 			wp_safe_redirect( home_url() );
 			return;
 		}
+	}
+
+	/**
+	 * Disable spectra's quick action bar in sureforms CPT.
+	 *
+	 * @param string $status current status of the quick action bar.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function restrict_spectra_quick_action_bar( $status ){
+		$screen = get_current_screen();
+		if( 'disabled' !== $status && isset( $screen->id ) && 'sureforms_form' === $screen->id ){
+			$status = 'disabled';
+		}
+
+		return $status;
 	}
 
 }
