@@ -49,8 +49,7 @@ class SRFM_Post_Types {
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 );
-		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );
-	}
+		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
 
 	/**
 	 * Add SureForms menu.
@@ -949,4 +948,5 @@ class SRFM_Post_Types {
 			return;
 		}
 	}
+
 }

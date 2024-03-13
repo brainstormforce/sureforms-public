@@ -490,11 +490,11 @@ class SRFM_Admin {
 	 *
 	 * @param string $status current status of the quick action bar.
 	 * @since x.x.x
-	 * @return void
+	 * @return string
 	 */
-	public function restrict_spectra_quick_action_bar( $status ){
+	public function restrict_spectra_quick_action_bar( $status ) {
 		$screen = get_current_screen();
-		if( 'disabled' !== $status && isset( $screen->id ) && 'sureforms_form' === $screen->id ){
+		if ( 'disabled' !== $status && isset( $screen->id ) && 'sureforms_form' === $screen->id ) {
 			$status = 'disabled';
 		}
 
