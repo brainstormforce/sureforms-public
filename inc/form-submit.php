@@ -123,13 +123,6 @@ class Form_Submit {
 					continue;
 				}
 
-				// Handle each file.
-				$upload_dir  = wp_upload_dir();
-				$destination = $upload_dir['basedir'] . '/sureforms/' . $filename;
-				if ( ! is_dir( dirname( $destination ) ) ) {
-					mkdir( dirname( $destination ), 0755, true );
-				}
-
 				// Use wp_handle_upload instead of move_uploaded_file.
 				$uploaded_file = [
 					'name'     => $filename,
