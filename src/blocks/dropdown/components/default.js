@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 	const { required, label, placeholder } = attributes;
@@ -10,7 +11,9 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					setAttributes( { label: decodeHtmlEntities( value ) } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ `srfm-listbox-label ${ blockID }` }
