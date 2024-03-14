@@ -101,6 +101,7 @@ body.post-type-sureforms_form div.is-root-container.block-editor-block-list__lay
   max-width: 100%;
 }
 body.post-type-sureforms_form .edit-post-visual-editor__post-title-wrapper,
+body.post-type-sureforms_form .block-editor-post-preview__button-toggle,
 body.post-type-sureforms_form .editor-preview-dropdown__toggle {
   display: none;
 }

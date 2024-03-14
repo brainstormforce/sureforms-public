@@ -7,6 +7,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// Styling for the sidebar - WP6.4 or below.
 	.edit-post-sidebar {
 		> .components-panel {
 			> .components-panel__body.is-opened {
@@ -31,11 +32,11 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// Sidebar Override. WP6.5
+	// Styling for the sidebar - WP6.5.
 	div[id="edit-post:document"].edit-post-sidebar {
 		> .edit-post-sidebar__panel {
 			.components-panel__body.is-opened {
-				padding: 0 !important;
+				padding: 0 !important; // This is needed to override the padding added by WordPress.
 				width: 100%;
 
 				> h2:last-child {
@@ -45,7 +46,7 @@ body.post-type-sureforms_form {
 
 			.srfm--panel {
 				.components-panel__body.is-opened {
-					padding: 16px !important;
+					padding: 16px !important; // This is needed to override the padding added by WordPress.
 					width: 100%;
 				}
 			}
@@ -146,7 +147,9 @@ body.post-type-sureforms_form {
 
 	// Hide default title and preview btns ( desktop / tablet / mobile ).
 	.edit-post-visual-editor__post-title-wrapper,
-	// .block-editor-post-preview__button-toggle, // we need to use below class to hide the preview button.  WP6.5
+	// classname in WP-6.4
+	.block-editor-post-preview__button-toggle, 
+	// classname in WP-6.5
 	.editor-preview-dropdown__toggle {
 		display: none;
 	}
@@ -183,7 +186,8 @@ body.post-type-sureforms_form {
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
-			height: 44px; // need to declare height WP6.5
+			// need to declare height for WP6.5 won't affect in WP6.4
+			height: 44px;
 
 			&:focus {
 				border-color: #0284c7;
