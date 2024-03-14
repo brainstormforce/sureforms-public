@@ -7,7 +7,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// Sidebar Override.
 	.edit-post-sidebar {
 		> .components-panel {
 			> .components-panel__body.is-opened {
@@ -22,6 +21,37 @@ body.post-type-sureforms_form {
 				&.edit-post-post-status.is-opened {
 					display: none;
 				}
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	// Sidebar Override. WP6.5
+	div[id="edit-post:document"].edit-post-sidebar {
+		> .edit-post-sidebar__panel {
+			.components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				> h2:last-child {
+					display: none;
+				}
+			}
+
+			.srfm--panel {
+				.components-panel__body.is-opened {
+					padding: 16px !important;
+					width: 100%;
+				}
+			}
+
+			.edit-post-post-status {
+				display: none;
 			}
 		}
 
@@ -116,7 +146,8 @@ body.post-type-sureforms_form {
 
 	// Hide default title and preview btns ( desktop / tablet / mobile ).
 	.edit-post-visual-editor__post-title-wrapper,
-	.block-editor-post-preview__button-toggle {
+	// .block-editor-post-preview__button-toggle, // we need to use below class to hide the preview button.  WP6.5
+	.editor-preview-dropdown__toggle {
 		display: none;
 	}
 
@@ -152,6 +183,7 @@ body.post-type-sureforms_form {
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
+			height: 44px; // need to declare height WP6.5
 
 			&:focus {
 				border-color: #0284c7;
