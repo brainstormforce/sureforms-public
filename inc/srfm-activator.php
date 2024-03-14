@@ -29,7 +29,6 @@ class SRFM_Activator {
 	 * @return void
 	 */
 	public static function activate() {
-
 		$email_summary_options = get_option( 'srfm_email_summary_options' );
 		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['enable_email_summary'] : '';
 
