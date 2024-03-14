@@ -46,6 +46,11 @@ body.post-type-sureforms_form .editor-styles-wrapper {
   background-position: center;
   background-size: cover;
   background-color: var(--srfm-bg-color);
+  font-family: inherit;
+}
+body.post-type-sureforms_form.block-editor-iframe__body .block-editor-block-list__layout,
+body.post-type-sureforms_form .editor-styles-wrapper .block-editor-block-list__layout {
+  font-size: var(--srfm-font-size);
 }
 body.post-type-sureforms_form.block-editor-iframe__body {
   border: 0;
