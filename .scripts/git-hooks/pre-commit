@@ -63,7 +63,7 @@ then
     then
         echo "Please fix the PHPCS errors before commit!"
         echo " => Run this command for automatic fixes."
-        echo "		composer lint:fix -- $FILES"
+        echo "		composer format-- $FILES"
         exit 1
     fi
 fi
@@ -77,6 +77,28 @@ then
         echo "Please fix the PHPStan errors before commit!"
         echo " => Run this command to check PHPStan errors."
         echo "		composer phpstan"
+        exit 1
+    fi
+fi
+
+if [ "$FILES" != "" ]
+then
+    echo "Running CSS linting issues..."
+    npm run lint-css
+    if [ $? != 0 ]
+    then
+        echo "Please fix the CSS issues before commit!"
+        exit 1
+    fi
+fi
+
+if [ "$FILES" != "" ]
+then
+    echo "Running JS linting issues..."
+    npm run lint-js
+    if [ $? != 0 ]
+    then
+        echo "Please fix the JS issues before commit!"
         exit 1
     fi
 fi
