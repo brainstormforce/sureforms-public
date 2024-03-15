@@ -113,7 +113,7 @@
 
 						input {
 							line-height: normal;
-							font-size: initial;
+							font-size: 0.875em;
 							height: auto;
 							width: auto;
 							min-width: auto;
@@ -131,6 +131,10 @@
 
 					.ts-dropdown {
 						margin-top: 0;
+						color: inherit;
+						font-family: inherit;
+						font-size: inherit;
+						line-height: inherit;
 					}
 				}
 

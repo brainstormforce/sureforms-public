@@ -96,7 +96,7 @@
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control input {
   line-height: normal;
-  font-size: initial;
+  font-size: 0.875em;
   height: auto;
   width: auto;
   min-width: auto;
@@ -117,6 +117,10 @@
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-dropdown {
   margin-top: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap select {
   display: block;
