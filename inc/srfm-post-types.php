@@ -280,7 +280,7 @@ class SRFM_Post_Types {
 				.misc-pub-visibility {
 					display: none !important;
 				}
-			</style> 
+			</style>
 			<?php
 		}
 	}

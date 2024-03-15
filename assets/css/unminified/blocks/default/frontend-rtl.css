@@ -254,6 +254,7 @@
 }
 .srfm-form-container .srfm-form .srfm-submit-container {
   width: 100%;
+  margin-bottom: 1.2em;
 }
 .srfm-form-container .srfm-form .srfm-submit-container.hide {
   display: none;
