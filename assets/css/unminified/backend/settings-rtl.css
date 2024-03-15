@@ -29,7 +29,8 @@
 .srfm-settings-wrap .srfm-settings-sidebar nav {
   margin-bottom: 1.6em;
   position: sticky;
-  top: 120px;
+  top: 88px;
+  padding-top: 10px;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category {
   display: flex;
@@ -65,7 +66,7 @@
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container {
   position: sticky;
-  top: 270px;
+  top: 235px;
   padding: 0.8em;
   border: 1px solid #125d9f;
   border-radius: 6px;
