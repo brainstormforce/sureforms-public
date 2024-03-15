@@ -7,7 +7,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// Sidebar Override.
+	// Styling for the sidebar - WP6.4.
 	.edit-post-sidebar {
 		> .components-panel {
 			> .components-panel__body.is-opened {
@@ -22,6 +22,37 @@ body.post-type-sureforms_form {
 				&.edit-post-post-status.is-opened {
 					display: none;
 				}
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	// Styling for the sidebar - WP6.5.
+	div[id="edit-post:document"].edit-post-sidebar {
+		> .edit-post-sidebar__panel {
+			.components-panel__body.is-opened {
+				padding: 0 !important; // This is needed to override the padding added by WordPress.
+				width: 100%;
+
+				> h2:last-child {
+					display: none;
+				}
+			}
+
+			.srfm--panel {
+				.components-panel__body.is-opened {
+					padding: 16px !important; // This is needed to override the padding added by WordPress.
+					width: 100%;
+				}
+			}
+
+			.edit-post-post-status {
+				display: none;
 			}
 		}
 
@@ -120,7 +151,10 @@ body.post-type-sureforms_form {
 
 	// Hide default title and preview btns ( desktop / tablet / mobile ).
 	.edit-post-visual-editor__post-title-wrapper,
-	.block-editor-post-preview__button-toggle {
+	// classname in WP-6.4.
+	.block-editor-post-preview__button-toggle, 
+	// classname in WP-6.5.
+	.editor-preview-dropdown__toggle {
 		display: none;
 	}
 
@@ -156,6 +190,8 @@ body.post-type-sureforms_form {
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
+			// need to declare height for WP6.5.
+			height: 44px;
 
 			&:focus {
 				border-color: #0284c7;

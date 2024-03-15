@@ -59,4 +59,26 @@ const getBlockTypes = ( exclude = '' ) => {
 	return blocks;
 };
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes };
+/**
+ * Modified the string value.
+ *
+ * @param {string} str - The input string to be modified.
+ * @return {string} modified value.
+ */
+function decodeHtmlEntities( str ) {
+	const entities = [
+		{ entity: '&amp;', char: '&' },
+		{ entity: '&lt;', char: '<' },
+	];
+
+	for ( let i = 0; i < entities.length; i++ ) {
+		if ( str.includes( entities[ i ].entity ) ) {
+			const regex = new RegExp( entities[ i ].entity, 'g' );
+			str = str.replace( regex, entities[ i ].char );
+		}
+	}
+
+	return str;
+}
+
+export { stripHTML, getSpacingPresetCssVar, getBlockTypes, decodeHtmlEntities };

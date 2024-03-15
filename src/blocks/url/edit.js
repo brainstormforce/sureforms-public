@@ -9,6 +9,7 @@ import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const { help, block_id, formId, preview } = attributes;
@@ -41,7 +42,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				<RichText
 					tagName="label"
 					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
+					onChange={ ( value ) => {
+						setAttributes( { help: decodeHtmlEntities( value ) } );
+					} }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }
