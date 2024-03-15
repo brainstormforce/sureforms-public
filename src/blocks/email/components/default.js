@@ -1,4 +1,5 @@
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -19,7 +20,9 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 				<RichText
 					tagName="label"
 					value={ label }
-					onChange={ ( value ) => setAttributes( { label: value } ) }
+					onChange={ ( value ) => {
+						setAttributes( { label: decodeHtmlEntities( value ) } );
+					} }
 					className={ `srfm-block-label${ isRequired }` }
 					multiline={ false }
 					id={ blockID }
