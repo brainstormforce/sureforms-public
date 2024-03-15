@@ -75,7 +75,7 @@
   border-radius: var(--srfm-border-radius);
   background-color: var(--srfm-base-background-color);
   height: auto;
-  padding: 0.75em 1em 0.75em 2.2em !important;
+  padding: 0.71em 1em 0.71em 2.2em !important;
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control::after {
   content: "";
