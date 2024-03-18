@@ -8,7 +8,7 @@
 
 namespace SRFM\API;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_Post_Type;
 use WP_REST_Controller;
@@ -16,7 +16,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use WP_Block_Patterns_Registry;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Block_Patterns extends WP_REST_Controller {
 
-	use SRFM_Get_Instance;
+	use Get_Instance;
 
 	/**
 	 * Class Constructor
@@ -103,7 +103,7 @@ class Block_Patterns extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		$nonce = SRFM_Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
 			wp_send_json_error(

@@ -1,10 +1,9 @@
 import { render } from '@wordpress/element';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import FormPageHeader from '../components/PageHeader';
 
-import Header from './Header';
 import Navigation from './Navigation';
 import Component from './Component';
-import './styles.scss';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -18,10 +17,14 @@ function QueryScreen() {
 const Settings = () => {
 	return (
 		<Router>
-			<Header />
-			<div className="srfm-flex srfm-flex-row srfm-h-[100vh] srfm-bg-transparent">
+			<FormPageHeader />
+			<div className="srfm-settings-wrap">
 				<Navigation />
-				<QueryScreen />
+				<div className="srfm-settings-page-container">
+					<div className="srfm-settings-page-inner">
+						<QueryScreen />
+					</div>
+				</div>
 			</div>
 		</Router>
 	);

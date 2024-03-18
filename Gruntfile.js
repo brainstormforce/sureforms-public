@@ -172,6 +172,10 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/backend/admin.css',
 						dest: 'assets/css/minified/backend/admin.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/backend/settings.css',
+						dest: 'assets/css/minified/backend/settings.min-rtl.css',
+					},
 				],
 
 			},
@@ -231,6 +235,7 @@ module.exports = function ( grunt ) {
 					'!.gitattributes',
 					'!*.sh',
 					'!*.zip',
+					'!**/README.md',
 					'!eslintrc.json',
 					'!README.md',
 					'!Gruntfile.js',
@@ -253,6 +258,7 @@ module.exports = function ( grunt ) {
 					'!config/**',
 					'!tests/**',
 					'!bin/**',
+					'!artifact/**',
 					//'!sass/**',
 					//'!assets/css/unminified/**',
 					//'!assets/js/unminified/**',

@@ -7,8 +7,8 @@
 
 namespace SRFM\Inc\Email;
 
-use SRFM\Inc\Traits\SRFM_Get_Instance;
-use SRFM\Inc\SRFM_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.0.1
  */
-class SRFM_Email_Template {
+class Email_Template {
 
-	use SRFM_Get_Instance;
+	use Get_Instance;
 
 	/**
 	 * Class Constructor
@@ -140,10 +140,10 @@ class SRFM_Email_Template {
 						$label       = explode( '-lbl-', $field_name )[1];
 						$field_label = '';
 						if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
-							$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
+							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
 							$value       = strpos( $field_name, 'srfm-url' ) !== false ? '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>' : '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_html__( 'View', 'sureforms' ) . '</a>';
 						} else {
-							$field_label = $label ? esc_html( SRFM_Helper::decrypt( $label ) ) : '';
+							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
 						}
 						?>
 					<tr class="field-label">

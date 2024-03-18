@@ -20,6 +20,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { applyFilters } from '@wordpress/hooks';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -45,6 +46,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_textarea_block_required_text', errorMsg );
 
 	// show the block preview on hover
 	if ( preview ) {
@@ -126,14 +132,15 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							{ required && (
 								<SRFMTextControl
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<SRFMNumberControl
@@ -211,9 +218,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<RichText
 					tagName="label"
 					value={ textAreaHelpText }
-					onChange={ ( value ) =>
-						setAttributes( { textAreaHelpText: value } )
-					}
+					onChange={ ( value ) => {
+						setAttributes( {
+							textAreaHelpText: decodeHtmlEntities( value ),
+						} );
+					} }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }

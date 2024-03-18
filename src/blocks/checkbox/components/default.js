@@ -1,5 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const CheckboxComponent = ( { attributes, setAttributes, blockID } ) => {
 	const { label, checked: isChecked, required } = attributes;
@@ -20,7 +21,9 @@ export const CheckboxComponent = ( { attributes, setAttributes, blockID } ) => {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					setAttributes( { label: decodeHtmlEntities( value ) } );
+				} }
 				className={ `srfm-block-text srfm-span-wrap ${ isRequired }` }
 				multiline={ false }
 				id={ blockID }

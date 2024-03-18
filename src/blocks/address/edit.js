@@ -18,6 +18,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { applyFilters } from '@wordpress/hooks';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 
@@ -45,6 +46,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_address_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -106,10 +112,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										label: 'errorMsg',
 									} }
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<span className="srfm-control-label srfm-control__header" />
@@ -250,7 +257,9 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<RichText
 					tagName="label"
 					value={ help }
-					onChange={ ( value ) => setAttributes( { help: value } ) }
+					onChange={ ( value ) => {
+						setAttributes( { help: decodeHtmlEntities( value ) } );
+					} }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }

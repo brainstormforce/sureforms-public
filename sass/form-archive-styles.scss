@@ -205,7 +205,9 @@ input:checked + .slider:before {
 }
 
 .wrap {
-	.page-title-action {
+	.srfm-add-new-btn {
+		position: relative;
+		top: -3px;
 		vertical-align: baseline;
 	}
 

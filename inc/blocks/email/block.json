@@ -52,11 +52,11 @@
 		},
 		"duplicateMsg": {
 			"type": "string",
-			"default": "Value needs to be unique."
+			"default": ""
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "This field is required."
+			"default": ""
 		},
 		"confirmLabel": {
 			"type": "string",
