@@ -4,7 +4,7 @@ namespace SRFM\Inc\Traits {
     /**
      * Trait Get_Instance.
      */
-    trait SRFM_Get_Instance
+    trait Get_Instance
     {
         /**
          * Instance object.
@@ -29,9 +29,9 @@ namespace SRFM\Admin {
      *
      * @since 0.0.1
      */
-    class SRFM_Admin
+    class Admin
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Class constructor.
          *
@@ -160,7 +160,7 @@ namespace SRFM\API {
      */
     class Block_Patterns extends \WP_REST_Controller
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Class Constructor
          *
@@ -224,7 +224,7 @@ namespace SRFM\Inc\Blocks {
     /**
      * Block base class.
      */
-    abstract class SRFM_Base
+    abstract class Base
     {
         /**
          * Optional directory to .json block data files.
@@ -310,7 +310,7 @@ namespace SRFM\Inc\Blocks\Address {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -329,7 +329,7 @@ namespace SRFM\Inc\Blocks\Checkbox {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render form checkbox block
@@ -348,7 +348,7 @@ namespace SRFM\Inc\Blocks\Dropdown {
     /**
      * Dropdown Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -367,7 +367,7 @@ namespace SRFM\Inc\Blocks\Email {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -386,7 +386,7 @@ namespace SRFM\Inc\Blocks\Input {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -405,7 +405,7 @@ namespace SRFM\Inc\Blocks\Multichoice {
     /**
      * Multichoice Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -424,7 +424,7 @@ namespace SRFM\Inc\Blocks\Number {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -443,7 +443,7 @@ namespace SRFM\Inc\Blocks\Phone {
     /**
      * Phone Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -462,7 +462,7 @@ namespace SRFM\Inc\Blocks\Sform {
     /**
      * Sureforms_Form Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block.
@@ -483,9 +483,9 @@ namespace SRFM\Inc\Blocks {
      *
      * @since 0.0.1
      */
-    class SRFM_Register
+    class Register
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -512,7 +512,7 @@ namespace SRFM\Inc\Blocks\Textarea {
     /**
      * Address Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -531,7 +531,7 @@ namespace SRFM\Inc\Blocks\Url {
     /**
      * URL Block.
      */
-    class SRFM_Block extends \SRFM\Inc\Blocks\SRFM_Base
+    class Block extends \SRFM\Inc\Blocks\Base
     {
         /**
          * Render the block
@@ -552,9 +552,9 @@ namespace SRFM\Inc\Email {
      *
      * @since 0.0.1
      */
-    class SRFM_Email_Template
+    class Email_Template
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Class Constructor
          *
@@ -603,7 +603,7 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Base
+    class Base
     {
         /**
          * Render the sureforms default
@@ -622,9 +622,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Address_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Address_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Return Phone codes
          *
@@ -650,9 +650,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Checkbox_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Checkbox_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms checkbox classic styling
          *
@@ -670,9 +670,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Dropdown_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Dropdown_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms dropdown classic styling
          *
@@ -690,9 +690,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Email_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Email_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms email classic styling
          *
@@ -709,9 +709,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Input_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Input_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render input markup
          *
@@ -729,9 +729,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Multichoice_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Multichoice_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms Multichoice classic styling
          *
@@ -749,9 +749,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Number_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Number_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms number classic styling
          *
@@ -769,9 +769,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Phone_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Phone_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms phone classic styling
          *
@@ -789,9 +789,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Textarea_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Textarea_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms textarea classic styling
          *
@@ -809,9 +809,9 @@ namespace SRFM\Inc\Fields {
      *
      * @since 0.0.1
      */
-    class SRFM_Url_Markup extends \SRFM\Inc\Fields\SRFM_Base
+    class Url_Markup extends \SRFM\Inc\Fields\Base
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Render the sureforms url classic styling
          *
@@ -7732,9 +7732,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Activator
+    class Activator
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Activation handler function.
          *
@@ -7750,9 +7750,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Admin_Ajax
+    class Admin_Ajax
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -7825,9 +7825,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Create_New_Form
+    class Create_New_Form
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -7874,7 +7874,7 @@ namespace SRFM\Inc {
      */
     class SRFM_Email_Summaries
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -7968,9 +7968,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Export
+    class Export
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8014,9 +8014,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Forms_Data
+    class Forms_Data
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8061,9 +8061,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Generate_Form_Markup
+    class Generate_Form_Markup
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8101,7 +8101,7 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Gutenberg_Hooks
+    class Gutenberg_Hooks
     {
         /**
          * Block patterns to register.
@@ -8109,7 +8109,7 @@ namespace SRFM\Inc {
          * @var array<mixed>
          */
         protected $patterns = [];
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Class constructor.
          *
@@ -8173,9 +8173,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Helper
+    class Helper
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Checks if current value is string or else returns default value
          *
@@ -8294,9 +8294,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Post_Types
+    class Post_Types
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8541,9 +8541,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Public
+    class Frontend_Assets
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8597,9 +8597,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Smart_Tags
+    class Smart_Tags
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Constructor
          *
@@ -8683,9 +8683,9 @@ namespace SRFM\Inc {
      *
      * @since 0.0.1
      */
-    class SRFM_Submit
+    class Form_Submit
     {
-        use \SRFM\Inc\Traits\SRFM_Get_Instance;
+        use \SRFM\Inc\Traits\Get_Instance;
         /**
          * Namespace.
          *
@@ -8801,9 +8801,9 @@ namespace SRFM\Inc {
 }
 namespace {
     /**
-     * Class SRFM_Spec_Block_Config.
+     * Class Spec_Block_Config.
      */
-    class SRFM_Spec_Block_Config
+    class Spec_Block_Config
     {
         /**
          * Block Attributes
@@ -8866,9 +8866,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Block_Helper.
+     * Class Spec_Block_Helper.
      */
-    class SRFM_Spec_Block_Helper
+    class Spec_Block_Helper
     {
         /**
          * Get Icon Block CSS
@@ -8961,7 +8961,7 @@ namespace {
     /**
      * Class Sureforms_Spec_Block_JS.
      */
-    class SRFM_Spec_Block_JS
+    class Spec_Block_JS
     {
         /**
          * Adds Google fonts for Next Step Button.
@@ -8992,9 +8992,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Block_Loader.
+     * Class Spec_Block_Loader.
      */
-    final class SRFM_Spec_Block_Loader
+    final class Spec_Block_Loader
     {
         /**
          *  Initiator
@@ -9020,9 +9020,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Filesystem.
+     * Class Spec_Filesystem.
      */
-    class SRFM_Spec_Filesystem
+    class Spec_Filesystem
     {
         /**
          *  Initiator
@@ -9056,9 +9056,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Gb_Helper.
+     * Class Spec_Gb_Helper.
      */
-    final class SRFM_Spec_Gb_Helper
+    final class Spec_Gb_Helper
     {
         /**
          * Member Variable
@@ -9390,11 +9390,11 @@ namespace {
         }
     }
     /**
-     * SRFM_Spec_Init_Blocks.
+     * Spec_Init_Blocks.
      *
      * @package Sureforms
      */
-    class SRFM_Spec_Init_Blocks
+    class Spec_Init_Blocks
     {
         /**
          * Store Json variable
@@ -9442,7 +9442,7 @@ namespace {
     /**
      * Class for Spectra compatibility
      */
-    class SRFM_Spec_Spectra_Compatibility
+    class Spec_Spectra_Compatibility
     {
         /**
          * Initiator
@@ -9478,14 +9478,14 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Advanced_Heading.
+     * Class Advanced_Heading.
      */
-    class SRFM_Advanced_Heading
+    class Advanced_Heading
     {
         /**
          *  Initiator
          *
-         * @return SRFM_Advanced_Heading The instance of the SRFM_Advanced_Heading class.
+         * @return Advanced_Heading The instance of the Advanced_Heading class.
          */
         public static function get_instance()
         {
@@ -9520,9 +9520,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Icon.
+     * Class Spec_Icon.
      */
-    class SRFM_Spec_Icon
+    class Spec_Icon
     {
         /**
          *  Initiator
@@ -9556,14 +9556,14 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Advanced_Image.
+     * Class Advanced_Image.
      */
-    class SRFM_Advanced_Image
+    class Advanced_Image
     {
         /**
          *  Initiator
          *
-         * @return SRFM_Advanced_Image The instance of the SRFM_Advanced_Image class.
+         * @return Advanced_Image The instance of the Advanced_Image class.
          */
         public static function get_instance()
         {
@@ -9610,9 +9610,9 @@ namespace {
         }
     }
     /**
-     * Class SRFM_Spec_Separator.
+     * Class Spec_Separator.
      */
-    class SRFM_Spec_Separator
+    class Spec_Separator
     {
         /**
          *  Initiator
@@ -9652,7 +9652,7 @@ namespace SRFM {
      *
      * @since 0.0.1
      */
-    class SRFM_Plugin_Loader
+    class Plugin_Loader
     {
         /**
          * Initiator
@@ -10052,7 +10052,7 @@ namespace {
      *
      * @since 0.0.1
      */
-    function srfm_filesystem()
+    function spec_filesystem()
     {
     }
     /**
