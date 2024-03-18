@@ -3,7 +3,7 @@
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 Tags:
 **Requires at least:** 5.9  
-**Tested up to:** 6.4.3  
+**Tested up to:** 6.5  
 **Requires PHP:** 7.4  
 **Stable tag:** 0.0.4  
 **License:** GPLv2 or later  

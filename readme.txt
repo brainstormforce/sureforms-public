@@ -2,7 +2,7 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.4.3
+Tested up to: 6.5
 Requires PHP: 7.4
 Stable tag: 0.0.4
 License: GPLv2 or later
