@@ -37,6 +37,22 @@ $placeholder_color: #9ca3af;
 	display: flex;
 	font-size: 20px;
 
+	&::before {
+		-webkit-animation-fill-mode: both;
+		animation-fill-mode: both;
+		background: #ffffff;
+		content: " ";
+		height: 100%;
+		position: fixed;
+		left: 0;
+		top: 0;
+		-webkit-transform-origin: right;
+		-ms-transform-origin: right;
+		transform-origin: right;
+		width: 450px;
+		border-right: 1px solid var( --sc-color-gray-200 );
+	}
+
 	.srfm-settings-sidebar {
 		position: relative;
 		max-width: 250px;
@@ -93,7 +109,7 @@ $placeholder_color: #9ca3af;
 
 		.srfm-notice-container {
 			position: sticky;
-			top: 235px;
+			top: 240px;
 			padding: 0.8em;
 			border: 1px solid #125d9f;
 			border-radius: 6px;

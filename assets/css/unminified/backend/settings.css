@@ -19,6 +19,18 @@
   display: flex;
   font-size: 20px;
 }
+.srfm-settings-wrap::before {
+  animation-fill-mode: both;
+  background: #ffffff;
+  content: " ";
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform-origin: right;
+  width: 450px;
+  border-right: 1px solid var(--sc-color-gray-200);
+}
 .srfm-settings-wrap .srfm-settings-sidebar {
   position: relative;
   max-width: 250px;
@@ -66,7 +78,7 @@
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container {
   position: sticky;
-  top: 235px;
+  top: 240px;
   padding: 0.8em;
   border: 1px solid #125d9f;
   border-radius: 6px;

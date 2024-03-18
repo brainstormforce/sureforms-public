@@ -135,7 +135,6 @@ class Global_Settings {
 		$srfm_ip_log         = isset( $setting_options['srfm_ip_log'] ) ? $setting_options['srfm_ip_log'] : false;
 		$srfm_honeypot       = isset( $setting_options['srfm_honeypot'] ) ? $setting_options['srfm_honeypot'] : false;
 		$srfm_form_analytics = isset( $setting_options['srfm_form_analytics'] ) ? $setting_options['srfm_form_analytics'] : false;
-		$srfm_gdpr           = isset( $setting_options['srfm_gdpr'] ) ? $setting_options['srfm_gdpr'] : false;
 
 		return update_option(
 			'srfm_general_settings_options',
@@ -143,7 +142,6 @@ class Global_Settings {
 				'srfm_ip_log'         => $srfm_ip_log,
 				'srfm_honeypot'       => $srfm_honeypot,
 				'srfm_form_analytics' => $srfm_form_analytics,
-				'srfm_gdpr'           => $srfm_gdpr,
 			]
 		);
 
@@ -270,7 +268,6 @@ class Global_Settings {
 				'srfm_ip_log'         => false,
 				'srfm_honeypot'       => false,
 				'srfm_form_analytics' => false,
-				'srfm_gdpr'           => false,
 			];
 		}
 		if ( empty( $global_setting_options['get_default_dynamic_block_option'] ) ) {

@@ -135,6 +135,7 @@ class Admin_Ajax {
 				'plugin_installing_text' => __( 'Installing...', 'sureforms' ),
 				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
+				'current_screen_id'      => get_current_screen() ? get_current_screen()->id : '',
 			]
 		);
 	}
