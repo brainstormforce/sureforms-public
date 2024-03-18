@@ -89,7 +89,7 @@
   font-size: 0.7em;
 }
 .is-root-container div[data-type="srfm/url"] .srfm-input-url {
-  padding-right: 87px;
+  padding-right: 5.4375em;
 }
 .is-root-container div[data-type="srfm/address"] .srfm-block-wrap {
   display: flex;

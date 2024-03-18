@@ -35,6 +35,7 @@
 .block-editor-page.post-type-sureforms_form .is-root-container .srfm-input-common,
 .srfm-form-container .srfm-input-common {
   width: 100%;
+  max-width: 100%;
 }
 .block-editor-page.post-type-sureforms_form .is-root-container .srfm-submit-button,
 .srfm-form-container .srfm-submit-button {

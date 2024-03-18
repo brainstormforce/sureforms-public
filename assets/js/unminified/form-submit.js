@@ -184,9 +184,9 @@ function extractFormAttributesAndElements( form ) {
 }
 
 // eslint-disable-next-line no-unused-vars
+// v-2 invisible recaptcha callback
 function onloadCallback() {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
-
 	forms.forEach( ( form ) => {
 		const {
 			formId,
@@ -239,3 +239,6 @@ function onloadCallback() {
 		}
 	} );
 }
+
+// directly assign onloadCallback into the global space:
+window.onloadCallback = onloadCallback;
