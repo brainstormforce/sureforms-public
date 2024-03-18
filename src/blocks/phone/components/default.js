@@ -2,6 +2,7 @@ import { RichText } from '@wordpress/block-editor';
 import IntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import { useEffect, useState } from '@wordpress/element';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 	const { label, placeholder, required, autoCountry } = attributes;
@@ -25,7 +26,9 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 			<RichText
 				tagName="label"
 				value={ label }
-				onChange={ ( value ) => setAttributes( { label: value } ) }
+				onChange={ ( value ) => {
+					setAttributes( { label: decodeHtmlEntities( value ) } );
+				} }
 				className={ `srfm-block-label${ isRequired }` }
 				multiline={ false }
 				id={ blockID }
