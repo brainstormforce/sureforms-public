@@ -42,8 +42,9 @@ const GeneralPage = ( {
 						)
 					}
 				/>
-				<ToggleControl
-					label={ __( 'Enable Form Analytics ', 'sureforms' ) }
+				{ /* Will be implemented later */ }
+				{ /* <ToggleControl
+					label={ __( 'Enable Form Analytics', 'sureforms' ) }
 					help={ __(
 						'Enable this to prevent tracking unique views and submission counts.',
 						'sureforms'
@@ -56,22 +57,7 @@ const GeneralPage = ( {
 							'general-settings'
 						)
 					}
-				/>
-				<ToggleControl
-					label={ __( 'GDPR Enhancements', 'sureforms' ) }
-					help={ __(
-						'Enable GDPR related features and enhancements.',
-						'sureforms'
-					) }
-					checked={ generalTabOptions.srfm_gdpr }
-					onChange={ ( value ) =>
-						updateGlobalSettings(
-							'srfm_gdpr',
-							value,
-							'general-settings'
-						)
-					}
-				/>
+				/> */ }
 			</>
 		);
 	};

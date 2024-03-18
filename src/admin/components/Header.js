@@ -19,7 +19,11 @@ export default () => {
 					position: sticky;
 					background-color: rgba( 255, 255, 255, 0.75 );
 					backdrop-filter: blur( 5px );
-					top: ${ showNotifications ? '0' : '32px' };
+					top: ${ showNotifications &&
+					'toplevel_page_sureforms_menu' !==
+						srfm_admin.current_screen_id
+			? '0'
+			: '32px' };
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {
