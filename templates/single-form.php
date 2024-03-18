@@ -5,7 +5,7 @@
  * @package SureForms
  */
 
-use SRFM\Inc\SRFM_Generate_Form_Markup;
+use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -80,7 +80,7 @@ if ( $srfm_form_preview_attr ) {
 			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
-					echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
+					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
 				<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
@@ -137,7 +137,7 @@ if ( $srfm_form_preview_attr ) {
 			show_admin_bar( false );
 
 			// phpcs:ignore
-			echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
+			echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
 			// phpcs:ignoreEnd
 
 			wp_footer();
