@@ -1,4 +1,5 @@
 import EmailNotification from './email-settings/EmailNotification';
+import WebhookSettings from './webhooks/WebhookSettings';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
@@ -18,15 +19,27 @@ const SingleFormSettingsPopup = ( props ) => {
 				>
 					<span className="srfm-modal-tab-icon">{ emailIcon }</span>
 					<span className="srfm-modal-tab-text">
-						<p>{ __( 'Email Notifications', 'sureforms' ) }</p>
+						<p>{ __( 'Email', 'sureforms' ) }</p>
 					</span>
 				</div>
+			</div>
+			<div
+				className="srfm-modal-tab"
+				onClick={ () => setSelectedTab( 'webhook_settings' ) }
+			>
+				<span className="srfm-modal-tab-icon">{ emailIcon }</span>
+				<span className="srfm-modal-tab-text">
+					<p>{ __( 'Webhooks Settings', 'sureforms' ) }</p>
+				</span>
 			</div>
 			{ /* Modal Content */ }
 			{ 'email_notification' === selectedTab && (
 				<EmailNotification
 					emailNotificationData={ emailNotificationData }
 				/>
+			) }
+			{ 'webhook_settings' === selectedTab && (
+				<WebhookSettings />
 			) }
 		</div>
 	);
