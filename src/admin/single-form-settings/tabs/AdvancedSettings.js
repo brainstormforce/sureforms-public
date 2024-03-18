@@ -18,7 +18,7 @@ import parse from 'html-react-parser';
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
-	const { default_keys } = props;
+	const { defaultKeys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
 
@@ -43,21 +43,21 @@ function AdvancedSettings( props ) {
 	};
 	const closeModal = () => setOpen( false );
 
-	let sureforms_keys = useSelect( ( select ) =>
+	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
-	if ( sureforms_keys && '_srfm_submit_type' in sureforms_keys ) {
-		if ( ! sureforms_keys._srfm_submit_type ) {
-			sureforms_keys = default_keys;
+	if ( sureformsKeys && '_srfm_submit_type' in sureformsKeys ) {
+		if ( ! sureformsKeys._srfm_submit_type ) {
+			sureformsKeys = defaultKeys;
 			editPost( {
-				meta: sureforms_keys,
+				meta: sureformsKeys,
 			} );
 		}
 	} else {
-		sureforms_keys = default_keys;
+		sureformsKeys = defaultKeys;
 		editPost( {
-			meta: sureforms_keys,
+			meta: sureformsKeys,
 		} );
 	}
 
@@ -70,41 +70,42 @@ function AdvancedSettings( props ) {
 	}
 
 	// Fetch the reCAPTCHA keys from the Global Settings
+	const optionsToFetch = [ 'srfm_security_settings_options' ];
+
 	useEffect( () => {
 		const fetchData = async () => {
 			try {
 				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-settings',
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ optionsToFetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
 						'X-WP-Nonce': srfm_admin.global_settings_nonce,
 					},
 				} );
-
-				if ( data ) {
-					setSureformsV2CheckboxSecret(
-						data.srfm_v2_checkbox_secret &&
-							data.srfm_v2_checkbox_secret
-					);
+				if ( data.srfm_security_settings_options ) {
+					const {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+					} = data.srfm_security_settings_options;
 					setSureformsV2CheckboxSite(
-						data.srfm_v2_checkbox_site &&
-							data.srfm_v2_checkbox_site
+						srfm_v2_checkbox_site_key || ''
 					);
-					setSureformsV2InvisibleSecret(
-						data.srfm_v2_invisible_secret &&
-							data.srfm_v2_invisible_secret
+					setSureformsV2CheckboxSecret(
+						srfm_v2_checkbox_secret_key || ''
 					);
 					setSureformsV2InvisibleSite(
-						data.srfm_v2_invisible_site &&
-							data.srfm_v2_invisible_site
+						srfm_v2_invisible_site_key || ''
 					);
-					setSureformsV3Secret(
-						data.srfm_v3_secret && data.srfm_v3_secret
+					setSureformsV2InvisibleSecret(
+						srfm_v2_invisible_secret_key || ''
 					);
-					setSureformsV3Site(
-						data.srfm_v3_site && data.srfm_v3_site
-					);
+					setSureformsV3Site( srfm_v3_site_key || '' );
+					setSureformsV3Secret( srfm_v3_secret_key || '' );
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -125,7 +126,7 @@ function AdvancedSettings( props ) {
 						'Turn Toggle on to Redirect to a URL',
 						'sureforms'
 					) }
-					checked={ 'url' === sureforms_keys._srfm_submit_type }
+					checked={ 'url' === sureformsKeys._srfm_submit_type }
 					onChange={ ( value ) => {
 						updateMeta(
 							'_srfm_submit_type',
@@ -134,11 +135,11 @@ function AdvancedSettings( props ) {
 					} }
 				/>
 				<p className="components-base-control__help" />
-				{ 'message' === sureforms_keys._srfm_submit_type ? (
+				{ 'message' === sureformsKeys._srfm_submit_type ? (
 					<>
 						<SRFMTextControl
 							data={ {
-								value: sureforms_keys._srfm_thankyou_message_title,
+								value: sureformsKeys._srfm_thankyou_message_title,
 								label: '_srfm_thankyou_message_title',
 							} }
 							label={ __(
@@ -146,9 +147,7 @@ function AdvancedSettings( props ) {
 								'sureforms'
 							) }
 							placeholder={ __( 'Thank you', 'sureforms' ) }
-							value={
-								sureforms_keys._srfm_thankyou_message_title
-							}
+							value={ sureformsKeys._srfm_thankyou_message_title }
 							onChange={ ( value ) => {
 								updateMeta(
 									'_srfm_thankyou_message_title',
@@ -161,7 +160,7 @@ function AdvancedSettings( props ) {
 						<SRFMTextControl
 							variant="textarea"
 							data={ {
-								value: sureforms_keys._srfm_thankyou_message,
+								value: sureformsKeys._srfm_thankyou_message,
 								label: '_srfm_thankyou_message',
 							} }
 							label={ __(
@@ -172,7 +171,7 @@ function AdvancedSettings( props ) {
 								'Form submitted successfully.',
 								'sureforms'
 							) }
-							value={ sureforms_keys._srfm_thankyou_message }
+							value={ sureformsKeys._srfm_thankyou_message }
 							onChange={ ( value ) => {
 								updateMeta( '_srfm_thankyou_message', value );
 							} }
@@ -185,7 +184,7 @@ function AdvancedSettings( props ) {
 							'Customize the Thankyou Page URL',
 							'sureforms'
 						) }
-						value={ sureforms_keys._srfm_submit_url }
+						value={ sureformsKeys._srfm_submit_url }
 						onChange={ ( value ) => {
 							updateMeta( '_srfm_submit_url', value );
 						} }
@@ -194,7 +193,7 @@ function AdvancedSettings( props ) {
 							'sureforms'
 						) }
 						data={ {
-							value: sureforms_keys._srfm_submit_url,
+							value: sureformsKeys._srfm_submit_url,
 							label: '_srfm_submit_url',
 						} }
 						isFormSpecific={ true }
@@ -218,7 +217,7 @@ function AdvancedSettings( props ) {
 						'Select the reCAPTCHA Version to Use',
 						'sureforms'
 					) }
-					value={ sureforms_keys._srfm_form_recaptcha }
+					value={ sureformsKeys._srfm_form_recaptcha }
 					options={ [
 						{ label: 'None', value: 'none' },
 						{

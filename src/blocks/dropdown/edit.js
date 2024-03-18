@@ -18,6 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -29,7 +30,6 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -68,6 +68,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_dropdown_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -134,10 +139,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										label: 'errorMsg',
 									} }
 									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<div style={ { marginBottom: '8px' } }>

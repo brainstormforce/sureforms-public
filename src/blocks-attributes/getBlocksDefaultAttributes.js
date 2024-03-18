@@ -9,7 +9,7 @@ import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
 
-const default_keys = {
+const defaultKeys = {
 	// General Tab
 	// Submit button
 	_srfm_submit_button_text: { default: 'SUBMIT' },
@@ -49,15 +49,56 @@ const default_keys = {
 };
 
 export const blocksAttributes = {
-	input: inputAttributes.attributes,
-	email: emailAttributes.attributes,
-	checkbox: checkboxAttributes.attributes,
-	address: addressAttributes.attributes,
-	'multi-choice': multiChoiceAttributes.attributes,
-	dropdown: dropdownAttributes.attributes,
-	phone: phoneAttributes.attributes,
-	textarea: textareaAttributes.attributes,
-	url: urlAttributes.attributes,
-	number: numberAttributes.attributes,
-	form_specific: default_keys,
+	input: {
+		...inputAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_input_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_input_block_unique_text' ),
+	},
+	email: {
+		...emailAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_email_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_email_block_unique_text' ),
+	},
+	checkbox: {
+		...checkboxAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_checkbox_block_required_text' ),
+	},
+	address: {
+		...addressAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_address_block_required_text' ),
+	},
+	'multi-choice': {
+		...multiChoiceAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_multi_choice_block_required_text' ),
+	},
+	dropdown: {
+		...dropdownAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_dropdown_block_required_text' ),
+	},
+	phone: {
+		...phoneAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_phone_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_phone_block_unique_text' ),
+	},
+	textarea: {
+		...textareaAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_textarea_block_required_text' ),
+	},
+	url: {
+		...urlAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_url_block_required_text' ),
+	},
+	number: {
+		...numberAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
+	},
+	form_specific: defaultKeys,
 };
+
+function getDefaultMessage( optionName ) {
+	return {
+		type: 'string',
+		default:
+			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
+	};
+}

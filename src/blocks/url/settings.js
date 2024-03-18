@@ -11,6 +11,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
+import { useErrMessage } from '@Blocks/util';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -22,6 +23,11 @@ export default ( { attributes, setAttributes } ) => {
 		errorMsg,
 		fieldWidth,
 	} = attributes;
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_url_block_required_text', errorMsg );
 
 	return (
 		<InspectorControls>
@@ -89,14 +95,15 @@ export default ( { attributes, setAttributes } ) => {
 						{ required && (
 							<SRFMTextControl
 								label={ __( 'Error message', 'sureforms' ) }
-								value={ errorMsg }
 								data={ {
 									value: errorMsg,
 									label: 'errorMsg',
 								} }
-								onChange={ ( value ) =>
-									setAttributes( { errorMsg: value } )
-								}
+								value={ currentErrorMsg }
+								onChange={ ( value ) => {
+									setCurrentErrorMsg( value );
+									setAttributes( { errorMsg: value } );
+								} }
 							/>
 						) }
 						<SRFMTextControl
