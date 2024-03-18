@@ -21,7 +21,7 @@ parameters:
 		- tests/php/stubs/srfm-stubs.php
 	paths:
 		- sureforms.php
-		- srfm-plugin-loader.php
+		- plugin-loader.php
 		- inc
 		- api
 

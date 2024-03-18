@@ -1,4 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
+import { useState, useEffect } from '@wordpress/element';
 
 const stripHTML = ( text ) => {
 	const { DOMParser } = window;
@@ -60,6 +61,38 @@ const getBlockTypes = ( exclude = '' ) => {
 };
 
 /**
+ * Generate Validation Message.
+ *
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
+ * @return {string} message.
+ */
+const validationMessage = ( key, message ) => {
+	if ( message ) {
+		return message;
+	}
+
+	return srfm_block_data?.get_default_dynamic_block_option?.[ key ] ?? '';
+};
+
+/**
+ * Generate Required Error Message.
+ *
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
+ * @return {Object} currentErrorMsg, setCurrentErrorMsg, currentUniqueMessage, setCurrentUniqueMessage.
+ */
+const useErrMessage = ( key, message ) => {
+	const [ currentMessage, setCurrentMessage ] = useState();
+
+	useEffect( () => {
+		setCurrentMessage( validationMessage( key, message ) );
+	}, [ key, message ] );
+
+	return { currentMessage, setCurrentMessage };
+};
+
+/**
  * Modified the string value.
  *
  * @param {string} str - The input string to be modified.
@@ -81,4 +114,11 @@ function decodeHtmlEntities( str ) {
 	return str;
 }
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes, decodeHtmlEntities };
+export {
+	stripHTML,
+	getSpacingPresetCssVar,
+	getBlockTypes,
+	validationMessage,
+	useErrMessage,
+	decodeHtmlEntities,
+};

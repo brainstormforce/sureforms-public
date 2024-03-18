@@ -15,11 +15,8 @@ const Header = () => {
 			<div
 				className="srfm-tp-header-close"
 				onClick={ () => {
-					if ( window.history.length > 1 ) {
-						window.history.back();
-					} else {
-						window.close();
-					}
+					window.location.href =
+						'/wp-admin/admin.php?page=sureforms_menu';
 				} }
 			>
 				<div>{ ICONS.close }</div>

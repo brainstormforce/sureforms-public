@@ -5,7 +5,7 @@
  * @package SureForms
  */
 
-use SRFM\Inc\SRFM_Generate_Form_Markup;
+use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -62,22 +62,6 @@ if ( $srfm_form_preview_attr ) {
 		} else {
 			$srfm_full = false;
 		}
-
-		$srfm_recaptcha_version       = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
-		$srfm_google_captcha_site_key = '';
-		switch ( $srfm_recaptcha_version ) {
-			case 'v2-checkbox':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? strval( get_option( 'srfm_v2_checkbox_site' ) ) : '';
-				break;
-			case 'v2-invisible':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? strval( get_option( 'srfm_v2_invisible_site' ) ) : '';
-				break;
-			case 'v3-reCAPTCHA':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v3_site' ) ) ? strval( get_option( 'srfm_v3_site' ) ) : '';
-				break;
-			default:
-				break;
-		}
 		?>
 		<style>
 			#srfm-single-page-container {
@@ -96,7 +80,7 @@ if ( $srfm_form_preview_attr ) {
 			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
-					echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
+					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
 				<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
@@ -153,7 +137,7 @@ if ( $srfm_form_preview_attr ) {
 			show_admin_bar( false );
 
 			// phpcs:ignore
-			echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
+			echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
 			// phpcs:ignoreEnd
 
 			wp_footer();
