@@ -21,7 +21,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage } from '@Blocks/util';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -34,7 +34,6 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
