@@ -171,6 +171,7 @@
 						gap: 20px;
 						align-self: stretch;
 						background-color: #ffff;
+
 						.srfm-modal-input-box {
 							display: flex;
 							align-items: center;
@@ -272,6 +273,23 @@
 									margin-bottom: 1rem;
 								}
 							}
+						}
+						.srfm-modal-upsell-message {
+							display: flex;
+							flex-direction: column;
+							gap: 10px;
+							p {
+								margin: 0;
+							}
+						}
+						.srfm-modal-info-box {
+							display: flex;
+							flex-direction: column;
+							width: 100%;
+							padding: 24px;
+							background-color: #eff6ff;
+							border: 1px solid #3b82f6;
+							border-radius: 4px;
 						}
 					}
 					.srfm-modal-inner-notification-btn {
@@ -466,6 +484,31 @@
 							}
 						}
 					}
+				}
+				.srfm-modal-cta {
+					display: flex;
+					gap: 5px;
+					justify-content: start;
+					align-items: center;
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 500;
+					line-height: 16px;
+					cursor: pointer;
+				}
+				.srfm-modal-primary-cta {
+					padding: 9px 13px;
+					border-radius: 6px;
+					border: none;
+					background: var( --dashboard-primary, #125d9f );
+					box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+					color: var( --dashboard-surface-secondary, #fff );
+				}
+
+				.srfm-modal-secondary-cta {
+					padding: 9px 13px;
+					color: var( --dashboard-primary, #125d9f );
+					text-decoration: none;
 				}
 			}
 		}

@@ -272,6 +272,23 @@
   border-radius: 10%;
   margin-bottom: 1rem;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message p {
+  margin: 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 24px;
+  background-color: #EFF6FF;
+  border: 1px solid #3B82F6;
+  border-radius: 4px;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-notification-btn {
   display: flex;
   padding: 7px 11px;
@@ -460,4 +477,28 @@
   border-right: 10px solid transparent;
   border-bottom: 0 solid transparent;
   border-left: 10px solid transparent;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-cta {
+  display: flex;
+  gap: 5px;
+  justify-content: start;
+  align-items: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-primary-cta {
+  padding: 9px 13px;
+  border-radius: 6px;
+  border: none;
+  background: var(--dashboard-primary, #125d9f);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  color: var(--dashboard-surface-secondary, #fff);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-secondary-cta {
+  padding: 9px 13px;
+  color: var(--dashboard-primary, #125d9f);
+  text-decoration: none;
 }
