@@ -20,12 +20,6 @@ $placeholder_color: #9ca3af;
 	#wpbody-content {
 		margin-left: 0;
 		padding-bottom: 0;
-
-		// Hide all admin notices on SureForms settings page.
-		.notice,
-		.error {
-			display: none !important;
-		}
 	}
 
 	#bsf-optin-notice,

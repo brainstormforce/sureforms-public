@@ -276,7 +276,7 @@ class Helper {
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
 		];
 
-		$default_dynamic_values = apply_filters( 'srfm_default_dynamic_block_option', $default_values );
+		$default_dynamic_values = apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
 
 		return $default_dynamic_values;
 	}
