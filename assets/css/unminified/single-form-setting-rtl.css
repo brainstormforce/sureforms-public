@@ -77,7 +77,7 @@
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab.srfm-modal-tab-active .srfm-modal-tab-text p {
   color: #125D9F;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab.srfm-modal-tab-active .srfm-modal-tab-icon svg {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-tab.srfm-modal-tab-active .srfm-modal-tab-icon svg path {
   stroke: #125D9F;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content {

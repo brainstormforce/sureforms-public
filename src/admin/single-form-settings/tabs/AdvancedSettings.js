@@ -39,9 +39,9 @@ function AdvancedSettings( props ) {
 	const [ popupTab, setPopupTab ] = useState( false );
 
 	const openModal = ( e ) => {
-		setOpen( true );
-		let popupTabTarget = e.target.getAttribute( 'data-popup-tab' );
+		let popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
 		setPopupTab( popupTabTarget );
+		setOpen( true );
 	};
 	const closeModal = () => setOpen( false );
 
@@ -293,7 +293,7 @@ function AdvancedSettings( props ) {
 					<button
 						className="components-button components-panel__body-toggle"
 						onClick={ openModal }
-						data-popup-tab="email_notification"
+						data-popup="email_notification"
 					>
 						<span className="srfm-title">
 							<div>
@@ -309,7 +309,7 @@ function AdvancedSettings( props ) {
 					<button
 						className="components-button components-panel__body-toggle"
 						onClick={ openModal }
-						data-popup-tab="integration"
+						data-popup="integration"
 					>
 						<span className="srfm-title">
 							<div>
