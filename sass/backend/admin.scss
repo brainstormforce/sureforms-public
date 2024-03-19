@@ -1,5 +1,13 @@
 /* stylelint-disable selector-id-pattern */
 
+#wpbody-content {
+	// Hide all admin notices on SureForms settings page.
+	.notice,
+	.error {
+		display: none !important;
+	}
+}
+
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
