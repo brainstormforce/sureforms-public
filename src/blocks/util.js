@@ -93,6 +93,20 @@ const useErrMessage = ( key, message ) => {
 };
 
 /**
+ * Get default message.
+ *
+ * @param {string} optionName Option name.
+ * @return {Object} default message.
+ */
+function getDefaultMessage( optionName ) {
+	return {
+		type: 'string',
+		default:
+			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
+	};
+}
+
+/**
  * Modified the string value.
  *
  * @param {string} str - The input string to be modified.
@@ -120,5 +134,6 @@ export {
 	getBlockTypes,
 	validationMessage,
 	useErrMessage,
+	getDefaultMessage,
 	decodeHtmlEntities,
 };

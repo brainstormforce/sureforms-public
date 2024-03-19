@@ -260,7 +260,7 @@ class Helper {
 
 		$common_err_msg = self::get_common_err_msg();
 
-		$default_dynamic_values = [
+		$default_values = [
 			'srfm_url_block_required_text'          => $common_err_msg['required'],
 			'srfm_input_block_required_text'        => $common_err_msg['required'],
 			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
@@ -275,6 +275,8 @@ class Helper {
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
 		];
+
+		$default_dynamic_values = apply_filters( 'srfm_default_dynamic_block_option', $default_values );
 
 		return $default_dynamic_values;
 	}

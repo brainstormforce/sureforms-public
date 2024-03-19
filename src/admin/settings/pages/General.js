@@ -77,6 +77,11 @@ const GeneralPage = ( {
 			'srfm_email_block_required_text',
 			'srfm_email_block_unique_text',
 			'srfm_dropdown_block_required_text',
+			// add only when pro version is active.
+			'srfm_password_block_required_text',
+			'srfm_rating_block_required_text',
+			'srfm_date_time_block_required_text',
+			'srfm_upload_block_required_text',
 		];
 
 		return (
