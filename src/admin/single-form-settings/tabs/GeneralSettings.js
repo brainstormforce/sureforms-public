@@ -232,16 +232,6 @@ function GeneralSettings( props ) {
 						}
 						__nextHasNoMarginBottom
 					/>
-					<ToggleControl
-						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_page_break_toggle_label }
-						onChange={ ( value ) => {
-							updateMeta(
-								'_srfm_page_break_toggle_label',
-								value
-							);
-						} }
-					/>
 					{ sureformsKeys._srfm_page_break_progress_indicator !==
 						'progress-bar' && (
 						<ToggleControl
