@@ -1,6 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-
+import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import 'react-loading-skeleton/dist/skeleton.css';
 import toast, { Toaster, ToastBar } from 'react-hot-toast';
@@ -147,7 +147,7 @@ const Component = ( { path } ) => {
 				const hasEmptyValue = Object.values( newFormData ).some( ( value ) => value === '' );
 				if ( hasEmptyValue ) {
 					toast.dismiss();
-					toast.error( 'This field cannot be left blank.', {
+					toast.error( __( 'This field cannot be left blank.', 'sureforms' ), {
 						duration: 1500,
 					} );
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
