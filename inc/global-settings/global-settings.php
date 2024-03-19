@@ -156,7 +156,7 @@ class Global_Settings {
 	 */
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
 
-		$options_to_save = [
+		$options_names = [
 			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
 			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
 			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
@@ -172,9 +172,7 @@ class Global_Settings {
 			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
 		];
 
-		$options_to_save = apply_filters( 'srfm_general_dynamic_options_to_save', $options_to_save, $setting_options );
-
-		return update_option( 'get_default_dynamic_block_option', $options_to_save );
+		return update_option( 'get_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
 
 	}
 

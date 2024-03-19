@@ -93,7 +93,7 @@ const useErrMessage = ( key, message ) => {
 };
 
 /**
- * Get default message.
+ * Get default message value for resetting the respective option.
  *
  * @param {string} optionName Option name.
  * @return {Object} default message.
