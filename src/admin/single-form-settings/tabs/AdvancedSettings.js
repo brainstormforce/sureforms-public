@@ -21,7 +21,7 @@ function AdvancedSettings( props ) {
 	const { defaultKeys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
-	const horizontalEllipsisIcon =parse( svgIcons.horizontalEllipsis )
+	const horizontalEllipsisIcon = parse( svgIcons.horizontalEllipsis );
 
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
@@ -39,7 +39,7 @@ function AdvancedSettings( props ) {
 	const [ popupTab, setPopupTab ] = useState( false );
 
 	const openModal = ( e ) => {
-		let popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
+		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
 		setPopupTab( popupTabTarget );
 		setOpen( true );
 	};
@@ -316,7 +316,7 @@ function AdvancedSettings( props ) {
 								{ __( 'Integration', 'sureforms' ) }
 							</div>
 						</span>
-						{horizontalEllipsisIcon}
+						{ horizontalEllipsisIcon }
 					</button>
 				</h2>
 			</div>

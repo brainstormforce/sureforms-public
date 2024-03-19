@@ -8,12 +8,12 @@ const Integration = () => {
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
 					<span className="srfm-modal-inner-heading-text">
-						<h4>{__('Integrations', 'sureforms')}</h4>
+						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
 					</span>
 				</div>
 				<div className="srfm-modal-inner-box">
 					<div className="srfm-modal-inner-box-text">
-						<h5>{__('All Integraions', 'sureforms')}</h5>
+						<h5>{ __( 'All Integraions', 'sureforms' ) }</h5>
 					</div>
 					<div className="srfm-modal-separator"></div>
 					<div className="srfm-modal-inner-box-content">
@@ -27,31 +27,31 @@ const Integration = () => {
 };
 
 const UpsellSureFormsPro = () => {
-	const lockIcon = parse(svgIcons.lock);
+	const lockIcon = parse( svgIcons.lock );
 	return (
 		<div className="srfm-modal-info-box">
 			<div>
-				{lockIcon}
+				{ lockIcon }
 			</div>
 			<div className="srfm-modal-upsell-message">
 				<div>
-					<h6>{__('This is a Pro Feature', 'sureforms')}</h6>
+					<h6>{ __( 'This is a Pro Feature', 'sureforms' ) }</h6>
 				</div>
 				<div>
-					<p>{__('To use the integrations you need to upgrade to SureForms Pro', 'sureforms')}</p>
+					<p>{ __( 'To use the integrations you need to upgrade to SureForms Pro', 'sureforms' ) }</p>
 				</div>
 				<div className="srfm-modal-cta">
 					<button className="srfm-modal-primary-cta"	>
-						{__('Upgarade', 'sureforms')}
+						{ __( 'Upgarade', 'sureforms' ) }
 					</button>
-					{ /* temporarily disable eslint */}
-					{ /* eslint-disable jsx-a11y/anchor-is-valid */}
+					{ /* temporarily disable eslint */ }
+					{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
 					<a
 						href="#"
 						className="srfm-modal-tertiary-cta">
-						{__('Learn More', 'sureforms')}
+						{ __( 'Learn More', 'sureforms' ) }
 					</a>
-					{ /* eslint-enable jsx-a11y/anchor-is-valid */}
+					{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
 				</div>
 			</div>
 		</div>
@@ -60,12 +60,12 @@ const UpsellSureFormsPro = () => {
 };
 
 const UpsellSureTriggers = () => {
-	const handlePluginActionTrigger = (e) => {
+	const handlePluginActionTrigger = ( e ) => {
 		const action = e.target.dataset.action;
 		const formData = new window.FormData();
-		switch (action) {
+		switch ( action ) {
 			case 'sureforms_recommended_plugin_activate':
-				activatePlugin(e);
+				activatePlugin( e );
 				break;
 
 			case 'sureforms_recommended_plugin_install':
@@ -77,20 +77,20 @@ const UpsellSureTriggers = () => {
 					'_ajax_nonce',
 					srfm_admin.plugin_installer_nonce
 				);
-				formData.append('slug', e.target.dataset.slug);
+				formData.append( 'slug', e.target.dataset.slug );
 
 				e.target.innerText = srfm_admin.plugin_installing_text;
 
-				apiFetch({
+				apiFetch( {
 					url: srfm_admin.ajax_url,
 					method: 'POST',
 					body: formData,
-				}).then((data) => {
-					if (data.success) {
+				} ).then( ( data ) => {
+					if ( data.success ) {
 						e.target.innerText = srfm_admin.plugin_installed_text;
-						activatePlugin(e);
+						activatePlugin( e );
 					}
-				});
+				} );
 				break;
 
 			default:
@@ -98,78 +98,78 @@ const UpsellSureTriggers = () => {
 				break;
 		}
 	};
-	const activatePlugin = (e) => {
+	const activatePlugin = ( e ) => {
 		const formData = new window.FormData();
-		formData.append('action', 'sureforms_recommended_plugin_activate');
-		formData.append('security', srfm_admin.sfPluginManagerNonce);
-		formData.append('init', e.target.dataset.init);
+		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
+		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
+		formData.append( 'init', e.target.dataset.init );
 		e.target.innerText = srfm_admin.plugin_activating_text;
-		apiFetch({
+		apiFetch( {
 			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
-		}).then((data) => {
-			if (data.success) {
+		} ).then( ( data ) => {
+			if ( data.success ) {
 				e.target.innerText = srfm_admin.plugin_activated_text;
 				window.location = e.target.dataset.redirection;
 			}
-		});
+		} );
 	};
-	const getAction = (status) => {
-		if (status === 'Activated') {
+	const getAction = ( status ) => {
+		if ( status === 'Activated' ) {
 			return '';
-		} else if (status === 'Installed') {
+		} else if ( status === 'Installed' ) {
 			return 'sureforms_recommended_plugin_activate';
 		}
 		return 'sureforms_recommended_plugin_install';
 	};
 
-	const getCTA = (status) => {
-		if (status === 'Activated' || status === 'Installed') {
-			return __('Go to Dashboard', 'sureforms');
+	const getCTA = ( status ) => {
+		if ( status === 'Activated' || status === 'Installed' ) {
+			return __( 'Go to Dashboard', 'sureforms' );
 		}
-		return __('Install & Authenticate', 'sureforms');
+		return __( 'Install & Authenticate', 'sureforms' );
 	};
 
-	const plugin = srfm_admin?.integrations?.find((item) => {
+	const plugin = srfm_admin?.integrations?.find( ( item ) => {
 		return 'suretriggers' === item.slug;
-	});
+	} );
 
 	return (
 		plugin && <div className="srfm-modal-inner-content">
 			<div className="srfm-modal-inner-heading">
 				<div className="srfm-modal-inner-heading-text">
-					<h4>{__('You Can also use our Free Integration platform', 'sureforms')}</h4>
+					<h4>{ __( 'You Can also use our Free Integration platform', 'sureforms' ) }</h4>
 				</div>
 			</div>
 			<div className="srfm-modal-inner-box">
 				<div className="srfm-modal-inner-box-content">
 					<div className="srfm-modal-upsell-message">
 						<div>
-							<img height="24px" src={plugin.logo_full} alt="logo" />
+							<img height="24px" src={ plugin.logo_full } alt="logo" />
 						</div>
 						<div>
-							<p>{plugin.description}</p>
+							<p>{ plugin.description }</p>
 						</div>
 						<div className="srfm-modal-cta">
 							<button
 								className="srfm-modal-primary-cta"
-								onClick={handlePluginActionTrigger}
-								data-slug={plugin.slug}
-								data-init={plugin.path}
-								data-redirection={plugin.redirection}
-								data-action={getAction(plugin.status)}
+								onClick={ handlePluginActionTrigger }
+								data-slug={ plugin.slug }
+								data-init={ plugin.path }
+								data-redirection={ plugin.redirection }
+								data-action={ getAction( plugin.status ) }
 							>
-								{getCTA(plugin.status)}
+								{ getCTA( plugin.status ) }
 							</button>
-							{ /* temporarily disable eslint */}
-							{ /* eslint-disable jsx-a11y/anchor-is-valid */}
+							{ /* temporarily disable eslint */ }
+							{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
 							<a
 								href="#"
 								className="srfm-modal-secondary-cta">
-								{__('Learn More', 'sureforms')}
+								{ __( 'Learn More', 'sureforms' ) }
 							</a>
-							{ /* eslint-enable jsx-a11y/anchor-is-valid */}
+							{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
 						</div>
 					</div>
 				</div >

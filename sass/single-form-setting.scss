@@ -6,8 +6,8 @@
 		justify-content: space-between;
 		align-items: center;
 		align-self: stretch;
-		border-bottom: 1px solid var(--colors-gray-200, #e5e7eb);
-		background: var(--base-white, #fff);
+		border-bottom: 1px solid var( --colors-gray-200, #e5e7eb );
+		background: var( --base-white, #fff );
 
 		.components-modal__header-heading-container {
 			gap: 10px;
@@ -17,7 +17,7 @@
 			}
 
 			.components-modal__header-heading {
-				color: var(--dashboard-heading, #1e293b);
+				color: var( --dashboard-heading, #1e293b );
 				/* Dashboard/Headings/H6 */
 				font-family: Inter;
 				font-size: 14px;
@@ -51,8 +51,8 @@
 			align-items: flex-start;
 			gap: 2px;
 			align-self: stretch;
-			border-right: 1px solid var(--dashboard-border-primary, #dce0e6);
-			background: var(--dashboard-surface-secondary, #fff);
+			border-right: 1px solid var( --dashboard-border-primary, #dce0e6 );
+			background: var( --dashboard-surface-secondary, #fff );
 			min-height: 80vh;
 			position: fixed;
 
@@ -63,11 +63,11 @@
 				gap: 8px;
 				align-self: stretch;
 				border-radius: 2px;
-				background: var(--colors-slate-50, #f8fafc);
+				background: var( --colors-slate-50, #f8fafc );
 				cursor: pointer;
 
 				.srfm-modal-tab-text p {
-					color: var(--dashboard-heading, #1e293b);
+					color: var( --dashboard-heading, #1e293b );
 					font-family: Inter;
 					font-size: 14px;
 					font-style: normal;
@@ -83,24 +83,24 @@
 					justify-content: center;
 					align-items: center;
 				}
-				&.srfm-modal-tab-active .srfm-modal-tab-text p{
-					color: #125D9F;
+				&.srfm-modal-tab-active .srfm-modal-tab-text p {
+					color: #125d9f;
 				}
 
-				&.srfm-modal-tab-active .srfm-modal-tab-icon svg path{
-					stroke: #125D9F;
+				&.srfm-modal-tab-active .srfm-modal-tab-icon svg path {
+					stroke: #125d9f;
 				}
 			}
 		}
 
 		.srfm-modal-content {
 			display: flex;
-			padding: var(--spacing-32, 32px);
+			padding: var( --spacing-32, 32px );
 			justify-content: center;
 			align-items: flex-start;
 			gap: 8px;
 			background-color: #f4f9fa;
-			width: calc(100% - 290px);
+			width: calc( 100% - 290px );
 			margin-left: 290px;
 			overflow-y: auto;
 
@@ -129,7 +129,7 @@
 						}
 
 						h4 {
-							color: var(--dashboard-heading, #1e293b);
+							color: var( --dashboard-heading, #1e293b );
 							font-size: 18px;
 							font-style: normal;
 							font-weight: 600;
@@ -144,9 +144,9 @@
 						justify-content: center;
 						align-items: center;
 						border-radius: 6px;
-						background: var(--dashboard-primary, #125d9f);
-						box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-						color: var(--dashboard-surface-secondary, #fff);
+						background: var( --dashboard-primary, #125d9f );
+						box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+						color: var( --dashboard-surface-secondary, #fff );
 						font-size: 14px;
 						font-style: normal;
 						font-weight: 500;
@@ -161,10 +161,10 @@
 					flex-direction: column;
 					align-items: flex-start;
 					align-self: stretch;
-					border-radius: var(--border-radius-4, 4px);
+					border-radius: var( --border-radius-4, 4px );
 					border: 1px solid #dce0e6;
 					background: #fff;
-					box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
+					box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
 
 					.srfm-empty-data {
 						display: flex;
@@ -174,7 +174,7 @@
 					}
 
 					.srfm-modal-inner-box-text h5 {
-						color: var(--dashboard-heading, #1e293b);
+						color: var( --dashboard-heading, #1e293b );
 						font-size: 16px;
 						font-weight: 600;
 						line-height: 24px;
@@ -214,22 +214,22 @@
 								right: 2px;
 
 								.has-icon {
-									&:focus:not( :disabled) {
-										box-shadow: 0 0 0 var(--wp-admin-border-width-focus) var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+									&:focus:not( :disabled ) {
+										box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) );
 									}
 								}
 							}
 
 							.srfm-modal-label {
 								width: 144px;
-								color: var(--dashboard-heading, #1e293b);
+								color: var( --dashboard-heading, #1e293b );
 								font-size: 14px;
 								font-style: normal;
 								font-weight: 500;
 								line-height: 20px;
 
 								.srfm-required {
-									color: var(--srfm-error-text-color);
+									color: var( --srfm-error-text-color );
 								}
 							}
 
@@ -239,10 +239,10 @@
 								align-items: center;
 								gap: 116px;
 								flex: 1 0 0;
-								border-radius: var(--border-radius-4, 4px);
+								border-radius: var( --border-radius-4, 4px );
 								border: 1px solid #dce0e6;
 								background: #fff;
-								box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
+								box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
 
 								&.with-icon {
 									padding: 10px 24px 10px 12px;
@@ -264,14 +264,14 @@
 								align-self: stretch;
 
 								.srfm-modal-area-header-text {
-									color: var(--dashboard-heading, #1e293b);
+									color: var( --dashboard-heading, #1e293b );
 									font-size: 14px;
 									font-style: normal;
 									font-weight: 500;
 									line-height: 20px;
 
 									.srfm-required-body {
-										color: var(--srfm-error-text-color);
+										color: var( --srfm-error-text-color );
 									}
 								}
 
@@ -285,7 +285,7 @@
 									}
 
 									.checkbox-text {
-										color: var(--dashboard-text, #475569);
+										color: var( --dashboard-text, #475569 );
 										font-size: 12px;
 										font-style: normal;
 										font-weight: 400;
@@ -294,7 +294,7 @@
 								}
 							}
 
-							.srfm-modal-area-header+div {
+							.srfm-modal-area-header + div {
 								width: 100%;
 							}
 
@@ -312,9 +312,9 @@
 
 								.srfm-active-editor {
 									border-radius: 6px;
-									background: var(--dashboard-primary, #125d9f);
-									box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-									color: var(--dashboard-surface-secondary, #fff);
+									background: var( --dashboard-primary, #125d9f );
+									box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+									color: var( --dashboard-surface-secondary, #fff );
 									color: white;
 									border-radius: 10%;
 									margin-bottom: 1rem;
@@ -344,9 +344,10 @@
 							h6 {
 								font-size: 14px;
 								font-weight: 600;
-								margin:0;
+								margin: 0;
 							}
-							h6,p{
+							h6,
+							p {
 								line-height: 1;
 							}
 						}
@@ -358,9 +359,9 @@
 						justify-content: center;
 						align-items: center;
 						border-radius: 4px;
-						background: var(--Light-Purple, #f5f3ff);
-						box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-						color: var(--dashboard-primary, #125d9f);
+						background: var( --Light-Purple, #f5f3ff );
+						box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+						color: var( --dashboard-primary, #125d9f );
 						font-size: 12px;
 						font-style: normal;
 						font-weight: 500;
@@ -386,7 +387,7 @@
 							align-self: stretch;
 							border: 1px solid #c3c4c7;
 							background: #fff;
-							box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.04);
+							box-shadow: 0px 1px 1px 0px rgba( 0, 0, 0, 0.04 );
 							// additional
 							width: 100%;
 							overflow-x: auto;
@@ -398,7 +399,7 @@
 								box-sizing: border-box;
 								width: 748px;
 
-								>table {
+								> table {
 									width: 100%;
 									border-collapse: collapse;
 								}
@@ -493,7 +494,7 @@
 									background: #fff;
 									border: 1px solid #ebeef5;
 									border-radius: 4px;
-									box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+									box-shadow: 0 2px 12px 0 rgba( 0, 0, 0, 0.1 );
 									color: #606266;
 									font-size: 14px;
 									line-height: 1.4;
@@ -587,9 +588,9 @@
 					padding: 8px 14px;
 					border-radius: 6px;
 					border: none;
-					background: var(--dashboard-primary, #125d9f);
-					box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-					color: var(--dashboard-surface-secondary, #fff);
+					background: var( --dashboard-primary, #125d9f );
+					box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+					color: var( --dashboard-surface-secondary, #fff );
 					cursor: pointer;
 					outline: none;
 				}
@@ -598,9 +599,9 @@
 					padding: 8px 14px;
 					border-radius: 6px;
 					border: none;
-					background: var(--dashboard-primary, #E3EEFB);
-					box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-					color: var(--dashboard-primary, #125d9f);
+					background: var( --dashboard-primary, #e3eefb );
+					box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+					color: var( --dashboard-primary, #125d9f );
 					text-decoration: none;
 					cursor: pointer;
 					outline: none;
@@ -610,7 +611,7 @@
 					text-decoration: none;
 					cursor: pointer;
 					outline: none;
-					color: var(--dashboard-text, #1e293b);
+					color: var( --dashboard-text, #1e293b );
 				}
 			}
 		}
