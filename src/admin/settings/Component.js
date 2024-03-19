@@ -144,11 +144,11 @@ const Component = ( { path } ) => {
 	const debouncedSave = useDebouncedCallback( ( newFormData, tab ) => {
 		try {
 			if ( tab === 'general-settings-dynamic-opt' ) {
-				const hasEmptyValue = Object.values( newFormData ).some( ( value ) => value === '' );
+				const hasEmptyValue = Object.values( newFormData ).some( ( value ) => value.trim() === '' );
 				if ( hasEmptyValue ) {
 					toast.dismiss();
 					toast.error( __( 'This field cannot be left blank.', 'sureforms' ), {
-						duration: 1500,
+						duration: 0,
 					} );
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
 					setTimeout( () => {
