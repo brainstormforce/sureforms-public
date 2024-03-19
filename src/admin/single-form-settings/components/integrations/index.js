@@ -13,7 +13,7 @@ const Integration = () => {
 				</div>
 				<div className="srfm-modal-inner-box">
 					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'All Integraions', 'sureforms' ) }</h5>
+						<h5>{ __( 'All Integrations', 'sureforms' ) }</h5>
 					</div>
 					<div className="srfm-modal-separator"></div>
 					<div className="srfm-modal-inner-box-content">
@@ -38,11 +38,11 @@ const UpsellSureFormsPro = () => {
 					<h6>{ __( 'This is a Pro Feature', 'sureforms' ) }</h6>
 				</div>
 				<div>
-					<p>{ __( 'To use the integrations you need to upgrade to SureForms Pro', 'sureforms' ) }</p>
+					<p>{ __( 'To use the integrations feature, you need to upgrade to SureForms Pro.', 'sureforms' ) }</p>
 				</div>
 				<div className="srfm-modal-cta">
 					<button className="srfm-modal-primary-cta"	>
-						{ __( 'Upgarade', 'sureforms' ) }
+						{ __( 'Upgrade', 'sureforms' ) }
 					</button>
 					{ /* temporarily disable eslint */ }
 					{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
@@ -94,7 +94,7 @@ const UpsellSureTriggers = () => {
 				break;
 
 			default:
-				window.location = e.target.dataset.redirection;
+				window.open( e.target.dataset.redirection, '_blank' );
 				break;
 		}
 	};
@@ -111,7 +111,7 @@ const UpsellSureTriggers = () => {
 		} ).then( ( data ) => {
 			if ( data.success ) {
 				e.target.innerText = srfm_admin.plugin_activated_text;
-				window.location = e.target.dataset.redirection;
+				window.open( e.target.dataset.redirection, '_blank' );
 			}
 		} );
 	};
@@ -139,7 +139,7 @@ const UpsellSureTriggers = () => {
 		plugin && <div className="srfm-modal-inner-content">
 			<div className="srfm-modal-inner-heading">
 				<div className="srfm-modal-inner-heading-text">
-					<h4>{ __( 'You Can also use our Free Integration platform', 'sureforms' ) }</h4>
+					<h4>{ __( 'You can also use our free integration platform', 'sureforms' ) }</h4>
 				</div>
 			</div>
 			<div className="srfm-modal-inner-box">
