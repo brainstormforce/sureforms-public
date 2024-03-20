@@ -809,6 +809,7 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 
 			$main_classes = [
 				'wp-block-uagb-image',
+				'uagb-block',
 				'uagb-block-' . $block_id,
 				'wp-block-uagb-image--layout-' . esc_attr( $attributes['layout'] ),
 				'wp-block-uagb-image--effect-' . esc_attr( $attributes['imageHoverEffect'] ),
