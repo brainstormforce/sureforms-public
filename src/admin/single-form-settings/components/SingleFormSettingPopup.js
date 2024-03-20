@@ -5,29 +5,53 @@ import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const SingleFormSettingsPopup = ( props ) => {
-	const { sureformsKeys } = props;
+	const { sureformsKeys, targetTab } = props;
 	const emailIcon = parse( svgIcons.email );
+	const formConfirmIcon = parse( svgIcons['circle-check'] );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
-	const [ selectedTab, setSelectedTab ] = useState( 'email_notification' );
+	const [ selectedTab, setSelectedTab ] = useState( targetTab ?? 'email_notification' );
+	const tabs = [
+		{
+			id: 'email_notification',
+			title: __( 'Email Notification', 'sureforms' ),
+			icon: emailIcon,
+			component: <EmailNotification
+				emailNotificationData={ emailNotificationData }
+			/>,
+		},
+		{
+			id: 'form-confirmation',
+			title: __( 'Form Confirmation', 'sureforms' ),
+			icon: formConfirmIcon,
+			component: <EmailNotification
+				emailNotificationData={ emailNotificationData }
+			/>,
+		}
+	];
 	return (
 		<div className="srfm-setting-modal-container">
 			<div className="srfm-modal-sidebar">
-				<div
-					className="srfm-modal-tab"
-					onClick={ () => setSelectedTab( 'email_notification' ) }
-				>
-					<span className="srfm-modal-tab-icon">{ emailIcon }</span>
-					<span className="srfm-modal-tab-text">
-						<p>{ __( 'Email Notifications', 'sureforms' ) }</p>
-					</span>
-				</div>
+				{
+					tabs.map( ( tabItem, tabIndex ) => (
+						<div
+							key={ tabIndex }
+							className={ `srfm-modal-tab ${ tabItem.id === selectedTab ? 'srfm-modal-tab-active' : '' }` }
+							onClick={ () => setSelectedTab( tabItem.id ) }
+						>
+							<span className="srfm-modal-tab-icon">{ tabItem.icon }</span>
+							<span className="srfm-modal-tab-text">
+								<p>{ tabItem.title }</p>
+							</span>
+						</div>
+					) )
+				}
 			</div>
 			{ /* Modal Content */ }
-			{ 'email_notification' === selectedTab && (
-				<EmailNotification
-					emailNotificationData={ emailNotificationData }
-				/>
-			) }
+			<div className="srfm-modal-main">
+				{
+					tabs.find( ( { id } ) => id === selectedTab ).component
+				}
+			</div>
 		</div>
 	);
 };

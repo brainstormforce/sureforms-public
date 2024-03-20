@@ -54,7 +54,9 @@
 				gap: 8px;
 				align-self: stretch;
 				border-radius: 2px;
-				background: var( --colors-slate-50, #f8fafc );
+				.srfm-modal-tab-active{
+					background: #f8fafc;
+				}
 				cursor: pointer;
 				.srfm-modal-tab-text p {
 					color: var( --dashboard-heading, #1e293b );
