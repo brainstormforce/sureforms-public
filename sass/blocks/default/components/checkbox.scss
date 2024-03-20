@@ -45,7 +45,10 @@
 					cursor: pointer;
 					overflow: hidden;
 					transition: all 0.2s ease;
-					display: inline-block;
+					display: flex;
+					.srfm-block-text {
+						flex: 1;
+					}
 
 					&:not( :last-child ) {
 						margin-right: 6px;
