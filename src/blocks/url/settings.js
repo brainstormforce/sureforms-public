@@ -11,8 +11,8 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
-import { applyFilters } from '@wordpress/hooks';
 import { useErrMessage } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -25,12 +25,6 @@ export default ( { attributes, setAttributes } ) => {
 		fieldWidth,
 	} = attributes;
 
-	const conditionalSettings = applyFilters(
-		'srfm.conditional_logic.tab_advance',
-		attributes,
-		setAttributes
-	);
-	const isPro = srfm_block_data.is_pro_active;
 	const {
 		currentMessage: currentErrorMsg,
 		setCurrentMessage: setCurrentErrorMsg,
@@ -128,7 +122,10 @@ export default ( { attributes, setAttributes } ) => {
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance }>
-					{ isPro && conditionalSettings }
+					<ConditionalLogic
+						setAttributes={ setAttributes }
+						attributes={ attributes }
+					/>
 				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>

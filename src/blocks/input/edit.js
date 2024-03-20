@@ -18,8 +18,8 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { applyFilters } from '@wordpress/hooks';
 import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -59,12 +59,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = srfm_fields_preview.input_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
-	const conditionalSettings = applyFilters(
-		'srfm.conditional_logic.tab_advance',
-		attributes,
-		setAttributes
-	);
-	const isPro = srfm_block_data.is_pro_active;
+
 	return (
 		<>
 			<InspectorControls>
@@ -206,7 +201,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
-						{ isPro && conditionalSettings }
+						<ConditionalLogic
+							setAttributes={ setAttributes }
+							attributes={ attributes }
+						/>
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
