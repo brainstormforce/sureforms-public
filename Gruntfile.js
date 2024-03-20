@@ -321,6 +321,63 @@ module.exports = function ( grunt ) {
 				],
 			},
 		},
+		bumpup: {
+			options: {
+				updateProps: {
+					pkg: 'package.json',
+				},
+			},
+			file: 'package.json',
+		},
+		replace: {
+			stable_tag: {
+				src: [ 'readme.txt' ],
+				overwrite: true,
+				replacements: [
+					{
+						from: /Stable tag:\ .*/g,
+						to: 'Stable tag: <%= pkg.version %>',
+					},
+				],
+			},
+			plugin_const: {
+				src: [ 'sureforms.php' ],
+				overwrite: true,
+				replacements: [
+					{
+						from: /UAGB_VER', '.*?'/g,
+						to: "SRFM_VER', '<%= pkg.version %>'",
+					},
+				],
+			},
+			plugin_function_comment: {
+				src: [
+					'*.php',
+					'**/*.php',
+					'!node_modules/**',
+					'!php-tests/**',
+					'!bin/**',
+					'!vendor/**',
+				],
+				overwrite: true,
+				replacements: [
+					{
+						from: /x.x.x/ig,
+						to: '<%=pkg.version %>',
+					},
+				],
+			},
+			plugin_main: {
+				src: [ 'sureforms.php' ],
+				overwrite: true,
+				replacements: [
+					{
+						from: /Version: \bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-A-Z-]+(?:\.[\da-z-A-Z-]+)*)?(?:\+[\da-z-A-Z-]+(?:\.[\da-z-A-Z-]+)*)?\b/g,
+						to: 'Version: <%= pkg.version %>',
+					},
+				],
+			},
+		},
 	} );
 
 	/* Load Tasks */
@@ -365,4 +422,16 @@ module.exports = function ( grunt ) {
 		'clean:zip',
 		'copy:main',
 	] );
+
+	// Version Bump `grunt version-bump --ver=<version-number>`
+	grunt.registerTask( 'version-bump', function () {
+		let newVersion = grunt.option( 'ver' );
+
+		if ( newVersion ) {
+			newVersion = newVersion ? newVersion : 'patch';
+
+			grunt.task.run( 'bumpup:' + newVersion );
+			grunt.task.run( 'replace' );
+		}
+	} );
 };
