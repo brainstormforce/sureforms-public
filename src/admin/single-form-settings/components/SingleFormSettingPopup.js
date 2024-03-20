@@ -11,37 +11,46 @@ const SingleFormSettingsPopup = ( props ) => {
 	const integrationIcon = parse( svgIcons.integration );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const [ selectedTab, setSelectedTab ] = useState( targetTab ?? 'email_notification' );
+	const tabs = [
+		{
+			id: 'email_notification',
+			title: __( 'Email Notification', 'sureforms' ),
+			icon: emailIcon,
+			component: <EmailNotification
+				emailNotificationData={ emailNotificationData }
+			/>,
+		},
+		{
+			id: 'integration',
+			title: __( 'Integration', 'sureforms' ),
+			icon: integrationIcon,
+			component: <Integration />,
+		},
+	];
 	return (
 		<div className="srfm-setting-modal-container">
 			<div className="srfm-modal-sidebar">
-				<div
-					className={ `srfm-modal-tab ${ 'email_notification' === selectedTab ? 'srfm-modal-tab-active' : '' }` }
-					onClick={ () => setSelectedTab( 'email_notification' ) }
-				>
-					<span className="srfm-modal-tab-icon">{ emailIcon }</span>
-					<span className="srfm-modal-tab-text">
-						<p>{ __( 'Email Notification', 'sureforms' ) }</p>
-					</span>
-				</div>
-				<div
-					className={ `srfm-modal-tab ${ 'integration' === selectedTab ? 'srfm-modal-tab-active' : '' }` }
-					onClick={ () => setSelectedTab( 'integration' ) }
-				>
-					<span className="srfm-modal-tab-icon">{ integrationIcon }</span>
-					<span className="srfm-modal-tab-text">
-						<p>{ __( 'Integration', 'sureforms' ) }</p>
-					</span>
-				</div>
+				{
+					tabs.map( ( tabItem, tabIndex ) => (
+						<div
+							key={ tabIndex }
+							className={ `srfm-modal-tab ${ tabItem.id === selectedTab ? 'srfm-modal-tab-active' : '' }` }
+							onClick={ () => setSelectedTab( tabItem.id ) }
+						>
+							<span className="srfm-modal-tab-icon">{ tabItem.icon }</span>
+							<span className="srfm-modal-tab-text">
+								<p>{ tabItem.title }</p>
+							</span>
+						</div>
+					) )
+				}
 			</div>
 			{ /* Modal Content */ }
-			{ 'email_notification' === selectedTab && (
-				<EmailNotification
-					emailNotificationData={ emailNotificationData }
-				/>
-			) }
-			{ 'integration' === selectedTab && (
-				<Integration />
-			) }
+			<div className="srfm-modal-main">
+				{
+					tabs.find( ( { id } ) => id === selectedTab ).component
+				}
+			</div>
 		</div>
 	);
 };

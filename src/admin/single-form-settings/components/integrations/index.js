@@ -17,10 +17,10 @@ const Integration = () => {
 					</div>
 					<div className="srfm-modal-separator"></div>
 					<div className="srfm-modal-inner-box-content">
-						<UpsellSureFormsPro></UpsellSureFormsPro>
+						<UpsellSureFormsPro />
 					</div>
 				</div>
-				<UpsellSureTriggers></UpsellSureTriggers>
+				<UpsellSureTriggers />
 			</div>
 		</div>
 	);

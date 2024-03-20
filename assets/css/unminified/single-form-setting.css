@@ -501,7 +501,7 @@
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-cta {
   display: flex;
   gap: 16px;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   font-size: 14px;
   font-style: normal;
