@@ -393,6 +393,10 @@ module.exports = function ( grunt ) {
 	/* Read File Generation task */
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 
+	/* Version Bump Task */
+	grunt.loadNpmTasks( 'grunt-bumpup' );
+	grunt.loadNpmTasks( 'grunt-text-replace' );
+
 	// Generate Read me file
 	grunt.registerTask( 'readme', [ 'wp_readme_to_markdown' ] );
 
