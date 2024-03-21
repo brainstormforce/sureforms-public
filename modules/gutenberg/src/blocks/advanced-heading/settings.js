@@ -1312,8 +1312,7 @@ const Settings = ( props ) => {
 					</InspectorTab>
 					<InspectorTab { ...UAGTabs.advance }>
 						<ConditionalLogic
-							setAttributes={ setAttributes }
-							attributes={ attributes }
+							{ ...{ setAttributes, attributes } }
 						/>
 					</InspectorTab>
 				</InspectorTabs>

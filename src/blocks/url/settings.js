@@ -122,10 +122,7 @@ export default ( { attributes, setAttributes } ) => {
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance }>
-					<ConditionalLogic
-						setAttributes={ setAttributes }
-						attributes={ attributes }
-					/>
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
 				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
