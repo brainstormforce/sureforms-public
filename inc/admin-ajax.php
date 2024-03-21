@@ -176,11 +176,13 @@ class Admin_Ajax {
 				[
 					'title'       => __( 'SureTriggers', 'sureforms' ),
 					'subtitle'    => __( 'Automate your WordPress setup.', 'sureforms' ),
+					'description' => __( 'SureTriggers is a powerful automation platform that helps you connect your various plugins and apps together. It allows you to automate repetitive tasks, so you can focus on more important work.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
 					'slug'        => 'suretriggers',
 					'path'        => 'suretriggers/suretriggers.php',
 					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
 					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) : '' ),
+					'logo_full'   => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) : '' ),
 				],
 			]
 		);
