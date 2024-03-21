@@ -27,12 +27,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
 		checked: isChecked,
-		required,
-		checkboxHelpText,
+		gdprHelpText,
 		block_id,
-		errorMsg,
 		preview,
 		formId,
+		errorMsg,
 	} = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
@@ -42,7 +41,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
-	}, [ formId, setAttributes, currentFormId ] );
+	}, [ formId, currentFormId ] );
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -78,27 +77,18 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<ToggleControl
-								label={ __( 'Required', 'sureforms' ) }
-								checked={ required }
-								onChange={ ( checked ) =>
-									setAttributes( { required: checked } )
-								}
+							<SRFMTextControl
+								data={ {
+									value: errorMsg,
+									label: 'errorMsg',
+								} }
+								label={ __( 'Error message', 'sureforms' ) }
+								value={ currentErrorMsg }
+								onChange={ ( value ) => {
+									setCurrentErrorMsg( value );
+									setAttributes( { errorMsg: value } );
+								} }
 							/>
-							{ required && (
-								<SRFMTextControl
-									data={ {
-										value: errorMsg,
-										label: 'errorMsg',
-									} }
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ currentErrorMsg }
-									onChange={ ( value ) => {
-										setCurrentErrorMsg( value );
-										setAttributes( { errorMsg: value } );
-									} }
-								/>
-							) }
 							<ToggleControl
 								label={ __(
 									'Checked by default',
@@ -111,13 +101,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							/>
 							<SRFMTextControl
 								data={ {
-									value: checkboxHelpText,
-									label: 'checkboxHelpText',
+									value: gdprHelpText,
+									label: 'gdprHelpText',
 								} }
 								label={ __( 'Help', 'sureforms' ) }
-								value={ checkboxHelpText }
+								value={ gdprHelpText }
 								onChange={ ( value ) =>
-									setAttributes( { checkboxHelpText: value } )
+									setAttributes( { gdprHelpText: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>
@@ -130,13 +120,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 				attributes={ attributes }
 			/>
-			{ checkboxHelpText !== '' && (
+			{ gdprHelpText !== '' && (
 				<RichText
 					tagName="label"
-					value={ checkboxHelpText }
+					value={ gdprHelpText }
 					onChange={ ( value ) => {
 						setAttributes( {
-							checkboxHelpText: decodeHtmlEntities( value ),
+							gdprHelpText: decodeHtmlEntities( value ),
 						} );
 					} }
 					className="srfm-description"

@@ -142,13 +142,15 @@
   -webkit-appearance: none;
   appearance: none;
 }
-.is-root-container div[data-type="srfm/checkbox"] .srfm-block-wrap input {
+.is-root-container div[data-type="srfm/checkbox"] .srfm-block-wrap input,
+.is-root-container div[data-type="srfm/gdpr"] .srfm-block-wrap input {
   margin: 0;
   border: 1px solid var(--srfm-border-color);
   box-shadow: none;
   background-color: var(--srfm-base-background-color);
 }
-.is-root-container div[data-type="srfm/checkbox"] .srfm-block-wrap .srfm-block-text {
+.is-root-container div[data-type="srfm/checkbox"] .srfm-block-wrap .srfm-block-text,
+.is-root-container div[data-type="srfm/gdpr"] .srfm-block-wrap .srfm-block-text {
   font-size: 0.7em;
   padding-right: 8px;
   line-height: 18px;

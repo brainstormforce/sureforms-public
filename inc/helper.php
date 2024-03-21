@@ -271,6 +271,7 @@ class Helper {
 			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
 			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
 			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
+			'srfm_gdpr_block_required_text'         => $common_err_msg['required'],
 			'srfm_email_block_required_text'        => $common_err_msg['required'],
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],

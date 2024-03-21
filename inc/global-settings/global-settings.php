@@ -167,6 +167,7 @@ class Global_Settings {
 			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
 			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
 			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
+			'srfm_gdpr_block_required_text'         => $setting_options['srfm_gdpr_block_required_text'],
 			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
 			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
 			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],

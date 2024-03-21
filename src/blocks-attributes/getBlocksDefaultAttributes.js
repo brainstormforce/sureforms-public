@@ -8,6 +8,7 @@ import checkboxAttributes from '@Blocks/checkbox/block.json';
 import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
+import gdprAttributes from '@Blocks/gdpr/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 
 const defaultKeys = {
@@ -92,6 +93,10 @@ export const blocksAttributes = {
 	number: {
 		...numberAttributes.attributes,
 		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
+	},
+	gdpr: {
+		...gdprAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_gdpr_block_required_text' ),
 	},
 	form_specific: defaultKeys,
 };

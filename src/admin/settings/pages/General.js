@@ -78,6 +78,7 @@ const GeneralPage = ( {
 				'srfm_textarea_block_required_text',
 				'srfm_multi_choice_block_required_text',
 				'srfm_checkbox_block_required_text',
+				'srfm_gdpr_block_required_text',
 				'srfm_email_block_required_text',
 				'srfm_email_block_unique_text',
 				'srfm_dropdown_block_required_text',
@@ -107,7 +108,9 @@ const GeneralPage = ( {
 										'Textarea Block Required',
 										'sureforms'
 									  )
-									: fieldLabel ) +
+									: fieldLabel === 'Gdpr Block Required '
+										? __( 'GDPR Block Required', 'sureforms' )
+										: fieldLabel ) +
 								__( ' Error Message', 'sureforms' )
 							}` }
 							type="text"

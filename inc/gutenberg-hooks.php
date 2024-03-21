@@ -75,6 +75,7 @@ class Gutenberg_Hooks {
 				'srfm/textarea',
 				'srfm/number',
 				'srfm/checkbox',
+				'srfm/gdpr',
 				'srfm/phone',
 				'srfm/address',
 				'srfm/dropdown',

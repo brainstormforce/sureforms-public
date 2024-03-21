@@ -126,10 +126,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Radio OR Checkbox type field
+		//Radio OR Checkbox OR GDPR field
 		if (
 			container.classList.contains( 'srfm-multi-choice-block' ) ||
-			container.classList.contains( 'srfm-checkbox-block' )
+			container.classList.contains( 'srfm-checkbox-block' ) ||
+			container.classList.contains( 'srfm-gdpr-block' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
