@@ -90,6 +90,7 @@
   width: calc(100% - 290px);
   margin-left: 290px;
   overflow-y: auto;
+  width: 100%;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content {
   display: flex;
