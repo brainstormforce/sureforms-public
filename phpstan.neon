@@ -17,8 +17,8 @@ parameters:
 	scanFiles:
 	bootstrapFiles:
 		- %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
-		- tests/php/stubs/sf-constants.php
-		- tests/php/stubs/sf-stubs.php
+		- tests/php/stubs/srfm-constants.php
+		- tests/php/stubs/srfm-stubs.php
 	paths:
 		- sureforms.php
 		- plugin-loader.php
@@ -27,6 +27,8 @@ parameters:
 
 	excludePaths:
 		- inc/form-builder
+		- inc/services/browser
+		- inc/lib
 #    excludes_analyse:
 #    autoload_files:
 #        # Missing constants, function and class stubs

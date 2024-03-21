@@ -1,0 +1,37 @@
+/* stylelint-disable selector-id-pattern */
+.toplevel_page_sureforms_menu {
+  /* Clear to evenly position the next list items after the separator */
+  /* Add the separator after the first item in the SureForms Settings Submenu */
+  /* Add the separator after the second last item in the SureForms Settings Submenu */
+  /* Add negative margins to the top separator if this is not the current submenu */
+  /* Add negative margins to the bottom separator if this is not the current submenu */
+}
+.toplevel_page_sureforms_menu #wpbody-content .notice,
+.toplevel_page_sureforms_menu #wpbody-content .error {
+  display: none !important;
+}
+.toplevel_page_sureforms_menu .wp-submenu li {
+  clear: both;
+}
+.toplevel_page_sureforms_menu .wp-submenu li.wp-first-item::after {
+  content: "";
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: block;
+  float: left;
+  margin: 8px 0;
+  width: 100%;
+}
+.toplevel_page_sureforms_menu .wp-submenu li:nth-last-child(2)::after {
+  content: "";
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: block;
+  float: left;
+  margin: 8px 0;
+  width: 100%;
+}
+.toplevel_page_sureforms_menu .wp-not-current-submenu .wp-submenu li.wp-first-item::after {
+  margin: 8px -3px;
+}
+.toplevel_page_sureforms_menu .wp-not-current-submenu .wp-submenu li:nth-last-child(2)::after {
+  margin: 8px -3px;
+}

@@ -1,0 +1,17 @@
+@import "../../styles/variables";
+
+.srfm-responsive-select-control {
+	.srfm-size-type-field-tabs {
+		align-items: center;
+		display: grid;
+		grid-template-columns: 50% 50%;
+
+		.srfm-control__header {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.components-base-control .components-base-control.srfm-responsive-select-control {
+	margin-bottom: $srfm-control-vertical-gap !important;
+}

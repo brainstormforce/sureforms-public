@@ -5,9 +5,13 @@
  * @package SureForms
  */
 
-namespace SureForms\Inc\Blocks;
+namespace SRFM\Inc\Blocks;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Manage Blocks registrations.
@@ -23,18 +27,40 @@ class Register {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
-		$blocks_dir = glob( SUREFORMS_DIR . 'inc/blocks/**/*.php' );
+		$namespace  = 'SRFM\\Inc\\Blocks';
+		$blocks_dir = glob( SRFM_DIR . 'inc/blocks/**/*.php' );
+		$base       = 'Block';
+		$this->register_block( $blocks_dir, $namespace, $base );
+
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$blocks_dir = glob( SRFM_PRO_DIR . 'inc/blocks/**/*.php' );
+			$namespace  = 'SRFM_PRO\\Inc\\Blocks';
+			$base       = 'Block';
+			$this->register_block( $blocks_dir, $namespace, $base );
+		}
+	}
+
+	/**
+	 * Register Blocks
+	 *
+	 * @param array<int, string>|false $blocks_dir Block directory.
+	 * @param string                   $namespace Namespace.
+	 * @param string                   $base Base.
+	 * @return void
+	 * @since 0.0.1
+	 */
+	public static function register_block( $blocks_dir, $namespace, $base ) {
 		if ( ! empty( $blocks_dir ) ) {
 			foreach ( $blocks_dir as $filename ) {
 				// Include the file.
 				require_once $filename;
-
-				$namespace       = 'SureForms\\Inc\\Blocks';
 				$classname       = ucfirst( basename( dirname( $filename ) ) );
-				$full_class_name = $namespace . '\\' . $classname . '\\Block';
+				$full_class_name = $namespace . '\\' . $classname . '\\' . $base;
+
 				// Check if the class exists.
 				if ( class_exists( $full_class_name ) ) {
 					$block = new $full_class_name();
+
 					// Check if the register method exists.
 					if ( method_exists( $block, 'register' ) ) {
 						// Call register on the block object.

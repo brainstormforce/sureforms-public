@@ -6,10 +6,14 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc\Fields;
+namespace SRFM\Inc\Fields;
 
-use SureForms\Inc\Traits\Get_Instance;
-use SureForms\Inc\Sureforms_Helper;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Sureforms Textarea Markup Class.
@@ -20,79 +24,60 @@ class Textarea_Markup extends Base {
 	use Get_Instance;
 
 	/**
-	 * Render the sureforms textarea default styling block
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function default_styling( $attributes ) {
-		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
-		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help        = isset( $attributes['textAreaHelpText'] ) ? $attributes['textAreaHelpText'] : '';
-		$max_length  = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
-		$rows        = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
-		$cols        = isset( $attributes['cols'] ) ? $attributes['cols'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
-
-		return '<div class="sureforms-textarea-container main-container frontend-inputs-holder ' . esc_attr( $classname ) . '">' .
-		'<label for="sureforms-textarea" class="sf-text-primary">' . esc_html( $label ) . ' ' .
-		( $required && $label ? '<span style="color:red;"> *</span>' : '' ) .
-		'</label>' .
-		'<div style="position:relative">
-		<div class="sureforms-text-area-counter">' . esc_attr( ( '' === $max_length ) ? '' : '0/' . esc_attr( $max_length ) ) . '</div>' .
-		'<textarea style="width:100%" name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '" id="sureforms-textarea" aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '" placeholder="' . esc_attr( $placeholder ) . '" maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '" cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '" class="sureforms-textarea-field">' . esc_attr( $default ) . '</textarea></div>' .
-		( '' !== $help ? '<label for="sureforms-textarea" class="sf-text-secondary sforms-helper-txt">' . esc_html( $help ) . '</label>' : '' ) .
-		'<span style="display:none" class="error-message">' . esc_html( $error_msg ) . '</span>' .
-		'</div>';
-
-	}
-
-	/**
 	 * Render the sureforms textarea classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function classic_styling( $attributes ) {
-		$block_id    = isset( $attributes['block_id'] ) ? Sureforms_Helper::get_string_value( $attributes['block_id'] ) : '';
+	public function markup( $attributes, $form_id ) {
+		$block_id    = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
+		$field_width = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$help        = isset( $attributes['textAreaHelpText'] ) ? $attributes['textAreaHelpText'] : '';
 		$max_length  = isset( $attributes['maxLength'] ) ? $attributes['maxLength'] : '';
 		$rows        = isset( $attributes['rows'] ) ? $attributes['rows'] : '';
 		$cols        = isset( $attributes['cols'] ) ? $attributes['cols'] : '';
-		$error_msg   = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$classname   = isset( $attributes['className'] ) ? $attributes['className'] : '';
+		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_textarea_block_required_text' );
+		$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$slug        = 'textarea';
 
-		return '
-		<div class="frontend-inputs-holder main-container sureforms-textarea-container ' . esc_attr( $classname ) . '">
-			<label for="sureforms-textarea" class="sf-classic-label-text">
-				' . esc_html( $label ) . '
-				' . ( $required && $label ? '<span class="text-red-500"> *</span>' : '' ) . '
-			</label>
-			<div class="mt-2 relative">
-				<div class="sureforms-text-area-counter">
-					' . esc_html( ( '' === $max_length ) ? '' : '0/' . esc_html( $max_length ) ) . '
-				</div>
-				<textarea name="' . esc_attr( str_replace( ' ', '_', $label . 'SF-divider' . $block_id ) ) . '"
-					aria-required="' . esc_attr( $required ? 'true' : 'false' ) . '"
-					placeholder="' . esc_attr( $placeholder ) . '"
-					maxLength="' . ( 0 === $max_length ? '' : esc_attr( $max_length ) ) . '"
-					cols="' . esc_attr( $cols ) . '" rows="' . esc_attr( $rows ) . '"
-					id="sureforms-textarea" class="sf-classic-textarea-element">' . esc_html( $default ) . '</textarea>
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+
+		// html attributes.
+		$placeholder_attr = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
+		$max_length_attr  = $max_length ? ' maxLength="' . $max_length . '" ' : '';
+		$cols_attr        = $cols ? ' cols="' . $cols . '" ' : '';
+		$rows_attr        = $rows ? ' rows="' . $rows . '" ' : '';
+
+		$aria_require_attr = $required ? 'true' : 'false';
+
+		$max_length_html = '' !== $max_length ? '0/' . $max_length : '';
+
+		$input_label_fallback = $label ? $label : __( 'Textarea', 'sureforms' );
+		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
+
+		$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
+
+		ob_start(); ?>
+		<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+			<div class="srfm-block-wrap">
+				<?php if ( $max_length_html ) { ?>
+					<div class="srfm-text-counter"><?php echo esc_html( $max_length_html ); ?></div>
+				<?php } ?>
+				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $placeholder_attr . '' . $max_length_attr . '' . $cols_attr . '' . $rows_attr ); ?> ><?php echo esc_html( $default ); ?></textarea>
 			</div>
-			' . ( '' !== $help ? '<p class="sforms-helper-txt" id="text-description">' . esc_html( $help ) . '</p>' : '' ) . '
-			<p style="display:none" class="error-message">' . esc_html( $error_msg ) . '</p>
-		</div>';
+			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
+			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+		</div>
+
+		<?php
+		return ob_get_clean();
 
 	}
-
 }

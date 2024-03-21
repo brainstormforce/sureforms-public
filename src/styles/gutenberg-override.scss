@@ -1,0 +1,360 @@
+/* --------- Overwriting All Gutenberg Components Inside srfm Panels --------- */
+
+.block-editor-block-popover__dynamic-content,
+.components-panel .srfm-dynamic-content-wrap,
+.components-panel .srfm-inspector-tab,
+.components-panel,
+#customize-theme-controls {
+	.srfm-inspector-tab {
+		&::-webkit-input-placeholder {
+			/* Edge */
+			color: #aaa;
+		}
+
+		&:-ms-input-placeholder {
+			/* Internet Explorer 10-11 */
+			color: #aaa;
+		}
+
+		&::placeholder {
+			color: #aaa;
+		}
+
+		&:focus {
+			border-color: $srfm-color-border-hover;
+			box-shadow: unset;
+		}
+	}
+
+	// Link Control.
+	.block-editor-link-control {
+		min-width: auto;
+
+		a {
+			color: $srfm-color-primary;
+
+			&:hover,
+			&:active,
+			&:focus {
+				color: $srfm-color-secondary;
+			}
+		}
+
+		&__tools {
+			padding: $srfm-control-vertical-gap 0 0;
+			border: 0;
+
+			.block-editor-link-control__settings {
+				.components-form-toggle:not( .is-checked ) .components-form-toggle__thumb {
+					background-color: #1e1e1e;
+					border-color: #1e1e1e;
+				}
+			}
+		}
+
+		&__search-input {
+			margin: 0;
+		}
+
+		&__settings {
+			.block-editor-link-control__setting {
+				margin-bottom: $srfm-control-vertical-gap;
+			}
+		}
+
+		&__search-actions {
+			right: 0;
+
+			.block-editor-link-control__search-submit {
+				max-height: 24px;
+				padding: 0;
+
+				svg {
+					width: 16px;
+				}
+			}
+		}
+
+		&__search-results-wrapper {
+			margin-top: 0;
+		}
+
+		&__search-results {
+			padding: 0;
+			margin-top: $srfm-control-label-bottom-margin;
+		}
+
+		&__search-item.is-current {
+			border: 1px solid $srfm-color-border;
+			border-radius: $srfm-control-border-radius;
+		}
+
+		&__field input[type="text"],
+		// Text and Number Controls.
+		.components-text-control__input,
+		.components-input-control__input {
+			color: $srfm-color-body;
+			border-color: $srfm-color-border;
+			border-radius: $srfm-control-border-radius;
+			padding: $srfm-control-input-padding;
+
+			&:focus {
+				border-color: $srfm-color-border-hover;
+				box-shadow: unset;
+			}
+		}
+
+		// Link Control.
+		.block-editor-link-control {
+			min-width: auto;
+
+			a {
+				color: $srfm-color-primary;
+
+				&:hover,
+				&:active,
+				&:focus {
+					color: $srfm-color-secondary;
+				}
+			}
+
+			&__tools {
+				padding: $srfm-control-vertical-gap 0 0;
+				border: 0;
+			}
+
+			&__search-input {
+				margin: 0;
+			}
+
+			&__settings {
+				.block-editor-link-control__setting {
+					margin-bottom: $srfm-control-vertical-gap;
+				}
+			}
+
+			&__search-actions {
+				right: 0;
+
+				.block-editor-link-control__search-submit {
+					max-height: 24px;
+					padding: 0;
+
+					svg {
+						width: 16px;
+					}
+				}
+			}
+
+			&__search-results-wrapper {
+				margin-top: 0;
+			}
+
+			&__search-results {
+				padding: 0;
+				margin-top: $srfm-control-label-bottom-margin;
+			}
+
+			&__search-item.is-current {
+				border: 1px solid $srfm-color-border;
+				border-radius: $srfm-control-border-radius;
+			}
+
+			&__field input[type="text"] {
+				color: $srfm-color-body;
+				border-color: $srfm-color-border;
+				border-radius: $srfm-control-border-radius;
+				padding: $srfm-control-input-padding;
+				// Separate Padding Right to avoid Overflow under Reset Button. Right Padding + Button Width.
+				padding-right: calc( 12px + 16px );
+
+				&:focus {
+					border-color: $srfm-color-border-hover;
+					box-shadow: 0 0 0 1px $srfm-color-border-hover;
+				}
+			}
+
+			.components-base-control__field {
+				padding: 0;
+			}
+		}
+
+		// Toggle Control.
+		.components-form-toggle {
+			margin-right: 0;
+
+			&.is-checked {
+				.components-form-toggle__thumb {
+					background-color: $srfm-color-plain-background;
+				}
+			}
+		}
+	}
+
+	// Input Wrapper for Multiple Gutenberg Components.
+	.components-input-control__container {
+		// Select Control.
+		// ----------------------------------------------------------------------------------------------------------
+		// NOTE: We will have to implement CustomSelectControl in place of SelectControl to style the Selected State.
+		// ----------------------------------------------------------------------------------------------------------
+		.components-select-control__input {
+			color: $srfm-color-body;
+		}
+
+		.components-input-control__backdrop {
+			border-color: $srfm-color-border !important;
+			border-radius: $srfm-control-border-radius !important;
+			box-shadow: unset;
+		}
+
+		// Angle Picker Input Field.
+		.components-input-control__input {
+			color: $srfm-color-body;
+		}
+
+		.components-truncate {
+			color: $srfm-color-body;
+		}
+
+		.components-input-control__input:focus-visible,
+		.components-select-control__input:active {
+			& ~ .components-input-control__backdrop {
+				border-color: $srfm-color-border-hover;
+			}
+
+			.components-form-toggle__input:focus + .components-form-toggle__track {
+				box-shadow: 0 0 0 2px $srfm-color-plain-background, 0 0 0 4px $srfm-color-primary;
+			}
+
+			&.is-checked {
+				.components-form-toggle__track {
+					background-color: $srfm-color-primary;
+					border-color: transparent;
+				}
+
+				.components-form-toggle__thumb {
+					background-color: $srfm-color-plain-background;
+				}
+			}
+		}
+
+		// Input Wrapper for Multiple Gutenberg Components.
+		.components-input-control__container {
+			// Select Control.
+			// ----------------------------------------------------------------------------------------------------------
+			// NOTE: We will have to implement CustomSelectControl in place of SelectControl to style the Selected State.
+			// ----------------------------------------------------------------------------------------------------------
+			.components-select-control__input {
+				color: $srfm-color-body;
+			}
+
+			.components-input-control__backdrop {
+				border-color: $srfm-color-border;
+				border-radius: $srfm-control-border-radius;
+				box-shadow: unset;
+			}
+
+			// Angle Picker Input Field.
+			.components-input-control__input {
+				color: $srfm-color-body;
+			}
+
+			.components-truncate {
+				color: $srfm-color-body;
+			}
+
+			.components-input-control__input:focus-visible,
+			.components-select-control__input:active {
+				& ~ .components-input-control__backdrop {
+					border-color: $srfm-color-border-hover;
+				}
+			}
+		}
+
+		// Range Control.
+		.components-range-control__wrapper {
+			.components-range-control__track {
+				color: $srfm-color-primary;
+
+				& + span span {
+					background-color: $srfm-color-primary;
+
+					&::before {
+						background-color: $srfm-color-primary;
+					}
+				}
+			}
+		}
+
+		// Angle Picker Circle.
+		.components-angle-picker-control__angle-circle {
+			border-color: $srfm-color-border;
+
+			.components-angle-picker-control__angle-circle-indicator {
+				background-color: $srfm-color-border-hover;
+				border-color: $srfm-color-border-hover;
+			}
+		}
+
+		// Angle Picker Clear Button.
+		.components-circular-option-picker__clear {
+			color: $srfm-color-primary;
+			box-shadow: inset 0 0 0 1px $srfm-color-primary;
+
+			&:hover:not( :disabled ) {
+				color: $srfm-color-primary;
+			}
+
+			&:active:not( :disabled ) {
+				background-color: $srfm-color-light-background;
+			}
+		}
+	}
+
+	// CSS for the Date Time Picker.
+	.block-editor-block-inspector .components-datetime__time {
+		// Remove the Bottom Margin set in the field.
+		.components-base-control,
+		.components-base-control:last-child {
+			margin-bottom: 0;
+		}
+
+		// Remove the top padding for all the control's input fields.
+		.components-panel__body .components-base-control__field {
+			padding: 0;
+		}
+
+		// Update the Spearator Color and Height to match the style guidelines.
+		.components-datetime__time-separator {
+			border-color: $srfm-color-border;
+			line-height: calc( #{$srfm-control-input-height} - 2px );
+		}
+
+		// Reduce the height for all the input fields in the date-time control.
+		input {
+			line-height: $srfm-control-input-height;
+			min-height: $srfm-control-input-height;
+			height: $srfm-control-input-height;
+		}
+
+		// Update the buttons in the group sizing to match the style guidelines.
+		.components-button-group .components-button {
+			height: $srfm-control-input-height;
+
+			// Update the Border Radius of the first button in the group.
+			&:first-child {
+				border-radius: $srfm-control-border-radius 0 0 $srfm-control-border-radius;
+			}
+
+			// Update the Border Radius of the last button in the group.
+			&:last-child {
+				border-radius: 0 $srfm-control-border-radius $srfm-control-border-radius 0;
+			}
+
+			// Replace the black border in the primary button
+			&.is-primary {
+				box-shadow: 0 0 0 1px $srfm-color-primary inset;
+			}
+		}
+	}
+}

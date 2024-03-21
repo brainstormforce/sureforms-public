@@ -1,0 +1,18 @@
+/* --------- Common Responsive Select CSS --------- */
+
+.srfm-responsive-common-button .dashicon {
+	font-size: 10px;
+}
+
+.components-button.srfm-responsive-common-button:hover,
+.components-button.srfm-responsive-common-button:focus,
+.components-button.srfm-responsive-common-button:active {
+	box-shadow: none;
+	outline: none;
+	color: $srfm-color-primary;
+}
+
+.srfm-responsive-label-wrap {
+	display: flex;
+	align-items: center;
+}

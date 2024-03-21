@@ -6,9 +6,14 @@
  * @since 0.0.1
  */
 
-namespace SureForms\Inc;
+namespace SRFM\Inc;
 
-use SureForms\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Global_Settings\Email_Summary;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Activation Class.
@@ -26,6 +31,13 @@ class Activator {
 	 */
 	public static function activate() {
 
+		$email_summary_options = get_option( 'srfm_email_summary_settings_options' );
+		$enable_email_summary  = is_array( $email_summary_options ) ? $email_summary_options['srfm_email_summary'] : '';
+
+		if ( $enable_email_summary ) {
+			Email_Summary::schedule_weekly_entries_email();
+		}
+
 		/**
 		 * Reset rewrite rules to avoid go to permalinks page
 		 * through deleting the database options to force WP to do it
@@ -33,7 +45,7 @@ class Activator {
 		 */
 		delete_option( 'rewrite_rules' );
 
-		update_option( '__sureforms_do_redirect', true );
+		update_option( '__srfm_do_redirect', true );
 
 	}
 }

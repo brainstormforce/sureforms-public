@@ -5,11 +5,15 @@
  * @package SureForms.
  */
 
-namespace SureForms\Inc\Blocks\Multichoice;
+namespace SRFM\Inc\Blocks\Multichoice;
 
-use SureForms\Inc\Blocks\Base;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Fields\Multichoice_Markup;
+use SRFM\Inc\Blocks\Base;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Fields\Multichoice_Markup;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Multichoice Block.
@@ -25,24 +29,11 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : '';
-			$styling      = get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ? Sureforms_Helper::get_string_value( get_post_meta( Sureforms_Helper::get_integer_value( $form_id ), '_sureforms_form_styling', true ) ) : '';
+			$form_id      = isset( $attributes['formId'] ) ? Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new Multichoice_Markup();
 			ob_start();
-			switch ( $styling ) {
-				case 'inherit':
-					// phpcs:ignore
-					echo $markup_class->default_styling( $attributes );
-					break;
-				case 'classic':
-					// phpcs:ignore
-					echo $markup_class->classic_styling( $attributes );
-					break;
-				default:
-					// phpcs:ignore
-					echo $markup_class->default_styling( $attributes );
-					break;
-			}
+			// phpcs:ignore
+			echo $markup_class->markup( $attributes, $form_id );
 		}
 			return ob_get_clean();
 	}

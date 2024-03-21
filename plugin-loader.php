@@ -6,20 +6,29 @@
  * @since 0.0.1
  */
 
-namespace SureForms;
+namespace SRFM;
 
-use SureForms\Inc\Post_Types;
-use SureForms\Inc\Sureforms_Submit;
-use SureForms\Inc\Gutenberg_Hooks;
-use SureForms\API\Block_Patterns;
-use SureForms\Inc\Forms_Data;
-use SureForms\Admin\Admin;
-use SureForms\Inc\Blocks\Register;
-use SureForms\Inc\SF_Public;
-use SureForms\Inc\Sureforms_Helper;
-use SureForms\Inc\Load_Form_Defaults;
-use SureForms\Inc\Activator;
-use SureForms\Inc\SF_Admin_Ajax;
+use SRFM\Inc\Post_Types;
+use SRFM\Inc\Form_Submit;
+use SRFM\Inc\Gutenberg_Hooks;
+use SRFM\API\Block_Patterns;
+use SRFM\Inc\Forms_Data;
+use SRFM\Admin\Admin;
+use SRFM\Inc\Blocks\Register;
+use SRFM\Inc\Frontend_Assets;
+use SRFM\Inc\Helper;
+use SRFM\Inc\Activator;
+use SRFM\Inc\Admin_Ajax;
+use SRFM\Inc\Export;
+use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Create_New_Form;
+use SRFM\Inc\Global_Settings\Global_Settings;
+use SRFM\Inc\Global_Settings\Email_Summary;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Plugin_Loader
@@ -46,6 +55,15 @@ class Plugin_Loader {
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
+
+			/**
+			 * SureForms loaded.
+			 *
+			 * Fires when SureForms was fully loaded and instantiated.
+			 *
+			 * @since 0.0.1
+			 */
+			do_action( 'srfm_core_loaded' );
 		}
 		return self::$instance;
 	}
@@ -71,7 +89,7 @@ class Plugin_Loader {
 
 			$filename = strtolower( $filename );
 
-			$file = SUREFORMS_DIR . $filename . '.php';
+			$file = SRFM_DIR . $filename . '.php';
 
 			// if the file is readable, include it.
 			if ( is_readable( $file ) ) {
@@ -87,38 +105,47 @@ class Plugin_Loader {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
+		// Load the action scheduler before plugin loads.
+		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
+		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
-		add_action( 'admin_init', [ $this, 'sureforms_activation_redirect' ] );
+		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
 		Post_Types::get_instance();
-		Sureforms_Submit::get_instance();
+		Form_Submit::get_instance();
 		Block_Patterns::get_instance();
 		Gutenberg_Hooks::get_instance();
 		Register::get_instance();
-		SF_Public::get_instance();
-		Sureforms_Helper::get_instance();
-		Load_Form_Defaults::get_instance();
+		Frontend_Assets::get_instance();
+		Helper::get_instance();
 		Activator::get_instance();
-		SF_Admin_Ajax::get_instance();
+		Admin_Ajax::get_instance();
 		Forms_Data::get_instance();
+		Export::get_instance();
+		Smart_Tags::get_instance();
+		Generate_Form_Markup::get_instance();
+		Create_New_Form::get_instance();
+		Global_Settings::get_instance();
+		Email_Summary::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
 		 */
 		register_activation_hook(
-			SUREFORMS_FILE,
+			SRFM_FILE,
 			function () {
 				Activator::activate();
 			}
 		);
 
 		register_deactivation_hook(
-			SUREFORMS_FILE,
+			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
+				Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
 			}
 		);
 	}
@@ -127,23 +154,23 @@ class Plugin_Loader {
 	 * Activation Reset
 	 *
 	 * @return void
-	 * @since X.X.X
+	 * @since 0.0.1
 	 */
-	public function sureforms_activation_redirect() {
+	public function activation_redirect() {
 
-		$do_redirect = apply_filters( 'sureforms_enable_redirect_activation', get_option( '__sureforms_do_redirect' ) );
+		$do_redirect = apply_filters( 'srfm_enable_redirect_activation', get_option( '__srfm_do_redirect' ) );
 
 		if ( $do_redirect ) {
 
-			update_option( '__sureforms_do_redirect', false );
+			update_option( '__srfm_do_redirect', false );
 
 			if ( ! is_multisite() ) {
 				wp_safe_redirect(
 					add_query_arg(
-						array(
-							'page' => 'sureforms_menu',
-							'sureforms-activation-redirect' => true,
-						),
+						[
+							'page'                     => 'sureforms_menu',
+							'srfm-activation-redirect' => true,
+						],
 						admin_url( 'admin.php' )
 					)
 				);
@@ -175,14 +202,14 @@ class Plugin_Loader {
 	 */
 	public function load_textdomain() {
 		// Default languages directory.
-		$lang_dir = SUREFORMS_DIR . 'languages/';
+		$lang_dir = SRFM_DIR . 'languages/';
 
 		/**
 		 * Filters the languages directory path to use for plugin.
 		 *
 		 * @param string $lang_dir The languages directory path.
 		 */
-		$lang_dir = apply_filters( 'sureforms_languages_directory', $lang_dir );
+		$lang_dir = apply_filters( 'srfm_languages_directory', $lang_dir );
 
 		// Traditional WordPress plugin locale filter.
 		global $wp_version;
@@ -200,7 +227,7 @@ class Plugin_Loader {
 		 * Uses get_user_locale()` in WordPress 4.7 or greater,
 		 * otherwise uses `get_locale()`.
 		 */
-		$locale = apply_filters( 'plugin_locale', $get_locale, 'sureforms' );
+		$locale = apply_filters( 'plugin_locale', $get_locale, 'sureforms' );//phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
 		$mofile = sprintf( '%1$s-%2$s.mo', 'sureforms', $locale );
 
 		// Setup paths to current locale file.
@@ -218,7 +245,32 @@ class Plugin_Loader {
 			load_plugin_textdomain( 'sureforms', false, $lang_dir );
 		}
 	}
+
+
+	/**
+	 * Loads plugin files.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return void
+	 */
+	public function load_plugin() {
+		$this->load_core_files();
+	}
+
+	/**
+	 * Load Core Files.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return void
+	 */
+	public function load_core_files() {
+		include_once SRFM_DIR . 'modules/gutenberg/classes/class-spec-block-loader.php';
+	}
 }
+
+
 
 /**
  * Kicking this off by calling 'get_instance()' method

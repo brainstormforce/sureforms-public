@@ -2,13 +2,17 @@
 /**
  * The blocks base file.
  *
- * @link       https://surecart.com
+ * @link       https://sureforms.com
  * @since      0.0.1
  * @package    SureForms
- * @author     SureCart <https://surecart.com/>
+ * @author     SureForms <https://sureforms.com/>
  */
 
-namespace SureForms\Inc\Blocks;
+namespace SRFM\Inc\Blocks;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Block base class.
@@ -41,9 +45,9 @@ abstract class Base {
 		register_block_type_from_metadata(
 			$this->get_dir(),
 			apply_filters(
-				'sureforms_block_registration_args',
-				[ 'render_callback' => [ $this, 'pre_render' ] ],
-			),
+				'srfm_block_registration_args',
+				[ 'render_callback' => [ $this, 'pre_render' ] ]
+			)
 		);
 	}
 
@@ -128,5 +132,6 @@ abstract class Base {
 	 */
 	public function render( $attributes, $content ) {
 		return '';
+
 	}
 }

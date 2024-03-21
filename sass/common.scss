@@ -1,0 +1,56 @@
+.block-editor-page.post-type-sureforms_form .is-root-container,
+.srfm-form-container {
+	* {
+		box-sizing: border-box;
+	}
+
+	.srfm-block-width-25 {
+		width: 25%;
+	}
+
+	.srfm-block-width-33-33 {
+		width: 33.33%;
+	}
+
+	.srfm-block-width-50 {
+		width: 50%;
+	}
+
+	.srfm-block-width-100 {
+		width: 100%;
+	}
+
+	.srfm-block-width-25,
+	.srfm-block-width-33-3,
+	.srfm-block-width-50 {
+		@media ( max-width: 576px ) {
+			width: 100%;
+		}
+	}
+
+	.srfm-block-label {
+		display: block;
+	}
+
+	.srfm-input-common {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.srfm-submit-button {
+		font-size: 0.7em;
+		cursor: pointer;
+	}
+
+	.srfm-btn-bg-color {
+		border-radius: var( --srfm-btn-border-radius );
+		font-family: inherit;
+		font-weight: var( --wp--custom--font-weight--medium );
+		line-height: var( --wp--custom--line-height--initial );
+		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+		text-decoration: none;
+		color: var( --srfm-btn-text-color );
+		border: var( --srfm-btn-border );
+		background-color: var( --srfm-btn-bg-color );
+	}
+}

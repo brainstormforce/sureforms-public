@@ -1,0 +1,755 @@
+/**
+ * External dependencies
+ */
+import styles from './editor.lazy.scss';
+import {
+	useLayoutEffect,
+	useEffect,
+	useState,
+	useRef,
+} from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
+import { ButtonGroup, Button, Tooltip } from '@wordpress/components';
+import { useDeviceType } from '@Controls/getPreviewType';
+import ResponsiveToggle from '../responsive-toggle';
+import { select } from '@wordpress/data';
+import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
+import SRFMReset from '../reset';
+import SRFMHelpText from '@Components/help-text';
+import { applyFilters } from '@wordpress/hooks';
+
+const SpacingControl = ( props ) => {
+	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
+	const panelRef = useRef( null );
+	// Add and remove the CSS on the drop and remove of the component.
+	useLayoutEffect( () => {
+		styles.use();
+		return () => {
+			styles.unuse();
+		};
+	}, [] );
+
+	const { getSelectedBlock } = select( 'core/block-editor' );
+	const blockNameForHook = getSelectedBlock()?.name.split( '/' ).pop(); // eslint-disable-line @wordpress/no-unused-vars-before-return
+	useEffect( () => {
+		setPanelNameForHook( getPanelIdFromRef( panelRef ) );
+	}, [ blockNameForHook ] );
+
+	const deviceType = useDeviceType();
+	const responsive = true;
+
+	const {
+		label,
+		unit,
+		mUnit,
+		tUnit,
+		disableUnits,
+		valueBottom,
+		valueLeft,
+		valueRight,
+		valueTop,
+		valueBottomTablet,
+		valueLeftTablet,
+		valueRightTablet,
+		valueTopTablet,
+		valueBottomMobile,
+		valueLeftMobile,
+		valueRightMobile,
+		valueTopMobile,
+		link,
+		setAttributes,
+		help = false,
+		min = -50,
+	} = props;
+
+	const onChangeUnits = ( value ) => {
+		if ( 'Mobile' === deviceType ) {
+			setAttributes( { [ mUnit.label ]: value.unitValue } );
+		} else if ( 'Tablet' === deviceType ) {
+			setAttributes( { [ tUnit.label ]: value.unitValue } );
+		} else {
+			setAttributes( { [ unit.label ]: value.unitValue } );
+		}
+	};
+	const changeLinkedValues = ( newValue, device ) => {
+		switch ( device ) {
+			case 'desktop':
+				// code block
+				setAttributes( { [ valueTop.label ]: newValue } );
+				setAttributes( { [ valueRight.label ]: newValue } );
+				setAttributes( { [ valueBottom.label ]: newValue } );
+				setAttributes( { [ valueLeft.label ]: newValue } );
+				break;
+			case 'tablet':
+				// code block
+				setAttributes( { [ valueTopTablet.label ]: newValue } );
+				setAttributes( { [ valueRightTablet.label ]: newValue } );
+				setAttributes( { [ valueBottomTablet.label ]: newValue } );
+				setAttributes( { [ valueLeftTablet.label ]: newValue } );
+				break;
+			case 'mobile':
+				// code block
+				setAttributes( { [ valueTopMobile.label ]: newValue } );
+				setAttributes( { [ valueRightMobile.label ]: newValue } );
+				setAttributes( { [ valueBottomMobile.label ]: newValue } );
+				setAttributes( { [ valueLeftMobile.label ]: newValue } );
+				break;
+		}
+	};
+	const onChangeTopValue = (
+		event,
+		device,
+		value = '',
+		resetLink = false
+	) => {
+		let newValue = value;
+		if ( '' === value && '' !== event ) {
+			newValue =
+				event.target.value === '' ? 0 : Number( event.target.value );
+		}
+
+		if ( ! resetLink ) {
+			if ( link.value ) {
+				changeLinkedValues( newValue, device );
+			} else {
+				changedUnLinkedValues( device );
+			}
+		}
+
+		switch ( device ) {
+			case 'desktop':
+				setAttributes( { [ valueTop.label ]: newValue } );
+				break;
+			case 'tablet':
+				setAttributes( { [ valueTopTablet.label ]: newValue } );
+				break;
+			case 'mobile':
+				setAttributes( { [ valueTopMobile.label ]: newValue } );
+				break;
+		}
+	};
+	const changedUnLinkedValues = ( device ) => {
+		switch ( device ) {
+			case 'desktop':
+				// code block
+				setAttributes( {
+					[ valueTop.label ]:
+						'' === valueTop.value || undefined === valueTop.value
+							? 0
+							: valueTop.value,
+				} );
+				setAttributes( {
+					[ valueRight.label ]:
+						'' === valueRight.value ||
+						undefined === valueRight.value
+							? 0
+							: valueRight.value,
+				} );
+				setAttributes( {
+					[ valueBottom.label ]:
+						'' === valueBottom.value ||
+						undefined === valueBottom.value
+							? 0
+							: valueBottom.value,
+				} );
+				setAttributes( {
+					[ valueLeft.label ]:
+						'' === valueLeft.value || undefined === valueLeft.value
+							? 0
+							: valueLeft.value,
+				} );
+				break;
+			case 'tablet':
+				// code block
+				setAttributes( {
+					[ valueTopTablet.label ]:
+						undefined === valueTopTablet.value ||
+						'' === valueTopTablet.value
+							? 0
+							: valueTopTablet.value,
+				} );
+				setAttributes( {
+					[ valueRightTablet.label ]:
+						undefined === valueRightTablet.value ||
+						'' === valueRightTablet.value
+							? 0
+							: valueRightTablet.value,
+				} );
+				setAttributes( {
+					[ valueBottomTablet.label ]:
+						undefined === valueBottomTablet.value ||
+						'' === valueBottomTablet.value
+							? 0
+							: valueBottomTablet.value,
+				} );
+				setAttributes( {
+					[ valueLeftTablet.label ]:
+						undefined === valueLeftTablet.value ||
+						'' === valueLeftTablet.value
+							? 0
+							: valueLeftTablet.value,
+				} );
+				break;
+			case 'mobile':
+				// code block
+				setAttributes( {
+					[ valueTopMobile.label ]:
+						'' === valueTopMobile.value ||
+						undefined === valueTopMobile.value
+							? 0
+							: valueTopMobile.value,
+				} );
+				setAttributes( {
+					[ valueRightMobile.label ]:
+						'' === valueRightMobile.value ||
+						undefined === valueRightMobile.value
+							? 0
+							: valueRightMobile.value,
+				} );
+				setAttributes( {
+					[ valueBottomMobile.label ]:
+						'' === valueBottomMobile.value ||
+						undefined === valueBottomMobile.value
+							? 0
+							: valueBottomMobile.value,
+				} );
+				setAttributes( {
+					[ valueLeftMobile.label ]:
+						'' === valueLeftMobile.value ||
+						undefined === valueLeftMobile.value
+							? 0
+							: valueLeftMobile.value,
+				} );
+				break;
+		}
+	};
+	const onChangeRightValue = (
+		event,
+		device,
+		value = '',
+		resetLink = false
+	) => {
+		let newValue = value;
+
+		if ( '' === value && '' !== event ) {
+			newValue =
+				event.target.value === '' ? 0 : Number( event.target.value );
+		}
+		if ( ! resetLink ) {
+			if ( link.value ) {
+				changeLinkedValues( newValue, device );
+			} else {
+				changedUnLinkedValues( device );
+			}
+		}
+
+		switch ( device ) {
+			case 'desktop':
+				setAttributes( { [ valueRight.label ]: newValue } );
+				break;
+			case 'tablet':
+				setAttributes( { [ valueRightTablet.label ]: newValue } );
+				break;
+			case 'mobile':
+				setAttributes( { [ valueRightMobile.label ]: newValue } );
+				break;
+		}
+	};
+
+	const onChangeBottomValue = (
+		event,
+		device,
+		value = '',
+		resetLink = false
+	) => {
+		let newValue = value;
+
+		if ( '' === value && '' !== event ) {
+			newValue =
+				event.target.value === '' ? 0 : Number( event.target.value );
+		}
+		if ( ! resetLink ) {
+			if ( link.value ) {
+				changeLinkedValues( newValue, device );
+			} else {
+				changedUnLinkedValues( deviceType );
+			}
+		}
+
+		switch ( device ) {
+			case 'desktop':
+				setAttributes( { [ valueBottom.label ]: newValue } );
+				break;
+			case 'tablet':
+				setAttributes( { [ valueBottomTablet.label ]: newValue } );
+				break;
+			case 'mobile':
+				setAttributes( { [ valueBottomMobile.label ]: newValue } );
+				break;
+		}
+	};
+
+	const onChangeLeftValue = (
+		event,
+		device,
+		value = '',
+		resetLink = false
+	) => {
+		let newValue = value;
+
+		if ( '' === value && '' !== event ) {
+			newValue =
+				event.target.value === '' ? 0 : Number( event.target.value );
+		}
+		if ( ! resetLink ) {
+			if ( link.value && ! resetLink ) {
+				changeLinkedValues( newValue, device );
+			} else {
+				changedUnLinkedValues( deviceType );
+			}
+		}
+
+		switch ( device ) {
+			case 'desktop':
+				setAttributes( { [ valueLeft.label ]: newValue } );
+				break;
+			case 'tablet':
+				setAttributes( { [ valueLeftTablet.label ]: newValue } );
+				break;
+			case 'mobile':
+				setAttributes( { [ valueLeftMobile.label ]: newValue } );
+				break;
+		}
+	};
+
+	let unitSizes = [
+		{
+			name: __( 'Pixel', 'sureforms' ),
+			unitValue: 'px',
+		},
+		{
+			name: __( 'Em', 'sureforms' ),
+			unitValue: 'em',
+		},
+		{
+			name: __( '%', 'sureforms' ),
+			unitValue: '%',
+		},
+	];
+	if ( props.units ) {
+		unitSizes = props.units;
+	}
+
+	const onUnitSizeClick = ( uSizes ) => {
+		const items = [];
+		uSizes.map( ( key ) =>
+			items.push(
+				<Tooltip
+					text={ sprintf(
+						/* translators: abbreviation for units */
+						__( '%s units', 'sureforms' ),
+						key.name
+					) }
+				>
+					<Button
+						key={ key.unitValue }
+						className={ 'srfm-range-control__units--' + key.name }
+						isSmall
+						isPrimary={
+							( 'Desktop' === deviceType &&
+								unit.value === key.unitValue ) ||
+							( 'Mobile' === deviceType &&
+								mUnit.value === key.unitValue ) ||
+							( 'Tablet' === deviceType &&
+								tUnit.value === key.unitValue )
+						}
+						isSecondary={
+							unit.value !== key.unitValue ||
+							mUnit.value !== key.unitValue ||
+							tUnit.value !== key.unitValue
+						}
+						aria-pressed={
+							( 'Desktop' === deviceType &&
+								unit.value === key.unitValue ) ||
+							( 'Mobile' === deviceType &&
+								mUnit.value === key.unitValue ) ||
+							( 'Tablet' === deviceType &&
+								tUnit.value === key.unitValue )
+						}
+						data-device-type={ deviceType }
+						aria-label={ sprintf(
+							/* translators: abbreviation for units */
+							__( '%s units', 'sureforms' ),
+							key.name
+						) }
+						onClick={ () => onChangeUnits( key ) }
+					>
+						{ key.unitValue }
+					</Button>
+				</Tooltip>
+			)
+		);
+
+		return items;
+	};
+
+	let linkHtml = '';
+
+	if ( link ) {
+		linkHtml = (
+			<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+				className="srfm-spacing-control__link srfm-spacing-control-connected dashicons dashicons-admin-links "
+				onClick={ () => {
+					changedUnLinkedValues( deviceType.toLowerCase() );
+					setAttributes( { [ link.label ]: false } );
+				} }
+			></span>
+		);
+
+		if ( ! link.value ) {
+			linkHtml = (
+				<span // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+					className="srfm-spacing-control__link srfm-spacing-control-disconnected dashicons dashicons-editor-unlink"
+					onClick={ () => {
+						onLinkClickHandler();
+						setAttributes( { [ link.label ]: true } );
+					} }
+				></span>
+			);
+		}
+	}
+	const onLinkClickHandler = () => {
+		let linkValue;
+		const device = deviceType.toLowerCase();
+
+		switch ( device ) {
+			case 'desktop':
+				linkValue = valueTop.value;
+				break;
+			case 'tablet':
+				linkValue = valueTopTablet.value;
+				break;
+			case 'mobile':
+				linkValue = valueTopMobile.value;
+				break;
+		}
+		changeLinkedValues( linkValue, device );
+	};
+	const output = {};
+	output.Desktop = (
+		<>
+			<div className="srfm-spacing-control__inputs">
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeTopValue( e, 'desktop' ) }
+					value={ undefined !== valueTop.value ? valueTop.value : '' }
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeRightValue( e, 'desktop' ) }
+					value={
+						undefined !== valueRight.value ? valueRight.value : ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeBottomValue( e, 'desktop' ) }
+					value={
+						undefined !== valueBottom.value ? valueBottom.value : ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeLeftValue( e, 'desktop' ) }
+					value={
+						undefined !== valueLeft.value ? valueLeft.value : ''
+					}
+				/>
+				{ linkHtml }
+			</div>
+		</>
+	);
+	output.Tablet = (
+		<>
+			<div className="srfm-spacing-control__inputs">
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeTopValue( e, 'tablet' ) }
+					value={
+						undefined !== valueTopTablet.value
+							? valueTopTablet.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeRightValue( e, 'tablet' ) }
+					value={
+						undefined !== valueRightTablet.value
+							? valueRightTablet.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeBottomValue( e, 'tablet' ) }
+					value={
+						undefined !== valueBottomTablet.value
+							? valueBottomTablet.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeLeftValue( e, 'tablet' ) }
+					value={
+						undefined !== valueLeftTablet.value
+							? valueLeftTablet.value
+							: ''
+					}
+				/>
+				{ linkHtml }
+			</div>
+		</>
+	);
+	output.Mobile = (
+		<>
+			<div className="srfm-spacing-control__inputs">
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeTopValue( e, 'mobile' ) }
+					value={
+						undefined !== valueTopMobile.value
+							? valueTopMobile.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeRightValue( e, 'mobile' ) }
+					value={
+						undefined !== valueRightMobile.value
+							? valueRightMobile.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeBottomValue( e, 'mobile' ) }
+					value={
+						undefined !== valueBottomMobile.value
+							? valueBottomMobile.value
+							: ''
+					}
+				/>
+				<input
+					className="srfm-spacing-control__number"
+					type="number"
+					min={ min }
+					onChange={ ( e ) => onChangeLeftValue( e, 'mobile' ) }
+					value={
+						undefined !== valueLeftMobile.value
+							? valueLeftMobile.value
+							: ''
+					}
+				/>
+				{ linkHtml }
+			</div>
+		</>
+	);
+
+	const resetValues = ( defaultValues ) => {
+		const device = deviceType.toLowerCase();
+
+		switch ( device ) {
+			case 'desktop':
+				onChangeTopValue(
+					'',
+					'desktop',
+					defaultValues[ valueTop.label ],
+					true
+				);
+				onChangeRightValue(
+					'',
+					'desktop',
+					defaultValues[ valueRight.label ],
+					true
+				);
+				onChangeBottomValue(
+					'',
+					'desktop',
+					defaultValues[ valueBottom.label ],
+					true
+				);
+				onChangeLeftValue(
+					'',
+					'desktop',
+					defaultValues[ valueLeft.label ],
+					true
+				);
+				setAttributes( {
+					[ unit?.label ]: defaultValues[ unit?.label ],
+				} );
+				break;
+			case 'tablet':
+				onChangeTopValue(
+					'',
+					'tablet',
+					defaultValues[ valueTopTablet.label ],
+					true
+				);
+				onChangeRightValue(
+					'',
+					'tablet',
+					defaultValues[ valueRightTablet.label ],
+					true
+				);
+				onChangeBottomValue(
+					'',
+					'tablet',
+					defaultValues[ valueBottomTablet.label ],
+					true
+				);
+				onChangeLeftValue(
+					'',
+					'tablet',
+					defaultValues[ valueLeftTablet.label ],
+					true
+				);
+				setAttributes( {
+					[ tUnit?.label ]: defaultValues[ tUnit?.label ],
+				} );
+				break;
+			case 'mobile':
+				onChangeTopValue(
+					'',
+					'mobile',
+					defaultValues[ valueTopMobile.label ],
+					true
+				);
+				onChangeRightValue(
+					'',
+					'mobile',
+					defaultValues[ valueRightMobile.label ],
+					true
+				);
+				onChangeBottomValue(
+					'',
+					'mobile',
+					defaultValues[ valueBottomMobile.label ],
+					true
+				);
+				onChangeLeftValue(
+					'',
+					'mobile',
+					defaultValues[ valueLeftMobile.label ],
+					true
+				);
+				setAttributes( {
+					[ mUnit?.label ]: defaultValues[ mUnit?.label ],
+				} );
+				break;
+		}
+	};
+
+	const controlName = getIdFromString( props.label );
+	const controlBeforeDomElement = applyFilters(
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }.before`,
+		'',
+		blockNameForHook
+	);
+	const controlAfterDomElement = applyFilters(
+		`srfm.${ blockNameForHook }.${ panelNameForHook }.${ controlName }`,
+		'',
+		blockNameForHook
+	);
+
+	return (
+		<div ref={ panelRef } className="components-base-control">
+			{ controlBeforeDomElement }
+			<div className="srfm-spacing-control">
+				<div className="srfm-size-type-field-tabs">
+					<div className="srfm-control__header">
+						<ResponsiveToggle
+							label={ label }
+							responsive={ responsive }
+						/>
+						<div className="srfm-control__actions">
+							<SRFMReset
+								onReset={ resetValues }
+								attributeNames={ [
+									valueTop?.label,
+									valueRight?.label,
+									valueBottom?.label,
+									valueLeft?.label,
+									valueTopTablet?.label,
+									valueRightTablet?.label,
+									valueBottomTablet?.label,
+									valueLeftTablet?.label,
+									valueTopMobile?.label,
+									valueRightMobile?.label,
+									valueBottomMobile?.label,
+									valueLeftMobile?.label,
+									unit?.label,
+									tUnit?.label,
+									mUnit?.label,
+								] }
+							/>
+							<ButtonGroup
+								className="srfm-control__units"
+								aria-label={ __( 'Select Units', 'sureforms' ) }
+							>
+								{ ! disableUnits &&
+									onUnitSizeClick( unitSizes ) }
+							</ButtonGroup>
+						</div>
+					</div>
+					{ output[ deviceType ]
+						? output[ deviceType ]
+						: output.Desktop }
+					<div className="srfm-spacing-control__input-labels">
+						<span className="srfm-spacing-control__number-label">
+							{ __( 'Top', 'sureforms' ) }
+						</span>
+						<span className="srfm-spacing-control__number-label">
+							{ __( 'Right', 'sureforms' ) }
+						</span>
+						<span className="srfm-spacing-control__number-label">
+							{ __( 'Bottom', 'sureforms' ) }
+						</span>
+						<span className="srfm-spacing-control__number-label">
+							{ __( 'Left', 'sureforms' ) }
+						</span>
+						<span className="srfm-spacing-control__number-label srfm-spacing-control__link-label"></span>
+					</div>
+				</div>
+				<SRFMHelpText text={ help } />
+			</div>
+			{ controlAfterDomElement }
+		</div>
+	);
+};
+
+export default SpacingControl;

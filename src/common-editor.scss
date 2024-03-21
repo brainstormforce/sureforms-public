@@ -1,0 +1,896 @@
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+
+/* ------------------------------------------------------------------------------------------------*/
+
+@import "styles/variables";
+
+/* Gutenberg Reset CSS */
+.block-editor-block-inspector,
+.srfm--panel {
+	.srfm-inspector-tab {
+		.components-notice.is-warning {
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		.components-panel__body {
+			> div:not( .components-panel__row ):not( .srfm-select-control ) > .components-base-control {
+				margin-bottom: $srfm-control-vertical-gap;
+			}
+			> .components-base-control {
+				margin-bottom: $srfm-control-vertical-gap;
+
+				.components-base-control,
+				.components-base-control__field {
+					padding-top: 0;
+					margin-bottom: 0;
+				}
+			}
+
+			> .components-base-control:last-child {
+				margin-bottom: 0;
+			}
+
+			> .srfm-components-control .components-base-control {
+				margin-bottom: $srfm-control-vertical-gap;
+
+				.components-base-control,
+				.components-base-control__field {
+					padding-top: 0;
+					margin-bottom: 0;
+				}
+			}
+
+			> .srfm-components-control:last-child .components-base-control {
+				margin-bottom: 0;
+			}
+
+			.srfm-panel__body-sub-heading {
+				font-size: 13px;
+				font-weight: 500;
+				line-height: 16px;
+				color: #50575e;
+			}
+
+			/* Gutenberg DatePicker CSS */
+			.components-datetime {
+				.components-datetime__buttons {
+					margin: 10px 0 10px 0;
+
+					/* Unset box-shadow */
+					.components-button:focus:not( :disabled ) {
+						box-shadow: unset;
+					}
+				}
+			}
+
+			/* Gutenberg Toggle Help CSS*/
+			.components-base-control__help {
+				margin-top: 10px;
+			}
+
+			/* Add a border top and bottom of responsive condition */
+			&:last-child {
+				border-bottom: 1px solid #e0e0e0;
+			}
+			.srfm-date-setting-wrap {
+				position: relative;
+				margin-bottom: 25px;
+				.srfm-date-setting-icon {
+					position: absolute;
+					right: 0;
+					top: 0;
+					bottom: 0;
+					padding: 6px;
+					.icon {
+						color: #aaacb0;
+						display: block;
+						transform: translateY( -15% );
+						line-height: 0;
+					}
+				}
+				.srfm-date-time-picker {
+					margin-left: 0;
+					margin-right: 0;
+					color: #50575e;
+					border: 1px solid #e6e7e9;
+					border-radius: 2px;
+					box-shadow: 0 0 0 transparent;
+					font-size: 13px;
+					line-height: normal;
+					padding: 6px 8px;
+					width: 100%;
+				}
+			}
+		}
+	}
+}
+.components-popover__content {
+	.components-datetime__date {
+		padding: 6px;
+	}
+}
+/* Form Notice Styling */
+.srfm-form-notice {
+	padding: 8px 10px;
+	background-color: #fff8e5;
+	border-left: 5px solid #ffb901;
+	color: #32373c;
+	font-size: 13px;
+	line-height: 20px;
+	a {
+		display: flex;
+		align-items: center;
+		color: #135e96;
+		text-decoration: underline;
+		box-shadow: none;
+		width: fit-content;
+	}
+}
+.srfm-settings-notice {
+	color: #478a3b;
+	background-color: #e5fce3;
+	padding: 15px;
+	border-left: 5px solid #c3f9c5;
+	font-size: 12px;
+	line-height: 1.5;
+	text-align: left;
+}
+
+/* Gutenberg Editor border hover */
+.edit-site-block-editor__block-list.is-outline-mode,
+.edit-post-visual-editor .editor-styles-wrapper > .block-editor-block-list__layout {
+	.block-editor-block-list__block:not( .remove-outline ).is-hovered::after,
+	.block-editor-block-list__block:hover::after,
+	.block-editor-block-list__block:not( [contenteditable] ):focus::after {
+		box-shadow: 0 0 0 1.5px $srfm-color-primary;
+		border-radius: 2px;
+	}
+
+	.block-editor-block-list__block:not( [contenteditable] ):focus {
+		z-index: 1;
+	}
+}
+
+.block-editor-block-list__layout .block-editor-block-list__block.is-selected {
+	// Added CSS for better clarity to the users to indicates which block is selected & being edited.
+	box-shadow: 0 0 0 1.5px $srfm-color-primary;
+	border-radius: 2px;
+}
+
+/* SRFM Control Label CSS*/
+.srfm-control-label,
+.srfm-inspector-tab .components-base-control__label,
+.srfm-inspector-tab .components-panel__body label,
+.srfm-extention-tab label {
+	color: $srfm-color-body;
+	font-size: $srfm-font-size-label !important;
+	line-height: $srfm-line-height-label !important;
+	margin-bottom: $srfm-control-label-bottom-margin;
+	text-transform: $srfm-text-transform-label !important;
+	font-weight: $srfm-font-weight-label !important;
+}
+
+.srfm-inspector-tab label.components-toggle-control__label {
+	margin-bottom: 0;
+}
+
+/* Editor panel sidebar - scrollbar design CSS start */
+
+.interface-interface-skeleton__sidebar::-webkit-scrollbar {
+	width: 5px;
+}
+
+.interface-interface-skeleton__sidebar::-webkit-scrollbar-thumb {
+	box-shadow: inset 0 0 6px rgba( 0, 0, 0, 0.3 );
+	border-radius: 100px;
+}
+
+/* Editor panel sidebar - scrollbar design CSS end */
+
+/* Panel Body CSS*/
+.srfm-inspector-tab,
+[data-srfm-tab] {
+	.components-panel__body-title .components-button {
+		font-size: $srfm-font-size-button;
+	}
+}
+
+/* GB Select Control CSS*/
+.srfm-inspector-tab .components-select-control {
+	height: auto;
+}
+
+/* Tabs Pabel CSS for .srfm-size-type-field-tabs START*/
+.srfm-size-type-field-tabs .components-tab-panel__tabs {
+	display: block;
+	border-bottom: 0;
+	text-align: right;
+	padding-right: 28px;
+	margin-right: 45px;
+	margin-bottom: -20px;
+	z-index: unset;
+
+	button span.dashicon.dashicons {
+		font-size: 15px;
+	}
+
+	button.active-tab svg,
+	button.active-tab svg:focus {
+		color: $srfm-color-primary;
+	}
+}
+
+.srfm-size-type-field-tabs .components-tab-panel__tabs button svg,
+.srfm-size-type-field-tabs .srfm-responsive-label-wrap svg {
+	width: auto;
+	height: 10px;
+}
+
+.srfm-size-type-field-tabs .components-tab-panel__tabs button {
+	border: 0;
+	border-bottom: 0;
+	padding: 4px;
+	margin-bottom: 0;
+	outline: 0;
+	font-size: 8px;
+	background: transparent;
+	color: #999;
+	display: inline-block;
+	height: 16px;
+	width: 22px;
+	margin-right: 3px;
+}
+
+.srfm-size-type-field-tabs .components-tab-panel__tabs button.active-tab,
+.srfm-size-type-field-tabs .components-tab-panel__tabs button.active-tab:focus {
+	box-shadow: none;
+	color: $srfm-color-primary;
+	border-radius: 100%;
+	padding: 0;
+	margin: 0;
+	line-height: 0;
+}
+
+.srfm-control__actions .srfm-size-type-field-tabs {
+	margin: 0;
+}
+
+/* Tabs Pabel CSS for .srfm-size-type-field-tabs END*/
+
+/* ------------------------------------------------------------------------------------------------*/
+
+.srfm-inspect-tabs .components-tab-panel__tabs button {
+	padding: 10px;
+	background: transparent;
+	color: #333;
+	outline: none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 3px solid #eee;
+	cursor: pointer;
+	-webkit-transition: all 0.2s;
+	-o-transition: all 0.2s;
+	transition: all 0.2s;
+}
+
+hr.srfm-editor__separator {
+	border-bottom: 1px solid #e2e4e7;
+	margin-top: 0;
+}
+
+.srfm-inspect-tabs > .components-tab-panel__tabs button.active-tab,
+.srfm-inspect-tabs > .components-tab-panel__tabs button:focus {
+	border-bottom: 3px solid #333;
+	outline: none;
+	font-weight: 500;
+}
+
+.srfm-inspect-tab-title {
+	margin-top: 20px;
+}
+
+.srfm-inspect-tabs-col-2 > .components-tab-panel__tabs button,
+.srfm-inspect-tabs.srfm-inspect-tabs-col-2 > .components-tab-panel__tabs button {
+	width: 50%;
+}
+
+.components-button-group .components-button.is-primary,
+.components-button-group .components-button:focus,
+.components-toolbar .components-button,
+.components-toolbar .components-button::before {
+	z-index: unset;
+}
+
+.srfm-inspect-tabs .components-tab-panel__tabs {
+	margin-bottom: 15px;
+}
+
+.srfm-inspect-tabs-col-3 > .components-tab-panel__tabs button {
+	width: 33.33%;
+}
+
+.srfm-settings-notice {
+	color: #478a3b;
+	background-color: #e5fce3;
+	padding: 15px;
+	border-left: 5px solid #c3f9c5;
+	font-size: 12px;
+	line-height: 1.5;
+	text-align: left;
+}
+
+/* SRFM Help Notice CSS*/
+.srfm-note,
+.components-base-control__help {
+	color: #a4afb7;
+	font-size: 12px;
+	font-style: italic;
+}
+
+.components-range-control.srfm-margin-control .components-base-control__label {
+	width: 30px;
+}
+
+.srfm-icons-list .srfm-widget-icon {
+	-js-display: flex;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	float: left;
+	padding: 1em;
+	margin: 0;
+	border: 1px solid #f1f1f1;
+	cursor: pointer;
+	text-align: center;
+	font-size: 16px;
+	line-height: 16px;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	-moz-box-align: center;
+	-ms-flex-align: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	-moz-box-pack: center;
+	-ms-flex-pack: center;
+}
+
+.srfm-icons-list {
+	display: inline-block;
+	max-height: 200px;
+	padding: 0;
+	margin: 1em 0 0 0;
+	overflow: auto;
+}
+
+.srfm-widget-icon svg {
+	width: 20px;
+	height: 20px;
+}
+
+.srfm-icon-picker-wrap {
+	position: relative;
+	vertical-align: middle;
+	width: 100%;
+	margin: 8px 0;
+}
+
+.srfm-icon-picker-wrap .search-icon {
+	width: 100%;
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+}
+
+.components-button-group.srfm-size-type-field {
+	display: flex;
+	justify-content: flex-end;
+	margin: 0;
+	text-align: right;
+	margin-bottom: -18px;
+}
+
+.edit-post-sidebar h2.srfm-size-type-field-title {
+	font-size: 14px;
+	margin-bottom: 0;
+	color: #555d66;
+	margin-top: 30px;
+}
+
+.srfm-size-type-field button.components-button.srfm-size-btn {
+	background: transparent;
+	color: #777;
+	border: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	text-shadow: none;
+	height: 18px;
+	line-height: 18px;
+	padding: 0 3px;
+}
+
+.srfm-size-type-field button.components-button.srfm-size-btn:first-child {
+	padding-left: 0;
+}
+
+.srfm-size-type-field button.components-button.srfm-size-btn:last-child {
+	padding-right: 0;
+}
+
+.srfm-size-type-field button.components-button.srfm-size-btn.is-primary,
+.srfm-size-type-field button.components-button.srfm-size-btn.is-primary:focus:not( :disabled ):not( [aria-disabled="true"] ) {
+	box-shadow: none;
+	background: transparent;
+	border: none;
+	outline: none;
+	color: $srfm-color-heading;
+	text-decoration: underline;
+	-webkit-box-shadow: none;
+}
+
+.components-button-group .components-button.is-button {
+	position: relative;
+	z-index: 1;
+}
+
+.srfm-size-type-field button.components-button.srfm-size-btn:hover,
+.srfm-size-type-field button.components-button.srfm-size-btn:hover:focus:not( :disabled ):not( [aria-disabled="true"] ) {
+	color: $srfm-color-heading;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: none;
+	outline: none;
+}
+
+.srfm-size-type-field__common-tabs .components-tab-panel__tabs {
+	display: block;
+	margin-bottom: -34px;
+}
+
+.srfm-box-shadow-option-actions {
+	margin-top: 1.5em;
+	margin-bottom: 2em;
+}
+
+.srfm__url-panel-body .block-editor-url-input input {
+	width: 100%;
+}
+
+/*
+ Fonticon picker css
+ */
+
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.srfm-setting-label .component-color-indicator {
+	vertical-align: middle;
+	background-color: transparent;
+}
+
+[class^="fipicon-"] {
+	speak: none;
+	font-style: normal;
+	font-weight: 400;
+	font-variant: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	display: flex;
+}
+
+i.fipicon-angle-down::before {
+	font-family: dashicons, serif;
+	content: "\f140";
+}
+
+i.fipicon-angle-up::before {
+	font-family: dashicons, serif;
+	content: "\f142";
+}
+
+i.fipicon-angle-right::before {
+	font-family: dashicons, serif;
+	content: "\f345";
+}
+
+i.fipicon-angle-left::before {
+	font-family: dashicons, serif;
+	content: "\f341";
+}
+
+label.wp-block-srfm-blockquote__via-label svg {
+	fill: #6c7781;
+	vertical-align: middle;
+}
+
+.slick-arrow svg {
+	vertical-align: middle;
+}
+
+// Select control text going out of screen.
+
+.srfm-inspector-tab .components-select-control .components-input-control__container .components-select-control__input {
+	text-transform: capitalize;
+	line-height: 30px;
+}
+
+.components-panel__body.srfm-repeater-panel {
+	max-width: 100%;
+	margin: 0 auto;
+	margin-bottom: 1em;
+	border: 1px solid #e2e4e7;
+	background: #fff;
+	margin-top: 1em;
+}
+
+.edit-post-settings-sidebar__panel-block .components-panel__body.srfm-repeater-panel:last-child {
+	margin-bottom: 1em;
+}
+
+.srfm-inline-margin .srfm-margin-control label.components-base-control__label {
+	display: inline-block;
+}
+
+.srfm-inline-margin .components-button-group.srfm-size-type-field {
+	display: inline-block;
+	float: right;
+}
+
+.srfm-forms-button-group {
+	margin-bottom: 15px;
+}
+
+.srfm-typography-range-options + .components-base-control {
+	.components-base-control__field .css-unzpkb-Flex-Root {
+		position: inherit;
+	}
+}
+
+.srfm-typography-range-options + .components-button-group.srfm-size-type-field {
+	margin-bottom: -33px;
+}
+
+/* Common srfm reset CSS start here */
+button.components-button.srfm-reset.is-secondary.is-small:not( :disabled ) {
+	color: $srfm-color-primary;
+}
+
+.srfm-reset .dashicons-image-rotate {
+	width: 10px;
+	height: 10px;
+	font-size: 10px;
+}
+
+button.components-button.srfm-reset.is-secondary.is-small {
+	box-shadow: unset;
+	background: 0 0;
+	color: $srfm-color-icon-disabled;
+}
+
+/* Common srfm reset CSS end here */
+
+/* Common CSS for border start here */
+.srfm-border-width {
+	margin-bottom: -15px;
+}
+
+.srfm-border-wrap {
+	display: flex;
+	margin-bottom: 5px;
+}
+
+.srfm-border-radius {
+	margin-bottom: -20px;
+}
+
+label.srfm-border-label {
+	margin-right: 130px;
+}
+
+/* Common CSS for border ens here */
+
+button.components-button.srfm-review-select-btn.is-secondary {
+	margin-bottom: 10px;
+}
+
+.components-panel__body .srfm-control__label {
+	margin-bottom: 0;
+}
+
+.srfm-components-base-control {
+	margin-bottom: 18px;
+}
+
+.srfm-typography-range-options .components-base-control .components-flex.components-select-control {
+	position: unset;
+}
+
+.srfm-typography-option-actions .srfm-typography-control-btn.components-button:focus:not( :disabled ) {
+	box-shadow: unset;
+	outline: none;
+	color: $srfm-color-secondary;
+}
+
+.srfm-inspector-tab .components-panel__body.is-opened > .components-panel__body-title {
+	margin-bottom: 16px;
+}
+
+.srfm-inspector-tab > .components-base-control,
+.srfm-inspector-tab > h2 {
+	padding: 0 10px;
+	margin: -10px;
+	margin-bottom: 16px;
+}
+
+.srfm-inspector-tab .components-panel__body > .components-panel__body-title {
+	.components-button.components-panel__body-toggle:focus {
+		box-shadow: none;
+	}
+}
+
+.srfm-responsive-common-button {
+	box-shadow: none;
+	color: $srfm-color-body;
+	border-radius: 100%;
+	border: 0;
+	border-bottom: 0;
+	outline: 0;
+	font-size: 10px;
+	display: inline-block;
+	height: 16px;
+	width: 22px;
+	cursor: pointer;
+	font-weight: 500;
+	padding: 4px;
+	margin: 0;
+	line-height: 0;
+	margin-left: 10px;
+
+	svg {
+		color: $srfm-color-body;
+	}
+}
+
+.components-panel__body.is-opened .srfm-range-control-responsive {
+	display: flex;
+	align-items: center;
+	padding: 0;
+	margin: 0;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.components-panel__body .components-base-control {
+	.srfm-control__header .srfm-range-control-responsive .srfm-responsive-tabs {
+		margin: 0;
+		padding: 4px;
+		line-height: 0;
+		box-shadow: none;
+		border: none;
+
+		&:hover {
+			color: #1e1e1e;
+		}
+	}
+}
+
+.srfm-inspector-tab .components-base-control .components-range-control__wrapper {
+	direction: initial;
+	margin-left: 5px;
+}
+
+.components-range-control__slider {
+	align-items: center;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.srfm-inspector-tab span[CLASS*="-ThumbWrapper"] {
+	left: 0%;
+	height: 17px;
+	width: 17px;
+	margin-left: 0;
+	margin-top: 6px;
+}
+
+.interface-interface-skeleton__sidebar {
+	overflow-y: overlay;
+	margin-bottom: 10px;
+	overflow-x: hidden;
+
+	.components-panel[data-srfm-tab="advance"] {
+		.block-editor-block-inspector__advanced.srfm-extention-tab {
+			border: none;
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+		.components-base-control .components-base-control__label {
+			color: $srfm-color-body;
+			font-size: $srfm-font-size-label;
+			line-height: $srfm-line-height-label;
+			margin-bottom: $srfm-control-label-bottom-margin;
+			text-transform: $srfm-text-transform-label;
+			font-weight: $srfm-font-weight-label;
+		}
+	}
+}
+
+/* Block icons white when block is selected in list view. */
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg.srfm-editor-icons {
+	path,
+	rect,
+	circle {
+		stroke: #fff;
+	}
+}
+
+/* Block icons white when toggle is set to select from tools. */
+.block-editor-block-list__block-selection-button .block-editor-block-icon.has-colors svg.srfm-editor-icons {
+	path,
+	rect,
+	circle {
+		stroke: #fff;
+	}
+}
+
+/* Block icons turn to secondary color when they are a parent block. */
+.block-editor-block-parent-selector .block-editor-block-icon svg.srfm-editor-icons {
+	path,
+	rect,
+	circle {
+		stroke: $srfm-color-heading;
+	}
+}
+
+/* Block Editor Block Icons Color*/
+.block-editor-block-icon.has-colors svg.srfm-editor-icons {
+	stroke: currentColor;
+
+	path,
+	rect,
+	circle {
+		stroke: currentColor;
+	}
+}
+
+/* Breadcrumbs css */
+.block-editor .interface-interface-skeleton__footer {
+	padding: 5px;
+	border-top: 1px solid #e9e9e9;
+
+	.block-editor-block-breadcrumb {
+		li {
+			color: $srfm-color-secondary;
+			font-weight: 600;
+			font-size: 14px;
+
+			button {
+				color: $srfm-color-secondary;
+				font-weight: 600;
+			}
+
+			svg {
+				width: 25px;
+				height: 25px;
+			}
+
+			.block-editor-block-breadcrumb__button::before {
+				box-shadow: none;
+			}
+
+			.block-editor-block-breadcrumb__button:active:not( :disabled ) {
+				background: transparent;
+			}
+		}
+	}
+}
+
+/* Gradient Picker CSS */
+.srfm-gradient-picker {
+	// This helps to fix alignment of gradient control input fields.
+	.components-flex.components-custom-gradient-picker__ui-line {
+		align-items: baseline;
+	}
+
+	.components-angle-picker-control {
+		margin-bottom: 0;
+	}
+
+	label {
+		text-transform: capitalize;
+		font-weight: 400;
+	}
+}
+
+/* Toggle Control */
+.srfm-inspector-tab {
+	.components-toggle-control .components-base-control__field {
+		.components-flex {
+			// WP6.1 compatibility.
+			display: flex;
+			flex-direction: row-reverse;
+			justify-content: space-between;
+			align-items: center;
+		}
+	}
+}
+
+/* srfm Page Level Settings */
+.is-pressed .srfm-page-settings-button path {
+	fill: #fff;
+}
+
+.srfm-page-settings-button:hover path {
+	fill: #007cba;
+}
+
+/* srfm Sidebar Settings Notice */
+.srfm-sidebar-settings-notice {
+	margin: 0;
+
+	&.is-error {
+		background-color: #f5d9d9;
+	}
+}
+
+/* srfm Multiselect Control */
+.srfm-multi-select__control {
+	box-shadow: none !important;
+	border-color: #e6e7e9 !important;
+	border-radius: 3px !important;
+
+	.srfm-multi-select__input input {
+		box-shadow: none !important;
+	}
+
+	.srfm-multi-select__multi-value__label {
+		font-size: 13px !important;
+	}
+
+	.srfm-multi-select__menu .srfm-multi-select__option {
+		font-size: 13px !important;
+	}
+}
+
+.editor-styles-wrapper .block-editor-block-list__block.wp-block[data-type*="srfm"] {
+	::selection {
+		color: #fff;
+		background: #2f86dd;
+	}
+}
+
+.srfm-custom-layout-panel .components-button {
+	padding-right: 15px;
+	height: 48px;
+	align-items: center;
+}
+
+.srfm-title {
+	display: flex;
+	flex: 1;
+}
+
+@import "styles/gutenberg-override";
+@import "styles/control-responsive";
+@import "styles/control-header";
+@import "styles/control-popup";
+@import "styles/control-media-picker";
+@import "styles/control-variation-picker";
+@import "styles/srfm-change-indicators";
+@import "styles/srfm-legacy";

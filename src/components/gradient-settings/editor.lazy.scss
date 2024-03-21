@@ -1,0 +1,37 @@
+.srfm-gradient-picker {
+	.components-custom-gradient-picker__gradient-bar {
+		border-radius: 5px;
+		height: 30px;
+
+		.components-custom-gradient-picker__control-point-button {
+			top: 9px;
+			width: 12px;
+			height: 12px;
+		}
+
+		.components-custom-gradient-picker__insert-point {
+			top: 7px;
+		}
+	}
+}
+
+.block-editor-block-inspector .srfm-inspector-tab .srfm-background-gradient,
+.block-editor-block-inspector .srfm-background-image-overlay-gradient {
+	.srfm-color-popover-container,
+	.srfm-multi-buttons-control,
+	.srfm-size-type-field-tabs,
+	.components-button-group {
+		margin-bottom: 24px;
+	}
+
+	.srfm-size-type-field-tabs {
+		display: block;
+	}
+
+	.srfm-gradient-advanced-option {
+		width: 100%;
+		justify-content: right;
+		margin-bottom: 5px;
+		padding-right: 0;
+	}
+}

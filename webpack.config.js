@@ -3,6 +3,7 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
+const webpack = require( 'webpack' );
 
 const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 	if ( String( item.test ) === String( /\.jsx?$/ ) ) {
@@ -18,7 +19,6 @@ const wp_rules = defaultConfig.module.rules.filter( function ( item ) {
 
 module.exports = {
 	...defaultConfig,
-	mode: 'production',
 	optimization: {
 		usedExports: true,
 	},
@@ -35,67 +35,47 @@ module.exports = {
 				},
 			],
 		} ),
+		new webpack.optimize.LimitChunkCountPlugin( {
+			maxChunks: 1,
+		} ),
 	],
 	entry: {
 		formEditor: path.resolve(
 			__dirname,
-			'assets/src/admin/single-form-settings/Editor.js'
+			'src/admin/single-form-settings/Editor.js'
 		),
-		editor: path.resolve( __dirname, 'assets/src/admin/editor-scripts.js' ),
-		tailwindElements: path.resolve(
+		formSubmit: path.resolve(
 			__dirname,
-			'assets/src/public/scripts/elements.js'
+			'assets/js/unminified/form-submit.js'
 		),
-		form_archive_styles: path.resolve(
+		quickActionSidebar: path.resolve(
 			__dirname,
-			'assets/src/admin/styles/form-archive-styles.scss'
+			'./modules/quick-action-sidebar/index.js'
 		),
-		sureforms_frontend_styles: path.resolve(
+		editor: path.resolve( __dirname, 'src/admin/editor-scripts.js' ),
+		settings: path.resolve( __dirname, 'src/admin/settings/settings.js' ),
+		templatePicker: path.resolve(
 			__dirname,
-			'assets/src/public/styles/sureforms-frontend-ui-styles.scss'
-		),
-		tailwind_frontend_styles: path.resolve(
-			__dirname,
-			'assets/src/public/styles/sureforms-tailwind.scss'
-		),
-		sureforms_backend_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/styles/sureforms-backend-ui-styles.scss'
-		),
-		block_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/block-styles.scss'
-		),
-		settings: path.resolve(
-			__dirname,
-			'assets/src/admin/settings/settings.js'
-		),
-		editor_header_styles: path.resolve(
-			__dirname,
-			'assets/src/admin/single-form-settings/header-styles.scss'
+			'src/admin/components/template-picker/TemplatePicker.js'
 		),
 		page_header: path.resolve(
 			__dirname,
-			'assets/src/admin/components/PageHeader.js'
+			'src/admin/components/PageHeader.js'
 		),
-		dashboard: path.resolve(
-			__dirname,
-			'assets/src/admin/dashboard/index.js'
-		),
-		blocks: path.resolve( __dirname, 'assets/src/blocks/blocks.js' ),
+		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
+		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
 	},
 	resolve: {
 		alias: {
 			...defaultConfig.resolve.alias,
-			'@Admin': path.resolve( __dirname, 'assets/src/admin/' ),
-			'@Blocks': path.resolve( __dirname, 'assets/src/blocks/' ),
-			'@Controls': path.resolve( __dirname, 'assets/src/uagb-controls/' ),
-			'@Components': path.resolve( __dirname, 'assets/src/components/' ),
-			'@Utils': path.resolve( __dirname, 'assets/src/utils/' ),
-			'@Attributes': path.resolve(
-				__dirname,
-				'assets/src/blocks-attributes/'
-			),
+			'@Admin': path.resolve( __dirname, 'src/admin/' ),
+			'@Blocks': path.resolve( __dirname, 'src/blocks/' ),
+			'@Controls': path.resolve( __dirname, 'src/srfm-controls/' ),
+			'@Components': path.resolve( __dirname, 'src/components/' ),
+			'@Utils': path.resolve( __dirname, 'src/utils/' ),
+			'@Svg': path.resolve( __dirname, 'assets/svg/' ),
+			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
+			'@Image': path.resolve( __dirname, 'images/' ),
 		},
 	},
 	module: {
@@ -121,7 +101,6 @@ module.exports = {
 	},
 	output: {
 		...defaultConfig.output,
-		filename: '[name].js',
 		path: path.resolve( __dirname, 'assets/build' ),
 	},
 };

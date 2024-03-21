@@ -1,0 +1,312 @@
+body.post-type-sureforms_form {
+	.edit-post-sidebar > .components-panel > .components-panel__body {
+		display: none;
+
+		&.srfm--panel.is-opened {
+			display: block;
+		}
+	}
+
+	// Styling for the sidebar - WP6.4.
+	.edit-post-sidebar {
+		> .components-panel {
+			> .components-panel__body.is-opened {
+				padding: 0 !important;
+				width: 100%;
+
+				> .components-panel__body-title {
+					display: none;
+				}
+			}
+			> .components-panel__body {
+				&.edit-post-post-status.is-opened {
+					display: none;
+				}
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	// Styling for the sidebar - WP6.5.
+	div[id="edit-post:document"].edit-post-sidebar {
+		> .edit-post-sidebar__panel {
+			.components-panel__body.is-opened {
+				padding: 0 !important; // This is needed to override the padding added by WordPress.
+				width: 100%;
+
+				> h2:last-child {
+					display: none;
+				}
+			}
+
+			.srfm--panel {
+				.components-panel__body.is-opened {
+					padding: 16px !important; // This is needed to override the padding added by WordPress.
+					width: 100%;
+				}
+			}
+
+			.edit-post-post-status {
+				display: none;
+			}
+		}
+
+		button.editor-post-url__panel-toggle {
+			text-wrap: wrap;
+			text-align: left;
+			margin-left: 25px;
+		}
+	}
+
+	.editor-post-url__panel-dialog {
+		> .components-popover__content {
+			width: 260px;
+		}
+	}
+
+	.edit-post-visual-editor .edit-post-visual-editor__content-area {
+		padding: 0 !important;
+	}
+
+	> .block-editor-block-list__layout .block-editor-block-list__block:not( .editor-post-title__input ) {
+		transition: 0.3s;
+
+		&:hover {
+			box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-admin-theme-color );
+		}
+	}
+
+	.srfm-hide-labels {
+		label.srfm-block-label {
+			display: none !important;
+		}
+	}
+
+	.srfm-hide-asterisk {
+		.srfm-block-text,
+		.srfm-block-label {
+			&.srfm-required::after {
+				content: "";
+			}
+		}
+	}
+
+	&.block-editor-iframe__body,
+	.editor-styles-wrapper {
+		position: relative;
+		width: 100%;
+		background-image: var( --srfm-bg-image );
+		background-position: center;
+		background-size: cover;
+		background-color: var( --srfm-bg-color );
+		font-family: inherit;
+		.block-editor-block-list__layout {
+			font-size: var( --srfm-font-size );
+		}
+	}
+
+	&.block-editor-iframe__body {
+		border: 0;
+
+		@media ( max-width: 430px ) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	div.is-root-container.block-editor-block-list__layout {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0;
+		max-width: calc( 620px + 0.6em ) !important; //Astra theme compatibility. It overrides the width.
+		margin: 0 auto;
+		margin-top: 2em;
+
+		.block-list-appender,
+		.block-editor-block-list__block {
+			&:not( .srfm-block-single ),
+			&[data-type="srfm/image"],
+			&[data-type="srfm/separator"],
+			&[data-type="srfm/advanced-heading"],
+			&[data-type="srfm/icon"] {
+				width: 100%;
+			}
+		}
+
+		.block-editor-block-list__block,
+		.block-list-appender {
+			padding: 0 0.3em;
+			margin-left: 0 !important; // This is needed to get the field width working.
+			margin-right: 0 !important; // This is needed to get the field width working.
+			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
+			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
+			max-width: 100%;
+		}
+	}
+
+	// Hide default title and preview btns ( desktop / tablet / mobile ).
+	.edit-post-visual-editor__post-title-wrapper,
+	// classname in WP-6.4.
+	.block-editor-post-preview__button-toggle, 
+	// classname in WP-6.5.
+	.editor-preview-dropdown__toggle {
+		display: none;
+	}
+
+	.editor-post-preview {
+		@media screen and ( max-width: 782px ) {
+			display: none;
+		}
+	}
+
+	.edit-post-header__settings {
+		@media screen and ( max-width: 782px ) {
+			flex: none;
+		}
+	}
+
+	.edit-post-header-toolbar__left {
+		margin-left: -10px;
+	}
+
+	.edit-post-header__center {
+		.srfm-header-title-input {
+			width: 100%;
+			max-width: 500px;
+		}
+
+		.components-text-control__input {
+			font-size: 16px;
+			font-style: normal;
+			font-weight: 400;
+			padding: 11px 16px;
+			margin-top: 8px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			background: rgb( 249, 250, 251 );
+			box-shadow: none;
+			// need to declare height for WP6.5.
+			height: 44px;
+
+			&:focus {
+				border-color: #0284c7;
+				box-shadow: unset;
+			}
+		}
+	}
+
+	// Pro panel preview styles.
+	.srfm-upgrade-pro-btn-container {
+		text-align: center;
+	}
+
+	.srfm-upgrade-pro-btn {
+		background-color: #1e1e1e;
+		color: #fff;
+		padding: 10px;
+		font-size: 12px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+		margin-top: 16px;
+		max-width: 280px;
+		width: 100%;
+	}
+
+	// Plus button, Block appended.
+
+	// Add submit button below the Block Appended.
+	.block-list-appender {
+		width: 100%;
+		padding: 0 0.3em;
+
+		.block-editor-button-block-appender.components-button.components-button {
+			box-shadow: none;
+			border: 1px dashed #959595;
+			padding: 24px;
+			background-color: #fff;
+			transition: 0.3s;
+
+			svg {
+				width: 30px;
+				height: 30px;
+				color: white;
+				background-color: #555d66;
+				border-radius: 100%;
+				transition: 0.3s;
+			}
+
+			&:hover {
+				border-color: #1e1e1e;
+
+				svg {
+					background-color: #1e1e1e;
+				}
+			}
+		}
+	}
+
+	.srfm-submit-btn-container {
+		position: relative;
+		max-width: calc( 620px - 0em );
+		margin: 0 auto;
+		padding: 0 0.3em;
+		margin-top: 1.2em;
+
+		.srfm-btn-bg-color {
+			border-radius: var( --srfm-btn-border-radius );
+			font-family: inherit;
+			font-weight: var( --wp--custom--font-weight--medium );
+			line-height: var( --wp--custom--line-height--initial );
+			padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+			text-decoration: none;
+			color: var( --srfm-btn-text-color );
+			background-color: var( --srfm-btn-bg-color );
+			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+		}
+		.srfm-submit-button {
+			position: absolute;
+			font-size: calc( var( --srfm-font-size ) - 0.33em );
+			pointer-events: none;
+			transform: translateX( var( --srfm-submit-alignment-backend ) );
+			right: var( --srfm-submit-alignment-backend );
+			transform: translateX( var( --srfm-submit-alignment-backend ) );
+			max-width: var( --srfm-submit-width-backend );
+			width: 100%;
+
+			&:after {
+				content: var( --srfm-submit-button-text );
+			}
+		}
+
+		@media ( max-width: 778px ) {
+			max-width: calc( 620px - 0.6em );
+		}
+
+		@media ( max-width: 360px ) {
+			max-width: calc( 620px - 0em );
+			margin-left: 0.3em;
+			margin-right: 0.3em;
+		}
+	}
+
+	.editor-post-publish-panel__content {
+		.srfm-shortcode {
+			position: relative;
+
+			.components-clipboard-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+				padding: 0;
+				height: 31px;
+			}
+		}
+	}
+}

@@ -5,39 +5,32 @@
  * This file defines the base class for form fields in the SureForms package.
  *
  * @package SureForms
- * @since X.X.X
+ * @since 0.0.1
  */
 
-namespace SureForms\Inc\Fields;
+namespace SRFM\Inc\Fields;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Field Base Class
  *
  * Defines the base class for form fields.
  *
- * @since X.X.X
+ * @since 0.0.1
  */
 class Base {
-
 	/**
-	 * Render the sureforms input default styling block
+	 * Render the sureforms default
 	 *
 	 * @param array<mixed> $attributes Block attributes.
+	 * @param string       $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function default_styling( $attributes ) {
-		return '';
-	}
-
-	/**
-	 * Render the sureforms input classic styling
-	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
-	 * @return string|boolean
-	 */
-	public function classic_styling( $attributes ) {
+	public function markup( $attributes, $form_id ) {
 		return '';
 	}
 }

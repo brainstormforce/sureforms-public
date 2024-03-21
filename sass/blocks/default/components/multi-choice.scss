@@ -1,0 +1,112 @@
+.srfm-form-container {
+	.srfm-form {
+		.srfm-multi-choice-block {
+			.srfm-block-wrap {
+				display: flex;
+				flex-wrap: wrap;
+				margin: 0 -0.3em;
+				row-gap: 0.6em;
+
+				@media ( min-width: 431px ) {
+					&.srfm-choice-width-100 {
+						.srfm-multi-choice-single {
+							width: 100%;
+						}
+					}
+
+					&.srfm-choice-width-50 {
+						.srfm-multi-choice-single {
+							width: 50%;
+						}
+					}
+
+					&.srfm-choice-width-33-33 {
+						.srfm-multi-choice-single {
+							width: 33%;
+						}
+					}
+
+					&.srfm-choice-width-25 {
+						.srfm-multi-choice-single {
+							width: 25%;
+						}
+					}
+				}
+
+				.srfm-multi-choice-single {
+					padding: 0 0.3em;
+					cursor: pointer;
+
+					input {
+						position: absolute;
+						opacity: 0;
+
+						&:checked + .srfm-block-content-wrap {
+							.srfm-multi-choice-icon {
+								border-color: transparent;
+								svg {
+									opacity: 1;
+
+									path {
+										fill: var( --srfm-primary-color );
+									}
+								}
+							}
+						}
+
+						&:checked + .srfm-block-content-wrap {
+							border-color: var( --srfm-primary-color );
+							background-color: var( --srfm-info-background-color );
+						}
+					}
+
+					.srfm-block-content-wrap {
+						position: relative;
+						display: flex;
+						flex-wrap: wrap;
+						align-items: flex-start;
+						padding: 0.55em 0.875em;
+						background-color: var( --srfm-base-background-color );
+						border: var( --srfm-border ) solid var( --srfm-border-color );
+						border-radius: var( --srfm-border-radius );
+						width: 100%;
+						height: 100%;
+
+						.srfm-multi-choice-icon {
+							position: relative;
+							width: 0.7em;
+							height: 0.7em;
+							top: 0.18em;
+							border-radius: 100%;
+							border: 1px solid var( --srfm-border-color );
+							border-radius: 100%;
+							line-height: 1.5em;
+
+							svg {
+								position: absolute;
+								top: 0;
+								width: 0.7em;
+								height: 0.7em;
+								opacity: 0;
+							}
+						}
+
+						p {
+							font-size: 0.7em;
+							line-height: 1.5em;
+							padding-left: 0.5em;
+							width: calc( 100% - 1em );
+							margin-top: 0;
+							margin-bottom: 0;
+							word-break: break-word;
+						}
+					}
+
+					@media ( max-width: 430px ) {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+}
