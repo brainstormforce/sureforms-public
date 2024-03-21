@@ -119,7 +119,6 @@
 @media screen and (max-width: 640px) {
   .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx {
     width: 100%;
-    display: inline-block;
   }
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-input-checkbox {
