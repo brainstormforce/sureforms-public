@@ -27,11 +27,10 @@ class Multichoice_Markup extends Base {
 	 * Render the sureforms Multichoice classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 			$options          = isset( $attributes['options'] ) ? $attributes['options'] : [];
@@ -40,6 +39,7 @@ class Multichoice_Markup extends Base {
 			$error_msg        = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_multi_choice_block_required_text' );
 			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
 			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+			$form_id          = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 			$choice_width     = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
 			$slug             = 'multi-choice';
@@ -51,9 +51,10 @@ class Multichoice_Markup extends Base {
 			$input_label_fallback = $label ? $label : __( 'Multi Choice', 'sureforms' );
 			$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 			$choice_width_attr    = $choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $choice_width ) : '';
+			$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 			ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" type="hidden" value=""/>
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				<?php if ( is_array( $options ) ) { ?>

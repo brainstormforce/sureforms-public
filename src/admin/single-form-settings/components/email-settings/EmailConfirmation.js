@@ -9,7 +9,7 @@ import parse from 'html-react-parser';
 const EmailConfirmation = ( props ) => {
 	const { data, handleConfirmEmail, handleBackNotifation } = props;
 	const dropdownIcon = parse( svgIcons.verticalDot );
-	const backArrow = parse( svgIcons[ 'left-arrow' ] );
+	const backArrow = parse( svgIcons.leftArrow );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
 		status: data.status || false,

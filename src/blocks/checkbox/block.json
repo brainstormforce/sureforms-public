@@ -49,6 +49,10 @@
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
 		}
 	}
 }

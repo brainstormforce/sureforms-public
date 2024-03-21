@@ -19,6 +19,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -36,9 +37,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 	} = attributes;
-
 	const currentFormId = useGetCurrentFormId( clientId );
-
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -201,7 +200,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<>

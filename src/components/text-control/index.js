@@ -92,6 +92,11 @@ const SRFMTextControl = ( props ) => {
 			setInputData( newValue );
 		}
 	};
+	const handleOnBlur = ( newValue ) => {
+		if ( props?.onBlur ) {
+			props.onBlur( newValue );
+		}
+	};
 
 	const resetValues = ( defaultValues ) => {
 		if ( props?.onChange ) {
@@ -164,6 +169,8 @@ const SRFMTextControl = ( props ) => {
 									type={ props?.type }
 									value={ inputData }
 									onChange={ handleOnChange }
+									onBlur={ handleOnBlur }
+									disabled={ props?.disabled }
 									autoComplete={ props?.autoComplete }
 									readOnly={ isEnableDynamicContent() }
 									placeholder={ props?.placeholder }
@@ -240,6 +247,7 @@ SRFMTextControl.defaultProps = {
 	help: false,
 	isFormSpecific: false,
 	withSmartTagDropdown: false,
+	disabled: false,
 };
 
 export default SRFMTextControl;
