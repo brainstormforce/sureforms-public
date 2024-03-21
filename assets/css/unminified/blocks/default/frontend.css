@@ -66,16 +66,19 @@
   color: var(--srfm-primary-color);
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx {
+  display: flex;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.2s ease;
-  display: inline-block;
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx:not(:last-child) {
   margin-right: 6px;
+}
+.srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx .srfm-block-text {
+  flex: 1;
 }
 .srfm-form-container .srfm-form .srfm-checkbox-block .srfm-block-wrap .srfm-cbx .srfm-span-wrap {
   float: left;
