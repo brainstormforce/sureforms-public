@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { useEffect, useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 const Integration = () => {
@@ -75,12 +76,18 @@ const UpsellSureFormsPro = () => {
 };
 
 const UpsellSureTriggers = () => {
-	const handlePluginActionTrigger = ( e ) => {
-		const action = e.target.dataset.action;
+	const [ action, setAction ] = useState();
+	const [ CTA, setCTA ] = useState();
+
+	const plugin = srfm_admin?.integrations?.find( ( item ) => {
+		return 'suretriggers' === item.slug;
+	} );
+
+	const handlePluginActionTrigger = () => {
 		const formData = new window.FormData();
 		switch ( action ) {
 			case 'sureforms_recommended_plugin_activate':
-				activatePlugin( e );
+				activatePlugin();
 				break;
 
 			case 'sureforms_recommended_plugin_install':
@@ -92,9 +99,9 @@ const UpsellSureTriggers = () => {
 					'_ajax_nonce',
 					srfm_admin.plugin_installer_nonce
 				);
-				formData.append( 'slug', e.target.dataset.slug );
+				formData.append( 'slug', plugin.slug );
 
-				e.target.innerText = srfm_admin.plugin_installing_text;
+				setCTA( srfm_admin.plugin_installing_text );
 
 				apiFetch( {
 					url: srfm_admin.ajax_url,
@@ -102,31 +109,36 @@ const UpsellSureTriggers = () => {
 					body: formData,
 				} ).then( ( data ) => {
 					if ( data.success ) {
-						e.target.innerText = srfm_admin.plugin_installed_text;
-						activatePlugin( e );
+						setAction( 'sureforms_recommended_plugin_activate' );
+						setCTA( srfm_admin.plugin_installed_text );
+						activatePlugin();
 					}
 				} );
 				break;
 
 			default:
-				window.open( e.target.dataset.redirection, '_blank' );
+				window.open( plugin.redirection, '_blank' );
 				break;
 		}
 	};
-	const activatePlugin = ( e ) => {
+	const activatePlugin = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
 		formData.append( 'security', srfm_admin.sfPluginManagerNonce );
-		formData.append( 'init', e.target.dataset.init );
-		e.target.innerText = srfm_admin.plugin_activating_text;
+		formData.append( 'init', plugin.path );
+		setCTA( srfm_admin.plugin_activating_text );
 		apiFetch( {
 			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
 		} ).then( ( data ) => {
 			if ( data.success ) {
-				e.target.innerText = srfm_admin.plugin_activated_text;
-				window.open( e.target.dataset.redirection, '_blank' );
+				setCTA( srfm_admin.plugin_activated_text );
+				setAction( '' );
+				window.open( plugin.redirection, '_blank' );
+				setTimeout( () => {
+					setCTA( 'Got To Dashboard' );
+				}, 3000 );
 			}
 		} );
 	};
@@ -146,9 +158,12 @@ const UpsellSureTriggers = () => {
 		return __( 'Install', 'sureforms' );
 	};
 
-	const plugin = srfm_admin?.integrations?.find( ( item ) => {
-		return 'suretriggers' === item.slug;
-	} );
+	useEffect( () => {
+		// const buttonAction = getAction( plugin.status );
+		// const buttonCTA = getCTA( plugin.status );
+		setAction( getAction( plugin.status ) );
+		setCTA( getCTA( plugin.status ) );
+	}, [] );
 
 	return (
 		plugin &&
@@ -161,12 +176,8 @@ const UpsellSureTriggers = () => {
 				<button
 					className="srfm-modal-primary-cta"
 					onClick={ handlePluginActionTrigger }
-					data-slug={ plugin.slug }
-					data-init={ plugin.path }
-					data-redirection={ plugin.redirection }
-					data-action={ getAction( plugin.status ) }
 				>
-					{ getCTA( plugin.status ) }
+					{ CTA }
 				</button>
 			</div>
 		</div>
