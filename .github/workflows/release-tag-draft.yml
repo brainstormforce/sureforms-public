@@ -6,7 +6,7 @@ on:
       - master
     paths:
       # Release happens only if the version number in main file is updated.
-      - 'suremembers.php'
+      - 'sureforms.php'
 
 jobs:
   build-artifact:
@@ -31,14 +31,25 @@ jobs:
           CURRENT_VERSION=$(jq --raw-output '.version' package.json)
           echo "::set-output name=current_version::$(echo $CURRENT_VERSION)"
 
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.15.0'
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Build
+        run: npm run build
+
       - name: Build plugin ZIP file
         run: bash ./bin/build-zip.sh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: suremembers-plugin
-          path: ./artifact/suremembers.zip
+          name: sureforms-plugin
+          path: ./artifact/sureforms.zip
 
   create-release:
     name: Create Release Draft and Attach Asset
@@ -54,7 +65,7 @@ jobs:
       - name: Download Plugin Zip Artifact
         uses: actions/download-artifact@v2
         with:
-          name: suremembers-plugin
+          name: sureforms-plugin
 
       - name: Create Release Draft
         id: create_release
@@ -68,4 +79,4 @@ jobs:
           draft: true
           prerelease: false
           body: 'Replace changelog here'
-          files: ./suremembers.zip
+          files: ./sureforms.zip

@@ -40,18 +40,19 @@
 				}
 
 				.srfm-cbx {
+					display: flex;
 					-webkit-user-select: none;
 					user-select: none;
 					cursor: pointer;
 					overflow: hidden;
 					transition: all 0.2s ease;
-					display: flex;
-					.srfm-block-text {
-						flex: 1;
-					}
 
 					&:not( :last-child ) {
 						margin-right: 6px;
+					}
+
+					.srfm-block-text {
+						flex: 1;
 					}
 
 					.srfm-span-wrap {
