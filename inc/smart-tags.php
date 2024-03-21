@@ -41,6 +41,10 @@ class Smart_Tags {
 	 * @return string
 	 */
 	public function render_form( $block_content, $block ) {
+		// Check "srfm/" string in block content.
+		if ( false === strpos( $block_content, 'srfm/' ) ) {
+			return $block_content;
+		}
 		$id = get_the_id();
 
 		if ( self::check_form_by_id( $id ) ) {

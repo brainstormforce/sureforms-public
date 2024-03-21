@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
+import FormConfirmSetting from './form-confirm-setting';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
@@ -23,8 +24,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			id: 'form-confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
 			icon: formConfirmIcon,
-			component: <EmailNotification
-				emailNotificationData={ emailNotificationData }
+			component: <FormConfirmSetting
 			/>,
 		}
 	];
@@ -47,11 +47,11 @@ const SingleFormSettingsPopup = ( props ) => {
 				}
 			</div>
 			{ /* Modal Content */ }
-			<div className="srfm-modal-main">
+			<>
 				{
 					tabs.find( ( { id } ) => id === selectedTab ).component
 				}
-			</div>
+			</>
 		</div>
 	);
 };
