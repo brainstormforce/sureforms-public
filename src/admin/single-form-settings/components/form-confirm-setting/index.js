@@ -1,9 +1,14 @@
 
 import { __ } from '@wordpress/i18n';
 import Editor from '../email-settings/QuillEditor';
-import { SelectControl } from '@wordpress/components';
+import Select from 'react-select';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 
 const FormConfirmSetting=()=>{
+	const sureforms_keys = useSelect( ( select ) =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
     return (
         <div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -52,30 +57,18 @@ const FormConfirmSetting=()=>{
 								</label>
 							</div>
 							<div className='srfm-options-wrapper'>
-                                <SelectControl
-                                    onBlur={function noRefCheck(){}}
-                                    onChange={function noRefCheck(){}}
-                                    onFocus={function noRefCheck(){}}
-                                    options={[
-                                        {
-                                        disabled: true,
-                                        label: 'Select an Option',
-                                        value: ''
-                                        },
-                                        {
-                                        label: 'Option A',
-                                        value: 'a'
-                                        },
-                                        {
-                                        label: 'Option B',
-                                        value: 'b'
-                                        },
-                                        {
-                                        label: 'Option C',
-                                        value: 'c'
-                                        }
-                                    ]}
-                                />
+								<Select
+									className='srfm-select-page'
+									options={ [
+										{ value: "none", label: "Empty" },
+										{ value: "left", label: "Open Left" },
+										{ value: "right", label: "Open Right" },
+										{
+										  value: "tilt,left",
+										  label: "Tilf and Open Left"
+										}] }
+									isMulti={false}
+								/>
                             </div>
 						</div>
                         <div className="srfm-modal-area-box">

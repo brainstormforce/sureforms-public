@@ -253,6 +253,11 @@
   font-style: normal;
   line-height: 20px;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-option-box .srfm-options-wrapper .srfm-select-page {
+  min-width: 720px;
+  width: 100%;
+  height: 36px;
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-area-box {
   display: flex;
   flex-direction: column;

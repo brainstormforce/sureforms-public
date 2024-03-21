@@ -531,6 +531,51 @@ class Post_Types {
 			]
 		);
 
+		//form confirmation
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_form_confirmation',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'id'            => [
+									'type' => 'integer',
+								],
+								'confirmation_type'        => [
+									'type' => 'string',
+								],
+								'href' => [
+									'type' => 'string',
+								],
+								'message'          => [
+									'type' => 'string',
+								],
+								'submission_action'      => [
+									'type' => 'string',
+								]
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
+						'id'            => 1,
+						'confirmation_type' => 'same page',
+						'href'          => '#',
+						'message'      => '<p>Form submitted successfully!</p>',
+						'submission_action'       => 'hide',
+					],
+				],
+			]
+		);
+
 		register_post_meta(
 			'sureforms_entry',
 			'_srfm_submission_info',
