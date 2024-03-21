@@ -1,6 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-
+import { __ } from '@wordpress/i18n';
 import { useDebouncedCallback } from 'use-debounce';
 import 'react-loading-skeleton/dist/skeleton.css';
 import toast, { Toaster, ToastBar } from 'react-hot-toast';
@@ -35,6 +35,7 @@ const Component = ( { path } ) => {
 		srfm_v3_secret_key: '',
 	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
+	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState( {} );
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -126,6 +127,9 @@ const Component = ( { path } ) => {
 					setDynamicBlockOptions( {
 						...data.get_default_dynamic_block_option,
 					} );
+					setPreDynamicBlockOptions( {
+						...data.get_default_dynamic_block_option,
+					} );
 				}
 				setLoading( false );
 			} catch ( error ) {
@@ -137,8 +141,22 @@ const Component = ( { path } ) => {
 	}, [] );
 
 	// Save global settings.
-	const debouncedSave = useDebouncedCallback( ( newFormData ) => {
+	const debouncedSave = useDebouncedCallback( ( newFormData, tab ) => {
 		try {
+			if ( tab === 'general-settings-dynamic-opt' ) {
+				const hasEmptyValue = Object.values( newFormData ).some( ( value ) => value.trim() === '' );
+				if ( hasEmptyValue ) {
+					toast.dismiss();
+					toast.error( __( 'This field cannot be left blank.', 'sureforms' ), {
+						duration: 0,
+					} );
+					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
+					setTimeout( () => {
+						toast.dismiss();
+					}, 1500 );
+					return;
+				}
+			}
 			apiFetch( {
 				path: 'sureforms/v1/srfm-global-settings',
 				method: 'POST',
@@ -152,6 +170,7 @@ const Component = ( { path } ) => {
 				toast.success( response?.data, {
 					duration: 1500,
 				} );
+				setPreDynamicBlockOptions( newFormData );
 				setTimeout( () => {
 					toast.dismiss();
 				}, 1500 );
@@ -196,8 +215,7 @@ const Component = ( { path } ) => {
 		} else {
 			return;
 		}
-
-		debouncedSave( updatedTabOptions );
+		debouncedSave( updatedTabOptions, tab );
 	}
 
 	return (
