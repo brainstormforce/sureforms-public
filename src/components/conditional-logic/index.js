@@ -1,7 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 
-const ConditionalLogic = ( props ) => {
-	const { attributes, setAttributes } = props;
+const ConditionalLogic = ( { attributes, setAttributes } ) => {
 	const conditionalSettings = applyFilters(
 		'srfm.conditional_logic.tab_advance',
 		attributes,
