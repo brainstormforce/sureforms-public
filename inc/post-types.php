@@ -560,6 +560,9 @@ class Post_Types {
 			]
 		);
 
+		// conditional logic.
+		do_action( 'srfm_register_conditional_logic_post_meta' );
+
 	}
 
 	/**

@@ -20,6 +20,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
@@ -235,6 +236,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<AddressBlock
