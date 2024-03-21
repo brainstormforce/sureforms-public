@@ -20,6 +20,14 @@ $sidebar_width: 290px;
 	background: $bg_color;
 	font-size: 16px;
 
+	#wpbody-content {
+		// Hide all admin notices on SureForms Template Picker.
+		.notice,
+		.error {
+			display: none !important;
+		}
+	}
+
 	*,
 	*::before,
 	*::after {
