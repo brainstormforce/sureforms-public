@@ -3,6 +3,16 @@ import apiFetch from '@wordpress/api-fetch';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 const Integration = () => {
+	const cards = [
+		{
+			title: __( 'All Integrations', 'sureforms' ),
+			component: <UpsellSureFormsPro />,
+		},
+		{
+			title: __( 'Free Extension', 'sureforms' ),
+			component: <UpsellSureTriggers />,
+		},
+	];
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -11,16 +21,19 @@ const Integration = () => {
 						<h4>{ __( 'Integrations', 'sureforms' ) }</h4>
 					</span>
 				</div>
-				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'All Integrations', 'sureforms' ) }</h5>
-					</div>
-					<div className="srfm-modal-separator"></div>
-					<div className="srfm-modal-inner-box-content">
-						<UpsellSureFormsPro />
-					</div>
-				</div>
-				<UpsellSureTriggers />
+				{
+					cards.map( ( cardItem, cardIndex ) => (
+						<div key={ cardIndex } className="srfm-modal-inner-box">
+							<div className="srfm-modal-inner-box-text">
+								<h5>{ cardItem.title }</h5>
+							</div>
+							<div className="srfm-modal-separator" />
+							<div className="srfm-modal-inner-box-content">
+								{ cardItem.component }
+							</div>
+						</div>
+					) )
+				}
 			</div>
 		</div>
 	);
@@ -30,29 +43,31 @@ const UpsellSureFormsPro = () => {
 	const lockIcon = parse( svgIcons.lock );
 	return (
 		<div className="srfm-modal-info-box">
-			<div>
-				{ lockIcon }
+			<div className="srfm-modal-info-box-content">
+				<div>
+					{ lockIcon }
+				</div>
+				<div className="srfm-modal-info-box-message">
+					<div>
+						<h6>{ __( 'This is a Pro Feature', 'sureforms' ) }</h6>
+					</div>
+					<div>
+						<p>{ __( 'To use the integrations, you need to upgrade to SureForms Pro.', 'sureforms' ) }</p>
+					</div>
+				</div>
 			</div>
-			<div className="srfm-modal-upsell-message">
-				<div>
-					<h6>{ __( 'This is a Pro Feature', 'sureforms' ) }</h6>
-				</div>
-				<div>
-					<p>{ __( 'To use the integrations feature, you need to upgrade to SureForms Pro.', 'sureforms' ) }</p>
-				</div>
-				<div className="srfm-modal-cta">
-					<button className="srfm-modal-primary-cta"	>
-						{ __( 'Upgrade', 'sureforms' ) }
-					</button>
-					{ /* temporarily disable eslint */ }
-					{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
-					<a
-						href="#"
-						className="srfm-modal-tertiary-cta">
-						{ __( 'Learn More', 'sureforms' ) }
-					</a>
-					{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
-				</div>
+			<div className="srfm-modal-cta">
+				<button className="srfm-modal-primary-cta"	>
+					{ __( 'Upgrade', 'sureforms' ) }
+				</button>
+				{ /* temporarily disable eslint */ }
+				{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
+				<a
+					href="#"
+					className="srfm-modal-tertiary-cta">
+					{ __( 'Learn More', 'sureforms' ) }
+				</a>
+				{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
 			</div>
 		</div>
 
@@ -128,7 +143,7 @@ const UpsellSureTriggers = () => {
 		if ( status === 'Activated' || status === 'Installed' ) {
 			return __( 'Go to Dashboard', 'sureforms' );
 		}
-		return __( 'Install & Authenticate', 'sureforms' );
+		return __( 'Install', 'sureforms' );
 	};
 
 	const plugin = srfm_admin?.integrations?.find( ( item ) => {
@@ -136,45 +151,25 @@ const UpsellSureTriggers = () => {
 	} );
 
 	return (
-		plugin && <div className="srfm-modal-inner-content">
-			<div className="srfm-modal-inner-heading">
-				<div className="srfm-modal-inner-heading-text">
-					<h4>{ __( 'You can also use our free integration platform', 'sureforms' ) }</h4>
-				</div>
+		plugin &&
+		<div className="srfm-modal-upsell-message">
+			<div className="srfm-modal-upsell-message-content">
+				<img height="24px" src={ plugin.logo_full } alt="logo" />
+				<p>{ __( 'SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!', 'sureforms' ) }</p>
 			</div>
-			<div className="srfm-modal-inner-box">
-				<div className="srfm-modal-inner-box-content">
-					<div className="srfm-modal-upsell-message">
-						<div>
-							<img height="24px" src={ plugin.logo_full } alt="logo" />
-						</div>
-						<div>
-							<p>{ plugin.description }</p>
-						</div>
-						<div className="srfm-modal-cta">
-							<button
-								className="srfm-modal-primary-cta"
-								onClick={ handlePluginActionTrigger }
-								data-slug={ plugin.slug }
-								data-init={ plugin.path }
-								data-redirection={ plugin.redirection }
-								data-action={ getAction( plugin.status ) }
-							>
-								{ getCTA( plugin.status ) }
-							</button>
-							{ /* temporarily disable eslint */ }
-							{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
-							<a
-								href="#"
-								className="srfm-modal-secondary-cta">
-								{ __( 'Learn More', 'sureforms' ) }
-							</a>
-							{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
-						</div>
-					</div>
-				</div >
-			</div >
-		</div >
+			<div className="srfm-modal-cta">
+				<button
+					className="srfm-modal-primary-cta"
+					onClick={ handlePluginActionTrigger }
+					data-slug={ plugin.slug }
+					data-init={ plugin.path }
+					data-redirection={ plugin.redirection }
+					data-action={ getAction( plugin.status ) }
+				>
+					{ getCTA( plugin.status ) }
+				</button>
+			</div>
+		</div>
 	);
 };
 

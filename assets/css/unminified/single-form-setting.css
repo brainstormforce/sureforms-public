@@ -281,30 +281,54 @@
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message p {
-  margin: 0;
-  margin-bottom: 4px;
-}
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box {
-  display: flex;
   gap: 16px;
   width: 100%;
   padding: 24px;
+  border: 1px solid #DCE0E6;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message .srfm-modal-upsell-message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-upsell-message .srfm-modal-upsell-message-content p {
+  margin: 0;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
   background-color: #eff6ff;
   border: 1px solid #3b82f6;
-  border-radius: 4px;
+  border-radius: 8px;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box h6 {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box .srfm-modal-info-box-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box .srfm-modal-info-box-content .srfm-modal-info-box-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box .srfm-modal-info-box-content .srfm-modal-info-box-message h6 {
   font-size: 14px;
   font-weight: 600;
   margin: 0;
 }
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box h6,
-.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box p {
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box .srfm-modal-info-box-content .srfm-modal-info-box-message h6,
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-box-content .srfm-modal-info-box .srfm-modal-info-box-content .srfm-modal-info-box-message p {
   line-height: 1;
+  margin: 0;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-inner-box .srfm-modal-inner-notification-btn {
   display: flex;
@@ -517,6 +541,7 @@
   color: var(--dashboard-surface-secondary, #fff);
   cursor: pointer;
   outline: none;
+  width: max-content;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-secondary-cta {
   padding: 8px 14px;
@@ -528,10 +553,12 @@
   text-decoration: none;
   cursor: pointer;
   outline: none;
+  width: max-content;
 }
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content .srfm-modal-inner-content .srfm-modal-tertiary-cta {
   text-decoration: none;
   cursor: pointer;
   outline: none;
   color: var(--dashboard-text, #1e293b);
+  width: max-content;
 }
