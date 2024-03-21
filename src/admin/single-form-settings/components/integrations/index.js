@@ -159,8 +159,6 @@ const UpsellSureTriggers = () => {
 	};
 
 	useEffect( () => {
-		// const buttonAction = getAction( plugin.status );
-		// const buttonCTA = getCTA( plugin.status );
 		setAction( getAction( plugin.status ) );
 		setCTA( getCTA( plugin.status ) );
 	}, [] );
