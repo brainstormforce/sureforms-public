@@ -14,6 +14,11 @@ export const navigation = [
 		icon: parse( svgIcons.vertical_settings ),
 	},
 	{
+		name: __( 'Validations', 'sureforms' ),
+		slug: 'validation-settings',
+		icon: parse( svgIcons.email ),
+	},
+	{
 		name: __( 'Email', 'sureforms' ),
 		slug: 'email-settings',
 		icon: parse( svgIcons.email ),
