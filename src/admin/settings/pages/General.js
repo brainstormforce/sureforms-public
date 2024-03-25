@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, TextControl } from '@wordpress/components';
-import { applyFilters } from '@wordpress/hooks';
+import { ToggleControl } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -8,7 +7,6 @@ const GeneralPage = ( {
 	loading,
 	generalTabOptions,
 	updateGlobalSettings,
-	dynamicBlockOptions,
 } ) => {
 	const miscellaneousContent = () => {
 		return (

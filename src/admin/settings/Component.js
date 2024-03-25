@@ -254,7 +254,6 @@ const Component = ( { path } ) => {
 						loading={ loading }
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
-						dynamicBlockOptions={ dynamicBlockOptions }
 					/>
 				) }
 				{ 'validation-settings' === path && (

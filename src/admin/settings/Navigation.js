@@ -16,7 +16,7 @@ export const navigation = [
 	{
 		name: __( 'Validations', 'sureforms' ),
 		slug: 'validation-settings',
-		icon: parse( svgIcons.email ),
+		icon: parse( svgIcons.validations ),
 	},
 	{
 		name: __( 'Email', 'sureforms' ),
