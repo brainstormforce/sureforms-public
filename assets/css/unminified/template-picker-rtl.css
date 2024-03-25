@@ -2,6 +2,10 @@
   background: #f4f9fa;
   font-size: 16px;
 }
+.srfm-template-picker #wpbody-content .notice,
+.srfm-template-picker #wpbody-content .error {
+  display: none !important;
+}
 .srfm-template-picker *,
 .srfm-template-picker *::before,
 .srfm-template-picker *::after {

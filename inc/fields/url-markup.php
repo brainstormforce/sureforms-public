@@ -27,12 +27,12 @@ class Url_Markup extends Base {
 	 * Render the sureforms url classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
 			$block_id    = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
+			$form_id     = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
 			$default     = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 			$required    = isset( $attributes['required'] ) ? $attributes['required'] : false;
 			$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
@@ -51,11 +51,11 @@ class Url_Markup extends Base {
 			$aria_require_attr    = $required ? 'true' : 'false';
 			$input_label_fallback = $label ? $label : __( 'Url', 'sureforms' );
 			$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
-
-			$unique_slug = 'srfm-' . $slug . '-' . $block_id . $input_label;
+			$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
+			$unique_slug          = 'srfm-' . $slug . '-' . $block_id . $input_label;
 
 			ob_start(); ?>
-			<div class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?>">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 					<div class="srfm-block-wrap">
 						<span class="srfm-protocol"><?php esc_html_e( 'https://', 'sureforms' ); ?></span>

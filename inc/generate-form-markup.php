@@ -70,7 +70,7 @@ class Generate_Form_Markup {
 		} else {
 			$id = Helper::get_integer_value( $id );
 		}
-
+		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
 		if ( $post && ! empty( $post->post_content ) ) {
 			$content = apply_filters( 'the_content', $post->post_content ); //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
