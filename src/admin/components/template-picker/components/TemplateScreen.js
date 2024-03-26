@@ -6,6 +6,7 @@ import apiFetch from '@wordpress/api-fetch';
 import TemplatePreview from './TemplatePreview';
 import { useLocation } from 'react-router-dom';
 import { randomNiceColor } from '@Utils/Helpers';
+import { Spinner } from '@wordpress/components';
 
 const TemplateScreen = () => {
 	const [ patterns, setPatterns ] = useState( [] );
@@ -13,8 +14,10 @@ const TemplateScreen = () => {
 	const [ selectedCategory, setSelectedCategory ] = useState( null );
 	const [ showSearch, setShowSearch ] = useState( false );
 	const [ templateColors, setTemplateColors ] = useState( [] );
+	const [ loading, setLoading ] = useState( true );
 
 	const getPatterns = async () => {
+		setLoading( true );
 		const newPatterns = await apiFetch( {
 			path: '/sureforms/v1/form-patterns',
 			headers: {
@@ -25,12 +28,14 @@ const TemplateScreen = () => {
 
 		// Generate and store colors based on the template title
 		const newColors = newPatterns.reduce( ( acc, template ) => {
-			acc[ template.title ] = randomNiceColor();
+			acc[ template.id ] = randomNiceColor();
 			return acc;
 		}, {} );
 		setTemplateColors( newColors );
 
 		setPatterns( newPatterns );
+
+		setLoading( false );
 	};
 
 	useEffect( () => {
@@ -90,125 +95,146 @@ const TemplateScreen = () => {
 		}
 		return (
 			<div className="srfm-ts-main-container srfm-content-section">
-				<div className="srfm-ts-sidebar">
-					<div className="srfm-ts-sidebar-header">
-						{ ! showSearch ? (
-							__( 'Form Templates', 'sureforms' )
-						) : (
-							<input
-								type="text"
-								placeholder={ __(
-									'Search Templates…',
-									'sureforms'
+				{ loading ? (
+					<Spinner className="srfm-ts-loader" />
+				) : (
+					<>
+						<div className="srfm-ts-sidebar">
+							<div className="srfm-ts-sidebar-header">
+								{ ! showSearch ? (
+									__( 'Form Templates', 'sureforms' )
+								) : (
+									<input
+										type="text"
+										placeholder={ __(
+											'Search Templates…',
+											'sureforms'
+										) }
+										className="srfm-ts-sidebar-search-input"
+										value={ searchQuery }
+										onChange={ ( e ) =>
+											setSearchQuery( e.target.value )
+										}
+									/>
 								) }
-								className="srfm-ts-sidebar-search-input"
-								value={ searchQuery }
-								onChange={ ( e ) =>
-									setSearchQuery( e.target.value )
-								}
-							/>
-						) }
-						<span
-							className="srfm-ts-sidebar-search-icon"
-							onClick={ () => {
-								setShowSearch( ! showSearch );
-							} }
-						>
-							{ ICONS.search }
-						</span>
-					</div>
-					<div className="srfm-ts-sidebar-categories-container">
-						<div
-							className={ `srfm-ts-sidebar-category ${
-								selectedCategory === null
-									? 'srfm-ts-category-is-selected'
-									: ''
-							}` }
-							onClick={ () => handleCategoryClick( null ) }
-						>
-							{ __( 'All Forms', 'sureforms' ) }
-							<span>{ patterns.length }</span>
-						</div>
-						{ Array.from(
-							new Set(
-								patterns.map(
-									( template ) => template.templateCategory
-								)
-							)
-						).map( ( uniqueCategory ) => {
-							const categoryElements = patterns.filter(
-								( template ) => {
-									return (
-										template.templateCategory ===
-										uniqueCategory
-									);
-								}
-							);
-							return (
+								<span
+									className="srfm-ts-sidebar-search-icon"
+									onClick={ () => {
+										setShowSearch( ! showSearch );
+									} }
+								>
+									{ ICONS.search }
+								</span>
+							</div>
+							<div className="srfm-ts-sidebar-categories-container">
 								<div
 									className={ `srfm-ts-sidebar-category ${
-										selectedCategory === uniqueCategory
+										selectedCategory === null
 											? 'srfm-ts-category-is-selected'
 											: ''
 									}` }
-									key={ uniqueCategory }
 									onClick={ () =>
-										handleCategoryClick( uniqueCategory )
+										handleCategoryClick( null )
 									}
 								>
-									{ uniqueCategory }
-									<span>{ categoryElements.length }</span>
+									{ __( 'All Forms', 'sureforms' ) }
+									<span>{ patterns.length }</span>
 								</div>
-							);
-						} ) }
-					</div>
-					<div className="srfm-req-template-container">
-						<div className="srfm-req-template-title-container">
-							{ ICONS.message }
-							<div className="srfm-req-template-title">
-								{ __( 'Request template', 'sureforms' ) }
+								{ Array.from(
+									new Set(
+										patterns.map(
+											( template ) =>
+												template.templateCategory
+										)
+									)
+								).map( ( uniqueCategory ) => {
+									const categoryElements = patterns.filter(
+										( template ) => {
+											return (
+												template.templateCategory ===
+												uniqueCategory
+											);
+										}
+									);
+									return (
+										<div
+											className={ `srfm-ts-sidebar-category ${
+												selectedCategory ===
+												uniqueCategory
+													? 'srfm-ts-category-is-selected'
+													: ''
+											}` }
+											key={ uniqueCategory }
+											onClick={ () =>
+												handleCategoryClick(
+													uniqueCategory
+												)
+											}
+										>
+											{ uniqueCategory }
+											<span>
+												{ categoryElements.length }
+											</span>
+										</div>
+									);
+								} ) }
+							</div>
+							<div className="srfm-req-template-container">
+								<div className="srfm-req-template-title-container">
+									{ ICONS.message }
+									<div className="srfm-req-template-title">
+										{ __(
+											'Request template',
+											'sureforms'
+										) }
+									</div>
+								</div>
+								<div className="srfm-req-template-body">
+									{ __(
+										'Can’t find it? Let us know what kind of form do you need.',
+										'sureforms'
+									) }
+								</div>
+								<button className="srfm-req-template-btn">
+									{ __( 'Request a Template', 'sureforms' ) }
+								</button>
 							</div>
 						</div>
-						<div className="srfm-req-template-body">
-							{ __(
-								'Can’t find it? Let us know what kind of form do you need.',
-								'sureforms'
-							) }
-						</div>
-						<button className="srfm-req-template-btn">
-							{ __( 'Request a Template', 'sureforms' ) }
-						</button>
-					</div>
-				</div>
-				<div className="srfm-ts-cards-container">
-					{ filteredTemplates.map( ( template ) => {
-						const filteredTemplateTitle = template.title;
-						const filteredTemplateId = template.id;
 
-						let imageName = filteredTemplateTitle
-							.toLowerCase()
-							.replace( / /g, '-' );
+						<div className="srfm-ts-cards-container">
+							{ filteredTemplates.map( ( template ) => {
+								const filteredTemplateTitle = template.title;
+								const filteredTemplateId = template.id;
 
-						if ( imageName === 'feedback-form-/-survey-form' ) {
-							imageName = 'survey-form';
-						}
+								let imageName = filteredTemplateTitle
+									.toLowerCase()
+									.split( ' ' )
+									.join( '-' );
 
-						return (
-							<TemplateCard
-								key={ filteredTemplateTitle }
-								templateName={ filteredTemplateTitle }
-								templateId={ filteredTemplateId }
-								templatePreview={
-									srfm_admin.preview_images_url +
-									`${ imageName }.png`
+								if (
+									imageName === 'feedback-form-/-survey-form'
+								) {
+									imageName = 'survey-form';
 								}
-								formData={ template.content }
-								color={ templateColors[ template.title ] }
-								templateMetas={ template?.postMetas }
-							/>
-						);
-					} ) }
-				</div>
+
+								return (
+									<TemplateCard
+										key={ filteredTemplateTitle }
+										templateName={ filteredTemplateTitle }
+										templateId={ filteredTemplateId }
+										templatePreview={
+											srfm_admin.preview_images_url +
+											`${ imageName }.png`
+										}
+										formData={ template.content }
+										color={ templateColors[ template.id ] }
+										templateMetas={ template?.postMetas }
+									/>
+								);
+							} ) }
+						</div>
+					</>
+				) }
 			</div>
 		);
 	}

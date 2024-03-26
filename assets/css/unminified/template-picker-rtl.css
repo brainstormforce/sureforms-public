@@ -31,6 +31,12 @@
   height: calc(100vh - 50px);
   padding-top: 70px;
 }
+.srfm-template-picker .srfm-content-section .srfm-ts-loader {
+  display: block;
+  margin: auto;
+  height: 50px;
+  width: 50px;
+}
 @media (max-width: 782px) {
   .srfm-template-picker .srfm-content-section {
     padding-top: 50px;

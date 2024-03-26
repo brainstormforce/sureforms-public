@@ -3,7 +3,7 @@
  * Event RSVP Form pattern.
  *
  * @link       https://sureforms.com
- * @since      0.0.1
+ * @since      x.x.x
  * @package    SureForms/Templates/Forms
  * @author     SureForms <https://sureforms.com/>
  */

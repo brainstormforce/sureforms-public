@@ -84,7 +84,7 @@ class Create_New_Form {
 	}
 
 	/**
-	 * Get default meta keys for form.
+	 * Get default post metas for form when creating using template.
 	 *
 	 * @return array<string, array<int, string>> Default meta keys.
 	 * @since x.x.x
@@ -141,7 +141,7 @@ class Create_New_Form {
 	}
 
 	/**
-	 * Create new form from selected templates
+	 * Create new form post from selected template.
 	 *
 	 * @param \WP_REST_Request $data Form Markup Data.
 	 *
@@ -164,23 +164,25 @@ class Create_New_Form {
 		$form_info     = $data->get_body();
 		$form_info_obj = json_decode( $form_info );
 
+		// Check if JSON decoding was successful and $form_info_obj is an object.
 		if ( json_last_error() !== JSON_ERROR_NONE || ! is_object( $form_info_obj ) ) {
 			return rest_ensure_response(
 				[
 					'status'  => 'error',
-					'message' => 'Invalid JSON format.',
+					'message' => __( 'Invalid JSON format.', 'sureforms' ),
 				]
 			);
 		}
 
-		$required_properties = [ 'template_name', 'form_data', 'template_name' ];
+		$required_properties = [ 'template_name', 'form_data' ];
 
+		// Check if required properties exist in the $form_info_obj.
 		foreach ( $required_properties as $property ) {
 			if ( ! property_exists( $form_info_obj, $property ) ) {
 				return rest_ensure_response(
 					[
 						'status'  => 'error',
-						'message' => 'Missing required properties in form info.',
+						'message' => __( 'Missing required properties in form info.', 'sureforms' ),
 					]
 				);
 			}
@@ -200,17 +202,19 @@ class Create_New_Form {
 		);
 
 		if ( ! empty( $post_id ) ) {
-			$default_post_metas = self::get_default_meta_keys();
-			$post_metas         = array_merge( $default_post_metas, $template_metas );
+			if ( ! empty( $template_metas ) ) {
+				$default_post_metas = self::get_default_meta_keys();
+				$post_metas         = array_merge( $default_post_metas, $template_metas );
 
-			foreach ( $post_metas as $meta_key => $meta_value ) {
-				add_post_meta( $post_id, $meta_key, $meta_value[0] );
+				foreach ( $post_metas as $meta_key => $meta_value ) {
+					add_post_meta( $post_id, $meta_key, $meta_value[0] );
+				}
 			}
 
 			return rest_ensure_response(
 				[
 					'status'  => 'success',
-					'message' => 'SureForms Form created successfully',
+					'message' => __( 'SureForms Form created successfully', 'sureforms' ),
 					'id'      => $post_id,
 				]
 			);
@@ -218,7 +222,7 @@ class Create_New_Form {
 			return rest_ensure_response(
 				[
 					'status'  => 'error',
-					'message' => 'Error creating SureForms Form',
+					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
 			);
 		}

@@ -57,6 +57,13 @@ $sidebar_width: 290px;
 		height: calc( 100vh - 50px );
 		padding-top: 70px;
 
+		.srfm-ts-loader {
+			display: block;
+			margin: auto;
+			height: calc( 4px * 12.5 );
+			width: calc( 4px * 12.5 );
+		}
+
 		@media ( max-width: 782px ) {
 			padding-top: 50px;
 			height: auto;
