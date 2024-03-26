@@ -166,7 +166,6 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  min-height: 600px;
 }
 .srfm-form-container .srfm-success-box.srfm-active {
   display: flex;

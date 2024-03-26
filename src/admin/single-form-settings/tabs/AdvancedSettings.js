@@ -373,7 +373,7 @@ function AdvancedSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSettingsPopup sureformsKeys={ sureformsKeys } targetTab={ popupTab }/>
+					<SingleFormSettingsPopup sureformsKeys={ sureformsKeys } targetTab={ popupTab } />
 				</Modal>
 			) }
 		</>

@@ -531,7 +531,7 @@ class Post_Types {
 			]
 		);
 
-		//form confirmation
+		// form confirmation.
 		register_post_meta(
 			'sureforms_form',
 			'_srfm_form_confirmation',
@@ -545,32 +545,36 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'id'            => [
+								'id'                => [
 									'type' => 'integer',
 								],
-								'confirmation_type'        => [
+								'confirmation_type' => [
 									'type' => 'string',
 								],
-								'href' => [
+								'page_url'          => [
 									'type' => 'string',
 								],
-								'message'          => [
+								'custom_url'        => [
 									'type' => 'string',
 								],
-								'submission_action'      => [
+								'message'           => [
 									'type' => 'string',
-								]
+								],
+								'submission_action' => [
+									'type' => 'string',
+								],
 							],
 						],
 					],
 				],
 				'default'       => [
 					[
-						'id'            => 1,
+						'id'                => 1,
 						'confirmation_type' => 'same page',
-						'href'          => '#',
-						'message'      => '<p>Form submitted successfully!</p>',
-						'submission_action'       => 'hide',
+						'page_url'          => '',
+						'custom_url'        => '',
+						'message'           => '<p>Form submitted successfully!</p>',
+						'submission_action' => 'hide form',
 					],
 				],
 			]

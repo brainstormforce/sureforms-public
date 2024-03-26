@@ -12,6 +12,7 @@ use WP_REST_Response;
 use WP_Error;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
+use SRFM\Inc\Smart_Tags;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -87,13 +88,27 @@ class Generate_Form_Markup {
 		if ( '' !== $id && 0 !== $block_count ) {
 			$color_primary            = Helper::get_meta_value( $id, '_srfm_color1' );
 			$form_font_size           = Helper::get_meta_value( $id, '_srfm_fontsize' );
-			$success_submit_type      = Helper::get_meta_value( $id, '_srfm_submit_type' );
-			$success_message_title    = Helper::get_meta_value( $id, '_srfm_thankyou_message_title' );
-			$success_message          = Helper::get_meta_value( $id, '_srfm_thankyou_message' );
-			$success_url              = Helper::get_meta_value( $id, '_srfm_submit_url' );
 			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
 			$is_page_break            = Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
+			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
+			$message                  = $form_confirmation[0][0]['message'];
+			if ( $message ) {
+				$smart_tags = new Smart_Tags();
+				$message    = $smart_tags->process_smart_tags( $message );
+			}
+			$page_url          = $form_confirmation[0][0]['page_url'];
+			$custom_url        = $form_confirmation[0][0]['custom_url'];
+			$confirmation_type = $form_confirmation[0][0]['confirmation_type'];
+			$submission_action = $form_confirmation[0][0]['submission_action'];
+			$success_url       = '';
+			if ( 'different page' === $confirmation_type ) {
+				$success_url = $page_url;
+			} elseif ( 'custom url' === $confirmation_type ) {
+				$success_url = $custom_url;
+			} else {
+				$success_url = '';
+			}
 			// Submit button.
 			$button_text       = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$button_alignment  = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
@@ -262,7 +277,7 @@ class Generate_Form_Markup {
 			}
 			?>
 				<form method="post" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
-				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" message-type="<?php echo esc_attr( $success_submit_type ? $success_submit_type : 'message' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
+				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
 					wp_nonce_field( 'srfm-form-submit', 'sureforms_form_submit' );
@@ -342,13 +357,7 @@ class Generate_Form_Markup {
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
-			<article class="srfm-success-box-header">
-					<?php echo Helper::fetch_svg( 'check-circle', 'srfm-check-circle-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-					<h2><?php echo esc_html( $success_message_title ); ?></h2>
-				</article>
-				<article class="srfm-success-box-description">
-					<p><?php echo esc_html( $success_message ); ?></p>
-				</article>
+				<?php echo $message; ?>
 			</div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
