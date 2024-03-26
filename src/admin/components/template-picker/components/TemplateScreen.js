@@ -204,6 +204,7 @@ const TemplateScreen = () => {
 								}
 								formData={ template.content }
 								color={ templateColors[ template.title ] }
+								templateMetas={ template?.postMetas }
 							/>
 						);
 					} ) }

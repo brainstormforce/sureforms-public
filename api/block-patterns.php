@@ -151,6 +151,7 @@ class Block_Patterns extends WP_REST_Controller {
 			'blockTypes'       => 'block_types',
 			'categories'       => 'categories',
 			'templateCategory' => 'templateCategory',
+			'postMetas'        => 'postMetas',
 			'id'               => 'id',
 			'isPro'            => 'isPro',
 			'keywords'         => 'keywords',
@@ -227,6 +228,12 @@ class Block_Patterns extends WP_REST_Controller {
 				'templateCategory' => [
 					'description' => __( 'The pattern template category.', 'sureforms' ),
 					'type'        => 'string',
+					'readonly'    => true,
+					'context'     => [ 'view', 'edit', 'embed' ],
+				],
+				'postMetas'        => [
+					'description' => __( 'The pattern post metas.', 'sureforms' ),
+					'type'        => 'array',
 					'readonly'    => true,
 					'context'     => [ 'view', 'edit', 'embed' ],
 				],

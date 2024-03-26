@@ -9,6 +9,7 @@ const TemplateCard = ( {
 	templatePreview,
 	formData,
 	color,
+	templateMetas,
 } ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
 	const blankImg = srfm_admin.preview_images_url + 'blank.svg';
@@ -37,7 +38,11 @@ const TemplateCard = ( {
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
 								onClick={ () =>
-									handleAddNewPost( formData, templateName )
+									handleAddNewPost(
+										formData,
+										templateName,
+										templateMetas
+									)
 								}
 							>
 								{ __( 'Use Template', 'sureforms' ) }
