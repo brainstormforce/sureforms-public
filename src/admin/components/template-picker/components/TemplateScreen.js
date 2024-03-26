@@ -18,23 +18,30 @@ const TemplateScreen = () => {
 
 	const getPatterns = async () => {
 		setLoading( true );
-		const newPatterns = await apiFetch( {
-			path: '/sureforms/v1/form-patterns',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': srfm_admin.template_picker_nonce,
-			},
-		} );
 
-		// Generate and store colors based on the template title
-		const newColors = newPatterns.reduce( ( acc, template ) => {
-			acc[ template.id ] = randomNiceColor();
-			return acc;
-		}, {} );
-		setTemplateColors( newColors );
+		try {
+			const newPatterns = await apiFetch( {
+				path: '/sureforms/v1/form-patterns',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': srfm_admin.template_picker_nonce,
+				},
+			} );
 
-		setPatterns( newPatterns );
+			// Generate and store colors based on the template title
+			const newColors = newPatterns.reduce( ( acc, template ) => {
+				acc[ template.id ] = randomNiceColor();
+				return acc;
+			}, {} );
+			setTemplateColors( newColors );
 
+			setPatterns( newPatterns );
+		} catch ( error ) {
+			console.error(
+				__( 'Error loading form templates:', 'sure' ),
+				error
+			);
+		}
 		setLoading( false );
 	};
 
