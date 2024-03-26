@@ -20,7 +20,7 @@ return [
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Survey Forms', 'sureforms' ),
 	'postTypes'        => SRFM_FORMS_POST_TYPE,
-	'content'          => '<!-- wp:srfm/input {"block_id":"c7894ce2","required":true,"label":"Name","formId":63} /--><!-- wp:srfm/email {"block_id":"82ea2785","required":true,"formId":63} /--><!-- wp:srfm/multi-choice {"block_id":"3a7ef9dd","required":true,"options":[{"optionTitle":"Food was great"},{"optionTitle":"Staff service"},{"optionTitle":"Location was great"},{"optionTitle":"Somthing else"}],"label":"What did you like about our lodge?","formId":63} /--><!-- wp:srfm/textarea {"block_id":"7046569e","label":"Any Comment","formId":63} /-->',
+	'content'          => '<!-- wp:srfm/advanced-heading {"block_id":"a9e4f8ad","headingTitle":"Customer Survey","headingDescToggle":true,"headingDesc":"Please take a moment to complete a short survey and let us know how much you like our service.","subHeadingColor":"#575757","headingTag":"h3","headSpace":12,"subHeadSpace":20,"subHeadFontSize":18} /--><!-- wp:srfm/input {"block_id":"c7894ce2","required":true,"label":"Name","formId":82} /--><!-- wp:srfm/email {"block_id":"82ea2785","required":true,"formId":82} /--><!-- wp:srfm/multi-choice {"block_id":"3a7ef9dd","required":true,"options":[{"optionTitle":"Food was great"},{"optionTitle":"Staff service"},{"optionTitle":"Location was great"},{"optionTitle":"Somthing else"}],"label":"What did you like about our lodge?","formId":82} /--><!-- wp:srfm/textarea {"block_id":"7046569e","label":"Any Comment","formId":82} /-->',
 	'id'               => 'form-' . Helper::generate_random_id( 2 ),
 	'isPro'            => false,
 ];
