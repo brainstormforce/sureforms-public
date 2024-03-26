@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Event RSVP Form', 'sureforms' ),
+	'slug'             => __( 'event-rsvp-form', 'sureforms' ),
 	'info'             => __( 'Form for RSVP', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'RSVP Forms', 'sureforms' ),

@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Feedback Form / Survey Form', 'sureforms' ),
+	'slug'             => __( 'survey-form', 'sureforms' ),
 	'info'             => __( 'Form for conducting surveys', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Survey Forms', 'sureforms' ),

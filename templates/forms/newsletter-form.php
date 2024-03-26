@@ -16,6 +16,7 @@ use SRFM\Inc\Helper;
 
 return [
 	'title'            => __( 'Newsletter Form', 'sureforms' ),
+	'slug'             => __( 'newsletter-form', 'sureforms' ),
 	'info'             => __( 'Creates a Newsletter Form', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Newsletter Forms', 'sureforms' ),

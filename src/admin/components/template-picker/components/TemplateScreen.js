@@ -28,7 +28,7 @@ const TemplateScreen = () => {
 				},
 			} );
 
-			// Generate and store colors based on the template title
+			// Generate and store colors based on the template id and set it in the template card background.
 			const newColors = newPatterns.reduce( ( acc, template ) => {
 				acc[ template.id ] = randomNiceColor();
 				return acc;
@@ -38,7 +38,7 @@ const TemplateScreen = () => {
 			setPatterns( newPatterns );
 		} catch ( error ) {
 			console.error(
-				__( 'Error loading form templates:', 'sure' ),
+				__( 'Error loading form templates:', 'sureforms' ),
 				error
 			);
 		}
@@ -207,22 +207,10 @@ const TemplateScreen = () => {
 								</button>
 							</div>
 						</div>
-
 						<div className="srfm-ts-cards-container">
 							{ filteredTemplates.map( ( template ) => {
 								const filteredTemplateTitle = template.title;
 								const filteredTemplateId = template.id;
-
-								let imageName = filteredTemplateTitle
-									.toLowerCase()
-									.split( ' ' )
-									.join( '-' );
-
-								if (
-									imageName === 'feedback-form-/-survey-form'
-								) {
-									imageName = 'survey-form';
-								}
 
 								return (
 									<TemplateCard
@@ -230,11 +218,11 @@ const TemplateScreen = () => {
 										templateName={ filteredTemplateTitle }
 										templateId={ filteredTemplateId }
 										templatePreview={
-											srfm_admin.preview_images_url +
-											`${ imageName }.png`
+											srfm_admin?.preview_images_url +
+											`${ template?.slug }.png`
 										}
-										formData={ template.content }
-										color={ templateColors[ template.id ] }
+										formData={ template?.content }
+										color={ templateColors[ template?.id ] }
 										templateMetas={ template?.postMetas }
 									/>
 								);

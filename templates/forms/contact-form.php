@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Contact Form', 'sureforms' ),
+	'slug'             => __( 'contact-form', 'sureforms' ),
 	'info'             => __( 'A basic Contact Form', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Basic Forms', 'sureforms' ),
