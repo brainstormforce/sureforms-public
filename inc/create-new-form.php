@@ -141,7 +141,17 @@ class Create_New_Form {
 			]
 		);
 
+		$post_meta = [
+			'_srfm_submit_button_text' => [
+				'SEND',
+			],
+		];
+
 		if ( ! empty( $post_id ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				update_post_meta( $post_id, $meta_key, $meta_value[0] );
+			}
+
 			$response = [
 				'status'  => 'success',
 				'message' => 'SureForms Form created successfully',

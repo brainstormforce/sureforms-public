@@ -1,5 +1,4 @@
 import { useState } from '@wordpress/element';
-import ICONS from './icons';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import { handleAddNewPost } from '@Utils/Helpers';
@@ -43,7 +42,8 @@ const TemplateCard = ( {
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
-							<Link
+							{ /* Might be used later */ }
+							{ /* <Link
 								to={ {
 									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
 									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
@@ -53,10 +53,9 @@ const TemplateCard = ( {
 									{ __( 'Preview', 'sureforms' ) }
 									{ ICONS.eye }
 								</button>
-							</Link>
+							</Link> */ }
 						</div>
 					</>
-
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }

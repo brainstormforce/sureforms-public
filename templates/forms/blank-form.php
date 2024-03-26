@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 return [
 	'title'            => __( 'Blank Form', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
-	'templateCategory' => 'Basic Forms',
+	'templateCategory' => __( 'Basic Forms', 'sureforms' ),
 	'postTypes'        => SRFM_FORMS_POST_TYPE,
 	'content'          => '',
 	'id'               => 'form-1',

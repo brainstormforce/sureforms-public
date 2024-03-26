@@ -25,7 +25,7 @@ const TemplateScreen = () => {
 
 		// Generate and store colors based on the template title
 		const newColors = newPatterns.reduce( ( acc, template ) => {
-			acc[ template.id ] = randomNiceColor();
+			acc[ template.title ] = randomNiceColor();
 			return acc;
 		}, {} );
 		setTemplateColors( newColors );
@@ -185,6 +185,14 @@ const TemplateScreen = () => {
 						const filteredTemplateTitle = template.title;
 						const filteredTemplateId = template.id;
 
+						let imageName = filteredTemplateTitle
+							.toLowerCase()
+							.replace( / /g, '-' );
+
+						if ( imageName === 'feedback-form-/-survey-form' ) {
+							imageName = 'survey-form';
+						}
+
 						return (
 							<TemplateCard
 								key={ filteredTemplateTitle }
@@ -192,10 +200,10 @@ const TemplateScreen = () => {
 								templateId={ filteredTemplateId }
 								templatePreview={
 									srfm_admin.preview_images_url +
-									'contact-form.png'
+									`${ imageName }.png`
 								}
 								formData={ template.content }
-								color={ templateColors[ template.id ] }
+								color={ templateColors[ template.title ] }
 							/>
 						);
 					} ) }

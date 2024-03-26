@@ -327,4 +327,21 @@ class Helper {
 			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
+
+	/**
+	 * Generate a random id for form template.
+	 *
+	 * @param int $length length of the random id.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function generate_random_id( $length = 8 ) {
+		$characters = '0123456789';
+		$id         = '';
+		for ( $i = 0; $i < $length; $i++ ) {
+			$id .= $characters[ wp_rand( 0, strlen( $characters ) - 1 ) ];
+		}
+		return $id;
+	}
 }
