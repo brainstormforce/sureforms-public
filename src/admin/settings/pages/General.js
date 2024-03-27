@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, TextControl } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 
 import ContentSection from '../components/ContentSection';
 
@@ -63,21 +64,25 @@ const GeneralPage = ( {
 	};
 
 	const validationContent = () => {
-		const validationFields = [
-			'srfm_url_block_required_text',
-			'srfm_input_block_required_text',
-			'srfm_input_block_unique_text',
-			'srfm_address_block_required_text',
-			'srfm_phone_block_required_text',
-			'srfm_phone_block_unique_text',
-			'srfm_number_block_required_text',
-			'srfm_textarea_block_required_text',
-			'srfm_multi_choice_block_required_text',
-			'srfm_checkbox_block_required_text',
-			'srfm_email_block_required_text',
-			'srfm_email_block_unique_text',
-			'srfm_dropdown_block_required_text',
-		];
+		// added filter to add pro fields when pro plugin is active.
+		const validationFields = applyFilters(
+			'srfm.general.tab.validationFields',
+			[
+				'srfm_url_block_required_text',
+				'srfm_input_block_required_text',
+				'srfm_input_block_unique_text',
+				'srfm_address_block_required_text',
+				'srfm_phone_block_required_text',
+				'srfm_phone_block_unique_text',
+				'srfm_number_block_required_text',
+				'srfm_textarea_block_required_text',
+				'srfm_multi_choice_block_required_text',
+				'srfm_checkbox_block_required_text',
+				'srfm_email_block_required_text',
+				'srfm_email_block_unique_text',
+				'srfm_dropdown_block_required_text',
+			]
+		);
 
 		return (
 			<>

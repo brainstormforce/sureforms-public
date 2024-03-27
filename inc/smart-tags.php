@@ -117,18 +117,17 @@ class Smart_Tags {
 		$get_smart_tag_list = self::smart_tag_list();
 		preg_match_all( '/{(.*?)}/', $content, $matches );
 
-		if ( ! $matches[0] ) {
+		if ( empty( $matches[0] ) ) {
 			return $content;
 		}
 
 		foreach ( $matches[0] as $match ) {
 
-			$replace = '';
+			$replace = false;
 			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
 				$replace = Helper::get_string_value( self::smart_tags_callback( $match ) );
+				$content = str_replace( $match, $replace, $content );
 			}
-
-			$content = str_replace( $match, $replace, $content );
 		}
 
 		return $content;

@@ -8,6 +8,7 @@ import checkboxAttributes from '@Blocks/checkbox/block.json';
 import addressAttributes from '@Blocks/address/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
+import { getDefaultMessage } from '@Blocks/util';
 
 const defaultKeys = {
 	// General Tab
@@ -94,11 +95,3 @@ export const blocksAttributes = {
 	},
 	form_specific: defaultKeys,
 };
-
-function getDefaultMessage( optionName ) {
-	return {
-		type: 'string',
-		default:
-			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
-	};
-}

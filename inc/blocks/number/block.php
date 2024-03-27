@@ -29,11 +29,10 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$form_id      = isset( $attributes['formId'] ) ? Helper::get_integer_value( $attributes['formId'] ) : '';
 			$markup_class = new Number_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->markup( $attributes, $form_id );
+			echo $markup_class->markup( $attributes );
 		}
 		return ob_get_clean();
 	}

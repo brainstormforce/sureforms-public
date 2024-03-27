@@ -40,15 +40,19 @@
 				}
 
 				.srfm-cbx {
+					display: flex;
 					-webkit-user-select: none;
 					user-select: none;
 					cursor: pointer;
 					overflow: hidden;
 					transition: all 0.2s ease;
-					display: inline-block;
 
 					&:not( :last-child ) {
 						margin-right: 6px;
+					}
+
+					.srfm-block-text {
+						flex: 1;
 					}
 
 					.srfm-span-wrap {
@@ -93,7 +97,6 @@
 
 					@media screen and ( max-width: 640px ) {
 						width: 100%;
-						display: inline-block;
 					}
 				}
 
