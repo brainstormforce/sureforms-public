@@ -81,15 +81,15 @@ const FormConfirmSetting = () => {
 							<div className="srfm-options-wrapper">
 								<div className="srfm-option">
 									<input className="srfm-option-input" value="same page" checked={ data?.confirmation_type === 'same page' } onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) } type="radio" id="confirm-type-1" name="confirm-type" />
-									<label className="srfm-option-text" htmlFor="confirm-type-1">Same Page</label>
+									<label className="srfm-option-text" htmlFor="confirm-type-1">{ __( 'Same Page', 'sureforms' ) }</label>
 								</div>
 								<div className="srfm-option">
 									<input className="srfm-option-input" value="different page" checked={ data?.confirmation_type === 'different page' } onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) } type="radio" id="confirm-type-2" name="confirm-type" />
-									<label className="srfm-option-text" htmlFor="confirm-type-2">Different Page</label>
+									<label className="srfm-option-text" htmlFor="confirm-type-2">{ __( 'Different Page', 'sureforms' ) }</label>
 								</div>
 								<div className="srfm-option">
 									<input className="srfm-option-input" value="custom url" checked={ data?.confirmation_type === 'custom url' } onChange={ ( e ) => setData( { ...data, confirmation_type: e.target.value } ) } type="radio" id="confirm-type-3" name="confirm-type" />
-									<label className="srfm-option-text" htmlFor="confirm-type-3">Custom URL</label>
+									<label className="srfm-option-text" htmlFor="confirm-type-3">{ __( 'Custom URL', 'sureforms' ) }</label>
 								</div>
 							</div>
 						</div>
@@ -149,11 +149,11 @@ const FormConfirmSetting = () => {
 							<div className="srfm-options-wrapper">
 								<div className="srfm-option">
 									<input className="srfm-option-input" type="radio" value="hide form" checked={ data?.submission_action === 'hide form' } onChange={ ( e ) => setData( { ...data, submission_action: e.target.value } ) } id="submission-type-1" name="submission-type" />
-									<label className="srfm-option-text" htmlFor="submission-type-1">Hide Form</label>
+									<label className="srfm-option-text" htmlFor="submission-type-1">{ __( 'Hide Form', 'sureforms' ) }</label>
 								</div>
 								<div className="srfm-option">
 									<input className="srfm-option-input" type="radio" value="reset form" checked={ data?.submission_action === 'reset form' } onChange={ ( e ) => setData( { ...data, submission_action: e.target.value } ) } id="submission-type-2" name="submission-type" />
-									<label className="srfm-option-text" htmlFor="submission-type-1">Reset Form</label>
+									<label className="srfm-option-text" htmlFor="submission-type-1">{ __( 'Reset Form', 'sureforms' ) }</label>
 								</div>
 							</div>
 						</div> }
