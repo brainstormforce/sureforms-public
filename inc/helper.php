@@ -336,12 +336,13 @@ class Helper {
 	 * @since x.x.x
 	 * @return string
 	 */
-	public static function generate_random_id( $length = 8 ) {
-		$characters = '0123456789';
-		$id         = '';
+	public static function generate_random_id( $length = 10 ) {
+		$random_id = '';
+
 		for ( $i = 0; $i < $length; $i++ ) {
-			$id .= $characters[ wp_rand( 0, strlen( $characters ) - 1 ) ];
+			$random_id .= wp_rand( 0, 9 );
 		}
-		return $id;
+		return $random_id;
 	}
+
 }
