@@ -1,5 +1,5 @@
-// import { withFilters } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 import WebhookIcon from '@Image/webhook.js';
 
 const UpgradeToPro = () => {
@@ -8,7 +8,7 @@ const UpgradeToPro = () => {
 	);
 };
 
-const Webhooks = ( ) => {
+const Webhooks = () => {
 	const showSwitch = false;
 	const switchWebhook = applyFilters(
 		'srfm.global_settings.integrations.webhook',
@@ -21,8 +21,12 @@ const Webhooks = ( ) => {
 				<div className="srfm-integration-content-inner">
 					<WebhookIcon />
 					<div>
-						<div className="srfm-integration-title">Webhooks</div>
-						<p className="srfm-integration-description">Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.</p>
+						<div className="srfm-integration-title">
+							{ __( 'Webhooks', 'sureforms' ) }
+						</div>
+						<p className="srfm-integration-description">
+							{ __( 'Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
+						</p>
 					</div>
 				</div>
 			</div>
