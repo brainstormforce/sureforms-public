@@ -57,15 +57,15 @@ const UpsellSureFormsPro = () => {
 					</div>
 				</div>
 			</div>
-			<div className="srfm-modal-cta">
-				<button className="srfm-modal-primary-cta"	>
+			<div className="srfm-button">
+				<button className="srfm-button-primary"	>
 					{ __( 'Upgrade', 'sureforms' ) }
 				</button>
 				{ /* temporarily disable eslint */ }
 				{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
 				<a
 					href="#"
-					className="srfm-modal-tertiary-cta">
+					className="srfm-link-secondary">
 					{ __( 'Learn More', 'sureforms' ) }
 				</a>
 				{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
@@ -170,9 +170,9 @@ const UpsellSureTriggers = () => {
 				<img height="24px" src={ plugin.logo_full } alt="logo" />
 				<p>{ __( 'SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!', 'sureforms' ) }</p>
 			</div>
-			<div className="srfm-modal-cta">
+			<div className="srfm-buttons">
 				<button
-					className="srfm-modal-primary-cta"
+					className="srfm-button-primary"
 					onClick={ handlePluginActionTrigger }
 				>
 					{ CTA }

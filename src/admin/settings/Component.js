@@ -9,6 +9,7 @@ import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
 import EmailPage from './pages/Email';
 import SecurityPage from './pages/Security';
+import IntegrationPage from './pages/Integrations';
 
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
@@ -263,6 +264,14 @@ const Component = ( { path } ) => {
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
+
+				{
+					'integration-settings' === path && (
+						<IntegrationPage
+							loading={ loading }
+						/>
+					)
+				}
 			</div>
 		</>
 	);

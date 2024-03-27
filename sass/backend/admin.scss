@@ -42,3 +42,72 @@
 #toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child( 2 )::after {
 	margin: 8px -3px;
 }
+
+.srfm-buttons {
+	display: flex;
+	gap: 16px;
+	justify-content: flex-start;
+	align-items: center;
+}
+.srfm-button-primary {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+	padding: 8px 14px;
+	border-radius: 6px;
+	border: none;
+	background: var(--dashboard-primary, #125d9f);
+	box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+	color: var(--dashboard-surface-secondary, #fff);
+	cursor: pointer;
+	outline: none;
+	width: max-content;
+}
+
+.srfm-button-secondary {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+	border: none;
+	background: var(--dashboard-primary, #e3eefb);
+	box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+	color: var(--dashboard-primary, #125d9f);
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	width: max-content;
+}
+
+.srfm-button-small{
+	padding: 8px 14px;
+	border-radius: 6px;
+}
+
+.srfm-button-xs{
+	padding: 7px 11px;
+	border-radius: 6px;
+}
+
+.srfm-link-secondary {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	color: var(--dashboard-text, #1e293b);
+	width: max-content;
+}
+
+.srfm-pro-badge{
+	color: white;
+	background-color: #1E293B;
+	padding: 4px 10px;
+	border: solid 1px #1E293B;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 6px;
+}

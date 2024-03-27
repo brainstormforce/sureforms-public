@@ -42,11 +42,13 @@
   background-color: #fff;
   border-right: 1px solid #e5e7eb;
 }
-.srfm-settings-wrap .srfm-settings-sidebar nav {
-  margin-bottom: 1.6em;
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-content {
   position: sticky;
-  top: 88px;
+  top: 98px;
   padding-top: 10px;
+}
+.srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-content nav {
+  margin-bottom: 1.6em;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category {
   display: flex;
@@ -81,8 +83,6 @@
   color: #1e293b;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container {
-  position: sticky;
-  top: 240px;
   padding: 0.8em;
   border: 1px solid #125d9f;
   border-radius: 6px;
@@ -126,14 +126,15 @@
 .srfm-settings-wrap .srfm-settings-page-container {
   display: flex;
   flex-wrap: wrap;
-  margin: auto;
   padding: 1.85em 0.5em;
-  max-width: 768px;
   width: 100%;
+  justify-content: center;
+  align-items: flex-start;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner {
   width: 100%;
   margin: 0 auto;
+  max-width: 768px;
 }
 .srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-skeleton-container {
   margin-bottom: 1em;
@@ -349,4 +350,38 @@
   line-height: normal;
   border: 0;
   cursor: pointer;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container {
+  margin-bottom: 1.2em;
+  box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1019607843);
+  border: 1px solid #dce0e6;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container .srfm-integration-content {
+  padding: 16px 24px 16px 24px;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container .srfm-integration-title {
+  font-size: 0.8em;
+  line-height: 1.5em;
+  font-weight: 600;
+  color: #0f172a;
+  padding: 0 0 0 0;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container .srfm-integration-description {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container .srfm-integration-content-inner {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.srfm-settings-wrap .srfm-settings-page-container .srfm-settings-page-inner .srfm-card-container .srfm-integration-cta {
+  border-top: 1px solid #dce0e6;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px 16px 24px;
+  align-items: center;
 }

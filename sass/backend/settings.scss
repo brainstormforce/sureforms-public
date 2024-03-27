@@ -39,6 +39,7 @@ $placeholder_color: #9ca3af;
 		font-size: 0.7em;
 	}
 }
+
 .srfm-settings-wrap {
 	display: flex;
 	font-size: 20px;
@@ -56,7 +57,7 @@ $placeholder_color: #9ca3af;
 		-ms-transform-origin: right;
 		transform-origin: right;
 		width: 450px;
-		border-right: 1px solid var( --sc-color-gray-200 );
+		border-right: 1px solid var(--sc-color-gray-200);
 	}
 
 	.srfm-settings-sidebar {
@@ -66,11 +67,14 @@ $placeholder_color: #9ca3af;
 		background-color: #fff;
 		border-right: 1px solid #e5e7eb;
 
-		nav {
-			margin-bottom: 1.6em;
+		.srfm-settings-sidebar-content {
 			position: sticky;
-			top: 88px;
+			top: 98px;
 			padding-top: 10px;
+
+			nav {
+				margin-bottom: 1.6em;
+			}
 		}
 
 		.srfm-settings-sidebar-category {
@@ -114,8 +118,6 @@ $placeholder_color: #9ca3af;
 		}
 
 		.srfm-notice-container {
-			position: sticky;
-			top: 240px;
 			padding: 0.8em;
 			border: 1px solid #125d9f;
 			border-radius: 6px;
@@ -137,7 +139,7 @@ $placeholder_color: #9ca3af;
 				}
 
 				.srfm-notice-title {
-					width: calc( 100% - 24px );
+					width: calc(100% - 24px);
 					font-size: 0.7em;
 					font-weight: 500;
 				}
@@ -167,14 +169,15 @@ $placeholder_color: #9ca3af;
 	.srfm-settings-page-container {
 		display: flex;
 		flex-wrap: wrap;
-		margin: auto;
 		padding: 1.85em 0.5em;
-		max-width: 768px;
 		width: 100%;
+		justify-content: center;
+		align-items: flex-start;
 
 		.srfm-settings-page-inner {
 			width: 100%;
 			margin: 0 auto;
+			max-width: 768px;
 
 			.srfm-skeleton-container {
 				margin-bottom: 1em;
@@ -222,6 +225,7 @@ $placeholder_color: #9ca3af;
 					.components-base-control {
 						font-size: 20px;
 						margin-bottom: 1em;
+
 						// Toggle control.
 						&.components-toggle-control {
 							.components-form-toggle.is-checked .components-form-toggle__track {
@@ -243,7 +247,7 @@ $placeholder_color: #9ca3af;
 							}
 						}
 
-						.components-form-toggle .components-form-toggle__input:focus + .components-form-toggle__track {
+						.components-form-toggle .components-form-toggle__input:focus+.components-form-toggle__track {
 							box-shadow: none;
 						}
 
@@ -258,6 +262,7 @@ $placeholder_color: #9ca3af;
 								text-transform: none;
 								margin-bottom: 0.3em;
 							}
+
 							.components-text-control__input,
 							.components-select-control__input {
 								font-size: 0.8em;
@@ -307,14 +312,15 @@ $placeholder_color: #9ca3af;
 							}
 						}
 
-						&:nth-last-child( 1 ) {
+						&:nth-last-child(1) {
 							margin-bottom: 0;
 						}
 					}
 
 					.srfm-style-1-tabs {
-						> .components-tab-panel__tabs {
+						>.components-tab-panel__tabs {
 							border-bottom: 1px solid $border_color;
+
 							.components-tab-panel__tabs-item {
 								font-size: 0.7em;
 								color: $content_color;
@@ -350,7 +356,7 @@ $placeholder_color: #9ca3af;
 										text-decoration: none;
 										box-shadow: none;
 
-										&:nth-last-child( 1 ) {
+										&:nth-last-child(1) {
 											margin-left: 0.3em;
 											padding-left: 0.3em;
 											border-left: 1px solid $border_color;
@@ -368,7 +374,7 @@ $placeholder_color: #9ca3af;
 					}
 
 					.srfm-style-2-tabs {
-						> .components-tab-panel__tabs {
+						>.components-tab-panel__tabs {
 							margin-bottom: 0.8em;
 
 							.components-tab-panel__tabs-item {
@@ -389,7 +395,7 @@ $placeholder_color: #9ca3af;
 									position: absolute;
 									left: 0.715em;
 									top: 50%;
-									transform: translateY( -50% );
+									transform: translateY(-50%);
 									width: 1.142em;
 									height: 1.142em;
 									border: 1px solid $border_color;
@@ -421,6 +427,47 @@ $placeholder_color: #9ca3af;
 						border: 0;
 						cursor: pointer;
 					}
+
+				}
+			}
+
+			.srfm-card-container {
+				margin-bottom: 1.2em;
+				box-shadow: 0px 1px 2px 0px $box_shadow;
+				border: 1px solid $border_color;
+				border-radius: 4px;
+				background-color: $bg_color;
+
+				.srfm-integration-content {
+					padding: 16px 24px 16px 24px;
+				}
+
+				.srfm-integration-title {
+					font-size: 0.8em;
+					line-height: 1.5em;
+					font-weight: 600;
+					color: $heading_color;
+					padding: 0 0 0 0;
+				}
+
+				.srfm-integration-description{
+					margin-top: 4px;
+					margin-bottom:0;
+				}
+
+				.srfm-integration-content-inner {
+					display: flex;
+					gap: 16px;
+					justify-content: flex-start;
+					align-items: flex-start;
+				}
+
+				.srfm-integration-cta {
+					border-top: 1px solid $border_color;
+					display: flex;
+					justify-content: space-between;
+					padding: 16px 24px 16px 24px;
+					align-items: center;
 				}
 			}
 		}
