@@ -68,6 +68,10 @@
 		"help": {
 			"type": "string",
 			"default": ""
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
 		}
 	}
 }

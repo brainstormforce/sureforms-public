@@ -27,11 +27,11 @@ class GDPR_Markup extends Base {
 	 * Render the sureforms GDPR classic styling
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param int|string   $form_id form id.
 	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes, $form_id ) {
+	public function markup( $attributes ) {
+		$form_id     = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
 		$required    = true;
 		$field_width = isset( $attributes['fieldWidth'] ) ? Helper::get_string_value( $attributes['fieldWidth'] ) : '';
 		$label       = isset( $attributes['label'] ) ? $attributes['label'] : '';

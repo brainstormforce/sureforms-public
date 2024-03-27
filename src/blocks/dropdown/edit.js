@@ -30,6 +30,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -322,6 +323,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<DropdownComponent

@@ -12,6 +12,7 @@ import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
 import { useErrMessage } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -120,6 +121,9 @@ export default ( { attributes, setAttributes } ) => {
 					</SRFMAdvancedPanelBody>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+				<InspectorTab { ...SRFMTabs.advance }>
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);
