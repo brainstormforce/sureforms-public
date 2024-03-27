@@ -92,23 +92,28 @@ class Generate_Form_Markup {
 			$is_page_break            = Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
-			$message                  = $form_confirmation[0][0]['message'];
-			if ( $message ) {
-				$smart_tags = new Smart_Tags();
-				$message    = $smart_tags->process_smart_tags( $message );
+			$confirmation_type        = '';
+			$submission_action        = '';
+			$success_url              = '';
+			$message                  = '';
+			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
+				$form_data = $form_confirmation[0][0];
+				if ( isset( $form_data['message'] ) && is_string( $form_data['message'] ) ) {
+					$smart_tags = new Smart_Tags();
+					$message    = $smart_tags->process_smart_tags( $form_data['message'] );
+				}
+				$page_url          = isset( $form_data['page_url'] ) ? $form_data['page_url'] : '';
+				$custom_url        = isset( $form_data['custom_url'] ) ? $form_data['custom_url'] : '';
+				$confirmation_type = isset( $form_data['confirmation_type'] ) ? $form_data['confirmation_type'] : '';
+				$submission_action = isset( $form_data['submission_action'] ) ? $form_data['submission_action'] : '';
+				$success_url       = '';
+				if ( 'different page' === $confirmation_type ) {
+					$success_url = $page_url;
+				} elseif ( 'custom url' === $confirmation_type ) {
+					$success_url = $custom_url;
+				}
 			}
-			$page_url          = $form_confirmation[0][0]['page_url'];
-			$custom_url        = $form_confirmation[0][0]['custom_url'];
-			$confirmation_type = $form_confirmation[0][0]['confirmation_type'];
-			$submission_action = $form_confirmation[0][0]['submission_action'];
-			$success_url       = '';
-			if ( 'different page' === $confirmation_type ) {
-				$success_url = $page_url;
-			} elseif ( 'custom url' === $confirmation_type ) {
-				$success_url = $custom_url;
-			} else {
-				$success_url = '';
-			}
+
 			// Submit button.
 			$button_text       = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
 			$button_alignment  = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
@@ -357,7 +362,7 @@ class Generate_Form_Markup {
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
-				<?php echo $message; ?>
+				<?php echo $message;// phpcs:ignore?>
 			</div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
