@@ -3,6 +3,7 @@ import Webhooks from '../components/integrations/webhooks';
 
 const IntegrationsPage = ( { loading } ) => {
 	return (
+
 		<div className="srfm-card-container">
 			<div className="srfm-card-content">
 				<ContentCard

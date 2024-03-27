@@ -4,7 +4,9 @@ import WebhookIcon from '@Image/webhook.js';
 
 const UpgradeToPro = () => {
 	return (
-		<button className="srfm-button-secondary srfm-button-xs">Upgrade to Pro</button>
+		<button className="srfm-button-secondary srfm-button-xs">
+			{ __( 'Upgrade to Pro', 'sureforms' ) }
+		</button>
 	);
 };
 
@@ -30,10 +32,10 @@ const Webhooks = () => {
 					</div>
 				</div>
 			</div>
-			<div></div>
 			<div className="srfm-integration-cta">
 				{ false === switchWebhook ? <UpgradeToPro /> : switchWebhook }
-				<div className="srfm-pro-badge">Pro</div>
+				<div className="srfm-pro-badge">
+					{ __( 'Pro', 'sureforms' ) }</div>
 			</div>
 		</> );
 };
