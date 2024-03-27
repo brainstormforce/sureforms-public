@@ -1,5 +1,4 @@
 import {
-	ToggleControl,
 	SelectControl,
 	PanelRow,
 	Modal,
@@ -8,7 +7,6 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
@@ -118,89 +116,6 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Success Message Settings', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<ToggleControl
-					label={ __(
-						'Turn Toggle on to Redirect to a URL',
-						'sureforms'
-					) }
-					checked={ 'url' === sureformsKeys._srfm_submit_type }
-					onChange={ ( value ) => {
-						updateMeta(
-							'_srfm_submit_type',
-							value ? 'url' : 'message'
-						);
-					} }
-				/>
-				<p className="components-base-control__help" />
-				{ 'message' === sureformsKeys._srfm_submit_type ? (
-					<>
-						<SRFMTextControl
-							data={ {
-								value: sureformsKeys._srfm_thankyou_message_title,
-								label: '_srfm_thankyou_message_title',
-							} }
-							label={ __(
-								'Form Submission Success Message Title',
-								'sureforms'
-							) }
-							placeholder={ __( 'Thank you', 'sureforms' ) }
-							value={ sureformsKeys._srfm_thankyou_message_title }
-							onChange={ ( value ) => {
-								updateMeta(
-									'_srfm_thankyou_message_title',
-									value
-								);
-							} }
-							isFormSpecific={ true }
-						/>
-						<p className="components-base-control__help" />
-						<SRFMTextControl
-							variant="textarea"
-							data={ {
-								value: sureformsKeys._srfm_thankyou_message,
-								label: '_srfm_thankyou_message',
-							} }
-							label={ __(
-								'Form Submission Success Message Description',
-								'sureforms'
-							) }
-							placeholder={ __(
-								'Form submitted successfully.',
-								'sureforms'
-							) }
-							value={ sureformsKeys._srfm_thankyou_message }
-							onChange={ ( value ) => {
-								updateMeta( '_srfm_thankyou_message', value );
-							} }
-							isFormSpecific={ true }
-						/>
-					</>
-				) : (
-					<SRFMTextControl
-						label={ __(
-							'Customize the Thankyou Page URL',
-							'sureforms'
-						) }
-						value={ sureformsKeys._srfm_submit_url }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_submit_url', value );
-						} }
-						placeholder={ __(
-							'https://example.com/',
-							'sureforms'
-						) }
-						data={ {
-							value: sureformsKeys._srfm_submit_url,
-							label: '_srfm_submit_url',
-						} }
-						isFormSpecific={ true }
-					/>
-				) }
-			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
