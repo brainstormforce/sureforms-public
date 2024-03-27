@@ -108,3 +108,37 @@
   font-weight: 600;
   border-radius: 6px;
 }
+
+.srfm-modal-card-content {
+  padding: 16px 24px 16px 24px;
+  margin-bottom: 1.2em;
+  border: 1px solid #dce0e6;
+  border-radius: 4px;
+  background-color: #ffffff;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.srfm-modal-card-content .srfm-modal-card-title {
+  line-height: 1.5em;
+  font-weight: 600;
+  color: #0f172a;
+  padding: 0 0 0 0;
+}
+.srfm-modal-card-content .srfm-modal-card-description {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+.srfm-modal-card-content .srfm-modal-card-content-inner {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.srfm-modal-card-content .srfm-modal-card-cta {
+  border-top: 1px solid #dce0e6;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px 16px 24px;
+  align-items: center;
+}

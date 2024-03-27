@@ -1,8 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
+import WebhookIcon from '@Image/webhook.js';
 const Integration = () => {
 	const cards = [
 		{
@@ -41,37 +40,28 @@ const Integration = () => {
 };
 
 const UpsellSureFormsPro = () => {
-	const lockIcon = parse( svgIcons.lock );
 	return (
-		<div className="srfm-modal-info-box">
-			<div className="srfm-modal-info-box-content">
-				<div>
-					{ lockIcon }
-				</div>
-				<div className="srfm-modal-info-box-message">
+		<>
+			<div className="srfm-modal-card-content">
+				<div className="srfm-modal-card-content-inner">
+					<WebhookIcon />
 					<div>
-						<h6>{ __( 'This is a Pro Feature', 'sureforms' ) }</h6>
-					</div>
-					<div>
-						<p>{ __( 'To use the integrations, you need to upgrade to SureForms Pro.', 'sureforms' ) }</p>
+						<div className="srfm-modal-card-title">
+							{ __( 'Webhooks', 'sureforms' ) }
+						</div>
+						<p className="srfm-modal-card-description">
+							{ __( 'Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
+						</p>
 					</div>
 				</div>
-			</div>
-			<div className="srfm-button">
-				<button className="srfm-button-primary"	>
-					{ __( 'Upgrade', 'sureforms' ) }
-				</button>
-				{ /* temporarily disable eslint */ }
-				{ /* eslint-disable jsx-a11y/anchor-is-valid */ }
-				<a
-					href="#"
-					className="srfm-link-secondary">
-					{ __( 'Learn More', 'sureforms' ) }
-				</a>
-				{ /* eslint-enable jsx-a11y/anchor-is-valid */ }
-			</div>
-		</div>
+				<div className="srfm-button">
+					<button className="srfm-button-primary"	>
+						{ __( 'Upgrade to Pro', 'sureforms' ) }
+					</button>
+				</div>
 
+			</div>
+		</>
 	);
 };
 
