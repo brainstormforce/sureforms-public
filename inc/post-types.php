@@ -531,6 +531,47 @@ class Post_Types {
 			]
 		);
 
+		// Compliance Settings metas.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_compliance',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'gdpr'                 => [
+									'type' => 'boolean',
+								],
+								'do_not_store_entries' => [
+									'type' => 'boolean',
+								],
+								'auto_delete_entries'  => [
+									'type' => 'boolean',
+								],
+								'auto_delete_days'     => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
+						'gdpr'                 => true,
+						'do_not_store_entries' => false,
+						'auto_delete_entries'  => false,
+						'auto_delete_days'     => '',
+					],
+				],
+			]
+		);
+
 		register_post_meta(
 			'sureforms_entry',
 			'_srfm_submission_info',

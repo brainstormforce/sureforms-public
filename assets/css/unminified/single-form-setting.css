@@ -73,6 +73,15 @@
   justify-content: center;
   align-items: center;
 }
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-active-tab {
+  background: var(--dashboard-primary, #125d9f);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-active-tab .srfm-modal-tab-text p {
+  color: var(--dashboard-surface-secondary, #fff);
+}
+.srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-sidebar .srfm-modal-active-tab .srfm-modal-tab-icon > svg {
+  fill: var(--dashboard-surface-secondary, #fff);
+}
 .srfm-header-settings-modal .srfm-setting-modal-container .srfm-modal-content {
   display: flex;
   padding: var(--spacing-32, 32px);
