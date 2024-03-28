@@ -197,7 +197,11 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
-
+		p {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+		}
 		&.srfm-active {
 			display: flex;
 		}

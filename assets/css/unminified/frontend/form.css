@@ -167,6 +167,11 @@
   justify-content: center;
   flex-direction: column;
 }
+.srfm-form-container .srfm-success-box p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
 .srfm-form-container .srfm-success-box.srfm-active {
   display: flex;
 }
