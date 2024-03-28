@@ -111,6 +111,14 @@ module.exports = function ( grunt ) {
 						src: 'assets/css/unminified/single-rtl.css',
 						dest: 'assets/css/minified/single.min-rtl.css',
 					},
+					{
+						src: 'assets/css/unminified/common-rtl.css',
+						dest: 'assets/css/minified/common.min-rtl.css',
+					},
+					{
+						src: 'assets/css/unminified/single-form-setting-rtl.css',
+						dest: 'assets/css/minified/single-form-setting.min-rtl.css',
+					},
 
 					// Generated '.min.css' files from '.css' files.
 					// NOTE: Avoided '-rtl.css' files.
