@@ -15,7 +15,7 @@ import DynamicFontLoader from './dynamicFontLoader';
 import { compose } from '@wordpress/compose';
 import AddStaticStyles from '@Controls/AddStaticStyles';
 import AddInitialAttr from '@Controls/addInitialAttr';
-import { useGetCurrentFormId } from '../../../../../src/blocks-attributes/getFormId';
+import { useGetCurrentFormId } from '@SrfmAttributes/getFormId';
 
 const UAGBAdvancedHeading = ( props ) => {
 	const {
