@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 const FormConfirmSetting = () => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -29,22 +30,21 @@ const FormConfirmSetting = () => {
 	}
 
 	useEffect( () => {
-		fetch( `${ srfm_admin?.site_url }/wp-json/wp/v2/pages` )
-			.then( ( response ) => response.json() )
+		apiFetch( { path: '/wp/v2/pages' } )
 			.then( ( pages ) => {
-				if ( pages ) {
-					const createFormat = pages.map( ( page ) => {
-						let label;
-						if ( page.title?.rendered ) {
-							label = page.title?.rendered;
-						} else {
-							label = page.id.toString();
-						}
-						const value = page.link;
-						return { label, value };
-					} );
-					setPageOptions( createFormat );
-				}
+			   if ( pages ) {
+				 const createFormat = pages.map( ( page ) => {
+				   let label;
+				   if ( page.title?.rendered ) {
+					 label = page.title?.rendered;
+				   } else {
+					 label = page.id.toString();
+				   }
+				   const value = page.link;
+				   return { label, value };
+				 } );
+				 setPageOptions( createFormat );
+			   }
 			} )
 			.catch( ( error ) => console.error( 'Error:', error ) );
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
