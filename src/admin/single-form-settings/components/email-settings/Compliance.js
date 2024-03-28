@@ -6,17 +6,12 @@ import { ToggleControl } from '@wordpress/components';
 const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
 
-	console.log( complianceData );
-
 	const handleToggle = ( data ) => {
 		const updatedData = complianceData.map( ( item ) => {
-			if ( item.id === data.id ) {
-				return {
-					...item,
-					[ data.id ]: data.status,
-				};
-			}
-			return item;
+			return {
+				...item,
+				[ data.id ]: data.status,
+			};
 		} );
 
 		editPost( {
@@ -45,6 +40,10 @@ const Compliance = ( { complianceData } ) => {
 								'Enable GDPR Compliance',
 								'sureforms'
 							) }
+							help={ __(
+								'When enabled this form will not store User IP, Browser Name and the Device Name in the Entries.',
+								'sureforms'
+							) }
 							checked={ complianceData[ 0 ].gdpr }
 							onChange={ ( value ) =>
 								handleToggle( {
@@ -53,6 +52,29 @@ const Compliance = ( { complianceData } ) => {
 								} )
 							}
 						/>
+						{ complianceData[ 0 ].gdpr && (
+							<>
+								<ToggleControl
+									label={ __(
+										'Delete entry data after form submission',
+										'sureforms'
+									) }
+									help={ __(
+										'When enabled this form will never store Entries',
+										'sureforms'
+									) }
+									checked={
+										complianceData[ 0 ].do_not_store_entries
+									}
+									onChange={ ( value ) =>
+										handleToggle( {
+											id: 'do_not_store_entries',
+											status: value,
+										} )
+									}
+								/>
+							</>
+						) }
 					</div>
 				</div>
 			</div>
