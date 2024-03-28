@@ -21,7 +21,7 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
-import ConditionalLogic from '@Components/conditional-logic';
+import ConditionalLogic from '../../../../../src/components/conditional-logic';
 
 const Settings = ( props ) => {
 	const { attributes, deviceType, setAttributes } = props;
