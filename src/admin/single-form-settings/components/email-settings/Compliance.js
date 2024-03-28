@@ -6,23 +6,26 @@ import { ToggleControl } from '@wordpress/components';
 const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
 
-	const handleToggle = ( data ) => {
-		const updatedData = { ...complianceData };
-
-		updatedData[ 0 ][ data.id ] = data.status;
-
-		updateMeta( '_srfm_compliance', updatedData );
-	};
-
 	console.log( complianceData );
 
-	function updateMeta( option, value ) {
-		const option_array = {};
-		option_array[ option ] = value;
-		editPost( {
-			meta: option_array,
+	const handleToggle = ( data ) => {
+		const updatedData = complianceData.map( ( item ) => {
+			if ( item.id === data.id ) {
+				return {
+					...item,
+					[ data.id ]: data.status,
+				};
+			}
+			return item;
 		} );
-	}
+
+		editPost( {
+			meta: {
+				_srfm_compliance: updatedData,
+			},
+		} );
+	};
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">

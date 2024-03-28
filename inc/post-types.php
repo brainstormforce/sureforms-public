@@ -545,6 +545,9 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
+								'id'                   => [
+									'type' => 'string',
+								],
 								'gdpr'                 => [
 									'type' => 'boolean',
 								],
@@ -563,7 +566,8 @@ class Post_Types {
 				],
 				'default'       => [
 					[
-						'gdpr'                 => true,
+						'id'                   => 'gdpr',
+						'gdpr'                 => false,
 						'do_not_store_entries' => false,
 						'auto_delete_entries'  => false,
 						'auto_delete_days'     => '',

@@ -261,15 +261,27 @@ class Form_Submit {
 	 */
 	public function handle_form_entry( $form_data ) {
 
+		$id = wp_kses_post( $form_data['form-id'] );
+
+		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
+
+		$gdpr = is_array( $compliance ) && $compliance ? $compliance[0]['gdpr'] : '';
+
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
-		$srfm_ip_log            = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
-		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
-		$browser      = new Browser();
-		$browser_name = sanitize_text_field( $browser->getBrowser() );
-		$device_name  = sanitize_text_field( $browser->getPlatform() );
+		if ( ! $gdpr ) {
+			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
-		$id           = wp_kses_post( $form_data['form-id'] );
+			$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+			$browser      = new Browser();
+			$browser_name = sanitize_text_field( $browser->getBrowser() );
+			$device_name  = sanitize_text_field( $browser->getPlatform() );
+		} else {
+			$user_ip      = '';
+			$browser_name = '';
+			$device_name  = '';
+		}
+
 		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
 		$sender_email = '';
 		$pattern      = '/"label":"(.*?)"/';
