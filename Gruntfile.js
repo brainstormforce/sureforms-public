@@ -133,7 +133,7 @@ module.exports = function ( grunt ) {
 					// Generating RTL files from '/unminified/' into '/minified/'
 					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
 					{
-						src: 'assets/css/unminified/blocks/default/frontend.css',
+						src: 'assets/css/unminified/blocks/default/frontend-rtl.css',
 						dest: 'assets/css/minified/blocks/default/frontend.min-rtl.css',
 					},
 					{
@@ -157,7 +157,7 @@ module.exports = function ( grunt ) {
 					// Generating RTL files from '/unminified/' into '/minified/'
 					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
 					{
-						src: 'assets/css/unminified/frontend/form.css',
+						src: 'assets/css/unminified/frontend/form-rtl.css',
 						dest: 'assets/css/minified/frontend/form.min-rtl.css',
 					},
 					// Generated '.min.css' files from '.css' files.
@@ -173,15 +173,15 @@ module.exports = function ( grunt ) {
 					// Generating RTL files from '/unminified/' into '/minified/'
 					// NOTE: Not possible to generate bulk .min-rtl.css files from '.min.css'
 					{
-						src: 'assets/css/unminified/backend/editor.css',
+						src: 'assets/css/unminified/backend/editor-rtl.css',
 						dest: 'assets/css/minified/backend/editor.min-rtl.css',
 					},
 					{
-						src: 'assets/css/unminified/backend/admin.css',
+						src: 'assets/css/unminified/backend/admin-rtl.css',
 						dest: 'assets/css/minified/backend/admin.min-rtl.css',
 					},
 					{
-						src: 'assets/css/unminified/backend/settings.css',
+						src: 'assets/css/unminified/backend/settings-rtl.css',
 						dest: 'assets/css/minified/backend/settings.min-rtl.css',
 					},
 				],
