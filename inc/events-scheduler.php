@@ -31,11 +31,10 @@ class Events_Scheduler {
 	 * Schedules a action that runs every 24 hours for SureForms.
 	 *
 	 * @hooked - init
-	 * @param array<mixed> $args array Arguments to pass to the action.
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function srfm_schedule_daily_action( $args = [] ) {
+	public static function srfm_schedule_daily_action() {
 		// Check if the action is not scheduled. Then schedule a new action.
 		if ( false === as_has_scheduled_action( 'srfm_daily_scheduled_action' ) ) {
 			// Shedule a recurring action srfm_daily_scheduled_events that runs every 24 hours.

@@ -25,13 +25,13 @@ class Compliance_Settings {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		add_action( 'srfm_daily_scheduled_action', [ $this, 'pre_auto_delete_entries' ], 10 );
-		add_action( 'init', [ $this, 'pre_auto_delete_entries' ], 10 );
+		add_action( 'srfm_daily_scheduled_action', [ $this, 'pre_auto_delete_entries' ] );
 	}
 
 	/**
 	 * Runs every 24 hours for SureForms.
 	 * And check if auto delete entries are enabled for any forms.
+	 * If enabled then delete the entries that are older than the days_old.
 	 *
 	 * @hooked - srfm_daily_scheduled_action
 	 * @since x.x.x
@@ -54,50 +54,44 @@ class Compliance_Settings {
 			return;
 		}
 
-		// For each form post id check if _srfm_auto_delete_entries is enabled.
+		// For each form post id check if auto_delete_entries is enabled. If enabled then delete the entries that are older than the days_old.
 		foreach ( $form_ids as $form_id ) {
-			$compliance_settings    = get_post_meta( $form_id, '_srfm_compliance', true );
-			$is_auto_delete_entries = is_array( $compliance_settings ) ? $compliance_settings['auto_delete_entries'] : '0';
-			$days_old               = is_array( $compliance_settings ) ? $compliance_settings['auto_delete_days'] : '0';
+			$compliance_settings = get_post_meta( $form_id, '_srfm_compliance', true );
 
-			if ( '1' === $is_auto_delete_entries ) {
-				self::auto_delete_entries( $form_id, $days_old );
+			if ( is_array( $compliance_settings ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['auto_delete_entries'] ) ) {
+				$is_auto_delete_entries = $compliance_settings[0]['auto_delete_entries'];
+				$days_old               = $compliance_settings[0]['auto_delete_days'];
+			} else {
+				$is_auto_delete_entries = false;
+				$days_old               = 0;
+			}
+
+			if ( $is_auto_delete_entries ) {
+				self::delete_old_entries( $form_id, $days_old );
 			}
 		}
 
 	}
 
 	/**
-	 * Auto delete entries
+	 * Delete all the entries that are older than the days_old.
 	 *
-	 * @since 0.0.1
-	 * @param int $form_id Form id.
-	 * @param int $days_old Days old.
+	 * @param int $days_old Number of days old.
+	 * @param int $form_id Form ID.
+	 * @since x.x.x
 	 * @return void
 	 */
-	public static function auto_delete_entries( $form_id, $days_old ) {
+	public static function delete_old_entries( $days_old, $form_id ) {
+		$entries = Helper::get_entries_form_ids( $days_old, [ $form_id ] );
 
-		if ( empty( $days_old ) ) {
+		if ( empty( $entries ) ) {
 			return;
 		}
 
-		$sf_form_ids = [ $form_id ];
-
-		$entries = Helper::get_entries_form_ids( $days_old, $sf_form_ids );
-
-		self::delete_old_entries( $entries, $days_old, $sf_form_ids );
-	}
-
-	/**
-	 * Delete old entries
-	 *
-	 * @since 0.0.1
-	 * @param array<mixed> $entries Entries.
-	 * @param int          $days_old Days old.
-	 * @param array<int>   $sf_form_ids Sureform form ids.
-	 * @return void
-	 */
-	public static function delete_old_entries( $entries, $days_old = 1, $sf_form_ids = [] ) {
+		foreach ( $entries as $entry ) {
+			$entry_id = isset( $entry->ID ) ? $entry->ID : 0;
+			wp_delete_post( $entry_id, true );
+		}
 	}
 
 }

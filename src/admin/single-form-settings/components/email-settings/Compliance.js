@@ -53,26 +53,29 @@ const Compliance = ( { complianceData } ) => {
 							}
 						/>
 						{ complianceData[ 0 ].gdpr && (
+							<ToggleControl
+								label={ __(
+									'Delete entry data after form submission',
+									'sureforms'
+								) }
+								help={ __(
+									'When enabled this form will never store Entries',
+									'sureforms'
+								) }
+								checked={
+									complianceData[ 0 ].do_not_store_entries
+								}
+								onChange={ ( value ) =>
+									handleToggle( {
+										id: 'do_not_store_entries',
+										status: value,
+									} )
+								}
+							/>
+						) }
+						{ ! complianceData[ 0 ].do_not_store_entries &&
+							complianceData[ 0 ].gdpr && (
 							<>
-								<ToggleControl
-									label={ __(
-										'Delete entry data after form submission',
-										'sureforms'
-									) }
-									help={ __(
-										'When enabled this form will never store Entries',
-										'sureforms'
-									) }
-									checked={
-										complianceData[ 0 ].do_not_store_entries
-									}
-									onChange={ ( value ) =>
-										handleToggle( {
-											id: 'do_not_store_entries',
-											status: value,
-										} )
-									}
-								/>
 								<ToggleControl
 									label={ __(
 										'Automatically delete entries',
@@ -83,7 +86,8 @@ const Compliance = ( { complianceData } ) => {
 										'sureforms'
 									) }
 									checked={
-										complianceData[ 0 ].auto_delete_entries
+										complianceData[ 0 ]
+											.auto_delete_entries
 									}
 									onChange={ ( value ) =>
 										handleToggle( {
@@ -92,38 +96,30 @@ const Compliance = ( { complianceData } ) => {
 										} )
 									}
 								/>
-								{
-									// Show the field only if auto delete entries is enabled
-									complianceData[ 0 ].auto_delete_entries && (
-										<>
-											<label>
-												{ __(
-													'Automatically delete entries after',
-													'sureforms'
-												) }
-											</label>
-											<input
-												type="number"
-												value={
-													complianceData[ 0 ]
-														.auto_delete_days
-												}
-												onChange={ ( e ) =>
-													handleToggle( {
-														id: 'auto_delete_days',
-														status: e.target.value,
-													} )
-												}
-											/>
-											<label>
-												{ __(
-													'Days of submission',
-													'sureforms'
-												) }
-											</label>
-										</>
-									)
-								}
+								{ complianceData[ 0 ]
+									.auto_delete_entries && (
+									<>
+										<label>
+											{ __(
+												'Specify how many days old entries will be deleted for this form',
+												'sureforms'
+											) }
+										</label>
+										<input
+											type="number"
+											value={
+												complianceData[ 0 ]
+													.auto_delete_days
+											}
+											onChange={ ( e ) =>
+												handleToggle( {
+													id: 'auto_delete_days',
+													status: e.target.value,
+												} )
+											}
+										/>
+									</>
+								) }
 							</>
 						) }
 					</div>

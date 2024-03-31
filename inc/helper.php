@@ -332,14 +332,14 @@ class Helper {
 	}
 
 	/**
-	 * Get all the entries for a particular form or by passing an array of form IDs
+	 * Get all the entries for the given form ids. The entries are older than the given days_old.
 	 *
-	 * @param int        $days_old The number of days old.
-	 * @param array<int> $sf_form_ids The form ids.
-	 * @since 0.0.1
-	 * @return array<int|WP_Post> The entries.
+	 * @param int        $days_old The number of days old the entries should be.
+	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
+	 * @since x.x.x
+	 * @return array<int|WP_Post> the entries matching the criteria.
 	 */
-	public static function get_entries_form_ids( $days_old = 1, $sf_form_ids = [] ) {
+	public static function get_entries_form_ids( $days_old = 0, $sf_form_ids = [] ) {
 
 		$entries = [];
 
