@@ -576,6 +576,7 @@ class Post_Types {
 			]
 		);
 
+		// Sureforms entry metas.
 		register_post_meta(
 			'sureforms_entry',
 			'_srfm_submission_info',
@@ -602,6 +603,18 @@ class Post_Types {
 						],
 					],
 				],
+			]
+		);
+
+		// store form id in entry.
+		register_post_meta(
+			'sureforms_entry',
+			'_srfm_form_id',
+			[
+				'single'        => true,
+				'type'          => 'integer',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => true,
 			]
 		);
 
@@ -722,16 +735,22 @@ class Post_Types {
 				$user_ip      = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
 				$browser_name = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
 				$device_name  = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
+				$form_id_meta = Helper::get_string_value( get_post_meta( $post_id, '_srfm_form_id', true ) );
 			} else {
 				$user_ip      = '';
 				$browser_name = '';
 				$device_name  = '';
+				$form_id_meta = '';
 			}
 			?>
 			<table style="border-collapse: separate; border-spacing: 5px 5px;">
 			<tr style="margin-bottom: 10px;">
 				<td><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b></td>
 				<td><?php echo esc_html( $form_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Form ID:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $form_id_meta ); ?></td>
 			</tr>
 			<tr style="margin-bottom: 10px;">
 				<td><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b></td>

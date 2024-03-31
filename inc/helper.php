@@ -12,6 +12,8 @@ use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
 use WP_Post_Type;
+use WP_Query;
+use WP_Post;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -327,5 +329,46 @@ class Helper {
 			__( 'Sorry, you are not allowed to perform this action.', 'sureforms' ),
 			[ 'status' => \rest_authorization_required_code() ]
 		);
+	}
+
+	/**
+	 * Get all the entries for a particular form or by passing an array of form IDs
+	 *
+	 * @param int        $days_old The number of days old.
+	 * @param array<int> $sf_form_ids The form ids.
+	 * @since 0.0.1
+	 * @return array<int|WP_Post> The entries.
+	 */
+	public static function get_entries_form_ids( $days_old = 1, $sf_form_ids = [] ) {
+
+		$entries = [];
+
+		foreach ( $sf_form_ids as $form_id ) {
+			$args = [
+				'post_type'   => 'sureforms_entry',
+				'post_status' => 'publish',
+				'date_query'  => [
+					[
+						'before' => $days_old . ' days ago',
+					],
+				],
+				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
+				=> [
+					[
+						'key'     => '_srfm_form_id',
+						'value'   => $form_id,
+						'compare' => '=',
+					],
+				],
+			];
+
+			$query = new WP_Query( $args );
+
+			// store all the entries in an single array.
+			$entries = array_merge( $entries, $query->posts );
+		}
+
+		return $entries;
+
 	}
 }

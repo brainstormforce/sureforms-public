@@ -263,8 +263,9 @@ class Form_Submit {
 
 		$id = wp_kses_post( $form_data['form-id'] );
 
-		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
-
+		// Get the compliance settings.
+		$compliance           = get_post_meta( intval( $id ), '_srfm_compliance', true );
+		$gdpr                 = is_array( $compliance ) && $compliance ? $compliance[0]['gdpr'] : '';
 		$do_not_store_entries = is_array( $compliance ) && $compliance ? $compliance[0]['do_not_store_entries'] : '';
 
 		$meta_data = [];
@@ -282,7 +283,9 @@ class Form_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
-		if ( $do_not_store_entries ) {
+		// Check if GDPR is enabled and do not store entries is enabled.
+		// If so, send email and do not store entries.
+		if ( $gdpr && $do_not_store_entries ) {
 
 			$send_email = $this->send_email( $id, $meta_data );
 
@@ -315,10 +318,10 @@ class Form_Submit {
 			}
 		}
 
-		$gdpr = is_array( $compliance ) && $compliance ? $compliance[0]['gdpr'] : '';
-
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 
+		// If GDPR is enabled, do not store IP, browser, and device info.
+		// If not, store IP, browser, and device info.
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
@@ -377,6 +380,7 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
+			update_post_meta( $post_id, '_srfm_form_id', $id );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response = [
 				'success' => true,

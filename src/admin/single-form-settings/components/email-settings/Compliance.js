@@ -73,6 +73,57 @@ const Compliance = ( { complianceData } ) => {
 										} )
 									}
 								/>
+								<ToggleControl
+									label={ __(
+										'Automatically delete entries',
+										'sureforms'
+									) }
+									help={ __(
+										'When enabled this form will automatically delete entries after a certain period of time.',
+										'sureforms'
+									) }
+									checked={
+										complianceData[ 0 ].auto_delete_entries
+									}
+									onChange={ ( value ) =>
+										handleToggle( {
+											id: 'auto_delete_entries',
+											status: value,
+										} )
+									}
+								/>
+								{
+									// Show the field only if auto delete entries is enabled
+									complianceData[ 0 ].auto_delete_entries && (
+										<>
+											<label>
+												{ __(
+													'Automatically delete entries after',
+													'sureforms'
+												) }
+											</label>
+											<input
+												type="number"
+												value={
+													complianceData[ 0 ]
+														.auto_delete_days
+												}
+												onChange={ ( e ) =>
+													handleToggle( {
+														id: 'auto_delete_days',
+														status: e.target.value,
+													} )
+												}
+											/>
+											<label>
+												{ __(
+													'Days of submission',
+													'sureforms'
+												) }
+											</label>
+										</>
+									)
+								}
 							</>
 						) }
 					</div>
