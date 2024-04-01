@@ -1,5 +1,5 @@
 import EmailNotification from './email-settings/EmailNotification';
-import Compliance from './email-settings/Compliance';
+import Compliance from './Compliance';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';

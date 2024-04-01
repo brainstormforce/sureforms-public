@@ -6,24 +6,23 @@ import { ToggleControl } from '@wordpress/components';
 const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
 
-	console.log( complianceData );
-
 	const handleToggle = ( data ) => {
-		const updatedData = complianceData.map( ( item ) => {
-			if ( item.id === data.id ) {
-				return {
-					...item,
-					[ data.id ]: data.status,
-				};
-			}
-			return item;
-		} );
+		const index = complianceData.findIndex(
+			( item ) => item.id === data.id
+		);
+		if ( index !== -1 ) {
+			const updatedData = [ ...complianceData ];
+			updatedData[ index ] = {
+				...updatedData[ index ],
+				[ data.id ]: data.status,
+			};
 
-		editPost( {
-			meta: {
-				_srfm_compliance: updatedData,
-			},
-		} );
+			editPost( {
+				meta: {
+					_srfm_compliance: updatedData,
+				},
+			} );
+		}
 	};
 
 	return (
