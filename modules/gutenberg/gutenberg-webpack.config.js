@@ -28,6 +28,14 @@ module.exports = {
 			'@Utils': path.resolve( __dirname, 'src/utils/' ),
 			'@Attributes': path.resolve( __dirname, 'src/blocks-attributes/' ),
 			'@Store': path.resolve( __dirname, 'src/store/' ),
+			'@SrfmComponents': path.resolve(
+				__dirname,
+				'../../src/components/'
+			),
+			'@SrfmAttributes': path.resolve(
+				__dirname,
+				'../../src/blocks-attributes/'
+			),
 		},
 	},
 	module: {
