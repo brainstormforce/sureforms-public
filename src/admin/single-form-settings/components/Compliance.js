@@ -7,22 +7,18 @@ const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
 
 	const handleToggle = ( data ) => {
-		const index = complianceData.findIndex(
-			( item ) => item.id === data.id
-		);
-		if ( index !== -1 ) {
-			const updatedData = [ ...complianceData ];
-			updatedData[ index ] = {
-				...updatedData[ index ],
+		const updatedData = complianceData.map( ( item ) => {
+			return {
+				...item,
 				[ data.id ]: data.status,
 			};
+		} );
 
-			editPost( {
-				meta: {
-					_srfm_compliance: updatedData,
-				},
-			} );
-		}
+		editPost( {
+			meta: {
+				_srfm_compliance: updatedData,
+			},
+		} );
 	};
 
 	return (
