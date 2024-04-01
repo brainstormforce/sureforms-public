@@ -114,6 +114,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
+	const isButtonBlockPresent = blocks.some(
+		( block ) => block.name === 'srfm/button'
+	);
 	const deviceType = useDeviceType();
 
 	function updateMeta( option, value ) {
@@ -386,7 +389,16 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
-				if ( ! submitBtnContainer ) {
+				if ( isButtonBlockPresent ) {
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 0 ) {
+						submitBtn[ 0 ].remove();
+					}
+				}
+
+				if ( ! submitBtnContainer && ! isButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -397,7 +409,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureformsKeys ] );
+	}, [ deviceType, sureformsKeys, blockCount, isButtonBlockPresent ] );
 
 	useEffect( () => {
 		//quick action sidebar

@@ -9,6 +9,7 @@ import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
 import * as url from '@Blocks/url';
+import * as button from '@Blocks/button';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
@@ -31,6 +32,7 @@ const registerBlock = [
 	phone,
 	select,
 	address,
+	button,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
