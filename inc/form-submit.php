@@ -261,7 +261,7 @@ class Form_Submit {
 	 */
 	public function handle_form_entry( $form_data ) {
 
-		$id = wp_kses_post( $form_data['form-id'] );
+		$id = sanitize_text_field( $form_data['form-id'] );
 
 		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
 
