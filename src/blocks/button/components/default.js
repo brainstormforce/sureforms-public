@@ -2,9 +2,8 @@ import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 
 export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
-	const { label, placeholder, required, defaultValue } = attributes;
+	const { placeholder, required } = attributes;
 
-	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'input';
 
 	return (
