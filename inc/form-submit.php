@@ -264,9 +264,15 @@ class Form_Submit {
 		$id = sanitize_text_field( $form_data['form-id'] );
 
 		// Get the compliance settings.
-		$compliance           = get_post_meta( intval( $id ), '_srfm_compliance', true );
-		$gdpr                 = is_array( $compliance ) && $compliance ? $compliance[0]['gdpr'] : '';
-		$do_not_store_entries = is_array( $compliance ) && $compliance ? $compliance[0]['do_not_store_entries'] : '';
+		$compliance = get_post_meta( Helper::get_integer_value( $id ), '_srfm_compliance', true );
+
+		if ( is_array( $compliance ) && $compliance ) {
+			$gdpr                 = $compliance[0]['gdpr'];
+			$do_not_store_entries = $compliance[0]['do_not_store_entries'];
+		} else {
+			$gdpr                 = '';
+			$do_not_store_entries = '';
+		}
 
 		$meta_data = [];
 
@@ -283,15 +289,19 @@ class Form_Submit {
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
+		$send_email = $this->send_email( $id, $meta_data );
+
+		if ( $send_email ) {
+			$emails       = $send_email['emails'];
+			$is_mail_sent = $send_email['success'];
+		} else {
+			$emails       = [];
+			$is_mail_sent = false;
+		}
+
 		// Check if GDPR is enabled and do not store entries is enabled.
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
-
-			$send_email = $this->send_email( $id, $meta_data );
-
-			$emails = $send_email ? $send_email['emails'] : [];
-
-			$is_mail_sent = $send_email ? $send_email['success'] : false;
 
 			if ( $is_mail_sent ) {
 
@@ -380,7 +390,7 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
-			update_post_meta( $post_id, '_srfm_form_id', $id );
+			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response = [
 				'success' => true,
@@ -389,12 +399,6 @@ class Form_Submit {
 					'name' => $name,
 				],
 			];
-
-			$send_email = $this->send_email( $id, $meta_data );
-
-			$emails = $send_email['emails'];
-
-			$is_mail_sent = $send_email['success'];
 
 			if ( $is_mail_sent ) {
 

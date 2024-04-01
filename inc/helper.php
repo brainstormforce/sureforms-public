@@ -355,7 +355,7 @@ class Helper {
 				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
 				=> [
 					[
-						'key'     => '_srfm_form_id',
+						'key'     => '_srfm_entry_form_id',
 						'value'   => $form_id,
 						'compare' => '=',
 					],
