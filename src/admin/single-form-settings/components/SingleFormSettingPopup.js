@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
+import { MdSecurity } from 'react-icons/md';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys } = props;
@@ -35,7 +36,9 @@ const SingleFormSettingsPopup = ( props ) => {
 					}` }
 					onClick={ () => setSelectedTab( 'compliance_settings' ) }
 				>
-					<span className="srfm-modal-tab-icon">{ emailIcon }</span>
+					<span className="srfm-modal-tab-icon">
+						<MdSecurity size={ 20 } />
+					</span>
 					<span className="srfm-modal-tab-text">
 						<p>{ __( 'Compliance Settings', 'sureforms' ) }</p>
 					</span>
