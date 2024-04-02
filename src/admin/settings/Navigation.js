@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
-import { MdSettings } from 'react-icons/md';
-import { MdWarningAmber } from 'react-icons/md';
-import { MdOutlineMail } from 'react-icons/md';
-import { MdOutlineSecurity } from 'react-icons/md';
+import {
+	MdSettings,
+	MdWarningAmber,
+	MdOutlineMail,
+	MdOutlineSecurity,
+} from 'react-icons/md';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
