@@ -382,7 +382,7 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
-			$is_mail_sent ? wp_send_json_success( $response ) : wp_send_json_error( $response );
+			$is_mail_sent ? wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) ) : wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
 
 		} else {
 			$response = [
