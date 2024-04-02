@@ -365,29 +365,25 @@ class Form_Submit {
 				}
 			}
 
-			if ( $is_mail_sent ) {
-
-				$modified_message = [];
-				foreach ( $meta_data as $key => $value ) {
-					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-					$modified_message[ $only_key ] = esc_attr( $value );
-				}
-
-				$form_submit_response = [
-					'success'   => true,
-					'form_id'   => $id ? intval( $id ) : '',
-					'emails'    => $emails,
-					'form_name' => $name ? esc_attr( $name ) : '',
-					'message'   => __( 'Form submitted successfully', 'sureforms' ),
-					'data'      => $modified_message,
-				];
-
-				do_action( 'srfm_form_submit', $form_submit_response );
-
-				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-			} else {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+			$modified_message = [];
+			foreach ( $meta_data as $key => $value ) {
+				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$modified_message[ $only_key ] = esc_attr( $value );
 			}
+
+			$form_submit_response = [
+				'success'   => true,
+				'form_id'   => $id ? intval( $id ) : '',
+				'emails'    => $emails,
+				'form_name' => $name ? esc_attr( $name ) : '',
+				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'data'      => $modified_message,
+			];
+
+			do_action( 'srfm_form_submit', $form_submit_response );
+
+			$is_mail_sent ? wp_send_json_success( $response ) : wp_send_json_error( $response );
+
 		} else {
 			$response = [
 				'success' => false,
