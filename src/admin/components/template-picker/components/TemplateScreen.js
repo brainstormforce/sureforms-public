@@ -171,7 +171,7 @@ const TemplateScreen = () => {
 								</div>
 								<div className="srfm-req-template-body">
 									{ __(
-										'Can’t find it? Let us know what kind of form do you need.',
+										"Can't find it? Let us know what kind of form do you need.",
 										'sureforms'
 									) }
 								</div>

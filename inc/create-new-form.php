@@ -153,7 +153,7 @@ class Create_New_Form {
 		$nonce = sanitize_text_field( $nonce );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return wp_send_json_error(
+			wp_send_json_error(
 				[
 					'message' => __( 'Nonce verification failed.', 'sureforms' ),
 				]
@@ -165,7 +165,7 @@ class Create_New_Form {
 
 		// Check if JSON decoding was successful and $form_info_obj is an object.
 		if ( json_last_error() !== JSON_ERROR_NONE || ! is_object( $form_info_obj ) ) {
-			return wp_send_json_error(
+			wp_send_json_error(
 				[
 					'message' => __( 'Invalid JSON format.', 'sureforms' ),
 				]
@@ -177,7 +177,7 @@ class Create_New_Form {
 		// Check if required properties exist in the $form_info_obj.
 		foreach ( $required_properties as $property ) {
 			if ( ! property_exists( $form_info_obj, $property ) ) {
-				return wp_send_json_error(
+				wp_send_json_error(
 					[
 						'message' => __( 'Missing required properties in form info.', 'sureforms' ),
 					]
@@ -215,7 +215,7 @@ class Create_New_Form {
 				]
 			);
 		} else {
-			return wp_send_json_error(
+			wp_send_json_error(
 				[
 					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
