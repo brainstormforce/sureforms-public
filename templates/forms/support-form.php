@@ -16,12 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Support Form', 'sureforms' ),
-	'slug'             => __( 'support-form', 'sureforms' ),
+	'slug'             => 'support-form',
+	'sureforms',
 	'info'             => __( 'Form for submitting support query', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Support Forms', 'sureforms' ),
 	'postTypes'        => SRFM_FORMS_POST_TYPE,
 	'content'          => '<!-- wp:srfm/input {"block_id":"fd4ef0f9","required":true,"fieldWidth":50,"label":"First Name","formId":81} /--><!-- wp:srfm/input {"block_id":"667678ef","required":true,"fieldWidth":50,"label":"Last Name","formId":81} /--><!-- wp:srfm/email {"block_id":"eae1ae54","required":true,"formId":81} /--><!-- wp:srfm/input {"block_id":"5e4d1e8f","required":true,"label":"Subject","formId":81} /--><!-- wp:srfm/textarea {"block_id":"f0076110","required":true,"label":"Please describe your question in detail. Explain the exact steps to replicate the problem.","formId":81} /--><!-- wp:srfm/url {"block_id":"0e087bac","required":true,"label":"URL where we can see more details.","formId":81} /-->',
-	'id'               => 'form-' . Helper::generate_random_id( 2 ),
 	'isPro'            => false,
 ];

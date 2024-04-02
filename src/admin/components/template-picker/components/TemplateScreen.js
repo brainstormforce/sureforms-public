@@ -3,8 +3,6 @@ import TemplateCard from './TemplateCard';
 import { __ } from '@wordpress/i18n';
 import ICONS from './icons';
 import apiFetch from '@wordpress/api-fetch';
-import TemplatePreview from './TemplatePreview';
-import { useLocation } from 'react-router-dom';
 import { randomNiceColor } from '@Utils/Helpers';
 import { Spinner } from '@wordpress/components';
 
@@ -30,7 +28,7 @@ const TemplateScreen = () => {
 
 			// Generate and store colors based on the template id and set it in the template card background.
 			const newColors = newPatterns.reduce( ( acc, template ) => {
-				acc[ template.id ] = randomNiceColor();
+				acc[ template.slug ] = randomNiceColor();
 				return acc;
 			}, {} );
 			setTemplateColors( newColors );
@@ -74,32 +72,7 @@ const TemplateScreen = () => {
 		}
 	}, [ searchQuery ] );
 
-	function useQuery() {
-		return new URLSearchParams( useLocation().search );
-	}
-
 	function QueryScreen() {
-		const query = useQuery();
-		const templateId = query.get( 'template-id' );
-
-		const selectedTemplate = patterns.find(
-			( template ) => template.id === templateId
-		);
-
-		const { title, content, info } = selectedTemplate || {};
-
-		if ( templateId ) {
-			return (
-				<>
-					<TemplatePreview
-						templateName={ title }
-						formData={ content }
-						info={ info }
-						templatePreview={ `${ srfm_admin.preview_images_url }contact-form.png` }
-					/>
-				</>
-			);
-		}
 		return (
 			<div className="srfm-ts-main-container srfm-content-section">
 				{ loading ? (
@@ -210,19 +183,20 @@ const TemplateScreen = () => {
 						<div className="srfm-ts-cards-container">
 							{ filteredTemplates.map( ( template ) => {
 								const filteredTemplateTitle = template.title;
-								const filteredTemplateId = template.id;
 
 								return (
 									<TemplateCard
 										key={ filteredTemplateTitle }
 										templateName={ filteredTemplateTitle }
-										templateId={ filteredTemplateId }
+										templateSlug={ template?.slug }
 										templatePreview={
 											srfm_admin?.preview_images_url +
 											`${ template?.slug }.png`
 										}
 										formData={ template?.content }
-										color={ templateColors[ template?.id ] }
+										color={
+											templateColors[ template?.slug ]
+										}
 										templateMetas={ template?.postMetas }
 									/>
 								);

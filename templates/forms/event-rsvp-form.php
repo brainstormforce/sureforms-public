@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Event RSVP Form', 'sureforms' ),
-	'slug'             => __( 'event-rsvp-form', 'sureforms' ),
+	'slug'             => 'event-rsvp-form',
 	'info'             => __( 'Form for RSVP', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'RSVP Forms', 'sureforms' ),
@@ -27,6 +27,5 @@ return [
 		'_srfm_submit_width'         => [ '100%' ],
 		'_srfm_submit_width_backend' => [ 'auto' ],
 	],
-	'id'               => 'form-' . Helper::generate_random_id( 2 ),
 	'isPro'            => false,
 ];

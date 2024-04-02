@@ -86,31 +86,31 @@ class Create_New_Form {
 	/**
 	 * Get default post metas for form when creating using template.
 	 *
-	 * @return array<string, array<int, string>> Default meta keys.
+	 * @return array<string, array<int, int|string>> Default meta keys.
 	 * @since x.x.x
 	 */
 	public static function get_default_meta_keys() {
 		return [
 			'_srfm_submit_button_text'            => [ 'SUBMIT' ],
-			'_srfm_show_labels'                   => [ '1' ],
-			'_srfm_show_asterisk'                 => [ '1' ],
+			'_srfm_show_labels'                   => [ 1 ],
+			'_srfm_show_asterisk'                 => [ 1 ],
 			'_srfm_page_form_title'               => [ '' ],
 			'_srfm_single_page_form_title'        => [ '' ],
 			'_srfm_instant_form'                  => [ '' ],
-			'_srfm_form_container_width'          => [ '650' ],
+			'_srfm_form_container_width'          => [ 650 ],
 			'_srfm_color1'                        => [ '#0e4372' ],
 			'_srfm_bg_type'                       => [ 'image' ],
 			'_srfm_bg_image'                      => [ '' ],
 			'_srfm_bg_color'                      => [ '#ffffff' ],
-			'_srfm_fontsize'                      => [ '20' ],
+			'_srfm_fontsize'                      => [ 20 ],
 			'_srfm_label_color'                   => [ '#1f2937' ],
 			'_srfm_help_color'                    => [ '#6b7280' ],
 			'_srfm_input_text_color'              => [ '#4B5563' ],
 			'_srfm_input_placeholder_color'       => [ '#9CA3AF' ],
 			'_srfm_input_bg_color'                => [ '#ffffff' ],
 			'_srfm_input_border_color'            => [ '#D0D5DD' ],
-			'_srfm_input_border_width'            => [ '1' ],
-			'_srfm_input_border_radius'           => [ '4' ],
+			'_srfm_input_border_width'            => [ 1 ],
+			'_srfm_input_border_radius'           => [ 4 ],
 			'_srfm_field_error_color'             => [ '#DC2626' ],
 			'_srfm_field_error_surface_color'     => [ '#EF4444' ],
 			'_srfm_field_error_bg_color'          => [ '#FEF2F2' ],
@@ -118,9 +118,9 @@ class Create_New_Form {
 			'_srfm_btn_bg_type'                   => [ 'filled' ],
 			'_srfm_button_bg_color'               => [ '#0e4372' ],
 			'_srfm_button_border_color'           => [ '#ffffff' ],
-			'_srfm_button_border_width'           => [ '0' ],
+			'_srfm_button_border_width'           => [ 0 ],
 			'_srfm_submit_width_backend'          => [ 'max-content' ],
-			'_srfm_button_border_radius'          => [ '6' ],
+			'_srfm_button_border_radius'          => [ 6 ],
 			'_srfm_submit_alignment'              => [ 'left' ],
 			'_srfm_submit_alignment_backend'      => [ '100%' ],
 			'_srfm_submit_width'                  => [ '' ],
@@ -153,9 +153,8 @@ class Create_New_Form {
 		$nonce = sanitize_text_field( $nonce );
 
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return rest_ensure_response(
+			return wp_send_json_error(
 				[
-					'status'  => false,
 					'message' => __( 'Nonce verification failed.', 'sureforms' ),
 				]
 			);
@@ -166,9 +165,8 @@ class Create_New_Form {
 
 		// Check if JSON decoding was successful and $form_info_obj is an object.
 		if ( json_last_error() !== JSON_ERROR_NONE || ! is_object( $form_info_obj ) ) {
-			return rest_ensure_response(
+			return wp_send_json_error(
 				[
-					'status'  => 'error',
 					'message' => __( 'Invalid JSON format.', 'sureforms' ),
 				]
 			);
@@ -179,9 +177,8 @@ class Create_New_Form {
 		// Check if required properties exist in the $form_info_obj.
 		foreach ( $required_properties as $property ) {
 			if ( ! property_exists( $form_info_obj, $property ) ) {
-				return rest_ensure_response(
+				return wp_send_json_error(
 					[
-						'status'  => 'error',
 						'message' => __( 'Missing required properties in form info.', 'sureforms' ),
 					]
 				);
@@ -211,17 +208,15 @@ class Create_New_Form {
 				}
 			}
 
-			return rest_ensure_response(
+			return new WP_REST_Response(
 				[
-					'status'  => 'success',
-					'message' => __( 'SureForms Form created successfully', 'sureforms' ),
+					'message' => __( 'SureForms Form created successfully.', 'sureforms' ),
 					'id'      => $post_id,
 				]
 			);
 		} else {
-			return rest_ensure_response(
+			return wp_send_json_error(
 				[
-					'status'  => 'error',
 					'message' => __( 'Error creating SureForms Form, ', 'sureforms' ),
 				]
 			);

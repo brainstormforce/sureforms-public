@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return [
 	'title'            => __( 'Subscription Form', 'sureforms' ),
-	'slug'             => __( 'subscription-form', 'sureforms' ),
+	'slug'             => 'subscription-form',
 	'info'             => __( 'Form for Subscription', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Subscription Forms', 'sureforms' ),
@@ -27,6 +27,5 @@ return [
 		'_srfm_submit_width'         => [ '100%' ],
 		'_srfm_submit_width_backend' => [ 'auto' ],
 	],
-	'id'               => 'form-' . Helper::generate_random_id( 2 ),
 	'isPro'            => false,
 ];

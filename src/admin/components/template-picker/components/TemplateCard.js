@@ -5,7 +5,7 @@ import { handleAddNewPost } from '@Utils/Helpers';
 
 const TemplateCard = ( {
 	templateName,
-	templateId,
+	templateSlug,
 	templatePreview,
 	formData,
 	color,
@@ -28,7 +28,7 @@ const TemplateCard = ( {
 			onMouseEnter={ handleMouseEnter }
 			onMouseLeave={ handleMouseLeave }
 		>
-			{ templatePreview && templateId !== 'form-1' ? (
+			{ templatePreview && templateSlug !== 'blank-form' ? (
 				<div
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
@@ -47,18 +47,6 @@ const TemplateCard = ( {
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
-							{ /* Might be used later */ }
-							{ /* <Link
-								to={ {
-									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
-								} }
-							>
-								<button className="srfm-tc-hover-preview-btn srfm-common-btn">
-									{ __( 'Preview', 'sureforms' ) }
-									{ ICONS.eye }
-								</button>
-							</Link> */ }
 						</div>
 					</>
 					<img

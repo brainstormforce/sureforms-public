@@ -16,7 +16,7 @@ use SRFM\Inc\Helper;
 
 return [
 	'title'            => __( 'Newsletter Form', 'sureforms' ),
-	'slug'             => __( 'newsletter-form', 'sureforms' ),
+	'slug'             => 'newsletter-form',
 	'info'             => __( 'Creates a Newsletter Form', 'sureforms' ),
 	'categories'       => [ 'sureforms_form' ],
 	'templateCategory' => __( 'Newsletter Forms', 'sureforms' ),
@@ -27,6 +27,5 @@ return [
 		'_srfm_submit_width'         => [ '100%' ],
 		'_srfm_submit_width_backend' => [ 'auto' ],
 	],
-	'id'               => 'form-' . Helper::generate_random_id( 2 ),
 	'isPro'            => true,
 ];
