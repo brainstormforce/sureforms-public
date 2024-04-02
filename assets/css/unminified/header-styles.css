@@ -11,6 +11,7 @@ body.post-type-sureforms_form .edit-post-header .edit-post-fullscreen-mode-close
   align-items: center;
   align-self: stretch;
   box-shadow: none;
+  left: 6px;
 }
 
 .interface-pinned-items button.components-button:not([aria-label=Settings]) {
