@@ -1,0 +1,10 @@
+{
+  "LABEL": {
+      "name": "title needs formatting",
+      "color": "EEEEEE"
+  },
+  "CHECKS": {
+    "regexp": "SF-[0-9]+",
+    "ignoreLabels" : ["meta", "dependencies", "skip-title-validation", "release-pr"]
+  }
+}
