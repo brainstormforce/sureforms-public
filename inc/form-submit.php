@@ -109,7 +109,7 @@ class Form_Submit {
 
 		$form_data = Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
-			return wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
+			wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
 			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
@@ -140,13 +140,13 @@ class Form_Submit {
 				if ( $move_file && ! isset( $move_file['error'] ) ) {
 					$form_data[ $field ] = $move_file['url'];
 				} else {
-					return wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
+					wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
 				}
 			}
 		}
 
 		if ( ! $form_data['form-id'] ) {
-			return wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
+			wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
@@ -365,29 +365,25 @@ class Form_Submit {
 				}
 			}
 
-			if ( $is_mail_sent ) {
-
-				$modified_message = [];
-				foreach ( $meta_data as $key => $value ) {
-					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-					$modified_message[ $only_key ] = esc_attr( $value );
-				}
-
-				$form_submit_response = [
-					'success'   => true,
-					'form_id'   => $id ? intval( $id ) : '',
-					'emails'    => $emails,
-					'form_name' => $name ? esc_attr( $name ) : '',
-					'message'   => __( 'Form submitted successfully', 'sureforms' ),
-					'data'      => $modified_message,
-				];
-
-				do_action( 'srfm_form_submit', $form_submit_response );
-
-				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-			} else {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+			$modified_message = [];
+			foreach ( $meta_data as $key => $value ) {
+				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$modified_message[ $only_key ] = esc_attr( $value );
 			}
+
+			$form_submit_response = [
+				'success'   => true,
+				'form_id'   => $id ? intval( $id ) : '',
+				'emails'    => $emails,
+				'form_name' => $name ? esc_attr( $name ) : '',
+				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'data'      => $modified_message,
+			];
+
+			do_action( 'srfm_form_submit', $form_submit_response );
+
+			$is_mail_sent ? wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) ) : wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+
 		} else {
 			$response = [
 				'success' => false,
