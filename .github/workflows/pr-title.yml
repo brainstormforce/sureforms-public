@@ -17,8 +17,18 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
+      # Run the PR Title Checker action
+      - name: PR Title Checker
       - uses: thehanimo/pr-title-checker@v1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pass_on_octokit_error: false
           configuration_path: ".github/config/pr-title-checker.json"
+
+      # Add Jira link to PR description if title is valid
+      - name: Update PR description with Jira link
+        if: steps.pr_title.outputs.valid == 'true'
+        run: |
+          echo "Jira: https://brainstormforce.atlassian.net/browse/${{ steps.pr_title.outputs.issue_number }}" > description.tmp
+          cat $GITHUB_EVENT_PATH | jq '.pull_request.body = "$(cat description.tmp)\n\n$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)"' > updated_event.json
+          mv updated_event.json $GITHUB_EVENT_PATH
