@@ -34,7 +34,7 @@ jobs:
       # Add Jira link to PR description if title is valid
       - name: Update PR description with Jira link
         uses: tzkhan/pr-update-action@v2
-        if: steps.pr_title.outputs.valid == 'true'
+        if: success()
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           base-branch-regex: '[A-Za-z\d-_.\\/]+'
