@@ -29,8 +29,14 @@ jobs:
 
       # Add Jira link to PR description if title is valid
       - name: Update PR description with Jira link
+        uses: tzkhan/pr-update-action@v2
         if: steps.pr_title.outputs.valid == 'true'
-        run: |
-          echo "Jira: https://brainstormforce.atlassian.net/browse/${{ steps.pr_title.outputs.issue_number }}" > description.tmp
-          cat $GITHUB_EVENT_PATH | jq '.pull_request.body = "$(cat description.tmp)\n\n$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)"' > updated_event.json
-          mv updated_event.json $GITHUB_EVENT_PATH
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          base-branch-regex: '[A-Za-z\d-_.\\/]+'
+          head-branch-regex: '[A-Za-z\d-_.\\/]+'
+          body-template: |
+            Jira: https://brainstormforce.atlassian.net/browse/${{ steps.pr_title.outputs.issue_number }}
+            ---
+          body-update-action: 'suffix'
+          body-uppercase-base-match: false
