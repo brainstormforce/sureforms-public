@@ -186,6 +186,7 @@ class Generate_Form_Markup {
 
 			// Error colors.
 			$error_surface_var          = Helper::get_meta_value( $id, '_srfm_field_error_surface_color', true, '#EF4444' );
+			$error_shadow_var           = Helper::get_meta_value( $id, '_srfm_field_error_shadow_color', true, '#FEE4E2' );
 			$error_text_var             = Helper::get_meta_value( $id, '_srfm_field_error_color', true, '#DC2626' );
 			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
@@ -218,6 +219,7 @@ class Generate_Form_Markup {
 					--srfm-warning-text-color : <?php echo esc_html( $warning_text_var ); ?>;
 					--srfm-warning-background-color : <?php echo esc_html( $warning_background_color_var ); ?>;
 					--srfm-error-surface-color : <?php echo esc_html( $error_surface_var ); ?>;
+					--srfm-error-shadow-color : <?php echo esc_html( $error_shadow_var ); ?>;
 					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
 					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
 					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;

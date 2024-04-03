@@ -803,6 +803,27 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 				<AdvancedPopColorControl
+					label={ __( 'Shadow Color', 'sureforms' ) }
+					colorValue={ sureformsKeys._srfm_field_error_shadow_color }
+					data={ {
+						value: sureformsKeys._srfm_field_error_shadow_color,
+						label: '_srfm_field_error_shadow_color',
+					} }
+					onColorChange={ ( colorValue ) => {
+						if (
+							colorValue !==
+							sureformsKeys._srfm_field_error_shadow_color
+						) {
+							updateMeta(
+								'_srfm_field_error_shadow_color',
+								colorValue
+							);
+						}
+					} }
+					value={ sureformsKeys._srfm_field_error_shadow_color }
+					isFormSpecific={ true }
+				/>
+				<AdvancedPopColorControl
 					label={ __( 'Background Color', 'sureforms' ) }
 					colorValue={ sureformsKeys._srfm_field_error_bg_color }
 					data={ {

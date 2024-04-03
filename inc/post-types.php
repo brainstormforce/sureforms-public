@@ -435,6 +435,7 @@ class Post_Types {
 				// Error.
 				'_srfm_field_error_color'         => 'string',
 				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_shadow_color'  => 'string',
 				'_srfm_field_error_bg_color'      => 'string',
 				// Submit Button.
 				'_srfm_button_text_color'         => 'string',

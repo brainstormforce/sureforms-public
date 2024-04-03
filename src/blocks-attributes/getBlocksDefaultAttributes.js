@@ -37,6 +37,7 @@ const defaultKeys = {
 	// Error
 	_srfm_field_error_color: { default: '#DC2626' },
 	_srfm_field_error_surface_color: { default: '#EF4444' },
+	_srfm_field_error_shadow_color: { default: '#FEE4E2' },
 	_srfm_field_error_bg_color: { default: '#FEF2F2' },
 	// Submit
 	_srfm_button_text_color: { default: '#ffffff' },
