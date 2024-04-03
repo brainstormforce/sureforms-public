@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Run the PR Title Checker action
-      - name: PR Title Checker
       - uses: thehanimo/pr-title-checker@v1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
