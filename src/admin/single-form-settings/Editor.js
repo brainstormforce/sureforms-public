@@ -114,8 +114,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
-	const isButtonBlockPresent = blocks.some(
-		( block ) => block.name === 'srfm/button'
+	const isInlineButtonBlockPresent = blocks.some(
+		( block ) => block.name === 'srfm/inline-button'
 	);
 	const deviceType = useDeviceType();
 
@@ -389,7 +389,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
-				if ( isButtonBlockPresent ) {
+				if ( isInlineButtonBlockPresent ) {
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
 					);
@@ -398,7 +398,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					}
 				}
 
-				if ( ! submitBtnContainer && ! isButtonBlockPresent ) {
+				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -409,7 +409,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureformsKeys, blockCount, isButtonBlockPresent ] );
+	}, [ deviceType, sureformsKeys, blockCount, isInlineButtonBlockPresent ] );
 
 	useEffect( () => {
 		//quick action sidebar
@@ -495,10 +495,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 							setEnableQuickActionSidebar
 						}
 						isPageBreak={ isPageBreak }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings defaultKeys={ defaultKeys } />
+					<StyleSettings
+						defaultKeys={ defaultKeys }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
+					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<AdvancedSettings defaultKeys={ defaultKeys } />

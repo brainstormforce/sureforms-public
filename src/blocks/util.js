@@ -47,7 +47,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/url',
-		'srfm/button',
+		'srfm/inline-button',
 	] );
 
 	if ( exclude ) {
