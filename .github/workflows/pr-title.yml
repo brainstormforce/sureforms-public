@@ -17,12 +17,15 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       # Run the PR Title Checker action
-      - uses: thehanimo/pr-title-checker@v1.4.0
+      - name: PR Title Checker
+        uses: thehanimo/pr-title-checker@v1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           pass_on_octokit_error: false
-          configuration_path: ".github/config/pr-title-checker.json"
+          configuration_path: ".github/pr-title-checker-config.json"
 
       # Add Jira link to PR description if title is valid
       - name: Update PR description with Jira link
