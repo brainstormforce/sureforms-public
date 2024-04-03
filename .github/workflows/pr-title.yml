@@ -1,0 +1,45 @@
+name: "PR Title Checker"
+on:
+  pull_request:
+    branches:
+      - master
+      - next-release
+      - dev
+    types:
+      - opened
+      - edited
+      - synchronize
+      - labeled
+      - unlabeled
+
+jobs:
+  check:
+    if: "!contains(github.event.pull_request.labels.*.name, 'skip-title-check') && github.actor != 'dependabot[bot]'"
+    runs-on: ubuntu-latest
+    steps:
+
+      # Run the PR Title Checker action
+      - name: PR Title Checker
+        id: title_check
+        uses: thehanimo/pr-title-checker@v1.4.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pass_on_octokit_error: false
+          configuration_path: ".github/config/pr-title-checker.json"
+
+      - name: Extract First Word from PR Title
+        id: extract_first_word
+        if: steps.title_check.outcome == 'success'
+        run: echo "::set-output name=first_word::$(echo ${{ github.event.pull_request.title }} | cut -d' ' -f1)"
+      # Add Jira link to PR description if title is valid
+      - name: Update PR description with Jira link
+        uses: tzkhan/pr-update-action@v2
+        if: steps.title_check.outcome == 'success'
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          base-branch-regex: '[A-Za-z\d-_.\\/]+'
+          head-branch-regex: '[A-Za-z\d-_.\\/]+'
+          body-template: |
+            Jira: https://brainstormforce.atlassian.net/browse/${{ steps.extract_first_word.outputs.first_word }}
+          body-update-action: 'prefix'
+          body-uppercase-base-match: false
