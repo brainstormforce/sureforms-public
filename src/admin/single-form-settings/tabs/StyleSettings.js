@@ -153,6 +153,12 @@ function StyleSettings( props ) {
 				? sureformsKeys._srfm_input_border_color
 				: '#D0D5DD'
 		);
+		root.style.setProperty(
+			'--srfm-shadow-color',
+			sureformsKeys._srfm_input_shadow_color
+				? sureformsKeys._srfm_input_shadow_color
+				: '#D0D5DD'
+		);
 		// Input border width
 		root.style.setProperty(
 			'--srfm-border',
@@ -309,6 +315,12 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_input_border_color' ) {
 			root.style.setProperty(
 				'--srfm-border-color',
+				value ? value : '#D0D5DD'
+			);
+		}
+		if ( option === '_srfm_input_shadow_color' ) {
+			root.style.setProperty(
+				'--srfm-shadow-color',
 				value ? value : '#D0D5DD'
 			);
 		}
@@ -692,6 +704,27 @@ function StyleSettings( props ) {
 						}
 					} }
 					value={ sureformsKeys._srfm_input_border_color }
+					isFormSpecific={ true }
+				/>
+				<AdvancedPopColorControl
+					label={ __( 'Shadow Color', 'sureforms' ) }
+					colorValue={ sureformsKeys._srfm_input_shadow_color }
+					data={ {
+						value: sureformsKeys._srfm_input_shadow_color,
+						label: '_srfm_input_shadow_color',
+					} }
+					onColorChange={ ( colorValue ) => {
+						if (
+							colorValue !==
+							sureformsKeys._srfm_input_shadow_color
+						) {
+							updateMeta(
+								'_srfm_input_shadow_color',
+								colorValue
+							);
+						}
+					} }
+					value={ sureformsKeys._srfm_input_shadow_color }
 					isFormSpecific={ true }
 				/>
 				<p className="components-base-control__help" />

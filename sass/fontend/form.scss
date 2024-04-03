@@ -78,11 +78,11 @@
 					border-radius: var( --srfm-border-radius );
 
 					&.input-active {
-						box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+						box-shadow: 0px 0px 0px 3px var( --srfm-shadow-color );
 					}
 
 					.ts-control {
-						font-size: 0.875em;
+						font-size: inherit;
 						position: relative;
 						line-height: normal;
 						width: 100%;
@@ -113,7 +113,7 @@
 
 						input {
 							line-height: normal;
-							font-size: 0.875em;
+							font-size: inherit;
 							height: auto;
 							width: auto;
 							min-width: auto;
@@ -130,7 +130,7 @@
 					}
 
 					.ts-dropdown {
-						margin-top: 0;
+						margin-top: 2px;
 						color: inherit;
 						font-family: inherit;
 						font-size: inherit;

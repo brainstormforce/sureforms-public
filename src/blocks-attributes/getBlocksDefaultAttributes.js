@@ -31,6 +31,7 @@ const defaultKeys = {
 	_srfm_input_placeholder_color: { default: '#9CA3AF' },
 	_srfm_input_bg_color: { default: '#ffffff' },
 	_srfm_input_border_color: { default: '#D0D5DD' },
+	_srfm_input_shadow_color: { default: '#D0D5DD' },
 	_srfm_input_border_width: { default: 1 },
 	_srfm_input_border_radius: { default: 4 },
 	// Error

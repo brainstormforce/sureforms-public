@@ -96,10 +96,11 @@
 				border-radius: var( --srfm-border-radius );
 				background-color: var( --srfm-base-background-color );
 				outline: none;
-				transition: 0.3s;
+				transition: 0.3s ease-out;
 
 				&:focus {
-					box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+					// box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+					box-shadow: 0px 0px 0px 3px var( --srfm-shadow-color );
 				}
 
 				&::placeholder {

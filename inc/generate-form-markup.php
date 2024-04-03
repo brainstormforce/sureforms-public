@@ -165,6 +165,7 @@ class Generate_Form_Markup {
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
 			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
+			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
 			$light_background_var  = '#F9FAFB';
 
@@ -203,6 +204,7 @@ class Generate_Form_Markup {
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
 					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
 					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
+					--srfm-shadow-color : <?php echo esc_html( $shadow_color_var ); ?>;
 					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
 					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
