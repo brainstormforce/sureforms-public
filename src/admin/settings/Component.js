@@ -7,6 +7,7 @@ import toast, { Toaster, ToastBar } from 'react-hot-toast';
 
 import { navigation } from './Navigation';
 import GeneralPage from './pages/General';
+import ValidationsPage from './pages/Validations';
 import EmailPage from './pages/Email';
 import SecurityPage from './pages/Security';
 
@@ -35,7 +36,9 @@ const Component = ( { path } ) => {
 		srfm_v3_secret_key: '',
 	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
-	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState( {} );
+	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
+		{}
+	);
 
 	// Options to fetch from API.
 	const optionsToFetch = [
@@ -144,12 +147,17 @@ const Component = ( { path } ) => {
 	const debouncedSave = useDebouncedCallback( ( newFormData, tab ) => {
 		try {
 			if ( tab === 'general-settings-dynamic-opt' ) {
-				const hasEmptyValue = Object.values( newFormData ).some( ( value ) => value.trim() === '' );
+				const hasEmptyValue = Object.values( newFormData ).some(
+					( value ) => value.trim() === ''
+				);
 				if ( hasEmptyValue ) {
 					toast.dismiss();
-					toast.error( __( 'This field cannot be left blank.', 'sureforms' ), {
-						duration: 0,
-					} );
+					toast.error(
+						__( 'This field cannot be left blank.', 'sureforms' ),
+						{
+							duration: 0,
+						}
+					);
 					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
 					setTimeout( () => {
 						toast.dismiss();
@@ -246,7 +254,13 @@ const Component = ( { path } ) => {
 						loading={ loading }
 						generalTabOptions={ generalTabOptions }
 						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'validation-settings' === path && (
+					<ValidationsPage
+						loading={ loading }
 						dynamicBlockOptions={ dynamicBlockOptions }
+						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
 				{ 'email-settings' === path && (

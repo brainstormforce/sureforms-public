@@ -11,7 +11,6 @@ const Breadcrumbs = () => {
 
 	const page = query.get( 'page' );
 	const method = query.get( 'method' );
-	const templateId = query.get( 'template-id' );
 
 	return (
 		<div className="srfm-header-breadcrumb-container">
@@ -51,12 +50,6 @@ const Breadcrumbs = () => {
 						{ __( 'Select a Template', 'sureforms' ) }
 					</span>
 				</Link>
-			) }
-			{ templateId && (
-				<span className="srfm-header-breadcrumb">
-					{ ICONS.breadcrumb }
-					{ __( 'Template Preview', 'sureforms' ) }
-				</span>
 			) }
 		</div>
 	);
