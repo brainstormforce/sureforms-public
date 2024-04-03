@@ -4,7 +4,7 @@
       "color": "EEEEEE"
   },
   "CHECKS": {
-    "regexp": "SF-[0-9]+",
+    "regexp": "^SF-[0-9]+ - ",
     "ignoreLabels" : ["meta", "dependencies", "skip-title-validation", "release-pr"]
   }
 }
