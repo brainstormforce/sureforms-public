@@ -78,10 +78,6 @@
 				.srfm-dropdown-common {
 					border-radius: var(--srfm-border-radius);
 
-					&.input-active {
-						box-shadow: 0px 0px 0px 3px var(--srfm-shadow-color);
-					}
-
 					.ts-control {
 						font-size: inherit;
 						position: relative;
@@ -140,6 +136,7 @@
 						left: -1px;
 						width: calc(100% + 2px);
 						border: 1px solid var(--srfm-border-color);
+						border-top: none;
 					}
 				}
 
@@ -170,30 +167,53 @@
 				display: none;
 			}
 		}
-	}
 
-	.srfm-submit-button {
-		.srfm-loader {
-			display: none;
-			border: 2px solid var(--srfm-base-background-color);
-			border-radius: 50%;
-			border-top: 2px solid var(--srfm-primary-color);
-			width: 1.2em;
-			height: 1.2em;
-			-webkit-animation: spin 2s linear infinite;
-			animation: spin 2s linear infinite;
-			margin-left: 0.5em;
-
-			&.srfm-active {
-				display: block;
+		.srfm-block:not(.srfm-error) {
+			.srfm-dropdown-common-wrap {
+				.srfm-dropdown-common {
+					&.input-active {
+						box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-primary-color), 0px 0px 0px 3px var(--srfm-shadow-color);
+						border-color: transparent;
+					}
+				}
 			}
 		}
 
-		.srfm-submit-wrap {
-			display: flex;
-			flex-wrap: wrap;
-			align-items: center;
-			justify-content: center;
+		.srfm-block.srfm-error {
+			.srfm-dropdown-common-wrap {
+				.srfm-dropdown-common {
+					&.input-active {
+						box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-error-surface-color), 0px 0px 0px 3px var(--srfm-error-shadow-color);
+						border-color: transparent;
+					}
+				}
+			}
+		}
+
+
+		.srfm-submit-button {
+			.srfm-loader {
+				display: none;
+				border: 2px solid var(--srfm-base-background-color);
+				border-radius: 50%;
+				border-top: 2px solid var(--srfm-primary-color);
+				width: 1.2em;
+				height: 1.2em;
+				-webkit-animation: spin 2s linear infinite;
+				animation: spin 2s linear infinite;
+				margin-left: 0.5em;
+
+				&.srfm-active {
+					display: block;
+				}
+			}
+
+			.srfm-submit-wrap {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				justify-content: center;
+			}
 		}
 	}
 
