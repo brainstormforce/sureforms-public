@@ -34,19 +34,22 @@
 		.srfm-wrn-text-ctn {
 			display: flex;
 			flex-direction: column;
-			margin-left: 0.5em;
 			gap: 0.25em;
 		}
 
 		.srfm-wrn-title {
-			font-size: 0.875em;
+			font-size: 0.8em;
 			font-weight: 600;
 			color: #b54708;
 			line-height: 1.25em;
 		}
 
+		a.srfm-wrn-title {
+			text-decoration: none;
+		}
+
 		.srfm-wrn-description {
-			font-size: 0.875em;
+			font-size: 0.8em;
 			font-weight: 400;
 			color: #b54708;
 			line-height: 1.25em;

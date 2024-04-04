@@ -22,7 +22,7 @@ module.exports = function ( grunt ) {
 						src: [ '**/*.scss', '!blocks/default/components/**/*.scss' ],
 						dest: 'assets/css/unminified',
 						ext: '.css',
-					}
+					},
 				],
 			},
 		},
@@ -65,13 +65,12 @@ module.exports = function ( grunt ) {
 						dest: 'assets/css/minified',
 						cwd: 'assets/css/unminified',
 						ext: '.css',
-						rename: function(dest, src) {
-							if (src.indexOf('-rtl.css') !== -1) {
-								return dest + '/' + src.replace('-rtl.css', '.min-rtl.css');
-							} else {
-								return dest + '/' + src.replace('.css', '.min.css');
+						rename( dest, src ) {
+							if ( src.indexOf( '-rtl.css' ) !== -1 ) {
+								return dest + '/' + src.replace( '-rtl.css', '.min-rtl.css' );
 							}
-						}
+							return dest + '/' + src.replace( '.css', '.min.css' );
+						},
 					},
 				],
 
@@ -185,7 +184,7 @@ module.exports = function ( grunt ) {
 						dest: 'assets/js/minified/',
 						cwd: 'assets/js/unminified/',
 						ext: '.min.js',
-					}
+					},
 				],
 			},
 		},
