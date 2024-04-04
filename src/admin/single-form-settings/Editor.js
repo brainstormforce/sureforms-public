@@ -65,13 +65,11 @@ const defaultKeys = {
 	_srfm_input_placeholder_color: '#9CA3AF',
 	_srfm_input_bg_color: '#ffffff',
 	_srfm_input_border_color: '#D0D5DD',
-	_srfm_input_shadow_color: '#D0D5DD',
 	_srfm_input_border_width: 1,
 	_srfm_input_border_radius: 4,
 	// Error
 	_srfm_field_error_color: '#DC2626',
 	_srfm_field_error_surface_color: '#EF4444',
-	_srfm_field_error_shadow_color: '#FEE4E2',
 	_srfm_field_error_bg_color: '#FEF2F2',
 	// Submit Button
 	_srfm_inherit_theme_button: false,
@@ -246,12 +244,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 								'#D0D5DD',
 						},
 						{
-							property: '--srfm-shadow-color',
-							value:
-								sureformsKeys._srfm_input_shadow_color ||
-								'#D0D5DD',
-						},
-						{
 							property: '--srfm-border',
 							value:
 								sureformsKeys._srfm_input_border_width + 'px' ||
@@ -275,12 +267,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 							value:
 								sureformsKeys._srfm_field_error_surface_color ||
 								'#EF4444',
-						},
-						{
-							property: '--srfm-field-error-shadow-color',
-							value:
-								sureformsKeys._srfm_field_error_shadow_color ||
-								'#FEE4E2',
 						},
 						{
 							property: '--srfm-field-error-bg-color',

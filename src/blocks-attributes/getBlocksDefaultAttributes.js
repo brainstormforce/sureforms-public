@@ -31,13 +31,11 @@ const defaultKeys = {
 	_srfm_input_placeholder_color: { default: '#9CA3AF' },
 	_srfm_input_bg_color: { default: '#ffffff' },
 	_srfm_input_border_color: { default: '#D0D5DD' },
-	_srfm_input_shadow_color: { default: '#D0D5DD' },
 	_srfm_input_border_width: { default: 1 },
 	_srfm_input_border_radius: { default: 4 },
 	// Error
 	_srfm_field_error_color: { default: '#DC2626' },
 	_srfm_field_error_surface_color: { default: '#EF4444' },
-	_srfm_field_error_shadow_color: { default: '#FEE4E2' },
 	_srfm_field_error_bg_color: { default: '#FEF2F2' },
 	// Submit
 	_srfm_button_text_color: { default: '#ffffff' },

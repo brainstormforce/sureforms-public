@@ -205,7 +205,7 @@ class Generate_Form_Markup {
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
 					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
 					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
-					--srfm-shadow-color : <?php echo esc_html( $shadow_color_var ); ?>;
+					--srfm-shadow-color : <?php echo esc_html( $primary_color_var . '30' ); ?>;
 					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
 					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
@@ -219,7 +219,7 @@ class Generate_Form_Markup {
 					--srfm-warning-text-color : <?php echo esc_html( $warning_text_var ); ?>;
 					--srfm-warning-background-color : <?php echo esc_html( $warning_background_color_var ); ?>;
 					--srfm-error-surface-color : <?php echo esc_html( $error_surface_var ); ?>;
-					--srfm-error-shadow-color : <?php echo esc_html( $error_shadow_var ); ?>;
+					--srfm-error-shadow-color : <?php echo esc_html( $error_surface_var . '30' ); ?>;
 					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
 					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
 					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;
