@@ -275,6 +275,16 @@
   width: 100%;
   margin-bottom: 1.2em;
 }
+.srfm-form-container .srfm-form .srfm-submit-container .wp-block-button {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 8px;
+}
+.srfm-form-container .srfm-form .srfm-submit-container .wp-block-button .srfm-submit-button {
+  width: -moz-fit-content;
+  width: fit-content;
+}
 .srfm-form-container .srfm-form .srfm-submit-container.hide {
   display: none;
 }
