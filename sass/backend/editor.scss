@@ -7,6 +7,16 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// hide site icon in the SureForms editor.
+	.edit-post-fullscreen-mode-close_site-icon {
+		display: none;
+	}
+
+	// Make the field preview container background white.
+	.block-editor-block-preview__container {
+		background-color: #fff;
+	}
+
 	// Styling for the sidebar - WP6.4.
 	.edit-post-sidebar {
 		> .components-panel {

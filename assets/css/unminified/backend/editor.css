@@ -4,6 +4,12 @@ body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .componen
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.srfm--panel.is-opened {
   display: block;
 }
+body.post-type-sureforms_form .edit-post-fullscreen-mode-close_site-icon {
+  display: none;
+}
+body.post-type-sureforms_form .block-editor-block-preview__container {
+  background-color: #fff;
+}
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.is-opened {
   padding: 0 !important;
   width: 100%;
