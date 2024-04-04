@@ -253,11 +253,11 @@ class Generate_Form_Markup {
 						<span class="srfm-wrn-description">
 						<?php echo esc_html__( 'This is a preview. To view the forms in the frontend, activate the instant form from the editor settings.', 'sureforms' ); ?>
 						</span>
-						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post='. $id .'&action=edit' ) )?>">
+						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
 							<?php echo esc_html__( 'Go to Settings', 'sureforms' ); ?>
 						</a>
 					</div>
-				</div>
+				</div> 
 				<?php
 			}
 			?>
