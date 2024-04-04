@@ -22,6 +22,14 @@ artifact/
 
 assets/build/
 
+assets/css/unminified/*
+assets/css/minified/*
+!assets/css/minified/deps/
+!assets/css/minified/block-styles.*
+
+assets/js/minified/*
+!assets/js/minified/deps/
+
 # Other
 *.zip
 
