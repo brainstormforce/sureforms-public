@@ -41,6 +41,7 @@ const defaultKeys = {
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
 	_srfm_instant_form: false,
+	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'SUBMIT',
 	// Page Break
@@ -149,6 +150,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			return;
 		}
 		updateMeta( '_srfm_is_page_break', isPageBreak );
+		if ( sureformsKeys._srfm_is_inline_button === undefined ) {
+			return;
+		}
+		updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
