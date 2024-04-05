@@ -24,7 +24,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		fieldWidth,
-		label,
 		help,
 		placeholder,
 		block_id,
@@ -87,17 +86,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }

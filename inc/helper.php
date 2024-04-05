@@ -134,7 +134,7 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';

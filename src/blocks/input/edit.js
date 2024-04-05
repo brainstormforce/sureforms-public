@@ -23,7 +23,6 @@ import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		label,
 		fieldWidth,
 		placeholder,
 		help,
@@ -82,17 +81,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
