@@ -560,6 +560,18 @@ class Post_Types {
 			]
 		);
 
+		// Webhook Metas.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_webhook_integration',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => true,
+			]
+		);
+
 		// conditional logic.
 		do_action( 'srfm_register_conditional_logic_post_meta' );
 

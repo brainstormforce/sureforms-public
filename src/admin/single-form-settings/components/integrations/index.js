@@ -1,12 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
-import WebhookIcon from '@Image/webhook.js';
-const Integration = () => {
+import Webhooks from './webhooks';
+
+const Integration = ( { setSelectedTab } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
-			component: <UpsellSureFormsPro />,
+			component: <AllIntegrations
+				setSelectedTab={ setSelectedTab }
+			/>,
 		},
 		{
 			title: __( 'Free Extension', 'sureforms' ),
@@ -39,29 +42,11 @@ const Integration = () => {
 	);
 };
 
-const UpsellSureFormsPro = () => {
+const AllIntegrations = ( { setSelectedTab } ) => {
 	return (
-		<>
-			<div className="srfm-modal-card-content">
-				<div className="srfm-modal-card-content-inner">
-					<WebhookIcon />
-					<div>
-						<div className="srfm-modal-card-title">
-							{ __( 'Webhooks', 'sureforms' ) }
-						</div>
-						<p className="srfm-modal-card-description">
-							{ __( 'Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
-						</p>
-					</div>
-				</div>
-				<div className="srfm-button">
-					<button className="srfm-button-primary"	>
-						{ __( 'Upgrade to Pro', 'sureforms' ) }
-					</button>
-				</div>
-
-			</div>
-		</>
+		<Webhooks
+			setSelectedTab={ setSelectedTab }
+		/>
 	);
 };
 
