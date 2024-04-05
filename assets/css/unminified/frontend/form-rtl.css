@@ -66,7 +66,7 @@
   border-radius: var(--srfm-border-radius);
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap .srfm-dropdown-common .ts-control {
-  font-size: inherit;
+  font-size: 0.8em;
   position: relative;
   line-height: normal;
   width: 100%;
@@ -129,6 +129,9 @@
 }
 .srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap select {
   display: block;
+}
+.srfm-form-container .srfm-form .srfm-block .srfm-dropdown-common-wrap:not(.srfm-address-country-wrap) .srfm-dropdown-common .ts-dropdown {
+  font-size: 0.8em;
 }
 .srfm-form-container .srfm-form .srfm-block.srfm-phone-block .iti__country-list {
   display: block;

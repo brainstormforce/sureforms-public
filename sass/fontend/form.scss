@@ -44,7 +44,7 @@
 			line-height: 1.25em;
 		}
 
-		a.srfm-wrn-title{
+		a.srfm-wrn-title {
 			text-decoration: none;
 		}
 
@@ -82,7 +82,7 @@
 					border-radius: var(--srfm-border-radius);
 
 					.ts-control {
-						font-size: inherit;
+						font-size: 0.8em;
 						position: relative;
 						line-height: normal;
 						width: 100%;
@@ -145,6 +145,14 @@
 
 				select {
 					display: block;
+				}
+			}
+
+			.srfm-dropdown-common-wrap:not(.srfm-address-country-wrap) {
+				.srfm-dropdown-common {
+					.ts-dropdown {
+						font-size: 0.8em;
+					}
 				}
 			}
 

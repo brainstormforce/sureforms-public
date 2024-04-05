@@ -42,6 +42,7 @@
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-input-address-country .ts-control {
   border: 0;
+  font-size: inherit;
 }
 .srfm-form-container .srfm-form .srfm-address-block .srfm-block-wrap .srfm-address-country-wrap .srfm-address-icon {
   position: absolute;
