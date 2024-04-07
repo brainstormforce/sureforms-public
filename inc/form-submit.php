@@ -301,10 +301,6 @@ class Form_Submit {
 		// If so, send email and do not store entries.
 		if ( $gdpr && $do_not_store_entries ) {
 
-			if ( ! $is_mail_sent ) {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-			}
-
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
@@ -322,7 +318,16 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
-			wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
+			$response = [
+				'success' => true,
+				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'data'    => [
+					'name' => $name,
+				],
+			];
+
+			return $response;
+
 		}
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
@@ -398,10 +403,6 @@ class Form_Submit {
 				],
 			];
 
-			if ( ! $is_mail_sent ) {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-			}
-
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
@@ -418,8 +419,6 @@ class Form_Submit {
 			];
 
 			do_action( 'srfm_form_submit', $form_submit_response );
-
-			wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
 		} else {
 			$response = [
 				'success' => false,
