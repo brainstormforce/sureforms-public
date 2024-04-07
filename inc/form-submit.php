@@ -265,10 +265,11 @@ class Form_Submit {
 
 		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
 
-		$gdpr = is_array( $compliance ) && $compliance ? $compliance[0]['gdpr'] : '';
+		$gdpr = is_array( $compliance ) && isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 
+		// If GDPR is enabled, we don't log IP address, browser and device.
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
