@@ -58,15 +58,19 @@ class Compliance_Settings {
 		foreach ( $form_ids as $form_id ) {
 			$compliance_settings = get_post_meta( $form_id, '_srfm_compliance', true );
 
+			$gdpr                   = false;
+			$do_not_store_entries   = false;
 			$is_auto_delete_entries = false;
 			$days_old               = 0;
 
-			if ( is_array( $compliance_settings ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['auto_delete_entries'] ) ) {
+			if ( is_array( $compliance_settings ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['gdpr'], $compliance_settings[0]['do_not_store_entries'], $compliance_settings[0]['auto_delete_entries'] ) ) {
+				$gdpr                   = $compliance_settings[0]['gdpr'];
+				$do_not_store_entries   = $compliance_settings[0]['do_not_store_entries'];
 				$is_auto_delete_entries = $compliance_settings[0]['auto_delete_entries'];
 				$days_old               = $compliance_settings[0]['auto_delete_days'];
 			}
 
-			if ( $is_auto_delete_entries ) {
+			if ( $gdpr && ! $do_not_store_entries && $is_auto_delete_entries ) {
 				self::delete_old_entries( $form_id, $days_old );
 			}
 		}
@@ -84,7 +88,7 @@ class Compliance_Settings {
 	public static function delete_old_entries( $days_old, $form_id ) {
 		$entries = Helper::get_entries_form_ids( $days_old, [ $form_id ] );
 
-		if ( ! is_array( $entries ) && empty( $entries ) ) {
+		if ( ! is_array( $entries ) || empty( $entries ) ) {
 			return;
 		}
 

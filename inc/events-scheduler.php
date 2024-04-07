@@ -34,7 +34,7 @@ class Events_Scheduler {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function srfm_schedule_daily_action() {
+	public function srfm_schedule_daily_action() {
 		// Check if the action is not scheduled. Then schedule a new action.
 		if ( false === as_has_scheduled_action( 'srfm_daily_scheduled_action' ) ) {
 			// Shedule a recurring action srfm_daily_scheduled_events that runs every 24 hours.
