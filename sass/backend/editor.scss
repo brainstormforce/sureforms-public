@@ -7,6 +7,11 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// Make the field preview container background white.
+	.block-editor-block-preview__container {
+		background-color: #fff;
+	}
+
 	// Styling for the sidebar - WP6.4.
 	.edit-post-sidebar {
 		> .components-panel {
@@ -255,9 +260,8 @@ body.post-type-sureforms_form {
 	.srfm-submit-btn-container {
 		position: relative;
 		max-width: calc( 620px - 0em );
-		margin: 0 auto;
 		padding: 0 0.3em;
-		margin-top: 1.2em;
+		margin: 1.2em auto 6em auto;
 
 		.srfm-btn-bg-color {
 			border-radius: var( --srfm-btn-border-radius );
