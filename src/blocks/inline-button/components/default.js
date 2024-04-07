@@ -12,35 +12,37 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 
 	return (
 		<>
-			<div
-				style={ {
-					height: '1em',
-				} }
-			/>
-			<button
-				style={ {
-					width: '100%',
-					border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
-					borderRadius: 'var( --srfm-btn-border-radius )',
-				} }
-				className={ `srfm-button srfm-submit-button srfm-inline-submit-button ${
-					sureformsKeys._srfm_inherit_theme_button
-						? 'wp-block-button__link'
-						: 'srfm-inline-submit-bg-color'
-				} ` }
-			>
-				<RichText
-					value={ label }
-					onChange={ ( value ) => {
-						setAttributes( {
-							label: decodeHtmlEntities( value ),
-						} );
+			<div className="srfm-block-wrap">
+				<div className="srfm-block-label">
+					{ /* empty space to align the button with the input field */ }
+					‎
+				</div>
+				<button
+					style={ {
+						width: '100%',
+						border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
+						borderRadius: 'var( --srfm-btn-border-radius )',
+						lineHeight: 'normal',
 					} }
-					multiline={ false }
-					id={ blockID }
-					allowedFormats={ [] }
-				/>
-			</button>
+					className={ `rfm-input-common srfm-button srfm-submit-button srfm-inline-submit-button ${
+						sureformsKeys._srfm_inherit_theme_button
+							? 'wp-block-button__link'
+							: 'srfm-inline-submit-bg-color'
+					} ` }
+				>
+					<RichText
+						value={ label }
+						onChange={ ( value ) => {
+							setAttributes( {
+								label: decodeHtmlEntities( value ),
+							} );
+						} }
+						multiline={ false }
+						id={ blockID }
+						allowedFormats={ [] }
+					/>
+				</button>
+			</div>
 		</>
 	);
 };
