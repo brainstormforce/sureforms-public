@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl, TextControl, BaseControl } from '@wordpress/components';
+import { ToggleControl, TextControl } from '@wordpress/components';
 
 const Compliance = ( { complianceData } ) => {
 	const { editPost } = useDispatch( editorStore );
@@ -99,7 +99,7 @@ const Compliance = ( { complianceData } ) => {
 									{ complianceData[ 0 ]
 										.auto_delete_entries && (
 										<div>
-											<label class="components-flex-item components-flex-block components-toggle-control__label">
+											<label className="components-flex-item components-flex-block components-toggle-control__label">
 												{ __(
 													'Specify how many days old entries will be deleted for this form',
 													'sureforms'

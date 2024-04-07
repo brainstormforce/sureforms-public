@@ -37,7 +37,7 @@ class Compliance_Settings {
 	 * @since x.x.x
 	 * @return void
 	 */
-	public static function pre_auto_delete_entries() {
+	public function pre_auto_delete_entries() {
 
 		// Get all the sureforms form post ids.
 		$form_ids = [];
