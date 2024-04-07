@@ -265,7 +265,7 @@ class Form_Submit {
 
 		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
 
-		$do_not_store_entries = is_array( $compliance ) && $compliance ? $compliance[0]['do_not_store_entries'] : '';
+		$do_not_store_entries = is_array( $compliance ) && isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
 
 		$meta_data = [];
 
