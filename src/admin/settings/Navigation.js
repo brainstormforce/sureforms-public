@@ -3,6 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 
+import {
+	MdSettings,
+	MdWarningAmber,
+	MdOutlineMail,
+	MdOutlineSecurity,
+} from 'react-icons/md';
+
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
@@ -11,22 +18,22 @@ export const navigation = [
 	{
 		name: __( 'General', 'sureforms' ),
 		slug: 'general-settings',
-		icon: parse( svgIcons.vertical_settings ),
+		icon: <MdSettings size={ 20 } color="#1E293B" />,
 	},
 	{
 		name: __( 'Validations', 'sureforms' ),
 		slug: 'validation-settings',
-		icon: parse( svgIcons.validations ),
+		icon: <MdWarningAmber size={ 20 } color="#1E293B" />,
 	},
 	{
 		name: __( 'Email', 'sureforms' ),
 		slug: 'email-settings',
-		icon: parse( svgIcons.email ),
+		icon: <MdOutlineMail size={ 20 } color="#1E293B" />,
 	},
 	{
 		name: __( 'Security', 'sureforms' ),
 		slug: 'security-settings',
-		icon: parse( svgIcons.lock ),
+		icon: <MdOutlineSecurity size={ 20 } color="#1E293B" />,
 	},
 ];
 
