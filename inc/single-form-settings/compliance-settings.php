@@ -58,12 +58,12 @@ class Compliance_Settings {
 		foreach ( $form_ids as $form_id ) {
 			$compliance_settings = get_post_meta( $form_id, '_srfm_compliance', true );
 
+			$is_auto_delete_entries = false;
+			$days_old               = 0;
+
 			if ( is_array( $compliance_settings ) && is_array( $compliance_settings[0] ) && isset( $compliance_settings[0]['auto_delete_entries'] ) ) {
 				$is_auto_delete_entries = $compliance_settings[0]['auto_delete_entries'];
 				$days_old               = $compliance_settings[0]['auto_delete_days'];
-			} else {
-				$is_auto_delete_entries = false;
-				$days_old               = 0;
 			}
 
 			if ( $is_auto_delete_entries ) {
@@ -84,7 +84,7 @@ class Compliance_Settings {
 	public static function delete_old_entries( $days_old, $form_id ) {
 		$entries = Helper::get_entries_form_ids( $days_old, [ $form_id ] );
 
-		if ( empty( $entries ) ) {
+		if ( ! is_array( $entries ) && empty( $entries ) ) {
 			return;
 		}
 
