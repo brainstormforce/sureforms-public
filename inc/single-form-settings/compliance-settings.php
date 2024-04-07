@@ -70,6 +70,7 @@ class Compliance_Settings {
 				$days_old               = $compliance_settings[0]['auto_delete_days'];
 			}
 
+			// Only delete entries if gdpr, is_auto_delete_entries are enabled and do_not_store_entries is not enabled.
 			if ( $gdpr && ! $do_not_store_entries && $is_auto_delete_entries ) {
 				self::delete_old_entries( $form_id, $days_old );
 			}
