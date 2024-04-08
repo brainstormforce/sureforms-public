@@ -23,7 +23,8 @@ export const InlineButton = ( { attributes, blockID, setAttributes } ) => {
 						border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
 						borderRadius: 'var( --srfm-btn-border-radius )',
 						lineHeight: 'normal',
-						height: '45px',
+						// height: '45px',
+						padding: '1em',
 					} }
 					className={ `rfm-input-common srfm-button srfm-submit-button srfm-inline-submit-button ${
 						sureformsKeys._srfm_inherit_theme_button

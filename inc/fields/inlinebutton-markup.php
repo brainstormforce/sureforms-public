@@ -33,11 +33,14 @@ class Inlinebutton_Markup extends Base {
 	public function markup( $attributes, $content = '' ) {
 
 		$id                = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+		$block_id          = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$button_text       = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$btn_from_theme    = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 		$is_page_break     = Helper::get_meta_value( $id, '_srfm_is_page_break' );
-
-		$width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $id, $block_id );
+		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$slug            = 'inline-button';
 
 		$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
 
@@ -65,15 +68,20 @@ class Inlinebutton_Markup extends Base {
 			}
 		}
 
-		$btn_height = "40px";
+		$theme_name = wp_get_theme()->get( 'Name' );
 
-		if ( wp_is_block_theme() ){
-			$btn_height = "45px";
+		$add_button_padding = true;
+
+		if ($theme_name === 'Astra' || $theme_name === 'Blocksy') {
+			$add_button_padding = false;
 		}
 
 		if ( ! $is_page_break ):
 			ob_start(); ?>
-			<div style="width: <?php echo esc_attr( $width ); ?>%; margin-top: 2px;">
+			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $conditional_class ); ?> srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?> srfm-block">
+			<?php if ( 'v2-checkbox' === $recaptcha_version ): ?>
+				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $google_captcha_site_key ) ) . "'></div>"; ?>
+			<?php endif; ?>
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $id, 'label', '‎', '', '', false ) ); ?>
 			<?php
 				if ( '' !== $google_captcha_site_key ):
@@ -81,7 +89,7 @@ class Inlinebutton_Markup extends Base {
 						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true );
 					endif;
 				?>
-					<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
+					<button style="<?php echo $add_button_padding ? esc_attr( "padding: 1em; ") : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: 1em;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
 						<div class="srfm-submit-wrap">
 							<?php echo esc_html( $button_text ); ?>
 							<div class="srfm-loader"></div>
@@ -89,7 +97,7 @@ class Inlinebutton_Markup extends Base {
 					</button>
 				<?php endif; ?>
 				<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-					<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
+					<button style="<?php echo $add_button_padding ? esc_attr( "padding: 1em; ") : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; " id="srfm-submit-btn" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
 						<div class="srfm-submit-wrap">
 							<?php echo esc_html( $button_text ); ?>
 							<div class="srfm-loader"></div>

@@ -514,7 +514,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<AdvancedSettings defaultKeys={ defaultKeys } />
+					<AdvancedSettings
+						defaultKeys={ defaultKeys }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
+					/>
 				</InspectorTab>
 			</InspectorTabs>
 			<PluginPostPublishPanel>

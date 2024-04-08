@@ -73,12 +73,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.advance } />
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
-				<InspectorTab { ...SRFMTabs.advance }>
-					<div>Hello</div>
-					<ConditionalLogic { ...{ setAttributes, attributes } } />
-				</InspectorTab>
 			</InspectorControls>
 			<>
 				<InlineButton
