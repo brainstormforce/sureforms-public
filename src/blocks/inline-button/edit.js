@@ -15,7 +15,7 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId.js';
-import { InputComponent } from './components/default.js';
+import { InlineButton } from './components/default.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -76,7 +76,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				<InputComponent
+				<InlineButton
 					blockID={ block_id }
 					setAttributes={ setAttributes }
 					attributes={ attributes }

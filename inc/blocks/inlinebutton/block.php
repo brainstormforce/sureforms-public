@@ -30,6 +30,13 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 
+		// $id            = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+		// $is_page_break = Helper::get_meta_value( $id, '_srfm_is_page_break' );
+
+		// if ( '1' === $is_page_break ) {
+		// 	return '';
+		// }
+
 		if ( ! empty( $attributes ) ) {
 			$markup_class = new Inlinebutton_Markup();
 			ob_start();
