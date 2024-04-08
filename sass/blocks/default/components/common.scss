@@ -2,20 +2,24 @@
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
+
 		.conditional-logic {
 			&.show {
 				display: none;
 				font-size: 1px;
 				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 			}
+
 			&.hide {
 				display: block;
 				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 			}
+
 			&.move-up-to-down {
 				animation: moveUpToDown 320ms ease-out;
 				font-size: inherit;
 			}
+
 			&.move-down-to-up {
 				animation: moveDownToUp 320ms ease-out;
 				font-size: 1px;
@@ -24,29 +28,33 @@
 
 		.srfm-block {
 			margin-bottom: 1.2em;
-			color: var( --srfm-body-input-color );
+			color: var(--srfm-body-input-color);
+
 			label {
 				font-size: 1em;
 			}
 
 			&.srfm-error {
 				.srfm-block-wrap {
+
 					.srfm-input-common,
 					.srfm-dropdown-common {
-						border-color: var( --srfm-error-surface-color );
-						background-color: var( --srfm-error-background-color );
+						border-color: var(--srfm-error-surface-color);
+						background-color: var(--srfm-error-background-color);
 
 						.ts-control {
-							background-color: var( --srfm-error-background-color );
-							border-color: var( --srfm-error-surface-color );
+							background-color: var(--srfm-error-background-color);
+							border-color: var(--srfm-error-surface-color);
+							color: var(--srfm-body-input-color);
 						}
 
 						&:focus {
-							box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-error-surface-color );
+							box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-error-surface-color), 0px 0px 0px 3px var(--srfm-error-shadow-color);
+							border-color: transparent;
 						}
 					}
 
-					.srfm-input-common:not( .srfm-dropdown-common ) {
+					.srfm-input-common:not(.srfm-dropdown-common) {
 						padding-right: 2.2em;
 					}
 
@@ -55,14 +63,14 @@
 						position: absolute;
 						top: 50%;
 						right: 0.7em;
-						transform: translateY( -50% );
+						transform: translateY(-50%);
 
 						svg {
 							width: 0.8em;
 							height: 0.8em;
 
 							path {
-								stroke: var( --srfm-error-surface-color );
+								stroke: var(--srfm-error-surface-color);
 							}
 						}
 					}
@@ -82,7 +90,7 @@
 				margin-bottom: 0.429em;
 				font-weight: 500;
 				line-height: normal;
-				color: var( --srfm-label-text-color );
+				color: var(--srfm-label-text-color);
 			}
 
 			.srfm-input-common {
@@ -91,19 +99,20 @@
 				font-weight: 400;
 				padding: 0.75em 1em;
 				line-height: normal;
-				color: var( --srfm-body-input-color );
-				border: var( --srfm-border ) solid var( --srfm-border-color );
-				border-radius: var( --srfm-border-radius );
-				background-color: var( --srfm-base-background-color );
+				color: var(--srfm-body-input-color);
+				border: var(--srfm-border) solid var(--srfm-border-color);
+				border-radius: var(--srfm-border-radius);
+				background-color: var(--srfm-base-background-color);
 				outline: none;
-				transition: 0.3s;
+				transition: 0.3s ease-out;
 
 				&:focus {
-					box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+					box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-primary-color), 0px 0px 0px 3px var(--srfm-shadow-color);
+					border-color: transparent;
 				}
 
 				&::placeholder {
-					color: var( --srfm-placeholder-color );
+					color: var(--srfm-placeholder-color);
 				}
 			}
 
@@ -120,11 +129,11 @@
 			}
 
 			.srfm-description {
-				color: var( --srfm-help-color );
+				color: var(--srfm-help-color);
 			}
 
 			.srfm-error-message {
-				color: var( --srfm-error-text-color );
+				color: var(--srfm-error-text-color);
 			}
 
 			.srfm-with-icon {
@@ -137,14 +146,15 @@
 					position: absolute;
 					top: 50%;
 					left: 0.7em;
-					transform: translateY( -50% );
+					transform: translateY(-50%);
 					line-height: 0;
 
 					svg {
 						width: 0.9em;
 						height: 0.9em;
+
 						path {
-							stroke: var( --srfm-body-input-color );
+							stroke: var(--srfm-body-input-color);
 						}
 					}
 				}
@@ -154,15 +164,18 @@
 		.srfm-submit-container {
 			width: 100%;
 			margin-bottom: 1.2em;
+
 			.wp-block-button {
 				display: flex;
 				flex-direction: column;
 				align-items: end;
 				gap: 8px;
+
 				.srfm-submit-button {
 					width: fit-content;
 				}
 			}
+
 			&.hide {
 				display: none;
 			}
@@ -173,20 +186,23 @@
 @keyframes moveUpToDown {
 	0% {
 		opacity: 0;
-		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
+		transform: translate3d(0, -20px, 0) scaleY(0.5);
 	}
+
 	100% {
 		opacity: 1;
-		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
+		transform: translate3d(0, 0, 0) scaleY(1);
 	}
 }
+
 @keyframes moveDownToUp {
 	0% {
 		opacity: 1;
-		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
+		transform: translate3d(0, 0, 0) scaleY(1);
 	}
+
 	100% {
 		opacity: 0;
-		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
+		transform: translate3d(0, -20px, 0) scaleY(0.5);
 	}
 }
