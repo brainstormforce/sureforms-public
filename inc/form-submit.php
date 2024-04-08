@@ -265,6 +265,56 @@ class Form_Submit {
 
 		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
 
+		$do_not_store_entries = is_array( $compliance ) && isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
+
+		$meta_data = [];
+
+		$form_data_keys  = array_keys( $form_data );
+		$form_data_count = count( $form_data );
+		for ( $i = 4; $i < $form_data_count; $i++ ) {
+			$key   = strval( $form_data_keys[ $i ] );
+			$value = $form_data[ $key ];
+
+			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
+
+			$meta_data[ $field_name ] = htmlspecialchars( $value );
+		}
+
+		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
+
+		if ( $do_not_store_entries ) {
+
+			$send_email = $this->send_email( $id, $meta_data );
+
+			$emails = $send_email ? $send_email['emails'] : [];
+
+			$is_mail_sent = $send_email ? $send_email['success'] : false;
+
+			if ( $is_mail_sent ) {
+
+				$modified_message = [];
+				foreach ( $meta_data as $key => $value ) {
+					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+					$modified_message[ $only_key ] = esc_attr( $value );
+				}
+
+				$form_submit_response = [
+					'success'   => true,
+					'form_id'   => $id ? intval( $id ) : '',
+					'emails'    => $emails,
+					'form_name' => $name ? esc_attr( $name ) : '',
+					'message'   => __( 'Form submitted successfully', 'sureforms' ),
+					'data'      => $modified_message,
+				];
+
+				do_action( 'srfm_form_submit', $form_submit_response );
+
+				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
+			} else {
+				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+			}
+		}
+
 		$gdpr = is_array( $compliance ) && isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
@@ -288,21 +338,6 @@ class Form_Submit {
 		$pattern      = '/"label":"(.*?)"/';
 		preg_match_all( $pattern, $form_markup, $matches );
 		$labels = $matches[1];
-
-		$meta_data = [];
-
-		$form_data_keys  = array_keys( $form_data );
-		$form_data_count = count( $form_data );
-		for ( $i = 4; $i < $form_data_count; $i++ ) {
-			$key   = strval( $form_data_keys[ $i ] );
-			$value = $form_data[ $key ];
-
-			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
-
-			$meta_data[ $field_name ] = htmlspecialchars( $value );
-		}
-
-		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
 
 		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
@@ -344,39 +379,19 @@ class Form_Submit {
 			];
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-			$response           = [
+			$response = [
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => [
 					'name' => $name,
 				],
 			];
-			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-			$smart_tags         = new Smart_Tags();
-			$is_mail_sent       = false;
-			$emails             = [];
-			if ( is_iterable( $email_notification ) ) {
-				foreach ( $email_notification as $notification ) {
-					foreach ( $notification as $item ) {
-						if ( true === $item['status'] ) {
-							$to             = $item['email_to'];
-							$to             = $smart_tags->process_smart_tags( $to );
-							$subject        = $item['subject'];
-							$subject        = $smart_tags->process_smart_tags( $subject );
-							$email_body     = $item['email_body'];
-							$email_template = new Email_Template();
-							$message        = $email_template->render( $meta_data, $email_body );
-							$headers        = "From: $to\r\n" .
-							"Reply-To: $to\r\n" .
-							'X-Mailer: PHP/' . phpversion() . "\r\n" .
-							'Content-Type: text/html; charset=utf-8';
-							$sent           = wp_mail( $to, $subject, $message, $headers );
-							$is_mail_sent   = $sent;
-							$emails[]       = $to;
-						}
-					}
-				}
-			}
+
+			$send_email = $this->send_email( $id, $meta_data );
+
+			$emails = $send_email['emails'];
+
+			$is_mail_sent = $send_email['success'];
 
 			if ( $is_mail_sent ) {
 
@@ -409,6 +424,50 @@ class Form_Submit {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Send Email.
+	 *
+	 * @param string                $id       Form ID.
+	 * @param array<string, string> $meta_data Meta data.
+	 * @since 0.0.1
+	 * @return array<mixed> Array containing the response data.
+	 */
+	public static function send_email( $id, $meta_data ) {
+		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
+		$smart_tags         = new Smart_Tags();
+		$is_mail_sent       = false;
+		$emails             = [];
+
+		if ( is_iterable( $email_notification ) ) {
+			foreach ( $email_notification as $notification ) {
+				foreach ( $notification as $item ) {
+					if ( true === $item['status'] ) {
+						$to             = $item['email_to'];
+						$to             = $smart_tags->process_smart_tags( $to );
+						$subject        = $item['subject'];
+						$subject        = $smart_tags->process_smart_tags( $subject );
+						$email_body     = $item['email_body'];
+						$email_template = new Email_Template();
+						$message        = $email_template->render( $meta_data, $email_body );
+						$headers        = "From: $to\r\n" .
+						"Reply-To: $to\r\n" .
+						'X-Mailer: PHP/' . phpversion() . "\r\n" .
+						'Content-Type: text/html; charset=utf-8';
+						$sent           = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent   = $sent;
+						$emails[]       = $to;
+					}
+				}
+			}
+		}
+
+		return [
+			'success' => $is_mail_sent,
+			'emails'  => $emails,
+		];
+
 	}
 
 	/**
