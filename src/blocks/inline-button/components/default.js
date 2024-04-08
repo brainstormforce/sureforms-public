@@ -13,10 +13,10 @@ export const InlineButton = ( { attributes, blockID, setAttributes } ) => {
 	return (
 		<>
 			<div className="srfm-block-wrap">
-				<div className="srfm-block-label">
+				<label className="srfm-block-labelblock-editor-rich-text__editable srfm-block-label rich-text">
 					{ /* empty space to align the button with the input field */ }
 					‎
-				</div>
+				</label>
 				<button
 					style={ {
 						width: '100%',

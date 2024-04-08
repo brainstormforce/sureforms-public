@@ -73,38 +73,30 @@ class Inlinebutton_Markup extends Base {
 
 		if ( ! $is_page_break ):
 			ob_start(); ?>
-			<?php var_dump($google_captcha_site_key); ?>
+			<div style="width: <?php echo esc_attr( $width ); ?>%; margin-top: 2px;">
+			<?php echo wp_kses_post( Helper::generate_common_form_markup( $id, 'label', '‎', '', '', false ) ); ?>
 			<?php
 				if ( '' !== $google_captcha_site_key ):
 					if( 'v3-reCAPTCHA' === $recaptcha_version ):
 						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true );
 					endif;
 				?>
-					<div class="srfm-block-single srfm-block srfm-block-width-<?php echo esc_attr( $width ); ?>">
-						<?php echo wp_kses_post( Helper::generate_common_form_markup( $id, 'label', '‎', '', '', false ) ); ?>
-						<div class="srfm-block-wrap">
-							<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
-								<div class="srfm-submit-wrap">
-									<?php echo esc_html( $button_text ); ?>
-									<div class="srfm-loader"></div>
-								</div>
-							</button>
+					<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
+						<div class="srfm-submit-wrap">
+							<?php echo esc_html( $button_text ); ?>
+							<div class="srfm-loader"></div>
 						</div>
-					</div>
+					</button>
 				<?php endif; ?>
 				<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-					<div class="srfm-block-single srfm-block srfm-block-width-<?php echo esc_attr( $width ); ?>">
-						<?php echo wp_kses_post( Helper::generate_common_form_markup( $id, 'label', '‎', '', '', false ) ); ?>
-						<div class="srfm-block-wrap">
-							<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
-								<div class="srfm-submit-wrap">
-									<?php echo esc_html( $button_text ); ?>
-									<div class="srfm-loader"></div>
-								</div>
-							</button>
+					<button style="width:100%; height: <?php echo esc_attr( $btn_height ); ?>; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: calc(.667em + 2px) calc(1.333em + 2px);" id="srfm-submit-btn" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
+						<div class="srfm-submit-wrap">
+							<?php echo esc_html( $button_text ); ?>
+							<div class="srfm-loader"></div>
 						</div>
-					</div>
+					</button>
 				<?php endif; ?>
+				</div>
 			<?php
 			return ob_get_clean();
 		endif;

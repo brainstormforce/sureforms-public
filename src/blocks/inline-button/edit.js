@@ -20,6 +20,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { label, fieldWidth, block_id, formId, preview } = attributes;
@@ -74,6 +75,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance } />
 				</InspectorTabs>
+				<InspectorTab { ...SRFMTabs.advance }>
+					<div>Hello</div>
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				</InspectorTab>
 			</InspectorControls>
 			<>
 				<InlineButton
