@@ -263,14 +263,21 @@ class Form_Submit {
 
 		$id = sanitize_text_field( $form_data['form-id'] );
 
-		$compliance = get_post_meta( intval( $id ), '_srfm_compliance', true );
+		// Get the compliance settings.
+		$compliance           = get_post_meta( Helper::get_integer_value( $id ), '_srfm_compliance', true );
+		$gdpr                 = '';
+		$do_not_store_entries = '';
 
-		$do_not_store_entries = is_array( $compliance ) && isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
+		if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+			$gdpr                 = isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
+			$do_not_store_entries = isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
+		}
 
 		$meta_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
+
 		for ( $i = 4; $i < $form_data_count; $i++ ) {
 			$key   = strval( $form_data_keys[ $i ] );
 			$value = $form_data[ $key ];
@@ -280,46 +287,56 @@ class Form_Submit {
 			$meta_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
-		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$send_email   = $this->send_email( $id, $meta_data );
+		$is_mail_sent = false;
+		$emails       = [];
 
-		if ( $do_not_store_entries ) {
-
-			$send_email = $this->send_email( $id, $meta_data );
-
-			$emails = $send_email ? $send_email['emails'] : [];
-
-			$is_mail_sent = $send_email ? $send_email['success'] : false;
-
-			if ( $is_mail_sent ) {
-
-				$modified_message = [];
-				foreach ( $meta_data as $key => $value ) {
-					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-					$modified_message[ $only_key ] = esc_attr( $value );
-				}
-
-				$form_submit_response = [
-					'success'   => true,
-					'form_id'   => $id ? intval( $id ) : '',
-					'emails'    => $emails,
-					'form_name' => $name ? esc_attr( $name ) : '',
-					'message'   => __( 'Form submitted successfully', 'sureforms' ),
-					'data'      => $modified_message,
-				];
-
-				do_action( 'srfm_form_submit', $form_submit_response );
-
-				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-			} else {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-			}
+		if ( $send_email ) {
+			$emails       = $send_email['emails'];
+			$is_mail_sent = $send_email['success'];
 		}
 
-		$gdpr = is_array( $compliance ) && isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
+		// Check if GDPR is enabled and do not store entries is enabled.
+		// If so, send email and do not store entries.
+		if ( $gdpr && $do_not_store_entries ) {
+
+			$modified_message = [];
+			foreach ( $meta_data as $key => $value ) {
+				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$modified_message[ $only_key ] = esc_attr( $value );
+			}
+
+			$form_submit_response = [
+				'success'   => true,
+				'form_id'   => $id ? intval( $id ) : '',
+				'emails'    => $emails,
+				'form_name' => $name ? esc_attr( $name ) : '',
+				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'data'      => $modified_message,
+			];
+
+			do_action( 'srfm_form_submit', $form_submit_response );
+
+			$response = [
+				'success' => true,
+				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'data'    => [
+					'name' => $name,
+				],
+			];
+
+			return $response;
+
+		}
 
 		$global_setting_options = get_option( 'srfm_general_settings_options' );
 
-		// If GDPR is enabled, we don't log IP address, browser and device.
+		// If GDPR is enabled, do not store IP, browser, and device info.
+		// If not, store IP, browser, and device info.
+		$user_ip      = '';
+		$browser_name = '';
+		$device_name  = '';
 		if ( ! $gdpr ) {
 			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
 
@@ -327,10 +344,6 @@ class Form_Submit {
 			$browser      = new Browser();
 			$browser_name = sanitize_text_field( $browser->getBrowser() );
 			$device_name  = sanitize_text_field( $browser->getPlatform() );
-		} else {
-			$user_ip      = '';
-			$browser_name = '';
-			$device_name  = '';
 		}
 
 		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
@@ -341,11 +354,11 @@ class Form_Submit {
 
 		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
+		$key               = strval( $form_data_keys[4] );
+		$first_field_value = $form_data[ $key ];
+
 		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );
-			$first_field_value = $form_data[ $key ];
-		} else {
-			$key               = strval( $form_data_keys[4] );
 			$first_field_value = $form_data[ $key ];
 		}
 
@@ -369,16 +382,19 @@ class Form_Submit {
 
 		wp_update_post( $post_args );
 
-		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
-		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
 				'browser_name' => $browser_name,
 				'device_name'  => $device_name,
 			];
+
+			update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
+			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
+
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
+
 			$response = [
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
@@ -387,35 +403,22 @@ class Form_Submit {
 				],
 			];
 
-			$send_email = $this->send_email( $id, $meta_data );
-
-			$emails = $send_email['emails'];
-
-			$is_mail_sent = $send_email['success'];
-
-			if ( $is_mail_sent ) {
-
-				$modified_message = [];
-				foreach ( $meta_data as $key => $value ) {
-					$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-					$modified_message[ $only_key ] = esc_attr( $value );
-				}
-
-				$form_submit_response = [
-					'success'   => true,
-					'form_id'   => $id ? intval( $id ) : '',
-					'emails'    => $emails,
-					'form_name' => $name ? esc_attr( $name ) : '',
-					'message'   => __( 'Form submitted successfully', 'sureforms' ),
-					'data'      => $modified_message,
-				];
-
-				do_action( 'srfm_form_submit', $form_submit_response );
-
-				wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) );
-			} else {
-				wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
+			$modified_message = [];
+			foreach ( $meta_data as $key => $value ) {
+				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$modified_message[ $only_key ] = esc_attr( $value );
 			}
+
+			$form_submit_response = [
+				'success'   => true,
+				'form_id'   => $id ? intval( $id ) : '',
+				'emails'    => $emails,
+				'form_name' => $name ? esc_attr( $name ) : '',
+				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'data'      => $modified_message,
+			];
+
+			do_action( 'srfm_form_submit', $form_submit_response );
 		} else {
 			$response = [
 				'success' => false,
