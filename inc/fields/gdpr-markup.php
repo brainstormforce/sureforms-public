@@ -42,7 +42,7 @@ class GDPR_Markup extends Base {
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$slug        = 'gdpr';
 
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$block_width       = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
 		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 		// html attributes.
