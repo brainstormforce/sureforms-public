@@ -232,21 +232,20 @@ function GeneralSettings( props ) {
 						}
 						__nextHasNoMarginBottom
 					/>
-					{ sureformsKeys._srfm_page_break_progress_indicator !==
-						'progress-bar' && (
-						<ToggleControl
-							label={ __( 'Show Labels', 'sureforms' ) }
-							checked={
-								sureformsKeys._srfm_page_break_toggle_label
-							}
-							onChange={ ( value ) => {
-								updateMeta(
-									'_srfm_page_break_toggle_label',
-									value
-								);
-							} }
-						/>
-					) }
+
+					<ToggleControl
+						label={ __( 'Show Labels', 'sureforms' ) }
+						checked={
+							sureformsKeys._srfm_page_break_toggle_label
+						}
+						onChange={ ( value ) => {
+							updateMeta(	
+								'_srfm_page_break_toggle_label',
+								value
+							);
+						} }
+					/>
+
 					<SRFMTextControl
 						data={ {
 							value: sureformsKeys._srfm_previous_button_text,
