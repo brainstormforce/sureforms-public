@@ -126,6 +126,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			meta: option_array,
 		} );
 	}
+
+	// find if code editor is open/close then trigger adding button again
+	const codeEditor = document.querySelector( '.editor-post-text-editor' );
+
 	// Find the main Editor Container
 	const rootContainerDiv = document.querySelector(
 		'.edit-post-visual-editor__content-area'
@@ -411,7 +415,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureformsKeys, blockCount, isInlineButtonBlockPresent ] );
+	}, [
+		deviceType,
+		sureformsKeys,
+		codeEditor,
+		blockCount,
+		isInlineButtonBlockPresent,
+	] );
 
 	useEffect( () => {
 		//quick action sidebar

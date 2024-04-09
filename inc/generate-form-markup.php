@@ -165,6 +165,7 @@ class Generate_Form_Markup {
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
 			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
+			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
 			$light_background_var  = '#F9FAFB';
 
@@ -185,6 +186,7 @@ class Generate_Form_Markup {
 
 			// Error colors.
 			$error_surface_var          = Helper::get_meta_value( $id, '_srfm_field_error_surface_color', true, '#EF4444' );
+			$error_shadow_var           = Helper::get_meta_value( $id, '_srfm_field_error_shadow_color', true, '#FEE4E2' );
 			$error_text_var             = Helper::get_meta_value( $id, '_srfm_field_error_color', true, '#DC2626' );
 			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
@@ -203,6 +205,7 @@ class Generate_Form_Markup {
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
 					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
 					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
+					--srfm-shadow-color : <?php echo esc_html( $primary_color_var . '30' ); ?>;
 					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
 					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
@@ -216,6 +219,7 @@ class Generate_Form_Markup {
 					--srfm-warning-text-color : <?php echo esc_html( $warning_text_var ); ?>;
 					--srfm-warning-background-color : <?php echo esc_html( $warning_background_color_var ); ?>;
 					--srfm-error-surface-color : <?php echo esc_html( $error_surface_var ); ?>;
+					--srfm-error-shadow-color : <?php echo esc_html( $error_surface_var . '30' ); ?>;
 					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
 					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
 					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;
@@ -251,13 +255,13 @@ class Generate_Form_Markup {
 						<?php echo esc_html__( 'Please Enable Instant Form', 'sureforms' ); ?>
 						</span>
 						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'To view the forms in the frontend you have to activate the instant form from the editor.', 'sureforms' ); ?>
+						<?php echo esc_html__( 'This is a preview. To view the forms in the frontend, activate the instant form from the editor settings.', 'sureforms' ); ?>
 						</span>
-						<span class="srfm-wrn-title">
-						<?php echo esc_html__( 'Learn More', 'sureforms' ); ?>
-						</span>
+						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
+							<?php echo esc_html__( 'Go to Settings', 'sureforms' ); ?>
+						</a>
 					</div>
-				</div>
+				</div> 
 				<?php
 			}
 			?>
