@@ -367,7 +367,12 @@ class Form_Submit {
 
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
-				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$parts    = explode( '-', $only_key );
+
+				if ( count( $parts ) > 5 ) {
+					$only_key = implode( '-', array_slice( $parts, 5 ) );
+				}
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
 

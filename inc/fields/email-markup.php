@@ -44,6 +44,7 @@ class Email_Markup extends Base {
 		$class_name       = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$form_id          = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
+		$block_slug       = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
 		$slug             = 'email';
 
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -58,6 +59,7 @@ class Email_Markup extends Base {
 		$input_confirm_label          = '-lbl-' . Helper::encrypt( $input_confirm_label_fallback );
 		$conditional_class            = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 		$unique_slug                  = 'srfm-' . $slug . '-' . $block_id . $input_label;
+		$field_name                   = $unique_slug . '-' . $block_slug;
 		$unique_confirm_slug          = 'srfm-' . $slug . '-confirm-' . $block_id . $input_confirm_label;
 
 		ob_start(); ?>
@@ -65,7 +67,7 @@ class Email_Markup extends Base {
 				<div class="srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
 					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="email" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" data-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="email" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" data-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
 						<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					</div>
 					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
