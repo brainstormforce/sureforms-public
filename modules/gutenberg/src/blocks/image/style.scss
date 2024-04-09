@@ -1,8 +1,5 @@
 .wp-block-uagb-image {
 	display: flex;
-	margin-bottom: 1.2em;
-	width: 100%;
-
 	&__figure {
 		position: relative;
 		display: flex;
@@ -27,6 +24,10 @@
 			margin-top: 0.5em;
 			margin-bottom: 1em;
 		}
+	}
+
+	.components-placeholder.block-editor-media-placeholder .components-placeholder__instructions {
+		align-self: center;
 	}
 
 	&--align-left {

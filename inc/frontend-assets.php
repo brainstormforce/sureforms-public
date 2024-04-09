@@ -79,7 +79,7 @@ class Frontend_Assets {
 
 		wp_enqueue_script( SRFM_SLUG . '-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
 		// Frontend common and validation before submit.
-		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SRFM_VER, true );
+		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
 		// Google reCaptcha.
 		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );

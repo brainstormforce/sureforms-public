@@ -51,7 +51,11 @@ export const srfmClassNames = ( classes ) =>
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
 
-export const handleAddNewPost = async ( formData, templateName ) => {
+export const handleAddNewPost = async (
+	formData,
+	templateName,
+	templateMetas
+) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
 		return;
@@ -65,7 +69,11 @@ export const handleAddNewPost = async ( formData, templateName ) => {
 				'Content-Type': 'text/html',
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
-			data: { form_data: formData, template_name: templateName },
+			data: {
+				form_data: formData,
+				template_name: templateName,
+				template_metas: templateMetas,
+			},
 		} );
 
 		if ( response.id ) {
