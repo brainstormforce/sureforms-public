@@ -34,7 +34,7 @@ class Inlinebutton_Markup extends Base {
 
 		$block_id          = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
 		$form_id           = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
-		$button_text       = isset( $attributes['label'] ) ? $attributes['label'] : '';
+		$button_text       = isset( $attributes['buttonText'] ) ? $attributes['buttonText'] : '';
 		$btn_from_theme    = Helper::get_meta_value( $form_id, '_srfm_inherit_theme_button' );
 		$is_page_break     = Helper::get_meta_value( $form_id, '_srfm_is_page_break' );
 		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );

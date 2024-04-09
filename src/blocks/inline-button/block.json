@@ -20,7 +20,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"blockId": {
+		"block_id": {
 			"type": "string"
 		},
 		"fieldWidth": {
