@@ -78,7 +78,7 @@ class Inlinebutton_Markup extends Base {
 		}
 
 			ob_start(); ?>
-			<?php if ( '1' === $is_page_break ) : ?>
+			<?php if ( '1' !== $is_page_break ) : ?>
 				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?> srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?> srfm-block srfm-inline-button">
 				<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 					<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $google_captcha_site_key ) ) . "'></div>"; ?>

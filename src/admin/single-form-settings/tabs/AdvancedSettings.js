@@ -18,7 +18,7 @@ import parse from 'html-react-parser';
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
-	const { defaultKeys, isInlineButtonBlockPresent } = props;
+	const { defaultKeys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
 
