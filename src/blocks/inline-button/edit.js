@@ -10,22 +10,22 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { buttonText, fieldWidth, blockId, formId, preview } = attributes;
+	const { buttonText, fieldWidth, block_id, formId, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
-	}, [ formId, setAttributes, currentFormId ] );
+	}, [ formId, currentFormId ] );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -46,7 +46,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							initialOpen={ true }
 						>
 							<SelectControl
-								buttonText={ __( 'Field Width', 'sureforms' ) }
+								label={ __( 'Field Width', 'sureforms' ) }
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
@@ -56,25 +56,18 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<SRFMTextControl
-								buttonText={ __( 'buttonText', 'sureforms' ) }
-								value={ buttonText }
-								data={ {
-									value: buttonText,
-									buttonText: 'buttonText',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { buttonText: value } )
-								}
-							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.advance } />
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<>
 				<div
-					className="srfm-block-buttonText"
+					className="srfm-block-label"
 					style={ {
 						height: '1em',
 					} }
@@ -95,7 +88,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							} );
 						} }
 						multiline={ false }
-						id={ blockId }
+						id={ block_id }
 						allowedFormats={ [] }
 					/>
 				</button>

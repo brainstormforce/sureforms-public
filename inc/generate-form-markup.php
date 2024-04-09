@@ -95,12 +95,14 @@ class Generate_Form_Markup {
 			$is_page_break            = Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			// Submit button.
-			$button_text       = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
-			$button_alignment  = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme    = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$btn_text_color    = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
-			$btn_bg_type       = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
-			$instant_form      = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_alignment = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
+			$btn_from_theme   = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$btn_text_color   = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
+			$btn_bg_type      = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$instant_form     = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$is_inline_button = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
 				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0e4372' );
@@ -301,7 +303,7 @@ class Generate_Form_Markup {
 					do_action( 'srfm_page_break_btn', $id );
 				}
 				?>
-				<?php if ( 0 !== $block_count ) : ?>
+				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 					<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
 						<?php if ( '' !== $google_captcha_site_key ) : ?>
