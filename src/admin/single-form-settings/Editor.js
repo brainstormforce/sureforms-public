@@ -389,6 +389,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
+				// If Custom Button is present, remove the default button.
 				if ( isInlineButtonBlockPresent ) {
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -398,6 +399,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					}
 				}
 
+				// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
 				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(

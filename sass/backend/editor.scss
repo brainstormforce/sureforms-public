@@ -300,26 +300,13 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// same inline button styles as in the frontend.
-	// .srfm-inline-btn-bg-color {
-	// 	border-radius: var( --srfm-btn-border-radius );
-	// 	font-family: inherit;
-	// 	font-weight: var( --wp--custom--font-weight--medium );
-	// 	line-height: var( --wp--custom--line-height--initial );
-	// 	padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
-	// 	text-decoration: none;
-	// 	color: var( --srfm-btn-text-color );
-	// 	background-color: var( --srfm-btn-bg-color );
-	// 	border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
-	// }
+	// SureForms Custom Button Styles.
 	.srfm-inline-submit-button {
 		font-family: inherit;
 		font-weight: var( --wp--custom--font-weight--medium );
 		line-height: var( --wp--custom--line-height--initial );
 		font-size: calc( var( --srfm-font-size ) - 0.33em );
 		pointer-events: none;
-		// border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
-		// border-radius: var( --srfm-btn-border-radius );
 		color: var( --srfm-btn-text-color );
 		background-color: var( --srfm-btn-bg-color );
 		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );

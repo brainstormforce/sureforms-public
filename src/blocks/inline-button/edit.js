@@ -2,10 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	// ToggleControl,
-	SelectControl,
-} from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -15,47 +12,21 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId.js';
-import { InputComponent } from './components/default.js';
-// import Range from '@Components/range/Range.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-// import { useErrMessage } from '@Blocks/util';
-// import ConditionalLogic from '@Components/conditional-logic';
+import { RichText } from '@wordpress/block-editor';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const {
-		label,
-		fieldWidth,
-		// placeholder,
-		// help,
-		// required,
-		block_id,
-		// defaultValue,
-		// errorMsg,
-		// textLength,
-		// isUnique,
-		// duplicateMsg,
-		formId,
-		preview,
-	} = attributes;
+	const { buttonText, fieldWidth, blockId, formId, preview } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
-	// const {
-	// 	currentMessage: currentErrorMsg,
-	// 	setCurrentMessage: setCurrentErrorMsg,
-	// } = useErrMessage( 'srfm_input_block_required_text', errorMsg );
-
-	// const {
-	// 	currentMessage: currentUniqueMessage,
-	// 	setCurrentMessage: setCurrentUniqueMessage,
-	// } = useErrMessage( 'srfm_input_block_unique_text', duplicateMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -76,7 +47,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							initialOpen={ true }
 						>
 							<SelectControl
-								label={ __( 'Field Width', 'sureforms' ) }
+								buttonText={ __( 'Field Width', 'sureforms' ) }
 								value={ fieldWidth }
 								options={ widthOptions }
 								onChange={ ( value ) =>
@@ -87,14 +58,14 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								__nextHasNoMarginBottom
 							/>
 							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
+								buttonText={ __( 'buttonText', 'sureforms' ) }
+								value={ buttonText }
 								data={ {
-									value: label,
-									label: 'label',
+									value: buttonText,
+									buttonText: 'buttonText',
 								} }
 								onChange={ ( value ) =>
-									setAttributes( { label: value } )
+									setAttributes( { buttonText: value } )
 								}
 							/>
 						</SRFMAdvancedPanelBody>
@@ -103,11 +74,32 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				<InputComponent
-					blockID={ block_id }
-					setAttributes={ setAttributes }
-					attributes={ attributes }
+				<div
+					className="srfm-block-buttonText"
+					style={ {
+						height: '1em',
+					} }
 				/>
+				<button
+					style={ {
+						width: '100%',
+						border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
+						borderRadius: 'var( --srfm-btn-border-radius )',
+					} }
+					className={ `srfm-button srfm-submit-button srfm-inline-submit-button` }
+				>
+					<RichText
+						value={ buttonText }
+						onChange={ ( value ) => {
+							setAttributes( {
+								buttonText: decodeHtmlEntities( value ),
+							} );
+						} }
+						multiline={ false }
+						id={ blockId }
+						allowedFormats={ [] }
+					/>
+				</button>
 			</>
 		</>
 	);

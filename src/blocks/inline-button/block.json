@@ -1,7 +1,7 @@
 {
 	"name": "srfm/inline-button",
 	"title": "Inline Button",
-	"description": "Displays a SureForm Text Field",
+	"description": "Displays a SureForms Custom Button",
 	"category": "sureforms",
 	"keywords": [ "inline submit", "button", "submit", "inline" ],
 	"textdomain": "sureforms",
@@ -20,14 +20,14 @@
 			"type": "boolean",
 			"default": false
 		},
-		"block_id": {
+		"blockId": {
 			"type": "string"
 		},
 		"fieldWidth": {
 			"type": "number",
 			"default": 100
 		},
-		"label": {
+		"buttonText": {
 			"type": "string",
 			"default": "Submit"
 		},
