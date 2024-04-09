@@ -239,7 +239,7 @@ function GeneralSettings( props ) {
 							sureformsKeys._srfm_page_break_toggle_label
 						}
 						onChange={ ( value ) => {
-							updateMeta(	
+							updateMeta(
 								'_srfm_page_break_toggle_label',
 								value
 							);
