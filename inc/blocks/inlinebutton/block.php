@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP render form Text Block.
+ * PHP render form Inline Button Block.
  *
  * @package SureForms.
  */
@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Inlinebutton;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Inlinebutton_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,6 +26,7 @@ class Block extends Base {
 	 * @param string       $content Post content.
 	 *
 	 * @return string|boolean
+	 * @since x.x.x
 	 */
 	public function render( $attributes, $content = '' ) {
 

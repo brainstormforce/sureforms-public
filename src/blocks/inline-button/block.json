@@ -1,9 +1,16 @@
 {
 	"name": "srfm/inline-button",
-	"title": "Inline Button",
+	"title": "Custom Button",
 	"description": "Displays a SureForms Custom Button",
 	"category": "sureforms",
-	"keywords": [ "inline submit", "button", "submit", "inline" ],
+	"keywords": [
+		"inline submit",
+		"button",
+		"submit",
+		"inline",
+		"custom",
+		"custom button"
+	],
 	"textdomain": "sureforms",
 	"supports": {
 		"reusable": false,

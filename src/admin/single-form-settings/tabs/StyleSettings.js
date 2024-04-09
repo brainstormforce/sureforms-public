@@ -63,11 +63,7 @@ function StyleSettings( props ) {
 
 	function submitButtonInherit() {
 		const inheritClass = 'wp-block-button__link';
-		const customClass =
-			// isInlineButtonBlockPresent
-			// 	? 'srfm-inline-submit-bg-color'
-			// 	:
-			'srfm-btn-bg-color';
+		const customClass = 'srfm-btn-bg-color';
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
