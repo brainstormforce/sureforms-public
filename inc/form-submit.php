@@ -368,10 +368,18 @@ class Form_Submit {
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
 				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$parts    = explode( '-', $only_key );
+				$parts    = explode( '-lbl-', $only_key );
 
-				if ( count( $parts ) > 5 ) {
-					$only_key = implode( '-', array_slice( $parts, 5 ) );
+				if ( ! empty( $parts[1] ) ) {
+					$tokens = explode( '-', $parts[1] );
+					if ( count( $tokens ) > 1 ) {
+						$only_key = implode( '-', array_slice( $tokens, 1 ) );
+					}
+				} else {
+					$tokens = explode( '-', $parts[0] );
+					if ( 'address' === $tokens[1] ) {
+						$only_key = implode( '-', array_slice( $tokens, 3 ) );
+					}
 				}
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
