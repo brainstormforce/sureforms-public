@@ -290,7 +290,7 @@ function AdvancedSettings( props ) {
 					>
 						<span className="srfm-title">
 							<div>
-								{ __( 'Email Notification', 'sureforms' ) }
+								{ __( 'Advanced Settings', 'sureforms' ) }
 							</div>
 						</span>
 						<svg
