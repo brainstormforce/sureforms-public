@@ -328,4 +328,23 @@ class Helper {
 		);
 	}
 
+	/**
+	 * Decode block attributes.
+	 *
+	 * @since x.x.x
+	 * The function reverses the effect of serialize_block_attributes()
+	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
+	 *
+	 * @param string $encoded_data the encoded block attribute.
+	 * @return string decoded block attribute
+	 */
+	public static function decode_block_attribute( $encoded_data = '' ) {
+		$decoded_data = preg_replace( '/\\\\u002d\\\\u002d/', '--', (string) $encoded_data );
+		$decoded_data = preg_replace( '/\\\\u003c/', '<', (string) $decoded_data );
+		$decoded_data = preg_replace( '/\\\\u003e/', '>', (string) $decoded_data );
+		$decoded_data = preg_replace( '/\\\\u0026/', '&', (string) $decoded_data );
+		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', (string) $decoded_data );
+		return (string) $decoded_data;
+	}
+
 }
