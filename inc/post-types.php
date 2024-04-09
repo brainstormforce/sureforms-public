@@ -430,11 +430,13 @@ class Post_Types {
 				'_srfm_input_placeholder_color'   => 'string',
 				'_srfm_input_bg_color'            => 'string',
 				'_srfm_input_border_color'        => 'string',
+				'_srfm_input_shadow_color'        => 'string',
 				'_srfm_input_border_width'        => 'integer',
 				'_srfm_input_border_radius'       => 'integer',
 				// Error.
 				'_srfm_field_error_color'         => 'string',
 				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_shadow_color'  => 'string',
 				'_srfm_field_error_bg_color'      => 'string',
 				// Submit Button.
 				'_srfm_button_text_color'         => 'string',

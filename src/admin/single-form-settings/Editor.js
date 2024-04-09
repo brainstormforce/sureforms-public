@@ -127,6 +127,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			meta: option_array,
 		} );
 	}
+
+	// find if code editor is open/close then trigger adding button again
+	const codeEditor = document.querySelector( '.editor-post-text-editor' );
+
 	// Find the main Editor Container
 	const rootContainerDiv = document.querySelector(
 		'.edit-post-visual-editor__content-area'
@@ -394,6 +398,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
+				// If Custom Button is present, remove the default button.
 				if ( isInlineButtonBlockPresent ) {
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -403,6 +408,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 					}
 				}
 
+				// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
 				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
@@ -414,7 +420,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureformsKeys, blockCount, isInlineButtonBlockPresent ] );
+	}, [
+		deviceType,
+		sureformsKeys,
+		codeEditor,
+		blockCount,
+		isInlineButtonBlockPresent,
+	] );
 
 	useEffect( () => {
 		//quick action sidebar
