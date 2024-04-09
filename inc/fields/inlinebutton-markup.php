@@ -27,24 +27,23 @@ class Inlinebutton_Markup extends Base {
 	 * Render input markup
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @param string       $content Post content.
-	 * 
-	 * return string|boolean|void
+	 *
+	 * @return string|boolean|void
 	 */
-	public function markup( $attributes, $content = '' ) {
+	public function markup( $attributes ) {
 
-		$id                = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 		$block_id          = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
+		$form_id           = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
 		$button_text       = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$btn_from_theme    = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-		$is_page_break     = Helper::get_meta_value( $id, '_srfm_is_page_break' );
-		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $id, $block_id );
-		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-		$slug            = 'inline-button';
-		$class_name      = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+		$btn_from_theme    = Helper::get_meta_value( $form_id, '_srfm_inherit_theme_button' );
+		$is_page_break     = Helper::get_meta_value( $form_id, '_srfm_is_page_break' );
+		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
+		$field_width       = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
+		$block_width       = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$slug              = 'inline-button';
+		$class_name        = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 
-		$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+		$recaptcha_version = Helper::get_meta_value( $form_id, '_srfm_form_recaptcha' );
 
 		$google_captcha_site_key = '';
 
@@ -74,32 +73,32 @@ class Inlinebutton_Markup extends Base {
 
 		$add_button_padding = true;
 
-		if ($theme_name === 'Astra' || $theme_name === 'Blocksy') {
+		if ( 'Astra' === $theme_name || 'Blocksy' === $theme_name ) {
 			$add_button_padding = false;
 		}
 
-		if ( ! $is_page_break ):
 			ob_start(); ?>
+			<?php if ( '1' === $is_page_break ) : ?>
 				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?> srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?> srfm-block srfm-inline-button">
-				<?php if ( 'v2-checkbox' === $recaptcha_version ): ?>
+				<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 					<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $google_captcha_site_key ) ) . "'></div>"; ?>
 				<?php endif; ?>
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $id, 'label', '‎', '', '', false ) ); ?>
+				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', '‎', '', '', false ) ); ?>
 				<?php
-					if ( '' !== $google_captcha_site_key ):
-						if( 'v3-reCAPTCHA' === $recaptcha_version ):
-							wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true );
+				if ( '' !== $google_captcha_site_key ) :
+					if ( 'v3-reCAPTCHA' === $recaptcha_version ) :
+						wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true );
 						endif;
 					?>
-						<button style="<?php echo $add_button_padding ? esc_attr( "padding: 1em; ") : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: 1em;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
+						<button style="<?php echo $add_button_padding ? esc_attr( 'padding: 1em; ' ) : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; padding: 1em;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-block-width-25 srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
 							<div class="srfm-submit-wrap">
-								<?php echo esc_html( $button_text ); ?>
+							<?php echo esc_html( $button_text ); ?>
 								<div class="srfm-loader"></div>
 							</div>
 						</button>
 					<?php endif; ?>
 					<?php if ( 'none' === $recaptcha_version || '' === $recaptcha_version ) : ?>
-						<button style="<?php echo $add_button_padding ? esc_attr( "padding: 1em; ") : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; " id="srfm-submit-btn" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
+						<button style="<?php echo $add_button_padding ? esc_attr( 'padding: 1em; ' ) : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal; " id="srfm-submit-btn" class="srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>">
 							<div class="srfm-submit-wrap">
 								<?php echo esc_html( $button_text ); ?>
 								<div class="srfm-loader"></div>
@@ -107,9 +106,10 @@ class Inlinebutton_Markup extends Base {
 						</button>
 					<?php endif; ?>
 				</div>
-			<?php
-			return ob_get_clean();
+				<?php
 		endif;
+
+			return ob_get_clean();
 	}
 
 }
