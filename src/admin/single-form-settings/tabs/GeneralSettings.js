@@ -181,8 +181,7 @@ function GeneralSettings( props ) {
 					placeholder={ __( 'SUBMIT', 'sureforms' ) }
 					value={ sureformsKeys._srfm_submit_button_text }
 					onChange={ ( value ) => {
-						const btnText = value.toUpperCase();
-						updateMeta( '_srfm_submit_button_text', btnText );
+						updateMeta( '_srfm_submit_button_text', value );
 					} }
 					isFormSpecific={ true }
 				/>
