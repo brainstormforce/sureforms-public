@@ -3,7 +3,11 @@
  */
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import {
+	InspectorControls,
+	RichText,
+	InnerBlocks,
+} from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
@@ -24,33 +28,33 @@ import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		required,
-		fieldWidth,
-		label,
-		block_id,
-		errorMsg,
-		lineOnePlaceholder,
-		lineTwoPlaceholder,
-		cityPlaceholder,
-		statePlaceholder,
-		postalPlaceholder,
-		countryPlaceholder,
-		formId,
+		// required,
+		// fieldWidth,
+		// label,
+		// block_id,
+		// errorMsg,
+		// lineOnePlaceholder,
+		// lineTwoPlaceholder,
+		// cityPlaceholder,
+		// statePlaceholder,
+		// postalPlaceholder,
+		// countryPlaceholder,
+		// formId,
 		preview,
-		help,
+		// help,
 	} = attributes;
-	const currentFormId = useGetCurrentFormId( clientId );
+	// const currentFormId = useGetCurrentFormId( clientId );
 
-	useEffect( () => {
-		if ( formId !== currentFormId ) {
-			setAttributes( { formId: currentFormId } );
-		}
-	}, [ formId, setAttributes, currentFormId ] );
+	// useEffect( () => {
+	// 	if ( formId !== currentFormId ) {
+	// 		setAttributes( { formId: currentFormId } );
+	// 	}
+	// }, [ formId, setAttributes, currentFormId ] );
 
-	const {
-		currentMessage: currentErrorMsg,
-		setCurrentMessage: setCurrentErrorMsg,
-	} = useErrMessage( 'srfm_address_block_required_text', errorMsg );
+	// const {
+	// 	currentMessage: currentErrorMsg,
+	// 	setCurrentMessage: setCurrentErrorMsg,
+	// } = useErrMessage( 'srfm_address_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -60,7 +64,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	return (
 		<>
-			<InspectorControls>
+			{ /* <InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
@@ -242,8 +246,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						/>
 					</InspectorTab>
 				</InspectorTabs>
-			</InspectorControls>
-			<AddressBlock
+			</InspectorControls> */ }
+			{ /* <AddressBlock
 				countries={ countries }
 				attributes={ attributes }
 				blockID={ block_id }
@@ -261,7 +265,61 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					id={ block_id }
 					allowedFormats={ [] }
 				/>
-			) }
+			) } */ }
+			<InnerBlocks
+				template={ [
+					[
+						'srfm/input',
+						{
+							placeholder: 'Address Line 1',
+							label: 'Address Line 1',
+							fieldWidth: 50,
+						},
+					],
+					[
+						'srfm/input',
+						{
+							placeholder: 'Address Line 2',
+							label: 'Address Line 2',
+							fieldWidth: 50,
+						},
+					],
+					[
+						'srfm/input',
+						{
+							placeholder: 'City',
+							label: 'City',
+							fieldWidth: 50,
+						},
+					],
+					[
+						'srfm/input',
+						{
+							placeholder: 'State',
+							label: 'State',
+							fieldWidth: 50,
+						},
+					],
+					[
+						'srfm/input',
+						{
+							placeholder: 'Postal Code',
+							label: 'Postal Code',
+							fieldWidth: 50,
+						},
+					],
+					[
+						'srfm/dropdown',
+						{
+							placeholder: 'Country',
+							label: 'Country',
+							options: countries,
+							fieldWidth: 50,
+						},
+					],
+				] }
+				allowedBlocks={ [ 'srfm/input', 'srfm/dropdown' ] }
+			/>
 		</>
 	);
 };
