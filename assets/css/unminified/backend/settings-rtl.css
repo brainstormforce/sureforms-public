@@ -44,8 +44,6 @@
 }
 .srfm-settings-wrap .srfm-settings-sidebar nav {
   margin-bottom: 1.6em;
-  position: sticky;
-  top: 88px;
   padding-top: 10px;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-settings-sidebar-category {
@@ -81,8 +79,6 @@
   color: #1e293b;
 }
 .srfm-settings-wrap .srfm-settings-sidebar .srfm-notice-container {
-  position: sticky;
-  top: 240px;
   padding: 0.8em;
   border: 1px solid #125d9f;
   border-radius: 6px;
@@ -126,7 +122,7 @@
 .srfm-settings-wrap .srfm-settings-page-container {
   display: flex;
   flex-wrap: wrap;
-  margin: auto;
+  margin: 0 auto auto auto;
   padding: 1.85em 0.5em;
   max-width: 768px;
   width: 100%;

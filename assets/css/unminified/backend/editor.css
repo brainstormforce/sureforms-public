@@ -4,6 +4,12 @@ body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .componen
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.srfm--panel.is-opened {
   display: block;
 }
+body.post-type-sureforms_form .edit-post-fullscreen-mode-close_site-icon {
+  display: none;
+}
+body.post-type-sureforms_form .block-editor-block-preview__container {
+  background-color: #fff;
+}
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.is-opened {
   padding: 0 !important;
   width: 100%;
@@ -187,9 +193,8 @@ body.post-type-sureforms_form .block-list-appender .block-editor-button-block-ap
 body.post-type-sureforms_form .srfm-submit-btn-container {
   position: relative;
   max-width: calc(620px - 0em);
-  margin: 0 auto;
   padding: 0 0.3em;
-  margin-top: 1.2em;
+  margin: 1.2em auto 6em auto;
 }
 body.post-type-sureforms_form .srfm-submit-btn-container .srfm-btn-bg-color {
   border-radius: var(--srfm-btn-border-radius);

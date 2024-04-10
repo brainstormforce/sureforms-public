@@ -57,6 +57,13 @@ $sidebar_width: 290px;
 		height: calc( 100vh - 50px );
 		padding-top: 70px;
 
+		.srfm-ts-loader {
+			display: block;
+			margin: auto;
+			height: calc( 4px * 12.5 );
+			width: calc( 4px * 12.5 );
+		}
+
 		@media ( max-width: 782px ) {
 			padding-top: 50px;
 			height: auto;
@@ -387,20 +394,19 @@ $sidebar_width: 290px;
 			}
 
 			.srfm-ts-preview-image {
-				padding: 2em 1.75em 0 2em;
+				padding: 1.5em 1.25em 0 1.25em;
 				width: 100%;
 			}
 
 			.srfm-ts-template-name {
 				width: 100%;
-				font-size: 1em;
+				font-size: 0.875em;
 				font-weight: 500;
 				background-color: $bg_white;
-				padding: 1.25em 1.4375em;
+				padding: 1em 1.25em 1em 1.25em;
 				border-top: 1px solid #e9e9e9;
 				margin-top: -6px;
 				z-index: 1;
-				height: 65px;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -421,9 +427,9 @@ $sidebar_width: 290px;
 					align-items: center;
 					justify-content: center;
 					flex-direction: column;
-					backdrop-filter: blur( 5px );
 					z-index: 1;
 					transition: 0.3s;
+					background-color: rgba( 255, 255, 255, 0.1 );
 
 					.srfm-common-btn {
 						padding: 9px 17px;

@@ -327,4 +327,5 @@ class Helper {
 			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
+
 }
