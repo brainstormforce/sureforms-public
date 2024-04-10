@@ -66,7 +66,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				<div
+				<label
 					className="srfm-block-label"
 					style={ {
 						height: '1em',
