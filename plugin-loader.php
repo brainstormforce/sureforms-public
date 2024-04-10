@@ -149,7 +149,8 @@ class Plugin_Loader {
 			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
-				Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
 			}
 		);
 	}

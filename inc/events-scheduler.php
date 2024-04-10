@@ -42,4 +42,15 @@ class Events_Scheduler {
 		}
 	}
 
+	/**
+	 * Unschedule any action.
+	 *
+	 * @param string $hook Event hook name.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public static function unschedule_events( $hook ) {
+		as_unschedule_all_actions( $hook );
+	}
+
 }

@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use WP_REST_Server;
@@ -190,7 +191,7 @@ class Global_Settings {
 		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
 		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : 'Monday';
 
-		Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
 		if ( $srfm_email_summary ) {
 			Email_Summary::schedule_weekly_entries_email();

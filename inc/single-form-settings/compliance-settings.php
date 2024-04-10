@@ -25,8 +25,7 @@ class Compliance_Settings {
 	 * @since x.x.x
 	 */
 	public function __construct() {
-		// add_action( 'srfm_daily_scheduled_action', [ $this, 'pre_auto_delete_entries' ] );
-		add_action( 'init', [ $this, 'pre_auto_delete_entries' ] );
+		add_action( 'srfm_daily_scheduled_action', [ $this, 'pre_auto_delete_entries' ] );
 	}
 
 	/**
