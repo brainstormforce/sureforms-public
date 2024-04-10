@@ -313,7 +313,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						{
 							placeholder: 'Country',
 							label: 'Country',
-							options: countries,
+							// "options": {
+							// 	"default": [ "Option 1", "Option 2" ],
+							// 	"type": "array"
+							// },
+							options: [ ...countries ],
 							fieldWidth: 50,
 						},
 					],
