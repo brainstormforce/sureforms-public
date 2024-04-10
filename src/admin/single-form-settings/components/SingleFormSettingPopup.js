@@ -8,7 +8,7 @@ import FormConfirmSetting from './form-confirm-setting';
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
 	const emailIcon = parse( svgIcons.email );
-	const formConfirmIcon = parse( svgIcons[ 'circleCheck' ] );
+	const formConfirmIcon = parse( svgIcons.circleCheck );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
