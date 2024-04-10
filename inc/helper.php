@@ -339,7 +339,7 @@ class Helper {
 	 * @since x.x.x
 	 * @return array<int|WP_Post> the entries matching the criteria.
 	 */
-	public static function get_entries_form_ids( $days_old = 0, $sf_form_ids = [] ) {
+	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
 
 		$entries = [];
 
