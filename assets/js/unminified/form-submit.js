@@ -15,6 +15,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			submitBtn,
 			siteKey,
 			recaptchaType,
+			afterSubmission,
 		} = extractFormAttributesAndElements( form );
 
 		if ( recaptchaType === 'v3-reCAPTCHA' ) {
@@ -35,7 +36,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 									successUrl,
 									successMessage,
 									errorMessage,
-									submitType
+									submitType,
+									afterSubmission
 								);
 							}
 						} );
@@ -53,7 +55,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					successUrl,
 					successMessage,
 					errorMessage,
-					submitType
+					submitType,
+					afterSubmission
 				);
 			} );
 		}
@@ -92,14 +95,18 @@ function submitFormData( form ) {
 		} );
 }
 
-function showSuccessMessage( element, form ) {
-	form.style.opacity = 1;
-	form.style.display = 'none';
-	element.classList.add( 'srfm-active' );
-
-	setTimeout( () => {
-		element.style.opacity = 1;
-	}, 500 );
+function showSuccessMessage( element, form, afterSubmission ) {
+	if ( afterSubmission === 'hide form' ) {
+		form.style.opacity = 1;
+		form.style.display = 'none';
+		element.classList.add( 'srfm-active' );
+		setTimeout( () => {
+			element.style.opacity = 1;
+		}, 500 );
+	} else {
+		element.classList.add( 'srfm-active' );
+		form.reset();
+	}
 }
 
 function redirectToUrl( url ) {
@@ -120,7 +127,8 @@ async function handleFormSubmission(
 	successUrl,
 	successMessage,
 	errorMessage,
-	submitType
+	submitType,
+	afterSubmission
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
@@ -138,16 +146,17 @@ async function handleFormSubmission(
 		}
 
 		const formStatus = await submitFormData( form );
-
-		loader.classList.add( 'srfm-active' );
 		if ( formStatus ) {
-			if ( submitType === 'message' ) {
-				showSuccessMessage( successMessage, form );
+			if ( submitType === 'same page' ) {
+				showSuccessMessage( successMessage, form, afterSubmission );
+				loader.classList.remove( 'srfm-active' );
 			} else {
 				redirectToUrl( successUrl );
+				loader.classList.remove( 'srfm-active' );
 			}
 		} else {
 			showErrorMessage( errorMessage );
+			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
 		loader.classList.remove( 'srfm-active' );
@@ -167,6 +176,7 @@ function extractFormAttributesAndElements( form ) {
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
 	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
+	const afterSubmission = form.getAttribute( 'after-submission' );
 
 	return {
 		formId,
@@ -180,6 +190,7 @@ function extractFormAttributesAndElements( form ) {
 		submitBtn,
 		siteKey,
 		recaptchaType,
+		afterSubmission,
 	};
 }
 
@@ -200,6 +211,7 @@ function onloadCallback() {
 			submitBtn,
 			siteKey,
 			recaptchaType,
+			afterSubmission,
 		} = extractFormAttributesAndElements( form );
 		let isRecaptchaRender = false;
 		if ( recaptchaType === 'v2-invisible' ) {
@@ -215,7 +227,8 @@ function onloadCallback() {
 						successUrl,
 						successMessage,
 						errorMessage,
-						submitType
+						submitType,
+						afterSubmission
 					);
 					isRecaptchaRender = true;
 				},
@@ -232,7 +245,8 @@ function onloadCallback() {
 						successUrl,
 						successMessage,
 						errorMessage,
-						submitType
+						submitType,
+						afterSubmission
 					);
 				}
 			} );
