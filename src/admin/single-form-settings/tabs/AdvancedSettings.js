@@ -1,8 +1,4 @@
-import {
-	SelectControl,
-	PanelRow,
-	Modal,
-} from '@wordpress/components';
+import { SelectControl, PanelRow, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -246,7 +242,7 @@ function AdvancedSettings( props ) {
 					<button
 						className="components-button components-panel__body-toggle"
 						onClick={ openModal }
-						data-popup="form-confirmation"
+						data-popup="form_confirmation"
 					>
 						<span className="srfm-title">
 							<div>
@@ -288,7 +284,10 @@ function AdvancedSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSettingsPopup sureformsKeys={ sureformsKeys } targetTab={ popupTab } />
+					<SingleFormSettingsPopup
+						sureformsKeys={ sureformsKeys }
+						targetTab={ popupTab }
+					/>
 				</Modal>
 			) }
 		</>
