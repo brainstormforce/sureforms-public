@@ -29,17 +29,17 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, currentFormId ] );
 
-	// show the block preview on hover.
-	if ( preview ) {
-		const fieldName = srfm_fields_preview.input_preview;
-		return <FieldsPreview fieldName={ fieldName } />;
-	}
-
 	const sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
 	const is_inherit_from_theme = sureformsKeys?._srfm_inherit_theme_button;
+
+	// show the block preview on hover.
+	if ( preview ) {
+		const fieldName = srfm_fields_preview.input_preview;
+		return <FieldsPreview fieldName={ fieldName } />;
+	}
 
 	return (
 		<>
