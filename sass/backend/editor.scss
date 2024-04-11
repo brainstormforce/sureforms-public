@@ -8,10 +8,18 @@ body.post-type-sureforms_form {
 	}
 
 	.srfm-address-block-wrap {
-		padding-left: 0.3em !important;
-		.block-editor-block-list__layout {
-			div.srfm-block-single {
-				margin-top: 1em !important;
+		padding-left: 0 !important;
+		margin-top: 0.7em !important;
+		padding-right: 0 !important;
+		margin-bottom: 0 !important;
+		.block-editor-inner-blocks {
+			.block-editor-block-list__layout {
+				.block-editor-block-list__block {
+					margin-top: 0.5em !important;
+				}
+				.block-editor-block-list__block {
+					// margin-bottom: 1em !important;
+				}
 			}
 		}
 	}
@@ -149,7 +157,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	div.is-root-container.block-editor-block-list__layout {
+	div.is-root-container.block-editor-block-list__layout:not( .srfm-address-block-wrap ) {
 		display: flex;
 		flex-wrap: wrap;
 		padding: 0;
@@ -173,9 +181,13 @@ body.post-type-sureforms_form {
 			padding: 0 0.3em;
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
-			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
 			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
 			max-width: 100%;
+		}
+
+		.block-editor-block-list__block:not( .srfm-address-block-wrap ),
+		.block-list-appender {
+			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
 		}
 	}
 

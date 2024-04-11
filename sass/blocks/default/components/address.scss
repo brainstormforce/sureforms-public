@@ -4,9 +4,16 @@
 			// > .srfm-block {
 			// 	margin-bottom: 1em;
 			// }
+			padding-left: 0 !important;
+			padding-right: 0 !important;
+			margin-bottom: 0.5em !important;
 			.srfm-block-wrap {
 				display: flex;
 				flex-wrap: wrap;
+
+				.srfm-block-single {
+					margin-bottom: 0.5em !important;
+				}
 
 				.srfm-input-common {
 					// border-radius: 0;
