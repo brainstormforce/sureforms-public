@@ -338,6 +338,11 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// SureForms Custom Button Styles.
+	.srfm-inline-submit-button {
+		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+	}
+
 	.editor-post-publish-panel__content {
 		.srfm-shortcode {
 			position: relative;
