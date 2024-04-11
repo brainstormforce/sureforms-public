@@ -30,6 +30,34 @@ class Gutenberg_Hooks {
 	 */
 	protected $patterns = [];
 
+	/**
+	 * Array of SureForms blocks which get have user input.
+	 *
+	 * @var array<string>
+	 * @since x.x.x
+	 */
+	protected $srfm_blocks = [
+		'srfm/input',
+		'srfm/email',
+		'srfm/textarea',
+		'srfm/number',
+		'srfm/checkbox',
+		'srfm/phone',
+		'srfm/address',
+		'srfm/dropdown',
+		'srfm/multi-choice',
+		'srfm/radio',
+		'srfm/submit',
+		'srfm/url',
+		// pro blocks.
+		'srfm/date-time-picker',
+		'srfm/hidden',
+		'srfm/number-slider',
+		'srfm/password',
+		'srfm/rating',
+		'srfm/upload',
+	];
+
 	use Get_Instance;
 
 	/**
@@ -56,6 +84,7 @@ class Gutenberg_Hooks {
 		add_filter( 'block_categories_all', [ $this, 'register_block_categories' ], 10, 1 );
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
+		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
 	}
 
 	/**
@@ -246,5 +275,109 @@ class Gutenberg_Hooks {
 				'is_site_editor'          => $screen ? $screen->id : null,
 			]
 		);
+	}
+
+	/**
+	 * This function generates slug for sureforms blocks.
+	 * Generates slug only if slug attribute of block is empty.
+	 * Ensures that all sureforms blocks have unique slugs.
+	 *
+	 * @param int      $post_id current sureforms form post id.
+	 * @param \WP_Post $post SureForms post object.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function update_field_slug( $post_id, $post ) {
+		$blocks = parse_blocks( $post->post_content );
+
+		if ( empty( $blocks ) ) {
+			return;
+		}
+
+		$updated = false;
+
+		/**
+		 * List of slugs already taken by processed blocks.
+		 * used to maintain uniqueness of slugs.
+		 */
+		$slugs = [];
+
+		foreach ( $blocks as $index => $block ) {
+			// Checking only for SureForms blocks which can have user input.
+			if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
+				continue;
+			}
+
+			/**
+			 * Lets continue if slug already exists.
+			 * This will ensure that we don't update already existing slugs.
+			 */
+			if ( ! empty( $block['attrs']['slug'] ) ) {
+				$slugs[] = $block['attrs']['slug'];
+				continue;
+			}
+
+			$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs );
+			$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
+			$updated                           = true;
+		}
+
+		if ( ! $updated ) {
+			return;
+		}
+
+		$post_content = serialize_blocks( $blocks );
+
+		wp_update_post(
+			[
+				'ID'           => $post_id,
+				'post_content' => $post_content,
+			]
+		);
+	}
+
+	/**
+	 * Generates slug based on the provided block and existing slugs.
+	 *
+	 * @param array<string,string|array<string,mixed>> $block The block data.
+	 * @param array<string>                            $slugs The array of existing slugs.
+	 * @since x.x.x
+	 * @return string The generated unique block slug.
+	 */
+	public function generate_unique_block_slug( $block, $slugs ) {
+		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+
+		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
+			$slug = sanitize_title( $block['attrs']['label'] );
+		}
+
+		$slug = $this->generate_slug( $slug, $slugs );
+
+		return $slug;
+	}
+
+	/**
+	 * This function ensures that the slug is unique.
+	 * If the slug is already taken, it appends a number to the slug to make it unique.
+	 *
+	 * @param string        $slug test to be converted to slug.
+	 * @param array<string> $slugs An array of existing slugs.
+	 * @since x.x.x
+	 * @return string The unique slug.
+	 */
+	public function generate_slug( $slug, $slugs ) {
+		$slug = sanitize_title( $slug );
+
+		if ( ! in_array( $slug, $slugs, true ) ) {
+			return $slug;
+		}
+
+		$index = 1;
+
+		while ( in_array( $slug . '-' . $index, $slugs, true ) ) {
+			$index++;
+		}
+
+		return $slug . '-' . $index;
 	}
 }

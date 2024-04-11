@@ -429,11 +429,13 @@ class Post_Types {
 				'_srfm_input_placeholder_color'   => 'string',
 				'_srfm_input_bg_color'            => 'string',
 				'_srfm_input_border_color'        => 'string',
+				'_srfm_input_shadow_color'        => 'string',
 				'_srfm_input_border_width'        => 'integer',
 				'_srfm_input_border_radius'       => 'integer',
 				// Error.
 				'_srfm_field_error_color'         => 'string',
 				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_shadow_color'  => 'string',
 				'_srfm_field_error_bg_color'      => 'string',
 				// Submit Button.
 				'_srfm_button_text_color'         => 'string',
@@ -594,6 +596,8 @@ class Post_Types {
 				}
 
 				$label = explode( '-lbl-', $field_name )[1];
+				// Getting the encrypted label. we are removing the block slug here.
+				$label = explode( '-', $label )[0];
 
 				?>
 				<tr class="">

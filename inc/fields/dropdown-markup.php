@@ -41,6 +41,7 @@ class Dropdown_Markup extends Base {
 		$placeholder = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 		$form_id     = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
+		$block_slug  = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
 		$slug        = 'dropdown';
 
 		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -48,6 +49,7 @@ class Dropdown_Markup extends Base {
 		$placeholder_html     = $placeholder ? $placeholder : 'Select option';
 		$input_label_fallback = $label ? $label : __( 'Dropdown', 'sureforms' );
 		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
+		$field_name           = $input_label . '-' . $block_slug;
 		$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 		ob_start(); ?>
@@ -58,7 +60,7 @@ class Dropdown_Markup extends Base {
 
 				if ( is_array( $options ) ) {
 					?>
-				<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $slug ); ?>-input" aria-required="<?php echo esc_attr( $aria_require ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" tabindex="0" aria-hidden="true">
+				<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $slug ); ?>-input" aria-required="<?php echo esc_attr( $aria_require ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $field_name ); ?>" tabindex="0" aria-hidden="true">
 				<option value="" disabled selected><?php echo esc_html( $placeholder_html ); ?></option>
 					<?php
 					foreach ( $options as $option ) {
