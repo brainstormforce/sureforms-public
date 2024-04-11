@@ -41,6 +41,7 @@ const defaultKeys = {
 	_srfm_page_form_title: false,
 	_srfm_single_page_form_title: false,
 	_srfm_instant_form: false,
+	_srfm_is_inline_button: false,
 	// Submit Button
 	_srfm_submit_button_text: 'SUBMIT',
 	// Page Break
@@ -114,6 +115,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
+	const isInlineButtonBlockPresent = blocks.some(
+		( block ) => block.name === 'srfm/inline-button'
+	);
 	const deviceType = useDeviceType();
 
 	function updateMeta( option, value ) {
@@ -150,6 +154,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			return;
 		}
 		updateMeta( '_srfm_is_page_break', isPageBreak );
+		if ( sureformsKeys._srfm_is_inline_button === undefined ) {
+			return;
+		}
+		updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
@@ -390,7 +398,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
-				if ( ! submitBtnContainer ) {
+				// If Custom Button is present, remove the default button.
+				if ( isInlineButtonBlockPresent ) {
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 0 ) {
+						submitBtn[ 0 ].remove();
+					}
+				}
+
+				// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
+				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -401,7 +420,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureformsKeys, codeEditor ] );
+	}, [
+		deviceType,
+		sureformsKeys,
+		codeEditor,
+		blockCount,
+		isInlineButtonBlockPresent,
+	] );
 
 	useEffect( () => {
 		//quick action sidebar
@@ -487,10 +512,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 							setEnableQuickActionSidebar
 						}
 						isPageBreak={ isPageBreak }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings defaultKeys={ defaultKeys } />
+					<StyleSettings
+						defaultKeys={ defaultKeys }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
+					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
 					<AdvancedSettings defaultKeys={ defaultKeys } />

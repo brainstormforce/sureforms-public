@@ -100,7 +100,11 @@ export const randomNiceColor = () => {
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
 
-export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
+export const generateSmartTagsDropDown = (
+	setInputData,
+	inputData,
+	insertTextAtEnd
+) => {
 	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
 		return;
@@ -110,8 +114,11 @@ export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
 		return {
 			title: val,
 			onClick: () => {
-				props?.onChange( inputData + key );
-				setInputData( inputData + key );
+				if ( typeof inputData === 'object' ) {
+					insertTextAtEnd( key );
+				} else {
+					setInputData( inputData + key );
+				}
 			},
 		};
 	} );
