@@ -4,7 +4,13 @@ body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .componen
 body.post-type-sureforms_form .edit-post-sidebar > .components-panel > .components-panel__body.srfm--panel.is-opened {
   display: block;
 }
-body.post-type-sureforms_form .block-editor-inner-blocks .block-editor-block-list__layout {
+body.post-type-sureforms_form .srfm-address-block-wrap {
+  padding-right: 0.3em !important;
+}
+body.post-type-sureforms_form .srfm-address-block-wrap .block-editor-block-list__layout div.srfm-block-single {
+  margin-top: 1em !important;
+}
+body.post-type-sureforms_form .block-editor-inner-blocks .block-editor-block-list__layout:not(.srfm-address-block-wrap .block-list-appender) {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
