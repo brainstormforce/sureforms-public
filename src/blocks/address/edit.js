@@ -317,7 +317,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							// 	"default": [ "Option 1", "Option 2" ],
 							// 	"type": "array"
 							// },
-							options: [ ...countries ],
+							options: [
+								...countries.map( ( country ) => {
+									return country.name;
+								} ),
+							],
 							fieldWidth: 50,
 						},
 					],

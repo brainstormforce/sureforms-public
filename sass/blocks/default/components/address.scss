@@ -1,13 +1,16 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-address-block {
+			// > .srfm-block {
+			// 	margin-bottom: 1em;
+			// }
 			.srfm-block-wrap {
 				display: flex;
 				flex-wrap: wrap;
 
 				.srfm-input-common {
-					border-radius: 0;
-					border-bottom-width: 0;
+					// border-radius: 0;
+					// border-bottom-width: 0;
 					padding-right: 0.875em;
 					&:nth-child( 1 ) {
 						border-top-left-radius: var( --srfm-border-radius );
