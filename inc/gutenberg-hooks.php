@@ -326,7 +326,7 @@ class Gutenberg_Hooks {
 			return;
 		}
 
-		$post_content = serialize_blocks( $blocks );
+		$post_content = addslashes( serialize_blocks( $blocks ) );
 
 		wp_update_post(
 			[
