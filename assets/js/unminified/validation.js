@@ -67,7 +67,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			} );
 		}
-		console.log( skipValidation );
+
 		if ( skipValidation ) {
 			continue;
 		}
