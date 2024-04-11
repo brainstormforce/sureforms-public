@@ -20,7 +20,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 function StyleSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys } = props;
+	const { defaultKeys, isInlineButtonBlockPresent } = props;
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -933,50 +933,83 @@ function StyleSettings( props ) {
 						) }{ ' ' }
 					</>
 				) }
-				<p className="components-base-control__help" />
-				<MultiButtonsControl
-					label={ __( 'Button Alignment', 'sureforms' ) }
-					data={ {
-						value: sureformsKeys._srfm_submit_alignment,
-						label: '_srfm_submit_alignment',
-					} }
-					options={ [
-						{
-							value: 'left',
-							icon: <FontAwesomeIcon icon={ faAlignLeft } />,
-							tooltip: __( 'Left', 'sureforms' ),
-						},
-						{
-							value: 'center',
-							icon: <FontAwesomeIcon icon={ faAlignCenter } />,
-							tooltip: __( 'Center', 'sureforms' ),
-						},
-						{
-							value: 'right',
-							icon: <FontAwesomeIcon icon={ faAlignRight } />,
-							tooltip: __( 'Right', 'sureforms' ),
-						},
-						{
-							value: 'justify',
-							icon: <FontAwesomeIcon icon={ faAlignJustify } />,
-							tooltip: __( 'Full Width', 'sureforms' ),
-						},
-					] }
-					showIcons={ true }
-					onChange={ ( value ) => {
-						if ( sureformsKeys._srfm_submit_alignment === value ) {
-							updateMeta( '_srfm_submit_alignment', 'left' );
-							updateMeta( '_srfm_submit_width', '' );
-						} else if ( 'justify' === value ) {
-							updateMeta( '_srfm_submit_alignment', value );
-							updateMeta( '_srfm_submit_width', '100%' );
-							updateMeta( '_srfm_submit_width_backend', 'auto' );
-						} else {
-							updateMeta( '_srfm_submit_alignment', value );
-							updateMeta( '_srfm_submit_width', '' );
-						}
-					} }
-				/>
+				{ ! isInlineButtonBlockPresent && (
+					<>
+						<p className="components-base-control__help" />
+						<MultiButtonsControl
+							label={ __( 'Button Alignment', 'sureforms' ) }
+							data={ {
+								value: sureformsKeys._srfm_submit_alignment,
+								label: '_srfm_submit_alignment',
+							} }
+							options={ [
+								{
+									value: 'left',
+									icon: (
+										<FontAwesomeIcon icon={ faAlignLeft } />
+									),
+									tooltip: __( 'Left', 'sureforms' ),
+								},
+								{
+									value: 'center',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignCenter }
+										/>
+									),
+									tooltip: __( 'Center', 'sureforms' ),
+								},
+								{
+									value: 'right',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignRight }
+										/>
+									),
+									tooltip: __( 'Right', 'sureforms' ),
+								},
+								{
+									value: 'justify',
+									icon: (
+										<FontAwesomeIcon
+											icon={ faAlignJustify }
+										/>
+									),
+									tooltip: __( 'Full Width', 'sureforms' ),
+								},
+							] }
+							showIcons={ true }
+							onChange={ ( value ) => {
+								if (
+									sureformsKeys._srfm_submit_alignment ===
+									value
+								) {
+									updateMeta(
+										'_srfm_submit_alignment',
+										'left'
+									);
+									updateMeta( '_srfm_submit_width', '' );
+								} else if ( 'justify' === value ) {
+									updateMeta(
+										'_srfm_submit_alignment',
+										value
+									);
+									updateMeta( '_srfm_submit_width', '100%' );
+									updateMeta(
+										'_srfm_submit_width_backend',
+										'auto'
+									);
+								} else {
+									updateMeta(
+										'_srfm_submit_alignment',
+										value
+									);
+									updateMeta( '_srfm_submit_width', '' );
+								}
+							} }
+						/>
+					</>
+				) }
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Advanced', 'sureforms' ) }
