@@ -296,7 +296,6 @@ class Gutenberg_Hooks {
 
 		$updated = false;
 
-		// List of slugs already taken by processed blocks.
 		/**
 		 * List of slugs already taken by processed blocks.
 		 * used to maintain uniqueness of slugs.
