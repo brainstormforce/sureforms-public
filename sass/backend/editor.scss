@@ -9,7 +9,6 @@ body.post-type-sureforms_form {
 
 	.srfm-address-block-wrap {
 		padding-left: 0 !important;
-		margin-top: 0.7em !important;
 		padding-right: 0 !important;
 		margin-bottom: 0 !important;
 		.block-editor-inner-blocks {
@@ -17,10 +16,11 @@ body.post-type-sureforms_form {
 				.block-editor-block-list__block {
 					margin-top: 0.5em !important;
 				}
-				.block-editor-block-list__block {
-					// margin-bottom: 1em !important;
-				}
 			}
+		}
+		.block-editor-block-list__block,
+		.block-list-appender {
+			margin-top: 1em !important; // Had to add as various themes remove this margin.
 		}
 	}
 
@@ -157,7 +157,7 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	div.is-root-container.block-editor-block-list__layout:not( .srfm-address-block-wrap ) {
+	div.is-root-container.block-editor-block-list__layout {
 		display: flex;
 		flex-wrap: wrap;
 		padding: 0;
@@ -166,7 +166,7 @@ body.post-type-sureforms_form {
 		margin-top: 2em;
 
 		.block-list-appender,
-		.block-editor-block-list__block {
+		.block-editor-block-list__block:not( .srfm-address-block-wrap ) {
 			&:not( .srfm-block-single ),
 			&[data-type="srfm/image"],
 			&[data-type="srfm/separator"],
@@ -181,13 +181,9 @@ body.post-type-sureforms_form {
 			padding: 0 0.3em;
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
+			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
 			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
 			max-width: 100%;
-		}
-
-		.block-editor-block-list__block:not( .srfm-address-block-wrap ),
-		.block-list-appender {
-			margin-top: 1.2em !important; // Had to add as various themes remove this margin.
 		}
 	}
 
@@ -336,11 +332,6 @@ body.post-type-sureforms_form {
 			margin-left: 0.3em;
 			margin-right: 0.3em;
 		}
-	}
-
-	// SureForms Custom Button Styles.
-	.srfm-inline-submit-button {
-		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
 	}
 
 	.editor-post-publish-panel__content {
