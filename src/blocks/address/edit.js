@@ -28,28 +28,28 @@ import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		// required,
-		// fieldWidth,
-		// label,
-		// block_id,
-		// errorMsg,
-		// lineOnePlaceholder,
-		// lineTwoPlaceholder,
-		// cityPlaceholder,
-		// statePlaceholder,
-		// postalPlaceholder,
-		// countryPlaceholder,
-		// formId,
+		required,
+		fieldWidth,
+		label,
+		block_id,
+		errorMsg,
+		lineOnePlaceholder,
+		lineTwoPlaceholder,
+		cityPlaceholder,
+		statePlaceholder,
+		postalPlaceholder,
+		countryPlaceholder,
+		formId,
 		preview,
-		// help,
+		help,
 	} = attributes;
-	// const currentFormId = useGetCurrentFormId( clientId );
+	const currentFormId = useGetCurrentFormId( clientId );
 
-	// useEffect( () => {
-	// 	if ( formId !== currentFormId ) {
-	// 		setAttributes( { formId: currentFormId } );
-	// 	}
-	// }, [ formId, setAttributes, currentFormId ] );
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, setAttributes, currentFormId ] );
 
 	// const {
 	// 	currentMessage: currentErrorMsg,
@@ -62,9 +62,13 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const isRequired = required ? ' srfm-required' : '';
+	const slug = 'address';
+	const blockID = `srfm-${ slug }-${ block_id }`;
+
 	return (
 		<>
-			{ /* <InspectorControls>
+			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
 					defaultTab={ 'general' }
@@ -85,17 +89,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								value={ label }
-								onChange={ ( value ) => {
-									setAttributes( { label: value } );
-								} }
-							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
 								checked={ required }
@@ -103,21 +96,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									setAttributes( { required: checked } )
 								}
 							/>
-							{ required && (
-								<SRFMTextControl
-									data={ {
-										value: errorMsg,
-										label: 'errorMsg',
-									} }
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ currentErrorMsg }
-									onChange={ ( value ) => {
-										setCurrentErrorMsg( value );
-										setAttributes( { errorMsg: value } );
-									} }
-								/>
-							) }
-							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
@@ -130,114 +108,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 							/>
 						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Address Line 1', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: lineOnePlaceholder,
-									label: 'lineOnePlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ lineOnePlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										lineOnePlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Address Line 2', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: lineTwoPlaceholder,
-									label: 'lineTwoPlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ lineTwoPlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										lineTwoPlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'City', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: cityPlaceholder,
-									label: 'cityPlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ cityPlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										cityPlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'State', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: statePlaceholder,
-									label: 'statePlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ statePlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										statePlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Postal Code', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: postalPlaceholder,
-									label: 'postalPlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ postalPlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										postalPlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
-						<SRFMAdvancedPanelBody
-							title={ __( 'Country', 'sureforms' ) }
-							initialOpen={ false }
-						>
-							<SRFMTextControl
-								data={ {
-									value: countryPlaceholder,
-									label: 'countryPlaceholder',
-								} }
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ countryPlaceholder }
-								onChange={ ( value ) =>
-									setAttributes( {
-										countryPlaceholder: value,
-									} )
-								}
-							/>
-						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
@@ -246,88 +116,109 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						/>
 					</InspectorTab>
 				</InspectorTabs>
-			</InspectorControls> */ }
-			{ /* <AddressBlock
-				countries={ countries }
-				attributes={ attributes }
-				blockID={ block_id }
-				setAttributes={ setAttributes }
-			/>
-			{ help !== '' && (
+			</InspectorControls>
+			<div
+				className="srfm-address-block-container"
+				style={ {
+					marginTop: '-.5em',
+				} }
+			>
+				<RichText
+					tagName="label"
+					value={ label }
+					onChange={ ( value ) => {
+						setAttributes( {
+							label: decodeHtmlEntities( value ),
+						} );
+					} }
+					className={ `srfm-block-label${ isRequired }` }
+					multiline={ false }
+					id={ block_id }
+					allowedFormats={ [] }
+					style={ {
+						padding: '0 .3em',
+						marginTop: '1em',
+					} }
+				/>
+				<InnerBlocks
+					template={ [
+						[
+							'srfm/input',
+							{
+								placeholder: 'Address Line 1',
+								label: 'Address Line 1',
+								fieldWidth: 50,
+							},
+						],
+						[
+							'srfm/input',
+							{
+								placeholder: 'Address Line 2',
+								label: 'Address Line 2',
+								fieldWidth: 50,
+							},
+						],
+						[
+							'srfm/input',
+							{
+								placeholder: 'City',
+								label: 'City',
+								fieldWidth: 50,
+							},
+						],
+						[
+							'srfm/input',
+							{
+								placeholder: 'State',
+								label: 'State',
+								fieldWidth: 50,
+							},
+						],
+						[
+							'srfm/input',
+							{
+								placeholder: 'Postal Code',
+								label: 'Postal Code',
+								fieldWidth: 50,
+							},
+						],
+						[
+							'srfm/dropdown',
+							{
+								placeholder: 'Country',
+								label: 'Country',
+								// "options": {
+								// 	"default": [ "Option 1", "Option 2" ],
+								// 	"type": "array"
+								// },
+								options: [
+									...countries.map( ( country ) => {
+										return country.name;
+									} ),
+								],
+								fieldWidth: 50,
+							},
+						],
+					] }
+					allowedBlocks={ [ 'srfm/input', 'srfm/dropdown' ] }
+				/>
 				<RichText
 					tagName="label"
 					value={ help }
 					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
+						setAttributes( {
+							help: decodeHtmlEntities( value ),
+						} );
 					} }
 					className="srfm-description"
 					multiline={ false }
 					id={ block_id }
 					allowedFormats={ [] }
+					style={ {
+						padding: '0 .3em',
+					} }
 				/>
-			) } */ }
-			<InnerBlocks
-				template={ [
-					[
-						'srfm/input',
-						{
-							placeholder: 'Address Line 1',
-							label: 'Address Line 1',
-							fieldWidth: 50,
-						},
-					],
-					[
-						'srfm/input',
-						{
-							placeholder: 'Address Line 2',
-							label: 'Address Line 2',
-							fieldWidth: 50,
-						},
-					],
-					[
-						'srfm/input',
-						{
-							placeholder: 'City',
-							label: 'City',
-							fieldWidth: 50,
-						},
-					],
-					[
-						'srfm/input',
-						{
-							placeholder: 'State',
-							label: 'State',
-							fieldWidth: 50,
-						},
-					],
-					[
-						'srfm/input',
-						{
-							placeholder: 'Postal Code',
-							label: 'Postal Code',
-							fieldWidth: 50,
-						},
-					],
-					[
-						'srfm/dropdown',
-						{
-							placeholder: 'Country',
-							label: 'Country',
-							// "options": {
-							// 	"default": [ "Option 1", "Option 2" ],
-							// 	"type": "array"
-							// },
-							options: [
-								...countries.map( ( country ) => {
-									return country.name;
-								} ),
-							],
-							fieldWidth: 50,
-						},
-					],
-				] }
-				allowedBlocks={ [ 'srfm/input', 'srfm/dropdown' ] }
-			/>
+			</div>
 		</>
 	);
 };
