@@ -17,6 +17,8 @@ import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { decodeHtmlEntities } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { buttonText, fieldWidth, block_id, formId, preview } = attributes;
@@ -32,6 +34,12 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		const fieldName = srfm_fields_preview.input_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	const sureformsKeys = useSelect( ( select ) =>
+		select( editorStore ).getEditedPostAttribute( 'meta' )
+	);
+
+	const is_inherit_from_theme = sureformsKeys?._srfm_inherit_theme_button;
 
 	return (
 		<>
@@ -66,19 +74,18 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<>
-				<label
-					className="srfm-block-label"
-					style={ {
-						height: '1em',
-					} }
-				/>
+				<label className="srfm-block-label">‎</label>
 				<button
 					style={ {
 						width: '100%',
 						border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
 						borderRadius: 'var( --srfm-btn-border-radius )',
 					} }
-					className={ `srfm-button srfm-submit-button srfm-inline-submit-button` }
+					className={ `srfm-button srfm-submit-button srfm-inline-submit-button ${
+						is_inherit_from_theme
+							? 'wp-block-button__link'
+							: 'srfm-btn-bg-color'
+					}` }
 				>
 					<RichText
 						value={ buttonText }

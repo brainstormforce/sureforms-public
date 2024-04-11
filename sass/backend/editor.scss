@@ -307,12 +307,6 @@ body.post-type-sureforms_form {
 
 	// SureForms Custom Button Styles.
 	.srfm-inline-submit-button {
-		font-family: inherit;
-		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: var( --wp--custom--line-height--initial );
-		background-color: var( --srfm-btn-bg-color );
-		font-size: calc( var( --srfm-font-size ) - 0.33em );
-		color: var( --srfm-btn-text-color );
 		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
 	}
 
