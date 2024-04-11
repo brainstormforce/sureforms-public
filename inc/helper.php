@@ -330,21 +330,20 @@ class Helper {
 
 	/**
 	 * Decode block attributes.
-	 *
-	 * @since x.x.x
 	 * The function reverses the effect of serialize_block_attributes()
-	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
 	 *
+	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
 	 * @param string $encoded_data the encoded block attribute.
+	 * @since x.x.x
 	 * @return string decoded block attribute
 	 */
 	public static function decode_block_attribute( $encoded_data = '' ) {
-		$decoded_data = preg_replace( '/\\\\u002d\\\\u002d/', '--', (string) $encoded_data );
-		$decoded_data = preg_replace( '/\\\\u003c/', '<', (string) $decoded_data );
-		$decoded_data = preg_replace( '/\\\\u003e/', '>', (string) $decoded_data );
-		$decoded_data = preg_replace( '/\\\\u0026/', '&', (string) $decoded_data );
-		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', (string) $decoded_data );
-		return (string) $decoded_data;
+		$decoded_data = preg_replace( '/\\\\u002d\\\\u002d/', '--', self::get_string_value( $encoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003c/', '<', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003e/', '>', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u0026/', '&', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', self::get_string_value( $decoded_data ) );
+		return self::get_string_value( $decoded_data );
 	}
 
 }
