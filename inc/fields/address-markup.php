@@ -65,6 +65,7 @@ class Address_Markup extends Base {
 			$block_id             = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
 			$form_id              = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
 			$help                 = isset( $attributes['help'] ) ? $attributes['help'] : '';
+			$block_slug           = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
 			$slug                 = 'address';
 
 			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -77,6 +78,7 @@ class Address_Markup extends Base {
 			$postal_placeholder_attr   = $postal_placeholder ? ' placeholder="' . esc_attr( $postal_placeholder ) . '" ' : '';
 			$input_label_fallback      = $label ? $label : __( 'Address', 'sureforms' );
 			$input_label               = '-lbl-' . Helper::encrypt( $input_label_fallback );
+			$field_name                = $input_label . '-' . $block_slug;
 
 			$aria_require_attr = $required ? 'true' : 'false';
 			$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
@@ -86,12 +88,12 @@ class Address_Markup extends Base {
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
-			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-hidden-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>"/>
+			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-hidden-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $field_name ); ?>"/>
 			<div class="srfm-block-wrap">
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-1" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-1" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $line_one_placeholder_attr ); ?> />	
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-2" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-2" <?php echo wp_kses_post( $line_two_placeholder_attr ); ?> />	
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-city" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-city" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $city_placeholder_attr ); ?> />	
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-state" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-state" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $state_placeholder_attr ); ?> />	
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-1" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-1" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $line_one_placeholder_attr ); ?> />
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-line-2" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-line-2" <?php echo wp_kses_post( $line_two_placeholder_attr ); ?> />
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-city" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-city" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $city_placeholder_attr ); ?> />
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-state" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-state" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $state_placeholder_attr ); ?> />
 
 				<?php
 				if ( is_array( $data ) ) {
@@ -115,7 +117,7 @@ class Address_Markup extends Base {
 					<?php
 				}
 				?>
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-postal-code" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $postal_placeholder_attr ); ?> />	
+				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-postal-code" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" <?php echo wp_kses_post( $postal_placeholder_attr ); ?> />
 			</div>
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
