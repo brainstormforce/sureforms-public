@@ -167,8 +167,8 @@ function extractFormAttributesAndElements( form ) {
 	const errorMessage = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
-	const siteKey = gcaptchaDiv.getAttribute( 'data-sitekey' );
-	const recaptchaType = gcaptchaDiv.getAttribute( 'recaptcha-type' );
+	const siteKey = gcaptchaDiv?.getAttribute( 'data-sitekey' );
+	const recaptchaType = gcaptchaDiv?.getAttribute( 'recaptcha-type' );
 
 	return {
 		formId,
