@@ -646,6 +646,8 @@ class Post_Types {
 				}
 
 				$label = explode( '-lbl-', $field_name )[1];
+				// Getting the encrypted label. we are removing the block slug here.
+				$label = explode( '-', $label )[0];
 
 				?>
 				<tr class="">
