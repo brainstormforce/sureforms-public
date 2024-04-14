@@ -16,12 +16,11 @@ import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
 import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { AddressBlock } from './components/default';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
@@ -32,13 +31,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		fieldWidth,
 		label,
 		block_id,
-		errorMsg,
-		lineOnePlaceholder,
-		lineTwoPlaceholder,
-		cityPlaceholder,
-		statePlaceholder,
-		postalPlaceholder,
-		countryPlaceholder,
+
 		formId,
 		preview,
 		help,
@@ -50,11 +43,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
-
-	// const {
-	// 	currentMessage: currentErrorMsg,
-	// 	setCurrentMessage: setCurrentErrorMsg,
-	// } = useErrMessage( 'srfm_address_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -133,7 +121,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					} }
 					className={ `srfm-block-label${ isRequired }` }
 					multiline={ false }
-					id={ block_id }
+					id={ blockID }
 					allowedFormats={ [] }
 					style={ {
 						padding: '0 .3em',
@@ -218,7 +206,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					} }
 					className="srfm-description"
 					multiline={ false }
-					id={ block_id }
+					id={ blockID }
 					allowedFormats={ [] }
 					style={ {
 						padding: '0 .3em',
