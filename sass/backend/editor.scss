@@ -7,6 +7,20 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.srfm-address-block-container {
+		margin-top: -0.5em;
+
+		.srfm-address-block-label {
+			padding: 0 0.3em;
+			margin-top: 1em;
+		}
+
+		.srfm-address-help-txt {
+			padding: 0 0.3em;
+		}
+	}
+
+	// Address block styles.
 	.srfm-address-block-wrap {
 		padding-left: 0 !important;
 		padding-right: 0 !important;
@@ -165,6 +179,7 @@ body.post-type-sureforms_form {
 		margin: 0 auto;
 		margin-top: 2em;
 
+		// apply width to all blocks except the address block.
 		.block-list-appender,
 		.block-editor-block-list__block:not( .srfm-address-block-wrap ) {
 			&:not( .srfm-block-single ),
@@ -332,6 +347,11 @@ body.post-type-sureforms_form {
 			margin-left: 0.3em;
 			margin-right: 0.3em;
 		}
+	}
+
+	// SureForms Custom Button Styles.
+	.srfm-inline-submit-button {
+		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
 	}
 
 	.editor-post-publish-panel__content {

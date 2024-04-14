@@ -153,12 +153,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div
-				className="srfm-address-block-container"
-				style={ {
-					marginTop: '-.5em',
-				} }
-			>
+			<div className="srfm-address-block-container">
 				<RichText
 					tagName="label"
 					value={ label }
@@ -167,35 +162,30 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							label: decodeHtmlEntities( value ),
 						} );
 					} }
-					className={ `srfm-block-label` }
+					className={ `srfm-block-label srfm-address-block-label` }
 					multiline={ false }
 					id={ blockID }
 					allowedFormats={ [] }
-					style={ {
-						padding: '0 .3em',
-						marginTop: '1em',
-					} }
 				/>
 				<InnerBlocks
 					template={ addressTemplate }
 					allowedBlocks={ allowedBlocks }
 				/>
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( {
-							help: decodeHtmlEntities( value ),
-						} );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ blockID }
-					allowedFormats={ [] }
-					style={ {
-						padding: '0 .3em',
-					} }
-				/>
+				{ help && (
+					<RichText
+						tagName="label"
+						value={ help }
+						onChange={ ( value ) => {
+							setAttributes( {
+								help: decodeHtmlEntities( value ),
+							} );
+						} }
+						className="srfm-description srfm-address-help-txt"
+						multiline={ false }
+						id={ blockID }
+						allowedFormats={ [] }
+					/>
+				) }
 			</div>
 		</>
 	);
