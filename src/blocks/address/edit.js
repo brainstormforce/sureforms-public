@@ -28,6 +28,7 @@ import ConditionalLogic from '@Components/conditional-logic';
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { required, fieldWidth, label, block_id, formId, preview, help } =
 		attributes;
+
 	const currentFormId = useGetCurrentFormId( clientId );
 
 	useEffect( () => {
