@@ -148,6 +148,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								placeholder: 'Address Line 1',
 								label: 'Address Line 1',
 								fieldWidth: 50,
+								slug: 'address-line-1',
 							},
 						],
 						[
@@ -156,6 +157,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								placeholder: 'Address Line 2',
 								label: 'Address Line 2',
 								fieldWidth: 50,
+								slug: 'address-line-2',
 							},
 						],
 						[
@@ -164,6 +166,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								placeholder: 'City',
 								label: 'City',
 								fieldWidth: 50,
+								slug: 'city',
 							},
 						],
 						[
@@ -172,6 +175,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								placeholder: 'State',
 								label: 'State',
 								fieldWidth: 50,
+								slug: 'state',
 							},
 						],
 						[
@@ -180,6 +184,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								placeholder: 'Postal Code',
 								label: 'Postal Code',
 								fieldWidth: 50,
+								slug: 'postal-code',
 							},
 						],
 						[
@@ -197,6 +202,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} ),
 								],
 								fieldWidth: 50,
+								slug: 'country',
 							},
 						],
 					] }

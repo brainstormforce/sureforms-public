@@ -98,7 +98,13 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 							} }
 						>
 							{ __( 'Send a Test Email Summary', 'sureforms' ) }
-							{ sendingTestEmail && <Spinner /> }
+							{ sendingTestEmail && (
+								<Spinner
+									style={ {
+										marginTop: '0',
+									} }
+								/>
+							) }
 						</button>
 					</>
 				) }
