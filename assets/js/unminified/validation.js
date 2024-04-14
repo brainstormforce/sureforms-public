@@ -59,22 +59,23 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 	);
 
 	for ( const container of fieldContainers ) {
-		let skipValidation = false;
-		if ( Array.isArray( window.sureforms.skipValidationCallbacks ) ) {
-			window.sureforms.skipValidationCallbacks.forEach(
-				( skipValidationCallback ) => {
-					if ( typeof skipValidationCallback === 'function' ) {
-						skipValidation =
-							skipValidation ||
-							skipValidationCallback( container );
-					}
-				}
-			);
-		}
+		// Commented because it is causing error on form submission.
+		// let skipValidation = false;
+		// if ( Array.isArray( window.sureforms.skipValidationCallbacks ) ) {
+		// 	window.sureforms.skipValidationCallbacks.forEach(
+		// 		( skipValidationCallback ) => {
+		// 			if ( typeof skipValidationCallback === 'function' ) {
+		// 				skipValidation =
+		// 					skipValidation ||
+		// 					skipValidationCallback( container );
+		// 			}
+		// 		}
+		// 	);
+		// }
 
-		if ( skipValidation ) {
-			continue;
-		}
+		// if ( skipValidation ) {
+		// 	continue;
+		// }
 		const currentForm = container.closest( 'form' );
 		const currentFormId = currentForm.getAttribute( 'form-id' );
 
