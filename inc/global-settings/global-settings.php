@@ -160,7 +160,6 @@ class Global_Settings {
 			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
 			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
 			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
-			'srfm_address_block_required_text'      => $setting_options['srfm_address_block_required_text'],
 			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
 			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
 			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],

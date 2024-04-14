@@ -67,7 +67,6 @@ export const blocksAttributes = {
 	},
 	address: {
 		...addressAttributes.attributes,
-		errorMsg: getDefaultMessage( 'srfm_address_block_required_text' ),
 	},
 	'multi-choice': {
 		...multiChoiceAttributes.attributes,

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 import {
 	InspectorControls,
 	RichText,
@@ -26,8 +26,7 @@ import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { required, fieldWidth, label, block_id, formId, preview, help } =
-		attributes;
+	const { fieldWidth, label, block_id, formId, preview, help } = attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -43,9 +42,73 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
-	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'address';
 	const blockID = `srfm-${ slug }-${ block_id }`;
+
+	const addressTemplate = [
+		[
+			'srfm/input',
+			{
+				placeholder: 'Address Line 1',
+				label: 'Address Line 1',
+				fieldWidth: 50,
+				slug: 'address-line-1',
+			},
+		],
+		[
+			'srfm/input',
+			{
+				placeholder: 'Address Line 2',
+				label: 'Address Line 2',
+				fieldWidth: 50,
+				slug: 'address-line-2',
+			},
+		],
+		[
+			'srfm/input',
+			{
+				placeholder: 'City',
+				label: 'City',
+				fieldWidth: 50,
+				slug: 'city',
+			},
+		],
+		[
+			'srfm/input',
+			{
+				placeholder: 'State',
+				label: 'State',
+				fieldWidth: 50,
+				slug: 'state',
+			},
+		],
+		[
+			'srfm/input',
+			{
+				placeholder: 'Postal Code',
+				label: 'Postal Code',
+				fieldWidth: 50,
+				slug: 'postal-code',
+			},
+		],
+		[
+			'srfm/dropdown',
+			{
+				placeholder: 'Country',
+				label: 'Country',
+
+				options: [
+					...countries.map( ( country ) => {
+						return country.name;
+					} ),
+				],
+				fieldWidth: 50,
+				slug: 'country',
+			},
+		],
+	];
+
+	const allowedBlocks = [ 'srfm/input', 'srfm/dropdown' ];
 
 	return (
 		<>
@@ -70,13 +133,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<ToggleControl
-								label={ __( 'Required', 'sureforms' ) }
-								checked={ required }
-								onChange={ ( checked ) =>
-									setAttributes( { required: checked } )
-								}
-							/>
 							<SRFMTextControl
 								label={ __( 'Help', 'sureforms' ) }
 								value={ help }
@@ -90,7 +146,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance }>
 						<ConditionalLogic
 							{ ...{ setAttributes, attributes } }
@@ -112,7 +167,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							label: decodeHtmlEntities( value ),
 						} );
 					} }
-					className={ `srfm-block-label${ isRequired }` }
+					className={ `srfm-block-label` }
 					multiline={ false }
 					id={ blockID }
 					allowedFormats={ [] }
@@ -122,72 +177,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					} }
 				/>
 				<InnerBlocks
-					template={ [
-						[
-							'srfm/input',
-							{
-								placeholder: 'Address Line 1',
-								label: 'Address Line 1',
-								fieldWidth: 50,
-								slug: 'address-line-1',
-							},
-						],
-						[
-							'srfm/input',
-							{
-								placeholder: 'Address Line 2',
-								label: 'Address Line 2',
-								fieldWidth: 50,
-								slug: 'address-line-2',
-							},
-						],
-						[
-							'srfm/input',
-							{
-								placeholder: 'City',
-								label: 'City',
-								fieldWidth: 50,
-								slug: 'city',
-							},
-						],
-						[
-							'srfm/input',
-							{
-								placeholder: 'State',
-								label: 'State',
-								fieldWidth: 50,
-								slug: 'state',
-							},
-						],
-						[
-							'srfm/input',
-							{
-								placeholder: 'Postal Code',
-								label: 'Postal Code',
-								fieldWidth: 50,
-								slug: 'postal-code',
-							},
-						],
-						[
-							'srfm/dropdown',
-							{
-								placeholder: 'Country',
-								label: 'Country',
-								// "options": {
-								// 	"default": [ "Option 1", "Option 2" ],
-								// 	"type": "array"
-								// },
-								options: [
-									...countries.map( ( country ) => {
-										return country.name;
-									} ),
-								],
-								fieldWidth: 50,
-								slug: 'country',
-							},
-						],
-					] }
-					allowedBlocks={ [ 'srfm/input', 'srfm/dropdown' ] }
+					template={ addressTemplate }
+					allowedBlocks={ allowedBlocks }
 				/>
 				<RichText
 					tagName="label"
