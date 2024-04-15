@@ -40,16 +40,18 @@ class GDPR_Markup extends Base {
 		$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_gdpr_block_required_text' );
 		$class_name  = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_id    = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
+		$block_slug      = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
 		$slug        = 'gdpr';
 
 		$block_width       = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
+		$input_label_fallback = $label ? $label : __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' );
+		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
+		$field_name        = $input_label . '-' . $block_slug;
 		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 
 		// html attributes.
 		$aria_require_attr    = 'true';
 		$checked_attr         = $checked ? 'checked' : '';
-		$input_label_fallback = $label ? $label : __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' );
-		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 		$allowed_tags         = [
 			'a' => [
 				'href'   => [],
@@ -60,7 +62,7 @@ class GDPR_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>" name="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $field_name ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $checked_attr ); ?>/>
 					<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>">
 						<span class="srfm-span-wrap">
 							<svg class="srfm-check-icon" width="12px" height="10px">
