@@ -165,17 +165,6 @@
 			width: 100%;
 			margin-bottom: 1.2em;
 
-			.wp-block-button {
-				display: flex;
-				flex-direction: column;
-				align-items: end;
-				gap: 8px;
-
-				.srfm-submit-button {
-					width: fit-content;
-				}
-			}
-
 			&.hide {
 				display: none;
 			}
