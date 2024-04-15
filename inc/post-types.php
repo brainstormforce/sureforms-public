@@ -125,7 +125,7 @@ class Post_Types {
 	public function register_post_types() {
 		$form_labels = [
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
-			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
+			'singular_name'      => _x( 'SureForms', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
