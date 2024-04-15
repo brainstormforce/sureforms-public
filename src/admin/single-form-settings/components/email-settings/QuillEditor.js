@@ -38,9 +38,9 @@ const Editor = ( {
 						insertTextAtEnd
 					)
 						? generateSmartTagsDropDown(
-								setFormData,
-								formData,
-								insertTextAtEnd
+							setFormData,
+							formData,
+							insertTextAtEnd
 						  )
 						: []
 				}
