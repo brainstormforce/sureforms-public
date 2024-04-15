@@ -522,7 +522,7 @@ class Post_Types {
 				'default'       => [
 					[
 						'id'            => 1,
-						'status'        => false,
+						'status'        => true,
 						'is_raw_format' => false,
 						'name'          => 'Admin Notification Email',
 						'email_to'      => '{admin_email}',
