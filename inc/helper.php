@@ -134,7 +134,7 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
@@ -326,6 +326,24 @@ class Helper {
 			__( 'Sorry, you are not allowed to perform this action.', 'sureforms' ),
 			[ 'status' => \rest_authorization_required_code() ]
 		);
+	}
+
+	/**
+	 * Decode block attributes.
+	 * The function reverses the effect of serialize_block_attributes()
+	 *
+	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
+	 * @param string $encoded_data the encoded block attribute.
+	 * @since x.x.x
+	 * @return string decoded block attribute
+	 */
+	public static function decode_block_attribute( $encoded_data = '' ) {
+		$decoded_data = preg_replace( '/\\\\u002d\\\\u002d/', '--', self::get_string_value( $encoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003c/', '<', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003e/', '>', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u0026/', '&', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', self::get_string_value( $decoded_data ) );
+		return self::get_string_value( $decoded_data );
 	}
 
 }
