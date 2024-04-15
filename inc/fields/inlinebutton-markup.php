@@ -81,14 +81,23 @@ class Inlinebutton_Markup extends Base {
 				<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 					<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $google_captcha_site_key ) ) . "'></div>"; ?>
 				<?php endif; ?>
-				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?> srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?> srfm-block srfm-custom-button">
+				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?> srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?> srfm-block srfm-custom-button-ctn">
 				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', '‎', '', '', false ) ); ?>
 				<?php
 				if ( 'v3-reCAPTCHA' === $recaptcha_version ) :
 					wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $google_captcha_site_key ), [], SRFM_VER, true );
 						endif;
+
+				 if ( 'v2-checkbox' === $recaptcha_version ) :
+					wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+				endif;
+
+				if ( 'v2-invisible' === $recaptcha_version ) :
+					wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+
+				endif; 
 				?>
-					<button style="<?php echo $add_button_padding ? esc_attr( 'padding: 1em; ' ) : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?>" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
+					<button style="<?php echo $add_button_padding ? esc_attr( 'padding: 1em; ' ) : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-button srfm-submit-button <?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?> srfm-custom-button" <?php echo 'v2-invisible' === $recaptcha_version || 'v3-reCAPTCHA' === $recaptcha_version ? esc_attr( 'recaptcha-type=' . $recaptcha_version . ' data-sitekey=' . $google_captcha_site_key ) : ''; ?>>
 						<div class="srfm-submit-wrap">
 							<?php echo esc_html( $button_text ); ?>
 							<div class="srfm-loader"></div>

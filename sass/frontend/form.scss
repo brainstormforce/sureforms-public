@@ -60,11 +60,11 @@
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block,
-		.g-recaptcha {
+		.g-recaptcha:not( .srfm-custom-button ) {
 			padding: 0 0.3em;
 		}
 
-		.g-recaptcha[recaptcha-type='v2-checkbox'] {
+		.g-recaptcha[recaptcha-type="v2-checkbox"] {
 			margin-bottom: 1.2em;
 		}
 
