@@ -534,50 +534,50 @@ class Post_Types {
 			]
 		);
 
-		// Compliance Settings metas.
-		register_post_meta(
-			'sureforms_form',
-			'_srfm_compliance',
-			[
-				'single'        => true,
-				'type'          => 'array',
-				'auth_callback' => '__return_true',
-				'show_in_rest'  => [
-					'schema' => [
-						'type'  => 'array',
-						'items' => [
-							'type'       => 'object',
-							'properties' => [
-								'id'                   => [
-									'type' => 'string',
-								],
-								'gdpr'                 => [
-									'type' => 'boolean',
-								],
-								'do_not_store_entries' => [
-									'type' => 'boolean',
-								],
-								'auto_delete_entries'  => [
-									'type' => 'boolean',
-								],
-								'auto_delete_days'     => [
-									'type' => 'integer',
-								],
-							],
+// Compliance Settings metas.
+register_post_meta(
+	'sureforms_form',
+	'_srfm_compliance',
+	[
+		'single'        => true,
+		'type'          => 'array',
+		'auth_callback' => '__return_true',
+		'show_in_rest'  => [
+			'schema' => [
+				'type'  => 'array',
+				'items' => [
+					'type'       => 'object',
+					'properties' => [
+						'id'                   => [
+							'type' => 'string',
+						],
+						'gdpr'                 => [
+							'type' => 'boolean',
+						],
+						'do_not_store_entries' => [
+							'type' => 'boolean',
+						],
+						'auto_delete_entries'  => [
+							'type' => 'boolean',
+						],
+						'auto_delete_days'     => [
+							'type' => 'string',
 						],
 					],
 				],
-				'default'       => [
-					[
-						'id'                   => 'gdpr',
-						'gdpr'                 => false,
-						'do_not_store_entries' => false,
-						'auto_delete_entries'  => false,
-						'auto_delete_days'     => '',
-					],
-				],
 			],
-		);
+		],
+		'default'       => [
+			[
+				'id'                   => 'gdpr',
+				'gdpr'                 => false,
+				'do_not_store_entries' => false,
+				'auto_delete_entries'  => false,
+				'auto_delete_days'     => '',
+			],
+		],
+	]
+);
 
 		// form confirmation.
 		register_post_meta(

@@ -12,6 +12,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const emailIcon = parse( svgIcons.email );
 	const formConfirmIcon = parse( svgIcons.circleCheck );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
+	const complianceData = sureformsKeys._srfm_compliance || [];
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
@@ -36,7 +37,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			id: 'compliance_settings',
 			title: __( 'Compliance Settings', 'sureforms' ),
 			icon: <MdSecurity size={ 20 } />,
-			component: <Compliance />,
+			component: <Compliance complianceData={ complianceData } />,
 		},
 	];
 	return (
