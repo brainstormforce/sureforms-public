@@ -413,6 +413,7 @@ class Post_Types {
 				'_srfm_single_page_form_title'    => 'boolean',
 				'_srfm_submit_button_text'        => 'string',
 				'_srfm_instant_form'              => 'boolean',
+				'_srfm_is_inline_button'          => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
@@ -560,7 +561,7 @@ class Post_Types {
 									'type' => 'boolean',
 								],
 								'auto_delete_days'     => [
-									'type' => 'string',
+									'type' => 'integer',
 								],
 							],
 						],
@@ -573,6 +574,55 @@ class Post_Types {
 						'do_not_store_entries' => false,
 						'auto_delete_entries'  => false,
 						'auto_delete_days'     => '',
+					],
+				],
+			],
+		);
+
+		// form confirmation.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_form_confirmation',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'id'                => [
+									'type' => 'integer',
+								],
+								'confirmation_type' => [
+									'type' => 'string',
+								],
+								'page_url'          => [
+									'type' => 'string',
+								],
+								'custom_url'        => [
+									'type' => 'string',
+								],
+								'message'           => [
+									'type' => 'string',
+								],
+								'submission_action' => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
+						'id'                => 1,
+						'confirmation_type' => 'same page',
+						'page_url'          => '',
+						'custom_url'        => '',
+						'message'           => '<p>Form submitted successfully!</p>',
+						'submission_action' => 'hide form',
 					],
 				],
 			]
@@ -654,6 +704,8 @@ class Post_Types {
 				}
 
 				$label = explode( '-lbl-', $field_name )[1];
+				// Getting the encrypted label. we are removing the block slug here.
+				$label = explode( '-', $label )[0];
 
 				?>
 				<tr class="">

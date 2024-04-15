@@ -405,7 +405,20 @@ class Form_Submit {
 
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
-				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$parts    = explode( '-lbl-', $only_key );
+
+				if ( ! empty( $parts[1] ) ) {
+					$tokens = explode( '-', $parts[1] );
+					if ( count( $tokens ) > 1 ) {
+						$only_key = implode( '-', array_slice( $tokens, 1 ) );
+					}
+				} else {
+					$tokens = explode( '-', $parts[0] );
+					if ( 'address' === $tokens[1] ) {
+						$only_key = implode( '-', array_slice( $tokens, 3 ) );
+					}
+				}
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
 
@@ -419,6 +432,7 @@ class Form_Submit {
 			];
 
 			do_action( 'srfm_form_submit', $form_submit_response );
+
 		} else {
 			$response = [
 				'success' => false,

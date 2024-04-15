@@ -44,6 +44,7 @@ class Number_Markup extends Base {
 			$error_msg   = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_number_block_required_text' );
 			$format_type = isset( $attributes['formatType'] ) ? $attributes['formatType'] : '';
 			$classname   = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
+			$block_slug  = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
 			$slug        = 'number';
 
 			$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
@@ -59,12 +60,13 @@ class Number_Markup extends Base {
 			$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
 			$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
 			$unique_slug          = 'srfm-' . $slug . '-' . $block_id . $input_label;
+			$field_name           = $unique_slug . '-' . $block_slug;
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
 				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="number" name="<?php echo esc_attr( $unique_slug ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> /> 
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="number" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $placeholder_attr . '' . $default_value_attr . '' . $format_attr . '' . $min_value_attr . '' . $max_value_attr ); ?> />
 					<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
 				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
