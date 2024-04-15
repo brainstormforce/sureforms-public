@@ -59,8 +59,13 @@
 	.srfm-form {
 		.srfm-block-single,
 		.srfm-submit-container,
-		.uagb-block {
+		.uagb-block,
+		.g-recaptcha {
 			padding: 0 0.3em;
+		}
+
+		.g-recaptcha[recaptcha-type='v2-checkbox'] {
+			margin-bottom: 1.2em;
 		}
 
 		.uagb-block {

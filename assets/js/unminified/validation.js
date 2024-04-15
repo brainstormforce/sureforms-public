@@ -60,7 +60,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 	for ( const container of fieldContainers ) {
 		let skipValidation = false;
-		if ( Array.isArray( window.sureforms.skipValidationCallbacks ) ) {
+		if ( Array.isArray( window.sureforms?.skipValidationCallbacks ) ) {
 			window.sureforms.skipValidationCallbacks.forEach( ( skipValidationCallback ) => {
 				if ( typeof skipValidationCallback === 'function' ) {
 					skipValidation = skipValidation || skipValidationCallback( container );
