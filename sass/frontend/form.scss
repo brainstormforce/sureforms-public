@@ -60,7 +60,7 @@
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block,
-		.g-recaptcha:not( .srfm-custom-button ) {
+		.g-recaptcha:not( .srfm-submit-button, .srfm-custom-button ) {
 			padding: 0 0.3em;
 		}
 
