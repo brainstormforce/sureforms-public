@@ -158,6 +158,10 @@ class Generate_Form_Markup {
 				$global_setting_options = [];
 			}
 
+			var_dump( $is_inline_button );
+			var_dump( $is_page_break );
+			wp_die();
+
 			if ( is_array( $global_setting_options ) ) {
 				switch ( $recaptcha_version ) {
 					case 'v2-checkbox':

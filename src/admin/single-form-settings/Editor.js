@@ -150,11 +150,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
-		if ( sureformsKeys._srfm_is_page_break !== undefined ) {
+		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
 			updateMeta( '_srfm_is_page_break', isPageBreak );
 		}
 
-		if ( sureformsKeys._srfm_is_inline_button !== undefined ) {
+		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
 			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
 	}, [ blockCount ] );
