@@ -53,7 +53,6 @@ class Address_Markup extends Base {
 				<div class="srfm-address-label-ctn">
 					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
 				</div>
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $slug ); ?>-hidden-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $input_label ); ?>"/>
 				<div class="srfm-block-wrap">
 					<?php
                         // phpcs:ignore
