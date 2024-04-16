@@ -155,6 +155,7 @@ async function handleFormSubmission(
 				loader.classList.remove( 'srfm-active' );
 			}
 		} else {
+			loader.classList.remove( 'srfm-active' );
 			showErrorMessage( errorMessage );
 			loader.classList.remove( 'srfm-active' );
 		}
@@ -174,9 +175,10 @@ function extractFormAttributesAndElements( form ) {
 	const successMessage = form.nextElementSibling;
 	const errorMessage = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
-	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
-	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
+	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
+	const siteKey = gcaptchaDiv?.getAttribute( 'data-sitekey' );
+	const recaptchaType = gcaptchaDiv?.getAttribute( 'recaptcha-type' );
 
 	return {
 		formId,
@@ -217,7 +219,7 @@ function onloadCallback() {
 		if ( recaptchaType === 'v2-invisible' ) {
 			grecaptcha.render( submitBtn, {
 				sitekey: siteKey,
-				callback: () => {
+				callback: ( ) => {
 					handleFormSubmission(
 						form,
 						formId,
@@ -235,6 +237,7 @@ function onloadCallback() {
 			} );
 
 			submitBtn.addEventListener( 'click', () => {
+				loader.classList.add( 'srfm-active' );
 				if ( isRecaptchaRender ) {
 					handleFormSubmission(
 						form,

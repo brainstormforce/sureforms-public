@@ -60,7 +60,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 	for ( const container of fieldContainers ) {
 		let skipValidation = false;
-		if ( Array.isArray( window.sureforms.skipValidationCallbacks ) ) {
+		if ( Array.isArray( window.sureforms?.skipValidationCallbacks ) ) {
 			window.sureforms.skipValidationCallbacks.forEach(
 				( skipValidationCallback ) => {
 					if ( typeof skipValidationCallback === 'function' ) {
@@ -142,11 +142,10 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Radio OR Checkbox OR GDPR field
+		//Radio OR Checkbox type field
 		if (
 			container.classList.contains( 'srfm-multi-choice-block' ) ||
-			container.classList.contains( 'srfm-checkbox-block' ) ||
-			container.classList.contains( 'srfm-gdpr-block' )
+			container.classList.contains( 'srfm-checkbox-block' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
