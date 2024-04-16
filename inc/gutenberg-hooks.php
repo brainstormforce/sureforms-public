@@ -163,6 +163,16 @@ class Gutenberg_Hooks {
 					'srfm/' . $block_pattern,
 					require $pattern_file
 				);
+			} else if ( defined( 'SRFM_PRO_VER' ) && ! is_readable( $pattern_file ) ) {
+				$pattern_file = SRFM_PRO_DIR . 'templates/forms/' . $block_pattern . '.php';
+				if ( is_readable( $pattern_file ) ) {
+					register_block_pattern(
+						'srfm/' . $block_pattern,
+						require $pattern_file
+					);
+				}
+			} else {
+				continue;
 			}
 		}
 	}

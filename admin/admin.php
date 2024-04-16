@@ -430,6 +430,9 @@ class Admin {
 			];
 			wp_enqueue_script( SRFM_SLUG . '-template-picker', SRFM_URL . 'assets/build/' . $sureforms_admin . '.js', $script_info['dependencies'], SRFM_VER, true );
 
+			// Check if the sureforms-pro plugin is active.
+			$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
+
 			wp_localize_script(
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
@@ -441,6 +444,7 @@ class Admin {
 					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                => $is_pro_active,
 				]
 			);
 		}
