@@ -81,12 +81,6 @@ class Frontend_Assets {
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
-		// Google reCaptcha.
-		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-		if ( $is_set_v2_site_key ) {
-			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
-		}
-
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',
