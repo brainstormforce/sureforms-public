@@ -31,6 +31,9 @@ class Events_Scheduler {
 	 * Schedules a action that runs every 24 hours for SureForms.
 	 *
 	 * @hooked - init
+	 * @uses as_has_scheduled_action() To check if the action is already scheduled.
+	 * @uses as_schedule_recurring_action() To schedule a recurring action.
+	 * @link https://actionscheduler.org/api/
 	 * @since x.x.x
 	 * @return void
 	 */
