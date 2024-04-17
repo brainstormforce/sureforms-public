@@ -36,38 +36,16 @@ const TemplateCard = ( {
 					style={ { backgroundColor: color } }
 				>
 					{ isPro && (
-						<div
-							style={ {
-								background: '#ffc107',
-								color: '#000',
-								padding: '1px 10px',
-								fontWeight: '500',
-								fontSize: '0.6875em',
-								top: '-10px',
-								right: '-10px',
-								textTransform: 'uppercase',
-								position: 'absolute',
-								zIndex: '1',
-								borderRadius: '6px',
-								letterSpacing: '.3px',
-							} }
-						>
+						<div className="srfm-tc-pro-badge">
 							{ __( 'PREMIUM', 'sureforms' ) }
 						</div>
 					) }
 					<div className="srfm-tc-btn-container">
 						{ isPro && ! srfm_admin.is_pro_active ? (
 							<button className="srfm-tc-hover-use-btn srfm-common-btn">
-								<div
-									style={ {
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'center',
-										gap: '5px',
-									} }
-								>
+								<div className="srfm-tc-upgrade-to-pro-btn">
 									<MdLockOutline />
-									{ __( 'Upgrade to pro', 'sureforms' ) }
+									{ __( 'Upgrade To Pro', 'sureforms' ) }
 								</div>
 							</button>
 						) : (

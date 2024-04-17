@@ -13,13 +13,13 @@ const TemplateScreen = () => {
 	const [ templateColors, setTemplateColors ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 
+	// Pro Templates dummy data for the preview in the free version.
 	const proTemplatesPreview = [
 		{
-			name: 'srfm/demo-pro-form',
-			title: 'Demo Pro Form',
+			title: 'Job Application Form',
 			categories: [ 'sureforms_form' ],
-			templateCategory: 'Pro Templates',
-			slug: 'demo-pro-form',
+			templateCategory: 'Job Application',
+			slug: 'job-application-form',
 			isPro: true,
 			content: '',
 		},
@@ -104,9 +104,6 @@ const TemplateScreen = () => {
 										'sureforms'
 									) }
 									className="srfm-ts-sidebar-search-input"
-									style={ {
-										width: '100%',
-									} }
 									value={ searchQuery }
 									onChange={ ( e ) =>
 										setSearchQuery( e.target.value )
