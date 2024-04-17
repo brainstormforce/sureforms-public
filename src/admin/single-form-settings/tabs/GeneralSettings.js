@@ -10,7 +10,7 @@ import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isPageBreak } = props;
+	const { defaultKeys, isPageBreak, isInlineButtonBlockPresent } = props;
 	const root = document.documentElement.querySelector( 'body' );
 
 	let sureformsKeys = useSelect( ( select ) =>
@@ -168,24 +168,26 @@ function GeneralSettings( props ) {
 					} }
 				/>
 			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Submit Button', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SRFMTextControl
-					data={ {
-						value: sureformsKeys._srfm_submit_button_text,
-						label: '_srfm_submit_button_text',
-					} }
-					label={ __( 'Submit Button Text', 'sureforms' ) }
-					placeholder={ __( 'SUBMIT', 'sureforms' ) }
-					value={ sureformsKeys._srfm_submit_button_text }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_submit_button_text', value );
-					} }
-					isFormSpecific={ true }
-				/>
-			</SRFMAdvancedPanelBody>
+			{ ! isInlineButtonBlockPresent && (
+				<SRFMAdvancedPanelBody
+					title={ __( 'Submit Button', 'sureforms' ) }
+					initialOpen={ false }
+				>
+					<SRFMTextControl
+						data={ {
+							value: sureformsKeys._srfm_submit_button_text,
+							label: '_srfm_submit_button_text',
+						} }
+						label={ __( 'Submit Button Text', 'sureforms' ) }
+						placeholder={ __( 'SUBMIT', 'sureforms' ) }
+						value={ sureformsKeys._srfm_submit_button_text }
+						onChange={ ( value ) => {
+							updateMeta( '_srfm_submit_button_text', value );
+						} }
+						isFormSpecific={ true }
+					/>
+				</SRFMAdvancedPanelBody>
+			) }
 			{ isPageBreak && (
 				<SRFMAdvancedPanelBody
 					title={ __( 'Page Break', 'sureforms' ) }

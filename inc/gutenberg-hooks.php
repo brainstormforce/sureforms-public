@@ -114,6 +114,7 @@ class Gutenberg_Hooks {
 				'srfm/icon',
 				'srfm/image',
 				'srfm/advanced-heading',
+				'srfm/inline-button',
 
 			];
 			// Apply a filter to the $allow_block_types types array.
