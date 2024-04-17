@@ -16,9 +16,9 @@ const TemplateScreen = () => {
 	// Pro Templates dummy data for the preview in the free version.
 	const proTemplatesPreview = [
 		{
-			title: 'Job Application Form',
+			title: __( 'Job Application Form', 'sureforms' ),
 			categories: [ 'sureforms_form' ],
-			templateCategory: 'Job Application',
+			templateCategory: __( 'Job Application', 'sureforms' ),
 			slug: 'job-application-form',
 			isPro: true,
 			content: '',
@@ -202,7 +202,7 @@ const TemplateScreen = () => {
 											templateColors[ template?.slug ]
 										}
 										templateMetas={ template?.postMetas }
-										isPro={ template?.isPro }
+										isProTemplate={ template?.isPro }
 									/>
 								);
 							} ) }

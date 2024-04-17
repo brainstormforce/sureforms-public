@@ -11,7 +11,7 @@ const TemplateCard = ( {
 	formData,
 	color,
 	templateMetas,
-	isPro,
+	isProTemplate,
 } ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
 	const blankImg = srfm_admin.preview_images_url + 'blank.svg';
@@ -35,13 +35,13 @@ const TemplateCard = ( {
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
 				>
-					{ isPro && (
+					{ isProTemplate && (
 						<div className="srfm-tc-pro-badge">
 							{ __( 'PREMIUM', 'sureforms' ) }
 						</div>
 					) }
 					<div className="srfm-tc-btn-container">
-						{ isPro && ! srfm_admin.is_pro_active ? (
+						{ isProTemplate && ! srfm_admin.is_pro_active ? (
 							<button className="srfm-tc-hover-use-btn srfm-common-btn">
 								<div className="srfm-tc-upgrade-to-pro-btn">
 									<MdLockOutline />
