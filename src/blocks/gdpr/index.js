@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { MdOutlineCheckBox as icon } from 'react-icons/md';
+import { MdSecurity as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies
