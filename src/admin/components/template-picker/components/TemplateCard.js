@@ -35,47 +35,42 @@ const TemplateCard = ( {
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
 				>
-					{ isPro && ! srfm_admin.is_pro_active ? (
-						<>
-							<div
-								style={ {
-									background: '#ffc107',
-									color: '#000',
-									padding: '1px 10px',
-									fontWeight: '500',
-									fontSize: '0.6875em',
-									top: '-10px',
-									right: '-10px',
-									textTransform: 'uppercase',
-									position: 'absolute',
-									zIndex: '1',
-									borderRadius: '6px',
-									letterSpacing: '.3px',
-								} }
-							>
-								{ __( 'PREMIUM', 'sureforms' ) }
-							</div>
-							<div className="srfm-tc-btn-container">
-								<button
-									className="srfm-tc-hover-use-btn srfm-common-btn"
-									onClick={ () => {} }
+					{ isPro && (
+						<div
+							style={ {
+								background: '#ffc107',
+								color: '#000',
+								padding: '1px 10px',
+								fontWeight: '500',
+								fontSize: '0.6875em',
+								top: '-10px',
+								right: '-10px',
+								textTransform: 'uppercase',
+								position: 'absolute',
+								zIndex: '1',
+								borderRadius: '6px',
+								letterSpacing: '.3px',
+							} }
+						>
+							{ __( 'PREMIUM', 'sureforms' ) }
+						</div>
+					) }
+					<div className="srfm-tc-btn-container">
+						{ isPro && ! srfm_admin.is_pro_active ? (
+							<button className="srfm-tc-hover-use-btn srfm-common-btn">
+								<div
+									style={ {
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										gap: '5px',
+									} }
 								>
-									<div
-										style={ {
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											gap: '5px',
-										} }
-									>
-										<MdLockOutline />
-										{ __( 'Upgrade to pro', 'sureforms' ) }
-									</div>
-								</button>
-							</div>
-						</>
-					) : (
-						<div className="srfm-tc-btn-container">
+									<MdLockOutline />
+									{ __( 'Upgrade to pro', 'sureforms' ) }
+								</div>
+							</button>
+						) : (
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
 								onClick={ () =>
@@ -88,8 +83,8 @@ const TemplateCard = ( {
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
-						</div>
-					) }
+						) }
+					</div>
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }

@@ -278,13 +278,12 @@ $sidebar_width: 290px;
 					font-weight: 400;
 					border-color: $border_2;
 					width: calc( 100% - 40px );
+					width: 100%;
 				}
 
-				.srfm-ts-sidebar-search-icon {
-					line-height: 0;
-					align-self: center;
-					color: $text_color_2;
-					cursor: pointer;
+				.srfm-ts-sidebar-search-input:focus {
+					box-shadow: none;
+					border-color: #2271b1;
 				}
 			}
 

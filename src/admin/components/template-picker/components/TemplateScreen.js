@@ -59,127 +59,6 @@ const TemplateScreen = () => {
 		setLoading( false );
 	};
 
-	// [
-	// 	{
-	// 		"name": "srfm/blank-form",
-	// 		"title": "Blank Form",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Basic Forms",
-	// 		"slug": "blank-form",
-	// 		"isPro": false,
-	// 		"content": ""
-	// 	},
-	// 	{
-	// 		"name": "srfm/contact-form",
-	// 		"title": "Contact Form",
-	// 		"info": "A basic Contact Form",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Basic Forms",
-	// 		"slug": "contact-form",
-	// 		"isPro": false,
-	// 		"content": "<!-- wp:srfm/advanced-heading {\"block_id\":\"88614146\",\"headingTitle\":\"Contact us\",\"headingDescToggle\":true,\"headingDesc\":\"Use this form to contact our team. We usually respond within 24 hours but it can take longer on weekends and around public holidays.\",\"headSpace\":16,\"subHeadSpace\":24,\"subHeadFontWeight\":\"400\",\"subHeadFontSize\":18} /--><!-- wp:srfm/input {\"block_id\":\"e8a489f7\",\"required\":true,\"label\":\"Name\",\"formId\":79} /--><!-- wp:srfm/email {\"block_id\":\"a5728450\",\"required\":true,\"formId\":79} /--><!-- wp:srfm/input {\"block_id\":\"9ec2463e\",\"required\":true,\"label\":\"Subject\",\"formId\":79} /--><!-- wp:srfm/textarea {\"block_id\":\"4afb9556\",\"required\":true,\"label\":\"Message\",\"formId\":79} /-->"
-	// 	},
-	// 	{
-	// 		"name": "srfm/newsletter-form",
-	// 		"title": "Newsletter Form",
-	// 		"info": "Creates a Newsletter Form",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Newsletter Forms",
-	// 		"postMetas": {
-	// 			"_srfm_submit_alignment": [
-	// 				"justify"
-	// 			],
-	// 			"_srfm_submit_width": [
-	// 				"100%"
-	// 			],
-	// 			"_srfm_submit_width_backend": [
-	// 				"auto"
-	// 			]
-	// 		},
-	// 		"slug": "newsletter-form",
-	// 		"isPro": true,
-	// 		"content": "<!-- wp:srfm/advanced-heading {\"block_id\":\"2117a231\",\"headingTitle\":\"Subscribe to Our Newsletter\",\"headingDescToggle\":true,\"headingDesc\":\"Subscribe to our newsletter below and receive exclusive access to new content, including tips, articles, guides, and updates.\",\"subHeadingColor\":\"#545454\",\"headingTag\":\"h3\",\"headSpace\":12,\"subHeadSpace\":20,\"subHeadFontSize\":18} /--><!-- wp:srfm/input {\"block_id\":\"3f513e23\",\"fieldWidth\":50,\"label\":\"First Name\",\"formId\":80} /--><!-- wp:srfm/input {\"block_id\":\"4f84bead\",\"fieldWidth\":50,\"label\":\"Last Name\",\"formId\":80} /--><!-- wp:srfm/email {\"block_id\":\"6ef07308\",\"label\":\"Your Email\",\"formId\":80} /-->"
-	// 	},
-	// 	{
-	// 		"name": "srfm/support-form",
-	// 		"title": "Support Form",
-	// 		"info": "Form for submitting support query",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Support Forms",
-	// 		"slug": "support-form",
-	// 		"isPro": false,
-	// 		"content": "<!-- wp:srfm/input {\"block_id\":\"fd4ef0f9\",\"required\":true,\"fieldWidth\":50,\"label\":\"First Name\",\"formId\":81} /--><!-- wp:srfm/input {\"block_id\":\"667678ef\",\"required\":true,\"fieldWidth\":50,\"label\":\"Last Name\",\"formId\":81} /--><!-- wp:srfm/email {\"block_id\":\"eae1ae54\",\"required\":true,\"formId\":81} /--><!-- wp:srfm/input {\"block_id\":\"5e4d1e8f\",\"required\":true,\"label\":\"Subject\",\"formId\":81} /--><!-- wp:srfm/textarea {\"block_id\":\"f0076110\",\"required\":true,\"label\":\"Please describe your question in detail. Explain the exact steps to replicate the problem.\",\"formId\":81} /--><!-- wp:srfm/url {\"block_id\":\"0e087bac\",\"required\":true,\"label\":\"URL where we can see more details.\",\"formId\":81} /-->"
-	// 	},
-	// 	{
-	// 		"name": "srfm/feedback-form",
-	// 		"title": "Feedback Form / Survey Form",
-	// 		"info": "Form for conducting surveys",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Survey Forms",
-	// 		"slug": "survey-form",
-	// 		"isPro": false,
-	// 		"content": "<!-- wp:srfm/advanced-heading {\"block_id\":\"a9e4f8ad\",\"headingTitle\":\"Customer Survey\",\"headingDescToggle\":true,\"headingDesc\":\"Please take a moment to complete a short survey and let us know how much you like our service.\",\"subHeadingColor\":\"#575757\",\"headingTag\":\"h3\",\"headSpace\":12,\"subHeadSpace\":20,\"subHeadFontSize\":18} /--><!-- wp:srfm/input {\"block_id\":\"c7894ce2\",\"required\":true,\"label\":\"Name\",\"formId\":82} /--><!-- wp:srfm/email {\"block_id\":\"82ea2785\",\"required\":true,\"formId\":82} /--><!-- wp:srfm/multi-choice {\"block_id\":\"3a7ef9dd\",\"required\":true,\"options\":[{\"optionTitle\":\"Food was great\"},{\"optionTitle\":\"Staff service\"},{\"optionTitle\":\"Location was great\"},{\"optionTitle\":\"Somthing else\"}],\"label\":\"What did you like about our lodge?\",\"formId\":82} /--><!-- wp:srfm/textarea {\"block_id\":\"7046569e\",\"label\":\"Any Comment\",\"formId\":82} /-->"
-	// 	},
-	// 	{
-	// 		"name": "srfm/event-rsvp-form",
-	// 		"title": "Event RSVP Form",
-	// 		"info": "Form for RSVP",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "RSVP Forms",
-	// 		"postMetas": {
-	// 			"_srfm_submit_alignment": [
-	// 				"justify"
-	// 			],
-	// 			"_srfm_submit_width": [
-	// 				"100%"
-	// 			],
-	// 			"_srfm_submit_width_backend": [
-	// 				"auto"
-	// 			]
-	// 		},
-	// 		"slug": "event-rsvp-form",
-	// 		"isPro": false,
-	// 		"content": "<!-- wp:srfm/input {\"block_id\":\"c7894ce2\",\"required\":true,\"fieldWidth\":50,\"label\":\"First Name\",\"formId\":85} /--><!-- wp:srfm/input {\"block_id\":\"44759383\",\"required\":true,\"fieldWidth\":50,\"label\":\"Last Name\",\"formId\":85} /--><!-- wp:srfm/email {\"block_id\":\"82ea2785\",\"required\":true,\"formId\":85} /--><!-- wp:srfm/multi-choice {\"block_id\":\"3a7ef9dd\",\"required\":true,\"singleSelection\":true,\"options\":[{\"optionTitle\":\"Yes\"},{\"optionTitle\":\"No\"}],\"label\":\"Will you be attending the Event\",\"formId\":85} /--><!-- wp:srfm/textarea {\"block_id\":\"7046569e\",\"label\":\"Any Comments or Suggestions\",\"formId\":85} /-->"
-	// 	},
-	// 	{
-	// 		"name": "srfm/subscription-form",
-	// 		"title": "Subscription Form",
-	// 		"info": "Form for Subscription",
-	// 		"categories": [
-	// 			"sureforms_form"
-	// 		],
-	// 		"templateCategory": "Subscription Forms",
-	// 		"postMetas": {
-	// 			"_srfm_submit_alignment": [
-	// 				"justify"
-	// 			],
-	// 			"_srfm_submit_width": [
-	// 				"100%"
-	// 			],
-	// 			"_srfm_submit_width_backend": [
-	// 				"auto"
-	// 			]
-	// 		},
-	// 		"slug": "subscription-form",
-	// 		"isPro": false,
-	// 		"content": "<!-- wp:srfm/advanced-heading {\"block_id\":\"6b9decba\",\"headingTitle\":\"Subscribe to our Blog Post\",\"headingTag\":\"h3\",\"blockTopPadding\":0,\"blockRightPadding\":0,\"blockLeftPadding\":0,\"blockBottomPadding\":0,\"blockTopMargin\":0,\"blockRightMargin\":0,\"blockLeftMargin\":0,\"blockBottomMargin\":20} /--><!-- wp:srfm/email {\"block_id\":\"6ef07308\",\"label\":\"Your Email\",\"formId\":83} /-->"
-	// 	}
-	// ]
-
-	console.log( patterns );
-
 	useEffect( () => {
 		getPatterns();
 	}, [] );
@@ -218,30 +97,21 @@ const TemplateScreen = () => {
 					<>
 						<div className="srfm-ts-sidebar">
 							<div className="srfm-ts-sidebar-header">
-								{ ! showSearch ? (
-									__( 'Form Templates', 'sureforms' )
-								) : (
-									<input
-										type="text"
-										placeholder={ __(
-											'Search Templates…',
-											'sureforms'
-										) }
-										className="srfm-ts-sidebar-search-input"
-										value={ searchQuery }
-										onChange={ ( e ) =>
-											setSearchQuery( e.target.value )
-										}
-									/>
-								) }
-								<span
-									className="srfm-ts-sidebar-search-icon"
-									onClick={ () => {
-										setShowSearch( ! showSearch );
+								<input
+									type="text"
+									placeholder={ __(
+										'Search Templates…',
+										'sureforms'
+									) }
+									className="srfm-ts-sidebar-search-input"
+									style={ {
+										width: '100%',
 									} }
-								>
-									{ ICONS.search }
-								</span>
+									value={ searchQuery }
+									onChange={ ( e ) =>
+										setSearchQuery( e.target.value )
+									}
+								/>
 							</div>
 							<div className="srfm-ts-sidebar-categories-container">
 								<div

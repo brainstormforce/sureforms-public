@@ -16,7 +16,7 @@ return [
 	'title'            => __( 'Blank Form', 'sureforms' ),
 	'slug'             => 'blank-form',
 	'categories'       => [ 'sureforms_form' ],
-	'templateCategory' => __( 'Basic Forms', 'sureforms' ),
+	'templateCategory' => __( 'Basic', 'sureforms' ),
 	'postTypes'        => SRFM_FORMS_POST_TYPE,
 	'content'          => '',
 	'isPro'            => false,
