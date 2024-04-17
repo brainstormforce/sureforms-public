@@ -8,7 +8,6 @@
  * @author     SureForms <https://sureforms.com/>
  */
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
