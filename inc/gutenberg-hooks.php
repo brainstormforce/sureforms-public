@@ -155,27 +155,35 @@ class Gutenberg_Hooks {
 		 */
 		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
 
-		// loop through patterns and register.
 		foreach ( $this->patterns as $block_pattern ) {
 			$pattern_file = plugin_dir_path( SRFM_FILE ) . 'templates/forms/' . $block_pattern . '.php';
+
 			if ( is_readable( $pattern_file ) ) {
-				register_block_pattern(
-					'srfm/' . $block_pattern,
-					require $pattern_file
-				);
-			} else if ( defined( 'SRFM_PRO_VER' ) && ! is_readable( $pattern_file ) ) {
-				$pattern_file = SRFM_PRO_DIR . 'templates/forms/' . $block_pattern . '.php';
-				if ( is_readable( $pattern_file ) ) {
-					register_block_pattern(
-						'srfm/' . $block_pattern,
-						require $pattern_file
-					);
-				}
+				$this->register_srfm_block_patterns( $block_pattern, $pattern_file );
 			} else {
-				continue;
+				if ( defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_DIR' ) ) {
+					$pattern_file = SRFM_PRO_DIR . 'templates/forms/' . $block_pattern . '.php';
+					if ( is_readable( $pattern_file ) ) {
+						$this->register_srfm_block_patterns( $block_pattern, $pattern_file );
+					}
+				}
 			}
 		}
+
 	}
+
+	/**
+	 * Register block patterns.
+	 *
+	 * @param string|mixed $block_pattern The block pattern name.
+	 * @param string $pattern_file The block pattern file.
+	 * @return void
+	 * @since x.x.x
+	 */
+	public function register_srfm_block_patterns( $block_pattern, $pattern_file ) {
+		register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
+	}
+
 
 	/**
 	 * Add Form Editor Scripts.
