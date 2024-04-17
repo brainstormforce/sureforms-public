@@ -10,7 +10,6 @@ const TemplateScreen = () => {
 	const [ patterns, setPatterns ] = useState( [] );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
 	const [ selectedCategory, setSelectedCategory ] = useState( null );
-	const [ showSearch, setShowSearch ] = useState( false );
 	const [ templateColors, setTemplateColors ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 
@@ -38,9 +37,10 @@ const TemplateScreen = () => {
 				},
 			} );
 
-			// Add Pro Templates to the list
-			! srfm_admin.is_pro_active &&
+			// Add Pro Templates preview to the list if the pro version is not active.
+			if ( ! srfm_admin.is_pro_active ) {
 				newPatterns.push( ...proTemplatesPreview );
+			}
 
 			// Generate and store colors based on the template id and set it in the template card background.
 			const newColors = newPatterns.reduce( ( acc, template ) => {
