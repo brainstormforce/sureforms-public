@@ -19,7 +19,6 @@ import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
-import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
@@ -232,7 +231,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				</InspectorTabs>
 			</InspectorControls>
 			<AddressCompactBlock
-				countries={ countries }
 				attributes={ attributes }
 				blockID={ block_id }
 				setAttributes={ setAttributes }

@@ -5,7 +5,7 @@
  * @package SureForms.
  */
 
-namespace SRFM\Inc\Blocks\AddressCompact;
+namespace SRFM\Inc\Blocks\Address_Compact;
 
 use SRFM\Inc\Blocks\Base;
 use SRFM\Inc\Fields\Address_Compact_Markup;
@@ -27,6 +27,7 @@ class Block extends Base {
 	 * @return string|boolean
 	 */
 	public function render( $attributes, $content = '' ) {
+
 		if ( ! empty( $attributes ) ) {
 			$markup_class = new Address_Compact_Markup();
 			ob_start();
