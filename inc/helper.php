@@ -12,6 +12,8 @@ use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
 use WP_Post_Type;
+use WP_Query;
+use WP_Post;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -271,6 +273,7 @@ class Helper {
 			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
 			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
 			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
+			'srfm_gdpr_block_required_text'         => $common_err_msg['required'],
 			'srfm_email_block_required_text'        => $common_err_msg['required'],
 			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
@@ -326,6 +329,47 @@ class Helper {
 			__( 'Sorry, you are not allowed to perform this action.', 'sureforms' ),
 			[ 'status' => \rest_authorization_required_code() ]
 		);
+	}
+
+	/**
+	 * Get all the entries for the given form ids. The entries are older than the given days_old.
+	 *
+	 * @param int        $days_old The number of days old the entries should be.
+	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
+	 * @since x.x.x
+	 * @return array<int|WP_Post> the entries matching the criteria.
+	 */
+	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
+
+		$entries = [];
+
+		foreach ( $sf_form_ids as $form_id ) {
+			$args = [
+				'post_type'   => 'sureforms_entry',
+				'post_status' => 'publish',
+				'date_query'  => [
+					[
+						'before' => $days_old . ' days ago',
+					],
+				],
+				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
+				=> [
+					[
+						'key'     => '_srfm_entry_form_id',
+						'value'   => $form_id,
+						'compare' => '=',
+					],
+				],
+			];
+
+			$query = new WP_Query( $args );
+
+			// store all the entries in an single array.
+			$entries = array_merge( $entries, $query->posts );
+		}
+
+		return $entries;
+
 	}
 
 	/**

@@ -4,6 +4,7 @@ import * as number from '@Blocks/number';
 import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
+import * as gdpr from '@Blocks/gdpr';
 import * as multiChoice from '@Blocks/multi-choice';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
@@ -27,6 +28,7 @@ const registerBlock = [
 	textarea,
 	multiChoice,
 	checkbox,
+	gdpr,
 	number,
 	sfForm,
 	phone,

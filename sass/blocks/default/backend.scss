@@ -201,8 +201,9 @@
 		}
 	}
 
-	//Checkbox
-	div[data-type="srfm/checkbox"] {
+	//Checkbox & GDPR.
+	div[data-type="srfm/checkbox"],
+	div[data-type="srfm/gdpr"] {
 		.srfm-block-wrap {
 			input {
 				margin: 0;

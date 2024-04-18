@@ -150,14 +150,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
-		if ( sureformsKeys._srfm_is_page_break === undefined ) {
-			return;
+		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
+			updateMeta( '_srfm_is_page_break', isPageBreak );
 		}
-		updateMeta( '_srfm_is_page_break', isPageBreak );
-		if ( sureformsKeys._srfm_is_inline_button === undefined ) {
-			return;
+
+		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
+			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 		}
-		updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header

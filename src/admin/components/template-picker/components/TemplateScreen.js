@@ -10,9 +10,20 @@ const TemplateScreen = () => {
 	const [ patterns, setPatterns ] = useState( [] );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
 	const [ selectedCategory, setSelectedCategory ] = useState( null );
-	const [ showSearch, setShowSearch ] = useState( false );
 	const [ templateColors, setTemplateColors ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
+
+	// Pro Templates dummy data for the preview in the free version.
+	const proTemplatesPreview = [
+		{
+			title: __( 'Job Application Form', 'sureforms' ),
+			categories: [ 'sureforms_form' ],
+			templateCategory: __( 'Job Application', 'sureforms' ),
+			slug: 'job-application-form',
+			isPro: true,
+			content: '',
+		},
+	];
 
 	const getPatterns = async () => {
 		setLoading( true );
@@ -25,6 +36,11 @@ const TemplateScreen = () => {
 					'X-WP-Nonce': srfm_admin.template_picker_nonce,
 				},
 			} );
+
+			// Add Pro Templates preview to the list if the pro version is not active.
+			if ( ! srfm_admin.is_pro_active ) {
+				newPatterns.push( ...proTemplatesPreview );
+			}
 
 			// Generate and store colors based on the template id and set it in the template card background.
 			const newColors = newPatterns.reduce( ( acc, template ) => {
@@ -81,30 +97,18 @@ const TemplateScreen = () => {
 					<>
 						<div className="srfm-ts-sidebar">
 							<div className="srfm-ts-sidebar-header">
-								{ ! showSearch ? (
-									__( 'Form Templates', 'sureforms' )
-								) : (
-									<input
-										type="text"
-										placeholder={ __(
-											'Search Templates…',
-											'sureforms'
-										) }
-										className="srfm-ts-sidebar-search-input"
-										value={ searchQuery }
-										onChange={ ( e ) =>
-											setSearchQuery( e.target.value )
-										}
-									/>
-								) }
-								<span
-									className="srfm-ts-sidebar-search-icon"
-									onClick={ () => {
-										setShowSearch( ! showSearch );
-									} }
-								>
-									{ ICONS.search }
-								</span>
+								<input
+									type="text"
+									placeholder={ __(
+										'Search Templates…',
+										'sureforms'
+									) }
+									className="srfm-ts-sidebar-search-input"
+									value={ searchQuery }
+									onChange={ ( e ) =>
+										setSearchQuery( e.target.value )
+									}
+								/>
 							</div>
 							<div className="srfm-ts-sidebar-categories-container">
 								<div
@@ -198,6 +202,7 @@ const TemplateScreen = () => {
 											templateColors[ template?.slug ]
 										}
 										templateMetas={ template?.postMetas }
+										isProTemplate={ template?.isPro }
 									/>
 								);
 							} ) }
