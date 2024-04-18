@@ -41,7 +41,7 @@ const SecurityPage = ( {
 											</h2>
 											<p>
 												{ __(
-													'To enable reCAPTCHA feature on your SureForms Please enable reCAPTCHA option on your blocks setting and select version. Add google reCAPTCHA secret and site key here. reCAPTCHA will be added to your page on front-end.',
+													'To enable reCAPTCHA feature on your SureForms. Please enable reCAPTCHA option on your blocks setting and select version. Add google reCAPTCHA secret and site key here. reCAPTCHA will be added to your page on front-end.',
 													'sureforms'
 												) }
 											</p>
