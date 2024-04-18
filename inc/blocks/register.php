@@ -55,10 +55,10 @@ class Register {
 				// Include the file.
 				require_once $filename;
 
-				// Replace hyphens with underscores
+				// Replace hyphens with underscores.
 				$classname = str_replace( '-', '_', basename( dirname( $filename ) ) );
 
-				// Convert to title case (capitalizes the first letter of each word)
+				// Convert to title case (capitalizes the first letter of each word).
 				$classname = ucwords( $classname, '_' );
 
 				$full_class_name = $namespace . '\\' . $classname . '\\' . $base;
