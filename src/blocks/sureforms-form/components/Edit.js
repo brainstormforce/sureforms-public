@@ -130,7 +130,7 @@ export default ( { attributes, setAttributes } ) => {
 					<PanelRow>
 						<ToggleControl
 							label={ __(
-								'Hide Form Title on This Page',
+								'Hide Form Title on this Page',
 								'sureforms'
 							) }
 							checked={ hideTitle }
@@ -195,6 +195,10 @@ export default ( { attributes, setAttributes } ) => {
 							<div className="srfm-iframe-loader">
 								<Spinner />
 							</div>
+						) }
+						{ /* add form title here */ }
+						{ ! hideTitle && title && (
+							<h2 className="srfm-form-title">{ title }</h2>
 						) }
 						<iframe
 							loading={ 'eager' }
