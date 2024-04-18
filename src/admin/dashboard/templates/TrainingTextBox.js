@@ -42,12 +42,13 @@ export default ( { title, description, urlText } ) => {
 				>
 					<a
 						href={
-							'https://wordpress.org/support/plugin/sureforms/reviews/#new-post'
+							'https://wordpress.org/support/plugin/sureforms/reviews/?rate=5#new-post'
 						}
 						target="_blank"
 						css={ css`
 							text-decoration: none;
-						` } rel="noreferrer"
+						` }
+						rel="noreferrer"
 					>
 						{ urlText } &nbsp;&nbsp;
 						<span>
