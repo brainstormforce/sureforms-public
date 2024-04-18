@@ -31,6 +31,13 @@ class Smart_Tags {
 	protected $submission_data;
 
 	/**
+	 * Form data.
+	 *
+	 * @var array|null
+	 */
+	protected $form_data;
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $form_data data from form.
@@ -238,7 +245,7 @@ class Smart_Tags {
 		}
 
 		if ( 0 === strpos( $tag, '{form:' ) ) {
-			return self::parse_form_input( $tag );
+			return $this->parse_form_input( $tag );
 		}
 	}
 
@@ -434,7 +441,7 @@ class Smart_Tags {
 	 * Parse User Input in the Form Submission.
 	 *
 	 * @param string $value tag.
-	 * @since  0.0.1
+	 * @since  x.x.x
 	 * @return string
 	 */
 	public function parse_form_input( $value ) {

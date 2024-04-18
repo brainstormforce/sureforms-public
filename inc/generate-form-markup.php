@@ -51,16 +51,6 @@ class Generate_Form_Markup {
 				'permission_callback' => '__return_true',
 			]
 		);
-
-		register_rest_route(
-			'sureforms/v1',
-			'/generate-confirmation-markup',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'get_confirmation_markup' ],
-				'permission_callback' => '__return_true',
-			]
-		);
 	}
 
 	/**
