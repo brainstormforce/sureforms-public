@@ -66,17 +66,16 @@ const Editor = ( {
 							setFormData,
 							formData,
 							insertTextAtEnd,
-							genericSmartTags,
-							'Generic tags'
+							formSmartTags,
+							'Form input tags'
 						),
 						generateDropDownOptions(
 							setFormData,
 							formData,
 							insertTextAtEnd,
-							formSmartTags,
-							'Form input tags'
+							genericSmartTags,
+							'Generic tags'
 						),
-
 					]
 				}
 			/>
