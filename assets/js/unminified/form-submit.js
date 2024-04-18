@@ -207,7 +207,7 @@ function onloadCallback() {
 		if ( recaptchaType === 'v2-invisible' ) {
 			grecaptcha.render( submitBtn, {
 				sitekey: siteKey,
-				callback: ( ) => {
+				callback: () => {
 					handleFormSubmission(
 						form,
 						formId,
