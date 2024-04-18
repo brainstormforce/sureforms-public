@@ -42,3 +42,10 @@
 #toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child( 2 )::after {
 	margin: 8px -3px;
 }
+
+.post-type-sureforms_entry {
+	#screen-meta,
+	#show-settings-link {
+		border-color: rgb( 229, 231, 235 );
+	}
+}
