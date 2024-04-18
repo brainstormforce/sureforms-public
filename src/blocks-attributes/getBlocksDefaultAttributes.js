@@ -9,6 +9,7 @@ import addressAttributes from '@Blocks/address/block.json';
 import addressCompactAttributes from '@Blocks/address-compact/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
+import gdprAttributes from '@Blocks/gdpr/block.json';
 import inlineButton from '@Blocks/inline-button/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 
@@ -94,6 +95,10 @@ export const blocksAttributes = {
 	number: {
 		...numberAttributes.attributes,
 		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
+	},
+	gdpr: {
+		...gdprAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_gdpr_block_required_text' ),
 	},
 	'inline-button': {
 		...inlineButton.attributes,

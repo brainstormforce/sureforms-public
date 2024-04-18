@@ -82,17 +82,6 @@ class Email_Summary {
 	}
 
 	/**
-	 * Unschedule the action.
-	 *
-	 * @param string $hook Event hook name.
-	 * @return void
-	 * @since 0.0.2
-	 */
-	public static function unschedule_events( $hook ) {
-		as_unschedule_all_actions( $hook );
-	}
-
-	/**
 	 * Function to get the total number of entries for the last week.
 	 *
 	 * @since 0.0.2
