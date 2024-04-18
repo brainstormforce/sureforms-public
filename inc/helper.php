@@ -264,6 +264,7 @@ class Helper {
 			'srfm_url_block_required_text'          => $common_err_msg['required'],
 			'srfm_input_block_required_text'        => $common_err_msg['required'],
 			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_address_compact_block_required_text'      => $common_err_msg['required'],
 			'srfm_phone_block_required_text'        => $common_err_msg['required'],
 			'srfm_phone_block_unique_text'          => $common_err_msg['unique'],
 			'srfm_number_block_required_text'       => $common_err_msg['required'],
