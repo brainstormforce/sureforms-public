@@ -413,13 +413,8 @@ class Form_Submit {
 					if ( count( $tokens ) > 1 ) {
 						$only_key = implode( '-', array_slice( $tokens, 1 ) );
 					}
-				} else {
-					$tokens = explode( '-', $parts[0] );
-					if ( 'address' === $tokens[1] ) {
-						$only_key = implode( '-', array_slice( $tokens, 3 ) );
-					}
+					$modified_message[ $only_key ] = esc_attr( $value );
 				}
-				$modified_message[ $only_key ] = esc_attr( $value );
 			}
 
 			$form_submit_response = [

@@ -299,8 +299,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Address field
-		if ( container.classList.contains( 'srfm-address-block' ) ) {
+		//Address Compact field
+		if ( container.classList.contains( 'srfm-address-compact-block' ) ) {
 			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
