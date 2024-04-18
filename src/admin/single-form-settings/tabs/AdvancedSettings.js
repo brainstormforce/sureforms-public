@@ -32,6 +32,8 @@ function AdvancedSettings( props ) {
 		useState( '' );
 	const [ sureformsV3Site, setSureformsV3Site ] = useState( '' );
 	const [ sureformsV3Secret, setSureformsV3Secret ] = useState( '' );
+	const [ showRecaptchaConflictNotice, setsShowRecaptchaConflictNotice ] =
+		useState( false );
 
 	const [ showErr, setShowErr ] = useState( false );
 	const [ isOpen, setOpen ] = useState( false );
@@ -102,6 +104,24 @@ function AdvancedSettings( props ) {
 					);
 					setSureformsV3Site( srfm_v3_site_key || '' );
 					setSureformsV3Secret( srfm_v3_secret_key || '' );
+
+					// show the notice if 2 recaptcha site and secret keys are not empty.
+					if (
+						( srfm_v2_checkbox_site_key &&
+							srfm_v2_checkbox_secret_key &&
+							srfm_v2_invisible_site_key &&
+							srfm_v2_invisible_secret_key ) ||
+						( srfm_v2_checkbox_site_key &&
+							srfm_v2_checkbox_secret_key &&
+							srfm_v3_site_key &&
+							srfm_v3_secret_key ) ||
+						( srfm_v2_invisible_site_key &&
+							srfm_v2_invisible_secret_key &&
+							srfm_v3_site_key &&
+							srfm_v3_secret_key )
+					) {
+						setsShowRecaptchaConflictNotice( true );
+					}
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -200,14 +220,16 @@ function AdvancedSettings( props ) {
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<PanelRow>
-					<p className="srfm-form-notice">
-						{ __(
-							'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-							'sureforms'
-						) }
-					</p>
-				</PanelRow>
+				{ showRecaptchaConflictNotice && (
+					<PanelRow>
+						<p className="srfm-form-notice">
+							{ __(
+								'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+								'sureforms'
+							) }
+						</p>
+					</PanelRow>
+				) }
 				<SelectControl
 					label={ __(
 						'Select the reCAPTCHA Version to Use',

@@ -616,7 +616,7 @@ function StyleSettings( props ) {
 				initialOpen={ false }
 			>
 				<AdvancedPopColorControl
-					label={ __( 'Text Color', 'sureforms' ) }
+					label={ __( 'Input Text Color', 'sureforms' ) }
 					colorValue={ sureformsKeys._srfm_input_text_color }
 					data={ {
 						value: sureformsKeys._srfm_input_text_color,
@@ -656,7 +656,7 @@ function StyleSettings( props ) {
 				/>
 				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
-					label={ __( 'Background Color', 'sureforms' ) }
+					label={ __( 'Field Background Color', 'sureforms' ) }
 					colorValue={ sureformsKeys._srfm_input_bg_color }
 					data={ {
 						value: sureformsKeys._srfm_input_bg_color,
@@ -728,11 +728,11 @@ function StyleSettings( props ) {
 				/>
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Error', 'sureforms' ) }
+				title={ __( 'Error Message', 'sureforms' ) }
 				initialOpen={ false }
 			>
 				<AdvancedPopColorControl
-					label={ __( 'Color', 'sureforms' ) }
+					label={ __( 'Text Color', 'sureforms' ) }
 					colorValue={ sureformsKeys._srfm_field_error_color }
 					data={ {
 						value: sureformsKeys._srfm_field_error_color,
