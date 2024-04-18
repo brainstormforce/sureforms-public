@@ -220,7 +220,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								] }
 							/>
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,

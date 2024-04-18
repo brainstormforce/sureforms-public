@@ -103,7 +103,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							) }
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,

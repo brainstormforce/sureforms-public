@@ -302,7 +302,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									value: help,
 									label: 'help',
 								} }
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )

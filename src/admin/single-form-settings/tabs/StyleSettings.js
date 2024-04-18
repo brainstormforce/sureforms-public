@@ -3,7 +3,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
-import SRFMMediaPicker from '@Components/image';
 import Range from '@Components/range/Range.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
@@ -101,27 +100,6 @@ function StyleSettings( props ) {
 			sureformsKeys._srfm_help_color
 				? sureformsKeys._srfm_help_color
 				: '#6b7280'
-		);
-		// Background image
-		root.style.setProperty(
-			'--srfm-bg-image',
-			sureformsKeys._srfm_bg_image
-				? 'url(' + sureformsKeys._srfm_bg_image + ')'
-				: 'none'
-		);
-		// Background color
-		root.style.setProperty(
-			'--srfm-bg-color',
-			sureformsKeys._srfm_bg_color
-				? sureformsKeys._srfm_bg_color
-				: '#ffffff'
-		);
-		// Font Size
-		root.style.setProperty(
-			'--srfm-font-size',
-			sureformsKeys._srfm_fontsize
-				? sureformsKeys._srfm_fontsize + 'px'
-				: 'none'
 		);
 
 		// Input
@@ -248,19 +226,6 @@ function StyleSettings( props ) {
 	function updateMeta( option, value ) {
 		let value_id = 0;
 		let key_id = '';
-
-		// Form Container
-		if ( option === '_srfm_bg_image' ) {
-			if ( value ) {
-				value_id = value.id;
-				value = value.sizes.full.url;
-			}
-			key_id = option + '_id';
-			root.style.setProperty(
-				'--srfm-bg-image',
-				value ? 'url(' + value + ')' : 'none'
-			);
-		}
 
 		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(
@@ -420,118 +385,8 @@ function StyleSettings( props ) {
 		} );
 	}
 
-	const onSelectRestImage = ( media ) => {
-		let imageUrl = null;
-		if ( ! media || ! media.url ) {
-			imageUrl = null;
-		} else {
-			imageUrl = media;
-		}
-
-		if ( ! media.type || 'image' !== media.type ) {
-			imageUrl = null;
-		}
-		updateMeta( '_srfm_bg_image', imageUrl );
-	};
-
-	/*
-	 * Event to set Image as null while removing it.
-	 */
-	const onRemoveRestImage = () => {
-		updateMeta( '_srfm_bg_image', '' );
-	};
-
 	return (
 		<>
-			{ sureformsKeys._srfm_instant_form && (
-				<SRFMAdvancedPanelBody
-					title={ __( 'Intstant Form', 'sureforms' ) }
-					initialOpen={ false }
-				>
-					<Range
-						label={ __( 'Form Container Width', 'sureforms' ) }
-						value={ sureformsKeys._srfm_form_container_width }
-						min={ 650 }
-						max={ 1000 }
-						displayUnit={ false }
-						data={ {
-							value: sureformsKeys._srfm_form_container_width,
-							label: '_srfm_form_container_width',
-						} }
-						onChange={ ( value ) =>
-							updateMeta( '_srfm_form_container_width', value )
-						}
-						isFormSpecific={ true }
-					/>
-					<p className="components-base-control__help" />
-					<MultiButtonsControl
-						label={ __( 'Background Type', 'sureforms' ) }
-						data={ {
-							value: sureformsKeys._srfm_bg_type,
-							label: '_srfm_bg_type',
-						} }
-						options={ [
-							{
-								value: 'image',
-								label: __( 'Image', 'sureforms' ),
-							},
-							{
-								value: 'color',
-								label: __( 'Color', 'sureforms' ),
-							},
-						] }
-						showIcons={ false }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_bg_type', value );
-							if ( value === 'color' ) {
-								updateMeta( '_srfm_bg_image', '' );
-								updateMeta(
-									'_srfm_bg_color',
-									sureformsKeys._srfm_bg_color
-										? sureformsKeys._srfm_bg_color
-										: '#ffffff'
-								);
-							} else {
-								updateMeta( '_srfm_bg_color', '' );
-								updateMeta(
-									'_srfm_bg_image',
-									sureformsKeys._srfm_bg_image
-										? sureformsKeys._srfm_bg_image
-										: ''
-								);
-							}
-						} }
-					/>
-					<p className="components-base-control__help" />
-					{ sureformsKeys._srfm_bg_type === 'image' ? (
-						<SRFMMediaPicker
-							label={ __( 'Background Image', 'sureforms' ) }
-							onSelectImage={ onSelectRestImage }
-							backgroundImage={ sureformsKeys._srfm_bg_image }
-							onRemoveImage={ onRemoveRestImage }
-							isFormSpecific={ true }
-						/>
-					) : (
-						<AdvancedPopColorControl
-							label={ __( 'Background Color', 'sureforms' ) }
-							colorValue={ sureformsKeys._srfm_bg_color }
-							data={ {
-								value: sureformsKeys._srfm_bg_color,
-								label: '_srfm_bg_color',
-							} }
-							onColorChange={ ( colorValue ) => {
-								if (
-									colorValue !== sureformsKeys._srfm_bg_color
-								) {
-									updateMeta( '_srfm_bg_color', colorValue );
-								}
-							} }
-							value={ sureformsKeys._srfm_bg_color }
-							isFormSpecific={ true }
-						/>
-					) }
-				</SRFMAdvancedPanelBody>
-			) }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form Container', 'sureforms' ) }
 				initialOpen={ false }

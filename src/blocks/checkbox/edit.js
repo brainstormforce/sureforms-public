@@ -115,7 +115,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									value: checkboxHelpText,
 									label: 'checkboxHelpText',
 								} }
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ checkboxHelpText }
 								onChange={ ( value ) =>
 									setAttributes( { checkboxHelpText: value } )

@@ -173,7 +173,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 							/>
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ textAreaHelpText }
 								data={ {
 									value: textAreaHelpText,
