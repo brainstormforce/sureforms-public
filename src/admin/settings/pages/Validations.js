@@ -50,8 +50,8 @@ const ValidationsPage = ( {
 							label={ `${
 								( fieldLabel === 'Area Block Required '
 									? __(
-											'Textarea Block Required',
-											'sureforms'
+										'Textarea Block Required',
+										'sureforms'
 									  )
 									: fieldLabel ) +
 								__( ' Error Message', 'sureforms' )

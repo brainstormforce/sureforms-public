@@ -261,19 +261,19 @@ class Helper {
 		$common_err_msg = self::get_common_err_msg();
 
 		$default_values = [
-			'srfm_url_block_required_text'          => $common_err_msg['required'],
-			'srfm_input_block_required_text'        => $common_err_msg['required'],
-			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_address_compact_block_required_text'      => $common_err_msg['required'],
-			'srfm_phone_block_required_text'        => $common_err_msg['required'],
-			'srfm_phone_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_number_block_required_text'       => $common_err_msg['required'],
-			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
-			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
-			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
-			'srfm_email_block_required_text'        => $common_err_msg['required'],
-			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
+			'srfm_url_block_required_text'             => $common_err_msg['required'],
+			'srfm_input_block_required_text'           => $common_err_msg['required'],
+			'srfm_input_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_address_compact_block_required_text' => $common_err_msg['required'],
+			'srfm_phone_block_required_text'           => $common_err_msg['required'],
+			'srfm_phone_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_number_block_required_text'          => $common_err_msg['required'],
+			'srfm_textarea_block_required_text'        => $common_err_msg['required'],
+			'srfm_multi_choice_block_required_text'    => $common_err_msg['required'],
+			'srfm_checkbox_block_required_text'        => $common_err_msg['required'],
+			'srfm_email_block_required_text'           => $common_err_msg['required'],
+			'srfm_email_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_dropdown_block_required_text'        => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
