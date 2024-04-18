@@ -28,7 +28,7 @@
 
 		.srfm-block {
 			margin-bottom: 1.2em;
-			color: var(--srfm-body-input-color);
+			color: var( --srfm-body-input-color );
 
 			label {
 				font-size: 1em;
@@ -36,25 +36,24 @@
 
 			&.srfm-error {
 				.srfm-block-wrap {
-
 					.srfm-input-common,
 					.srfm-dropdown-common {
-						border-color: var(--srfm-error-surface-color);
-						background-color: var(--srfm-error-background-color);
+						border-color: var( --srfm-error-surface-color );
+						background-color: var( --srfm-error-background-color );
 
 						.ts-control {
-							background-color: var(--srfm-error-background-color);
-							border-color: var(--srfm-error-surface-color);
-							color: var(--srfm-body-input-color);
+							background-color: var( --srfm-error-background-color );
+							border-color: var( --srfm-error-surface-color );
+							color: var( --srfm-body-input-color );
 						}
 
 						&:focus {
-							box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-error-surface-color), 0px 0px 0px 3px var(--srfm-error-shadow-color);
+							box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-error-surface-color ), 0px 0px 0px 3px var( --srfm-error-shadow-color );
 							border-color: transparent;
 						}
 					}
 
-					.srfm-input-common:not(.srfm-dropdown-common) {
+					.srfm-input-common:not( .srfm-dropdown-common ) {
 						padding-right: 2.2em;
 					}
 
@@ -63,14 +62,14 @@
 						position: absolute;
 						top: 50%;
 						right: 0.7em;
-						transform: translateY(-50%);
+						transform: translateY( -50% );
 
 						svg {
 							width: 0.8em;
 							height: 0.8em;
 
 							path {
-								stroke: var(--srfm-error-surface-color);
+								stroke: var( --srfm-error-surface-color );
 							}
 						}
 					}
@@ -90,7 +89,7 @@
 				margin-bottom: 0.429em;
 				font-weight: 500;
 				line-height: normal;
-				color: var(--srfm-label-text-color);
+				color: var( --srfm-label-text-color );
 			}
 
 			.srfm-input-common {
@@ -99,20 +98,20 @@
 				font-weight: 400;
 				padding: 0.75em 1em;
 				line-height: normal;
-				color: var(--srfm-body-input-color);
-				border: var(--srfm-border) solid var(--srfm-border-color);
-				border-radius: var(--srfm-border-radius);
-				background-color: var(--srfm-base-background-color);
+				color: var( --srfm-body-input-color );
+				border: var( --srfm-border ) solid var( --srfm-border-color );
+				border-radius: var( --srfm-border-radius );
+				background-color: var( --srfm-base-background-color );
 				outline: none;
 				transition: 0.3s ease-out;
 
 				&:focus {
-					box-shadow: 0px 0px 0px var(--srfm-border) var(--srfm-primary-color), 0px 0px 0px 3px var(--srfm-shadow-color);
+					box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
 					border-color: transparent;
 				}
 
 				&::placeholder {
-					color: var(--srfm-placeholder-color);
+					color: var( --srfm-placeholder-color );
 				}
 			}
 
@@ -129,11 +128,11 @@
 			}
 
 			.srfm-description {
-				color: var(--srfm-help-color);
+				color: var( --srfm-help-color );
 			}
 
 			.srfm-error-message {
-				color: var(--srfm-error-text-color);
+				color: var( --srfm-error-text-color );
 			}
 
 			.srfm-with-icon {
@@ -146,7 +145,7 @@
 					position: absolute;
 					top: 50%;
 					left: 0.7em;
-					transform: translateY(-50%);
+					transform: translateY( -50% );
 					line-height: 0;
 
 					svg {
@@ -154,13 +153,13 @@
 						height: 0.9em;
 
 						path {
-							stroke: var(--srfm-body-input-color);
+							stroke: var( --srfm-body-input-color );
 						}
 					}
 				}
 			}
 
-			&.srfm-email-confirm-block{
+			&.srfm-email-confirm-block {
 				margin-top: 1.2em;
 				margin-bottom: 0;
 			}
@@ -180,23 +179,23 @@
 @keyframes moveUpToDown {
 	0% {
 		opacity: 0;
-		transform: translate3d(0, -20px, 0) scaleY(0.5);
+		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
 	}
 
 	100% {
 		opacity: 1;
-		transform: translate3d(0, 0, 0) scaleY(1);
+		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
 	}
 }
 
 @keyframes moveDownToUp {
 	0% {
 		opacity: 1;
-		transform: translate3d(0, 0, 0) scaleY(1);
+		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
 	}
 
 	100% {
 		opacity: 0;
-		transform: translate3d(0, -20px, 0) scaleY(0.5);
+		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
 	}
 }

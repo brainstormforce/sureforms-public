@@ -47,7 +47,7 @@ export default ( { title, description, urlText } ) => {
 						target="_blank"
 						css={ css`
 							text-decoration: none;
-						` }
+						` } rel="noreferrer"
 					>
 						{ urlText } &nbsp;&nbsp;
 						<span>
