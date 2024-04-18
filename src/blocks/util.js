@@ -44,6 +44,7 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/checkbox',
 		'srfm/phone',
 		'srfm/address',
+		'srfm/address-compact',
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/url',

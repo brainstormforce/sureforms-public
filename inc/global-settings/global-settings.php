@@ -157,18 +157,19 @@ class Global_Settings {
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
 
 		$options_names = [
-			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
-			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
-			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
-			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
-			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
-			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],
-			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
-			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
-			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
-			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
-			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
-			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
+			'srfm_url_block_required_text'             => $setting_options['srfm_url_block_required_text'],
+			'srfm_input_block_required_text'           => $setting_options['srfm_input_block_required_text'],
+			'srfm_input_block_unique_text'             => $setting_options['srfm_input_block_unique_text'],
+			'srfm_address_compact_block_required_text' => $setting_options['srfm_address_compact_block_required_text'],
+			'srfm_phone_block_required_text'           => $setting_options['srfm_phone_block_required_text'],
+			'srfm_phone_block_unique_text'             => $setting_options['srfm_phone_block_unique_text'],
+			'srfm_number_block_required_text'          => $setting_options['srfm_number_block_required_text'],
+			'srfm_textarea_block_required_text'        => $setting_options['srfm_textarea_block_required_text'],
+			'srfm_multi_choice_block_required_text'    => $setting_options['srfm_multi_choice_block_required_text'],
+			'srfm_checkbox_block_required_text'        => $setting_options['srfm_checkbox_block_required_text'],
+			'srfm_email_block_required_text'           => $setting_options['srfm_email_block_required_text'],
+			'srfm_email_block_unique_text'             => $setting_options['srfm_email_block_unique_text'],
+			'srfm_dropdown_block_required_text'        => $setting_options['srfm_dropdown_block_required_text'],
 		];
 
 		return update_option( 'get_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );

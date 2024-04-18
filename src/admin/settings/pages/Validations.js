@@ -17,6 +17,7 @@ const ValidationsPage = ( {
 				'srfm_url_block_required_text',
 				'srfm_input_block_required_text',
 				'srfm_input_block_unique_text',
+				'srfm_address_block_required_text',
 				'srfm_phone_block_required_text',
 				'srfm_phone_block_unique_text',
 				'srfm_number_block_required_text',

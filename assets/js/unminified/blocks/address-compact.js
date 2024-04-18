@@ -1,24 +1,30 @@
 function initializeAddress() {
-	const addressBlocks = document.querySelectorAll( '.srfm-address-block' );
+	const addressBlocks = document.querySelectorAll(
+		'.srfm-address-compact-block'
+	);
 
 	if ( addressBlocks ) {
 		addressBlocks.forEach( ( element ) => {
 			const fullAddressInput = element.querySelector(
-				'.srfm-input-address-hidden'
+				'.srfm-input-address-compact-hidden'
 			);
 			const addressLine1 = element.querySelector(
-				'.srfm-input-address-line-1'
+				'.srfm-input-address-compact-line-1'
 			);
 			const addressLine2 = element.querySelector(
-				'.srfm-input-address-line-2'
+				'.srfm-input-address-compact-line-2'
 			);
-			const city = element.querySelector( '.srfm-input-address-city' );
-			const state = element.querySelector( '.srfm-input-address-state' );
+			const city = element.querySelector(
+				'.srfm-input-address-compact-city'
+			);
+			const state = element.querySelector(
+				'.srfm-input-address-compact-state'
+			);
 			const country = element.querySelector(
-				'.srfm-input-address-country'
+				'.srfm-input-address-compact-country'
 			);
 			const postalCode = element.querySelector(
-				'.srfm-input-address-postal-code'
+				'.srfm-input-address-compact-postal-code'
 			);
 
 			const updateFullAddress = () => {
