@@ -22,8 +22,8 @@ export default () => {
 					top: ${ showNotifications &&
 					'toplevel_page_sureforms_menu' !==
 						srfm_admin.current_screen_id
-			? '0'
-			: '32px' };
+						? '0'
+						: '32px' };
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {
@@ -56,49 +56,23 @@ export default () => {
 								font-size: var( --sc-font-size-large );
 							` }
 						>
-							<div
-								css={ css`
-									display: flex;
-									align-items: center;
-
-									sc-breadcrumbs
-										sc-breadcrumb:nth-child( 2 ) {
-										position: relative;
-									}
-
-									sc-breadcrumbs
-										sc-breadcrumb:nth-child( 2 )::before {
-										content: '';
-										width: 3.5px;
-										height: 3.5px;
-										border: 1px solid #4b5563;
-										border-left: 0;
-										border-top: 0;
-										position: absolute;
-										left: -17px;
-										top: 9px;
-										transform: rotate( 315deg );
-									}
-								` }
-							>
-								<ScBreadcrumbs>
-									<ScBreadcrumb>
-										<Logo display="block" />
-									</ScBreadcrumb>
-									{ srfm_admin?.breadcrumbs &&
-										srfm_admin.breadcrumbs.length > 0 &&
-										srfm_admin.breadcrumbs.map(
-											( breadcrumb, index ) => (
-												<ScBreadcrumb
-													key={ index }
-													href={ breadcrumb.link }
-												>
-													{ breadcrumb.title }
-												</ScBreadcrumb>
-											)
-										) }
-								</ScBreadcrumbs>
-							</div>
+							<ScBreadcrumbs>
+								<ScBreadcrumb>
+									<Logo display="block" />
+								</ScBreadcrumb>
+								{ srfm_admin?.breadcrumbs &&
+									srfm_admin.breadcrumbs.length > 0 &&
+									srfm_admin.breadcrumbs.map(
+										( breadcrumb, index ) => (
+											<ScBreadcrumb
+												key={ index }
+												href={ breadcrumb.link }
+											>
+												{ breadcrumb.title }
+											</ScBreadcrumb>
+										)
+									) }
+							</ScBreadcrumbs>
 						</h1>
 					</div>
 					<div
