@@ -168,8 +168,8 @@ class Gutenberg_Hooks {
 	 *
 	 * @param string|mixed $block_pattern The block pattern name.
 	 * @param string       $directory The directory path.
-	 * @return bool True if the block pattern was registered, false otherwise.
 	 * @since x.x.x
+	 * @return bool True if the block pattern was registered, false otherwise.
 	 */
 	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
 		$pattern_file = $directory . $block_pattern . '.php';
