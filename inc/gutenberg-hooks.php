@@ -150,24 +150,40 @@ class Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function register_block_patterns() {
-		/**
-		 * Filters the plugin block patterns.
-		 *
-		 * @param array<mixed> $patterns List of block patterns by name.
-		 */
+		// Apply filters to the patterns.
 		$this->patterns = apply_filters( 'srfm_block_patterns', $this->patterns );
 
-		// loop through patterns and register.
+		// Iterate over each block pattern.
 		foreach ( $this->patterns as $block_pattern ) {
-			$pattern_file = plugin_dir_path( SRFM_FILE ) . 'templates/forms/' . $block_pattern . '.php';
-			if ( is_readable( $pattern_file ) ) {
-				register_block_pattern(
-					'srfm/' . $block_pattern,
-					require $pattern_file
-				);
+			// Attempt to register block pattern from the main directory.
+			if ( ! $this->register_block_pattern_from_directory( $block_pattern, plugin_dir_path( SRFM_FILE ) . 'templates/forms/' ) ) {
+				// If unsuccessful, attempt to register block pattern from the pro directory.
+				if ( defined( 'SRFM_PRO_VER' ) && defined( 'SRFM_PRO_DIR' ) ) {
+					$this->register_block_pattern_from_directory( $block_pattern, SRFM_PRO_DIR . 'templates/forms/' );
+				}
 			}
 		}
 	}
+
+	/**
+	 * Register block pattern from the specified directory.
+	 *
+	 * @param string|mixed $block_pattern The block pattern name.
+	 * @param string       $directory The directory path.
+	 * @since x.x.x
+	 * @return bool True if the block pattern was registered, false otherwise.
+	 */
+	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
+		$pattern_file = $directory . $block_pattern . '.php';
+
+		if ( is_readable( $pattern_file ) ) {
+			register_block_pattern( 'srfm/' . $block_pattern, require $pattern_file );
+			return true;
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Add Form Editor Scripts.
