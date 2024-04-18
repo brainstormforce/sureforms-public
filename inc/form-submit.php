@@ -12,6 +12,7 @@ use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Generate_Form_Markup;
 use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
 use WP_Error;
@@ -276,7 +277,7 @@ class Form_Submit {
 		preg_match_all( $pattern, $form_markup, $matches );
 		$labels = $matches[1];
 
-		$meta_data = [];
+		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
@@ -286,7 +287,7 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			$meta_data[ $field_name ] = htmlspecialchars( $value );
+			$submission_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
 		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
@@ -321,7 +322,7 @@ class Form_Submit {
 
 		wp_update_post( $post_args );
 
-		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+		update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			$srfm_submission_info[] = [
@@ -333,7 +334,7 @@ class Form_Submit {
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 			$response           = [
 				'success' => true,
-				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name' => $name,
 				],
@@ -352,7 +353,7 @@ class Form_Submit {
 							$subject        = $smart_tags->process_smart_tags( $subject );
 							$email_body     = $item['email_body'];
 							$email_template = new Email_Template();
-							$message        = $email_template->render( $meta_data, $email_body );
+							$message        = $email_template->render( $submission_data, $email_body );
 							$headers        = "From: $to\r\n" .
 							"Reply-To: $to\r\n" .
 							'X-Mailer: PHP/' . phpversion() . "\r\n" .
@@ -366,7 +367,7 @@ class Form_Submit {
 			}
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$parts    = explode( '-lbl-', $only_key );
 

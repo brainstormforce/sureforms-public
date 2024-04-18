@@ -24,12 +24,23 @@ class Smart_Tags {
 	use Get_Instance;
 
 	/**
+	 * Submission data.
+	 *
+	 * @var array|null
+	 */
+	protected $submission_data;
+
+	/**
 	 * Constructor
 	 *
+	 * @param array $form_data data from form.
+	 * @param array $submission_data data from submission.
 	 * @since  0.0.1
 	 */
-	public function __construct() {
+	public function __construct( $form_data = null, $submission_data = null ) {
 		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
+		$this->form_data       = $form_data;
+		$this->submission_data = $submission_data;
 	}
 
 	/**
@@ -119,11 +130,9 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $match ) {
 
-			$replace = false;
-			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
-				$replace = Helper::get_string_value( self::smart_tags_callback( $match ) );
-				$content = str_replace( $match, $replace, $content );
-			}
+			$replace = Helper::get_string_value( self::smart_tags_callback( $match ) );
+			$content = str_replace( $match, $replace, $content );
+
 		}
 
 		return $content;
@@ -132,90 +141,104 @@ class Smart_Tags {
 	/**
 	 *  Smart Tag Callback.
 	 *
-	 * @param string $tags smart tag.
+	 * @param string $tag smart tag.
 	 * @since 0.0.1
 	 * @return mixed
 	 */
-	public function smart_tags_callback( $tags ) {
+	public function smart_tags_callback( $tag ) {
 
-		if ( '{site_url}' === $tags ) {
+		$is_valid_tag = false;
+		$is_valid_tag = $is_valid_tag || isset( $get_smart_tag_list[ $match ] );
+		$is_valid_tag = $is_valid_tag || strpos( $match, 'get_input:' );
+		$is_valid_tag = $is_valid_tag || strpos( $match, 'get_cookie:' );
+		$is_valid_tag = $is_valid_tag || 0 === strpos( $tag, '{form:' );
+
+		if ( ! $is_valid_tag ) {
+			return false;
+		}
+
+		if ( '{site_url}' === $tag ) {
 			return site_url();
 		}
 
-		if ( '{admin_email}' === $tags ) {
+		if ( '{admin_email}' === $tag ) {
 			return get_option( 'admin_email' );
 		}
 
-		if ( '{site_title}' === $tags ) {
+		if ( '{site_title}' === $tag ) {
 			return get_option( 'blogname' );
 		}
 
-		if ( '{http_referer}' === $tags ) {
+		if ( '{http_referer}' === $tag ) {
 			return wp_get_referer();
 		}
 
-		if ( '{ip}' === $tags ) {
+		if ( '{ip}' === $tag ) {
 			return self::get_the_user_ip();
 		}
 
-		if ( '{date_dmy}' === $tags ) {
-			return self::parse_date( $tags );
+		if ( '{date_dmy}' === $tag ) {
+			return self::parse_date( $tag );
 		}
 
-		if ( '{date_mdy}' === $tags ) {
-			return self::parse_date( $tags );
+		if ( '{date_mdy}' === $tag ) {
+			return self::parse_date( $tag );
 		}
 
-		if ( '{user_id}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_id}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_display_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_display_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_first_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_first_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_last_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_last_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_email}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_email}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_login}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_login}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{browser_name}' === $tags ) {
-			return self::parse_browser_props( $tags );
+		if ( '{browser_name}' === $tag ) {
+			return self::parse_browser_props( $tag );
 		}
 
-		if ( '{browser_platform}' === $tags ) {
-			return self::parse_browser_props( $tags );
+		if ( '{browser_platform}' === $tag ) {
+			return self::parse_browser_props( $tag );
 		}
 
-		if ( '{embed_post_id}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_id}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( '{embed_post_title}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_title}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( '{embed_post_url}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_url}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( strpos( $tags, 'get_input:' ) ) {
-			return self::parse_request_param( $tags );
+		if ( strpos( $tag, 'get_input:' ) ) {
+			return self::parse_request_param( $tag );
 		}
 
-		if ( strpos( $tags, 'get_cookie:' ) ) {
-			return self::parse_request_param( $tags );
+		if ( strpos( $tag, 'get_cookie:' ) ) {
+			return self::parse_request_param( $tag );
+		}
+
+		if ( 0 === strpos( $tag, '{form:' ) ) {
+			return self::parse_form_input( $tag );
 		}
 	}
 
@@ -405,5 +428,38 @@ class Smart_Tags {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Parse User Input in the Form Submission.
+	 *
+	 * @param string $value tag.
+	 * @since  0.0.1
+	 * @return string
+	 */
+	public function parse_form_input( $value ) {
+
+		if ( ! $this->form_data || ! $this->submission_data ) {
+			return $value;
+		}
+
+		if ( ! preg_match( '/\{form:(.*?)}/', $value, $matches ) ) {
+			return $value;
+		}
+
+		$target_slug = $matches[1];
+		$replacement_data;
+		foreach ( $this->submission_data as $submission_item_key => $submission_item_value ) {
+			$label = explode( '-lbl-', $submission_item_key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			if ( $slug === $target_slug ) {
+				$replacement_data = $submission_item_value;
+				break;
+			}
+		}
+		if ( null === $replacement_data ) {
+			return $value;
+		}
+		return $replacement_data;
 	}
 }

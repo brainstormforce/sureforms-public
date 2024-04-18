@@ -51,6 +51,16 @@ class Generate_Form_Markup {
 				'permission_callback' => '__return_true',
 			]
 		);
+
+		register_rest_route(
+			'sureforms/v1',
+			'/generate-confirmation-markup',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_confirmation_markup' ],
+				'permission_callback' => '__return_true',
+			]
+		);
 	}
 
 	/**
@@ -95,17 +105,17 @@ class Generate_Form_Markup {
 			$confirmation_type        = '';
 			$submission_action        = '';
 			$success_url              = '';
-			$message                  = '';
+			$confirmation_message     = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
-				$form_data = $form_confirmation[0][0];
-				if ( isset( $form_data['message'] ) && is_string( $form_data['message'] ) ) {
-					$smart_tags = new Smart_Tags();
-					$message    = $smart_tags->process_smart_tags( $form_data['message'] );
+				$confirmation_data = $form_confirmation[0][0];
+				if ( isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
+					$smart_tags           = new Smart_Tags();
+					$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'] );
 				}
-				$page_url          = isset( $form_data['page_url'] ) ? $form_data['page_url'] : '';
-				$custom_url        = isset( $form_data['custom_url'] ) ? $form_data['custom_url'] : '';
-				$confirmation_type = isset( $form_data['confirmation_type'] ) ? $form_data['confirmation_type'] : '';
-				$submission_action = isset( $form_data['submission_action'] ) ? $form_data['submission_action'] : '';
+				$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
+				$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
+				$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+				$submission_action = isset( $confirmation_data['submission_action'] ) ? $confirmation_data['submission_action'] : '';
 				$success_url       = '';
 				if ( 'different page' === $confirmation_type ) {
 					$success_url = $page_url;
@@ -365,9 +375,7 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
-				<?php echo $message;// phpcs:ignore?>
-			</div>
+			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
@@ -380,5 +388,32 @@ class Generate_Form_Markup {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Generate form confirmation markup
+	 *
+	 * @param array $form_data contains form data.
+	 * @param array $submission_data contains submission data.
+	 * @since x.x.x
+	 * @return string|false
+	 */
+	public static function get_confirmation_markup( $form_data = [], $submission_data = [] ) {
 
+		if ( empty( $form_data ) || empty( $submission_data ) ) {
+			return '';
+		}
+
+		$form_confirmation    = get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' );
+		$confirmation_message = '';
+
+		if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
+			$confirmation_data = $form_confirmation[0][0];
+			if ( isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
+				$smart_tags           = new Smart_Tags( $form_data, $submission_data );
+				$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'] );
+			}
+		}
+
+		return $confirmation_message;
+
+	}
 }

@@ -11,6 +11,7 @@ const FormConfirmSetting = () => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
 	const { editPost } = useDispatch( editorStore );
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );

@@ -556,3 +556,13 @@
 		}
 	}
 }
+
+.components-popover__fallback-container {
+
+	.components-dropdown-menu__menu[aria-label='Select Shortcodes']{
+		.components-button.components-dropdown-menu__menu-item:disabled{
+			opacity: 1;
+			font-weight: bolder;
+		}
+	}
+}

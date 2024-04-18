@@ -110,7 +110,21 @@ export const generateSmartTagsDropDown = (
 		return;
 	}
 	const entries = Object.entries( smartTagList );
-	const data = entries.map( ( [ key, val ] ) => {
+	return generateDropDownOptions(
+		setInputData,
+		inputData,
+		insertTextAtEnd,
+		entries );
+};
+
+export const generateDropDownOptions = (
+	setInputData,
+	inputData,
+	insertTextAtEnd,
+	optionsArray = [],
+	arrayHeader = '',
+) => {
+	let data = optionsArray.map( ( [ key, val ] ) => {
 		return {
 			title: val,
 			onClick: () => {
@@ -122,6 +136,17 @@ export const generateSmartTagsDropDown = (
 			},
 		};
 	} );
+
+	if ( 0 !== arrayHeader.length ) {
+		data = [
+			{
+				title: arrayHeader,
+				isDisabled: true,
+				onclick: () => false,
+			},
+			...data,
+		];
+	}
 
 	return data;
 };
