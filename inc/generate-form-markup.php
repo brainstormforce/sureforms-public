@@ -381,8 +381,8 @@ class Generate_Form_Markup {
 	/**
 	 * Generate form confirmation markup
 	 *
-	 * @param array $form_data contains form data.
-	 * @param array $submission_data contains submission data.
+	 * @param array<mixed> $form_data contains form data.
+	 * @param array<mixed> $submission_data contains submission data.
 	 * @since x.x.x
 	 * @return string|false
 	 */

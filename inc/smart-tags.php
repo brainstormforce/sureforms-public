@@ -26,22 +26,22 @@ class Smart_Tags {
 	/**
 	 * Submission data.
 	 *
-	 * @var array|null
+	 * @var array<mixed>|null
 	 */
 	protected $submission_data;
 
 	/**
 	 * Form data.
 	 *
-	 * @var array|null
+	 * @var array<mixed>|null
 	 */
 	protected $form_data;
 
 	/**
 	 * Constructor
 	 *
-	 * @param array $form_data data from form.
-	 * @param array $submission_data data from submission.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @param array<mixed>|null $submission_data data from submission.
 	 * @since  0.0.1
 	 */
 	public function __construct( $form_data = null, $submission_data = null ) {
@@ -128,7 +128,6 @@ class Smart_Tags {
 			return $content;
 		}
 
-		$get_smart_tag_list = self::smart_tag_list();
 		preg_match_all( '/{(.*?)}/', $content, $matches );
 
 		if ( empty( $matches[0] ) ) {
@@ -153,12 +152,11 @@ class Smart_Tags {
 	 * @return mixed
 	 */
 	public function smart_tags_callback( $tag ) {
-
-		$is_valid_tag = false;
-		$is_valid_tag = $is_valid_tag || isset( $get_smart_tag_list[ $match ] );
-		$is_valid_tag = $is_valid_tag || strpos( $match, 'get_input:' );
-		$is_valid_tag = $is_valid_tag || strpos( $match, 'get_cookie:' );
-		$is_valid_tag = $is_valid_tag || 0 === strpos( $tag, '{form:' );
+		$get_smart_tag_list = self::smart_tag_list();
+		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] );
+		$is_valid_tag       = $is_valid_tag || strpos( $tag, 'get_input:' );
+		$is_valid_tag       = $is_valid_tag || strpos( $tag, 'get_cookie:' );
+		$is_valid_tag       = $is_valid_tag || 0 === strpos( $tag, '{form:' );
 
 		if ( ! $is_valid_tag ) {
 			return false;
@@ -442,7 +440,7 @@ class Smart_Tags {
 	 *
 	 * @param string $value tag.
 	 * @since  x.x.x
-	 * @return string
+	 * @return mixed
 	 */
 	public function parse_form_input( $value ) {
 
@@ -455,7 +453,7 @@ class Smart_Tags {
 		}
 
 		$target_slug = $matches[1];
-		$replacement_data;
+		$replacement_data = null;
 		foreach ( $this->submission_data as $submission_item_key => $submission_item_value ) {
 			$label = explode( '-lbl-', $submission_item_key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );

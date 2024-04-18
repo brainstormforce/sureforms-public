@@ -289,7 +289,7 @@ class Form_Submit {
 		}
 
 		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email   = $this->send_email( $id, $meta_data );
+		$send_email   = $this->send_email( $id, $submission_data );
 		$is_mail_sent = false;
 		$emails       = [];
 
@@ -303,7 +303,7 @@ class Form_Submit {
 		if ( $gdpr && $do_not_store_entries ) {
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
@@ -392,13 +392,13 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 
-			update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 
-			$response = [
+			$response           = [
 				'success' => true,
 				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
@@ -476,11 +476,11 @@ class Form_Submit {
 	 * Send Email.
 	 *
 	 * @param string                $id       Form ID.
-	 * @param array<string, string> $meta_data Meta data.
+	 * @param array<string, string> $submission_data Submission data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $meta_data ) {
+	public static function send_email( $id, $submission_data ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
@@ -496,7 +496,7 @@ class Form_Submit {
 						$subject        = $smart_tags->process_smart_tags( $subject );
 						$email_body     = $item['email_body'];
 						$email_template = new Email_Template();
-						$message        = $email_template->render( $meta_data, $email_body );
+						$message        = $email_template->render( $submission_data, $email_body );
 						$headers        = "From: $to\r\n" .
 						"Reply-To: $to\r\n" .
 						'X-Mailer: PHP/' . phpversion() . "\r\n" .
