@@ -452,7 +452,7 @@ class Smart_Tags {
 			return $value;
 		}
 
-		$target_slug = $matches[1];
+		$target_slug      = $matches[1];
 		$replacement_data = null;
 		foreach ( $this->submission_data as $submission_item_key => $submission_item_value ) {
 			$label = explode( '-lbl-', $submission_item_key )[1];
