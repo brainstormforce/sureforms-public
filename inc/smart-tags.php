@@ -24,30 +24,12 @@ class Smart_Tags {
 	use Get_Instance;
 
 	/**
-	 * Submission data.
-	 *
-	 * @var array<mixed>|null
-	 */
-	protected $submission_data;
-
-	/**
-	 * Form data.
-	 *
-	 * @var array<mixed>|null
-	 */
-	protected $form_data;
-
-	/**
 	 * Constructor
 	 *
-	 * @param array<mixed>|null $form_data data from form.
-	 * @param array<mixed>|null $submission_data data from submission.
 	 * @since  0.0.1
 	 */
-	public function __construct( $form_data = null, $submission_data = null ) {
+	public function __construct() {
 		add_filter( 'render_block', [ $this, 'render_form' ], 10, 2 );
-		$this->form_data       = $form_data;
-		$this->submission_data = $submission_data;
 	}
 
 	/**
@@ -118,11 +100,13 @@ class Smart_Tags {
 	/**
 	 * Process Start Tag.
 	 *
-	 * @param string $content Form content.
+	 * @param string            $content Form content.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @param array<mixed>|null $submission_data data from submission.
 	 * @since 0.0.1
 	 * @return string
 	 */
-	public function process_smart_tags( $content ) {
+	public function process_smart_tags( $content, $form_data = null, $submission_data = null ) {
 
 		if ( ! $content ) {
 			return $content;
@@ -134,10 +118,10 @@ class Smart_Tags {
 			return $content;
 		}
 
-		foreach ( $matches[0] as $match ) {
+		foreach ( $matches[0] as $tag ) {
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $match ) );
-			$content = str_replace( $match, $replace, $content );
+			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $form_data = null, $submission_data = null ) );
+			$content = str_replace( $tag, $replace, $content );
 
 		}
 
@@ -147,11 +131,13 @@ class Smart_Tags {
 	/**
 	 *  Smart Tag Callback.
 	 *
-	 * @param string $tag smart tag.
+	 * @param string            $tag smart tag.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @param array<mixed>|null $submission_data data from submission.
 	 * @since 0.0.1
 	 * @return mixed
 	 */
-	public function smart_tags_callback( $tag ) {
+	public static function smart_tags_callback( $tag, $form_data = null, $submission_data = null ) {
 		$get_smart_tag_list = self::smart_tag_list();
 		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] );
 		$is_valid_tag       = $is_valid_tag || strpos( $tag, 'get_input:' );
@@ -243,7 +229,7 @@ class Smart_Tags {
 		}
 
 		if ( 0 === strpos( $tag, '{form:' ) ) {
-			return $this->parse_form_input( $tag );
+			return self::parse_form_input( $tag );
 		}
 	}
 
@@ -253,7 +239,7 @@ class Smart_Tags {
 	 * @since  0.0.1
 	 * @return string
 	 */
-	public function get_the_user_ip() {
+	public static function get_the_user_ip() {
 		$ip = '';
 		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
 			$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
@@ -438,13 +424,15 @@ class Smart_Tags {
 	/**
 	 * Parse User Input in the Form Submission.
 	 *
-	 * @param string $value tag.
+	 * @param string            $value tag.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @param array<mixed>|null $submission_data data from submission.
 	 * @since  x.x.x
 	 * @return mixed
 	 */
-	public function parse_form_input( $value ) {
+	public static function parse_form_input( $value, $form_data = null, $submission_data = null ) {
 
-		if ( ! $this->form_data || ! $this->submission_data ) {
+		if ( ! $form_data || ! $submission_data ) {
 			return $value;
 		}
 
@@ -454,7 +442,7 @@ class Smart_Tags {
 
 		$target_slug      = $matches[1];
 		$replacement_data = null;
-		foreach ( $this->submission_data as $submission_item_key => $submission_item_value ) {
+		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
 			$label = explode( '-lbl-', $submission_item_key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			if ( $slug === $target_slug ) {

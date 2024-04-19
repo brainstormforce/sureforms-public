@@ -398,8 +398,8 @@ class Generate_Form_Markup {
 		if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
 			$confirmation_data = $form_confirmation[0][0];
 			if ( isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
-				$smart_tags           = new Smart_Tags( $form_data, $submission_data );
-				$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'] );
+				$smart_tags           = new Smart_Tags();
+				$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $form_data, $submission_data );
 			}
 		}
 
