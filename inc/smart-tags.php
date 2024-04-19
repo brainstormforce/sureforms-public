@@ -139,10 +139,10 @@ class Smart_Tags {
 	 */
 	public static function smart_tags_callback( $tag, $form_data = null, $submission_data = null ) {
 		$get_smart_tag_list = self::smart_tag_list();
-		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] );
-		$is_valid_tag       = $is_valid_tag || strpos( $tag, 'get_input:' );
-		$is_valid_tag       = $is_valid_tag || strpos( $tag, 'get_cookie:' );
-		$is_valid_tag       = $is_valid_tag || 0 === strpos( $tag, '{form:' );
+		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] ) ||
+		strpos( $tag, 'get_input:' ) ||
+		strpos( $tag, 'get_cookie:' ) ||
+		0 === strpos( $tag, '{form:' );
 
 		if ( ! $is_valid_tag ) {
 			return false;
