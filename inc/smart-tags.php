@@ -120,7 +120,7 @@ class Smart_Tags {
 
 		foreach ( $matches[0] as $tag ) {
 
-			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $form_data = null, $submission_data = null ) );
+			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $form_data, $submission_data ) );
 			$content = str_replace( $tag, $replace, $content );
 
 		}
@@ -229,7 +229,7 @@ class Smart_Tags {
 		}
 
 		if ( 0 === strpos( $tag, '{form:' ) ) {
-			return self::parse_form_input( $tag );
+			return self::parse_form_input( $tag, $form_data, $submission_data );
 		}
 	}
 
