@@ -6,6 +6,7 @@
  */
 
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -136,6 +137,12 @@ export const generateDropDownOptions = (
 			},
 		};
 	} );
+
+	if ( 0 === data.length ) {
+		data = [
+			{ title: __( 'No tags available', 'sureforms' ) },
+		];
+	}
 
 	if ( 0 !== arrayHeader.length ) {
 		data = [

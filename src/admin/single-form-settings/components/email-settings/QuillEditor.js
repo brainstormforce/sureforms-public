@@ -7,6 +7,7 @@ import { generateDropDownOptions } from '@Utils/Helpers';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 import { useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const Editor = ( {
 	handleEmailBodyContent,
@@ -58,8 +59,8 @@ const Editor = ( {
 			<DropdownMenu
 				icon={ dropdownIcon }
 				className="srfm-editor-dropdown srfm-smart-tag-dropdown"
-				label="Select Shortcodes"
-				text="Add Shortcodes"
+				label={ __( 'Select Shortcodes', 'sureforms' ) }
+				text={ __( 'Add Shortcodes', 'sureforms' ) }
 				controls={
 					[
 						generateDropDownOptions(
@@ -67,14 +68,14 @@ const Editor = ( {
 							formData,
 							insertTextAtEnd,
 							formSmartTags,
-							'Form input tags'
+							__( 'Form input tags', 'sureforms' )
 						),
 						generateDropDownOptions(
 							setFormData,
 							formData,
 							insertTextAtEnd,
 							genericSmartTags,
-							'Generic tags'
+							__( 'Generic tags', 'sureforms' )
 						),
 					]
 				}
