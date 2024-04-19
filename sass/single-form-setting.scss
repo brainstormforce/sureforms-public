@@ -75,6 +75,15 @@
 					align-items: center;
 				}
 			}
+			.srfm-modal-active-tab {
+				background: var( --dashboard-primary, #125d9f );
+				.srfm-modal-tab-text p {
+					color: var( --dashboard-surface-secondary, #fff );
+				}
+				.srfm-modal-tab-icon > svg {
+					fill: var( --dashboard-surface-secondary, #fff );
+				}
+			}
 		}
 		.srfm-modal-content {
 			display: flex;

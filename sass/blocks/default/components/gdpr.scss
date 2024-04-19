@@ -1,0 +1,136 @@
+@-moz-keyframes wave-4 {
+	50% {
+		transform: scale( 0.9 );
+	}
+}
+
+@-webkit-keyframes wave-4 {
+	50% {
+		transform: scale( 0.9 );
+	}
+}
+
+@-o-keyframes wave-4 {
+	50% {
+		transform: scale( 0.9 );
+	}
+}
+
+@keyframes wave-4 {
+	50% {
+		transform: scale( 0.9 );
+	}
+}
+
+.srfm-form-container {
+	.srfm-form {
+		.srfm-gdpr-block {
+			.srfm-block-wrap {
+				* {
+					box-sizing: border-box;
+				}
+
+				.srfm-block-text {
+					font-size: 0.7em;
+					color: var( --srfm-label-text-color );
+				}
+
+				.srfm-block-url {
+					color: var( --srfm-primary-color );
+				}
+
+				.srfm-cbx {
+					display: flex;
+					-webkit-user-select: none;
+					user-select: none;
+					cursor: pointer;
+					overflow: hidden;
+					transition: all 0.2s ease;
+
+					&:not( :last-child ) {
+						margin-right: 6px;
+					}
+
+					.srfm-block-text {
+						flex: 1;
+					}
+
+					.srfm-span-wrap {
+						float: left;
+						vertical-align: middle;
+						transform: translate3d( 0, 0, 0 );
+
+						&:first-child {
+							position: relative;
+							width: 18px;
+							height: 18px;
+							border-radius: 4px;
+							transform: scale( 1 );
+							border: 1px solid var( --srfm-border-color );
+							background-color: var( --srfm-base-background-color );
+							transition: all 0.2s ease;
+
+							svg {
+								position: absolute;
+								top: 3px;
+								left: 2px;
+								fill: none;
+								width: 12px;
+								height: 10px;
+								stroke: #fff;
+								stroke-width: 2;
+								stroke-linecap: round;
+								stroke-linejoin: round;
+								stroke-dasharray: 16px;
+								stroke-dashoffset: 16px;
+								transition: all 0.3s ease;
+								transition-delay: 0.1s;
+								transform: translate3d( 0, 0, 0 );
+							}
+						}
+
+						&:last-child {
+							padding-left: 8px;
+							line-height: 18px;
+						}
+					}
+
+					@media screen and ( max-width: 640px ) {
+						width: 100%;
+					}
+				}
+
+				.srfm-input-gdpr {
+					position: absolute;
+					visibility: hidden;
+
+					&:checked {
+						+ {
+							.srfm-cbx {
+								span {
+									&:first-child:not( .srfm-required ) {
+										background: var( --srfm-primary-color );
+										border-color: var( --srfm-primary-color );
+										animation: wave-4 0.4s ease;
+
+										svg {
+											stroke-dashoffset: 0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.srfm-inline-svg {
+					position: absolute;
+					width: 0;
+					height: 0;
+					pointer-events: none;
+					user-select: none;
+				}
+			}
+		}
+	}
+}

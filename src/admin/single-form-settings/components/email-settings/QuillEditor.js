@@ -41,7 +41,7 @@ const Editor = ( {
 							setFormData,
 							formData,
 							insertTextAtEnd
-						)
+						  )
 						: []
 				}
 			/>
@@ -73,7 +73,9 @@ const Editor = ( {
 										modules={ modules }
 										value={ content }
 										onChange={ ( newContent ) => {
-											handleEmailBodyContent( newContent );
+											handleEmailBodyContent(
+												newContent
+											);
 										} }
 									/>
 								</div>

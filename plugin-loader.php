@@ -25,6 +25,8 @@ use SRFM\Inc\Generate_Form_Markup;
 use SRFM\Inc\Create_New_Form;
 use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
+use SRFM\Inc\Events_Scheduler;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -130,6 +132,8 @@ class Plugin_Loader {
 		Create_New_Form::get_instance();
 		Global_Settings::get_instance();
 		Email_Summary::get_instance();
+		Compliance_Settings::get_instance();
+		Events_Scheduler::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
@@ -145,7 +149,8 @@ class Plugin_Loader {
 			SRFM_FILE,
 			function () {
 				update_option( '__sureforms_do_redirect', false );
-				Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
+				Events_Scheduler::unschedule_events( 'srfm_daily_scheduled_action' );
 			}
 		);
 	}
