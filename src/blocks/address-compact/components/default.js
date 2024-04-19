@@ -1,7 +1,11 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 
-export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
+export const AddressCompactBlock = ( {
+	attributes,
+	setAttributes,
+	blockID,
+} ) => {
 	const {
 		required,
 		label,
@@ -14,7 +18,7 @@ export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
-	const slug = 'address';
+	const slug = 'address-compact';
 	return (
 		<>
 			<RichText
@@ -66,7 +70,7 @@ export const AddressBlock = ( { attributes, setAttributes, blockID } ) => {
 				>
 					<input
 						type="text"
-						className={ `srfm-input-common srfm-input-address-country srfm-dropdown-common` }
+						className={ `srfm-input-common srfm-input-address-compact-country srfm-dropdown-common` }
 						id={ `srfm-${ slug }-state-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ countryPlaceholder }
