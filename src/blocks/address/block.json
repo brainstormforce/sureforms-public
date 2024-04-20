@@ -1,6 +1,6 @@
 {
 	"name": "srfm/address",
-	"title": "Address Field",
+	"title": "Address",
 	"description": "Displays a SureForm Address Field",
 	"category": "sureforms",
 	"keywords": [ "address", "country", "location", "field" ],
@@ -69,9 +69,9 @@
 			"type": "string",
 			"default": ""
 		},
-		"isConditionalLogic":{
-			"type":"boolean",
-			"default":false
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }
