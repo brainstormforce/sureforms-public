@@ -34,7 +34,12 @@ const Navigation = () => {
 	const activatedTab = useQuery();
 
 	return (
-		<div className="srfm-settings-sidebar">
+		<div
+			className="srfm-settings-sidebar"
+			style={ {
+				width: '450px',
+			} }
+		>
 			<nav>
 				{ navigation.map( ( item ) => (
 					<Link
@@ -54,23 +59,25 @@ const Navigation = () => {
 					</Link>
 				) ) }
 			</nav>
-			<div className="srfm-notice-container">
-				<div className="srfm-notice-title-container">
-					{ parse( svgIcons.message ) }
-					<div className="srfm-notice-title">
-						{ __( 'Want More?', 'sureforms' ) }
+			{ ! srfm_admin.is_pro_active && (
+				<div className="srfm-notice-container">
+					<div className="srfm-notice-title-container">
+						{ parse( svgIcons.message ) }
+						<div className="srfm-notice-title">
+							{ __( 'Want More?', 'sureforms' ) }
+						</div>
 					</div>
+					<div className="srfm-notice-body">
+						{ __(
+							'Unlock revenue boosting features when you upgrade to Pro',
+							'sureforms'
+						) }
+					</div>
+					<button className="button button-primary srfm-notice-btn">
+						{ __( 'Upgrade to Premium', 'sureforms' ) }
+					</button>
 				</div>
-				<div className="srfm-notice-body">
-					{ __(
-						'Unlock revenue boosting features when you upgrade to Pro',
-						'sureforms'
-					) }
-				</div>
-				<button className="button button-primary srfm-notice-btn">
-					{ __( 'Upgrade to Premium', 'sureforms' ) }
-				</button>
-			</div>
+			) }
 		</div>
 	);
 };
