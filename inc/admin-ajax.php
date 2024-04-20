@@ -154,26 +154,6 @@ class Admin_Ajax {
 			'srfm_integrated_plugins',
 			[
 				[
-					'title'       => __( 'Spectra', 'sureforms' ),
-					'subtitle'    => __( 'Free WordPress Page Builder Plugin.', 'sureforms' ),
-					'isPro'       => false,
-					'status'      => self::get_plugin_status( 'ultimate-addons-for-gutenberg/ultimate-addons-for-gutenberg.php' ),
-					'slug'        => 'ultimate-addons-for-gutenberg',
-					'path'        => 'ultimate-addons-for-gutenberg/ultimate-addons-for-gutenberg.php',
-					'redirection' => admin_url( 'options-general.php?page=spectra' ),
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/spectra.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/spectra.svg' ) : '' ),
-				],
-				[
-					'title'       => __( 'SureCart', 'sureforms' ),
-					'subtitle'    => __( 'Simplifying selling online with WordPress.', 'sureforms' ),
-					'isPro'       => false,
-					'status'      => self::get_plugin_status( 'surecart/surecart.php' ),
-					'redirection' => admin_url( 'admin.php?page=' . esc_attr( $surecart_redirection ) ),
-					'slug'        => 'surecart',
-					'path'        => 'surecart/surecart.php',
-					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/surecart.svg' ) : '' ),
-				],
-				[
 					'title'       => __( 'SureTriggers', 'sureforms' ),
 					'subtitle'    => __( 'Automate your WordPress setup.', 'sureforms' ),
 					'status'      => self::get_plugin_status( 'suretriggers/suretriggers.php' ),
