@@ -124,8 +124,8 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full               = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+			$full              = 'justify' === $button_alignment ? true : false;
+			$recaptcha_version = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
 
 			$google_captcha_site_key = '';
 
