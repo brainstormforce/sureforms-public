@@ -164,16 +164,16 @@ function GeneralSettings( props ) {
 	}
 
 	const onSelectRestImage = ( media ) => {
-		let imageUrl = null;
-		if ( ! media || ! media.url ) {
+		let imageUrl = media;
+		if (
+			! media ||
+			! media.url ||
+			! media.type ||
+			'image' !== media.type
+		) {
 			imageUrl = null;
-		} else {
-			imageUrl = media;
 		}
 
-		if ( ! media.type || 'image' !== media.type ) {
-			imageUrl = null;
-		}
 		updateMeta( '_srfm_bg_image', imageUrl );
 	};
 

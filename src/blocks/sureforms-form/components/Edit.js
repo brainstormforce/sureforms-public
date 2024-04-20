@@ -198,7 +198,6 @@ export default ( { attributes, setAttributes } ) => {
 								<Spinner />
 							</div>
 						) }
-						{ /* add form title here */ }
 						{ showTItle && title && (
 							<h2 className="srfm-form-title">{ title }</h2>
 						) }
