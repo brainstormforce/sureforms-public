@@ -92,7 +92,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
+									label={ __( 'Error Message', 'sureforms' ) }
 									value={ currentErrorMsg }
 									onChange={ ( value ) => {
 										setCurrentErrorMsg( value );
@@ -102,7 +102,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Checked by default',
+									'Checked by Default',
 									'sureforms'
 								) }
 								checked={ isChecked }

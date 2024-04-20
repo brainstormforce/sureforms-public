@@ -209,22 +209,12 @@ function GeneralSettings( props ) {
 				<p className="components-base-control__help" />
 				<ToggleControl
 					label={ __(
-						'Hide Form Title on the Page/Post',
+						'Show Form Title on the Page/Post',
 						'sureforms'
 					) }
 					checked={ sureformsKeys._srfm_page_form_title }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_page_form_title', value );
-					} }
-				/>
-				<ToggleControl
-					label={ __(
-						'Hide Form Title on the Single Form Page',
-						'sureforms'
-					) }
-					checked={ sureformsKeys._srfm_single_page_form_title }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_single_page_form_title', value );
 					} }
 				/>
 			</SRFMAdvancedPanelBody>
@@ -340,11 +330,30 @@ function GeneralSettings( props ) {
 						updateMeta( '_srfm_instant_form', value );
 					} }
 				/>
-				{ sureformsKeys._srfm_instant_form && <PostURLPanel /> }
+				{ sureformsKeys._srfm_instant_form && (
+					<>
+						<ToggleControl
+							label={ __(
+								'Show Title on Instant Forms',
+								'sureforms'
+							) }
+							checked={
+								sureformsKeys._srfm_single_page_form_title
+							}
+							onChange={ ( value ) => {
+								updateMeta(
+									'_srfm_single_page_form_title',
+									value
+								);
+							} }
+						/>
+						<PostURLPanel />
+					</>
+				) }
 			</SRFMAdvancedPanelBody>
 			{ sureformsKeys._srfm_instant_form && (
 				<SRFMAdvancedPanelBody
-					title={ __( 'Instant Form', 'sureforms' ) }
+					title={ __( 'Instant Form Styling', 'sureforms' ) }
 					initialOpen={ false }
 				>
 					<Range

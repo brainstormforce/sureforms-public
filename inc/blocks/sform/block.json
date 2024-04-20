@@ -16,7 +16,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"hideTitle": {
+		"showTItle": {
 			"type": "boolean",
 			"default": false
 		},
@@ -37,9 +37,9 @@
 			"enum": [ "all", "checkbox", "radio" ],
 			"default": "all"
 		},
-    "slug":{
-			"type":"string",
-			"default":""
+		"slug": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

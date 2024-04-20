@@ -16,7 +16,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"hideTitle": {
+		"showTItle": {
 			"type": "boolean",
 			"default": false
 		},

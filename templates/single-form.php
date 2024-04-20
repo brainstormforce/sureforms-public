@@ -6,6 +6,7 @@
  */
 
 use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -40,6 +41,7 @@ if ( $srfm_form_preview_attr ) {
 		$srfm_form_container_width           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 		$srfm_submit_button_text             = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_button_text', true );
 		$srfm_show_title_on_single_form_page = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$instant_form                        = Helper::get_meta_value( $srfm_custom_post_id, '_srfm_instant_form' );
 
 		$srfm_color_primary         = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
 		$srfm_background_image_url  = $srfm_bg_val ? rawurldecode( strval( $srfm_bg_val ) ) : '';
@@ -73,7 +75,7 @@ if ( $srfm_form_preview_attr ) {
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $srfm_color_primary ); ?>">
-				<?php if ( '1' !== $srfm_show_title_on_single_form_page ) : ?>
+				<?php if ( ! empty( $srfm_show_title_on_single_form_page ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>

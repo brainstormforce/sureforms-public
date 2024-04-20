@@ -115,7 +115,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							{ required && (
 								<SRFMTextControl
-									label={ __( 'Error message', 'sureforms' ) }
+									label={ __( 'Error Message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
@@ -129,7 +129,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Validate as unique',
+									'Validate as Unique',
 									'sureforms'
 								) }
 								checked={ isUnique }
@@ -169,7 +169,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							<Range
 								label={ __(
-									'Maximum text length',
+									'Maximum Text Length',
 									'sureforms'
 								) }
 								displayUnit={ false }

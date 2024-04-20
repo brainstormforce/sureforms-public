@@ -812,7 +812,7 @@ class Post_Types {
 
 				ob_start();
 				?>
-					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>" target="_blank"><?php echo esc_html( $post_count ); ?></a></p>
+					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( $post_count ); ?></a></p>
 				<?php
 				ob_end_flush();
 			}

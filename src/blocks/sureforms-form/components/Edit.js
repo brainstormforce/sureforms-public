@@ -21,7 +21,7 @@ import {
 } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes } ) => {
-	const { id, hideTitle } = attributes;
+	const { id, showTItle } = attributes;
 	const iframeRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 
@@ -130,25 +130,27 @@ export default ( { attributes, setAttributes } ) => {
 					<PanelRow>
 						<ToggleControl
 							label={ __(
-								'Hide Form Title on this Page',
+								'Show Form Title on this Page',
 								'sureforms'
 							) }
-							checked={ hideTitle }
+							checked={ showTItle }
 							onChange={ ( value ) => {
-								setAttributes( { hideTitle: value } );
+								setAttributes( { showTItle: value } );
 							} }
+							className="srfm-form-page-title-toggle"
 						/>
 					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Form Title', 'sureforms' ) }
-							value={ title }
-							disabled={ hideTitle }
-							onChange={ ( value ) => {
-								setTitle( value );
-							} }
-						/>
-					</PanelRow>
+					{ showTItle && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Form Title', 'sureforms' ) }
+								value={ title }
+								onChange={ ( value ) => {
+									setTitle( value );
+								} }
+							/>
+						</PanelRow>
+					) }
 					{ srfm_block_data.is_admin_user && (
 						<PanelRow>
 							<p className="srfm-form-notice">
@@ -197,7 +199,7 @@ export default ( { attributes, setAttributes } ) => {
 							</div>
 						) }
 						{ /* add form title here */ }
-						{ ! hideTitle && title && (
+						{ showTItle && title && (
 							<h2 className="srfm-form-title">{ title }</h2>
 						) }
 						<iframe

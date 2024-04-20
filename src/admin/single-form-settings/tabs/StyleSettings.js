@@ -224,8 +224,8 @@ function StyleSettings( props ) {
 	}
 
 	function updateMeta( option, value ) {
-		let value_id = 0;
-		let key_id = '';
+		const value_id = 0;
+		const key_id = '';
 
 		if ( option === '_srfm_color1' ) {
 			root.style.setProperty(

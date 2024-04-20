@@ -150,7 +150,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
+									label={ __( 'Error Message', 'sureforms' ) }
 									value={ currentErrorMsg }
 									onChange={ ( value ) => {
 										setCurrentErrorMsg( value );
@@ -160,7 +160,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Allow only single selection',
+									'Allow Only Single Selection',
 									'sureforms'
 								) }
 								checked={ singleSelection }

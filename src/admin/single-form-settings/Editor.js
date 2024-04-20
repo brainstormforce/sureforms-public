@@ -39,7 +39,7 @@ const defaultKeys = {
 	_srfm_show_labels: true,
 	_srfm_show_asterisk: true,
 	_srfm_page_form_title: false,
-	_srfm_single_page_form_title: false,
+	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
 	// Submit Button
 	_srfm_submit_button_text: 'SUBMIT',

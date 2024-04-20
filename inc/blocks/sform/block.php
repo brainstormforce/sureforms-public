@@ -31,7 +31,7 @@ class Block extends Base {
 		$id           = isset( $attributes['id'] ) ? $attributes['id'] : '';
 		$sf_classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		$hide_title_current_page = isset( $attributes['hideTitle'] ) ? $attributes['hideTitle'] : '';
+		$show_title_current_page = isset( $attributes['showTItle'] ) ? $attributes['showTItle'] : '';
 
 		if ( empty( $id ) ) {
 			return '';
@@ -47,7 +47,7 @@ class Block extends Base {
 			return '';
 		}
 
-		$content = Generate_Form_Markup::get_form_markup( absint( $id ), $hide_title_current_page, $sf_classname );
+		$content = Generate_Form_Markup::get_form_markup( absint( $id ), $show_title_current_page, $sf_classname );
 
 		return $content;
 	}
