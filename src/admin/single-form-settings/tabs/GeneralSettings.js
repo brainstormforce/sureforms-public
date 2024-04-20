@@ -206,17 +206,6 @@ function GeneralSettings( props ) {
 						} }
 					/>
 				) }
-				<p className="components-base-control__help" />
-				<ToggleControl
-					label={ __(
-						'Show Form Title on the Page/Post',
-						'sureforms'
-					) }
-					checked={ sureformsKeys._srfm_page_form_title }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_page_form_title', value );
-					} }
-				/>
 			</SRFMAdvancedPanelBody>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Submit Button', 'sureforms' ) }

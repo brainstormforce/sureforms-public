@@ -126,7 +126,6 @@ class Generate_Form_Markup {
 
 			$full               = 'justify' === $button_alignment ? true : false;
 			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
-			$show_title_on_page = Helper::get_meta_value( $id, '_srfm_page_form_title' );
 
 			$google_captcha_site_key = '';
 
