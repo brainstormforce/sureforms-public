@@ -30,6 +30,8 @@ export const navigation = [
 	},
 ];
 
+const isProActive = srfm_admin.is_pro_active;
+
 const Navigation = () => {
 	const activatedTab = useQuery();
 
@@ -37,7 +39,7 @@ const Navigation = () => {
 		<div
 			className="srfm-settings-sidebar"
 			style={ {
-				width: '450px',
+				...( isProActive && { width: '450px' } ),
 			} }
 		>
 			<nav>
@@ -59,7 +61,7 @@ const Navigation = () => {
 					</Link>
 				) ) }
 			</nav>
-			{ ! srfm_admin.is_pro_active && (
+			{ ! isProActive && (
 				<div className="srfm-notice-container">
 					<div className="srfm-notice-title-container">
 						{ parse( svgIcons.message ) }
