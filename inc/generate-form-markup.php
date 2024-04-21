@@ -95,13 +95,8 @@ class Generate_Form_Markup {
 			$confirmation_type        = '';
 			$submission_action        = '';
 			$success_url              = '';
-			$confirmation_message     = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
 				$confirmation_data = $form_confirmation[0][0];
-				if ( isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
-					$smart_tags           = new Smart_Tags();
-					$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'] );
-				}
 				$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
 				$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
 				$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';

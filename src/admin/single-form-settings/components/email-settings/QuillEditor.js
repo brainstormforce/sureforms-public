@@ -1,8 +1,6 @@
 import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, { modules, formats } from './EditorToolbar';
 import { TabPanel, DropdownMenu } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import { generateDropDownOptions } from '@Utils/Helpers';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
@@ -23,32 +21,8 @@ const Editor = ( {
 		quillInstance.insertText( length - 1, text );
 	};
 
-	const savedBlocks = useSelect( ( select ) =>
-		select( editorStore ).getBlocks()
-	);
-
-	const excludedBlocks = [
-		'srfm/inline-button',
-		'srfm/hidden',
-		'srfm/page-break',
-		'srfm/separator',
-		'srfm/advanced-heading',
-		'srfm/image',
-		'srfm/icon',
-	];
-	const formSmartTags = [];
-
-	savedBlocks.map( ( savedBlock ) =>
-		! excludedBlocks.includes( savedBlock.name ) &&
-		undefined !== savedBlock.attributes.slug &&
-		undefined !== savedBlock.attributes.label &&
-		formSmartTags.push( [
-			'{form:' + savedBlock.attributes.slug + '}',
-			savedBlock.attributes.label,
-		] )
-	);
-
 	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 
 	const onSelect = () => { };
 	// Add inline style instead of classes.

@@ -158,6 +158,36 @@ export const generateDropDownOptions = (
 	return data;
 };
 
+export const setFormSpecificSmartTags = ( savedBlocks ) => {
+	const excludedBlocks = [
+		'srfm/inline-button',
+		'srfm/hidden',
+		'srfm/page-break',
+		'srfm/separator',
+		'srfm/advanced-heading',
+		'srfm/image',
+		'srfm/icon',
+	];
+	const formSmartTags = [];
+
+	savedBlocks.map( ( savedBlock ) =>
+		undefined !== savedBlock.attributes.slug &&
+		undefined !== savedBlock.attributes.label &&
+		'' !== savedBlock.attributes.slug &&
+		! excludedBlocks.includes( savedBlock.name ) &&
+		formSmartTags.push( [
+			'{form:' + savedBlock.attributes.slug + '}',
+			savedBlock.attributes.label,
+		] )
+	);
+
+	if ( typeof window.sureforms === 'undefined' ) {
+		window.sureforms = {};
+	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+};
+
 /**
  * A function to check if an object is not empty.
  *
