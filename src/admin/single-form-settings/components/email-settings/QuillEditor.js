@@ -8,7 +8,7 @@ import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 const Editor = ( {
-	handleEmailBodyContent,
+	handleContentChange,
 	content,
 	formData,
 	setFormData,
@@ -82,7 +82,7 @@ const Editor = ( {
 										modules={ modules }
 										value={ content }
 										onChange={ ( newContent ) => {
-											handleEmailBodyContent(
+											handleContentChange(
 												newContent
 											);
 										} }
@@ -94,10 +94,7 @@ const Editor = ( {
 								<textarea
 									id="srfm-editor-html"
 									onChange={ ( e ) =>
-										setFormData( {
-											...formData,
-											email_body: e.target.value,
-										} )
+										handleContentChange( e.target.value )
 									}
 									className="srfm-editor-textarea"
 								>

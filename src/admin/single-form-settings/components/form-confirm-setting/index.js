@@ -132,7 +132,7 @@ const FormConfirmSetting = () => {
 							</div>
 							<div className="srfm-editor-wrap">
 								<Editor
-									handleEmailBodyContent={
+									handleContentChange={
 										handleEditorChange
 									}
 									content={ data?.message }

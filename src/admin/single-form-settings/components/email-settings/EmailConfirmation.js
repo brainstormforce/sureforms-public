@@ -155,7 +155,7 @@ const EmailConfirmation = ( props ) => {
 									</textarea>
 								) : (
 									<Editor
-										handleEmailBodyContent={
+										handleContentChange={
 											handleOnChangeEmailBodyContent
 										}
 										content={ formData.email_body }
