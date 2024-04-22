@@ -838,7 +838,7 @@ class Post_Types {
 		$atts = shortcode_atts(
 			[
 				'id'         => '',
-				'hide_title' => false,
+				'show_title' => true,
 			],
 			$atts
 		);
@@ -846,10 +846,8 @@ class Post_Types {
 		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
-		$hide_title = filter_var( $atts['hide_title'], FILTER_VALIDATE_BOOLEAN );
-
 		if ( $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, $hide_title );
+			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ) );
 			return $content;
 		}
 
