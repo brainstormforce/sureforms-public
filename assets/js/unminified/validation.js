@@ -372,35 +372,43 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			}
 
+			// Function to check if all inputs are filled
+			function checkInputs() {
+				const hasCountry = selectWrap.classList.contains( 'has-items' );
+
+				if (
+					addressInput[ 1 ].value &&
+					addressInput[ 2 ].value &&
+					addressInput[ 3 ].value &&
+					addressInput[ 4 ].value &&
+					hasCountry &&
+					addressInput[ 6 ].value
+				) {
+					container.classList.remove( 'srfm-error' );
+				}
+			}
+
 			// Add event listener to each input element to check if all inputs are filled
 			addressInput.forEach( ( input ) => {
-				input.addEventListener( 'change', () => {
-					// onchange of the input field, check if all inputs are filled
-					let hasError = true;
-					for (
-						let i = 1;
-						i < addressInput.length && isAddressRequired === 'true';
-						i++
-					) {
-						if (
-							addressInput[ i ].value
-							// &&
-							// hasItem
-							// &&
-							// i !== 2 && i !== 5
-							// ( i === 5 && hasItem )
-						) {
-							hasError = false;
-							continue;
-						}
-					}
+				input.addEventListener( 'change', checkInputs );
+			} );
 
-					if ( hasError ) {
-						container.classList.add( 'srfm-error' );
-					} else {
-						container.classList.remove( 'srfm-error' );
+			// Create a mutation observer to watch for changes in the class of selectWrap
+			const MutationObserver =
+				window.MutationObserver ||
+				window.WebKitMutationObserver ||
+				window.MozMutationObserver;
+
+			const observer = new MutationObserver( ( mutations ) => {
+				mutations.forEach( ( mutation ) => {
+					if ( mutation.attributeName === 'class' ) {
+						checkInputs();
 					}
 				} );
+			} );
+
+			observer.observe( selectWrap, {
+				attributes: true,
 			} );
 		}
 
