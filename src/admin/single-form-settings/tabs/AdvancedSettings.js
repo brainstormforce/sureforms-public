@@ -106,19 +106,18 @@ function AdvancedSettings( props ) {
 					setSureformsV3Secret( srfm_v3_secret_key || '' );
 
 					// show the notice if 2 recaptcha site and secret keys are not empty.
+					const v2_checkbox =
+						srfm_v2_checkbox_site_key &&
+						srfm_v2_checkbox_secret_key;
+					const v2_invisible =
+						srfm_v2_invisible_site_key &&
+						srfm_v2_invisible_secret_key;
+					const v3 = srfm_v3_site_key && srfm_v3_secret_key;
+
 					if (
-						( srfm_v2_checkbox_site_key &&
-							srfm_v2_checkbox_secret_key &&
-							srfm_v2_invisible_site_key &&
-							srfm_v2_invisible_secret_key ) ||
-						( srfm_v2_checkbox_site_key &&
-							srfm_v2_checkbox_secret_key &&
-							srfm_v3_site_key &&
-							srfm_v3_secret_key ) ||
-						( srfm_v2_invisible_site_key &&
-							srfm_v2_invisible_secret_key &&
-							srfm_v3_site_key &&
-							srfm_v3_secret_key )
+						( v2_checkbox && v2_invisible ) ||
+						( v2_checkbox && v3 ) ||
+						( v2_invisible && v3 )
 					) {
 						setsShowRecaptchaConflictNotice( true );
 					}

@@ -31,7 +31,7 @@ class Block extends Base {
 		$id           = isset( $attributes['id'] ) ? $attributes['id'] : '';
 		$sf_classname = isset( $attributes['className'] ) ? $attributes['className'] : '';
 
-		$show_title_current_page = isset( $attributes['showTItle'] ) ? $attributes['showTItle'] : '';
+		$show_title_current_page = isset( $attributes['showTitle'] ) ? $attributes['showTitle'] : '';
 
 		if ( empty( $id ) ) {
 			return '';

@@ -21,7 +21,7 @@ import {
 } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes } ) => {
-	const { id, showTItle } = attributes;
+	const { id, showTitle } = attributes;
 	const iframeRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 
@@ -133,14 +133,14 @@ export default ( { attributes, setAttributes } ) => {
 								'Show Form Title on this Page',
 								'sureforms'
 							) }
-							checked={ showTItle }
+							checked={ showTitle }
 							onChange={ ( value ) => {
-								setAttributes( { showTItle: value } );
+								setAttributes( { showTitle: value } );
 							} }
 							className="srfm-form-page-title-toggle"
 						/>
 					</PanelRow>
-					{ showTItle && (
+					{ showTitle && (
 						<PanelRow>
 							<TextControl
 								label={ __( 'Form Title', 'sureforms' ) }
@@ -198,7 +198,7 @@ export default ( { attributes, setAttributes } ) => {
 								<Spinner />
 							</div>
 						) }
-						{ showTItle && title && (
+						{ showTitle && title && (
 							<h2 className="srfm-form-title">{ title }</h2>
 						) }
 						<iframe
