@@ -113,6 +113,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
 			}
+
+			// remove the error message on change of the input
+			inputField.addEventListener( 'change', () => {
+				inputField
+					.closest( '.srfm-block' )
+					.classList.remove( 'srfm-error' );
+			} );
 		}
 
 		// Checks if input is unique.
@@ -174,6 +181,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
+
+			// also remove the error message on change of the input
+			checkedInput.forEach( ( input ) => {
+				input.addEventListener( 'change', () => {
+					container.classList.remove( 'srfm-error' );
+				} );
+			} );
 		}
 
 		//Url field
@@ -188,6 +202,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = urlInput;
 				}
 			}
+
+			// remove the error message on change of the url input
+			urlInput.addEventListener( 'change', () => {
+				container.classList.remove( 'srfm-error' );
+			} );
 		}
 
 		//Phone field
@@ -203,6 +222,14 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = phoneInput;
 				}
 			}
+
+			// remove the error message on change of the phone input
+			const phoneInputs = container.querySelectorAll( 'input' );
+			phoneInputs.forEach( ( input ) => {
+				input.addEventListener( 'change', () => {
+					container.classList.remove( 'srfm-error' );
+				} );
+			} );
 		}
 
 		//Password field
@@ -295,11 +322,23 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
 					}
+
+					// remove the error message on change of the email confirm field
+					confirmInput.addEventListener( 'change', () => {
+						confirmParent.classList.remove( 'srfm-error' );
+					} );
 				}
+
+				// remove the error message on change of the email main field
+				const allInputFields =
+					parent.querySelector( '.srfm-input-email' );
+				allInputFields.addEventListener( 'change', () => {
+					parent.classList.remove( 'srfm-error' );
+				} );
 			}
 		}
 
-		//Address field
+		// Address field
 		if ( container.classList.contains( 'srfm-address-block' ) ) {
 			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
@@ -317,8 +356,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if (
-					( ! addressInput[ i ].value && 2 !== i && 5 !== i ) ||
-					( 5 === i && ! hasItem )
+					( ! addressInput[ i ].value && i !== 2 && i !== 5 ) ||
+					( i === 5 && ! hasItem )
 				) {
 					container.classList.add( 'srfm-error' );
 
@@ -332,6 +371,37 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.classList.remove( 'srfm-error' );
 				}
 			}
+
+			// Add event listener to each input element to check if all inputs are filled
+			addressInput.forEach( ( input ) => {
+				input.addEventListener( 'change', () => {
+					// onchange of the input field, check if all inputs are filled
+					let hasError = true;
+					for (
+						let i = 1;
+						i < addressInput.length && isAddressRequired === 'true';
+						i++
+					) {
+						if (
+							addressInput[ i ].value
+							// &&
+							// hasItem
+							// &&
+							// i !== 2 && i !== 5
+							// ( i === 5 && hasItem )
+						) {
+							hasError = false;
+							continue;
+						}
+					}
+
+					if ( hasError ) {
+						container.classList.add( 'srfm-error' );
+					} else {
+						container.classList.remove( 'srfm-error' );
+					}
+				} );
+			} );
 		}
 
 		//Upload field
