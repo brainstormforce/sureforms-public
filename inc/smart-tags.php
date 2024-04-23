@@ -432,7 +432,7 @@ class Smart_Tags {
 	 */
 	public static function parse_form_input( $value, $form_data = null, $submission_data = null ) {
 
-		if ( ! $form_data || ! $submission_data ) {
+		if ( ! $submission_data && ! $form_data ) {
 			return $value;
 		}
 

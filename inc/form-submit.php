@@ -460,10 +460,11 @@ class Form_Submit {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
 						$to             = $item['email_to'];
-						$to             = $smart_tags->process_smart_tags( $to );
+						$to             = $smart_tags->process_smart_tags( $to, null, $submission_data );
 						$subject        = $item['subject'];
-						$subject        = $smart_tags->process_smart_tags( $subject );
+						$subject        = $smart_tags->process_smart_tags( $subject, null, $submission_data );
 						$email_body     = $item['email_body'];
+						$email_body     = $smart_tags->process_smart_tags( $email_body, null, $submission_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
 						$headers        = "From: $to\r\n" .
