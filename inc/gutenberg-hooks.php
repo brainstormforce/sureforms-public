@@ -272,17 +272,18 @@ class Gutenberg_Hooks {
 			apply_filters(
 				'srfm_block_preview_images',
 				[
-					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
-					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
-					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
-					'textarea_preview'     => SRFM_URL . 'images/field-previews/textarea.svg',
-					'multi_choice_preview' => SRFM_URL . 'images/field-previews/multi-choice.svg',
-					'checkbox_preview'     => SRFM_URL . 'images/field-previews/checkbox.svg',
-					'number_preview'       => SRFM_URL . 'images/field-previews/number.svg',
-					'phone_preview'        => SRFM_URL . 'images/field-previews/phone.svg',
-					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
-					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
-					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'input_preview'           => SRFM_URL . 'images/field-previews/input.svg',
+					'email_preview'           => SRFM_URL . 'images/field-previews/email.svg',
+					'url_preview'             => SRFM_URL . 'images/field-previews/url.svg',
+					'textarea_preview'        => SRFM_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview'    => SRFM_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'        => SRFM_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'          => SRFM_URL . 'images/field-previews/number.svg',
+					'phone_preview'           => SRFM_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'        => SRFM_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'         => SRFM_URL . 'images/field-previews/address.svg',
+					'address_compact_preview' => SRFM_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'       => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
 			)
 		);
