@@ -405,32 +405,6 @@ class Form_Submit {
 					'name' => $name,
 				],
 			];
-			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-			$smart_tags         = new Smart_Tags();
-			$is_mail_sent       = false;
-			$emails             = [];
-			if ( is_iterable( $email_notification ) ) {
-				foreach ( $email_notification as $notification ) {
-					foreach ( $notification as $item ) {
-						if ( true === $item['status'] ) {
-							$to             = $item['email_to'];
-							$to             = $smart_tags->process_smart_tags( $to );
-							$subject        = $item['subject'];
-							$subject        = $smart_tags->process_smart_tags( $subject );
-							$email_body     = $item['email_body'];
-							$email_template = new Email_Template();
-							$message        = $email_template->render( $submission_data, $email_body );
-							$headers        = "From: $to\r\n" .
-							"Reply-To: $to\r\n" .
-							'X-Mailer: PHP/' . phpversion() . "\r\n" .
-							'Content-Type: text/html; charset=utf-8';
-							$sent           = wp_mail( $to, $subject, $message, $headers );
-							$is_mail_sent   = $sent;
-							$emails[]       = $to;
-						}
-					}
-				}
-			}
 
 			$modified_message = [];
 			foreach ( $submission_data as $key => $value ) {
