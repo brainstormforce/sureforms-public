@@ -392,12 +392,12 @@ class Generate_Form_Markup {
 		$form_confirmation = isset( $form_data['form-id'] ) ?
 			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
 
-		if ( ! is_array( $form_confirmation )  ) {
+		if ( ! is_array( $form_confirmation ) ) {
 			return $confirmation_message;
 		}
 
 		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
-		
+
 		if ( is_array( $form_confirmation ) && isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
 			$smart_tags           = new Smart_Tags();
 			$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $form_data, $submission_data );
