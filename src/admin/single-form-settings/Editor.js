@@ -190,7 +190,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			) {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 
-				// If the custom button is present, add RichText to the button.
+				// If the normal button is present, add RichText to the button.
 				const buttonContainer = elm.nextElementSibling;
 				const button = buttonContainer.querySelector(
 					'.srfm-submit-button'
