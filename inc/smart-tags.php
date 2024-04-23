@@ -432,7 +432,7 @@ class Smart_Tags {
 	 */
 	public static function parse_form_input( $value, $form_data = null, $submission_data = null ) {
 
-		if ( ! $form_data || ! $submission_data ) {
+		if ( ! $submission_data && ! $form_data ) {
 			return $value;
 		}
 
@@ -441,7 +441,7 @@ class Smart_Tags {
 		}
 
 		$target_slug      = $matches[1];
-		$replacement_data = null;
+		$replacement_data = '';
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
 			$label = explode( '-lbl-', $submission_item_key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
@@ -449,9 +449,6 @@ class Smart_Tags {
 				$replacement_data = $submission_item_value;
 				break;
 			}
-		}
-		if ( null === $replacement_data ) {
-			return $value;
 		}
 		return $replacement_data;
 	}
