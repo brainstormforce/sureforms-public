@@ -398,7 +398,7 @@ class Form_Submit {
 
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
 
-			$response           = [
+			$response = [
 				'success' => true,
 				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
