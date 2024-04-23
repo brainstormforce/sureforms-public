@@ -16,7 +16,7 @@ import { getDefaultMessage } from '@Blocks/util';
 const defaultKeys = {
 	// General Tab
 	// Submit button
-	_srfm_submit_button_text: { default: 'SUBMIT' },
+	_srfm_submit_button_text: { default: 'Submit' },
 	// Page Break
 	_srfm_first_page_label: { default: 'Page break' },
 	_srfm_previous_button_text: { default: 'Previous' },

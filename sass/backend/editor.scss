@@ -294,15 +294,15 @@ body.post-type-sureforms_form {
 		.srfm-submit-button {
 			position: absolute;
 			font-size: calc( var( --srfm-font-size ) - 0.33em );
-			pointer-events: none;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			max-width: var( --srfm-submit-width-backend );
 			width: 100%;
 
-			&:after {
-				content: var( --srfm-submit-button-text );
+			label {
+				display: inline-block;
+				width: 100%;
 			}
 		}
 

@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as blockEditorStore, RichText } from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -43,7 +43,7 @@ const defaultKeys = {
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
 	// Submit Button
-	_srfm_submit_button_text: 'SUBMIT',
+	_srfm_submit_button_text: 'Submit',
 	// Page Break
 	_srfm_is_page_break: false,
 	_srfm_first_page_label: 'Page break',
@@ -189,6 +189,22 @@ const SureformsFormSpecificSettings = ( props ) => {
 					.querySelector( '.srfm-submit-btn-container' )
 			) {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
+
+				// If the custom button is present, add RichText to the button.
+				const buttonContainer = elm.nextElementSibling;
+				const button = buttonContainer.querySelector(
+					'.srfm-submit-button'
+				);
+				createRoot( button ).render(
+					<RichText
+						tagName="label"
+						value={ sureformsKeys._srfm_submit_button_text }
+						onChange={ ( value ) =>
+							updateMeta( '_srfm_submit_button_text', value )
+						}
+						placeholder={ __( 'Submit', 'sureforms' ) }
+					/>
+				);
 			}
 		}
 	}
@@ -511,9 +527,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 							setEnableQuickActionSidebar
 						}
 						isPageBreak={ isPageBreak }
-						isInlineButtonBlockPresent={
-							isInlineButtonBlockPresent
-						}
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>
