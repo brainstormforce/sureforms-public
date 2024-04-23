@@ -442,6 +442,9 @@ class Smart_Tags {
 
 		$target_slug      = $matches[1];
 		$replacement_data = '';
+		if ( ! is_array( $submission_data ) ) {
+			return $replacement_data;
+		}
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
 			$label = explode( '-lbl-', $submission_item_key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
