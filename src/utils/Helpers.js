@@ -170,16 +170,33 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 	];
 	const formSmartTags = [];
 
-	savedBlocks.map( ( savedBlock ) =>
-		undefined !== savedBlock.attributes.slug &&
-		undefined !== savedBlock.attributes.label &&
-		'' !== savedBlock.attributes.slug &&
-		! excludedBlocks.includes( savedBlock.name ) &&
-		formSmartTags.push( [
-			'{form:' + savedBlock.attributes.slug + '}',
-			savedBlock.attributes.label,
-		] )
-	);
+	const pushSmartTagToArray = ( blocks ) => {
+		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+			return;
+		}
+
+		blocks.forEach( ( block ) => {
+			if (
+				undefined === block?.attributes?.slug ||
+				undefined === block?.attributes?.label ||
+				'' === block?.attributes?.slug ||
+				excludedBlocks.includes( block?.name )
+			) {
+				return;
+			}
+
+			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
+				pushSmartTagToArray( block.innerBlocks );
+			} else {
+				formSmartTags.push( [
+					'{form:' + block.attributes.slug + '}',
+					block.attributes.label,
+				] );
+			}
+		} );
+	};
+
+	pushSmartTagToArray( savedBlocks );
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};

@@ -323,25 +323,31 @@ class Gutenberg_Hooks {
 		 */
 		$slugs = [];
 
-		foreach ( $blocks as $index => $block ) {
-			// Checking only for SureForms blocks which can have user input.
-			if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
-				continue;
-			}
+		// phpcs:disable
 
-			/**
-			 * Lets continue if slug already exists.
-			 * This will ensure that we don't update already existing slugs.
-			 */
-			if ( ! empty( $block['attrs']['slug'] ) ) {
-				$slugs[] = $block['attrs']['slug'];
-				continue;
-			}
+		// foreach ( $blocks as $index => $block ) {
+		// Checking only for SureForms blocks which can have user input.
+		// if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
+		// continue;
+		// }
 
-			$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs );
-			$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
-			$updated                           = true;
-		}
+		// **
+		// * Lets continue if slug already exists.
+		// * This will ensure that we don't update already existing slugs.
+		// */
+		// if ( ! empty( $block['attrs']['slug'] ) ) {
+		// $slugs[] = $block['attrs']['slug'];
+		// continue;
+		// }
+
+		// $blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs );
+		// $slugs[]                           = $blocks[ $index ]['attrs']['slug'];
+		// $updated                           = true;
+		// }
+
+		// phpcs:enable
+
+		list( $blocks, $updated ) = $this->process_blocks( $blocks, $slugs, $updated, $prefix = '' );
 
 		if ( ! $updated ) {
 			return;
@@ -358,18 +364,62 @@ class Gutenberg_Hooks {
 	}
 
 	/**
+	 * Undocumented function
+	 *
+	 * @param @param array<string,string|array<string,mixed>> $blocks $block The block data.
+	 * @param array<string>                                   $slugs The array of existing slugs.
+	 * @param bool                                            $updated The array of existing slugs.
+	 * @param string                                          $prefix The array of existing slugs.
+	 * @since x.x.x
+	 * @return array<array,bool>
+	 */
+	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
+
+		foreach ( $blocks as $index => $block ) {
+			// Checking only for SureForms blocks which can have user input.
+			if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
+				continue;
+			}
+
+			/**
+			 * Lets continue if slug already exists.
+			 * This will ensure that we don't update already existing slugs.
+			 */
+			if ( ! empty( $block['attrs']['slug'] ) ) {
+				$slugs[] = $block['attrs']['slug'];
+				continue;
+			}
+
+			$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
+			$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
+			$updated                           = true;
+			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+
+				list( $blocks[ $index ]['innerBlocks'], $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+
+			}
+		}
+		return [ $blocks, $updated ];
+	}
+
+	/**
 	 * Generates slug based on the provided block and existing slugs.
 	 *
 	 * @param array<string,string|array<string,mixed>> $block The block data.
 	 * @param array<string>                            $slugs The array of existing slugs.
+	 * @param string                                   $prefix The array of existing slugs.
 	 * @since x.x.x
 	 * @return string The generated unique block slug.
 	 */
-	public function generate_unique_block_slug( $block, $slugs ) {
+	public function generate_unique_block_slug( $block, $slugs, $prefix ) {
 		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
 
 		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
 			$slug = sanitize_title( $block['attrs']['label'] );
+		}
+
+		if ( ! empty( $prefix ) ) {
+			$slug = $prefix . '-' . $slug;
 		}
 
 		$slug = $this->generate_slug( $slug, $slugs );
