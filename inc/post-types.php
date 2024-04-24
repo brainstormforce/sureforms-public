@@ -855,7 +855,8 @@ class Post_Types {
 	public function forms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
 			[
-				'id' => '',
+				'id'         => '',
+				'show_title' => true,
 			],
 			$atts
 		);
@@ -864,7 +865,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id );
+			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ) );
 			return $content;
 		}
 
