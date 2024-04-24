@@ -123,7 +123,7 @@ class Generate_Form_Markup {
 			$instant_form         = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
 			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
-			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? wp_kses_post( $form_custom_css_meta ) : '';
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {

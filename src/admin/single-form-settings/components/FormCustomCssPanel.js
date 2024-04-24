@@ -20,14 +20,14 @@ const Compliance = ( { formCustomCssData } ) => {
 		};
 	}, [] );
 
-	// Update the custom CSS when the formCustomCssData prop changes.
+	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	useEffect( () => {
 		const isExistStyle = document.getElementById(
-			'uagb-blocks-editor-custom-css'
+			'srfm-blocks-editor-custom-css'
 		);
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
-			node.setAttribute( 'id', 'uagb-blocks-editor-custom-css' );
+			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
 			node.textContent = customCSS;
 			document.head.appendChild( node );
 		} else {
@@ -35,60 +35,47 @@ const Compliance = ( { formCustomCssData } ) => {
 		}
 	}, [ customCSS ] );
 
-	// Remove the editor when the component is unmounted.
+	// Initialize the editor when the component is mounted and cleanup the editor when the component is unmounted.
 	useEffect( () => {
-		return () => {
+		const cleanupEditors = () => {
 			const srfmCustomCSSPanel = document.querySelector(
 				'.srfm-custom-css-panel'
 			);
 			const editors =
 				srfmCustomCSSPanel?.querySelectorAll( '.CodeMirror-wrap' );
-
-			if ( editors ) {
-				editors?.forEach( ( editor ) => {
-					editor?.remove();
-				} );
-			}
-		};
-	}, [] );
-
-	// Initialize the editor when the component is mounted.
-	useEffect( () => {
-		const srfmCustomCSSPanel = document.querySelector(
-			'.srfm-custom-css-panel'
-		);
-		const editors =
-			srfmCustomCSSPanel?.querySelectorAll( '.CodeMirror-wrap' );
-
-		// Remove the existing editors.
-		if ( editors ) {
 			editors?.forEach( ( editor ) => {
 				editor?.remove();
 			} );
-		}
+		};
 
-		// Initialize the editor.
-		const editor = wp?.codeEditor?.initialize( tabRef?.current, {
-			...wp.codeEditor.defaultSettings.codemirror,
-			scrollbarStyle: null,
-		} );
+		cleanupEditors(); // Remove existing editors when the component is mounted
 
-		const codeMirrorEditor = document.querySelector(
-			'.srfm-css-editor .CodeMirror-code'
-		);
-
-		// Save the custom CSS when the editor value changes.
-		if ( codeMirrorEditor ) {
-			codeMirrorEditor?.addEventListener( 'keyup', function () {
-				editor?.codemirror?.save();
-				const value = editor?.codemirror?.getValue();
-
-				setCustomCSS( value );
-				dispatch( 'core/editor' ).editPost( {
-					meta: { _srfm_form_custom_css: value },
-				} );
+		const initializeEditor = () => {
+			const editor = wp?.codeEditor?.initialize( tabRef?.current, {
+				...wp.codeEditor.defaultSettings.codemirror,
+				scrollbarStyle: null,
 			} );
-		}
+
+			const codeMirrorEditor = document.querySelector(
+				'.srfm-css-editor .CodeMirror-code'
+			);
+
+			if ( codeMirrorEditor ) {
+				codeMirrorEditor?.addEventListener( 'keyup', function () {
+					editor?.codemirror?.save();
+					const value = editor?.codemirror?.getValue();
+
+					setCustomCSS( value );
+					dispatch( 'core/editor' ).editPost( {
+						meta: { _srfm_form_custom_css: value },
+					} );
+				} );
+			}
+		};
+
+		initializeEditor(); // Initialize the editor when the component is mounted
+
+		return cleanupEditors; // Remove existing editors when the component is unmounted
 	}, [ tabRef ] );
 
 	return (

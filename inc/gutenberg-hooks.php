@@ -211,13 +211,12 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		$script_dep = array_merge( $script_info['dependencies'], [ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-api-fetch' ] );
+		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_info['dependencies'] , SRFM_VER, true );
 
+		// Enqueue the code editor for the Custom CSS Editor in SureForms.
 		wp_enqueue_code_editor( [ 'type' => 'text/css' ] );
 		wp_enqueue_script( 'wp-theme-plugin-editor' );
 		wp_enqueue_style( 'wp-codemirror' );
-
-		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_dep, SRFM_VER, true );
 
 		wp_localize_script(
 			SRFM_SLUG . $form_editor_script,
@@ -250,6 +249,9 @@ class Gutenberg_Hooks {
 
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
+		// Check if the sureforms-pro plugin is active.
+		$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
+
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',
@@ -262,7 +264,7 @@ class Gutenberg_Hooks {
 				'smart_tags_array'                 => Smart_Tags::smart_tag_list(),
 				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
-				'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
+				'is_pro_active'                    => $is_pro_active,
 				'get_default_dynamic_block_option' => get_option( 'get_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'              => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                    => current_user_can( 'manage_options' ),

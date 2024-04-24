@@ -465,8 +465,8 @@ class Post_Types {
 		);
 
 		// Form Custom CSS meta.
-		register_meta(
-			'post',
+		register_post_meta(
+			'sureforms_form',
 			'_srfm_form_custom_css',
 			[
 				'show_in_rest'      => true,
