@@ -215,7 +215,7 @@ function AdvancedSettings( props ) {
 				openModal={ openModal }
 			/>
 			<MoreSettingsButton
-				settingName={ __( 'Form Custom CSS', 'sureforms' ) }
+				settingName={ __( 'Custom CSS', 'sureforms' ) }
 				popupId="form_custom_css"
 				openModal={ openModal }
 			/>

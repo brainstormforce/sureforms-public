@@ -1,4 +1,4 @@
-.spectra-custom-css-panel.components-panel__body.is-opened {
+.srfm-custom-css-panel.components-panel__body.is-opened {
 	padding: 0;
 	overflow: hidden;
 	height: 100%;
@@ -29,12 +29,12 @@
 		}
 	}
 
-	.spectra-custom-css-notice {
+	.srfm-custom-css-notice {
 		font-style: italic;
 		padding: 0 16px;
 	}
 
-	.spectra-custom-css-example {
+	.srfm-custom-css-example {
 		font-size: 11px;
 		font-style: italic;
 		line-height: 1.4;
@@ -42,14 +42,14 @@
 	}
 }
 
-.interface-complementary-area.edit-post-sidebar:has( .spectra-sidebar ) {
+.interface-complementary-area.edit-post-sidebar:has( .srfm-sidebar ) {
 	height: auto;
 }
 
-.interface-interface-skeleton__sidebar:has( .spectra-sidebar ) {
+.interface-interface-skeleton__sidebar:has( .srfm-sidebar ) {
 	height: auto;
 }
 
-.spectra-sidebar {
+.srfm-sidebar {
 	height: 100%;
 }

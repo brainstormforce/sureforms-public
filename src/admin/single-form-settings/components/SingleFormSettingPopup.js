@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import { MdSecurity, MdOutlineCss } from 'react-icons/md';
+import { MdSecurity, MdOutlineCode } from 'react-icons/md';
 import FormConfirmSetting from './form-confirm-setting';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -43,8 +43,8 @@ const SingleFormSettingsPopup = ( props ) => {
 		},
 		{
 			id: 'form_custom_css',
-			title: __( 'Form Custom CSS', 'sureforms' ),
-			icon: <MdOutlineCss size={ 20 } />,
+			title: __( 'Custom CSS', 'sureforms' ),
+			icon: <MdOutlineCode size={ 20 } />,
 			component: (
 				<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
 			),
