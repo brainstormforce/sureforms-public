@@ -214,6 +214,11 @@ function AdvancedSettings( props ) {
 				popupId="compliance_settings"
 				openModal={ openModal }
 			/>
+			<MoreSettingsButton
+				settingName={ __( 'Form Custom CSS', 'sureforms' ) }
+				popupId="form_custom_css"
+				openModal={ openModal }
+			/>
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }

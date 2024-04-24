@@ -122,6 +122,9 @@ class Generate_Form_Markup {
 			$btn_bg_type      = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			$instant_form     = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$is_inline_button = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$form_custom_css_meta  = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css       = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? wp_kses_post( $form_custom_css_meta ) : '';
+
 
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
@@ -255,6 +258,7 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
+					<?php echo wp_kses_post( $custom_css ); ?>;
 				}
 			</style>
 			<?php

@@ -461,7 +461,25 @@ class Post_Types {
 				'_srfm_submit_url'                => 'string',
 				// Security.
 				'_srfm_form_recaptcha'            => 'string',
+				// Form Custom CSS
+				// '_srfm_form_custom_css'                => 'string',
 			]
+		);
+
+		register_meta(
+			'post',
+			'_srfm_form_custom_css',
+			array(
+				'show_in_rest'      => true,
+				'type'              => 'string',
+				'single'            => true,
+				'auth_callback'     => function() {
+					return current_user_can( 'edit_posts' );
+				},
+				'sanitize_callback' => function( $meta_value ) {
+					return wp_kses_post( $meta_value );
+				},
+			)
 		);
 
 		foreach ( $metas as $meta => $type ) {
