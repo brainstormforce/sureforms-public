@@ -195,10 +195,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 				const button = buttonContainer.querySelector(
 					'.srfm-submit-button'
 				);
+
+				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
 				createRoot( button ).render(
 					<RichText
 						tagName="label"
-						value={ sureformsKeys._srfm_submit_button_text }
+						value={
+							submitBtnText
+								? submitBtnText
+								: __( 'Submit', 'sureforms' )
+						}
 						onChange={ ( value ) =>
 							updateMeta( '_srfm_submit_button_text', value )
 						}
