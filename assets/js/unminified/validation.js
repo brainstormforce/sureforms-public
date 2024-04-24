@@ -441,6 +441,15 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
 			}
+
+			// remove srfm-error class when file is selected
+			uploadInput.addEventListener( 'change', () => {
+				if ( inputField ) {
+					inputField
+						.closest( '.srfm-block' )
+						.classList.remove( 'srfm-error' );
+				}
+			} );
 		}
 
 		// Number field.
