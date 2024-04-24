@@ -461,15 +461,14 @@ class Post_Types {
 				'_srfm_submit_url'                => 'string',
 				// Security.
 				'_srfm_form_recaptcha'            => 'string',
-				// Form Custom CSS
-				// '_srfm_form_custom_css'                => 'string',
 			]
 		);
 
+		// Form Custom CSS meta.
 		register_meta(
 			'post',
 			'_srfm_form_custom_css',
-			array(
+			[
 				'show_in_rest'      => true,
 				'type'              => 'string',
 				'single'            => true,
@@ -479,7 +478,7 @@ class Post_Types {
 				'sanitize_callback' => function( $meta_value ) {
 					return wp_kses_post( $meta_value );
 				},
-			)
+			]
 		);
 
 		foreach ( $metas as $meta => $type ) {

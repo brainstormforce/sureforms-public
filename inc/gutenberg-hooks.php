@@ -211,14 +211,13 @@ class Gutenberg_Hooks {
 				'version'      => SRFM_VER,
 			];
 
-		$script_dep = array_merge( $script_info['dependencies'], array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-api-fetch' ) );
+		$script_dep = array_merge( $script_info['dependencies'], [ 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-api-fetch' ] );
 
-		wp_enqueue_code_editor( array( 'type' => 'text/css' ) );
+		wp_enqueue_code_editor( [ 'type' => 'text/css' ] );
 		wp_enqueue_script( 'wp-theme-plugin-editor' );
 		wp_enqueue_style( 'wp-codemirror' );
 
 		wp_enqueue_script( SRFM_SLUG . $form_editor_script, SRFM_URL . 'assets/build/formEditor.js', $script_dep, SRFM_VER, true );
-
 
 		wp_localize_script(
 			SRFM_SLUG . $form_editor_script,
