@@ -36,12 +36,12 @@ class Input_Markup extends Base {
 		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
 		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
 		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$duplicate_msg   = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Helper::get_default_dynamic_block_option( 'srfm_input_block_unique_text' );
+		$duplicate_msg   = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
 		$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
 		$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
 		$field_width     = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
 		$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg       = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_input_block_required_text' );
+		$error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
 		$max_text_length = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
 		$class_name      = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
 		$block_slug      = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
