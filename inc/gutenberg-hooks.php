@@ -279,7 +279,7 @@ class Gutenberg_Hooks {
 					'phone_preview'           => SRFM_URL . 'images/field-previews/phone.svg',
 					'dropdown_preview'        => SRFM_URL . 'images/field-previews/dropdown.svg',
 					'address_preview'         => SRFM_URL . 'images/field-previews/address.svg',
-					'address_compact_preview' => SRFM_URL . 'images/field-previews/address.svg',
+					'address_compact_preview' => SRFM_URL . 'images/field-previews/address-compact.svg',
 					'sureforms_preview'       => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
 			)
