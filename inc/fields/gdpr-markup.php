@@ -29,9 +29,11 @@ class GDPR_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'I consent to have this website store my submitted information so they can respond to my inquiry.', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_gdpr_block_required_text' );
-		$this->slug     = 'gdpr';
-		$this->help     = isset( $attributes['gdprHelpText'] ) ? $attributes['gdprHelpText'] : '';
-		$this->required = true;
+		$this->slug              = 'gdpr';
+		$this->help              = isset( $attributes['gdprHelpText'] ) ? $attributes['gdprHelpText'] : '';
+		$this->required          = true;
+		$this->aria_require_attr = 'true';
+		$this->set_markup_properties();
 	}
 
 	/**
@@ -63,9 +65,6 @@ class GDPR_Markup extends Base {
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
 			</div>
 		<?php
-
 		return ob_get_clean();
-
 	}
-
 }
