@@ -51,7 +51,6 @@ const defaultKeys = {
 	_srfm_thankyou_message: { default: 'Form submitted successfully!' },
 	_srfm_submit_url: { default: '' },
 };
-console.log( addressCompactAttributes );
 
 export const blocksAttributes = {
 	input: {
