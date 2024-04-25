@@ -349,6 +349,7 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
+						<div name="srfm-cf-sitekey" class="cf-turnstile" data-sitekey="0x4AAAAAAAVWxI9XhWfbQntq" data-callback="javascriptCallback"></div>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 

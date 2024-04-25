@@ -81,6 +81,8 @@ class Frontend_Assets {
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
+		wp_enqueue_script( SRFM_SLUG . '-cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback', [], SRFM_VER, true );
+
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',

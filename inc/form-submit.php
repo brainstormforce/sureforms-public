@@ -87,6 +87,60 @@ class Form_Submit {
 	}
 
 
+	// Function to validate Turnstile token
+	public static function validateTurnstileToken($turnstileToken, $response = '', $remoteIP = null, $idempotencyKey = null) {
+		$secretKey = $turnstileToken;
+		
+		// Build POST data
+		$postData = array(
+			'secret' => $secretKey,
+			'response' => $response
+		);
+		
+		// Add optional parameters if provided
+		if ($remoteIP !== null) {
+			$postData['remoteip'] = $remoteIP;
+		}
+		if ($idempotencyKey !== null) {
+			$postData['idempotency_key'] = $idempotencyKey;
+		}
+		
+		// Encode POST data
+		$postData = http_build_query($postData);
+		
+		// Set endpoint URL
+		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+		
+		// Initialize cURL session
+		$ch = curl_init();
+		
+		// Set cURL options
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		// Execute cURL session
+		$response = curl_exec($ch);
+		
+		// Check for errors
+		if ($response === false) {
+			// Handle cURL error
+			$error = curl_error($ch);
+			// Handle the error accordingly
+			return array('success' => false, 'error' => $error);
+		}
+		
+		// Close cURL session
+		curl_close($ch);
+		
+		// Decode JSON response
+		$result = json_decode($response, true);
+		
+		// Return result
+		return $result;
+	}
+
 	/**
 	 * Handle Form Submission
 	 *
@@ -173,6 +227,20 @@ class Form_Submit {
 		}
 
 		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+
+		// $turnstileToken = isset($form_data['cf-turnstile-response']) ? $form_data['cf-turnstile-response'] : '';
+		$turnstile_sec_key = '0x4AAAAAAAVWxL78-ubPtqCOBln_FAisecs';
+		$cf_response = isset($form_data['cf-turnstile-response']) ? $form_data['cf-turnstile-response'] : '';
+		$remoteIP = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : '';
+		$idempotencyKey = null;
+
+		// Validate Turnstile token
+		$turnstileValidationResult = self::validateTurnstileToken($turnstile_sec_key, $cf_response, $remoteIP, $idempotencyKey);
+
+
+		if ( isset( $turnstileValidationResult['success'] ) && false === $turnstileValidationResult['success'] ) {
+			return new \WP_Error( 'turnstile_error', 'Turnstile error.', [ 'status' => 403 ] );
+		}
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
