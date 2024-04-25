@@ -168,24 +168,50 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/image',
 		'srfm/icon',
 	];
-	const formSmartTags = [];
 
-	savedBlocks.map( ( savedBlock ) =>
-		undefined !== savedBlock.attributes.slug &&
-		undefined !== savedBlock.attributes.label &&
-		'' !== savedBlock.attributes.slug &&
-		! excludedBlocks.includes( savedBlock.name ) &&
-		formSmartTags.push( [
-			'{form:' + savedBlock.attributes.slug + '}',
-			savedBlock.attributes.label,
-		] )
-	);
+	savedBlocks = savedBlocks.filter( ( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name ) );
+
+	const formSmartTags = [];
+	const formEmailSmartTags = [];
+
+	const pushSmartTagToArray = ( blocks, tagsArray, allowedBlocks = [] ) => {
+		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+			return;
+		}
+
+		blocks.forEach( ( block ) => {
+			if (
+				undefined === block?.attributes?.slug ||
+				undefined === block?.attributes?.label ||
+				'' === block?.attributes?.slug ||
+				(
+					0 !== allowedBlocks.length &&
+					! allowedBlocks.includes( block?.name )
+				)
+			) {
+				return;
+			}
+
+			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
+				pushSmartTagToArray( block.innerBlocks, tagsArray );
+			} else {
+				tagsArray.push( [
+					'{form:' + block.attributes.slug + '}',
+					block.attributes.label,
+				] );
+			}
+		} );
+	};
+
+	pushSmartTagToArray( savedBlocks, formSmartTags );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [ 'srfm/email' ] );
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
 
 /**

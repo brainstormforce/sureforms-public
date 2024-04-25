@@ -459,13 +459,14 @@ class Form_Submit {
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
-						$to             = $smart_tags->process_smart_tags( $item['email_to'], null, $submission_data );
-						$subject        = $smart_tags->process_smart_tags( $item['subject'], null, $submission_data );
-						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], null, $submission_data );
+						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
+						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
+						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
+						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "From: $to\r\n" .
-						"Reply-To: $to\r\n" .
+						$headers        = "From: $from\r\n" .
+						"Reply-To: $from\r\n" .
 						'X-Mailer: PHP/' . phpversion() . "\r\n" .
 						'Content-Type: text/html; charset=utf-8';
 						$sent           = wp_mail( $to, $subject, $message, $headers );

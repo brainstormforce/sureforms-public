@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Editor from './QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
-import { generateSmartTagsDropDown } from '@Utils/Helpers';
+import { generateDropDownOptions } from '@Utils/Helpers';
 import { DropdownMenu } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
@@ -26,6 +26,15 @@ const EmailConfirmation = ( props ) => {
 	useEffect( () => {
 		setFormData( { ...formData, subject: dynamicSubject } );
 	}, [ dynamicSubject ] );
+
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array
+		? Object.entries( window.srfm_block_data.smart_tags_array )
+		: [];
+	const genericEmailSmartTags = window.srfm_block_data?.smart_tags_array_email
+		? Object.entries( window.srfm_block_data.smart_tags_array_email )
+		: [];
+	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
 
 	return (
 		<div className="srfm-modal-content">
@@ -82,6 +91,37 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_to }
 								className="srfm-modal-input"
 							/>
+							<DropdownMenu
+								icon={ dropdownIcon }
+								className="srfm-scroll-dropdown"
+								label="Select Shortcodes"
+								controls={
+									[
+										generateDropDownOptions(
+											( emailTo ) =>
+												setFormData( {
+													...formData,
+													email_to: emailTo,
+												} ),
+											formData.email_to,
+											() => { },
+											formEmailSmartTags,
+											__( 'Form input tags', 'sureforms' ),
+										),
+										generateDropDownOptions(
+											( emailTo ) =>
+												setFormData( {
+													...formData,
+													email_to: emailTo,
+												} ),
+											formData.email_to,
+											() => { },
+											genericEmailSmartTags,
+											__( 'Generic tags', 'sureforms' ),
+										),
+									]
+								}
+							/>
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
@@ -102,15 +142,22 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-scroll-dropdown"
 								label="Select Shortcodes"
 								controls={
-									generateSmartTagsDropDown(
-										setDynamicSubject,
-										dynamicSubject
-									)
-										? generateSmartTagsDropDown(
+									[
+										generateDropDownOptions(
 											setDynamicSubject,
-											dynamicSubject
-										  )
-										: []
+											dynamicSubject,
+											() => { },
+											formSmartTags,
+											__( 'Form input tags', 'sureforms' )
+										),
+										generateDropDownOptions(
+											setDynamicSubject,
+											dynamicSubject,
+											() => { },
+											genericSmartTags,
+											__( 'Generic tags', 'sureforms' )
+										),
+									]
 								}
 							/>
 						</div>
@@ -119,6 +166,9 @@ const EmailConfirmation = ( props ) => {
 								<div className="srfm-modal-area-header-text">
 									<p>{ __( 'Email Body', 'sureforms' ) }<span className="srfm-required-body"> *</span></p>
 								</div>
+								{
+								/*TODO: to be removed later after thorough considerations
+								/*
 								<div className="srfm-modal-area-header-checkbox">
 									<input
 										checked={ formData.is_raw_format }
@@ -138,7 +188,8 @@ const EmailConfirmation = ( props ) => {
 											'sureforms'
 										) }
 									</span>
-								</div>
+								</div> */
+								}
 							</div>
 							<div className="srfm-editor-wrap">
 								{ formData.is_raw_format === true ? (
