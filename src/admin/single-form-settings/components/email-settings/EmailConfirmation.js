@@ -313,30 +313,6 @@ const EmailConfirmation = ( props ) => {
 								<div className="srfm-modal-area-header-text">
 									<p>{ __( 'Email Body', 'sureforms' ) }<span className="srfm-required-body"> *</span></p>
 								</div>
-								{
-									/*TODO: to be removed later after thorough considerations
-									/*
-									<div className="srfm-modal-area-header-checkbox">
-										<input
-											checked={ formData.is_raw_format }
-											onChange={ () =>
-												setFormData( {
-													...formData,
-													is_raw_format:
-														! formData.is_raw_format,
-												} )
-											}
-											className="srfm-modal-checkbox"
-											type="checkbox"
-										/>
-										<span className="checkbox-text">
-											{ __(
-												'Send Email as RAW HTML Format',
-												'sureforms'
-											) }
-										</span>
-									</div> */
-								}
 							</div>
 							<div className="srfm-editor-wrap">
 								{ formData.is_raw_format === true ? (
