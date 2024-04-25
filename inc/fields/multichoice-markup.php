@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,59 +20,92 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Multichoice_Markup extends Base {
-	use Get_Instance;
+
+	/**
+	 * Flag indicating if only a single selection is allowed.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $single_selection;
+
+	/**
+	 * Width of the choice input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $choice_width;
+
+	/**
+	 * HTML attribute string for the choice width.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $choice_width_attr;
+
+	/**
+	 * HTML attribute string for the input type (radio or checkbox).
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $type_attr;
+
+	/**
+	 * HTML attribute string for the name attribute of the input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $name_attr;
+
+	/**
+	 * Initialize the properties based on block attributes.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since x.x.x
+	 */
+	public function __construct( $attributes ) {
+		$this->set_properties( $attributes );
+		$this->set_input_label( __( 'Multi Choice', 'sureforms' ) );
+		$this->set_error_msg( $attributes, 'srfm_multi_choice_block_required_text' );
+		$this->slug              = 'multi-choice';
+		$this->single_selection  = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
+		$this->choice_width      = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
+		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
+		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
+		$this->choice_width_attr = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
+		$this->set_markup_properties();
+	}
 
 	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
 	 * @return string|boolean
 	 */
-	public function markup( $attributes ) {
-			$required         = isset( $attributes['required'] ) ? $attributes['required'] : false;
-			$single_selection = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
-			$options          = isset( $attributes['options'] ) ? $attributes['options'] : [];
-			$label            = isset( $attributes['label'] ) ? $attributes['label'] : '';
-			$help             = isset( $attributes['help'] ) ? $attributes['help'] : '';
-			$error_msg        = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_multi_choice_block_required_text' );
-			$classname        = isset( $attributes['className'] ) ? '' . $attributes['className'] : '';
-			$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-			$form_id          = isset( $attributes['formId'] ) ? $attributes['formId'] : '';
-			$field_width      = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-			$choice_width     = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
-			$block_slug       = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
-			$slug             = 'multi-choice';
-
-			$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-			$aria_require_attr    = $required ? 'true' : 'false';
-			$type_attr            = $single_selection ? 'radio' : 'checkbox';
-			$name_attr            = $single_selection ? 'name="srfm-input-' . esc_attr( $slug ) . '-' . esc_attr( $block_id ) . '"' : '';
-			$input_label_fallback = $label ? $label : __( 'Multi Choice', 'sureforms' );
-			$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
-			$field_name           = $input_label . '-' . $block_slug;
-			$choice_width_attr    = $choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $choice_width ) : '';
-			$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
-
-			ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $type_attr ); ?>-mode srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo wp_kses_post( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
-			<input class="srfm-input-<?php echo esc_attr( $slug ); ?>-hidden" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?><?php echo esc_attr( $field_name ); ?>" type="hidden" value=""/>
-			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id, boolval( $required ) ) ); ?>
-				<?php if ( is_array( $options ) ) { ?>
-					<div class="srfm-block-wrap <?php echo esc_attr( $choice_width_attr ); ?>">
-						<?php foreach ( $options as $i => $option ) { ?>
-							<label class="srfm-<?php echo esc_attr( $slug ); ?>-single">
-								<input type="<?php echo esc_attr( $type_attr ); ?>" id="srfm-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $slug ); ?>-single" <?php echo wp_kses_post( $name_attr ); ?>/>
-								<div class="srfm-block-content-wrap">
-									<?php echo Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $slug . '-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-									<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
-								</div>
-							</label>
-						<?php } ?>
-					</div>
-				<?php } ?>
-			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg ) ); ?>
+	public function markup() {
+		$check_svg = Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $this->slug . '-icon' );
+		ob_start(); ?>
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+		<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
+		<?php echo wp_kses_post( $this->label_markup ); ?>
+			<?php if ( is_array( $this->options ) ) { ?>
+				<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
+					<?php foreach ( $this->options as $i => $option ) { ?>
+						<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
+							<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
+							<div class="srfm-block-content-wrap">
+								<?php echo $check_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+								<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
+							</div>
+						</label>
+					<?php } ?>
+				</div>
+			<?php } ?>
+		<?php echo wp_kses_post( $this->help_markup ); ?>
+		<?php echo wp_kses_post( $this->error_msg_markup ); ?>
 		</div>
 		<?php
 		return ob_get_clean();

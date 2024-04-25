@@ -30,10 +30,10 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 
 		if ( ! empty( $attributes ) ) {
-			$markup_class = new Url_Markup();
+			$markup_class = new Url_Markup( $attributes );
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->markup( $attributes );
+			echo $markup_class->markup();
 		}
 			return ob_get_clean();
 	}
