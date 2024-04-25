@@ -135,6 +135,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 				attributes={ attributes }
+				blockType="checkbox"
 			/>
 			{ checkboxHelpText !== '' && (
 				<RichText
