@@ -8,7 +8,7 @@ import {
 } from '@wordpress/element';
 import editorStyles from './editor.lazy.scss';
 
-const Compliance = ( { formCustomCssData } ) => {
+const FormCustomCssPanel = ( { formCustomCssData } ) => {
 	const tabRef = useRef( null );
 	const [ customCSS, setCustomCSS ] = useState( formCustomCssData );
 
@@ -114,4 +114,4 @@ const Compliance = ( { formCustomCssData } ) => {
 	);
 };
 
-export default Compliance;
+export default FormCustomCssPanel;
