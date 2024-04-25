@@ -6,6 +6,7 @@
  */
 
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -110,7 +111,21 @@ export const generateSmartTagsDropDown = (
 		return;
 	}
 	const entries = Object.entries( smartTagList );
-	const data = entries.map( ( [ key, val ] ) => {
+	return generateDropDownOptions(
+		setInputData,
+		inputData,
+		insertTextAtEnd,
+		entries );
+};
+
+export const generateDropDownOptions = (
+	setInputData,
+	inputData,
+	insertTextAtEnd,
+	optionsArray = [],
+	arrayHeader = '',
+) => {
+	let data = optionsArray.map( ( [ key, val ] ) => {
 		return {
 			title: val,
 			onClick: () => {
@@ -123,7 +138,80 @@ export const generateSmartTagsDropDown = (
 		};
 	} );
 
+	if ( 0 === data.length ) {
+		data = [
+			{ title: __( 'No tags available', 'sureforms' ) },
+		];
+	}
+
+	if ( 0 !== arrayHeader.length ) {
+		data = [
+			{
+				title: arrayHeader,
+				isDisabled: true,
+				onclick: () => false,
+			},
+			...data,
+		];
+	}
+
 	return data;
+};
+
+export const setFormSpecificSmartTags = ( savedBlocks ) => {
+	const excludedBlocks = [
+		'srfm/inline-button',
+		'srfm/hidden',
+		'srfm/page-break',
+		'srfm/separator',
+		'srfm/advanced-heading',
+		'srfm/image',
+		'srfm/icon',
+	];
+
+	savedBlocks = savedBlocks.filter( ( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name ) );
+
+	const formSmartTags = [];
+	const formEmailSmartTags = [];
+
+	const pushSmartTagToArray = ( blocks, tagsArray, allowedBlocks = [] ) => {
+		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+			return;
+		}
+
+		blocks.forEach( ( block ) => {
+			if (
+				undefined === block?.attributes?.slug ||
+				undefined === block?.attributes?.label ||
+				'' === block?.attributes?.slug ||
+				(
+					0 !== allowedBlocks.length &&
+					! allowedBlocks.includes( block?.name )
+				)
+			) {
+				return;
+			}
+
+			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
+				pushSmartTagToArray( block.innerBlocks, tagsArray );
+			} else {
+				tagsArray.push( [
+					'{form:' + block.attributes.slug + '}',
+					block.attributes.label,
+				] );
+			}
+		} );
+	};
+
+	pushSmartTagToArray( savedBlocks, formSmartTags );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [ 'srfm/email' ] );
+
+	if ( typeof window.sureforms === 'undefined' ) {
+		window.sureforms = {};
+	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
 
 /**

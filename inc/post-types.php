@@ -495,25 +495,34 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'id'            => [
+								'id'             => [
 									'type' => 'integer',
 								],
-								'status'        => [
+								'status'         => [
 									'type' => 'boolean',
 								],
-								'is_raw_format' => [
+								'is_raw_format'  => [
 									'type' => 'boolean',
 								],
-								'name'          => [
+								'name'           => [
 									'type' => 'string',
 								],
-								'email_to'      => [
+								'email_to'       => [
 									'type' => 'string',
 								],
-								'subject'       => [
+								'email_reply_to' => [
 									'type' => 'string',
 								],
-								'email_body'    => [
+								'email_cc'       => [
+									'type' => 'string',
+								],
+								'email_bcc'      => [
+									'type' => 'string',
+								],
+								'subject'        => [
+									'type' => 'string',
+								],
+								'email_body'     => [
 									'type' => 'string',
 								],
 							],
@@ -522,13 +531,16 @@ class Post_Types {
 				],
 				'default'       => [
 					[
-						'id'            => 1,
-						'status'        => true,
-						'is_raw_format' => false,
-						'name'          => 'Admin Notification Email',
-						'email_to'      => '{admin_email}',
-						'subject'       => 'New Form Submission',
-						'email_body'    => '{all_data}',
+						'id'             => 1,
+						'status'         => true,
+						'is_raw_format'  => false,
+						'name'           => 'Admin Notification Email',
+						'email_to'       => '{admin_email}',
+						'email_reply_to' => '{admin_email}',
+						'email_cc'       => '{admin_email}',
+						'email_bcc'      => '{admin_email}',
+						'subject'        => 'New Form Submission',
+						'email_body'     => '{all_data}',
 					],
 				],
 			]

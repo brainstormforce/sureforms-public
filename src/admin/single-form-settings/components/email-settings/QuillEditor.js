@@ -1,10 +1,11 @@
 import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, { modules, formats } from './EditorToolbar';
 import { TabPanel, DropdownMenu } from '@wordpress/components';
-import { generateSmartTagsDropDown } from '@Utils/Helpers';
+import { generateDropDownOptions } from '@Utils/Helpers';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 import { useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const Editor = ( {
 	handleContentChange,
@@ -20,7 +21,10 @@ const Editor = ( {
 		quillInstance.insertText( length - 1, text );
 	};
 
-	const onSelect = () => {};
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+
+	const onSelect = () => { };
 	// Add inline style instead of classes.
 	Quill.register( Quill.import( 'attributors/style/align' ), true );
 
@@ -28,21 +32,26 @@ const Editor = ( {
 		<>
 			<DropdownMenu
 				icon={ dropdownIcon }
-				className="srfm-editor-dropdown"
-				label="Select Shortcodes"
-				text="Add Shortcodes"
+				className="srfm-editor-dropdown srfm-smart-tag-dropdown"
+				label={ __( 'Select Shortcodes', 'sureforms' ) }
+				text={ __( 'Add Shortcodes', 'sureforms' ) }
 				controls={
-					generateSmartTagsDropDown(
-						setFormData,
-						formData,
-						insertTextAtEnd
-					)
-						? generateSmartTagsDropDown(
+					[
+						generateDropDownOptions(
 							setFormData,
 							formData,
-							insertTextAtEnd
-						  )
-						: []
+							insertTextAtEnd,
+							formSmartTags,
+							__( 'Form input tags', 'sureforms' )
+						),
+						generateDropDownOptions(
+							setFormData,
+							formData,
+							insertTextAtEnd,
+							genericSmartTags,
+							__( 'Generic tags', 'sureforms' )
+						),
+					]
 				}
 			/>
 			<TabPanel

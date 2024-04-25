@@ -253,6 +253,7 @@ class Gutenberg_Hooks {
 				'post_url'                         => admin_url( 'post.php' ),
 				'current_screen'                   => $screen,
 				'smart_tags_array'                 => Smart_Tags::smart_tag_list(),
+				'smart_tags_array_email'           => Smart_Tags::email_smart_tag_list(),
 				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
