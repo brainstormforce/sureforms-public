@@ -454,6 +454,7 @@ class Admin {
 				'srfm/textarea',
 				'srfm/number',
 				'srfm/address',
+				'srfm/address-compact',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {

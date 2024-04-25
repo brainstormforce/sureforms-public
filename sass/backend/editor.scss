@@ -7,7 +7,17 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	// hide site icon in the SureForms editor.
+	.block-editor-inner-blocks {
+		.block-editor-block-list__layout:not( .srfm-address-block-wrap .block-list-appender ) {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0;
+			max-width: calc( 620px + 0.6em ) !important;
+			margin: 0 auto;
+		}
+	}
+
+	// hide site ion in the SureForms editor.
 	.edit-post-fullscreen-mode-close_site-icon {
 		display: none;
 	}
@@ -137,8 +147,9 @@ body.post-type-sureforms_form {
 		margin: 0 auto;
 		margin-top: 2em;
 
+		// apply width to all blocks except the address block.
 		.block-list-appender,
-		.block-editor-block-list__block {
+		.block-editor-block-list__block:not( .srfm-address-block-wrap ) {
 			&:not( .srfm-block-single ),
 			&[data-type="srfm/image"],
 			&[data-type="srfm/separator"],
@@ -232,7 +243,8 @@ body.post-type-sureforms_form {
 	// Plus button, Block appended.
 
 	// Add submit button below the Block Appended.
-	.block-list-appender {
+	// Target all the block-list-appender class except the one inside the address block.
+	.block-list-appender:not( .srfm-address-block-wrap .block-list-appender ) {
 		width: 100%;
 		padding: 0 0.3em;
 
