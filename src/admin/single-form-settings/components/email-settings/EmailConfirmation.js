@@ -17,6 +17,9 @@ const EmailConfirmation = ( props ) => {
 		name: data.name || 'New Notification',
 		email_to: data.email_to,
 		subject: data.subject,
+		email_reply_to: data.email_reply_to,
+		email_bcc: data.email_bcc,
+		email_cc: data.email_cc,
 		email_body: data.email_body,
 	} );
 	const [ dynamicSubject, setDynamicSubject ] = useState( data.subject );
@@ -94,7 +97,7 @@ const EmailConfirmation = ( props ) => {
 							<DropdownMenu
 								icon={ dropdownIcon }
 								className="srfm-scroll-dropdown"
-								label="Select Shortcodes"
+								label={ __( 'Select Shortcodes', 'sureforms' ) }
 								controls={
 									[
 										generateDropDownOptions(
@@ -140,7 +143,7 @@ const EmailConfirmation = ( props ) => {
 							<DropdownMenu
 								icon={ dropdownIcon }
 								className="srfm-scroll-dropdown"
-								label="Select Shortcodes"
+								label={ __( 'Select Shortcodes', 'sureforms' ) }
 								controls={
 									[
 										generateDropDownOptions(
@@ -161,34 +164,178 @@ const EmailConfirmation = ( props ) => {
 								}
 							/>
 						</div>
+						<div className="srfm-modal-input-box">
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Reply To', 'sureforms' ) }
+								</label>
+							</div>
+							<input
+								onChange={ ( e ) =>
+									setFormData( {
+										...formData,
+										email_reply_to: e.target.value,
+									} )
+								}
+								value={ formData.email_reply_to }
+								className="srfm-modal-input"
+							/>
+							<DropdownMenu
+								icon={ dropdownIcon }
+								className="srfm-scroll-dropdown"
+								label={ __( 'Select Shortcodes', 'sureforms' ) }
+								controls={
+									[
+										generateDropDownOptions(
+											( emailReplyTo ) =>
+												setFormData( {
+													...formData,
+													email_reply_to: emailReplyTo,
+												} ),
+											formData.email_reply_to,
+											() => { },
+											formEmailSmartTags,
+											__( 'Form input tags', 'sureforms' ),
+										),
+										generateDropDownOptions(
+											( emailReplyTo ) =>
+												setFormData( {
+													...formData,
+													email_reply_to: emailReplyTo,
+												} ),
+											formData.email_reply_to,
+											() => { },
+											genericEmailSmartTags,
+											__( 'Generic tags', 'sureforms' ),
+										),
+									]
+								}
+							/>
+						</div>
+						<div className="srfm-modal-input-box">
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Email CC', 'sureforms' ) }
+								</label>
+							</div>
+							<input
+								onChange={ ( e ) =>
+									setFormData( {
+										...formData,
+										email_cc: e.target.value,
+									} )
+								}
+								value={ formData.email_cc }
+								className="srfm-modal-input"
+							/>
+							<DropdownMenu
+								icon={ dropdownIcon }
+								className="srfm-scroll-dropdown"
+								label={ __( 'Select Shortcodes', 'sureforms' ) }
+								controls={
+									[
+										generateDropDownOptions(
+											( emailCC ) =>
+												setFormData( {
+													...formData,
+													email_cc: emailCC,
+												} ),
+											formData.email_cc,
+											() => { },
+											formEmailSmartTags,
+											__( 'Form input tags', 'sureforms' ),
+										),
+										generateDropDownOptions(
+											( emailCC ) =>
+												setFormData( {
+													...formData,
+													email_cc: emailCC,
+												} ),
+											formData.email_cc,
+											() => { },
+											genericEmailSmartTags,
+											__( 'Generic tags', 'sureforms' ),
+										),
+									]
+								}
+							/>
+						</div>
+						<div className="srfm-modal-input-box">
+							<div className="srfm-modal-label">
+								<label>
+									{ __( 'Email BCC', 'sureforms' ) }
+								</label>
+							</div>
+							<input
+								onChange={ ( e ) =>
+									setFormData( {
+										...formData,
+										email_bcc: e.target.value,
+									} )
+								}
+								value={ formData.email_bcc }
+								className="srfm-modal-input"
+							/>
+							<DropdownMenu
+								icon={ dropdownIcon }
+								className="srfm-scroll-dropdown"
+								label={ __( 'Select Shortcodes', 'sureforms' ) }
+								controls={
+									[
+										generateDropDownOptions(
+											( emailBCC ) =>
+												setFormData( {
+													...formData,
+													email_bcc: emailBCC,
+												} ),
+											formData.email_bcc,
+											() => { },
+											formEmailSmartTags,
+											__( 'Form input tags', 'sureforms' ),
+										),
+										generateDropDownOptions(
+											( emailBCC ) =>
+												setFormData( {
+													...formData,
+													email_bcc: emailBCC,
+												} ),
+											formData.email_bcc,
+											() => { },
+											genericEmailSmartTags,
+											__( 'Generic tags', 'sureforms' ),
+										),
+									]
+								}
+							/>
+						</div>
 						<div className="srfm-modal-area-box">
 							<div className="srfm-modal-area-header">
 								<div className="srfm-modal-area-header-text">
 									<p>{ __( 'Email Body', 'sureforms' ) }<span className="srfm-required-body"> *</span></p>
 								</div>
 								{
-								/*TODO: to be removed later after thorough considerations
-								/*
-								<div className="srfm-modal-area-header-checkbox">
-									<input
-										checked={ formData.is_raw_format }
-										onChange={ () =>
-											setFormData( {
-												...formData,
-												is_raw_format:
-													! formData.is_raw_format,
-											} )
-										}
-										className="srfm-modal-checkbox"
-										type="checkbox"
-									/>
-									<span className="checkbox-text">
-										{ __(
-											'Send Email as RAW HTML Format',
-											'sureforms'
-										) }
-									</span>
-								</div> */
+									/*TODO: to be removed later after thorough considerations
+									/*
+									<div className="srfm-modal-area-header-checkbox">
+										<input
+											checked={ formData.is_raw_format }
+											onChange={ () =>
+												setFormData( {
+													...formData,
+													is_raw_format:
+														! formData.is_raw_format,
+												} )
+											}
+											className="srfm-modal-checkbox"
+											type="checkbox"
+										/>
+										<span className="checkbox-text">
+											{ __(
+												'Send Email as RAW HTML Format',
+												'sureforms'
+											) }
+										</span>
+									</div> */
 								}
 							</div>
 							<div className="srfm-editor-wrap">

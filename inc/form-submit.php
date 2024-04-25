@@ -465,13 +465,25 @@ class Form_Submit {
 						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
 						$message        = $email_template->render( $submission_data, $email_body );
-						$headers        = "From: $from\r\n" .
-						"Reply-To: $from\r\n" .
+						$headers        = "
+						From: $from\r\n" .
 						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						'Content-Type: text/html; charset=utf-8';
-						$sent           = wp_mail( $to, $subject, $message, $headers );
-						$is_mail_sent   = $sent;
-						$emails[]       = $to;
+						"Content-Type: text/html; charset=utf-8\r\n";
+						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
+							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+						} else {
+							$headers .= "Reply-To: $from\r\n";
+						}
+						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
+							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+						}
+						if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
+							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+						}
+
+						$sent         = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent = $sent;
+						$emails[]     = $to;
 					}
 				}
 			}
