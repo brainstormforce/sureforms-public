@@ -87,14 +87,14 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 					</span>
 				</div>
 				<div className="srfm-modal-inner-box">
-					<div className="srfm-modal-inner-box-text">
+					{ /* <div className="srfm-modal-inner-box-text">
 						<h5>{ __( 'Custom CSS', 'sureforms' ) }</h5>
 					</div>
-					<div className="srfm-modal-separator"></div>
+					<div className="srfm-modal-separator"></div> */ }
 					<div className="srfm-modal-inner-box-table">
 						<span>
 							{ __(
-								'Add the Custom CSS for the this form. This will be applied only to the Form Container.',
+								'Add the Custom CSS for this form. This will be applied only to the Form Container.',
 								'sureforms'
 							) }
 						</span>
