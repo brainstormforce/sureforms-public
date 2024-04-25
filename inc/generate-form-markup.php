@@ -405,7 +405,7 @@ class Generate_Form_Markup {
 			return $confirmation_message;
 		}
 		$smart_tags           = new Smart_Tags();
-		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $form_data, $submission_data );
+		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
 		return $confirmation_message;
 
