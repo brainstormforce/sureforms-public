@@ -256,6 +256,7 @@ class Gutenberg_Hooks {
 				'post_url'                         => admin_url( 'post.php' ),
 				'current_screen'                   => $screen,
 				'smart_tags_array'                 => Smart_Tags::smart_tag_list(),
+				'smart_tags_array_email'           => Smart_Tags::email_smart_tag_list(),
 				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
 				'is_pro_active'                    => $is_pro_active,
@@ -323,30 +324,6 @@ class Gutenberg_Hooks {
 		 */
 		$slugs = [];
 
-		// phpcs:disable
-
-		// foreach ( $blocks as $index => $block ) {
-		// Checking only for SureForms blocks which can have user input.
-		// if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
-		// continue;
-		// }
-
-		// **
-		// * Lets continue if slug already exists.
-		// * This will ensure that we don't update already existing slugs.
-		// */
-		// if ( ! empty( $block['attrs']['slug'] ) ) {
-		// $slugs[] = $block['attrs']['slug'];
-		// continue;
-		// }
-
-		// $blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs );
-		// $slugs[]                           = $blocks[ $index ]['attrs']['slug'];
-		// $updated                           = true;
-		// }
-
-		// phpcs:enable
-
 		list( $blocks, $updated ) = $this->process_blocks( $blocks, $slugs, $updated, $prefix = '' );
 
 		if ( ! $updated ) {
@@ -364,20 +341,28 @@ class Gutenberg_Hooks {
 	}
 
 	/**
-	 * Undocumented function
+	 * Process blocks and inner blocks.
 	 *
-	 * @param @param array<string,string|array<string,mixed>> $blocks $block The block data.
-	 * @param array<string>                                   $slugs The array of existing slugs.
-	 * @param bool                                            $updated The array of existing slugs.
-	 * @param string                                          $prefix The array of existing slugs.
+	 * @param array<array<array<mixed>>> $blocks The block data.
+	 * @param array<string>              $slugs The array of existing slugs.
+	 * @param bool                       $updated The array of existing slugs.
+	 * @param string                     $prefix The array of existing slugs.
 	 * @since x.x.x
-	 * @return array<array,bool>
+	 * @return array{array<array<array<mixed>>>,bool}
 	 */
 	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
 
+		if ( ! is_array( $blocks ) ) {
+			return [ $blocks, false ];
+		}
+
 		foreach ( $blocks as $index => $block ) {
+
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
 			// Checking only for SureForms blocks which can have user input.
-			if ( ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
+			if ( isset( $block['blockName'] ) && ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
 				continue;
 			}
 
@@ -385,18 +370,21 @@ class Gutenberg_Hooks {
 			 * Lets continue if slug already exists.
 			 * This will ensure that we don't update already existing slugs.
 			 */
-			if ( ! empty( $block['attrs']['slug'] ) ) {
-				$slugs[] = $block['attrs']['slug'];
+			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) ) {
+				$slugs[] = Helper::get_string_value( $block['attrs']['slug'] );
 				continue;
 			}
 
-			$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
-			$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
-			$updated                           = true;
-			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
 
-				list( $blocks[ $index ]['innerBlocks'], $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+				$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
+				$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
+				$updated                           = true;
+				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
+					list( $blocks[ $index ]['innerBlocks'], $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+
+				}
 			}
 		}
 		return [ $blocks, $updated ];
@@ -405,9 +393,9 @@ class Gutenberg_Hooks {
 	/**
 	 * Generates slug based on the provided block and existing slugs.
 	 *
-	 * @param array<string,string|array<string,mixed>> $block The block data.
-	 * @param array<string>                            $slugs The array of existing slugs.
-	 * @param string                                   $prefix The array of existing slugs.
+	 * @param array<mixed>  $block The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
 	 * @since x.x.x
 	 * @return string The generated unique block slug.
 	 */

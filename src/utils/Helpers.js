@@ -168,9 +168,13 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/image',
 		'srfm/icon',
 	];
-	const formSmartTags = [];
 
-	const pushSmartTagToArray = ( blocks ) => {
+	savedBlocks = savedBlocks.filter( ( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name ) );
+
+	const formSmartTags = [];
+	const formEmailSmartTags = [];
+
+	const pushSmartTagToArray = ( blocks, tagsArray, allowedBlocks = [] ) => {
 		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
 			return;
 		}
@@ -180,15 +184,18 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 				undefined === block?.attributes?.slug ||
 				undefined === block?.attributes?.label ||
 				'' === block?.attributes?.slug ||
-				excludedBlocks.includes( block?.name )
+				(
+					0 !== allowedBlocks.length &&
+					! allowedBlocks.includes( block?.name )
+				)
 			) {
 				return;
 			}
 
 			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
-				pushSmartTagToArray( block.innerBlocks );
+				pushSmartTagToArray( block.innerBlocks, tagsArray );
 			} else {
-				formSmartTags.push( [
+				tagsArray.push( [
 					'{form:' + block.attributes.slug + '}',
 					block.attributes.label,
 				] );
@@ -196,13 +203,15 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		} );
 	};
 
-	pushSmartTagToArray( savedBlocks );
+	pushSmartTagToArray( savedBlocks, formSmartTags );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [ 'srfm/email' ] );
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
 
 /**
