@@ -228,18 +228,18 @@ class Form_Submit {
 
 		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 
-		// $turnstileToken = isset($form_data['cf-turnstile-response']) ? $form_data['cf-turnstile-response'] : '';
-		$turnstile_sec_key = '0x4AAAAAAAVWxL78-ubPtqCOBln_FAisecs';
+		$global_setting_options = get_option( 'srfm_security_settings_options' );
+		$srfm_cf_turnstile_secret_key = isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
 		$cf_response = isset($form_data['cf-turnstile-response']) ? $form_data['cf-turnstile-response'] : '';
 		$remoteIP = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : '';
 		$idempotencyKey = null;
 
 		// Validate Turnstile token
-		$turnstileValidationResult = self::validateTurnstileToken($turnstile_sec_key, $cf_response, $remoteIP, $idempotencyKey);
+		$turnstileValidationResult = self::validateTurnstileToken($srfm_cf_turnstile_secret_key, $cf_response, $remoteIP, $idempotencyKey);
 
 
 		if ( isset( $turnstileValidationResult['success'] ) && false === $turnstileValidationResult['success'] ) {
-			return new \WP_Error( 'turnstile_error', 'Turnstile error.', [ 'status' => 403 ] );
+			return new \WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
 		}
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {

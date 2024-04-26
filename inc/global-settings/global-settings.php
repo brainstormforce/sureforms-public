@@ -223,6 +223,8 @@ class Global_Settings {
 		$srfm_v2_invisible_secret_key = isset( $setting_options['srfm_v2_invisible_secret_key'] ) ? $setting_options['srfm_v2_invisible_secret_key'] : '';
 		$srfm_v3_site_key             = isset( $setting_options['srfm_v3_site_key'] ) ? $setting_options['srfm_v3_site_key'] : '';
 		$srfm_v3_secret_key           = isset( $setting_options['srfm_v3_secret_key'] ) ? $setting_options['srfm_v3_secret_key'] : '';
+		$srfm_cf_turnstile_site_key   = isset( $setting_options['srfm_cf_turnstile_site_key'] ) ? $setting_options['srfm_cf_turnstile_site_key'] : '';
+		$srfm_cf_turnstile_secret_key = isset( $setting_options['srfm_cf_turnstile_secret_key'] ) ? $setting_options['srfm_cf_turnstile_secret_key'] : '';
 
 		return update_option(
 			'srfm_security_settings_options',
@@ -233,6 +235,8 @@ class Global_Settings {
 				'srfm_v2_invisible_secret_key' => $srfm_v2_invisible_secret_key,
 				'srfm_v3_site_key'             => $srfm_v3_site_key,
 				'srfm_v3_secret_key'           => $srfm_v3_secret_key,
+				'srfm_cf_turnstile_site_key'   => $srfm_cf_turnstile_site_key,
+				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
 			]
 		);
 
@@ -290,6 +294,8 @@ class Global_Settings {
 				'srfm_v2_invisible_secret_key' => '',
 				'srfm_v3_site_key'             => '',
 				'srfm_v3_secret_key'           => '',
+				'srfm_cf_turnstile_site_key'   => '',
+				'srfm_cf_turnstile_secret_key' => '',
 			];
 		}
 

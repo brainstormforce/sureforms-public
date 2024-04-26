@@ -25,6 +25,11 @@ const SecurityPage = ( {
 							title: 'reCaptcha',
 							className: 'srfm-captcha-tab-1',
 						},
+						{
+							name: 'srfm-captcha-tab-2',
+							title: 'Turnstile',
+							className: 'srfm-captcha-tab-2',
+						},
 					] }
 				>
 					{ ( securityTab ) => {
@@ -256,6 +261,122 @@ const SecurityPage = ( {
 													}
 												} }
 											</TabPanel>
+										</div>
+									</>
+								);
+							case 'srfm-captcha-tab-2':
+								return (
+									<>
+										<div className="srfm-sub-section-heading">
+											<h2>
+												{ __(
+													'Cloudflare Turnstile',
+													'sureforms'
+												) }
+											</h2>
+											<p>
+												{ __(
+													'To enable Turnstile feature on your SureForms, Please enable Turnstile option on your blocks setting. Add Cloudflare Turnstile secret and site key here. Turnstile will be added to your page on front-end.',
+													'sureforms'
+												) }
+											</p>
+											<div className="srfm-link">
+												<a
+													href="https://www.cloudflare.com/en-gb/products/turnstile/"
+													target="_blank"
+													rel="noreferrer"
+												>
+													{ __(
+														'Get Keys',
+														'sureforms'
+													) }
+												</a>
+												<a href="/" target="_blank">
+													{ __(
+														'Documentation',
+														'sureforms'
+													) }
+												</a>
+											</div>
+										</div>
+										<div className="srfm-sub-section-content">
+											<TabPanel
+												className="srfm-style-2-tabs"
+												activeClass="active-tab"
+												onSelect={ () => {
+													updateGlobalSettings(
+														'srfm_cf_appearance_mode',
+														value,
+														'security-settings'
+													);
+												} }
+												tabs={ [
+													{
+														name: 'srfm-captcha-tab-1',
+														title: 'Auto',
+														className:
+															'srfm-captcha-tab-1',
+													},
+													{
+														name: 'srfm-captcha-tab-2',
+														title: 'Light',
+														className:
+															'srfm-captcha-tab-2',
+													},
+													{
+														name: 'srfm-captcha-tab-3',
+														title: 'Dark',
+														className:
+															'srfm-captcha-tab-3',
+													},
+												] }
+											>
+												{ ( appearanceTab ) => {} }
+											</TabPanel>
+											<TextControl
+												label={ __(
+													'Site Key',
+													'sureforms'
+												) }
+												type="text"
+												className="srfm-components-input-control"
+												value={
+													securitytabOptions.srfm_cf_turnstile_site_key
+												}
+												onChange={ ( value ) => {
+													updateGlobalSettings(
+														'srfm_cf_turnstile_site_key',
+														value,
+														'security-settings'
+													);
+												} }
+												placeholder={ __(
+													'Enter your site key here',
+													'sureforms'
+												) }
+											/>
+											<TextControl
+												label={ __(
+													'Secret Key',
+													'sureforms'
+												) }
+												type="password"
+												className="srfm-components-input-control"
+												value={
+													securitytabOptions.srfm_cf_turnstile_secret_key
+												}
+												onChange={ ( value ) => {
+													updateGlobalSettings(
+														'srfm_cf_turnstile_secret_key',
+														value,
+														'security-settings'
+													);
+												} }
+												placeholder={ __(
+													'Enter your site key here',
+													'sureforms'
+												) }
+											/>
 										</div>
 									</>
 								);

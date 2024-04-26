@@ -259,3 +259,13 @@ function onloadCallback() {
 
 // directly assign onloadCallback into the global space:
 window.onloadCallback = onloadCallback;
+
+// if using synchronous loading, will be called once the DOM is ready
+turnstile.ready( function () {
+	turnstile.render( '#srfm-cf-sitekey', {
+		sitekey: '0x4AAAAAAAVWxI9XhWfbQntq',
+		callback: function ( token ) {
+			// console.log( `Challenge Success ${ token }` );
+		},
+	} );
+} );
