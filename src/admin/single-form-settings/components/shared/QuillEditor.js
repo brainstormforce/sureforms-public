@@ -1,24 +1,20 @@
 import ReactQuill, { Quill } from 'react-quill';
-import EditorToolbar, { modules, formats } from './EditorToolbar';
-import { TabPanel, DropdownMenu } from '@wordpress/components';
+import EditorToolbar, { modules, formats } from '../email-settings/EditorToolbar';
+import { TabPanel } from '@wordpress/components';
 import { generateDropDownOptions } from '@Utils/Helpers';
+import SmartTagList from './SmartTagsList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 const Editor = ( {
 	handleContentChange,
 	content,
-	formData,
-	setFormData,
 } ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
-	const quillRef = useRef( null );
-	const insertTextAtEnd = ( text ) => {
-		const quillInstance = quillRef.current.getEditor();
-		const length = quillInstance.getLength();
-		quillInstance.insertText( length - 1, text );
+
+	const insertSmartTag = ( tag ) => {
+		handleContentChange( content + tag );
 	};
 
 	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
@@ -30,29 +26,27 @@ const Editor = ( {
 
 	return (
 		<>
-			<DropdownMenu
+			<SmartTagList
 				icon={ dropdownIcon }
-				className="srfm-editor-dropdown srfm-smart-tag-dropdown"
 				label={ __( 'Select Shortcodes', 'sureforms' ) }
-				text={ __( 'Add Shortcodes', 'sureforms' ) }
-				controls={
+				text={ __( 'Add Shortcode', 'sureforms' ) }
+				cssClass={ 'srfm-editor-dropdown' }
+				optionsCallback={ generateDropDownOptions }
+				tagsArray={
 					[
-						generateDropDownOptions(
-							setFormData,
-							formData,
-							insertTextAtEnd,
-							formSmartTags,
-							__( 'Form input tags', 'sureforms' )
-						),
-						generateDropDownOptions(
-							setFormData,
-							formData,
-							insertTextAtEnd,
-							genericSmartTags,
-							__( 'Generic tags', 'sureforms' )
-						),
+						{
+							tags: formSmartTags,
+							label: __( 'Form input tags', 'sureforms' ),
+						},
+						{
+							tags: genericSmartTags,
+							label: __( 'Form input tags', 'sureforms' ),
+						},
 					]
+
 				}
+				setTargetData={ insertSmartTag }
+
 			/>
 			<TabPanel
 				activeClass="srfm-active-editor"
@@ -77,7 +71,6 @@ const Editor = ( {
 								<div className="srfm-editor-visual">
 									<EditorToolbar />
 									<ReactQuill
-										ref={ quillRef }
 										formats={ formats }
 										modules={ modules }
 										value={ content }
@@ -97,8 +90,8 @@ const Editor = ( {
 										handleContentChange( e.target.value )
 									}
 									className="srfm-editor-textarea"
+									value={ content }
 								>
-									{ content }
 								</textarea>
 							);
 						default:

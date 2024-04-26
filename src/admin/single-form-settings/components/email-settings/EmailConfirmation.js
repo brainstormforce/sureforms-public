@@ -1,14 +1,14 @@
 import { __ } from '@wordpress/i18n';
-import Editor from './QuillEditor';
+import Editor from '../shared/QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { generateDropDownOptions } from '@Utils/Helpers';
-import { DropdownMenu } from '@wordpress/components';
+import SmartTagList from '../shared/SmartTagsList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
 const EmailConfirmation = ( props ) => {
 	const { data, handleConfirmEmail, handleBackNotifation } = props;
-	const dropdownIcon = parse( svgIcons.verticalDot );
+	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const backArrow = parse( svgIcons.leftArrow );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
@@ -94,35 +94,30 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_to }
 								className="srfm-modal-input"
 							/>
-							<DropdownMenu
-								icon={ dropdownIcon }
-								className="srfm-scroll-dropdown"
+							<SmartTagList
+								icon={ verticalDotIcon }
 								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								controls={
+								cssClass={ 'srfm-scroll-dropdown' }
+								optionsCallback={ generateDropDownOptions }
+								tagsArray={
 									[
-										generateDropDownOptions(
-											( emailTo ) =>
-												setFormData( {
-													...formData,
-													email_to: emailTo,
-												} ),
-											formData.email_to,
-											() => { },
-											formEmailSmartTags,
-											__( 'Form input tags', 'sureforms' ),
-										),
-										generateDropDownOptions(
-											( emailTo ) =>
-												setFormData( {
-													...formData,
-													email_to: emailTo,
-												} ),
-											formData.email_to,
-											() => { },
-											genericEmailSmartTags,
-											__( 'Generic tags', 'sureforms' ),
-										),
+										{
+											tags: formEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
+										{
+											tags: genericEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
 									]
+
+								}
+								setTargetData={
+									( tag ) =>
+										setFormData( {
+											...formData,
+											email_to: formData.email_to + tag,
+										} )
 								}
 							/>
 						</div>
@@ -140,28 +135,31 @@ const EmailConfirmation = ( props ) => {
 								value={ dynamicSubject }
 								className="srfm-modal-input with-icon"
 							/>
-							<DropdownMenu
-								icon={ dropdownIcon }
-								className="srfm-scroll-dropdown"
+
+							<SmartTagList
+								icon={ verticalDotIcon }
 								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								controls={
+								cssClass={ 'srfm-scroll-dropdown' }
+								optionsCallback={ generateDropDownOptions }
+								tagsArray={
 									[
-										generateDropDownOptions(
-											setDynamicSubject,
-											dynamicSubject,
-											() => { },
-											formSmartTags,
-											__( 'Form input tags', 'sureforms' )
-										),
-										generateDropDownOptions(
-											setDynamicSubject,
-											dynamicSubject,
-											() => { },
-											genericSmartTags,
-											__( 'Generic tags', 'sureforms' )
-										),
+										{
+											tags: formSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
+										{
+											tags: genericSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
 									]
+
 								}
+								setTargetData={
+									( tag ) => setDynamicSubject(
+										dynamicSubject + tag
+									)
+								}
+
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
@@ -180,35 +178,30 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_reply_to }
 								className="srfm-modal-input"
 							/>
-							<DropdownMenu
-								icon={ dropdownIcon }
-								className="srfm-scroll-dropdown"
+							<SmartTagList
+								icon={ verticalDotIcon }
 								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								controls={
+								cssClass={ 'srfm-scroll-dropdown' }
+								optionsCallback={ generateDropDownOptions }
+								tagsArray={
 									[
-										generateDropDownOptions(
-											( emailReplyTo ) =>
-												setFormData( {
-													...formData,
-													email_reply_to: emailReplyTo,
-												} ),
-											formData.email_reply_to,
-											() => { },
-											formEmailSmartTags,
-											__( 'Form input tags', 'sureforms' ),
-										),
-										generateDropDownOptions(
-											( emailReplyTo ) =>
-												setFormData( {
-													...formData,
-													email_reply_to: emailReplyTo,
-												} ),
-											formData.email_reply_to,
-											() => { },
-											genericEmailSmartTags,
-											__( 'Generic tags', 'sureforms' ),
-										),
+										{
+											tags: formEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
+										{
+											tags: genericEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
 									]
+
+								}
+								setTargetData={
+									( tag ) =>
+										setFormData( {
+											...formData,
+											email_reply_to: formData.email_reply_to + tag,
+										} )
 								}
 							/>
 						</div>
@@ -228,35 +221,30 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_cc }
 								className="srfm-modal-input"
 							/>
-							<DropdownMenu
-								icon={ dropdownIcon }
-								className="srfm-scroll-dropdown"
+							<SmartTagList
+								icon={ verticalDotIcon }
 								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								controls={
+								cssClass={ 'srfm-scroll-dropdown' }
+								optionsCallback={ generateDropDownOptions }
+								tagsArray={
 									[
-										generateDropDownOptions(
-											( emailCC ) =>
-												setFormData( {
-													...formData,
-													email_cc: emailCC,
-												} ),
-											formData.email_cc,
-											() => { },
-											formEmailSmartTags,
-											__( 'Form input tags', 'sureforms' ),
-										),
-										generateDropDownOptions(
-											( emailCC ) =>
-												setFormData( {
-													...formData,
-													email_cc: emailCC,
-												} ),
-											formData.email_cc,
-											() => { },
-											genericEmailSmartTags,
-											__( 'Generic tags', 'sureforms' ),
-										),
+										{
+											tags: formEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
+										{
+											tags: genericEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
 									]
+
+								}
+								setTargetData={
+									( tag ) =>
+										setFormData( {
+											...formData,
+											email_cc: formData.email_cc + tag,
+										} )
 								}
 							/>
 						</div>
@@ -276,35 +264,30 @@ const EmailConfirmation = ( props ) => {
 								value={ formData.email_bcc }
 								className="srfm-modal-input"
 							/>
-							<DropdownMenu
-								icon={ dropdownIcon }
-								className="srfm-scroll-dropdown"
+							<SmartTagList
+								icon={ verticalDotIcon }
 								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								controls={
+								cssClass={ 'srfm-scroll-dropdown' }
+								optionsCallback={ generateDropDownOptions }
+								tagsArray={
 									[
-										generateDropDownOptions(
-											( emailBCC ) =>
-												setFormData( {
-													...formData,
-													email_bcc: emailBCC,
-												} ),
-											formData.email_bcc,
-											() => { },
-											formEmailSmartTags,
-											__( 'Form input tags', 'sureforms' ),
-										),
-										generateDropDownOptions(
-											( emailBCC ) =>
-												setFormData( {
-													...formData,
-													email_bcc: emailBCC,
-												} ),
-											formData.email_bcc,
-											() => { },
-											genericEmailSmartTags,
-											__( 'Generic tags', 'sureforms' ),
-										),
+										{
+											tags: formEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
+										{
+											tags: genericEmailSmartTags,
+											label: __( 'Form input tags', 'sureforms' ),
+										},
 									]
+
+								}
+								setTargetData={
+									( tag ) =>
+										setFormData( {
+											...formData,
+											email_bcc: formData.email_bcc + tag,
+										} )
 								}
 							/>
 						</div>

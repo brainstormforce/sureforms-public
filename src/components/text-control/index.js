@@ -9,16 +9,17 @@ import { useSelect } from '@wordpress/data';
 import {
 	TextControl,
 	TextareaControl,
-	DropdownMenu,
 } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
 import {
 	getIdFromString,
 	getPanelIdFromRef,
-	generateSmartTagsDropDown,
+	generateDropDownOptions,
 } from '@Utils/Helpers';
+import SmartTagList from '../../admin/single-form-settings/components/shared/SmartTagsList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
@@ -61,7 +62,7 @@ const SRFMTextControl = ( props ) => {
 				selectedBlock?.name,
 				props.name,
 				props.dynamicContentType
-			  )
+			)
 			: null;
 
 	const isEnableDynamicContent = () => {
@@ -134,6 +135,8 @@ const SRFMTextControl = ( props ) => {
 		blockNameForHook
 	);
 
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
@@ -161,8 +164,8 @@ const SRFMTextControl = ( props ) => {
 								<TextControl
 									label={
 										props?.variant === 'inline' ||
-										( props?.variant !== 'inline' &&
-											! props?.showHeaderControls )
+											( props?.variant !== 'inline' &&
+												! props?.showHeaderControls )
 											? props?.label
 											: false
 									}
@@ -191,22 +194,40 @@ const SRFMTextControl = ( props ) => {
 							) }
 
 							{ props?.withSmartTagDropdown === true && (
-								<DropdownMenu
+								// <DropdownMenu
+								// 	icon={ VerticalEllipsis }
+								// 	className="srfm-scroll-dropdown"
+								// 	label="Select Shortcodes"
+								// 	controls={
+								// 		generateSmartTagsDropDown(
+								// 			setInputData,
+								// 			inputData,
+								// 			props
+								// 		)
+								// 			? generateSmartTagsDropDown(
+								// 				setInputData,
+								// 				inputData,
+								// 				props
+								// 			  )
+								// 			: []
+								// 	}
+								// />
+								<SmartTagList
 									icon={ VerticalEllipsis }
-									className="srfm-scroll-dropdown"
-									label="Select Shortcodes"
-									controls={
-										generateSmartTagsDropDown(
-											setInputData,
-											inputData,
-											props
-										)
-											? generateSmartTagsDropDown(
-												setInputData,
-												inputData,
-												props
-											  )
-											: []
+									label={ __( 'Select Shortcodes', 'sureforms' ) }
+									cssClass={ 'srfm-scroll-dropdown' }
+									optionsCallback={ generateDropDownOptions }
+									tagsArray={
+										[
+											{
+												tags: genericSmartTags,
+												label: __( 'Form input tags', 'sureforms' ),
+											},
+										]
+
+									}
+									setTargetData={
+										( tag ) => setInputData( inputData + tag )
 									}
 								/>
 							) }

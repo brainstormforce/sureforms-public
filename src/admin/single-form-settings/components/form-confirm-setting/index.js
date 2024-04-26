@@ -1,6 +1,6 @@
 
 import { __ } from '@wordpress/i18n';
-import Editor from '../email-settings/QuillEditor';
+import Editor from '../shared/QuillEditor';
 import Select from 'react-select';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
@@ -136,8 +136,6 @@ const FormConfirmSetting = () => {
 										handleEditorChange
 									}
 									content={ data?.message }
-									formData={ data }
-									setFormData={ setData }
 								/>
 							</div>
 						</div>
