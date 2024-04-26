@@ -257,7 +257,7 @@ function styling(
 			color: linkHColor,
 			...gradientLinkHoverColor,
 		},
-		'.wp-block-uagb-advanced-heading .uagb-highlight': {
+		'.wp-block-uagb-advanced-heading .srfm-highlight': {
 			background: highLightBackground,
 			color: highLightColor,
 			'-webkit-text-fill-color': highLightColor,
@@ -296,7 +296,7 @@ function styling(
 			),
 			...highLightBorderCSS,
 		},
-		'.wp-block-uagb-advanced-heading .uagb-highlight:hover': {
+		'.wp-block-uagb-advanced-heading .srfm-highlight:hover': {
 			'border-color': highLightBorderHColor,
 		},
 	};
@@ -318,9 +318,9 @@ function styling(
 		'-webkit-text-fill-color': highLightColor,
 	};
 	selectors[
-		'.wp-block-uagb-advanced-heading .uagb-highlight::-moz-selection'
+		'.wp-block-uagb-advanced-heading .srfm-highlight::-moz-selection'
 	] = highlightSelectionText;
-	selectors[ '.wp-block-uagb-advanced-heading .uagb-highlight::selection' ] =
+	selectors[ '.wp-block-uagb-advanced-heading .srfm-highlight::selection' ] =
 		highlightSelectionText;
 
 	// heading
@@ -465,7 +465,7 @@ function styling(
 			'px'
 		),
 	};
-	tablet_selectors[ '.wp-block-uagb-advanced-heading .uagb-highlight' ] = {
+	tablet_selectors[ '.wp-block-uagb-advanced-heading .srfm-highlight' ] = {
 		'font-size': generateCSSUnit(
 			highLightFontSizeTablet,
 			highLightFontSizeTypeTablet
@@ -587,7 +587,7 @@ function styling(
 			'px'
 		),
 	};
-	mobile_selectors[ '.wp-block-uagb-advanced-heading .uagb-highlight' ] = {
+	mobile_selectors[ '.wp-block-uagb-advanced-heading .srfm-highlight' ] = {
 		'font-size': generateCSSUnit(
 			highLightFontSizeMobile,
 			highLightFontSizeTypeMobile

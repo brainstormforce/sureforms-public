@@ -600,7 +600,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 						'px'
 					),
 				],
-				'.wp-block-uagb-advanced-heading .uagb-highlight' => array_merge(
+				'.wp-block-uagb-advanced-heading .srfm-highlight' => array_merge(
 					[
 						'background'              => $attr['highLightBackground'],
 						'color'                   => $attr['highLightColor'],
@@ -632,7 +632,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 					],
 					$high_light_border_css
 				),
-				'.wp-block-uagb-advanced-heading .uagb-highlight:hover' => [
+				'.wp-block-uagb-advanced-heading .srfm-highlight:hover' => [
 					'border-color' => $attr['highLightBorderHColor'],
 				],
 			];
@@ -677,8 +677,8 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 				'-webkit-text-fill-color' => $attr['highLightColor'],
 			];
 
-			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::-moz-selection'] = $highlight_selection_text;
-			$selectors['.wp-block-uagb-advanced-heading .uagb-highlight::selection']      = $highlight_selection_text;
+			$selectors['.wp-block-uagb-advanced-heading .srfm-highlight::-moz-selection'] = $highlight_selection_text;
+			$selectors['.wp-block-uagb-advanced-heading .srfm-highlight::selection']      = $highlight_selection_text;
 
 			$separator_style = isset( $attr['separatorStyle'] ) ? $attr['separatorStyle'] : '';
 
@@ -732,7 +732,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 				'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginTablet'], $attr['blockMarginUnitTablet'] ),
 			];
 
-			$t_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
+			$t_selectors['.wp-block-uagb-advanced-heading .srfm-highlight'] = array_merge(
 				[
 					'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['highLightTopPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
 					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['highLightRightPaddingTablet'], $attr['highLightPaddingUnitTablet'] ),
@@ -753,7 +753,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 				'margin-bottom'  => Spec_Gb_Helper::get_css_value( $attr['blockBottomMarginMobile'], $attr['blockMarginUnitMobile'] ),
 				'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginMobile'], $attr['blockMarginUnitMobile'] ),
 			];
-			$m_selectors['.wp-block-uagb-advanced-heading .uagb-highlight'] = array_merge(
+			$m_selectors['.wp-block-uagb-advanced-heading .srfm-highlight'] = array_merge(
 				[
 					'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['highLightTopPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
 					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['highLightRightPaddingMobile'], $attr['highLightPaddingUnitMobile'] ),
@@ -808,7 +808,7 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 
 			$combined_selectors = Spec_Gb_Helper::get_typography_css( $attr, 'head', ' .uagb-heading-text', $combined_selectors );
 			$combined_selectors = Spec_Gb_Helper::get_typography_css( $attr, 'subHead', ' .uagb-desc-text', $combined_selectors );
-			$combined_selectors = Spec_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .uagb-highlight', $combined_selectors );
+			$combined_selectors = Spec_Gb_Helper::get_typography_css( $attr, 'highLight', '.wp-block-uagb-advanced-heading .srfm-highlight', $combined_selectors );
 
 			return Spec_Gb_Helper::generate_all_css( $combined_selectors, ' .uagb-block-' . $id );
 
