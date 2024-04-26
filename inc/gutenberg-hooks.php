@@ -322,7 +322,7 @@ class Gutenberg_Hooks {
 		 */
 		$slugs = [];
 
-		list( $blocks, $updated ) = $this->process_blocks( $blocks, $slugs, $updated, $prefix = '' );
+		list( $blocks, $slugs, $updated ) = $this->process_blocks( $blocks, $slugs, $updated, $prefix = '' );
 
 		if ( ! $updated ) {
 			return;
@@ -346,12 +346,12 @@ class Gutenberg_Hooks {
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
 	 * @since x.x.x
-	 * @return array{array<array<array<mixed>>>,bool}
+	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
 	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
 
 		if ( ! is_array( $blocks ) ) {
-			return [ $blocks, false ];
+			return [ $blocks, $slugs, $updated ];
 		}
 
 		foreach ( $blocks as $index => $block ) {
@@ -360,7 +360,7 @@ class Gutenberg_Hooks {
 				continue;
 			}
 			// Checking only for SureForms blocks which can have user input.
-			if ( isset( $block['blockName'] ) && ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
+			if ( empty( $block['blockName'] ) || ! in_array( $block['blockName'], $this->srfm_blocks, true ) ) {
 				continue;
 			}
 
@@ -380,12 +380,12 @@ class Gutenberg_Hooks {
 				$updated                           = true;
 				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
-					list( $blocks[ $index ]['innerBlocks'], $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
+					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
 
 				}
 			}
 		}
-		return [ $blocks, $updated ];
+		return [ $blocks, $slugs, $updated ];
 	}
 
 	/**
