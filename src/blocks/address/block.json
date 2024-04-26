@@ -41,10 +41,6 @@
 		"isConditionalLogic": {
 			"type": "boolean",
 			"default": false
-		},
-		"slug": {
-			"type": "string",
-			"default": ""
 		}
 	}
 }
