@@ -194,24 +194,6 @@ const SRFMTextControl = ( props ) => {
 							) }
 
 							{ props?.withSmartTagDropdown === true && (
-								// <DropdownMenu
-								// 	icon={ VerticalEllipsis }
-								// 	className="srfm-scroll-dropdown"
-								// 	label="Select Shortcodes"
-								// 	controls={
-								// 		generateSmartTagsDropDown(
-								// 			setInputData,
-								// 			inputData,
-								// 			props
-								// 		)
-								// 			? generateSmartTagsDropDown(
-								// 				setInputData,
-								// 				inputData,
-								// 				props
-								// 			  )
-								// 			: []
-								// 	}
-								// />
 								<SmartTagList
 									icon={ VerticalEllipsis }
 									label={ __( 'Select Shortcodes', 'sureforms' ) }
@@ -227,7 +209,7 @@ const SRFMTextControl = ( props ) => {
 
 									}
 									setTargetData={
-										( tag ) => setInputData( inputData + tag )
+										( tag ) => handleOnChange( inputData + tag )
 									}
 								/>
 							) }
