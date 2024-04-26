@@ -322,7 +322,7 @@ class Gutenberg_Hooks {
 		 */
 		$slugs = [];
 
-		list( $blocks, $slugs, $updated ) = $this->process_blocks( $blocks, $slugs, $updated, $prefix = '' );
+		list( $blocks, $slugs, $updated ) = $this->process_blocks( $blocks, $slugs, $updated );
 
 		if ( ! $updated ) {
 			return;
