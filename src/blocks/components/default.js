@@ -2,13 +2,23 @@ import { useState, useEffect } from '@wordpress/element';
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 
-export const CheckboxComponent = ( { attributes, setAttributes, blockID } ) => {
+export const CheckboxComponent = ( {
+	attributes,
+	setAttributes,
+	blockID,
+	blockType,
+} ) => {
 	const { label, checked: isChecked, required } = attributes;
 	const [ selected, setSelected ] = useState( isChecked );
-	const isRequired = required ? 'srfm-required' : '';
+	let isRequired = required ? 'srfm-required' : '';
 	useEffect( () => {
 		setSelected( isChecked );
 	}, [ isChecked ] );
+
+	if ( blockType === 'gdpr' ) {
+		isRequired = 'srfm-required';
+	}
+
 	return (
 		<div className="srfm-block-wrap">
 			<input
