@@ -92,6 +92,8 @@
 						&:last-child {
 							padding-left: 8px;
 							line-height: 18px;
+							max-width: calc(100% - 26px);
+							word-wrap: break-word;
 						}
 					}
 
