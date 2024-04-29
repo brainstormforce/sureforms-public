@@ -1,6 +1,6 @@
 
 import { __ } from '@wordpress/i18n';
-import Editor from '../shared/QuillEditor';
+import Editor from '../QuillEditor';
 import Select from 'react-select';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';

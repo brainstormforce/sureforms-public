@@ -19,7 +19,7 @@ import {
 	getPanelIdFromRef,
 	generateDropDownOptions,
 } from '@Utils/Helpers';
-import SmartTagList from '../../admin/single-form-settings/components/shared/SmartTagsList';
+import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';

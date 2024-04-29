@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import Editor from '../shared/QuillEditor';
+import Editor from '../QuillEditor';
 import { useState, useEffect } from '@wordpress/element';
 import { generateDropDownOptions } from '@Utils/Helpers';
-import SmartTagList from '../shared/SmartTagsList';
+import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
