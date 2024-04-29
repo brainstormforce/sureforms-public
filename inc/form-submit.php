@@ -95,9 +95,7 @@ class Form_Submit {
 	 * @param string       $idempotency_key Idempotency key.
 	 * @return array<mixed>|mixed Result of the validation.
 	 */
-	public static function validate_turnstile_token( $turnstile_token, $response = '', $remote_ip = null, $idempotency_key = null ) {
-		$secret_key = $turnstile_token;
-
+	public static function validate_turnstile_token( $secret_key, $response = '', $remote_ip = null, $idempotency_key = null ) {
 		$body = [
 			'secret'   => $secret_key,
 			'response' => $response,
@@ -114,7 +112,7 @@ class Form_Submit {
 
 		$args = [
 			'body'    => $body,
-			'timeout' => 15, // Adjust timeout as needed.
+			'timeout' => 15,
 		];
 
 		$response = wp_remote_post( $url, $args );
@@ -127,9 +125,7 @@ class Form_Submit {
 			];
 		}
 
-		$result = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		return $result;
+		return json_decode( wp_remote_retrieve_body( $response ), true );
 	}
 
 
@@ -195,9 +191,10 @@ class Form_Submit {
 			wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
+		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
-		if ( 'none' !== $selected_captcha_type ) {
+		if ( 'none' !== $security_type ) {
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
 		} else {
 			$global_setting_options = [];
@@ -220,24 +217,16 @@ class Form_Submit {
 
 		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 
-		$global_setting_options = get_option( 'srfm_security_settings_options' );
-		if ( ! is_array( $global_setting_options ) ) {
-			$global_setting_options = [];
-		}
-		$srfm_cf_turnstile_secret_key = isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
+		// Turnstile validation.
+		$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ 'srfm_cf_turnstile_secret_key' ] ) ? $global_setting_options[ 'srfm_cf_turnstile_secret_key' ] : '';
 		$cf_response                  = isset( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
 		$remote_ip                    = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
-		$idempotency_key              = null;
+		$turnstile_validation_result  = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
-		$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip, $idempotency_key );
-
-		if ( ! is_array( $turnstile_validation_result ) ) {
-			return new \WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
+		if ( ! is_array( $turnstile_validation_result ) || ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) ) {
+			return new WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
 		}
-
-		if ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
-			return new \WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
-		}
+		
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
