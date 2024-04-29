@@ -64,7 +64,8 @@
 			padding: 0 0.3em;
 		}
 
-		.g-recaptcha[recaptcha-type="v2-checkbox"] {
+		.g-recaptcha[recaptcha-type="v2-checkbox"],
+		.cf-turnstile {
 			margin-bottom: 1.2em;
 		}
 

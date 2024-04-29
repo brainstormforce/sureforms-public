@@ -122,6 +122,7 @@ class Generate_Form_Markup {
 			$btn_bg_type      = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			$instant_form     = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$is_inline_button = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type    = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
@@ -160,6 +161,7 @@ class Generate_Form_Markup {
 
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
 			$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
+			$srfm_cf_appearance_mode = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
 
 			if ( is_array( $global_setting_options ) ) {
 				switch ( $recaptcha_version ) {
@@ -322,7 +324,7 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 
-					<?php if ( '' !== $google_captcha_site_key ) : ?>
+					<?php if ( '' !== $google_captcha_site_key && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
@@ -352,7 +354,14 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
-						<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="light" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+						<?php
+
+						if ( 'cf-turnstile' === $security_type ) :
+							?>
+							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+							<?php
+						endif;
+						?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 

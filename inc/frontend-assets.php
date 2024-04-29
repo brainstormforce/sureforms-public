@@ -87,10 +87,10 @@ class Frontend_Assets {
 			SRFM_SLUG . '-cf-turnstile',
 			'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
 			[],
-			SRFM_VER,
+			null,
 			[
 				false,
-				'async' => true,
+				// 'async' => true,
 				'defer' => true,
 			]
 		);
