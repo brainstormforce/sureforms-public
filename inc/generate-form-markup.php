@@ -364,7 +364,16 @@ class Generate_Form_Markup {
 						if ( 'cf-turnstile' === $security_type ) :
 							// Cloudflare Turnstile script.
 							// phpcs:ignore - added to ignore error version null.
-							wp_enqueue_script( SRFM_SLUG . '-cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', [], null, [ false, 'defer' => true, ] );
+							wp_enqueue_script(
+								SRFM_SLUG . '-cf-turnstile',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								[],
+								null,
+								[
+									false,
+									'defer' => true,
+								]
+							);
 							// phpcs:ignoreEnd
 							?>
 							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
