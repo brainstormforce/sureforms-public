@@ -125,7 +125,7 @@ class Post_Types {
 	public function register_post_types() {
 		$form_labels = [
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
-			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
+			'singular_name'      => _x( 'SureForms', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
@@ -413,6 +413,7 @@ class Post_Types {
 				'_srfm_single_page_form_title'    => 'boolean',
 				'_srfm_submit_button_text'        => 'string',
 				'_srfm_instant_form'              => 'boolean',
+				'_srfm_is_inline_button'          => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
@@ -429,11 +430,13 @@ class Post_Types {
 				'_srfm_input_placeholder_color'   => 'string',
 				'_srfm_input_bg_color'            => 'string',
 				'_srfm_input_border_color'        => 'string',
+				'_srfm_input_shadow_color'        => 'string',
 				'_srfm_input_border_width'        => 'integer',
 				'_srfm_input_border_radius'       => 'integer',
 				// Error.
 				'_srfm_field_error_color'         => 'string',
 				'_srfm_field_error_surface_color' => 'string',
+				'_srfm_field_error_shadow_color'  => 'string',
 				'_srfm_field_error_bg_color'      => 'string',
 				// Submit Button.
 				'_srfm_button_text_color'         => 'string',
@@ -520,7 +523,7 @@ class Post_Types {
 				'default'       => [
 					[
 						'id'            => 1,
-						'status'        => false,
+						'status'        => true,
 						'is_raw_format' => false,
 						'name'          => 'Admin Notification Email',
 						'email_to'      => '{admin_email}',
@@ -531,6 +534,101 @@ class Post_Types {
 			]
 		);
 
+		// Compliance Settings metas.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_compliance',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'id'                   => [
+									'type' => 'string',
+								],
+								'gdpr'                 => [
+									'type' => 'boolean',
+								],
+								'do_not_store_entries' => [
+									'type' => 'boolean',
+								],
+								'auto_delete_entries'  => [
+									'type' => 'boolean',
+								],
+								'auto_delete_days'     => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
+						'id'                   => 'gdpr',
+						'gdpr'                 => false,
+						'do_not_store_entries' => false,
+						'auto_delete_entries'  => false,
+						'auto_delete_days'     => '',
+					],
+				],
+			]
+		);
+
+		// form confirmation.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_form_confirmation',
+			[
+				'single'        => true,
+				'type'          => 'array',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [
+							'type'       => 'object',
+							'properties' => [
+								'id'                => [
+									'type' => 'integer',
+								],
+								'confirmation_type' => [
+									'type' => 'string',
+								],
+								'page_url'          => [
+									'type' => 'string',
+								],
+								'custom_url'        => [
+									'type' => 'string',
+								],
+								'message'           => [
+									'type' => 'string',
+								],
+								'submission_action' => [
+									'type' => 'string',
+								],
+							],
+						],
+					],
+				],
+				'default'       => [
+					[
+						'id'                => 1,
+						'confirmation_type' => 'same page',
+						'page_url'          => '',
+						'custom_url'        => '',
+						'message'           => '<p>Form submitted successfully!</p>',
+						'submission_action' => 'hide form',
+					],
+				],
+			]
+		);
+
+		// Sureforms entry metas.
 		register_post_meta(
 			'sureforms_entry',
 			'_srfm_submission_info',
@@ -557,6 +655,18 @@ class Post_Types {
 						],
 					],
 				],
+			]
+		);
+
+		// store form id in entry.
+		register_post_meta(
+			'sureforms_entry',
+			'_srfm_entry_form_id',
+			[
+				'single'        => true,
+				'type'          => 'integer',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => true,
 			]
 		);
 
@@ -594,6 +704,8 @@ class Post_Types {
 				}
 
 				$label = explode( '-lbl-', $field_name )[1];
+				// Getting the encrypted label. we are removing the block slug here.
+				$label = explode( '-', $label )[0];
 
 				?>
 				<tr class="">
@@ -674,19 +786,25 @@ class Post_Types {
 			$form_name       = ! empty( get_the_title( $form_id ) ) ? get_the_title( $form_id ) : 'SureForms Form';
 			$submission_info = get_post_meta( $post_id, '_srfm_submission_info', true );
 			if ( is_array( $submission_info ) && count( $submission_info ) > 0 ) {
-				$user_ip      = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
-				$browser_name = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
-				$device_name  = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
+				$user_ip       = $submission_info[0]['user_ip'] ? $submission_info[0]['user_ip'] : '';
+				$browser_name  = $submission_info[0]['browser_name'] ? $submission_info[0]['browser_name'] : '';
+				$device_name   = $submission_info[0]['device_name'] ? $submission_info[0]['device_name'] : '';
+				$entry_form_id = Helper::get_string_value( get_post_meta( $post_id, '_srfm_entry_form_id', true ) );
 			} else {
-				$user_ip      = '';
-				$browser_name = '';
-				$device_name  = '';
+				$user_ip       = '';
+				$browser_name  = '';
+				$device_name   = '';
+				$entry_form_id = '';
 			}
 			?>
 			<table style="border-collapse: separate; border-spacing: 5px 5px;">
 			<tr style="margin-bottom: 10px;">
 				<td><b><?php echo esc_html( __( 'Form Name:', 'sureforms' ) ); ?></b></td>
 				<td><?php echo esc_html( $form_name ); ?></td>
+			</tr>
+			<tr style="margin-bottom: 10px;">
+				<td><b><?php echo esc_html( __( 'Form ID:', 'sureforms' ) ); ?></b></td>
+				<td><?php echo esc_html( $entry_form_id ); ?></td>
 			</tr>
 			<tr style="margin-bottom: 10px;">
 				<td><b><?php echo esc_html( __( 'User IP:', 'sureforms' ) ); ?></b></td>
@@ -719,7 +837,8 @@ class Post_Types {
 	public function forms_shortcode( array $atts ) {
 		$atts = shortcode_atts(
 			[
-				'id' => '',
+				'id'         => '',
+				'show_title' => true,
 			],
 			$atts
 		);
@@ -728,7 +847,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id );
+			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ) );
 			return $content;
 		}
 
@@ -910,7 +1029,7 @@ class Post_Types {
 			?>
 			<div class="srfm-import-plugin-wrap">
 				<div class="srfm-import-wrap">
-					<p class="srfm-import-help"><?php echo esc_html__( 'Select the SureForms Forms export file(.json) you would like to import.', 'sureforms' ); ?></p>
+					<p class="srfm-import-help"><?php echo esc_html__( 'Please choose the SureForms export file (.json) that you wish to import.', 'sureforms' ); ?></p>
 					<form method="post" enctype="multipart/form-data" class="srfm-import-form">
 						<input type="file" id="srfm-import-file" onchange="handleFileChange(event)" name="import form" accept=".json">
 						<input type="submit" name="import-form-submit" id="import-form-submit" class="srfm-import-button" value="Import Now" disabled>

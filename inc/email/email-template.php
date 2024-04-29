@@ -138,6 +138,7 @@ class Email_Template {
 						}
 
 						$label       = explode( '-lbl-', $field_name )[1];
+						$label       = explode( '-', $label )[0];
 						$field_label = '';
 						if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
 							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';

@@ -1,6 +1,6 @@
 {
 	"name": "srfm/input",
-	"title": "Text Field",
+	"title": "Text",
 	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
 	"keywords": [ "text", "input", "custom", "field" ],
@@ -66,9 +66,13 @@
 			"type": "number",
 			"default": ""
 		},
-		"isConditionalLogic":{
-			"type":"boolean",
-			"default":false
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		},
+		"slug": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

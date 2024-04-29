@@ -7,6 +7,26 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.block-editor-inner-blocks {
+		.block-editor-block-list__layout:not( .srfm-address-block-wrap .block-list-appender ) {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0;
+			max-width: calc( 620px + 0.6em ) !important;
+			margin: 0 auto;
+		}
+	}
+
+	// hide site ion in the SureForms editor.
+	.edit-post-fullscreen-mode-close_site-icon {
+		display: none;
+	}
+
+	// Make the field preview container background white.
+	.block-editor-block-preview__container {
+		background-color: #fff;
+	}
+
 	// Styling for the sidebar - WP6.4.
 	.edit-post-sidebar {
 		> .components-panel {
@@ -127,8 +147,9 @@ body.post-type-sureforms_form {
 		margin: 0 auto;
 		margin-top: 2em;
 
+		// apply width to all blocks except the address block.
 		.block-list-appender,
-		.block-editor-block-list__block {
+		.block-editor-block-list__block:not( .srfm-address-block-wrap ) {
 			&:not( .srfm-block-single ),
 			&[data-type="srfm/image"],
 			&[data-type="srfm/separator"],
@@ -222,7 +243,8 @@ body.post-type-sureforms_form {
 	// Plus button, Block appended.
 
 	// Add submit button below the Block Appended.
-	.block-list-appender {
+	// Target all the block-list-appender class except the one inside the address block.
+	.block-list-appender:not( .srfm-address-block-wrap .block-list-appender ) {
 		width: 100%;
 		padding: 0 0.3em;
 
@@ -255,9 +277,8 @@ body.post-type-sureforms_form {
 	.srfm-submit-btn-container {
 		position: relative;
 		max-width: calc( 620px - 0em );
-		margin: 0 auto;
 		padding: 0 0.3em;
-		margin-top: 1.2em;
+		margin: 1.2em auto 6em auto;
 
 		.srfm-btn-bg-color {
 			border-radius: var( --srfm-btn-border-radius );
@@ -294,6 +315,11 @@ body.post-type-sureforms_form {
 			margin-left: 0.3em;
 			margin-right: 0.3em;
 		}
+	}
+
+	// SureForms Custom Button Styles.
+	.srfm-inline-submit-button {
+		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
 	}
 
 	.editor-post-publish-panel__content {

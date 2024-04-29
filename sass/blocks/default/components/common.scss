@@ -2,20 +2,24 @@
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
+
 		.conditional-logic {
 			&.show {
 				display: none;
 				font-size: 1px;
 				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 			}
+
 			&.hide {
 				display: block;
 				transition: opacity 350ms ease-out, transform 320ms ease-out, font-size 320ms ease-out;
 			}
+
 			&.move-up-to-down {
 				animation: moveUpToDown 320ms ease-out;
 				font-size: inherit;
 			}
+
 			&.move-down-to-up {
 				animation: moveDownToUp 320ms ease-out;
 				font-size: 1px;
@@ -25,6 +29,7 @@
 		.srfm-block {
 			margin-bottom: 1.2em;
 			color: var( --srfm-body-input-color );
+
 			label {
 				font-size: 1em;
 			}
@@ -39,10 +44,12 @@
 						.ts-control {
 							background-color: var( --srfm-error-background-color );
 							border-color: var( --srfm-error-surface-color );
+							color: var( --srfm-body-input-color );
 						}
 
 						&:focus {
-							box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-error-surface-color );
+							box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-error-surface-color ), 0px 0px 0px 3px var( --srfm-error-shadow-color );
+							border-color: transparent;
 						}
 					}
 
@@ -96,10 +103,11 @@
 				border-radius: var( --srfm-border-radius );
 				background-color: var( --srfm-base-background-color );
 				outline: none;
-				transition: 0.3s;
+				transition: 0.3s ease-out;
 
 				&:focus {
-					box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.075 ) inset, 0 0 5px var( --srfm-primary-color );
+					box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
+					border-color: transparent;
 				}
 
 				&::placeholder {
@@ -143,17 +151,24 @@
 					svg {
 						width: 0.9em;
 						height: 0.9em;
+
 						path {
 							stroke: var( --srfm-body-input-color );
 						}
 					}
 				}
 			}
+
+			&.srfm-email-confirm-block {
+				margin-top: 1.2em;
+				margin-bottom: 0;
+			}
 		}
 
 		.srfm-submit-container {
 			width: 100%;
 			margin-bottom: 1.2em;
+
 			&.hide {
 				display: none;
 			}
@@ -166,16 +181,19 @@
 		opacity: 0;
 		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );
 	}
+
 	100% {
 		opacity: 1;
 		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
 	}
 }
+
 @keyframes moveDownToUp {
 	0% {
 		opacity: 1;
 		transform: translate3d( 0, 0, 0 ) scaleY( 1 );
 	}
+
 	100% {
 		opacity: 0;
 		transform: translate3d( 0, -20px, 0 ) scaleY( 0.5 );

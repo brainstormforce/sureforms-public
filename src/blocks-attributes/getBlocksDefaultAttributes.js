@@ -6,8 +6,11 @@ import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
 import addressAttributes from '@Blocks/address/block.json';
+import addressCompactAttributes from '@Blocks/address-compact/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
+import gdprAttributes from '@Blocks/gdpr/block.json';
+import inlineButton from '@Blocks/inline-button/block.json';
 import { getDefaultMessage } from '@Blocks/util';
 
 const defaultKeys = {
@@ -66,7 +69,6 @@ export const blocksAttributes = {
 	},
 	address: {
 		...addressAttributes.attributes,
-		errorMsg: getDefaultMessage( 'srfm_address_block_required_text' ),
 	},
 	'multi-choice': {
 		...multiChoiceAttributes.attributes,
@@ -92,6 +94,19 @@ export const blocksAttributes = {
 	number: {
 		...numberAttributes.attributes,
 		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
+	},
+	gdpr: {
+		...gdprAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_gdpr_block_required_text' ),
+	},
+	'inline-button': {
+		...inlineButton.attributes,
+	},
+	'address-compact': {
+		...addressCompactAttributes.attributes,
+		errorMsg: getDefaultMessage(
+			'srfm_address_compact_block_required_text'
+		),
 	},
 	form_specific: defaultKeys,
 };

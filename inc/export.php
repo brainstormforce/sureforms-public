@@ -107,6 +107,9 @@ class Export {
 			$post_title   = $form_data['post']['post_title'];
 			$post_meta    = $form_data['post_meta'];
 			$post_type    = $form_data['post']['post_type'];
+
+			$post_content = addslashes( $post_content );
+
 			// Check if sureforms/form exists in post_content.
 			if ( 'sureforms_form' === $post_type ) {
 				$new_post = [

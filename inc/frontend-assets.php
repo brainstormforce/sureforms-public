@@ -79,13 +79,7 @@ class Frontend_Assets {
 
 		wp_enqueue_script( SRFM_SLUG . '-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
 		// Frontend common and validation before submit.
-		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend' . $file_prefix . '.js', [], SRFM_VER, true );
-
-		// Google reCaptcha.
-		wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-		if ( $is_set_v2_site_key ) {
-			wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
-		}
+		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
@@ -106,7 +100,7 @@ class Frontend_Assets {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'srfm/', '', $block_type );
-		$script_dep_blocks = [ 'address', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
+		$script_dep_blocks = [ 'address-compact', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -120,7 +114,7 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
 			}
 
-			if ( 'dropdown' === $block_name || 'address' === $block_name ) {
+			if ( 'dropdown' === $block_name || 'address-compact' === $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 			}

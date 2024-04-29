@@ -12,6 +12,8 @@ use SRFM\Inc\Traits\Get_Instance;
 use WP_Error;
 use WP_REST_Request;
 use WP_Post_Type;
+use WP_Query;
+use WP_Post;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -134,7 +136,7 @@ class Helper {
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . esc_html( $label ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
@@ -261,19 +263,21 @@ class Helper {
 		$common_err_msg = self::get_common_err_msg();
 
 		$default_values = [
-			'srfm_url_block_required_text'          => $common_err_msg['required'],
-			'srfm_input_block_required_text'        => $common_err_msg['required'],
-			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_address_block_required_text'      => $common_err_msg['required'],
-			'srfm_phone_block_required_text'        => $common_err_msg['required'],
-			'srfm_phone_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_number_block_required_text'       => $common_err_msg['required'],
-			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
-			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
-			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
-			'srfm_email_block_required_text'        => $common_err_msg['required'],
-			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
-			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
+			'srfm_url_block_required_text'             => $common_err_msg['required'],
+			'srfm_input_block_required_text'           => $common_err_msg['required'],
+			'srfm_input_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_address_block_required_text'         => $common_err_msg['required'],
+			'srfm_address_compact_block_required_text' => $common_err_msg['required'],
+			'srfm_phone_block_required_text'           => $common_err_msg['required'],
+			'srfm_phone_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_number_block_required_text'          => $common_err_msg['required'],
+			'srfm_textarea_block_required_text'        => $common_err_msg['required'],
+			'srfm_multi_choice_block_required_text'    => $common_err_msg['required'],
+			'srfm_checkbox_block_required_text'        => $common_err_msg['required'],
+			'srfm_gdpr_block_required_text'            => $common_err_msg['required'],
+			'srfm_email_block_required_text'           => $common_err_msg['required'],
+			'srfm_email_block_unique_text'             => $common_err_msg['unique'],
+			'srfm_dropdown_block_required_text'        => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
@@ -327,4 +331,64 @@ class Helper {
 			[ 'status' => \rest_authorization_required_code() ]
 		);
 	}
+
+	/**
+	 * Get all the entries for the given form ids. The entries are older than the given days_old.
+	 *
+	 * @param int        $days_old The number of days old the entries should be.
+	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
+	 * @since x.x.x
+	 * @return array<int|WP_Post> the entries matching the criteria.
+	 */
+	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
+
+		$entries = [];
+
+		foreach ( $sf_form_ids as $form_id ) {
+			$args = [
+				'post_type'   => 'sureforms_entry',
+				'post_status' => 'publish',
+				'date_query'  => [
+					[
+						'before' => $days_old . ' days ago',
+					],
+				],
+				'meta_query' // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query. -- We require meta_query for this function to work.
+				=> [
+					[
+						'key'     => '_srfm_entry_form_id',
+						'value'   => $form_id,
+						'compare' => '=',
+					],
+				],
+			];
+
+			$query = new WP_Query( $args );
+
+			// store all the entries in an single array.
+			$entries = array_merge( $entries, $query->posts );
+		}
+
+		return $entries;
+
+	}
+
+	/**
+	 * Decode block attributes.
+	 * The function reverses the effect of serialize_block_attributes()
+	 *
+	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
+	 * @param string $encoded_data the encoded block attribute.
+	 * @since x.x.x
+	 * @return string decoded block attribute
+	 */
+	public static function decode_block_attribute( $encoded_data = '' ) {
+		$decoded_data = preg_replace( '/\\\\u002d\\\\u002d/', '--', self::get_string_value( $encoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003c/', '<', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u003e/', '>', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\u0026/', '&', self::get_string_value( $decoded_data ) );
+		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', self::get_string_value( $decoded_data ) );
+		return self::get_string_value( $decoded_data );
+	}
+
 }

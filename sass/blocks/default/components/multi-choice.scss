@@ -58,6 +58,10 @@
 							border-color: var( --srfm-primary-color );
 							background-color: var( --srfm-info-background-color );
 						}
+						&:focus + .srfm-block-content-wrap {
+							box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
+							border-color: transparent;
+						}
 					}
 
 					.srfm-block-content-wrap {

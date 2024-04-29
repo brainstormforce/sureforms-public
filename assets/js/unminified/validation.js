@@ -59,6 +59,22 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 	);
 
 	for ( const container of fieldContainers ) {
+		let skipValidation = false;
+		if ( Array.isArray( window.sureforms?.skipValidationCallbacks ) ) {
+			window.sureforms.skipValidationCallbacks.forEach(
+				( skipValidationCallback ) => {
+					if ( typeof skipValidationCallback === 'function' ) {
+						skipValidation =
+							skipValidation ||
+							skipValidationCallback( container );
+					}
+				}
+			);
+		}
+
+		if ( skipValidation ) {
+			continue;
+		}
 		const currentForm = container.closest( 'form' );
 		const currentFormId = currentForm.getAttribute( 'form-id' );
 
@@ -126,10 +142,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Radio OR Checkbox type field
+		//Radio OR Checkbox or GDPR type field
 		if (
 			container.classList.contains( 'srfm-multi-choice-block' ) ||
-			container.classList.contains( 'srfm-checkbox-block' )
+			container.classList.contains( 'srfm-checkbox-block' ) ||
+			container.classList.contains( 'srfm-gdpr-block' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
@@ -283,8 +300,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Address field
-		if ( container.classList.contains( 'srfm-address-block' ) ) {
+		//Address Compact field
+		if ( container.classList.contains( 'srfm-address-compact-block' ) ) {
 			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );

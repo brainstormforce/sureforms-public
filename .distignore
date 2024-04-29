@@ -61,3 +61,7 @@ admin/assets/src
 artifact
 tests
 scripts
+sass
+src
+unminified
+
