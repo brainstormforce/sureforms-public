@@ -369,8 +369,8 @@ class Base {
 	/**
 	 * Setter for duplicate message value for the block.
 	 *
-	 * @param string       $key meta key name.
 	 * @param array<mixed> $attributes Block attributes, expected to contain 'errorMsg' key.
+	 * @param string       $key meta key name.
 	 * @since x.x.x
 	 * @return void
 	 */
