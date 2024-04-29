@@ -327,6 +327,7 @@ class Admin {
 						'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 						'plugin_version'          => SRFM_VER,
 						'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
+						'security_settings_url'   => admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' ),
 					]
 				)
 			);

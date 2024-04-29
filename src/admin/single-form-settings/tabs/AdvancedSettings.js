@@ -291,9 +291,15 @@ function AdvancedSettings( props ) {
 				{ showErr && (
 					<p style={ { color: 'red' } }>
 						{ __(
-							'Please configure the reCAPTCHA keys correctly',
+							'Please configure the reCAPTCHA keys correctly in the ',
 							'sureforms'
 						) }
+						<a
+							href={ srfm_admin.security_settings_url }
+							target="_blank"
+						>
+							{ __( 'Global Settings', 'sureforms' ) }
+						</a>
 					</p>
 				) }
 				<p className="components-base-control__help">
