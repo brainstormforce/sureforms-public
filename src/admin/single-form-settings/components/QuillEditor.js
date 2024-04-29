@@ -16,12 +16,12 @@ const Editor = ( {
 	const editorTabs = [
 		{
 			name: 'srfm-editor-visual',
-			title: 'Visual',
+			title: __( 'Visual', 'sureforms' ),
 			className: 'srfm-editor-visual',
 		},
 		{
 			name: 'srfm-editor-html',
-			title: 'HTML',
+			title: __( 'HTML', 'sureforms' ),
 			className: 'srfm-editor-html',
 		},
 	];
