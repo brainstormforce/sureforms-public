@@ -26,10 +26,17 @@ if ( $srfm_form_preview_attr ) {
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<?php wp_head(); ?>
+		<?php
+			$srfm_custom_post_id  = get_the_ID();
+			$form_custom_css_meta = get_post_meta( $srfm_custom_post_id, '_srfm_form_custom_css', true );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+		?>
+		<style>
+			<?php echo wp_kses_post( $custom_css ); ?>
+		</style>
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$srfm_custom_post_id                 = get_the_ID();
 		$srfm_color1_val                     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
 		$srfm_bg_val                         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
 		$srfm_fontsize_val                   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );

@@ -257,7 +257,12 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
-					<?php echo wp_kses_post( $custom_css ); ?>;
+					<?php
+						// echo custom css on page/post.
+					if ( 'sureforms_form' !== $current_post_type ) :
+						echo wp_kses_post( $custom_css );
+						endif;
+					?>
 				}
 			</style>
 			<?php
