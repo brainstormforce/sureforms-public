@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Checkbox;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Checkbox_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

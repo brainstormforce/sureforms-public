@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Dropdown;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Dropdown_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

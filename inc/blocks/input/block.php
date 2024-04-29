@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Input;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Input_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Phone;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Phone_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

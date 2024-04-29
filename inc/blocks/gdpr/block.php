@@ -9,7 +9,6 @@
 namespace SRFM\Inc\Blocks\GDPR;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\GDPR_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

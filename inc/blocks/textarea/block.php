@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Textarea;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Textarea_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

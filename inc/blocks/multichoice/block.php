@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Multichoice;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Multichoice_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Email;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Email_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
