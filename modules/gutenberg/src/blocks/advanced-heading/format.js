@@ -42,6 +42,6 @@ function HighlightFormat( { isActive, onChange, value } ) {
 registerFormatType( FORMAT_TYPE, {
 	title: 'Spectra Highlight',
 	tagName: 'mark',
-	className: 'uagb-highlight',
+	className: 'srfm-highlight',
 	edit: HighlightFormat,
 } );

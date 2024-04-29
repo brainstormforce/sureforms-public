@@ -1,15 +1,17 @@
 import { useState } from '@wordpress/element';
-import ICONS from './icons';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import { handleAddNewPost } from '@Utils/Helpers';
+import { MdLockOutline } from 'react-icons/md';
 
 const TemplateCard = ( {
 	templateName,
-	templateId,
+	templateSlug,
 	templatePreview,
 	formData,
 	color,
+	templateMetas,
+	isProTemplate,
 } ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
 	const blankImg = srfm_admin.preview_images_url + 'blank.svg';
@@ -28,35 +30,39 @@ const TemplateCard = ( {
 			onMouseEnter={ handleMouseEnter }
 			onMouseLeave={ handleMouseLeave }
 		>
-			{ templatePreview && templateId !== 'form-1' ? (
+			{ templatePreview && templateSlug !== 'blank-form' ? (
 				<div
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
 				>
-					<>
-						<div className="srfm-tc-btn-container">
+					{ isProTemplate && (
+						<div className="srfm-tc-pro-badge">
+							{ __( 'PREMIUM', 'sureforms' ) }
+						</div>
+					) }
+					<div className="srfm-tc-btn-container">
+						{ isProTemplate && ! srfm_admin.is_pro_active ? (
+							<button className="srfm-tc-hover-use-btn srfm-common-btn">
+								<div className="srfm-tc-upgrade-to-pro-btn">
+									<MdLockOutline />
+									{ __( 'Upgrade To Pro', 'sureforms' ) }
+								</div>
+							</button>
+						) : (
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
 								onClick={ () =>
-									handleAddNewPost( formData, templateName )
+									handleAddNewPost(
+										formData,
+										templateName,
+										templateMetas
+									)
 								}
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
-							<Link
-								to={ {
-									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-									search: `?page=add-new-form&method=template&template-id=${ templateId }`,
-								} }
-							>
-								<button className="srfm-tc-hover-preview-btn srfm-common-btn">
-									{ __( 'Preview', 'sureforms' ) }
-									{ ICONS.eye }
-								</button>
-							</Link>
-						</div>
-					</>
-
+						) }
+					</div>
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }

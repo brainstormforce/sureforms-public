@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Global_Settings;
 
 use SRFM\Inc\Global_Settings\Email_Summary;
+use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use WP_REST_Server;
@@ -157,19 +158,21 @@ class Global_Settings {
 	public static function srfm_save_general_settings_dynamic_opt( $setting_options ) {
 
 		$options_names = [
-			'srfm_url_block_required_text'          => $setting_options['srfm_url_block_required_text'],
-			'srfm_input_block_required_text'        => $setting_options['srfm_input_block_required_text'],
-			'srfm_input_block_unique_text'          => $setting_options['srfm_input_block_unique_text'],
-			'srfm_address_block_required_text'      => $setting_options['srfm_address_block_required_text'],
-			'srfm_phone_block_required_text'        => $setting_options['srfm_phone_block_required_text'],
-			'srfm_phone_block_unique_text'          => $setting_options['srfm_phone_block_unique_text'],
-			'srfm_number_block_required_text'       => $setting_options['srfm_number_block_required_text'],
-			'srfm_textarea_block_required_text'     => $setting_options['srfm_textarea_block_required_text'],
-			'srfm_multi_choice_block_required_text' => $setting_options['srfm_multi_choice_block_required_text'],
-			'srfm_checkbox_block_required_text'     => $setting_options['srfm_checkbox_block_required_text'],
-			'srfm_email_block_required_text'        => $setting_options['srfm_email_block_required_text'],
-			'srfm_email_block_unique_text'          => $setting_options['srfm_email_block_unique_text'],
-			'srfm_dropdown_block_required_text'     => $setting_options['srfm_dropdown_block_required_text'],
+			'srfm_url_block_required_text'             => $setting_options['srfm_url_block_required_text'],
+			'srfm_input_block_required_text'           => $setting_options['srfm_input_block_required_text'],
+			'srfm_input_block_unique_text'             => $setting_options['srfm_input_block_unique_text'],
+			'srfm_address_block_required_text'         => $setting_options['srfm_address_block_required_text'],
+			'srfm_address_compact_block_required_text' => $setting_options['srfm_address_compact_block_required_text'],
+			'srfm_phone_block_required_text'           => $setting_options['srfm_phone_block_required_text'],
+			'srfm_phone_block_unique_text'             => $setting_options['srfm_phone_block_unique_text'],
+			'srfm_number_block_required_text'          => $setting_options['srfm_number_block_required_text'],
+			'srfm_textarea_block_required_text'        => $setting_options['srfm_textarea_block_required_text'],
+			'srfm_multi_choice_block_required_text'    => $setting_options['srfm_multi_choice_block_required_text'],
+			'srfm_checkbox_block_required_text'        => $setting_options['srfm_checkbox_block_required_text'],
+			'srfm_gdpr_block_required_text'            => $setting_options['srfm_gdpr_block_required_text'],
+			'srfm_email_block_required_text'           => $setting_options['srfm_email_block_required_text'],
+			'srfm_email_block_unique_text'             => $setting_options['srfm_email_block_unique_text'],
+			'srfm_dropdown_block_required_text'        => $setting_options['srfm_dropdown_block_required_text'],
 		];
 
 		return update_option( 'get_default_dynamic_block_option', apply_filters( 'srfm_general_dynamic_options_to_save', $options_names, $setting_options ) );
@@ -189,7 +192,7 @@ class Global_Settings {
 		$srfm_email_sent_to   = isset( $setting_options['srfm_email_sent_to'] ) ? $setting_options['srfm_email_sent_to'] : get_option( 'admin_email' );
 		$srfm_schedule_report = isset( $setting_options['srfm_schedule_report'] ) ? $setting_options['srfm_schedule_report'] : 'Monday';
 
-		Email_Summary::unschedule_events( 'srfm_weekly_scheduled_events' );
+		Events_Scheduler::unschedule_events( 'srfm_weekly_scheduled_events' );
 
 		if ( $srfm_email_summary ) {
 			Email_Summary::schedule_weekly_entries_email();

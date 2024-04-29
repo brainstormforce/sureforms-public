@@ -4,11 +4,14 @@ import * as number from '@Blocks/number';
 import * as email from '@Blocks/email';
 import * as textarea from '@Blocks/textarea';
 import * as checkbox from '@Blocks/checkbox';
+import * as gdpr from '@Blocks/gdpr';
 import * as multiChoice from '@Blocks/multi-choice';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
+import * as addressCompact from '@Blocks/address-compact';
 import * as url from '@Blocks/url';
+import * as inlineButton from '@Blocks/inline-button';
 import { registerBlocks } from '@Blocks/register-block';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter, applyFilters } from '@wordpress/hooks';
@@ -26,11 +29,14 @@ const registerBlock = [
 	textarea,
 	multiChoice,
 	checkbox,
+	gdpr,
 	number,
 	sfForm,
 	phone,
 	select,
 	address,
+	addressCompact,
+	inlineButton,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {

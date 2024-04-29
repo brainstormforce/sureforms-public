@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Address;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Address_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,7 +31,7 @@ class Block extends Base {
 			$markup_class = new Address_Markup();
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->markup( $attributes );
+			echo $markup_class->markup( $attributes, $content );
 		}
 		return ob_get_clean();
 	}

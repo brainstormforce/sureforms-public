@@ -1,6 +1,6 @@
 {
 	"name": "srfm/address",
-	"title": "Address Field",
+	"title": "Address",
 	"description": "Displays a SureForm Address Field",
 	"category": "sureforms",
 	"keywords": [ "address", "country", "location", "field" ],
@@ -22,9 +22,6 @@
 		"block_id": {
 			"type": "string"
 		},
-		"required": {
-			"type": "boolean"
-		},
 		"fieldWidth": {
 			"type": "number",
 			"default": 100
@@ -32,34 +29,6 @@
 		"label": {
 			"type": "string",
 			"default": "Address"
-		},
-		"errorMsg": {
-			"type": "string",
-			"default": ""
-		},
-		"lineOnePlaceholder": {
-			"type": "string",
-			"default": "Address Line 1"
-		},
-		"lineTwoPlaceholder": {
-			"type": "string",
-			"default": "Address Line 2"
-		},
-		"cityPlaceholder": {
-			"type": "string",
-			"default": "City"
-		},
-		"statePlaceholder": {
-			"type": "string",
-			"default": "State / Province / Region"
-		},
-		"postalPlaceholder": {
-			"type": "string",
-			"default": "Postal Code"
-		},
-		"countryPlaceholder": {
-			"type": "string",
-			"default": "Select Country"
 		},
 		"formId": {
 			"type": "number",
@@ -69,9 +38,9 @@
 			"type": "string",
 			"default": ""
 		},
-		"isConditionalLogic":{
-			"type":"boolean",
-			"default":false
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
 		}
 	}
 }

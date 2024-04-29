@@ -168,3 +168,10 @@ $placeholder_color: #9ca3af;
 		align-items: center;
 	}
 }
+.post-type-sureforms_form,
+.post-type-sureforms_entry {
+	#screen-meta,
+	#show-settings-link {
+		border-color: rgb( 229, 231, 235 );
+	}
+}

@@ -1,14 +1,8 @@
-import {
-	ToggleControl,
-	SelectControl,
-	PanelRow,
-	Modal,
-} from '@wordpress/components';
+import { SelectControl, PanelRow, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import SRFMTextControl from '@Components/text-control';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
@@ -21,7 +15,6 @@ function AdvancedSettings( props ) {
 	const { defaultKeys } = props;
 	// Modal icon
 	const modalIcon = parse( svgIcons.modalLogo );
-	const horizontalEllipsisIcon = parse( svgIcons.horizontalEllipsis );
 
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
@@ -120,89 +113,6 @@ function AdvancedSettings( props ) {
 	return (
 		<>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Success Message Settings', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<ToggleControl
-					label={ __(
-						'Turn Toggle on to Redirect to a URL',
-						'sureforms'
-					) }
-					checked={ 'url' === sureformsKeys._srfm_submit_type }
-					onChange={ ( value ) => {
-						updateMeta(
-							'_srfm_submit_type',
-							value ? 'url' : 'message'
-						);
-					} }
-				/>
-				<p className="components-base-control__help" />
-				{ 'message' === sureformsKeys._srfm_submit_type ? (
-					<>
-						<SRFMTextControl
-							data={ {
-								value: sureformsKeys._srfm_thankyou_message_title,
-								label: '_srfm_thankyou_message_title',
-							} }
-							label={ __(
-								'Form Submission Success Message Title',
-								'sureforms'
-							) }
-							placeholder={ __( 'Thank you', 'sureforms' ) }
-							value={ sureformsKeys._srfm_thankyou_message_title }
-							onChange={ ( value ) => {
-								updateMeta(
-									'_srfm_thankyou_message_title',
-									value
-								);
-							} }
-							isFormSpecific={ true }
-						/>
-						<p className="components-base-control__help" />
-						<SRFMTextControl
-							variant="textarea"
-							data={ {
-								value: sureformsKeys._srfm_thankyou_message,
-								label: '_srfm_thankyou_message',
-							} }
-							label={ __(
-								'Form Submission Success Message Description',
-								'sureforms'
-							) }
-							placeholder={ __(
-								'Form submitted successfully.',
-								'sureforms'
-							) }
-							value={ sureformsKeys._srfm_thankyou_message }
-							onChange={ ( value ) => {
-								updateMeta( '_srfm_thankyou_message', value );
-							} }
-							isFormSpecific={ true }
-						/>
-					</>
-				) : (
-					<SRFMTextControl
-						label={ __(
-							'Customize the Thankyou Page URL',
-							'sureforms'
-						) }
-						value={ sureformsKeys._srfm_submit_url }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_submit_url', value );
-						} }
-						placeholder={ __(
-							'https://example.com/',
-							'sureforms'
-						) }
-						data={ {
-							value: sureformsKeys._srfm_submit_url,
-							label: '_srfm_submit_url',
-						} }
-						isFormSpecific={ true }
-					/>
-				) }
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
@@ -288,38 +198,27 @@ function AdvancedSettings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
-			<div className="srfm-custom-layout-panel components-panel__body">
-				<h2 className="components-panel__body-title">
-					<button
-						className="components-button components-panel__body-toggle"
-						onClick={ openModal }
-						data-popup="email_notification"
-					>
-						<span className="srfm-title">
-							<div>
-								{ __( 'Email Notification', 'sureforms' ) }
-							</div>
-						</span>
-						{ horizontalEllipsisIcon }
-					</button>
-				</h2>
-			</div>
-			<div className="srfm-custom-layout-panel components-panel__body">
-				<h2 className="components-panel__body-title">
-					<button
-						className="components-button components-panel__body-toggle"
-						onClick={ openModal }
-						data-popup="integration"
-					>
-						<span className="srfm-title">
-							<div>
-								{ __( 'Integration', 'sureforms' ) }
-							</div>
-						</span>
-						{ horizontalEllipsisIcon }
-					</button>
-				</h2>
-			</div>
+			<MoreSettingsButton
+				settingName={ __( 'Email Notification', 'sureforms' ) }
+				popupId="email_notification"
+				openModal={ openModal }
+			/>
+			<MoreSettingsButton
+				settingName={ __( 'Form Confirmation', 'sureforms' ) }
+				popupId="form_confirmation"
+				openModal={ openModal }
+			/>
+
+			<MoreSettingsButton
+				settingName={ __( 'Compliance Settings', 'sureforms' ) }
+				popupId="compliance_settings"
+				openModal={ openModal }
+			/>
+			<MoreSettingsButton
+				settingName={ __( 'Integrations', 'sureforms' ) }
+				popupId="integration"
+				openModal={ openModal }
+			/>
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
@@ -328,11 +227,34 @@ function AdvancedSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSettingsPopup sureformsKeys={ sureformsKeys } targetTab={ popupTab } />
+					<SingleFormSettingsPopup
+						sureformsKeys={ sureformsKeys }
+						targetTab={ popupTab }
+					/>
 				</Modal>
 			) }
 		</>
 	);
 }
+
+const MoreSettingsButton = ( { settingName, popupId, openModal } ) => {
+	const horizontalEllipsisIcon = parse( svgIcons.horizontalEllipsis );
+	return (
+		<div className="srfm-custom-layout-panel components-panel__body">
+			<h2 className="components-panel__body-title">
+				<button
+					className="components-button components-panel__body-toggle"
+					onClick={ openModal }
+					data-popup={ popupId }
+				>
+					<span className="srfm-title">
+						<div>{ settingName }</div>
+					</span>
+					{ horizontalEllipsisIcon }
+				</button>
+			</h2>
+		</div>
+	);
+};
 
 export default AdvancedSettings;

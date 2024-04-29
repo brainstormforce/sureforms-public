@@ -51,7 +51,11 @@ export const srfmClassNames = ( classes ) =>
 export const srfmDeepClone = ( arrayOrObject ) =>
 	JSON.parse( JSON.stringify( arrayOrObject ) );
 
-export const handleAddNewPost = async ( formData, templateName ) => {
+export const handleAddNewPost = async (
+	formData,
+	templateName,
+	templateMetas
+) => {
 	if ( '1' !== srfm_admin.capability ) {
 		console.error( 'User does not have permission to create posts' );
 		return;
@@ -65,7 +69,11 @@ export const handleAddNewPost = async ( formData, templateName ) => {
 				'Content-Type': 'text/html',
 				'X-WP-Nonce': srfm_admin.template_picker_nonce,
 			},
-			data: { form_data: formData, template_name: templateName },
+			data: {
+				form_data: formData,
+				template_name: templateName,
+				template_metas: templateMetas,
+			},
 		} );
 
 		if ( response.id ) {
@@ -92,7 +100,11 @@ export const randomNiceColor = () => {
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
 
-export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
+export const generateSmartTagsDropDown = (
+	setInputData,
+	inputData,
+	insertTextAtEnd
+) => {
 	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
 		return;
@@ -102,8 +114,11 @@ export const generateSmartTagsDropDown = ( setInputData, inputData, props ) => {
 		return {
 			title: val,
 			onClick: () => {
-				props?.onChange( inputData + key );
-				setInputData( inputData + key );
+				if ( typeof inputData === 'object' ) {
+					insertTextAtEnd( key );
+				} else {
+					setInputData( inputData + key );
+				}
 			},
 		};
 	} );
