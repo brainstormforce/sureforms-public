@@ -92,6 +92,7 @@ class Number_Markup extends Base {
 	/**
 	 * Render the sureforms number classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

@@ -63,7 +63,7 @@ class Email_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Email', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_email_block_required_text' );
-		$this->set_duplicate_msg( 'srfm_email_block_unique_text', $attributes );
+		$this->set_duplicate_msg( $attributes, 'srfm_email_block_unique_text' );
 		$this->slug                         = 'email';
 		$this->is_confirm_email             = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
 		$this->input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $this->input_label_fallback;
@@ -77,6 +77,7 @@ class Email_Markup extends Base {
 	/**
 	 * Render the sureforms email classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

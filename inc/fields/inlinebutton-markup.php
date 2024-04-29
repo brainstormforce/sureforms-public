@@ -70,14 +70,6 @@ class Inlinebutton_Markup extends Base {
 	protected $global_setting_options;
 
 	/**
-	 * Name of the current WordPress theme.
-	 *
-	 * @var string
-	 * @since x.x.x
-	 */
-	protected $theme_name;
-
-	/**
 	 * Flag indicating if padding should be added to the button.
 	 *
 	 * @var bool
@@ -119,9 +111,9 @@ class Inlinebutton_Markup extends Base {
 					break;
 			}
 		}
-		$this->theme_name         = wp_get_theme()->get( 'Name' );
+		$theme_name               = wp_get_theme()->get( 'Name' );
 		$this->add_button_padding = true;
-		if ( 'Astra' === $this->theme_name || 'Blocksy' === $this->theme_name ) {
+		if ( 'Astra' === $theme_name || 'Blocksy' === $theme_name ) {
 			$this->add_button_padding = false;
 		}
 	}
@@ -129,8 +121,8 @@ class Inlinebutton_Markup extends Base {
 	/**
 	 * Render inline button markup
 	 *
-	 * @return string|boolean|void
 	 * @since x.x.x
+	 * @return string|boolean|void
 	 */
 	public function markup() {
 		ob_start(); ?>

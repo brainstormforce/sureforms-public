@@ -39,7 +39,7 @@ class Input_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Text Field', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_input_block_required_text' );
-		$this->set_duplicate_msg( 'srfm_input_block_unique_text', $attributes );
+		$this->set_duplicate_msg( $attributes, 'srfm_input_block_unique_text' );
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
@@ -48,6 +48,7 @@ class Input_Markup extends Base {
 	/**
 	 * Render input markup
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

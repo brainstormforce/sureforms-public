@@ -374,8 +374,8 @@ class Base {
 	 * @since x.x.x
 	 * @return void
 	 */
-	protected function set_duplicate_msg( $key, $attributes ) {
-		$this->duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Helper::get_default_dynamic_block_option( $key );
+	protected function set_duplicate_msg( $attributes, $key ) {
+		$this->duplicate_msg = ! empty( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : Helper::get_default_dynamic_block_option( $key );
 	}
 
 	/**
@@ -408,6 +408,7 @@ class Base {
 	/**
 	 * Render the sureforms default
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

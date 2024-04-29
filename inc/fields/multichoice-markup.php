@@ -83,6 +83,7 @@ class Multichoice_Markup extends Base {
 	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

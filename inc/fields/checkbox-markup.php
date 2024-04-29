@@ -37,6 +37,7 @@ class Checkbox_Markup extends Base {
 	/**
 	 * Render the sureforms checkbox classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

@@ -36,6 +36,7 @@ class Address_Markup extends Base {
 	 * Render the sureforms address classic styling
 	 *
 	 * @param string $content inner block content.
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup( $content = '' ) {

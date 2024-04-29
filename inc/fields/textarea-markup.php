@@ -103,6 +103,7 @@ class Textarea_Markup extends Base {
 	/**
 	 * Render the sureforms textarea classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

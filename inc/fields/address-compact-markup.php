@@ -147,6 +147,7 @@ class Address_Compact_Markup extends Base {
 	/**
 	 * Return Phone codes
 	 *
+	 * @since x.x.x
 	 * @return mixed|array<mixed|string> $data with phone codes
 	 */
 	public function get_countries() {
@@ -165,6 +166,7 @@ class Address_Compact_Markup extends Base {
 	/**
 	 * Render the sureforms address compact styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {

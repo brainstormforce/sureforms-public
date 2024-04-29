@@ -38,13 +38,14 @@ class Dropdown_Markup extends Base {
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
 		$this->slug             = 'dropdown';
-		$this->placeholder_html = $this->placeholder ? $this->placeholder : 'Select option';
+		$this->placeholder_html = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
 		$this->set_markup_properties();
 	}
 
 	/**
 	 * Render the sureforms dropdown classic styling
 	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
 	public function markup() {
