@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl, TabPanel, BaseControl } from '@wordpress/components';
+import { TextControl, TabPanel } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -314,11 +314,11 @@ const SecurityPage = ( {
 											</div>
 										</div>
 										<div className="srfm-sub-section-content">
-											<div class="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4">
-												<div class="components-base-control__field css-1t5ousf ej5x27r3">
+											<div className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4">
+												<div className="components-base-control__field css-1t5ousf ej5x27r3">
 													<label
-														class="components-base-control__label css-1v57ksj ej5x27r2"
-														for="inspector-text-control-2"
+														className="components-base-control__label css-1v57ksj ej5x27r2"
+														htmlFor="inspector-text-control-2"
 													>
 														{ __(
 															'Appearance Mode',

@@ -86,60 +86,52 @@ class Form_Submit {
 		return true;
 	}
 
+	/**
+	 * Validate Turnstile token
+	 *
+	 * @param string       $turnstile_token Turnstile token.
+	 * @param string       $response Response.
+	 * @param string|false $remote_ip Remote IP.
+	 * @param string       $idempotency_key Idempotency key.
+	 * @return array<mixed>|mixed Result of the validation.
+	 */
+	public static function validate_turnstile_token( $turnstile_token, $response = '', $remote_ip = null, $idempotency_key = null ) {
+		$secret_key = $turnstile_token;
 
-	// Function to validate Turnstile token
-	public static function validateTurnstileToken($turnstileToken, $response = '', $remoteIP = null, $idempotencyKey = null) {
-		$secretKey = $turnstileToken;
-		
-		// Build POST data
-		$postData = array(
-			'secret' => $secretKey,
-			'response' => $response
-		);
-		
-		// Add optional parameters if provided
-		if ($remoteIP !== null) {
-			$postData['remoteip'] = $remoteIP;
+		$body = [
+			'secret'   => $secret_key,
+			'response' => $response,
+		];
+
+		if ( null !== $remote_ip ) {
+			$body['remoteip'] = $remote_ip;
 		}
-		if ($idempotencyKey !== null) {
-			$postData['idempotency_key'] = $idempotencyKey;
+		if ( null !== $idempotency_key ) {
+			$body['idempotency_key'] = $idempotency_key;
 		}
-		
-		// Encode POST data
-		$postData = http_build_query($postData);
-		
-		// Set endpoint URL
+
 		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-		
-		// Initialize cURL session
-		$ch = curl_init();
-		
-		// Set cURL options
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
-		// Execute cURL session
-		$response = curl_exec($ch);
-		
-		// Check for errors
-		if ($response === false) {
-			// Handle cURL error
-			$error = curl_error($ch);
-			// Handle the error accordingly
-			return array('success' => false, 'error' => $error);
+
+		$args = [
+			'body'    => $body,
+			'timeout' => 15, // Adjust timeout as needed.
+		];
+
+		$response = wp_remote_post( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			return [
+				'success' => false,
+				'error'   => $error_message,
+			];
 		}
-		
-		// Close cURL session
-		curl_close($ch);
-		
-		// Decode JSON response
-		$result = json_decode($response, true);
-		
-		// Return result
+
+		$result = json_decode( wp_remote_retrieve_body( $response ), true );
+
 		return $result;
 	}
+
 
 	/**
 	 * Handle Form Submission
@@ -229,16 +221,21 @@ class Form_Submit {
 		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 
 		$global_setting_options = get_option( 'srfm_security_settings_options' );
+		if ( ! is_array( $global_setting_options ) ) {
+			$global_setting_options = [];
+		}
 		$srfm_cf_turnstile_secret_key = isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
-		$cf_response = isset($form_data['cf-turnstile-response']) ? $form_data['cf-turnstile-response'] : '';
-		$remoteIP = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : '';
-		$idempotencyKey = null;
+		$cf_response                  = isset( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
+		$remote_ip                    = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+		$idempotency_key              = null;
 
-		// Validate Turnstile token
-		$turnstileValidationResult = self::validateTurnstileToken($srfm_cf_turnstile_secret_key, $cf_response, $remoteIP, $idempotencyKey);
+		$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip, $idempotency_key );
 
+		if ( ! is_array( $turnstile_validation_result ) ) {
+			return new \WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
+		}
 
-		if ( isset( $turnstileValidationResult['success'] ) && false === $turnstileValidationResult['success'] ) {
+		if ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
 			return new \WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
 		}
 

@@ -81,8 +81,8 @@ class Frontend_Assets {
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
-		// wp_enqueue_script( SRFM_SLUG . '-cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', [], SRFM_VER, true );
-
+		// Cloudflare Turnstile - If using synchronous loading, will be called once the DOM is ready.
+		// phpcs:ignore
 		wp_enqueue_script(
 			SRFM_SLUG . '-cf-turnstile',
 			'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
@@ -90,13 +90,10 @@ class Frontend_Assets {
 			null,
 			[
 				false,
-				// 'async' => true,
 				'defer' => true,
 			]
 		);
-
-		// load script defer
-		// wp_script_add_data( SRFM_SLUG . '-cf-turnstile', 'defer', true );
+		// phpcs:ignoreEnd
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',

@@ -160,8 +160,13 @@ class Generate_Form_Markup {
 			}
 
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
+
+			if ( ! is_array( $global_setting_options ) ) {
+				$global_setting_options = [];
+			}
+
 			$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
-			$srfm_cf_appearance_mode = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
 
 			if ( is_array( $global_setting_options ) ) {
 				switch ( $recaptcha_version ) {
