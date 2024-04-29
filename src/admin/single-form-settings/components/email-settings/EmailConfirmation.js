@@ -7,7 +7,6 @@ import parse from 'html-react-parser';
 
 const EmailConfirmation = ( props ) => {
 	const { data, handleConfirmEmail, handleBackNotifation } = props;
-	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const backArrow = parse( svgIcons.leftArrow );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
@@ -94,9 +93,6 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								icon={ verticalDotIcon }
-								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								cssClass={ 'srfm-scroll-dropdown' }
 								tagsArray={
 									[
 										{
@@ -135,9 +131,6 @@ const EmailConfirmation = ( props ) => {
 							/>
 
 							<SmartTagList
-								icon={ verticalDotIcon }
-								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								cssClass={ 'srfm-scroll-dropdown' }
 								tagsArray={
 									[
 										{
@@ -176,9 +169,6 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								icon={ verticalDotIcon }
-								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								cssClass={ 'srfm-scroll-dropdown' }
 								tagsArray={
 									[
 										{
@@ -218,9 +208,6 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								icon={ verticalDotIcon }
-								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								cssClass={ 'srfm-scroll-dropdown' }
 								tagsArray={
 									[
 										{
@@ -260,9 +247,6 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								icon={ verticalDotIcon }
-								label={ __( 'Select Shortcodes', 'sureforms' ) }
-								cssClass={ 'srfm-scroll-dropdown' }
 								tagsArray={
 									[
 										{

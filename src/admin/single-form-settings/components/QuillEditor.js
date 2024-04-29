@@ -50,7 +50,6 @@ const Editor = ( {
 		<>
 			<SmartTagList
 				icon={ dropdownIcon }
-				label={ __( 'Select Shortcodes', 'sureforms' ) }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }
 				tagsArray={

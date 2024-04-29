@@ -22,16 +22,12 @@ import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
-import parse from 'html-react-parser';
-import svgIcons from '@Svg/svgs.json';
 
 const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	const [ inputData, setInputData ] = useState( props?.value );
 	// Add and remove the CSS on the drop and remove of the component.
-
-	const VerticalEllipsis = parse( svgIcons.vertical_ellipsis );
 
 	useLayoutEffect( () => {
 		styles.use();
@@ -194,9 +190,6 @@ const SRFMTextControl = ( props ) => {
 
 							{ props?.withSmartTagDropdown === true && (
 								<SmartTagList
-									icon={ VerticalEllipsis }
-									label={ __( 'Select Shortcodes', 'sureforms' ) }
-									cssClass={ 'srfm-scroll-dropdown' }
 									tagsArray={
 										[
 											{
