@@ -17,7 +17,6 @@ import classnames from 'classnames';
 import {
 	getIdFromString,
 	getPanelIdFromRef,
-	generateDropDownOptions,
 } from '@Utils/Helpers';
 import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
@@ -198,12 +197,11 @@ const SRFMTextControl = ( props ) => {
 									icon={ VerticalEllipsis }
 									label={ __( 'Select Shortcodes', 'sureforms' ) }
 									cssClass={ 'srfm-scroll-dropdown' }
-									optionsCallback={ generateDropDownOptions }
 									tagsArray={
 										[
 											{
 												tags: genericSmartTags,
-												label: __( 'Form input tags', 'sureforms' ),
+												label: __( 'Generic tags', 'sureforms' ),
 											},
 										]
 

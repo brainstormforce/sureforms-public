@@ -1,7 +1,6 @@
 import ReactQuill, { Quill } from 'react-quill';
 import EditorToolbar, { modules, formats } from './email-settings/EditorToolbar';
 import { TabPanel } from '@wordpress/components';
-import { generateDropDownOptions } from '@Utils/Helpers';
 import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
@@ -54,7 +53,6 @@ const Editor = ( {
 				label={ __( 'Select Shortcodes', 'sureforms' ) }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }
-				optionsCallback={ generateDropDownOptions }
 				tagsArray={
 					[
 						{
@@ -63,7 +61,7 @@ const Editor = ( {
 						},
 						{
 							tags: genericSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
+							label: __( 'Generic tags', 'sureforms' ),
 						},
 					]
 
