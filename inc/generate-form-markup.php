@@ -147,10 +147,10 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full               = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
-			$show_title_on_page = Helper::get_meta_value( $id, '_srfm_page_form_title' );
-			$srfm_cf_appearance_mode = '';
+			$full                       = 'justify' === $button_alignment ? true : false;
+			$recaptcha_version          = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+			$show_title_on_page         = Helper::get_meta_value( $id, '_srfm_page_form_title' );
+			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
 
 			$google_captcha_site_key = '';
