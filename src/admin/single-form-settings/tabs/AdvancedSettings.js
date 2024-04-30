@@ -259,7 +259,7 @@ function AdvancedSettings( props ) {
 				{ showErr && (
 					<p style={ { color: 'red' } }>
 						{ __(
-							'Please configure the reCAPTCHA keys correctly',
+							'Please configure the API keys correctly',
 							'sureforms'
 						) }
 					</p>
