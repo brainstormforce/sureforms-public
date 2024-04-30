@@ -38,8 +38,7 @@ const defaultKeys = {
 	// General Tab
 	_srfm_show_labels: true,
 	_srfm_show_asterisk: true,
-	_srfm_page_form_title: false,
-	_srfm_single_page_form_title: false,
+	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
 	// Submit Button

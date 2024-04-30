@@ -335,4 +335,9 @@ body.post-type-sureforms_form {
 			}
 		}
 	}
+
+	// Hide the box shadow of input inside React Select.
+	.srfm-select__input {
+		box-shadow: none;
+	}
 }
