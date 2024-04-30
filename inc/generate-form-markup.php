@@ -115,7 +115,7 @@ class Generate_Form_Markup {
 			}
 
 			// Submit button.
-			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : __( 'Submit', 'sureforms' );
 			$button_alignment = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
 			$btn_from_theme   = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 			$btn_text_color   = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
