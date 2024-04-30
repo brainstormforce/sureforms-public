@@ -89,14 +89,12 @@ export default ( { setAttributes } ) => {
 						/>
 						<Button
 							variant="secondary"
-							text={ __( 'Add New', 'sureforms' ) }
+							text={ __( 'Create New', 'sureforms' ) }
 							onClick={ () => {
 								// open in a new tab
 								window.open(
 									srfm_block_data.template_picker_url
 								);
-								// window.location.href =
-								// 	srfm_block_data.template_picker_url;
 							} }
 						/>
 					</div>

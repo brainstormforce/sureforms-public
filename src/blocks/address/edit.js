@@ -93,7 +93,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
+									label={ __( 'Error Message', 'sureforms' ) }
 									value={ currentErrorMsg }
 									onChange={ ( value ) => {
 										setCurrentErrorMsg( value );
@@ -103,7 +103,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							) }
 							<span className="srfm-control-label srfm-control__header" />
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,
