@@ -134,7 +134,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								__nextHasNoMarginBottom
 							/>
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,

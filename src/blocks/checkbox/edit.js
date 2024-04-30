@@ -92,7 +92,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
+									label={ __( 'Error Message', 'sureforms' ) }
 									value={ currentErrorMsg }
 									onChange={ ( value ) => {
 										setCurrentErrorMsg( value );
@@ -102,7 +102,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							) }
 							<ToggleControl
 								label={ __(
-									'Checked by default',
+									'Checked by Default',
 									'sureforms'
 								) }
 								checked={ isChecked }
@@ -115,7 +115,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									value: checkboxHelpText,
 									label: 'checkboxHelpText',
 								} }
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ checkboxHelpText }
 								onChange={ ( value ) =>
 									setAttributes( { checkboxHelpText: value } )
@@ -135,6 +135,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 				attributes={ attributes }
+				blockType="checkbox"
 			/>
 			{ checkboxHelpText !== '' && (
 				<RichText

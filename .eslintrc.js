@@ -76,5 +76,6 @@ module.exports = {
 		srfm_quick_sidebar_blocks: true,
 		srfm_backend: true,
 		TomSelect: true,
+		root: true,
 	},
 };

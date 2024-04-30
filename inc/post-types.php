@@ -409,7 +409,6 @@ class Post_Types {
 				// General tab metas.
 				'_srfm_show_labels'               => 'boolean',
 				'_srfm_show_asterisk'             => 'boolean',
-				'_srfm_page_form_title'           => 'boolean',
 				'_srfm_single_page_form_title'    => 'boolean',
 				'_srfm_submit_button_text'        => 'string',
 				'_srfm_instant_form'              => 'boolean',
@@ -928,7 +927,7 @@ class Post_Types {
 
 				ob_start();
 				?>
-					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>" target="_blank"><?php echo esc_html( $post_count ); ?></a></p>
+					<p class="srfm-entries-number"><a href="<?php echo esc_url( $entries_url ); ?>"><?php echo esc_html( $post_count ); ?></a></p>
 				<?php
 				ob_end_flush();
 			}
