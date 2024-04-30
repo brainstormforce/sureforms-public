@@ -150,25 +150,23 @@ class Generate_Form_Markup {
 			$full               = 'justify' === $button_alignment ? true : false;
 			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
 			$show_title_on_page = Helper::get_meta_value( $id, '_srfm_page_form_title' );
+			$srfm_cf_appearance_mode = '';
+			$srfm_cf_turnstile_site_key = '';
 
 			$google_captcha_site_key = '';
 
-			if ( 'none' !== $recaptcha_version ) {
+			if ( 'none' !== $security_type ) {
 				$global_setting_options = get_option( 'srfm_security_settings_options' );
 			} else {
 				$global_setting_options = [];
 			}
 
-			$global_setting_options = get_option( 'srfm_security_settings_options' );
-
-			if ( ! is_array( $global_setting_options ) ) {
-				$global_setting_options = [];
+			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
+				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
+				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
 			}
 
-			$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
-			$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
-
-			if ( is_array( $global_setting_options ) ) {
+			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
 				switch ( $recaptcha_version ) {
 					case 'v2-checkbox':
 						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
