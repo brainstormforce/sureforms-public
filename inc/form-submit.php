@@ -89,7 +89,7 @@ class Form_Submit {
 	/**
 	 * Validate Turnstile token
 	 *
-	 * @param string       $turnstile_token Turnstile token.
+	 * @param string       $secret_key Turnstile token.
 	 * @param string       $response Response.
 	 * @param string|false $remote_ip Remote IP.
 	 * @param string       $idempotency_key Idempotency key.
@@ -200,31 +200,35 @@ class Form_Submit {
 			$global_setting_options = [];
 		}
 
-		switch ( $selected_captcha_type ) {
-			case 'v2-checkbox':
-				$key = 'srfm_v2_checkbox_secret_key';
-				break;
-			case 'v2-invisible':
-				$key = 'srfm_v2_invisible_secret_key';
-				break;
-			case 'v3-reCAPTCHA':
-				$key = 'srfm_v3_secret_key';
-				break;
-			default:
-				$key = '';
-				break;
+		if ( 'g-recaptcha' === $security_type ) {
+			switch ( $selected_captcha_type ) {
+				case 'v2-checkbox':
+					$key = 'srfm_v2_checkbox_secret_key';
+					break;
+				case 'v2-invisible':
+					$key = 'srfm_v2_invisible_secret_key';
+					break;
+				case 'v3-reCAPTCHA':
+					$key = 'srfm_v3_secret_key';
+					break;
+				default:
+					$key = '';
+					break;
+			}
+
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 		}
 
-		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+		if ( 'cf-turnstile' === $security_type ) {
+			// Turnstile validation.
+			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
+			$cf_response                  = isset( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
+			$remote_ip                    = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+			$turnstile_validation_result  = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
-		// Turnstile validation.
-		$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
-		$cf_response                  = isset( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
-		$remote_ip                    = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
-		$turnstile_validation_result  = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
-
-		if ( ! is_array( $turnstile_validation_result ) || ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) ) {
-			return new WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
+			if ( ! is_array( $turnstile_validation_result ) || ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) ) {
+				return new WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
+			}
 		}
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {

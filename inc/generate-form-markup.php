@@ -363,7 +363,7 @@ class Generate_Form_Markup {
 
 						if ( 'cf-turnstile' === $security_type ) :
 							// Cloudflare Turnstile script.
-							// phpcs:ignore - added to ignore error version null.
+							// phpcs:ignore
 							wp_enqueue_script(
 								SRFM_SLUG . '-cf-turnstile',
 								'https://challenges.cloudflare.com/turnstile/v0/api.js',
