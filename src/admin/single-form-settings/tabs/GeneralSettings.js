@@ -10,8 +10,7 @@ import PostURLPanel from '../components/form-permalink/Panel';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
-	const { defaultKeys, isPageBreak, isInlineButtonBlockPresent } = props;
-	const root = document.documentElement.querySelector( 'body' );
+	const { defaultKeys, isPageBreak } = props;
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -64,13 +63,6 @@ function GeneralSettings( props ) {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
 		}
-		// Button text
-		root.style.setProperty(
-			'--srfm-submit-button-text',
-			sureformsKeys._srfm_submit_button_text
-				? '"' + sureformsKeys._srfm_submit_button_text + '"'
-				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-		);
 	} else {
 		sureformsKeys = defaultKeys;
 		editPost( {
@@ -101,16 +93,6 @@ function GeneralSettings( props ) {
 			} else {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
-		}
-
-		// Button
-		if ( option === '_srfm_submit_button_text' ) {
-			root.style.setProperty(
-				'--srfm-submit-button-text',
-				value
-					? '"' + value + '"'
-					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-			);
 		}
 
 		const option_array = {};
@@ -168,26 +150,6 @@ function GeneralSettings( props ) {
 					} }
 				/>
 			</SRFMAdvancedPanelBody>
-			{ ! isInlineButtonBlockPresent && (
-				<SRFMAdvancedPanelBody
-					title={ __( 'Submit Button', 'sureforms' ) }
-					initialOpen={ false }
-				>
-					<SRFMTextControl
-						data={ {
-							value: sureformsKeys._srfm_submit_button_text,
-							label: '_srfm_submit_button_text',
-						} }
-						label={ __( 'Submit Button Text', 'sureforms' ) }
-						placeholder={ __( 'SUBMIT', 'sureforms' ) }
-						value={ sureformsKeys._srfm_submit_button_text }
-						onChange={ ( value ) => {
-							updateMeta( '_srfm_submit_button_text', value );
-						} }
-						isFormSpecific={ true }
-					/>
-				</SRFMAdvancedPanelBody>
-			) }
 			{ isPageBreak && (
 				<SRFMAdvancedPanelBody
 					title={ __( 'Page Break', 'sureforms' ) }
@@ -236,9 +198,7 @@ function GeneralSettings( props ) {
 
 					<ToggleControl
 						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={
-							sureformsKeys._srfm_page_break_toggle_label
-						}
+						checked={ sureformsKeys._srfm_page_break_toggle_label }
 						onChange={ ( value ) => {
 							updateMeta(
 								'_srfm_page_break_toggle_label',
