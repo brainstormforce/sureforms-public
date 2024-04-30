@@ -149,16 +149,6 @@ function AdvancedSettings( props ) {
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				{ showRecaptchaConflictNotice && (
-					<PanelRow>
-						<p className="srfm-form-notice">
-							{ __(
-								'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-								'sureforms'
-							) }
-						</p>
-					</PanelRow>
-				) }
 				<SelectControl
 					label={ __( 'Security Type', 'sureforms' ) }
 					value={ sureformsKeys._srfm_captcha_security_type }
@@ -200,14 +190,16 @@ function AdvancedSettings( props ) {
 				{ sureformsKeys._srfm_captcha_security_type ===
 					'g-recaptcha' && (
 					<>
-						<PanelRow>
-							<p className="srfm-form-notice">
-								{ __(
-									'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-									'sureforms'
-								) }
-							</p>
-						</PanelRow>
+						{ showRecaptchaConflictNotice && (
+							<PanelRow>
+								<p className="srfm-form-notice">
+									{ __(
+										'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+										'sureforms'
+									) }
+								</p>
+							</PanelRow>
+						) }
 						<SelectControl
 							label={ __(
 								'Select the reCAPTCHA Version to Use',
@@ -217,15 +209,21 @@ function AdvancedSettings( props ) {
 							options={ [
 								{ label: 'None', value: 'none' },
 								{
-									label: 'reCAPTCHA v2 Checkbox',
+									label: __(
+										'reCAPTCHA v2 Checkbox',
+										'sureforms'
+									),
 									value: 'v2-checkbox',
 								},
 								{
-									label: 'reCAPTCHA v2 Invisible',
+									label: __(
+										'reCAPTCHA v2 Invisible',
+										'sureforms'
+									),
 									value: 'v2-invisible',
 								},
 								{
-									label: 'reCAPTCHA v3',
+									label: __( 'reCAPTCHA v3', 'sureforms' ),
 									value: 'v3-reCAPTCHA',
 								},
 							] }

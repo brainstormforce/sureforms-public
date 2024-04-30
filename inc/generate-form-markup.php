@@ -360,6 +360,7 @@ class Generate_Form_Markup {
 
 						if ( 'cf-turnstile' === $security_type ) :
 							// Cloudflare Turnstile script.
+							// If we pass version number then the Cloudflare script will give an error, unknown argument ?ver= passed. To avoid WordPress.WP.EnqueuedResourceParameters.MissingVersion error in phpcs we have ignored this line.
 							// phpcs:ignore
 							wp_enqueue_script(
 								SRFM_SLUG . '-cf-turnstile',

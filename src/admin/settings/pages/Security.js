@@ -13,9 +13,9 @@ const SecurityPage = ( {
 	};
 
 	const buttonData = [
-		{ mode: 'auto', label: 'Auto' },
-		{ mode: 'light', label: 'Light' },
-		{ mode: 'dark', label: 'Dark' },
+		{ mode: 'auto', label: __( 'Auto', 'sureforms' ) },
+		{ mode: 'light', label: __( 'Light', 'sureforms' ) },
+		{ mode: 'dark', label: __( 'Dark', 'sureforms' ) },
 	];
 
 	const captchaContent = () => {
@@ -28,12 +28,12 @@ const SecurityPage = ( {
 					tabs={ [
 						{
 							name: 'srfm-captcha-tab-1',
-							title: 'reCaptcha',
+							title: __( 'reCaptcha', 'sureforms' ),
 							className: 'srfm-captcha-tab-1',
 						},
 						{
 							name: 'srfm-captcha-tab-2',
-							title: 'Turnstile',
+							title: __( 'Turnstile', 'sureforms' ),
 							className: 'srfm-captcha-tab-2',
 						},
 					] }
@@ -87,19 +87,28 @@ const SecurityPage = ( {
 												tabs={ [
 													{
 														name: 'srfm-captcha-tab-1',
-														title: 'v2 Checkbox',
+														title: __(
+															'v2 Checkbox',
+															'sureforms'
+														),
 														className:
 															'srfm-captcha-tab-1',
 													},
 													{
 														name: 'srfm-captcha-tab-2',
-														title: 'v2 Invisible',
+														title: __(
+															'v2 Invisible',
+															'sureforms'
+														),
 														className:
 															'srfm-captcha-tab-2',
 													},
 													{
 														name: 'srfm-captcha-tab-3',
-														title: 'v3 reCaptcha',
+														title: __(
+															'v3 reCaptcha',
+															'sureforms'
+														),
 														className:
 															'srfm-captcha-tab-3',
 													},
