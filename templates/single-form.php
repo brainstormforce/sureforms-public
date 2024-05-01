@@ -6,6 +6,7 @@
  */
 
 use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -29,17 +30,18 @@ if ( $srfm_form_preview_attr ) {
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$srfm_custom_post_id                 = get_the_ID();
-		$srfm_color1_val                     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
-		$srfm_bg_val                         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
-		$srfm_fontsize_val                   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
-		$srfm_submit_type_val                = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_type', true );
-		$srfm_thankyou_message_title         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message_title', true );
-		$srfm_thankyou_message_val           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message', true );
-		$srfm_submit_url_val                 = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_url', true );
-		$srfm_form_container_width           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
-		$srfm_submit_button_text             = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_button_text', true );
-		$srfm_show_title_on_single_form_page = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$srfm_custom_post_id         = get_the_ID();
+		$srfm_color1_val             = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
+		$srfm_bg_val                 = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
+		$srfm_fontsize_val           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
+		$srfm_submit_type_val        = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_type', true );
+		$srfm_thankyou_message_title = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message_title', true );
+		$srfm_thankyou_message_val   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message', true );
+		$srfm_submit_url_val         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_url', true );
+		$srfm_form_container_width   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
+		$srfm_submit_button_text     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_button_text', true );
+		$show_title                  = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$instant_form                = Helper::get_meta_value( $srfm_custom_post_id, '_srfm_instant_form' );
 
 		$srfm_color_primary         = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
 		$srfm_background_image_url  = $srfm_bg_val ? rawurldecode( strval( $srfm_bg_val ) ) : '';
@@ -73,7 +75,7 @@ if ( $srfm_form_preview_attr ) {
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $srfm_color_primary ); ?>">
-				<?php if ( '1' !== $srfm_show_title_on_single_form_page ) : ?>
+				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>

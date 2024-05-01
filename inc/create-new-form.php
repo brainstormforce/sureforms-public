@@ -91,11 +91,10 @@ class Create_New_Form {
 	 */
 	public static function get_default_meta_keys() {
 		return [
-			'_srfm_submit_button_text'            => [ 'SUBMIT' ],
+			'_srfm_submit_button_text'            => [ 'Submit' ],
 			'_srfm_show_labels'                   => [ 1 ],
 			'_srfm_show_asterisk'                 => [ 1 ],
-			'_srfm_page_form_title'               => [ '' ],
-			'_srfm_single_page_form_title'        => [ '' ],
+			'_srfm_single_page_form_title'        => [ 1 ],
 			'_srfm_instant_form'                  => [ '' ],
 			'_srfm_form_container_width'          => [ 650 ],
 			'_srfm_color1'                        => [ '#0e4372' ],

@@ -57,14 +57,14 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param boolean    $hide_title_current_page Boolean to show/hide form title.
+	 * @param boolean    $show_title_current_page Boolean to show/hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $hide_title_current_page = false, $sf_classname = '', $post_type = 'post' ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post' ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -115,7 +115,7 @@ class Generate_Form_Markup {
 			}
 
 			// Submit button.
-			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : __( 'Submit', 'sureforms' );
 			$button_alignment = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
 			$btn_from_theme   = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
 			$btn_text_color   = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
@@ -146,9 +146,8 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full               = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
-			$show_title_on_page = Helper::get_meta_value( $id, '_srfm_page_form_title' );
+			$full              = 'justify' === $button_alignment ? true : false;
+			$recaptcha_version = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
 
 			$google_captcha_site_key = '';
 
@@ -258,7 +257,7 @@ class Generate_Form_Markup {
 				}
 			</style>
 			<?php
-			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
+			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
