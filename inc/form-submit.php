@@ -92,10 +92,34 @@ class Form_Submit {
 	 * @param string       $secret_key Turnstile token.
 	 * @param string       $response Response.
 	 * @param string|false $remote_ip Remote IP.
-	 * @param string       $idempotency_key Idempotency key.
 	 * @return array<mixed>|mixed Result of the validation.
 	 */
-	public static function validate_turnstile_token( $secret_key, $response = '', $remote_ip = null, $idempotency_key = null ) {
+	public static function validate_turnstile_token( $secret_key, $response = '', $remote_ip = '' ) {
+
+		$checks = [
+			[
+				'param' => $secret_key,
+				'error' => 'Invalid cloudflare turnstile secret key type.',
+			],
+			[
+				'param' => $response,
+				'error' => 'Invalid cloudflare turnstile response type.',
+			],
+			[
+				'param' => $remote_ip,
+				'error' => 'Invalid remote IP type.',
+			]
+		];
+
+		foreach ( $checks as $check ) {
+			if ( null !== $check['param'] && ! is_string( $check['param'] ) ) {
+				return [
+					'success' => false,
+					'error'   => $check['error'],
+				];
+			}
+		}
+
 		$body = [
 			'secret'   => $secret_key,
 			'response' => $response,
@@ -103,9 +127,6 @@ class Form_Submit {
 
 		if ( null !== $remote_ip ) {
 			$body['remoteip'] = $remote_ip;
-		}
-		if ( null !== $idempotency_key ) {
-			$body['idempotency_key'] = $idempotency_key;
 		}
 
 		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
