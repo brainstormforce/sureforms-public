@@ -108,7 +108,7 @@ class Form_Submit {
 			[
 				'param' => $remote_ip,
 				'error' => 'Invalid remote IP type.',
-			]
+			],
 		];
 
 		foreach ( $checks as $check ) {
