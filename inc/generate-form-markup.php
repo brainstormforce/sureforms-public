@@ -148,7 +148,7 @@ class Generate_Form_Markup {
 			}
 
 			$full                       = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version          = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
 
@@ -326,7 +326,7 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 
-					<?php if ( '' !== $google_captcha_site_key && 'g-recaptcha' === $security_type ) : ?>
+					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
@@ -360,9 +360,7 @@ class Generate_Form_Markup {
 
 						if ( 'cf-turnstile' === $security_type ) :
 							// Cloudflare Turnstile script.
-							// If we pass version number then the Cloudflare script will give an error, unknown argument ?ver= passed. To avoid WordPress.WP.EnqueuedResourceParameters.MissingVersion error in phpcs we have ignored this line.
-							// phpcs:ignore
-							wp_enqueue_script(
+							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 								SRFM_SLUG . '-cf-turnstile',
 								'https://challenges.cloudflare.com/turnstile/v0/api.js',
 								[],
@@ -372,7 +370,6 @@ class Generate_Form_Markup {
 									'defer' => true,
 								]
 							);
-							// phpcs:ignoreEnd
 							?>
 							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
 							<?php

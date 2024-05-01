@@ -90,44 +90,31 @@ class Form_Submit {
 	 * Validate Turnstile token
 	 *
 	 * @param string       $secret_key Turnstile token.
-	 * @param string       $response Response.
+	 * @param string|false $response Response.
 	 * @param string|false $remote_ip Remote IP.
 	 * @return array<mixed>|mixed Result of the validation.
 	 */
-	public static function validate_turnstile_token( $secret_key, $response = '', $remote_ip = '' ) {
+	public static function validate_turnstile_token( $secret_key, $response, $remote_ip ) {
 
-		$checks = [
-			[
-				'param' => $secret_key,
-				'error' => 'Invalid cloudflare turnstile secret key type.',
-			],
-			[
-				'param' => $response,
-				'error' => 'Invalid cloudflare turnstile response type.',
-			],
-			[
-				'param' => $remote_ip,
-				'error' => 'Invalid remote IP type.',
-			],
-		];
+		if ( empty( $secret_key ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile secret key is missing.',
+			];
+		}
 
-		foreach ( $checks as $check ) {
-			if ( null !== $check['param'] && ! is_string( $check['param'] ) ) {
-				return [
-					'success' => false,
-					'error'   => $check['error'],
-				];
-			}
+		if ( empty( $response ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile response is missing.',
+			];
 		}
 
 		$body = [
 			'secret'   => $secret_key,
 			'response' => $response,
+			'remoteip' => $remote_ip,
 		];
-
-		if ( null !== $remote_ip ) {
-			$body['remoteip'] = $remote_ip;
-		}
 
 		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
@@ -242,13 +229,25 @@ class Form_Submit {
 
 		if ( 'cf-turnstile' === $security_type ) {
 			// Turnstile validation.
-			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? $global_setting_options['srfm_cf_turnstile_secret_key'] : '';
-			$cf_response                  = isset( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : '';
-			$remote_ip                    = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
-			$turnstile_validation_result  = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
+			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
 
-			if ( ! is_array( $turnstile_validation_result ) || ( isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) ) {
-				return new WP_Error( 'turnstile_error', 'Turnstile validation failed.', [ 'status' => 403 ] );
+			// if gdpr is enabled then set remote ip to empty.
+			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
+			$gdpr       = false;
+
+			if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+				$gdpr = ! empty( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : false;
+			}
+
+			$remote_ip = ( $gdpr ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+
+			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
+
+			// If the cloudflare validation fails, return an error.
+			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
+				$error_message = isset( $turnstile_validation_result['error'] ) ? $turnstile_validation_result['error'] : 'Cloudflare Turnstile validation failed.';
+				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
 
