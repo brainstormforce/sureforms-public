@@ -47,6 +47,7 @@ export default ( { title, description, urlText } ) => {
 						target="_blank"
 						css={ css`
 							text-decoration: none;
+							color: #d54407;
 						` }
 						rel="noreferrer"
 					>
@@ -61,7 +62,7 @@ export default ( { title, description, urlText } ) => {
 							>
 								<path
 									d="M6.66406 3.9974H3.9974C3.26102 3.9974 2.66406 4.59435 2.66406 5.33073V11.9974C2.66406 12.7338 3.26102 13.3307 3.9974 13.3307H10.6641C11.4004 13.3307 11.9974 12.7338 11.9974 11.9974V9.33073M9.33073 2.66406H13.3307M13.3307 2.66406V6.66406M13.3307 2.66406L6.66406 9.33073"
-									stroke="#125D9F"
+									stroke="#d54407"
 									strokeWidth="1.2"
 									strokeLinecap="round"
 									strokeLinejoin="round"
