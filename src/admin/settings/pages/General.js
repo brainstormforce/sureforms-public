@@ -14,7 +14,7 @@ const GeneralPage = ( {
 				<ToggleControl
 					label={ __( 'Enable IP Logging', 'sureforms' ) }
 					help={ __(
-						"If this option is turned on, the user's IP address will not be saved with the form data",
+						"If this option is turned on, the user's IP address will be saved with the form data",
 						'sureforms'
 					) }
 					checked={ generalTabOptions.srfm_ip_log }
