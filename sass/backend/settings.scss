@@ -3,7 +3,7 @@ $text_color: #1e293b;
 $help_color: #6b7280;
 $border_color: #dce0e6;
 $bg_color: #ffffff;
-$primary_color: #125d9f;
+$primary_color: #d54407;
 $option_active_bg_color: #f2fafc;
 $label_color: #1e293b;
 $box_shadow: #0d131e1a;
@@ -118,7 +118,7 @@ $placeholder_color: #9ca3af;
 
 		.srfm-notice-container {
 			padding: 0.8em;
-			border: 1px solid #125d9f;
+			border: 1px solid #d54407;
 			border-radius: 6px;
 
 			.srfm-notice-title-container {
@@ -246,6 +246,10 @@ $placeholder_color: #9ca3af;
 
 						.components-form-toggle .components-form-toggle__input:focus + .components-form-toggle__track {
 							box-shadow: none;
+						}
+
+						.components-form-toggle.is-checked .components-form-toggle__track {
+							border: #d54407;
 						}
 
 						&.srfm-components-input-control,

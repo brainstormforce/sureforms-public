@@ -299,6 +299,7 @@ $sidebar_width: 290px;
 				}
 				.srfm-ts-category-is-selected {
 					font-weight: 600;
+					color: #d54407;
 				}
 			}
 
@@ -338,9 +339,10 @@ $sidebar_width: 290px;
 					padding: 0.4375em 0.625em;
 					font-size: 0.75em;
 					font-weight: 500;
-					background: #f5f3ff;
-					color: $btn_primary_color;
-					border: 0;
+					background: #fff;
+					color: #d54407;
+					border: 1px solid #d54407;
+					border-radius: 4px;
 					width: 100%;
 					cursor: pointer;
 				}
@@ -443,7 +445,7 @@ $sidebar_width: 290px;
 					}
 
 					.srfm-tc-hover-use-btn {
-						background-color: $btn_primary_color;
+						background-color: #d54407;
 						color: $btn_secondary_color;
 						margin-bottom: 0.75em;
 					}

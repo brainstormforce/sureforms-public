@@ -16,5 +16,9 @@ function changeAddNewUrl() {
 			`${ siteUrl }/wp-admin/admin.php?page=add-new-form`
 		);
 		addNewBtn.classList.remove( 'page-title-action' );
+		addNewBtn.style.color = '#fff';
+		addNewBtn.style.background = '#D54407';
+		addNewBtn.style.borderColor = '#D54407';
+		addNewBtn.style.boxShadow = 'none';
 	}
 }
