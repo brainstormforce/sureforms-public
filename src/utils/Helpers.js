@@ -102,9 +102,7 @@ export const randomNiceColor = () => {
 };
 
 export const generateSmartTagsDropDown = (
-	setInputData,
-	inputData,
-	insertTextAtEnd
+	setInputData
 ) => {
 	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
@@ -113,15 +111,11 @@ export const generateSmartTagsDropDown = (
 	const entries = Object.entries( smartTagList );
 	return generateDropDownOptions(
 		setInputData,
-		inputData,
-		insertTextAtEnd,
 		entries );
 };
 
 export const generateDropDownOptions = (
 	setInputData,
-	inputData,
-	insertTextAtEnd,
 	optionsArray = [],
 	arrayHeader = '',
 ) => {
@@ -129,11 +123,7 @@ export const generateDropDownOptions = (
 		return {
 			title: val,
 			onClick: () => {
-				if ( typeof inputData === 'object' ) {
-					insertTextAtEnd( key );
-				} else {
-					setInputData( inputData + key );
-				}
+				setInputData( key );
 			},
 		};
 	} );
