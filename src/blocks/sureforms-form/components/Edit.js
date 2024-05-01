@@ -21,7 +21,7 @@ import {
 } from '@wordpress/block-editor';
 
 export default ( { attributes, setAttributes } ) => {
-	const { id, hideTitle } = attributes;
+	const { id, showTitle } = attributes;
 	const iframeRef = useRef( null );
 	const [ loading, setLoading ] = useState( false );
 
@@ -130,25 +130,27 @@ export default ( { attributes, setAttributes } ) => {
 					<PanelRow>
 						<ToggleControl
 							label={ __(
-								'Hide Form Title on This Page',
+								'Show Form Title on this Page',
 								'sureforms'
 							) }
-							checked={ hideTitle }
+							checked={ showTitle }
 							onChange={ ( value ) => {
-								setAttributes( { hideTitle: value } );
+								setAttributes( { showTitle: value } );
 							} }
+							className="srfm-form-page-title-toggle"
 						/>
 					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Form Title', 'sureforms' ) }
-							value={ title }
-							disabled={ hideTitle }
-							onChange={ ( value ) => {
-								setTitle( value );
-							} }
-						/>
-					</PanelRow>
+					{ showTitle && (
+						<PanelRow>
+							<TextControl
+								label={ __( 'Form Title', 'sureforms' ) }
+								value={ title }
+								onChange={ ( value ) => {
+									setTitle( value );
+								} }
+							/>
+						</PanelRow>
+					) }
 					{ srfm_block_data.is_admin_user && (
 						<PanelRow>
 							<p className="srfm-form-notice">
@@ -195,6 +197,9 @@ export default ( { attributes, setAttributes } ) => {
 							<div className="srfm-iframe-loader">
 								<Spinner />
 							</div>
+						) }
+						{ showTitle && title && (
+							<h2 className="srfm-form-title">{ title }</h2>
 						) }
 						<iframe
 							loading={ 'eager' }

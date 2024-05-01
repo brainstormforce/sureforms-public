@@ -168,6 +168,12 @@
 	justify-content: center;
 }
 
+.srfm-form-title {
+	padding: 0.3em;
+	margin-top: 0;
+	margin-bottom: 1em;
+}
+
 .srfm-change-form-btn {
 	width: 100%;
 	display: flex;
@@ -188,5 +194,11 @@
 		text-decoration: underline;
 		box-shadow: none;
 		width: fit-content;
+	}
+}
+
+.srfm-form-page-title-toggle {
+	.components-toggle-control__label {
+		cursor: pointer;
 	}
 }
