@@ -96,10 +96,10 @@ class Form_Submit {
 	 */
 	public static function validate_turnstile_token( $secret_key, $response, $remote_ip ) {
 
-		if ( empty( $secret_key ) ) {
+		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
 			return [
 				'success' => false,
-				'error'   => 'Cloudflare Turnstile secret key is missing.',
+				'error'   => 'Cloudflare Turnstile secret key is invalid.',
 			];
 		}
 
@@ -240,7 +240,11 @@ class Form_Submit {
 				$gdpr = ! empty( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : false;
 			}
 
-			$remote_ip = ( $gdpr ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+			// check if ip logging is disabled in global settings then set remote ip to empty.
+			$gb_general_settinionsgs_opt = get_option( 'srfm_general_settings_options' );
+			$srfm_ip_log                 = is_array( $gb_general_settinionsgs_opt ) && isset( $gb_general_settinionsgs_opt['srfm_ip_log'] ) ? $gb_general_settinionsgs_opt['srfm_ip_log'] : '';
+
+			$remote_ip = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
 
 			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
 
