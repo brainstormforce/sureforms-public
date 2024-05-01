@@ -52,7 +52,7 @@ const defaultKeys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
-	_srfm_color1: '#0e4372',
+	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
 	_srfm_bg_color: '#ffffff',
@@ -74,7 +74,7 @@ const defaultKeys = {
 	_srfm_inherit_theme_button: false,
 	_srfm_button_text_color: '#ffffff',
 	_srfm_btn_bg_type: 'filled',
-	_srfm_button_bg_color: '#0e4372',
+	_srfm_button_bg_color: '#D54407',
 	_srfm_button_border_color: '#ffffff',
 	_srfm_button_border_width: 0,
 	_srfm_button_border_radius: 6,
@@ -193,7 +193,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						// Form Container
 						{
 							property: '--srfm-primary-color',
-							value: sureformsKeys._srfm_color1 || '#0e4372',
+							value: sureformsKeys._srfm_color1 || '#D54407',
 						},
 						{
 							property: '--srfm-bg-image',
@@ -288,7 +288,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-btn-bg-color',
 							value:
 								sureformsKeys._srfm_button_bg_color ||
-								'#0e4372',
+								'#D54407',
 						},
 						{
 							property: '--srfm-btn-border-color',

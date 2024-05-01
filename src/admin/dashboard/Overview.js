@@ -36,8 +36,8 @@ export default ( {} ) => {
 					type="primary"
 					href={ `${ siteUrl }/wp-admin/admin.php?page=add-new-form` }
 					style={ {
-						'--primary-background': '#125D9F',
-						'--sc-focus-ring-color-primary': '#125D9F',
+						'--primary-background': '#D54407',
+						'--sc-focus-ring-color-primary': '#D54407',
 					} }
 				>
 					{ __( 'Create New Form', 'sureforms' ) } &#8594;

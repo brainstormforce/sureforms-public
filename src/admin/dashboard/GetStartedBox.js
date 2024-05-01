@@ -12,7 +12,6 @@ export default ( {
 	btnFilled,
 } ) => {
 	return (
-
 		<div
 			className="sc-col-33"
 			css={ css`
@@ -25,7 +24,8 @@ export default ( {
 				@media screen and ( max-width: 480px ) {
 					margin-bottom: 20px;
 				}
-			` }>
+			` }
+		>
 			<div className="sc-top-section">
 				<ScTag
 					type={ infoType }
@@ -42,7 +42,7 @@ export default ( {
 						font-size: 20px;
 						line-height: 28px;
 						color: #334155;
-						margin: 0.8em 0 .4em 0;
+						margin: 0.8em 0 0.4em 0;
 					` }
 				>
 					{ title }
@@ -60,13 +60,16 @@ export default ( {
 				</p>
 			</div>
 			<ScButton
-
 				type="primary"
 				href={ buttonUrl }
 				style={ {
-					'--primary-background': btnFilled ? '#125D9F' : '#F5F3FF',
-					'--primary-color': btnFilled ? '#fff' : '#125D9F',
-					'--sc-focus-ring-color-primary': '#125D9F',
+					'--primary-background': btnFilled ? '#D54407' : '#FFFFFF',
+					'--primary-color': btnFilled ? '#fff' : '#D54407',
+					'--sc-focus-ring-color-primary': '#D54407',
+					// add border color for unfilled button
+					border: btnFilled ? 'none' : '1px solid #D54407',
+					borderRadius:
+						'var(--button-border-radius, var(--sc-input-border-radius-medium))',
 				} }
 			>
 				{ buttonLabel } &#8594;

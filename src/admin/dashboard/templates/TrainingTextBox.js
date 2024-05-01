@@ -35,7 +35,7 @@ export default ( { title, description, urlText } ) => {
 				</article>
 				<article
 					css={ css`
-						color: #125d9f;
+						color: #d54407;
 						margin-top: 15px;
 						display: flex;
 					` }

@@ -103,7 +103,7 @@ class Generate_Form_Markup {
 			$instant_form      = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0e4372' );
+				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
 				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
 				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
