@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import WebhookIcon from '@Image/webhook.js';
 
-const UpgradeToPro = ( ) => {
+const UpgradeToPro = () => {
 	return (
 		<button className="srfm-button-primary"	>
 			{ __( 'Upgrade to Pro', 'sureforms' ) }
@@ -12,10 +12,19 @@ const UpgradeToPro = ( ) => {
 
 const Webhooks = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
-		'srfm.form_settings.integrations.webhooks',
+		'srfm.form_settings.integrations.webhooks.button',
 		<UpgradeToPro />,
 		setSelectedTab
 	);
+
+	const isGloballyEnabled = applyFilters(
+		'srfm.form_settings.integrations.webhooks.component',
+		true
+	);
+
+	if ( ! isGloballyEnabled ) {
+		return <></>;
+	}
 	return (
 		<>
 			<div className="srfm-modal-card-content">
