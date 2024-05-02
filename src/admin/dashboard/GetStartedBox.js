@@ -66,10 +66,6 @@ export default ( {
 					'--primary-background': btnFilled ? '#D54407' : '#FFFFFF',
 					'--primary-color': btnFilled ? '#fff' : '#D54407',
 					'--sc-focus-ring-color-primary': '#D54407',
-					// add border color for unfilled button
-					border: btnFilled ? 'none' : '1px solid #D54407',
-					borderRadius:
-						'var(--button-border-radius, var(--sc-input-border-radius-medium))',
 				} }
 			>
 				{ buttonLabel } &#8594;
