@@ -261,25 +261,23 @@ class Form_Submit {
 	 */
 	public function handle_form_entry( $form_data ) {
 
-		$global_setting_options = get_option( 'srfm_general_settings_options' );
-		$srfm_ip_log            = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
+		$id = sanitize_text_field( $form_data['form-id'] );
 
-		$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
-		$browser      = new Browser();
-		$browser_name = sanitize_text_field( $browser->getBrowser() );
-		$device_name  = sanitize_text_field( $browser->getPlatform() );
+		// Get the compliance settings.
+		$compliance           = get_post_meta( Helper::get_integer_value( $id ), '_srfm_compliance', true );
+		$gdpr                 = '';
+		$do_not_store_entries = '';
 
-		$id           = wp_kses_post( $form_data['form-id'] );
-		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
-		$sender_email = '';
-		$pattern      = '/"label":"(.*?)"/';
-		preg_match_all( $pattern, $form_markup, $matches );
-		$labels = $matches[1];
+		if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+			$gdpr                 = isset( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : '';
+			$do_not_store_entries = isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
+		}
 
 		$meta_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
+
 		for ( $i = 4; $i < $form_data_count; $i++ ) {
 			$key   = strval( $form_data_keys[ $i ] );
 			$value = $form_data[ $key ];
@@ -289,15 +287,78 @@ class Form_Submit {
 			$meta_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
-		$name = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
+		$send_email   = $this->send_email( $id, $meta_data );
+		$is_mail_sent = false;
+		$emails       = [];
+
+		if ( $send_email ) {
+			$emails       = $send_email['emails'];
+			$is_mail_sent = $send_email['success'];
+		}
+
+		// Check if GDPR is enabled and do not store entries is enabled.
+		// If so, send email and do not store entries.
+		if ( $gdpr && $do_not_store_entries ) {
+
+			$modified_message = [];
+			foreach ( $meta_data as $key => $value ) {
+				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
+				$modified_message[ $only_key ] = esc_attr( $value );
+			}
+
+			$form_submit_response = [
+				'success'   => true,
+				'form_id'   => $id ? intval( $id ) : '',
+				'emails'    => $emails,
+				'form_name' => $name ? esc_attr( $name ) : '',
+				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'data'      => $modified_message,
+			];
+
+			do_action( 'srfm_form_submit', $form_submit_response );
+
+			$response = [
+				'success' => true,
+				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'data'    => [
+					'name' => $name,
+				],
+			];
+
+			return $response;
+
+		}
+
+		$global_setting_options = get_option( 'srfm_general_settings_options' );
+
+		// If GDPR is enabled, do not store IP, browser, and device info.
+		// If not, store IP, browser, and device info.
+		$user_ip      = '';
+		$browser_name = '';
+		$device_name  = '';
+		if ( ! $gdpr ) {
+			$srfm_ip_log = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_ip_log'] ) ? $global_setting_options['srfm_ip_log'] : '';
+
+			$user_ip      = ( $srfm_ip_log && isset( $_SERVER['REMOTE_ADDR'] ) ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+			$browser      = new Browser();
+			$browser_name = sanitize_text_field( $browser->getBrowser() );
+			$device_name  = sanitize_text_field( $browser->getPlatform() );
+		}
+
+		$form_markup  = get_the_content( null, false, Helper::get_integer_value( $form_data['form-id'] ) );
+		$sender_email = '';
+		$pattern      = '/"label":"(.*?)"/';
+		preg_match_all( $pattern, $form_markup, $matches );
+		$labels = $matches[1];
 
 		$honeypot = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
+		$key               = strval( $form_data_keys[4] );
+		$first_field_value = $form_data[ $key ];
+
 		if ( $honeypot ) {
 			$key               = strval( $form_data_keys[5] );
-			$first_field_value = $form_data[ $key ];
-		} else {
-			$key               = strval( $form_data_keys[4] );
 			$first_field_value = $form_data[ $key ];
 		}
 
@@ -321,49 +382,26 @@ class Form_Submit {
 
 		wp_update_post( $post_args );
 
-		update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
-		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
 				'browser_name' => $browser_name,
 				'device_name'  => $device_name,
 			];
+
+			update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
+			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
+
 			wp_set_object_terms( $post_id, $id, 'sureforms_tax' );
-			$response           = [
+
+			$response = [
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => [
 					'name' => $name,
 				],
 			];
-			$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
-			$smart_tags         = new Smart_Tags();
-			$is_mail_sent       = false;
-			$emails             = [];
-			if ( is_iterable( $email_notification ) ) {
-				foreach ( $email_notification as $notification ) {
-					foreach ( $notification as $item ) {
-						if ( true === $item['status'] ) {
-							$to             = $item['email_to'];
-							$to             = $smart_tags->process_smart_tags( $to );
-							$subject        = $item['subject'];
-							$subject        = $smart_tags->process_smart_tags( $subject );
-							$email_body     = $item['email_body'];
-							$email_template = new Email_Template();
-							$message        = $email_template->render( $meta_data, $email_body );
-							$headers        = "From: $to\r\n" .
-							"Reply-To: $to\r\n" .
-							'X-Mailer: PHP/' . phpversion() . "\r\n" .
-							'Content-Type: text/html; charset=utf-8';
-							$sent           = wp_mail( $to, $subject, $message, $headers );
-							$is_mail_sent   = $sent;
-							$emails[]       = $to;
-						}
-					}
-				}
-			}
 
 			$modified_message = [];
 			foreach ( $meta_data as $key => $value ) {
@@ -375,13 +413,8 @@ class Form_Submit {
 					if ( count( $tokens ) > 1 ) {
 						$only_key = implode( '-', array_slice( $tokens, 1 ) );
 					}
-				} else {
-					$tokens = explode( '-', $parts[0] );
-					if ( 'address' === $tokens[1] ) {
-						$only_key = implode( '-', array_slice( $tokens, 3 ) );
-					}
+					$modified_message[ $only_key ] = esc_attr( $value );
 				}
-				$modified_message[ $only_key ] = esc_attr( $value );
 			}
 
 			$form_submit_response = [
@@ -395,8 +428,6 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
-			$is_mail_sent ? wp_send_json_success( __( 'Email sent successfully.', 'sureforms' ) ) : wp_send_json_error( __( 'Failed to send form data.', 'sureforms' ) );
-
 		} else {
 			$response = [
 				'success' => false,
@@ -405,6 +436,50 @@ class Form_Submit {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Send Email.
+	 *
+	 * @param string                $id       Form ID.
+	 * @param array<string, string> $meta_data Meta data.
+	 * @since 0.0.1
+	 * @return array<mixed> Array containing the response data.
+	 */
+	public static function send_email( $id, $meta_data ) {
+		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
+		$smart_tags         = new Smart_Tags();
+		$is_mail_sent       = false;
+		$emails             = [];
+
+		if ( is_iterable( $email_notification ) ) {
+			foreach ( $email_notification as $notification ) {
+				foreach ( $notification as $item ) {
+					if ( true === $item['status'] ) {
+						$to             = $item['email_to'];
+						$to             = $smart_tags->process_smart_tags( $to );
+						$subject        = $item['subject'];
+						$subject        = $smart_tags->process_smart_tags( $subject );
+						$email_body     = $item['email_body'];
+						$email_template = new Email_Template();
+						$message        = $email_template->render( $meta_data, $email_body );
+						$headers        = "From: $to\r\n" .
+						"Reply-To: $to\r\n" .
+						'X-Mailer: PHP/' . phpversion() . "\r\n" .
+						'Content-Type: text/html; charset=utf-8';
+						$sent           = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent   = $sent;
+						$emails[]       = $to;
+					}
+				}
+			}
+		}
+
+		return [
+			'success' => $is_mail_sent,
+			'emails'  => $emails,
+		];
+
 	}
 
 	/**

@@ -15,7 +15,6 @@ import Range from '@Components/range/Range.js';
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isPageBreak } = props;
-	const root = document.documentElement.querySelector( 'body' );
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -24,6 +23,7 @@ function GeneralSettings( props ) {
 	const [ rootContainer, setRootContainer ] = useState(
 		document.getElementById( 'srfm-form-container' )
 	);
+	const root = document.documentElement.querySelector( 'body' );
 
 	// if device type is desktop then
 	useEffect( () => {
@@ -68,13 +68,6 @@ function GeneralSettings( props ) {
 				rootContainer.classList.remove( 'srfm-hide-asterisk' );
 			}
 		}
-		// Button text
-		root.style.setProperty(
-			'--srfm-submit-button-text',
-			sureformsKeys._srfm_submit_button_text
-				? '"' + sureformsKeys._srfm_submit_button_text + '"'
-				: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-		);
 
 		// Background image
 		root.style.setProperty(
@@ -142,16 +135,6 @@ function GeneralSettings( props ) {
 			}
 		}
 
-		// Button
-		if ( option === '_srfm_submit_button_text' ) {
-			root.style.setProperty(
-				'--srfm-submit-button-text',
-				value
-					? '"' + value + '"'
-					: '"' + __( 'SUBMIT', 'sureforms' ) + '"'
-			);
-		}
-
 		const option_array = {};
 
 		if ( key_id ) {
@@ -206,24 +189,6 @@ function GeneralSettings( props ) {
 						} }
 					/>
 				) }
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Submit Button', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SRFMTextControl
-					data={ {
-						value: sureformsKeys._srfm_submit_button_text,
-						label: '_srfm_submit_button_text',
-					} }
-					label={ __( 'Submit Button Text', 'sureforms' ) }
-					placeholder={ __( 'SUBMIT', 'sureforms' ) }
-					value={ sureformsKeys._srfm_submit_button_text }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_submit_button_text', value );
-					} }
-					isFormSpecific={ true }
-				/>
 			</SRFMAdvancedPanelBody>
 			{ isPageBreak && (
 				<SRFMAdvancedPanelBody

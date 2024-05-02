@@ -1,13 +1,28 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-address-block {
+			padding-left: 0 !important;
+			padding-right: 0 !important;
+			margin-bottom: 0.5em !important;
+
+			.srfm-address-label-ctn {
+				padding: 0 0.3em;
+			}
+
+			.srfm-address-help-ctn {
+				padding: 0 0.3em;
+				margin-bottom: 0.7em;
+			}
+
 			.srfm-block-wrap {
 				display: flex;
 				flex-wrap: wrap;
 
+				.srfm-block-single {
+					margin-bottom: 0.5em !important;
+				}
+
 				.srfm-input-common {
-					border-radius: 0;
-					border-bottom-width: 0;
 					padding-right: 0.875em;
 					&:nth-child( 1 ) {
 						border-top-left-radius: var( --srfm-border-radius );
@@ -65,6 +80,10 @@
 						cursor: pointer;
 					}
 				}
+			}
+
+			.srfm-description {
+				margin-top: 0em !important;
 			}
 		}
 	}

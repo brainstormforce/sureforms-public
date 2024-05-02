@@ -15,8 +15,8 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { CheckboxComponent } from './components/default';
+import { useGetCurrentFormId } from '@Attributes/getFormId';
+import { CheckboxComponent } from '../components/default.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
@@ -135,6 +135,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 				attributes={ attributes }
+				blockType="checkbox"
 			/>
 			{ checkboxHelpText !== '' && (
 				<RichText

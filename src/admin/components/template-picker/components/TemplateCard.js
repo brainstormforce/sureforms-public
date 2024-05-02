@@ -2,6 +2,7 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import { handleAddNewPost } from '@Utils/Helpers';
+import { MdLockOutline } from 'react-icons/md';
 
 const TemplateCard = ( {
 	templateName,
@@ -10,6 +11,7 @@ const TemplateCard = ( {
 	formData,
 	color,
 	templateMetas,
+	isProTemplate,
 } ) => {
 	const [ hoverClass, setHoverClass ] = useState( '' );
 	const blankImg = srfm_admin.preview_images_url + 'blank.svg';
@@ -33,8 +35,20 @@ const TemplateCard = ( {
 					className={ `srfm-ts-preview-wrap${ hoverClass }` }
 					style={ { backgroundColor: color } }
 				>
-					<>
-						<div className="srfm-tc-btn-container">
+					{ isProTemplate && (
+						<div className="srfm-tc-pro-badge">
+							{ __( 'PREMIUM', 'sureforms' ) }
+						</div>
+					) }
+					<div className="srfm-tc-btn-container">
+						{ isProTemplate && ! srfm_admin.is_pro_active ? (
+							<button className="srfm-tc-hover-use-btn srfm-common-btn">
+								<div className="srfm-tc-upgrade-to-pro-btn">
+									<MdLockOutline />
+									{ __( 'Upgrade To Pro', 'sureforms' ) }
+								</div>
+							</button>
+						) : (
 							<button
 								className="srfm-tc-hover-use-btn srfm-common-btn"
 								onClick={ () =>
@@ -47,8 +61,8 @@ const TemplateCard = ( {
 							>
 								{ __( 'Use Template', 'sureforms' ) }
 							</button>
-						</div>
-					</>
+						) }
+					</div>
 					<img
 						className="srfm-ts-preview-image"
 						src={ templatePreview }

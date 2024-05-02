@@ -61,7 +61,7 @@
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block,
-		.g-recaptcha {
+		.g-recaptcha:not( .srfm-submit-button, .srfm-custom-button ) {
 			padding: 0 0.3em;
 		}
 
@@ -153,7 +153,7 @@
 				}
 			}
 
-			.srfm-dropdown-common-wrap:not( .srfm-address-country-wrap ) {
+			.srfm-dropdown-common-wrap:not( .srfm-address-compact-country-wrap ) {
 				.srfm-dropdown-common {
 					.ts-dropdown {
 						font-size: 0.8em;
@@ -240,10 +240,15 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		p {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+		}
 		min-height: 40vh;
 
 		&.srfm-active {
-			display: flex;
+			display: block;
 		}
 
 		.srfm-success-box-header {
