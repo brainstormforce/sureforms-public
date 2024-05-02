@@ -3,7 +3,7 @@
  * Sureforms Background Process.
  *
  * @package sureforms.
- * @since 0.0.1
+ * @since x.x.x
  */
 
 namespace SRFM\Inc;
@@ -33,19 +33,19 @@ class Background_Process {
 	 */
 	protected $namespace = 'sureforms/v1';
 	/**
-	 * Namespace.
+	 * Submission Id.
 	 *
 	 * @var int
 	 */
 	protected $submission_id = 0;
 	/**
-	 * Namespace.
+	 * Form Id.
 	 *
 	 * @var int
 	 */
 	protected $form_id = 0;
 	/**
-	 * Namespace.
+	 * Submission Data.
 	 *
 	 * @var array<mixed>
 	 */
@@ -63,8 +63,8 @@ class Background_Process {
 	/**
 	 * Add custom API Route for 'After Submission' background process.
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
 	public function register_custom_endpoint() {
 		register_rest_route(
@@ -136,7 +136,13 @@ class Background_Process {
 	 * @return bool
 	 */
 	public function trigger_after_submission_process() {
-		// @phpstan-ignore-next-line
+		/**
+		 * Suppress treatPhpDocTypesAsCertain
+		 *
+		 * @link https://github.com/brainstormforce/sureforms/pull/637#discussion_r1587970817
+		 * @link https://phpstan.org/config-reference#treatphpdoctypesascertain
+		 * @phpstan-ignore-next-line
+		 * */
 		if ( ! is_integer( $this->form_id ) || ! is_array( $this->submission_data ) ) {
 			return false;
 		}

@@ -167,8 +167,7 @@ async function handleFormSubmission(
 				showSuccessMessage( successMessage, form, afterSubmission );
 				loader.classList.remove( 'srfm-active' );
 				if ( formStatus?.data?.after_submit ) {
-					const afterSubmitResponse = await afterSubmit( formStatus );
-					console.log( afterSubmitResponse );
+					void afterSubmit( formStatus );
 				}
 			} else {
 				redirectToUrl( successUrl );
