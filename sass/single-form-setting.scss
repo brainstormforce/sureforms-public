@@ -645,89 +645,12 @@ $placeholder_color: #9ca3af;
 			}
 		}
 
-		// .components-textarea-control__input {
-		// 	font-size: 0.8em;
-		// 	border: 1px solid $border_color;
-		// 	border-radius: 0.25em;
-		// 	padding: 0.75em 1em;
-
-		// 	&:focus {
-		// 		border: 1px solid $primary_color;
-		// 		box-shadow: 0 0 0 0.5px $primary_color;
-		// 	}
-		// }
-
 		textarea {
 			&:focus {
 				border: 1px solid $primary_color;
 				box-shadow: 0 0 0 0.5px $primary_color;
 			}
 		}
-
-		// .srfm-style-1-tabs {
-		// 	> .components-tab-panel__tabs {
-		// 		border-bottom: 1px solid $border_color;
-		// 		.components-tab-panel__tabs-item {
-		// 			font-size: 0.7em;
-		// 			color: $content_color;
-
-		// 			&.active-tab {
-		// 				color: $primary_color;
-		// 				border-bottom: 2px solid $primary_color;
-		// 			}
-		// 		}
-		// 	}
-
-		// 	.components-tab-panel__tab-content {
-		// 		.srfm-sub-section-heading {
-		// 			max-width: 560px;
-		// 			margin-bottom: 1em;
-
-		// 			h2 {
-		// 				font-size: 0.8em;
-		// 				line-height: normal;
-		// 				font-weight: 500;
-		// 				margin-bottom: 0.5em;
-		// 			}
-
-		// 			p {
-		// 				font-size: 0.7em;
-		// 				line-height: normal;
-		// 			}
-
-		// 			.srfm-link {
-		// 				a {
-		// 					font-size: 0.7em;
-		// 					color: $primary_color;
-		// 					text-decoration: none;
-		// 					box-shadow: none;
-
-		// 					&:nth-last-child( 1 ) {
-		// 						margin-left: 0.3em;
-		// 						padding-left: 0.3em;
-		// 						border-left: 1px solid $border_color;
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-
-		// 		.srfm-sub-section-content {
-		// 			padding: 1.2em;
-		// 			border: 1px solid $border_color;
-		// 			border-radius: 0.2em;
-		// 		}
-		// 	}
-		// }
-
-		// .components-tab-panel__tabs-item {
-		// 	&hover {
-		// 		color: $primary_color;
-		// 	}
-
-		// 	.srfm-active-editor {
-		// 		background: $primary_color;
-		// 	}
-		// }
 
 		.components-base-control {
 			font-size: 20px;
