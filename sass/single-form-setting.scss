@@ -33,7 +33,7 @@ $placeholder_color: #9ca3af;
 		border-bottom: 1px solid var( --colors-gray-200, #e5e7eb );
 		background: var( --base-white, #fff );
 		.components-modal__header-heading-container {
-			gap: 10px;
+			align-items: center;
 			.components-modal__icon-container {
 				display: inline-flex;
 			}
