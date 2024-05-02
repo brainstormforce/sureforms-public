@@ -392,7 +392,7 @@ class Helper {
 	}
 
 	/**
-	 * Map_slug_to_submission_data.
+	 * Map slug to submission data.
 	 *
 	 * @param array<mixed> $submission_data submission_data.
 	 * @since x.x.x
