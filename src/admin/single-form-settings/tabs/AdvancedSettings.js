@@ -26,6 +26,12 @@ function AdvancedSettings( props ) {
 		useState( '' );
 	const [ sureformsV3Site, setSureformsV3Site ] = useState( '' );
 	const [ sureformsV3Secret, setSureformsV3Secret ] = useState( '' );
+	const [ sureformsCfTurnstileSite, setSureformsCfTurnstileSite ] =
+		useState( '' );
+	const [ sureformsCfTurnstileSecret, setSureformsCfTurnstileSecret ] =
+		useState( '' );
+	const [ showRecaptchaConflictNotice, setsShowRecaptchaConflictNotice ] =
+		useState( false );
 
 	const [ showErr, setShowErr ] = useState( false );
 	const [ isOpen, setOpen ] = useState( false );
@@ -86,6 +92,8 @@ function AdvancedSettings( props ) {
 						srfm_v2_invisible_secret_key,
 						srfm_v3_site_key,
 						srfm_v3_secret_key,
+						srfm_cf_turnstile_site_key,
+						srfm_cf_turnstile_secret_key,
 					} = data.srfm_security_settings_options;
 					setSureformsV2CheckboxSite(
 						srfm_v2_checkbox_site_key || ''
@@ -101,6 +109,31 @@ function AdvancedSettings( props ) {
 					);
 					setSureformsV3Site( srfm_v3_site_key || '' );
 					setSureformsV3Secret( srfm_v3_secret_key || '' );
+
+					// CloudFlare Turnstile
+					setSureformsCfTurnstileSite(
+						srfm_cf_turnstile_site_key || ''
+					);
+					setSureformsCfTurnstileSecret(
+						srfm_cf_turnstile_secret_key || ''
+					);
+
+					// show the notice if 2 recaptcha site and secret keys are not empty.
+					const v2_checkbox =
+						srfm_v2_checkbox_site_key &&
+						srfm_v2_checkbox_secret_key;
+					const v2_invisible =
+						srfm_v2_invisible_site_key &&
+						srfm_v2_invisible_secret_key;
+					const v3 = srfm_v3_site_key && srfm_v3_secret_key;
+
+					if (
+						( v2_checkbox && v2_invisible ) ||
+						( v2_checkbox && v3 ) ||
+						( v2_invisible && v3 )
+					) {
+						setsShowRecaptchaConflictNotice( true );
+					}
 				}
 			} catch ( error ) {
 				console.error( 'Error fetching data:', error );
@@ -116,87 +149,169 @@ function AdvancedSettings( props ) {
 				title={ __( 'Security Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
-				<PanelRow>
-					<p className="srfm-form-notice">
-						{ __(
-							'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-							'sureforms'
-						) }
-					</p>
-				</PanelRow>
 				<SelectControl
-					label={ __(
-						'Select the reCAPTCHA Version to Use',
-						'sureforms'
-					) }
-					value={ sureformsKeys._srfm_form_recaptcha }
+					label={ __( 'Security Type', 'sureforms' ) }
+					value={ sureformsKeys._srfm_captcha_security_type }
 					options={ [
-						{ label: 'None', value: 'none' },
 						{
-							label: 'reCAPTCHA v2 Checkbox',
-							value: 'v2-checkbox',
+							value: 'none',
+							label: __( 'None', 'sureforms' ),
 						},
 						{
-							label: 'reCAPTCHA v2 Invisible',
-							value: 'v2-invisible',
+							value: 'g-recaptcha',
+							label: __( 'Google reCAPTCHA', 'sureforms' ),
 						},
 						{
-							label: 'reCAPTCHA v3',
-							value: 'v3-reCAPTCHA',
+							value: 'cf-turnstile',
+							label: __( 'CloudFlare Turnstile', 'sureforms' ),
 						},
 					] }
 					onChange={ ( value ) => {
-						if ( value === 'v2-checkbox' ) {
+						if ( value === 'cf-turnstile' ) {
 							if (
-								sureformsV2CheckboxSite !== '' &&
-								sureformsV2CheckboxSecret !== ''
+								sureformsCfTurnstileSite !== '' &&
+								sureformsCfTurnstileSecret !== ''
 							) {
 								setShowErr( false );
-								updateMeta( '_srfm_form_recaptcha', value );
-							} else {
-								setShowErr( true );
-							}
-						} else if ( value === 'v2-invisible' ) {
-							if (
-								sureformsV2InvisibleSecret !== '' &&
-								sureformsV2InvisibleSite !== ''
-							) {
-								setShowErr( false );
-								updateMeta( '_srfm_form_recaptcha', value );
-							} else {
-								setShowErr( true );
-							}
-						} else if ( value === 'v3-reCAPTCHA' ) {
-							if (
-								sureformsV3Secret !== '' &&
-								sureformsV3Site !== ''
-							) {
-								setShowErr( false );
-								updateMeta( '_srfm_form_recaptcha', value );
+								updateMeta(
+									'_srfm_captcha_security_type',
+									value
+								);
 							} else {
 								setShowErr( true );
 							}
 						} else {
 							setShowErr( false );
-							updateMeta( '_srfm_form_recaptcha', value );
+							updateMeta( '_srfm_captcha_security_type', value );
 						}
 					} }
 					__nextHasNoMarginBottom
 				/>
-				{ showErr && (
-					<p style={ { color: 'red' } }>
-						{ __(
-							'Please configure the reCAPTCHA keys correctly',
-							'sureforms'
+				{ sureformsKeys._srfm_captcha_security_type ===
+					'g-recaptcha' && (
+					<>
+						{ showRecaptchaConflictNotice && (
+							<PanelRow>
+								<p className="srfm-form-notice">
+									{ __(
+										'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+										'sureforms'
+									) }
+								</p>
+							</PanelRow>
 						) }
-					</p>
+						<SelectControl
+							label={ __(
+								'Select the reCAPTCHA Version to Use',
+								'sureforms'
+							) }
+							value={ sureformsKeys._srfm_form_recaptcha }
+							options={ [
+								{ label: 'None', value: 'none' },
+								{
+									label: __(
+										'reCAPTCHA v2 Checkbox',
+										'sureforms'
+									),
+									value: 'v2-checkbox',
+								},
+								{
+									label: __(
+										'reCAPTCHA v2 Invisible',
+										'sureforms'
+									),
+									value: 'v2-invisible',
+								},
+								{
+									label: __( 'reCAPTCHA v3', 'sureforms' ),
+									value: 'v3-reCAPTCHA',
+								},
+							] }
+							onChange={ ( value ) => {
+								if ( value === 'v2-checkbox' ) {
+									if (
+										sureformsV2CheckboxSite !== '' &&
+										sureformsV2CheckboxSecret !== ''
+									) {
+										setShowErr( false );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
+									} else {
+										setShowErr( true );
+									}
+								} else if ( value === 'v2-invisible' ) {
+									if (
+										sureformsV2InvisibleSecret !== '' &&
+										sureformsV2InvisibleSite !== ''
+									) {
+										setShowErr( false );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
+									} else {
+										setShowErr( true );
+									}
+								} else if ( value === 'v3-reCAPTCHA' ) {
+									if (
+										sureformsV3Secret !== '' &&
+										sureformsV3Site !== ''
+									) {
+										setShowErr( false );
+										updateMeta(
+											'_srfm_form_recaptcha',
+											value
+										);
+									} else {
+										setShowErr( true );
+									}
+								} else {
+									setShowErr( false );
+									updateMeta( '_srfm_form_recaptcha', value );
+								}
+							} }
+							__nextHasNoMarginBottom
+						/>
+					</>
 				) }
+
 				<p className="components-base-control__help">
 					{ __(
-						'Before selecting the reCAPTCHA version. Please make sure you have configured reCAPTCHA in the Global Settings',
+						'Before selecting the security type. Please make sure you have configured API keys in the Global Settings - here',
 						'sureforms'
 					) }
 				</p>
+				{ showErr && (
+					<p style={ { color: 'red' } }>
+						{ __(
+							'Please configure the API keys correctly',
+							'sureforms'
+						) }
+						<a
+							href={ srfm_admin.security_settings_url }
+							target="_blank"
+							rel="noreferrer"
+							style={ {
+								display: 'flex',
+								alignItems: 'center',
+							} }
+						>
+							{ __( 'Global Settings', 'sureforms' ) }
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								width="16"
+								height="16"
+								aria-hidden="true"
+								focusable="false"
+							>
+								<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
+							</svg>
+						</a>
+					</p>
+				) }
 			</SRFMAdvancedPanelBody>
 			<MoreSettingsButton
 				settingName={ __( 'Email Notification', 'sureforms' ) }

@@ -57,14 +57,14 @@ class Generate_Form_Markup {
 	 * Handle Form status
 	 *
 	 * @param int|string $id Contains form ID.
-	 * @param boolean    $hide_title_current_page Boolean to show/hide form title.
+	 * @param boolean    $show_title_current_page Boolean to show/hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $hide_title_current_page = false, $sf_classname = '', $post_type = 'post' ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post' ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -122,6 +122,7 @@ class Generate_Form_Markup {
 			$btn_bg_type          = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
 			$instant_form         = Helper::get_meta_value( $id, '_srfm_instant_form' );
 			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
 			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
 			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
@@ -148,19 +149,25 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full               = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version  = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
-			$show_title_on_page = Helper::get_meta_value( $id, '_srfm_page_form_title' );
+			$full                       = 'justify' === $button_alignment ? true : false;
+			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
+			$srfm_cf_appearance_mode    = '';
+			$srfm_cf_turnstile_site_key = '';
 
 			$google_captcha_site_key = '';
 
-			if ( 'none' !== $recaptcha_version ) {
+			if ( 'none' !== $security_type ) {
 				$global_setting_options = get_option( 'srfm_security_settings_options' );
 			} else {
 				$global_setting_options = [];
 			}
 
-			if ( is_array( $global_setting_options ) ) {
+			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
+				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
+				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			}
+
+			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
 				switch ( $recaptcha_version ) {
 					case 'v2-checkbox':
 						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
@@ -266,7 +273,7 @@ class Generate_Form_Markup {
 				}
 			</style>
 			<?php
-			if ( 'sureforms_form' !== $current_post_type && '1' !== $show_title_on_page && true !== $hide_title_current_page ) {
+			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
 				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
@@ -327,7 +334,7 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 
-					<?php if ( '' !== $google_captcha_site_key ) : ?>
+					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
@@ -357,6 +364,25 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
+						<?php
+
+						if ( 'cf-turnstile' === $security_type ) :
+							// Cloudflare Turnstile script.
+							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+								SRFM_SLUG . '-cf-turnstile',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								[],
+								null,
+								[
+									false,
+									'defer' => true,
+								]
+							);
+							?>
+							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+							<?php
+						endif;
+						?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 

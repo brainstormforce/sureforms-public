@@ -8,9 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -21,57 +18,49 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Input_Markup extends Base {
-	use Get_Instance;
+
+	/**
+	 * Maximum length of text allowed for an input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $max_text_length;
+
+	/**
+	 * Initialize the properties based on block attributes.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since x.x.x
+	 */
+	public function __construct( $attributes ) {
+		$this->slug            = 'input';
+		$this->max_text_length = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
+		$this->set_properties( $attributes );
+		$this->set_input_label( __( 'Text Field', 'sureforms' ) );
+		$this->set_error_msg( $attributes, 'srfm_input_block_required_text' );
+		$this->set_duplicate_msg( $attributes, 'srfm_input_block_unique_text' );
+		$this->set_unique_slug();
+		$this->set_field_name( $this->unique_slug );
+		$this->set_markup_properties( $this->input_label );
+	}
 
 	/**
 	 * Render input markup
 	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
+	 * @since x.x.x
 	 * @return string|boolean
 	 */
-	public function markup( $attributes ) {
-		$block_id        = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
-		$form_id         = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
-		$default         = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$required        = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$is_unique       = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$duplicate_msg   = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-		$placeholder     = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$label           = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$field_width     = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$help            = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg       = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$max_text_length = isset( $attributes['textLength'] ) ? $attributes['textLength'] : '';
-		$class_name      = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$block_slug      = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
-		$slug            = 'input';
-
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-
-		// Attributes.
-		$placeholder          = $placeholder ? $placeholder : '';
-		$max_length           = $max_text_length ? $max_text_length : '';
-		$aria_require         = $required ? 'true' : 'false';
-		$aria_unique          = $is_unique ? 'true' : 'false';
-		$default_value        = $default ? $default : '';
-		$input_label_fallback = $label ? $label : __( 'Text Field', 'sureforms' );
-		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
-
-		$unique_slug       = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$field_name        = $unique_slug . '-' . $block_slug;
-		$conditional_class = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
-
+	public function markup() {
 		ob_start(); ?>
-
-			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
-			<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+			<?php echo wp_kses_post( $this->label_markup ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="text" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" data-unique="<?php echo esc_attr( $aria_unique ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" maxlength="<?php echo esc_attr( $max_length ); ?>" value="<?php echo esc_attr( $default_value ); ?>" />
-					<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' );  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" placeholder="<?php echo esc_attr( $this->placeholder ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" />
+					<?php echo $this->error_svg;  //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
+				<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

@@ -1,0 +1,18 @@
+#!/bin/bash
+# Script to checkout a branch and build the project
+
+# Check if branch name is provided as an argument
+if [ -z "$1" ]; then
+    echo "Error: No branch name provided."
+    echo "Usage: ./checkout-and-build.sh <branch-name>"
+    exit 1
+fi
+
+# Assign the first argument to a variable
+branch_name=$1
+
+# Checkout the specified branch
+git checkout "$branch_name"
+
+# Run the build command
+npm run build

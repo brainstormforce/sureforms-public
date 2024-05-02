@@ -71,7 +71,7 @@ export const AddressCompactBlock = ( {
 					<input
 						type="text"
 						className={ `srfm-input-common srfm-input-address-compact-country srfm-dropdown-common` }
-						id={ `srfm-${ slug }-state-${ blockID }` }
+						id={ `srfm-${ slug }-country-${ blockID }` }
 						aria-required={ required ? 'true' : 'false' }
 						placeholder={ countryPlaceholder }
 						readOnly

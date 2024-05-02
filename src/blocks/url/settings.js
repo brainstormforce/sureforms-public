@@ -95,7 +95,7 @@ export default ( { attributes, setAttributes } ) => {
 						/>
 						{ required && (
 							<SRFMTextControl
-								label={ __( 'Error message', 'sureforms' ) }
+								label={ __( 'Error Message', 'sureforms' ) }
 								data={ {
 									value: errorMsg,
 									label: 'errorMsg',
@@ -108,7 +108,7 @@ export default ( { attributes, setAttributes } ) => {
 							/>
 						) }
 						<SRFMTextControl
-							label={ __( 'Help', 'sureforms' ) }
+							label={ __( 'Help Text', 'sureforms' ) }
 							value={ help }
 							data={ {
 								value: help,
