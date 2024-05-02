@@ -85,8 +85,10 @@ class Frontend_Assets {
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',
 			[
-				'site_url' => site_url(),
-				'nonce'    => wp_create_nonce( 'wp_rest' ),
+				'site_url'           => site_url(),
+				'nonce'              => wp_create_nonce( 'wp_rest' ),
+				'nonce_after_submit' => wp_create_nonce( 'wp_rest' ),
+
 			]
 		);
 	}
@@ -157,4 +159,3 @@ class Frontend_Assets {
 	}
 
 }
-

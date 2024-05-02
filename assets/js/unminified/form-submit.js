@@ -63,7 +63,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	}
 } );
 
-function submitFormData( form ) {
+async function submitFormData( form ) {
 	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
@@ -78,7 +78,7 @@ function submitFormData( form ) {
 		}
 	}
 
-	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
+	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': srfm_submit.nonce,
@@ -87,8 +87,24 @@ function submitFormData( form ) {
 	} )
 		.then( ( response ) => {
 			if ( response.ok ) {
-				return response;
+				return response.json();
 			}
+		} )
+		.catch( ( e ) => {
+			console.log( e );
+		} );
+}
+
+async function afterSubmit( formStatus ) {
+	const site_url = window.srfm_submit.site_url;
+	const submissionId = formStatus.data.submission_id;
+	return await fetch( `${ site_url }/wp-json/sureforms/v1/after-submission/` + submissionId, {
+		headers: {
+			'X-WP-Nonce': window.srfm_submit.nonce_after_submit,
+		},
+	} )
+		.then( ( response ) => {
+			return response.json();
 		} )
 		.catch( ( e ) => {
 			console.log( e );
@@ -150,6 +166,10 @@ async function handleFormSubmission(
 			if ( submitType === 'same page' ) {
 				showSuccessMessage( successMessage, form, afterSubmission );
 				loader.classList.remove( 'srfm-active' );
+				if ( formStatus?.data?.after_submit ) {
+					const afterSubmitResponse = await afterSubmit( formStatus );
+					console.log( afterSubmitResponse );
+				}
 			} else {
 				redirectToUrl( successUrl );
 				loader.classList.remove( 'srfm-active' );

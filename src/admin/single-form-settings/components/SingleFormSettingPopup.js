@@ -51,29 +51,31 @@ const SingleFormSettingsPopup = ( props ) => {
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
-		]
+		],
+		setSelectedTab
 	);
 
 	return (
 		<div className="srfm-setting-modal-container">
 			<div className="srfm-modal-sidebar">
 				{ tabs.map( ( tabItem, tabIndex ) => (
-					<div
-						key={ tabIndex }
-						className={ `srfm-modal-tab ${
-							tabItem.id === selectedTab
+					tabItem.parent === undefined && (
+						<div
+							key={ tabIndex }
+							className={ `srfm-modal-tab ${ tabItem.id === selectedTab
 								? 'srfm-modal-tab-active'
 								: ''
-						}` }
-						onClick={ () => setSelectedTab( tabItem.id ) }
-					>
-						<span className="srfm-modal-tab-icon">
-							{ tabItem.icon }
-						</span>
-						<span className="srfm-modal-tab-text">
-							<p>{ tabItem.title }</p>
-						</span>
-					</div>
+							}` }
+							onClick={ () => setSelectedTab( tabItem.id ) }
+						>
+							<span className="srfm-modal-tab-icon">
+								{ tabItem.icon }
+							</span>
+							<span className="srfm-modal-tab-text">
+								<p>{ tabItem.title }</p>
+							</span>
+						</div>
+					)
 				) ) }
 			</div>
 			{ /* Modal Content */ }

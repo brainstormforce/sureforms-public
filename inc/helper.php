@@ -391,4 +391,20 @@ class Helper {
 		return self::get_string_value( $decoded_data );
 	}
 
+	/**
+	 * Map_slug_to_submission_data.
+	 *
+	 * @param array<mixed> $submission_data submission_data.
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public static function map_slug_to_submission_data( $submission_data = [] ) {
+		$mapped_data = [];
+		foreach ( $submission_data as $key => $value ) {
+			$label                = explode( '-lbl-', $key )[1];
+			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$mapped_data[ $slug ] = $value;
+		}
+		return $mapped_data;
+	}
 }

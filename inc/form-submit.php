@@ -318,11 +318,19 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
+			/**
+			 * Hook for enabling background processes.
+			 *
+			 * @param array $form_data form data related to submission.
+			 */
+			do_action( 'srfm_after_submission_process', $form_data );
+
 			$response = [
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => [
-					'name' => $name,
+					'name'         => $name,
+					'after_submit' => false,
 				],
 			];
 
@@ -399,7 +407,9 @@ class Form_Submit {
 				'success' => true,
 				'message' => __( 'Form submitted successfully', 'sureforms' ),
 				'data'    => [
-					'name' => $name,
+					'name'          => $name,
+					'submission_id' => $post_id,
+					'after_submit'  => true,
 				],
 			];
 

@@ -265,7 +265,7 @@ function AdvancedSettings( props ) {
 				<Modal
 					onRequestClose={ closeModal }
 					title={ __( 'Single Form Setting', 'sureforms' ) }
-					className="srfm-header-settings-modal"
+					className="srfm-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
