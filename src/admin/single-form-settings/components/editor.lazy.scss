@@ -1,16 +1,7 @@
-.srfm-custom-css-panel.components-panel__body.is-opened {
-	padding: 0;
-	overflow: hidden;
-	height: 100%;
-
-	.components-panel__body-title {
-		padding: 16px 16px 0 16px;
-	}
-
+.srfm-custom-css-panel {
 	.CodeMirror-wrap {
 		border-top: 1px solid #ddd6d6;
 		border-bottom: 1px solid #ddd6d6;
-		height: calc( 100vh - 185px );
 
 		.CodeMirror-scroll {
 			width: 100%;
@@ -27,18 +18,6 @@
 		.CodeMirror-vscrollbar {
 			overflow-y: hidden;
 		}
-	}
-
-	.srfm-custom-css-notice {
-		font-style: italic;
-		padding: 0 16px;
-	}
-
-	.srfm-custom-css-example {
-		font-size: 11px;
-		font-style: italic;
-		line-height: 1.4;
-		color: #a4afb7;
 	}
 }
 
