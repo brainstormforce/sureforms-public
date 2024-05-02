@@ -28,10 +28,11 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
-			node.textContent = customCSS;
+			node.textContent = '.editor-styles-wrapper{' + customCSS + '}';
 			document.head.appendChild( node );
 		} else {
-			isExistStyle.textContent = customCSS;
+			isExistStyle.textContent =
+				'.editor-styles-wrapper{' + customCSS + '}';
 		}
 	}, [ customCSS ] );
 
