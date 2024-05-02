@@ -48,6 +48,10 @@ export default ( { title, description, urlText } ) => {
 						css={ css`
 							text-decoration: none;
 							color: #d54407;
+
+							&:hover {
+								color: #d54407;
+							}
 						` }
 						rel="noreferrer"
 					>

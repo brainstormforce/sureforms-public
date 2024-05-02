@@ -103,7 +103,11 @@ $placeholder_color: #9ca3af;
 			}
 
 			&.active {
-				background-color: $option_active_bg_color;
+				background-color: #ffefe8;
+
+				svg {
+					fill: #d54407;
+				}
 
 				svg,
 				path {
