@@ -67,4 +67,4 @@ export default FormPageHeader;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );
