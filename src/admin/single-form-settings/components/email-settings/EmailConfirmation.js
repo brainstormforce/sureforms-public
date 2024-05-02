@@ -13,14 +13,14 @@ const EmailConfirmation = ( props ) => {
 		status: data.status || false,
 		is_raw_format: data.is_raw_format || false,
 		name: data.name || 'New Notification',
-		email_to: data.email_to,
-		subject: data.subject,
-		email_reply_to: data.email_reply_to,
-		email_bcc: data.email_bcc,
-		email_cc: data.email_cc,
-		email_body: data.email_body,
+		email_to: data.email_to || '',
+		subject: data.subject || '',
+		email_reply_to: data.email_reply_to || '',
+		email_bcc: data.email_bcc || '',
+		email_cc: data.email_cc || '',
+		email_body: data.email_body || '',
 	} );
-	const [ dynamicSubject, setDynamicSubject ] = useState( data.subject );
+	const [ dynamicSubject, setDynamicSubject ] = useState( data.subject || '' );
 	const handleOnChangeEmailBodyContent = ( newContent ) => {
 		setFormData( { ...formData, email_body: newContent } );
 	};
