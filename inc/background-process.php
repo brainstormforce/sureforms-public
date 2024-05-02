@@ -140,8 +140,9 @@ class Background_Process {
 		if ( ! is_integer( $this->form_id ) || ! is_array( $this->submission_data ) ) {
 			return false;
 		}
-		$form_data            = $this->submission_data;
-		$form_data['form_id'] = $this->form_id;
+		$form_data                  = $this->submission_data;
+		$form_data['form_id']       = $this->form_id;
+		$form_data['submission_id'] = $this->form_id;
 		/**
 		 * Hook for enabling background processes.
 		 *

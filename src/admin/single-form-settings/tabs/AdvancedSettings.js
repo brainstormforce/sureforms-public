@@ -268,6 +268,7 @@ function AdvancedSettings( props ) {
 					className="srfm-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
+					bodyOpenClassName="srfm-settings-modal-body"
 				>
 					<SingleFormSettingsPopup
 						sureformsKeys={ sureformsKeys }

@@ -32,6 +32,10 @@
 	.components-modal__content {
 		background-color: #f4f9fa;
 		padding: 0;
+
+		& > div:last-child{
+			height: 100%;
+		}
 	}
 
 	.components-modal__header .components-button svg {
@@ -42,6 +46,7 @@
 
 	.srfm-setting-modal-container {
 		display: flex;
+		height: 100%;
 
 		.srfm-modal-sidebar {
 			display: flex;
@@ -100,6 +105,7 @@
 
 		.srfm-modal-main{
 			width: 100%;
+			height: 100%;
 		}
 
 		.srfm-modal-content {
@@ -112,6 +118,7 @@
 			width: calc(100% - 290px);
 			margin-left: 290px;
 			overflow-y: auto;
+			height: 100%;
 			
 			.srfm-modal-inner-content {
 				display: flex;
@@ -260,78 +267,17 @@
 						}
 
 						.srfm-modal-option-box {
-							.srfm-modal-label {
+							.srfm-modal-label ,
+							.srfm-modal-label .components-base-control__label{
 								color: var( --dashboard-heading, #1e293b );
 								font-size: 14px;
 								font-style: normal;
 								font-weight: 500;
 								line-height: 20px;
+								text-transform:capitalize;
 							}
-							.srfm-modal-input {
-								min-width: 720px;
-								width: 100%;
-								padding: 10px 8px 10px 12px;
-								align-items: center;
-								gap: 116px;
-								flex: 1 0 0;
-								border-radius: var(--border-radius-4, 4px);
-								border: 1px solid #dce0e6;
-								background: #fff;
-								box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
-								margin-top: 8px;
-								&.with-icon {
-									padding: 10px 24px 10px 12px;
-								}
-							}
-							.srfm-options-wrapper {
-								margin-top: 8px;
-								display: flex;
-								gap: 12px;
-								.srfm-option {
-									border: 1px solid #dce0e6;
-									padding: 8px 16px 8px 16px;
-									border-radius: 6px;
-									display: flex;
-									align-items: center;
-									gap: 8px;
-									.srfm-option-input {
-										margin: 0;
-										&:checked {
-											background-color: #125d9f;
-										}
-										&:checked::before {
-											content: "";
-											border-radius: 50%;
-											width: 0.5rem;
-											height: 0.5rem;
-											margin: 0.1875rem;
-											background-color: #fff;
-											line-height: 1.14285714;
-										}
-									}
-									.srfm-option-text {
-										color: var( --dashboard-heading, #1e293b );
-										font-size: 14px;
-										font-style: normal;
-										line-height: 20px;
-									}
-								}
-								.srfm-select-page {
-									min-width: 720px;
-									width: 100%;
-									height: 36px;
-								}
-							}
-						}
-						.srfm-modal-option-box {
-							.srfm-modal-label {
-								color: var( --dashboard-heading, #1e293b );
-								font-size: 14px;
-								font-style: normal;
-								font-weight: 500;
-								line-height: 20px;
-							}
-							.srfm-modal-input {
+							.srfm-modal-input,
+							.srfm-modal-input .components-text-control__input{
 								min-width: 720px;
 								width: 100%;
 								padding: 10px 8px 10px 12px;
