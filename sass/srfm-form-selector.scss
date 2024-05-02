@@ -47,6 +47,15 @@
 	box-shadow: none;
 }
 
+.components-button.is-primary:hover:not( :disabled ) {
+	box-shadow: none;
+	background-color: #d54407;
+}
+
+.components-button.is-primary:focus:not( :disabled ) {
+	box-shadow: none;
+}
+
 .srfm-form-select-dropdown {
 	position: relative;
 	color: #333;
@@ -121,7 +130,7 @@
 
 	.srfm-form-single-option.srfm-form-selected,
 	.srfm-form-single-option:hover {
-		background-color: #f2f9fc;
+		background-color: #ffefe8;
 		color: #333;
 	}
 }
