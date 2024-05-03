@@ -31,10 +31,10 @@ class Block extends Base {
 	public function render( $attributes, $content = '' ) {
 
 		if ( ! empty( $attributes ) ) {
-			$markup_class = new Inlinebutton_Markup();
+			$markup_class = new Inlinebutton_Markup( $attributes );
 			ob_start();
 			// phpcs:ignore.
-			echo $markup_class->markup( $attributes );
+			echo $markup_class->markup();
 		}
 		return ob_get_clean();
 	}

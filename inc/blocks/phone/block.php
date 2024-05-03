@@ -8,7 +8,6 @@
 namespace SRFM\Inc\Blocks\Phone;
 
 use SRFM\Inc\Blocks\Base;
-use SRFM\Inc\Helper;
 use SRFM\Inc\Fields\Phone_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,10 +28,10 @@ class Block extends Base {
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {
-			$markup_class = new Phone_Markup();
+			$markup_class = new Phone_Markup( $attributes );
 			ob_start();
 			// phpcs:ignore
-			echo $markup_class->markup( $attributes );
+			echo $markup_class->markup();
 		}
 		return ob_get_clean();
 	}

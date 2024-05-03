@@ -87,6 +87,56 @@ class Form_Submit {
 		return true;
 	}
 
+	/**
+	 * Validate Turnstile token
+	 *
+	 * @param string       $secret_key Turnstile token.
+	 * @param string|false $response Response.
+	 * @param string|false $remote_ip Remote IP.
+	 * @return array<mixed>|mixed Result of the validation.
+	 */
+	public static function validate_turnstile_token( $secret_key, $response, $remote_ip ) {
+
+		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile secret key is invalid.',
+			];
+		}
+
+		if ( empty( $response ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile response is missing.',
+			];
+		}
+
+		$body = [
+			'secret'   => $secret_key,
+			'response' => $response,
+			'remoteip' => $remote_ip,
+		];
+
+		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+
+		$args = [
+			'body'    => $body,
+			'timeout' => 15,
+		];
+
+		$response = wp_remote_post( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			return [
+				'success' => false,
+				'error'   => $error_message,
+			];
+		}
+
+		return json_decode( wp_remote_retrieve_body( $response ), true );
+	}
+
 
 	/**
 	 * Handle Form Submission
@@ -150,30 +200,61 @@ class Form_Submit {
 			wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
+		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
-		if ( 'none' !== $selected_captcha_type ) {
+		if ( 'none' !== $security_type ) {
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
 		} else {
 			$global_setting_options = [];
 		}
 
-		switch ( $selected_captcha_type ) {
-			case 'v2-checkbox':
-				$key = 'srfm_v2_checkbox_secret_key';
-				break;
-			case 'v2-invisible':
-				$key = 'srfm_v2_invisible_secret_key';
-				break;
-			case 'v3-reCAPTCHA':
-				$key = 'srfm_v3_secret_key';
-				break;
-			default:
-				$key = '';
-				break;
+		if ( 'g-recaptcha' === $security_type ) {
+			switch ( $selected_captcha_type ) {
+				case 'v2-checkbox':
+					$key = 'srfm_v2_checkbox_secret_key';
+					break;
+				case 'v2-invisible':
+					$key = 'srfm_v2_invisible_secret_key';
+					break;
+				case 'v3-reCAPTCHA':
+					$key = 'srfm_v3_secret_key';
+					break;
+				default:
+					$key = '';
+					break;
+			}
+
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 		}
 
-		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+		if ( 'cf-turnstile' === $security_type ) {
+			// Turnstile validation.
+			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+
+			// if gdpr is enabled then set remote ip to empty.
+			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
+			$gdpr       = false;
+
+			if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+				$gdpr = ! empty( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : false;
+			}
+
+			// check if ip logging is disabled in global settings then set remote ip to empty.
+			$gb_general_settinionsgs_opt = get_option( 'srfm_general_settings_options' );
+			$srfm_ip_log                 = is_array( $gb_general_settinionsgs_opt ) && isset( $gb_general_settinionsgs_opt['srfm_ip_log'] ) ? $gb_general_settinionsgs_opt['srfm_ip_log'] : '';
+
+			$remote_ip = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+
+			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
+
+			// If the cloudflare validation fails, return an error.
+			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
+				$error_message = isset( $turnstile_validation_result['error'] ) ? $turnstile_validation_result['error'] : 'Cloudflare Turnstile validation failed.';
+				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
+			}
+		}
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
