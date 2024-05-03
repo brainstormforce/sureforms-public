@@ -499,7 +499,7 @@ class Admin {
 	 * Disable spectra's quick action bar in sureforms CPT.
 	 *
 	 * @param string $status current status of the quick action bar.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string
 	 */
 	public function restrict_spectra_quick_action_bar( $status ) {

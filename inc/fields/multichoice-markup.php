@@ -25,7 +25,7 @@ class Multichoice_Markup extends Base {
 	 * Flag indicating if only a single selection is allowed.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $single_selection;
 
@@ -33,7 +33,7 @@ class Multichoice_Markup extends Base {
 	 * Width of the choice input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $choice_width;
 
@@ -41,7 +41,7 @@ class Multichoice_Markup extends Base {
 	 * HTML attribute string for the choice width.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $choice_width_attr;
 
@@ -49,7 +49,7 @@ class Multichoice_Markup extends Base {
 	 * HTML attribute string for the input type (radio or checkbox).
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $type_attr;
 
@@ -57,7 +57,7 @@ class Multichoice_Markup extends Base {
 	 * HTML attribute string for the name attribute of the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $name_attr;
 
@@ -65,7 +65,7 @@ class Multichoice_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -83,7 +83,7 @@ class Multichoice_Markup extends Base {
 	/**
 	 * Render the sureforms Multichoice classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

@@ -28,7 +28,7 @@ class Base {
 	 * Flag indicating if the field is required.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $required;
 
@@ -36,7 +36,7 @@ class Base {
 	 * Width of the field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $field_width;
 
@@ -45,7 +45,7 @@ class Base {
 	 * The value of this variable specifies the text displayed as the label for the corresponding input field when rendered.
 	 *
 	 * @var string $label Label used for the input field.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $label;
 
@@ -53,7 +53,7 @@ class Base {
 	 * Stores the string that provides help text.
 	 *
 	 * @var string $help
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $help;
 
@@ -61,7 +61,7 @@ class Base {
 	 * Validation error message for the fields.
 	 *
 	 * @var string $error_msg Input field validation error message.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $error_msg;
 
@@ -69,7 +69,7 @@ class Base {
 	 * Represents the identifier of the block.
 	 *
 	 * @var string $block_id Unique identifier representing the block.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $block_id;
 
@@ -77,7 +77,7 @@ class Base {
 	 * Stores the ID of the form.
 	 *
 	 * @var string $form_id Form ID.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $form_id;
 
@@ -85,7 +85,7 @@ class Base {
 	 * Stores the block slug.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $block_slug;
 
@@ -93,7 +93,7 @@ class Base {
 	 * Stores the conditional class.
 	 *
 	 * @var string $conditional_class class name.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $conditional_class;
 
@@ -101,7 +101,7 @@ class Base {
 	 * Indicates whether the attribute should be set to true or false.
 	 *
 	 * @var string $aria_require_attr Value of the aria-required attribute.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $aria_require_attr;
 
@@ -109,7 +109,7 @@ class Base {
 	 * Dynamically sets the CSS class for block width based on the field width.
 	 *
 	 * @var string $block_width The CSS class for block width, dynamically generated from $field_width.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $block_width;
 
@@ -117,7 +117,7 @@ class Base {
 	 * Stores the class name.
 	 *
 	 * @var string $class_name The value of the class name attribute.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $class_name;
 
@@ -125,7 +125,7 @@ class Base {
 	 * Stores the placeholder text.
 	 *
 	 * @var string $placeholder HTML field placeholder.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $placeholder;
 
@@ -133,7 +133,7 @@ class Base {
 	 * Stores the HTML placeholder attribute.
 	 *
 	 * @var string $placeholder_attr HTML field placeholder attribute.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $placeholder_attr;
 
@@ -141,7 +141,7 @@ class Base {
 	 * Default value for the field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $default;
 
@@ -149,7 +149,7 @@ class Base {
 	 * HTML attribute string for the default value.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $default_value_attr;
 
@@ -157,7 +157,7 @@ class Base {
 	 * Stores the input label.
 	 *
 	 * @var string $input_label input label.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $input_label;
 
@@ -165,7 +165,7 @@ class Base {
 	 * Stores the default fallback value of the label for an input field if nothing is specified.
 	 *
 	 * @var string $input_label_fallback Default fallback value for the input label.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $input_label_fallback;
 
@@ -173,7 +173,7 @@ class Base {
 	 * Stores the field name.
 	 *
 	 * @var string $field_name HTML field name.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $field_name;
 
@@ -181,7 +181,7 @@ class Base {
 	 * Stores the slug.
 	 *
 	 * @var string $slug slug value.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $slug;
 
@@ -189,7 +189,7 @@ class Base {
 	 * Unique slug which combines the slug, block ID, and input label.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $unique_slug;
 
@@ -197,7 +197,7 @@ class Base {
 	 * Checked state for the field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $checked;
 
@@ -205,7 +205,7 @@ class Base {
 	 * HTML attribute string for the checked state.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $checked_attr;
 
@@ -213,7 +213,7 @@ class Base {
 	 * Options for the field.
 	 *
 	 * @var array<mixed>
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $options;
 
@@ -221,7 +221,7 @@ class Base {
 	 * Allowed HTML tags for the field.
 	 *
 	 * @var array<string, array<array<string>>>
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $allowed_tags;
 
@@ -229,7 +229,7 @@ class Base {
 	 * Flag indicating if the field value must be unique.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $is_unique;
 
@@ -237,7 +237,7 @@ class Base {
 	 * Stores the flag if the field value must be unique.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $aria_unique;
 
@@ -245,7 +245,7 @@ class Base {
 	 * Duplicate value message for the field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $duplicate_msg;
 
@@ -253,7 +253,7 @@ class Base {
 	 * Stores the help text markup.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $help_markup;
 
@@ -261,7 +261,7 @@ class Base {
 	 * Stores the error message markup.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $error_msg_markup;
 
@@ -269,7 +269,7 @@ class Base {
 	 * Stores the HTML label markup.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $label_markup;
 
@@ -277,7 +277,7 @@ class Base {
 	 * Stores the error icon to be used in HTML markup.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $error_svg;
 
@@ -285,7 +285,7 @@ class Base {
 	 * Stores the duplicate message markup for a field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $duplicate_msg_markup;
 
@@ -293,7 +293,7 @@ class Base {
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_properties( $attributes ) {
@@ -330,7 +330,7 @@ class Base {
 	 * Invokes the set_field_name() function to set the field_name property.
 	 *
 	 * @param string $value The default fallback text.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_input_label( $value ) {
@@ -343,7 +343,7 @@ class Base {
 	 * Setter for the field name property.
 	 *
 	 * @param string $string Contains $input_label value or the $unique_slug based on the block.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_field_name( $string ) {
@@ -355,7 +355,7 @@ class Base {
 	 *
 	 * @param array<mixed> $attributes Block attributes, expected to contain 'errorMsg' key.
 	 * @param string       $key meta key name.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_error_msg( $attributes, $key = '' ) {
@@ -371,7 +371,7 @@ class Base {
 	 *
 	 * @param array<mixed> $attributes Block attributes, expected to contain 'errorMsg' key.
 	 * @param string       $key meta key name.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_duplicate_msg( $attributes, $key ) {
@@ -381,7 +381,7 @@ class Base {
 	/**
 	 * Setter for unique slug.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_unique_slug() {
@@ -394,7 +394,7 @@ class Base {
 	 *
 	 * @param string $input_label Optional. Additional label to be appended to the block ID.
 	 * @param bool   $override Optional. Override for error markup. Default is false.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	protected function set_markup_properties( $input_label = '', $override = false ) {
@@ -408,7 +408,7 @@ class Base {
 	/**
 	 * Render the sureforms default
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

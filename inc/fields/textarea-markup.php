@@ -23,7 +23,7 @@ class Textarea_Markup extends Base {
 	 * Maximum length of text allowed for the textarea.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_length;
 
@@ -31,7 +31,7 @@ class Textarea_Markup extends Base {
 	 * HTML attribute string for the maximum length.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_length_attr;
 
@@ -39,7 +39,7 @@ class Textarea_Markup extends Base {
 	 * HTML string for displaying the maximum length in the UI.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_length_html;
 
@@ -47,7 +47,7 @@ class Textarea_Markup extends Base {
 	 * Number of rows for the textarea.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $rows;
 
@@ -55,7 +55,7 @@ class Textarea_Markup extends Base {
 	 * HTML attribute string for the number of rows.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $rows_attr;
 
@@ -63,7 +63,7 @@ class Textarea_Markup extends Base {
 	 * Number of columns for the textarea.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $cols;
 
@@ -71,7 +71,7 @@ class Textarea_Markup extends Base {
 	 * HTML attribute string for the number of columns.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $cols_attr;
 
@@ -79,7 +79,7 @@ class Textarea_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -103,7 +103,7 @@ class Textarea_Markup extends Base {
 	/**
 	 * Render the sureforms textarea classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

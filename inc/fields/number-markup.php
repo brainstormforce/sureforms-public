@@ -23,7 +23,7 @@ class Number_Markup extends Base {
 	 * Minimum value allowed for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $min_value;
 
@@ -31,7 +31,7 @@ class Number_Markup extends Base {
 	 * Maximum value allowed for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_value;
 
@@ -39,7 +39,7 @@ class Number_Markup extends Base {
 	 * Format type for the input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $format_type;
 
@@ -47,7 +47,7 @@ class Number_Markup extends Base {
 	 * HTML attribute string for the format type.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $format_attr;
 
@@ -55,7 +55,7 @@ class Number_Markup extends Base {
 	 * HTML attribute string for the minimum value.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $min_value_attr;
 
@@ -63,7 +63,7 @@ class Number_Markup extends Base {
 	 * HTML attribute string for the maximum value.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_value_attr;
 
@@ -71,7 +71,7 @@ class Number_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -92,7 +92,7 @@ class Number_Markup extends Base {
 	/**
 	 * Render the sureforms number classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sureforms Inline Button Markup Class.
  *
- * @since x.x.x
+ * @since 0.0.2
  */
 class Inlinebutton_Markup extends Base {
 
@@ -25,7 +25,7 @@ class Inlinebutton_Markup extends Base {
 	 * Text displayed on the button.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $button_text;
 
@@ -33,7 +33,7 @@ class Inlinebutton_Markup extends Base {
 	 * Button style inherited from the theme.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $btn_from_theme;
 
@@ -41,7 +41,7 @@ class Inlinebutton_Markup extends Base {
 	 * Used as a flag which decides whether page break is added.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $is_page_break;
 
@@ -49,7 +49,7 @@ class Inlinebutton_Markup extends Base {
 	 * Version of reCAPTCHA to use.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $recaptcha_version;
 
@@ -57,7 +57,7 @@ class Inlinebutton_Markup extends Base {
 	 * Site key for Google reCAPTCHA.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $google_captcha_site_key;
 
@@ -65,7 +65,7 @@ class Inlinebutton_Markup extends Base {
 	 * Global setting options for security settings.
 	 *
 	 * @var array<mixed>|mixed
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $global_setting_options;
 
@@ -73,7 +73,7 @@ class Inlinebutton_Markup extends Base {
 	 * Flag indicating if padding should be added to the button.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $add_button_padding;
 
@@ -81,7 +81,7 @@ class Inlinebutton_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -121,7 +121,7 @@ class Inlinebutton_Markup extends Base {
 	/**
 	 * Render inline button markup
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean|void
 	 */
 	public function markup() {

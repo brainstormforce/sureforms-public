@@ -23,7 +23,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the first line of the address input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $line_one_placeholder;
 
@@ -31,7 +31,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the second line of the address input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $line_two_placeholder;
 
@@ -39,7 +39,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the city input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $city_placeholder;
 
@@ -47,7 +47,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the state input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $state_placeholder;
 
@@ -55,7 +55,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the postal code input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $postal_placeholder;
 
@@ -63,7 +63,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the placeholder text for the country input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $country_placeholder;
 
@@ -71,7 +71,7 @@ class Address_Compact_Markup extends Base {
 	 * HTML attribute string for the first line of the address input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $line_one_placeholder_attr;
 
@@ -79,7 +79,7 @@ class Address_Compact_Markup extends Base {
 	 * HTML attribute string for the second line of the address input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $line_two_placeholder_attr;
 
@@ -87,7 +87,7 @@ class Address_Compact_Markup extends Base {
 	 * HTML attribute string for the city input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $city_placeholder_attr;
 
@@ -95,7 +95,7 @@ class Address_Compact_Markup extends Base {
 	 * HTML attribute string for the state input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $state_placeholder_attr;
 
@@ -103,7 +103,7 @@ class Address_Compact_Markup extends Base {
 	 * HTML attribute string for the postal code input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $postal_placeholder_attr;
 
@@ -111,7 +111,7 @@ class Address_Compact_Markup extends Base {
 	 * Stores the data returned by the get_countries function.
 	 *
 	 * @var mixed|array<mixed|string>
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $data;
 
@@ -119,7 +119,7 @@ class Address_Compact_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -147,7 +147,7 @@ class Address_Compact_Markup extends Base {
 	/**
 	 * Return Phone codes
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return mixed|array<mixed|string> $data with phone codes
 	 */
 	public function get_countries() {
@@ -166,7 +166,7 @@ class Address_Compact_Markup extends Base {
 	/**
 	 * Render the sureforms address compact styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

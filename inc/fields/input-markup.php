@@ -23,7 +23,7 @@ class Input_Markup extends Base {
 	 * Maximum length of text allowed for an input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $max_text_length;
 
@@ -31,7 +31,7 @@ class Input_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->slug            = 'input';
@@ -48,7 +48,7 @@ class Input_Markup extends Base {
 	/**
 	 * Render input markup
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

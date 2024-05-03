@@ -22,7 +22,7 @@ class Url_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->slug = 'url';
@@ -37,7 +37,7 @@ class Url_Markup extends Base {
 	/**
 	 * Render the sureforms url classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

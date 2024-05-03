@@ -87,7 +87,7 @@ class Create_New_Form {
 	 * Get default post metas for form when creating using template.
 	 *
 	 * @return array<string, array<int, int|string>> Default meta keys.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public static function get_default_meta_keys() {
 		return [

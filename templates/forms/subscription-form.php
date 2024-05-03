@@ -3,7 +3,7 @@
  * Subscription Form pattern.
  *
  * @link       https://sureforms.com
- * @since      x.x.x
+ * @since      0.0.2
  * @package    SureForms/Templates/Forms
  * @author     SureForms <https://sureforms.com/>
  */

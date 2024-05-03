@@ -23,7 +23,7 @@ class Dropdown_Markup extends Base {
 	 * Stores the placeholder text of a select option, defaults to 'Select option' if no placeholder is provided.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $placeholder_html;
 
@@ -31,7 +31,7 @@ class Dropdown_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -45,7 +45,7 @@ class Dropdown_Markup extends Base {
 	/**
 	 * Render the sureforms dropdown classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {
