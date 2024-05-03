@@ -115,14 +115,16 @@ class Generate_Form_Markup {
 			}
 
 			// Submit button.
-			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : __( 'Submit', 'sureforms' );
-			$button_alignment = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme   = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$btn_text_color   = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
-			$btn_bg_type      = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
-			$instant_form     = Helper::get_meta_value( $id, '_srfm_instant_form' );
-			$is_inline_button = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
-			$security_type    = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$button_text          = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_alignment     = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
+			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$btn_text_color       = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
+			$btn_bg_type          = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$instant_form         = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
@@ -262,6 +264,12 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
+					<?php
+						// echo custom css on page/post.
+					if ( 'sureforms_form' !== $current_post_type ) :
+						echo wp_kses_post( $custom_css );
+						endif;
+					?>
 				}
 			</style>
 			<?php

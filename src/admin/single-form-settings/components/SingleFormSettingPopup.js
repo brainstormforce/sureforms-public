@@ -1,10 +1,11 @@
 import EmailNotification from './email-settings/EmailNotification';
 import Compliance from './Compliance';
+import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import { MdSecurity } from 'react-icons/md';
+import { MdSecurity, MdOutlineCode } from 'react-icons/md';
 import FormConfirmSetting from './form-confirm-setting';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -13,6 +14,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const formConfirmIcon = parse( svgIcons.circleCheck );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
+	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
@@ -38,6 +40,14 @@ const SingleFormSettingsPopup = ( props ) => {
 			title: __( 'Compliance Settings', 'sureforms' ),
 			icon: <MdSecurity size={ 20 } />,
 			component: <Compliance complianceData={ complianceData } />,
+		},
+		{
+			id: 'form_custom_css',
+			title: __( 'Custom CSS', 'sureforms' ),
+			icon: <MdOutlineCode size={ 20 } />,
+			component: (
+				<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
+			),
 		},
 	];
 	return (
