@@ -413,7 +413,7 @@ class Helper {
 	 *
 	 * @param mixed $data Data which needs to be checked if it is an array.
 	 *
-	 * @since 0.0.1
+	 * @since x.x.x
 	 * @return array<mixed>
 	 */
 	public static function get_array_value( $data ) {
