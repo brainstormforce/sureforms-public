@@ -7,6 +7,7 @@ import {
 	MdSecurity,
 	MdOutlineMailOutline,
 	MdOutlineCheckCircleOutline,
+	MdOutlineCode,
 } from 'react-icons/md';
 import FormConfirmSetting from './form-confirm-setting';
 
