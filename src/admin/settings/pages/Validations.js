@@ -53,7 +53,9 @@ const ValidationsPage = ( {
 										'Textarea Block Required',
 										'sureforms'
 									  )
-									: fieldLabel ) +
+									: fieldLabel === 'Url Block Required '
+										? __( 'URL Block Required', 'sureforms' )
+										: fieldLabel ) +
 								__( ' Error Message', 'sureforms' )
 							}` }
 							type="text"

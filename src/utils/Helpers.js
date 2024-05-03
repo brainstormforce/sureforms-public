@@ -101,23 +101,19 @@ export const randomNiceColor = () => {
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
 
-export const generateSmartTagsDropDown = (
-	setInputData
-) => {
+export const generateSmartTagsDropDown = ( setInputData ) => {
 	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
 		return;
 	}
 	const entries = Object.entries( smartTagList );
-	return generateDropDownOptions(
-		setInputData,
-		entries );
+	return generateDropDownOptions( setInputData, entries );
 };
 
 export const generateDropDownOptions = (
 	setInputData,
 	optionsArray = [],
-	arrayHeader = '',
+	arrayHeader = ''
 ) => {
 	let data = optionsArray.map( ( [ key, val ] ) => {
 		return {
@@ -129,9 +125,7 @@ export const generateDropDownOptions = (
 	} );
 
 	if ( 0 === data.length ) {
-		data = [
-			{ title: __( 'No tags available', 'sureforms' ) },
-		];
+		data = [ { title: __( 'No tags available', 'sureforms' ) } ];
 	}
 
 	if ( 0 !== arrayHeader.length ) {
@@ -159,12 +153,19 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
-	savedBlocks = savedBlocks.filter( ( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name ) );
+	savedBlocks = savedBlocks.filter(
+		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+	);
 
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	const pushSmartTagToArray = ( blocks, tagsArray, uniqueSlugs = [], allowedBlocks = [] ) => {
+	const pushSmartTagToArray = (
+		blocks,
+		tagsArray,
+		uniqueSlugs = [],
+		allowedBlocks = []
+	) => {
 		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
 			return;
 		}
@@ -174,16 +175,22 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 				undefined === block?.attributes?.slug ||
 				undefined === block?.attributes?.label ||
 				'' === block?.attributes?.slug ||
-				(
-					0 !== allowedBlocks.length &&
-					! allowedBlocks.includes( block?.name )
-				)
+				( 0 !== allowedBlocks.length &&
+					! allowedBlocks.includes( block?.name ) )
 			) {
 				return;
 			}
 
-			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
-				pushSmartTagToArray( block.innerBlocks, tagsArray, uniqueSlugs, allowedBlocks );
+			if (
+				Array.isArray( block?.innerBlocks ) &&
+				0 !== block?.innerBlocks.length
+			) {
+				pushSmartTagToArray(
+					block.innerBlocks,
+					tagsArray,
+					uniqueSlugs,
+					allowedBlocks
+				);
 			} else {
 				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
 					return;
@@ -198,7 +205,12 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 	};
 
 	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
-	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [], [ 'srfm/email' ] );
+	pushSmartTagToArray(
+		savedBlocks,
+		formEmailSmartTags,
+		[],
+		[ 'srfm/email' ]
+	);
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};

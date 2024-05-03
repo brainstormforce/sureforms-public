@@ -3,7 +3,7 @@ $text_color: #1e293b;
 $help_color: #6b7280;
 $border_color: #dce0e6;
 $bg_color: #ffffff;
-$primary_color: #125d9f;
+$primary_color: #d54407;
 $option_active_bg_color: #f2fafc;
 $label_color: #1e293b;
 $box_shadow: #0d131e1a;
@@ -98,7 +98,11 @@ $placeholder_color: #9ca3af;
 			}
 
 			&.active {
-				background-color: $option_active_bg_color;
+				background-color: #ffefe8;
+
+				svg {
+					fill: #d54407;
+				}
 
 				svg,
 				path {
@@ -113,7 +117,7 @@ $placeholder_color: #9ca3af;
 
 		.srfm-notice-container {
 			padding: 0.8em;
-			border: 1px solid #125d9f;
+			border: 1px solid #d54407;
 			border-radius: 6px;
 
 			.srfm-notice-title-container {
@@ -243,6 +247,10 @@ $placeholder_color: #9ca3af;
 							box-shadow: none;
 						}
 
+						.components-form-toggle.is-checked .components-form-toggle__track {
+							border: #d54407;
+						}
+
 						&.srfm-components-input-control,
 						.srfm-components-select-control {
 							gap: 0;
@@ -296,8 +304,6 @@ $placeholder_color: #9ca3af;
 							}
 
 							.components-input-control__backdrop {
-								// border: 1px solid $border_color;
-								// border-radius: 0.25em;
 								border: none;
 								box-shadow: none;
 							}
