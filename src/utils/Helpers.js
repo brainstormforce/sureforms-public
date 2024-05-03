@@ -164,7 +164,7 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	const pushSmartTagToArray = ( blocks, tagsArray, allowedBlocks = [] ) => {
+	const pushSmartTagToArray = ( blocks, tagsArray, uniqueSlugs = [], allowedBlocks = [] ) => {
 		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
 			return;
 		}
@@ -183,18 +183,22 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 			}
 
 			if ( Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length ) {
-				pushSmartTagToArray( block.innerBlocks, tagsArray );
+				pushSmartTagToArray( block.innerBlocks, tagsArray, uniqueSlugs, allowedBlocks );
 			} else {
+				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
+					return;
+				}
 				tagsArray.push( [
 					'{form:' + block.attributes.slug + '}',
 					block.attributes.label,
 				] );
+				uniqueSlugs.push( block.attributes.slug );
 			}
 		} );
 	};
 
-	pushSmartTagToArray( savedBlocks, formSmartTags );
-	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [ 'srfm/email' ] );
+	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, [], [ 'srfm/email' ] );
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
