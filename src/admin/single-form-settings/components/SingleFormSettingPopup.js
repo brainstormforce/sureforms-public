@@ -1,5 +1,6 @@
 import EmailNotification from './email-settings/EmailNotification';
 import Compliance from './Compliance';
+import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import {
@@ -13,6 +14,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
+	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
@@ -38,6 +40,14 @@ const SingleFormSettingsPopup = ( props ) => {
 			title: __( 'Compliance Settings', 'sureforms' ),
 			icon: <MdSecurity size={ 20 } />,
 			component: <Compliance complianceData={ complianceData } />,
+		},
+		{
+			id: 'form_custom_css',
+			title: __( 'Custom CSS', 'sureforms' ),
+			icon: <MdOutlineCode size={ 20 } />,
+			component: (
+				<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
+			),
 		},
 	];
 	return (

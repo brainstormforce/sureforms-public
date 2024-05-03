@@ -97,7 +97,7 @@ $placeholder_color: #9ca3af;
 				}
 				.srfm-modal-tab-icon {
 					display: flex;
-					width: 20px;
+					width: 30px;
 					height: 20px;
 					justify-content: center;
 					align-items: center;
@@ -749,4 +749,8 @@ $placeholder_color: #9ca3af;
 			}
 		}
 	}
+}
+
+.components-modal__screen-overlay {
+	z-index: 0 !important;
 }
