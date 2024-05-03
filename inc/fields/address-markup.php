@@ -23,7 +23,7 @@ class Address_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -36,7 +36,7 @@ class Address_Markup extends Base {
 	 * Render the sureforms address classic styling
 	 *
 	 * @param string $content inner block content.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup( $content = '' ) {

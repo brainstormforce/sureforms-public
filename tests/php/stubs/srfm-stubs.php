@@ -353,7 +353,7 @@ namespace SRFM\Inc\Blocks\GDPR {
          * @param string       $content Post content.
          *
          * @return string|boolean
-         * @since x.x.x
+         * @since 0.0.2
          */
         public function render($attributes, $content = '')
         {
@@ -8058,7 +8058,7 @@ namespace SRFM\Inc\Fields {
     /**
      * Sureforms GDPR Markup Class.
      *
-     * @since x.x.x
+     * @since 0.0.2
      */
     class GDPR_Markup extends \SRFM\Inc\Fields\Base
     {
@@ -8945,7 +8945,7 @@ namespace SRFM\Admin {
          * Disable spectra's quick action bar in sureforms CPT.
          *
          * @param string $status current status of the quick action bar.
-         * @since x.x.x
+         * @since 0.0.2
          * @return string
          */
         public function restrict_spectra_quick_action_bar($status)

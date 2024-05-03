@@ -34,7 +34,7 @@ class Gutenberg_Hooks {
 	 * Array of SureForms blocks which get have user input.
 	 *
 	 * @var array<string>
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $srfm_blocks = [
 		'srfm/input',
@@ -172,7 +172,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param string|mixed $block_pattern The block pattern name.
 	 * @param string       $directory The directory path.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return bool True if the block pattern was registered, false otherwise.
 	 */
 	private function register_block_pattern_from_directory( $block_pattern, $directory ) {
@@ -312,7 +312,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param int      $post_id current sureforms form post id.
 	 * @param \WP_Post $post SureForms post object.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public function update_field_slug( $post_id, $post ) {
@@ -369,7 +369,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param array<string,string|array<string,mixed>> $block The block data.
 	 * @param array<string>                            $slugs The array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string The generated unique block slug.
 	 */
 	public function generate_unique_block_slug( $block, $slugs ) {
@@ -390,7 +390,7 @@ class Gutenberg_Hooks {
 	 *
 	 * @param string        $slug test to be converted to slug.
 	 * @param array<string> $slugs An array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string The unique slug.
 	 */
 	public function generate_slug( $slug, $slugs ) {

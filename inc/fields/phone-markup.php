@@ -23,7 +23,7 @@ class Phone_Markup extends Base {
 	 * Stores the boolean string indicating if the country should be automatically determined.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $auto_country;
 
@@ -31,7 +31,7 @@ class Phone_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -47,7 +47,7 @@ class Phone_Markup extends Base {
 	/**
 	 * Render the sureforms phone classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {

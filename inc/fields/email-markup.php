@@ -25,7 +25,7 @@ class Email_Markup extends Base {
 	 * Flag indicating whether email confirmation is required.
 	 *
 	 * @var bool
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $is_confirm_email;
 
@@ -33,7 +33,7 @@ class Email_Markup extends Base {
 	 * Fallback label for the confirmation input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $input_confirm_label_fallback;
 
@@ -41,7 +41,7 @@ class Email_Markup extends Base {
 	 * Encrypted label for the confirmation input field.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $input_confirm_label;
 
@@ -49,7 +49,7 @@ class Email_Markup extends Base {
 	 * Unique slug for the confirmation input field, combining the form slug, block ID, and encrypted label.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	protected $unique_confirm_slug;
 
@@ -57,7 +57,7 @@ class Email_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -77,7 +77,7 @@ class Email_Markup extends Base {
 	/**
 	 * Render the sureforms email classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {
