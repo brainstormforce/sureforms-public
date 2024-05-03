@@ -116,7 +116,7 @@ class Background_Process {
 		}
 
 		$this->form_id         = Helper::get_integer_value( get_post_meta( $this->submission_id, '_srfm_entry_form_id', true ) );
-		$this->submission_data = (array) get_post_meta( $this->submission_id, 'srfm_entry_meta', true );
+		$this->submission_data = Helper::get_array_value( get_post_meta( $this->submission_id, 'srfm_entry_meta', true ) );
 
 		if ( ! $this->trigger_after_submission_process() ) {
 			return new \WP_Error(

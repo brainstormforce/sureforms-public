@@ -407,4 +407,22 @@ class Helper {
 		}
 		return $mapped_data;
 	}
+
+	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.1
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
 }

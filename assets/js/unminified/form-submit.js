@@ -100,7 +100,7 @@ async function afterSubmit( formStatus ) {
 	const submissionId = formStatus.data.submission_id;
 	return await fetch( `${ site_url }/wp-json/sureforms/v1/after-submission/` + submissionId, {
 		headers: {
-			'X-WP-Nonce': window.srfm_submit.nonce_after_submit,
+			'X-WP-Nonce': window.srfm_submit.nonce,
 		},
 	} )
 		.then( ( response ) => {
