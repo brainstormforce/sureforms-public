@@ -1,5 +1,29 @@
+$heading_color: #0f172a;
+$text_color: #1e293b;
+$help_color: #6b7280;
+$border_color: #dce0e6;
+$bg_color: #ffffff;
+$primary_color: #d54407;
+$option_active_bg_color: #f2fafc;
+$label_color: #1e293b;
+$box_shadow: #0d131e1a;
+$option_bg_color: #fff;
+$content_color: #475569;
+$btn_text_color: #ffffff;
+$placeholder_color: #9ca3af;
+
+.components-popover__fallback-container {
+	& .components-button {
+		&:hover {
+			color: #1e293b;
+			font-weight: 600;
+		}
+	}
+}
+
 //single form UI
 .srfm-header-settings-modal {
+	background-color: #f1f5f9;
 	.components-modal__header {
 		display: flex;
 		padding: 20px;
@@ -10,6 +34,7 @@
 		background: var( --base-white, #fff );
 		.components-modal__header-heading-container {
 			gap: 10px;
+			align-items: center;
 			.components-modal__icon-container {
 				display: inline-flex;
 			}
@@ -33,11 +58,21 @@
 		height: 24px;
 		fill: #475569;
 	}
+
+	.srfm-modal-input {
+		&:focus-visible {
+			border-color: $primary_color !important;
+			box-shadow: 0 0 0 0.5px $primary_color !important;
+			outline-color: $primary_color;
+		}
+	}
+
 	.srfm-setting-modal-container {
 		display: flex;
 		.srfm-modal-sidebar {
 			display: flex;
 			width: 290px;
+			height: 100%;
 			padding: 20px 16px;
 			flex-direction: column;
 			align-items: flex-start;
@@ -55,7 +90,10 @@
 				align-self: stretch;
 				border-radius: 2px;
 				&.srfm-modal-tab-active {
-					background: #f8fafc;
+					background: #ffefe8;
+					.srfm-modal-tab-icon {
+						color: $primary_color;
+					}
 				}
 				cursor: pointer;
 				.srfm-modal-tab-text p {
@@ -76,7 +114,7 @@
 				}
 			}
 			.srfm-modal-active-tab {
-				background: var( --dashboard-primary, #125d9f );
+				background: var( --dashboard-primary, $primary_color );
 				.srfm-modal-tab-text p {
 					color: var( --dashboard-surface-secondary, #fff );
 				}
@@ -130,7 +168,7 @@
 						justify-content: center;
 						align-items: center;
 						border-radius: 6px;
-						background: var( --dashboard-primary, #125d9f );
+						background: var( --dashboard-primary, $primary_color );
 						box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 						color: var( --dashboard-surface-secondary, #fff );
 						font-size: 14px;
@@ -193,7 +231,7 @@
 								right: 2px;
 								.has-icon {
 									&:focus:not( :disabled ) {
-										box-shadow: 0 0 0 var( --wp-admin-border-width-focus ) var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) );
+										box-shadow: none;
 									}
 								}
 							}
@@ -223,6 +261,10 @@
 								}
 							}
 						}
+
+						.components-tab-panel__tabs-item.active-tab {
+							border-color: #d54407;
+						}
 						.srfm-modal-option-box {
 							.srfm-modal-label {
 								color: var( --dashboard-heading, #1e293b );
@@ -251,6 +293,12 @@
 								margin-top: 8px;
 								display: flex;
 								gap: 12px;
+								.srfm-active-conf-type {
+									border-color: $primary_color !important;
+								}
+								.srfm-active-after-submit {
+									border-color: $primary_color !important;
+								}
 								.srfm-option {
 									border: 1px solid #dce0e6;
 									padding: 8px 16px 8px 16px;
@@ -260,8 +308,15 @@
 									gap: 8px;
 									.srfm-option-input {
 										margin: 0;
+										&:focus {
+											box-shadow: none;
+											border-color: $primary_color;
+										}
 										&:checked {
-											background-color: #125d9f;
+											background-color: $primary_color;
+											&:focus {
+												box-shadow: none;
+											}
 										}
 										&:checked::before {
 											content: "";
@@ -284,6 +339,11 @@
 									min-width: 720px;
 									width: 100%;
 									height: 36px;
+
+									// Hide the box shadow of input inside React Select.
+									.srfm-select__input {
+										box-shadow: none;
+									}
 								}
 							}
 						}
@@ -346,7 +406,16 @@
 									.components-dropdown-menu__toggle svg {
 										height: 8px;
 									}
+
+									.components-button {
+										&:hover {
+											color: #1e293b;
+											font-weight: 600;
+										}
+										color: #1e293b !important;
+									}
 								}
+
 								ul {
 									list-style: disc;
 									margin-left: 2em;
@@ -356,9 +425,10 @@
 									width: 100%;
 									min-height: 300px;
 								}
+
 								.srfm-active-editor {
 									border-radius: 6px;
-									background: var( --dashboard-primary, #125d9f );
+									background: var( --dashboard-primary, $primary_color );
 									box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
 									color: var( --dashboard-surface-secondary, #fff );
 									color: white;
@@ -563,9 +633,142 @@
 				}
 			}
 		}
+
+		.components-tab-panel__tabs {
+			.components-button:hover {
+				color: $primary_color;
+			}
+		}
+
+		.components-text-control__input,
+		.components-select-control__input {
+			font-size: 0.8em;
+			border: 1px solid $border_color;
+			border-radius: 0.25em;
+			padding: 0.75em 1em;
+
+			&:focus {
+				border: 1px solid $primary_color !important;
+				box-shadow: 0 0 0 0.5px $primary_color !important;
+			}
+
+			&::placeholder {
+				color: $placeholder_color;
+			}
+		}
+
+		textarea {
+			&:focus {
+				border: 1px solid $primary_color;
+				box-shadow: 0 0 0 0.5px $primary_color;
+			}
+		}
+
+		.components-base-control {
+			font-size: 20px;
+			margin-bottom: 1em;
+			// Toggle control.
+			&.components-toggle-control {
+				.components-form-toggle.is-checked .components-form-toggle__track {
+					background-color: $primary_color;
+					box-shadow: none;
+				}
+
+				label {
+					font-size: 0.7em;
+					font-weight: 500;
+					color: $label_color;
+				}
+
+				.components-base-control__help {
+					font-size: 0.6em;
+					margin-top: 0.2em;
+					margin-left: 4em;
+					color: $help_color;
+				}
+			}
+
+			.components-form-toggle .components-form-toggle__input:focus + .components-form-toggle__track {
+				box-shadow: none;
+			}
+
+			.components-form-toggle.is-checked .components-form-toggle__track {
+				border: #d54407;
+			}
+
+			&.srfm-components-input-control,
+			.srfm-components-select-control {
+				gap: 0;
+
+				label {
+					color: $label_color;
+					font-size: 0.7em;
+					line-height: normal;
+					text-transform: none;
+					margin-bottom: 0.3em;
+				}
+				.components-text-control__input,
+				.components-select-control__input {
+					font-size: 0.8em;
+					border: 1px solid $border_color;
+					border-radius: 0.25em;
+					padding: 0.75em 1em;
+
+					&:focus {
+						border: 1px solid $primary_color !important;
+						box-shadow: 0 0 0 0.5px $primary_color !important;
+					}
+
+					&::placeholder {
+						color: $placeholder_color;
+					}
+				}
+
+				.components-textarea-control__input {
+					font-size: 0.8em;
+					border: 1px solid $border_color;
+					border-radius: 0.25em;
+					padding: 0.75em 1em;
+
+					&:focus {
+						border: 1px solid $primary_color;
+						box-shadow: 0 0 0 0.5px $primary_color;
+					}
+				}
+
+				.components-select-control__input {
+					height: auto;
+					line-height: normal;
+					border: 1px solid $border_color;
+					box-shadow: 0 0 0 0.5px $border_color;
+
+					&:focus {
+						border: 1.5px solid $primary_color;
+						box-shadow: 0 0 0 0.5px $primary_color;
+					}
+				}
+
+				.components-input-control__backdrop {
+					border: none;
+					box-shadow: none;
+				}
+			}
+
+			&:nth-last-child( 1 ) {
+				margin-bottom: 0;
+			}
+		}
 	}
 }
 
+.components-popover__fallback-container {
+	.components-dropdown-menu__menu[aria-label="Select Shortcodes"] {
+		.components-button.components-dropdown-menu__menu-item:disabled {
+			opacity: 1;
+			font-weight: bolder;
+		}
+	}
+}
 .components-modal__screen-overlay {
 	z-index: 0 !important;
 }

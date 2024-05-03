@@ -135,7 +135,7 @@ export default () => {
 									plugin.status === 'Installed' ||
 									plugin.status === 'Activated'
 										? '#16A34A'
-										: '#046BD2'
+										: '#D54407'
 								}
 								dataSlug={ plugin.slug }
 								init={ plugin.path }

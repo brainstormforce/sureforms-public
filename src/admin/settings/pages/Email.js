@@ -68,6 +68,9 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 						/>
 						<button
 							className="button button-primary srfm-email-test-btn"
+							style={ {
+								backgroundColor: '#D54407',
+							} }
 							disabled={ sendingTestEmail }
 							onClick={ async () => {
 								setSendingTestEmail( true );
@@ -102,6 +105,7 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 								<Spinner
 									style={ {
 										marginTop: '0',
+										color: '#D54407',
 									} }
 								/>
 							) }

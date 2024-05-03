@@ -12,6 +12,7 @@ use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Generate_Form_Markup;
 use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
 use WP_Error;
@@ -354,7 +355,7 @@ class Form_Submit {
 			$do_not_store_entries = isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
 		}
 
-		$meta_data = [];
+		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
@@ -365,11 +366,11 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			$meta_data[ $field_name ] = htmlspecialchars( $value );
+			$submission_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
 		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email   = $this->send_email( $id, $meta_data );
+		$send_email   = $this->send_email( $id, $submission_data );
 		$is_mail_sent = false;
 		$emails       = [];
 
@@ -383,7 +384,7 @@ class Form_Submit {
 		if ( $gdpr && $do_not_store_entries ) {
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
@@ -393,7 +394,7 @@ class Form_Submit {
 				'form_id'   => $id ? intval( $id ) : '',
 				'emails'    => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,
 			];
 
@@ -401,7 +402,7 @@ class Form_Submit {
 
 			$response = [
 				'success' => true,
-				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name' => $name,
 				],
@@ -463,6 +464,8 @@ class Form_Submit {
 
 		wp_update_post( $post_args );
 
+		update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
+		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
@@ -470,7 +473,7 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 
-			update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
@@ -478,14 +481,14 @@ class Form_Submit {
 
 			$response = [
 				'success' => true,
-				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name' => $name,
 				],
 			];
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$parts    = explode( '-lbl-', $only_key );
 
@@ -503,7 +506,7 @@ class Form_Submit {
 				'form_id'   => $id ? intval( $id ) : '',
 				'emails'    => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,
 			];
 
@@ -523,11 +526,11 @@ class Form_Submit {
 	 * Send Email.
 	 *
 	 * @param string                $id       Form ID.
-	 * @param array<string, string> $meta_data Meta data.
+	 * @param array<string, string> $submission_data Submission data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $meta_data ) {
+	public static function send_email( $id, $submission_data ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
@@ -537,20 +540,31 @@ class Form_Submit {
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
-						$to             = $item['email_to'];
-						$to             = $smart_tags->process_smart_tags( $to );
-						$subject        = $item['subject'];
-						$subject        = $smart_tags->process_smart_tags( $subject );
-						$email_body     = $item['email_body'];
+						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
+						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
+						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
+						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
-						$message        = $email_template->render( $meta_data, $email_body );
-						$headers        = "From: $to\r\n" .
-						"Reply-To: $to\r\n" .
+						$message        = $email_template->render( $submission_data, $email_body );
+						$headers        = "
+						From: $from\r\n" .
 						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						'Content-Type: text/html; charset=utf-8';
-						$sent           = wp_mail( $to, $subject, $message, $headers );
-						$is_mail_sent   = $sent;
-						$emails[]       = $to;
+						"Content-Type: text/html; charset=utf-8\r\n";
+						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
+							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+						} else {
+							$headers .= "Reply-To: $from\r\n";
+						}
+						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
+							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+						}
+						if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
+							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+						}
+
+						$sent         = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent = $sent;
+						$emails[]     = $to;
 					}
 				}
 			}
