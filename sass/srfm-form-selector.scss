@@ -41,18 +41,18 @@
 		}
 		box-shadow: none;
 	}
+
+	.components-button.is-primary:hover:not( :disabled ) {
+		box-shadow: none;
+		background-color: #d54407;
+	}
+
+	.components-button.is-primary:focus:not( :disabled ) {
+		box-shadow: none;
+	}
 }
 
 .components-button.is-secondary:hover:not( :disabled ) {
-	box-shadow: none;
-}
-
-.components-button.is-primary:hover:not( :disabled ) {
-	box-shadow: none;
-	background-color: #d54407;
-}
-
-.components-button.is-primary:focus:not( :disabled ) {
 	box-shadow: none;
 }
 

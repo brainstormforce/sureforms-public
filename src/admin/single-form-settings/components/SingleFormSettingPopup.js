@@ -9,7 +9,10 @@ import {
 	MdOutlineCheckCircleOutline,
 	MdOutlineCode,
 } from 'react-icons/md';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
+import { setFormSpecificSmartTags } from '@Utils/Helpers';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
@@ -19,6 +22,13 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
+
+	const savedBlocks = useSelect( ( select ) =>
+		select( editorStore ).getBlocks()
+	);
+
+	setFormSpecificSmartTags( savedBlocks );
+
 	const tabs = [
 		{
 			id: 'email_notification',
