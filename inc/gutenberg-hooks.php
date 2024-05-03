@@ -368,7 +368,8 @@ class Gutenberg_Hooks {
 			 * Lets continue if slug already exists.
 			 * This will ensure that we don't update already existing slugs.
 			 */
-			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) ) {
+			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) && ! in_array( $block['attrs']['slug'], $slugs, true ) ) {
+
 				$slugs[] = Helper::get_string_value( $block['attrs']['slug'] );
 				continue;
 			}
