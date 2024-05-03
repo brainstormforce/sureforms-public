@@ -136,13 +136,6 @@ class Background_Process {
 	 * @return bool
 	 */
 	public function trigger_after_submission_process() {
-		/**
-		 * Suppress treatPhpDocTypesAsCertain
-		 *
-		 * @link https://github.com/brainstormforce/sureforms/pull/637#discussion_r1587970817
-		 * @link https://phpstan.org/config-reference#treatphpdoctypesascertain
-		 * @phpstan-ignore-next-line
-		 * */
 		if ( ! is_integer( $this->form_id ) || ! is_array( $this->submission_data ) ) {
 			return false;
 		}
