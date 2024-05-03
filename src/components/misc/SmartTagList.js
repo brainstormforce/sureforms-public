@@ -14,13 +14,15 @@ export default function SmartTagList( {
 } ) {
 	const verticalDotIcon = parse( svgIcons.verticalDot );
 	const controls = [];
-	tagsArray.map( ( tagsArrayItem ) => (
-		controls.push( generateDropDownOptions(
-			setTargetData,
-			tagsArrayItem.tags,
-			tagsArrayItem.label
-		) )
-	) );
+	tagsArray.map( ( tagsArrayItem ) =>
+		controls.push(
+			generateDropDownOptions(
+				setTargetData,
+				tagsArrayItem.tags,
+				tagsArrayItem.label
+			)
+		)
+	);
 
 	return (
 		<DropdownMenu

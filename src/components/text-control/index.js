@@ -6,18 +6,12 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import {
-	TextControl,
-	TextareaControl,
-} from '@wordpress/components';
+import { TextControl, TextareaControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
-import {
-	getIdFromString,
-	getPanelIdFromRef,
-} from '@Utils/Helpers';
+import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
 import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
@@ -57,7 +51,7 @@ const SRFMTextControl = ( props ) => {
 				selectedBlock?.name,
 				props.name,
 				props.dynamicContentType
-			)
+			  )
 			: null;
 
 	const isEnableDynamicContent = () => {
@@ -130,7 +124,9 @@ const SRFMTextControl = ( props ) => {
 		blockNameForHook
 	);
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array
+		? Object.entries( window.srfm_block_data.smart_tags_array )
+		: [];
 
 	return (
 		<div ref={ panelRef } className="components-base-control">
@@ -159,8 +155,8 @@ const SRFMTextControl = ( props ) => {
 								<TextControl
 									label={
 										props?.variant === 'inline' ||
-											( props?.variant !== 'inline' &&
-												! props?.showHeaderControls )
+										( props?.variant !== 'inline' &&
+											! props?.showHeaderControls )
 											? props?.label
 											: false
 									}
@@ -190,17 +186,17 @@ const SRFMTextControl = ( props ) => {
 
 							{ props?.withSmartTagDropdown === true && (
 								<SmartTagList
-									tagsArray={
-										[
-											{
-												tags: genericSmartTags,
-												label: __( 'Generic tags', 'sureforms' ),
-											},
-										]
-
-									}
-									setTargetData={
-										( tag ) => handleOnChange( inputData + tag )
+									tagsArray={ [
+										{
+											tags: genericSmartTags,
+											label: __(
+												'Generic tags',
+												'sureforms'
+											),
+										},
+									] }
+									setTargetData={ ( tag ) =>
+										handleOnChange( inputData + tag )
 									}
 								/>
 							) }

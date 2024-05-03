@@ -148,7 +148,12 @@ async function handleFormSubmission(
 		const formStatus = await submitFormData( form );
 		if ( formStatus?.success ) {
 			if ( submitType === 'same page' ) {
-				showSuccessMessage( successElement, formStatus?.message ?? '', form, afterSubmission );
+				showSuccessMessage(
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission
+				);
 				loader.classList.remove( 'srfm-active' );
 			} else {
 				redirectToUrl( successUrl );
@@ -172,7 +177,9 @@ function extractFormAttributesAndElements( form ) {
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
-	const successElement = form.parentElement.querySelector( '.srfm-single-form.srfm-success-box' );
+	const successElement = form.parentElement.querySelector(
+		'.srfm-single-form.srfm-success-box'
+	);
 	const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
