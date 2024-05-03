@@ -11,6 +11,8 @@ import InspectorTab, {
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import widthOptions from '../width-options.json';
+import { useErrMessage } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
 	const {
@@ -22,6 +24,11 @@ export default ( { attributes, setAttributes } ) => {
 		errorMsg,
 		fieldWidth,
 	} = attributes;
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_url_block_required_text', errorMsg );
 
 	return (
 		<InspectorControls>
@@ -88,19 +95,20 @@ export default ( { attributes, setAttributes } ) => {
 						/>
 						{ required && (
 							<SRFMTextControl
-								label={ __( 'Error message', 'sureforms' ) }
-								value={ errorMsg }
+								label={ __( 'Error Message', 'sureforms' ) }
 								data={ {
 									value: errorMsg,
 									label: 'errorMsg',
 								} }
-								onChange={ ( value ) =>
-									setAttributes( { errorMsg: value } )
-								}
+								value={ currentErrorMsg }
+								onChange={ ( value ) => {
+									setCurrentErrorMsg( value );
+									setAttributes( { errorMsg: value } );
+								} }
 							/>
 						) }
 						<SRFMTextControl
-							label={ __( 'Help', 'sureforms' ) }
+							label={ __( 'Help Text', 'sureforms' ) }
 							value={ help }
 							data={ {
 								value: help,
@@ -113,6 +121,9 @@ export default ( { attributes, setAttributes } ) => {
 					</SRFMAdvancedPanelBody>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+				<InspectorTab { ...SRFMTabs.advance }>
+					<ConditionalLogic { ...{ setAttributes, attributes } } />
+				</InspectorTab>
 			</InspectorTabs>
 		</InspectorControls>
 	);

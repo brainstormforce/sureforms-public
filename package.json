@@ -1,11 +1,11 @@
 {
 	"name": "sureforms",
-	"version": "0.0.3",
+	"version": "0.0.2",
 	"description": "A simple yet powerful way to add forms to your website.",
 	"main": "index.js",
 	"scripts": {
 		"start": "wp-scripts start",
-		"build": "wp-scripts build && npm run build:sass",
+		"build": "wp-scripts build && npm run build:sass && grunt minify",
 		"build:script": "wp-scripts build",
 		"build:sass": "node scripts/generate-assets-files.js",
 		"makepot": "wp i18n make-pot . --skip-audit --exclude='.dev,.github,.wordpress-org,docs,src,node_modules,tests,vendor,wordpress' languages/sureforms.pot",
@@ -40,6 +40,7 @@
 		"@wordpress/scripts": "^26.2.0",
 		"copy-webpack-plugin": "^11.0.0",
 		"grunt": "^1.4.1",
+		"grunt-bumpup": "^0.6.3",
 		"grunt-cli": "^1.4.3",
 		"grunt-contrib-clean": "^2.0.0",
 		"grunt-contrib-compress": "^2.0.0",
@@ -48,6 +49,7 @@
 		"grunt-contrib-uglify": "^5.2.2",
 		"grunt-rtlcss": "^2.0.2",
 		"grunt-sass": "^3.1.0",
+		"grunt-text-replace": "^0.4.0",
 		"grunt-wp-readme-to-markdown": "^2.1.0",
 		"sass": "^1.69.4",
 		"sass-loader": "^13.3.2",
@@ -77,12 +79,14 @@
 		"react-apexcharts": "^1.4.1",
 		"react-beautiful-dnd": "^13.1.1",
 		"react-dom": "^18.2.0",
+		"react-hot-toast": "^2.4.1",
 		"react-icons": "^4.8.0",
 		"react-intl-tel-input": "^8.2.0",
+		"react-loading-skeleton": "^3.4.0",
 		"react-quill": "^2.0.0",
 		"react-router-dom": "^6.11.0",
 		"react-select": "^5.7.2",
-		"react-toastify": "^9.1.3"
+		"use-debounce": "^10.0.0"
 	},
 	"volta": {
 		"node": "18.15.0"

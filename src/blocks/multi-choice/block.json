@@ -60,11 +60,15 @@
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "This field is required."
+			"default": ""
 		},
 		"formId": {
 			"type": "number",
 			"default": ""
+		},
+		"isConditionalLogic":{
+			"type":"boolean",
+			"default":false
 		}
 	}
 }

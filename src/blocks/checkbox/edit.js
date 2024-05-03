@@ -15,13 +15,14 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useGetCurrentFormId } from '../../blocks-attributes/getFormId';
-import { CheckboxComponent } from './components/default';
+import { useGetCurrentFormId } from '@Attributes/getFormId';
+import { CheckboxComponent } from '../components/default.js';
 import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -43,6 +44,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_checkbox_block_required_text', errorMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -86,16 +92,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									label={ __( 'Error Message', 'sureforms' ) }
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
 								label={ __(
-									'Checked by default',
+									'Checked by Default',
 									'sureforms'
 								) }
 								checked={ isChecked }
@@ -108,7 +115,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									value: checkboxHelpText,
 									label: 'checkboxHelpText',
 								} }
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ checkboxHelpText }
 								onChange={ ( value ) =>
 									setAttributes( { checkboxHelpText: value } )
@@ -117,12 +124,18 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<CheckboxComponent
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 				attributes={ attributes }
+				blockType="checkbox"
 			/>
 			{ checkboxHelpText !== '' && (
 				<RichText

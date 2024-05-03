@@ -37,7 +37,7 @@
 		},
 		"errorMsg": {
 			"type": "string",
-			"default": "This field is required."
+			"default": ""
 		},
 		"placeholder": {
 			"type": "string",
@@ -61,6 +61,14 @@
 		},
 		"formId": {
 			"type": "number",
+			"default": ""
+		},
+		"isConditionalLogic": {
+			"type": "boolean",
+			"default": false
+		},
+		"slug": {
+			"type": "string",
 			"default": ""
 		}
 	}

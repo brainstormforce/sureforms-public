@@ -1,167 +1,80 @@
-import { __ } from '@wordpress/i18n';
-// settings icons.
-import GeneralIcon from './settingsIcon.js';
-import { BaseControl, TabPanel } from '@wordpress/components';
-import { useState, useEffect, Fragment } from '@wordpress/element';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import EmailSummary from './tabs/EmailSummary.js';
+import { __ } from '@wordpress/i18n';
+import { useDebouncedCallback } from 'use-debounce';
+import 'react-loading-skeleton/dist/skeleton.css';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
+
+import { navigation } from './Navigation';
+import GeneralPage from './pages/General';
+import ValidationsPage from './pages/Validations';
+import EmailPage from './pages/Email';
+import SecurityPage from './pages/Security';
 
 const Component = ( { path } ) => {
-	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
-		useState( '' );
-	const [ sureformsV2CheckboxSecret, setSureformsV2CheckboxSecret ] =
-		useState( '' );
-	const [ sureformsV2InvisibleSite, setSureformsV2InvisibleSite ] =
-		useState( '' );
-	const [ sureformsV2InvisibleSecret, setSureformsV2InvisibleSecret ] =
-		useState( '' );
-	const [ sureformsV3Site, setSureformsV3Site ] = useState( '' );
-	const [ sureformsV3Secret, setSureformsV3Secret ] = useState( '' );
+	const [ pageTitle, setPageTitle ] = useState( '' );
+	const [ pageIcon, setPageIcon ] = useState( '' );
+	const [ loading, setLoading ] = useState( false );
 
-	const [ formData, setFormData ] = useState( {} );
-	const [ honeyPot, setHoneyPot ] = useState( false );
-	const [ isIpLog, setIsIpLog ] = useState( false );
+	// Global settings states.
+	const [ generalTabOptions, setGeneralTabOptions ] = useState( {
+		srfm_ip_log: false,
+		srfm_honeypot: false,
+		srfm_form_analytics: false,
+	} );
+	const [ emailTabOptions, setEmailTabOptions ] = useState( {
+		srfm_email_summary: false,
+		srfm_emails_send_to: srfm_admin.admin_email,
+		srfm_schedule_report: 'Monday',
+	} );
+	const [ securitytabOptions, setSecurityTabOptions ] = useState( {
+		srfm_v2_checkbox_site_key: '',
+		srfm_v2_checkbox_secret_key: '',
+		srfm_v2_invisible_site_key: '',
+		srfm_v2_invisible_secret_key: '',
+		srfm_v3_site_key: '',
+		srfm_v3_secret_key: '',
+		srfm_cf_appearance_mode: 'auto',
+		srfm_cf_turnstile_site_key: '',
+		srfm_cf_turnstile_secret_key: '',
+	} );
+	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
+	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
+		{}
+	);
 
-	const onSelect = () => {};
+	// Options to fetch from API.
+	const optionsToFetch = [
+		'srfm_general_settings_options',
+		'srfm_email_summary_settings_options',
+		'srfm_security_settings_options',
+		'get_default_dynamic_block_option',
+	];
 
-	const handleChange = ( e ) => {
-		const { name, value, type, checked } = e.target;
-		const newValue = value;
-
-		if ( name === 'srfm_v2_checkbox_secret' ) {
-			setSureformsV2CheckboxSecret( newValue );
-			setFormData( () => ( {
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'srfm_v2_checkbox_site' ) {
-			setSureformsV2CheckboxSite( newValue );
-			setFormData( () => ( {
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'srfm_v2_invisible_secret' ) {
-			setSureformsV2InvisibleSecret( newValue );
-			setFormData( () => ( {
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'srfm_v2_invisible_site' ) {
-			setSureformsV2InvisibleSite( newValue );
-			setFormData( () => ( {
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'srfm_v3_secret' ) {
-			setSureformsV3Secret( newValue );
-			setFormData( () => ( {
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'srfm_v3_site' ) {
-			setSureformsV3Site( newValue );
-			setFormData( () => ( {
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_secret: sureformsV3Secret,
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: isIpLog,
-				[ name ]: newValue,
-			} ) );
-		} else if ( name === 'honeypot_toggle' ) {
-			const honeyPotValue = type === 'checkbox' ? checked : value;
-
-			setHoneyPot( ! honeyPot );
-			setFormData( () => ( {
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				srfm_ip_log: isIpLog,
-				[ name ]: honeyPotValue,
-			} ) );
-		} else if ( name === 'ip_toggle' ) {
-			const ipValue = type === 'checkbox' ? checked : value;
-			setIsIpLog( ! isIpLog );
-			setFormData( () => ( {
-				srfm_v2_invisible_site: sureformsV2InvisibleSite,
-				srfm_v2_invisible_secret: sureformsV2InvisibleSecret,
-				srfm_v2_checkbox_site: sureformsV2CheckboxSite,
-				srfm_v2_checkbox_secret: sureformsV2CheckboxSecret,
-				srfm_v3_site: sureformsV3Site,
-				srfm_v3_secret: sureformsV3Secret,
-				honeypot_toggle: honeyPot,
-				srfm_ip_log: ipValue,
-			} ) );
+	// set page title and icon based on the path.
+	useEffect( () => {
+		if ( path ) {
+			navigation.forEach( ( single ) => {
+				const slug = single?.slug && single.slug ? single.slug : '';
+				const title = single?.name && single.name ? single.name : '';
+				const icon = single?.icon && single.icon ? single.icon : '';
+				if ( slug ) {
+					if ( slug === path ) {
+						setPageTitle( title );
+						setPageIcon( icon );
+					}
+				}
+			} );
 		}
-	};
+	}, [ path ] );
 
-	const handleSubmit = async ( e ) => {
-		e.preventDefault();
-		try {
-			await apiFetch( {
-				path: 'sureforms/v1/srfm-settings',
-				method: 'POST',
-				body: JSON.stringify( formData ),
-				headers: {
-					'content-type': 'application/json',
-					'X-WP-Nonce': srfm_admin.global_settings_nonce,
-				},
-			} );
-			toast.success( __( 'Settings Saved Successfully!', 'sureforms' ), {
-				position: 'bottom-right',
-				hideProgressBar: true,
-			} );
-		} catch ( error ) {
-			toast.error( __( 'Error Saving Settings!', 'sureforms' ), {
-				position: 'bottom-right',
-				hideProgressBar: true,
-			} );
-			console.error( error );
-		}
-	};
-
+	// Fetch global settings.
 	useEffect( () => {
 		const fetchData = async () => {
+			setLoading( true );
 			try {
 				const data = await apiFetch( {
-					path: 'sureforms/v1/srfm-settings',
+					path: `sureforms/v1/srfm-global-settings?options_to_fetch=${ optionsToFetch }`,
 					method: 'GET',
 					headers: {
 						'content-type': 'application/json',
@@ -169,351 +82,213 @@ const Component = ( { path } ) => {
 					},
 				} );
 
-				if ( data ) {
-					setSureformsV2CheckboxSecret(
-						data.srfm_v2_checkbox_secret &&
-							data.srfm_v2_checkbox_secret
-					);
-					setSureformsV2CheckboxSite(
-						data.srfm_v2_checkbox_site && data.srfm_v2_checkbox_site
-					);
-					setSureformsV2InvisibleSecret(
-						data.srfm_v2_invisible_secret &&
-							data.srfm_v2_invisible_secret
-					);
-					setSureformsV2InvisibleSite(
-						data.srfm_v2_invisible_site &&
-							data.srfm_v2_invisible_site
-					);
-					setSureformsV3Secret(
-						data.srfm_v3_secret && data.srfm_v3_secret
-					);
-					setSureformsV3Site(
-						data.srfm_v3_site && data.srfm_v3_site
-					);
-					setHoneyPot( data.srfm_honeypot && data.srfm_honeypot );
-					setIsIpLog( data.srfm_ip_log && data.srfm_ip_log );
+				const {
+					srfm_general_settings_options,
+					srfm_email_summary_settings_options,
+				} = data;
+
+				if ( srfm_general_settings_options ) {
+					const { srfm_ip_log, srfm_honeypot, srfm_form_analytics } =
+						srfm_general_settings_options;
+					setGeneralTabOptions( {
+						srfm_ip_log,
+						srfm_honeypot,
+						srfm_form_analytics,
+					} );
 				}
+
+				if ( srfm_email_summary_settings_options ) {
+					const {
+						srfm_email_summary,
+						srfm_email_sent_to,
+						srfm_schedule_report,
+					} = srfm_email_summary_settings_options;
+					setEmailTabOptions( {
+						srfm_email_summary,
+						srfm_email_sent_to,
+						srfm_schedule_report,
+					} );
+				}
+
+				if ( data.srfm_security_settings_options ) {
+					const {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+						srfm_cf_appearance_mode,
+						srfm_cf_turnstile_site_key,
+						srfm_cf_turnstile_secret_key,
+					} = data.srfm_security_settings_options;
+					setSecurityTabOptions( {
+						srfm_v2_checkbox_site_key,
+						srfm_v2_checkbox_secret_key,
+						srfm_v2_invisible_site_key,
+						srfm_v2_invisible_secret_key,
+						srfm_v3_site_key,
+						srfm_v3_secret_key,
+						srfm_cf_appearance_mode,
+						srfm_cf_turnstile_site_key,
+						srfm_cf_turnstile_secret_key,
+					} );
+				}
+
+				if ( data.get_default_dynamic_block_option ) {
+					setDynamicBlockOptions( {
+						...data.get_default_dynamic_block_option,
+					} );
+					setPreDynamicBlockOptions( {
+						...data.get_default_dynamic_block_option,
+					} );
+				}
+				setLoading( false );
 			} catch ( error ) {
-				console.error( 'Error fetching datates:', error );
+				console.error( 'Error fetching data:', error );
 			}
 		};
 
 		fetchData();
 	}, [] );
 
-	if ( 'general-settings' === path ) {
-		return (
-			<div className="srfm-flex srfm-justify-center lg:srfm-w-[100%] md:srfm-w-[80%] srfm-w-[70%]">
-				<ToastContainer />
-				<div className="srfm-w-full srfm-p-8 srfm-bg-[#FBFBFC] srfm-rounded-md srfm-m-4 srfm-h-3/4 srfm-overflow-scroll srfm-shadow-md srfm-mb-8">
-					<div
-						className="srfm-flex srfm-gap-2 srfm-text-left srfm-text-[17.6px] srfm-text-[#111827] srfm-pb-4"
+	// Save global settings.
+	const debouncedSave = useDebouncedCallback( ( newFormData, tab ) => {
+		try {
+			if ( tab === 'general-settings-dynamic-opt' ) {
+				const hasEmptyValue = Object.values( newFormData ).some(
+					( value ) => value.trim() === ''
+				);
+				if ( hasEmptyValue ) {
+					toast.dismiss();
+					toast.error(
+						__( 'This field cannot be left blank.', 'sureforms' ),
+						{
+							duration: 0,
+						}
+					);
+					setDynamicBlockOptions( { ...preDynamicBlockOptions } );
+					setTimeout( () => {
+						toast.dismiss();
+					}, 1500 );
+					return;
+				}
+			}
+			apiFetch( {
+				path: 'sureforms/v1/srfm-global-settings',
+				method: 'POST',
+				body: JSON.stringify( newFormData ),
+				headers: {
+					'content-type': 'application/json',
+					'X-WP-Nonce': srfm_admin.global_settings_nonce,
+				},
+			} ).then( ( response ) => {
+				toast.dismiss();
+				toast.success( response?.data, {
+					duration: 1500,
+				} );
+				setPreDynamicBlockOptions( newFormData );
+				setTimeout( () => {
+					toast.dismiss();
+				}, 1500 );
+			} );
+		} catch ( error ) {
+			console.error( error );
+		}
+	}, 1000 );
+
+	// Handle global settings change.
+	function updateGlobalSettings( setting, value, tab ) {
+		let updatedTabOptions;
+
+		if ( tab === 'email-settings' ) {
+			updatedTabOptions = {
+				...emailTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setEmailTabOptions( updatedTabOptions );
+		} else if ( tab === 'general-settings' ) {
+			updatedTabOptions = {
+				...generalTabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setGeneralTabOptions( updatedTabOptions );
+		} else if ( tab === 'security-settings' ) {
+			updatedTabOptions = {
+				...securitytabOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setSecurityTabOptions( updatedTabOptions );
+		} else if ( tab === 'general-settings-dynamic-opt' ) {
+			updatedTabOptions = {
+				...dynamicBlockOptions,
+				srfm_tab: tab,
+				[ setting ]: value,
+			};
+			setDynamicBlockOptions( updatedTabOptions );
+		} else {
+			return;
+		}
+		debouncedSave( updatedTabOptions, tab );
+	}
+
+	return (
+		<>
+			<Toaster
+				containerClassName="srfm-toast-container"
+				position="top-right"
+			>
+				{ ( t ) => (
+					<ToastBar
+						toast={ t }
 						style={ {
-							borderBottom: '1px solid rgba(229, 231, 235, 1)',
+							...t.style,
+							animation: t.visible
+								? 'slide-in-left 0.5s ease'
+								: 'slide-out-right 0.5s ease',
 						} }
-					>
-						<GeneralIcon />
-						<span className="srfm-font-semibold">
-							{ __( 'General Settings', 'sureforms' ) }
-						</span>
-					</div>
-					<form onSubmit={ handleSubmit }>
-						<div className="srfm-mt-4">
-							{ /* Google reCAPTCHA Settings */ }
-							<div
-								className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10"
-								style={ {
-									borderBottom:
-										'1px solid rgba(229, 231, 235, 1)',
-								} }
-							>
-								<div className="srfm-max-w-[250px]">
-									<BaseControl
-										help={ __(
-											'A CAPTCHA serves as an anti-spam measure, safeguarding your website against spam and misuse.',
-											'sureforms'
-										) }
-									>
-										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
-											{ __(
-												'Google reCAPTCHA Settings',
-												'sureforms'
-											) }
-										</h3>
-									</BaseControl>
-								</div>
-								<div>
-									<TabPanel
-										activeClass="active-recaptcha"
-										onSelect={ ( tab ) => onSelect( tab ) }
-										tabs={ [
-											{
-												name: 'srfm-recaptcha-v2-checkbox',
-												title: 'v2 Checkbox',
-												className: 'recaptcha-tab',
-											},
-											{
-												name: 'srfm-recaptcha-v2-invisible',
-												title: 'v2 Invisible',
-												className: 'recaptcha-tab',
-											},
-											{
-												name: 'srfm-recaptcha-v3',
-												title: 'v3 reCAPTCHA',
-												className: 'recaptcha-tab',
-											},
-										] }
-									>
-										{ ( tab ) => {
-											switch ( tab.title ) {
-												case 'v2 Checkbox':
-													return (
-														<div className="srfm-w-[600px] srfm-mt-4">
-															<Fragment>
-																<div className="srfm-mb-4 ">
-																	<input
-																		type="text"
-																		name="srfm_v2_checkbox_site"
-																		id="srfm_v2_checkbox_site"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Site Key v2 checkbox',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV2CheckboxSite
-																		}
-																	/>
-																</div>
-															</Fragment>
-															<Fragment>
-																<div className="srfm-mb-4">
-																	<input
-																		type="text"
-																		name="srfm_v2_checkbox_secret"
-																		id="srfm_v2_checkbox_secret"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Secret Key v2 checkbox',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV2CheckboxSecret
-																		}
-																	/>
-																</div>
-															</Fragment>
-														</div>
-													);
-												case 'v2 Invisible':
-													return (
-														<div className="srfm-w-[600px] srfm-mt-4">
-															<Fragment>
-																<div className="srfm-mb-4 ">
-																	<input
-																		type="text"
-																		name="srfm_v2_invisible_site"
-																		id="srfm_v2_invisible_site"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Site Key v2 Invisible',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV2InvisibleSite
-																		}
-																	/>
-																</div>
-															</Fragment>
-															<Fragment>
-																<div className="srfm-mb-4">
-																	<input
-																		type="text"
-																		name="srfm_v2_invisible_secret"
-																		id="srfm_v2_invisible_secret"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Secret Key v2 Invisible',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV2InvisibleSecret
-																		}
-																	/>
-																</div>
-															</Fragment>
-														</div>
-													);
-												case 'v3 reCAPTCHA':
-													return (
-														<div className="srfm-w-[600px] srfm-mt-4">
-															<Fragment>
-																<div className="srfm-mb-4 ">
-																	<input
-																		type="text"
-																		name="srfm_v3_site"
-																		id="srfm_v3_site"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Site Key v3',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV3Site
-																		}
-																	/>
-																</div>
-															</Fragment>
-															<Fragment>
-																<div className="srfm-mb-4">
-																	<input
-																		type="text"
-																		name="srfm_v3_secret"
-																		id="srfm_v3_secret"
-																		className="srfm-block srfm-w-full srfm-rounded-md srfm-border-0 srfm-py-1.5 srfm-text-gray-900 srfm-shadow-sm srfm-ring-1 srfm-ring-inset srfm-ring-gray-300 placeholder:srfm-text-gray-400 focus:srfm-ring-2 focus:srfm-ring-inset focus:srfm-ring-indigo-600 sm:srfm-text-sm sm:srfm-leading-6"
-																		placeholder={ __(
-																			'Secret Key v3',
-																			'sureforms'
-																		) }
-																		onChange={
-																			handleChange
-																		}
-																		value={
-																			sureformsV3Secret
-																		}
-																	/>
-																</div>
-															</Fragment>
-														</div>
-													);
-
-												default:
-													return null;
-											}
-										} }
-									</TabPanel>
-									<h3 className="srfm-text-sm srfm-font-normal srfm-text-[#64748B]">
-										{ __(
-											'To enable reCAPTCHA for your form, please follow the steps mentioned ',
-											'sureforms'
-										) }
-										<a
-											target="_blank"
-											href="https://www.google.com/recaptcha/admin/create"
-											rel="noreferrer"
-										>
-											here
-										</a>
-										.
-									</h3>
-								</div>
-							</div>
-
-							{ /* Honeypot Spam Protection Settings might be used later*/ }
-							<div className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10">
-								<div className="srfm-max-w-[250px]">
-									<BaseControl
-										help={ __(
-											'This adds a hidden field that if filled out prevents the form from submitting.',
-											'sureforms'
-										) }
-									>
-										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
-											{ __(
-												'Honeypot Spam Protection',
-												'sureforms'
-											) }
-										</h3>
-									</BaseControl>
-								</div>
-								<div className="srfm-w-[600px] srfm-mt-4">
-									<Fragment>
-										<div className="srfm-mb-4 ">
-											<label
-												htmlFor="srfm-honeypot-checkbox-input"
-												className="toggle-button"
-											>
-												<input
-													id="srfm-honeypot-checkbox-input"
-													type="checkbox"
-													name="srfm_honeypot_toggle"
-													checked={ honeyPot }
-													onChange={ handleChange }
-												/>
-												<span className="slider"></span>
-											</label>
-										</div>
-									</Fragment>
-								</div>
-							</div>
-
-							{ /* Honeypot Spam Protection Settings might be used later*/ }
-							<div className="srfm-mb-4 srfm-flex srfm-items-start srfm-gap-10">
-								<div className="srfm-max-w-[250px]">
-									<BaseControl
-										help={ __(
-											'Shows the IP address of the user who submitted the form. It shows in the Entry Data',
-											'sureforms'
-										) }
-									>
-										<h3 className="srfm-text-base srfm-font-semibold srfm-text-gray-90">
-											{ __(
-												'Enable IP Logging',
-												'sureforms'
-											) }
-										</h3>
-									</BaseControl>
-								</div>
-								<div className="srfm-w-[600px] srfm-mt-4">
-									<Fragment>
-										<div className="srfm-mb-4 ">
-											<label
-												htmlFor="srfm-ip-checkbox-input"
-												className="toggle-button"
-											>
-												<input
-													id="srfm-ip-checkbox-input"
-													type="checkbox"
-													name="ip_toggle"
-													checked={ isIpLog }
-													onChange={ handleChange }
-												/>
-												<span className="slider"></span>
-											</label>
-										</div>
-									</Fragment>
-								</div>
-							</div>
-						</div>
-						<button type="submit" className="button-primary">
-							{ __( ' Save', 'sureforms' ) }
-						</button>
-					</form>
-				</div>
+					/>
+				) }
+			</Toaster>
+			<div className="srfm-page-heading">
+				<div className="srfm-page-icon">{ pageIcon }</div>
+				<span>{ pageTitle }</span>
 			</div>
-		);
-	}
-
-	if ( 'email-summary' === path ) {
-		return <EmailSummary />;
-	}
-	return null;
+			<div className="srfm-page-content">
+				{ 'general-settings' === path && (
+					<GeneralPage
+						loading={ loading }
+						generalTabOptions={ generalTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'validation-settings' === path && (
+					<ValidationsPage
+						loading={ loading }
+						dynamicBlockOptions={ dynamicBlockOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'email-settings' === path && (
+					<EmailPage
+						loading={ loading }
+						emailTabOptions={ emailTabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+				{ 'security-settings' === path && (
+					<SecurityPage
+						loading={ loading }
+						securitytabOptions={ securitytabOptions }
+						updateGlobalSettings={ updateGlobalSettings }
+					/>
+				) }
+			</div>
+		</>
+	);
 };
 
 export default Component;

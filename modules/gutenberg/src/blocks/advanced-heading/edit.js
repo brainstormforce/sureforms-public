@@ -15,6 +15,7 @@ import DynamicFontLoader from './dynamicFontLoader';
 import { compose } from '@wordpress/compose';
 import AddStaticStyles from '@Controls/AddStaticStyles';
 import AddInitialAttr from '@Controls/addInitialAttr';
+import { useGetCurrentFormId } from '@SrfmAttributes/getFormId';
 
 const UAGBAdvancedHeading = ( props ) => {
 	const {
@@ -25,6 +26,7 @@ const UAGBAdvancedHeading = ( props ) => {
 			UAGHideMob,
 			headingTitle,
 			headingDesc,
+			formId,
 		},
 		isSelected,
 		clientId,
@@ -40,6 +42,7 @@ const UAGBAdvancedHeading = ( props ) => {
 	const descriptionHasDynamicContent =
 		headingDesc &&
 		-1 !== headingDesc.indexOf( '<span data-spectra-dc-field="' );
+	const currentFormId = useGetCurrentFormId( clientId );
 
 	// Including condition in props for child component.
 	props = {
@@ -65,6 +68,12 @@ const UAGBAdvancedHeading = ( props ) => {
 	useEffect( () => {
 		scrollBlockToView();
 	}, [ deviceType ] );
+
+	useEffect( () => {
+		if ( formId !== currentFormId ) {
+			setAttributes( { formId: currentFormId } );
+		}
+	}, [ formId, currentFormId ] );
 
 	const blockStyling = useMemo(
 		() => styling( attributes, clientId, name, deviceType ),

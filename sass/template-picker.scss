@@ -20,6 +20,18 @@ $sidebar_width: 290px;
 	background: $bg_color;
 	font-size: 16px;
 
+	#wpwrap {
+		background-color: #f1f5f9;
+	}
+
+	#wpbody-content {
+		// Hide all admin notices on SureForms Template Picker.
+		.notice,
+		.error {
+			display: none !important;
+		}
+	}
+
 	*,
 	*::before,
 	*::after {
@@ -48,6 +60,14 @@ $sidebar_width: 290px;
 	.srfm-content-section {
 		height: calc( 100vh - 50px );
 		padding-top: 70px;
+
+		.srfm-ts-loader {
+			display: block;
+			margin: auto;
+			height: calc( 4px * 12.5 );
+			width: calc( 4px * 12.5 );
+			color: #d54407;
+		}
 
 		@media ( max-width: 782px ) {
 			padding-top: 50px;
@@ -262,14 +282,12 @@ $sidebar_width: 290px;
 				.srfm-ts-sidebar-search-input {
 					font-weight: 400;
 					border-color: $border_2;
-					width: calc( 100% - 40px );
+					width: 100%;
 				}
 
-				.srfm-ts-sidebar-search-icon {
-					line-height: 0;
-					align-self: center;
-					color: $text_color_2;
-					cursor: pointer;
+				.srfm-ts-sidebar-search-input:focus {
+					box-shadow: none;
+					border-color: #2271b1;
 				}
 			}
 
@@ -284,6 +302,7 @@ $sidebar_width: 290px;
 				}
 				.srfm-ts-category-is-selected {
 					font-weight: 600;
+					color: #d54407;
 				}
 			}
 
@@ -323,9 +342,10 @@ $sidebar_width: 290px;
 					padding: 0.4375em 0.625em;
 					font-size: 0.75em;
 					font-weight: 500;
-					background: #f5f3ff;
-					color: $btn_primary_color;
-					border: 0;
+					background: #fff;
+					color: #d54407;
+					border: 1px solid #d54407;
+					border-radius: 4px;
 					width: 100%;
 					cursor: pointer;
 				}
@@ -379,20 +399,19 @@ $sidebar_width: 290px;
 			}
 
 			.srfm-ts-preview-image {
-				padding: 2em 1.75em 0 2em;
+				padding: 1.5em 1.25em 0 1.25em;
 				width: 100%;
 			}
 
 			.srfm-ts-template-name {
 				width: 100%;
-				font-size: 1em;
+				font-size: 0.875em;
 				font-weight: 500;
 				background-color: $bg_white;
-				padding: 1.25em 1.4375em;
+				padding: 1em 1.25em 1em 1.25em;
 				border-top: 1px solid #e9e9e9;
 				margin-top: -6px;
 				z-index: 1;
-				height: 65px;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -400,6 +419,29 @@ $sidebar_width: 290px;
 
 			.srfm-ts-preview-wrap {
 				position: relative;
+				width: 100%;
+
+				.srfm-tc-pro-badge {
+					background: #ffc107;
+					color: #000;
+					padding: 1px 10px;
+					font-weight: 500;
+					font-size: 0.6875em;
+					top: -10px;
+					right: -10px;
+					text-transform: uppercase;
+					position: absolute;
+					z-index: 1;
+					border-radius: 6px;
+					letter-spacing: 0.3px;
+				}
+
+				.srfm-tc-upgrade-to-pro-btn {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 5px;
+				}
 
 				.srfm-tc-btn-container {
 					opacity: 0;
@@ -412,23 +454,23 @@ $sidebar_width: 290px;
 					align-items: center;
 					justify-content: center;
 					flex-direction: column;
-					backdrop-filter: blur( 5px );
 					z-index: 1;
 					transition: 0.3s;
+					background-color: rgba( 255, 255, 255, 0.1 );
 
 					.srfm-common-btn {
 						padding: 9px 17px;
 						font-size: 0.875em;
 						font-weight: 500;
 						border: 0;
-						width: 126px;
+						width: fit-content;
 						box-shadow: 0px 1px 2px 0px $box_shadow_3;
 						border-radius: 8px;
 						cursor: pointer;
 					}
 
 					.srfm-tc-hover-use-btn {
-						background-color: $btn_primary_color;
+						background-color: #d54407;
 						color: $btn_secondary_color;
 						margin-bottom: 0.75em;
 					}

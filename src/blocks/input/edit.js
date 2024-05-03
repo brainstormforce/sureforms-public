@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -18,11 +18,11 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
-		label,
 		fieldWidth,
 		placeholder,
 		help,
@@ -35,8 +35,8 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		duplicateMsg,
 		formId,
 		preview,
+		className,
 	} = attributes;
-
 	const currentFormId = useGetCurrentFormId( clientId );
 
 	useEffect( () => {
@@ -45,6 +45,16 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_input_block_required_text', errorMsg );
+
+	const {
+		currentMessage: currentUniqueMessage,
+		setCurrentMessage: setCurrentUniqueMessage,
+	} = useErrMessage( 'srfm_input_block_unique_text', duplicateMsg );
+
 	// show the block preview on hover.
 	if ( preview ) {
 		const fieldName = srfm_fields_preview.input_preview;
@@ -52,7 +62,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -73,17 +83,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
@@ -118,20 +117,21 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							{ required && (
 								<SRFMTextControl
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
+									label={ __( 'Error Message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
 								label={ __(
-									'Validate as unique',
+									'Validate as Unique',
 									'sureforms'
 								) }
 								checked={ isUnique }
@@ -145,18 +145,21 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 										'Validation Message for Duplicate ',
 										'sureforms'
 									) }
-									value={ duplicateMsg }
+									value={ currentUniqueMessage }
 									data={ {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { duplicateMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage( value );
+										setAttributes( {
+											duplicateMsg: value,
+										} );
+									} }
 								/>
 							) }
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,
@@ -168,7 +171,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							<Range
 								label={ __(
-									'Maximum text length',
+									'Maximum Text Length',
 									'sureforms'
 								) }
 								displayUnit={ false }
@@ -187,7 +190,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
-					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<>
@@ -213,7 +220,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					/>
 				) }
 			</>
-		</>
+		</div>
 	);
 };
 

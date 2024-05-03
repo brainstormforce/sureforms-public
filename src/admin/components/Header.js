@@ -19,7 +19,11 @@ export default () => {
 					position: sticky;
 					background-color: rgba( 255, 255, 255, 0.75 );
 					backdrop-filter: blur( 5px );
-					top: 32px;
+					top: ${ showNotifications &&
+					'toplevel_page_sureforms_menu' !==
+						srfm_admin.current_screen_id
+			? '0'
+			: '32px' };
 					width: 100%;
 					z-index: 4;
 					@media screen and ( max-width: 782px ) {
@@ -52,49 +56,23 @@ export default () => {
 								font-size: var( --sc-font-size-large );
 							` }
 						>
-							<div
-								css={ css`
-									display: flex;
-									align-items: center;
-
-									sc-breadcrumbs sc-breadcrumb:nth-child(2) {
-										position: relative;
-									}
-
-									sc-breadcrumbs sc-breadcrumb:nth-child(2)::before {
-										content: "";
-										width: 3.5px;
-										height: 3.5px;
-										border: 1px solid #4B5563;
-										border-left: 0;
-										border-top: 0;
-										position: absolute;
-										left: -17px;
-										top: 9px;
-										transform: rotate(315deg);
-									}
-
-								` }
-							>
-								<ScBreadcrumbs>
-									<ScBreadcrumb>
-										<Logo display="block" />
-									</ScBreadcrumb>
-									{ srfm_admin?.breadcrumbs &&
-										srfm_admin.breadcrumbs.length >
-											0 &&
-										srfm_admin.breadcrumbs.map(
-											( breadcrumb, index ) => (
-												<ScBreadcrumb
-													key={ index }
-													href={ breadcrumb.link }
-												>
-													{ breadcrumb.title }
-												</ScBreadcrumb>
-											)
-										) }
-								</ScBreadcrumbs>
-							</div>
+							<ScBreadcrumbs>
+								<ScBreadcrumb>
+									<Logo display="block" />
+								</ScBreadcrumb>
+								{ srfm_admin?.breadcrumbs &&
+									srfm_admin.breadcrumbs.length > 0 &&
+									srfm_admin.breadcrumbs.map(
+										( breadcrumb, index ) => (
+											<ScBreadcrumb
+												key={ index }
+												href={ breadcrumb.link }
+											>
+												{ breadcrumb.title }
+											</ScBreadcrumb>
+										)
+									) }
+							</ScBreadcrumbs>
 						</h1>
 					</div>
 					<div
@@ -134,29 +112,6 @@ export default () => {
 								height: 20px;
 							` }
 						></div>
-						{ /* <span
-							css={ css`
-								display: flex;
-								align-items: center;
-							` }
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-							>
-								<path
-									d="M9.87891 7.51884C11.0505 6.49372 12.95 6.49372 14.1215 7.51884C15.2931 8.54397 15.2931 10.206 14.1215 11.2312C13.9176 11.4096 13.6917 11.5569 13.4513 11.6733C12.7056 12.0341 12.0002 12.6716 12.0002 13.5V14.25M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM12 17.25H12.0075V17.2575H12V17.25Z"
-									stroke="#9CA3AF"
-									strokeWidth="1.5"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</span> */ }
-
 						<span
 							onClick={ () =>
 								setShowNotifications( ! showNotifications )
@@ -191,6 +146,7 @@ export default () => {
 				noHeader={ true }
 				style={ { '--sc-drawer-size': '500px' } }
 				open={ showNotifications }
+				onScHide={ () => setShowNotifications( false ) }
 			>
 				<div>
 					<span

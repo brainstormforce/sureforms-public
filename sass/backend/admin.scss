@@ -1,5 +1,13 @@
 /* stylelint-disable selector-id-pattern */
-
+.toplevel_page_sureforms_menu {
+	#wpbody-content {
+		// Hide all admin notices on SureForms Dashboard page.
+		.notice,
+		.error {
+			display: none !important;
+		}
+	}
+}
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
@@ -33,4 +41,12 @@
 /* Add negative margins to the bottom separator if this is not the current submenu */
 #toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child( 2 )::after {
 	margin: 8px -3px;
+}
+
+.post-type-sureforms_form,
+.post-type-sureforms_entry {
+	#screen-meta,
+	#show-settings-link {
+		border-color: rgb( 229, 231, 235 );
+	}
 }

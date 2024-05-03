@@ -10,11 +10,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			ajaxUrl,
 			nonce,
 			loader,
-			successMessage,
-			errorMessage,
+			successElement,
+			errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
+			afterSubmission,
 		} = extractFormAttributesAndElements( form );
 
 		if ( recaptchaType === 'v3-reCAPTCHA' ) {
@@ -33,9 +34,10 @@ document.addEventListener( 'DOMContentLoaded', function () {
 									nonce,
 									loader,
 									successUrl,
-									successMessage,
-									errorMessage,
-									submitType
+									successElement,
+									errorElement,
+									submitType,
+									afterSubmission
 								);
 							}
 						} );
@@ -51,16 +53,17 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					nonce,
 					loader,
 					successUrl,
-					successMessage,
-					errorMessage,
-					submitType
+					successElement,
+					errorElement,
+					submitType,
+					afterSubmission
 				);
 			} );
 		}
 	}
 } );
 
-function submitFormData( form ) {
+async function submitFormData( form ) {
 	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
@@ -75,7 +78,7 @@ function submitFormData( form ) {
 		}
 	}
 
-	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
+	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': srfm_submit.nonce,
@@ -84,7 +87,7 @@ function submitFormData( form ) {
 	} )
 		.then( ( response ) => {
 			if ( response.ok ) {
-				return response;
+				return response.json();
 			}
 		} )
 		.catch( ( e ) => {
@@ -92,14 +95,18 @@ function submitFormData( form ) {
 		} );
 }
 
-function showSuccessMessage( element, form ) {
-	form.style.opacity = 1;
-	form.style.display = 'none';
+function showSuccessMessage( element, message, form, afterSubmission ) {
+	if ( afterSubmission === 'hide form' ) {
+		form.style.opacity = 1;
+		form.style.display = 'none';
+		setTimeout( () => {
+			element.style.opacity = 1;
+		}, 500 );
+	} else {
+		form.reset();
+	}
+	element.innerHTML = message;
 	element.classList.add( 'srfm-active' );
-
-	setTimeout( () => {
-		element.style.opacity = 1;
-	}, 500 );
 }
 
 function redirectToUrl( url ) {
@@ -118,9 +125,10 @@ async function handleFormSubmission(
 	nonce,
 	loader,
 	successUrl,
-	successMessage,
-	errorMessage,
-	submitType
+	successElement,
+	errorElement,
+	submitType,
+	afterSubmission
 ) {
 	try {
 		loader.classList.add( 'srfm-active' );
@@ -138,20 +146,27 @@ async function handleFormSubmission(
 		}
 
 		const formStatus = await submitFormData( form );
-
-		loader.classList.add( 'srfm-active' );
-		if ( formStatus ) {
-			if ( submitType === 'message' ) {
-				showSuccessMessage( successMessage, form );
+		if ( formStatus?.success ) {
+			if ( submitType === 'same page' ) {
+				showSuccessMessage(
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission
+				);
+				loader.classList.remove( 'srfm-active' );
 			} else {
 				redirectToUrl( successUrl );
+				loader.classList.remove( 'srfm-active' );
 			}
 		} else {
-			showErrorMessage( errorMessage );
+			loader.classList.remove( 'srfm-active' );
+			showErrorMessage( errorElement );
+			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
 		loader.classList.remove( 'srfm-active' );
-		showErrorMessage( errorMessage );
+		showErrorMessage( errorElement );
 	}
 }
 
@@ -162,11 +177,15 @@ function extractFormAttributesAndElements( form ) {
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
-	const successMessage = form.nextElementSibling;
-	const errorMessage = form.querySelector( '.srfm-error-message' );
+	const successElement = form.parentElement.querySelector(
+		'.srfm-single-form.srfm-success-box'
+	);
+	const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
-	const siteKey = submitBtn.getAttribute( 'data-sitekey' );
-	const recaptchaType = submitBtn.getAttribute( 'recaptcha-type' );
+	const afterSubmission = form.getAttribute( 'after-submission' );
+	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
+	const siteKey = gcaptchaDiv?.getAttribute( 'data-sitekey' );
+	const recaptchaType = gcaptchaDiv?.getAttribute( 'recaptcha-type' );
 
 	return {
 		formId,
@@ -175,18 +194,19 @@ function extractFormAttributesAndElements( form ) {
 		ajaxUrl,
 		nonce,
 		loader,
-		successMessage,
-		errorMessage,
+		successElement,
+		errorElement,
 		submitBtn,
 		siteKey,
 		recaptchaType,
+		afterSubmission,
 	};
 }
 
 // eslint-disable-next-line no-unused-vars
+// v-2 invisible recaptcha callback
 function onloadCallback() {
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
-
 	forms.forEach( ( form ) => {
 		const {
 			formId,
@@ -195,11 +215,12 @@ function onloadCallback() {
 			ajaxUrl,
 			nonce,
 			loader,
-			successMessage,
-			errorMessage,
+			successElement,
+			errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
+			afterSubmission,
 		} = extractFormAttributesAndElements( form );
 		let isRecaptchaRender = false;
 		if ( recaptchaType === 'v2-invisible' ) {
@@ -213,15 +234,17 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
-						successMessage,
-						errorMessage,
-						submitType
+						successElement,
+						errorElement,
+						submitType,
+						afterSubmission
 					);
 					isRecaptchaRender = true;
 				},
 			} );
 
 			submitBtn.addEventListener( 'click', () => {
+				loader.classList.add( 'srfm-active' );
 				if ( isRecaptchaRender ) {
 					handleFormSubmission(
 						form,
@@ -230,12 +253,16 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
-						successMessage,
-						errorMessage,
-						submitType
+						successElement,
+						errorElement,
+						submitType,
+						afterSubmission
 					);
 				}
 			} );
 		}
 	} );
 }
+
+// directly assign onloadCallback into the global space:
+window.onloadCallback = onloadCallback;

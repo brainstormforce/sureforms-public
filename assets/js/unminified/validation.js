@@ -59,6 +59,22 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 	);
 
 	for ( const container of fieldContainers ) {
+		let skipValidation = false;
+		if ( Array.isArray( window.sureforms?.skipValidationCallbacks ) ) {
+			window.sureforms.skipValidationCallbacks.forEach(
+				( skipValidationCallback ) => {
+					if ( typeof skipValidationCallback === 'function' ) {
+						skipValidation =
+							skipValidation ||
+							skipValidationCallback( container );
+					}
+				}
+			);
+		}
+
+		if ( skipValidation ) {
+			continue;
+		}
 		const currentForm = container.closest( 'form' );
 		const currentFormId = currentForm.getAttribute( 'form-id' );
 
@@ -97,6 +113,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
 			}
+
+			// remove the error message on change of the input
+			inputField.addEventListener( 'change', () => {
+				inputField
+					.closest( '.srfm-block' )
+					.classList.remove( 'srfm-error' );
+			} );
 		}
 
 		// Checks if input is unique.
@@ -126,10 +149,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 		}
 
-		//Radio OR Checkbox type field
+		//Radio OR Checkbox or GDPR type field
 		if (
 			container.classList.contains( 'srfm-multi-choice-block' ) ||
-			container.classList.contains( 'srfm-checkbox-block' )
+			container.classList.contains( 'srfm-checkbox-block' ) ||
+			container.classList.contains( 'srfm-gdpr-block' )
 		) {
 			const checkedInput = container.querySelectorAll( 'input' );
 			const isCheckedRequired =
@@ -158,6 +182,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			} else if ( errorMessage ) {
 				container.classList.remove( 'srfm-error' );
 			}
+
+			// also remove the error message on change of the input
+			checkedInput.forEach( ( input ) => {
+				input.addEventListener( 'change', () => {
+					container.classList.remove( 'srfm-error' );
+				} );
+			} );
 		}
 
 		//Url field
@@ -172,6 +203,11 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = urlInput;
 				}
 			}
+
+			// remove the error message on change of the url input
+			urlInput.addEventListener( 'change', () => {
+				container.classList.remove( 'srfm-error' );
+			} );
 		}
 
 		//Phone field
@@ -187,6 +223,14 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					firstErrorInput = phoneInput;
 				}
 			}
+
+			// remove the error message on change of the phone input
+			const phoneInputs = container.querySelectorAll( 'input' );
+			phoneInputs.forEach( ( input ) => {
+				input.addEventListener( 'change', () => {
+					container.classList.remove( 'srfm-error' );
+				} );
+			} );
 		}
 
 		//Password field
@@ -279,12 +323,24 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					} else {
 						confirmParent.classList.remove( 'srfm-error' );
 					}
+
+					// remove the error message on change of the email confirm field
+					confirmInput.addEventListener( 'change', () => {
+						confirmParent.classList.remove( 'srfm-error' );
+					} );
 				}
+
+				// remove the error message on change of the email main field
+				const allInputFields =
+					parent.querySelector( '.srfm-input-email' );
+				allInputFields.addEventListener( 'change', () => {
+					parent.classList.remove( 'srfm-error' );
+				} );
 			}
 		}
 
-		//Address field
-		if ( container.classList.contains( 'srfm-address-block' ) ) {
+		//Address Compact field
+		if ( container.classList.contains( 'srfm-address-compact-block' ) ) {
 			const addressInput = container.querySelectorAll( 'input' );
 			const isAddressRequired =
 				addressInput[ 1 ].getAttribute( 'aria-required' );
@@ -301,8 +357,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				i++
 			) {
 				if (
-					( ! addressInput[ i ].value && 2 !== i && 5 !== i ) ||
-					( 5 === i && ! hasItem )
+					( ! addressInput[ i ].value && i !== 2 && i !== 5 ) ||
+					( i === 5 && ! hasItem )
 				) {
 					container.classList.add( 'srfm-error' );
 
@@ -316,6 +372,45 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					container.classList.remove( 'srfm-error' );
 				}
 			}
+
+			// Function to check if all inputs are filled
+			function checkInputs() {
+				const hasCountry = selectWrap.classList.contains( 'has-items' );
+
+				if (
+					addressInput[ 1 ].value &&
+					addressInput[ 2 ].value &&
+					addressInput[ 3 ].value &&
+					addressInput[ 4 ].value &&
+					hasCountry &&
+					addressInput[ 6 ].value
+				) {
+					container.classList.remove( 'srfm-error' );
+				}
+			}
+
+			// Add event listener to each input element to check if all inputs are filled
+			addressInput.forEach( ( input ) => {
+				input.addEventListener( 'change', checkInputs );
+			} );
+
+			// Create a mutation observer to watch for changes in the class of selectWrap
+			const MutationObserver =
+				window.MutationObserver ||
+				window.WebKitMutationObserver ||
+				window.MozMutationObserver;
+
+			const observer = new MutationObserver( ( mutations ) => {
+				mutations.forEach( ( mutation ) => {
+					if ( mutation.attributeName === 'class' ) {
+						checkInputs();
+					}
+				} );
+			} );
+
+			observer.observe( selectWrap, {
+				attributes: true,
+			} );
 		}
 
 		//Upload field
@@ -347,6 +442,15 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
 			}
+
+			// remove srfm-error class when file is selected
+			uploadInput.addEventListener( 'change', () => {
+				if ( inputField ) {
+					inputField
+						.closest( '.srfm-block' )
+						.classList.remove( 'srfm-error' );
+				}
+			} );
 		}
 
 		// Number field.

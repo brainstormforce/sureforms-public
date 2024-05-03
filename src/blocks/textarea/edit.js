@@ -19,12 +19,12 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		fieldWidth,
-		label,
 		placeholder,
 		textAreaHelpText,
 		required,
@@ -45,6 +45,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_textarea_block_required_text', errorMsg );
 
 	// show the block preview on hover
 	if ( preview ) {
@@ -74,17 +79,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
@@ -119,15 +113,16 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 							/>
 							{ required && (
 								<SRFMTextControl
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
+									label={ __( 'Error Message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<SRFMNumberControl
@@ -178,7 +173,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 								} }
 							/>
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ textAreaHelpText }
 								data={ {
 									value: textAreaHelpText,
@@ -191,6 +186,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<TextareaComponent

@@ -1,4 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
+import { useState, useEffect } from '@wordpress/element';
 
 const stripHTML = ( text ) => {
 	const { DOMParser } = window;
@@ -41,11 +42,14 @@ const getBlockTypes = ( exclude = '' ) => {
 		'srfm/textarea',
 		'srfm/number',
 		'srfm/checkbox',
+		'srfm/gdpr',
 		'srfm/phone',
 		'srfm/address',
+		'srfm/address-compact',
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/url',
+		'srfm/inline-button',
 	] );
 
 	if ( exclude ) {
@@ -58,6 +62,52 @@ const getBlockTypes = ( exclude = '' ) => {
 
 	return blocks;
 };
+
+/**
+ * Generate Validation Message.
+ *
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
+ * @return {string} message.
+ */
+const validationMessage = ( key, message ) => {
+	if ( message ) {
+		return message;
+	}
+
+	return srfm_block_data?.get_default_dynamic_block_option?.[ key ] ?? '';
+};
+
+/**
+ * Generate Required Error Message.
+ *
+ * @param {string} key     Default error message key
+ * @param {string} message Custom error message.
+ * @return {Object} currentErrorMsg, setCurrentErrorMsg, currentUniqueMessage, setCurrentUniqueMessage.
+ */
+const useErrMessage = ( key, message ) => {
+	const [ currentMessage, setCurrentMessage ] = useState();
+
+	useEffect( () => {
+		setCurrentMessage( validationMessage( key, message ) );
+	}, [ key, message ] );
+
+	return { currentMessage, setCurrentMessage };
+};
+
+/**
+ * Get default message value for resetting the respective option.
+ *
+ * @param {string} optionName Option name.
+ * @return {Object} default message.
+ */
+function getDefaultMessage( optionName ) {
+	return {
+		type: 'string',
+		default:
+			srfm_block_data?.get_default_dynamic_block_option?.[ optionName ],
+	};
+}
 
 /**
  * Modified the string value.
@@ -81,4 +131,12 @@ function decodeHtmlEntities( str ) {
 	return str;
 }
 
-export { stripHTML, getSpacingPresetCssVar, getBlockTypes, decodeHtmlEntities };
+export {
+	stripHTML,
+	getSpacingPresetCssVar,
+	getBlockTypes,
+	validationMessage,
+	useErrMessage,
+	getDefaultMessage,
+	decodeHtmlEntities,
+};

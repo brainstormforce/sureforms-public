@@ -5,7 +5,8 @@
  * @package SureForms
  */
 
-use SRFM\Inc\SRFM_Generate_Form_Markup;
+use SRFM\Inc\Generate_Form_Markup;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -26,10 +27,17 @@ if ( $srfm_form_preview_attr ) {
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<?php wp_head(); ?>
+		<?php
+			$srfm_custom_post_id  = get_the_ID();
+			$form_custom_css_meta = get_post_meta( $srfm_custom_post_id, '_srfm_form_custom_css', true );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+		?>
+		<style>
+			<?php echo wp_kses_post( $custom_css ); ?>
+		</style>
 	</head>
 	<body <?php body_class(); ?>>
 	<?php
-		$srfm_custom_post_id                 = get_the_ID();
 		$srfm_color1_val                     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
 		$srfm_bg_val                         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
 		$srfm_fontsize_val                   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
@@ -40,6 +48,8 @@ if ( $srfm_form_preview_attr ) {
 		$srfm_form_container_width           = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_container_width', true ) ) : 650;
 		$srfm_submit_button_text             = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_button_text', true );
 		$srfm_show_title_on_single_form_page = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$show_title                          = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_single_page_form_title', true ) ) : '';
+		$instant_form                        = Helper::get_meta_value( $srfm_custom_post_id, '_srfm_instant_form' );
 
 		$srfm_color_primary         = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
 		$srfm_background_image_url  = $srfm_bg_val ? rawurldecode( strval( $srfm_bg_val ) ) : '';
@@ -62,22 +72,6 @@ if ( $srfm_form_preview_attr ) {
 		} else {
 			$srfm_full = false;
 		}
-
-		$srfm_recaptcha_version       = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ? strval( get_post_meta( intval( $srfm_custom_post_id ), '_srfm_form_recaptcha', true ) ) : '';
-		$srfm_google_captcha_site_key = '';
-		switch ( $srfm_recaptcha_version ) {
-			case 'v2-checkbox':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_checkbox_site' ) ) ? strval( get_option( 'srfm_v2_checkbox_site' ) ) : '';
-				break;
-			case 'v2-invisible':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v2_invisible_site' ) ) ? strval( get_option( 'srfm_v2_invisible_site' ) ) : '';
-				break;
-			case 'v3-reCAPTCHA':
-				$srfm_google_captcha_site_key = ! empty( get_option( 'srfm_v3_site' ) ) ? strval( get_option( 'srfm_v3_site' ) ) : '';
-				break;
-			default:
-				break;
-		}
 		?>
 		<style>
 			#srfm-single-page-container {
@@ -89,14 +83,14 @@ if ( $srfm_form_preview_attr ) {
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $srfm_color_primary ); ?>">
-				<?php if ( '1' !== $srfm_show_title_on_single_form_page ) : ?>
+				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>
 			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
-					echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
+					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
 				<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
@@ -153,7 +147,7 @@ if ( $srfm_form_preview_attr ) {
 			show_admin_bar( false );
 
 			// phpcs:ignore
-			echo SRFM_Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
+			echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false, 'sureforms_form' );
 			// phpcs:ignoreEnd
 
 			wp_footer();

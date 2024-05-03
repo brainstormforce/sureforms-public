@@ -20,9 +20,7 @@ const FormPageHeader = () => {
 						overflow-x: hidden;
 					}
 					#wpwrap {
-						background-color: var(
-							--sc-color-brand-main-background
-						);
+						background-color: #f1f5f9;
 					}
 					#wpcontent {
 						padding: 0;

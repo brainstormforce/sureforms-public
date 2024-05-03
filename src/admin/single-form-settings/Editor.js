@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, createRoot, render } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as blockEditorStore, RichText } from '@wordpress/block-editor';
 
 import GeneralSettings from './tabs/GeneralSettings.js';
 import StyleSettings from './tabs/StyleSettings.js';
@@ -34,15 +34,15 @@ import ProPanel from './components/pro-panel/index.js';
 
 const { select, dispatch } = wp.data;
 
-const default_keys = {
+const defaultKeys = {
 	// General Tab
 	_srfm_show_labels: true,
 	_srfm_show_asterisk: true,
-	_srfm_page_form_title: false,
-	_srfm_single_page_form_title: false,
+	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
+	_srfm_is_inline_button: false,
 	// Submit Button
-	_srfm_submit_button_text: 'SUBMIT',
+	_srfm_submit_button_text: 'Submit',
 	// Page Break
 	_srfm_is_page_break: false,
 	_srfm_first_page_label: 'Page break',
@@ -53,7 +53,7 @@ const default_keys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
-	_srfm_color1: '#0e4372',
+	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
 	_srfm_bg_color: '#ffffff',
@@ -75,7 +75,7 @@ const default_keys = {
 	_srfm_inherit_theme_button: false,
 	_srfm_button_text_color: '#ffffff',
 	_srfm_btn_bg_type: 'filled',
-	_srfm_button_bg_color: '#0e4372',
+	_srfm_button_bg_color: '#D54407',
 	_srfm_button_border_color: '#ffffff',
 	_srfm_button_border_width: 0,
 	_srfm_button_border_radius: 6,
@@ -97,11 +97,11 @@ const default_keys = {
 const SureformsFormSpecificSettings = ( props ) => {
 	const [ hasCopied, setHasCopied ] = useState( false );
 	const [ enableQuickActionSidebar, setEnableQuickActionSidebar ] =
-		useState();
+		useState( 'enabled' );
 	const postId = useSelect( () => {
 		return select( 'core/editor' ).getCurrentPostId();
 	}, [] );
-	const sureforms_keys = useSelect( () =>
+	const sureformsKeys = useSelect( () =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
 
@@ -114,6 +114,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const isPageBreak = blocks.some(
 		( block ) => block.name === 'srfm/page-break'
 	);
+	const isInlineButtonBlockPresent = blocks.some(
+		( block ) => block.name === 'srfm/inline-button'
+	);
 	const deviceType = useDeviceType();
 
 	function updateMeta( option, value ) {
@@ -123,6 +126,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			meta: option_array,
 		} );
 	}
+
+	// find if code editor is open/close then trigger adding button again
+	const codeEditor = document.querySelector( '.editor-post-text-editor' );
+
 	// Find the main Editor Container
 	const rootContainerDiv = document.querySelector(
 		'.edit-post-visual-editor__content-area'
@@ -142,10 +149,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	useEffect( () => {
-		if ( sureforms_keys._srfm_is_page_break === undefined ) {
-			return;
+		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
+			updateMeta( '_srfm_is_page_break', isPageBreak );
 		}
-		updateMeta( '_srfm_is_page_break', isPageBreak );
+
+		if ( typeof sureformsKeys._srfm_is_inline_button === 'boolean' ) {
+			updateMeta( '_srfm_is_inline_button', isInlineButtonBlockPresent );
+		}
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
@@ -165,8 +175,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 		const inheritClass = 'wp-block-button__link';
 		const customClass = 'srfm-btn-bg-color';
 		const btnClass =
-			sureforms_keys?._srfm_inherit_theme_button &&
-			sureforms_keys._srfm_inherit_theme_button
+			sureformsKeys?._srfm_inherit_theme_button &&
+			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
 		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
@@ -178,6 +188,29 @@ const SureformsFormSpecificSettings = ( props ) => {
 					.querySelector( '.srfm-submit-btn-container' )
 			) {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
+
+				// If the normal button is present, add RichText to the button.
+				const buttonContainer = elm.nextElementSibling;
+				const button = buttonContainer.querySelector(
+					'.srfm-submit-button'
+				);
+
+				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
+				createRoot( button ).render(
+					<RichText
+						tagName="label"
+						value={
+							submitBtnText
+								? submitBtnText
+								: __( 'Submit', 'sureforms' )
+						}
+						onChange={ ( value ) =>
+							updateMeta( '_srfm_submit_button_text', value )
+						}
+						placeholder={ __( 'Submit', 'sureforms' ) }
+					/>
+				);
 			}
 		}
 	}
@@ -190,152 +223,150 @@ const SureformsFormSpecificSettings = ( props ) => {
 						// Form Container
 						{
 							property: '--srfm-primary-color',
-							value: sureforms_keys._srfm_color1 || '#0e4372',
+							value: sureformsKeys._srfm_color1 || '#D54407',
 						},
 						{
 							property: '--srfm-bg-image',
-							value: sureforms_keys._srfm_bg_image
-								? `url(${ sureforms_keys._srfm_bg_image })`
+							value: sureformsKeys._srfm_bg_image
+								? `url(${ sureformsKeys._srfm_bg_image })`
 								: '',
 						},
 						{
 							property: '--srfm-bg-color',
-							value: sureforms_keys._srfm_bg_color
-								? sureforms_keys._srfm_bg_color
+							value: sureformsKeys._srfm_bg_color
+								? sureformsKeys._srfm_bg_color
 								: '',
 						},
 						{
 							property: '--srfm-font-size',
-							value: sureforms_keys._srfm_fontsize
-								? `${ sureforms_keys._srfm_fontsize }px`
+							value: sureformsKeys._srfm_fontsize
+								? `${ sureformsKeys._srfm_fontsize }px`
 								: '20px',
 						},
 						{
 							property: '--srfm-label-text-color',
-							value:
-								sureforms_keys._srfm_label_color || '#1f2937',
+							value: sureformsKeys._srfm_label_color || '#1f2937',
 						},
 						{
 							property: '--srfm-help-color',
-							value: sureforms_keys._srfm_help_color || '#6b7280',
+							value: sureformsKeys._srfm_help_color || '#6b7280',
 						},
 						// Input
 						{
 							property: '--srfm-body-input-color',
 							value:
-								sureforms_keys._srfm_input_text_color ||
+								sureformsKeys._srfm_input_text_color ||
 								'#4B5563',
 						},
 
 						{
 							property: '--srfm-placeholder-color',
 							value:
-								sureforms_keys._srfm_input_placeholder_color ||
+								sureformsKeys._srfm_input_placeholder_color ||
 								'#9CA3AF',
 						},
 						{
 							property: '--srfm-base-background-color',
 							value:
-								sureforms_keys._srfm_input_bg_color ||
-								'#ffffff',
+								sureformsKeys._srfm_input_bg_color || '#ffffff',
 						},
 						{
 							property: '--srfm-border-color',
 							value:
-								sureforms_keys._srfm_input_border_color ||
+								sureformsKeys._srfm_input_border_color ||
 								'#D0D5DD',
 						},
 						{
 							property: '--srfm-border',
 							value:
-								sureforms_keys._srfm_input_border_width +
-									'px' || '1px',
+								sureformsKeys._srfm_input_border_width + 'px' ||
+								'1px',
 						},
 						{
 							property: '--srfm-border-radius',
 							value:
-								sureforms_keys._srfm_input_border_radius +
+								sureformsKeys._srfm_input_border_radius +
 									'px' || '4px',
 						},
 						// Error
 						{
 							property: '--srfm-error-text-color',
-							value: sureforms_keys._srfm_field_error_color
-								? `${ sureforms_keys._srfm_field_error_color }`
+							value: sureformsKeys._srfm_field_error_color
+								? `${ sureformsKeys._srfm_field_error_color }`
 								: '#DC2626',
 						},
 						{
 							property: '--srfm-field-error-surface-color',
 							value:
-								sureforms_keys._srfm_field_error_surface_color ||
+								sureformsKeys._srfm_field_error_surface_color ||
 								'#EF4444',
 						},
 						{
 							property: '--srfm-field-error-bg-color',
 							value:
-								sureforms_keys._srfm_field_error_bg_color ||
+								sureformsKeys._srfm_field_error_bg_color ||
 								'#FEF2F2',
 						},
 						// Submit Button
 						{
 							property: '--srfm-btn-text-color',
 							value:
-								sureforms_keys._srfm_button_text_color ||
+								sureformsKeys._srfm_button_text_color ||
 								'#ffffff',
 						},
 						{
 							property: '--srfm-btn-bg-color',
 							value:
-								sureforms_keys._srfm_button_bg_color ||
-								'#0e4372',
+								sureformsKeys._srfm_button_bg_color ||
+								'#D54407',
 						},
 						{
 							property: '--srfm-btn-border-color',
 							value:
-								sureforms_keys._srfm_button_border_color ||
+								sureformsKeys._srfm_button_border_color ||
 								'#ffffff',
 						},
 						{
 							property: '--srfm-btn-border-width',
 							value:
-								sureforms_keys._srfm_button_border_width +
+								sureformsKeys._srfm_button_border_width +
 									'px' || '0px',
 						},
 						{
 							property: '--srfm-btn-border-radius',
 							value:
-								sureforms_keys._srfm_button_border_radius +
+								sureformsKeys._srfm_button_border_radius +
 									'px' || '6px',
 						},
 						{
 							property: '--srfm-submit-alignment-backend',
-							value: sureforms_keys._srfm_submit_alignment_backend
-								? `${ sureforms_keys._srfm_submit_alignment_backend }`
+							value: sureformsKeys._srfm_submit_alignment_backend
+								? `${ sureformsKeys._srfm_submit_alignment_backend }`
 								: '100%',
 						},
 						{
 							property: '--srfm-submit-width-backend',
-							value: sureforms_keys._srfm_submit_width_backend
-								? `${ sureforms_keys._srfm_submit_width_backend }`
+							value: sureformsKeys._srfm_submit_width_backend
+								? `${ sureformsKeys._srfm_submit_width_backend }`
 								: 'max-content',
 						},
 
 						{
 							property: '--srfm-submit-alignment',
-							value: sureforms_keys._srfm_submit_alignment
-								? `${ sureforms_keys._srfm_submit_alignment }`
+							value: sureformsKeys._srfm_submit_alignment
+								? `${ sureformsKeys._srfm_submit_alignment }`
 								: 'left',
 						},
 						{
 							property: '--srfm-submit-width',
-							value: sureforms_keys._srfm_submit_width
-								? `${ sureforms_keys._srfm_submit_width }`
+							value: sureformsKeys._srfm_submit_width
+								? `${ sureformsKeys._srfm_submit_width }`
 								: '',
 						},
 						{
 							property: '--srfm-submit-button-text',
-							value: sureforms_keys._srfm_submit_button_text
-								? `"${ sureforms_keys._srfm_submit_button_text }"`
+							value: sureformsKeys._srfm_submit_button_text
+								? `"${ sureformsKeys._srfm_submit_button_text }"`
 								: 'SUBMIT',
 						},
 					];
@@ -388,7 +419,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 					'.block-editor-block-list__layout'
 				);
 
-				if ( ! submitBtnContainer ) {
+				// If Custom Button is present, remove the default button.
+				if ( isInlineButtonBlockPresent ) {
+					const submitBtn = document.querySelectorAll(
+						'.srfm-submit-btn-container'
+					);
+					if ( submitBtn.length > 0 ) {
+						submitBtn[ 0 ].remove();
+					}
+				}
+
+				// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
+				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 					addSubmitButton( elm );
 					const submitBtn = document.querySelectorAll(
 						'.srfm-submit-btn-container'
@@ -399,7 +441,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 				}
 			}
 		}, 200 );
-	}, [ deviceType, sureforms_keys ] );
+	}, [
+		deviceType,
+		sureformsKeys,
+		codeEditor,
+		blockCount,
+		isInlineButtonBlockPresent,
+	] );
 
 	useEffect( () => {
 		//quick action sidebar
@@ -479,7 +527,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			>
 				<InspectorTab { ...SRFMTabs.general }>
 					<GeneralSettings
-						default_keys={ default_keys }
+						defaultKeys={ defaultKeys }
 						enableQuickActionSidebar={ enableQuickActionSidebar }
 						setEnableQuickActionSidebar={
 							setEnableQuickActionSidebar
@@ -488,10 +536,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings default_keys={ default_keys } />
+					<StyleSettings
+						defaultKeys={ defaultKeys }
+						isInlineButtonBlockPresent={
+							isInlineButtonBlockPresent
+						}
+					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<AdvancedSettings default_keys={ default_keys } />
+					<AdvancedSettings defaultKeys={ defaultKeys } />
 				</InspectorTab>
 			</InspectorTabs>
 			<PluginPostPublishPanel>

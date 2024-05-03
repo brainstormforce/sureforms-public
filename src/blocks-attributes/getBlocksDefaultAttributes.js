@@ -6,13 +6,17 @@ import urlAttributes from '@Blocks/url/block.json';
 import numberAttributes from '@Blocks/number/block.json';
 import checkboxAttributes from '@Blocks/checkbox/block.json';
 import addressAttributes from '@Blocks/address/block.json';
+import addressCompactAttributes from '@Blocks/address-compact/block.json';
 import multiChoiceAttributes from '@Blocks/multi-choice/block.json';
 import dropdownAttributes from '@Blocks/dropdown/block.json';
+import gdprAttributes from '@Blocks/gdpr/block.json';
+import inlineButton from '@Blocks/inline-button/block.json';
+import { getDefaultMessage } from '@Blocks/util';
 
-const default_keys = {
+const defaultKeys = {
 	// General Tab
 	// Submit button
-	_srfm_submit_button_text: { default: 'SUBMIT' },
+	_srfm_submit_button_text: { default: 'Submit' },
 	// Page Break
 	_srfm_first_page_label: { default: 'Page break' },
 	_srfm_previous_button_text: { default: 'Previous' },
@@ -20,7 +24,7 @@ const default_keys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: { default: 650 },
-	_srfm_color1: { default: '#0e4372' },
+	_srfm_color1: { default: '#D54407' },
 	_srfm_bg_color: { default: '#ffffff' },
 	_srfm_fontsize: { default: 20 },
 	_srfm_label_color: { default: '#1f2937' },
@@ -38,7 +42,7 @@ const default_keys = {
 	_srfm_field_error_bg_color: { default: '#FEF2F2' },
 	// Submit
 	_srfm_button_text_color: { default: '#ffffff' },
-	_srfm_button_bg_color: { default: '#0e4372' },
+	_srfm_button_bg_color: { default: '#D54407' },
 	_srfm_button_border_color: { default: '#ffffff' },
 	_srfm_button_border_width: { default: 0 },
 	_srfm_button_border_radius: { default: 6 },
@@ -49,15 +53,60 @@ const default_keys = {
 };
 
 export const blocksAttributes = {
-	input: inputAttributes.attributes,
-	email: emailAttributes.attributes,
-	checkbox: checkboxAttributes.attributes,
-	address: addressAttributes.attributes,
-	'multi-choice': multiChoiceAttributes.attributes,
-	dropdown: dropdownAttributes.attributes,
-	phone: phoneAttributes.attributes,
-	textarea: textareaAttributes.attributes,
-	url: urlAttributes.attributes,
-	number: numberAttributes.attributes,
-	form_specific: default_keys,
+	input: {
+		...inputAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_input_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_input_block_unique_text' ),
+	},
+	email: {
+		...emailAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_email_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_email_block_unique_text' ),
+	},
+	checkbox: {
+		...checkboxAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_checkbox_block_required_text' ),
+	},
+	address: {
+		...addressAttributes.attributes,
+	},
+	'multi-choice': {
+		...multiChoiceAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_multi_choice_block_required_text' ),
+	},
+	dropdown: {
+		...dropdownAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_dropdown_block_required_text' ),
+	},
+	phone: {
+		...phoneAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_phone_block_required_text' ),
+		duplicateMsg: getDefaultMessage( 'srfm_phone_block_unique_text' ),
+	},
+	textarea: {
+		...textareaAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_textarea_block_required_text' ),
+	},
+	url: {
+		...urlAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_url_block_required_text' ),
+	},
+	number: {
+		...numberAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_number_block_required_text' ),
+	},
+	gdpr: {
+		...gdprAttributes.attributes,
+		errorMsg: getDefaultMessage( 'srfm_gdpr_block_required_text' ),
+	},
+	'inline-button': {
+		...inlineButton.attributes,
+	},
+	'address-compact': {
+		...addressCompactAttributes.attributes,
+		errorMsg: getDefaultMessage(
+			'srfm_address_compact_block_required_text'
+		),
+	},
+	form_specific: defaultKeys,
 };

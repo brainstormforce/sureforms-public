@@ -21,6 +21,7 @@ import ResponsiveSlider from '@Components/responsive-slider';
 import UAGSelectControl from '@Components/select-control';
 // Extend component
 import UAGAdvancedPanelBody from '@Components/advanced-panel-body';
+import ConditionalLogic from '@SrfmComponents/conditional-logic';
 
 const Settings = ( props ) => {
 	const { attributes, deviceType, setAttributes } = props;
@@ -1308,6 +1309,11 @@ const Settings = ( props ) => {
 						{ highLightStylePanel() }
 						{ backgroundStylePanel() }
 						{ spacingStylePanel() }
+					</InspectorTab>
+					<InspectorTab { ...UAGTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>

@@ -17,12 +17,12 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
-		label,
 		placeholder,
 		help,
 		required,
@@ -44,6 +44,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			setAttributes( { formId: currentFormId } );
 		}
 	}, [ formId, setAttributes, currentFormId ] );
+
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_email_block_required_text', errorMsg );
+
+	const {
+		currentMessage: currentUniqueMessage,
+		setCurrentMessage: setCurrentUniqueMessage,
+	} = useErrMessage( 'srfm_email_block_unique_text', duplicateMsg );
 
 	// show the block preview on hover.
 	if ( preview ) {
@@ -73,17 +83,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								value={ label }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { label: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
@@ -118,20 +117,21 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 							/>
 							{ required && (
 								<SRFMTextControl
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
+									label={ __( 'Error Message', 'sureforms' ) }
 									data={ {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<ToggleControl
 								label={ __(
-									'Validate as unique',
+									'Validate as Unique',
 									'sureforms'
 								) }
 								checked={ isUnique }
@@ -145,14 +145,17 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										'Validation Message for Duplicate ',
 										'sureforms'
 									) }
-									value={ duplicateMsg }
+									value={ currentUniqueMessage }
 									data={ {
 										value: duplicateMsg,
 										label: 'duplicateMsg',
 									} }
-									onChange={ ( value ) =>
-										setAttributes( { duplicateMsg: value } )
-									}
+									onChange={ ( value ) => {
+										setCurrentUniqueMessage( value );
+										setAttributes( {
+											duplicateMsg: value,
+										} );
+									} }
 								/>
 							) }
 							<ToggleControl
@@ -166,7 +169,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								}
 							/>
 							<SRFMTextControl
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								data={ {
 									value: help,
@@ -179,6 +182,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<EmailComponent

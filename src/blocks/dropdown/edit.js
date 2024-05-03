@@ -18,6 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
+import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -29,14 +30,13 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { decodeHtmlEntities } from '@Blocks/util';
+import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		required,
 		options,
 		fieldWidth,
-		label,
 		help,
 		block_id,
 		errorMsg,
@@ -69,6 +69,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		}
 	}, [ formId, setAttributes, currentFormId ] );
 
+	const {
+		currentMessage: currentErrorMsg,
+		setCurrentMessage: setCurrentErrorMsg,
+	} = useErrMessage( 'srfm_dropdown_block_required_text', errorMsg );
+
 	// show the block preview on hover.
 	if ( preview ) {
 		const fieldName = srfm_fields_preview.dropdown_preview;
@@ -99,17 +104,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								__nextHasNoMarginBottom
 							/>
 							<SRFMTextControl
-								label={ __( 'Label', 'sureforms' ) }
-								data={ {
-									value: label,
-									label: 'label',
-								} }
-								value={ label }
-								onChange={ ( value ) => {
-									setAttributes( { label: value } );
-								} }
-							/>
-							<SRFMTextControl
 								label={ __( 'Placeholder', 'sureforms' ) }
 								data={ {
 									value: placeholder,
@@ -133,11 +127,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										value: errorMsg,
 										label: 'errorMsg',
 									} }
-									label={ __( 'Error message', 'sureforms' ) }
-									value={ errorMsg }
-									onChange={ ( value ) =>
-										setAttributes( { errorMsg: value } )
-									}
+									label={ __( 'Error Message', 'sureforms' ) }
+									value={ currentErrorMsg }
+									onChange={ ( value ) => {
+										setCurrentErrorMsg( value );
+										setAttributes( { errorMsg: value } );
+									} }
 								/>
 							) }
 							<div style={ { marginBottom: '8px' } }>
@@ -307,7 +302,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									value: help,
 									label: 'help',
 								} }
-								label={ __( 'Help', 'sureforms' ) }
+								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
 								onChange={ ( value ) =>
 									setAttributes( { help: value } )
@@ -316,6 +311,11 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						</SRFMAdvancedPanelBody>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.style }></InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance }>
+						<ConditionalLogic
+							{ ...{ setAttributes, attributes } }
+						/>
+					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
 			<DropdownComponent
