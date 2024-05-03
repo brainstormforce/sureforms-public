@@ -1,6 +1,6 @@
 
 import { __ } from '@wordpress/i18n';
-import Editor from '../email-settings/QuillEditor';
+import Editor from '../QuillEditor';
 import Select from 'react-select';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
@@ -11,6 +11,7 @@ const FormConfirmSetting = () => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+
 	const { editPost } = useDispatch( editorStore );
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
@@ -135,8 +136,6 @@ const FormConfirmSetting = () => {
 										handleEditorChange
 									}
 									content={ data?.message }
-									formData={ data }
-									setFormData={ setData }
 								/>
 							</div>
 						</div>

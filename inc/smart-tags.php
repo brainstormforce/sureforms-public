@@ -98,32 +98,44 @@ class Smart_Tags {
 	}
 
 	/**
+	 * Email smart Tag List.
+	 *
+	 * @since 0.0.1
+	 * @return array<mixed>
+	 */
+	public static function email_smart_tag_list() {
+		return [
+			'{admin_email}' => __( 'Admin Email', 'sureforms' ),
+			'{user_email}'  => __( 'User Email', 'sureforms' ),
+		];
+	}
+
+	/**
 	 * Process Start Tag.
 	 *
-	 * @param string $content Form content.
+	 * @param string            $content Form content.
+	 * @param array<mixed>|null $submission_data data from submission.
+	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
 	 * @return string
 	 */
-	public function process_smart_tags( $content ) {
+	public function process_smart_tags( $content, $submission_data = null, $form_data = null ) {
 
 		if ( ! $content ) {
 			return $content;
 		}
 
-		$get_smart_tag_list = self::smart_tag_list();
 		preg_match_all( '/{(.*?)}/', $content, $matches );
 
 		if ( empty( $matches[0] ) ) {
 			return $content;
 		}
 
-		foreach ( $matches[0] as $match ) {
+		foreach ( $matches[0] as $tag ) {
 
-			$replace = false;
-			if ( isset( $get_smart_tag_list[ $match ] ) || strpos( $match, 'get_input:' ) || strpos( $match, 'get_cookie:' ) ) {
-				$replace = Helper::get_string_value( self::smart_tags_callback( $match ) );
-				$content = str_replace( $match, $replace, $content );
-			}
+			$replace = Helper::get_string_value( self::smart_tags_callback( $tag, $submission_data, $form_data ) );
+			$content = str_replace( $tag, $replace, $content );
+
 		}
 
 		return $content;
@@ -132,90 +144,105 @@ class Smart_Tags {
 	/**
 	 *  Smart Tag Callback.
 	 *
-	 * @param string $tags smart tag.
+	 * @param string            $tag smart tag.
+	 * @param array<mixed>|null $submission_data data from submission.
+	 * @param array<mixed>|null $form_data data from form.
 	 * @since 0.0.1
 	 * @return mixed
 	 */
-	public function smart_tags_callback( $tags ) {
+	public static function smart_tags_callback( $tag, $submission_data = null, $form_data = null ) {
+		$get_smart_tag_list = self::smart_tag_list();
+		$is_valid_tag       = isset( $get_smart_tag_list[ $tag ] ) ||
+		strpos( $tag, 'get_input:' ) ||
+		strpos( $tag, 'get_cookie:' ) ||
+		0 === strpos( $tag, '{form:' );
 
-		if ( '{site_url}' === $tags ) {
+		if ( ! $is_valid_tag ) {
+			return $tag;
+		}
+
+		if ( '{site_url}' === $tag ) {
 			return site_url();
 		}
 
-		if ( '{admin_email}' === $tags ) {
+		if ( '{admin_email}' === $tag ) {
 			return get_option( 'admin_email' );
 		}
 
-		if ( '{site_title}' === $tags ) {
+		if ( '{site_title}' === $tag ) {
 			return get_option( 'blogname' );
 		}
 
-		if ( '{http_referer}' === $tags ) {
+		if ( '{http_referer}' === $tag ) {
 			return wp_get_referer();
 		}
 
-		if ( '{ip}' === $tags ) {
+		if ( '{ip}' === $tag ) {
 			return self::get_the_user_ip();
 		}
 
-		if ( '{date_dmy}' === $tags ) {
-			return self::parse_date( $tags );
+		if ( '{date_dmy}' === $tag ) {
+			return self::parse_date( $tag );
 		}
 
-		if ( '{date_mdy}' === $tags ) {
-			return self::parse_date( $tags );
+		if ( '{date_mdy}' === $tag ) {
+			return self::parse_date( $tag );
 		}
 
-		if ( '{user_id}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_id}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_display_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_display_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_first_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_first_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_last_name}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_last_name}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_email}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_email}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{user_login}' === $tags ) {
-			return self::parse_user_props( $tags );
+		if ( '{user_login}' === $tag ) {
+			return self::parse_user_props( $tag );
 		}
 
-		if ( '{browser_name}' === $tags ) {
-			return self::parse_browser_props( $tags );
+		if ( '{browser_name}' === $tag ) {
+			return self::parse_browser_props( $tag );
 		}
 
-		if ( '{browser_platform}' === $tags ) {
-			return self::parse_browser_props( $tags );
+		if ( '{browser_platform}' === $tag ) {
+			return self::parse_browser_props( $tag );
 		}
 
-		if ( '{embed_post_id}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_id}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( '{embed_post_title}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_title}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( '{embed_post_url}' === $tags ) {
-			return self::parse_post_props( $tags );
+		if ( '{embed_post_url}' === $tag ) {
+			return self::parse_post_props( $tag );
 		}
 
-		if ( strpos( $tags, 'get_input:' ) ) {
-			return self::parse_request_param( $tags );
+		if ( strpos( $tag, 'get_input:' ) ) {
+			return self::parse_request_param( $tag );
 		}
 
-		if ( strpos( $tags, 'get_cookie:' ) ) {
-			return self::parse_request_param( $tags );
+		if ( strpos( $tag, 'get_cookie:' ) ) {
+			return self::parse_request_param( $tag );
+		}
+
+		if ( 0 === strpos( $tag, '{form:' ) ) {
+			return self::parse_form_input( $tag, $submission_data, $form_data );
 		}
 	}
 
@@ -225,7 +252,7 @@ class Smart_Tags {
 	 * @since  0.0.1
 	 * @return string
 	 */
-	public function get_the_user_ip() {
+	public static function get_the_user_ip() {
 		$ip = '';
 		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
 			$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
@@ -405,5 +432,40 @@ class Smart_Tags {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Parse User Input in the Form Submission.
+	 *
+	 * @param string            $value tag.
+	 * @param array<mixed>|null $submission_data data from submission.
+	 * @param array<mixed>|null $form_data data from form.
+	 * @since  x.x.x
+	 * @return mixed
+	 */
+	public static function parse_form_input( $value, $submission_data = null, $form_data = null ) {
+
+		if ( ! $submission_data && ! $form_data ) {
+			return $value;
+		}
+
+		if ( ! preg_match( '/\{form:(.*?)}/', $value, $matches ) ) {
+			return $value;
+		}
+
+		$target_slug      = $matches[1];
+		$replacement_data = '';
+		if ( ! is_array( $submission_data ) ) {
+			return $replacement_data;
+		}
+		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
+			$label = explode( '-lbl-', $submission_item_key )[1];
+			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			if ( $slug === $target_slug ) {
+				$replacement_data = $submission_item_value;
+				break;
+			}
+		}
+		return $replacement_data;
 	}
 }
