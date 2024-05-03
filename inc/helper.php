@@ -37,7 +37,7 @@ class Helper {
 	/**
 	 * Get common error message.
 	 *
-	 * @since 0.0.3
+	 * @since 0.0.2
 	 * @return array<string>
 	 */
 	public static function get_common_err_msg() {

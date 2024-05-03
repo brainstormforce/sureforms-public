@@ -101,7 +101,7 @@ class Admin_Ajax {
 	 *
 	 * @param string $type Message type.
 	 * @return string
-	 * @since 0.0.3
+	 * @since 0.0.2
 	 */
 	public function get_error_msg( $type ) {
 

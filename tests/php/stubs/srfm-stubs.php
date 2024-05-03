@@ -7885,7 +7885,7 @@ namespace SRFM\Inc {
         /**
          * Get common error message.
          *
-         * @since 0.0.3
+         * @since 0.0.2
          * @return array<string>
          */
         public static function get_common_err_msg()
@@ -8551,7 +8551,7 @@ namespace SRFM\Inc {
          *
          * @param string $type Message type.
          * @return string
-         * @since 0.0.3
+         * @since 0.0.2
          */
         public function get_error_msg($type)
         {
@@ -10191,7 +10191,7 @@ namespace {
     \define('SRFM_BASENAME', \plugin_basename(\SRFM_FILE));
     \define('SRFM_DIR', \plugin_dir_path(\SRFM_FILE));
     \define('SRFM_URL', \plugins_url('/', \SRFM_FILE));
-    \define('SRFM_VER', '0.0.4');
+    \define('SRFM_VER', '');
     \define('SRFM_SLUG', 'srfm');
     // ------ ADDITIONAL CONSTANTS ------- //
     \define('SRFM_FORMS_POST_TYPE', 'sureforms_form');
