@@ -6,6 +6,7 @@ import { handleAddNewPost } from '@Utils/Helpers';
 
 const TemplateScreen = () => {
 	const [ message, setMessage ] = useState( '' );
+	const [ errorMessage, setErrorMessage ] = useState();
 
 	const createAiForm = async (
 		userCommand,
@@ -14,6 +15,12 @@ const TemplateScreen = () => {
 	) => {
 		if ( '1' !== srfm_admin.capability ) {
 			console.error( 'User does not have permission to create posts' );
+			return;
+		}
+
+		// check if userCommand is empty then setErrorMessage as 'Please enter a valid prompt.'
+		if ( ! userCommand ) {
+			setErrorMessage( 'Please enter a valid prompt.' );
 			return;
 		}
 
@@ -93,7 +100,9 @@ const TemplateScreen = () => {
 
 				// data = JSON.parse( data );
 
-				setMessage( 'Creating form....' );
+				setMessage( 'Creating Post Content...' );
+
+				console.log( sanitizedFormJsonData );
 
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
@@ -103,6 +112,30 @@ const TemplateScreen = () => {
 						form_data: sanitizedFormJsonData,
 					},
 				} );
+
+				console.log( postContent );
+
+				// if the postContent is empty, setErrorMessage as 'Error creating post content. Please check your prompt'
+
+				if ( ! postContent ) {
+					setErrorMessage(
+						'Error creating post content. Please check your prompt'
+					);
+					return;
+				}
+
+				setMessage( 'Creating Post...' );
+
+				// check if postContent have srfm/page-break then create array [ 'srfm_is_page_break' = true]
+				// else create empty array []
+
+				// const pageBreak = postContent.includes( 'srfm/page-break' )
+				// 	? [
+				// 			{
+				// 				_srfm_is_page_break: [ true ],
+				// 			},
+				// 	  ]
+				// 	: [];
 
 				handleAddNewPost( postContent, 'AI Form', [] );
 			} else {
@@ -137,6 +170,8 @@ const TemplateScreen = () => {
 						borderRadius: '5px',
 						marginBottom: '20px',
 					} }
+					// value={ textAreaValue }
+					// onChange={ ( e ) => setTextAreaValue( e.target.value ) }
 				></textarea>
 				{ message === '' ? (
 					<Button
@@ -154,6 +189,13 @@ const TemplateScreen = () => {
 					message
 				) }
 				<pre>Total requests = { srfm_admin.srfm_ai_request_count }</pre>
+				<pre
+					style={ {
+						color: 'red',
+					} }
+				>
+					{ errorMessage }
+				</pre>
 			</div>
 		);
 	}

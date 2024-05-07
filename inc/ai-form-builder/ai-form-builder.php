@@ -165,7 +165,19 @@ class AI_Form_Builder {
                 array(
                     'role'    => 'system',
                     // 'content' => 'You are an expert form designer. Your expertise is needed to craft a JSON structure that accurately represents a form based on the following description. Your JSON structure should utilize standard HTML form fields and adhere to specific requirements. It\'s essential to ensure the JSON structure you provide is valid and easily interpretable for implementation.',
-					'content' => 'Based on the description, generate a survey with questions array where every element has two fields: text and the fieldType and fieldType can be of these options input, email, number, textarea, checkbox, dropdown, date-time, upload. For dropdown type also return fieldOptions array as array of strings. For example, for dropdown the fieldOptions can be [ "Option 1", "Option 2", "Option 3" ]. It is essential to provide a valid JSON structure. If there is an error, return an empty JSON.',
+					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required, helpText. fieldType can be of these options input, email, url, textarea, checkbox, gdpr, number, phone, dropdown, address, address-compact, hidden, rating, upload, date-time, number-slider, page-break, multi-choice.
+					
+					Here are the field specific properties that you need to return with that specific field:
+					
+					1. For input type if needed you can return. defaultValue, isUnique, duplicateMsg, errorMsg, textLength.
+					
+					2) For dropdown type also return fieldOptions array as array of strings. For example, for dropdown the fieldOptions can be [ "Option 1", "Option 2", "Option 3" ].
+
+					3) For multi-choice type also return fieldOptions array as array of objects. For example, for multi-choice the fieldOptions can be [ {"optionTitle":"Option 1"}, {"optionTitle":"Option 2"}, {"optionTitle":"Option 3"}, {"optionTitle":"Option 4"} ]. Also return singleSelection as boolean value.
+
+					4) consider multi step form as page-break and you can use it multiple time if required and use it only if asked to.
+					
+					It is essential to provide a valid JSON structure. If there is an error, return an empty JSON. Make sure you don\'t entertain the empty cases, like Hey there, or kind of message, just check for the proper prompt and understand if the prompt has the word form or any kind of direction to create the form',
                 ),
                 array(
                     'role'    => 'user',

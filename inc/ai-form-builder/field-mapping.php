@@ -77,6 +77,12 @@ class Field_Mapping {
 
         $questions = $params['form_data']['questions'];
 
+        if ( $questions === null ){
+            $questions = $params['form_data'];
+        }
+
+        
+
         // Initialize post content string
         $post_content = '';
     
@@ -85,14 +91,24 @@ class Field_Mapping {
             // Initialize common attributes
             $common_attributes = [
                 'block_id' => bin2hex(random_bytes(4)), // Generate random block_id
-                'required' => true, // Default required attribute
+                // 'required' => true, // Default required attribute
                 'formId' => 0 // Set your formId here
             ];
     
             // Merge common attributes with question attributes
             $merged_attributes = array_merge($common_attributes, [
-                'label' => $question['text']
+                'label' => $question['label'],
+                'required' => $question['required'],
+                'placeholder' => $question['placeholder'],
+                'help' => $question['helpText'],
+                'fieldWidth' => $question['fieldWidth']
             ]);
+
+            // exclude label in page-break
+
+            // if ($question['fieldType'] === 'page-break') {
+            //     unset($merged_attributes['label']);
+            // }
     
             // Determine field type based on fieldType
             switch ($question['fieldType']) {
@@ -127,9 +143,66 @@ class Field_Mapping {
                 case 'upload':
                     $post_content .= '<!-- wp:srfm/upload ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
                     break;
+                    // case for address
+                case 'address':
+                    $post_content .= '<!-- wp:srfm/address ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for address-compact
+                case 'address-compact':
+                    $post_content .= '<!-- wp:srfm/address-compact ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for inline-button
+                case 'inline-button':
+                    $post_content .= '<!-- wp:srfm/inline-button ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for hidden
+                case 'hidden':
+                    $post_content .= '<!-- wp:srfm/hidden ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for rating
+                case 'rating':
+                    if (isset($question['fieldOptions']) && is_array($question['fieldOptions'])) {
+                        $merged_attributes['ratingBoxHelpText'] = $question['helpText'];
+                    }
+                    $post_content .= '<!-- wp:srfm/rating ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for phone
+                case 'phone':
+                    $post_content .= '<!-- wp:srfm/phone ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for gdpr
+                case 'gdpr':
+                    $post_content .= '<!-- wp:srfm/gdpr ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for number-slider
+                case 'number-slider':
+                    $post_content .= '<!-- wp:srfm/number-slider ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for page-break
+                case 'page-break':
+                    $post_content .= '<!-- wp:srfm/page-break ' . json_encode($common_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // multi choice
+                case 'multi-choice':
+                    // Check if fieldOptions are provided
+                    if (isset($question['fieldOptions']) && is_array($question['fieldOptions'])) {
+                        $merged_attributes['options'] = $question['fieldOptions'];
+                        $merged_attributes['singleSelection'] = $question['singleSelection'];
+                    } else {
+                        // Default options
+                        $merged_attributes['options'] = array(
+                            array("optionTitle" => "Option 1"),
+                            array("optionTitle" => "Option 2"),
+                            array("optionTitle" => "Option 3"),
+                            array("optionTitle" => "Option 4")
+                        );
+                    }
+                    $post_content .= '<!-- wp:srfm/multi-choice ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
+                    break;
+                    // case for multi-choice
                 default:
                     // Unsupported field type
-                    $post_content .= '<!-- Unsupported field type: ' . $question['fieldType'] . ' -->' . PHP_EOL;
+                    $post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . json_encode($merged_attributes) . ' /-->' . PHP_EOL;
             }
         }
     

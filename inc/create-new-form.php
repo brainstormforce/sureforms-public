@@ -190,6 +190,12 @@ class Create_New_Form {
 		$content        = isset( $form_info_obj->form_data ) ? $form_info_obj->form_data : '';
 		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
 
+		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
+
+		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
+			$template_metas['_srfm_is_page_break'] = [ 'true' ];
+		}
+
 		$post_id = wp_insert_post(
 			[
 				'post_title'   => $title,
