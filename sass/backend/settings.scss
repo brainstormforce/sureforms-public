@@ -437,182 +437,181 @@ $placeholder_color: #9ca3af;
 								}
 							}
 
-								.srfm-email-test-btn {
-									display: flex;
-									align-items: center;
-									padding: 0.64em;
-									font-size: 0.7em;
-									font-weight: 500;
-									background: #125d9f;
-									color: #fff;
-									border-radius: 6px;
-									line-height: normal;
-									border: 0;
-									cursor: pointer;
-								}
-
-							}
-						}
-
-						.srfm-card-container {
-							margin-bottom: 1.2em;
-							box-shadow: 0px 1px 2px 0px $box_shadow;
-							border: 1px solid $border_color;
-							border-radius: 4px;
-							background-color: $bg_color;
-
-							.srfm-integration-content {
-								padding: 16px 24px 16px 24px;
-							}
-
-							.srfm-integration-title {
-								font-size: 0.8em;
-								line-height: 1.5em;
-								font-weight: 600;
-								color: $heading_color;
-								padding: 0 0 0 0;
-							}
-
-							.srfm-integration-description {
-								margin-top: 4px;
-								margin-bottom: 0;
-							}
-
-							.srfm-integration-content-inner {
+							.srfm-email-test-btn {
 								display: flex;
-								gap: 16px;
-								justify-content: flex-start;
-								align-items: flex-start;
-							}
-
-							.srfm-integration-cta {
-								border-top: 1px solid $border_color;
-								display: flex;
-								justify-content: space-between;
-								padding: 16px 24px 16px 24px;
 								align-items: center;
+								padding: 0.64em;
+								font-size: 0.7em;
+								font-weight: 500;
+								background: #125d9f;
+								color: #fff;
+								border-radius: 6px;
+								line-height: normal;
+								border: 0;
+								cursor: pointer;
 							}
+
+						}
+					}
+
+					.srfm-card-container {
+						margin-bottom: 1.2em;
+						box-shadow: 0px 1px 2px 0px $box_shadow;
+						border: 1px solid $border_color;
+						border-radius: 4px;
+						background-color: $bg_color;
+
+						.srfm-integration-content {
+							padding: 16px 24px 16px 24px;
 						}
 
-						.components-base-control {
-							font-size: 20px;
-							margin-bottom: 1em;
+						.srfm-integration-title {
+							font-size: 0.8em;
+							line-height: 1.5em;
+							font-weight: 600;
+							color: $heading_color;
+							padding: 0 0 0 0;
+						}
 
-							// Toggle control.
-							&.components-toggle-control {
-								.components-form-toggle.is-checked .components-form-toggle__track {
-									background-color: $primary_color;
-									box-shadow: none;
-								}
+						.srfm-integration-description {
+							margin-top: 4px;
+							margin-bottom: 0;
+						}
 
-								label {
-									font-size: 0.7em;
-									font-weight: 500;
-									color: $label_color;
-								}
+						.srfm-integration-content-inner {
+							display: flex;
+							gap: 16px;
+							justify-content: flex-start;
+							align-items: flex-start;
+						}
 
-								.components-base-control__help {
-									font-size: 0.6em;
-									margin-top: 0.2em;
-									margin-left: 4em;
-									color: $help_color;
-								}
-							}
+						.srfm-integration-cta {
+							border-top: 1px solid $border_color;
+							display: flex;
+							justify-content: space-between;
+							padding: 16px 24px 16px 24px;
+							align-items: center;
+						}
+					}
 
-							.components-form-toggle .components-form-toggle__input:focus+.components-form-toggle__track {
+					.components-base-control {
+						font-size: 20px;
+						margin-bottom: 1em;
+
+						// Toggle control.
+						&.components-toggle-control {
+							.components-form-toggle.is-checked .components-form-toggle__track {
+								background-color: $primary_color;
 								box-shadow: none;
 							}
 
-							&.srfm-components-input-control,
-							.srfm-components-select-control {
-								gap: 0;
+							label {
+								font-size: 0.7em;
+								font-weight: 500;
+								color: $label_color;
+							}
 
-								label {
-									color: $label_color;
-									font-size: 0.7em;
-									line-height: normal;
-									text-transform: none;
-									margin-bottom: 0.3em;
+							.components-base-control__help {
+								font-size: 0.6em;
+								margin-top: 0.2em;
+								margin-left: 4em;
+								color: $help_color;
+							}
+						}
+
+						.components-form-toggle .components-form-toggle__input:focus+.components-form-toggle__track {
+							box-shadow: none;
+						}
+
+						&.srfm-components-input-control,
+						.srfm-components-select-control {
+							gap: 0;
+
+							label {
+								color: $label_color;
+								font-size: 0.7em;
+								line-height: normal;
+								text-transform: none;
+								margin-bottom: 0.3em;
+							}
+
+							.components-text-control__input,
+							.components-select-control__input {
+								font-size: 0.8em;
+								border: 1px solid $border_color;
+								border-radius: 0.25em;
+								padding: 0.75em 1em;
+
+								&:focus {
+									border: 1px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
 								}
 
-								.components-text-control__input,
-								.components-select-control__input {
-									font-size: 0.8em;
-									border: 1px solid $border_color;
-									border-radius: 0.25em;
-									padding: 0.75em 1em;
-
-									&:focus {
-										border: 1px solid $primary_color;
-										box-shadow: 0 0 0 0.5px $primary_color;
-									}
-
-									&::placeholder {
-										color: $placeholder_color;
-									}
-								}
-
-								.components-textarea-control__input {
-									font-size: 0.8em;
-									border: 1px solid $border_color;
-									border-radius: 0.25em;
-									padding: 0.75em 1em;
-
-									&:focus {
-										border: 1px solid $primary_color;
-										box-shadow: 0 0 0 0.5px $primary_color;
-									}
-								}
-
-								.components-select-control__input {
-									height: auto;
-									line-height: normal;
-									border: 1px solid $border_color;
-									box-shadow: 0 0 0 0.5px $border_color;
-
-									&:focus {
-										border: 1.5px solid $primary_color;
-										box-shadow: 0 0 0 0.5px $primary_color;
-									}
-								}
-
-								.components-input-control__backdrop {
-									// border: 1px solid $border_color;
-									// border-radius: 0.25em;
-									border: none;
-									box-shadow: none;
+								&::placeholder {
+									color: $placeholder_color;
 								}
 							}
 
-							&:nth-last-child(1) {
-								margin-bottom: 0;
+							.components-textarea-control__input {
+								font-size: 0.8em;
+								border: 1px solid $border_color;
+								border-radius: 0.25em;
+								padding: 0.75em 1em;
+
+								&:focus {
+									border: 1px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
+								}
+							}
+
+							.components-select-control__input {
+								height: auto;
+								line-height: normal;
+								border: 1px solid $border_color;
+								box-shadow: 0 0 0 0.5px $border_color;
+
+								&:focus {
+									border: 1.5px solid $primary_color;
+									box-shadow: 0 0 0 0.5px $primary_color;
+								}
+							}
+
+							.components-input-control__backdrop {
+								// border: 1px solid $border_color;
+								// border-radius: 0.25em;
+								border: none;
+								box-shadow: none;
 							}
 						}
-					}
 
-					.components-select-control__input {
-						height: auto;
-						line-height: normal;
-						border: 1px solid $border_color;
-						box-shadow: 0 0 0 0.5px $border_color;
-
-						&:focus {
-							border: 1.5px solid $primary_color;
-							box-shadow: 0 0 0 0.5px $primary_color;
+						&:nth-last-child(1) {
+							margin-bottom: 0;
 						}
 					}
+				}
 
-					.components-input-control__backdrop {
-						// border: 1px solid $border_color;
-						// border-radius: 0.25em;
-						border: none;
-						box-shadow: none;
+				.components-select-control__input {
+					height: auto;
+					line-height: normal;
+					border: 1px solid $border_color;
+					box-shadow: 0 0 0 0.5px $border_color;
+
+					&:focus {
+						border: 1.5px solid $primary_color;
+						box-shadow: 0 0 0 0.5px $primary_color;
 					}
 				}
 
-				&:nth-last-child(1) {
-					margin-bottom: 0;
+				.components-input-control__backdrop {
+					// border: 1px solid $border_color;
+					// border-radius: 0.25em;
+					border: none;
+					box-shadow: none;
 				}
+			}
+
+			&:nth-last-child(1) {
+				margin-bottom: 0;
 			}
 		}
 	}
