@@ -6,32 +6,22 @@ import {
 	useRef,
 } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import {
-	TextControl,
-	TextareaControl,
-	DropdownMenu,
-} from '@wordpress/components';
+import { TextControl, TextareaControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import ResponsiveToggle from '../responsive-toggle';
 import styles from './editor.lazy.scss';
 import classnames from 'classnames';
-import {
-	getIdFromString,
-	getPanelIdFromRef,
-	generateSmartTagsDropDown,
-} from '@Utils/Helpers';
+import { getIdFromString, getPanelIdFromRef } from '@Utils/Helpers';
+import SmartTagList from '@Components/misc/SmartTagList';
 import SRFMReset from '../reset';
 import SRFMHelpText from '@Components/help-text';
 import { applyFilters } from '@wordpress/hooks';
-import parse from 'html-react-parser';
-import svgIcons from '@Svg/svgs.json';
 
 const SRFMTextControl = ( props ) => {
 	const [ panelNameForHook, setPanelNameForHook ] = useState( null );
 	const panelRef = useRef( null );
 	const [ inputData, setInputData ] = useState( props?.value );
 	// Add and remove the CSS on the drop and remove of the component.
-
-	const VerticalEllipsis = parse( svgIcons.vertical_ellipsis );
 
 	useLayoutEffect( () => {
 		styles.use();
@@ -134,6 +124,10 @@ const SRFMTextControl = ( props ) => {
 		blockNameForHook
 	);
 
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array
+		? Object.entries( window.srfm_block_data.smart_tags_array )
+		: [];
+
 	return (
 		<div ref={ panelRef } className="components-base-control">
 			{ controlBeforeDomElement }
@@ -191,22 +185,18 @@ const SRFMTextControl = ( props ) => {
 							) }
 
 							{ props?.withSmartTagDropdown === true && (
-								<DropdownMenu
-									icon={ VerticalEllipsis }
-									className="srfm-scroll-dropdown"
-									label="Select Shortcodes"
-									controls={
-										generateSmartTagsDropDown(
-											setInputData,
-											inputData,
-											props
-										)
-											? generateSmartTagsDropDown(
-												setInputData,
-												inputData,
-												props
-											  )
-											: []
+								<SmartTagList
+									tagsArray={ [
+										{
+											tags: genericSmartTags,
+											label: __(
+												'Generic tags',
+												'sureforms'
+											),
+										},
+									] }
+									setTargetData={ ( tag ) =>
+										handleOnChange( inputData + tag )
 									}
 								/>
 							) }

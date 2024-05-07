@@ -12,6 +12,7 @@ use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\Email\Email_Template;
 use SRFM\Inc\Smart_Tags;
+use SRFM\Inc\Generate_Form_Markup;
 use WP_REST_Server;
 use SRFM\Inc\Lib\Browser\Browser;
 use WP_Error;
@@ -86,6 +87,56 @@ class Form_Submit {
 		return true;
 	}
 
+	/**
+	 * Validate Turnstile token
+	 *
+	 * @param string       $secret_key Turnstile token.
+	 * @param string|false $response Response.
+	 * @param string|false $remote_ip Remote IP.
+	 * @return array<mixed>|mixed Result of the validation.
+	 */
+	public static function validate_turnstile_token( $secret_key, $response, $remote_ip ) {
+
+		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile secret key is invalid.',
+			];
+		}
+
+		if ( empty( $response ) ) {
+			return [
+				'success' => false,
+				'error'   => 'Cloudflare Turnstile response is missing.',
+			];
+		}
+
+		$body = [
+			'secret'   => $secret_key,
+			'response' => $response,
+			'remoteip' => $remote_ip,
+		];
+
+		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+
+		$args = [
+			'body'    => $body,
+			'timeout' => 15,
+		];
+
+		$response = wp_remote_post( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			return [
+				'success' => false,
+				'error'   => $error_message,
+			];
+		}
+
+		return json_decode( wp_remote_retrieve_body( $response ), true );
+	}
+
 
 	/**
 	 * Handle Form Submission
@@ -149,30 +200,61 @@ class Form_Submit {
 			wp_send_json_error( __( 'Form Id is missing.', 'sureforms' ) );
 		}
 		$current_form_id       = $form_data['form-id'];
+		$security_type         = Helper::get_meta_value( Helper::get_integer_value( $current_form_id ), '_srfm_captcha_security_type' );
 		$selected_captcha_type = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_form_recaptcha', true ) ) : '';
 
-		if ( 'none' !== $selected_captcha_type ) {
+		if ( 'none' !== $security_type ) {
 			$global_setting_options = get_option( 'srfm_security_settings_options' );
 		} else {
 			$global_setting_options = [];
 		}
 
-		switch ( $selected_captcha_type ) {
-			case 'v2-checkbox':
-				$key = 'srfm_v2_checkbox_secret_key';
-				break;
-			case 'v2-invisible':
-				$key = 'srfm_v2_invisible_secret_key';
-				break;
-			case 'v3-reCAPTCHA':
-				$key = 'srfm_v3_secret_key';
-				break;
-			default:
-				$key = '';
-				break;
+		if ( 'g-recaptcha' === $security_type ) {
+			switch ( $selected_captcha_type ) {
+				case 'v2-checkbox':
+					$key = 'srfm_v2_checkbox_secret_key';
+					break;
+				case 'v2-invisible':
+					$key = 'srfm_v2_invisible_secret_key';
+					break;
+				case 'v3-reCAPTCHA':
+					$key = 'srfm_v3_secret_key';
+					break;
+				default:
+					$key = '';
+					break;
+			}
+
+			$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
 		}
 
-		$google_captcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options[ $key ] ) ? $global_setting_options[ $key ] : '';
+		if ( 'cf-turnstile' === $security_type ) {
+			// Turnstile validation.
+			$srfm_cf_turnstile_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_cf_turnstile_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_cf_turnstile_secret_key'] ) : '';
+			$cf_response                  = ! empty( $form_data['cf-turnstile-response'] ) ? $form_data['cf-turnstile-response'] : false;
+
+			// if gdpr is enabled then set remote ip to empty.
+			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
+			$gdpr       = false;
+
+			if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+				$gdpr = ! empty( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : false;
+			}
+
+			// check if ip logging is disabled in global settings then set remote ip to empty.
+			$gb_general_settinionsgs_opt = get_option( 'srfm_general_settings_options' );
+			$srfm_ip_log                 = is_array( $gb_general_settinionsgs_opt ) && isset( $gb_general_settinionsgs_opt['srfm_ip_log'] ) ? $gb_general_settinionsgs_opt['srfm_ip_log'] : '';
+
+			$remote_ip = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+
+			$turnstile_validation_result = self::validate_turnstile_token( $srfm_cf_turnstile_secret_key, $cf_response, $remote_ip );
+
+			// If the cloudflare validation fails, return an error.
+			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
+				$error_message = isset( $turnstile_validation_result['error'] ) ? $turnstile_validation_result['error'] : 'Cloudflare Turnstile validation failed.';
+				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
+			}
+		}
 
 		if ( isset( $form_data['srfm-honeypot-field'] ) && empty( $form_data['srfm-honeypot-field'] ) ) {
 			if ( ! empty( $google_captcha_secret_key ) ) {
@@ -273,7 +355,7 @@ class Form_Submit {
 			$do_not_store_entries = isset( $compliance[0]['do_not_store_entries'] ) ? $compliance[0]['do_not_store_entries'] : '';
 		}
 
-		$meta_data = [];
+		$submission_data = [];
 
 		$form_data_keys  = array_keys( $form_data );
 		$form_data_count = count( $form_data );
@@ -284,11 +366,11 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			$meta_data[ $field_name ] = htmlspecialchars( $value );
+			$submission_data[ $field_name ] = htmlspecialchars( $value );
 		}
 
 		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
-		$send_email   = $this->send_email( $id, $meta_data );
+		$send_email   = $this->send_email( $id, $submission_data );
 		$is_mail_sent = false;
 		$emails       = [];
 
@@ -302,7 +384,7 @@ class Form_Submit {
 		if ( $gdpr && $do_not_store_entries ) {
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$modified_message[ $only_key ] = esc_attr( $value );
 			}
@@ -312,7 +394,7 @@ class Form_Submit {
 				'form_id'   => $id ? intval( $id ) : '',
 				'emails'    => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,
 			];
 
@@ -320,7 +402,7 @@ class Form_Submit {
 
 			$response = [
 				'success' => true,
-				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name' => $name,
 				],
@@ -382,6 +464,8 @@ class Form_Submit {
 
 		wp_update_post( $post_args );
 
+		update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
+		add_post_meta( $post_id, 'srfm_entry_meta_form_id', $id, true );
 		if ( $post_id ) {
 			$srfm_submission_info[] = [
 				'user_ip'      => $user_ip,
@@ -389,7 +473,7 @@ class Form_Submit {
 				'device_name'  => $device_name,
 			];
 
-			update_post_meta( $post_id, 'srfm_entry_meta', $meta_data );
+			update_post_meta( $post_id, 'srfm_entry_meta', $submission_data );
 			update_post_meta( $post_id, '_srfm_submission_info', $srfm_submission_info );
 			update_post_meta( $post_id, '_srfm_entry_form_id', $id );
 
@@ -397,14 +481,14 @@ class Form_Submit {
 
 			$response = [
 				'success' => true,
-				'message' => __( 'Form submitted successfully', 'sureforms' ),
+				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
 					'name' => $name,
 				],
 			];
 
 			$modified_message = [];
-			foreach ( $meta_data as $key => $value ) {
+			foreach ( $submission_data as $key => $value ) {
 				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
 				$parts    = explode( '-lbl-', $only_key );
 
@@ -422,7 +506,7 @@ class Form_Submit {
 				'form_id'   => $id ? intval( $id ) : '',
 				'emails'    => $emails,
 				'form_name' => $name ? esc_attr( $name ) : '',
-				'message'   => __( 'Form submitted successfully', 'sureforms' ),
+				'message'   => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'      => $modified_message,
 			];
 
@@ -442,11 +526,11 @@ class Form_Submit {
 	 * Send Email.
 	 *
 	 * @param string                $id       Form ID.
-	 * @param array<string, string> $meta_data Meta data.
+	 * @param array<string, string> $submission_data Submission data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */
-	public static function send_email( $id, $meta_data ) {
+	public static function send_email( $id, $submission_data ) {
 		$email_notification = get_post_meta( intval( $id ), '_srfm_email_notification' );
 		$smart_tags         = new Smart_Tags();
 		$is_mail_sent       = false;
@@ -456,20 +540,31 @@ class Form_Submit {
 			foreach ( $email_notification as $notification ) {
 				foreach ( $notification as $item ) {
 					if ( true === $item['status'] ) {
-						$to             = $item['email_to'];
-						$to             = $smart_tags->process_smart_tags( $to );
-						$subject        = $item['subject'];
-						$subject        = $smart_tags->process_smart_tags( $subject );
-						$email_body     = $item['email_body'];
+						$from           = Helper::get_string_value( get_option( 'admin_email' ) );
+						$to             = $smart_tags->process_smart_tags( $item['email_to'], $submission_data );
+						$subject        = $smart_tags->process_smart_tags( $item['subject'], $submission_data );
+						$email_body     = $smart_tags->process_smart_tags( $item['email_body'], $submission_data );
 						$email_template = new Email_Template();
-						$message        = $email_template->render( $meta_data, $email_body );
-						$headers        = "From: $to\r\n" .
-						"Reply-To: $to\r\n" .
+						$message        = $email_template->render( $submission_data, $email_body );
+						$headers        = "
+						From: $from\r\n" .
 						'X-Mailer: PHP/' . phpversion() . "\r\n" .
-						'Content-Type: text/html; charset=utf-8';
-						$sent           = wp_mail( $to, $subject, $message, $headers );
-						$is_mail_sent   = $sent;
-						$emails[]       = $to;
+						"Content-Type: text/html; charset=utf-8\r\n";
+						if ( isset( $item['email_reply_to'] ) && ! empty( $item['email_reply_to'] ) ) {
+							$headers .= 'Reply-To:' . $smart_tags->process_smart_tags( $item['email_reply_to'], $submission_data ) . "\r\n";
+						} else {
+							$headers .= "Reply-To: $from\r\n";
+						}
+						if ( isset( $item['email_cc'] ) && ! empty( $item['email_cc'] ) ) {
+							$headers .= 'Cc:' . $smart_tags->process_smart_tags( $item['email_cc'], $submission_data ) . "\r\n";
+						}
+						if ( isset( $item['email_bcc'] ) && ! empty( $item['email_bcc'] ) ) {
+							$headers .= 'Bcc:' . $smart_tags->process_smart_tags( $item['email_bcc'], $submission_data ) . "\r\n";
+						}
+
+						$sent         = wp_mail( $to, $subject, $message, $headers );
+						$is_mail_sent = $sent;
+						$emails[]     = $to;
 					}
 				}
 			}

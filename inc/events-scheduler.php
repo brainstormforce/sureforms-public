@@ -3,7 +3,7 @@
  * SureForms events scheduler class.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.2
  */
 
 namespace SRFM\Inc;
@@ -13,7 +13,7 @@ use SRFM\Inc\Traits\Get_Instance;
 /**
  * SureForms events scheduler class.
  *
- * @since x.x.x
+ * @since 0.0.2
  */
 class Events_Scheduler {
 	use Get_Instance;
@@ -21,7 +21,7 @@ class Events_Scheduler {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'srfm_schedule_daily_action' ] );
@@ -34,7 +34,7 @@ class Events_Scheduler {
 	 * @uses as_has_scheduled_action() To check if the action is already scheduled.
 	 * @uses as_schedule_recurring_action() To schedule a recurring action.
 	 * @link https://actionscheduler.org/api/
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public function srfm_schedule_daily_action() {
@@ -49,7 +49,7 @@ class Events_Scheduler {
 	 * Unschedule any action.
 	 *
 	 * @param string $hook Event hook name.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public static function unschedule_events( $hook ) {

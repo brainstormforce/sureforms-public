@@ -26,15 +26,15 @@ class Block extends Base {
 	 * @param string       $content Post content.
 	 *
 	 * @return string|boolean
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function render( $attributes, $content = '' ) {
 
 		if ( ! empty( $attributes ) ) {
-			$markup_class = new Inlinebutton_Markup();
+			$markup_class = new Inlinebutton_Markup( $attributes );
 			ob_start();
 			// phpcs:ignore.
-			echo $markup_class->markup( $attributes );
+			echo $markup_class->markup();
 		}
 		return ob_get_clean();
 	}

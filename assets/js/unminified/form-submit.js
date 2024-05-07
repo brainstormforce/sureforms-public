@@ -10,8 +10,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			ajaxUrl,
 			nonce,
 			loader,
-			successMessage,
-			errorMessage,
+			successElement,
+			errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
@@ -34,8 +34,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 									nonce,
 									loader,
 									successUrl,
-									successMessage,
-									errorMessage,
+									successElement,
+									errorElement,
 									submitType,
 									afterSubmission
 								);
@@ -53,8 +53,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					nonce,
 					loader,
 					successUrl,
-					successMessage,
-					errorMessage,
+					successElement,
+					errorElement,
 					submitType,
 					afterSubmission
 				);
@@ -63,7 +63,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	}
 } );
 
-function submitFormData( form ) {
+async function submitFormData( form ) {
 	const site_url = srfm_submit.site_url;
 
 	const formData = new FormData( form );
@@ -78,7 +78,7 @@ function submitFormData( form ) {
 		}
 	}
 
-	return fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
+	return await fetch( `${ site_url }/wp-json/sureforms/v1/submit-form`, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': srfm_submit.nonce,
@@ -87,7 +87,7 @@ function submitFormData( form ) {
 	} )
 		.then( ( response ) => {
 			if ( response.ok ) {
-				return response;
+				return response.json();
 			}
 		} )
 		.catch( ( e ) => {
@@ -95,18 +95,18 @@ function submitFormData( form ) {
 		} );
 }
 
-function showSuccessMessage( element, form, afterSubmission ) {
+function showSuccessMessage( element, message, form, afterSubmission ) {
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
-		element.classList.add( 'srfm-active' );
 		setTimeout( () => {
 			element.style.opacity = 1;
 		}, 500 );
 	} else {
-		element.classList.add( 'srfm-active' );
 		form.reset();
 	}
+	element.innerHTML = message;
+	element.classList.add( 'srfm-active' );
 }
 
 function redirectToUrl( url ) {
@@ -125,8 +125,8 @@ async function handleFormSubmission(
 	nonce,
 	loader,
 	successUrl,
-	successMessage,
-	errorMessage,
+	successElement,
+	errorElement,
 	submitType,
 	afterSubmission
 ) {
@@ -146,9 +146,14 @@ async function handleFormSubmission(
 		}
 
 		const formStatus = await submitFormData( form );
-		if ( formStatus ) {
+		if ( formStatus?.success ) {
 			if ( submitType === 'same page' ) {
-				showSuccessMessage( successMessage, form, afterSubmission );
+				showSuccessMessage(
+					successElement,
+					formStatus?.message ?? '',
+					form,
+					afterSubmission
+				);
 				loader.classList.remove( 'srfm-active' );
 			} else {
 				redirectToUrl( successUrl );
@@ -156,12 +161,12 @@ async function handleFormSubmission(
 			}
 		} else {
 			loader.classList.remove( 'srfm-active' );
-			showErrorMessage( errorMessage );
+			showErrorMessage( errorElement );
 			loader.classList.remove( 'srfm-active' );
 		}
 	} catch ( error ) {
 		loader.classList.remove( 'srfm-active' );
-		showErrorMessage( errorMessage );
+		showErrorMessage( errorElement );
 	}
 }
 
@@ -172,8 +177,10 @@ function extractFormAttributesAndElements( form ) {
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
-	const successMessage = form.nextElementSibling;
-	const errorMessage = form.querySelector( '.srfm-error-message' );
+	const successElement = form.parentElement.querySelector(
+		'.srfm-single-form.srfm-success-box'
+	);
+	const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
 	const afterSubmission = form.getAttribute( 'after-submission' );
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
@@ -187,8 +194,8 @@ function extractFormAttributesAndElements( form ) {
 		ajaxUrl,
 		nonce,
 		loader,
-		successMessage,
-		errorMessage,
+		successElement,
+		errorElement,
 		submitBtn,
 		siteKey,
 		recaptchaType,
@@ -208,8 +215,8 @@ function onloadCallback() {
 			ajaxUrl,
 			nonce,
 			loader,
-			successMessage,
-			errorMessage,
+			successElement,
+			errorElement,
 			submitBtn,
 			siteKey,
 			recaptchaType,
@@ -227,8 +234,8 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
-						successMessage,
-						errorMessage,
+						successElement,
+						errorElement,
 						submitType,
 						afterSubmission
 					);
@@ -246,8 +253,8 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
-						successMessage,
-						errorMessage,
+						successElement,
+						errorElement,
 						submitType,
 						afterSubmission
 					);

@@ -24,7 +24,7 @@ const defaultKeys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: { default: 650 },
-	_srfm_color1: { default: '#0e4372' },
+	_srfm_color1: { default: '#D54407' },
 	_srfm_bg_color: { default: '#ffffff' },
 	_srfm_fontsize: { default: 20 },
 	_srfm_label_color: { default: '#1f2937' },
@@ -42,7 +42,7 @@ const defaultKeys = {
 	_srfm_field_error_bg_color: { default: '#FEF2F2' },
 	// Submit
 	_srfm_button_text_color: { default: '#ffffff' },
-	_srfm_button_bg_color: { default: '#0e4372' },
+	_srfm_button_bg_color: { default: '#D54407' },
 	_srfm_button_border_color: { default: '#ffffff' },
 	_srfm_button_border_width: { default: 0 },
 	_srfm_button_border_radius: { default: 6 },

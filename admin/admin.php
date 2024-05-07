@@ -377,8 +377,6 @@ class Admin {
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SRFM_VER,
 					'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
-
 				]
 			);
 		}
@@ -501,7 +499,7 @@ class Admin {
 	 * Disable spectra's quick action bar in sureforms CPT.
 	 *
 	 * @param string $status current status of the quick action bar.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string
 	 */
 	public function restrict_spectra_quick_action_bar( $status ) {

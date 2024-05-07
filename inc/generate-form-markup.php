@@ -95,17 +95,12 @@ class Generate_Form_Markup {
 			$confirmation_type        = '';
 			$submission_action        = '';
 			$success_url              = '';
-			$message                  = '';
 			if ( is_array( $form_confirmation ) && isset( $form_confirmation[0][0] ) ) {
-				$form_data = $form_confirmation[0][0];
-				if ( isset( $form_data['message'] ) && is_string( $form_data['message'] ) ) {
-					$smart_tags = new Smart_Tags();
-					$message    = $smart_tags->process_smart_tags( $form_data['message'] );
-				}
-				$page_url          = isset( $form_data['page_url'] ) ? $form_data['page_url'] : '';
-				$custom_url        = isset( $form_data['custom_url'] ) ? $form_data['custom_url'] : '';
-				$confirmation_type = isset( $form_data['confirmation_type'] ) ? $form_data['confirmation_type'] : '';
-				$submission_action = isset( $form_data['submission_action'] ) ? $form_data['submission_action'] : '';
+				$confirmation_data = $form_confirmation[0][0];
+				$page_url          = isset( $confirmation_data['page_url'] ) ? $confirmation_data['page_url'] : '';
+				$custom_url        = isset( $confirmation_data['custom_url'] ) ? $confirmation_data['custom_url'] : '';
+				$confirmation_type = isset( $confirmation_data['confirmation_type'] ) ? $confirmation_data['confirmation_type'] : '';
+				$submission_action = isset( $confirmation_data['submission_action'] ) ? $confirmation_data['submission_action'] : '';
 				$success_url       = '';
 				if ( 'different page' === $confirmation_type ) {
 					$success_url = $page_url;
@@ -115,17 +110,20 @@ class Generate_Form_Markup {
 			}
 
 			// Submit button.
-			$button_text      = Helper::get_meta_value( $id, '_srfm_submit_button_text' ) ? Helper::get_meta_value( $id, '_srfm_submit_button_text' ) : __( 'Submit', 'sureforms' );
-			$button_alignment = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme   = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$btn_text_color   = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
-			$btn_bg_type      = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
-			$instant_form     = Helper::get_meta_value( $id, '_srfm_instant_form' );
-			$is_inline_button = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$button_text          = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$button_alignment     = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
+			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$btn_text_color       = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
+			$btn_bg_type          = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
+			$instant_form         = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
 			$btn_border_radius = '6px';
 			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#0e4372' );
+				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
 				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
 				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
@@ -146,18 +144,25 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full              = 'justify' === $button_alignment ? true : false;
-			$recaptcha_version = Helper::get_meta_value( $id, '_srfm_form_recaptcha' );
+			$full                       = 'justify' === $button_alignment ? true : false;
+			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
+			$srfm_cf_appearance_mode    = '';
+			$srfm_cf_turnstile_site_key = '';
 
 			$google_captcha_site_key = '';
 
-			if ( 'none' !== $recaptcha_version ) {
+			if ( 'none' !== $security_type ) {
 				$global_setting_options = get_option( 'srfm_security_settings_options' );
 			} else {
 				$global_setting_options = [];
 			}
 
-			if ( is_array( $global_setting_options ) ) {
+			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
+				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
+				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			}
+
+			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
 				switch ( $recaptcha_version ) {
 					case 'v2-checkbox':
 						$google_captcha_site_key = isset( $global_setting_options['srfm_v2_checkbox_site_key'] ) ? $global_setting_options['srfm_v2_checkbox_site_key'] : '';
@@ -254,6 +259,12 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
+					<?php
+						// echo custom css on page/post.
+					if ( 'sureforms_form' !== $current_post_type ) :
+						echo wp_kses_post( $custom_css );
+						endif;
+					?>
 				}
 			</style>
 			<?php
@@ -318,7 +329,7 @@ class Generate_Form_Markup {
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
 
-					<?php if ( '' !== $google_captcha_site_key ) : ?>
+					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
@@ -348,6 +359,25 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
+						<?php
+
+						if ( 'cf-turnstile' === $security_type ) :
+							// Cloudflare Turnstile script.
+							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+								SRFM_SLUG . '-cf-turnstile',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								[],
+								null,
+								[
+									false,
+									'defer' => true,
+								]
+							);
+							?>
+							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+							<?php
+						endif;
+						?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
@@ -364,9 +394,7 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page">
-				<?php echo $message;// phpcs:ignore?>
-			</div>
+			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
@@ -379,5 +407,41 @@ class Generate_Form_Markup {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Generate form confirmation markup
+	 *
+	 * @param array<mixed> $form_data contains form data.
+	 * @param array<mixed> $submission_data contains submission data.
+	 * @since x.x.x
+	 * @return string|false
+	 */
+	public static function get_confirmation_markup( $form_data = [], $submission_data = [] ) {
 
+		$confirmation_message = '';
+
+		if ( empty( $form_data ) ) {
+			return $confirmation_message;
+		}
+
+		$form_confirmation = isset( $form_data['form-id'] ) ?
+			get_post_meta( Helper::get_integer_value( $form_data['form-id'] ), '_srfm_form_confirmation' ) : null;
+
+		if ( ! is_array( $form_confirmation ) ) {
+			return $confirmation_message;
+		}
+
+		$confirmation_data = is_array( $form_confirmation[0] ) && isset( $form_confirmation[0][0] ) ? $form_confirmation[0][0] : null;
+
+		if ( is_array( $form_confirmation ) && isset( $confirmation_data['message'] ) && is_string( $confirmation_data['message'] ) ) {
+			$confirmation_message = $confirmation_data['message'];
+		}
+		if ( empty( $submission_data ) ) {
+			return $confirmation_message;
+		}
+		$smart_tags           = new Smart_Tags();
+		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
+
+		return $confirmation_message;
+
+	}
 }

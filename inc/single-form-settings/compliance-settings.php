@@ -3,7 +3,7 @@
  * SureForms single form settings - Compliance settings.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.2
  */
 
 namespace SRFM\Inc\Single_Form_Settings;
@@ -14,7 +14,7 @@ use SRFM\Inc\Helper;
 /**
  * SureForms single form settings - Compliance settings.
  *
- * @since x.x.x
+ * @since 0.0.2
  */
 class Compliance_Settings {
 	use Get_Instance;
@@ -22,7 +22,7 @@ class Compliance_Settings {
 	/**
 	 * Constructor
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct() {
 		add_action( 'srfm_daily_scheduled_action', [ $this, 'pre_auto_delete_entries' ] );
@@ -34,7 +34,7 @@ class Compliance_Settings {
 	 * If enabled then delete the entries that are older than the days_old.
 	 *
 	 * @hooked - srfm_daily_scheduled_action
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public function pre_auto_delete_entries() {
@@ -83,7 +83,7 @@ class Compliance_Settings {
 	 *
 	 * @param int $days_old Number of days old.
 	 * @param int $form_id Form ID.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return void
 	 */
 	public static function delete_old_entries( $days_old, $form_id ) {
