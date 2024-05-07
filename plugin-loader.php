@@ -27,6 +27,7 @@ use SRFM\Inc\Global_Settings\Global_Settings;
 use SRFM\Inc\Global_Settings\Email_Summary;
 use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Events_Scheduler;
+use SRFM\Inc\Background_Process;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -134,6 +135,7 @@ class Plugin_Loader {
 		Email_Summary::get_instance();
 		Compliance_Settings::get_instance();
 		Events_Scheduler::get_instance();
+		Background_Process::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
