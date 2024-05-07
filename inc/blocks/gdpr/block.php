@@ -3,7 +3,7 @@
  * GDPR Block.
  *
  * @package SureForms.
- * @since x.x.x
+ * @since 0.0.2
  */
 
 namespace SRFM\Inc\Blocks\GDPR;
@@ -26,7 +26,7 @@ class Block extends Base {
 	 * @param string       $content Post content.
 	 *
 	 * @return string|boolean
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function render( $attributes, $content = '' ) {
 		if ( ! empty( $attributes ) ) {

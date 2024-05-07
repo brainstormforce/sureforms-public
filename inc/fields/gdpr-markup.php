@@ -3,7 +3,7 @@
  * Sureforms GDPR Markup Class file.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.2
  */
 
 namespace SRFM\Inc\Fields;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sureforms GDPR Markup Class.
  *
- * @since x.x.x
+ * @since 0.0.2
  */
 class GDPR_Markup extends Base {
 
@@ -23,7 +23,7 @@ class GDPR_Markup extends Base {
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 */
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
@@ -39,7 +39,7 @@ class GDPR_Markup extends Base {
 	/**
 	 * Render the sureforms GDPR classic styling
 	 *
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
 	public function markup() {
