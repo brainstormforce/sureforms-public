@@ -51,6 +51,20 @@ const Breadcrumbs = () => {
 					</span>
 				</Link>
 			) }
+			{ method === 'ai' && (
+				<Link
+					className="srfm-tp-breadcrumb-url"
+					to={ {
+						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
+						search: `?page=add-new-form&method=ai`,
+					} }
+				>
+					<span className="srfm-header-breadcrumb">
+						{ ICONS.breadcrumb }
+						{ __( 'AI Form Builder', 'sureforms' ) }
+					</span>
+				</Link>
+			) }
 		</div>
 	);
 };

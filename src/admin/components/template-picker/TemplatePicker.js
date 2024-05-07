@@ -1,10 +1,11 @@
-import { useEffect, render } from '@wordpress/element';
+import { useEffect, render, useState } from '@wordpress/element';
 import Header from './components/Header.js';
 import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
 import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
+import AiFormBuilder from './components/AiFormBuilder.js';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -26,6 +27,13 @@ const TemplatePicker = () => {
 					<>
 						<Header />
 						<TemplateScreen />
+					</>
+				);
+			case 'ai':
+				return (
+					<>
+						<Header />
+						<AiFormBuilder />
 					</>
 				);
 			default:
@@ -74,7 +82,13 @@ const TemplatePicker = () => {
 											) }
 										/>
 									</Link>
-									<div className="srfm-single-card">
+									<Link
+										className="srfm-single-card"
+										to={ {
+											location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
+											search: `?page=add-new-form&method=ai`,
+										} }
+									>
 										<StartingPoint
 											icon={ ICONS.ai }
 											title={ __(
@@ -85,9 +99,9 @@ const TemplatePicker = () => {
 												'Experience the future of form building. AI-powered algorithms analyze your requirements and generate a tailor-made form.',
 												'sureforms'
 											) }
-											isComingSoon={ true }
+											isBeta={ true }
 										/>
-									</div>
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -117,4 +131,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-}() );
+} )();

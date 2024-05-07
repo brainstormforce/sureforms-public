@@ -443,6 +443,7 @@ class Admin {
 					'capability'                   => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'srfm_ai_request_count' 	   => get_option( 'srfm_ai_request_count' ),
 				]
 			);
 		}
