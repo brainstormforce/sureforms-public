@@ -60,7 +60,8 @@ const SingleFormSettingsPopup = ( props ) => {
 			id: 'integration',
 			title: __( 'Integration', 'sureforms' ),
 			icon: integrationIcon,
-			component: <Integration />,
+			component: <Integration
+				setSelectedTab={ setSelectedTab } />,
 		},
 		{
 			id: 'form_custom_css',
