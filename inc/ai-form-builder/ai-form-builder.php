@@ -9,6 +9,7 @@ namespace SRFM\Inc\AI_Form_Builder;
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
+use ZipAI\Classes\Helper as AI_Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -149,7 +150,7 @@ class AI_Form_Builder {
                 )
             );
         }
-        
+
 
 		// Out custom endpoint to get OpenAi data.
 		// $endpoint = ZIP_AI_CREDIT_SERVER_API . 'chat/completions';
