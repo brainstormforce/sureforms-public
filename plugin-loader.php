@@ -139,13 +139,12 @@ class Plugin_Loader {
 		Events_Scheduler::get_instance();
 		AI_Form_Builder::get_instance();
 		Field_Mapping::get_instance();
-		if( is_admin() ) {
+		if ( is_admin() ) {
 			/**
 			 * Connects zip_AI library.
 			 */
 			Connect_Zip_AI::get_instance();
 		}
-
 
 		/**
 		 * The code that runs during plugin activation
