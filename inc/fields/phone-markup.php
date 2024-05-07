@@ -8,9 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\Get_Instance;
-use SRFM\Inc\Helper;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -21,49 +18,47 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Phone_Markup extends Base {
-	use Get_Instance;
+
+	/**
+	 * Stores the boolean string indicating if the country should be automatically determined.
+	 *
+	 * @var string
+	 * @since 0.0.2
+	 */
+	protected $auto_country;
+
+	/**
+	 * Initialize the properties based on block attributes.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since 0.0.2
+	 */
+	public function __construct( $attributes ) {
+		$this->set_properties( $attributes );
+		$this->set_input_label( __( 'Phone', 'sureforms' ) );
+		$this->set_error_msg( $attributes );
+		$this->slug         = 'phone';
+		$this->auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
+		$this->set_unique_slug();
+		$this->set_field_name( $this->unique_slug );
+		$this->set_markup_properties( $this->input_label, true );
+	}
 
 	/**
 	 * Render the sureforms phone classic styling
 	 *
-	 * @param array<mixed> $attributes Block attributes.
-	 *
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
-	public function markup( $attributes ) {
-		$block_id     = isset( $attributes['block_id'] ) ? Helper::get_string_value( $attributes['block_id'] ) : '';
-		$form_id      = isset( $attributes['formId'] ) ? Helper::get_string_value( $attributes['formId'] ) : '';
-		$required     = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$placeholder  = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$field_width  = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$label        = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help         = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$error_msg    = isset( $attributes['errorMsg'] ) ? $attributes['errorMsg'] : '';
-		$is_unique    = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$dulicate_msg = isset( $attributes['duplicateMsg'] ) ? $attributes['duplicateMsg'] : '';
-		$classname    = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
-		$block_slug   = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
-		$slug         = 'phone';
-
-		$block_width = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-
-		$aria_require_attr    = $required ? 'true' : 'false';
-		$placeholder_attr     = $placeholder ? 'placeholder="' . $placeholder . '" ' : '';
-		$input_label_fallback = $label ? $label : __( 'Phone', 'sureforms' );
-		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
-		$conditional_class    = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
-		$unique_slug          = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$field_name           = $unique_slug . '-' . $block_slug;
-
+	public function markup() {
 		ob_start(); ?>
-		<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $classname ); ?> <?php echo esc_attr( $conditional_class ); ?>">
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<div class="srfm-block-wrap">
-					<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require_attr ); ?>" auto-country="<?php echo esc_attr( $auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $placeholder_attr ); ?>>
+					<input type="tel" class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" auto-country="<?php echo esc_attr( $this->auto_country ? 'true' : 'false' ); ?>" value="" <?php echo wp_kses_post( $this->placeholder_attr ); ?>>
 				</div>
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-				<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, '', true ) ); ?>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
+				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
 			</div>
 		<?php
 		return ob_get_clean();

@@ -6,6 +6,7 @@
  */
 
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -100,30 +101,123 @@ export const randomNiceColor = () => {
 	return `hsla(${ h },${ s }%,${ l }%,${ 0.2 })`;
 };
 
-export const generateSmartTagsDropDown = (
-	setInputData,
-	inputData,
-	insertTextAtEnd
-) => {
+export const generateSmartTagsDropDown = ( setInputData ) => {
 	const smartTagList = srfm_block_data.smart_tags_array;
 	if ( ! smartTagList ) {
 		return;
 	}
 	const entries = Object.entries( smartTagList );
-	const data = entries.map( ( [ key, val ] ) => {
+	return generateDropDownOptions( setInputData, entries );
+};
+
+export const generateDropDownOptions = (
+	setInputData,
+	optionsArray = [],
+	arrayHeader = ''
+) => {
+	let data = optionsArray.map( ( [ key, val ] ) => {
 		return {
 			title: val,
 			onClick: () => {
-				if ( typeof inputData === 'object' ) {
-					insertTextAtEnd( key );
-				} else {
-					setInputData( inputData + key );
-				}
+				setInputData( key );
 			},
 		};
 	} );
 
+	if ( 0 === data.length ) {
+		data = [ { title: __( 'No tags available', 'sureforms' ) } ];
+	}
+
+	if ( 0 !== arrayHeader.length ) {
+		data = [
+			{
+				title: arrayHeader,
+				isDisabled: true,
+				onclick: () => false,
+			},
+			...data,
+		];
+	}
+
 	return data;
+};
+
+export const setFormSpecificSmartTags = ( savedBlocks ) => {
+	const excludedBlocks = [
+		'srfm/inline-button',
+		'srfm/hidden',
+		'srfm/page-break',
+		'srfm/separator',
+		'srfm/advanced-heading',
+		'srfm/image',
+		'srfm/icon',
+	];
+
+	savedBlocks = savedBlocks.filter(
+		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+	);
+
+	const formSmartTags = [];
+	const formEmailSmartTags = [];
+
+	const pushSmartTagToArray = (
+		blocks,
+		tagsArray,
+		uniqueSlugs = [],
+		allowedBlocks = []
+	) => {
+		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+			return;
+		}
+
+		blocks.forEach( ( block ) => {
+			if (
+				undefined === block?.attributes?.slug ||
+				undefined === block?.attributes?.label ||
+				'' === block?.attributes?.slug ||
+				( 0 !== allowedBlocks.length &&
+					! allowedBlocks.includes( block?.name ) )
+			) {
+				return;
+			}
+
+			if (
+				Array.isArray( block?.innerBlocks ) &&
+				0 !== block?.innerBlocks.length
+			) {
+				pushSmartTagToArray(
+					block.innerBlocks,
+					tagsArray,
+					uniqueSlugs,
+					allowedBlocks
+				);
+			} else {
+				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
+					return;
+				}
+				tagsArray.push( [
+					'{form:' + block.attributes.slug + '}',
+					block.attributes.label,
+				] );
+				uniqueSlugs.push( block.attributes.slug );
+			}
+		} );
+	};
+
+	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
+	pushSmartTagToArray(
+		savedBlocks,
+		formEmailSmartTags,
+		[],
+		[ 'srfm/email' ]
+	);
+
+	if ( typeof window.sureforms === 'undefined' ) {
+		window.sureforms = {};
+	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
 
 /**

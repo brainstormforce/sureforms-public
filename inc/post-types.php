@@ -72,7 +72,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
+			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary" style="background: #d54407; border-color: #d54407;">' . esc_html( $button_text ) . '</div></a>';
 		}
 
 		echo '</div>';
@@ -459,7 +459,25 @@ class Post_Types {
 				'_srfm_thankyou_message'          => 'string',
 				'_srfm_submit_url'                => 'string',
 				// Security.
+				'_srfm_captcha_security_type'     => 'string',
 				'_srfm_form_recaptcha'            => 'string',
+			]
+		);
+
+		// Form Custom CSS meta.
+		register_post_meta(
+			'sureforms_form',
+			'_srfm_form_custom_css',
+			[
+				'show_in_rest'      => true,
+				'type'              => 'string',
+				'single'            => true,
+				'auth_callback'     => function() {
+					return current_user_can( 'edit_posts' );
+				},
+				'sanitize_callback' => function( $meta_value ) {
+					return wp_kses_post( $meta_value );
+				},
 			]
 		);
 
@@ -494,25 +512,34 @@ class Post_Types {
 						'items' => [
 							'type'       => 'object',
 							'properties' => [
-								'id'            => [
+								'id'             => [
 									'type' => 'integer',
 								],
-								'status'        => [
+								'status'         => [
 									'type' => 'boolean',
 								],
-								'is_raw_format' => [
+								'is_raw_format'  => [
 									'type' => 'boolean',
 								],
-								'name'          => [
+								'name'           => [
 									'type' => 'string',
 								],
-								'email_to'      => [
+								'email_to'       => [
 									'type' => 'string',
 								],
-								'subject'       => [
+								'email_reply_to' => [
 									'type' => 'string',
 								],
-								'email_body'    => [
+								'email_cc'       => [
+									'type' => 'string',
+								],
+								'email_bcc'      => [
+									'type' => 'string',
+								],
+								'subject'        => [
+									'type' => 'string',
+								],
+								'email_body'     => [
 									'type' => 'string',
 								],
 							],
@@ -521,13 +548,16 @@ class Post_Types {
 				],
 				'default'       => [
 					[
-						'id'            => 1,
-						'status'        => true,
-						'is_raw_format' => false,
-						'name'          => 'Admin Notification Email',
-						'email_to'      => '{admin_email}',
-						'subject'       => 'New Form Submission',
-						'email_body'    => '{all_data}',
+						'id'             => 1,
+						'status'         => true,
+						'is_raw_format'  => false,
+						'name'           => 'Admin Notification Email',
+						'email_to'       => '{admin_email}',
+						'email_reply_to' => '{admin_email}',
+						'email_cc'       => '{admin_email}',
+						'email_bcc'      => '{admin_email}',
+						'subject'        => 'New Form Submission',
+						'email_body'     => '{all_data}',
 					],
 				],
 			]

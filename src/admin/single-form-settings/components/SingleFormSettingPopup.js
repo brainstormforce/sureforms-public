@@ -1,22 +1,32 @@
 import Integration from './integrations';
 import Compliance from './Compliance';
+import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import parse from 'html-react-parser';
 import svgIcons from '@Image/single-form-logo.json';
 import EmailNotification from './email-settings/EmailNotification';
-import { MdSecurity } from 'react-icons/md';
+import {
+	MdSecurity,
+	MdOutlineMailOutline,
+	MdOutlineCheckCircleOutline,
+	MdOutlineCode,
+} from 'react-icons/md';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
+import { setFormSpecificSmartTags } from '@Utils/Helpers';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
-	const emailIcon = parse( svgIcons.email );
 	const integrationIcon = parse( svgIcons.integration );
-	const formConfirmIcon = parse( svgIcons.circleCheck );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
-	const [ selectedTab, setSelectedTab ] = useState( targetTab ?? 'email_notification' );
+	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
+	const [ selectedTab, setSelectedTab ] = useState(
+		targetTab ?? 'email_notification'
+	);
 
 	const tabs = applyFilters(
 		'srfm.form_settings.tabs',
@@ -25,15 +35,17 @@ const SingleFormSettingsPopup = ( props ) => {
 			{
 				id: 'email_notification',
 				title: __( 'Email Notification', 'sureforms' ),
-				icon: emailIcon,
-				component: <EmailNotification
-					emailNotificationData={ emailNotificationData }
-				/>,
+				icon: <MdOutlineMailOutline size={ 20 } />,
+				component: (
+					<EmailNotification
+						emailNotificationData={ emailNotificationData }
+					/>
+				),
 			},
 			{
 				id: 'form_confirmation',
 				title: __( 'Form Confirmation', 'sureforms' ),
-				icon: formConfirmIcon,
+				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
 				component: <FormConfirmSetting />,
 			},
 			{
@@ -46,14 +58,27 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'integration',
 				title: __( 'Integration', 'sureforms' ),
 				icon: integrationIcon,
-				component: <Integration
-					setSelectedTab={ setSelectedTab } />,
+				component: <Integration />,
+			},
+			{
+				id: 'form_custom_css',
+				title: __( 'Custom CSS', 'sureforms' ),
+				icon: <MdOutlineCode size={ 20 } />,
+				component: (
+					<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
+				),
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
 		],
 		setSelectedTab
 	);
+
+	const savedBlocks = useSelect( ( select ) =>
+		select( editorStore ).getBlocks()
+	);
+
+	setFormSpecificSmartTags( savedBlocks );
 
 	return (
 		<div className="srfm-setting-modal-container">

@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import { InspectorControls, RichText } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
@@ -35,8 +35,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		duplicateMsg,
 		formId,
 		preview,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
+
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
@@ -60,7 +62,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -218,7 +220,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					/>
 				) }
 			</>
-		</>
+		</div>
 	);
 };
 

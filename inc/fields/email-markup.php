@@ -8,7 +8,6 @@
 
 namespace SRFM\Inc\Fields;
 
-use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,67 +20,88 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 0.0.1
  */
 class Email_Markup extends Base {
-	use Get_Instance;
+
+	/**
+	 * Flag indicating whether email confirmation is required.
+	 *
+	 * @var bool
+	 * @since 0.0.2
+	 */
+	protected $is_confirm_email;
+
+	/**
+	 * Fallback label for the confirmation input field.
+	 *
+	 * @var string
+	 * @since 0.0.2
+	 */
+	protected $input_confirm_label_fallback;
+
+	/**
+	 * Encrypted label for the confirmation input field.
+	 *
+	 * @var string
+	 * @since 0.0.2
+	 */
+	protected $input_confirm_label;
+
+	/**
+	 * Unique slug for the confirmation input field, combining the form slug, block ID, and encrypted label.
+	 *
+	 * @var string
+	 * @since 0.0.2
+	 */
+	protected $unique_confirm_slug;
+
+	/**
+	 * Initialize the properties based on block attributes.
+	 *
+	 * @param array<mixed> $attributes Block attributes.
+	 * @since 0.0.2
+	 */
+	public function __construct( $attributes ) {
+		$this->set_properties( $attributes );
+		$this->set_input_label( __( 'Email', 'sureforms' ) );
+		$this->set_error_msg( $attributes, 'srfm_email_block_required_text' );
+		$this->set_duplicate_msg( $attributes, 'srfm_email_block_unique_text' );
+		$this->slug                         = 'email';
+		$this->is_confirm_email             = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
+		$this->input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $this->input_label_fallback;
+		$this->input_confirm_label          = '-lbl-' . Helper::encrypt( $this->input_confirm_label_fallback );
+		$this->unique_confirm_slug          = 'srfm-' . $this->slug . '-confirm-' . $this->block_id . $this->input_confirm_label;
+		$this->set_unique_slug();
+		$this->set_field_name( $this->unique_slug );
+		$this->set_markup_properties( $this->input_label, true );
+	}
 
 	/**
 	 * Render the sureforms email classic styling
 	 *
-	 * @param array<mixed> $attributes Block attributes.
+	 * @since 0.0.2
 	 * @return string|boolean
 	 */
-	public function markup( $attributes ) {
-		$required      = isset( $attributes['required'] ) ? $attributes['required'] : false;
-		$default       = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
-		$placeholder   = isset( $attributes['placeholder'] ) ? $attributes['placeholder'] : '';
-		$field_width   = isset( $attributes['fieldWidth'] ) ? $attributes['fieldWidth'] : '';
-		$label         = isset( $attributes['label'] ) ? $attributes['label'] : '';
-		$help          = isset( $attributes['help'] ) ? $attributes['help'] : '';
-		$is_unique     = isset( $attributes['isUnique'] ) ? $attributes['isUnique'] : false;
-		$duplicate_msg = isset( $attributes['duplicateMsg'] ) && $attributes['duplicateMsg'] ? $attributes['duplicateMsg'] : Helper::get_default_dynamic_block_option( 'srfm_email_block_unique_text' );
-		$error_msg     = isset( $attributes['errorMsg'] ) && $attributes['errorMsg'] ? $attributes['errorMsg'] : Helper::get_default_dynamic_block_option( 'srfm_email_block_required_text' );
-
-		$is_confirm_email = isset( $attributes['isConfirmEmail'] ) ? $attributes['isConfirmEmail'] : false;
-		$class_name       = isset( $attributes['className'] ) ? ' ' . $attributes['className'] : '';
-		$block_id         = isset( $attributes['block_id'] ) ? $attributes['block_id'] : '';
-		$form_id          = isset( $attributes['formId'] ) ? strval( $attributes['formId'] ) : '';
-		$block_slug       = isset( $attributes['slug'] ) ? $attributes['slug'] : '';
-		$slug             = 'email';
-
-		$block_width          = $field_width ? ' srfm-block-width-' . str_replace( '.', '-', $field_width ) : '';
-		$aria_require         = $required ? 'true' : 'false';
-		$aria_unique          = $is_unique ? 'true' : 'false';
-		$default_value_attr   = $default ? ' value="' . $default . '" ' : '';
-		$placeholder_attr     = $placeholder ? ' placeholder="' . $placeholder . '" ' : '';
-		$input_label_fallback = $label ? $label : __( 'Email', 'sureforms' );
-		$input_label          = '-lbl-' . Helper::encrypt( $input_label_fallback );
-
-		$input_confirm_label_fallback = __( 'Confirm ', 'sureforms' ) . $input_label_fallback;
-		$input_confirm_label          = '-lbl-' . Helper::encrypt( $input_confirm_label_fallback );
-		$conditional_class            = apply_filters( 'srfm_conditional_logic_classes', $form_id, $block_id );
-		$unique_slug                  = 'srfm-' . $slug . '-' . $block_id . $input_label;
-		$field_name                   = $unique_slug . '-' . $block_slug;
-		$unique_confirm_slug          = 'srfm-' . $slug . '-confirm-' . $block_id . $input_confirm_label;
-
+	public function markup() {
+		$confirm_label_markup = Helper::generate_common_form_markup( $this->form_id, 'label', 'Confirm ' . $this->label, $this->slug . '-confirm', $this->block_id . $this->input_confirm_label, boolval( $this->required ) );
 		ob_start(); ?>
-			<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $slug ); ?>-block-wrap<?php echo esc_attr( $block_width ); ?><?php echo esc_attr( $class_name ); ?> <?php echo esc_attr( $conditional_class ); ?>">
-				<div class="srfm-<?php echo esc_attr( $slug ); ?>-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-block">
-					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', $label, $slug, $block_id . $input_label, boolval( $required ) ) ); ?>
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block-wrap<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+				<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block">
+					<?php echo wp_kses_post( $this->label_markup ); ?>
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>" type="email" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $unique_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" data-unique="<?php echo esc_attr( $aria_unique ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
-						<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="email" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
+						<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					</div>
-					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-					<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, $duplicate_msg, $is_unique ) ); ?>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
+					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>
 				</div>
-				<?php if ( true === $is_confirm_email ) { ?>
-					<div class="srfm-block srfm-<?php echo esc_attr( $slug ); ?>-confirm-block srf-<?php echo esc_attr( $slug ); ?>-<?php echo esc_attr( $block_id ); ?>-confirm-block">
-						<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'label', 'Confirm ' . $label, $slug . '-confirm', $block_id . $input_confirm_label, boolval( $required ) ) ); ?>
+				<?php if ( true === $this->is_confirm_email ) { ?>
+					<div class="srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-confirm-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-confirm-block">
+						<?php echo wp_kses_post( $confirm_label_markup ); ?>
 						<div class="srfm-block-wrap">
-							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $slug ); ?>-confirm" type="email" name="<?php echo esc_attr( $unique_confirm_slug ); ?>" id="<?php echo esc_attr( $unique_confirm_slug ); ?>" aria-required="<?php echo esc_attr( $aria_require ); ?>" <?php echo wp_kses_post( $default_value_attr . ' ' . $placeholder_attr ); ?> >
-							<?php echo Helper::fetch_svg( 'error', 'srfm-error-icon' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-confirm" type="email" name="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" id="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
+							<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 						</div>
-						<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'help', '', '', '', false, $help ) ); ?>
-						<?php echo wp_kses_post( Helper::generate_common_form_markup( $form_id, 'error', '', '', '', boolval( $required ), '', $error_msg, false, '', true ) ); ?>
+						<?php echo wp_kses_post( $this->help_markup ); ?>
+						<?php echo wp_kses_post( $this->error_msg_markup ); ?>
 					</div>
 				<?php } ?>
 			</div>

@@ -37,7 +37,7 @@ class Helper {
 	/**
 	 * Get common error message.
 	 *
-	 * @since 0.0.3
+	 * @since 0.0.2
 	 * @return array<string>
 	 */
 	public static function get_common_err_msg() {
@@ -337,7 +337,7 @@ class Helper {
 	 *
 	 * @param int        $days_old The number of days old the entries should be.
 	 * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return array<int|WP_Post> the entries matching the criteria.
 	 */
 	public static function get_entries_from_form_ids( $days_old = 0, $sf_form_ids = [] ) {
@@ -379,7 +379,7 @@ class Helper {
 	 *
 	 * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
 	 * @param string $encoded_data the encoded block attribute.
-	 * @since x.x.x
+	 * @since 0.0.2
 	 * @return string decoded block attribute
 	 */
 	public static function decode_block_attribute( $encoded_data = '' ) {
