@@ -42,7 +42,7 @@ export const navigation = [
 	},
 ];
 
-const isProActive = srfm_admin.is_pro_active;
+const isProActive = window.srfm_admin.is_pro_active;
 
 const Navigation = () => {
 	const activatedTab = useQuery();
