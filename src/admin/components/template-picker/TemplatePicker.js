@@ -1,4 +1,4 @@
-import { useEffect, render, useState } from '@wordpress/element';
+import { useEffect, render } from '@wordpress/element';
 import Header from './components/Header.js';
 import { __ } from '@wordpress/i18n';
 import StartingPoint from './components/StartingPoint.js';
@@ -131,4 +131,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );
