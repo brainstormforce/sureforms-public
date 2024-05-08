@@ -99,7 +99,6 @@ class Field_Mapping {
 					'required'    => $question['required'],
 					'placeholder' => $question['placeholder'],
 					'help'        => $question['helpText'],
-					'fieldWidth'  => $question['fieldWidth'],
 				]
 			);
 
