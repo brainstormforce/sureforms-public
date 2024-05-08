@@ -191,7 +191,6 @@ class Create_New_Form {
 		$template_metas = isset( $form_info_obj->template_metas ) ? (array) $form_info_obj->template_metas : [];
 
 		// if post content contains srfm/page-break block, then set _srfm_is_page_break meta to true.
-
 		if ( strpos( $content, 'srfm/page-break' ) !== false ) {
 			$template_metas['_srfm_is_page_break'] = [ 'true' ];
 		}
