@@ -133,7 +133,10 @@ const TemplateScreen = () => {
 			) : (
 				<p className="srfm-ai-form-builder-message">{ message }</p>
 			) }
-			<pre>Total requests = { srfm_admin.srfm_ai_request_count }</pre>
+			<pre>
+				Credits Used { srfm_admin.zip_ai_credit_details?.used } /{ ' ' }
+				{ srfm_admin.zip_ai_credit_details?.total }
+			</pre>
 			<pre style={ { color: 'red' } }>{ errorMessage }</pre>
 		</div>
 	);
