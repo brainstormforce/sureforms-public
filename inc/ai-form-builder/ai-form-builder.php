@@ -145,6 +145,8 @@ class AI_Form_Builder {
 					4) consider multi step form as page-break and you can use it multiple time if required and use it only if asked to.
 
 					5) For upload field also return fileSizeLimit, allowedFormats. For example, for upload field the allowedFileTypes can be [ { "value": "jpg", "label": "jpg" }, { "value": "jpeg", "label": "jpeg" }] and fileSizeLimit number can be between 10 to 300.
+
+					6) Never give labels as generic names Field 1, Field 2, etc.
 					
 					It is essential to provide a valid JSON structure. If there is an error, return an empty JSON. Make sure you don\'t entertain the empty cases, like Hey there, or kind of message, just check for the proper prompt and understand if the prompt has the word form or any kind of direction to create the form.',
 				]
@@ -161,11 +163,10 @@ class AI_Form_Builder {
 		$response = wp_remote_post(
 			$endpoint,
 			[
-				'body'    => wp_json_encode( $data ) ? wp_json_encode( $data ) : '',
+				'body'    => $data,
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
 				'headers' => [
 					'Authorization' => 'Bearer ' . AI_Helper::get_decrypted_auth_token(),
-					'Content-Type'  => 'application/json',
 				],
 			]
 		);

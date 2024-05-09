@@ -115,18 +115,15 @@ class Field_Mapping {
 					break;
 				case 'textarea':
 					// Check if helpText is provided.
-					if ( in_array( 'helpText', $question, true ) ) {
+					if ( ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = $question['helpText'];
 					}
 					$post_content .= '<!-- wp:srfm/textarea ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'dropdown':
 					// Check if fieldOptions are provided.
-					if ( in_array( $question['fieldOptions'], $question, true ) ) {
+					if ( ! empty( $question['fieldOptions'] ) ) {
 						$merged_attributes['options'] = $question['fieldOptions'];
-					} else {
-						// Default options.
-						$merged_attributes['options'] = [ 'Option 1', 'Option 2', 'Option 3' ];
 					}
 					$post_content .= '<!-- wp:srfm/dropdown ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -138,9 +135,11 @@ class Field_Mapping {
 					break;
 				case 'upload':
 					// Check if allowedFormats and fileSizeLimit are provided.
-					if ( in_array( 'allowedFormats', $question, true ) || in_array( $question['fileSizeLimit'], $question, true ) ) {
+					if ( ! empty( $question['allowedFormats'] ) ) {
 						$merged_attributes['allowedFormats'] = $question['allowedFormats'];
-						$merged_attributes['fileSizeLimit']  = $question['fileSizeLimit'];
+					}
+					if ( ! empty( $question['fileSizeLimit'] ) ) {
+						$merged_attributes['fileSizeLimit'] = $question['fileSizeLimit'];
 					}
 					$post_content .= '<!-- wp:srfm/upload ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -157,7 +156,7 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/hidden ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'rating':
-					if ( in_array( 'helpText', $question, true ) ) {
+					if ( ! empty( $question['helpText'] ) ) {
 						$merged_attributes['ratingBoxHelpText'] = $question['helpText'];
 					}
 					$post_content .= '<!-- wp:srfm/rating ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
@@ -176,9 +175,11 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/page-break ' . wp_json_encode( $common_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'multi-choice':
-					// Check if fieldOptions are provided.
-					if ( in_array( $question['fieldOptions'], $questions, true ) || in_array( 'singleSelection', $question, true ) ) {
-						$merged_attributes['options']         = $question['fieldOptions'];
+					// check if fieldOptions or singleSelection is provided.
+					if ( ! empty( $question['fieldOptions'] ) ) {
+						$merged_attributes['options'] = $question['fieldOptions'];
+					}
+					if ( ! empty( $question['singleSelection'] ) ) {
 						$merged_attributes['singleSelection'] = $question['singleSelection'];
 					}
 					$post_content .= '<!-- wp:srfm/multi-choice ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
