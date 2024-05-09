@@ -16,7 +16,7 @@ jobs:
         strategy:
             matrix:
                 node: ['18.15.0']
-                php: ['7.4','8.2']
+                php: ['8.1']
 
         steps:
             - name: Checkout
@@ -35,7 +35,7 @@ jobs:
                   key: ${{ runner.os }}-node-${{ matrix.node }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install npm dependencies
-              run: npm install
+              run: npm install --legacy-peer-deps
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
