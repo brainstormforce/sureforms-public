@@ -75,7 +75,11 @@ const TemplateScreen = () => {
 				}
 
 				setMessage( __( 'Creating Post…', 'sureforms' ) );
-				handleAddNewPost( postContent, 'AI Form', [] );
+				handleAddNewPost(
+					postContent,
+					sanitizedFormJsonData?.formTitle,
+					[]
+				);
 			} else {
 				console.error(
 					'Error creating sureforms_form:',
