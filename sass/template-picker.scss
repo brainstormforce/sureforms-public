@@ -501,6 +501,72 @@ $sidebar_width: 290px;
 		}
 	}
 
+	.srfm-ai-form-builder-ctn {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+
+		textarea {
+			width: 80%;
+			height: 200px;
+			padding: 10px;
+			border: 1px solid #d54407;
+			border-radius: 8px;
+			margin-bottom: 1em;
+			font-size: 1em;
+			font-weight: 500;
+
+			&:focus {
+				box-shadow: none;
+			}
+
+			&::placeholder {
+				color: #d54407;
+			}
+		}
+
+		.srfm-example-ai-prompt-ctn {
+			display: flex;
+			justify-content: space-between;
+			width: 80%;
+			margin-bottom: 20px;
+		}
+
+		.srfm-example-ai-prompt-btn {
+			background-color: #ffffff;
+			color: #d54407;
+			border: 1px solid #d54407;
+			padding: 10px;
+			cursor: pointer;
+		}
+
+		.srfm-generate-ai-form-btn {
+			background-color: #d54407;
+			color: $btn_secondary_color;
+			margin-top: 2em;
+			margin-bottom: 0.75em;
+			padding: 9px 17px;
+			font-size: 1em;
+			font-weight: 500;
+			border: 0;
+			width: fit-content;
+			box-shadow: 0px 1px 2px 0px $box_shadow_3;
+			border-radius: 8px;
+			cursor: pointer;
+		}
+
+		.srfm-ai-form-builder-message {
+			font-size: 1em;
+			font-weight: 500;
+			color: #d54407;
+			margin-top: 2em;
+			margin-bottom: 0.75em;
+			padding: 9px 17px;
+		}
+	}
+
 	.srfm-ts-preview-container {
 		.srfm-ts-sidebar {
 			.srfm-ts-sidebar-back-btn {

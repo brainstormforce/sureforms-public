@@ -23,34 +23,26 @@ class Field_Mapping {
 	/**
 	 * The namespace for the Rest Routes.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @var string
 	 */
 	private $namespace = 'sureforms/v1';
 
+	/**
+	 * Constructor of this class.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function __construct() {
-		// Setup the Sidebar Rest Routes.
 		add_action( 'rest_api_init', [ $this, 'register_route' ] );
-
-		// Setup the Sidebar Auth Ajax.
-		// add_action( 'wp_ajax_verify_zip_ai_authenticity', array( $this, 'verify_authenticity' ) );
-
-		// add_action( 'admin_bar_menu', array( $this, 'add_admin_trigger' ), 999 );
-
-		// Render the Sidebar React App in the Footer in the Gutenberg Editor, Admin, and the Front-end.
-		// add_action( 'admin_footer', array( $this, 'render_sidebar_markup' ) );
-		// add_action( 'wp_footer', array( $this, 'render_sidebar_markup' ) );
-
-		// Add the Sidebar to the Gutenberg Editor, Admin, and the Front-end.
-		// add_action( 'admin_enqueue_scripts', array( $this, 'load_sidebar_assets' ) );
-		// add_action( 'wp_enqueue_scripts', array( $this, 'load_sidebar_assets' ) );
 	}
 
 	/**
 	 * Register All Routes.
 	 *
 	 * @hooked - rest_api_init
-	 * @since 1.0.0
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function register_route() {
@@ -68,77 +60,134 @@ class Field_Mapping {
 			]
 		);
 	}
+
+	/**
+	 * Generate Gutenberg Fields from AI data.
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return string
+	 */
 	public static function generate_gutenberg_fields_from_questions( $request ) {
 
-		// Get questions from request
+		// Get params from request.
 		$params = $request->get_params();
 
-		// get form_data from request
-
+		// Get questions from form data.
 		$questions = $params['form_data']['questions'];
 
-		// Initialize post content string
+		// Check if questions are null then set it to form_data.
+		if ( null === $questions ) {
+			$questions = $params['form_data'];
+		}
+
+		// Initialize post content string.
 		$post_content = '';
 
-		// Loop through questions
+		// Loop through questions.
 		foreach ( $questions as $index => $question ) {
-			// Initialize common attributes
+			// Initialize common attributes.
 			$common_attributes = [
-				'block_id' => bin2hex( random_bytes( 4 ) ), // Generate random block_id
-				'required' => true, // Default required attribute
-				'formId'   => 0, // Set your formId here
+				'block_id' => bin2hex( random_bytes( 4 ) ), // Generate random block_id.
+				'formId'   => 0, // Set your formId here.
 			];
 
-			// Merge common attributes with question attributes
+			// Merge common attributes with question attributes.
 			$merged_attributes = array_merge(
 				$common_attributes,
 				[
-					'label' => $question['text'],
+					'label'       => $question['label'],
+					'required'    => $question['required'],
+					'placeholder' => $question['placeholder'],
+					'help'        => $question['helpText'],
 				]
 			);
 
-			// Determine field type based on fieldType
+			// Determine field type based on fieldType.
 			switch ( $question['fieldType'] ) {
 				case 'input':
-					$post_content .= '<!-- wp:srfm/input ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/input ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'email':
-					$post_content .= '<!-- wp:srfm/email ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/email ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'number':
-					$post_content .= '<!-- wp:srfm/number ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/number ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'textarea':
-					$post_content .= '<!-- wp:srfm/textarea ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/textarea ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'dropdown':
-					// Check if fieldOptions are provided
+					// Check if fieldOptions are provided.
 					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
 						$merged_attributes['options'] = $question['fieldOptions'];
 					} else {
-						// Default options
+						// Default options.
 						$merged_attributes['options'] = [ 'Option 1', 'Option 2', 'Option 3' ];
 					}
-					$post_content .= '<!-- wp:srfm/dropdown ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/dropdown ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'checkbox':
-					$post_content .= '<!-- wp:srfm/checkbox ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/checkbox ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'date-time':
-					$post_content .= '<!-- wp:srfm/date-time-picker ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/date-time-picker ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'upload':
-					$post_content .= '<!-- wp:srfm/upload ' . json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$post_content .= '<!-- wp:srfm/upload ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'address':
+					$post_content .= '<!-- wp:srfm/address ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'address-compact':
+					$post_content .= '<!-- wp:srfm/address-compact ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'inline-button':
+					$post_content .= '<!-- wp:srfm/inline-button ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'hidden':
+					$post_content .= '<!-- wp:srfm/hidden ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'rating':
+					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
+						$merged_attributes['ratingBoxHelpText'] = $question['helpText'];
+					}
+					$post_content .= '<!-- wp:srfm/rating ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'phone':
+					$post_content .= '<!-- wp:srfm/phone ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'gdpr':
+					$post_content .= '<!-- wp:srfm/gdpr ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'number-slider':
+					$post_content .= '<!-- wp:srfm/number-slider ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'page-break':
+					$post_content .= '<!-- wp:srfm/page-break ' . wp_json_encode( $common_attributes ) . ' /-->' . PHP_EOL;
+					break;
+				case 'multi-choice':
+					// Check if fieldOptions are provided.
+					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
+						$merged_attributes['options']         = $question['fieldOptions'];
+						$merged_attributes['singleSelection'] = $question['singleSelection'];
+					} else {
+						// Default options.
+						$merged_attributes['options'] = [
+							[ 'optionTitle' => 'Option 1' ],
+							[ 'optionTitle' => 'Option 2' ],
+							[ 'optionTitle' => 'Option 3' ],
+							[ 'optionTitle' => 'Option 4' ],
+						];
+					}
+					$post_content .= '<!-- wp:srfm/multi-choice ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				default:
-					// Unsupported field type
-					$post_content .= '<!-- Unsupported field type: ' . $question['fieldType'] . ' -->' . PHP_EOL;
+					// Unsupported field type - fallback to input.
+					$post_content .= '<!-- wp:srfm/' . $question['fieldType'] . ' ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 			}
 		}
 
 		return $post_content;
 	}
-
-
 
 }

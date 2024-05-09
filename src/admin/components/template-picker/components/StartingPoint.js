@@ -12,7 +12,7 @@ const StartingPoint = ( {
 		<>
 			{ isComingSoon && (
 				<div className="srfm-tp-cs-badge">
-					{ __( 'Coming Soon...', 'sureforms' ) }
+					{ __( 'Coming Soon…', 'sureforms' ) }
 				</div>
 			) }
 			{ isBeta && (

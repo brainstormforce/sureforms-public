@@ -6,8 +6,9 @@ import { handleAddNewPost } from '@Utils/Helpers';
 
 const TemplateScreen = () => {
 	const [ message, setMessage ] = useState( '' );
+	const [ errorMessage, setErrorMessage ] = useState( '' );
 
-	const createAiForm = async (
+	const handleCreateAiForm = async (
 		userCommand,
 		previousMessages,
 		useSystemMessage
@@ -17,16 +18,19 @@ const TemplateScreen = () => {
 			return;
 		}
 
-		const messageArray = [];
-
-		// Add the previous messages to the message array.
-		if ( previousMessages?.length ) {
-			previousMessages.forEach( ( chat ) => {
-				messageArray.push( { role: chat.role, content: chat.message } );
-			} );
+		if ( ! userCommand ) {
+			setErrorMessage(
+				__( 'Please enter a valid prompt.', 'sureforms' )
+			);
+			return;
 		}
 
-		// Add the user message to the message array.
+		const messageArray =
+			previousMessages?.map( ( chat ) => ( {
+				role: chat.role,
+				content: chat.message,
+			} ) ) || [];
+
 		messageArray.push( { role: 'user', content: userCommand } );
 
 		const postData = {
@@ -34,76 +38,43 @@ const TemplateScreen = () => {
 			use_system_message: useSystemMessage,
 		};
 
-		console.log( postData );
-
-		// Send the user message to the sureforms/v1/generate-form endpoint.
-		// This is the endpoint that will generate the form based on the user's input.
-
-		// return apiFetch( {
-		// 	path: 'sureforms/v1/generate-form',
-		// 	method: 'POST',
-		// 	data: postData,
-		// } );
-
-		// handleAddNewPost using the postData
-
 		try {
-			setMessage( 'Getting field labels from SureForms AI!' );
+			setMessage(
+				__( 'Getting Fields Data from SureForms AI…', 'sureforms' )
+			);
 			const response = await apiFetch( {
 				path: 'sureforms/v1/generate-form',
-
 				method: 'POST',
 				data: postData,
 			} );
 
 			if ( response ) {
-				// setMessage( 'Form markup generated...' );
-				// console.log( 'got response' );
-
-				// console.log( response.data );
-
-				// get eh choice message from open ai response
-
-				// convert json to object
-
-				// response = JSON.parse( response );
-
-				// const choiceMessage =
-				// 	response.data.choices[ 0 ].message.content;
-
-				setMessage( 'Mapping data to field markup...' );
-
 				const data = JSON.parse( response.data );
-
 				const formJsonData = data.choices[ 0 ].message.content;
-				// parse the response and send it to the sureforms/v1/map-fields endpoint
-
-				// remove ``` from the response.data
-
-				let sanitizedFormJsonData = formJsonData.replace( /```/g, '' );
-
-				// remove word "json" from the response.data
-
-				sanitizedFormJsonData = sanitizedFormJsonData.replace(
-					/json/g,
-					''
-				);
-
+				let sanitizedFormJsonData = formJsonData
+					.replace( /```/g, '' )
+					.replace( /json/g, '' );
 				sanitizedFormJsonData = JSON.parse( sanitizedFormJsonData );
 
-				// data = JSON.parse( data );
-
-				setMessage( 'Creating form....' );
+				setMessage( __( 'Creating Post Content…', 'sureforms' ) );
 
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
-
 					method: 'POST',
-					data: {
-						form_data: sanitizedFormJsonData,
-					},
+					data: { form_data: sanitizedFormJsonData },
 				} );
 
+				if ( ! postContent ) {
+					setErrorMessage(
+						__(
+							'Error creating post content. Please check your prompt',
+							'sureforms'
+						)
+					);
+					return;
+				}
+
+				setMessage( __( 'Creating Post…', 'sureforms' ) );
 				handleAddNewPost( postContent, 'AI Form', [] );
 			} else {
 				console.error(
@@ -116,49 +87,59 @@ const TemplateScreen = () => {
 		}
 	};
 
-	function QueryScreen() {
-		return (
-			<div
-				style={ {
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: '100vh',
-				} }
-			>
-				<textarea
-					style={ {
-						width: '80%',
-						height: '300px',
-						padding: '10px',
-						fontSize: '16px',
-						fontFamily: 'monospace',
-						borderRadius: '5px',
-						marginBottom: '20px',
-					} }
-				></textarea>
-				{ message === '' ? (
-					<Button
-						onClick={ () => {
-							const userPrompt =
-								document.querySelector( 'textarea' );
+	const examplePrompts = [
+		__( 'Create a user feedback form', 'sureforms' ),
+		__( 'Create a GYM membership form', 'sureforms' ),
+		__( 'Create a contact form for my website', 'sureforms' ),
+		__( 'Create a form to submit support tickets', 'sureforms' ),
+	];
 
-							// send userPrompt.value to the sureforms/v1/generate-form endpoint
-							createAiForm( userPrompt.value, [], true );
-						} }
-					>
-						{ __( 'Generate Form', 'sureforms' ) }
-					</Button>
-				) : (
-					message
+	const handlePromptClick = ( prompt ) => {
+		const userPrompt = document.querySelector( 'textarea' );
+		userPrompt.value = prompt;
+	};
+
+	return (
+		<div className="srfm-ai-form-builder-ctn">
+			<h2>{ __( 'AI Form Builder', 'sureforms' ) }</h2>
+			<p>
+				{ __(
+					'Enter a prompt to generate a form. You can use the example prompts below to get started.',
+					'sureforms'
 				) }
-				<pre>Total requests = { srfm_admin.srfm_ai_request_count }</pre>
+			</p>
+			<textarea maxLength={ 2000 } />
+			<div className="srfm-example-ai-prompt-ctn">
+				{ examplePrompts.map( ( prompt, index ) => (
+					<Button
+						key={ index }
+						onClick={ () => handlePromptClick( prompt ) }
+						className="srfm-example-ai-prompt-btn"
+					>
+						{ prompt }
+					</Button>
+				) ) }
 			</div>
-		);
-	}
-
-	return <QueryScreen />;
+			{ message === '' ? (
+				<Button
+					onClick={ () => {
+						const userPrompt = document.querySelector( 'textarea' );
+						handleCreateAiForm( userPrompt.value, [], true );
+					} }
+					className="srfm-generate-ai-form-btn"
+				>
+					{ __( 'Generate Form', 'sureforms' ) }
+				</Button>
+			) : (
+				<p className="srfm-ai-form-builder-message">{ message }</p>
+			) }
+			<pre>
+				Credits Used { srfm_admin.zip_ai_credit_details?.used } /{ ' ' }
+				{ srfm_admin.zip_ai_credit_details?.total }
+			</pre>
+			<pre style={ { color: 'red' } }>{ errorMessage }</pre>
+		</div>
+	);
 };
 
 export default TemplateScreen;

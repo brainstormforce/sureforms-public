@@ -1722,6 +1722,11 @@ namespace SRFM\Inc\Lib\Browser {
         }
     }
 }
+namespace SRFM\Inc\Lib {
+    class Connect_Zip_AI{
+        use \SRFM\Inc\Traits\Get_Instance;
+    }
+}
 namespace {
     /**
      * Abstract WP_Async_Request class.
