@@ -8,6 +8,7 @@
 namespace SRFM\Inc\AI_Form_Builder;
 
 use SRFM\Inc\Traits\Get_Instance;
+use ZipAI\Classes\Helper as AI_Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -118,13 +119,20 @@ class AI_Form_Builder {
 			array_unshift( $messages, $current_message );
 		}
 
+		$field_types = 'input, email, url, textarea,  multi-choice, checkbox, gdpr, number, phone, dropdown, address, address-compact';
+
+		// if pro is active then add pro field types.
+		if ( defined( 'SRFM_PRO_VER' ) ) {
+			$field_types .= ', hidden, rating, upload, date-time, number-slider, page-break';
+		}
+
 		// Finally add the system message to the start of the array.
 		if ( ! empty( $params['use_system_message'] ) ) {
 			array_unshift(
 				$messages,
 				[
 					'role'    => 'system',
-					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required, helpText. fieldType can only be of these options input, email, url, textarea, checkbox, gdpr, number, phone, dropdown, address, address-compact, hidden, rating, upload, date-time, number-slider, page-break, multi-choice. fieldType can be used in any order and any number of times.
+					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required, helpText. fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times.
 					
 					Here are the field specific properties that you need to return with that specific field:
 					
@@ -142,7 +150,7 @@ class AI_Form_Builder {
 		}
 
 		// send the request to the open ai server.
-		$endpoint = 'https://api.openai.com/v1/chat/completions';
+		$endpoint = ZIP_AI_CREDIT_SERVER_API . 'chat/completions';
 		$data     = [
 			'model'    => 'gpt-3.5-turbo',
 			'messages' => $messages,
@@ -154,7 +162,7 @@ class AI_Form_Builder {
 				'body'    => wp_json_encode( $data ) ? wp_json_encode( $data ) : '',
 				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
 				'headers' => [
-					'Authorization' => 'Bearer sk-proj-LgSXu9dbBmhYYjYNRdDkT3BlbkFJlvtzD9BxqtrXze3ya9cg',
+					'Authorization' => 'Bearer ' . AI_Helper::get_decrypted_auth_token(),
 					'Content-Type'  => 'application/json',
 				],
 			]
@@ -166,11 +174,6 @@ class AI_Form_Builder {
 			$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 			if ( is_array( $response_body ) && is_array( $response_body['choices'] ) && ! empty( $response_body['choices'][0]['message']['content'] ) ) {
-
-				// Increment the request count.
-				$request_count = get_option( 'srfm_ai_request_count', 0 );
-				update_option( 'srfm_ai_request_count', $request_count + 1 );
-
 				// send the response back to the client.
 				wp_send_json_success( wp_remote_retrieve_body( $response ) );
 			} elseif ( is_array( $response_body ) && ! empty( $response_body['error'] ) ) {

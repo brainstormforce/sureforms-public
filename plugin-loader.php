@@ -29,6 +29,7 @@ use SRFM\Inc\Single_Form_Settings\Compliance_Settings;
 use SRFM\Inc\Events_Scheduler;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 use SRFM\Inc\AI_Form_Builder\Field_Mapping;
+use SRFM\Inc\Lib\Connect_Zip_AI;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -138,6 +139,7 @@ class Plugin_Loader {
 		Events_Scheduler::get_instance();
 		AI_Form_Builder::get_instance();
 		Field_Mapping::get_instance();
+		Connect_Zip_AI::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
