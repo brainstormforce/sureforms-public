@@ -216,6 +216,42 @@ function StyleSettings( props ) {
 				? sureformsKeys._srfm_submit_width_backend
 				: ''
 		);
+		// Page Break Button
+		// Page Break Button text color
+		root.style.setProperty(
+			'--srfm-page-break-btn-text-color',
+			sureformsKeys._srfm_page_break_button_text_color
+				? sureformsKeys._srfm_page_break_button_text_color
+				: '#000000'
+		);
+		// Page Break Button bg Color
+		root.style.setProperty(
+			'--srfm-page-break-btn-bg-color',
+			sureformsKeys._srfm_page_break_button_bg_color
+				? sureformsKeys._srfm_page_break_button_bg_color
+				: ''
+		);
+		// Page Break Button Border Color
+		root.style.setProperty(
+			'--srfm-page-break-btn-border-color',
+			sureformsKeys._srfm_page_break_button_border_color
+				? sureformsKeys._srfm_page_break_button_border_color
+				: '#000000'
+		);
+		// Page Break Button Border Width
+		root.style.setProperty(
+			'--srfm-page-break-btn-border-width',
+			sureformsKeys._srfm_page_break_button_border_width
+				? sureformsKeys._srfm_page_break_button_border_width + 'px'
+				: '0px'
+		);
+		// Page Break Button Border Radius
+		root.style.setProperty(
+			'--srfm-page-break-btn-border-radius',
+			sureformsKeys._srfm_page_break_button_border_radius
+				? sureformsKeys._srfm_page_break_button_border_radius + 'px'
+				: '4px'
+		);
 	} else {
 		sureformsKeys = defaultKeys;
 		editPost( {
@@ -371,6 +407,26 @@ function StyleSettings( props ) {
 			root.style.setProperty(
 				'--srfm-btn-border-color',
 				value ? value : '#000000'
+			);
+		}
+
+		// Page Break Button
+		if ( option === '_srfm_page_break_button_text_color' ) {
+			root.style.setProperty(
+				'--srfm-page-break-btn-text-color',
+				value ? value : '#000000'
+			);
+		}
+		if ( option === '_srfm_page_break_button_border_color' ) {
+			root.style.setProperty(
+				'--srfm-page-break-btn-border-color',
+				value ? value : '#000000'
+			);
+		}
+		if ( option === '_srfm_page_break_button_border_width' ) {
+			root.style.setProperty(
+				'--srfm-page-break-btn-border-width',
+				value ? value + 'px' : '0px'
 			);
 		}
 
@@ -863,6 +919,148 @@ function StyleSettings( props ) {
 								}
 							} }
 						/>
+					</>
+				) }
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
+				title={ __( 'Page Break Buttons', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<ToggleControl
+					label={ __( 'Inherit From Theme', 'sureforms' ) }
+					checked={ sureformsKeys._srfm_page_break_inherit_theme_button }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_page_break_inherit_theme_button', value );
+					} }
+				/>
+				{ ! sureformsKeys._srfm_page_break_inherit_theme_button && (
+					<>
+						<AdvancedPopColorControl
+							label={ __( 'Text Color', 'sureforms' ) }
+							colorValue={ sureformsKeys._srfm_page_break_button_text_color }
+							data={ {
+								value: sureformsKeys._srfm_page_break_button_text_color,
+								label: '_srfm_page_break_button_text_color',
+							} }
+							onColorChange={ ( colorValue ) => {
+								if (
+									colorValue !==
+									sureformsKeys._srfm_page_break_button_text_color
+								) {
+									updateMeta(
+										'_srfm_page_break_button_text_color',
+										colorValue
+									);
+								}
+							} }
+							value={ sureformsKeys._srfm_page_break_button_text_color }
+							isFormSpecific={ true }
+						/>
+						{ sureformsKeys._srfm_page_break_button_bg_type === 'filled' && (
+							<>
+								<p className="components-base-control__help" />
+								<AdvancedPopColorControl
+									label={ __(
+										'Background Color',
+										'sureforms'
+									) }
+									colorValue={
+										sureformsKeys._srfm_page_break_button_bg_color
+									}
+									data={ {
+										value: sureformsKeys._srfm_page_break_button_bg_color,
+										label: '_srfm_page_break_button_bg_color',
+									} }
+									onColorChange={ ( colorValue ) => {
+										if (
+											colorValue !==
+											sureformsKeys._srfm_page_break_button_bg_color
+										) {
+											updateMeta(
+												'_srfm_page_break_button_bg_color',
+												colorValue
+											);
+										}
+									} }
+									value={
+										sureformsKeys._srfm_page_break_button_bg_color
+									}
+									isFormSpecific={ true }
+								/>
+							</>
+						) }
+						{ sureformsKeys._srfm_page_break_button_bg_type === 'filled' && (
+							<>
+								<p className="components-base-control__help" />
+								<AdvancedPopColorControl
+									label={ __( 'Border Color', 'sureforms' ) }
+									colorValue={
+										sureformsKeys._srfm_page_break_button_border_color
+									}
+									data={ {
+										value: sureformsKeys._srfm_page_break_button_border_color,
+										label: '_srfm_page_break_button_border_color',
+									} }
+									onColorChange={ ( colorValue ) => {
+										if (
+											colorValue !==
+											sureformsKeys._srfm_page_break_button_border_color
+										) {
+											updateMeta(
+												'_srfm_page_break_button_border_color',
+												colorValue
+											);
+										}
+									} }
+									value={
+										sureformsKeys._srfm_page_break_button_border_color
+									}
+									isFormSpecific={ true }
+								/>
+								<p className="components-base-control__help" />
+								<Range
+									label={ __( 'Border Width', 'sureforms' ) }
+									value={
+										sureformsKeys._srfm_page_break_button_border_width
+									}
+									min={ 0 }
+									max={ 10 }
+									displayUnit={ false }
+									data={ {
+										value: sureformsKeys._srfm_page_break_button_border_width,
+										label: '_srfm_page_break_button_border_width',
+									} }
+									onChange={ ( value ) =>
+										updateMeta(
+											'_srfm_page_break_button_border_width',
+											value
+										)
+									}
+									isFormSpecific={ true }
+								/>
+								<p className="components-base-control__help" />
+								<Range
+									label={ __( 'Border Radius', 'sureforms' ) }
+									value={
+										sureformsKeys._srfm_page_break_button_border_radius
+									}
+									min={ 1 }
+									max={ 100 }
+									displayUnit={ false }
+									data={ {
+										value: sureformsKeys._srfm_page_break_button_border_radius,
+										label: '_srfm_page_break_button_border_radius',
+									} }
+									onChange={ ( value ) =>
+										updateMeta(
+											'_srfm_page_break_button_border_radius',
+											value
+										)
+									}
+									isFormSpecific={ true }
+								/>
+							</>
+						) }{ ' ' }
 					</>
 				) }
 			</SRFMAdvancedPanelBody>

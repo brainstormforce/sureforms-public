@@ -84,6 +84,14 @@ const defaultKeys = {
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
 	_srfm_additional_classes: '',
+	// Page Break Button
+	_srfm_page_break_inherit_theme_button: false,
+	_srfm_page_break_button_bg_color: '#D54407',
+	_srfm_page_break_button_text_color: '#ffffff',
+	_srfm_page_break_button_border_color: '#ffffff',
+	_srfm_page_break_button_border_width: 0,
+	_srfm_page_break_button_border_radius: 6,
+	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
 	// Success Message
@@ -368,6 +376,37 @@ const SureformsFormSpecificSettings = ( props ) => {
 							value: sureformsKeys._srfm_submit_button_text
 								? `"${ sureformsKeys._srfm_submit_button_text }"`
 								: 'SUBMIT',
+						},
+						// Page Break Button
+						{
+							property: '--srfm-page-break-btn-bg-color',
+							value:
+								sureformsKeys._srfm_page_break_button_bg_color ||
+								'#D54407',
+						},
+						{
+							property: '--srfm-page-break-btn-text-color',
+							value:
+								sureformsKeys._srfm_button_text_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-page-break-btn-border-color',
+							value:
+								sureformsKeys._srfm_page_break_button_border_color ||
+								'#ffffff',
+						},
+						{
+							property: '--srfm-page-break-btn-border-width',
+							value:
+								sureformsKeys._srfm_page_break_button_border_width +
+									'px' || '0px',
+						},
+						{
+							property: '--srfm-page-break-btn-border-radius',
+							value:
+								sureformsKeys._srfm_page_break_button_border_radius +
+									'px' || '6px',
 						},
 					];
 

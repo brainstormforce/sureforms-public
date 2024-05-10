@@ -132,6 +132,21 @@ class Generate_Form_Markup {
 				$btn_bg_color = '';
 				$btn_border   = 'none';
 			}
+
+			// Page break buttons.
+			$page_break_btn_text_color    = Helper::get_meta_value( $id, '_srfm_page_break_button_text_color', true, '#000000' );
+			$page_break_btn_bg_type       = Helper::get_meta_value( $id, '_srfm_page_break_button_bg_type' );
+			$page_break_btn_border_radius = '6px';
+			if ( 'filled' === $page_break_btn_bg_type ) {
+				$page_break_btn_bg_color      = Helper::get_meta_value( $id, '_srfm_page_break_button_bg_color', true, '#D54407' );
+				$page_break_btn_border_color  = Helper::get_meta_value( $id, '_srfm_page_break_button_border_color', true, '#000000' );
+				$page_break_btn_border_width  = Helper::get_meta_value( $id, '_srfm_page_break_button_border_width', true, '0px' );
+				$page_break_btn_border_radius = Helper::get_meta_value( $id, '_srfm_page_break_button_border_radius', true, '6' ) . 'px';
+				$page_break_btn_border        = $page_break_btn_border_width . 'px solid ' . $page_break_btn_border_color;
+			} else {
+				$page_break_btn_bg_color = '';
+				$page_break_btn_border   = 'none';
+			}
 			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
 
 			if ( 'image' === $bg_type ) {
@@ -259,6 +274,10 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
+					--srfm-page-break-btn-text-color: <?php echo esc_html( $page_break_btn_text_color ); ?>;
+					--srfm-page-break-btn-bg-color: <?php echo esc_html( $page_break_btn_bg_color ); ?>;
+					--srfm-page-break-btn-border: <?php echo esc_html( $page_break_btn_border ); ?>;
+					--srfm-page-break-btn-border-radius: <?php echo esc_html( $page_break_btn_border_radius ); ?>;
 					<?php
 						// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
