@@ -56,7 +56,7 @@ if ( ! class_exists( 'Spec_Spectra_Compatibility' ) ) :
 				'srfm_spec_blocks_info',
 				[
 					'number_of_icon_chunks'         => Spec_Gb_Helper::$number_of_icon_chunks,
-					'collapse_panels'               => 'disabled',
+					'collapse_panels'               => 'enabled',
 					'load_font_awesome_5'           => 'disabled',
 					'uag_select_font_globally'      => [],
 					'uag_load_select_font_globally' => [],
