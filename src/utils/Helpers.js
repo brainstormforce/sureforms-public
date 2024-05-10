@@ -197,7 +197,9 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 				}
 				tagsArray.push( [
 					'{form:' + block.attributes.slug + '}',
-					block.attributes.label,
+					'srfm/gdpr' === block?.name
+						? 'GDPR Agreement'
+						: block.attributes.label,
 				] );
 				uniqueSlugs.push( block.attributes.slug );
 			}
