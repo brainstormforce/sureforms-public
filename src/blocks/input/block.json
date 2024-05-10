@@ -60,7 +60,7 @@
 		},
 		"textLength": {
 			"type": "number",
-			"default": 30
+			"default": 100
 		},
 		"formId": {
 			"type": "number",
