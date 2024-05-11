@@ -36,6 +36,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		isUnique,
 		duplicateMsg,
 		preview,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -62,7 +63,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -207,7 +208,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 

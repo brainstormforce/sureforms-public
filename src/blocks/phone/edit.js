@@ -33,6 +33,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		errorMsg,
 		formId,
 		autoCountry,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	// eslint-disable-next-line no-unused-vars
@@ -65,7 +66,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -198,7 +199,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 
