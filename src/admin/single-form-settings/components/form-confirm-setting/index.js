@@ -234,13 +234,13 @@ const FormConfirmSetting = () => {
 												backgroundColor: state.isFocused
 													? '#FFEFE8'
 													: state.isSelected
-													? '#D54406'
-													: 'white', // Background color for option when focused or selected
+														? '#D54406'
+														: 'white', // Background color for option when focused or selected
 												color: state.isFocused
 													? 'black'
 													: state.isSelected
-													? 'white'
-													: 'black', // Text color for option when focused or selected
+														? 'white'
+														: 'black', // Text color for option when focused or selected
 											} ),
 										} }
 									/>

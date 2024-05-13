@@ -313,20 +313,20 @@ function GeneralSettings( props ) {
 						{ sureformsKeys._srfm_instant_form && (
 							<>
 								<div>
-									<div class="srfm-instant-form-settings-separator"></div>
+									<div className="srfm-instant-form-settings-separator"></div>
 								</div>
-								<p class="srfm-panel__body-sub-heading">
+								<p className="srfm-panel__body-sub-heading">
 									{ __(
 										'Instant Form Styling Settings',
 										'sureforms'
 									) }
 								</p>
-								<p class="components-base-control__help">
+								<p className="components-base-control__help">
 									{ __(
 										'Please preview styling for instant form ',
 										'sureforms'
 									) }
-									<a href={ instantFormUrl } target="_blank">
+									<a href={ instantFormUrl } target="_blank" rel="noreferrer">
 										{ __( 'here', 'sureforms' ) }
 									</a>
 									.

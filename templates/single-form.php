@@ -80,7 +80,8 @@ if ( $srfm_form_preview_attr ) {
 				--srfm-form-container-width: 
 					<?php
 					echo esc_attr( $srfm_form_container_width . 'px' );
-					?>;
+					?>
+					;
 			}
 			<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
 				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
@@ -92,7 +93,7 @@ if ( $srfm_form_preview_attr ) {
 			<?php endif; ?>
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
-			<div class="srfm-page-banner" style="<?php echo empty( $srfm_cover_image_url ) ? 'background-color: ' . esc_attr($srfm_color_primary) . ';' : ''; ?>">
+			<div class="srfm-page-banner" style="<?php echo empty( $srfm_cover_image_url ) ? 'background-color: ' . esc_attr( $srfm_color_primary ) . ';' : ''; ?>">
 				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
