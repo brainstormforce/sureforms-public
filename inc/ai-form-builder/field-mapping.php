@@ -114,15 +114,16 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/number ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'textarea':
+					// Check if helpText is provided.
+					if ( ! empty( $question['helpText'] ) ) {
+						$merged_attributes['textAreaHelpText'] = $question['helpText'];
+					}
 					$post_content .= '<!-- wp:srfm/textarea ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'dropdown':
 					// Check if fieldOptions are provided.
-					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
+					if ( ! empty( $question['fieldOptions'] ) ) {
 						$merged_attributes['options'] = $question['fieldOptions'];
-					} else {
-						// Default options.
-						$merged_attributes['options'] = [ 'Option 1', 'Option 2', 'Option 3' ];
 					}
 					$post_content .= '<!-- wp:srfm/dropdown ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -133,6 +134,13 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/date-time-picker ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'upload':
+					// Check if allowedFormats and fileSizeLimit are provided.
+					if ( ! empty( $question['allowedFormats'] ) ) {
+						$merged_attributes['allowedFormats'] = $question['allowedFormats'];
+					}
+					if ( ! empty( $question['fileSizeLimit'] ) ) {
+						$merged_attributes['fileSizeLimit'] = $question['fileSizeLimit'];
+					}
 					$post_content .= '<!-- wp:srfm/upload ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'address':
@@ -148,13 +156,14 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/hidden ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'rating':
-					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
+					if ( ! empty( $question['helpText'] ) ) {
 						$merged_attributes['ratingBoxHelpText'] = $question['helpText'];
 					}
 					$post_content .= '<!-- wp:srfm/rating ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'phone':
-					$post_content .= '<!-- wp:srfm/phone ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
+					$merged_attributes['autoCountry'] = true;
+					$post_content                    .= '<!-- wp:srfm/phone ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'gdpr':
 					$post_content .= '<!-- wp:srfm/gdpr ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
@@ -166,18 +175,12 @@ class Field_Mapping {
 					$post_content .= '<!-- wp:srfm/page-break ' . wp_json_encode( $common_attributes ) . ' /-->' . PHP_EOL;
 					break;
 				case 'multi-choice':
-					// Check if fieldOptions are provided.
-					if ( isset( $question['fieldOptions'] ) && is_array( $question['fieldOptions'] ) ) {
-						$merged_attributes['options']         = $question['fieldOptions'];
+					// check if fieldOptions or singleSelection is provided.
+					if ( ! empty( $question['fieldOptions'] ) ) {
+						$merged_attributes['options'] = $question['fieldOptions'];
+					}
+					if ( ! empty( $question['singleSelection'] ) ) {
 						$merged_attributes['singleSelection'] = $question['singleSelection'];
-					} else {
-						// Default options.
-						$merged_attributes['options'] = [
-							[ 'optionTitle' => 'Option 1' ],
-							[ 'optionTitle' => 'Option 2' ],
-							[ 'optionTitle' => 'Option 3' ],
-							[ 'optionTitle' => 'Option 4' ],
-						];
 					}
 					$post_content .= '<!-- wp:srfm/multi-choice ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
