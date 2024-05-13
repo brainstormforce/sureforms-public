@@ -242,7 +242,7 @@ const FormConfirmSetting = () => {
 											...theme,
 											colors: {
 												...theme.colors,
-												primary25: '#FFEFE8',
+												primary50: '#FFEFE8',
 												primary: '#D54406',
 											},
 										} ) }

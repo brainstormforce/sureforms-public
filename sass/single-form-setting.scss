@@ -878,6 +878,16 @@ $placeholder_color: #9ca3af;
 				border: #d54407;
 			}
 
+			.components-checkbox-control__input[type=checkbox]:checked{
+				border: #d54407;
+				background-color:#d54407;
+				border-radius: 4px;
+			}
+
+			.components-checkbox-control__input[type=checkbox]:focus{
+				box-shadow: none;
+			}
+
 			&.srfm-components-input-control,
 			.srfm-components-select-control {
 				gap: 0;
