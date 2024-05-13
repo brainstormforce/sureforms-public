@@ -515,22 +515,12 @@ const SureformsFormSpecificSettings = ( props ) => {
 		return () => observer.disconnect();
 	}, [] );
 
-	// const { documentLabel } = useSelect( ( select ) => {
-	// 	const { getPostTypeLabel } = select( editorStore );
-
-	// 	return {
-	// 		// translators: Default label for the Document sidebar tab, not selected.
-	// 		documentLabel: getPostTypeLabel() || _x( 'Document', 'noun' ),
-	// 	};
-	// }, [] );
-
-	// dispatch getPostTypeLabel to make it Form
-
-	// const { getPostTypeLabel } = useDispatch( editorStore );
-
 	return (
 		<>
-			<PluginDocumentSettingPanel name="srfm-sidebar">
+			<PluginDocumentSettingPanel
+				name="srfm-sidebar"
+				className="srfm-single-form-settings-description"
+			>
 				<div className="block-editor-block-card">
 					<span className="block-editor-block-icon has-colors">
 						<svg

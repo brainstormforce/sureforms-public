@@ -48,7 +48,7 @@ class Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
-		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 );
+		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
 
 	/**
@@ -125,7 +125,7 @@ class Post_Types {
 	public function register_post_types() {
 		$form_labels = [
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
-			'singular_name'      => _x( 'SureForms', 'post type singular name', 'sureforms' ),
+			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
@@ -231,17 +231,8 @@ class Post_Types {
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function custom_admin_bar_menu_url( $wp_admin_bar ) {
-		$menu_item_id = 'new-' . SRFM_FORMS_POST_TYPE;
-		$menu_item    = $wp_admin_bar->get_node( $menu_item_id );
-
-		if ( $menu_item && isset( $menu_item->id ) && isset( $menu_item->href ) && $menu_item->id === $menu_item_id ) {
-			$menu_item->href = admin_url( 'admin.php?page=add-new-form' );
-
-			// Use WP_Admin_Bar methods to modify the menu.
-			$wp_admin_bar->remove_node( $menu_item_id );
-			$wp_admin_bar->add_node( (array) $menu_item );
-		}
+	public function remove_admin_bar_menu_item( $wp_admin_bar ) {
+		$wp_admin_bar->remove_node( 'new-sureforms_form' );
 	}
 
 	/**
