@@ -420,6 +420,7 @@ class Post_Types {
 				'_srfm_color1'                    => 'string',
 				'_srfm_bg_type'                   => 'string',
 				'_srfm_bg_image'                  => 'string',
+				'_srfm_cover_image'                  => 'string',
 				'_srfm_bg_color'                  => 'string',
 				'_srfm_fontsize'                  => 'integer',
 				'_srfm_label_color'               => 'string',

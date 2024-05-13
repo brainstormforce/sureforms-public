@@ -56,6 +56,7 @@ const defaultKeys = {
 	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
+	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
 	_srfm_fontsize: 20,
 	_srfm_label_color: '#1f2937',
@@ -516,63 +517,96 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [] );
 
 	return (
-		<PluginDocumentSettingPanel
-			className="srfm--panel"
-			name="srfm-sidebar"
-			title={ __( 'Form Options', 'sureforms' ) }
-		>
-			<InspectorTabs
-				tabs={ [ 'general', 'style', 'advance' ] }
-				defaultTab={ 'general' }
+		<>
+			<PluginDocumentSettingPanel name="srfm-sidebar">
+				<div class="block-editor-block-card">
+					<span class="block-editor-block-icon has-colors">
+						<svg
+							stroke="currentColor"
+							fill="currentColor"
+							stroke-width="0"
+							viewBox="0 0 24 24"
+							height="24"
+							width="24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path fill="none" d="M0 0h24v24H0z"></path>
+							<path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"></path>
+						</svg>
+					</span>
+					<div class="block-editor-block-card__content">
+						<h2 class="block-editor-block-card__title">
+							{ __( 'SureForms', 'sureforms' ) }
+						</h2>
+						<span class="block-editor-block-card__description">
+							{ __(
+								'Customize your form with SureForms.',
+								'sureforms'
+							) }
+						</span>
+					</div>
+				</div>
+			</PluginDocumentSettingPanel>
+			<PluginDocumentSettingPanel
+				className="srfm--panel"
+				name="srfm-sidebar"
+				title={ __( 'Form Options', 'sureforms' ) }
 			>
-				<InspectorTab { ...SRFMTabs.general }>
-					<GeneralSettings
-						defaultKeys={ defaultKeys }
-						enableQuickActionSidebar={ enableQuickActionSidebar }
-						setEnableQuickActionSidebar={
-							setEnableQuickActionSidebar
-						}
-						isPageBreak={ isPageBreak }
-					/>
-				</InspectorTab>
-				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings
-						defaultKeys={ defaultKeys }
-						isInlineButtonBlockPresent={
-							isInlineButtonBlockPresent
-						}
-					/>
-				</InspectorTab>
-				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<AdvancedSettings defaultKeys={ defaultKeys } />
-				</InspectorTab>
-			</InspectorTabs>
-			<PluginPostPublishPanel>
-				<PanelRow>
-					<BaseControl
-						id="srfm-form-shortcode"
-						label={ __( 'Form Shortcode', 'sureforms' ) }
-						help={ __(
-							'Paste this shortcode on the page or post to render this form.',
-							'sureforms'
-						) }
-					>
-						<div className="srfm-shortcode">
-							<TextControl
-								value={ `[sureforms id="${ postId }"]` }
-								disabled
-							/>
-							<ClipboardButton
-								onCopy={ () => setHasCopied( true ) }
-								onFinishCopy={ () => setHasCopied( false ) }
-								icon={ hasCopied ? 'yes' : 'admin-page' }
-								text={ `[sureforms id="${ postId }"]` }
-							/>
-						</div>
-					</BaseControl>
-				</PanelRow>
-			</PluginPostPublishPanel>
-		</PluginDocumentSettingPanel>
+				<InspectorTabs
+					tabs={ [ 'general', 'style', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...SRFMTabs.general }>
+						<GeneralSettings
+							defaultKeys={ defaultKeys }
+							enableQuickActionSidebar={
+								enableQuickActionSidebar
+							}
+							setEnableQuickActionSidebar={
+								setEnableQuickActionSidebar
+							}
+							isPageBreak={ isPageBreak }
+						/>
+					</InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }>
+						<StyleSettings
+							defaultKeys={ defaultKeys }
+							isInlineButtonBlockPresent={
+								isInlineButtonBlockPresent
+							}
+						/>
+					</InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
+						<AdvancedSettings defaultKeys={ defaultKeys } />
+					</InspectorTab>
+				</InspectorTabs>
+				<PluginPostPublishPanel>
+					<PanelRow>
+						<BaseControl
+							id="srfm-form-shortcode"
+							label={ __( 'Form Shortcode', 'sureforms' ) }
+							help={ __(
+								'Paste this shortcode on the page or post to render this form.',
+								'sureforms'
+							) }
+						>
+							<div className="srfm-shortcode">
+								<TextControl
+									value={ `[sureforms id="${ postId }"]` }
+									disabled
+								/>
+								<ClipboardButton
+									onCopy={ () => setHasCopied( true ) }
+									onFinishCopy={ () => setHasCopied( false ) }
+									icon={ hasCopied ? 'yes' : 'admin-page' }
+									text={ `[sureforms id="${ postId }"]` }
+								/>
+							</div>
+						</BaseControl>
+					</PanelRow>
+				</PluginPostPublishPanel>
+			</PluginDocumentSettingPanel>
+		</>
 	);
 };
 

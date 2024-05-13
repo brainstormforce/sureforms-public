@@ -108,7 +108,7 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-1"
 									>
-										{ __( 'Same Page', 'sureforms' ) }
+										{ __( 'Success Message', 'sureforms' ) }
 									</label>
 								</div>
 								<div
@@ -141,7 +141,10 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-2"
 									>
-										{ __( 'Different Page', 'sureforms' ) }
+										{ __(
+											'Redirect to Page',
+											'sureforms'
+										) }
 									</label>
 								</div>
 								<div
@@ -173,7 +176,10 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-3"
 									>
-										{ __( 'Custom URL', 'sureforms' ) }
+										{ __(
+											'Redirect to Custom URL',
+											'sureforms'
+										) }
 									</label>
 								</div>
 							</div>
@@ -228,13 +234,13 @@ const FormConfirmSetting = () => {
 												backgroundColor: state.isFocused
 													? '#FFEFE8'
 													: state.isSelected
-														? '#D54406'
-														: 'white', // Background color for option when focused or selected
+													? '#D54406'
+													: 'white', // Background color for option when focused or selected
 												color: state.isFocused
 													? 'black'
 													: state.isSelected
-														? 'white'
-														: 'black', // Text color for option when focused or selected
+													? 'white'
+													: 'black', // Text color for option when focused or selected
 											} ),
 										} }
 									/>
