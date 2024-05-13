@@ -124,7 +124,7 @@ class Address_Compact_Markup extends Base {
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Address', 'sureforms' ) );
-		$this->set_error_msg( $attributes );
+		$this->set_error_msg( $attributes, 'srfm_address_compact_block_required_text' );
 		$this->slug                 = 'address-compact';
 		$this->line_one_placeholder = isset( $attributes['lineOnePlaceholder'] ) ? $attributes['lineOnePlaceholder'] : '';
 		$this->line_two_placeholder = isset( $attributes['lineTwoPlaceholder'] ) ? $attributes['lineTwoPlaceholder'] : '';
