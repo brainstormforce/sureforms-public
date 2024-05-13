@@ -701,6 +701,10 @@ class Post_Types {
 
 		// conditional logic.
 		do_action( 'srfm_register_conditional_logic_post_meta' );
+		/**
+		 * Hook for registering additional Post Meta
+		 */
+		do_action( 'srfm_register_additional_post_meta' );
 
 	}
 
