@@ -178,7 +178,7 @@ $placeholder_color: #9ca3af;
 						align-items: center;
 
 						.srfm-back-btn {
-							height: 24px;
+							height: 100%;
 							width: 24px;
 							cursor: pointer;
 							display: flex;
@@ -718,6 +718,10 @@ $placeholder_color: #9ca3af;
 									align-self: stretch;
 									align-items: center;
 
+									&>td{
+										overflow-wrap: anywhere;
+									}
+
 									&.odd {
 										background: #f6f7f7;
 									}
@@ -813,6 +817,10 @@ $placeholder_color: #9ca3af;
 				}
 
 			}
+
+			.srfm-validation-error{
+				color: var(--srfm-error-text-color);
+			}
 		}
 
 		.components-tab-panel__tabs {
@@ -886,6 +894,7 @@ $placeholder_color: #9ca3af;
 
 			.components-checkbox-control__input[type=checkbox]:focus{
 				box-shadow: none;
+				border: $label_color;
 			}
 
 			&.srfm-components-input-control,
