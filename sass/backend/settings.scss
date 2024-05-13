@@ -106,16 +106,11 @@ $placeholder_color: #9ca3af;
 					background-color: #ffefe8;
 
 					svg {
-						fill: #d54407;
-					}
-
-					svg,
-					path {
-						stroke: $content_color;
-					}
-
-					svg {
 						margin-right: 0.4em;
+						fill: #d54407;
+						path {
+							stroke: $primary_color;
+						}
 					}
 
 					span {
@@ -221,10 +216,7 @@ $placeholder_color: #9ca3af;
 						font-size: 0.9em;
 						font-weight: 600;
 						line-height: 1.4em;
-
-						.components-form-toggle.is-checked .components-form-toggle__track {
-							border: #d54407;
-						}
+			
 
 						&.srfm-components-input-control,
 						.srfm-components-select-control {
@@ -479,6 +471,11 @@ $placeholder_color: #9ca3af;
 					.components-form-toggle.is-checked .components-form-toggle__track {
 						background-color: $primary_color;
 						box-shadow: none;
+						border: #d54407;
+
+					}
+
+					.components-form-toggle.is-checked .components-form-toggle__track {
 					}
 
 					label {

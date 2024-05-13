@@ -23,39 +23,36 @@ $placeholder_color: #9ca3af;
 
 //single form UI
 .srfm-settings-modal {
-	.srfm-header-settings-modal {
-		background-color: #f1f5f9;
+	background-color: #f1f5f9;
 
-		.components-modal__header {
-			display: flex;
-			padding: 20px;
-			justify-content: space-between;
+	.components-modal__header {
+		display: flex;
+		padding: 20px;
+		justify-content: space-between;
+		align-items: center;
+		align-self: stretch;
+		border-bottom: 1px solid var(--colors-gray-200, #e5e7eb);
+		background: var(--base-white, #fff);
+
+		.components-modal__header-heading-container {
+			gap: 10px;
 			align-items: center;
-			align-self: stretch;
-			border-bottom: 1px solid var(--colors-gray-200, #e5e7eb);
-			background: var(--base-white, #fff);
 
-			.components-modal__header-heading-container {
-				gap: 10px;
-				align-items: center;
+			.components-modal__icon-container {
+				display: inline-flex;
+			}
 
-				.components-modal__icon-container {
-					display: inline-flex;
-				}
-
-				.components-modal__header-heading {
-					color: var(--dashboard-heading, #1e293b);
-					/* Dashboard/Headings/H6 */
-					font-family: Inter;
-					font-size: 14px;
-					font-style: normal;
-					font-weight: 600;
-					line-height: 20px;
-					/* 142.857% */
-				}
+			.components-modal__header-heading {
+				color: var(--dashboard-heading, #1e293b);
+				/* Dashboard/Headings/H6 */
+				font-family: Inter;
+				font-size: 14px;
+				font-style: normal;
+				font-weight: 600;
+				line-height: 20px;
+				/* 142.857% */
 			}
 		}
-
 	}
 
 	.components-modal__content {
@@ -106,14 +103,20 @@ $placeholder_color: #9ca3af;
 				gap: 8px;
 				align-self: stretch;
 				border-radius: 2px;
-				background: var(--colors-slate-50, #f8fafc);
 
 				&.srfm-modal-tab-active {
 					background: #ffefe8;
 
+					.srfm-modal-tab-icon>svg {
+						path {
+							stroke: var(--dashboard-primary, $primary_color );
+						}
+					}
+
 					.srfm-modal-tab-icon {
 						color: $primary_color;
 					}
+
 				}
 
 				cursor: pointer;
@@ -137,17 +140,6 @@ $placeholder_color: #9ca3af;
 				}
 			}
 
-			.srfm-modal-active-tab {
-				background: var(--dashboard-primary, $primary_color );
-
-				.srfm-modal-tab-text p {
-					color: var(--dashboard-surface-secondary, #fff);
-				}
-
-				.srfm-modal-tab-icon>svg {
-					fill: var(--dashboard-surface-secondary, #fff);
-				}
-			}
 		}
 
 		.srfm-modal-main {
@@ -430,82 +422,9 @@ $placeholder_color: #9ca3af;
 							.srfm-modal-label {
 								margin-top: 0;
 							}
-							.components-base-control{
+
+							.components-base-control {
 								margin-bottom: 0;
-							}
-						}
-
-						.srfm-modal-option-box {
-							.srfm-modal-label {
-								color: var(--dashboard-heading, #1e293b);
-								font-size: 14px;
-								font-style: normal;
-								font-weight: 500;
-								line-height: 20px;
-							}
-
-							.srfm-modal-input {
-								min-width: 720px;
-								width: 100%;
-								padding: 10px 8px 10px 12px;
-								align-items: center;
-								gap: 116px;
-								flex: 1 0 0;
-								border-radius: var(--border-radius-4, 4px);
-								border: 1px solid #dce0e6;
-								background: #fff;
-								box-shadow: 0px 1px 2px 0px rgba(13, 19, 30, 0.1);
-								margin-top: 8px;
-
-								&.with-icon {
-									padding: 10px 24px 10px 12px;
-								}
-							}
-
-							.srfm-options-wrapper {
-								margin-top: 8px;
-								display: flex;
-								gap: 12px;
-
-								.srfm-option {
-									border: 1px solid #dce0e6;
-									padding: 8px 16px 8px 16px;
-									border-radius: 6px;
-									display: flex;
-									align-items: center;
-									gap: 8px;
-
-									.srfm-option-input {
-										margin: 0;
-
-										&:checked {
-											background-color: #125d9f;
-										}
-
-										&:checked::before {
-											content: "";
-											border-radius: 50%;
-											width: 0.5rem;
-											height: 0.5rem;
-											margin: 0.1875rem;
-											background-color: #fff;
-											line-height: 1.14285714;
-										}
-									}
-
-									.srfm-option-text {
-										color: var(--dashboard-heading, #1e293b);
-										font-size: 14px;
-										font-style: normal;
-										line-height: 20px;
-									}
-								}
-
-								.srfm-select-page {
-									min-width: 720px;
-									width: 100%;
-									height: 36px;
-								}
 							}
 						}
 

@@ -237,6 +237,15 @@ const FormConfirmSetting = () => {
 														: 'black', // Text color for option when focused or selected
 											} ),
 										} }
+										menuPosition="auto"
+										theme={ ( theme ) => ( {
+											...theme,
+											colors: {
+												...theme.colors,
+												primary25: '#FFEFE8',
+												primary: '#D54406',
+											},
+										} ) }
 									/>
 								</div>
 							</div>
