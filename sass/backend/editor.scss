@@ -7,6 +7,12 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.edit-post-sidebar[id="edit-post:block"] {
+		.edit-post-sidebar__panel {
+			margin-top: 1px;
+		}
+	}
+
 	.block-editor-inner-blocks {
 		.block-editor-block-list__layout:not( .srfm-address-block-wrap .block-list-appender ) {
 			display: flex;
