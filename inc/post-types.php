@@ -224,7 +224,7 @@ class Post_Types {
 	}
 
 	/**
-	 * Customize the URL of new form in the admin bar.
+	 * Remove add new form menu item.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
 	 *
