@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Link, useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
+import { applyFilters } from '@wordpress/hooks';
 
 import {
 	MdSettings,
@@ -14,7 +15,9 @@ function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
 
-export const navigation = [
+export const navigation = applyFilters(
+	'srfm.settings.navigation',
+	[
 	{
 		name: __( 'General', 'sureforms' ),
 		slug: 'general-settings',
@@ -40,7 +43,7 @@ export const navigation = [
 		slug: 'integration-settings',
 		icon: parse( svgIcons.integration ),
 	},
-];
+] );
 
 const isProActive = srfm_admin.is_pro_active;
 
