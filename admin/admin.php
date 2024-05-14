@@ -445,6 +445,9 @@ class Admin {
 					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
 					'zip_ai_credit_details'        => AI_Helper::get_credit_details(),
+					'zip_ai_auth_middleware'       => AI_Helper::get_auth_middleware_url( array( 'plugin' => 'spectra' ) ),
+					'is_authorized' 			   => AI_Helper::is_authorized(),
+					'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 				]
 			);
 		}

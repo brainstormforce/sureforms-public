@@ -7,6 +7,12 @@ import { handleAddNewPost } from '@Utils/Helpers';
 const TemplateScreen = () => {
 	const [ message, setMessage ] = useState( '' );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
+	const [ buttonLabel, setButtonLabel ] = useState(
+		__(
+			'Get Started with 1000 Free Monthly Credits',
+			'ultimate-addons-for-gutenberg'
+		)
+	);
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -103,8 +109,117 @@ const TemplateScreen = () => {
 		userPrompt.value = prompt;
 	};
 
+	// Function: Authorize Zip AI.
+	const authorizeZipAI = ( event ) => {
+		event.preventDefault();
+		// window.location.assign( uag_react.zip_ai_auth_middleware );
+
+		// Get all the auth buttons and disable them.
+		const authButtons = document.querySelectorAll(
+			'.srfm-ai-features-authorization'
+		);
+		authButtons.forEach( ( authButton ) => {
+			authButton.disabled = true;
+		} );
+
+		// Create the window positioning to be centered.
+		const positioning = {
+			left: ( window.screen.width - 480 ) / 2,
+			top: ( window.screen.height - 720 ) / 2,
+		};
+
+		// Redirect to the Zip AI Authorization URL.
+		const authWindow = window.open(
+			srfm_admin.zip_ai_auth_middleware,
+			'SureFormsAiFeaturesAuthorization',
+			`width=480,height=720,top=${ positioning.top },left=${ positioning.left },scrollbars=0`
+		);
+
+		// Create an object with the security property.
+		const data = {
+			security: srfm_admin.zip_ai_verify_authenticity_nonce,
+		};
+
+		// Set a counter for timeout.
+		let iterations = 0;
+
+		// Update the texts.
+		setButtonLabel(
+			__(
+				'Getting Started with 1000 Free Monthly Credits',
+				'ultimate-addons-for-gutenberg'
+			)
+		);
+
+		// Set an interval to check if the option was updated.
+		const authVerificationInterval = setInterval( () => {
+			// Clear the interval if the window was closed, or automatically after 5 minutes.
+			if ( authWindow.closed || 300 === iterations ) {
+				// Close the auth window if it wasn't closed.
+				if ( ! authWindow.closed ) {
+					authWindow.close();
+				}
+				// Reset the texts and enable the button.
+				clearInterval( authVerificationInterval );
+				setButtonLabel(
+					__(
+						'Get Started with 1000 Free Monthly Credits',
+						'ultimate-addons-for-gutenberg'
+					)
+				);
+				authButtons.forEach( ( authButton ) => {
+					authButton.disabled = false;
+				} );
+			}
+
+			// // Call the getApiData function with the required parameters.
+			// const getApiFetchData = getApiData( {
+			// 	url: srfm_admin.ajax_url,
+			// 	action: 'uag_zip_ai_verify_authenticity',
+			// 	data,
+			// } );
+
+			// // Make the AJAX request to check if the option was updated.
+			// getApiFetchData.then( ( response ) => {
+			// 	if ( response?.success && response?.data?.is_authorized ) {
+			// 		authWindow.close();
+			// 		localStorage.setItem( 'zipAiAuthorizationStatus', true );
+			// 		clearInterval( authVerificationInterval );
+			// 		window.location.reload();
+			// 		setButtonLabel(
+			// 			__(
+			// 				'Get Started with 1000 Free Monthly Credits',
+			// 				'ultimate-addons-for-gutenberg'
+			// 			)
+			// 		);
+			// 	}
+			// } );
+
+			if ( srfm_admin.is_authorized ) {
+				authWindow.close();
+				localStorage.setItem( 'zipAiAuthorizationStatus', true );
+				clearInterval( authVerificationInterval );
+				window.location.reload();
+				setButtonLabel(
+					__(
+						'Get Started with 1000 Free Monthly Credits',
+						'ultimate-addons-for-gutenberg'
+					)
+				);
+			}
+			iterations++;
+		}, 500 );
+	};
+
 	return (
 		<div className="srfm-ai-form-builder-ctn">
+			<Button
+				onClick={ authorizeZipAI }
+				className="srfm-ai-features-authorization srfm-example-ai-prompt-btn"
+			>
+				{ buttonLabel }
+				<span>{ '→' }</span>
+			</Button>
 			<h2>{ __( 'AI Form Builder', 'sureforms' ) }</h2>
 			<p>
 				{ __(
