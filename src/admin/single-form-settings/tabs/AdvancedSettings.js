@@ -4,7 +4,6 @@ import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
 
 function AdvancedSettings( props ) {
