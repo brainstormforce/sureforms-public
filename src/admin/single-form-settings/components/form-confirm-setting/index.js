@@ -5,6 +5,9 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {
+	Spinner,
+} from '@wordpress/components';
 
 const FormConfirmSetting = () => {
 	const sureforms_keys = useSelect( ( select ) =>
@@ -15,19 +18,33 @@ const FormConfirmSetting = () => {
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
+	const [ isProcessing, setIsProcessing ] = useState( false );
+	const [ showSuccess, setShowSuccess ] = useState( null );
 	const handleSaveChanges = () => {
+		setIsProcessing( true );
 		const validationStatus = validateForm();
-		setErrorMessage( validationStatus );
-		if ( '' !== validationStatus ) {
-			return;
-		}
-		updateMeta( '_srfm_form_confirmation', [ data ] );
+		setTimeout( () => {
+			setErrorMessage( validationStatus );
+			setIsProcessing( false );
+			if ( '' !== validationStatus ) {
+				return;
+			}
+			updateMeta( '_srfm_form_confirmation', [ data ] );
+			setShowSuccess( true );
+		}, 500 );
 	};
 	useEffect( () => {
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
 	}, [ data ] );
+	useEffect( () => {
+		if ( true === showSuccess ) {
+			setTimeout( () => {
+				setShowSuccess( false );
+			}, 500 );
+		}
+	}, [ showSuccess ] );
 
 	const validateForm = () => {
 		let validation = '';
@@ -99,12 +116,25 @@ const FormConfirmSetting = () => {
 					<div className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
 					</div>
-					<button
-						onClick={ handleSaveChanges }
-						className="srfm-modal-inner-heading-button"
-					>
-						{ __( 'Save Changes', 'sureforms' ) }
-					</button>
+					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
+						{
+							isProcessing && <Spinner
+								style={ {
+									marginTop: '0',
+									color: '#D54407',
+								} }
+							/>
+						}
+						{
+							showSuccess && <div className="srfm-success srfm-tick"> &#10004;</div>
+						}
+						<button
+							onClick={ handleSaveChanges }
+							className="srfm-modal-inner-heading-button"
+						>
+							{ __( 'Save Changes', 'sureforms' ) }
+						</button>
+					</div>
 				</div>
 				<div className="srfm-modal-inner-box">
 					<div className="srfm-modal-inner-box-text">
