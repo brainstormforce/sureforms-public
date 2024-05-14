@@ -332,7 +332,7 @@ function AdvancedSettings( props ) {
 				/>
 				<p className="components-base-control__help">
 					{ __(
-						' Separate multiple classes with spaces. ',
+						'Separate multiple classes with spaces.',
 						'sureforms'
 					) }
 				</p>
