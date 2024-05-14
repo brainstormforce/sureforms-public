@@ -6,6 +6,7 @@ import ICONS from './components/icons';
 import { BrowserRouter as Router, useLocation, Link } from 'react-router-dom';
 import TemplateScreen from './components/TemplateScreen.js';
 import AiFormBuilder from './components/AiFormBuilder.js';
+import AiAuthScreen from './components/AiAuthScreen.js';
 
 const TemplatePicker = () => {
 	// Remove admin bar padding.
@@ -33,9 +34,14 @@ const TemplatePicker = () => {
 				return (
 					<>
 						<Header />
-						<AiFormBuilder />
+						{ srfm_admin.is_authorized ? (
+							<AiFormBuilder />
+						) : (
+							<AiAuthScreen />
+						) }
 					</>
 				);
+
 			default:
 				return (
 					<div className="srfm-tp-sp-container srfm-content-section">
@@ -131,4 +137,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-}() );
+} )();

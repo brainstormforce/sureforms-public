@@ -3,17 +3,10 @@ import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
 import { handleAddNewPost } from '@Utils/Helpers';
-import { act } from 'react';
 
 const TemplateScreen = () => {
 	const [ message, setMessage ] = useState( '' );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
-	const [ buttonLabel, setButtonLabel ] = useState(
-		__(
-			'Get Started with 1000 Free Monthly Credits',
-			'ultimate-addons-for-gutenberg'
-		)
-	);
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -110,159 +103,135 @@ const TemplateScreen = () => {
 		userPrompt.value = prompt;
 	};
 
-	// Function: Authorize Zip AI.
-	const authorizeZipAI = ( event ) => {
-		event.preventDefault();
-		// window.location.assign( uag_react.zip_ai_auth_middleware );
-
-		// Get all the auth buttons and disable them.
-		const authButtons = document.querySelectorAll(
-			'.srfm-ai-features-authorization'
-		);
-		authButtons.forEach( ( authButton ) => {
-			authButton.disabled = true;
-		} );
-
-		// Create the window positioning to be centered.
-		const positioning = {
-			left: ( window.screen.width - 480 ) / 2,
-			top: ( window.screen.height - 720 ) / 2,
-		};
-
-		// Redirect to the Zip AI Authorization URL.
-		const authWindow = window.open(
-			srfm_admin.zip_ai_auth_middleware,
-			'SureFormsAiFeaturesAuthorization',
-			`width=480,height=720,top=${ positioning.top },left=${ positioning.left },scrollbars=0`
-		);
-
-		// Create an object with the security property.
-		const data = {
-			// security: srfm_admin.zip_ai_verify_authenticity_nonce,
-			action: 'sureforms_zip_ai_verify_authenticity',
-		};
-
-		// Set a counter for timeout.
-		let iterations = 0;
-
-		// Update the texts.
-		setButtonLabel(
-			__(
-				'Getting Started with 1000 Free Monthly Credits',
-				'ultimate-addons-for-gutenberg'
-			)
-		);
-
-		// Set an interval to check if the option was updated.
-		const authVerificationInterval = setInterval( () => {
-			// Clear the interval if the window was closed, or automatically after 5 minutes.
-			if ( authWindow.closed || 300 === iterations ) {
-				// Close the auth window if it wasn't closed.
-				if ( ! authWindow.closed ) {
-					authWindow.close();
-				}
-				// Reset the texts and enable the button.
-				clearInterval( authVerificationInterval );
-				setButtonLabel(
-					__(
-						'Get Started with 1000 Free Monthly Credits',
-						'ultimate-addons-for-gutenberg'
-					)
-				);
-				authButtons.forEach( ( authButton ) => {
-					authButton.disabled = false;
-				} );
-			}
-
-			// Call the getApiData function with the required parameters. ajax
-			// const getApiFetchData = apiFetch( {
-			// 	url: srfm_admin.ajax_url,
-			// 	method: 'POST',
-			// 	data,
-			// } );
-
-			// // Make the AJAX request to check if the option was updated.
-			// getApiFetchData
-
-			apiFetch( {
-				url:
-					srfm_admin.ajax_url +
-					'?action=sureforms_zip_ai_verify_authenticity',
-				method: 'POST',
-				// body: data,
-			} ).then( ( response ) => {
-				console.log( response );
-				if ( response?.success && response?.data?.is_authorized ) {
-					authWindow.close();
-					localStorage.setItem( 'zipAiAuthorizationStatus', true );
-					clearInterval( authVerificationInterval );
-					window.location.reload();
-					setButtonLabel(
-						__(
-							'Get Started with 1000 Free Monthly Credits',
-							'ultimate-addons-for-gutenberg'
-						)
-					);
-				}
-			} );
-			iterations++;
-		}, 500 );
-	};
-
 	return (
-		<div className="srfm-ai-form-builder-ctn">
-			<Button
-				onClick={ authorizeZipAI }
-				className="srfm-ai-features-authorization srfm-example-ai-prompt-btn"
-			>
-				{ buttonLabel }
-				<span>{ '→' }</span>
-			</Button>
-			<Button
-				onClick={ () => {
-					localStorage.removeItem( 'zipAiAuthorizationStatus' );
-					window.location.assign( srfm_admin.zip_ai_auth_revoke_url );
+		<div className="srfm-ts-main-container srfm-content-section">
+			<div
+				style={ {
+					display: 'flex',
+					flexWrap: 'wrap',
+					alignItems: 'center',
+					justifyContent: 'center',
+					padding: '50px 1.25em',
+					position: 'absolute',
+					top: '50%',
+					left: '50%',
+					transform: 'translate(-50%, -50%)',
+					width: '100%',
+					height: '100%',
 				} }
 			>
-				{ __( 'Revoke Authorization', 'sureforms' ) }
-			</Button>
-			<h2>{ __( 'AI Form Builder', 'sureforms' ) }</h2>
-			<p>
-				{ __(
-					'Enter a prompt to generate a form. You can use the example prompts below to get started.',
-					'sureforms'
-				) }
-			</p>
-			<textarea maxLength={ 2000 } />
-			<div className="srfm-example-ai-prompt-ctn">
-				{ examplePrompts.map( ( prompt, index ) => (
-					<Button
-						key={ index }
-						onClick={ () => handlePromptClick( prompt ) }
-						className="srfm-example-ai-prompt-btn"
-					>
-						{ prompt }
-					</Button>
-				) ) }
-			</div>
-			{ message === '' ? (
-				<Button
-					onClick={ () => {
-						const userPrompt = document.querySelector( 'textarea' );
-						handleCreateAiForm( userPrompt.value, [], true );
+				<div
+					style={ {
+						display: 'flex',
+						flexDirection: 'column',
+						gap: '32px',
+						width: '768px',
+						height: '514px',
 					} }
-					className="srfm-generate-ai-form-btn"
 				>
-					{ __( 'Generate Form', 'sureforms' ) }
-				</Button>
-			) : (
-				<p className="srfm-ai-form-builder-message">{ message }</p>
-			) }
-			<pre>
-				Credits Used { srfm_admin.zip_ai_credit_details?.used } /{ ' ' }
-				{ srfm_admin.zip_ai_credit_details?.total }
-			</pre>
-			<pre style={ { color: 'red' } }>{ errorMessage }</pre>
+					<h1
+						style={ {
+							fontSize: '32px',
+							fontWeight: '600',
+							color: '#0F172A',
+							lineHeight: '41.6px',
+						} }
+					>
+						{ __(
+							'What Type of Form Do You Want to Create?',
+							'sureforms'
+						) }
+					</h1>
+					<p
+						style={ {
+							fontSize: '16px',
+							fontWeight: '400',
+							color: '#64748B',
+							lineHeight: '24px',
+						} }
+					>
+						{ __(
+							'The best way to describe the form you want is by providing as much details, mention the audience you are creating the form for and how you want your form to look like.',
+							'sureforms'
+						) }
+					</p>
+					<p
+						style={ {
+							fontSize: '14px',
+							fontWeight: '600',
+							lineHeight: '20px',
+						} }
+					>
+						{ __( 'Create a Form', 'sureforms' ) }
+					</p>
+					<textarea
+						style={ {
+							width: '768px',
+							height: '144px',
+							borderRadius: '4px',
+							border: '1px solid #CBD5E1',
+						} }
+					/>
+				</div>
+				{ /* <div className="srfm-ai-form-builder-ctn">
+					<Button
+						onClick={ () => {
+							localStorage.removeItem(
+								'zipAiAuthorizationStatus'
+							);
+							window.location.assign(
+								srfm_admin.zip_ai_auth_revoke_url
+							);
+						} }
+					>
+						{ __( 'Revoke Authorization', 'sureforms' ) }
+					</Button>
+					<h2>{ __( 'AI Form Builder', 'sureforms' ) }</h2>
+					<p>
+						{ __(
+							'Enter a prompt to generate a form. You can use the example prompts below to get started.',
+							'sureforms'
+						) }
+					</p>
+					<textarea maxLength={ 2000 } />
+					<div className="srfm-example-ai-prompt-ctn">
+						{ examplePrompts.map( ( prompt, index ) => (
+							<Button
+								key={ index }
+								onClick={ () => handlePromptClick( prompt ) }
+								className="srfm-example-ai-prompt-btn"
+							>
+								{ prompt }
+							</Button>
+						) ) }
+					</div>
+					{ message === '' ? (
+						<Button
+							onClick={ () => {
+								const userPrompt =
+									document.querySelector( 'textarea' );
+								handleCreateAiForm(
+									userPrompt.value,
+									[],
+									true
+								);
+							} }
+							className="srfm-generate-ai-form-btn"
+						>
+							{ __( 'Generate Form', 'sureforms' ) }
+						</Button>
+					) : (
+						<p className="srfm-ai-form-builder-message">
+							{ message }
+						</p>
+					) }
+					<pre>
+						Credits Used { srfm_admin.zip_ai_credit_details?.used }{ ' ' }
+						/ { srfm_admin.zip_ai_credit_details?.total }
+					</pre>
+					<pre style={ { color: 'red' } }>{ errorMessage }</pre>
+				</div> */ }
+			</div>
 		</div>
 	);
 };
