@@ -543,10 +543,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							{ __( 'SureForms', 'sureforms' ) }
 						</h2>
 						<span className="block-editor-block-card__description">
-							{ __(
-								'Customize your form with SureForms.',
-								'sureforms'
-							) }
+							{ __( 'Customize with SureForms.', 'sureforms' ) }
 						</span>
 					</div>
 				</div>
@@ -604,6 +601,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 									onFinishCopy={ () => setHasCopied( false ) }
 									icon={ hasCopied ? 'yes' : 'admin-page' }
 									text={ `[sureforms id="${ postId }"]` }
+									style={ {
+										marginTop: '5px',
+									} }
 								/>
 							</div>
 						</BaseControl>
