@@ -373,26 +373,6 @@ function StyleSettings( props ) {
 			);
 		}
 
-		// Page Break Button
-		if ( option === '_srfm_page_break_button_text_color' ) {
-			root.style.setProperty(
-				'--srfm-page-break-btn-text-color',
-				value ? value : '#000000'
-			);
-		}
-		if ( option === '_srfm_page_break_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-page-break-btn-border-color',
-				value ? value : '#000000'
-			);
-		}
-		if ( option === '_srfm_page_break_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-page-break-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
-		}
-
 		const option_array = {};
 
 		if ( key_id ) {
