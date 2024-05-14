@@ -149,6 +149,23 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
+	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
+	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
+	useEffect( () => {
+		const isExistStyle = document.getElementById(
+			'srfm-blocks-editor-custom-css'
+		);
+		if ( ! isExistStyle ) {
+			const node = document.createElement( 'style' );
+			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
+			node.textContent = '.editor-styles-wrapper{' + formCustomCssData + '}';
+			document.head.appendChild( node );
+		} else {
+			isExistStyle.textContent =
+				'.editor-styles-wrapper{' + formCustomCssData + '}';
+		}
+	}, [ formCustomCssData ] );
+
 	useEffect( () => {
 		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
 			updateMeta( '_srfm_is_page_break', isPageBreak );

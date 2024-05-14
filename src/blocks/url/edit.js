@@ -12,7 +12,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { decodeHtmlEntities } from '@Blocks/util';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
-	const { help, block_id, formId, preview } = attributes;
+	const { help, block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
 	useEffect( () => {
@@ -28,7 +28,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<Settings
 				attributes={ attributes }
 				setAttributes={ setAttributes }
@@ -51,7 +51,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 
