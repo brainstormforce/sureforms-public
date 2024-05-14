@@ -5,7 +5,6 @@ import { store as editorStore } from '@wordpress/editor';
 import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import Range from '@Components/range/Range.js';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToggleControl } from '@wordpress/components';
@@ -1030,29 +1029,6 @@ function StyleSettings( props ) {
 					) }
 				</SRFMAdvancedPanelBody>
 			) }
-			<SRFMAdvancedPanelBody
-				title={ __( 'Advanced', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SRFMTextControl
-					data={ {
-						value: sureformsKeys._srfm_additional_classes,
-						label: '_srfm_additional_classes',
-					} }
-					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
-					value={ sureformsKeys._srfm_additional_classes }
-					onChange={ ( value ) => {
-						updateMeta( '_srfm_additional_classes', value );
-					} }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help">
-					{ __(
-						' Separate multiple classes with spaces. ',
-						'sureforms'
-					) }
-				</p>
-			</SRFMAdvancedPanelBody>
 		</>
 	);
 }
