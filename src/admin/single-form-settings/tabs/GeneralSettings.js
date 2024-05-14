@@ -4,7 +4,12 @@ import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
-import { ToggleControl, SelectControl, Modal } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	Modal,
+	ExternalLink,
+} from '@wordpress/components';
 import { useDeviceType } from '@Controls/getPreviewType';
 import PostURLPanel from '../components/form-permalink/Panel';
 import SRFMMediaPicker from '@Components/image';
@@ -323,13 +328,12 @@ function GeneralSettings( props ) {
 								</p>
 								<p className="components-base-control__help">
 									{ __(
-										'Please preview styling for instant form ',
+										'Please preview the styling for the instant form ',
 										'sureforms'
 									) }
-									<a href={ instantFormUrl } target="_blank" rel="noreferrer">
+									<ExternalLink href={ instantFormUrl }>
 										{ __( 'here', 'sureforms' ) }
-									</a>
-									.
+									</ExternalLink>
 								</p>
 								<SRFMMediaPicker
 									label={ __(
