@@ -108,7 +108,7 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-1"
 									>
-										{ __( 'Same Page', 'sureforms' ) }
+										{ __( 'Success Message', 'sureforms' ) }
 									</label>
 								</div>
 								<div
@@ -141,7 +141,10 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-2"
 									>
-										{ __( 'Different Page', 'sureforms' ) }
+										{ __(
+											'Redirect to Page',
+											'sureforms'
+										) }
 									</label>
 								</div>
 								<div
@@ -173,7 +176,10 @@ const FormConfirmSetting = () => {
 										className="srfm-option-text"
 										htmlFor="confirm-type-3"
 									>
-										{ __( 'Custom URL', 'sureforms' ) }
+										{ __(
+											'Redirect to Custom URL',
+											'sureforms'
+										) }
 									</label>
 								</div>
 							</div>
