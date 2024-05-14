@@ -3,6 +3,7 @@ import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
 import { handleAddNewPost } from '@Utils/Helpers';
+import { act } from 'react';
 
 const TemplateScreen = () => {
 	const [ message, setMessage ] = useState( '' );
@@ -137,7 +138,8 @@ const TemplateScreen = () => {
 
 		// Create an object with the security property.
 		const data = {
-			security: srfm_admin.zip_ai_verify_authenticity_nonce,
+			// security: srfm_admin.zip_ai_verify_authenticity_nonce,
+			action: 'sureforms_zip_ai_verify_authenticity',
 		};
 
 		// Set a counter for timeout.
@@ -172,41 +174,37 @@ const TemplateScreen = () => {
 				} );
 			}
 
-			// // Call the getApiData function with the required parameters.
-			// const getApiFetchData = getApiData( {
+			// Call the getApiData function with the required parameters. ajax
+			// const getApiFetchData = apiFetch( {
 			// 	url: srfm_admin.ajax_url,
-			// 	action: 'uag_zip_ai_verify_authenticity',
+			// 	method: 'POST',
 			// 	data,
 			// } );
 
 			// // Make the AJAX request to check if the option was updated.
-			// getApiFetchData.then( ( response ) => {
-			// 	if ( response?.success && response?.data?.is_authorized ) {
-			// 		authWindow.close();
-			// 		localStorage.setItem( 'zipAiAuthorizationStatus', true );
-			// 		clearInterval( authVerificationInterval );
-			// 		window.location.reload();
-			// 		setButtonLabel(
-			// 			__(
-			// 				'Get Started with 1000 Free Monthly Credits',
-			// 				'ultimate-addons-for-gutenberg'
-			// 			)
-			// 		);
-			// 	}
-			// } );
+			// getApiFetchData
 
-			if ( srfm_admin.is_authorized ) {
-				authWindow.close();
-				localStorage.setItem( 'zipAiAuthorizationStatus', true );
-				clearInterval( authVerificationInterval );
-				window.location.reload();
-				setButtonLabel(
-					__(
-						'Get Started with 1000 Free Monthly Credits',
-						'ultimate-addons-for-gutenberg'
-					)
-				);
-			}
+			apiFetch( {
+				url:
+					srfm_admin.ajax_url +
+					'?action=sureforms_zip_ai_verify_authenticity',
+				method: 'POST',
+				// body: data,
+			} ).then( ( response ) => {
+				console.log( response );
+				if ( response?.success && response?.data?.is_authorized ) {
+					authWindow.close();
+					localStorage.setItem( 'zipAiAuthorizationStatus', true );
+					clearInterval( authVerificationInterval );
+					window.location.reload();
+					setButtonLabel(
+						__(
+							'Get Started with 1000 Free Monthly Credits',
+							'ultimate-addons-for-gutenberg'
+						)
+					);
+				}
+			} );
 			iterations++;
 		}, 500 );
 	};
@@ -219,6 +217,14 @@ const TemplateScreen = () => {
 			>
 				{ buttonLabel }
 				<span>{ '→' }</span>
+			</Button>
+			<Button
+				onClick={ () => {
+					localStorage.removeItem( 'zipAiAuthorizationStatus' );
+					window.location.assign( srfm_admin.zip_ai_auth_revoke_url );
+				} }
+			>
+				{ __( 'Revoke Authorization', 'sureforms' ) }
 			</Button>
 			<h2>{ __( 'AI Form Builder', 'sureforms' ) }</h2>
 			<p>

@@ -10,6 +10,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use ZipAI\Classes\Helper as AI_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -36,7 +37,34 @@ class Admin_Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
+		add_action( 'wp_ajax_sureforms_zip_ai_verify_authenticity', [ $this, 'zip_ai_verify_auth' ] );
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+	}
+
+		/**
+	 * Ajax Request - Verify if Zip AI is authorized.
+	 *
+	 * @since 2.10.2
+	 * @return void
+	 */
+	public function zip_ai_verify_auth() {
+		// // Check if the user is authorized to perform this action.
+		// if ( ! current_user_can( 'manage_options' ) ) {
+		// 	wp_send_json_error( array( 'messsage' => __( 'You are not authorized to perform this action.', 'ultimate-addons-for-gutenberg' ) ) );
+		// }
+
+		// // Check if the nonce is valid.
+		// if ( ! check_ajax_referer( 'zip-ai-verify-authenticity', 'nonce', false ) ) {
+		// 	wp_send_json_error( array( 'messsage' => __( 'Invalid nonce.', 'sureforms' ) ) );
+		// }
+
+		// If the Zip AI Helper Class exists, return a success based on the authorizatoin status, else return an error.
+		if ( class_exists( '\ZipAI\Classes\Helper' ) ) {
+			// Send a boolean based on whether the auth token has been added.
+			wp_send_json_success( array( 'is_authorized' => Ai_Helper::is_authorized() ) );
+		} else {
+			wp_send_json_error( array( 'messsage' => __( 'Unable to verify authenticity.', 'ultimate-addons-for-gutenberg' ) ) );
+		}
 	}
 
 	/**

@@ -40,6 +40,11 @@ class Admin {
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
+		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
+	}
+
+	public function custom_zip_ai_auth_redirection_url( $url ) {
+		return admin_url( 'admin.php?page=add-new-form&method=ai' );
 	}
 
 	/**
@@ -446,6 +451,7 @@ class Admin {
 					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
 					'zip_ai_credit_details'        => AI_Helper::get_credit_details(),
 					'zip_ai_auth_middleware'       => AI_Helper::get_auth_middleware_url( array( 'plugin' => 'spectra' ) ),
+					'zip_ai_auth_revoke_url'       => Ai_Helper::get_auth_revoke_url(),
 					'is_authorized' 			   => AI_Helper::is_authorized(),
 					'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 				]
