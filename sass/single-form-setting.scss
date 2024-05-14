@@ -24,6 +24,7 @@ $placeholder_color: #9ca3af;
 //single form UI
 .srfm-header-settings-modal {
 	background-color: #f1f5f9;
+	gap: 10px;
 	.components-modal__header {
 		display: flex;
 		padding: 20px;
@@ -37,6 +38,7 @@ $placeholder_color: #9ca3af;
 			align-items: center;
 			.components-modal__icon-container {
 				display: inline-flex;
+				margin: 0;
 			}
 			.components-modal__header-heading {
 				color: var( --dashboard-heading, #1e293b );

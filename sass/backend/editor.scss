@@ -1,10 +1,19 @@
 body.post-type-sureforms_form {
+	overflow-y: hidden;
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 
 		&.srfm--panel.is-opened {
 			display: block;
 		}
+	}
+
+	.edit-post-sidebar__panel {
+		margin-top: 1px;
+	}
+
+	.srfm-single-form-settings-description {
+		border-top: none !important;
 	}
 
 	.block-editor-inner-blocks {
