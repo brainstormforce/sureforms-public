@@ -377,37 +377,6 @@ const SureformsFormSpecificSettings = ( props ) => {
 								? `"${ sureformsKeys._srfm_submit_button_text }"`
 								: 'SUBMIT',
 						},
-						// Page Break Button
-						{
-							property: '--srfm-page-break-btn-bg-color',
-							value:
-								sureformsKeys._srfm_page_break_button_bg_color ||
-								'#D54407',
-						},
-						{
-							property: '--srfm-page-break-btn-text-color',
-							value:
-								sureformsKeys._srfm_button_text_color ||
-								'#ffffff',
-						},
-						{
-							property: '--srfm-page-break-btn-border-color',
-							value:
-								sureformsKeys._srfm_page_break_button_border_color ||
-								'#ffffff',
-						},
-						{
-							property: '--srfm-page-break-btn-border-width',
-							value:
-								sureformsKeys._srfm_page_break_button_border_width +
-									'px' || '0px',
-						},
-						{
-							property: '--srfm-page-break-btn-border-radius',
-							value:
-								sureformsKeys._srfm_page_break_button_border_radius +
-									'px' || '6px',
-						},
 					];
 
 					styleProperties.forEach( ( prop ) => {
@@ -580,6 +549,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						isInlineButtonBlockPresent={
 							isInlineButtonBlockPresent
 						}
+						isPageBreak={ isPageBreak }
 					/>
 				</InspectorTab>
 				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
