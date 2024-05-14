@@ -331,7 +331,7 @@ function AdvancedSettings( props ) {
 			/>
 			<MoreSettingsButton
 				settingName={ __( 'Integrations', 'sureforms' ) }
-				popupId="integration"
+				popupId="integrations"
 				openModal={ openModal }
 			/>
 			<MoreSettingsButton

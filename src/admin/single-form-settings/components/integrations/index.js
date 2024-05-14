@@ -3,7 +3,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import Webhooks from './webhooks';
 
-const Integration = ( { setSelectedTab } ) => {
+const Integrations = ( { setSelectedTab } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -127,8 +127,10 @@ const UpsellSureTriggers = () => {
 	};
 
 	const getCTA = ( status ) => {
-		if ( status === 'Activated' || status === 'Installed' ) {
+		if ( status === 'Activated' ) {
 			return __( 'Go to Dashboard', 'sureforms' );
+		} else if ( status === 'Installed' ) {
+			return __( 'Activate', 'sureforms' );
 		}
 		return __( 'Install', 'sureforms' );
 	};
@@ -157,4 +159,4 @@ const UpsellSureTriggers = () => {
 	);
 };
 
-export default Integration;
+export default Integrations;

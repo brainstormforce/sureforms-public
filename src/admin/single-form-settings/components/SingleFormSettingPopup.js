@@ -1,8 +1,8 @@
-import Integration from './integrations';
+import Integrations from './integrations';
 import Compliance from './Compliance';
 import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import parse from 'html-react-parser';
 import svgIcons from '@Image/single-form-logo.json';
@@ -27,6 +27,8 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ selectedTab, setSelectedTab ] = useState(
 		targetTab ?? 'email_notification'
 	);
+
+	const [ parentTab, setParentTab ] = useState( null );
 
 	const tabs = applyFilters(
 		'srfm.form_settings.tabs',
@@ -55,10 +57,10 @@ const SingleFormSettingsPopup = ( props ) => {
 				component: <Compliance complianceData={ complianceData } />,
 			},
 			{
-				id: 'integration',
-				title: __( 'Integration', 'sureforms' ),
+				id: 'integrations',
+				title: __( 'Integrations', 'sureforms' ),
 				icon: integrationIcon,
-				component: <Integration
+				component: <Integrations
 					setSelectedTab={ setSelectedTab } />,
 			},
 			{
@@ -81,6 +83,15 @@ const SingleFormSettingsPopup = ( props ) => {
 
 	setFormSpecificSmartTags( savedBlocks );
 
+	useEffect( () => {
+		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
+		if ( activeTabObject?.parent ) {
+			setParentTab( activeTabObject.parent );
+		} else {
+			setParentTab( null );
+		}
+	}, [ selectedTab ] );
+
 	return (
 		<div className="srfm-setting-modal-container">
 			<div className="srfm-modal-sidebar">
@@ -88,10 +99,10 @@ const SingleFormSettingsPopup = ( props ) => {
 					tabItem.parent === undefined && (
 						<div
 							key={ tabIndex }
-							className={ `srfm-modal-tab ${ tabItem.id === selectedTab
+							className={ `srfm-modal-tab ${ ( tabItem.id === selectedTab || ( null !== parentTab && tabItem.id === parentTab ) )
 								? 'srfm-modal-tab-active'
-								: ''
-							}` }
+								: '' }`
+							}
 							onClick={ () => setSelectedTab( tabItem.id ) }
 						>
 							<span className="srfm-modal-tab-icon">
