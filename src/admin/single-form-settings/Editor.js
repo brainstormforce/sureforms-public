@@ -56,6 +56,7 @@ const defaultKeys = {
 	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
+	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
 	_srfm_fontsize: 20,
 	_srfm_label_color: '#1f2937',
