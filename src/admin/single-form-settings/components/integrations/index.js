@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
-import Webhooks from './webhooks';
+import './webhooks';
 
 const Integrations = ( { setSelectedTab } ) => {
 	const cards = [
@@ -43,10 +44,53 @@ const Integrations = ( { setSelectedTab } ) => {
 };
 
 const AllIntegrations = ( { setSelectedTab } ) => {
+	const integrationCards = applyFilters(
+		'srfm.form_settings.integrations.cards',
+		[],
+		setSelectedTab
+	);
+	if ( 0 === integrationCards.length ) {
+		return <EnableIntegrations />;
+	}
 	return (
-		<Webhooks
-			setSelectedTab={ setSelectedTab }
-		/>
+		<>
+			{
+				integrationCards.map( ( card ) => ( card.component ) )
+			}
+		</>
+	);
+};
+
+const EnableIntegrations = () => {
+	return (
+		<>
+			<div className="srfm-modal-card-content">
+				<div className="srfm-modal-card-content-inner">
+					<div>
+						<div className="srfm-modal-card-title">
+							{ __( 'No Integrations Enabled', 'sureforms' ) }
+						</div>
+						<p className="srfm-modal-card-description">
+							{ __( 'Please enable Integrations from Global Settings.', 'sureforms' ) }
+						</p>
+					</div>
+				</div>
+				<div className="srfm-buttons">
+					<button
+						className="srfm-button-primary"
+						onClick={ () => {
+							window.open( 'wp-admin/admin.php?page=sureforms_form_settings&tab=integration-settings' );
+						} }
+
+					>
+						{
+							__( 'Enable from Settings', 'sureforms' )
+						}
+					</button>
+				</div>
+
+			</div>
+		</>
 	);
 };
 
