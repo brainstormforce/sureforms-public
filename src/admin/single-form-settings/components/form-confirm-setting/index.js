@@ -14,8 +14,47 @@ const FormConfirmSetting = () => {
 	const { editPost } = useDispatch( editorStore );
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
+	const [ errorMessage, setErrorMessage ] = useState( null );
 	const handleSaveChanges = () => {
+		validationFunction();
+		if ( errorMessage ) {
+			return;
+		}
 		updateMeta( '_srfm_form_confirmation', [ data ] );
+	};
+	useEffect( () => {
+		if ( null !== errorMessage ) {
+			validationFunction();
+		} 
+	}, [ data ] );
+
+	const validationFunction = () => {
+		setErrorMessage( '' );
+		if ( 'different page' === data?.confirmation_type && ! data?.page_url ) {
+			setErrorMessage( __( 'Please select a page.', 'sureforms' ) );
+			return;
+		}
+		if ( 'custom url' === data?.confirmation_type ) {
+			if ( ! data?.custom_url ) {
+				setErrorMessage( __( 'This field is required', 'sureforms' ) );
+				return;
+			}
+			try {
+				const newURL = new URL( data?.custom_url );
+				if ( newURL.protocol !== 'https:' ) {
+					setErrorMessage( __( 'URL should use HTTPS', 'sureforms' ) );
+				} else if ( ! (
+					'localhost' !== newURL.hostname &&
+					newURL.hostname.includes( '.' ) &&
+					newURL.hostname.split( '.' ).pop().length > 1 ) ) {
+					setErrorMessage( __( 'URL is missing Top Level Domain (TLD)', 'sureforms' ) );
+				} else {
+					setErrorMessage( '' );
+				}
+			} catch ( error ) {
+				setErrorMessage( __( 'Please enter a valid URL', 'sureforms' ) );
+			}
+		}
 	};
 	const handleEditorChange = ( newContent ) => {
 		setData( { ...data, message: newContent } );
@@ -183,6 +222,7 @@ const FormConfirmSetting = () => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Select Page', 'sureforms' ) }
+										<span className="srfm-validation-error"> *</span>
 									</label>
 								</div>
 								<div className="srfm-options-wrapper">
@@ -246,6 +286,7 @@ const FormConfirmSetting = () => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Custom URL', 'sureforms' ) }
+										<span className="srfm-validation-error"> *</span>
 									</label>
 								</div>
 								<input
@@ -259,6 +300,9 @@ const FormConfirmSetting = () => {
 									}
 								/>
 							</div>
+						) }
+						{ errorMessage && (
+							<div className="srfm-validation-error">{ errorMessage }</div>
 						) }
 						<div className="srfm-modal-area-box">
 							<div className="srfm-modal-area-header">

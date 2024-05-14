@@ -632,6 +632,9 @@ $placeholder_color: #9ca3af;
 					}
 				}
 			}
+			.srfm-validation-error {
+				color: var( --srfm-error-text-color );
+			}
 		}
 
 		.components-tab-panel__tabs {
