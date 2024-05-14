@@ -83,17 +83,19 @@ if ( $srfm_form_preview_attr ) {
 					?>
 					;
 			}
-			<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
-				.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+			.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+				<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
 					background-image: url( <?php echo esc_attr( $srfm_cover_image_url ); ?> );
 					background-position: center;
 					background-size: cover;
 					background-repeat: no-repeat;
-				}
-			<?php endif; ?>
+				<?php else : ?>
+					background-color: <?php echo esc_attr( $srfm_color_primary ); ?>;
+				<?php endif; ?>
+			}
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
-			<div class="srfm-page-banner" style="<?php echo empty( $srfm_cover_image_url ) ? 'background-color: ' . esc_attr( $srfm_color_primary ) . ';' : ''; ?>">
+			<div class="srfm-page-banner">
 				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
