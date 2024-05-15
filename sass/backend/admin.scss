@@ -15,7 +15,6 @@ $placeholder_color: #9ca3af;
 /* stylelint-disable selector-id-pattern */
 .toplevel_page_sureforms_menu {
 	#wpbody-content {
-
 		// Hide all admin notices on SureForms Dashboard page.
 		.notice,
 		.error {
@@ -32,7 +31,7 @@ $placeholder_color: #9ca3af;
 /* Add the separator after the first item in the SureForms Settings Submenu */
 #toplevel_page_sureforms_menu .wp-submenu li.wp-first-item::after {
 	content: "";
-	border-bottom: 1px solid rgb(255 255 255 / 0.2);
+	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
 	float: left;
 	margin: 8px 0;
@@ -40,9 +39,9 @@ $placeholder_color: #9ca3af;
 }
 
 /* Add the separator after the second last item in the SureForms Settings Submenu */
-#toplevel_page_sureforms_menu .wp-submenu li:nth-last-child(2)::after {
+#toplevel_page_sureforms_menu .wp-submenu li:nth-last-child( 2 )::after {
 	content: "";
-	border-bottom: 1px solid rgb(255 255 255 / 0.2);
+	border-bottom: 1px solid rgb( 255 255 255 / 0.2 );
 	display: block;
 	float: left;
 	margin: 8px 0;
@@ -55,7 +54,7 @@ $placeholder_color: #9ca3af;
 }
 
 /* Add negative margins to the bottom separator if this is not the current submenu */
-#toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child(2)::after {
+#toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child( 2 )::after {
 	margin: 8px -3px;
 }
 
@@ -74,9 +73,9 @@ $placeholder_color: #9ca3af;
 	padding: 8px 14px;
 	border-radius: 6px;
 	border: none;
-	background: var(--dashboard-primary, $primary_color);
-	box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-	color: var(--dashboard-surface-secondary, #fff);
+	background: var( --dashboard-primary, $primary_color );
+	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+	color: var( --dashboard-surface-secondary, #fff );
 	cursor: pointer;
 	outline: none;
 	width: max-content;
@@ -88,9 +87,9 @@ $placeholder_color: #9ca3af;
 	font-weight: 500;
 	line-height: 16px;
 	border: none;
-	background: var(--dashboard-primary, #e3eefb);
-	box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-	color: var(--dashboard-primary, $primary_color);
+	background: var( --dashboard-primary, #e3eefb );
+	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+	color: var( --dashboard-primary, $primary_color );
 	text-decoration: none;
 	cursor: pointer;
 	outline: none;
@@ -115,15 +114,15 @@ $placeholder_color: #9ca3af;
 	text-decoration: none;
 	cursor: pointer;
 	outline: none;
-	color: var(--dashboard-primary, $primary_color);
+	color: var( --dashboard-primary, $primary_color );
 	width: max-content;
 }
 
 .srfm-pro-badge {
 	color: white;
-	background-color: #1E293B;
+	background-color: #1e293b;
 	padding: 4px 10px;
-	border: solid 1px #1E293B;
+	border: solid 1px #1e293b;
 	font-size: 14px;
 	font-weight: 600;
 	border-radius: 6px;
@@ -137,7 +136,7 @@ $placeholder_color: #9ca3af;
 	}
 
 	&.srfm-gap-normal {
-		gap: 16px
+		gap: 16px;
 	}
 }
 
@@ -147,8 +146,6 @@ $placeholder_color: #9ca3af;
 	background: 0 0;
 	padding: 0;
 }
-
-
 
 .srfm-modal-card-content {
 	padding: 16px 24px 16px 24px;
@@ -190,9 +187,8 @@ $placeholder_color: #9ca3af;
 
 .post-type-sureforms_form,
 .post-type-sureforms_entry {
-
 	#screen-meta,
 	#show-settings-link {
-		border-color: rgb(229, 231, 235);
+		border-color: rgb( 229, 231, 235 );
 	}
 }

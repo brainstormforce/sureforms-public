@@ -18,32 +18,32 @@ function useQuery() {
 export const navigation = applyFilters(
 	'srfm.settings.navigation',
 	[
-	{
-		name: __( 'General', 'sureforms' ),
-		slug: 'general-settings',
-		icon: <MdSettings size={ 20 } color="#1E293B" />,
-	},
-	{
-		name: __( 'Validations', 'sureforms' ),
-		slug: 'validation-settings',
-		icon: <MdWarningAmber size={ 20 } color="#1E293B" />,
-	},
-	{
-		name: __( 'Email', 'sureforms' ),
-		slug: 'email-settings',
-		icon: <MdOutlineMail size={ 20 } color="#1E293B" />,
-	},
-	{
-		name: __( 'Security', 'sureforms' ),
-		slug: 'security-settings',
-		icon: <MdOutlineSecurity size={ 20 } color="#1E293B" />,
-	},
-	{
-		name: __( 'Integrations', 'sureforms' ),
-		slug: 'integration-settings',
-		icon: parse( svgIcons.integration ),
-	},
-] );
+		{
+			name: __( 'General', 'sureforms' ),
+			slug: 'general-settings',
+			icon: <MdSettings size={ 20 } color="#1E293B" />,
+		},
+		{
+			name: __( 'Validations', 'sureforms' ),
+			slug: 'validation-settings',
+			icon: <MdWarningAmber size={ 20 } color="#1E293B" />,
+		},
+		{
+			name: __( 'Email', 'sureforms' ),
+			slug: 'email-settings',
+			icon: <MdOutlineMail size={ 20 } color="#1E293B" />,
+		},
+		{
+			name: __( 'Security', 'sureforms' ),
+			slug: 'security-settings',
+			icon: <MdOutlineSecurity size={ 20 } color="#1E293B" />,
+		},
+		{
+			name: __( 'Integrations', 'sureforms' ),
+			slug: 'integration-settings',
+			icon: parse( svgIcons.integration ),
+		},
+	] );
 
 const isProActive = srfm_admin.is_pro_active;
 
