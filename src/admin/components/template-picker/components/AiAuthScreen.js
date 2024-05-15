@@ -10,6 +10,7 @@ const TemplateScreen = () => {
 	const [ buttonLabel, setButtonLabel ] = useState(
 		__( "Let's Get Started. It's Free", 'sureforms' )
 	);
+	const [ showErr, setShowErr ] = useState( false );
 
 	// Function: Authorize Zip AI.
 	const authorizeZipAI = ( event ) => {
@@ -214,7 +215,22 @@ const TemplateScreen = () => {
 							</span>
 							<MdArrowForward color="white" size={ 20 } />
 						</Button>
-
+						{ showErr && (
+							<p
+								style={ {
+									fontSize: '16px',
+									fontWeight: '600',
+									lineHeight: '24px',
+									color: '#D54407',
+									margin: '0',
+								} }
+							>
+								{ __(
+									'An error occurred. Please try again.',
+									'sureforms'
+								) }
+							</p>
+						) }
 						<Link
 							className="srfm-tp-breadcrumb-url"
 							to={ {

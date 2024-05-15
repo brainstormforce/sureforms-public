@@ -33,7 +33,6 @@ const TemplatePicker = () => {
 			case 'ai':
 				return (
 					<>
-						<Header />
 						{ srfm_admin.is_authorized ? (
 							<AiFormBuilder />
 						) : (
