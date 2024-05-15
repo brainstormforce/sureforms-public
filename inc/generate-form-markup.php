@@ -223,7 +223,7 @@ class Generate_Form_Markup {
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
-			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?>">
+			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
 				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;

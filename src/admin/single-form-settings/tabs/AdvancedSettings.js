@@ -4,6 +4,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
 
 function AdvancedSettings( props ) {
@@ -130,10 +131,11 @@ function AdvancedSettings( props ) {
 	}, [] );
 
 	return (
+		<>
 		<SRFMAdvancedPanelBody
 			title={ __( 'Security Settings', 'sureforms' ) }
 			initialOpen={ false }
-		>
+			>
 			<SelectControl
 				label={ __( 'Security Type', 'sureforms' ) }
 				value={ sureformsKeys._srfm_captcha_security_type }
@@ -168,7 +170,7 @@ function AdvancedSettings( props ) {
 					}
 				} }
 				__nextHasNoMarginBottom
-			/>
+				/>
 			{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
 				<>
 					{ showRecaptchaConflictNotice && (
@@ -245,7 +247,7 @@ function AdvancedSettings( props ) {
 							}
 						} }
 						__nextHasNoMarginBottom
-					/>
+						/>
 				</>
 			) }
 
@@ -270,6 +272,30 @@ function AdvancedSettings( props ) {
 				</p>
 			) }
 		</SRFMAdvancedPanelBody>
+		<SRFMAdvancedPanelBody
+				title={ __( 'Advanced', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<SRFMTextControl
+					data={ {
+						value: sureformsKeys._srfm_additional_classes,
+						label: '_srfm_additional_classes',
+					} }
+					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
+					value={ sureformsKeys._srfm_additional_classes }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_additional_classes', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<p className="components-base-control__help">
+					{ __(
+						' Separate multiple classes with spaces. ',
+						'sureforms'
+					) }
+				</p>
+			</SRFMAdvancedPanelBody>
+		</>
 	);
 }
 

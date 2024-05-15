@@ -135,7 +135,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 	const rootContainerDiv = document.querySelector(
 		'.edit-post-visual-editor__content-area'
 	);
-
+	
 	// Add styling class to main Editor Container
 	const addFormStylingClass = () => {
 		if ( rootContainer && 'Desktop' === deviceType ) {
@@ -146,9 +146,20 @@ const SureformsFormSpecificSettings = ( props ) => {
 			rootContainerDiv.setAttribute( 'id', 'srfm-form-container' );
 		}
 	};
-
+	
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
+	
+	// Find the root container for the form
+	const formRootContainer = document.getElementById( 'srfm-form-container' );
 
+	const addRootClass = () => {
+		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
+			formRootContainer?.classList.add( sureformsKeys?._srfm_additional_classes );
+		}
+	}
+
+	useEffect( addRootClass, [ formRootContainer ] );
+	
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
 	useEffect( () => {
