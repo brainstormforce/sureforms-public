@@ -132,147 +132,147 @@ function AdvancedSettings( props ) {
 
 	return (
 		<>
-		<SRFMAdvancedPanelBody
-			title={ __( 'Security Settings', 'sureforms' ) }
-			initialOpen={ false }
+			<SRFMAdvancedPanelBody
+				title={ __( 'Security Settings', 'sureforms' ) }
+				initialOpen={ false }
 			>
-			<SelectControl
-				label={ __( 'Security Type', 'sureforms' ) }
-				value={ sureformsKeys._srfm_captcha_security_type }
-				options={ [
-					{
-						value: 'none',
-						label: __( 'None', 'sureforms' ),
-					},
-					{
-						value: 'g-recaptcha',
-						label: __( 'Google reCAPTCHA', 'sureforms' ),
-					},
-					{
-						value: 'cf-turnstile',
-						label: __( 'CloudFlare Turnstile', 'sureforms' ),
-					},
-				] }
-				onChange={ ( value ) => {
-					if ( value === 'cf-turnstile' ) {
-						if (
-							sureformsCfTurnstileSite !== '' &&
+				<SelectControl
+					label={ __( 'Security Type', 'sureforms' ) }
+					value={ sureformsKeys._srfm_captcha_security_type }
+					options={ [
+						{
+							value: 'none',
+							label: __( 'None', 'sureforms' ),
+						},
+						{
+							value: 'g-recaptcha',
+							label: __( 'Google reCAPTCHA', 'sureforms' ),
+						},
+						{
+							value: 'cf-turnstile',
+							label: __( 'CloudFlare Turnstile', 'sureforms' ),
+						},
+					] }
+					onChange={ ( value ) => {
+						if ( value === 'cf-turnstile' ) {
+							if (
+								sureformsCfTurnstileSite !== '' &&
 							sureformsCfTurnstileSecret !== ''
-						) {
+							) {
+								setShowErr( false );
+								updateMeta( '_srfm_captcha_security_type', value );
+							} else {
+								setShowErr( true );
+							}
+						} else {
 							setShowErr( false );
 							updateMeta( '_srfm_captcha_security_type', value );
-						} else {
-							setShowErr( true );
 						}
-					} else {
-						setShowErr( false );
-						updateMeta( '_srfm_captcha_security_type', value );
-					}
-				} }
-				__nextHasNoMarginBottom
+					} }
+					__nextHasNoMarginBottom
 				/>
-			{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
-				<>
-					{ showRecaptchaConflictNotice && (
-						<PanelRow>
-							<p className="srfm-form-notice">
-								{ __(
-									'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-									'sureforms'
-								) }
-							</p>
-						</PanelRow>
-					) }
-					<SelectControl
-						label={ __(
-							'Select the reCAPTCHA Version to Use',
-							'sureforms'
+				{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
+					<>
+						{ showRecaptchaConflictNotice && (
+							<PanelRow>
+								<p className="srfm-form-notice">
+									{ __(
+										'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+										'sureforms'
+									) }
+								</p>
+							</PanelRow>
 						) }
-						value={ sureformsKeys._srfm_form_recaptcha }
-						options={ [
-							{ label: 'None', value: 'none' },
-							{
-								label: __(
-									'reCAPTCHA v2 Checkbox',
-									'sureforms'
-								),
-								value: 'v2-checkbox',
-							},
-							{
-								label: __(
-									'reCAPTCHA v2 Invisible',
-									'sureforms'
-								),
-								value: 'v2-invisible',
-							},
-							{
-								label: __( 'reCAPTCHA v3', 'sureforms' ),
-								value: 'v3-reCAPTCHA',
-							},
-						] }
-						onChange={ ( value ) => {
-							if ( value === 'v2-checkbox' ) {
-								if (
-									sureformsV2CheckboxSite !== '' &&
+						<SelectControl
+							label={ __(
+								'Select the reCAPTCHA Version to Use',
+								'sureforms'
+							) }
+							value={ sureformsKeys._srfm_form_recaptcha }
+							options={ [
+								{ label: 'None', value: 'none' },
+								{
+									label: __(
+										'reCAPTCHA v2 Checkbox',
+										'sureforms'
+									),
+									value: 'v2-checkbox',
+								},
+								{
+									label: __(
+										'reCAPTCHA v2 Invisible',
+										'sureforms'
+									),
+									value: 'v2-invisible',
+								},
+								{
+									label: __( 'reCAPTCHA v3', 'sureforms' ),
+									value: 'v3-reCAPTCHA',
+								},
+							] }
+							onChange={ ( value ) => {
+								if ( value === 'v2-checkbox' ) {
+									if (
+										sureformsV2CheckboxSite !== '' &&
 									sureformsV2CheckboxSecret !== ''
-								) {
-									setShowErr( false );
-									updateMeta( '_srfm_form_recaptcha', value );
-								} else {
-									setShowErr( true );
-								}
-							} else if ( value === 'v2-invisible' ) {
-								if (
-									sureformsV2InvisibleSecret !== '' &&
+									) {
+										setShowErr( false );
+										updateMeta( '_srfm_form_recaptcha', value );
+									} else {
+										setShowErr( true );
+									}
+								} else if ( value === 'v2-invisible' ) {
+									if (
+										sureformsV2InvisibleSecret !== '' &&
 									sureformsV2InvisibleSite !== ''
-								) {
-									setShowErr( false );
-									updateMeta( '_srfm_form_recaptcha', value );
-								} else {
-									setShowErr( true );
-								}
-							} else if ( value === 'v3-reCAPTCHA' ) {
-								if (
-									sureformsV3Secret !== '' &&
+									) {
+										setShowErr( false );
+										updateMeta( '_srfm_form_recaptcha', value );
+									} else {
+										setShowErr( true );
+									}
+								} else if ( value === 'v3-reCAPTCHA' ) {
+									if (
+										sureformsV3Secret !== '' &&
 									sureformsV3Site !== ''
-								) {
+									) {
+										setShowErr( false );
+										updateMeta( '_srfm_form_recaptcha', value );
+									} else {
+										setShowErr( true );
+									}
+								} else {
 									setShowErr( false );
 									updateMeta( '_srfm_form_recaptcha', value );
-								} else {
-									setShowErr( true );
 								}
-							} else {
-								setShowErr( false );
-								updateMeta( '_srfm_form_recaptcha', value );
-							}
-						} }
-						__nextHasNoMarginBottom
+							} }
+							__nextHasNoMarginBottom
 						/>
-				</>
-			) }
-
-			<p className="components-base-control__help">
-				{ __(
-					'Before selecting the security type. Please, make sure you have configured API keys ',
-					'sureforms'
+					</>
 				) }
-				<ExternalLink href={ srfm_admin.security_settings_url }>
-					{ __( 'here', 'sureforms' ) }
-				</ExternalLink>
-			</p>
-			{ showErr && (
-				<p style={ { color: 'red' } }>
+
+				<p className="components-base-control__help">
 					{ __(
-						'Please configure the API keys correctly in the ',
+						'Before selecting the security type. Please, make sure you have configured API keys ',
 						'sureforms'
 					) }
 					<ExternalLink href={ srfm_admin.security_settings_url }>
-						{ __( 'Global Settings', 'sureforms' ) }
+						{ __( 'here', 'sureforms' ) }
 					</ExternalLink>
 				</p>
-			) }
-		</SRFMAdvancedPanelBody>
-		<SRFMAdvancedPanelBody
+				{ showErr && (
+					<p style={ { color: 'red' } }>
+						{ __(
+							'Please configure the API keys correctly in the ',
+							'sureforms'
+						) }
+						<ExternalLink href={ srfm_admin.security_settings_url }>
+							{ __( 'Global Settings', 'sureforms' ) }
+						</ExternalLink>
+					</p>
+				) }
+			</SRFMAdvancedPanelBody>
+			<SRFMAdvancedPanelBody
 				title={ __( 'Advanced', 'sureforms' ) }
 				initialOpen={ false }
 			>
