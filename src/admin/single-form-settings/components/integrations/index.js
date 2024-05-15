@@ -79,7 +79,7 @@ const EnableIntegrations = () => {
 					<button
 						className="srfm-button-primary"
 						onClick={ () => {
-							window.open( 'wp-admin/admin.php?page=sureforms_form_settings&tab=integration-settings' );
+							window.open( 'admin.php?page=sureforms_form_settings&tab=integration-settings' );
 						} }
 
 					>
