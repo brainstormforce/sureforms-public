@@ -36,6 +36,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		formId,
 		preview,
 		help,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -57,7 +58,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -248,7 +249,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 

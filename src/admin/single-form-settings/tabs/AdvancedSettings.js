@@ -1,20 +1,15 @@
-import { SelectControl, PanelRow, Modal } from '@wordpress/components';
+import { SelectControl, PanelRow, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import apiFetch from '@wordpress/api-fetch';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
 	const { defaultKeys } = props;
-	// Modal icon
-	const modalIcon = parse( svgIcons.modalLogo );
 
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
@@ -34,15 +29,6 @@ function AdvancedSettings( props ) {
 		useState( false );
 
 	const [ showErr, setShowErr ] = useState( false );
-	const [ isOpen, setOpen ] = useState( false );
-	const [ popupTab, setPopupTab ] = useState( false );
-
-	const openModal = ( e ) => {
-		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
-		setPopupTab( popupTabTarget );
-		setOpen( true );
-	};
-	const closeModal = () => setOpen( false );
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -144,238 +130,147 @@ function AdvancedSettings( props ) {
 	}, [] );
 
 	return (
-		<>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Security Settings', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<SelectControl
-					label={ __( 'Security Type', 'sureforms' ) }
-					value={ sureformsKeys._srfm_captcha_security_type }
-					options={ [
-						{
-							value: 'none',
-							label: __( 'None', 'sureforms' ),
-						},
-						{
-							value: 'g-recaptcha',
-							label: __( 'Google reCAPTCHA', 'sureforms' ),
-						},
-						{
-							value: 'cf-turnstile',
-							label: __( 'CloudFlare Turnstile', 'sureforms' ),
-						},
-					] }
-					onChange={ ( value ) => {
-						if ( value === 'cf-turnstile' ) {
-							if (
-								sureformsCfTurnstileSite !== '' &&
-								sureformsCfTurnstileSecret !== ''
-							) {
-								setShowErr( false );
-								updateMeta(
-									'_srfm_captcha_security_type',
-									value
-								);
-							} else {
-								setShowErr( true );
-							}
-						} else {
+		<SRFMAdvancedPanelBody
+			title={ __( 'Security Settings', 'sureforms' ) }
+			initialOpen={ false }
+		>
+			<SelectControl
+				label={ __( 'Security Type', 'sureforms' ) }
+				value={ sureformsKeys._srfm_captcha_security_type }
+				options={ [
+					{
+						value: 'none',
+						label: __( 'None', 'sureforms' ),
+					},
+					{
+						value: 'g-recaptcha',
+						label: __( 'Google reCAPTCHA', 'sureforms' ),
+					},
+					{
+						value: 'cf-turnstile',
+						label: __( 'CloudFlare Turnstile', 'sureforms' ),
+					},
+				] }
+				onChange={ ( value ) => {
+					if ( value === 'cf-turnstile' ) {
+						if (
+							sureformsCfTurnstileSite !== '' &&
+							sureformsCfTurnstileSecret !== ''
+						) {
 							setShowErr( false );
 							updateMeta( '_srfm_captcha_security_type', value );
+						} else {
+							setShowErr( true );
 						}
-					} }
-					__nextHasNoMarginBottom
-				/>
-				{ sureformsKeys._srfm_captcha_security_type ===
-					'g-recaptcha' && (
-					<>
-						{ showRecaptchaConflictNotice && (
-							<PanelRow>
-								<p className="srfm-form-notice">
-									{ __(
-										'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
-										'sureforms'
-									) }
-								</p>
-							</PanelRow>
-						) }
-						<SelectControl
-							label={ __(
-								'Select the reCAPTCHA Version to Use',
-								'sureforms'
-							) }
-							value={ sureformsKeys._srfm_form_recaptcha }
-							options={ [
-								{ label: 'None', value: 'none' },
-								{
-									label: __(
-										'reCAPTCHA v2 Checkbox',
-										'sureforms'
-									),
-									value: 'v2-checkbox',
-								},
-								{
-									label: __(
-										'reCAPTCHA v2 Invisible',
-										'sureforms'
-									),
-									value: 'v2-invisible',
-								},
-								{
-									label: __( 'reCAPTCHA v3', 'sureforms' ),
-									value: 'v3-reCAPTCHA',
-								},
-							] }
-							onChange={ ( value ) => {
-								if ( value === 'v2-checkbox' ) {
-									if (
-										sureformsV2CheckboxSite !== '' &&
-										sureformsV2CheckboxSecret !== ''
-									) {
-										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
-									} else {
-										setShowErr( true );
-									}
-								} else if ( value === 'v2-invisible' ) {
-									if (
-										sureformsV2InvisibleSecret !== '' &&
-										sureformsV2InvisibleSite !== ''
-									) {
-										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
-									} else {
-										setShowErr( true );
-									}
-								} else if ( value === 'v3-reCAPTCHA' ) {
-									if (
-										sureformsV3Secret !== '' &&
-										sureformsV3Site !== ''
-									) {
-										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
-									} else {
-										setShowErr( true );
-									}
-								} else {
-									setShowErr( false );
-									updateMeta( '_srfm_form_recaptcha', value );
-								}
-							} }
-							__nextHasNoMarginBottom
-						/>
-					</>
-				) }
-
-				<p className="components-base-control__help">
-					{ __(
-						'Before selecting the security type. Please make sure you have configured API keys in the Global Settings - here',
-						'sureforms'
+					} else {
+						setShowErr( false );
+						updateMeta( '_srfm_captcha_security_type', value );
+					}
+				} }
+				__nextHasNoMarginBottom
+			/>
+			{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
+				<>
+					{ showRecaptchaConflictNotice && (
+						<PanelRow>
+							<p className="srfm-form-notice">
+								{ __(
+									'P.S. Note that If you are using two forms on the same page with the different reCAPTCHA versions (V2 checkbox and V3), it will create conflicts between the versions. Kindly avoid using different versions on same page.',
+									'sureforms'
+								) }
+							</p>
+						</PanelRow>
 					) }
-				</p>
-				{ showErr && (
-					<p style={ { color: 'red' } }>
-						{ __(
-							'Please configure the API keys correctly',
+					<SelectControl
+						label={ __(
+							'Select the reCAPTCHA Version to Use',
 							'sureforms'
 						) }
-						<a
-							href={ srfm_admin.security_settings_url }
-							target="_blank"
-							rel="noreferrer"
-							style={ {
-								display: 'flex',
-								alignItems: 'center',
-							} }
-						>
-							{ __( 'Global Settings', 'sureforms' ) }
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								width="16"
-								height="16"
-								aria-hidden="true"
-								focusable="false"
-							>
-								<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
-							</svg>
-						</a>
-					</p>
-				) }
-			</SRFMAdvancedPanelBody>
-			<MoreSettingsButton
-				settingName={ __( 'Email Notification', 'sureforms' ) }
-				popupId="email_notification"
-				openModal={ openModal }
-			/>
-			<MoreSettingsButton
-				settingName={ __( 'Form Confirmation', 'sureforms' ) }
-				popupId="form_confirmation"
-				openModal={ openModal }
-			/>
-
-			<MoreSettingsButton
-				settingName={ __( 'Compliance Settings', 'sureforms' ) }
-				popupId="compliance_settings"
-				openModal={ openModal }
-			/>
-			<MoreSettingsButton
-				settingName={ __( 'Integrations', 'sureforms' ) }
-				popupId="integration"
-				openModal={ openModal }
-			/>
-			<MoreSettingsButton
-				settingName={ __( 'Custom CSS', 'sureforms' ) }
-				popupId="form_custom_css"
-				openModal={ openModal }
-			/>
-			{ isOpen && (
-				<Modal
-					onRequestClose={ closeModal }
-					title={ __( 'Single Form Setting', 'sureforms' ) }
-					className="srfm-settings-modal"
-					icon={ modalIcon }
-					isFullScreen={ true }
-					bodyOpenClassName="srfm-settings-modal-body"
-				>
-					<SingleFormSettingsPopup
-						sureformsKeys={ sureformsKeys }
-						targetTab={ popupTab }
+						value={ sureformsKeys._srfm_form_recaptcha }
+						options={ [
+							{ label: 'None', value: 'none' },
+							{
+								label: __(
+									'reCAPTCHA v2 Checkbox',
+									'sureforms'
+								),
+								value: 'v2-checkbox',
+							},
+							{
+								label: __(
+									'reCAPTCHA v2 Invisible',
+									'sureforms'
+								),
+								value: 'v2-invisible',
+							},
+							{
+								label: __( 'reCAPTCHA v3', 'sureforms' ),
+								value: 'v3-reCAPTCHA',
+							},
+						] }
+						onChange={ ( value ) => {
+							if ( value === 'v2-checkbox' ) {
+								if (
+									sureformsV2CheckboxSite !== '' &&
+									sureformsV2CheckboxSecret !== ''
+								) {
+									setShowErr( false );
+									updateMeta( '_srfm_form_recaptcha', value );
+								} else {
+									setShowErr( true );
+								}
+							} else if ( value === 'v2-invisible' ) {
+								if (
+									sureformsV2InvisibleSecret !== '' &&
+									sureformsV2InvisibleSite !== ''
+								) {
+									setShowErr( false );
+									updateMeta( '_srfm_form_recaptcha', value );
+								} else {
+									setShowErr( true );
+								}
+							} else if ( value === 'v3-reCAPTCHA' ) {
+								if (
+									sureformsV3Secret !== '' &&
+									sureformsV3Site !== ''
+								) {
+									setShowErr( false );
+									updateMeta( '_srfm_form_recaptcha', value );
+								} else {
+									setShowErr( true );
+								}
+							} else {
+								setShowErr( false );
+								updateMeta( '_srfm_form_recaptcha', value );
+							}
+						} }
+						__nextHasNoMarginBottom
 					/>
-				</Modal>
+				</>
 			) }
-		</>
+
+			<p className="components-base-control__help">
+				{ __(
+					'Before selecting the security type. Please, make sure you have configured API keys ',
+					'sureforms'
+				) }
+				<ExternalLink href={ srfm_admin.security_settings_url }>
+					{ __( 'here', 'sureforms' ) }
+				</ExternalLink>
+			</p>
+			{ showErr && (
+				<p style={ { color: 'red' } }>
+					{ __(
+						'Please configure the API keys correctly in the ',
+						'sureforms'
+					) }
+					<ExternalLink href={ srfm_admin.security_settings_url }>
+						{ __( 'Global Settings', 'sureforms' ) }
+					</ExternalLink>
+				</p>
+			) }
+		</SRFMAdvancedPanelBody>
 	);
 }
-
-const MoreSettingsButton = ( { settingName, popupId, openModal } ) => {
-	const horizontalEllipsisIcon = parse( svgIcons.horizontalEllipsis );
-	return (
-		<div className="srfm-custom-layout-panel components-panel__body">
-			<h2 className="components-panel__body-title">
-				<button
-					className="components-button components-panel__body-toggle"
-					onClick={ openModal }
-					data-popup={ popupId }
-				>
-					<span className="srfm-title">
-						<div>{ settingName }</div>
-					</span>
-					{ horizontalEllipsisIcon }
-				</button>
-			</h2>
-		</div>
-	);
-};
 
 export default AdvancedSettings;

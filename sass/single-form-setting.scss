@@ -24,7 +24,7 @@ $placeholder_color: #9ca3af;
 //single form UI
 .srfm-settings-modal {
 	background-color: #f1f5f9;
-
+	gap: 10px;
 	.components-modal__header {
 		display: flex;
 		padding: 20px;
@@ -40,6 +40,7 @@ $placeholder_color: #9ca3af;
 
 			.components-modal__icon-container {
 				display: inline-flex;
+				margin: 0;
 			}
 
 			.components-modal__header-heading {
@@ -816,6 +817,9 @@ $placeholder_color: #9ca3af;
 			.srfm-validation-error {
 				color: var( --srfm-error-text-color );
 			}
+			.srfm-validation-error {
+				color: var( --srfm-error-text-color );
+			}
 		}
 
 		.components-tab-panel__tabs {
@@ -885,11 +889,16 @@ $placeholder_color: #9ca3af;
 				border: #d54407;
 				background-color: #d54407;
 				border-radius: 4px;
+				box-shadow: none;
 			}
 
 			.components-checkbox-control__input[type="checkbox"]:focus {
 				box-shadow: none;
-				border: $label_color;
+
+			}
+			.components-checkbox-control__input[type=checkbox]{
+				border: 1px solid #dce0e6;
+				box-shadow: 0 1px 2px 0 rgba(13, 19, 30, .1);;
 			}
 
 			&.srfm-components-input-control,

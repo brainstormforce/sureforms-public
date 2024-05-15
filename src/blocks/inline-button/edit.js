@@ -21,7 +21,7 @@ import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { buttonText, fieldWidth, block_id, formId, preview } = attributes;
+	const { buttonText, fieldWidth, block_id, formId, preview, className } = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -42,7 +42,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -100,7 +100,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					/>
 				</button>
 			</>
-		</>
+		</div>
 	);
 };
 

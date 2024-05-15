@@ -40,6 +40,7 @@ if ( $srfm_form_preview_attr ) {
 	<?php
 		$srfm_color1_val                     = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_color1', true );
 		$srfm_bg_val                         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_bg_image', true );
+		$srfm_cover_image                    = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_cover_image', true );
 		$srfm_fontsize_val                   = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_fontsize', true );
 		$srfm_submit_type_val                = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_submit_type', true );
 		$srfm_thankyou_message_title         = get_post_meta( intval( $srfm_custom_post_id ), '_srfm_thankyou_message_title', true );
@@ -53,6 +54,7 @@ if ( $srfm_form_preview_attr ) {
 
 		$srfm_color_primary         = $srfm_color1_val ? strval( $srfm_color1_val ) : '#0284c7';
 		$srfm_background_image_url  = $srfm_bg_val ? rawurldecode( strval( $srfm_bg_val ) ) : '';
+		$srfm_cover_image_url       = $srfm_cover_image ? rawurldecode( strval( $srfm_cover_image ) ) : '';
 		$srfm_form_font_size        = $srfm_fontsize_val ? $srfm_fontsize_val : '';
 		$srfm_success_submit_type   = $srfm_submit_type_val ? strval( $srfm_submit_type_val ) : '';
 		$srfm_success_message_title = $srfm_thankyou_message_title ? strval( $srfm_thankyou_message_title ) : '';
@@ -79,10 +81,21 @@ if ( $srfm_form_preview_attr ) {
 					<?php
 					echo esc_attr( $srfm_form_container_width . 'px' );
 					?>
+					;
+			}
+			.single-sureforms_form .srfm-single-page-container .srfm-page-banner {
+				<?php if ( ! empty( $srfm_cover_image_url ) ) : ?>
+					background-image: url( <?php echo esc_attr( $srfm_cover_image_url ); ?> );
+					background-position: center;
+					background-size: cover;
+					background-repeat: no-repeat;
+				<?php else : ?>
+					background-color: <?php echo esc_attr( $srfm_color_primary ); ?>;
+				<?php endif; ?>
 			}
 		</style>
 		<div id="srfm-single-page-container" class="srfm-single-page-container">
-			<div class="srfm-page-banner" style="background-color: <?php echo esc_attr( $srfm_color_primary ); ?>">
+			<div class="srfm-page-banner">
 				<?php if ( ! empty( $show_title ) && ! empty( $instant_form ) ) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
