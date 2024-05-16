@@ -421,6 +421,10 @@ $sidebar_width: 290px;
 					resize: none;
 					padding: 16px;
 					overflow: hidden;
+					font-size: 16px;
+					font-weight: 400;
+					line-height: 24px;
+
 					&::placeholder {
 						width: 736px;
 						height: 94px;
@@ -1111,25 +1115,6 @@ $sidebar_width: 290px;
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
-
-		textarea {
-			width: 80%;
-			height: 200px;
-			padding: 10px;
-			border: 1px solid #d54407;
-			border-radius: 8px;
-			margin-bottom: 1em;
-			font-size: 1em;
-			font-weight: 500;
-
-			&:focus {
-				box-shadow: none;
-			}
-
-			&::placeholder {
-				color: #d54407;
-			}
-		}
 
 		.srfm-example-ai-prompt-ctn {
 			display: flex;
