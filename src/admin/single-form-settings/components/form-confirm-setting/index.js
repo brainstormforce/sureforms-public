@@ -80,10 +80,9 @@ const FormConfirmSetting = () => {
 							</div>
 							<div className="srfm-options-wrapper">
 								<div
-									className={ `srfm-option ${
-										data?.confirmation_type === 'same page'
-											? 'srfm-active-conf-type'
-											: ''
+									className={ `srfm-option ${ data?.confirmation_type === 'same page'
+										? 'srfm-active-conf-type'
+										: ''
 									}` }
 								>
 									<input
@@ -112,11 +111,10 @@ const FormConfirmSetting = () => {
 									</label>
 								</div>
 								<div
-									className={ `srfm-option ${
-										data?.confirmation_type ===
-										'different page'
-											? 'srfm-active-conf-type'
-											: ''
+									className={ `srfm-option ${ data?.confirmation_type ===
+											'different page'
+										? 'srfm-active-conf-type'
+										: ''
 									}` }
 								>
 									<input
@@ -148,10 +146,9 @@ const FormConfirmSetting = () => {
 									</label>
 								</div>
 								<div
-									className={ `srfm-option ${
-										data?.confirmation_type === 'custom url'
-											? 'srfm-active-conf-type'
-											: ''
+									className={ `srfm-option ${ data?.confirmation_type === 'custom url'
+										? 'srfm-active-conf-type'
+										: ''
 									}` }
 								>
 									<input
@@ -207,6 +204,7 @@ const FormConfirmSetting = () => {
 											} )
 										}
 										classNamePrefix={ 'srfm-select' }
+										menuPlacement="auto"
 										styles={ {
 											control: (
 												baseStyles,
@@ -215,10 +213,10 @@ const FormConfirmSetting = () => {
 												...baseStyles,
 												boxShadow: state.isFocused
 													? '0 0 0 1px #D54406'
-													: 'none', // Primary color for option when focused
+													: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
 												borderColor: state.isFocused
 													? '#D54406'
-													: 'grey', // Primary color for focus
+													: '#dce0e6', // Primary color for focus
 												'&:hover': {
 													borderColor: '#D54406', // Primary color for hover
 												},
@@ -243,7 +241,6 @@ const FormConfirmSetting = () => {
 														: 'black', // Text color for option when focused or selected
 											} ),
 										} }
-										menuPosition="auto"
 										theme={ ( theme ) => ( {
 											...theme,
 											colors: {
@@ -275,24 +272,29 @@ const FormConfirmSetting = () => {
 								/>
 							</div>
 						) }
-						<div className="srfm-modal-area-box">
-							<div className="srfm-modal-area-header">
-								<div className="srfm-modal-area-header-text">
-									<p>
-										{ __(
-											'Confirmation Message',
-											'sureforms'
-										) }
-									</p>
+						{
+							data?.confirmation_type === 'same page' && (
+								<div className="srfm-modal-area-box">
+									<div className="srfm-modal-area-header">
+										<div className="srfm-modal-area-header-text">
+											<p>
+												{ __(
+													'Confirmation Message',
+													'sureforms'
+												) }
+											</p>
+										</div>
+									</div>
+									<div className="srfm-editor-wrap">
+										<Editor
+											handleContentChange={ handleEditorChange }
+											content={ data?.message }
+										/>
+									</div>
 								</div>
-							</div>
-							<div className="srfm-editor-wrap">
-								<Editor
-									handleContentChange={ handleEditorChange }
-									content={ data?.message }
-								/>
-							</div>
-						</div>
+							)
+						}
+
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
@@ -305,11 +307,10 @@ const FormConfirmSetting = () => {
 								</div>
 								<div className="srfm-options-wrapper">
 									<div
-										className={ `srfm-option ${
-											data?.submission_action ===
-											'hide form'
-												? 'srfm-active-after-submit'
-												: ''
+										className={ `srfm-option ${ data?.submission_action ===
+												'hide form'
+											? 'srfm-active-after-submit'
+											: ''
 										}` }
 									>
 										<input
@@ -338,11 +339,10 @@ const FormConfirmSetting = () => {
 										</label>
 									</div>
 									<div
-										className={ `srfm-option ${
-											data?.submission_action ===
-											'reset form'
-												? 'srfm-active-after-submit'
-												: ''
+										className={ `srfm-option ${ data?.submission_action ===
+												'reset form'
+											? 'srfm-active-after-submit'
+											: ''
 										}` }
 									>
 										<input
