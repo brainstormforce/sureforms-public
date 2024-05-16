@@ -44,7 +44,7 @@ class Admin {
 		// Add custom redirection URL for Zip AI after authentication.
 		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
 		// Add custom redirection URL for Zip AI after authentication revoke.
-		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ] );
+		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ], 9999, 1 );
 	}
 
 	/**
@@ -64,7 +64,11 @@ class Admin {
 	 * @return string
 	 */
 	public function custom_zip_ai_auth_revoke_args( $args ) {
-		return admin_url( 'admin.php?page=add-new-form' );
+		// only change admin URL if the user is on the add new form page.
+		if ( isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+			return admin_url( 'admin.php?page=add-new-form' );
+		}
+		return $args;
 	}
 
 	/**
