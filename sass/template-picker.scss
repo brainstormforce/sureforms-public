@@ -470,6 +470,10 @@ $sidebar_width: 290px;
 					gap: 4px;
 					cursor: pointer;
 
+					&:hover {
+						background: #f3f4f6;
+					}
+
 					.srfm-ai-builder-prompt-title {
 						width: 191px;
 						height: 18px;
