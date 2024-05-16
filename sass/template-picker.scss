@@ -120,8 +120,8 @@ $sidebar_width: 290px;
 			font-size: 14px;
 			font-weight: 600;
 			line-height: 20px;
-			width: 100px;
-			height: 34px;
+			width: 90px;
+			height: 40px;
 			border: none;
 			cursor: pointer;
 			padding: 9px 13px 9px 13px;
@@ -135,8 +135,8 @@ $sidebar_width: 290px;
 			font-size: 14px;
 			font-weight: 600;
 			line-height: 20px;
-			width: 100px;
-			height: 34px;
+			width: 90px;
+			height: 40px;
 			border: none;
 			cursor: pointer;
 			border: 1px solid #d8dfe9;
@@ -703,7 +703,7 @@ $sidebar_width: 290px;
 			.srfm-tp-header-credits-popover {
 				position: absolute;
 				top: 60px;
-				right: 73px;
+				right: 71px;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -741,7 +741,7 @@ $sidebar_width: 290px;
 					border: 1px solid #d54407;
 					padding: 9px 13px 9px 13px;
 					border-radius: 6px;
-					line-height: 16px;
+					line-height: 12px;
 				}
 
 				.srfm-credits-popover-revoke-btn {
