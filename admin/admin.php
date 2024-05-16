@@ -41,15 +41,28 @@ class Admin {
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
 
-		// Add custom redirection URL for Zip AI authentication.
+		// Add custom redirection URL for Zip AI after authentication.
 		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
-		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ], 100, 1);
+		// Add custom redirection URL for Zip AI after authentication revoke.
+		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ] );
 	}
 
+	/**
+	 * Custom redirection URL for Zip AI after authentication.
+	 *
+	 * @param string $url Redirection URL.
+	 * @return string
+	 */
 	public function custom_zip_ai_auth_redirection_url( $url ) {
 		return admin_url( 'admin.php?page=add-new-form&method=ai' );
 	}
 
+	/**
+	 * Custom redirection URL for Zip AI after authentication revoke.
+	 *
+	 * @param string $args Redirection URL.
+	 * @return string
+	 */
 	public function custom_zip_ai_auth_revoke_args( $args ) {
 		return admin_url( 'admin.php?page=add-new-form' );
 	}
@@ -448,19 +461,20 @@ class Admin {
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
 				[
-					'site_url'                     => get_site_url(),
-					'plugin_url'                   => SRFM_URL,
-					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
-					'admin_url'                    => admin_url( 'admin.php' ),
-					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => current_user_can( 'edit_posts' ),
-					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
-					'zip_ai_credit_details'        => AI_Helper::get_credit_details(),
-					'zip_ai_auth_middleware'       => AI_Helper::get_auth_middleware_url( array( 'plugin' => 'spectra' ) ),
-					'zip_ai_auth_revoke_url'       => Ai_Helper::get_auth_revoke_url(),
-					'is_authorized' 			   => AI_Helper::is_authorized(),
-					'ajax_url'                     => admin_url( 'admin-ajax.php' ),
+					'site_url'                         => get_site_url(),
+					'plugin_url'                       => SRFM_URL,
+					'preview_images_url'               => SRFM_URL . 'images/template-previews/',
+					'admin_url'                        => admin_url( 'admin.php' ),
+					'new_template_picker_base_url'     => admin_url( 'post-new.php?post_type=sureforms_form' ),
+					'capability'                       => current_user_can( 'edit_posts' ),
+					'template_picker_nonce'            => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
+					'zip_ai_credit_details'            => AI_Helper::get_credit_details(),
+					'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
+					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
+					'is_authorized'                    => AI_Helper::is_authorized(),
+					'ajax_url'                         => admin_url( 'admin-ajax.php' ),
+					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
 				]
 			);
 		}

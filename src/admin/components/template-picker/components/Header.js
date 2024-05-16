@@ -1,11 +1,10 @@
-import ICONS from './icons';
-import Breadcrumbs from './Breadcrumbs';
-import aiCreditsIcon from '@Image/ai-credits.svg';
-import { useLocation } from 'react-router-dom';
-import { BsLightningCharge } from 'react-icons/bs';
+import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import ICONS from './icons';
+import Breadcrumbs from './Breadcrumbs';
+import { useLocation } from 'react-router-dom';
+import { BsLightningCharge } from 'react-icons/bs';
 
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
@@ -37,8 +36,16 @@ const Header = () => {
 		};
 	}, [ revokePopover ] );
 
-	// count the credits left in the account and show the number like 463.4k
+	// if the methods is ai then hide the the scrollbar from body
+	useEffect( () => {
+		if ( method === 'template' ) {
+			document.body.style.overflow = 'auto';
+		} else {
+			document.body.style.overflow = 'hidden';
+		}
+	}, [ method ] );
 
+	// get the total and used credits
 	const totalCredits = parseInt( srfm_admin.zip_ai_credit_details?.total );
 	const usedCredits = parseInt( srfm_admin.zip_ai_credit_details?.used );
 
@@ -58,15 +65,6 @@ const Header = () => {
 		);
 	}
 
-	// if the methods is ai then hide the the scrollbar from body
-	useEffect( () => {
-		if ( method === 'ai' ) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
-	}, [ method ] );
-
 	return (
 		<div className="srfm-tp-header">
 			<div className="srfm-tp-header-items">
@@ -76,110 +74,52 @@ const Header = () => {
 				</div>
 			</div>
 
-			{ /** Close Icon */ }
+			{ /* if the user is authorized and the page is add-new-form and the method is ai then show the credits left in the account
+			 */ }
 			{ srfm_admin.is_authorized &&
 			page === 'add-new-form' &&
 			method === 'ai' ? (
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-						width: '155px',
-					} }
-				>
+				<div className="srfm-tp-header-credits-ctn">
 					<div
 						style={ {
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							gap: '8px',
-							borderRadius: '4px',
-							padding: '4px 12px',
-							border: '1px solid #E5E7EB',
-							cursor: 'pointer',
 							// if popover is open, change background color
 							background: showRevokePopover ? '#F3F4F6' : 'white',
 						} }
+						className="srfm-tp-header-credits"
 						onClick={ () => {
 							setShowRevokePopover( ! showRevokePopover );
 						} }
 					>
-						<span
-							style={ {
-								fontSize: '14px',
-								fontWeight: '400',
-								lineHeight: '20px',
-								color: '#374151',
-							} }
-						>
+						<span className="srfm-tp-header-credits-left">
 							{ creditsLeftInK }+
 						</span>
 						<BsLightningCharge />
 					</div>
 					{ showRevokePopover && (
 						<div
-							style={ {
-								position: 'absolute',
-								top: '60px',
-								right: '73px',
-								display: 'flex',
-								flexDirection: 'column',
-								alignItems: 'center',
-								gap: '12px',
-								width: '266px',
-								background: '#FFFFFF',
-								borderRadius: '8px',
-								padding: '16px',
-								border: '1px solid #E5E7EB',
-							} }
+							className="srfm-tp-header-credits-popover"
 							ref={ revokePopover }
 						>
-							<span
-								style={ {
-									fontSize: '14px',
-									fontWeight: '500',
-									lineHeight: '20px',
-									color: '#030712',
-								} }
-							>
+							<span className="srfm-tp-header-credits-popover-title">
 								{ creditsLeft
 									.toString()
 									.replace(
 										/\B(?=(\d{3})+(?!\d))/g,
 										','
 									) }{ ' ' }
-								AI Credits in Your Account
+								{ __(
+									'AI Credits in Your Account',
+									'sureforms'
+								) }
 							</span>
-							<span
-								style={ {
-									fontSize: '14px',
-									fontWeight: '400',
-									lineHeight: '20px',
-									color: '#9CA3AF',
-								} }
-							>
+							<span className="srfm-tp-header-credits-popover-description">
 								{ __(
 									'Credits are used to generate forms with AI.',
 									'sureforms'
 								) }
 							</span>
 							<Button
-								style={ {
-									backgroundColor: 'transparent',
-									color: '#D54407',
-									fontSize: '14px',
-									fontWeight: '400',
-									lineHeight: '20px',
-									width: '208px',
-									height: '34px',
-									border: 'none',
-									cursor: 'pointer',
-									border: '1px solid #D54407',
-									padding: '9px 13px 9px 13px',
-									borderRadius: '6px',
-									lineHeight: '16px',
-								} }
+								className="srfm-credits-popover-more-btn"
 								onClick={ () => {
 									window.open(
 										'https://app.zipwp.com/credits-pricing',
@@ -190,16 +130,7 @@ const Header = () => {
 								{ __( 'Get More Credits', 'sureforms' ) }
 							</Button>
 							<Button
-								style={ {
-									backgroundColor: 'transparent',
-									color: '#CD1A1A',
-									fontSize: '14px',
-									fontWeight: '400',
-									lineHeight: '20px',
-									height: '20px',
-									border: 'none',
-									cursor: 'pointer',
-								} }
+								className="srfm-credits-popover-revoke-btn"
 								onClick={ () => {
 									setShowRevokePopover( false );
 									setShowRevokeConfirmation( true );
@@ -238,100 +169,24 @@ const RevokeConfirmation = ( { setShowRevokeConfirmation } ) => {
 	return (
 		<>
 			<Header />
-			<div
-				style={ {
-					position: 'fixed',
-					top: 0,
-					left: 0,
-					width: '100%',
-					height: '100%',
-					backgroundColor: '#0F172AB2',
-					zIndex: 999,
-				} }
-			/>
-			<div
-				style={ {
-					position: 'fixed',
-					top: '50%',
-					left: '50%',
-					transform: 'translate(-50%, -50%)',
-					zIndex: '1000',
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'flex-start',
-					gap: '16px',
-					width: '464px',
-					height: '184px',
-					padding: '20px',
-					background: '#FFFFFF',
-					borderRadius: '8px',
-				} }
-			>
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'flex-start',
-						gap: '12px',
-						justifyContent: 'center',
-					} }
-				>
-					<span
-						style={ {
-							paddingTop: '3px',
-						} }
-					>
-						{ ICONS.warning }
-					</span>
-					<span
-						style={ {
-							fontSize: '18px',
-							fontWeight: '700',
-							lineHeight: '28px',
-							color: '#0F172A',
-						} }
-					>
+			<div className="srfm-popup-overlay" />
+			<div className="srfm-revoke-confirmation-container">
+				<div className="srfm-popup-header">
+					<span className="srfm-popup-icon">{ ICONS.warning }</span>
+					<span className="srfm-popup-title">
 						{ __( 'Revoke Access', 'sureforms' ) }
 					</span>
 				</div>
-				<span
-					style={ {
-						fontSize: '14px',
-						fontWeight: '400',
-						lineHeight: '20px',
-						color: '#475569',
-					} }
-				>
+				<span className="srfm-revoke-confirmation-description">
 					{ __(
 						'Are you sure you want to disconnect? You will need to reconnect to use AI features again.',
 						'sureforms'
 					) }
 				</span>
-				<div
-					style={ {
-						display: 'flex',
-						alignItems: 'flex-start',
-						gap: '12px',
-					} }
-				>
+				<div className="srfm-revoke-confirmation-btn-container">
 					<Button
-						style={ {
-							backgroundColor: '#DC2626',
-							color: '#ffffff',
-							fontSize: '14px',
-							fontWeight: '600',
-							lineHeight: '20px',
-							width: '100px',
-							height: '34px',
-							border: 'none',
-							cursor: 'pointer',
-							padding: '9px 13px 9px 13px',
-							borderRadius: '6px',
-							lineHeight: '16px',
-						} }
+						className="srfm-revoke-confirmation-revoke-btn"
 						onClick={ () => {
-							// localStorage.removeItem(
-							// 	'zipAiAuthorizationStatus'
-							// );
 							window.location.assign(
 								srfm_admin.zip_ai_auth_revoke_url
 							);
@@ -340,21 +195,7 @@ const RevokeConfirmation = ( { setShowRevokeConfirmation } ) => {
 						{ __( 'Revoke', 'sureforms' ) }
 					</Button>
 					<Button
-						style={ {
-							backgroundColor: 'transparent',
-							color: '#0F172A',
-							fontSize: '14px',
-							fontWeight: '600',
-							lineHeight: '20px',
-							width: '100px',
-							height: '34px',
-							border: 'none',
-							cursor: 'pointer',
-							border: '1px solid #D8DFE9',
-							padding: '9px 13px 9px 13px',
-							borderRadius: '6px',
-							lineHeight: '16px',
-						} }
+						className="srfm-revoke-confirmation-cancel-btn"
 						onClick={ () => {
 							setShowRevokeConfirmation( false );
 						} }

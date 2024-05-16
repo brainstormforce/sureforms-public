@@ -11,6 +11,7 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use ZipAI\Classes\Helper as AI_Helper;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -41,29 +42,30 @@ class Admin_Ajax {
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
 
-		/**
+	/**
 	 * Ajax Request - Verify if Zip AI is authorized.
 	 *
-	 * @since 2.10.2
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function zip_ai_verify_auth() {
-		// // Check if the user is authorized to perform this action.
-		// if ( ! current_user_can( 'manage_options' ) ) {
-		// 	wp_send_json_error( array( 'messsage' => __( 'You are not authorized to perform this action.', 'ultimate-addons-for-gutenberg' ) ) );
-		// }
 
-		// // Check if the nonce is valid.
-		// if ( ! check_ajax_referer( 'zip-ai-verify-authenticity', 'nonce', false ) ) {
-		// 	wp_send_json_error( array( 'messsage' => __( 'Invalid nonce.', 'sureforms' ) ) );
-		// }
+		// Check if the user has the required permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'messsage' => __( 'You do not have required permission to create a form.', 'sureforms' ) ] );
+		}
 
-		// If the Zip AI Helper Class exists, return a success based on the authorizatoin status, else return an error.
+		// verify nonce.
+		if ( ! check_ajax_referer( 'zip_ai_verify_authenticity', 'nonce', false ) ) {
+			wp_send_json_error( [ 'messsage' => __( 'Unable to verify nonce.', 'sureforms' ) ] );
+		}
+
+		// If the Zip AI Helper Class exists, return a success based on the authorization status, else return an error.
 		if ( class_exists( '\ZipAI\Classes\Helper' ) ) {
 			// Send a boolean based on whether the auth token has been added.
-			wp_send_json_success( array( 'is_authorized' => Ai_Helper::is_authorized() ) );
+			wp_send_json_success( [ 'is_authorized' => Ai_Helper::is_authorized() ] );
 		} else {
-			wp_send_json_error( array( 'messsage' => __( 'Unable to verify authenticity.', 'ultimate-addons-for-gutenberg' ) ) );
+			wp_send_json_error( [ 'messsage' => __( 'Unable to verify authenticity.', 'sureforms' ) ] );
 		}
 	}
 
