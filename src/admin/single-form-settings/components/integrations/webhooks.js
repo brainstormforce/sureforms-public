@@ -12,7 +12,7 @@ const UpgradeToPro = () => {
 
 const WebhooksCard = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
-		'srfm.form_settings.integrations.webhooks.button',
+		'srfm.formSettings.integrations.webhooks.button',
 		<UpgradeToPro />,
 		setSelectedTab
 	);
@@ -40,12 +40,12 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 };
 
 addFilter(
-	'srfm.form_settings.integrations.cards',
+	'srfm.formSettings.integrations.cards',
 	'sureforms/form-settings/integrations',
 	( tabs, setSelectedTab ) => {
 		const cards = [ ...tabs ];
 		const isGloballyEnabled = applyFilters(
-			'srfm.form_settings.integrations.webhooks.component',
+			'srfm.formSettings.integrations.webhooks.component',
 			true
 		);
 

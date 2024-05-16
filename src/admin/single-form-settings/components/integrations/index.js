@@ -45,7 +45,7 @@ const Integrations = ( { setSelectedTab } ) => {
 
 const AllIntegrations = ( { setSelectedTab } ) => {
 	const integrationCards = applyFilters(
-		'srfm.form_settings.integrations.cards',
+		'srfm.formSettings.integrations.cards',
 		[],
 		setSelectedTab
 	);
