@@ -157,46 +157,33 @@ class AI_Form_Builder {
 		}
 
 		// send the request to the open ai server.
-		$endpoint = ZIP_AI_CREDIT_SERVER_API . 'chat/completions';
+		$endpoint = 'chat/completions';
 		$data     = [
 			'model'    => 'gpt-3.5-turbo',
 			'messages' => $messages,
 		];
 
-		$response = wp_remote_post(
-			$endpoint,
-			[
-				'body'    => $data,
-				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
-				'headers' => [
-					'Authorization' => 'Bearer ' . AI_Helper::get_decrypted_auth_token(),
-				],
-			]
-		);
+		// Get the response from the endpoint.
+		$response = AI_Helper::get_credit_server_response( $endpoint, $data );
 
-		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
-		} else {
-			$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-			if ( is_array( $response_body ) && is_array( $response_body['choices'] ) && ! empty( $response_body['choices'][0]['message']['content'] ) ) {
-				// send the response back to the client.
-				wp_send_json_success( wp_remote_retrieve_body( $response ) );
-			} elseif ( is_array( $response_body ) && ! empty( $response_body['error'] ) ) {
-				$message = '';
-				if ( ! empty( $response_body['error']['message'] ) ) { // If any error message received from OpenAI.
-					$message = $response_body['error']['message'];
-				} elseif ( is_string( $response_body['error'] ) ) {  // If any error message received from server.
-					if ( ! empty( $response_body['code'] && is_string( $response_body['code'] ) ) ) {
-						$message = $this->custom_message( $response_body['code'] );
-					}
-					$message = ! empty( $message ) ? $message : $response_body['error'];
+		if ( ! empty( $response['error'] ) ) {
+			// If the response has an error, handle it and report it back.
+			$message = '';
+			if ( ! empty( $response['error']['message'] ) ) { // If any error message received from OpenAI.
+				$message = $response['error']['message'];
+			} elseif ( is_string( $response['error'] ) ) {  // If any error message received from server.
+				if ( ! empty( $response['code'] && is_string( $response['code'] ) ) ) {
+					$message = $this->custom_message( $response['code'] );
 				}
-
-				wp_send_json_error( [ 'message' => $message ] );
-			} else {
-				wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
+				$message = ! empty( $message ) ? $message : $response['error'];
 			}
+			wp_send_json_error( [ 'message' => $message ] );
+		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
+			// If the message was sent successfully, send it successfully.
+			wp_send_json_success( $response );
+		} else {
+			// If you've reached here, then something has definitely gone amuck. Abandon ship.
+			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
 		}//end if
 	}
 

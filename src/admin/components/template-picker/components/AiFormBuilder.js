@@ -83,10 +83,13 @@ const AiFormBuilder = () => {
 					__( 'Just doing some final touches…', 'sureforms' )
 				);
 				setPercentBuild( 75 );
-				const data = JSON.parse( response.data );
-				const formJsonData = data.choices[ 0 ].message.content;
 
-				let sanitizedFormJsonData = formJsonData
+				const content = response?.data?.choices[ 0 ]?.message?.content;
+				if ( ! content ) {
+					setShowFormCreationErr( true );
+					return;
+				}
+				let sanitizedFormJsonData = content
 					.replace( /```/g, '' )
 					.replace( /json/g, '' );
 				sanitizedFormJsonData = JSON.parse( sanitizedFormJsonData );

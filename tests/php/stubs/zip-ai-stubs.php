@@ -111,7 +111,17 @@ class Sidebar_Configurations
     {
     }
     /**
-     * Fetches ai data from the middleware server - this will be merged with the get_credit_server_response() function.
+     * Update ZIP AI Assistant options.
+     *
+     * @param array $params Parameters for updating options.
+     * @since 1.1.6
+     * @return void
+     */
+    public function update_zip_ai_assistant_options($params)
+    {
+    }
+    /**
+     * Fetches ai data from the middleware server.
      *
      * @param \WP_REST_Request $request request object.
      * @since 1.0.0
@@ -311,10 +321,12 @@ class Helper
      * Get the Zip AI Response from the Zip Credit Server.
      *
      * @param string $endpoint The endpoint to get the response from.
+     * @param array  $body The data to be passed as the request body, if any.
+     * @param array  $extra_args Extra arguments to be passed to the request, if any.
      * @since 1.0.0
      * @return array The Zip AI Response.
      */
-    public static function get_credit_server_response($endpoint)
+    public static function get_credit_server_response($endpoint, $body = [], $extra_args = [])
     {
     }
     /**
