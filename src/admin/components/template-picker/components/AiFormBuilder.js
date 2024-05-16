@@ -2,12 +2,13 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
-import { handleAddNewPost } from '@Utils/Helpers';
+import { handleAddNewPost, getRemaingCredits } from '@Utils/Helpers';
 import { MdArrowForward } from 'react-icons/md';
 import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
 import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
 import Header from './Header.js';
-import ICONS from './icons.js';
+import LimitReachedPopup from './LimitReachedPopup.js';
+import ErrorPopup from './ErrorPopup.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
@@ -19,6 +20,23 @@ const AiFormBuilder = () => {
 	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
 		useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
+	const examplePrompts = [
+		{
+			title: 'Generate User Survey Form',
+			description:
+				'Collects data on user satisfaction, ease of use, and overall experience with a product or service.',
+		},
+		{
+			title: 'Request for Quote Form',
+			description:
+				'Allows users to request quotes for products or services, providing details such as quantity, specifications, and contact information.',
+		},
+		{
+			title: 'Event Registration Form',
+			description:
+				'Enables users to register for an event, providing details such as name, contact information, and any additional requirements or preferences.',
+		},
+	];
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -32,9 +50,6 @@ const AiFormBuilder = () => {
 		}
 
 		if ( ! userCommand ) {
-			// setErrorMessage(
-			// 	__( 'Please enter a valid prompt.', 'sureforms' )
-			// );
 			setShowEmptyError( true );
 			return;
 		}
@@ -119,8 +134,8 @@ const AiFormBuilder = () => {
 						<div className="srfm-loading-inner-container">
 							<div className="srfm-ai-builder-header">
 								<CircularProgressBar
-									colorCircle="#3d45921a"
-									colorSlice={ '#3D4592' }
+									colorCircle="#eee3e1"
+									colorSlice="#D54407"
 									percent={ percentBuild }
 									round
 									speed={ 85 }
@@ -148,36 +163,7 @@ const AiFormBuilder = () => {
 						</div>
 					</div>
 				</div>
-				{ showFormCreationErr && (
-					<>
-						<div className="srfm-popup-overlay" />
-						<div className="srfm-err-popup-container">
-							<div className="srfm-popup-header">
-								<span className="srfm-popup-icon">
-									{ ICONS.warning }
-								</span>
-								<span className="srfm-popup-title">
-									{ __( 'Error Creating Form', 'sureforms' ) }
-								</span>
-							</div>
-							<span className="srfm-err-popup-description">
-								{ __(
-									'Please change your prompt and try again.',
-									'sureforms'
-								) }
-							</span>
-
-							<Button
-								className="srfm-err-popup-try-again-btn"
-								onClick={ () => {
-									window.location.reload();
-								} }
-							>
-								{ __( 'Try Again!', 'sureforms' ) }
-							</Button>
-						</div>
-					</>
-				) }
+				{ showFormCreationErr && <ErrorPopup /> }
 			</>
 		);
 	}
@@ -189,25 +175,6 @@ const AiFormBuilder = () => {
 			/>
 		);
 	}
-
-	// create an array of prompts
-	const examplePrompts = [
-		{
-			title: 'Generate User Survey Form',
-			description:
-				'Collects data on user satisfaction, ease of use, and overall experience with a product or service.',
-		},
-		{
-			title: 'Request for Quote Form',
-			description:
-				'Allows users to request quotes for products or services, providing details such as quantity, specifications, and contact information.',
-		},
-		{
-			title: 'Event Registration Form',
-			description:
-				'Enables users to register for an event, providing details such as name, contact information, and any additional requirements or preferences.',
-		},
-	];
 
 	return (
 		<>
@@ -285,16 +252,7 @@ const AiFormBuilder = () => {
 									return;
 								}
 
-								const totalCredits = parseInt(
-									srfm_admin.zip_ai_credit_details?.total
-								);
-								const usedCredits = parseInt(
-									srfm_admin.zip_ai_credit_details?.used
-								);
-
-								const creditsLeft = totalCredits - usedCredits;
-
-								if ( creditsLeft <= 0 ) {
+								if ( getRemaingCredits() <= 0 ) {
 									setShowLimitReachedPopup( true );
 									return;
 								}
@@ -315,68 +273,6 @@ const AiFormBuilder = () => {
 					</div>
 				</div>
 			</div>
-		</>
-	);
-};
-
-const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
-	return (
-		<>
-			<Header />
-			<div className="srfm-popup-overlay" />
-			<div className="srfm-limit-reached-popup">
-				<div className="srfm-popup-header">
-					<span className="srfm-popup-icon">{ ICONS.warning }</span>
-					<span className="srfm-popup-title">
-						{ __( 'Limit Reached', 'sureforms' ) }
-					</span>
-					<div
-						className="srfm-ai-limit-reached-close"
-						onClick={ () => setShowLimitReachedPopup( false ) }
-					>
-						{ ICONS.close }
-					</div>
-				</div>
-				<div className="srfm-limit-reached-popup-content">
-					<span className="srfm-limit-reached-popup-text">
-						{ __(
-							'You have reached the maximum number of credits usage in your Free Plan.',
-							'sureforms'
-						) }
-					</span>
-					<span>
-						{ __(
-							'Please upgrade your plan in order to create more forms.',
-							'sureforms'
-						) }
-					</span>
-				</div>
-				<div className="srfm-limit-reached-popup-content">
-					<Button
-						className="srfm-limit-reached-more-credits-btn"
-						onClick={ () => {
-							window.open(
-								'https://app.zipwp.com/credits-pricing',
-								'_blank'
-							);
-						} }
-					>
-						{ __( 'Get more credits', 'sureforms' ) }
-					</Button>
-					<span
-						className="srfm-limit-reached-check-usage-btn"
-						onClick={ () => {
-							window.open(
-								'https://app.zipwp.com/dashboard',
-								'_blank'
-							);
-						} }
-					>
-						{ __( 'Check Your Usage', 'sureforms' ) }
-					</span>
-				</div>
-			</div>
-			<AiFormBuilder />
 		</>
 	);
 };
