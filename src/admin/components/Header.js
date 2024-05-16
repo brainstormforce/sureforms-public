@@ -173,7 +173,7 @@ export default () => {
 									` }
 								>
 									{ ' ' }
-									{ isLicenseActive ? ( __( 'License activated', 'sureforms' ) ) : ( __( 'License not activated', 'sureforms' ) ) }
+									{ isLicenseActive ? ( __( 'License Activated', 'sureforms' ) ) : ( __( 'License not Activated', 'sureforms' ) ) }
 								</article>
 							</>
 						) }
