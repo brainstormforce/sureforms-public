@@ -7,14 +7,19 @@ import { MdArrowForward } from 'react-icons/md';
 import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
 import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
 import Header from './Header.js';
+import ICONS from './icons.js';
 
-const TemplateScreen = () => {
+const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
 		__( 'Connecting with AI...', 'sureforms' )
 	);
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
+	const [ showEmptyError, setShowEmptyError ] = useState( false );
+	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
+		useState( false );
+	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -28,9 +33,10 @@ const TemplateScreen = () => {
 		}
 
 		if ( ! userCommand ) {
-			setErrorMessage(
-				__( 'Please enter a valid prompt.', 'sureforms' )
-			);
+			// setErrorMessage(
+			// 	__( 'Please enter a valid prompt.', 'sureforms' )
+			// );
+			setShowEmptyError( true );
 			return;
 		}
 
@@ -56,7 +62,7 @@ const TemplateScreen = () => {
 		// }, 2000 );
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
-		setPercentBuild( 25 );
+		setPercentBuild( 50 );
 		setMessage( __( 'Generating Fields...', 'sureforms' ) );
 		// setTimeout( () => {
 		// 	setPercentBuild( 40 );
@@ -92,18 +98,19 @@ const TemplateScreen = () => {
 			} );
 
 			if ( response ) {
-				setPercentBuild( 50 );
+				setMessage(
+					__( 'Just doing some final touches...', 'sureforms' )
+				);
+				setPercentBuild( 75 );
 				const data = JSON.parse( response.data );
 				const formJsonData = data.choices[ 0 ].message.content;
+
 				let sanitizedFormJsonData = formJsonData
 					.replace( /```/g, '' )
 					.replace( /json/g, '' );
 				sanitizedFormJsonData = JSON.parse( sanitizedFormJsonData );
 
-				setMessage(
-					__( 'Just doing some final touches...', 'sureforms' )
-				);
-				setPercentBuild( 75 );
+				// setPercentBuild( 75 );
 
 				const postContent = await apiFetch( {
 					path: 'sureforms/v1/map-fields',
@@ -111,8 +118,11 @@ const TemplateScreen = () => {
 					data: { form_data: sanitizedFormJsonData },
 				} );
 
+				// console.log( postContent );
+				// return;
+
 				if ( postContent ) {
-					setMessage( __( 'Redirecting to Form', 'sureforms' ) );
+					setMessage( __( 'Redirecting to Editor', 'sureforms' ) );
 					setPercentBuild( 100 );
 
 					handleAddNewPost(
@@ -120,6 +130,8 @@ const TemplateScreen = () => {
 						sanitizedFormJsonData?.formTitle,
 						[]
 					);
+				} else {
+					setShowFormCreationErr( true );
 				}
 			} else {
 				console.error(
@@ -140,108 +152,215 @@ const TemplateScreen = () => {
 	];
 
 	const handlePromptClick = ( prompt ) => {
+		setShowEmptyError( false );
 		const userPrompt = document.querySelector( 'textarea' );
 		userPrompt.value = prompt;
 	};
 
 	if ( isBuildingForm ) {
 		return (
-			<div className="srfm-ts-main-container srfm-content-section">
-				<div
-					style={ {
-						display: 'flex',
-						flexWrap: 'wrap',
-						alignItems: 'center',
-						justifyContent: 'center',
-						padding: '50px 1.25em',
-						position: 'absolute',
-						top: '50%',
-						left: '50%',
-						transform: 'translate(-50%, -50%)',
-						width: '100%',
-						height: '100%',
-					} }
-				>
+			<>
+				<div className="srfm-ts-main-container srfm-content-section">
 					<div
 						style={ {
 							display: 'flex',
-							flexDirection: 'column',
+							flexWrap: 'wrap',
 							alignItems: 'center',
 							justifyContent: 'center',
-							width: '480px',
-							height: '440px',
-							gap: '24px',
+							padding: '50px 1.25em',
+							position: 'absolute',
+							top: '50%',
+							left: '50%',
+							transform: 'translate(-50%, -50%)',
+							width: '100%',
+							height: '100%',
 						} }
 					>
 						<div
 							style={ {
 								display: 'flex',
-								flexDirection: 'row',
+								flexDirection: 'column',
 								alignItems: 'center',
 								justifyContent: 'center',
-								width: '400px',
-								height: '72px',
+								width: '480px',
+								height: '440px',
 								gap: '24px',
 							} }
 						>
-							<CircularProgressBar
-								colorCircle="#3d45921a"
-								colorSlice={ '#3D4592' }
-								percent={ percentBuild }
-								round
-								speed={ 45 }
-								fontColor="#0F172A"
-								fontSize="18px"
-								fontWeight={ 700 }
-								size={ 72 }
-							/>
 							<div
 								style={ {
 									display: 'flex',
-									flexDirection: 'column',
+									flexDirection: 'row',
+									alignItems: 'center',
 									justifyContent: 'center',
-									width: '304px',
-									height: '50px',
-									gap: '2px',
+									width: '400px',
+									height: '72px',
+									gap: '24px',
 								} }
 							>
-								<h1
+								<CircularProgressBar
+									colorCircle="#3d45921a"
+									colorSlice={ '#3D4592' }
+									percent={ percentBuild }
+									round
+									speed={ 85 }
+									fontColor="#0F172A"
+									fontSize="18px"
+									fontWeight={ 700 }
+									size={ 72 }
+								/>
+								<div
 									style={ {
-										width: '273px',
-										height: '28px',
-										fontSize: '20px',
-										fontWeight: '700',
-										lineHeight: '28px',
-										margin: 0,
-										padding: 0,
-										textAlign: 'start',
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: 'center',
+										width: '304px',
+										height: '50px',
+										gap: '2px',
 									} }
 								>
-									{ __(
-										'We are building your Form...',
-										'sureforms'
-									) }
-								</h1>
-								<span
-									style={ {
-										width: '301px',
-										height: '20px',
-										fontSize: '14px',
-										fontWeight: '400',
-										textAlign: 'start',
-									} }
-								>
-									{ message }
-								</span>
+									<h1
+										style={ {
+											width: '273px',
+											height: '28px',
+											fontSize: '20px',
+											fontWeight: '700',
+											lineHeight: '28px',
+											margin: 0,
+											padding: 0,
+											textAlign: 'start',
+										} }
+									>
+										{ __(
+											'We are building your Form...',
+											'sureforms'
+										) }
+									</h1>
+									<span
+										style={ {
+											width: '301px',
+											height: '20px',
+											fontSize: '14px',
+											fontWeight: '400',
+											textAlign: 'start',
+										} }
+									>
+										{ message }
+									</span>
+								</div>
 							</div>
+							<img
+								src={ aiFormBuilderPlaceholder }
+								alt="AI Form Builder"
+							/>
 						</div>
-						<img
-							src={ aiFormBuilderPlaceholder }
-							alt="AI Form Builder"
-						/>
 					</div>
 				</div>
-			</div>
+				{ showFormCreationErr && (
+					<>
+						<div
+							style={ {
+								position: 'fixed',
+								top: 0,
+								left: 0,
+								width: '100%',
+								height: '100%',
+								backgroundColor: '#0F172AB2',
+								zIndex: 999,
+							} }
+						/>
+
+						<div
+							style={ {
+								position: 'fixed',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								zIndex: '1000',
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'flex-start',
+								gap: '20px',
+								width: '400px',
+								height: '170px',
+								padding: '20px',
+								background: '#FFFFFF',
+								borderRadius: '8px',
+							} }
+						>
+							<div
+								style={ {
+									display: 'flex',
+									alignItems: 'flex-start',
+									gap: '12px',
+									justifyContent: 'center',
+								} }
+							>
+								<span
+									style={ {
+										paddingTop: '5px',
+									} }
+								>
+									{ ICONS.warning }
+								</span>
+								<span
+									style={ {
+										fontSize: '18px',
+										fontWeight: '700',
+										lineHeight: '28px',
+										color: '#0F172A',
+									} }
+								>
+									{ __( 'Error Creating Form', 'sureforms' ) }
+								</span>
+							</div>
+							<span
+								style={ {
+									fontSize: '14px',
+									fontWeight: '400',
+									lineHeight: '20px',
+									color: '#64748B',
+								} }
+							>
+								{ __(
+									'Please change your prompt and try again.',
+									'sureforms'
+								) }
+							</span>
+
+							<Button
+								style={ {
+									backgroundColor: '#D54407',
+									color: '#ffffff',
+									fontSize: '14px',
+									fontWeight: '600',
+									lineHeight: '20px',
+									width: '100%',
+									height: '34px',
+									border: 'none',
+									cursor: 'pointer',
+									padding: '9px 13px 9px 13px',
+									borderRadius: '6px',
+									lineHeight: '16px',
+								} }
+								onClick={ () => {
+									window.location.reload();
+								} }
+							>
+								{ __( 'Try Again!', 'sureforms' ) }
+							</Button>
+						</div>
+					</>
+				) }
+			</>
+		);
+	}
+
+	if ( showLimitReachedPopup ) {
+		return (
+			<LimitReachedPopup
+				setShowLimitReachedPopup={ setShowLimitReachedPopup }
+			/>
 		);
 	}
 
@@ -339,10 +458,33 @@ const TemplateScreen = () => {
 									outline: 'none',
 									boxShadow: 'none',
 									resize: 'none',
+									borderColor: showEmptyError
+										? '#CD1A1A'
+										: '#CBD5E1',
 								} }
 								placeholder="E.g. Form to gather feedback from our customer for our product functionality, usability, how much you will rate it and what you don’t like about it."
 								maxLength={ 2000 }
+								onChange={ () => {
+									setShowEmptyError( false );
+								} }
 							/>
+							{ showEmptyError && (
+								<span
+									style={ {
+										fontSize: '14px',
+										fontWeight: '600',
+										lineHeight: '20px',
+										margin: '0',
+										padding: '0',
+										color: '#CD1A1A',
+									} }
+								>
+									{ __(
+										'Prompt cannot be empty.',
+										'sureforms'
+									) }
+								</span>
+							) }
 							<div
 								style={ {
 									display: 'flex',
@@ -546,6 +688,25 @@ const TemplateScreen = () => {
 							onClick={ () => {
 								const userPrompt =
 									document.querySelector( 'textarea' );
+
+								if ( ! userPrompt.value ) {
+									setShowEmptyError( true );
+									return;
+								}
+
+								const totalCredits = parseInt(
+									srfm_admin.zip_ai_credit_details?.total
+								);
+								const usedCredits = parseInt(
+									srfm_admin.zip_ai_credit_details?.used
+								);
+
+								const creditsLeft = totalCredits - usedCredits;
+								if ( creditsLeft <= 0 ) {
+									setShowLimitReachedPopup( true );
+									return;
+								}
+
 								handleCreateAiForm(
 									userPrompt.value,
 									[],
@@ -572,4 +733,167 @@ const TemplateScreen = () => {
 	);
 };
 
-export default TemplateScreen;
+const LimitReachedPopup = ( { setShowLimitReachedPopup } ) => {
+	return (
+		<>
+			<Header />
+			<div
+				style={ {
+					position: 'fixed',
+					top: 0,
+					left: 0,
+					width: '100%',
+					height: '100%',
+					backgroundColor: '#0F172AB2',
+					zIndex: 999,
+				} }
+			/>
+			<div
+				style={ {
+					position: 'fixed',
+					top: '50%',
+					left: '50%',
+					transform: 'translate(-50%, -50%)',
+					zIndex: '1000',
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'flex-start',
+					gap: '20px',
+					width: '480px',
+					height: '260px',
+					padding: '20px',
+					background: '#FFFFFF',
+					borderRadius: '8px',
+				} }
+			>
+				<div
+					style={ {
+						display: 'flex',
+						alignItems: 'flex-start',
+						gap: '12px',
+						justifyContent: 'center',
+					} }
+				>
+					<span
+						style={ {
+							paddingTop: '3px',
+						} }
+					>
+						{ ICONS.warning }
+					</span>
+					<span
+						style={ {
+							fontSize: '18px',
+							fontWeight: '700',
+							lineHeight: '28px',
+							color: '#0F172A',
+						} }
+					>
+						{ __( 'Limit Reached', 'sureforms' ) }
+					</span>
+					<div
+						style={ {
+							cursor: 'pointer',
+							position: 'absolute',
+							right: '5px',
+							top: '5px',
+							color: '#94A3B8',
+						} }
+						className="srfm-ai-limit-reached-close"
+						onClick={ () => {
+							setShowLimitReachedPopup( false );
+						} }
+					>
+						{ ICONS.close }
+					</div>
+				</div>
+				<span
+					style={ {
+						fontSize: '14px',
+						fontWeight: '400',
+						lineHeight: '20px',
+						color: '#64748B',
+					} }
+				>
+					{ __(
+						'You have reached the maximum number of credits usage in your Free Plan.',
+						'sureforms'
+					) }
+				</span>
+				<span
+					style={ {
+						fontSize: '14px',
+						fontWeight: '400',
+						lineHeight: '20px',
+						color: '#64748B',
+					} }
+				>
+					{ __(
+						'Please upgrade your plan in order to create more forms.',
+						'sureforms'
+					) }
+				</span>
+				{ /* <div
+					style={ {
+						display: 'flex',
+
+						alignItems: 'flex-start',
+						gap: '12px',
+					} }
+				> */ }
+				<Button
+					style={ {
+						backgroundColor: '#D54407',
+						color: '#ffffff',
+						fontSize: '14px',
+						fontWeight: '600',
+						lineHeight: '20px',
+						width: '100%',
+						height: '34px',
+						border: 'none',
+						cursor: 'pointer',
+						padding: '9px 13px 9px 13px',
+						borderRadius: '6px',
+						lineHeight: '16px',
+					} }
+					onClick={ () => {
+						window.open(
+							'https://app.zipwp.com/credits-pricing',
+							'_blank'
+						);
+					} }
+				>
+					{ __( 'Get more credits', 'sureforms' ) }
+				</Button>
+				<span
+					style={ {
+						backgroundColor: 'transparent',
+						color: '#64748B',
+						fontSize: '14px',
+						fontWeight: '600',
+						lineHeight: '20px',
+						// width: '100px',
+						// height: '34px',
+						border: 'none',
+						cursor: 'pointer',
+						border: 'none',
+						lineHeight: '16px',
+						alignSelf: 'center',
+					} }
+					onClick={ () => {
+						window.open(
+							'https://app.zipwp.com/dashboard',
+							'_blank'
+						);
+					} }
+				>
+					{ __( 'Check Your Usage', 'sureforms' ) }
+				</span>
+				{ /* </div> */ }
+			</div>
+			<AiFormBuilder />
+		</>
+	);
+};
+
+export default AiFormBuilder;

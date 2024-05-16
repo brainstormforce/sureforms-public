@@ -132,7 +132,7 @@ class AI_Form_Builder {
 				$messages,
 				[
 					'role'    => 'system',
-					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required (add only if it is mentioned by user or if it is needed based on the field), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
+					'content' => 'Based on the description, generate a survey with questions array where every element has five fields: label, fieldType, placeholder, required (add only if it is mentioned by user or if it is mandatory for form submission), helpText (add only if it is mentioned by user or if it is needed based on the field). fieldType can only be of these options ' . $field_types . '. fieldType can be used in any order and any number of times. Also return formTitle in the response.
 					
 					Here are the field specific properties that you need to return with that specific field:
 					
@@ -147,6 +147,9 @@ class AI_Form_Builder {
 					5) For upload field also return fileSizeLimit, allowedFormats. For example, for upload field the allowedFileTypes can be [ { "value": "jpg", "label": "jpg" }, { "value": "jpeg", "label": "jpeg" }] and fileSizeLimit number can be between 10 to 300.
 
 					6) Never give labels as generic names Field 1, Field 2, etc.
+
+					7) Do not generate more than 20 fields in a form. If the user enter number of fields more than 20, then just return the first 20 fields.
+
 					
 					It is essential to provide a valid JSON structure. If there is an error, return an empty JSON. Make sure you don\'t entertain the empty cases, like Hey there, or kind of message, just check for the proper prompt and understand if the prompt has the word form or any kind of direction to create the form.',
 				]

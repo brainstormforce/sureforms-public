@@ -5,6 +5,7 @@ import { useState } from '@wordpress/element';
 import aiAuthPlaceholder from '@Image/ai-auth.svg';
 import { MdArrowForward, MdKeyboardBackspace } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import Header from './Header';
 
 const TemplateScreen = () => {
 	const [ buttonLabel, setButtonLabel ] = useState(
@@ -87,7 +88,7 @@ const TemplateScreen = () => {
 			} ).then( ( response ) => {
 				if ( response?.success && response?.data?.is_authorized ) {
 					authWindow.close();
-					localStorage.setItem( 'zipAiAuthorizationStatus', true );
+					// localStorage.setItem( 'zipAiAuthorizationStatus', true );
 					clearInterval( authVerificationInterval );
 					window.location.reload();
 					setButtonLabel(
@@ -100,172 +101,178 @@ const TemplateScreen = () => {
 	};
 
 	return (
-		<div className="srfm-ts-main-container srfm-content-section">
-			<div
-				style={ {
-					display: 'flex',
-					flexWrap: 'wrap',
-					alignItems: 'center',
-					justifyContent: 'center',
-					padding: '50px 1.25em',
-					position: 'absolute',
-					top: '50%',
-					left: '50%',
-					transform: 'translate(-50%, -50%)',
-					width: '100%',
-					height: '100%',
-				} }
-			>
+		<>
+			<Header />
+			<div className="srfm-ts-main-container srfm-content-section">
 				<div
 					style={ {
 						display: 'flex',
-						width: '1044px',
-						height: '364px',
-						top: '350px',
-						left: '438px',
-						gap: '32px',
+						flexWrap: 'wrap',
+						alignItems: 'center',
 						justifyContent: 'center',
+						padding: '50px 1.25em',
+						position: 'absolute',
+						top: '50%',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: '100%',
+						height: '100%',
 					} }
 				>
 					<div
 						style={ {
 							display: 'flex',
-							flexDirection: 'column',
-							gap: '24px',
+							width: '1044px',
+							height: '364px',
+							top: '350px',
+							left: '438px',
+							gap: '32px',
+							justifyContent: 'center',
 						} }
 					>
-						<h1>
-							{ __( 'Building  Forms with AI ', 'sureforms' ) }
-						</h1>
-						<p
-							style={ {
-								fontSize: '16px',
-								fontWeight: '600',
-								lineHeight: '24px',
-								color: '#64748B',
-								margin: '0',
-							} }
-						>
-							{ __(
-								'Here is how the AI Form Builder Works:',
-								'sureforms'
-							) }
-						</p>
-						<ol
-							style={ {
-								fontWeight: '400',
-								fontSize: '16px',
-								lineHeight: '24px',
-								color: '#64748B',
-								margin: '0',
-								paddingInlineStart: '20px',
-							} }
-						>
-							<li>
-								{ __(
-									'Create a free account on ZipWP platform.',
-									'sureforms'
-								) }
-							</li>
-							<li>
-								{ __(
-									'Describe the form you want to create in words.',
-									'sureforms'
-								) }
-							</li>
-							<li>
-								{ __(
-									'Watch as AI crafts your form instantly.',
-									'sureforms'
-								) }
-							</li>
-							<li>
-								{ __(
-									'Refine the form with an easy drag & drop builder.',
-									'sureforms'
-								) }
-							</li>
-							<li>{ __( 'Launch.', 'sureforms' ) }</li>
-						</ol>
-						<Button
-							onClick={ authorizeZipAI }
+						<div
 							style={ {
 								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								backgroundColor: '#D54407',
-								color: 'white',
-								width: '271px',
-								height: '48px',
-								padding: '12px 20px 12px 24px',
-								gap: '7px',
-								borderRadius: '6px',
-								border: 'none',
-								cursor: 'pointer',
+								flexDirection: 'column',
+								gap: '24px',
 							} }
 						>
-							<span
-								style={ {
-									fontSize: '16px',
-									fontWeight: '600',
-									lineHeight: '24px',
-								} }
-							>
-								{ buttonLabel }
-							</span>
-							<MdArrowForward color="white" size={ 20 } />
-						</Button>
-						{ showErr && (
+							<h1>
+								{ __(
+									'Building  Forms with AI ',
+									'sureforms'
+								) }
+							</h1>
 							<p
 								style={ {
 									fontSize: '16px',
 									fontWeight: '600',
 									lineHeight: '24px',
-									color: '#D54407',
+									color: '#64748B',
 									margin: '0',
 								} }
 							>
 								{ __(
-									'An error occurred. Please try again.',
+									'Here is how the AI Form Builder Works:',
 									'sureforms'
 								) }
 							</p>
-						) }
-						<Link
-							className="srfm-tp-breadcrumb-url"
-							to={ {
-								location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-								search: `?page=add-new-form`,
-							} }
-							style={ {
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								width: '66px',
-								height: '24px',
-								gap: '8px',
-								color: '#64748B',
-								boxShadow: 'none',
-							} }
-						>
-							<MdKeyboardBackspace size={ 20 } />
-							<span
+							<ol
 								style={ {
+									fontWeight: '400',
 									fontSize: '16px',
-									fontWeight: '500',
 									lineHeight: '24px',
+									color: '#64748B',
+									margin: '0',
+									paddingInlineStart: '20px',
 								} }
 							>
-								{ __( 'Back', 'sureforms' ) }
-							</span>
-						</Link>
-					</div>
-					<div>
-						<img src={ aiAuthPlaceholder } alt="AI Auth" />
+								<li>
+									{ __(
+										'Create a free account on ZipWP platform.',
+										'sureforms'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Describe the form you want to create in words.',
+										'sureforms'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Watch as AI crafts your form instantly.',
+										'sureforms'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Refine the form with an easy drag & drop builder.',
+										'sureforms'
+									) }
+								</li>
+								<li>{ __( 'Launch.', 'sureforms' ) }</li>
+							</ol>
+							<Button
+								onClick={ authorizeZipAI }
+								style={ {
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'space-between',
+									backgroundColor: '#D54407',
+									color: 'white',
+									width: '271px',
+									height: '48px',
+									padding: '12px 20px 12px 24px',
+									gap: '7px',
+									borderRadius: '6px',
+									border: 'none',
+									cursor: 'pointer',
+								} }
+							>
+								<span
+									style={ {
+										fontSize: '16px',
+										fontWeight: '600',
+										lineHeight: '24px',
+									} }
+								>
+									{ buttonLabel }
+								</span>
+								<MdArrowForward color="white" size={ 20 } />
+							</Button>
+							{ showErr && (
+								<p
+									style={ {
+										fontSize: '16px',
+										fontWeight: '600',
+										lineHeight: '24px',
+										color: '#D54407',
+										margin: '0',
+									} }
+								>
+									{ __(
+										'An error occurred. Please try again.',
+										'sureforms'
+									) }
+								</p>
+							) }
+							<Link
+								className="srfm-tp-breadcrumb-url"
+								to={ {
+									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
+									search: `?page=add-new-form`,
+								} }
+								style={ {
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									width: '66px',
+									height: '24px',
+									gap: '8px',
+									color: '#64748B',
+									boxShadow: 'none',
+								} }
+							>
+								<MdKeyboardBackspace size={ 20 } />
+								<span
+									style={ {
+										fontSize: '16px',
+										fontWeight: '500',
+										lineHeight: '24px',
+									} }
+								>
+									{ __( 'Back', 'sureforms' ) }
+								</span>
+							</Link>
+						</div>
+						<div>
+							<img src={ aiAuthPlaceholder } alt="AI Auth" />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

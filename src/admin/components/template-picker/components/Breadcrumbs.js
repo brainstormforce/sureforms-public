@@ -61,7 +61,7 @@ const Breadcrumbs = () => {
 				>
 					<span className="srfm-header-breadcrumb">
 						{ ICONS.breadcrumb }
-						{ __( 'AI Form Builder', 'sureforms' ) }
+						{ __( 'Describe your Form', 'sureforms' ) }
 					</span>
 				</Link>
 			) }

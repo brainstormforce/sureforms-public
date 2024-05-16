@@ -40,11 +40,18 @@ class Admin {
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
+
+		// Add custom redirection URL for Zip AI authentication.
 		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
+		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ], 100, 1);
 	}
 
 	public function custom_zip_ai_auth_redirection_url( $url ) {
 		return admin_url( 'admin.php?page=add-new-form&method=ai' );
+	}
+
+	public function custom_zip_ai_auth_revoke_args( $args ) {
+		return admin_url( 'admin.php?page=add-new-form' );
 	}
 
 	/**

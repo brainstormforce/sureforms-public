@@ -230,6 +230,23 @@ const ICONS = {
 			/>
 		</svg>
 	),
+	warning: (
+		<svg
+			width="22"
+			height="20"
+			viewBox="0 0 22 20"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M10.9983 7.9975V11.7475M1.69506 15.1231C0.829677 16.6231 1.91225 18.4975 3.64398 18.4975H18.3526C20.0844 18.4975 21.1669 16.6231 20.3016 15.1231L12.9472 2.37562C12.0814 0.874792 9.91525 0.874792 9.04939 2.37562L1.69506 15.1231ZM10.9983 14.7475H11.0058V14.755H10.9983V14.7475Z"
+				stroke="#EF4444"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
 };
 
 export default ICONS;
