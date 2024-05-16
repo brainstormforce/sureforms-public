@@ -13,7 +13,11 @@ const CreditDetailsPopup = ( {
 		const handleClickOutside = ( event ) => {
 			if (
 				revokePopover.current &&
-				! revokePopover.current.contains( event.target )
+				! revokePopover.current.contains( event.target ) &&
+				event.target.className !== 'srfm-tp-header-credits' &&
+				event.target.className !== 'srfm-tp-header-credits-left' &&
+				event.target.tagName !== 'svg' &&
+				event.target.tagName !== 'path'
 			) {
 				setShowRevokePopover( false );
 			}
@@ -30,8 +34,8 @@ const CreditDetailsPopup = ( {
 			<span className="srfm-tp-header-credits-popover-title">
 				{ typeof creditsLeft === 'number' && ! isNaN( creditsLeft )
 					? `${ creditsLeft
-						.toString()
-						.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
+							.toString()
+							.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
                             `
 					: '0' }
 				{ __( ' AI Credits in Your Account', 'sureforms' ) }

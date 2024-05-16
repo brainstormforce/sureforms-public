@@ -6,6 +6,7 @@ import { BsLightningCharge } from 'react-icons/bs';
 import RevokeConfirmationPopup from './RevokeConfirmationPopup.js';
 import CreditDetailsPopup from './CreditDetailsPopup.js';
 import { formatNumber, getRemaingCredits } from '@Utils/Helpers';
+import { Button } from '@wordpress/components';
 
 const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
@@ -53,52 +54,54 @@ const Header = () => {
 			{ srfm_admin.is_authorized &&
 			page === 'add-new-form' &&
 			method === 'ai' ? (
-					<div className="srfm-tp-header-credits-ctn">
-						<div
-							style={ {
+				<div className="srfm-tp-header-credits-ctn">
+					<Button
+						style={ {
 							// if popover is open, change background color
-								background: showRevokePopover ? '#F3F4F6' : 'white',
-							} }
-							className="srfm-tp-header-credits"
-							onClick={ () => {
-								setShowRevokePopover( ! showRevokePopover );
-							} }
-						>
-							<span className="srfm-tp-header-credits-left">
-								{ formatNumber( creditsLeft ) }
-							</span>
+							background: showRevokePopover ? '#F3F4F6' : 'white',
+						} }
+						className="srfm-tp-header-credits"
+						onClick={ () => {
+							setShowRevokePopover( ! showRevokePopover );
+						} }
+					>
+						<span className="srfm-tp-header-credits-left">
+							{ formatNumber( creditsLeft ) }
+						</span>
+						<div className="srfm-tp-header-bolt-icon">
 							<BsLightningCharge />
 						</div>
-						{ showRevokePopover && (
-							<CreditDetailsPopup
-								setShowRevokePopover={ setShowRevokePopover }
-								setShowRevokeConfirmation={
-									setShowRevokeConfirmation
-								}
-								creditsLeft={ creditsLeft }
-							/>
-						) }
-						<div
-							className="srfm-tp-header-close"
-							onClick={ () => {
-								window.location.href =
-								'/wp-admin/admin.php?page=sureforms_menu';
-							} }
-						>
-							<div>{ ICONS.close }</div>
-						</div>
-					</div>
-				) : (
+					</Button>
+					{ showRevokePopover && (
+						<CreditDetailsPopup
+							setShowRevokePopover={ setShowRevokePopover }
+							setShowRevokeConfirmation={
+								setShowRevokeConfirmation
+							}
+							creditsLeft={ creditsLeft }
+						/>
+					) }
 					<div
 						className="srfm-tp-header-close"
 						onClick={ () => {
 							window.location.href =
-							'/wp-admin/admin.php?page=sureforms_menu';
+								'/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
 						<div>{ ICONS.close }</div>
 					</div>
-				) }
+				</div>
+			) : (
+				<div
+					className="srfm-tp-header-close"
+					onClick={ () => {
+						window.location.href =
+							'/wp-admin/admin.php?page=sureforms_menu';
+					} }
+				>
+					<div>{ ICONS.close }</div>
+				</div>
+			) }
 		</div>
 	);
 };
