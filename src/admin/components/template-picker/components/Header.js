@@ -79,88 +79,88 @@ const Header = () => {
 			{ srfm_admin.is_authorized &&
 			page === 'add-new-form' &&
 			method === 'ai' ? (
-				<div className="srfm-tp-header-credits-ctn">
-					<div
-						style={ {
-							// if popover is open, change background color
-							background: showRevokePopover ? '#F3F4F6' : 'white',
-						} }
-						className="srfm-tp-header-credits"
-						onClick={ () => {
-							setShowRevokePopover( ! showRevokePopover );
-						} }
-					>
-						<span className="srfm-tp-header-credits-left">
-							{ creditsLeftInK }+
-						</span>
-						<BsLightningCharge />
-					</div>
-					{ showRevokePopover && (
+					<div className="srfm-tp-header-credits-ctn">
 						<div
-							className="srfm-tp-header-credits-popover"
-							ref={ revokePopover }
+							style={ {
+							// if popover is open, change background color
+								background: showRevokePopover ? '#F3F4F6' : 'white',
+							} }
+							className="srfm-tp-header-credits"
+							onClick={ () => {
+								setShowRevokePopover( ! showRevokePopover );
+							} }
 						>
-							<span className="srfm-tp-header-credits-popover-title">
-								{ creditsLeft
-									.toString()
-									.replace(
-										/\B(?=(\d{3})+(?!\d))/g,
-										','
-									) }{ ' ' }
-								{ __(
-									'AI Credits in Your Account',
-									'sureforms'
-								) }
+							<span className="srfm-tp-header-credits-left">
+								{ creditsLeftInK }+
 							</span>
-							<span className="srfm-tp-header-credits-popover-description">
-								{ __(
-									'Credits are used to generate forms with AI.',
-									'sureforms'
-								) }
-							</span>
-							<Button
-								className="srfm-credits-popover-more-btn"
-								onClick={ () => {
-									window.open(
-										'https://app.zipwp.com/credits-pricing',
-										'_blank'
-									);
-								} }
-							>
-								{ __( 'Get More Credits', 'sureforms' ) }
-							</Button>
-							<Button
-								className="srfm-credits-popover-revoke-btn"
-								onClick={ () => {
-									setShowRevokePopover( false );
-									setShowRevokeConfirmation( true );
-								} }
-							>
-								{ __( 'Revoke Authorization', 'sureforms' ) }
-							</Button>
+							<BsLightningCharge />
 						</div>
-					) }
+						{ showRevokePopover && (
+							<div
+								className="srfm-tp-header-credits-popover"
+								ref={ revokePopover }
+							>
+								<span className="srfm-tp-header-credits-popover-title">
+									{ creditsLeft
+										.toString()
+										.replace(
+											/\B(?=(\d{3})+(?!\d))/g,
+											','
+										) }{ ' ' }
+									{ __(
+										'AI Credits in Your Account',
+										'sureforms'
+									) }
+								</span>
+								<span className="srfm-tp-header-credits-popover-description">
+									{ __(
+										'Credits are used to generate forms with AI.',
+										'sureforms'
+									) }
+								</span>
+								<Button
+									className="srfm-credits-popover-more-btn"
+									onClick={ () => {
+										window.open(
+											'https://app.zipwp.com/credits-pricing',
+											'_blank'
+										);
+									} }
+								>
+									{ __( 'Get More Credits', 'sureforms' ) }
+								</Button>
+								<Button
+									className="srfm-credits-popover-revoke-btn"
+									onClick={ () => {
+										setShowRevokePopover( false );
+										setShowRevokeConfirmation( true );
+									} }
+								>
+									{ __( 'Revoke Authorization', 'sureforms' ) }
+								</Button>
+							</div>
+						) }
+						<div
+							className="srfm-tp-header-close"
+							onClick={ () => {
+								window.location.href =
+								'/wp-admin/admin.php?page=sureforms_menu';
+							} }
+						>
+							<div>{ ICONS.close }</div>
+						</div>
+					</div>
+				) : (
 					<div
 						className="srfm-tp-header-close"
 						onClick={ () => {
 							window.location.href =
-								'/wp-admin/admin.php?page=sureforms_menu';
+							'/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
 						<div>{ ICONS.close }</div>
 					</div>
-				</div>
-			) : (
-				<div
-					className="srfm-tp-header-close"
-					onClick={ () => {
-						window.location.href =
-							'/wp-admin/admin.php?page=sureforms_menu';
-					} }
-				>
-					<div>{ ICONS.close }</div>
-				</div>
-			) }
+				) }
 		</div>
 	);
 };

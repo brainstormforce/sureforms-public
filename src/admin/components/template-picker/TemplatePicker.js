@@ -136,4 +136,4 @@ export default TemplatePicker;
 	}
 
 	document.addEventListener( 'DOMContentLoaded', renderApp );
-} )();
+}() );

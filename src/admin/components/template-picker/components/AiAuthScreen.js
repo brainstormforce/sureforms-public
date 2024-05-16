@@ -82,10 +82,7 @@ const AiAuthScreen = () => {
 					<div className="srfm-ai-auth-ctn-inner">
 						<div className="srfm-ai-auth-txt-ctn">
 							<h1 className="srfm-ai-auth-title">
-								{ __(
-									'Building  Forms with AI ',
-									'sureforms'
-								) }
+								{ __( 'Building Forms with AI', 'sureforms' ) }
 							</h1>
 							<p className="srfm-ai-auth-sub-title">
 								{ __(

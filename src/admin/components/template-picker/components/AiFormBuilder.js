@@ -11,9 +11,8 @@ import ICONS from './icons.js';
 
 const AiFormBuilder = () => {
 	const [ message, setMessage ] = useState(
-		__( 'Connecting with AI...', 'sureforms' )
+		__( 'Connecting with AI…', 'sureforms' )
 	);
-	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ isBuildingForm, setIsBuildingForm ] = useState( false );
 	const [ percentBuild, setPercentBuild ] = useState( 0 );
 	const [ showEmptyError, setShowEmptyError ] = useState( false );
@@ -55,7 +54,7 @@ const AiFormBuilder = () => {
 
 		// add a pause of 2 seconds and set percentBuild to 25 without using setTimeout
 		setPercentBuild( 50 );
-		setMessage( __( 'Generating Fields...', 'sureforms' ) );
+		setMessage( __( 'Generating Fields…', 'sureforms' ) );
 
 		try {
 			const response = await apiFetch( {
@@ -66,7 +65,7 @@ const AiFormBuilder = () => {
 
 			if ( response ) {
 				setMessage(
-					__( 'Just doing some final touches...', 'sureforms' )
+					__( 'Just doing some final touches…', 'sureforms' )
 				);
 				setPercentBuild( 75 );
 				const data = JSON.parse( response.data );
@@ -133,7 +132,7 @@ const AiFormBuilder = () => {
 								<div className="srfm-ai-builder-header-text">
 									<h1 className="srfm-ai-builder-header-title">
 										{ __(
-											'We are building your Form...',
+											'We are building your Form…',
 											'sureforms'
 										) }
 									</h1>
