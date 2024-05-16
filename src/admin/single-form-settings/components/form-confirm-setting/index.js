@@ -14,8 +14,48 @@ const FormConfirmSetting = () => {
 	const { editPost } = useDispatch( editorStore );
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
+	const [ errorMessage, setErrorMessage ] = useState( null );
 	const handleSaveChanges = () => {
+		const validationStatus = validateForm();
+		setErrorMessage( validationStatus );
+		if ( '' !== validationStatus ) {
+			return;
+		}
 		updateMeta( '_srfm_form_confirmation', [ data ] );
+	};
+	useEffect( () => {
+		if ( null !== errorMessage ) {
+			setErrorMessage( validateForm() );
+		}
+	}, [ data ] );
+
+	const validateForm = () => {
+		let validation = '';
+		if ( 'different page' === data?.confirmation_type && ! data?.page_url ) {
+			validation = __( 'Please select a page.', 'sureforms' );
+		}
+		if ( 'custom url' === data?.confirmation_type ) {
+			if ( ! data?.custom_url ) {
+				validation = __( 'This field is required', 'sureforms' );
+			} else {
+				try {
+					const newURL = new URL( data?.custom_url );
+					if ( newURL.protocol !== 'https:' ) {
+						validation = __( 'URL should use HTTPS', 'sureforms' );
+					} else if ( ! (
+						'localhost' !== newURL.hostname &&
+						newURL.hostname.includes( '.' ) &&
+						newURL.hostname.split( '.' ).pop().length > 1 ) ) {
+						validation = __( 'URL is missing Top Level Domain (TLD)', 'sureforms' );
+					} else {
+						validation = '';
+					}
+				} catch ( error ) {
+					validation = __( 'Please enter a valid URL', 'sureforms' );
+				}
+			}
+		}
+		return validation;
 	};
 	const handleEditorChange = ( newContent ) => {
 		setData( { ...data, message: newContent } );
@@ -112,7 +152,7 @@ const FormConfirmSetting = () => {
 								</div>
 								<div
 									className={ `srfm-option ${ data?.confirmation_type ===
-											'different page'
+										'different page'
 										? 'srfm-active-conf-type'
 										: ''
 									}` }
@@ -124,12 +164,14 @@ const FormConfirmSetting = () => {
 											data?.confirmation_type ===
 											'different page'
 										}
-										onChange={ ( e ) =>
+										onChange={ ( e ) => {
+											setErrorMessage( null );
 											setData( {
 												...data,
 												confirmation_type:
 													e.target.value,
-											} )
+											} );
+										}
 										}
 										type="radio"
 										id="confirm-type-2"
@@ -158,12 +200,14 @@ const FormConfirmSetting = () => {
 											data?.confirmation_type ===
 											'custom url'
 										}
-										onChange={ ( e ) =>
+										onChange={ ( e ) => {
+											setErrorMessage( null );
 											setData( {
 												...data,
 												confirmation_type:
 													e.target.value,
-											} )
+											} );
+										}
 										}
 										type="radio"
 										id="confirm-type-3"
@@ -186,6 +230,7 @@ const FormConfirmSetting = () => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Select Page', 'sureforms' ) }
+										<span className="srfm-validation-error"> *</span>
 									</label>
 								</div>
 								<div className="srfm-options-wrapper">
@@ -197,11 +242,13 @@ const FormConfirmSetting = () => {
 										) }
 										options={ pageOptions }
 										isMulti={ false }
-										onChange={ ( e ) =>
+										onChange={ ( e ) => {
+											setErrorMessage( null );
 											setData( {
 												...data,
 												page_url: e.value,
-											} )
+											} );
+										}
 										}
 										classNamePrefix={ 'srfm-select' }
 										menuPlacement="auto"
@@ -258,6 +305,7 @@ const FormConfirmSetting = () => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Custom URL', 'sureforms' ) }
+										<span className="srfm-validation-error"> *</span>
 									</label>
 								</div>
 								<input
@@ -271,6 +319,9 @@ const FormConfirmSetting = () => {
 									}
 								/>
 							</div>
+						) }
+						{ errorMessage && (
+							<div className="srfm-validation-error">{ errorMessage }</div>
 						) }
 						{
 							data?.confirmation_type === 'same page' && (
@@ -292,9 +343,9 @@ const FormConfirmSetting = () => {
 										/>
 									</div>
 								</div>
+
 							)
 						}
-
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
@@ -308,7 +359,7 @@ const FormConfirmSetting = () => {
 								<div className="srfm-options-wrapper">
 									<div
 										className={ `srfm-option ${ data?.submission_action ===
-												'hide form'
+											'hide form'
 											? 'srfm-active-after-submit'
 											: ''
 										}` }
@@ -340,7 +391,7 @@ const FormConfirmSetting = () => {
 									</div>
 									<div
 										className={ `srfm-option ${ data?.submission_action ===
-												'reset form'
+											'reset form'
 											? 'srfm-active-after-submit'
 											: ''
 										}` }
