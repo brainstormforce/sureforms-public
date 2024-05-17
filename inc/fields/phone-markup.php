@@ -36,7 +36,7 @@ class Phone_Markup extends Base {
 	public function __construct( $attributes ) {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Phone', 'sureforms' ) );
-		$this->set_error_msg( $attributes );
+		$this->set_error_msg( $attributes, 'srfm_phone_block_required_text' );
 		$this->slug         = 'phone';
 		$this->auto_country = isset( $attributes['autoCountry'] ) ? $attributes['autoCountry'] : '';
 		$this->set_unique_slug();

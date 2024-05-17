@@ -20,22 +20,6 @@ const FormCustomCssPanel = ( { formCustomCssData } ) => {
 		};
 	}, [] );
 
-	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
-	useEffect( () => {
-		const isExistStyle = document.getElementById(
-			'srfm-blocks-editor-custom-css'
-		);
-		if ( ! isExistStyle ) {
-			const node = document.createElement( 'style' );
-			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
-			node.textContent = '.editor-styles-wrapper{' + customCSS + '}';
-			document.head.appendChild( node );
-		} else {
-			isExistStyle.textContent =
-				'.editor-styles-wrapper{' + customCSS + '}';
-		}
-	}, [ customCSS ] );
-
 	// Initialize the editor when the component is mounted and cleanup the editor when the component is unmounted.
 	useEffect( () => {
 		const cleanupEditors = () => {

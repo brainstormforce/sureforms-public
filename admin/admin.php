@@ -245,6 +245,7 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
@@ -371,7 +372,6 @@ class Admin {
 
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
-		wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
@@ -407,6 +407,7 @@ class Admin {
 					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
 					'plugin_version'          => SRFM_VER,
 					'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 				]
 			);
 		}
