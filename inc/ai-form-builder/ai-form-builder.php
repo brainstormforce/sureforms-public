@@ -105,7 +105,7 @@ class AI_Form_Builder {
 		}
 
 		// Set the token count to 0, and create messages array.
-		$messages    = [];
+		$messages = [];
 
 		// Start with the last message - going upwards until the token count hits 2000.
 		foreach ( array_reverse( $params['message_array'] ) as $current_message ) {
