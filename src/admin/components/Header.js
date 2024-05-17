@@ -102,7 +102,7 @@ export default () => {
 							` }
 						>
 							{ ' ' }
-							{ 'V:' + srfm_admin?.plugin_version }
+							{ srfm_admin?.plugin_version }
 							<span
 								css={ css`
 									padding: 2px 5px 3px 6px;
@@ -138,7 +138,7 @@ export default () => {
 									` }
 								>
 									{ ' ' }
-									{ 'V:' + srfm_admin?.pro_plugin_version }
+									{ srfm_admin?.pro_plugin_version }
 									<span
 										css={ css`
 											background-color: #0F172A;
@@ -164,7 +164,7 @@ export default () => {
 								></div>
 								<article
 									css={ css`
-										color: ${ isLicenseActive ? '#16A34A' : '#FF4B4B' };
+										color: ${ isLicenseActive ? '#16A34A' : '#DC2626' };
 										font-size: 14px;
 										font-weight: 400;
 										line-height: 20px;
@@ -173,7 +173,7 @@ export default () => {
 									` }
 								>
 									{ ' ' }
-									{ isLicenseActive ? ( __( 'License Activated', 'sureforms' ) ) : ( __( 'License not Activated', 'sureforms' ) ) }
+									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : ( __( 'Unlicensed', 'sureforms' ) ) }
 								</article>
 							</>
 						) }
