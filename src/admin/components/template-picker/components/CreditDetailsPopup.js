@@ -34,8 +34,8 @@ const CreditDetailsPopup = ( {
 			<span className="srfm-tp-header-credits-popover-title">
 				{ typeof creditsLeft === 'number' && ! isNaN( creditsLeft )
 					? `${ creditsLeft
-							.toString()
-							.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
+						.toString()
+						.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
                             `
 					: '0' }
 				{ __( ' AI Credits in Your Account', 'sureforms' ) }

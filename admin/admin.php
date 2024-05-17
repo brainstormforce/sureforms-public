@@ -44,7 +44,7 @@ class Admin {
 		// Add custom redirection URL for Zip AI after authentication.
 		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
 		// Add custom redirection URL for Zip AI after authentication revoke.
-		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_args' ], 9999, 1 );
+		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_redirection_url' ], 9999, 1 );
 	}
 
 	/**
@@ -60,15 +60,15 @@ class Admin {
 	/**
 	 * Custom redirection URL for Zip AI after authentication revoke.
 	 *
-	 * @param string $args Redirection URL.
+	 * @param string $url Redirection URL.
 	 * @return string
 	 */
-	public function custom_zip_ai_auth_revoke_args( $args ) {
+	public function custom_zip_ai_auth_revoke_redirection_url( $url ) {
 		// only change admin URL if the user is on the add new form page.
 		if ( isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
 			return admin_url( 'admin.php?page=add-new-form' );
 		}
-		return $args;
+		return $url;
 	}
 
 	/**
@@ -477,7 +477,6 @@ class Admin {
 					'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
 					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
 					'is_authorized'                    => AI_Helper::is_authorized(),
-					'ajax_url'                         => admin_url( 'admin-ajax.php' ),
 					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
 				]
 			);

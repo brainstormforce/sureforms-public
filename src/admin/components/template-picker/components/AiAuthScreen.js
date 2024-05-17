@@ -56,13 +56,19 @@ const AiAuthScreen = () => {
 				} );
 			}
 
+			// Create a new FormData object. Append the action and nonce.
+			const formData = new FormData();
+			formData.append( 'action', 'sureforms_zip_ai_verify_authenticity' );
+			formData.append(
+				'nonce',
+				srfm_admin.zip_ai_verify_authenticity_nonce
+			);
+
 			// Call the getApiData function with the required parameters. fetch
 			apiFetch( {
-				url:
-					srfm_admin.ajax_url +
-					'?action=sureforms_zip_ai_verify_authenticity&nonce=' +
-					srfm_admin.zip_ai_verify_authenticity_nonce,
+				url: ajaxurl,
 				method: 'POST',
+				body: formData,
 			} ).then( ( response ) => {
 				if ( response?.success && response?.data?.is_authorized ) {
 					authWindow.close();
