@@ -160,6 +160,7 @@ class AI_Form_Builder {
 		$data     = [
 			'model'    => 'gpt-3.5-turbo',
 			'messages' => $messages,
+			'type' => 'form-builder'
 		];
 
 		// Get the response from the endpoint.
