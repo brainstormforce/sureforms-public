@@ -159,6 +159,8 @@ $placeholder_color: #9ca3af;
 	display: flex;
 	gap: 16px;
 	align-items: center;
+	width: 100%;
+	justify-content: space-between;
 
 	.srfm-modal-card-title {
 		line-height: 1.5em;

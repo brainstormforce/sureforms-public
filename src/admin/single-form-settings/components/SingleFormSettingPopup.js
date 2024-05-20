@@ -31,7 +31,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ parentTab, setParentTab ] = useState( null );
 
 	const tabs = applyFilters(
-		'srfm.form_settings.tabs',
+		'srfm.formSettings.tabs',
 		[
 			/*parent tabs linked to nav*/
 			{
