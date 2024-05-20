@@ -5,12 +5,21 @@ import {
 	ScBreadcrumbs,
 	ScDrawer,
 } from '@surecart/components-react';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Logo from '../dashboard/templates/Logo';
 
 export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
+	const [ isLicenseActive, setIsLicenseActive ] = useState( srfm_admin?.is_license_active || false );
+
+	useEffect( () => {
+		window.addEventListener( 'srfm_license_status_updated', ( event ) => {
+			if ( event?.detail ) {
+				setIsLicenseActive( event.detail.is_license_active );
+			}
+		} );
+	}, [] );
 
 	return (
 		<>
@@ -93,18 +102,81 @@ export default () => {
 							` }
 						>
 							{ ' ' }
-							{ 'V:' + srfm_admin?.plugin_version }
+							{ srfm_admin?.plugin_version }
 							<span
 								css={ css`
 									padding: 2px 5px 3px 6px;
 									border-radius: 4px;
 									border: 1px solid #e2e8f0;
 									margin-left: 12px;
+									font-weight: 500;
+									line-height: 11px;
+									font-size: 11px;
 								` }
 							>
 								{ __( 'Core', 'sureforms' ) }
 							</span>
 						</article>
+						{ srfm_admin?.is_pro_active && (
+							<>
+								<div
+									css={ css`
+										width: 1px;
+										background: #e2e8f0;
+										height: 20px;
+									` }
+								></div>
+
+								<article
+									css={ css`
+										color: #94a3b8;
+										font-size: 14px;
+										font-weight: 500;
+										line-height: 20px;
+										display: flex;
+										align-items: center;
+									` }
+								>
+									{ ' ' }
+									{ srfm_admin?.pro_plugin_version }
+									<span
+										css={ css`
+											background-color: #0F172A;
+											color: #ffffff;
+											padding: 2px 5px 3px 6px;
+											border-radius: 4px;
+											border: 1px solid #0F172A;
+											margin-left: 12px;
+											font-weight: 500;
+											line-height: 11px;
+											font-size: 11px;
+										` }
+									>
+										{ __( 'Pro', 'sureforms' ) }
+									</span>
+								</article>
+								<div
+									css={ css`
+										width: 1px;
+										background: #e2e8f0;
+										height: 20px;
+									` }
+								></div>
+								<article
+									css={ css`
+										color: ${ isLicenseActive ? '#16A34A' : '#DC2626' };
+										font-size: 14px;
+										font-weight: 400;
+										line-height: 20px;
+										display: flex;
+										align-items: center;
+									` }
+								>
+									{ ' ' }
+									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : ( __( 'Unlicensed', 'sureforms' ) ) }
+								</article>
+							</>
+						) }
 						<div
 							css={ css`
 								width: 1px;
