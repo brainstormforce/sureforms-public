@@ -1004,7 +1004,7 @@ function StyleSettings( props ) {
 										isFormSpecific={ true }
 									/>
 								</>
-							) }{ ' ' }
+							) }
 						</>
 					) }
 				</SRFMAdvancedPanelBody>
