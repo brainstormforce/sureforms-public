@@ -476,7 +476,7 @@ function GeneralSettings( props ) {
 				) }
 			</SRFMAdvancedPanelBody>
 			<MoreSettingsButton
-				settingName={ __( 'More Settings', 'sureforms' ) }
+				settingName={ __( 'Form Behavior', 'sureforms' ) }
 				popupId="email_notification"
 				openModal={ openModal }
 			/>
