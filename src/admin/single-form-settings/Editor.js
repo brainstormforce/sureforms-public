@@ -166,7 +166,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
-			node.textContent = '.editor-styles-wrapper{' + formCustomCssData + '}';
+			node.textContent =
+				'.editor-styles-wrapper{' + formCustomCssData + '}';
 			document.head.appendChild( node );
 		} else {
 			isExistStyle.textContent =
@@ -544,8 +545,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	return (
 		<>
 			<PluginDocumentSettingPanel
-				name="srfm-sidebar"
+				name="srfm-description"
 				className="srfm-single-form-settings-description"
+				title={ __( 'SureForms description', 'sureforms' ) }
 			>
 				<div className="block-editor-block-card">
 					<span className="block-editor-block-icon has-colors">
@@ -648,29 +650,13 @@ registerPlugin( 'srfm-form-specific-settings', {
 
 //force panel open
 const forcePanel = () => {
-	//force sidebar open
-	if ( ! select( 'core/edit-post' ).isEditorSidebarOpened() ) {
-		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
-	}
-	//force panel open
-	if (
-		! select( 'core/edit-post' ).isEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
-	if (
-		! select( 'core/edit-post' ).isEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		)
-	) {
-		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
-			'srfm-form-specific-settings/srfm-sidebar'
-		);
-	}
+	dispatch( 'core/editor' ).toggleEditorPanelOpened(
+		'srfm-form-specific-settings/srfm-description'
+	);
+
+	dispatch( 'core/editor' ).toggleEditorPanelOpened(
+		'srfm-form-specific-settings/srfm-sidebar'
+	);
 };
 
 wp.domReady( () => {
