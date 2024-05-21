@@ -567,7 +567,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			<PluginDocumentSettingPanel
 				name="srfm-description"
 				className="srfm-single-form-settings-description"
-				title={ __( 'SureForms description', 'sureforms' ) }
+				title={ __( 'SureForms Description', 'sureforms' ) }
 			>
 				<div className="block-editor-block-card">
 					<span className="block-editor-block-icon has-colors">
