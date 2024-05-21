@@ -475,7 +475,7 @@ function GeneralSettings( props ) {
 					</>
 				) }
 			</SRFMAdvancedPanelBody>
-			<MoreSettingsButton
+			<FormBehaviorButton
 				settingName={ __( 'Form Behavior', 'sureforms' ) }
 				popupId="email_notification"
 				openModal={ openModal }
@@ -483,7 +483,7 @@ function GeneralSettings( props ) {
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
-					title={ __( 'Single Form Setting', 'sureforms' ) }
+					title={ __( 'Form Behavior', 'sureforms' ) }
 					className="srfm-header-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
@@ -498,7 +498,7 @@ function GeneralSettings( props ) {
 	);
 }
 
-const MoreSettingsButton = ( { settingName, popupId, openModal } ) => {
+const FormBehaviorButton = ( { settingName, popupId, openModal } ) => {
 	return (
 		<div className="srfm-custom-layout-panel components-panel__body">
 			<h2 className="components-panel__body-title">
