@@ -301,7 +301,7 @@ function GeneralSettings( props ) {
 					<>
 						<ToggleControl
 							label={ __(
-								'Show Title on Instant Forms',
+								'Show Title on Instant Form',
 								'sureforms'
 							) }
 							checked={
@@ -483,7 +483,7 @@ function GeneralSettings( props ) {
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
-					title={ __( 'Single Form Setting', 'sureforms' ) }
+					title={ __( 'Single Form Settings', 'sureforms' ) }
 					className="srfm-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
