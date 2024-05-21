@@ -670,13 +670,29 @@ registerPlugin( 'srfm-form-specific-settings', {
 
 //force panel open
 const forcePanel = () => {
-	dispatch( 'core/editor' ).toggleEditorPanelOpened(
-		'srfm-form-specific-settings/srfm-description'
-	);
-
-	dispatch( 'core/editor' ).toggleEditorPanelOpened(
-		'srfm-form-specific-settings/srfm-sidebar'
-	);
+	//force sidebar open
+	if ( ! select( 'core/edit-post' ).isEditorSidebarOpened() ) {
+		dispatch( 'core/edit-post' ).openGeneralSidebar( 'edit-post/document' );
+	}
+	//force panel open
+	if (
+		! select( 'core/edit-post' ).isEditorPanelEnabled(
+			'srfm-form-specific-settings/srfm-sidebar'
+		)
+	) {
+		dispatch( 'core/edit-post' ).toggleEditorPanelEnabled(
+			'srfm-form-specific-settings/srfm-sidebar'
+		);
+	}
+	if (
+		! select( 'core/edit-post' ).isEditorPanelOpened(
+			'srfm-form-specific-settings/srfm-sidebar'
+		)
+	) {
+		dispatch( 'core/edit-post' ).toggleEditorPanelOpened(
+			'srfm-form-specific-settings/srfm-sidebar'
+		);
+	}
 };
 
 wp.domReady( () => {
