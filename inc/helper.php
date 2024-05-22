@@ -332,6 +332,26 @@ class Helper {
 	}
 
 	/**
+	 * Check if the current user has a given capability.
+	 *
+	 * @param string $capability The capability to check.
+	 * @since x.x.x
+	 * @return bool Whether the current user has the given capability or role.
+	 */
+	public static function current_user_can( $capability = '' ) {
+
+		if ( ! function_exists( 'current_user_can' ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $capability ) || empty( $capability ) ) {
+			$capability = 'edit_posts';
+		}
+
+		return current_user_can( $capability );
+	}
+
+	/**
 	 * Get all the entries for the given form ids. The entries are older than the given days_old.
 	 *
 	 * @param int        $days_old The number of days old the entries should be.

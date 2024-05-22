@@ -111,9 +111,9 @@ class Export {
 
 			$post_content = addslashes( $post_content );
 
-			// Check if _srfm_conditional_logic exists in post_meta.
-			if ( isset( $post_meta['_srfm_conditional_logic'] ) ) {
-				// loop through the conditional logic and unserialize the value.
+			// Check if the post_meta has conditional logic and is an array.
+			if ( ! empty( $post_meta['_srfm_conditional_logic'] ) && is_array( $post_meta['_srfm_conditional_logic'] ) ) {
+				// Loop through the conditional logic and unserialize the value.
 				foreach ( $post_meta['_srfm_conditional_logic'] as $key => $value ) {
 					// Check if the value is serialized.
 					// if serialized then unserialize the value.
@@ -163,7 +163,7 @@ class Export {
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => [ $this, 'handle_import_form' ],
-				'permission_callback' => [ $helper, 'get_items_permissions_check' ],
+				'permission_callback' => [ $helper, 'current_user_can' ],
 			]
 		);
 	}
