@@ -13,6 +13,7 @@ import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
 import { setFormSpecificSmartTags } from '@Utils/Helpers';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
@@ -37,6 +38,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			component: (
 				<EmailNotification
 					emailNotificationData={ emailNotificationData }
+					toast={ toast }
 				/>
 			),
 		},
@@ -83,6 +85,25 @@ const SingleFormSettingsPopup = ( props ) => {
 					</div>
 				) ) }
 			</div>
+			<Toaster
+				containerClassName="srfm-single-form-toast-ctn"
+				position="top-right"
+				containerStyle={ {
+					marginTop: '35px',
+				} }
+			>
+				{ ( t ) => (
+					<ToastBar
+						toast={ t }
+						style={ {
+							...t.style,
+							animation: t.visible
+								? 'slide-in-left 0.5s ease'
+								: 'slide-out-right 0.5s ease',
+						} }
+					/>
+				) }
+			</Toaster>
 			{ /* Modal Content */ }
 			<>{ tabs.find( ( { id } ) => id === selectedTab ).component }</>
 		</div>

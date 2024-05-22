@@ -11,6 +11,7 @@ $option_bg_color: #fff;
 $content_color: #475569;
 $btn_text_color: #ffffff;
 $placeholder_color: #9ca3af;
+$req_err_color: #dc2625;
 
 .components-popover__fallback-container {
 	& .components-button {
@@ -261,6 +262,11 @@ $placeholder_color: #9ca3af;
 								&.with-icon {
 									padding: 10px 24px 10px 12px;
 								}
+							}
+							.required-error {
+								border-color: $req_err_color !important;
+								box-shadow: 0 0 0 0.5px $req_err_color !important;
+								outline-color: $req_err_color;
 							}
 						}
 

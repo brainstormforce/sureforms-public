@@ -37,6 +37,25 @@ const EmailConfirmation = ( props ) => {
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
 
+	// Remove the required error class from the input field on change
+	const maybeRemoveRequiredError = ( e ) => {
+		e.target.classList.remove( 'required-error' );
+	};
+
+	// Function to remove the required error class if the condition is met
+	const removeErrorClassIfNeeded = ( selector, condition ) => {
+		if ( condition ) {
+			const inputElement = document.querySelector( selector );
+			inputElement?.classList.remove( 'required-error' );
+		}
+	};
+
+	// if required fields values are changed by smart tags then remove the required error
+	useEffect( () => {
+		removeErrorClassIfNeeded( '.srfm-modal-email-to', formData.email_to );
+		removeErrorClassIfNeeded( '.srfm-modal-subject', dynamicSubject );
+	}, [ formData.email_to, dynamicSubject ] );
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
@@ -83,14 +102,15 @@ const EmailConfirmation = ( props ) => {
 								<span className="srfm-required"> *</span>
 							</div>
 							<input
-								onChange={ ( e ) =>
+								onChange={ ( e ) => {
 									setFormData( {
 										...formData,
 										email_to: e.target.value,
-									} )
-								}
+									} );
+									maybeRemoveRequiredError( e );
+								} }
 								value={ formData.email_to }
-								className="srfm-modal-input"
+								className="srfm-modal-input srfm-modal-email-to"
 							/>
 							<SmartTagList
 								tagsArray={
@@ -117,17 +137,16 @@ const EmailConfirmation = ( props ) => {
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label>
-									{ __( 'Subject', 'sureforms' ) }
-								</label>
+								<label>{ __( 'Subject', 'sureforms' ) }</label>
 								<span className="srfm-required"> *</span>
 							</div>
 							<input
-								onChange={ ( e ) =>
-									setDynamicSubject( e.target.value )
-								}
+								onChange={ ( e ) => {
+									setDynamicSubject( e.target.value );
+									maybeRemoveRequiredError( e );
+								} }
 								value={ dynamicSubject }
-								className="srfm-modal-input with-icon"
+								className="srfm-modal-input with-icon srfm-modal-subject"
 							/>
 
 							<SmartTagList
@@ -193,9 +212,7 @@ const EmailConfirmation = ( props ) => {
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label>
-									{ __( 'Email CC', 'sureforms' ) }
-								</label>
+								<label>{ __( 'CC', 'sureforms' ) }</label>
 							</div>
 							<input
 								onChange={ ( e ) =>
@@ -232,9 +249,7 @@ const EmailConfirmation = ( props ) => {
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label>
-									{ __( 'Email BCC', 'sureforms' ) }
-								</label>
+								<label>{ __( 'BCC', 'sureforms' ) }</label>
 							</div>
 							<input
 								onChange={ ( e ) =>
@@ -272,7 +287,7 @@ const EmailConfirmation = ( props ) => {
 						<div className="srfm-modal-area-box">
 							<div className="srfm-modal-area-header">
 								<div className="srfm-modal-area-header-text">
-									<p>{ __( 'Email Body', 'sureforms' ) }<span className="srfm-required-body"> *</span></p>
+									<p>{ __( 'Email Body', 'sureforms' ) }</p>
 								</div>
 							</div>
 							<div className="srfm-editor-wrap">

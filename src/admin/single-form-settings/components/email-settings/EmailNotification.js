@@ -7,7 +7,7 @@ import { ToggleControl } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
-const EmailNotification = ( { emailNotificationData } ) => {
+const EmailNotification = ( { emailNotificationData, toast } ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
@@ -32,8 +32,28 @@ const EmailNotification = ( { emailNotificationData } ) => {
 		updateMeta( '_srfm_email_notification', allData );
 	};
 	const handleUpdateEmailData = ( newData ) => {
-		const { email_body, email_to, subject } = newData;
-		if ( ! email_body || ! email_to || ! subject ) {
+		const { email_to, subject } = newData;
+		if ( ! email_to || ! subject ) {
+			// make the border red of the field which is empty
+			if ( ! email_to ) {
+				document
+					.querySelector( '.srfm-modal-email-to' )
+					.classList.add( 'required-error' );
+			}
+
+			if ( ! subject ) {
+				document
+					.querySelector( '.srfm-modal-subject' )
+					.classList.add( 'required-error' );
+			}
+
+			toast.dismiss();
+			toast.error(
+				__( 'Please fill out the required field.', 'sureforms' ),
+				{
+					duration: 1500,
+				}
+			);
 			return;
 		}
 		let currEmailData = emailNotificationData;
@@ -50,6 +70,13 @@ const EmailNotification = ( { emailNotificationData } ) => {
 			} );
 		}
 		updateMeta( '_srfm_email_notification', currEmailData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email notification updated successfully.', 'sureforms' ),
+			{
+				duration: 1500,
+			}
+		);
 	};
 	function updateMeta( option, value ) {
 		const option_array = {};
