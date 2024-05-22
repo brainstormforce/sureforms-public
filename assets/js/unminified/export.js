@@ -131,10 +131,6 @@ function appendImportBtn() {
 			'button button-secondary button-large srfm-import-btn';
 		newElement.textContent = 'Import Form';
 		element.parentNode.insertBefore( newElement, element.nextSibling );
-		newElement.style.color = '#D54407';
-		newElement.style.background = '#fff';
-		newElement.style.borderColor = '#D54407';
-		newElement.style.boxShadow = 'none';
 	}
 }
 document.addEventListener( 'DOMContentLoaded', function () {

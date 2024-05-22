@@ -57,20 +57,19 @@
 	&.srfm-flex-row {
 		flex-direction: row;
 	}
-	&.srfm-items-center{
+	&.srfm-items-center {
 		align-items: center;
 	}
 
-	&.srfm-gap-xs{
-		gap:4px;
+	&.srfm-gap-xs {
+		gap: 4px;
 	}
-
 }
 
-.srfm-success{
+.srfm-success {
 	color: green;
 }
 
-.srfm-tick{
+.srfm-tick {
 	margin-right: 8px;
 }
