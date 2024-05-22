@@ -33,29 +33,27 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 	};
 	const handleUpdateEmailData = ( newData ) => {
 		const { email_to, subject } = newData;
-		if ( ! email_to || ! subject ) {
-			// make the border red of the field which is empty
-			if ( ! email_to ) {
-				document
-					.querySelector( '.srfm-modal-email-to' )
-					.classList.add( 'required-error' );
-			}
+		let hasError = false;
 
-			if ( ! subject ) {
-				document
-					.querySelector( '.srfm-modal-subject' )
-					.classList.add( 'required-error' );
-			}
+		if ( ! email_to ) {
+			document.querySelector( '.srfm-modal-email-to' ).classList.add( 'required-error' );
+			hasError = true;
+		}
 
+		if ( ! subject ) {
+			document.querySelector( '.srfm-modal-subject' ).classList.add( 'required-error' );
+			hasError = true;
+		}
+
+		if ( hasError ) {
 			toast.dismiss();
 			toast.error(
 				__( 'Please fill out the required field.', 'sureforms' ),
-				{
-					duration: 1500,
-				}
+				{ duration: 1500 }
 			);
 			return;
 		}
+
 		let currEmailData = emailNotificationData;
 		if ( ! newData.id ) {
 			const currId = emailNotificationData.length + 1;
