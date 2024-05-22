@@ -25,6 +25,7 @@
 		background-color: #fffcf5;
 		padding: 0.75em;
 		margin-bottom: 1.2em;
+		font-size: 20px !important;
 
 		.srfm-svg-container {
 			max-width: 36px;
@@ -151,6 +152,10 @@
 
 				select {
 					display: block;
+					padding: 11px 35px 11px 12px !important;
+					width: 100%;
+					font-size: .8em;
+					color: #778899;
 				}
 			}
 

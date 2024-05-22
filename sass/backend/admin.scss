@@ -197,3 +197,27 @@ $placeholder_color: #9ca3af;
 		border-color: rgb( 229, 231, 235 );
 	}
 }
+
+.srfm-flex {
+	display: flex;
+
+	&.srfm-flex-row {
+		flex-direction: row;
+	}
+	&.srfm-items-center{
+		align-items: center;
+	}
+
+	&.srfm-gap-xs{
+		gap:4px;
+	}
+
+}
+
+.srfm-success{
+	color: green;
+}
+
+.srfm-tick{
+	margin-right: 8px;
+}
