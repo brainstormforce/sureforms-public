@@ -85,6 +85,14 @@ const defaultKeys = {
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
 	_srfm_additional_classes: '',
+	// Page Break Button
+	_srfm_page_break_inherit_theme_button: false,
+	_srfm_page_break_button_bg_color: '#D54407',
+	_srfm_page_break_button_text_color: '#ffffff',
+	_srfm_page_break_button_border_color: '#ffffff',
+	_srfm_page_break_button_border_width: 0,
+	_srfm_page_break_button_border_radius: 6,
+	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
 	// Success Message
@@ -149,6 +157,23 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
+	// Find the root container of the form
+	const formRootContainer = document.querySelector( '.editor-styles-wrapper' );
+
+	const addRootClass = () => {
+		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
+			// Split the classes string by spaces
+			const classesArray = sureformsKeys._srfm_additional_classes.split( ' ' );
+
+			// Add classes individually
+			classesArray.forEach( ( classname ) => {
+				formRootContainer?.classList.add( classname );
+			} );
+		}
+	};
+
+	useEffect( addRootClass, [ formRootContainer ] );
+
 	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
 	useEffect( () => {
@@ -158,11 +183,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
-			node.textContent = '.editor-styles-wrapper{' + formCustomCssData + '}';
+			node.textContent = '.edit-post-visual-editor{' + formCustomCssData + '}';
 			document.head.appendChild( node );
 		} else {
 			isExistStyle.textContent =
-				'.editor-styles-wrapper{' + formCustomCssData + '}';
+				'.edit-post-visual-editor{' + formCustomCssData + '}';
 		}
 	}, [ formCustomCssData ] );
 
@@ -593,6 +618,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							isInlineButtonBlockPresent={
 								isInlineButtonBlockPresent
 							}
+							isPageBreak={ isPageBreak }
 						/>
 					</InspectorTab>
 					<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
