@@ -284,14 +284,11 @@ class Generate_Form_Markup {
 					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
 					</div>
 					<div class="srfm-wrn-text-ctn">
-						<span class="srfm-wrn-title">
-						<?php echo esc_html__( 'Please Enable Instant Form', 'sureforms' ); ?>
-						</span>
 						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'This is a preview. To view the forms in the frontend, activate the instant form from the editor settings.', 'sureforms' ); ?>
+						<?php echo esc_html__( 'Please enable Instant Form in the editor to preview the form on the frontend.', 'sureforms' ); ?>
 						</span>
-						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'Go to Settings', 'sureforms' ); ?>
+						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
+							<?php echo esc_html__( 'Go To Settings', 'sureforms' ); ?>
 						</a>
 					</div>
 				</div> 
