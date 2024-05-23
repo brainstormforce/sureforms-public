@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import {
 	MdOutlineCalendarMonth,
 	MdOutlineInsertPageBreak,
-	MdOutlinePassword,
 	MdOutlineStarBorder,
 	MdOutlineCloudUpload,
 } from 'react-icons/md';
@@ -55,15 +54,9 @@ const IconGrid = () => (
 					label={ __( 'Page Break', 'sureforms' ) }
 				/>
 				<IconBlock
-					icon={ <MdOutlinePassword size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Password', 'sureforms' ) }
-				/>
-				<IconBlock
 					icon={ <MdOutlineStarBorder size={ 24 } color="#B4B4B4" /> }
 					label={ __( 'Rating', 'sureforms' ) }
 				/>
-			</div>
-			<div role="presentation">
 				<IconBlock
 					icon={
 						<MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />
