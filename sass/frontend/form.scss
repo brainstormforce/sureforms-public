@@ -40,18 +40,19 @@
 		}
 
 		.srfm-wrn-description {
-			font-size: 14px;
+			font-size: 0.8em;
 			font-weight: 400;
 			color: #b45309;
 			line-height: 24px;
 		}
 
 		.srfm-wrn-link {
-			font-size: 12px;
+			font-size: 0.65em;
 			font-weight: 500;
 			color: #b45309;
 			line-height: 16px;
 			text-decoration: none;
+			width: fit-content;
 			padding: 4px 0 4px 0;
 		}
 	}
