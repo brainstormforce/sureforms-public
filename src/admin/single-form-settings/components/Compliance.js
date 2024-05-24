@@ -116,12 +116,17 @@ const Compliance = ( { complianceData } ) => {
 												complianceData[ 0 ]
 													.auto_delete_days
 											}
-											onChange={ ( value ) =>
+											onChange={ ( value ) => {
+												if ( value < 0 ) {
+													value = 1;
+												}
 												handleToggle( {
 													id: 'auto_delete_days',
 													status: value,
-												} )
-											}
+												} );
+											} }
+											min={ 1 }
+											max={ Infinity }
 										/>
 									</div>
 								) }
