@@ -305,11 +305,10 @@ class Helper {
 	/**
 	 * Checks whether a given request has appropriate permissions.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 * @since 0.0.1
 	 */
-	public static function get_items_permissions_check( $request ) {
+	public static function get_items_permissions_check() {
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
@@ -330,6 +329,26 @@ class Helper {
 			__( 'Sorry, you are not allowed to perform this action.', 'sureforms' ),
 			[ 'status' => \rest_authorization_required_code() ]
 		);
+	}
+
+	/**
+	 * Check if the current user has a given capability.
+	 *
+	 * @param string $capability The capability to check.
+	 * @since x.x.x
+	 * @return bool Whether the current user has the given capability or role.
+	 */
+	public static function current_user_can( $capability = '' ) {
+
+		if ( ! function_exists( 'current_user_can' ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $capability ) || empty( $capability ) ) {
+			$capability = 'edit_posts';
+		}
+
+		return current_user_can( $capability );
 	}
 
 	/**
