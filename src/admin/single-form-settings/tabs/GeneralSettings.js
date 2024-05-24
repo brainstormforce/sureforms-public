@@ -484,7 +484,7 @@ function GeneralSettings( props ) {
 				<Modal
 					onRequestClose={ closeModal }
 					title={ __( 'Form Behavior', 'sureforms' ) }
-					className="srfm-header-settings-modal"
+					className="srfm-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
