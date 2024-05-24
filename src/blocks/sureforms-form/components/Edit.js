@@ -212,6 +212,3 @@ export default ( { attributes, setAttributes } ) => {
 		</>
 	);
 };
-
-˜
-˜
