@@ -26,7 +26,7 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 							{ __( 'Webhooks', 'sureforms' ) }
 						</div>
 						<p className="srfm-modal-card-description">
-							{ __( 'Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
+							{ __( 'Broadcast your SureForms submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
 						</p>
 					</div>
 				</div>

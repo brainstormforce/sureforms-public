@@ -59,7 +59,7 @@ const Compliance = ( { complianceData } ) => {
 									'sureforms'
 								) }
 								help={ __(
-									'When enabled this form will never store Entries',
+									'When enabled this form will never store Entries.',
 									'sureforms'
 								) }
 								checked={
@@ -101,7 +101,7 @@ const Compliance = ( { complianceData } ) => {
 									<div>
 										<label className="components-flex-item components-flex-block components-toggle-control__label">
 											{ __(
-												'Specify how many days old entries will be deleted for this form',
+												'Set the automatic deletion period for entries in this form (in days)',
 												'sureforms'
 											) }
 										</label>
