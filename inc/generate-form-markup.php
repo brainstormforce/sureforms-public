@@ -148,6 +148,7 @@ class Generate_Form_Markup {
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
+			$srfm_hcaptcha_site_key     = '';
 
 			$google_captcha_site_key = '';
 
@@ -160,6 +161,10 @@ class Generate_Form_Markup {
 			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
 				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
 				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			}
+
+			if ( is_array( $global_setting_options ) && 'hcaptcha' === $security_type ) {
+				$srfm_hcaptcha_site_key = isset( $global_setting_options['srfm_hcaptcha_site_key'] ) ? $global_setting_options['srfm_hcaptcha_site_key'] : '';
 			}
 
 			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
@@ -376,6 +381,14 @@ class Generate_Form_Markup {
 							);
 							?>
 							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+							<?php
+						endif;
+
+						if ( 'hcaptcha' === $security_type ) :
+							// hCaptcha script.
+							wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+							?>
+							<div id="srfm-hcaptcha-sitekey" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
 							<?php
 						endif;
 						?>
