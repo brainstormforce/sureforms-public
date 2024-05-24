@@ -19,9 +19,6 @@ const FormPageHeader = () => {
 						--dashboard-text: #64748b;
 						overflow-x: hidden;
 					}
-					#wpwrap {
-						background-color: #f1f5f9;
-					}
 					#wpcontent {
 						padding: 0;
 					}
