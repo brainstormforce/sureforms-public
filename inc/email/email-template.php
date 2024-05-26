@@ -114,8 +114,8 @@ class Email_Template {
 	/**
 	 * Render email template.
 	 *
-	 * @param array<string, string> $fields Submission fields.
-	 * @param string                $email_body email body.
+	 * @param array<string, string|false> $fields Submission fields.
+	 * @param string                      $email_body email body.
 	 * @since 0.0.1
 	 * @return string
 	 */
@@ -133,6 +133,7 @@ class Email_Template {
 				<tbody>
 					<?php
 					foreach ( $fields as $field_name => $value ) {
+						$value = Helper::get_string_value( $value );
 						if ( in_array( $field_name, $excluded_fields, true ) || false === str_contains( $field_name, '-lbl-' ) ) {
 							continue;
 						}
