@@ -95,7 +95,7 @@ export default () => {
 							css={ css`
 								color: #94a3b8;
 								font-size: 14px;
-								font-weight: 500;
+								font-weight: 400;
 								line-height: 20px;
 								display: flex;
 								align-items: center;

@@ -119,6 +119,7 @@ $placeholder_color: #9ca3af;
 	outline: none;
 	color: var( --dashboard-primary, $primary_color );
 	width: max-content;
+	padding: 0;
 }
 
 .srfm-pro-badge {
@@ -204,20 +205,19 @@ $placeholder_color: #9ca3af;
 	&.srfm-flex-row {
 		flex-direction: row;
 	}
-	&.srfm-items-center{
+	&.srfm-items-center {
 		align-items: center;
 	}
 
-	&.srfm-gap-xs{
-		gap:4px;
+	&.srfm-gap-xs {
+		gap: 4px;
 	}
-
 }
 
-.srfm-success{
+.srfm-success {
 	color: green;
 }
 
-.srfm-tick{
+.srfm-tick {
 	margin-right: 8px;
 }

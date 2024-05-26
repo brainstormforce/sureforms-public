@@ -158,12 +158,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
 	// Find the root container of the form
-	const formRootContainer = document.querySelector( '.editor-styles-wrapper' );
+	const formRootContainer = document.querySelector(
+		'.editor-styles-wrapper'
+	);
 
 	const addRootClass = () => {
 		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
 			// Split the classes string by spaces
-			const classesArray = sureformsKeys._srfm_additional_classes.split( ' ' );
+			const classesArray =
+				sureformsKeys._srfm_additional_classes.split( ' ' );
 
 			// Add classes individually
 			classesArray.forEach( ( classname ) => {
@@ -183,7 +186,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 		if ( ! isExistStyle ) {
 			const node = document.createElement( 'style' );
 			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
-			node.textContent = '.edit-post-visual-editor{' + formCustomCssData + '}';
+			node.textContent =
+				'.edit-post-visual-editor{' + formCustomCssData + '}';
 			document.head.appendChild( node );
 		} else {
 			isExistStyle.textContent =
@@ -561,8 +565,9 @@ const SureformsFormSpecificSettings = ( props ) => {
 	return (
 		<>
 			<PluginDocumentSettingPanel
-				name="srfm-sidebar"
+				name="srfm-description"
 				className="srfm-single-form-settings-description"
+				title={ __( 'SureForms Description', 'sureforms' ) }
 			>
 				<div className="block-editor-block-card">
 					<span className="block-editor-block-icon has-colors">
