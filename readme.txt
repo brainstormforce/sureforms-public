@@ -28,9 +28,6 @@ Activate the plugin through the 'Plugins' menu in WordPress.
 Customize your forms using the SureForms interface to suit your requirements.
 Easily embed your forms on any page or post using the provided shortcode or block.
 
-## CREDITS ##
-Our external packages use Rating Star Components that are distributed under the terms of the ISC. While Slick, Lottie and Striptags are distributed under the terms of the MIT.
-
 ## USE OF 3RD PARTY SERVICES  ##
 To improve the user experience, SureForms may use the following 3rd party services if the required features are enabled:
 – ipinfo – is used to show User IP Info to Admin when IP Logging is turned on. [TOS](https://ipinfo.io/terms-of-service) and [Privacy Policy](https://ipinfo.io/privacy-policy)

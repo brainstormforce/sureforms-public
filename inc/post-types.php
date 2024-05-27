@@ -72,7 +72,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary" style="background: #d54407; border-color: #d54407;">' . esc_html( $button_text ) . '</div></a>';
+			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
 		}
 
 		echo '</div>';
