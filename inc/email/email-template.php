@@ -143,7 +143,11 @@ class Email_Template {
 						$field_label = '';
 						if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
 							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
-							$value       = strpos( $field_name, 'srfm-url' ) !== false ? '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>' : '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_html__( 'View', 'sureforms' ) . '</a>';
+							if ( strpos( $field_name, 'srfm-upload' ) !== false ) {
+								$values = json_decode( $value );
+							} else {
+								$value = '<a href="' . esc_url( $value ) . '"></a>';
+							}
 						} else {
 							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
 						}
@@ -156,15 +160,24 @@ class Email_Template {
 					<tr class="field-value">
 						<td style="font-size: 14px;color: #475569;padding: 8px 16px 16px 16px;padding-bottom: 10px;">
 						<?php
-						echo wp_kses(
-							$value,
-							[
-								'a' => [
-									'href'   => [],
-									'target' => [],
-								],
-							]
-						);
+						if ( ! empty( $values ) && is_array( $values ) ) {
+							foreach ( $values as $value ) {
+								$value = Helper::get_string_value( $value );
+								?>
+									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
+								<?php
+							}
+						} else {
+							echo wp_kses(
+								$value,
+								[
+									'a' => [
+										'href'   => [],
+										'target' => [],
+									],
+								]
+							);
+						}
 						?>
 						</td>
 					</tr>
