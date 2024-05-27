@@ -114,8 +114,8 @@ class Email_Template {
 	/**
 	 * Render email template.
 	 *
-	 * @param array<string, string|false> $fields Submission fields.
-	 * @param string                      $email_body email body.
+	 * @param array<mixed> $fields Submission fields.
+	 * @param string       $email_body email body.
 	 * @since 0.0.1
 	 * @return string
 	 */
@@ -133,23 +133,20 @@ class Email_Template {
 				<tbody>
 					<?php
 					foreach ( $fields as $field_name => $value ) {
-						$value = Helper::get_string_value( $value );
+						if ( is_array( $value ) ) {
+							$values = $value;
+						} else {
+							$value = Helper::get_string_value( $value );
+						}
 						if ( in_array( $field_name, $excluded_fields, true ) || false === str_contains( $field_name, '-lbl-' ) ) {
 							continue;
 						}
 
 						$label       = explode( '-lbl-', $field_name )[1];
 						$label       = explode( '-', $label )[0];
-						$field_label = '';
-						if ( strpos( $field_name, 'srfm-upload' ) !== false || strpos( $field_name, 'srfm-url' ) !== false ) {
-							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
-							if ( strpos( $field_name, 'srfm-upload' ) !== false ) {
-								$values = json_decode( $value );
-							} else {
-								$value = '<a href="' . esc_url( $value ) . '"></a>';
-							}
-						} else {
-							$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
+						$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
+						if ( strpos( $field_name, 'srfm-url' ) !== false ) {
+							$value = ! is_array( $value ) && ! is_string( $value ) ? '<a href="' . esc_url( $value ) . '">' . $value . '</a>' : $value;
 						}
 						?>
 					<tr class="field-label">
@@ -168,15 +165,17 @@ class Email_Template {
 								<?php
 							}
 						} else {
-							echo wp_kses(
-								$value,
-								[
-									'a' => [
-										'href'   => [],
-										'target' => [],
-									],
-								]
-							);
+							if ( is_string( $value ) ) {
+								echo wp_kses(
+									$value,
+									[
+										'a' => [
+											'href'   => [],
+											'target' => [],
+										],
+									]
+								);
+							}
 						}
 						?>
 						</td>

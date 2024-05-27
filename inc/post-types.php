@@ -785,7 +785,7 @@ class Post_Types {
 					<td>
 						<div class="file-cards-container">
 							<?php
-							$values = json_decode( $value );
+							$values = $value;
 							if ( ! empty( $values ) && is_array( $values ) ) {
 								foreach ( $values as $value ) {
 									$value     = Helper::get_string_value( $value );

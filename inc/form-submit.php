@@ -374,15 +374,13 @@ class Form_Submit {
 
 			// add support for multiple file uploads.
 			if ( is_array( $value ) ) {
-				// if there are space in value then rawurlencode the value. then json encode it.
-				$submission_data[ $field_name ] = wp_json_encode(
+				$submission_data[ $field_name ] =
 					array_map(
 						function ( $val ) {
 							return rawurlencode( $val );
 						},
 						$value
-					)
-				);
+					);
 			} else {
 				$submission_data[ $field_name ] = htmlspecialchars( $value );
 			}
@@ -550,8 +548,8 @@ class Form_Submit {
 	/**
 	 * Send Email.
 	 *
-	 * @param string                      $id       Form ID.
-	 * @param array<string, string|false> $submission_data Submission data.
+	 * @param string       $id Form ID.
+	 * @param array<mixed> $submission_data Submission data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */

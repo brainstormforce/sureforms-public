@@ -462,7 +462,15 @@ class Smart_Tags {
 			$label = explode( '-lbl-', $submission_item_key )[1];
 			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			if ( $slug === $target_slug ) {
-				$replacement_data = $submission_item_value;
+				if ( 'srfm-upload' === $target_slug ) {
+					if ( is_array( $submission_item_value ) ) {
+						foreach ( $submission_item_value as $value ) {
+							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">View</a><br>';
+						}
+					}
+				} else {
+					$replacement_data = $submission_item_value;
+				}
 				break;
 			}
 		}
