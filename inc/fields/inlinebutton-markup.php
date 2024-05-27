@@ -143,13 +143,13 @@ class Inlinebutton_Markup extends Base {
 				default:
 					break;
 			}
-		}
-		if ( 'cf-turnstile' === $this->captcha_security_type ) {
-			$this->srfm_cf_turnstile_site_key = isset( $this->global_setting_options['srfm_cf_turnstile_site_key'] ) ? $this->global_setting_options['srfm_cf_turnstile_site_key'] : 'test';
-			$this->srfm_cf_appearance_mode    = isset( $this->global_setting_options['srfm_cf_appearance_mode'] ) ? $this->global_setting_options['srfm_cf_appearance_mode'] : 'auto';
-		}
-		if ( 'hcaptcha' === $this->captcha_security_type ) {
-			$this->srfm_hcaptcha_site_key = isset( $this->global_setting_options['srfm_hcaptcha_site_key'] ) ? $this->global_setting_options['srfm_hcaptcha_site_key'] : '';
+			if ( 'cf-turnstile' === $this->captcha_security_type ) {
+				$this->srfm_cf_turnstile_site_key = isset( $this->global_setting_options['srfm_cf_turnstile_site_key'] ) ? $this->global_setting_options['srfm_cf_turnstile_site_key'] : '';
+				$this->srfm_cf_appearance_mode    = isset( $this->global_setting_options['srfm_cf_appearance_mode'] ) ? $this->global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			}
+			if ( 'hcaptcha' === $this->captcha_security_type ) {
+				$this->srfm_hcaptcha_site_key = isset( $this->global_setting_options['srfm_hcaptcha_site_key'] ) ? $this->global_setting_options['srfm_hcaptcha_site_key'] : '';
+			}
 		}
 		$theme_name               = wp_get_theme()->get( 'Name' );
 		$this->add_button_padding = true;
@@ -171,7 +171,7 @@ class Inlinebutton_Markup extends Base {
 				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
 			<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->srfm_cf_turnstile_site_key ) : ?>
-				<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-theme='" . esc_attr( $this->srfm_cf_appearance_mode ) . "' data-sitekey='" . esc_attr( strval( $this->srfm_cf_turnstile_site_key ) ) . "'></div>"; ?>
+				<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-theme='" . esc_attr( strval( $this->srfm_cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->srfm_cf_turnstile_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
 			<?php if ( 'hcaptcha' === $this->captcha_security_type && $this->srfm_hcaptcha_site_key ) : ?>
 				<?php echo "<div id='srfm-hcaptcha-sitekey' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->srfm_hcaptcha_site_key ) ) . "'></div>"; ?>
