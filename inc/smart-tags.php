@@ -462,9 +462,10 @@ class Smart_Tags {
 			$label      = explode( '-lbl-', $submission_item_key )[1];
 			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
 			$block_type = explode( '-lbl-', $submission_item_key )[0];
+			$str        = strpos( $block_type, 'srfm-upload' );
 			if ( $slug === $target_slug ) {
 					// if $submission_item_value is an array, make a tag for each item.
-				if ( 0 !== strstr( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
+				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
 					foreach ( $submission_item_value as $value ) {
 						$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
 					}
