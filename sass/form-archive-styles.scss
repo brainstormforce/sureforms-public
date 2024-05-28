@@ -70,22 +70,22 @@ input:checked + .slider:before {
 	margin: 0 !important;
 	padding: 0 !important;
 }
-
 .srfm-shortcode-input {
-	width: fit-content !important;
+	width: auto;
 	border: none !important;
-	background: transparent !important;
+	background: rgba( 0, 0, 0, 0.07 ) !important;
 	color: #50575e !important;
 	font-size: 13px;
 	font-style: normal;
 	font-weight: 400;
 	line-height: 19.5px;
-	padding: 0 !important;
+	padding: 2px 4px 2px 4px !important;
+	min-height: 24px !important;
+	height: 100%;
 }
 
 .srfm-shortcode-input:focus {
 	border: none !important;
-	background: transparent !important;
 	outline: none !important;
 	box-shadow: none !important;
 }
@@ -96,19 +96,20 @@ input:checked + .slider:before {
 	cursor: pointer;
 	padding: 0;
 	margin-right: 3px;
-	margin-left: -23px;
+	margin-left: 5px;
 	visibility: hidden;
 }
-.type-sureforms_form:hover {
+td[data-colname="Shortcode"]:hover {
 	.srfm-shortcode {
 		visibility: visible;
 	}
 }
 .srfm-entries-number {
 	padding: 0 !important;
+	margin: 0 !important;
 	width: 40px !important;
 	cursor: pointer;
-	text-align: left;
+	text-align: right;
 }
 
 #notification {
