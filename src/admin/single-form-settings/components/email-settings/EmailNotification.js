@@ -70,7 +70,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		updateMeta( '_srfm_email_notification', currEmailData );
 		toast.dismiss();
 		toast.success(
-			__( 'Email notification updated successfully.', 'sureforms' ),
+			__( 'Email Notification updated successfully.', 'sureforms' ),
 			{
 				duration: 1500,
 			}

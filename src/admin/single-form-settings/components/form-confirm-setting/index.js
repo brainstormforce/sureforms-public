@@ -9,7 +9,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 
-const FormConfirmSetting = () => {
+const FormConfirmSetting = ( { toast } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -31,6 +31,11 @@ const FormConfirmSetting = () => {
 			}
 			updateMeta( '_srfm_form_confirmation', [ data ] );
 			setShowSuccess( true );
+			toast.dismiss();
+			toast.success(
+				__( 'Form Confirmation updated successfully.', 'sureforms' ),
+				{ duration: 1500 }
+			);
 		}, 500 );
 	};
 	useEffect( () => {
@@ -42,6 +47,7 @@ const FormConfirmSetting = () => {
 		if ( true === showSuccess ) {
 			setTimeout( () => {
 				setShowSuccess( false );
+				toast.dismiss();
 			}, 500 );
 		}
 	}, [ showSuccess ] );
@@ -117,22 +123,24 @@ const FormConfirmSetting = () => {
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
 					</div>
 					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
-						{
-							isProcessing && <Spinner
-								style={ {
-									marginTop: '0',
-									color: '#D54407',
-								} }
-							/>
-						}
-						{
+
+						{ /* {
 							showSuccess && <div className="srfm-success srfm-tick"> &#10004;</div>
-						}
+						} */ }
 						<button
 							onClick={ handleSaveChanges }
 							className="srfm-modal-inner-heading-button"
+							disabled={ isProcessing }
 						>
 							{ __( 'Save Changes', 'sureforms' ) }
+							{
+								isProcessing && <Spinner
+									style={ {
+										marginTop: '0',
+										color: '#D54407',
+									} }
+								/>
+							}
 						</button>
 					</div>
 				</div>
