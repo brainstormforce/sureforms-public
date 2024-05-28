@@ -123,10 +123,6 @@ const FormConfirmSetting = ( { toast } ) => {
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
 					</div>
 					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
-
-						{ /* {
-							showSuccess && <div className="srfm-success srfm-tick"> &#10004;</div>
-						} */ }
 						<button
 							onClick={ handleSaveChanges }
 							className="srfm-modal-inner-heading-button"
