@@ -290,6 +290,14 @@ class Base {
 	protected $duplicate_msg_markup;
 
 	/**
+	 * Stores attribute for aria-describedby.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $aria_described_by;
+
+	/**
 	 * Setter for the properties of class based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -398,11 +406,22 @@ class Base {
 	 * @return void
 	 */
 	protected function set_markup_properties( $input_label = '', $override = false ) {
-		$this->help_markup          = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', '', false, $this->help );
-		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', '', boolval( $this->required ), '', $this->error_msg, false, '', $override );
+		$this->help_markup          = Helper::generate_common_form_markup( $this->form_id, 'help', '', '', $this->block_id, false, $this->help );
+		$this->error_msg_markup     = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, '', $override );
 		$this->label_markup         = Helper::generate_common_form_markup( $this->form_id, 'label', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
 		$this->error_svg            = Helper::fetch_svg( 'error', 'srfm-error-icon' );
-		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', '', boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $this->is_unique );
+		$this->duplicate_msg_markup = Helper::generate_common_form_markup( $this->form_id, 'error', '', '', $this->block_id, boolval( $this->required ), '', $this->error_msg, false, $this->duplicate_msg, $this->is_unique );
+	}
+
+	/**
+	 * Setter for the aria-describedby attribute.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function set_aria_described_by() {
+		$this->aria_described_by .= ! empty( $this->help ) ? ' srfm-description-' . $this->block_id : '';
+		$this->aria_described_by .= ! empty( $this->required ) ? ' srfm-error-' . $this->block_id : '';
 	}
 
 	/**
