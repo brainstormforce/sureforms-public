@@ -160,9 +160,11 @@ class Email_Template {
 						if ( ! empty( $values ) && is_array( $values ) ) {
 							foreach ( $values as $value ) {
 								$value = Helper::get_string_value( $value );
-								?>
+								if ( ! empty( $value ) && is_string( $value ) ) {
+									?>
 									<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a>
-								<?php
+									<?php
+								}
 							}
 						} else {
 							if ( is_string( $value ) ) {
