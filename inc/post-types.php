@@ -785,30 +785,32 @@ class Post_Types {
 								$upload_values = $value;
 								if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
 									foreach ( $upload_values as $value ) {
-										$value     = Helper::get_string_value( $value );
-										$file_type = pathinfo( $value, PATHINFO_EXTENSION );
-										$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
-										?>
-										<div class="file-card">
-											<?php if ( $is_image ) : ?>
-												<div class="file-card-image">
-													<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
-														<img src="<?php echo esc_attr( urldecode( $value ) ); ?>" alt="img" />
-													</a>
+											$value = Helper::get_string_value( $value );
+										if ( ! empty( $value ) ) {
+											$file_type = pathinfo( $value, PATHINFO_EXTENSION );
+											$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
+											?>
+												<div class="file-card">
+												<?php if ( $is_image ) : ?>
+														<div class="file-card-image">
+															<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+																<img src="<?php echo esc_attr( urldecode( $value ) ); ?>" alt="img" />
+															</a>
+														</div>
+													<?php else : ?>
+														<div class="file-card-icon">
+															<?php echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>'; ?>
+														</div>
+														<div class="file-card-details">
+															<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
+														</div>
+													<?php endif; ?>
+													<div class="file-card-url">
+														<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+													</div>
 												</div>
-											<?php else : ?>
-												<div class="file-card-icon">
-													<?php echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>'; ?>
-												</div>
-												<div class="file-card-details">
-													<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
-												</div>
-											<?php endif; ?>
-											<div class="file-card-url">
-												<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
-											</div>
-										</div>
-										<?php
+											<?php
+										}
 									}
 								} else {
 									echo '';
