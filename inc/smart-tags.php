@@ -465,7 +465,7 @@ class Smart_Tags {
 				if ( 'srfm-upload' === $target_slug ) {
 					if ( is_array( $submission_item_value ) ) {
 						foreach ( $submission_item_value as $value ) {
-							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">View</a><br>';
+							$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
 						}
 					}
 				} else {

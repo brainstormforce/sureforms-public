@@ -375,7 +375,7 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			// add support for multiple file uploads.
+			// If the field is an array, encode the values. This is to add support for multi-upload field.
 			if ( is_array( $value ) ) {
 				$submission_data[ $field_name ] =
 					array_map(
