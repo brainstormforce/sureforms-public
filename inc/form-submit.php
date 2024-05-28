@@ -175,6 +175,7 @@ class Form_Submit {
 						$file_error = $file['error'][ $key ];
 
 						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
+							$form_data[ $field ][] = '';
 							continue;
 						}
 
@@ -198,6 +199,8 @@ class Form_Submit {
 							wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
 						}
 					}
+				} else {
+					$form_data[ $field ][] = '';
 				}
 			}
 		}
