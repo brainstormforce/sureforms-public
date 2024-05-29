@@ -60,7 +60,7 @@ const defaultKeys = {
 	_srfm_bg_color: '#ffffff',
 	_srfm_fontsize: 20,
 	_srfm_label_color: '#111827',
-	_srfm_help_color: '#6b7280',
+	_srfm_help_color: '#4B5563',
 	// Input Fields
 	_srfm_input_text_color: '#4B5563',
 	_srfm_input_placeholder_color: '#9CA3AF',
@@ -296,7 +296,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--srfm-help-color',
-							value: sureformsKeys._srfm_help_color || '#6b7280',
+							value: sureformsKeys._srfm_help_color || '#4B5563',
 						},
 						// Input
 						{

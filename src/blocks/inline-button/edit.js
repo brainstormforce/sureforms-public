@@ -79,8 +79,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<button
 					style={ {
 						width: '100%',
-						// border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
-						// borderRadius: 'var( --srfm-btn-border-radius )',
 					} }
 					className={ `srfm-button srfm-submit-button srfm-inline-submit-button ${
 						is_inherit_from_theme

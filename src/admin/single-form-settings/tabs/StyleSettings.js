@@ -98,7 +98,7 @@ function StyleSettings( props ) {
 			'--srfm-help-color',
 			sureformsKeys._srfm_help_color
 				? sureformsKeys._srfm_help_color
-				: '#6b7280'
+				: '#4B5563'
 		);
 
 		// Input
@@ -247,7 +247,7 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_help_color' ) {
 			root.style.setProperty(
 				'--srfm-help-color',
-				value ? value : '#6b7280'
+				value ? value : '#4B5563'
 			);
 		}
 

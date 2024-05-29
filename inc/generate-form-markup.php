@@ -181,7 +181,7 @@ class Generate_Form_Markup {
 			$primary_color = $color_primary;
 
 			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#6b7280' );
+			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
 
 			// New colors.
 
