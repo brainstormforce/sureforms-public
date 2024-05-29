@@ -99,9 +99,11 @@ input:checked + .slider:before {
 	margin-left: 5px;
 	visibility: hidden;
 }
-td[data-colname="Shortcode"]:hover {
-	.srfm-shortcode {
-		visibility: visible;
+.type-sureforms_form {
+	td[data-colname="Shortcode"]:hover {
+		.srfm-shortcode {
+			visibility: visible;
+		}
 	}
 }
 .srfm-entries-number {
