@@ -56,9 +56,9 @@
 	}
 
 	.srfm-input-common {
-		font-size: 0.8em;
+		font-size: 0.7em;
 		font-weight: 400;
-		padding: 0.75em 1em;
+		padding: .72em 1.143em;
 		line-height: normal;
 		color: var( --srfm-body-input-color );
 		border: var( --srfm-border ) solid var( --srfm-border-color );
@@ -68,6 +68,7 @@
 		margin: 0;
 
 		&::placeholder {
+			font-size: 1em;
 			color: var( --srfm-placeholder-color );
 		}
 	}
@@ -128,7 +129,7 @@
 		}
 
 		.srfm-input-url {
-			padding-left: 5.4375em;
+			padding-left: 6.4375em;
 		}
 	}
 
@@ -372,7 +373,8 @@
 					display: flex;
 					flex-wrap: wrap;
 					align-items: flex-start;
-					padding: 0.625em 0.875em;
+					font-size: 1em;
+					padding: .72em 1.143em .72em .72em;
 					background-color: var( --srfm-base-background-color );
 					border: var( --srfm-border ) solid var( --srfm-border-color );
 					border-radius: var( --srfm-border-radius );
@@ -381,8 +383,8 @@
 
 					.srfm-multi-choice-icon {
 						position: relative;
-						width: 0.7em;
-						height: 0.7em;
+						width: 1em;
+						height: 1em;
 						top: 0.18em;
 						border-radius: 100%;
 						border: 1px solid var( --srfm-border-color );
@@ -391,9 +393,9 @@
 					}
 
 					p {
-						font-size: 0.7em;
-						line-height: 1.5em;
-						padding-left: 0.5em;
+						font-size: 1em;
+						line-height: normal;
+						padding-left: .575em;
 						width: calc( 100% - 1em );
 						color: var( --srfm-body-input-color );
 						margin-top: 0;
