@@ -812,8 +812,6 @@ class Post_Types {
 											<?php
 										}
 									}
-								} else {
-									echo '';
 								}
 								?>
 							</div>

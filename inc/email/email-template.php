@@ -134,7 +134,7 @@ class Email_Template {
 					<?php
 					foreach ( $fields as $field_name => $value ) {
 						if ( is_array( $value ) ) {
-							$values = $value;
+							$values_array = $value;
 						} else {
 							$value = Helper::get_string_value( $value );
 						}
@@ -145,9 +145,6 @@ class Email_Template {
 						$label       = explode( '-lbl-', $field_name )[1];
 						$label       = explode( '-', $label )[0];
 						$field_label = $label ? esc_html( Helper::decrypt( $label ) ) : '';
-						if ( strpos( $field_name, 'srfm-url' ) !== false ) {
-							$value = ! is_array( $value ) && ! is_string( $value ) ? '<a href="' . esc_url( $value ) . '">' . $value . '</a>' : $value;
-						}
 						?>
 					<tr class="field-label">
 						<th style="font-weight: 500;font-size: 14px;color: #1E293B;padding: 8px 16px;background-color: #F1F5F9;text-align: left;">
@@ -157,8 +154,8 @@ class Email_Template {
 					<tr class="field-value">
 						<td style="font-size: 14px;color: #475569;padding: 8px 16px 16px 16px;padding-bottom: 10px;">
 						<?php
-						if ( ! empty( $values ) && is_array( $values ) ) {
-							foreach ( $values as $value ) {
+						if ( ! empty( $values_array ) && is_array( $values_array ) ) {
+							foreach ( $values_array as $value ) {
 								$value = Helper::get_string_value( $value );
 								if ( ! empty( $value ) && is_string( $value ) ) {
 									?>
