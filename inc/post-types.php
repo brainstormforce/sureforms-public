@@ -908,11 +908,11 @@ class Post_Types {
 			ob_start();
 			?>
 			<div class="srfm-shortcode-container">
+				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( $post_id_formatted ); ?>']" />
 				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
 					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
 				</button>
-				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
-			<div>
+			</div>
 			<?php
 			ob_end_flush();
 		}
