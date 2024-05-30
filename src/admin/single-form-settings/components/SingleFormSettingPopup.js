@@ -46,7 +46,9 @@ const SingleFormSettingsPopup = ( props ) => {
 			id: 'form_confirmation',
 			title: __( 'Form Confirmation', 'sureforms' ),
 			icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-			component: <FormConfirmSetting />,
+			component: <FormConfirmSetting
+				toast={ toast }
+			/>,
 		},
 		{
 			id: 'compliance_settings',
