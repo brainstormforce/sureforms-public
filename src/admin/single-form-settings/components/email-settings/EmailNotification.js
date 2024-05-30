@@ -22,6 +22,11 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 	const handleDelete = ( data ) => {
 		const filterData = emailNotificationData.filter( ( el ) => el.id !== data.id );
 		updateMeta( '_srfm_email_notification', filterData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email Notification deleted successfully.', 'sureforms' ),
+			{ duration: 500 }
+		);
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -30,6 +35,11 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		}
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email Notification duplicated successfully.', 'sureforms' ),
+			{ duration: 500 }
+		);
 	};
 	const handleUpdateEmailData = ( newData ) => {
 		const { email_to, subject } = newData;
@@ -49,7 +59,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 			toast.dismiss();
 			toast.error(
 				__( 'Please fill out the required field.', 'sureforms' ),
-				{ duration: 1500 }
+				{ duration: 500 }
 			);
 			return;
 		}
@@ -72,7 +82,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		toast.success(
 			__( 'Email Notification updated successfully.', 'sureforms' ),
 			{
-				duration: 1500,
+				duration: 500,
 			}
 		);
 	};
@@ -92,6 +102,12 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 			return el;
 		} );
 		updateMeta( '_srfm_email_notification', updatedData );
+		toast.success(
+			__( 'Email Notification updated successfully.', 'sureforms' ),
+			{
+				duration: 500,
+			}
+		);
 	};
 	const handleBackNotifation = () => {
 		setShowConfirmation( false );
@@ -169,7 +185,9 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 																		<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
 																			{ editIcons }
 																		</button>
-																		<button onClick={ () => setIsPopup( el.id ) } className="srfm-cursor-pointer">
+																		<button onClick={ () => {
+																			setIsPopup( el.id );
+																		} } className="srfm-cursor-pointer">
 																			{ deleteIcons }
 																		</button>
 																	</td>

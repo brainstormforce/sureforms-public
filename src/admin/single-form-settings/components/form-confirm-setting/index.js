@@ -34,7 +34,7 @@ const FormConfirmSetting = ( { toast } ) => {
 			toast.dismiss();
 			toast.success(
 				__( 'Form Confirmation updated successfully.', 'sureforms' ),
-				{ duration: 1500 }
+				{ duration: 500 }
 			);
 		}, 500 );
 	};
