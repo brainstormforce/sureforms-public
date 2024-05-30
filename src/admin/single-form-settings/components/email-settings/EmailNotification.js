@@ -102,14 +102,14 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 			return el;
 		} );
 		updateMeta( '_srfm_email_notification', updatedData );
+
+		toast.dismiss();
 		if ( ! data.status ) {
-			toast.dismiss();
 			toast.success(
 				__( 'Email Notification enabled successfully.', 'sureforms' ),
 				{ duration: 500 }
 			);
 		} else {
-			toast.dismiss();
 			toast.success(
 				__( 'Email Notification disabled successfully.', 'sureforms' ),
 				{ duration: 500 }
