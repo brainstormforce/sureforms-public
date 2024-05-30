@@ -220,13 +220,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 	function addSubmitButton( elm ) {
 		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-btn-bg-color';
+		const customClass = 'srfm-button srfm-submit-button srfm-btn-bg-color';
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
+		const btnCtnClass = sureformsKeys?._srfm_inherit_theme_button &&
+		sureformsKeys._srfm_inherit_theme_button ? 'wp-block-button' : '';
+		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -239,7 +241,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				// If the normal button is present, add RichText to the button.
 				const buttonContainer = elm.nextElementSibling;
 				const button = buttonContainer.querySelector(
-					'.srfm-submit-button'
+					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;

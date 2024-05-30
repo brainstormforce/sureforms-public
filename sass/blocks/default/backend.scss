@@ -58,7 +58,7 @@
 	.srfm-input-common {
 		font-size: 0.7em;
 		font-weight: 400;
-		padding: .72em 1.143em;
+		padding: 0.72em 1.143em;
 		line-height: normal;
 		color: var( --srfm-body-input-color );
 		border: var( --srfm-border ) solid var( --srfm-border-color );
@@ -374,8 +374,8 @@
 					display: flex;
 					flex-wrap: wrap;
 					align-items: flex-start;
-					font-size: .7em;
-					padding: .72em 1.143em .72em .72em;
+					font-size: 0.7em;
+					padding: 0.72em 1.143em 0.72em 0.72em;
 					background-color: var( --srfm-base-background-color );
 					border: var( --srfm-border ) solid var( --srfm-border-color );
 					border-radius: var( --srfm-border-radius );
@@ -383,28 +383,28 @@
 					height: 100%;
 
 					.srfm-multi-choice-icon {
-							position: relative;
+						position: relative;
+						width: 1em;
+						height: 1em;
+						top: 0.18em;
+						border-radius: 100%;
+						border: 1px solid var( --srfm-border-color );
+						border-radius: 100%;
+						line-height: 1.5em;
+
+						svg {
+							position: absolute;
+							top: 0;
 							width: 1em;
 							height: 1em;
-							top: 0.18em;
-							border-radius: 100%;
-							border: 1px solid var( --srfm-border-color );
-							border-radius: 100%;
-							line-height: 1.5em;
-
-							svg {
-								position: absolute;
-								top: 0;
-								width: 1em;
-								height: 1em;
-								opacity: 0;
-							}
+							opacity: 0;
+						}
 					}
 
 					p {
 						font-size: 1em;
 						line-height: normal;
-						padding-left: .575em;
+						padding-left: 0.575em;
 						width: calc( 100% - 1em );
 						color: var( --srfm-body-input-color );
 						margin-top: 0;

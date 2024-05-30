@@ -69,8 +69,8 @@
 						display: flex;
 						flex-wrap: wrap;
 						align-items: flex-start;
-						font-size: .7em;
-						padding: .72em 1.143em .72em .72em;
+						font-size: 0.7em;
+						padding: 0.72em 1.143em 0.72em 0.72em;
 						background-color: var( --srfm-base-background-color );
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						border-radius: var( --srfm-border-radius );
@@ -80,7 +80,7 @@
 						.srfm-multi-choice-icon {
 							position: relative;
 							width: 1em;
-						height: 1em;
+							height: 1em;
 							top: 0.18em;
 							border-radius: 100%;
 							border: 1px solid var( --srfm-border-color );
@@ -99,7 +99,7 @@
 						p {
 							font-size: 1em;
 							line-height: normal;
-							padding-left: .575em;
+							padding-left: 0.575em;
 							width: calc( 100% - 1em );
 							margin-top: 0;
 							margin-bottom: 0;

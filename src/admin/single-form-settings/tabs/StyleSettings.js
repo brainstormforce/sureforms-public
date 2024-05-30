@@ -26,7 +26,10 @@ function StyleSettings( props ) {
 	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
-		document.querySelector( '.srfm-submit-button' )
+		document.querySelector( '.srfm-submit-richtext' )
+	);
+	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
+		document.querySelector( '.srfm-submit-btn-container' )
 	);
 
 	// if device type is desktop then change the submit button
@@ -48,12 +51,16 @@ function StyleSettings( props ) {
 						?.querySelector( 'body' );
 
 					setSubmitBtn(
-						iframeBody.querySelector( '.srfm-submit-button' )
+						iframeBody.querySelector( '.srfm-submit-richtext' )
+					);
+					setSubmitBtnCtn(
+						iframeBody.querySelector( '.srfm-submit-btn-container' )
 					);
 					submitButtonInherit();
 				}
 			} else {
-				setSubmitBtn( document.querySelector( '.srfm-submit-button' ) );
+				setSubmitBtnCtn( document.querySelector( '.srfm-submit-btn-container' ) );
+				setSubmitBtn( document.querySelector( '.srfm-submit-richtext' ) );
 				submitButtonInherit();
 			}
 		}, 1000 );
@@ -61,21 +68,27 @@ function StyleSettings( props ) {
 
 	function submitButtonInherit() {
 		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-btn-bg-color';
+		const customClass = [ 'srfm-button', 'srfm-submit-button', 'srfm-btn-bg-color' ];
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-
 		if ( submitBtn ) {
 			if ( submitBtn.classList.contains( inheritClass ) ) {
 				submitBtn.classList.remove( inheritClass );
+				submitBtnCtn.classList.remove( 'wp-block-button' );
 			}
 			if ( submitBtn.classList.contains( customClass ) ) {
-				submitBtn.classList.remove( customClass );
+				submitBtn.classList.remove( ...customClass );
 			}
-			submitBtn.classList.add( btnClass );
+			submitBtnCtn.classList.add( 'wp-block-button' );
+			if ( sureformsKeys?._srfm_inherit_theme_button &&
+				sureformsKeys._srfm_inherit_theme_button ) {
+				submitBtn.classList.add( btnClass );
+			} else {
+				submitBtn.classList.add( ...btnClass );
+			}
 		}
 	}
 
