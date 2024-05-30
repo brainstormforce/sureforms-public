@@ -287,7 +287,7 @@ class Generate_Form_Markup {
 						<span class="srfm-wrn-description">
 						<?php echo esc_html__( 'Enable the Instant Form in the editor from ', 'sureforms' ); ?>
 						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'here', 'sureforms' ); ?>
+							<?php echo esc_html__( 'here.', 'sureforms' ); ?>
 						</a>
 						</span>
 					</div>
