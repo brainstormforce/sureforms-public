@@ -75,20 +75,14 @@ function StyleSettings( props ) {
 				? inheritClass
 				: customClass;
 		if ( submitBtn ) {
-			if ( submitBtn.classList.contains( inheritClass ) ) {
-				submitBtn.classList.remove( inheritClass );
-				submitBtnCtn.classList.remove( 'wp-block-button' );
-			}
-			if ( submitBtn.classList.contains( 'srfm-submit-button' ) ) {
-				submitBtn.classList.remove( ...customClass );
-			}
 			if ( sureformsKeys?._srfm_inherit_theme_button &&
 				sureformsKeys._srfm_inherit_theme_button ) {
-					console.log("inherit");
+				submitBtn.classList.remove( ...customClass );
 				submitBtnCtn.classList.add( 'wp-block-button' );
 				submitBtn.classList.add( btnClass );
 			} else {
-				console.log("custom");
+				submitBtn.classList.remove( inheritClass );
+				submitBtnCtn.classList.remove( 'wp-block-button' );
 				submitBtn.classList.add( ...btnClass );
 			}
 		}
