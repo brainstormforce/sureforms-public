@@ -73,7 +73,7 @@ const index = () => {
 		<>
 			<div className="block-editor-inserter__panel-header">
 				<h2 className="block-editor-inserter__panel-title">
-					{ __( 'Pro Fields', 'sureforms' ) }
+					{ __( 'SureForms Pro', 'sureforms' ) }
 				</h2>
 			</div>
 			<div className="srfm-upgrade-pro-btn-container">
