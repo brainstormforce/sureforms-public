@@ -1,7 +1,25 @@
 /* eslint-disable no-unused-vars */
+document.addEventListener( 'DOMContentLoaded', function () {
+	const shortcodeInputs = document.querySelectorAll(
+		'.srfm-shortcode-input'
+	);
+	shortcodeInputs.forEach( ( input ) => {
+		const text = input.value;
+		const testSpan = document.createElement( 'span' );
+		testSpan.style.visibility = 'hidden';
+		testSpan.style.whiteSpace = 'pre';
+		testSpan.style.font = window.getComputedStyle( input ).font;
+		testSpan.textContent = text;
 
+		document.body.appendChild( testSpan );
+		const width = testSpan.offsetWidth + 8;
+		document.body.removeChild( testSpan );
+
+		input.style.width = width + 'px';
+	} );
+} );
 function handleFormShortcode( button ) {
-	const input = button.nextElementSibling;
+	const input = button.previousElementSibling;
 
 	const icon = button.parentElement.querySelector( '#srfm-copy-icon' );
 
