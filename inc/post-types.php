@@ -202,6 +202,7 @@ class Post_Types {
 					'edit_terms'   => 'god',
 					'manage_terms' => 'god',
 				],
+				'public'            => false,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'show_in_nav_menus' => false,
