@@ -478,8 +478,6 @@ class Admin {
 					'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
 					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
 					'is_authorized'                    => AI_Helper::is_authorized(),
-					'current_plan_details'             => AI_Helper::get_current_plan_details(),
-					'zip_ai_setting'                   => AI_Helper::get_setting(),
 					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
 				]
 			);

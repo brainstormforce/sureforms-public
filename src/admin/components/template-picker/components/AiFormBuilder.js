@@ -118,10 +118,12 @@ const AiFormBuilder = () => {
 					setShowFormCreationErr( true );
 				}
 			} else {
+				setShowFormCreationErr( true );
 				console.error(
 					'Error creating sureforms form using AI: ',
 					response.message
 				);
+				return;
 			}
 		} catch ( error ) {
 			console.log( error );

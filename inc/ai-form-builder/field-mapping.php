@@ -72,12 +72,22 @@ class Field_Mapping {
 		// Get params from request.
 		$params = $request->get_params();
 
+		// check parama is empty or not and is an array and consist form_data key.
+		if ( empty( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) ) {
+			return '';
+		}
+
 		// Get questions from form data.
 		$questions = $params['form_data']['questions'];
 
 		// Check if questions are null then set it to form_data.
-		if ( null === $questions ) {
+		if ( empty( $questions ) ) {
 			$questions = $params['form_data'];
+		}
+
+		// if questions is empty then return empty string.
+		if ( empty( $questions ) ) {
+			return '';
 		}
 
 		// Initialize post content string.
@@ -85,6 +95,12 @@ class Field_Mapping {
 
 		// Loop through questions.
 		foreach ( $questions as $index => $question ) {
+
+			// Check if question is empty then continue to next question.
+			if ( empty( $question ) ) {
+				continue;
+			}
+
 			// Initialize common attributes.
 			$common_attributes = [
 				'block_id' => bin2hex( random_bytes( 4 ) ), // Generate random block_id.
