@@ -301,7 +301,7 @@ function GeneralSettings( props ) {
 					<>
 						<ToggleControl
 							label={ __(
-								'Show Title on Instant Forms',
+								'Show Title on Instant Form',
 								'sureforms'
 							) }
 							checked={
@@ -475,15 +475,15 @@ function GeneralSettings( props ) {
 					</>
 				) }
 			</SRFMAdvancedPanelBody>
-			<MoreSettingsButton
-				settingName={ __( 'More Settings', 'sureforms' ) }
+			<FormBehaviorButton
+				settingName={ __( 'Form Behavior', 'sureforms' ) }
 				popupId="email_notification"
 				openModal={ openModal }
 			/>
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
-					title={ __( 'Single Form Setting', 'sureforms' ) }
+					title={ __( 'Form Behavior', 'sureforms' ) }
 					className="srfm-settings-modal"
 					icon={ modalIcon }
 					isFullScreen={ true }
@@ -498,7 +498,7 @@ function GeneralSettings( props ) {
 	);
 }
 
-const MoreSettingsButton = ( { settingName, popupId, openModal } ) => {
+const FormBehaviorButton = ( { settingName, popupId, openModal } ) => {
 	return (
 		<div className="srfm-custom-layout-panel components-panel__body">
 			<h2 className="components-panel__body-title">

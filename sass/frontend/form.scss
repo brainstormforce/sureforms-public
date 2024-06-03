@@ -20,15 +20,17 @@
 	.srfm-instant-form-wrn-ctn {
 		display: flex;
 		align-items: flex-start;
-		border: 1px solid #fec84b;
+		border: 1px solid #fbbf24;
 		border-radius: 0.75em;
-		background-color: #fffcf5;
+		background-color: #ffffff;
 		padding: 0.75em;
 		margin-bottom: 1.2em;
+		font-size: 20px !important;
 
 		.srfm-svg-container {
 			max-width: 36px;
 			width: 100%;
+			height: 20px;
 			flex: none;
 		}
 
@@ -38,22 +40,19 @@
 			gap: 0.25em;
 		}
 
-		.srfm-wrn-title {
-			font-size: 0.8em;
-			font-weight: 600;
-			color: #b54708;
-			line-height: 1.25em;
-		}
-
-		a.srfm-wrn-title {
-			text-decoration: none;
-		}
-
 		.srfm-wrn-description {
 			font-size: 0.8em;
-			font-weight: 400;
-			color: #b54708;
-			line-height: 1.25em;
+			color: #b45309;
+			line-height: 24px;
+		}
+
+		.srfm-wrn-link {
+			font-weight: 600;
+			color: #b45309;
+			line-height: 16px;
+			text-decoration: none;
+			width: fit-content;
+			padding: 4px 0 4px 0;
 		}
 	}
 
@@ -151,6 +150,10 @@
 
 				select {
 					display: block;
+					padding: 11px 35px 11px 12px !important;
+					width: 100%;
+					font-size: 0.8em;
+					color: #778899;
 				}
 			}
 

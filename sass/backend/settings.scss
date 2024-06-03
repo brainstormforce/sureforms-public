@@ -11,11 +11,14 @@ $option_bg_color: #fff;
 $content_color: #475569;
 $btn_text_color: #ffffff;
 $placeholder_color: #9ca3af;
+$background_color: #f1f5f9;
 
 .sureforms_page_sureforms_form_settings {
 	#wpfooter {
 		display: none;
 	}
+
+	background-color: $background_color;
 
 	#wpbody-content {
 		margin-left: 0;
@@ -338,7 +341,7 @@ $placeholder_color: #9ca3af;
 
 								.srfm-link {
 									a {
-										font-size: 0.7em;
+										font-size: 14px;
 										color: $primary_color;
 										text-decoration: none;
 										box-shadow: none;

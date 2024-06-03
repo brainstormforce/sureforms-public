@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, addFilter } from '@wordpress/hooks';
 import WebhookIcon from '@Image/webhook.js';
 
 const UpgradeToPro = () => {
@@ -10,21 +10,12 @@ const UpgradeToPro = () => {
 	);
 };
 
-const Webhooks = ( { setSelectedTab } ) => {
+const WebhooksCard = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
-		'srfm.form_settings.integrations.webhooks.button',
+		'srfm.formSettings.integrations.webhooks.button',
 		<UpgradeToPro />,
 		setSelectedTab
 	);
-
-	const isGloballyEnabled = applyFilters(
-		'srfm.form_settings.integrations.webhooks.component',
-		true
-	);
-
-	if ( ! isGloballyEnabled ) {
-		return <></>;
-	}
 	return (
 		<>
 			<div className="srfm-modal-card-content">
@@ -35,7 +26,7 @@ const Webhooks = ( { setSelectedTab } ) => {
 							{ __( 'Webhooks', 'sureforms' ) }
 						</div>
 						<p className="srfm-modal-card-description">
-							{ __( 'Broadcast your SureForms Submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
+							{ __( 'Broadcast your SureForms submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
 						</p>
 					</div>
 				</div>
@@ -47,4 +38,31 @@ const Webhooks = ( { setSelectedTab } ) => {
 		</>
 	);
 };
-export default Webhooks;
+
+addFilter(
+	'srfm.formSettings.integrations.cards',
+	'sureforms/form-settings/integrations',
+	( tabs, setSelectedTab ) => {
+		const cards = [ ...tabs ];
+		const isGloballyEnabled = applyFilters(
+			'srfm.formSettings.integrations.webhooks.component',
+			true
+		);
+
+		if ( ! isGloballyEnabled ) {
+			return cards;
+		}
+		cards.push(
+			{
+				id: 'webhooks',
+				parent: 'integrations',
+				title: __( 'Webhooks', 'sureforms' ),
+				component: <WebhooksCard
+					setSelectedTab={ setSelectedTab }
+				/>,
+			},
+		);
+		return cards;
+	}
+
+);

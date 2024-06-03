@@ -5,8 +5,11 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import {
+	Spinner,
+} from '@wordpress/components';
 
-const FormConfirmSetting = () => {
+const FormConfirmSetting = ( { toast } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -15,19 +18,39 @@ const FormConfirmSetting = () => {
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
+	const [ isProcessing, setIsProcessing ] = useState( false );
+	const [ showSuccess, setShowSuccess ] = useState( null );
 	const handleSaveChanges = () => {
+		setIsProcessing( true );
 		const validationStatus = validateForm();
-		setErrorMessage( validationStatus );
-		if ( '' !== validationStatus ) {
-			return;
-		}
-		updateMeta( '_srfm_form_confirmation', [ data ] );
+		setTimeout( () => {
+			setErrorMessage( validationStatus );
+			setIsProcessing( false );
+			if ( '' !== validationStatus ) {
+				return;
+			}
+			updateMeta( '_srfm_form_confirmation', [ data ] );
+			setShowSuccess( true );
+			toast.dismiss();
+			toast.success(
+				__( 'Form Confirmation updated successfully.', 'sureforms' ),
+				{ duration: 500 }
+			);
+		}, 500 );
 	};
 	useEffect( () => {
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
 	}, [ data ] );
+	useEffect( () => {
+		if ( true === showSuccess ) {
+			setTimeout( () => {
+				setShowSuccess( false );
+				toast.dismiss();
+			}, 500 );
+		}
+	}, [ showSuccess ] );
 
 	const validateForm = () => {
 		let validation = '';
@@ -99,12 +122,23 @@ const FormConfirmSetting = () => {
 					<div className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
 					</div>
-					<button
-						onClick={ handleSaveChanges }
-						className="srfm-modal-inner-heading-button"
-					>
-						{ __( 'Save Changes', 'sureforms' ) }
-					</button>
+					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
+						<button
+							onClick={ handleSaveChanges }
+							className="srfm-modal-inner-heading-button"
+							disabled={ isProcessing }
+						>
+							{ __( 'Save Changes', 'sureforms' ) }
+							{
+								isProcessing && <Spinner
+									style={ {
+										marginTop: '0',
+										color: '#D54407',
+									} }
+								/>
+							}
+						</button>
+					</div>
 				</div>
 				<div className="srfm-modal-inner-box">
 					<div className="srfm-modal-inner-box-text">
@@ -251,6 +285,7 @@ const FormConfirmSetting = () => {
 										}
 										}
 										classNamePrefix={ 'srfm-select' }
+										menuPlacement="auto"
 										styles={ {
 											control: (
 												baseStyles,
@@ -259,10 +294,10 @@ const FormConfirmSetting = () => {
 												...baseStyles,
 												boxShadow: state.isFocused
 													? '0 0 0 1px #D54406'
-													: 'none', // Primary color for option when focused
+													: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
 												borderColor: state.isFocused
 													? '#D54406'
-													: 'grey', // Primary color for focus
+													: '#dce0e6', // Primary color for focus
 												'&:hover': {
 													borderColor: '#D54406', // Primary color for hover
 												},
@@ -287,7 +322,6 @@ const FormConfirmSetting = () => {
 														: 'black', // Text color for option when focused or selected
 											} ),
 										} }
-										menuPosition="auto"
 										theme={ ( theme ) => ( {
 											...theme,
 											colors: {
@@ -323,24 +357,29 @@ const FormConfirmSetting = () => {
 						{ errorMessage && (
 							<div className="srfm-validation-error">{ errorMessage }</div>
 						) }
-						<div className="srfm-modal-area-box">
-							<div className="srfm-modal-area-header">
-								<div className="srfm-modal-area-header-text">
-									<p>
-										{ __(
-											'Confirmation Message',
-											'sureforms'
-										) }
-									</p>
+						{
+							data?.confirmation_type === 'same page' && (
+								<div className="srfm-modal-area-box">
+									<div className="srfm-modal-area-header">
+										<div className="srfm-modal-area-header-text">
+											<p>
+												{ __(
+													'Confirmation Message',
+													'sureforms'
+												) }
+											</p>
+										</div>
+									</div>
+									<div className="srfm-editor-wrap">
+										<Editor
+											handleContentChange={ handleEditorChange }
+											content={ data?.message }
+										/>
+									</div>
 								</div>
-							</div>
-							<div className="srfm-editor-wrap">
-								<Editor
-									handleContentChange={ handleEditorChange }
-									content={ data?.message }
-								/>
-							</div>
-						</div>
+
+							)
+						}
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
