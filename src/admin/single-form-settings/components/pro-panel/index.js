@@ -35,7 +35,7 @@ const IconGrid = () => (
 					icon={
 						<MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />
 					}
-					label={ __( 'Date & Time', 'sureforms' ) }
+					label={ __( 'Date & Time Picker', 'sureforms' ) }
 				/>
 				<IconBlock
 					icon={ <FaRegEyeSlash size={ 24 } color="#B4B4B4" /> }
@@ -43,7 +43,7 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Slider', 'sureforms' ) }
+					label={ __( 'Number Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
@@ -55,13 +55,13 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <MdOutlineStarBorder size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Rating', 'sureforms' ) }
+					label={ __( 'Rating Field', 'sureforms' ) }
 				/>
 				<IconBlock
 					icon={
 						<MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />
 					}
-					label={ __( 'Upload', 'sureforms' ) }
+					label={ __( 'Upload Field', 'sureforms' ) }
 				/>
 			</div>
 		</div>
@@ -84,7 +84,7 @@ const index = () => {
 						window.open( '/', '_blank' );
 					} }
 				>
-					{ __( 'Upgrade to unlock the Pro Fields', 'sureforms' ) }
+					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }
 				</button>
 			</div>
 			<IconGrid />
