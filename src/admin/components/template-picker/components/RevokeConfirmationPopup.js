@@ -12,7 +12,7 @@ const RevokeConfirmationPopup = ( { setShowRevokeConfirmation } ) => {
 				<div className="srfm-popup-header">
 					<span className="srfm-popup-icon">{ ICONS.warning }</span>
 					<span className="srfm-popup-title">
-						{ __( 'Revoke Access', 'sureforms' ) }
+						{ __( 'Disconnect Account', 'sureforms' ) }
 					</span>
 				</div>
 				<span className="srfm-revoke-confirmation-description">
@@ -30,7 +30,7 @@ const RevokeConfirmationPopup = ( { setShowRevokeConfirmation } ) => {
 							);
 						} }
 					>
-						{ __( 'Revoke', 'sureforms' ) }
+						{ __( 'Disconnect', 'sureforms' ) }
 					</Button>
 					<Button
 						className="srfm-revoke-confirmation-cancel-btn"
