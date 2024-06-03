@@ -3,7 +3,11 @@ import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
 import { handleAddNewPost, getRemaingCredits } from '@Utils/Helpers';
-import { MdArrowForward } from 'react-icons/md';
+import {
+	MdArrowForward,
+	MdKeyboardArrowDown,
+	MdKeyboardArrowUp,
+} from 'react-icons/md';
 import aiFormBuilderPlaceholder from '@Image/ai-form-builder.svg';
 import { CircularProgressBar } from '@tomickigrzegorz/react-circular-progress-bar';
 import Header from './Header.js';
@@ -20,21 +24,22 @@ const AiFormBuilder = () => {
 	const [ showLimitReachedPopup, setShowLimitReachedPopup ] =
 		useState( false );
 	const [ showFormCreationErr, setShowFormCreationErr ] = useState( false );
+	const [ showFormIdeas, setShowFormIdeas ] = useState( false );
 	const examplePrompts = [
 		{
-			title: 'Generate User Survey Form',
-			description:
-				'Collects data on user satisfaction, ease of use, and overall experience with a product or service.',
+			title: 'Generate a user feedback form',
 		},
 		{
-			title: 'Request for Quote Form',
-			description:
-				'Allows users to request quotes for products or services, providing details such as quantity, specifications, and contact information.',
+			title: 'Create a job application form',
 		},
 		{
-			title: 'Event Registration Form',
-			description:
-				'Enables users to register for an event, providing details such as name, contact information, and any additional requirements or preferences.',
+			title: 'Create simple contact form',
+		},
+		{
+			title: 'Make an event registration form',
+		},
+		{
+			title: 'Create a GYM membership form',
 		},
 	];
 
@@ -113,10 +118,12 @@ const AiFormBuilder = () => {
 					setShowFormCreationErr( true );
 				}
 			} else {
+				setShowFormCreationErr( true );
 				console.error(
 					'Error creating sureforms form using AI: ',
 					response.message
 				);
+				return;
 			}
 		} catch ( error ) {
 			console.log( error );
@@ -185,24 +192,13 @@ const AiFormBuilder = () => {
 			<div className="srfm-ts-main-container srfm-content-section">
 				<div className="srfm-ai-builder-container">
 					<div className="srfm-ai-builder-inner-container">
-						<div className="srfm-ai-builder-header">
-							<h1 className="srfm-ai-builder-header-title">
-								{ __(
-									'What Type of Form Do You Want to Create?',
-									'sureforms'
-								) }
-							</h1>
-							<p className="srfm-ai-builder-header-subtitle">
-								{ __(
-									'The best way to describe the form you want is by providing as much details, mention the audience you are creating the form for and how you want your form to look like.',
-									'sureforms'
-								) }
-							</p>
-						</div>
+						<h1 className="srfm-ai-builder-header-title">
+							{ __(
+								'Please describe the form you want to create',
+								'sureforms'
+							) }
+						</h1>
 						<div className="srfm-ai-builder-textarea-ctn">
-							<p className="srfm-ai-builder-textarea-title">
-								{ __( 'Create a Form', 'sureforms' ) }
-							</p>
 							<textarea
 								style={ {
 									borderColor: showEmptyError
@@ -210,7 +206,7 @@ const AiFormBuilder = () => {
 										: '#CBD5E1',
 								} }
 								placeholder={ __(
-									'E.g. Form to gather feedback from our customer for our product functionality, usability, how much you will rate it and what you don’t like about it.',
+									'E.g. Form to gather feedback from our customer for our product functionality, usability , how much you will rate it and what you don’t like about it.',
 									'sureforms'
 								) }
 								maxLength={ 2000 }
@@ -224,24 +220,40 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							<div className="srfm-ai-builder-prompt-btn-ctn">
-								{ examplePrompts.map( ( prompt, index ) => (
-									<Button
-										key={ index }
-										className="srfm-ai-builder-prompt-btn"
-										onClick={ () =>
-											handlePromptClick( prompt.title )
-										}
-									>
-										<span className="srfm-ai-builder-prompt-title">
-											{ prompt.title }
-										</span>
-										<span className="srfm-ai-builder-prompt-description">
-											{ prompt.description }
-										</span>
-									</Button>
-								) ) }
-							</div>
+							{ /* <div className="srfm-ai-builder-prompt-btn-ctn"> */ }
+							<Button
+								onClick={ () =>
+									setShowFormIdeas( ! showFormIdeas )
+								}
+								className="srfm-ai-form-ideas-toggle"
+							>
+								{ __( 'Some Form Ideas', 'sureforms' ) }
+								{ showFormIdeas ? (
+									<MdKeyboardArrowUp />
+								) : (
+									<MdKeyboardArrowDown />
+								) }
+							</Button>
+							{ showFormIdeas && (
+								<div className="srfm-ai-form-ideas-ctn">
+									{ examplePrompts.map( ( prompt, index ) => (
+										<Button
+											key={ index }
+											className="srfm-ai-builder-prompt-btn"
+											onClick={ () =>
+												handlePromptClick(
+													prompt.title
+												)
+											}
+										>
+											<span className="srfm-ai-builder-prompt-title">
+												{ prompt.title }
+											</span>
+										</Button>
+									) ) }
+								</div>
+							) }
+							{ /* </div> */ }
 						</div>
 						<hr className="srfm-ai-builder-separator" />
 						<Button
@@ -269,7 +281,7 @@ const AiFormBuilder = () => {
 							} }
 						>
 							<span className="srfm-ai-builder-create-form-btn-text">
-								{ __( 'Create Form', 'sureforms' ) }
+								{ __( 'Generate Form', 'sureforms' ) }
 							</span>
 							<MdArrowForward color="white" size={ 20 } />
 						</Button>

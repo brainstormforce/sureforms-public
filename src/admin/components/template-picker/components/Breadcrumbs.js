@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import ICONS from './icons';
 
 const Breadcrumbs = () => {
+	const is_authorized = srfm_admin.is_authorized;
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
 	}
@@ -61,7 +62,7 @@ const Breadcrumbs = () => {
 				>
 					<span className="srfm-header-breadcrumb">
 						{ ICONS.breadcrumb }
-						{ __( 'Describe your Form', 'sureforms' ) }
+						{ is_authorized ? __( 'Describe your Form', 'sureforms' ) : __( 'Connect with AI', 'sureforms' ) }
 					</span>
 				</Link>
 			) }

@@ -12,6 +12,7 @@ const Header = () => {
 	const [ showRevokePopover, setShowRevokePopover ] = useState( false );
 	const [ showRevokeConfirmation, setShowRevokeConfirmation ] =
 		useState( false );
+
 	function useQuery() {
 		return new URLSearchParams( useLocation().search );
 	}

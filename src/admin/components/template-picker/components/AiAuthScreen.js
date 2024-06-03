@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { Button, Spinner } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
 import aiAuthPlaceholder from '@Image/ai-auth.svg';
@@ -9,6 +9,7 @@ import Header from './Header';
 
 const AiAuthScreen = () => {
 	const [ disableAuthButton, setDisableAuthButton ] = useState( false );
+	const [ isAuthorized, setIsAuthorized ] = useState( false );
 
 	// Function: Authorize Zip AI.
 	const authorizeZipAI = ( event ) => {
@@ -71,6 +72,7 @@ const AiAuthScreen = () => {
 				body: formData,
 			} ).then( ( response ) => {
 				if ( response?.success && response?.data?.is_authorized ) {
+					setIsAuthorized( true );
 					authWindow.close();
 					clearInterval( authVerificationInterval );
 					window.location.reload();
@@ -84,7 +86,7 @@ const AiAuthScreen = () => {
 		<>
 			<Header />
 			<div className="srfm-ts-main-container srfm-content-section">
-				<div className="srfm-ai-auth-ctn">
+				{	isAuthorized ? <Spinner className="srfm-ts-loader" /> : <div className="srfm-ai-auth-ctn">
 					<div className="srfm-ai-auth-ctn-inner">
 						<div className="srfm-ai-auth-txt-ctn">
 							<h1 className="srfm-ai-auth-title">
@@ -99,7 +101,7 @@ const AiAuthScreen = () => {
 							<ol className="srfm-ai-auth-list">
 								<li>
 									{ __(
-										'Create a free account on ZipWP platform.',
+										'Create a free account on ZipWP to connect with our AI.',
 										'sureforms'
 									) }
 								</li>
@@ -111,13 +113,13 @@ const AiAuthScreen = () => {
 								</li>
 								<li>
 									{ __(
-										'Watch as AI crafts your form instantly.',
+										'Watch as our AI crafts your form instantly.',
 										'sureforms'
 									) }
 								</li>
 								<li>
 									{ __(
-										'Refine the form with an easy drag & drop builder.',
+										'Refine the form with our easy drag & drop builder.',
 										'sureforms'
 									) }
 								</li>
@@ -153,7 +155,7 @@ const AiAuthScreen = () => {
 							<img src={ aiAuthPlaceholder } alt="AI Auth" />
 						</div>
 					</div>
-				</div>
+				</div> }
 			</div>
 		</>
 	);

@@ -15,7 +15,7 @@ const ErrorPopup = () => {
 				</div>
 				<span className="srfm-err-popup-description">
 					{ __(
-						'Please change your prompt and try again.',
+						'There was an error mapping the AI response to Fields. Please try again.',
 						'sureforms'
 					) }
 				</span>
