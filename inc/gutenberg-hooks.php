@@ -138,7 +138,11 @@ class Gutenberg_Hooks {
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'SureForms', 'sureforms' ),
+				'title' => esc_html__( 'General Fields', 'sureforms' ),
+			],
+			[
+				'slug'  => 'sureforms-pro',
+				'title' => esc_html__( 'Advanced Fields', 'sureforms' ),
 			],
 		];
 
