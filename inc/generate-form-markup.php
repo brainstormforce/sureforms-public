@@ -51,6 +51,16 @@ class Generate_Form_Markup {
 				'permission_callback' => '__return_true',
 			]
 		);
+
+		register_rest_route(
+			'sureforms/v1',
+			'/form-fields',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_form_fields' ],
+				'permission_callback' => '__return_true',
+			]
+		);
 	}
 
 	/**
@@ -272,7 +282,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
+				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
 				<?php
 			}
 			?>
@@ -291,7 +301,7 @@ class Generate_Form_Markup {
 						</a>
 						</span>
 					</div>
-				</div> 
+				</div>
 				<?php
 			}
 			?>
@@ -378,7 +388,7 @@ class Generate_Form_Markup {
 						?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
-							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
+							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
 						<?php endif; ?>
 						>
@@ -440,6 +450,50 @@ class Generate_Form_Markup {
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
 		return $confirmation_message;
+
+	}
+
+	public function get_form_fields() {
+		if( empty( $_GET['form_id'] ) ) {
+			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
+		}
+
+		$form_id = Helper::get_integer_value( sanitize_text_field( $_GET['form_id' ] ) );
+
+		if( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
+			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
+		}
+
+		$post = get_post( $form_id );
+
+		$blocks = parse_blocks( $post->post_content );
+
+		if ( empty( $blocks ) ) {
+			wp_send_json( [ 'message' => 'No data found for this id.' ] );
+		}
+
+		$data = [];
+
+		foreach( $blocks as $block ) {
+			if( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
+				if( ! empty( $block['attrs']['slug'] ) ) {
+					$data[ $block['attrs']['slug'] ] = ! empty( $block['attrs']['label'] ) ? $block['attrs']['label'] : wp_rand( 10, 1000 );
+				}
+			}
+		}
+
+		if( empty( $data ) ) {
+			wp_send_json( [ 'message' => 'No data found for this id.' ] );
+		}
+
+		$response = [
+			'integration_name' => 'SureForms',
+			'event_name' => 'sureforms_form_submitted',
+			'form_id' => $form_id,
+			'data' => $data
+		];
+
+		wp_send_json( $response );
 
 	}
 }
