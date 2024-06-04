@@ -1,22 +1,20 @@
 <?php
 /**
- * Elementor form widget.
+ * Elementor SureForms form widget.
  *
  * @package sureforms.
  * @since x.x.x
  */
 
-namespace SRFM\Inc\Integrations\Elementor;
+namespace SRFM\Inc\Page_Builders\Elementor;
 
 use Elementor\Widget_Base;
-use SRFM\Inc\Generate_Form_Markup;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * SureForms form form widget.
  *
  * SureForms widget that displays a form.
  */
@@ -24,11 +22,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget name.
 	 *
-	 * Retrieve form widget name.
-	 *
 	 * @since x.x.x
-	 * @access public
-	 *
 	 * @return string Widget name.
 	 */
 	public function get_name() {
@@ -38,42 +32,28 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget title.
 	 *
-	 * Retrieve form widget title.
-	 *
 	 * @since x.x.x
-	 * @access public
-	 *
 	 * @return string Widget title.
 	 */
 	public function get_title() {
-		return __( 'Form', 'sureforms' );
+		return __( 'SureForms Form', 'sureforms' );
 	}
 
 	/**
 	 * Get widget icon.
 	 *
-	 * Retrieve form widget icon.
-	 *
 	 * @since x.x.x
-	 * @access public
-	 *
 	 * @return string Widget icon.
 	 */
 	public function get_icon() {
-		return 'eicon-form-horizontal surecart-checkout-icon';
+		return 'eicon-form-horizontal srfm-checkout-icon';
 	}
 
 	/**
-	 * Get widget categories.
-	 *
-	 * Retrieve the list of categories the form widget belongs to.
-	 *
-	 * Used to determine where to display the widget in the editor.
+	 * Get widget categories. Used to determine where to display the widget in the editor.
 	 *
 	 * @since x.x.x
-	 * @access public
-	 *
-	 * @return array Widget categories.
+	 * @return array<string> Widget categories.
 	 */
 	public function get_categories() {
 		return [ 'sureforms-elementor' ];
@@ -82,37 +62,38 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget keywords.
 	 *
-	 * Retrieve the list of keywords the widget belongs to.
-	 *
 	 * @since x.x.x
-	 * @access public
-	 *
-	 * @return array Widget keywords.
+	 * @return array<string> Widget keywords.
 	 */
 	public function get_keywords() {
-		return [ 'form', 'sureforms', 'contact' ];
+		return [
+			'sureforms',
+			'contact form',
+			'form',
+			'elementor form',
+		];
 	}
 
 	/**
 	 * Register form widget controls.
-	 *
 	 * Adds different input fields to allow the user to change and customize the widget settings.
 	 *
 	 * @since x.x.x
-	 * @access protected
+	 * @return void
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+	protected function register_controls() {
+
 		$this->start_controls_section(
 			'section_form',
 			[
-				'label' => __( 'Form', 'sureforms' ),
+				'label' => __( 'SureForms Form', 'sureforms' ),
 			]
 		);
 
 		$options = $this->get_forms_options();
 
 		$this->add_control(
-			'sf_form_block',
+			'srfm_form_block',
 			[
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
@@ -121,7 +102,18 @@ class Form_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
-			'sf_edit_form',
+			'srfm_show_form_title',
+			[
+				'label'        => __( 'Show Form Title', 'sureforms' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Show', 'sureforms' ),
+				'label_off'    => __( 'Hide', 'sureforms' ),
+				'return_value' => 'true',
+			]
+		);
+
+		$this->add_control(
+			'srfm_edit_form',
 			[
 				'label' => __( 'Edit Form', 'sureforms' ),
 				'type'  => \Elementor\Controls_Manager::BUTTON,
@@ -131,11 +123,10 @@ class Form_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
-			'sf_create_form',
+			'srfm_create_form',
 			[
 				'label'     => __( 'Create New Form', 'sureforms' ),
 				'separator' => 'before',
-				'classes'   => 'testclass',
 				'type'      => \Elementor\Controls_Manager::BUTTON,
 				'text'      => __( 'Create', 'sureforms' ),
 				'event'     => 'sureforms:form:create',
@@ -146,11 +137,10 @@ class Form_Widget extends Widget_Base {
 	}
 
 	/**
-	 * Get froms options.
+	 * Get froms options. Shows all the available forms in the dropdown.
 	 *
 	 * @since x.x.x
-	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function get_forms_options() {
 		$forms = get_posts(
@@ -173,14 +163,13 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Render form widget output on the frontend.
 	 *
-	 * Written in PHP and used to generate the final HTML.
-	 *
 	 * @since x.x.x
 	 * @access protected
 	 */
 	protected function render() {
-		$settings = $this->get_settings_for_display();
-		echo do_shortcode( '[sureforms id="' . $settings['sf_form_block'] . '"]' );
+		$settings        = $this->get_settings_for_display();
+		$show_form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
+		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
 	}
 
 }

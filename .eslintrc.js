@@ -77,5 +77,6 @@ module.exports = {
 		srfm_backend: true,
 		TomSelect: true,
 		root: true,
+		srfmElementorData: true,
 	},
 };
