@@ -55,13 +55,13 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <MdOutlineStarBorder size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Rating Field', 'sureforms' ) }
+					label={ __( 'Rating', 'sureforms' ) }
 				/>
 				<IconBlock
 					icon={
 						<MdOutlineCloudUpload size={ 24 } color="#B4B4B4" />
 					}
-					label={ __( 'Upload Field', 'sureforms' ) }
+					label={ __( 'Upload', 'sureforms' ) }
 				/>
 			</div>
 		</div>
