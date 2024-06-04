@@ -43,7 +43,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	}
 
 	return (
-		<div className={ className }>
+		<div
+			className={ `${
+				is_inherit_from_theme ? 'wp-block-button' : ''
+			} ${ className }` }
+		>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -79,13 +83,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 				<button
 					style={ {
 						width: '100%',
-						border: 'var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color )',
-						borderRadius: 'var( --srfm-btn-border-radius )',
 					} }
-					className={ `srfm-button srfm-submit-button srfm-inline-submit-button ${
+					className={ `${
 						is_inherit_from_theme
 							? 'wp-block-button__link'
-							: 'srfm-btn-bg-color'
+							: 'srfm-button srfm-submit-button srfm-inline-submit-button srfm-btn-bg-color'
 					}` }
 				>
 					<RichText

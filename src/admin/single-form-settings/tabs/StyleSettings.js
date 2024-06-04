@@ -26,7 +26,10 @@ function StyleSettings( props ) {
 	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
-		document.querySelector( '.srfm-submit-button' )
+		document.querySelector( '.srfm-submit-richtext' )
+	);
+	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
+		document.querySelector( '.srfm-submit-btn-container' )
 	);
 
 	// if device type is desktop then change the submit button
@@ -48,12 +51,20 @@ function StyleSettings( props ) {
 						?.querySelector( 'body' );
 
 					setSubmitBtn(
-						iframeBody.querySelector( '.srfm-submit-button' )
+						iframeBody.querySelector( '.srfm-submit-richtext' )
+					);
+					setSubmitBtnCtn(
+						iframeBody.querySelector( '.srfm-submit-btn-container' )
 					);
 					submitButtonInherit();
 				}
 			} else {
-				setSubmitBtn( document.querySelector( '.srfm-submit-button' ) );
+				setSubmitBtnCtn(
+					document.querySelector( '.srfm-submit-btn-container' )
+				);
+				setSubmitBtn(
+					document.querySelector( '.srfm-submit-richtext' )
+				);
 				submitButtonInherit();
 			}
 		}, 1000 );
@@ -61,21 +72,29 @@ function StyleSettings( props ) {
 
 	function submitButtonInherit() {
 		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-btn-bg-color';
+		const customClass = [
+			'srfm-button',
+			'srfm-submit-button',
+			'srfm-btn-bg-color',
+		];
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-
 		if ( submitBtn ) {
-			if ( submitBtn.classList.contains( inheritClass ) ) {
+			if (
+				sureformsKeys?._srfm_inherit_theme_button &&
+				sureformsKeys._srfm_inherit_theme_button
+			) {
+				submitBtn.classList.remove( ...customClass );
+				submitBtnCtn.classList.add( 'wp-block-button' );
+				submitBtn.classList.add( btnClass );
+			} else {
 				submitBtn.classList.remove( inheritClass );
+				submitBtnCtn.classList.remove( 'wp-block-button' );
+				submitBtn.classList.add( ...btnClass );
 			}
-			if ( submitBtn.classList.contains( customClass ) ) {
-				submitBtn.classList.remove( customClass );
-			}
-			submitBtn.classList.add( btnClass );
 		}
 	}
 
@@ -98,7 +117,7 @@ function StyleSettings( props ) {
 			'--srfm-help-color',
 			sureformsKeys._srfm_help_color
 				? sureformsKeys._srfm_help_color
-				: '#6b7280'
+				: '#4B5563'
 		);
 
 		// Input
@@ -114,7 +133,7 @@ function StyleSettings( props ) {
 			'--srfm-placeholder-color',
 			sureformsKeys._srfm_input_placeholder_color
 				? sureformsKeys._srfm_input_placeholder_color
-				: '#9ca3af'
+				: '#94A3B8'
 		);
 		// Input background color
 		root.style.setProperty(
@@ -247,7 +266,7 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_help_color' ) {
 			root.style.setProperty(
 				'--srfm-help-color',
-				value ? value : '#6b7280'
+				value ? value : '#4B5563'
 			);
 		}
 
@@ -261,7 +280,7 @@ function StyleSettings( props ) {
 		if ( option === '_srfm_input_placeholder_color' ) {
 			root.style.setProperty(
 				'--srfm-placeholder-color',
-				value ? value : '#9ca3af'
+				value ? value : '#94A3B8'
 			);
 		}
 		if ( option === '_srfm_input_bg_color' ) {
@@ -872,16 +891,23 @@ function StyleSettings( props ) {
 				>
 					<ToggleControl
 						label={ __( 'Inherit From Theme', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_page_break_inherit_theme_button }
+						checked={
+							sureformsKeys._srfm_page_break_inherit_theme_button
+						}
 						onChange={ ( value ) => {
-							updateMeta( '_srfm_page_break_inherit_theme_button', value );
+							updateMeta(
+								'_srfm_page_break_inherit_theme_button',
+								value
+							);
 						} }
 					/>
 					{ ! sureformsKeys._srfm_page_break_inherit_theme_button && (
 						<>
 							<AdvancedPopColorControl
 								label={ __( 'Text Color', 'sureforms' ) }
-								colorValue={ sureformsKeys._srfm_page_break_button_text_color }
+								colorValue={
+									sureformsKeys._srfm_page_break_button_text_color
+								}
 								data={ {
 									value: sureformsKeys._srfm_page_break_button_text_color,
 									label: '_srfm_page_break_button_text_color',
@@ -889,7 +915,7 @@ function StyleSettings( props ) {
 								onColorChange={ ( colorValue ) => {
 									if (
 										colorValue !==
-									sureformsKeys._srfm_page_break_button_text_color
+										sureformsKeys._srfm_page_break_button_text_color
 									) {
 										updateMeta(
 											'_srfm_page_break_button_text_color',
@@ -897,10 +923,13 @@ function StyleSettings( props ) {
 										);
 									}
 								} }
-								value={ sureformsKeys._srfm_page_break_button_text_color }
+								value={
+									sureformsKeys._srfm_page_break_button_text_color
+								}
 								isFormSpecific={ true }
 							/>
-							{ sureformsKeys._srfm_page_break_button_bg_type === 'filled' && (
+							{ sureformsKeys._srfm_page_break_button_bg_type ===
+								'filled' && (
 								<>
 									<p className="components-base-control__help" />
 									<AdvancedPopColorControl
@@ -918,7 +947,7 @@ function StyleSettings( props ) {
 										onColorChange={ ( colorValue ) => {
 											if (
 												colorValue !==
-											sureformsKeys._srfm_page_break_button_bg_color
+												sureformsKeys._srfm_page_break_button_bg_color
 											) {
 												updateMeta(
 													'_srfm_page_break_button_bg_color',
@@ -933,11 +962,15 @@ function StyleSettings( props ) {
 									/>
 								</>
 							) }
-							{ sureformsKeys._srfm_page_break_button_bg_type === 'filled' && (
+							{ sureformsKeys._srfm_page_break_button_bg_type ===
+								'filled' && (
 								<>
 									<p className="components-base-control__help" />
 									<AdvancedPopColorControl
-										label={ __( 'Border Color', 'sureforms' ) }
+										label={ __(
+											'Border Color',
+											'sureforms'
+										) }
 										colorValue={
 											sureformsKeys._srfm_page_break_button_border_color
 										}
@@ -948,7 +981,7 @@ function StyleSettings( props ) {
 										onColorChange={ ( colorValue ) => {
 											if (
 												colorValue !==
-											sureformsKeys._srfm_page_break_button_border_color
+												sureformsKeys._srfm_page_break_button_border_color
 											) {
 												updateMeta(
 													'_srfm_page_break_button_border_color',
@@ -963,7 +996,10 @@ function StyleSettings( props ) {
 									/>
 									<p className="components-base-control__help" />
 									<Range
-										label={ __( 'Border Width', 'sureforms' ) }
+										label={ __(
+											'Border Width',
+											'sureforms'
+										) }
 										value={
 											sureformsKeys._srfm_page_break_button_border_width
 										}
@@ -984,7 +1020,10 @@ function StyleSettings( props ) {
 									/>
 									<p className="components-base-control__help" />
 									<Range
-										label={ __( 'Border Radius', 'sureforms' ) }
+										label={ __(
+											'Border Radius',
+											'sureforms'
+										) }
 										value={
 											sureformsKeys._srfm_page_break_button_border_radius
 										}
