@@ -59,11 +59,11 @@ const defaultKeys = {
 	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
 	_srfm_fontsize: 20,
-	_srfm_label_color: '#1f2937',
-	_srfm_help_color: '#6b7280',
+	_srfm_label_color: '#111827',
+	_srfm_help_color: '#4B5563',
 	// Input Fields
 	_srfm_input_text_color: '#4B5563',
-	_srfm_input_placeholder_color: '#9CA3AF',
+	_srfm_input_placeholder_color: '#94A3B8',
 	_srfm_input_bg_color: '#ffffff',
 	_srfm_input_border_color: '#D0D5DD',
 	_srfm_input_border_width: 1,
@@ -79,7 +79,7 @@ const defaultKeys = {
 	_srfm_button_bg_color: '#D54407',
 	_srfm_button_border_color: '#ffffff',
 	_srfm_button_border_width: 0,
-	_srfm_button_border_radius: 6,
+	_srfm_button_border_radius: 4,
 	_srfm_submit_alignment: 'left',
 	_srfm_submit_width: '',
 	_srfm_submit_alignment_backend: '100%',
@@ -220,13 +220,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 	function addSubmitButton( elm ) {
 		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-btn-bg-color';
+		const customClass = 'srfm-button srfm-submit-button srfm-btn-bg-color';
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
+		const btnCtnClass = sureformsKeys?._srfm_inherit_theme_button &&
+		sureformsKeys._srfm_inherit_theme_button ? 'wp-block-button' : '';
+		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -239,7 +241,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				// If the normal button is present, add RichText to the button.
 				const buttonContainer = elm.nextElementSibling;
 				const button = buttonContainer.querySelector(
-					'.srfm-submit-button'
+					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
@@ -292,11 +294,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--srfm-label-text-color',
-							value: sureformsKeys._srfm_label_color || '#1f2937',
+							value: sureformsKeys._srfm_label_color || '#111827',
 						},
 						{
 							property: '--srfm-help-color',
-							value: sureformsKeys._srfm_help_color || '#6b7280',
+							value: sureformsKeys._srfm_help_color || '#4B5563',
 						},
 						// Input
 						{
@@ -310,7 +312,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-placeholder-color',
 							value:
 								sureformsKeys._srfm_input_placeholder_color ||
-								'#9CA3AF',
+								'#94A3B8',
 						},
 						{
 							property: '--srfm-base-background-color',
@@ -383,7 +385,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-btn-border-radius',
 							value:
 								sureformsKeys._srfm_button_border_radius +
-									'px' || '6px',
+									'px' || '4px',
 						},
 						{
 							property: '--srfm-submit-alignment-backend',

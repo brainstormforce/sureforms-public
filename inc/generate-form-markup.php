@@ -126,7 +126,7 @@ class Generate_Form_Markup {
 				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
 				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
-				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
+				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '4' ) . 'px';
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
 			} else {
 				$btn_bg_color = '';
@@ -180,16 +180,16 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#1f2937' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#6b7280' );
+			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
+			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
-			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
+			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
-			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
+			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#94A3B8' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
 			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
@@ -376,7 +376,7 @@ class Generate_Form_Markup {
 							<?php
 						endif;
 						?>
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color srfm-button srfm-submit-button ' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
