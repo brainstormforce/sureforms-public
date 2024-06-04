@@ -106,7 +106,7 @@ class Create_New_Form {
 			'_srfm_label_color'                     => [ '#111827' ],
 			'_srfm_help_color'                      => [ '#4B5563' ],
 			'_srfm_input_text_color'                => [ '#4B5563' ],
-			'_srfm_input_placeholder_color'         => [ '#9CA3AF' ],
+			'_srfm_input_placeholder_color'         => [ '#94A3B8' ],
 			'_srfm_input_bg_color'                  => [ '#ffffff' ],
 			'_srfm_input_border_color'              => [ '#D0D5DD' ],
 			'_srfm_input_shadow_color'              => [ '#D0D5DD' ],

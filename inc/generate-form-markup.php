@@ -189,7 +189,7 @@ class Generate_Form_Markup {
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
-			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
+			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#94A3B8' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
 			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );

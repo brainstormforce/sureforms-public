@@ -63,7 +63,7 @@ const defaultKeys = {
 	_srfm_help_color: '#4B5563',
 	// Input Fields
 	_srfm_input_text_color: '#4B5563',
-	_srfm_input_placeholder_color: '#9CA3AF',
+	_srfm_input_placeholder_color: '#94A3B8',
 	_srfm_input_bg_color: '#ffffff',
 	_srfm_input_border_color: '#D0D5DD',
 	_srfm_input_border_width: 1,
@@ -312,7 +312,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-placeholder-color',
 							value:
 								sureformsKeys._srfm_input_placeholder_color ||
-								'#9CA3AF',
+								'#94A3B8',
 						},
 						{
 							property: '--srfm-base-background-color',

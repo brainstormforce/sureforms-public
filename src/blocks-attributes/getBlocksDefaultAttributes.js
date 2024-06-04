@@ -31,7 +31,7 @@ const defaultKeys = {
 	_srfm_help_color: { default: '#4B5563' },
 	// Input
 	_srfm_input_text_color: { default: '#4B5563' },
-	_srfm_input_placeholder_color: { default: '#9CA3AF' },
+	_srfm_input_placeholder_color: { default: '#94A3B8' },
 	_srfm_input_bg_color: { default: '#ffffff' },
 	_srfm_input_border_color: { default: '#D0D5DD' },
 	_srfm_input_border_width: { default: 1 },
