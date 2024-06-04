@@ -410,7 +410,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param array<mixed> $form_data contains form data.
 	 * @param array<mixed> $submission_data contains submission data.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return string|false
 	 */
 	public static function get_confirmation_markup( $form_data = [], $submission_data = [] ) {

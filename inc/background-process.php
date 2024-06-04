@@ -3,7 +3,7 @@
  * Sureforms Background Process.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.3
  */
 
 namespace SRFM\Inc;
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sureforms Background Process Class.
  *
- * @since x.x.x
+ * @since 0.0.3
  */
 class Background_Process {
 	use Get_Instance;
@@ -54,7 +54,7 @@ class Background_Process {
 	/**
 	 * Constructor
 	 *
-	 * @since  x.x.x
+	 * @since  0.0.3
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
@@ -63,7 +63,7 @@ class Background_Process {
 	/**
 	 * Add custom API Route for 'After Submission' background process.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return void
 	 */
 	public function register_custom_endpoint() {
@@ -90,7 +90,7 @@ class Background_Process {
 	 * Handle 'After Submission' background process
 	 *
 	 * @param \WP_REST_Request $request Request object or array containing form data.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function handle_after_submission( $request ) {
@@ -132,7 +132,7 @@ class Background_Process {
 	/**
 	 * Handle 'After Submission' background process
 	 *
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return bool
 	 */
 	public function trigger_after_submission_process() {
