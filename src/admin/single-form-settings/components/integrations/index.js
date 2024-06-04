@@ -156,7 +156,7 @@ const UpsellSureTriggers = () => {
 				setAction( '' );
 				window.open( plugin.redirection, '_blank' );
 				setTimeout( () => {
-					setCTA( 'Got To Dashboard' );
+					setCTA( 'Go To Dashboard' );
 				}, 3000 );
 			}
 		} );

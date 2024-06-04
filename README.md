@@ -40,22 +40,22 @@ With SureForms, our customers can expect a delightful range of pre-made template
 We're here to empower our customers to create forms that not only function flawlessly but also captivate their audience. Say goodbye to the mundane and hello to a whole new level of form-building experience.
 With SureForms, let's revolutionize the way people create and design forms for their websites.
 
-<h4>**HOW IT WORKS ❓**</h4>
+<h4>HOW IT WORKS ❓</h4>
 From installation to creating your first form, SureForms is designed to be simple and intuitive. Here is how it works:
-<h4>**Step 1. Install WordPress Plugin 🔌**</h4>
+<h4>Step 1. Install WordPress Plugin 🔌</h4>
 From your WordPress dashboard, navigate to the Plugins menu and click on the “Add New” button. Search for the SureForms plugin, then click “Install Now” and “Activate”.
-<h4>**Step 2. Build your Form ⚙️**</h4>
+<h4>Step 2. Build your Form ⚙️</h4>
 Once the plugin is installed, you will be redirected to the SureForms dashboard page in your WordPress dashboard. There you will find a button to create a new form. Click it to build and customize your form using the SureForms interface to suit your requirements.
-<h4>**Step 3. Embed your Form 📄**</h4>
+<h4>Step 3. Embed your Form 📄</h4>
 Once your form is ready, easily embed it on any page or post using the provided shortcode or block.
 
-<h4>**SOME POWERFUL FEATURES OF SUREFORMS 💪**</h4>
+<h4>SOME POWERFUL FEATURES OF SUREFORMS 💪</h4>
 SureForms is packed with features that will help you create forms fast and save time. Below are some of the top features it offers:
 
-<h4>**Native Gutenberg Integration**</h4>
+<h4>Native Gutenberg Integration</h4>
 SureForms leverages the power of Gutenberg, WordPress's native block editor, as its foundation. This integration provides a seamless and intuitive form-building experience for users familiar with the WordPress ecosystem. By utilizing Gutenberg's drag-and-drop interface, SureForms eliminates the need to learn a separate form builder, saving time and simplifying the form creation process.
 
-<h4>**Stunning Out-of-the-Box Form Templates**</h4>
+<h4>Stunning Out-of-the-Box Form Templates</h4>
 
 SureForms prioritizes aesthetics and user experience by offering modern and visually appealing form templates. Users can create stunning forms without relying on their theme or writing custom CSS. Our pre-made templates ensure that forms look amazing from the start, providing a polished and professional appearance that captivates users.
 Here are a few of the templates:
@@ -66,19 +66,19 @@ Here are a few of the templates:
 * Newsletter Form
 * Support Form
 
-<h4>**No-Code Flexibility**</h4>
+<h4>No-Code Flexibility</h4>
 SureForms caters to users who may not possess extensive coding knowledge. It offers a range of advanced form features, such as conditional logic, multi-step forms, dynamic data handling, and query parameters, all accessible through an intuitive, no-code interface. This empowers users of all levels to create sophisticated and interactive forms without the need for custom coding.
 
-<h4>**Mobile-First and Accessible Design**</h4>
+<h4>Mobile-First and Accessible Design</h4>
 SureForms recognizes the importance of mobile responsiveness and accessibility. The forms created with SureForms are designed with a mobile-first approach, ensuring they look and function flawlessly on various devices. Moreover, SureForms adheres to accessibility standards, enabling users of all abilities to interact with the forms easily.
 
-<h4>**Instant Forms**</h4>
+<h4>Instant Forms</h4>
 Publish forms instantly as a URL that can be easily shared across the web, via email, or social media. Make our forms available to anyone, anywhere.
 
-<h4>**Multi-Column Layouts**</h4>
+<h4>Multi-Column Layouts</h4>
 Arrange input fields into multiple columns to create a sleek and efficient form layout. This approach enhances the form's appearance, making it appear more condensed and visually appealing, thereby reducing the likelihood of users abandoning the form. Place input fields in one to four columns to customize the layout according to your preferences.
 
-<h4>**Input Field Blocks**</h4>
+<h4>Input Field Blocks</h4>
 
 SureForms comes with 15+ fields that are available as Gutenberg blocks to build your form:
 * Text Field
@@ -98,31 +98,31 @@ SureForms comes with 15+ fields that are available as Gutenberg blocks to build 
 * Image
 * Icon
 
-<h4>**Inline Field Validation**</h4>
+<h4>Inline Field Validation</h4>
 Real-time validation for form fields provides instant feedback to users if they enter incorrect or incomplete information. This ensures data accuracy and enhances the user experience.
 
-<h4>**GDPR Compliance**</h4>
+<h4>GDPR Compliance</h4>
 Ensure your forms are compliant with GDPR regulations to protect user data and privacy.
 
-<h4>**Anti-Spam**</h4>
+<h4>Anti-Spam</h4>
 Anti-spam measures protect forms from unwanted submissions. Built-in spam protection ensures form submissions are genuine and reliable. Integrate with Google reCAPTCHA, providing an additional layer of security against spam and bots, ensuring the integrity of form submissions. Honeypot field to detect and prevent automated form submissions. This hidden field helps identify and block spam bots without requiring any user interaction.
 
-<h4>**Confirmations**</h4>
+<h4>Confirmations</h4>
 Customize confirmation messages or redirections that are displayed to users after successful form submissions. Tailor these messages to provide personalized feedback or redirect respondents to specific pages.
 
-<h4>**Email Notifications**</h4>
+<h4>Email Notifications</h4>
 Configure customized email notifications triggered by form submissions. Specify recipients, email templates, and personalized messages to stay informed and automate communication.
 
-<h4>**Form Entries**</h4>
+<h4>Form Entries</h4>
 Stores form entries securely to access and manage form submission data within the WordPress dashboard. Review, export, or perform actions on form entries as needed.
 
-<h4>**Visual Data Reporting**</h4>
+<h4>Visual Data Reporting</h4>
 Analyze and gain insights from form submissions through interactive charts, graphs, and data visualizations. Take data-driven decisions.
 
-<h4>**Developer-Friendly Customization**</h4>
+<h4>Developer-Friendly Customization</h4>
 For developers seeking advanced customization options, SureForms provides clean APIs, extensive hooks, and developer-friendly code. This allows developers to extend and integrate SureForms with other systems, plugins, or themes seamlessly. The plugin's code is designed to be accessible and well-structured, making it easy for developers to customize and tailor the forms to their specific requirements.
 
-<h4>**WHO CAN BENEFIT FROM SUREFORMS?**</h4>
+<h4>WHO CAN BENEFIT FROM SUREFORMS?</h4>
 Any individual or organization that wants to create forms to gather information from their users can greatly benefit from using SureForms.
 <ol>
   <li> **Website Owners**: SureForms is aimed at individuals and businesses who manage their own websites. It provides an intuitive and user-friendly interface that empowers website owners to create beautiful and functional forms without requiring technical knowledge or coding skills.</li>
@@ -169,7 +169,7 @@ SureForms is compatible with all plugins, including:
 * Yoast SEO
 * And many more
 
-<h4>**BRANDING GUIDELINE**</h4>
+<h4>BRANDING GUIDELINE</h4>
 
 SureForms® is a registered trademark. Please use the following format when mentioning the SureForms anywhere.
 * SureForms [correct]
@@ -181,7 +181,8 @@ SureForms® is a registered trademark. Please use the following format when ment
 * Sure Form [incorrect]
 
 <h4>CONNECT WITH OUR TEAM AND COMMUNITY</h4>
-[Join our Facebook group community:](https://www.facebook.com/groups/surecart) Learn the tricks and techniques that other SureForms users are using to grow their business. Also, get exciting insider information on upcoming feature releases.
+
+[Join our Facebook group community](https://www.facebook.com/groups/surecart): Learn the tricks and techniques that other SureForms users are using to grow their business. Also, get exciting insider information on upcoming feature releases.
 
 <h4>USE OF 3RD PARTY SERVICES</h4>
 
@@ -225,6 +226,10 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 <a href="(https://brainstormforce.com) "> Brainstorm Force </a>
 
 ## Changelog ##
+
+### 0.0.3 ###
+New: Added support for Cloudflare Turnstile.
+Fix: Multiple bug fixes and UI enhancement.
 
 ### 0.0.2 ###
 Improvement: Added smart tag feature.
