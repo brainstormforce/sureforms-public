@@ -219,12 +219,6 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
-== Contributors & Developers ==
-
-“SureForms – Gutenberg-powered Drag & Drop Contact Form Plugin for WordPress!” is open source software. The following people have contributed to this plugin.
-
-<a href="(https://brainstormforce.com) "> Brainstorm Force </a>
-
 == Changelog ==
 
 = 0.0.4 =
