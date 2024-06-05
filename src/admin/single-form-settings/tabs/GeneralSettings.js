@@ -301,7 +301,7 @@ function GeneralSettings( props ) {
 					<>
 						<ToggleControl
 							label={ __(
-								'Show Title on Instant Forms',
+								'Show Title on Instant Form',
 								'sureforms'
 							) }
 							checked={

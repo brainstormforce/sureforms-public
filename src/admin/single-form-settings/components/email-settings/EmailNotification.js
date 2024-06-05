@@ -137,7 +137,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 					<div className="srfm-modal-inner-box-text">
 						<h5>{ __( 'Notification', 'sureforms' ) }</h5>
 					</div>
-					<div className="srfm-modal-separator"></div>
+					<div className="srfm-modal-separator" />
 					{
 						emailNotificationData.length === 0 ? (
 							<div className="srfm-empty-data">

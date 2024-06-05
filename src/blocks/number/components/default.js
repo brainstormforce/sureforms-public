@@ -33,17 +33,19 @@ export const NumberComponent = ( {
 				id={ blockID }
 				allowedFormats={ [] }
 			/>
-			<input
-				className={ `srfm-input-common srfm-input-${ slug }` }
-				id={ `srfm-${ slug }-${ blockID }` }
-				type={ formatType === 'none' ? 'number' : 'text' }
-				value={ defaultValue }
-				onChange={ handleInput }
-				placeholder={ placeholder }
-				required={ required }
-				min={ minValue }
-				max={ maxValue }
-			/>
+			<div className="srfm-block-wrap">
+				<input
+					className={ `srfm-input-common srfm-input-${ slug }` }
+					id={ `srfm-${ slug }-${ blockID }` }
+					type={ formatType === 'none' ? 'number' : 'text' }
+					value={ defaultValue }
+					onChange={ handleInput }
+					placeholder={ placeholder }
+					required={ required }
+					min={ minValue }
+					max={ maxValue }
+				/>
+			</div>
 		</>
 	);
 };

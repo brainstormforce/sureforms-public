@@ -95,6 +95,25 @@ async function submitFormData( form ) {
 		} );
 }
 
+async function afterSubmit( formStatus ) {
+	const site_url = window.srfm_submit.site_url;
+	const submissionId = formStatus.data.submission_id;
+	return await fetch(
+		`${ site_url }/wp-json/sureforms/v1/after-submission/` + submissionId,
+		{
+			headers: {
+				'X-WP-Nonce': window.srfm_submit.nonce,
+			},
+		}
+	)
+		.then( ( response ) => {
+			return response.json();
+		} )
+		.catch( ( e ) => {
+			console.log( e );
+		} );
+}
+
 function showSuccessMessage( element, message, form, afterSubmission ) {
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
@@ -155,6 +174,9 @@ async function handleFormSubmission(
 					afterSubmission
 				);
 				loader.classList.remove( 'srfm-active' );
+				if ( formStatus?.data?.after_submit ) {
+					void afterSubmit( formStatus );
+				}
 			} else {
 				redirectToUrl( successUrl );
 				loader.classList.remove( 'srfm-active' );
