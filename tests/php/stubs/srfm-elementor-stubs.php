@@ -3015,3 +3015,102 @@ class Controls_Manager
 }
 
 }
+
+namespace Elementor{
+
+/**
+ * Elementor editor.
+ *
+ * Elementor editor handler class is responsible for initializing Elementor
+ * editor and register all the actions needed to display the editor.
+ *
+ * @since 1.0.0
+ */
+class Editor {
+
+	/**
+	 * Whether the edit mode is active.
+	 *
+	 * Used to determine whether we are in edit mode.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @var bool Whether the edit mode is active.
+	 */
+	private $is_edit_mode;
+
+	/**
+	 * Whether the edit mode is active.
+	 *
+	 * Used to determine whether we are in the edit mode.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @param int $post_id Optional. Post ID. Default is `null`, the current
+	 *                     post ID.
+	 *
+	 * @return bool Whether the edit mode is active.
+	 */
+	public function is_edit_mode() {
+	}
+
+}
+
+}
+
+namespace Elementor{
+
+/**
+ * Elementor plugin.
+ *
+ * The main plugin handler class is responsible for initializing Elementor. The
+ * class registers and all the components required to run the plugin.
+ *
+ * @since 1.0.0
+ */
+class Plugin {
+
+	/**
+	 * Instance.
+	 *
+	 * Holds the plugin instance.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 * @static
+	 *
+	 * @var Plugin
+	 */
+	public static $instance = null;
+
+    	/**
+	 * Editor.
+	 *
+	 * Holds the plugin editor.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @var Editor
+	 */
+	public $editor;
+
+	/**
+	 * Instance.
+	 *
+	 * Ensures only one instance of the plugin class is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 * @static
+	 *
+	 * @return Plugin An instance of the class.
+	 */
+	public static function instance() {
+	}
+
+}
+
+}

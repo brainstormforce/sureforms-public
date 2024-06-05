@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Page_Builders\Elementor;
 
 use Elementor\Widget_Base;
+use Elementor\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -170,6 +171,13 @@ class Form_Widget extends Widget_Base {
 		$settings = $this->get_settings_for_display();
 
 		if ( ! is_array( $settings ) || ! array_key_exists( 'srfm_show_form_title', $settings ) || ! array_key_exists( 'srfm_form_block', $settings ) ) {
+			return;
+		}
+
+		$is_editor = \Elementor\Plugin::instance()->editor->is_edit_mode();
+
+		if ( $is_editor && '' === $settings['srfm_form_block'] ) {
+			echo esc_html__( 'Select the form that you wish to add here.', 'sureforms' );
 			return;
 		}
 
