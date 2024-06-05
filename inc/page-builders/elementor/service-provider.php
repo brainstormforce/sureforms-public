@@ -58,6 +58,7 @@ class Service_Provider {
 	 * Elementor surecart categories register
 	 *
 	 * @param object $elements_manager Elementor category manager.
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function categories_registered( $elements_manager ) {
@@ -79,6 +80,7 @@ class Service_Provider {
 	 * Elementor widget register
 	 *
 	 * @param object $widgets_manager Elementor widget manager.
+	 * @since x.x.x
 	 * @return void
 	 */
 	public function widget( $widgets_manager ) {

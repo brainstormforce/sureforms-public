@@ -46,7 +46,7 @@ class Form_Widget extends Widget_Base {
 	 * @return string Widget icon.
 	 */
 	public function get_icon() {
-		return 'eicon-form-horizontal srfm-checkout-icon';
+		return 'eicon-form-horizontal srfm-elementor-widget-icon';
 	}
 
 	/**
