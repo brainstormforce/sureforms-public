@@ -89,7 +89,7 @@ class Generate_Form_Markup {
 			$color_primary            = Helper::get_meta_value( $id, '_srfm_color1' );
 			$form_font_size           = Helper::get_meta_value( $id, '_srfm_fontsize' );
 			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
-			$is_page_break            = Helper::get_meta_value( $id, '_srfm_is_page_break' );
+			$is_page_break            = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
 			$confirmation_type        = '';
@@ -272,7 +272,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
+				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
 				<?php
 			}
 			?>
@@ -291,7 +291,7 @@ class Generate_Form_Markup {
 						</a>
 						</span>
 					</div>
-				</div> 
+				</div>
 				<?php
 			}
 			?>
@@ -303,10 +303,8 @@ class Generate_Form_Markup {
 					$global_setting_options = get_option( 'srfm_general_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
-				if ( defined( 'SRFM_PRO_VER' ) ) {
-					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-						do_action( 'srfm_page_break_header', $id );
-					}
+				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
+					do_action( 'srfm_page_break_header', $id );
 				}
 				?>
 
@@ -317,7 +315,7 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<?php
 
-				if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
+				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
@@ -350,7 +348,7 @@ class Generate_Form_Markup {
 					<?php endif; ?>
 
 					<?php
-					if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
+					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
 					?>
@@ -378,7 +376,7 @@ class Generate_Form_Markup {
 						?>
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color srfm-button srfm-submit-button ' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
-							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
+							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
 						<?php endif; ?>
 						>

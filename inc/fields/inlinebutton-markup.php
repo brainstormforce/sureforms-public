@@ -40,7 +40,7 @@ class Inlinebutton_Markup extends Base {
 	/**
 	 * Used as a flag which decides whether page break is added.
 	 *
-	 * @var string
+	 * @var bool
 	 * @since 0.0.2
 	 */
 	protected $is_page_break;
@@ -88,7 +88,7 @@ class Inlinebutton_Markup extends Base {
 		$this->slug                    = 'inline-button';
 		$this->button_text             = isset( $attributes['buttonText'] ) ? $attributes['buttonText'] : '';
 		$this->btn_from_theme          = Helper::get_meta_value( $this->form_id, '_srfm_inherit_theme_button' );
-		$this->is_page_break           = Helper::get_meta_value( $this->form_id, '_srfm_is_page_break' );
+		$this->is_page_break           = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $this->form_id, '_srfm_is_page_break' );
 		$this->recaptcha_version       = Helper::get_meta_value( $this->form_id, '_srfm_form_recaptcha' );
 		$this->google_captcha_site_key = '';
 		$this->global_setting_options  = [];
@@ -126,7 +126,7 @@ class Inlinebutton_Markup extends Base {
 	 */
 	public function markup() {
 		ob_start(); ?>
-		<?php if ( '1' !== $this->is_page_break ) : ?>
+		<?php if ( ! $this->is_page_break ) : ?>
 			<?php if ( 'v2-checkbox' === $this->recaptcha_version ) : ?>
 				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
