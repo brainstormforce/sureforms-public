@@ -26,7 +26,8 @@ import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
-	const { fieldWidth, label, block_id, formId, preview, help } = attributes;
+	const { fieldWidth, label, block_id, formId, preview, help, className } =
+		attributes;
 
 	const currentFormId = useGetCurrentFormId( clientId );
 
@@ -105,7 +106,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const allowedBlocks = [ 'srfm/input', 'srfm/dropdown' ];
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -181,7 +182,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					/>
 				) }
 			</div>
-		</>
+		</div>
 	);
 };
 

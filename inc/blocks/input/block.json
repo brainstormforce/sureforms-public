@@ -1,6 +1,6 @@
 {
 	"name": "srfm/input",
-	"title": "Text Field",
+	"title": "Text",
 	"description": "Displays a SureForm Text Field",
 	"category": "sureforms",
 	"keywords": [ "text", "input", "custom", "field" ],
@@ -60,7 +60,7 @@
 		},
 		"textLength": {
 			"type": "number",
-			"default": 30
+			"default": 100
 		},
 		"formId": {
 			"type": "number",

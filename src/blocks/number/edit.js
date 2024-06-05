@@ -36,6 +36,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 		formatType,
 		formId,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
@@ -74,7 +75,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -259,7 +260,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 

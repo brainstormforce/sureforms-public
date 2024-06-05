@@ -10,6 +10,8 @@ import GeneralPage from './pages/General';
 import ValidationsPage from './pages/Validations';
 import EmailPage from './pages/Email';
 import SecurityPage from './pages/Security';
+import IntegrationPage from './pages/Integrations';
+import { applyFilters } from '@wordpress/hooks';
 
 const Component = ( { path } ) => {
 	const [ pageTitle, setPageTitle ] = useState( '' );
@@ -286,6 +288,15 @@ const Component = ( { path } ) => {
 						updateGlobalSettings={ updateGlobalSettings }
 					/>
 				) }
+
+				{
+					'integration-settings' === path && (
+						<IntegrationPage
+							loading={ loading }
+						/>
+					)
+				}
+				{ applyFilters( 'srfm.settings.page.content', '', path, loading, toast ) }
 			</div>
 		</>
 	);

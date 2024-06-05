@@ -215,6 +215,7 @@ class Admin {
 			wp_enqueue_style( SRFM_SLUG . '-intl', $vendor_css_uri . 'intl/intlTelInput-backend.min.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-common', $css_uri . 'common' . $file_prefix . '.css', [], SRFM_VER );
 			wp_enqueue_style( SRFM_SLUG . '-reactQuill', $vendor_css_uri . 'quill/quill.snow.css', [], SRFM_VER );
+			wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 		}
 
 		wp_enqueue_style( SRFM_SLUG . '-form-selector', $css_uri . 'srfm-form-selector' . $file_prefix . '.css', [], SRFM_VER );
@@ -299,6 +300,21 @@ class Admin {
 			$file_prefix .= '-rtl';
 		}
 
+		$localization_data = [
+			'site_url'                => get_site_url(),
+			'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
+			'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
+			'plugin_version'          => SRFM_VER,
+			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
+			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
+			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
+		];
+
+		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
+			$license_active                         = \SRFM_PRO\Admin\Licensing::is_license_active();
+			$localization_data['is_license_active'] = $license_active;
+		}
+
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type || 'toplevel_page_sureforms_menu' === $current_screen->base || SRFM_ENTRIES_POST_TYPE === $current_screen->post_type
 		|| 'sureforms_page_sureforms_form_settings' === $current_screen->id
 		) {
@@ -316,19 +332,14 @@ class Admin {
 			wp_enqueue_script( SRFM_SLUG . $asset_handle, SRFM_URL . 'assets/build/dashboard.js', $script_info['dependencies'], SRFM_VER, true );
 
 			wp_localize_script( SRFM_SLUG . $asset_handle, 'scIcons', [ 'path' => SRFM_URL . 'assets/build/icon-assets' ] );
+
+			$localization_data['security_settings_url'] = admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' );
 			wp_localize_script(
 				SRFM_SLUG . $asset_handle,
 				SRFM_SLUG . '_admin',
 				apply_filters(
 					SRFM_SLUG . '_admin_filter',
-					[
-						'site_url'                => get_site_url(),
-						'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-						'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-						'plugin_version'          => SRFM_VER,
-						'global_settings_nonce'   => ( current_user_can( 'manage_options' ) ) ? wp_create_nonce( 'wp_rest' ) : '',
-						'security_settings_url'   => admin_url( '/admin.php?page=sureforms_form_settings&tab=security-settings' ),
-					]
+					$localization_data
 				)
 			);
 			wp_enqueue_style( SRFM_SLUG . '-dashboard', SRFM_URL . 'assets/build/dashboard.css', [], SRFM_VER, 'all' );
@@ -341,7 +352,6 @@ class Admin {
 
 		// Admin Submenu Styles.
 		wp_enqueue_style( SRFM_SLUG . '-admin', $css_uri . 'backend/admin' . $file_prefix . '.css', [], SRFM_VER );
-		wp_enqueue_style( SRFM_SLUG . '-single-form-modal', $css_uri . 'single-form-setting' . $file_prefix . '.css', [], SRFM_VER );
 
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id || 'edit-' . SRFM_ENTRIES_POST_TYPE === $current_screen->id ) {
 			$asset_handle = 'page_header';
@@ -366,18 +376,13 @@ class Admin {
 				'dependencies' => [],
 				'version'      => SRFM_VER,
 			];
+
 			wp_enqueue_script( SRFM_SLUG . '-settings', SRFM_URL . 'assets/build/' . $asset_handle . '.js', $script_info['dependencies'], SRFM_VER, true );
 			wp_enqueue_style( SRFM_SLUG . '-setting-styles', SRFM_URL . 'assets/build/' . $asset_handle . '.css', [ 'wp-components' ], SRFM_VER, 'all' );
 			wp_localize_script(
 				SRFM_SLUG . '-settings',
 				SRFM_SLUG . '_admin',
-				[
-					'site_url'                => get_site_url(),
-					'breadcrumbs'             => $this->get_breadcrumbs_for_current_page(),
-					'sureforms_dashboard_url' => admin_url( '/admin.php?page=sureforms_menu' ),
-					'plugin_version'          => SRFM_VER,
-					'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
-				]
+				$localization_data
 			);
 		}
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
@@ -453,8 +458,10 @@ class Admin {
 				'srfm/input',
 				'srfm/email',
 				'srfm/textarea',
+				'srfm/checkbox',
 				'srfm/number',
-				'srfm/address',
+				'srfm/inline-button',
+				'srfm/advanced-heading',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {

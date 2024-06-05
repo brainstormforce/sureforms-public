@@ -7,6 +7,7 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
+import { Toaster, ToastBar } from 'react-hot-toast';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -197,7 +198,9 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 				}
 				tagsArray.push( [
 					'{form:' + block.attributes.slug + '}',
-					block.attributes.label,
+					'srfm/gdpr' === block?.name
+						? __( 'GDPR Agreement', 'sureforms' )
+						: block.attributes.label,
 				] );
 				uniqueSlugs.push( block.attributes.slug );
 			}
@@ -234,5 +237,31 @@ export const isObjectNotEmpty = ( obj ) => {
 		obj &&
 		Object.keys( obj ).length > 0 &&
 		Object.getPrototypeOf( obj ) === Object.prototype
+	);
+};
+
+export const SRFMToaster = ( {
+	containerClassName,
+	containerStyle,
+	position = 'top-right',
+} ) => {
+	return (
+		<Toaster
+			containerClassName={ containerClassName }
+			position={ position }
+			containerStyle={ containerStyle }
+		>
+			{ ( t ) => (
+				<ToastBar
+					toast={ t }
+					style={ {
+						...t.style,
+						animation: t.visible
+							? 'slide-in-left 0.5s ease'
+							: 'slide-out-right 0.5s ease',
+					} }
+				/>
+			) }
+		</Toaster>
 	);
 };

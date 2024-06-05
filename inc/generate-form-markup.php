@@ -126,7 +126,7 @@ class Generate_Form_Markup {
 				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
 				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
-				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
+				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '4' ) . 'px';
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
 			} else {
 				$btn_bg_color = '';
@@ -180,16 +180,16 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#1f2937' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#6b7280' );
+			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
+			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
-			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
+			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
-			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
+			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#94A3B8' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
 			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
@@ -223,7 +223,7 @@ class Generate_Form_Markup {
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
-			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?>">
+			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
 				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
@@ -259,13 +259,14 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
+				}
 					<?php
+					do_action( 'srfm_form_css_variables', $id );
 						// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );
 						endif;
 					?>
-				}
 			</style>
 			<?php
 			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
@@ -283,21 +284,18 @@ class Generate_Form_Markup {
 					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
 					</div>
 					<div class="srfm-wrn-text-ctn">
-						<span class="srfm-wrn-title">
-						<?php echo esc_html__( 'Please Enable Instant Form', 'sureforms' ); ?>
-						</span>
 						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'This is a preview. To view the forms in the frontend, activate the instant form from the editor settings.', 'sureforms' ); ?>
-						</span>
-						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'Go to Settings', 'sureforms' ); ?>
+						<?php echo esc_html__( 'Enable the Instant Form in the editor from ', 'sureforms' ); ?>
+						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
+							<?php echo esc_html__( 'here.', 'sureforms' ); ?>
 						</a>
+						</span>
 					</div>
 				</div> 
 				<?php
 			}
 			?>
-				<form method="post" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?><?php echo esc_attr( $classname ); ?>"
+				<form method="post" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
 				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
@@ -378,7 +376,7 @@ class Generate_Form_Markup {
 							<?php
 						endif;
 						?>
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color srfm-button srfm-submit-button ' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
@@ -412,7 +410,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param array<mixed> $form_data contains form data.
 	 * @param array<mixed> $submission_data contains submission data.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return string|false
 	 */
 	public static function get_confirmation_markup( $form_data = [], $submission_data = [] ) {

@@ -48,7 +48,7 @@ class Post_Types {
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
 		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
-		add_action( 'admin_bar_menu', [ $this, 'custom_admin_bar_menu_url' ], 80, 1 );
+		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
 
 	/**
@@ -72,7 +72,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary" style="background: #d54407; border-color: #d54407;">' . esc_html( $button_text ) . '</div></a>';
+			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
 		}
 
 		echo '</div>';
@@ -125,7 +125,7 @@ class Post_Types {
 	public function register_post_types() {
 		$form_labels = [
 			'name'               => _x( 'Forms', 'post type general name', 'sureforms' ),
-			'singular_name'      => _x( 'SureForms', 'post type singular name', 'sureforms' ),
+			'singular_name'      => _x( 'Form', 'post type singular name', 'sureforms' ),
 			'menu_name'          => _x( 'Forms', 'admin menu', 'sureforms' ),
 			'add_new'            => _x( 'Add New', 'form', 'sureforms' ),
 			'add_new_item'       => __( 'Add New Form', 'sureforms' ),
@@ -202,6 +202,7 @@ class Post_Types {
 					'edit_terms'   => 'god',
 					'manage_terms' => 'god',
 				],
+				'public'            => false,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'show_in_nav_menus' => false,
@@ -224,24 +225,15 @@ class Post_Types {
 	}
 
 	/**
-	 * Customize the URL of new form in the admin bar.
+	 * Remove add new form menu item.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
 	 *
 	 * @return void
 	 * @since 0.0.1
 	 */
-	public function custom_admin_bar_menu_url( $wp_admin_bar ) {
-		$menu_item_id = 'new-' . SRFM_FORMS_POST_TYPE;
-		$menu_item    = $wp_admin_bar->get_node( $menu_item_id );
-
-		if ( $menu_item && isset( $menu_item->id ) && isset( $menu_item->href ) && $menu_item->id === $menu_item_id ) {
-			$menu_item->href = admin_url( 'admin.php?page=add-new-form' );
-
-			// Use WP_Admin_Bar methods to modify the menu.
-			$wp_admin_bar->remove_node( $menu_item_id );
-			$wp_admin_bar->add_node( (array) $menu_item );
-		}
+	public function remove_admin_bar_menu_item( $wp_admin_bar ) {
+		$wp_admin_bar->remove_node( 'new-sureforms_form' );
 	}
 
 	/**
@@ -420,6 +412,7 @@ class Post_Types {
 				'_srfm_color1'                    => 'string',
 				'_srfm_bg_type'                   => 'string',
 				'_srfm_bg_image'                  => 'string',
+				'_srfm_cover_image'               => 'string',
 				'_srfm_bg_color'                  => 'string',
 				'_srfm_fontsize'                  => 'integer',
 				'_srfm_label_color'               => 'string',
@@ -701,6 +694,10 @@ class Post_Types {
 
 		// conditional logic.
 		do_action( 'srfm_register_conditional_logic_post_meta' );
+		/**
+		 * Hook for registering additional Post Meta
+		 */
+		do_action( 'srfm_register_additional_post_meta' );
 
 	}
 
@@ -916,11 +913,11 @@ class Post_Types {
 			ob_start();
 			?>
 			<div class="srfm-shortcode-container">
+				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_attr( $post_id_formatted ); ?>']" />
 				<button type="button" class="components-button components-clipboard-button has-icon srfm-shortcode" onclick="handleFormShortcode(this)">
 					<span id="srfm-copy-icon" class="dashicon dashicons dashicons-admin-page"></span>
 				</button>
-				<input id="srfm-shortcode-input-<?php echo esc_attr( strval( $post_id ) ); ?>" class="srfm-shortcode-input" type="text" readonly value="[sureforms id='<?php echo esc_html( $post_id_formatted ); ?>']" />
-			<div>
+			</div>
 			<?php
 			ob_end_flush();
 		}

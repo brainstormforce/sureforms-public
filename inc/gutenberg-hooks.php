@@ -249,9 +249,6 @@ class Gutenberg_Hooks {
 
 		$plugin_path = 'sureforms-pro/sureforms-pro.php';
 
-		// Check if the sureforms-pro plugin is active.
-		$is_pro_active = defined( 'SRFM_PRO_VER' ) ? true : false;
-
 		wp_localize_script(
 			SRFM_SLUG . $all_screen_blocks,
 			SRFM_SLUG . '_block_data',
@@ -265,7 +262,7 @@ class Gutenberg_Hooks {
 				'smart_tags_array_email'           => Smart_Tags::email_smart_tag_list(),
 				'srfm_form_markup_nonce'           => wp_create_nonce( 'srfm_form_markup' ),
 				'get_form_markup_url'              => 'sureforms/v1/generate-form-markup',
-				'is_pro_active'                    => $is_pro_active,
+				'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
 				'get_default_dynamic_block_option' => get_option( 'get_default_dynamic_block_option', Helper::default_dynamic_block_option() ),
 				'form_selector_nonce'              => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 				'is_admin_user'                    => current_user_can( 'manage_options' ),
@@ -354,7 +351,7 @@ class Gutenberg_Hooks {
 	 * @param array<string>              $slugs The array of existing slugs.
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
 	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {

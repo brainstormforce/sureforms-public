@@ -43,6 +43,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		formId,
 		placeholder,
 		preview,
+		className,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -81,7 +82,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	}
 
 	return (
-		<>
+		<div className={ className }>
 			<InspectorControls>
 				<InspectorTabs
 					tabs={ [ 'general', 'advance' ] }
@@ -336,7 +337,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
-		</>
+		</div>
 	);
 };
 export default compose( AddInitialAttr )( Edit );

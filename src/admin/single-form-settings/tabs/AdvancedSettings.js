@@ -1,20 +1,16 @@
-import { SelectControl, PanelRow, Modal } from '@wordpress/components';
+import { SelectControl, PanelRow, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
+import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
-import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
 
 	const { defaultKeys } = props;
-	// Modal icon
-	const modalIcon = parse( svgIcons.modalLogo );
 
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
 		useState( '' );
@@ -34,15 +30,6 @@ function AdvancedSettings( props ) {
 		useState( false );
 
 	const [ showErr, setShowErr ] = useState( false );
-	const [ isOpen, setOpen ] = useState( false );
-	const [ popupTab, setPopupTab ] = useState( false );
-
-	const openModal = ( e ) => {
-		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
-		setPopupTab( popupTabTarget );
-		setOpen( true );
-	};
-	const closeModal = () => setOpen( false );
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -170,13 +157,10 @@ function AdvancedSettings( props ) {
 						if ( value === 'cf-turnstile' ) {
 							if (
 								sureformsCfTurnstileSite !== '' &&
-								sureformsCfTurnstileSecret !== ''
+							sureformsCfTurnstileSecret !== ''
 							) {
 								setShowErr( false );
-								updateMeta(
-									'_srfm_captcha_security_type',
-									value
-								);
+								updateMeta( '_srfm_captcha_security_type', value );
 							} else {
 								setShowErr( true );
 							}
@@ -187,8 +171,7 @@ function AdvancedSettings( props ) {
 					} }
 					__nextHasNoMarginBottom
 				/>
-				{ sureformsKeys._srfm_captcha_security_type ===
-					'g-recaptcha' && (
+				{ sureformsKeys._srfm_captcha_security_type === 'g-recaptcha' && (
 					<>
 						{ showRecaptchaConflictNotice && (
 							<PanelRow>
@@ -231,39 +214,30 @@ function AdvancedSettings( props ) {
 								if ( value === 'v2-checkbox' ) {
 									if (
 										sureformsV2CheckboxSite !== '' &&
-										sureformsV2CheckboxSecret !== ''
+									sureformsV2CheckboxSecret !== ''
 									) {
 										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
+										updateMeta( '_srfm_form_recaptcha', value );
 									} else {
 										setShowErr( true );
 									}
 								} else if ( value === 'v2-invisible' ) {
 									if (
 										sureformsV2InvisibleSecret !== '' &&
-										sureformsV2InvisibleSite !== ''
+									sureformsV2InvisibleSite !== ''
 									) {
 										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
+										updateMeta( '_srfm_form_recaptcha', value );
 									} else {
 										setShowErr( true );
 									}
 								} else if ( value === 'v3-reCAPTCHA' ) {
 									if (
 										sureformsV3Secret !== '' &&
-										sureformsV3Site !== ''
+									sureformsV3Site !== ''
 									) {
 										setShowErr( false );
-										updateMeta(
-											'_srfm_form_recaptcha',
-											value
-										);
+										updateMeta( '_srfm_form_recaptcha', value );
 									} else {
 										setShowErr( true );
 									}
@@ -279,119 +253,50 @@ function AdvancedSettings( props ) {
 
 				<p className="components-base-control__help">
 					{ __(
-						'Before selecting the security type. Please make sure you have configured API keys in the Global Settings - here',
+						'Before selecting the security type. Please, make sure you have configured API keys ',
 						'sureforms'
 					) }
+					<ExternalLink href={ srfm_admin.security_settings_url }>
+						{ __( 'here', 'sureforms' ) }
+					</ExternalLink>
 				</p>
 				{ showErr && (
 					<p style={ { color: 'red' } }>
 						{ __(
-							'Please configure the API keys correctly',
+							'Please configure the API keys correctly in the ',
 							'sureforms'
 						) }
-						<a
-							href={ srfm_admin.security_settings_url }
-							target="_blank"
-							rel="noreferrer"
-							style={ {
-								display: 'flex',
-								alignItems: 'center',
-							} }
-						>
+						<ExternalLink href={ srfm_admin.security_settings_url }>
 							{ __( 'Global Settings', 'sureforms' ) }
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								width="16"
-								height="16"
-								aria-hidden="true"
-								focusable="false"
-							>
-								<path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path>
-							</svg>
-						</a>
+						</ExternalLink>
 					</p>
 				) }
 			</SRFMAdvancedPanelBody>
-			<MoreSettingsButton
-				settingName={ __( 'Email Notification', 'sureforms' ) }
-				popupId="email_notification"
-				openModal={ openModal }
-			/>
-			<MoreSettingsButton
-				settingName={ __( 'Form Confirmation', 'sureforms' ) }
-				popupId="form_confirmation"
-				openModal={ openModal }
-			/>
-
-			<MoreSettingsButton
-				settingName={ __( 'Compliance Settings', 'sureforms' ) }
-				popupId="compliance_settings"
-				openModal={ openModal }
-			/>
-			<MoreSettingsButton
-				settingName={ __( 'Custom CSS', 'sureforms' ) }
-				popupId="form_custom_css"
-				openModal={ openModal }
-			/>
-			{ isOpen && (
-				<Modal
-					onRequestClose={ closeModal }
-					title={ __( 'Single Form Setting', 'sureforms' ) }
-					className="srfm-header-settings-modal"
-					icon={ modalIcon }
-					isFullScreen={ true }
-				>
-					<SingleFormSettingsPopup
-						sureformsKeys={ sureformsKeys }
-						targetTab={ popupTab }
-					/>
-				</Modal>
-			) }
+			<SRFMAdvancedPanelBody
+				title={ __( 'Advanced', 'sureforms' ) }
+				initialOpen={ false }
+			>
+				<SRFMTextControl
+					data={ {
+						value: sureformsKeys._srfm_additional_classes,
+						label: '_srfm_additional_classes',
+					} }
+					label={ __( 'Additional CSS Class(es)', 'sureforms' ) }
+					value={ sureformsKeys._srfm_additional_classes }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_additional_classes', value );
+					} }
+					isFormSpecific={ true }
+				/>
+				<p className="components-base-control__help">
+					{ __(
+						' Separate multiple classes with spaces. ',
+						'sureforms'
+					) }
+				</p>
+			</SRFMAdvancedPanelBody>
 		</>
 	);
 }
-
-const MoreSettingsButton = ( { settingName, popupId, openModal } ) => {
-	return (
-		<div className="srfm-custom-layout-panel components-panel__body">
-			<h2 className="components-panel__body-title">
-				<button
-					className="components-button components-panel__body-toggle"
-					onClick={ openModal }
-					data-popup={ popupId }
-				>
-					<span className="srfm-title">
-						<div>{ settingName }</div>
-					</span>
-					<svg
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<g id="heroicons-mini/ellipsis-horizontal">
-							<g id="Union">
-								<path
-									d="M3.60156 12.0031C3.60156 11.009 4.40745 10.2031 5.40156 10.2031C6.39567 10.2031 7.20156 11.009 7.20156 12.0031C7.20156 12.9972 6.39567 13.8031 5.40156 13.8031C4.40745 13.8031 3.60156 12.9972 3.60156 12.0031Z"
-									fill="#555D66"
-								/>
-								<path
-									d="M10.2016 12.0031C10.2016 11.009 11.0074 10.2031 12.0016 10.2031C12.9957 10.2031 13.8016 11.009 13.8016 12.0031C13.8016 12.9972 12.9957 13.8031 12.0016 13.8031C11.0074 13.8031 10.2016 12.9972 10.2016 12.0031Z"
-									fill="#555D66"
-								/>
-								<path
-									d="M18.6016 10.2031C17.6074 10.2031 16.8016 11.009 16.8016 12.0031C16.8016 12.9972 17.6074 13.8031 18.6016 13.8031C19.5957 13.8031 20.4016 12.9972 20.4016 12.0031C20.4016 11.009 19.5957 10.2031 18.6016 10.2031Z"
-									fill="#555D66"
-								/>
-							</g>
-						</g>
-					</svg>
-				</button>
-			</h2>
-		</div>
-	);
-};
 
 export default AdvancedSettings;

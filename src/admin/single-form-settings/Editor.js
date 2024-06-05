@@ -56,13 +56,14 @@ const defaultKeys = {
 	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
+	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
 	_srfm_fontsize: 20,
-	_srfm_label_color: '#1f2937',
-	_srfm_help_color: '#6b7280',
+	_srfm_label_color: '#111827',
+	_srfm_help_color: '#4B5563',
 	// Input Fields
 	_srfm_input_text_color: '#4B5563',
-	_srfm_input_placeholder_color: '#9CA3AF',
+	_srfm_input_placeholder_color: '#94A3B8',
 	_srfm_input_bg_color: '#ffffff',
 	_srfm_input_border_color: '#D0D5DD',
 	_srfm_input_border_width: 1,
@@ -78,12 +79,20 @@ const defaultKeys = {
 	_srfm_button_bg_color: '#D54407',
 	_srfm_button_border_color: '#ffffff',
 	_srfm_button_border_width: 0,
-	_srfm_button_border_radius: 6,
+	_srfm_button_border_radius: 4,
 	_srfm_submit_alignment: 'left',
 	_srfm_submit_width: '',
 	_srfm_submit_alignment_backend: '100%',
 	_srfm_submit_width_backend: 'max-content',
 	_srfm_additional_classes: '',
+	// Page Break Button
+	_srfm_page_break_inherit_theme_button: false,
+	_srfm_page_break_button_bg_color: '#D54407',
+	_srfm_page_break_button_text_color: '#ffffff',
+	_srfm_page_break_button_border_color: '#ffffff',
+	_srfm_page_break_button_border_width: 0,
+	_srfm_page_break_button_border_radius: 6,
+	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
 	// Success Message
@@ -148,6 +157,44 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( addFormStylingClass, [ rootContainer, deviceType ] );
 
+	// Find the root container of the form
+	const formRootContainer = document.querySelector(
+		'.editor-styles-wrapper'
+	);
+
+	const addRootClass = () => {
+		if ( formRootContainer && sureformsKeys._srfm_additional_classes ) {
+			// Split the classes string by spaces
+			const classesArray =
+				sureformsKeys._srfm_additional_classes.split( ' ' );
+
+			// Add classes individually
+			classesArray.forEach( ( classname ) => {
+				formRootContainer?.classList.add( classname );
+			} );
+		}
+	};
+
+	useEffect( addRootClass, [ formRootContainer ] );
+
+	// Update the custom CSS when the formCustomCssData prop changes. This will apply the custom CSS to the editor.
+	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
+	useEffect( () => {
+		const isExistStyle = document.getElementById(
+			'srfm-blocks-editor-custom-css'
+		);
+		if ( ! isExistStyle ) {
+			const node = document.createElement( 'style' );
+			node.setAttribute( 'id', 'srfm-blocks-editor-custom-css' );
+			node.textContent =
+				'.edit-post-visual-editor{' + formCustomCssData + '}';
+			document.head.appendChild( node );
+		} else {
+			isExistStyle.textContent =
+				'.edit-post-visual-editor{' + formCustomCssData + '}';
+		}
+	}, [ formCustomCssData ] );
+
 	useEffect( () => {
 		if ( typeof sureformsKeys._srfm_is_page_break === 'boolean' ) {
 			updateMeta( '_srfm_is_page_break', isPageBreak );
@@ -173,13 +220,15 @@ const SureformsFormSpecificSettings = ( props ) => {
 	);
 	function addSubmitButton( elm ) {
 		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-btn-bg-color';
+		const customClass = 'srfm-button srfm-submit-button srfm-btn-bg-color';
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-		const appendHtml = `<div class="srfm-submit-btn-container"><button class="srfm-button srfm-submit-button ${ btnClass }"></button></div>`;
+		const btnCtnClass = sureformsKeys?._srfm_inherit_theme_button &&
+		sureformsKeys._srfm_inherit_theme_button ? 'wp-block-button' : '';
+		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -192,7 +241,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 				// If the normal button is present, add RichText to the button.
 				const buttonContainer = elm.nextElementSibling;
 				const button = buttonContainer.querySelector(
-					'.srfm-submit-button'
+					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
@@ -245,11 +294,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 						},
 						{
 							property: '--srfm-label-text-color',
-							value: sureformsKeys._srfm_label_color || '#1f2937',
+							value: sureformsKeys._srfm_label_color || '#111827',
 						},
 						{
 							property: '--srfm-help-color',
-							value: sureformsKeys._srfm_help_color || '#6b7280',
+							value: sureformsKeys._srfm_help_color || '#4B5563',
 						},
 						// Input
 						{
@@ -263,7 +312,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-placeholder-color',
 							value:
 								sureformsKeys._srfm_input_placeholder_color ||
-								'#9CA3AF',
+								'#94A3B8',
 						},
 						{
 							property: '--srfm-base-background-color',
@@ -336,7 +385,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-btn-border-radius',
 							value:
 								sureformsKeys._srfm_button_border_radius +
-									'px' || '6px',
+									'px' || '4px',
 						},
 						{
 							property: '--srfm-submit-alignment-backend',
@@ -516,63 +565,103 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [] );
 
 	return (
-		<PluginDocumentSettingPanel
-			className="srfm--panel"
-			name="srfm-sidebar"
-			title={ __( 'Form Options', 'sureforms' ) }
-		>
-			<InspectorTabs
-				tabs={ [ 'general', 'style', 'advance' ] }
-				defaultTab={ 'general' }
+		<>
+			<PluginDocumentSettingPanel
+				name="srfm-description"
+				className="srfm-single-form-settings-description"
+				title={ __( 'SureForms Description', 'sureforms' ) }
 			>
-				<InspectorTab { ...SRFMTabs.general }>
-					<GeneralSettings
-						defaultKeys={ defaultKeys }
-						enableQuickActionSidebar={ enableQuickActionSidebar }
-						setEnableQuickActionSidebar={
-							setEnableQuickActionSidebar
-						}
-						isPageBreak={ isPageBreak }
-					/>
-				</InspectorTab>
-				<InspectorTab { ...SRFMTabs.style }>
-					<StyleSettings
-						defaultKeys={ defaultKeys }
-						isInlineButtonBlockPresent={
-							isInlineButtonBlockPresent
-						}
-					/>
-				</InspectorTab>
-				<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
-					<AdvancedSettings defaultKeys={ defaultKeys } />
-				</InspectorTab>
-			</InspectorTabs>
-			<PluginPostPublishPanel>
-				<PanelRow>
-					<BaseControl
-						id="srfm-form-shortcode"
-						label={ __( 'Form Shortcode', 'sureforms' ) }
-						help={ __(
-							'Paste this shortcode on the page or post to render this form.',
-							'sureforms'
-						) }
-					>
-						<div className="srfm-shortcode">
-							<TextControl
-								value={ `[sureforms id="${ postId }"]` }
-								disabled
+				<div className="block-editor-block-card">
+					<span className="block-editor-block-icon has-colors">
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M12.0078 24C18.6352 24 24.0078 18.6274 24.0078 12C24.0078 5.37259 18.6352 0 12.0078 0C5.3804 0 0.0078125 5.37259 0.0078125 12C0.0078125 18.6274 5.3804 24 12.0078 24ZM12.0595 6C11.0959 6 9.76255 6.55103 9.08115 7.23077L7.2307 9.07692H16.4543L19.5384 6H12.0595ZM14.9189 16.7692C14.2376 17.449 12.9041 18 11.9406 18H4.46169L7.54585 14.9231H16.7694L14.9189 16.7692ZM17.9166 10.6154H5.69197L5.11453 11.1923C3.74722 12.4231 4.15274 13.3846 6.0676 13.3846H18.3253L18.903 12.8077C20.257 11.5841 19.8315 10.6154 17.9166 10.6154Z"
+								fill="#D54407"
 							/>
-							<ClipboardButton
-								onCopy={ () => setHasCopied( true ) }
-								onFinishCopy={ () => setHasCopied( false ) }
-								icon={ hasCopied ? 'yes' : 'admin-page' }
-								text={ `[sureforms id="${ postId }"]` }
-							/>
-						</div>
-					</BaseControl>
-				</PanelRow>
-			</PluginPostPublishPanel>
-		</PluginDocumentSettingPanel>
+						</svg>
+					</span>
+					<div className="block-editor-block-card__content">
+						<h2 className="block-editor-block-card__title">
+							{ __( 'SureForms', 'sureforms' ) }
+						</h2>
+						<span className="block-editor-block-card__description">
+							{ __( 'Customize with SureForms.', 'sureforms' ) }
+						</span>
+					</div>
+				</div>
+			</PluginDocumentSettingPanel>
+			<PluginDocumentSettingPanel
+				className="srfm--panel"
+				name="srfm-sidebar"
+				title={ __( 'Form Options', 'sureforms' ) }
+			>
+				<InspectorTabs
+					tabs={ [ 'general', 'style', 'advance' ] }
+					defaultTab={ 'general' }
+				>
+					<InspectorTab { ...SRFMTabs.general }>
+						<GeneralSettings
+							defaultKeys={ defaultKeys }
+							enableQuickActionSidebar={
+								enableQuickActionSidebar
+							}
+							setEnableQuickActionSidebar={
+								setEnableQuickActionSidebar
+							}
+							isPageBreak={ isPageBreak }
+						/>
+					</InspectorTab>
+					<InspectorTab { ...SRFMTabs.style }>
+						<StyleSettings
+							defaultKeys={ defaultKeys }
+							isInlineButtonBlockPresent={
+								isInlineButtonBlockPresent
+							}
+							isPageBreak={ isPageBreak }
+						/>
+					</InspectorTab>
+					<InspectorTab { ...SRFMTabs.advance } parentProps={ props }>
+						<AdvancedSettings defaultKeys={ defaultKeys } />
+					</InspectorTab>
+				</InspectorTabs>
+				<PluginPostPublishPanel>
+					<PanelRow>
+						<BaseControl
+							id="srfm-form-shortcode"
+							label={ __( 'Form Shortcode', 'sureforms' ) }
+							help={ __(
+								'Paste this shortcode on the page or post to render this form.',
+								'sureforms'
+							) }
+						>
+							<div className="srfm-shortcode">
+								<TextControl
+									value={ `[sureforms id="${ postId }"]` }
+									disabled
+								/>
+								<ClipboardButton
+									onCopy={ () => setHasCopied( true ) }
+									onFinishCopy={ () => setHasCopied( false ) }
+									icon={ hasCopied ? 'yes' : 'admin-page' }
+									text={ `[sureforms id="${ postId }"]` }
+									style={ {
+										marginTop: '5px',
+									} }
+								/>
+							</div>
+						</BaseControl>
+					</PanelRow>
+				</PluginPostPublishPanel>
+			</PluginDocumentSettingPanel>
+		</>
 	);
 };
 
