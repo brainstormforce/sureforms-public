@@ -36,7 +36,7 @@ class Form_Widget extends Widget_Base {
 	 * @return string Widget title.
 	 */
 	public function get_title() {
-		return __( 'SureForms Form', 'sureforms' );
+		return __( 'SureForms', 'sureforms' );
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Form_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'section_form',
 			[
-				'label' => __( 'SureForms Form', 'sureforms' ),
+				'label' => __( 'SureForms', 'sureforms' ),
 			]
 		);
 
@@ -104,7 +104,7 @@ class Form_Widget extends Widget_Base {
 		$this->add_control(
 			'srfm_show_form_title',
 			[
-				'label'        => __( 'Show Form Title', 'sureforms' ),
+				'label'        => __( 'Form Title', 'sureforms' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'label_on'     => __( 'Show', 'sureforms' ),
 				'label_off'    => __( 'Hide', 'sureforms' ),
