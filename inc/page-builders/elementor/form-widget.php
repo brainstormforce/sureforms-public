@@ -116,21 +116,21 @@ class Form_Widget extends Widget_Base {
 		$this->add_control(
 			'srfm_edit_form',
 			[
-				'label' => __( 'Edit Form', 'sureforms' ),
-				'type'  => \Elementor\Controls_Manager::BUTTON,
-				'text'  => __( 'Edit', 'sureforms' ),
-				'event' => 'sureforms:form:edit',
+				'label'     => __( 'Edit Form', 'sureforms' ),
+				'separator' => 'before',
+				'type'      => \Elementor\Controls_Manager::BUTTON,
+				'text'      => __( 'Edit', 'sureforms' ),
+				'event'     => 'sureforms:form:edit',
 			]
 		);
 
 		$this->add_control(
 			'srfm_create_form',
 			[
-				'label'     => __( 'Create New Form', 'sureforms' ),
-				'separator' => 'before',
-				'type'      => \Elementor\Controls_Manager::BUTTON,
-				'text'      => __( 'Create', 'sureforms' ),
-				'event'     => 'sureforms:form:create',
+				'label' => __( 'Create New Form', 'sureforms' ),
+				'type'  => \Elementor\Controls_Manager::BUTTON,
+				'text'  => __( 'Create', 'sureforms' ),
+				'event' => 'sureforms:form:create',
 			]
 		);
 
@@ -174,7 +174,7 @@ class Form_Widget extends Widget_Base {
 			return;
 		}
 
-		$is_editor = \Elementor\Plugin::instance()->editor->is_edit_mode();
+		$is_editor = Plugin::instance()->editor->is_edit_mode();
 
 		if ( $is_editor && '' === $settings['srfm_form_block'] ) {
 			echo esc_html__( 'Select the form that you wish to add here.', 'sureforms' );
