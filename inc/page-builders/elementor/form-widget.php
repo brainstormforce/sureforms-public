@@ -165,7 +165,7 @@ class Form_Widget extends Widget_Base {
 	 * Render form widget output on the frontend.
 	 *
 	 * @since x.x.x
-	 * @return void
+	 * @return void|string
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
@@ -177,7 +177,9 @@ class Form_Widget extends Widget_Base {
 		$is_editor = Plugin::instance()->editor->is_edit_mode();
 
 		if ( $is_editor && '' === $settings['srfm_form_block'] ) {
-			echo esc_html__( 'Select the form that you wish to add here.', 'sureforms' );
+			echo '<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">' .
+					esc_html__( 'Select the form that you wish to add here.', 'sureforms' ) .
+				'</div>';
 			return;
 		}
 
