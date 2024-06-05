@@ -32,6 +32,7 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		$this->restrict_unwanted_insertions();
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
@@ -1091,6 +1092,17 @@ class Post_Types {
 			wp_safe_redirect( home_url() );
 			return;
 		}
+	}
+
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMatch columns and filters in edit page.
+		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
+		// add_filter( 'rank_math/excluded_post_types', function( $post_types ) {
+		// 	if( isset( $post_types['sureforms_form'] ) ) {
+		// 		unset( $post_types['sureforms_form'] );
+		// 	}
+		// 	return $post_types;
+		// } );
 	}
 
 }
