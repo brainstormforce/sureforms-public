@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SureForms 0.0.3\n"
+"Project-Id-Version: SureForms 0.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sureforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-06-04T11:13:34+00:00\n"
+"POT-Creation-Date: 2024-06-05T09:29:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: sureforms\n"
@@ -149,7 +149,6 @@ msgid "Activated"
 msgstr ""
 
 #: inc/admin-ajax.php:133
-#: assets/build/formEditor.js:172
 msgid "Activate"
 msgstr ""
 
@@ -8455,8 +8454,6 @@ msgid "This is where your form views will appear"
 msgstr ""
 
 #: assets/build/dashboard.js:2
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:2
 msgid "Integrations"
 msgstr ""
 
@@ -8476,25 +8473,6 @@ msgstr ""
 #: assets/build/page_header.js:2
 #: assets/build/settings.js:2
 msgid "Core"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-#: assets/build/settings.js:172
-msgid "Pro"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-msgid "Licensed"
-msgstr ""
-
-#: assets/build/dashboard.js:2
-#: assets/build/page_header.js:2
-#: assets/build/settings.js:2
-msgid "Unlicensed"
 msgstr ""
 
 #: assets/build/dashboard.js:2
@@ -8655,97 +8633,6 @@ msgid "Select Color"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Upgrade to Pro"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Webhooks"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-#: assets/build/settings.js:172
-msgid "Broadcast your SureForms submission to any web API endpoint with the powerful webhook module."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "No Integrations Enabled"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Please enable Integrations from Global Settings."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Enable from Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Go to Dashboard"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Install"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "All Integrations"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Free Extension"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Compliance Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "GDPR Settings"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Enable GDPR Compliance"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "When enabled this form will not store User IP, Browser Name and the Device Name in the Entries."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Delete entry data after form submission"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "When enabled this form will never store Entries."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Automatically delete entries"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "When enabled this form will automatically delete entries after a certain period of time."
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Set the automatic deletion period for entries in this form (in days)"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "Custom CSS"
-msgstr ""
-
-#: assets/build/formEditor.js:172
-msgid "The following CSS styles added below will only apply to this form container."
-msgstr ""
-
-#: assets/build/formEditor.js:172
 msgid "Visual"
 msgstr ""
 
@@ -8847,6 +8734,50 @@ msgstr ""
 
 #: assets/build/formEditor.js:172
 msgid "Email Notification deleted successfully."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Compliance Settings"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "GDPR Settings"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Enable GDPR Compliance"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "When enabled this form will not store User IP, Browser Name and the Device Name in the Entries."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Delete entry data after form submission"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "When enabled this form will never store Entries"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Automatically delete entries"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "When enabled this form will automatically delete entries after a certain period of time."
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Specify how many days old entries will be deleted for this form"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "Custom CSS"
+msgstr ""
+
+#: assets/build/formEditor.js:172
+msgid "The following CSS styles added below will only apply to this form container."
 msgstr ""
 
 #: assets/build/formEditor.js:172
@@ -8954,7 +8885,7 @@ msgid "Enable Instant Form"
 msgstr ""
 
 #: assets/build/formEditor.js:172
-msgid "Show Title on Instant Form"
+msgid "Show Title on Instant Forms"
 msgstr ""
 
 #: assets/build/formEditor.js:172

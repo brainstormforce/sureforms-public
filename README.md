@@ -4,7 +4,7 @@
 **Requires at least:** 6.4  
 **Tested up to:** 6.5  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.3  
+**Stable tag:** 0.0.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -227,7 +227,7 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 ## Changelog ##
 
-### 0.0.3 ###
+### 0.0.4 ###
 New: Added support for Cloudflare Turnstile.
 Fix: Multiple bug fixes and UI enhancement.
 
