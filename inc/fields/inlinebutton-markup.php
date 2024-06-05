@@ -167,7 +167,7 @@ class Inlinebutton_Markup extends Base {
 	public function markup() {
 		ob_start(); ?>
 		<?php if ( '1' !== $this->is_page_break ) : ?>
-			<?php if ( 'v2-checkbox' === $this->recaptcha_version ) : ?>
+			<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) : ?>
 				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
 			<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->cf_turnstile_site_key ) : ?>
@@ -179,16 +179,18 @@ class Inlinebutton_Markup extends Base {
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?> srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?> srfm-block srfm-custom-button-ctn">
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $this->form_id, 'label', '‎', '', '', false ) ); ?>
 			<?php
-			if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) :
-				wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $this->google_captcha_site_key ), [], SRFM_VER, true );
-			endif;
+			if ( 'g-recaptcha' === $this->captcha_security_type ) :
+				if ( 'v3-reCAPTCHA' === $this->recaptcha_version ) :
+					wp_enqueue_script( 'srfm-google-recaptchaV3', 'https://www.google.com/recaptcha/api.js?render=' . esc_js( $this->google_captcha_site_key ), [], SRFM_VER, true );
+				endif;
 
-			if ( 'v2-checkbox' === $this->recaptcha_version ) :
-				wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
-			endif;
+				if ( 'v2-checkbox' === $this->recaptcha_version ) :
+					wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
+				endif;
 
-			if ( 'v2-invisible' === $this->recaptcha_version ) :
-				wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+				if ( 'v2-invisible' === $this->recaptcha_version ) :
+					wp_enqueue_script( 'google-recaptcha-invisible', 'https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit', [ SRFM_SLUG . '-form-submit' ], SRFM_VER, true );
+				endif;
 			endif;
 
 			if ( 'cf-turnstile' === $this->captcha_security_type ) :
