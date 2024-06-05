@@ -10,7 +10,6 @@ namespace SRFM\Inc\Page_Builders\Elementor;
 
 use SRFM\Inc\Traits\Get_Instance;
 
-
 /**
  * Elementor service provider.
  */
@@ -39,8 +38,8 @@ class Service_Provider {
 	/**
 	 * Elementor load scripts
 	 *
-	 * @return void
 	 * @since x.x.x
+	 * @return void
 	 */
 	public function load_scripts() {
 		wp_enqueue_script( 'sureforms-elementor-editor', plugins_url( 'assets/editor.js', __FILE__ ), [], SRFM_VER, true );
@@ -59,10 +58,14 @@ class Service_Provider {
 	 * Elementor surecart categories register
 	 *
 	 * @param object $elements_manager Elementor category manager.
-	 *
 	 * @return void
 	 */
 	public function categories_registered( $elements_manager ) {
+
+		if ( ! method_exists( $elements_manager, 'add_category' ) ) {
+			return;
+		}
+
 		$elements_manager->add_category(
 			'sureforms-elementor',
 			[
@@ -79,6 +82,9 @@ class Service_Provider {
 	 * @return void
 	 */
 	public function widget( $widgets_manager ) {
+		if ( ! method_exists( $widgets_manager, 'register' ) ) {
+			return;
+		}
 		$widgets_manager->register( new Form_Widget() );
 	}
 

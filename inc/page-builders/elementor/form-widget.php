@@ -164,10 +164,15 @@ class Form_Widget extends Widget_Base {
 	 * Render form widget output on the frontend.
 	 *
 	 * @since x.x.x
-	 * @access protected
+	 * @return void
 	 */
 	protected function render() {
-		$settings        = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
+
+		if ( ! is_array( $settings ) || ! array_key_exists( 'srfm_show_form_title', $settings ) || ! array_key_exists( 'srfm_form_block', $settings ) ) {
+			return;
+		}
+
 		$show_form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
 		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
 	}
