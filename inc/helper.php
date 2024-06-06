@@ -445,12 +445,12 @@ class Helper {
 		}
 	}
 
-		/**
-		 * Get froms options. Shows all the available forms in the dropdown.
-		 *
-		 * @since x.x.x
-		 * @return array<mixed>
-		 */
+	/**
+	 * Get froms options. Shows all the available forms in the dropdown.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
 	public static function get_forms_options() {
 		$forms = get_posts(
 			[
