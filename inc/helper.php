@@ -335,7 +335,7 @@ class Helper {
 	 * Check if the current user has a given capability.
 	 *
 	 * @param string $capability The capability to check.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
 	public static function current_user_can( $capability = '' ) {
@@ -414,7 +414,7 @@ class Helper {
 	 * Map slugs to submission data.
 	 *
 	 * @param array<mixed> $submission_data submission_data.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return array<mixed>
 	 */
 	public static function map_slug_to_submission_data( $submission_data = [] ) {
@@ -432,7 +432,7 @@ class Helper {
 	 *
 	 * @param mixed $data Data which needs to be checked if it is an array.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return array<mixed>
 	 */
 	public static function get_array_value( $data ) {
