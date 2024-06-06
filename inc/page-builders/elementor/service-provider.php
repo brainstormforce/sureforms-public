@@ -8,15 +8,10 @@
 
 namespace SRFM\Inc\Page_Builders\Elementor;
 
-use SRFM\Inc\Traits\Get_Instance;
-
 /**
  * Elementor service provider.
  */
 class Service_Provider {
-	use Get_Instance;
-
-
 	/**
 	 * Constructor
 	 *
