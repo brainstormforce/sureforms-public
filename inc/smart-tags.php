@@ -440,7 +440,7 @@ class Smart_Tags {
 	 * @param string            $value tag.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @since  x.x.x
+	 * @since  0.0.3
 	 * @return mixed
 	 */
 	public static function parse_form_input( $value, $submission_data = null, $form_data = null ) {

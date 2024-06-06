@@ -458,8 +458,10 @@ class Admin {
 				'srfm/input',
 				'srfm/email',
 				'srfm/textarea',
+				'srfm/checkbox',
 				'srfm/number',
-				'srfm/address',
+				'srfm/inline-button',
+				'srfm/advanced-heading',
 			]
 		);
 		if ( ! is_array( $default_allowed_quick_sidebar_blocks ) ) {
