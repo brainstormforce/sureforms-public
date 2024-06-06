@@ -27,7 +27,7 @@ class Form_Widget extends Widget_Base {
 	 * @return string Widget name.
 	 */
 	public function get_name() {
-		return 'sureforms_form';
+		return SRFM_FORMS_POST_TYPE;
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Form_Widget extends Widget_Base {
 	public function get_forms_options() {
 		$forms = get_posts(
 			[
-				'post_type'      => 'sureforms_form',
+				'post_type'      => SRFM_FORMS_POST_TYPE,
 				'posts_per_page' => -1,
 				'post_status'    => 'publish',
 			]
