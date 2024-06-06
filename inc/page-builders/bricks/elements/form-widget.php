@@ -82,6 +82,7 @@ class Form_Widget extends \Bricks\Element {
 	 * Render element.
 	 *
 	 * @since x.x.x
+	 * @return void
 	 */
 	public function render() {
 		$settings   = $this->settings;
