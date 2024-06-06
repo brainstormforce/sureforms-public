@@ -444,4 +444,28 @@ class Helper {
 			return (array) $data;
 		}
 	}
+
+		/**
+	 * Get froms options. Shows all the available forms in the dropdown.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public static function get_forms_options() {
+		$forms = get_posts(
+			[
+				'post_type'      => 'sureforms_form',
+				'posts_per_page' => -1,
+				'post_status'    => 'publish',
+			]
+		);
+
+		$options = [];
+
+		foreach ( $forms as $form ) {
+			$options[ $form->ID ] = $form->post_title;
+		}
+
+		return $options;
+	}
 }

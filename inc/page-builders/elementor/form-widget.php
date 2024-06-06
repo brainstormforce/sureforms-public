@@ -10,6 +10,7 @@ namespace SRFM\Inc\Page_Builders\Elementor;
 
 use Elementor\Widget_Base;
 use Elementor\Plugin;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,6 +21,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * SureForms widget that displays a form.
  */
 class Form_Widget extends Widget_Base {
+
+	/**
+	 * Stores Elementor Pro Conditions_Manager instance.
+	 *
+	 * @var false|\ElementorPro\Modules\ThemeBuilder\Classes\Conditions_Manager
+	 * @since 1.6.1
+	 */
+	private static $elementor_conditions_manager = false;
+
 	/**
 	 * Get widget name.
 	 *
@@ -91,7 +101,7 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		$options = $this->get_forms_options();
+		$options = Helper::get_forms_options();
 
 		$this->add_control(
 			'srfm_form_block',
@@ -138,30 +148,6 @@ class Form_Widget extends Widget_Base {
 	}
 
 	/**
-	 * Get froms options. Shows all the available forms in the dropdown.
-	 *
-	 * @since x.x.x
-	 * @return array<mixed>
-	 */
-	public function get_forms_options() {
-		$forms = get_posts(
-			[
-				'post_type'      => 'sureforms_form',
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
-			]
-		);
-
-		$options = [];
-
-		foreach ( $forms as $form ) {
-			$options[ $form->ID ] = $form->post_title;
-		}
-
-		return $options;
-	}
-
-	/**
 	 * Render form widget output on the frontend.
 	 *
 	 * @since x.x.x
@@ -183,8 +169,37 @@ class Form_Widget extends Widget_Base {
 			return;
 		}
 
-		$show_form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
-		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
+		$form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
+
+		$shortcode =  sprintf( '[sureforms id="%s" show_title="%s"]', $settings['srfm_form_block'], ! $form_title );
+					//   sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title )
+
+		echo do_shortcode( $shortcode );
+	}
+
+		/**
+	 * Returns Condition_Manager instance of the Elementor Pro.
+	 *
+	 * @return false|\ElementorPro\Modules\ThemeBuilder\Classes\Conditions_Manager
+	 * @since 1.6.1
+	 */
+	private static function get_condition_manager() {
+		if ( false !== self::$elementor_conditions_manager ) {
+			return self::$elementor_conditions_manager;
+		}
+
+		if ( ! method_exists( '\ElementorPro\Modules\ThemeBuilder\Module', 'instance' ) ) {
+			return false;
+		}
+
+		$theme_builder = (object) \ElementorPro\Modules\ThemeBuilder\Module::instance();
+
+		if ( ! method_exists( $theme_builder, 'get_conditions_manager' ) ) {
+			return false;
+		}
+
+		self::$elementor_conditions_manager = $theme_builder->get_conditions_manager();
+		return self::$elementor_conditions_manager;
 	}
 
 }

@@ -113,9 +113,7 @@ class Plugin_Loader {
 		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
-		new Page_Builders();
-
-
+		
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );
@@ -139,6 +137,7 @@ class Plugin_Loader {
 		Compliance_Settings::get_instance();
 		Events_Scheduler::get_instance();
 		Background_Process::get_instance();
+		Page_Builders::get_instance();
 
 		/**
 		 * The code that runs during plugin activation

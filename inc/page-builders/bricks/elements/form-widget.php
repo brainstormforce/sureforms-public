@@ -1,6 +1,8 @@
 <?php
 
-	namespace SRFM\Inc\Page_Builders\Bricks\Elements;
+namespace SRFM\Inc\Page_Builders\Bricks\Elements;
+
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -22,30 +24,6 @@ class Form_Widget extends \Bricks\Element {
 		return __( 'SureForms', 'sureforms' );
 	}
 
-	/**
-	 * Get froms options. Shows all the available forms in the dropdown.
-	 *
-	 * @since x.x.x
-	 * @return array<mixed>
-	 */
-	public function get_forms_options() {
-		$forms = get_posts(
-			[
-				'post_type'      => 'sureforms_form',
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
-			]
-		);
-
-		$options = [];
-
-		foreach ( $forms as $form ) {
-			$options[ $form->ID ] = $form->post_title;
-		}
-
-		return $options;
-	}
-
 	public function set_controls() {
 
 		// Select Form.
@@ -54,7 +32,7 @@ class Form_Widget extends \Bricks\Element {
 			'tab'         => 'content',
 			'label'       => __( 'Form', 'sureforms' ),
 			'type'        => 'select',
-			'options'     => $this->get_forms_options(),
+			'options'     => Helper::get_forms_options(),
 			'placeholder' => __( 'Select a form', 'ws-form' ),
 		];
 
