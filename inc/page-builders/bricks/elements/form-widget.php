@@ -38,7 +38,7 @@ class Form_Widget extends \Bricks\Element {
 	 *
 	 * @var string
 	 */
-	public $icon = 'ti-view-list';
+	public $icon = 'ti-layout-accordion-separated';
 
 	/**
 	 * Get element name.
@@ -86,7 +86,7 @@ class Form_Widget extends \Bricks\Element {
 		// Show Form Title Toggle.
 		$this->controls['form-title'] = [
 			'tab'   => 'content',
-			'label' => __( 'Form Title', 'sureforms' ),
+			'label' => __( 'Show Form Title', 'sureforms' ),
 			'type'  => 'checkbox',
 			'info'  => __( 'Enable this to show form title.', 'sureforms' ),
 		];
@@ -114,9 +114,7 @@ class Form_Widget extends \Bricks\Element {
 			echo $this->render_element_placeholder(
 				[
 					'icon-class'  => $this->icon,
-					'title'       => esc_html__( 'No form selected', 'sureforms' ),
 					'description' => esc_html__( 'Select the form that you wish to add here.', 'sureforms' ),
-					'text'        => esc_html__( 'No form selected', 'sureforms' ),
 				]
 			);
 			// phpcs:ignoreEnd
