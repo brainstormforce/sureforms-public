@@ -95,7 +95,7 @@ if ($srfm_form_preview_attr) {
 				<?php endif; ?>
 			}
 		</style>
-		<div id="srfm-single-page-container" class="srfm-single-page-container">
+		<div aria-live="polite" aria-atomic="true" id="srfm-single-page-container" class="srfm-single-page-container">
 			<div class="srfm-page-banner">
 				<?php if (!empty($show_title) && !empty($instant_form)) : ?>
 					<h1 class="srfm-single-banner-title"><?php echo esc_html(get_the_title()); ?></h1>
