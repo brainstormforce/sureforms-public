@@ -51,6 +51,21 @@ class Form_Widget extends \Bricks\Element {
 	}
 
 	/**
+	 * Get element keywords.
+	 *
+	 * @since x.x.x
+	 * @return array<string> element keywords.
+	 */
+	public function get_keywords() {
+		return [
+			'sureforms',
+			'contact form',
+			'form',
+			'bricks form',
+		];
+	}
+
+	/**
 	 * Set element controls.
 	 *
 	 * @since x.x.x
