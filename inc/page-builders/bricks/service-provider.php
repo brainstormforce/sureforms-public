@@ -1,12 +1,35 @@
 <?php
+/**
+ * Bricks SureForms service provider.
+ *
+ * @package sureforms.
+ * @since x.x.x
+ */
 
 namespace SRFM\Inc\Page_Builders\Bricks;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * SureForms Bricks service provider.
+ */
 class Service_Provider {
+
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'widget' ], 11 );
 	}
 
+	/**
+	 * Register SureForms widget.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function widget() {
 		if ( ! class_exists( '\Bricks\Elements' ) ) {
 			return;

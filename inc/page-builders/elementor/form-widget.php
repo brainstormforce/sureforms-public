@@ -98,7 +98,7 @@ class Form_Widget extends Widget_Base {
 			[
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
-				'options' => Helper::get_forms_options()
+				'options' => Helper::get_forms_options(),
 			]
 		);
 
@@ -161,10 +161,7 @@ class Form_Widget extends Widget_Base {
 
 		$form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
 
-		$shortcode =  sprintf( '[sureforms id="%s" show_title="%s"]', $settings['srfm_form_block'], ! $form_title );
-					//   sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title )
-
-		echo do_shortcode( $shortcode );
+		echo do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', $settings['srfm_form_block'], ! $form_title ) );
 	}
 
 }

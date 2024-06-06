@@ -113,7 +113,7 @@ class Plugin_Loader {
 		require_once SRFM_DIR . 'inc/lib/action-scheduler/action-scheduler.php';
 
 		spl_autoload_register( [ $this, 'autoload' ] );
-		
+
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		add_action( 'plugins_loaded', [ $this, 'load_plugin' ], 99 );
 		add_action( 'init', [ $this, 'load_classes' ] );

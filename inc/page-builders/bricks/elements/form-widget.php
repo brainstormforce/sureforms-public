@@ -1,29 +1,61 @@
 <?php
+/**
+ * Bricks SureForms form element.
+ *
+ * @package sureforms.
+ * @since x.x.x
+ */
 
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
+/**
+ * SureForms Bricks element.
+ */
 class Form_Widget extends \Bricks\Element {
-	// Element properties
-	public $category = 'sureforms';
-	public $name     = 'sureforms';
-	public $icon     = 'ti-view-list';
 
 	/**
-	 * Get widget name.
+	 * Element category.
+	 *
+	 * @var string
+	 */
+	public $category = 'sureforms';
+
+	/**
+	 * Element name.
+	 *
+	 * @var string
+	 */
+	public $name = 'sureforms';
+
+	/**
+	 * Element icon.
+	 *
+	 * @var string
+	 */
+	public $icon = 'ti-view-list';
+
+	/**
+	 * Get element name.
 	 *
 	 * @since x.x.x
-	 * @return string Widget name.
+	 * @return string element name.
 	 */
 	public function get_label() {
 		return __( 'SureForms', 'sureforms' );
 	}
 
+	/**
+	 * Set element controls.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function set_controls() {
 
 		// Select Form.
@@ -33,7 +65,7 @@ class Form_Widget extends \Bricks\Element {
 			'label'       => __( 'Form', 'sureforms' ),
 			'type'        => 'select',
 			'options'     => Helper::get_forms_options(),
-			'placeholder' => __( 'Select a form', 'ws-form' ),
+			'placeholder' => __( 'Select a form', 'sureforms' ),
 		];
 
 		// Show Form Title Toggle.
@@ -46,15 +78,23 @@ class Form_Widget extends \Bricks\Element {
 
 	}
 
+	/**
+	 * Render element.
+	 *
+	 * @since x.x.x
+	 */
 	public function render() {
 		$settings   = $this->settings;
 		$form_id    = isset( $settings['form-id'] ) ? $settings['form-id'] : '';
 		$form_title = isset( $settings['form-title'] ) ? true : false;
 
 		if ( $form_id > 0 ) {
+			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
 			echo '<div ' . $this->render_attributes( '_root' ) . '>' . do_shortcode( sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title ) ) . '</div>';
+			// phpcs:ignoreEnd
 		} else {
-			// Show placeholder when no form is selected
+			// Show placeholder when no form is selected.
+			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
 			echo $this->render_element_placeholder(
 				[
 					'icon-class'  => $this->icon,
@@ -63,6 +103,7 @@ class Form_Widget extends \Bricks\Element {
 					'text'        => esc_html__( 'No form selected', 'sureforms' ),
 				]
 			);
+			// phpcs:ignoreEnd
 		}
 	}
 }
