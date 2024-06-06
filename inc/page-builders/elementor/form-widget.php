@@ -37,7 +37,7 @@ class Form_Widget extends Widget_Base {
 	 * @return string Widget name.
 	 */
 	public function get_name() {
-		return 'sureforms_form';
+		return SRFM_FORMS_POST_TYPE;
 	}
 
 	/**
@@ -101,14 +101,12 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		$options = Helper::get_forms_options();
-
 		$this->add_control(
 			'srfm_form_block',
 			[
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
-				'options' => $options,
+				'options' => Helper::get_forms_options()
 			]
 		);
 
