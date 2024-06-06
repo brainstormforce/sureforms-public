@@ -454,7 +454,7 @@ class Helper {
 	public static function get_forms_options() {
 		$forms = get_posts(
 			[
-				'post_type'      => 'sureforms_form',
+				'post_type'      => SRFM_FORMS_POST_TYPE,
 				'posts_per_page' => -1,
 				'post_status'    => 'publish',
 			]

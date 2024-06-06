@@ -23,14 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Form_Widget extends Widget_Base {
 
 	/**
-	 * Stores Elementor Pro Conditions_Manager instance.
-	 *
-	 * @var false|\ElementorPro\Modules\ThemeBuilder\Classes\Conditions_Manager
-	 * @since 1.6.1
-	 */
-	private static $elementor_conditions_manager = false;
-
-	/**
 	 * Get widget name.
 	 *
 	 * @since x.x.x
@@ -173,31 +165,6 @@ class Form_Widget extends Widget_Base {
 					//   sprintf( '[sureforms id="%s" show_title="%s"]', $form_id, ! $form_title )
 
 		echo do_shortcode( $shortcode );
-	}
-
-		/**
-	 * Returns Condition_Manager instance of the Elementor Pro.
-	 *
-	 * @return false|\ElementorPro\Modules\ThemeBuilder\Classes\Conditions_Manager
-	 * @since 1.6.1
-	 */
-	private static function get_condition_manager() {
-		if ( false !== self::$elementor_conditions_manager ) {
-			return self::$elementor_conditions_manager;
-		}
-
-		if ( ! method_exists( '\ElementorPro\Modules\ThemeBuilder\Module', 'instance' ) ) {
-			return false;
-		}
-
-		$theme_builder = (object) \ElementorPro\Modules\ThemeBuilder\Module::instance();
-
-		if ( ! method_exists( $theme_builder, 'get_conditions_manager' ) ) {
-			return false;
-		}
-
-		self::$elementor_conditions_manager = $theme_builder->get_conditions_manager();
-		return self::$elementor_conditions_manager;
 	}
 
 }
