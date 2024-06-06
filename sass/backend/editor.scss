@@ -202,7 +202,7 @@ body.post-type-sureforms_form {
 	// Hide default title and preview btns ( desktop / tablet / mobile ).
 	.edit-post-visual-editor__post-title-wrapper,
 	// classname in WP-6.4.
-	.block-editor-post-preview__button-toggle, 
+	.block-editor-post-preview__button-toggle,
 	// classname in WP-6.5.
 	.editor-preview-dropdown__toggle {
 		display: none;
@@ -373,5 +373,9 @@ body.post-type-sureforms_form {
 	.edit-post-sidebar__panel .block-editor-block-card svg {
 		fill: #D54407;
 		color: #D54407;
+	}
+
+	.wpforms-edit-post-education-notice {
+		display: none;
 	}
 }

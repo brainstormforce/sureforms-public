@@ -47,7 +47,7 @@ class Post_Types {
 		add_action( 'admin_head', [ $this, 'remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
+		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
@@ -306,8 +306,10 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$bulk_actions['export'] = __( 'Export', 'sureforms' );
-		return $bulk_actions;
+		$actions[ 'edit' ] = $bulk_actions[ 'edit' ];
+		$actions[ 'trash' ] = $bulk_actions[ 'trash' ];
+		$actions[ 'export' ] = __( 'Export', 'sureforms' );
+		return $actions;
 	}
 
 	/**
@@ -1101,12 +1103,16 @@ class Post_Types {
 	private function restrict_unwanted_insertions() {
 		// Restrict RankMatch columns and filters in edit page.
 		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
-		// add_filter( 'rank_math/excluded_post_types', function( $post_types ) {
-		// 	if( isset( $post_types['sureforms_form'] ) ) {
-		// 		unset( $post_types['sureforms_form'] );
-		// 	}
-		// 	return $post_types;
-		// } );
+		// Restrict RankMatch metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
 	}
 
+	public function restrict_data() {
+		add_filter( 'rank_math/excluded_post_types', function( $post_types ) {
+			if( isset( $post_types['sureforms_form'] ) ) {
+				unset( $post_types['sureforms_form'] );
+			}
+			return $post_types;
+		} );
+	}
 }
