@@ -73,7 +73,7 @@ class Field_Mapping {
 		$params = $request->get_params();
 
 		// check parama is empty or not and is an array and consist form_data key.
-		if ( empty( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) ) {
+		if ( empty( $params ) || ! is_array( $params ) || ! array_key_exists( 'form_data', $params ) || 0 === count( $params['form_data'] ) ) {
 			return '';
 		}
 
@@ -97,8 +97,8 @@ class Field_Mapping {
 		foreach ( $questions as $index => $question ) {
 
 			// Check if question is empty then continue to next question.
-			if ( empty( $question ) ) {
-				continue;
+			if ( empty( $question ) || ! is_array( $question ) ) {
+				return '';
 			}
 
 			// Initialize common attributes.

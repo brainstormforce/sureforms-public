@@ -39,7 +39,7 @@ const AiFormBuilder = () => {
 			title: 'Make an event registration form',
 		},
 		{
-			title: 'Create a GYM membership form',
+			title: 'Create a Gym membership form',
 		},
 	];
 

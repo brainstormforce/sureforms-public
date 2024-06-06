@@ -228,7 +228,6 @@ $sidebar_width: 290px;
 		align-items: flex-start;
 		gap: 20px;
 		width: 400px;
-		height: 170px;
 		padding: 20px;
 		background: #ffffff;
 		border-radius: 8px;
@@ -387,7 +386,6 @@ $sidebar_width: 290px;
 			.srfm-ai-builder-textarea-ctn {
 				display: flex;
 				flex-direction: column;
-				// height: 144px;
 				gap: 12px;
 
 				textarea {
@@ -400,9 +398,9 @@ $sidebar_width: 290px;
 					box-shadow: none;
 					resize: none;
 					overflow: hidden;
-					font-size: 16px;
+					font-size: 20px;
 					font-weight: 400;
-					line-height: 24px;
+					line-height: 32px;
 
 					&::placeholder {
 						width: 664px;
