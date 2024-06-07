@@ -470,7 +470,7 @@ class Helper {
 			if ( $form instanceof WP_Post ) {
 				if ( 'all' === $key ) {
 					$options[ $form->ID ] = $form;
-				} elseif ( isset( $form->$key ) ) {
+				} elseif ( ! empty( $key ) && is_string( $key ) && isset( $form->$key ) ) {
 					$options[ $form->ID ] = $form->$key;
 				} else {
 					$options[ $form->ID ] = $form->post_title;
