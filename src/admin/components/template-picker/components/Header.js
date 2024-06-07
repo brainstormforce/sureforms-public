@@ -89,7 +89,7 @@ const Header = () => {
 								'/wp-admin/admin.php?page=sureforms_menu';
 							} }
 						>
-							<div>{ ICONS.close }</div>
+							<div style={ { height: '24px' } }>{ ICONS.close }</div>
 						</div>
 					</div>
 				) : (
@@ -100,7 +100,7 @@ const Header = () => {
 							'/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
-						<div>{ ICONS.close }</div>
+						<div style={ { height: '24px' } }>{ ICONS.close }</div>
 					</div>
 				) }
 		</div>

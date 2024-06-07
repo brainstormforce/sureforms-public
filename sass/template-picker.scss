@@ -447,12 +447,10 @@ $sidebar_width: 290px;
 				display: flex;
 				flex-wrap: wrap;
 				width: 688px;
-				height: 72px;
 				gap: 16px;
 				overflow: hidden;
 
 				.srfm-ai-builder-prompt-btn {
-					height: 28px;
 					padding: 4px 10px 4px 10px;
 					border-radius: 99px;
 					background: #f8f9fc;
@@ -489,7 +487,7 @@ $sidebar_width: 290px;
 				background-color: #d54407;
 				color: white;
 				width: 688px;
-				height: 48px;
+				height: 56px;
 				padding: 12px 16px 12px 24px;
 				gap: 8px;
 				border-radius: 6px;
@@ -498,7 +496,7 @@ $sidebar_width: 290px;
 
 				.srfm-ai-builder-create-form-btn-text {
 					font-size: 16px;
-					font-weight: 600;
+					font-weight: 500;
 					line-height: 24px;
 				}
 			}
