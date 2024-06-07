@@ -99,6 +99,7 @@ class Form_Widget extends Widget_Base {
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
 				'options' => $options,
+				'default' => '',
 			]
 		);
 
@@ -110,6 +111,9 @@ class Form_Widget extends Widget_Base {
 				'label_on'     => __( 'Show', 'sureforms' ),
 				'label_off'    => __( 'Hide', 'sureforms' ),
 				'return_value' => 'true',
+				'condition'    => [
+					'srfm_form_block!' => [ '' ],
+				],
 			]
 		);
 
@@ -121,6 +125,9 @@ class Form_Widget extends Widget_Base {
 				'type'      => \Elementor\Controls_Manager::BUTTON,
 				'text'      => __( 'Edit', 'sureforms' ),
 				'event'     => 'sureforms:form:edit',
+				'condition' => [
+					'srfm_form_block!' => [ '' ],
+				],
 			]
 		);
 
@@ -170,16 +177,20 @@ class Form_Widget extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		if ( ! is_array( $settings ) || ! isset( $settings['srfm_show_form_title'] ) || ! isset( $settings['srfm_form_block'] ) ) {
+		if ( ! is_array( $settings ) ) {
 			return;
 		}
 
 		$is_editor = Plugin::instance()->editor->is_edit_mode();
 
-		if ( $is_editor && '' === $settings['srfm_form_block'] ) {
+		if ( $is_editor && array_key_exists( 'srfm_form_block', $settings ) && '' === $settings['srfm_form_block'] ) {
 			echo '<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">' .
 					esc_html__( 'Select the form that you wish to add here.', 'sureforms' ) .
 				'</div>';
+			return;
+		}
+
+		if ( ! isset( $settings['srfm_show_form_title'] ) || ! isset( $settings['srfm_form_block'] ) ) {
 			return;
 		}
 
