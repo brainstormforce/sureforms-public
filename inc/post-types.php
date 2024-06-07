@@ -873,7 +873,7 @@ class Post_Types {
 		$post = get_post( $id );
 
 		if ( ! empty( $id ) && $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', $post->post_content );
+			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 			return $content;
 		}
 
