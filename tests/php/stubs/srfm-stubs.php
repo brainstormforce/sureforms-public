@@ -153,7 +153,7 @@ namespace SRFM\Admin {
          * Disable spectra's quick action bar in sureforms CPT.
          *
          * @param string $status current status of the quick action bar.
-         * @since x.x.x
+         * @since 0.0.3
          * @return string
          */
         public function restrict_spectra_quick_action_bar($status)
@@ -214,7 +214,7 @@ namespace SRFM\Inc\Single_Form_Settings {
     /**
      * SureForms single form settings - Compliance settings.
      *
-     * @since x.x.x
+     * @since 0.0.3
      */
     class Compliance_Settings
     {
@@ -222,7 +222,7 @@ namespace SRFM\Inc\Single_Form_Settings {
         /**
          * Constructor
          *
-         * @since x.x.x
+         * @since 0.0.3
          */
         public function __construct()
         {
@@ -233,7 +233,7 @@ namespace SRFM\Inc\Single_Form_Settings {
          * If enabled then delete the entries that are older than the days_old.
          *
          * @hooked - srfm_daily_scheduled_action
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public function pre_auto_delete_entries()
@@ -244,7 +244,7 @@ namespace SRFM\Inc\Single_Form_Settings {
          *
          * @param int $days_old Number of days old.
          * @param int $form_id Form ID.
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public static function delete_old_entries($days_old, $form_id)
@@ -458,7 +458,7 @@ namespace SRFM\Inc\Fields {
     /**
      * Sureforms Inline Button Markup Class.
      *
-     * @since x.x.x
+     * @since 0.0.3
      */
     class Inlinebutton_Markup extends \SRFM\Inc\Fields\Base
     {
@@ -469,7 +469,7 @@ namespace SRFM\Inc\Fields {
          * @param array<mixed> $attributes Block attributes.
          *
          * @return string|boolean|void
-         * @since x.x.x
+         * @since 0.0.3
          */
         public function markup($attributes)
         {
@@ -553,7 +553,7 @@ namespace SRFM\Inc\Fields {
     /**
      * Sureforms GDPR Markup Class.
      *
-     * @since x.x.x
+     * @since 0.0.3
      */
     class GDPR_Markup extends \SRFM\Inc\Fields\Base
     {
@@ -7749,7 +7749,7 @@ namespace SRFM\Inc {
          * Get default post metas for form when creating using template.
          *
          * @return array<string, array<int, int|string>> Default meta keys.
-         * @since x.x.x
+         * @since 0.0.3
          */
         public static function get_default_meta_keys()
         {
@@ -7874,7 +7874,7 @@ namespace SRFM\Inc {
     /**
      * Sureforms Background Process Class.
      *
-     * @since x.x.x
+     * @since 0.0.3
      */
     class Background_Process
     {
@@ -7906,7 +7906,7 @@ namespace SRFM\Inc {
         /**
          * Constructor
          *
-         * @since  x.x.x
+         * @since  0.0.3
          */
         public function __construct()
         {
@@ -7914,7 +7914,7 @@ namespace SRFM\Inc {
         /**
          * Add custom API Route for 'After Submission' background process.
          *
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public function register_custom_endpoint()
@@ -7924,7 +7924,7 @@ namespace SRFM\Inc {
          * Handle 'After Submission' background process
          *
          * @param \WP_REST_Request $request Request object or array containing form data.
-         * @since x.x.x
+         * @since 0.0.3
          * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
          */
         public function handle_after_submission($request)
@@ -7933,7 +7933,7 @@ namespace SRFM\Inc {
         /**
          * Handle 'After Submission' background process
          *
-         * @since x.x.x
+         * @since 0.0.3
          * @return bool
          */
         public function trigger_after_submission_process()
@@ -8116,7 +8116,7 @@ namespace SRFM\Inc\Blocks\GDPR {
          * @param string       $content Post content.
          *
          * @return string|boolean
-         * @since x.x.x
+         * @since 0.0.3
          */
         public function render($attributes, $content = '')
         {
@@ -8231,7 +8231,7 @@ namespace SRFM\Inc\Blocks\Inlinebutton {
          * @param string       $content Post content.
          *
          * @return string|boolean
-         * @since x.x.x
+         * @since 0.0.3
          */
         public function render($attributes, $content = '')
         {
@@ -8490,7 +8490,7 @@ namespace SRFM\Inc {
          *
          * @param int        $days_old The number of days old the entries should be.
          * @param array<int> $sf_form_ids The form ids for which the entries need to be fetched.
-         * @since x.x.x
+         * @since 0.0.3
          * @return array<int|WP_Post> the entries matching the criteria.
          */
         public static function get_entries_from_form_ids($days_old = 0, $sf_form_ids = [])
@@ -8502,7 +8502,7 @@ namespace SRFM\Inc {
          *
          * @link https://developer.wordpress.org/reference/functions/serialize_block_attributes/
          * @param string $encoded_data the encoded block attribute.
-         * @since x.x.x
+         * @since 0.0.3
          * @return string decoded block attribute
          */
         public static function decode_block_attribute($encoded_data = '')
@@ -8512,7 +8512,7 @@ namespace SRFM\Inc {
          * Map slugs to submission data.
          *
          * @param array<mixed> $submission_data submission_data.
-         * @since x.x.x
+         * @since 0.0.3
          * @return array<mixed>
          */
         public static function map_slug_to_submission_data($submission_data = [])
@@ -8523,7 +8523,7 @@ namespace SRFM\Inc {
          *
          * @param mixed $data Data which needs to be checked if it is an array.
          *
-         * @since x.x.x
+         * @since 0.0.3
          * @return array<mixed>
          */
         public static function get_array_value($data)
@@ -9051,7 +9051,7 @@ namespace SRFM\Inc {
     /**
      * SureForms events scheduler class.
      *
-     * @since x.x.x
+     * @since 0.0.3
      */
     class Events_Scheduler
     {
@@ -9059,7 +9059,7 @@ namespace SRFM\Inc {
         /**
          * Constructor
          *
-         * @since x.x.x
+         * @since 0.0.3
          */
         public function __construct()
         {
@@ -9071,7 +9071,7 @@ namespace SRFM\Inc {
          * @uses as_has_scheduled_action() To check if the action is already scheduled.
          * @uses as_schedule_recurring_action() To schedule a recurring action.
          * @link https://actionscheduler.org/api/
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public function srfm_schedule_daily_action()
@@ -9081,7 +9081,7 @@ namespace SRFM\Inc {
          * Unschedule any action.
          *
          * @param string $hook Event hook name.
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public static function unschedule_events($hook)
@@ -9105,7 +9105,7 @@ namespace SRFM\Inc {
          * Array of SureForms blocks which get have user input.
          *
          * @var array<string>
-         * @since x.x.x
+         * @since 0.0.3
          */
         protected $srfm_blocks = [
             'srfm/input',
@@ -9195,7 +9195,7 @@ namespace SRFM\Inc {
          *
          * @param int      $post_id current sureforms form post id.
          * @param \WP_Post $post SureForms post object.
-         * @since x.x.x
+         * @since 0.0.3
          * @return void
          */
         public function update_field_slug($post_id, $post)
@@ -9206,7 +9206,7 @@ namespace SRFM\Inc {
          *
          * @param array<string,string|array<string,mixed>> $block The block data.
          * @param array<string>                            $slugs The array of existing slugs.
-         * @since x.x.x
+         * @since 0.0.3
          * @return string The generated unique block slug.
          */
         public function generate_unique_block_slug($block, $slugs)
@@ -9218,7 +9218,7 @@ namespace SRFM\Inc {
          *
          * @param string        $slug test to be converted to slug.
          * @param array<string> $slugs An array of existing slugs.
-         * @since x.x.x
+         * @since 0.0.3
          * @return string The unique slug.
          */
         public function generate_slug($slug, $slugs)
