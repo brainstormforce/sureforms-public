@@ -170,7 +170,7 @@ class Form_Widget extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		if ( ! is_array( $settings ) || ! array_key_exists( 'srfm_show_form_title', $settings ) || ! array_key_exists( 'srfm_form_block', $settings ) ) {
+		if ( ! is_array( $settings ) || ! isset( $settings['srfm_show_form_title'] ) || ! isset( $settings['srfm_form_block'] ) ) {
 			return;
 		}
 
