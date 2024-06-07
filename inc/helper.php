@@ -446,12 +446,13 @@ class Helper {
 	}
 
 	/**
-	 * Get froms options. Shows all the available forms in the dropdown.
+	 * Get forms options. Shows all the available forms in the dropdown.
 	 *
 	 * @since x.x.x
+	 * @param string $key Determines the type of data to return.
 	 * @return array<mixed>
 	 */
-	public static function get_sureforms() {
+	public static function get_sureforms( $key = '' ) {
 		$forms = get_posts(
 			apply_filters(
 				'srfm_get_sureforms_query_args',
@@ -467,7 +468,13 @@ class Helper {
 
 		foreach ( $forms as $form ) {
 			if ( $form instanceof WP_Post ) {
-				$options[ $form->ID ] = $form->post_title;
+				if ( 'all' === $key ) {
+					$options[ $form->ID ] = $form;
+				} elseif ( isset( $form->$key ) ) {
+					$options[ $form->ID ] = $form->$key;
+				} else {
+					$options[ $form->ID ] = $form->post_title;
+				}
 			}
 		}
 
