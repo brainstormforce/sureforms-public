@@ -27,8 +27,8 @@ class Page_Builders {
 	 * @return void
 	 */
 	public function __construct() {
-		new Elementor_Service_Provider();
-		new Bricks_Service_Provider();
+		Elementor_Service_Provider::get_instance();
+		Bricks_Service_Provider::get_instance();
 	}
 
 }

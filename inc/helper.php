@@ -451,21 +451,27 @@ class Helper {
 	 * @since x.x.x
 	 * @return array<mixed>
 	 */
-	public static function get_forms_options() {
+	public static function get_sureforms() {
 		$forms = get_posts(
-			[
-				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
-			]
+			apply_filters(
+				'srfm_get_sureforms_query_args',
+				[
+					'post_type'      => SRFM_FORMS_POST_TYPE,
+					'posts_per_page' => -1,
+					'post_status'    => 'publish',
+				]
+			)
 		);
 
 		$options = [];
 
 		foreach ( $forms as $form ) {
-			$options[ $form->ID ] = $form->post_title;
+			if ( $form instanceof WP_Post ) {
+				$options[ $form->ID ] = $form->post_title;
+			}
 		}
 
 		return $options;
 	}
+
 }

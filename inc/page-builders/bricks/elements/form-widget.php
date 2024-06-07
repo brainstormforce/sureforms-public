@@ -79,16 +79,17 @@ class Form_Widget extends \Bricks\Element {
 			'tab'         => 'content',
 			'label'       => __( 'Form', 'sureforms' ),
 			'type'        => 'select',
-			'options'     => Helper::get_forms_options(),
-			'placeholder' => __( 'Select a form', 'sureforms' ),
+			'options'     => Helper::get_sureforms(),
+			'placeholder' => __( 'Select Form', 'sureforms' ),
 		];
 
 		// Show Form Title Toggle.
 		$this->controls['form-title'] = [
-			'tab'   => 'content',
-			'label' => __( 'Show Form Title', 'sureforms' ),
-			'type'  => 'checkbox',
-			'info'  => __( 'Enable this to show form title.', 'sureforms' ),
+			'tab'      => 'content',
+			'label'    => __( 'Show Form Title', 'sureforms' ),
+			'type'     => 'checkbox',
+			'info'     => __( 'Enable this to show form title.', 'sureforms' ),
+			'required' => [ 'form-id', '!=', '' ],
 		];
 
 	}
@@ -102,7 +103,7 @@ class Form_Widget extends \Bricks\Element {
 	public function render() {
 		$settings   = $this->settings;
 		$form_id    = isset( $settings['form-id'] ) ? $settings['form-id'] : '';
-		$form_title = isset( $settings['form-title'] ) ? true : false;
+		$form_title = isset( $settings['form-title'] );
 
 		if ( $form_id > 0 ) {
 			// phpcs:ignore -- WordPress.Security.EscapeOutput.OutputNotEscaped - Escaping not required.
