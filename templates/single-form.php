@@ -106,31 +106,6 @@ if ( $srfm_form_preview_attr ) {
 					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
 					// phpcs:ignoreEnd
 				?>
-				<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="height:0; opacity:0; min-height:0;" class="srfm-single-form srfm-success-box in-page"> 
-					<i class="fa-regular fa-circle-check"></i>
-					<article class="srfm-success-box-header">
-						<?php echo esc_html( $srfm_success_message_title ); ?>
-					</article>
-					<article class="srfm-success-box-subtxt srfm-text-gray-900">
-						<?php echo esc_html( $srfm_success_message ); ?>
-					</article>
-				</div>
-					<?php
-					if ( isset( $srfm_success_message ) && isset( $srfm_success_message_title ) ) {
-						?>
-					<div id="srfm-success-message-page-<?php echo esc_attr( $srfm_custom_post_id ); ?>" style="display:none;" class="srfm-single-form srfm-success-box"> 
-						<i class="fa-regular fa-circle-check"></i>
-						<article class="srfm-success-box-header">
-							<?php echo esc_html( $srfm_success_message_title ); ?>
-						</article>
-						<article class="srfm-success-box-subtxt srfm-text-gray-900">
-							<?php echo esc_html( $srfm_success_message ); ?>
-						</article>
-					</div>
-						<?php
-					}
-					?>
-					<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_attr__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 						<?php
 						$srfm_page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 						$srfm_page_path = strval( wp_parse_url( $srfm_page_url, PHP_URL_PATH ) );
