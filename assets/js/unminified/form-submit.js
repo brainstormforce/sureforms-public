@@ -288,3 +288,13 @@ function onloadCallback() {
 
 // directly assign onloadCallback into the global space:
 window.onloadCallback = onloadCallback;
+
+// Bricks Builder compatibility to disable form submission in the preview mode
+window.handleBricksPreviewFormSubmission = function () {
+	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
+	for ( const form of forms ) {
+		form.addEventListener( 'submit', async function ( e ) {
+			e.preventDefault();
+		} );
+	}
+};

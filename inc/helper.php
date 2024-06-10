@@ -481,4 +481,20 @@ class Helper {
 		return $options;
 	}
 
+	/**
+	 * Get all the forms.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public static function get_sureforms_title_with_ids() {
+		$form_options = self::get_sureforms();
+
+		foreach ( $form_options as $key => $value ) {
+			$form_options[ $key ] = $value . ' #' . $key;
+		}
+
+		return $form_options;
+	}
+
 }

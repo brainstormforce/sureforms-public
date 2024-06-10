@@ -9,6 +9,7 @@
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
 
 use SRFM\Inc\Helper;
+use SRFM\Inc\Frontend_Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -39,6 +40,21 @@ class Form_Widget extends \Bricks\Element {
 	 * @var string
 	 */
 	public $icon = 'ti-layout-accordion-separated';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array<mixed> $element Element data.
+	 */
+	public function __construct( $element = null ) {
+
+		if ( bricks_is_builder() ) {
+
+			$this->scripts = [ 'handleBricksPreviewFormSubmission', 'loadPageBreak' ];
+		}
+
+		parent::__construct( $element );
+	}
 
 	/**
 	 * Get element name.
@@ -79,7 +95,7 @@ class Form_Widget extends \Bricks\Element {
 			'tab'         => 'content',
 			'label'       => __( 'Form', 'sureforms' ),
 			'type'        => 'select',
-			'options'     => Helper::get_sureforms(),
+			'options'     => Helper::get_sureforms_title_with_ids(),
 			'placeholder' => __( 'Select Form', 'sureforms' ),
 		];
 
@@ -89,6 +105,13 @@ class Form_Widget extends \Bricks\Element {
 			'label'    => __( 'Show Form Title', 'sureforms' ),
 			'type'     => 'checkbox',
 			'info'     => __( 'Enable this to show form title.', 'sureforms' ),
+			'required' => [ 'form-id', '!=', '' ],
+		];
+
+		$this->controls['srfm_form_submission_info'] = [
+			'tab'      => 'content',
+			'content'  => __( 'Form submission will be possible on the frontend.', 'sureforms' ),
+			'type'     => 'info',
 			'required' => [ 'form-id', '!=', '' ],
 		];
 

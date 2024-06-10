@@ -23,6 +23,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Form_Widget extends Widget_Base {
 
 	/**
+	 * Whether we are in the preview mode.
+	 *
+	 * @var bool
+	 */
+	public $is_preview_mode;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array<mixed> $data Widget data.
+	 * @param array<mixed> $args Widget arguments.
+	 */
+	public function __construct( $data = [], $args = null ) {
+
+		parent::__construct( $data, $args );
+
+		// (Preview iframe)
+		$this->is_preview_mode = \Elementor\Plugin::$instance->preview->is_preview_mode();
+
+		if ( $this->is_preview_mode ) {
+			wp_register_script( 'srfm-elementor-preview', SRFM_URL . 'inc/page-builders/elementor/assets/elementor-editor-preview.js', [ 'elementor-frontend' ], SRFM_VER, true );
+			wp_localize_script(
+				'srfm-elementor-preview',
+				'srfmElementorData',
+				[
+					'isProActive' => defined( 'SRFM_PRO_VER' ),
+				]
+			);
+
+		}
+	}
+
+	/**
+	 * Get script depends.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Script dependencies.
+	 */
+	public function get_script_depends() {
+		if ( $this->is_preview_mode ) {
+			return [ 'srfm-elementor-preview' ];
+		}
+
+		return [];
+	}
+
+	/**
 	 * Get widget name.
 	 *
 	 * @since x.x.x
@@ -98,7 +145,7 @@ class Form_Widget extends Widget_Base {
 			[
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
-				'options' => Helper::get_sureforms(),
+				'options' => Helper::get_sureforms_title_with_ids(),
 				'default' => '',
 			]
 		);
@@ -138,6 +185,17 @@ class Form_Widget extends Widget_Base {
 				'type'  => \Elementor\Controls_Manager::BUTTON,
 				'text'  => __( 'Create', 'sureforms' ),
 				'event' => 'sureforms:form:create',
+			]
+		);
+
+		$this->add_control(
+			'srfm_form_submission_info',
+			[
+				'content'   => __( 'Form submission will be possible on the frontend.', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::ALERT,
+				'condition' => [
+					'srfm_form_block!' => [ '' ],
+				],
 			]
 		);
 

@@ -78,5 +78,7 @@ module.exports = {
 		TomSelect: true,
 		root: true,
 		srfmElementorData: true,
+		elementorFrontend: true,
+		loadPageBreak: true,
 	},
 };
