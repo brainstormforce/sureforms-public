@@ -1114,20 +1114,27 @@ class Post_Types {
 	}
 
 	/**
-	 * Restrict RankMatch metaboxes in edit page.
+	 * Restrict RankMatch meta boxes in edit page.
 	 *
 	 * @since x.x.x
 	 * @return void
 	 */
 	public function restrict_data() {
-		add_filter(
-			'rank_math/excluded_post_types',
-			function( $post_types ) {
-				if ( isset( $post_types['sureforms_form'] ) ) {
-					unset( $post_types['sureforms_form'] );
-				}
-				return $post_types;
-			}
-		);
+		add_filter( 'rank_math/excluded_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Remove SureForms post type from RankMath.
+	 *
+	 * @param array<mixed> $post_types Post types.
+	 * @since x.x.x
+	 * @return array<mixed> $post_types Modified post types.
+	 */
+	public function unset_sureforms_post_type( $post_types ) {
+		// Remove SureForms post type from RankMath.
+		if ( isset( $post_types[ SRFM_FORMS_POST_TYPE ] ) ) {
+			unset( $post_types[ SRFM_FORMS_POST_TYPE ] );
+		}
+		return $post_types;
 	}
 }
