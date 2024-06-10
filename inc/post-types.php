@@ -1131,7 +1131,6 @@ class Post_Types {
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		// Remove SureForms post type from RankMath.
 		if ( isset( $post_types[ SRFM_FORMS_POST_TYPE ] ) ) {
 			unset( $post_types[ SRFM_FORMS_POST_TYPE ] );
 		}
