@@ -306,9 +306,9 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$actions[ 'edit' ] = $bulk_actions[ 'edit' ];
-		$actions[ 'trash' ] = $bulk_actions[ 'trash' ];
-		$actions[ 'export' ] = __( 'Export', 'sureforms' );
+		$actions['edit']   = $bulk_actions['edit'];
+		$actions['trash']  = $bulk_actions['trash'];
+		$actions['export'] = __( 'Export', 'sureforms' );
 		return $actions;
 	}
 
@@ -1100,6 +1100,12 @@ class Post_Types {
 		}
 	}
 
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	private function restrict_unwanted_insertions() {
 		// Restrict RankMatch columns and filters in edit page.
 		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
@@ -1107,12 +1113,21 @@ class Post_Types {
 		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
 	}
 
+	/**
+	 * Restrict RankMatch metaboxes in edit page.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
 	public function restrict_data() {
-		add_filter( 'rank_math/excluded_post_types', function( $post_types ) {
-			if( isset( $post_types['sureforms_form'] ) ) {
-				unset( $post_types['sureforms_form'] );
+		add_filter(
+			'rank_math/excluded_post_types',
+			function( $post_types ) {
+				if ( isset( $post_types['sureforms_form'] ) ) {
+					unset( $post_types['sureforms_form'] );
+				}
+				return $post_types;
 			}
-			return $post_types;
-		} );
+		);
 	}
 }
