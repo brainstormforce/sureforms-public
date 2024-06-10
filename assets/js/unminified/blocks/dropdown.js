@@ -6,16 +6,22 @@ function initializeDropdown() {
 	);
 
 	dropDownSelector.forEach( ( element ) => {
-		const placeholderOption = element.querySelector( '.srfm-dropdown-placeholder' );
-		const placeholderText = placeholderOption ? placeholderOption.innerText : '';
+		const placeholderOption = element.querySelector(
+			'.srfm-dropdown-placeholder'
+		);
+		const placeholderText = placeholderOption
+			? placeholderOption.innerText
+			: '';
 		if ( element ) {
 			const config = {
-				onDropdownOpen( dropdown ) {
+				onDropdownOpen() {
 					speak( placeholderText );
 				},
 				onChange( value ) {
-					if ( value ) speak( value );
-				}
+					if ( value ) {
+						speak( value );
+					}
+				},
 			};
 			new TomSelect( element, config );
 		}
