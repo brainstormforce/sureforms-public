@@ -613,7 +613,7 @@
 	text-decoration: underline;
 }
 .ql-snow .ql-editor blockquote {
-	border-left: 4px solid #ccc;
+	border-left: 4px solid #d0d5dd;
 	margin-bottom: 5px;
 	margin-top: 5px;
 	padding-left: 16px;
@@ -679,14 +679,14 @@
 	padding-top: 5px;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-label {
-	color: #ccc;
+	color: #d0d5dd;
 	z-index: 2;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-fill {
-	fill: #ccc;
+	fill: #d0d5dd;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-stroke {
-	stroke: #ccc;
+	stroke: #d0d5dd;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-options {
 	display: block;
@@ -846,10 +846,11 @@
 	background-color: #000;
 }
 .ql-toolbar.ql-snow {
-	border: 1px solid #ccc;
+	border: 1px solid #d0d5dd;
 	box-sizing: border-box;
 	font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 	padding: 8px;
+	border-bottom: none;
 }
 .ql-toolbar.ql-snow .ql-formats {
 	margin-right: 15px;
@@ -862,10 +863,10 @@
 	box-shadow: rgba( 0, 0, 0, 0.2 ) 0 2px 8px;
 }
 .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
-	border-color: #ccc;
+	border-color: #d0d5dd;
 }
 .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
-	border-color: #ccc;
+	border-color: #d0d5dd;
 }
 .ql-toolbar.ql-snow .ql-color-picker .ql-picker-item.ql-selected,
 .ql-toolbar.ql-snow .ql-color-picker .ql-picker-item:hover {
@@ -876,7 +877,7 @@
 }
 .ql-snow .ql-tooltip {
 	background-color: #fff;
-	border: 1px solid #ccc;
+	border: 1px solid #d0d5dd;
 	box-shadow: 0px 0px 5px #ddd;
 	color: #444;
 	padding: 5px 12px;
@@ -889,7 +890,7 @@
 }
 .ql-snow .ql-tooltip input[type="text"] {
 	display: none;
-	border: 1px solid #ccc;
+	border: 1px solid #d0d5dd;
 	font-size: 13px;
 	height: 26px;
 	margin: 0px;
@@ -904,7 +905,7 @@
 	vertical-align: top;
 }
 .ql-snow .ql-tooltip a.ql-action::after {
-	border-right: 1px solid #ccc;
+	border-right: 1px solid #d0d5dd;
 	content: "Edit";
 	margin-left: 16px;
 	padding-right: 8px;
@@ -941,5 +942,5 @@
 	color: #d54406;
 }
 .ql-container.ql-snow {
-	border: 1px solid #ccc;
+	border: 1px solid #d0d5dd;
 }

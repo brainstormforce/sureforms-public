@@ -13,15 +13,6 @@ $btn_text_color: #ffffff;
 $placeholder_color: #9ca3af;
 $req_err_color: #dc2625;
 
-.components-popover__fallback-container {
-	& .components-button {
-		&:hover {
-			color: #1e293b;
-			font-weight: 600;
-		}
-	}
-}
-
 //single form UI
 .srfm-settings-modal {
 	background-color: #f1f5f9;
@@ -73,10 +64,11 @@ $req_err_color: #dc2625;
 	}
 
 	.srfm-modal-input {
+		box-shadow: none;
 		&:focus-visible {
 			border-color: $primary_color !important;
-			box-shadow: 0 0 0 0.5px $primary_color !important;
-			outline-color: $primary_color;
+			box-shadow: none;
+			outline: none;
 		}
 	}
 
@@ -295,14 +287,15 @@ $req_err_color: #dc2625;
 
 							.srfm-modal-input {
 								display: flex;
-								padding: 10px 8px 10px 12px;
+								height: 40px;
+								padding: 10px 8px 10px 16px;
 								align-items: center;
 								gap: 116px;
 								flex: 1 0 0;
 								border-radius: var( --border-radius-4, 4px );
 								border: 1px solid #dce0e6;
 								background: #fff;
-								box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
+								box-shadow: none;
 
 								&.with-icon {
 									padding: 10px 24px 10px 12px;
@@ -344,7 +337,7 @@ $req_err_color: #dc2625;
 								border-radius: var( --border-radius-4, 4px );
 								border: 1px solid #dce0e6;
 								background: #fff;
-								box-shadow: 0px 1px 2px 0px rgba( 13, 19, 30, 0.1 );
+								box-shadow: none;
 								margin-top: 8px;
 
 								&.with-icon {
@@ -375,6 +368,7 @@ $req_err_color: #dc2625;
 
 									.srfm-option-input {
 										margin: 0;
+										box-shadow: none;
 
 										&:focus {
 											box-shadow: none;
@@ -383,6 +377,7 @@ $req_err_color: #dc2625;
 
 										&:checked {
 											background-color: $primary_color;
+											border-color: $primary_color;
 
 											&:focus {
 												box-shadow: none;
@@ -505,7 +500,6 @@ $req_err_color: #dc2625;
 									.components-button {
 										&:hover {
 											color: #1e293b;
-											font-weight: 600;
 										}
 
 										color: #1e293b !important;
@@ -840,10 +834,11 @@ $req_err_color: #dc2625;
 			border: 1px solid $border_color;
 			border-radius: 0.25em;
 			padding: 0.75em 1em;
+			box-shadow: none;
 
 			&:focus {
 				border: 1px solid $primary_color !important;
-				box-shadow: 0 0 0 0.5px $primary_color !important;
+				box-shadow: none;
 			}
 
 			&::placeholder {
@@ -924,10 +919,11 @@ $req_err_color: #dc2625;
 					border: 1px solid $border_color;
 					border-radius: 0.25em;
 					padding: 0.75em 1em;
+					box-shadow: none;
 
 					&:focus {
 						border: 1px solid $primary_color !important;
-						box-shadow: 0 0 0 0.5px $primary_color !important;
+						box-shadow: none;
 					}
 
 					&::placeholder {
@@ -940,10 +936,11 @@ $req_err_color: #dc2625;
 					border: 1px solid $border_color;
 					border-radius: 0.25em;
 					padding: 0.75em 1em;
+					box-shadow: none;
 
 					&:focus {
 						border: 1px solid $primary_color;
-						box-shadow: 0 0 0 0.5px $primary_color;
+						box-shadow: none;
 					}
 				}
 
@@ -951,11 +948,11 @@ $req_err_color: #dc2625;
 					height: auto;
 					line-height: normal;
 					border: 1px solid $border_color;
-					box-shadow: 0 0 0 0.5px $border_color;
+					box-shadow: none;
 
 					&:focus {
 						border: 1.5px solid $primary_color;
-						box-shadow: 0 0 0 0.5px $primary_color;
+						box-shadow: none;
 					}
 				}
 
