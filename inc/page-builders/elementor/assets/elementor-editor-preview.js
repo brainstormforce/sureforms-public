@@ -5,17 +5,23 @@
 			typeof elementorFrontend !== 'undefined' &&
 			elementorFrontend.hooks
 		) {
+			const checkAndLoadPageBreak = function () {
+				if (
+					typeof srfmElementorData !== 'undefined' &&
+					srfmElementorData.isProActive &&
+					typeof loadPageBreak === 'function'
+				) {
+					loadPageBreak();
+				}
+			};
+
 			elementorFrontend.hooks.addAction(
 				'frontend/element_ready/sureforms_form.default',
-				function () {
-					if (
-						typeof srfmElementorData !== 'undefined' &&
-						srfmElementorData.isProActive &&
-						typeof loadPageBreak === 'function'
-					) {
-						loadPageBreak();
-					}
-				}
+				checkAndLoadPageBreak
+			);
+			elementorFrontend.hooks.addAction(
+				'frontend/element_ready/shortcode.default',
+				checkAndLoadPageBreak
 			);
 		}
 	} );
