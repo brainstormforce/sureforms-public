@@ -55,10 +55,10 @@ class Address_Markup extends Base {
                         // phpcs:ignoreEnd
 					?>
 					</div>
-				</fieldset>
-			<div class="srfm-address-help-ctn">
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-			</div>
+				<div class="srfm-address-help-ctn">
+					<?php echo wp_kses_post( $this->help_markup ); ?>
+				</div>
+			</fieldset>
 			</div>
 		<?php
 
