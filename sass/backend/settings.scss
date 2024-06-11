@@ -148,7 +148,7 @@ $background_color: #f1f5f9;
 						font-size: 0.7em;
 						line-height: 1em;
 						font-weight: 500;
-						color: $content_color;
+						color: $heading_color;
 					}
 
 					&.active {
@@ -168,20 +168,13 @@ $background_color: #f1f5f9;
 				.srfm-notice-body {
 					padding-bottom: 0.85em;
 					font-size: 0.7em;
-					color: $content_color;
+					font-weight: 400;
+					line-height: 20px;
+					color: $input_text_color;
 				}
 
 				.srfm-notice-btn {
-					padding: 0.64em;
-					font-size: 0.7em;
-					font-weight: 500;
-					background: $primary_color;
-					color: $btn_text_color;
-					border-radius: 6px;
-					line-height: normal;
-					border: 0;
 					width: 100%;
-					cursor: pointer;
 				}
 			}
 		}
@@ -208,7 +201,7 @@ $background_color: #f1f5f9;
 			.srfm-page-heading {
 				display: flex;
 				flex-wrap: wrap;
-				margin-bottom: 1.5em;
+				margin-bottom: 28px;
 
 				.srfm-page-icon {
 					margin-right: 0.4em;
