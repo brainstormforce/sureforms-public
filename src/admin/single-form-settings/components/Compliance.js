@@ -75,72 +75,72 @@ const Compliance = ( { complianceData } ) => {
 						) }
 						{ ! complianceData[ 0 ].do_not_store_entries &&
 							complianceData[ 0 ].gdpr && (
-								<>
-									<ToggleControl
-										label={ __(
-											'Automatically delete entries',
-											'sureforms'
-										) }
-										help={ __(
-											'When enabled this form will automatically delete entries after a certain period of time.',
-											'sureforms'
-										) }
-										checked={
-											complianceData[ 0 ]
-												.auto_delete_entries
-										}
-										onChange={ ( value ) =>
-											handleToggle( {
-												id: 'auto_delete_entries',
-												status: value,
-											} )
-										}
-									/>
-									{ complianceData[ 0 ]
-										.auto_delete_entries && (
-										<div>
-											<label className="components-flex-item components-flex-block components-toggle-control__label">
-												{ __(
-													'Set the automatic deletion period for entries in this form (in days)',
-													'sureforms'
-												) }
-											</label>
-											<TextControl
-												type="number"
-												style={ {
-													width: '17%',
-													marginTop: 'calc(8px)',
-													fontSize: '12px',
-												} }
-												value={
-													complianceData[ 0 ]
-														.auto_delete_days
-												}
-												help={ __(
-													'Entries older than the days set will be deleted automatically.',
-													'sureforms'
-												) }
-												onChange={ ( value ) => {
-													value = parseInt( value );
-
-													if ( value < 0 ) {
-														value = 1;
-													}
-
-													value = value.toString();
-
-													handleToggle( {
-														id: 'auto_delete_days',
-														status: value,
-													} );
-												} }
-												min={ 1 }
-												max={ Infinity }
-											/>
-										</div>
+							<>
+								<ToggleControl
+									label={ __(
+										'Automatically delete entries',
+										'sureforms'
 									) }
-								</>
-							) }
+									help={ __(
+										'When enabled this form will automatically delete entries after a certain period of time.',
+										'sureforms'
+									) }
+									checked={
+										complianceData[ 0 ]
+											.auto_delete_entries
+									}
+									onChange={ ( value ) =>
+										handleToggle( {
+											id: 'auto_delete_entries',
+											status: value,
+										} )
+									}
+								/>
+								{ complianceData[ 0 ]
+									.auto_delete_entries && (
+									<div>
+										<label className="components-flex-item components-flex-block components-toggle-control__label">
+											{ __(
+												'Set the automatic deletion period for entries in this form (in days)',
+												'sureforms'
+											) }
+										</label>
+										<TextControl
+											type="number"
+											style={ {
+												width: '17%',
+												marginTop: 'calc(8px)',
+												fontSize: '12px',
+											} }
+											value={
+												complianceData[ 0 ]
+													.auto_delete_days
+											}
+											help={ __(
+												'Entries older than the days set will be deleted automatically.',
+												'sureforms'
+											) }
+											onChange={ ( value ) => {
+												value = parseInt( value );
+
+												if ( value < 0 ) {
+													value = 1;
+												}
+
+												value = value.toString();
+
+												handleToggle( {
+													id: 'auto_delete_days',
+													status: value,
+												} );
+											} }
+											min={ 1 }
+											max={ Infinity }
+										/>
+									</div>
+								) }
+							</>
+						) }
 					</div>
 				</div>
 			</div>
