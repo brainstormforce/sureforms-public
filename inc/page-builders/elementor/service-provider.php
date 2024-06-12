@@ -16,7 +16,6 @@ use SRFM\Inc\Traits\Get_Instance;
 class Service_Provider {
 	use Get_Instance;
 
-
 	/**
 	 * Constructor
 	 *

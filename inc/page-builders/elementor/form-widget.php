@@ -10,6 +10,7 @@ namespace SRFM\Inc\Page_Builders\Elementor;
 
 use Elementor\Widget_Base;
 use Elementor\Plugin;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -20,6 +21,54 @@ if ( ! defined( 'ABSPATH' ) ) {
  * SureForms widget that displays a form.
  */
 class Form_Widget extends Widget_Base {
+
+	/**
+	 * Whether we are in the preview mode.
+	 *
+	 * @var bool
+	 */
+	public $is_preview_mode;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array<mixed> $data Widget data.
+	 * @param array<mixed> $args Widget arguments.
+	 */
+	public function __construct( $data = [], $args = null ) {
+
+		parent::__construct( $data, $args );
+
+		// (Preview iframe)
+		$this->is_preview_mode = \Elementor\Plugin::$instance->preview->is_preview_mode();
+
+		if ( $this->is_preview_mode ) {
+			wp_register_script( 'srfm-elementor-preview', SRFM_URL . 'inc/page-builders/elementor/assets/elementor-editor-preview.js', [ 'elementor-frontend' ], SRFM_VER, true );
+			wp_localize_script(
+				'srfm-elementor-preview',
+				'srfmElementorData',
+				[
+					'isProActive' => defined( 'SRFM_PRO_VER' ),
+				]
+			);
+
+		}
+	}
+
+	/**
+	 * Get script depends.
+	 *
+	 * @since x.x.x
+	 * @return array<string> Script dependencies.
+	 */
+	public function get_script_depends() {
+		if ( $this->is_preview_mode ) {
+			return [ 'srfm-elementor-preview' ];
+		}
+
+		return [];
+	}
+
 	/**
 	 * Get widget name.
 	 *
@@ -91,14 +140,12 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		$options = $this->get_forms_options();
-
 		$this->add_control(
 			'srfm_form_block',
 			[
 				'label'   => __( 'Select Form', 'sureforms' ),
 				'type'    => \Elementor\Controls_Manager::SELECT2,
-				'options' => $options,
+				'options' => Helper::get_sureforms_title_with_ids(),
 				'default' => '',
 			]
 		);
@@ -141,31 +188,18 @@ class Form_Widget extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_section();
-	}
-
-	/**
-	 * Get froms options. Shows all the available forms in the dropdown.
-	 *
-	 * @since x.x.x
-	 * @return array<mixed>
-	 */
-	public function get_forms_options() {
-		$forms = get_posts(
+		$this->add_control(
+			'srfm_form_submission_info',
 			[
-				'post_type'      => SRFM_FORMS_POST_TYPE,
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
+				'content'   => __( 'Form submission will be possible on the frontend.', 'sureforms' ),
+				'type'      => \Elementor\Controls_Manager::ALERT,
+				'condition' => [
+					'srfm_form_block!' => [ '' ],
+				],
 			]
 		);
 
-		$options = [];
-
-		foreach ( $forms as $form ) {
-			$options[ $form->ID ] = $form->post_title;
-		}
-
-		return $options;
+		$this->end_controls_section();
 	}
 
 	/**
@@ -194,7 +228,7 @@ class Form_Widget extends Widget_Base {
 			return;
 		}
 
-		$show_form_title = 'true' === $settings['srfm_show_form_title'] ? true : false;
+		$show_form_title = 'true' === $settings['srfm_show_form_title'];
 		echo do_shortcode( '[sureforms id="' . $settings['srfm_form_block'] . '" show_title="' . ! $show_form_title . '"]' );
 	}
 

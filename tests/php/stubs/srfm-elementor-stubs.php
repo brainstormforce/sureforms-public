@@ -3056,6 +3056,9 @@ class Editor {
 	public function is_edit_mode() {
 	}
 
+	public static function is_preview_mode() {
+	}
+
 }
 
 }
@@ -3085,7 +3088,7 @@ class Plugin {
 	 */
 	public static $instance = null;
 
-    	/**
+    /**
 	 * Editor.
 	 *
 	 * Holds the plugin editor.
@@ -3096,6 +3099,18 @@ class Plugin {
 	 * @var Editor
 	 */
 	public $editor;
+
+    /**
+	 * Editor.
+	 *
+	 * Holds the plugin editor.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @var Editor
+	 */
+	public $preview;
 
 	/**
 	 * Instance.
