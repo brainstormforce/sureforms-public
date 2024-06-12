@@ -44,6 +44,7 @@ const Settings = ( props ) => {
 		subHeadSpaceType,
 		separatorColor,
 		headingTag,
+		headingWrapper,
 		headFontFamily,
 		headFontWeight,
 		headFontStyle,
@@ -324,48 +325,68 @@ const Settings = ( props ) => {
 					}
 				/>
 				{ headingTitleToggle && (
-					<MultiButtonsControl
-						setAttributes={ setAttributes }
-						label={ __( 'Heading Tag', 'sureforms' ) }
-						data={ {
-							value: headingTag,
-							label: 'headingTag',
-						} }
-						options={ [
-							{
-								value: 'h1',
-								label: __( 'H1', 'sureforms' ),
-							},
-							{
-								value: 'h2',
-								label: __( 'H2', 'sureforms' ),
-							},
-							{
-								value: 'h3',
-								label: __( 'H3', 'sureforms' ),
-							},
-							{
-								value: 'h4',
-								label: __( 'H4', 'sureforms' ),
-							},
-							{
-								value: 'h5',
-								label: __( 'H5', 'sureforms' ),
-							},
-							{
-								value: 'h6',
-								label: __( 'H6', 'sureforms' ),
-							},
-							{
-								value: 'p',
-								label: __( 'P', 'sureforms' ),
-							},
-							{
-								value: 'div',
-								label: __( 'Div', 'sureforms' ),
-							},
-						] }
-					/>
+					<>
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __( 'Heading Tag', 'sureforms' ) }
+							data={ {
+								value: headingTag,
+								label: 'headingTag',
+							} }
+							options={ [
+								{
+									value: 'h1',
+									label: __( 'H1', 'sureforms' ),
+								},
+								{
+									value: 'h2',
+									label: __( 'H2', 'sureforms' ),
+								},
+								{
+									value: 'h3',
+									label: __( 'H3', 'sureforms' ),
+								},
+								{
+									value: 'h4',
+									label: __( 'H4', 'sureforms' ),
+								},
+								{
+									value: 'h5',
+									label: __( 'H5', 'sureforms' ),
+								},
+								{
+									value: 'h6',
+									label: __( 'H6', 'sureforms' ),
+								},
+								{
+									value: 'p',
+									label: __( 'P', 'sureforms' ),
+								},
+								{
+									value: 'div',
+									label: __( 'Div', 'sureforms' ),
+								},
+							] }
+						/>
+						<MultiButtonsControl
+							setAttributes={ setAttributes }
+							label={ __( 'Heading Wrapper', 'sureforms' ) }
+							data={ {
+								value: headingWrapper,
+								label: 'headingWrapper',
+							} }
+							options={ [
+								{
+									value: 'div',
+									label: __( 'Div', 'sureforms' ),
+								},
+								{
+									value: 'header',
+									label: __( 'Header', 'sureforms' ),
+								},
+							] }
+						/>
+					</>
 				) }
 			</UAGAdvancedPanelBody>
 		);
