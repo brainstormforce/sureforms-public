@@ -183,7 +183,7 @@ class Form_Widget extends Widget_Base {
 
 		$is_editor = Plugin::instance()->editor->is_edit_mode();
 
-		if ( $is_editor && array_key_exists( 'srfm_form_block', $settings ) && '' === $settings['srfm_form_block'] ) {
+		if ( $is_editor && isset( $settings['srfm_form_block'] ) && '' === $settings['srfm_form_block'] ) {
 			echo '<div style="background: #D9DEE1; color: #9DA5AE; padding: 10px; font-family: Roboto, sans-serif">' .
 					esc_html__( 'Select the form that you wish to add here.', 'sureforms' ) .
 				'</div>';
