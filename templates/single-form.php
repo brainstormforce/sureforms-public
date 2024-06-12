@@ -84,7 +84,7 @@ if ( $srfm_form_preview_attr ) {
 					<h1 class="srfm-single-banner-title"><?php echo esc_html( get_the_title() ); ?></h1>
 				<?php endif; ?>
 			</div>
-			<div aria-live="polite" aria-atomic="true" class="srfm-form-wrapper">
+			<div class="srfm-form-wrapper">
 				<?php
 					// phpcs:ignore
 					echo Generate_Form_Markup::get_form_markup( absint( $srfm_custom_post_id ), false,'', 'sureforms_form' );
