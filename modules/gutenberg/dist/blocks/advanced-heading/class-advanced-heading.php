@@ -662,7 +662,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 				$heading_wrapper = $attributes['headingWrapper'];
 			}
 
-			$element = $heading_wrapper ? $heading_wrapper : 'div';
+			$element = ! empty( $heading_wrapper ) ? $heading_wrapper : 'div';
 
 			$seperator = '';
 
