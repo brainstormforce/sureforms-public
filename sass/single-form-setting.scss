@@ -329,6 +329,7 @@ $req_err_color: #dc2625;
 						}
 
 						.srfm-modal-option-box {
+							width: 100%;
 							.srfm-modal-input {
 								min-width: 720px;
 								width: 100%;
@@ -489,8 +490,8 @@ $req_err_color: #dc2625;
 
 								.srfm-editor-dropdown {
 									position: relative;
-									left: 615px;
-									top: 50px;
+									left: 610px;
+									top: 38px;
 									color: var( --dashboard-heading, #1e293b );
 									border: 1px solid #dce0e6;
 									border-radius: 6px;
@@ -519,14 +520,22 @@ $req_err_color: #dc2625;
 									min-height: 300px;
 								}
 
+								.components-tab-panel__tabs {
+									.srfm-active-editor,
+									.srfm-editor-html,
+									button {
+										border-radius: 4px;
+										padding: 9px 13px;
+										height: 34px;
+										margin-bottom: 1rem;
+									}
+								}
+
 								.srfm-active-editor {
-									border-radius: 6px;
-									background: var( --dashboard-primary, $primary_color );
+									background: $primary_color;
+
 									box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
-									color: var( --dashboard-surface-secondary, #fff );
-									color: white;
-									border-radius: 10%;
-									margin-bottom: 1rem;
+									color: #ffffff;
 								}
 							}
 						}
