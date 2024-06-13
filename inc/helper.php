@@ -335,7 +335,7 @@ class Helper {
 	 * Check if the current user has a given capability.
 	 *
 	 * @param string $capability The capability to check.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
 	public static function current_user_can( $capability = '' ) {
@@ -410,4 +410,38 @@ class Helper {
 		return self::get_string_value( $decoded_data );
 	}
 
+	/**
+	 * Map slugs to submission data.
+	 *
+	 * @param array<mixed> $submission_data submission_data.
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function map_slug_to_submission_data( $submission_data = [] ) {
+		$mapped_data = [];
+		foreach ( $submission_data as $key => $value ) {
+			$label                = explode( '-lbl-', $key )[1];
+			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$mapped_data[ $slug ] = $value;
+		}
+		return $mapped_data;
+	}
+
+	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
 }

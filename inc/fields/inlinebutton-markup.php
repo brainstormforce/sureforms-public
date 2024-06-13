@@ -40,7 +40,7 @@ class Inlinebutton_Markup extends Base {
 	/**
 	 * Used as a flag which decides whether page break is added.
 	 *
-	 * @var string
+	 * @var bool
 	 * @since 0.0.2
 	 */
 	protected $is_page_break;
@@ -120,7 +120,7 @@ class Inlinebutton_Markup extends Base {
 		$this->slug                    = 'inline-button';
 		$this->button_text             = isset( $attributes['buttonText'] ) ? $attributes['buttonText'] : '';
 		$this->btn_from_theme          = Helper::get_meta_value( $this->form_id, '_srfm_inherit_theme_button' );
-		$this->is_page_break           = Helper::get_meta_value( $this->form_id, '_srfm_is_page_break' );
+		$this->is_page_break           = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $this->form_id, '_srfm_is_page_break' );
 		$this->captcha_security_type   = Helper::get_meta_value( $this->form_id, '_srfm_captcha_security_type' );
 		$this->recaptcha_version       = Helper::get_meta_value( $this->form_id, '_srfm_form_recaptcha' );
 		$this->google_captcha_site_key = '';
@@ -166,7 +166,7 @@ class Inlinebutton_Markup extends Base {
 	 */
 	public function markup() {
 		ob_start(); ?>
-		<?php if ( '1' !== $this->is_page_break ) : ?>
+		<?php if ( ! $this->is_page_break ) : ?>
 			<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) : ?>
 				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
@@ -176,7 +176,7 @@ class Inlinebutton_Markup extends Base {
 			<?php if ( 'hcaptcha' === $this->captcha_security_type && $this->hcaptcha_site_key ) : ?>
 				<?php echo "<div id='srfm-hcaptcha-sitekey' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
-			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?> srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?> srfm-block srfm-custom-button-ctn">
+			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?> srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?> srfm-block srfm-custom-button-ctn <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button' : '' ); ?>">
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $this->form_id, 'label', '‎', '', '', false ) ); ?>
 			<?php
 			if ( 'g-recaptcha' === $this->captcha_security_type ) :
@@ -210,7 +210,7 @@ class Inlinebutton_Markup extends Base {
 				wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion 
 			endif;
 			?>
-				<button style="<?php echo $this->add_button_padding ? esc_attr( 'padding: 1em; ' ) : ''; ?>width:100%; font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '' ); ?>srfm-button srfm-submit-button <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?> srfm-custom-button" <?php echo 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? esc_attr( 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key ) : ''; ?>>
+				<button style="<?php echo $this->btn_from_theme ? '' : ' font-family: inherit; font-weight: var(--wp--custom--font-weight--medium); line-height: normal;'; ?>width:100%;" id="srfm-submit-btn" class="<?php echo esc_attr( 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? 'g-recaptcha ' : '' ); ?> <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button__link' : 'srfm-butto srfm-submit-button srfm-btn-bg-color srfm-custom-button' ); ?> " <?php echo 'v2-invisible' === $this->recaptcha_version || 'v3-reCAPTCHA' === $this->recaptcha_version ? esc_attr( 'recaptcha-type=' . $this->recaptcha_version . ' data-sitekey=' . $this->google_captcha_site_key ) : ''; ?>>
 					<div class="srfm-submit-wrap">
 						<?php echo esc_html( $this->button_text ); ?>
 						<div class="srfm-loader"></div>

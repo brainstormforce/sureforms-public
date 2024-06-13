@@ -9,7 +9,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 
-const FormConfirmSetting = () => {
+const FormConfirmSetting = ( { toast } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -31,6 +31,11 @@ const FormConfirmSetting = () => {
 			}
 			updateMeta( '_srfm_form_confirmation', [ data ] );
 			setShowSuccess( true );
+			toast.dismiss();
+			toast.success(
+				__( 'Form Confirmation updated successfully.', 'sureforms' ),
+				{ duration: 500 }
+			);
 		}, 500 );
 	};
 	useEffect( () => {
@@ -42,6 +47,7 @@ const FormConfirmSetting = () => {
 		if ( true === showSuccess ) {
 			setTimeout( () => {
 				setShowSuccess( false );
+				toast.dismiss();
 			}, 500 );
 		}
 	}, [ showSuccess ] );
@@ -117,22 +123,20 @@ const FormConfirmSetting = () => {
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
 					</div>
 					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
-						{
-							isProcessing && <Spinner
-								style={ {
-									marginTop: '0',
-									color: '#D54407',
-								} }
-							/>
-						}
-						{
-							showSuccess && <div className="srfm-success srfm-tick"> &#10004;</div>
-						}
 						<button
 							onClick={ handleSaveChanges }
 							className="srfm-modal-inner-heading-button"
+							disabled={ isProcessing }
 						>
 							{ __( 'Save Changes', 'sureforms' ) }
+							{
+								isProcessing && <Spinner
+									style={ {
+										marginTop: '0',
+										color: '#D54407',
+									} }
+								/>
+							}
 						</button>
 					</div>
 				</div>
@@ -281,6 +285,7 @@ const FormConfirmSetting = () => {
 										}
 										}
 										classNamePrefix={ 'srfm-select' }
+										menuPlacement="auto"
 										styles={ {
 											control: (
 												baseStyles,
@@ -289,10 +294,10 @@ const FormConfirmSetting = () => {
 												...baseStyles,
 												boxShadow: state.isFocused
 													? '0 0 0 1px #D54406'
-													: 'none', // Primary color for option when focused
+													: '0 1px 2px 0 rgba(13, 19, 30, .1)', // Primary color for option when focused
 												borderColor: state.isFocused
 													? '#D54406'
-													: 'grey', // Primary color for focus
+													: '#dce0e6', // Primary color for focus
 												'&:hover': {
 													borderColor: '#D54406', // Primary color for hover
 												},
@@ -317,6 +322,14 @@ const FormConfirmSetting = () => {
 														: 'black', // Text color for option when focused or selected
 											} ),
 										} }
+										theme={ ( theme ) => ( {
+											...theme,
+											colors: {
+												...theme.colors,
+												primary50: '#FFEFE8',
+												primary: '#D54406',
+											},
+										} ) }
 									/>
 								</div>
 							</div>
@@ -344,24 +357,29 @@ const FormConfirmSetting = () => {
 						{ errorMessage && (
 							<div className="srfm-validation-error">{ errorMessage }</div>
 						) }
-						<div className="srfm-modal-area-box">
-							<div className="srfm-modal-area-header">
-								<div className="srfm-modal-area-header-text">
-									<p>
-										{ __(
-											'Confirmation Message',
-											'sureforms'
-										) }
-									</p>
+						{
+							data?.confirmation_type === 'same page' && (
+								<div className="srfm-modal-area-box">
+									<div className="srfm-modal-area-header">
+										<div className="srfm-modal-area-header-text">
+											<p>
+												{ __(
+													'Confirmation Message',
+													'sureforms'
+												) }
+											</p>
+										</div>
+									</div>
+									<div className="srfm-editor-wrap">
+										<Editor
+											handleContentChange={ handleEditorChange }
+											content={ data?.message }
+										/>
+									</div>
 								</div>
-							</div>
-							<div className="srfm-editor-wrap">
-								<Editor
-									handleContentChange={ handleEditorChange }
-									content={ data?.message }
-								/>
-							</div>
-						</div>
+
+							)
+						}
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">

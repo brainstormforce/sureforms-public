@@ -20,14 +20,16 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				id={ blockID }
 				allowedFormats={ [] }
 			/>
-			<input
-				id={ `srfm-${ slug }-confirm-${ blockID }` }
-				type="text"
-				value={ defaultValue }
-				className={ `srfm-input-common srfm-input-${ slug }` }
-				placeholder={ placeholder }
-				required={ required }
-			/>
+			<div className="srfm-block-wrap">
+				<input
+					id={ `srfm-${ slug }-confirm-${ blockID }` }
+					type="text"
+					value={ defaultValue }
+					className={ `srfm-input-common srfm-input-${ slug }` }
+					placeholder={ placeholder }
+					required={ required }
+				/>
+			</div>
 		</>
 	);
 };

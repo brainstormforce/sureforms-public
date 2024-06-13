@@ -1,3 +1,17 @@
+$heading_color: #0f172a;
+$text_color: #1e293b;
+$help_color: #6b7280;
+$border_color: #dce0e6;
+$bg_color: #ffffff;
+$primary_color: #d54407;
+$option_active_bg_color: #f2fafc;
+$label_color: #1e293b;
+$box_shadow: #0d131e1a;
+$option_bg_color: #fff;
+$content_color: #475569;
+$btn_text_color: #ffffff;
+$placeholder_color: #9ca3af;
+
 /* stylelint-disable selector-id-pattern */
 .toplevel_page_sureforms_menu {
 	#wpbody-content {
@@ -8,6 +22,7 @@
 		}
 	}
 }
+
 /* Clear to evenly position the next list items after the separator */
 #toplevel_page_sureforms_menu .wp-submenu li {
 	clear: both;
@@ -41,6 +56,139 @@
 /* Add negative margins to the bottom separator if this is not the current submenu */
 #toplevel_page_sureforms_menu.wp-not-current-submenu .wp-submenu li:nth-last-child( 2 )::after {
 	margin: 8px -3px;
+}
+
+.srfm-buttons {
+	display: flex;
+	gap: 16px;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.srfm-button-primary {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+	padding: 8px 14px;
+	border-radius: 6px;
+	border: none;
+	background: var( --dashboard-primary, $primary_color );
+	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+	color: var( --dashboard-surface-secondary, #fff );
+	cursor: pointer;
+	outline: none;
+	width: max-content;
+}
+
+.srfm-button-secondary {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 16px;
+	border: none;
+	box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+	color: var( --dashboard-primary, $primary_color );
+	border: 1px solid var( --dashboard-primary, $primary_color );
+	background: none;
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	width: max-content;
+}
+
+.srfm-button-small {
+	padding: 8px 14px;
+	border-radius: 6px;
+}
+
+.srfm-button-xs {
+	padding: 7px 11px;
+	border-radius: 6px;
+}
+
+.srfm-link {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 16px;
+	background: none;
+	border: none;
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	color: var( --dashboard-primary, $primary_color );
+	width: max-content;
+	padding: 0;
+}
+
+.srfm-pro-badge {
+	color: white;
+	background-color: #1e293b;
+	padding: 4px 10px;
+	border: solid 1px #1e293b;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 6px;
+}
+
+.srfm-flex {
+	display: flex;
+
+	&.srfm-flex-row {
+		flex-direction: row;
+	}
+
+	&.srfm-gap-normal {
+		gap: 16px;
+	}
+}
+
+.srfm-modal-action {
+	cursor: pointer;
+	border: none;
+	background: 0 0;
+	padding: 0;
+}
+
+.srfm-modal-card-content {
+	padding: 16px 24px 16px 24px;
+	margin-bottom: 1.2em;
+	border: 1px solid $border_color;
+	border-radius: 4px;
+	background-color: $bg_color;
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	width: 100%;
+	justify-content: space-between;
+
+	.srfm-modal-card-title {
+		line-height: 1.5em;
+		font-weight: 600;
+		color: $heading_color;
+		padding: 0 0 0 0;
+	}
+
+	.srfm-modal-card-description {
+		margin-top: 4px;
+		margin-bottom: 0;
+	}
+
+	.srfm-modal-card-content-inner {
+		display: flex;
+		gap: 16px;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+
+	.srfm-modal-card-cta {
+		border-top: 1px solid $border_color;
+		display: flex;
+		justify-content: space-between;
+		padding: 16px 24px 16px 24px;
+		align-items: center;
+	}
 }
 
 .post-type-sureforms_form,

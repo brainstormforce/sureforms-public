@@ -10,6 +10,7 @@ includes:
 	# - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 parameters:
 	level: 9
+	treatPhpDocTypesAsCertain: false
 	inferPrivatePropertyTypeFromConstructor: true
 	checkGenericClassInNonGenericObjectType: false
 	stubFiles:
