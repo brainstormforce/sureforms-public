@@ -260,7 +260,7 @@ const Component = ( { path } ) => {
 				<h4
 					style={ {
 						margin: '0',
-						color : '#0F172A',
+						color: '#0F172A',
 					} }
 				>
 					{ pageTitle }
