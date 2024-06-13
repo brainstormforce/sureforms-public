@@ -1,11 +1,11 @@
 $heading_color: #0f172a;
-$text_color: #1e293b;
+$input_text_color: #64748b;
 $help_color: #6b7280;
-$border_color: #dce0e6;
+$border_color: #d0d5dd;
 $bg_color: #ffffff;
 $primary_color: #d54407;
 $option_active_bg_color: #f2fafc;
-$label_color: #1e293b;
+$label_color: #0f172a;
 $box_shadow: #0d131e1a;
 $option_bg_color: #fff;
 $content_color: #475569;
@@ -77,7 +77,7 @@ $background_color: #f1f5f9;
 
 		.srfm-settings-sidebar-content {
 			position: sticky;
-			top: 98px;
+			top: 85px;
 
 			nav {
 				margin-bottom: 1.6em;
@@ -148,7 +148,7 @@ $background_color: #f1f5f9;
 						font-size: 0.7em;
 						line-height: 1em;
 						font-weight: 500;
-						color: $content_color;
+						color: $heading_color;
 					}
 
 					&.active {
@@ -168,20 +168,13 @@ $background_color: #f1f5f9;
 				.srfm-notice-body {
 					padding-bottom: 0.85em;
 					font-size: 0.7em;
-					color: $content_color;
+					font-weight: 400;
+					line-height: 20px;
+					color: $input_text_color;
 				}
 
 				.srfm-notice-btn {
-					padding: 0.64em;
-					font-size: 0.7em;
-					font-weight: 500;
-					background: $primary_color;
-					color: $btn_text_color;
-					border-radius: 6px;
-					line-height: normal;
-					border: 0;
 					width: 100%;
-					cursor: pointer;
 				}
 			}
 		}
@@ -208,7 +201,7 @@ $background_color: #f1f5f9;
 			.srfm-page-heading {
 				display: flex;
 				flex-wrap: wrap;
-				margin-bottom: 1.5em;
+				margin-bottom: 28px;
 
 				.srfm-page-icon {
 					margin-right: 0.4em;
@@ -260,7 +253,7 @@ $background_color: #f1f5f9;
 							}
 
 							.components-select-control__input {
-								height: auto;
+								height: 40px;
 								line-height: normal;
 								border: 1px solid $border_color;
 								box-shadow: 0 0 0 0.5px $border_color;
@@ -310,10 +303,14 @@ $background_color: #f1f5f9;
 					.srfm-style-1-tabs {
 						> .components-tab-panel__tabs {
 							border-bottom: 1px solid $border_color;
+							gap: 32px;
 
 							.components-tab-panel__tabs-item {
 								font-size: 0.7em;
 								color: $content_color;
+								padding: 0;
+								height: 10px;
+								padding-bottom: 20px;
 
 								&.active-tab {
 									color: $primary_color;
@@ -324,7 +321,6 @@ $background_color: #f1f5f9;
 
 						.components-tab-panel__tab-content {
 							.srfm-sub-section-heading {
-								max-width: 560px;
 								margin-bottom: 1em;
 
 								h2 {
@@ -332,11 +328,13 @@ $background_color: #f1f5f9;
 									line-height: normal;
 									font-weight: 500;
 									margin-bottom: 0.5em;
+									color: $heading_color;
 								}
 
 								p {
 									font-size: 0.7em;
-									line-height: normal;
+									line-height: 20px;
+									color: $input_text_color;
 								}
 
 								.srfm-link {
@@ -349,7 +347,7 @@ $background_color: #f1f5f9;
 										&:nth-last-child( 1 ) {
 											margin-left: 0.3em;
 											padding-left: 0.3em;
-											border-left: 1px solid $border_color;
+											border-left: 1px solid $input_text_color;
 										}
 									}
 								}
@@ -398,6 +396,7 @@ $background_color: #f1f5f9;
 
 									&:before {
 										box-shadow: inset 0px 0px 0px 0.3em $primary_color;
+										border: none;
 									}
 								}
 							}
@@ -407,16 +406,9 @@ $background_color: #f1f5f9;
 
 				.srfm-email-test-btn {
 					display: flex;
+					gap: 8px;
+					justify-content: center;
 					align-items: center;
-					padding: 0.64em;
-					font-size: 0.7em;
-					font-weight: 500;
-					background: #125d9f;
-					color: #fff;
-					border-radius: 6px;
-					line-height: normal;
-					border: 0;
-					cursor: pointer;
 				}
 			}
 
@@ -502,19 +494,23 @@ $background_color: #f1f5f9;
 						font-size: 0.7em;
 						line-height: normal;
 						text-transform: none;
-						margin-bottom: 0.3em;
+						margin-bottom: 0.43em;
 					}
 
 					.components-text-control__input,
 					.components-select-control__input {
-						font-size: 0.8em;
+						font-size: 0.7em;
+						line-height: normal;
+						font-weight: 400;
 						border: 1px solid $border_color;
-						border-radius: 0.25em;
-						padding: 0.75em 1em;
+						border-radius: 0.29em;
+						padding: 0.715em 1.15em;
+						height: 40px;
+						color: $input_text_color;
 
 						&:focus {
 							border: 1px solid $primary_color;
-							box-shadow: 0 0 0 0.5px $primary_color;
+							box-shadow: none;
 						}
 
 						&::placeholder {
@@ -547,8 +543,6 @@ $background_color: #f1f5f9;
 					}
 
 					.components-input-control__backdrop {
-						// border: 1px solid $border_color;
-						// border-radius: 0.25em;
 						border: none;
 						box-shadow: none;
 					}
@@ -573,8 +567,6 @@ $background_color: #f1f5f9;
 		}
 
 		.components-input-control__backdrop {
-			// border: 1px solid $border_color;
-			// border-radius: 0.25em;
 			border: none;
 			box-shadow: none;
 		}
