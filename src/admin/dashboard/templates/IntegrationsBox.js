@@ -24,8 +24,7 @@ export default ( {
 		>
 			<ScFlex
 				justify-content="space-between"
-				alignItems="flex-start"
-				style={ { '--sc-flex-column-gap': '1em', alignItems: 'flex-start' } }
+				style={ { '--sc-flex-column-gap': '1em' } }
 			>
 				<ScFlex
 					alignItems="center"
@@ -52,7 +51,7 @@ export default ( {
 							font-size: 14px;
 							line-height: 20px;
 							color: #AAA;
-							width: auto;
+							width: 85%;
 							margin: 0;
 							@media screen and ( max-width: 480px ) {
 								width: 100%;
@@ -62,9 +61,8 @@ export default ( {
 							{ descriptions }
 						</p>
 					</div>
-				</ScFlex>
-				<button
-					css={ css`
+					<button
+						css={ css`
 						webkit-appearance: button;
 						background-color: transparent;
 						border:none;
@@ -75,14 +73,15 @@ export default ( {
 						color: ${ statusColor };
 						margin: 0;
 					` }
-					onClick={ handlePluginActionTrigger }
-					data-slug={ dataSlug }
-					data-init={ init }
-					data-redirection={ redirectURL }
-					data-action={ action }
-				>
-					{ statusText }
-				</button>
+						onClick={ handlePluginActionTrigger }
+						data-slug={ dataSlug }
+						data-init={ init }
+						data-redirection={ redirectURL }
+						data-action={ action }
+					>
+						{ statusText }
+					</button>
+				</ScFlex>
 			</ScFlex>
 		</ScStackedListRow>
 	);
