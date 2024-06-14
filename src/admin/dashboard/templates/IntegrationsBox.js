@@ -52,7 +52,7 @@ export default ( {
 							font-size: 14px;
 							line-height: 20px;
 							color: #AAA;
-							width: max-content;
+							width: auto;
 							margin: 0;
 							@media screen and ( max-width: 480px ) {
 								width: 100%;
