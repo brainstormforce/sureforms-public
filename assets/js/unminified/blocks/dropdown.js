@@ -14,6 +14,7 @@ function initializeDropdown() {
 			: '';
 		if ( element ) {
 			const config = {
+				maxOptions: null,
 				onDropdownOpen() {
 					speak( placeholderText );
 				},
