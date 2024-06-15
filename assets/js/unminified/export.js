@@ -129,7 +129,7 @@ function appendImportBtn() {
 	if ( searchElement ) {
 		const newElement = document.createElement( 'button' );
 		newElement.className = 'button button-secondary srfm-import-btn';
-		newElement.textContent = 'Import Form';
+		newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
 		searchElement.parentNode.insertBefore(
 			newElement,
 			searchElement.nextSibling
