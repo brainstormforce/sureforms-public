@@ -40,7 +40,7 @@ export default ( {
 							font-size: 14px;
 							line-height: 22px;
 							color: #1E293B;
-							margin: 0;
+							margin: 0 0 4px 0;
 						` }
 						>
 							{ title }
@@ -49,9 +49,9 @@ export default ( {
 							css={ css`
 							font-weight: 400;
 							font-size: 14px;
-							line-height: 20px;
+							line-height: 1.6em;
 							color: #AAA;
-							width: 85%;
+							width: 95%;
 							margin: 0;
 							@media screen and ( max-width: 480px ) {
 								width: 100%;
