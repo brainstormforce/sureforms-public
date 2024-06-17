@@ -154,7 +154,7 @@ export default function Image( {
 					} );
 				} }
 				ref={ imageRef }
-				loading={ disableLazyLoad ? undefined : 'lazy' }
+				loading={ disableLazyLoad ? 'eager' : 'lazy' }
 			/>
 			{ temporaryURL && <Spinner /> }
 		</>

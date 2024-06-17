@@ -763,7 +763,7 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 			$image .= ' width="' . ( $attributes['width'] ? esc_attr( $attributes['width'] ) : esc_attr( $attributes['naturalWidth'] ) )
 				. '" height="' . ( $attributes['height'] ? esc_attr( $attributes['height'] ) : esc_attr( $attributes['naturalHeight'] ) ) . '"
                 title="' . esc_attr( $attributes['title'] ) . '"
-                loading="' . ( ! isset( $attributes['disableLazyLoad'] ) || ! $attributes['disableLazyLoad'] ? 'lazy' : 'eager' ) .
+                loading="' . ( empty( $attributes['disableLazyLoad'] ) ? 'lazy' : 'eager' ) .
 			'" />';
 
 			$figure_image = '';
