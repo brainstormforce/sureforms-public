@@ -20,7 +20,9 @@ const EmailConfirmation = ( props ) => {
 		email_cc: data.email_cc || '',
 		email_body: data.email_body || '',
 	} );
-	const [ dynamicSubject, setDynamicSubject ] = useState( data.subject || '' );
+	const [ dynamicSubject, setDynamicSubject ] = useState(
+		data.subject || ''
+	);
 	const handleOnChangeEmailBodyContent = ( newContent ) => {
 		setFormData( { ...formData, email_body: newContent } );
 	};
@@ -35,7 +37,8 @@ const EmailConfirmation = ( props ) => {
 		? Object.entries( window.srfm_block_data.smart_tags_array_email )
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
-	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
+	const formEmailSmartTags =
+		window.sureforms?.formSpecificEmailSmartTags ?? [];
 
 	// Remove the required error class from the input field on change
 	const maybeRemoveRequiredError = ( e ) => {
@@ -61,7 +64,12 @@ const EmailConfirmation = ( props ) => {
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
 					<div className="srfm-modal-inner-heading-text">
-						<span onClick={ handleBackNotifation } className="srfm-back-btn">{ backArrow }</span>
+						<span
+							onClick={ handleBackNotifation }
+							className="srfm-back-btn"
+						>
+							{ backArrow }
+						</span>
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</div>
 					<button
@@ -79,9 +87,7 @@ const EmailConfirmation = ( props ) => {
 					<div className="srfm-modal-inner-box-content">
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-name"
-								>
+								<label htmlFor="srfm-email-notification-name">
 									{ __( 'Name', 'sureforms' ) }
 								</label>
 							</div>
@@ -99,9 +105,7 @@ const EmailConfirmation = ( props ) => {
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-to"
-								>
+								<label htmlFor="srfm-email-notification-to">
 									{ __( 'Send Email To', 'sureforms' ) }
 								</label>
 								<span className="srfm-required"> *</span>
@@ -119,34 +123,35 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input srfm-modal-email-to"
 							/>
 							<SmartTagList
-								tagsArray={
-									[
-										{
-											tags: formEmailSmartTags,
-											label: __( 'Form input tags', 'sureforms' ),
-										},
-										{
-											tags: genericEmailSmartTags,
-											label: __( 'Generic tags', 'sureforms' ),
-										},
-									]
-
-								}
-								setTargetData={
-									( tag ) =>
-										setFormData( {
-											...formData,
-											email_to: formData.email_to + tag,
-										} )
+								tagsArray={ [
+									{
+										tags: formEmailSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericEmailSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								setTargetData={ ( tag ) =>
+									setFormData( {
+										...formData,
+										email_to: formData.email_to + tag,
+									} )
 								}
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-subject"
-
-								>{ __( 'Subject', 'sureforms' ) }</label>
+								<label htmlFor="srfm-email-notification-subject">
+									{ __( 'Subject', 'sureforms' ) }
+								</label>
 								<span className="srfm-required"> *</span>
 							</div>
 							<input
@@ -160,32 +165,30 @@ const EmailConfirmation = ( props ) => {
 							/>
 
 							<SmartTagList
-								tagsArray={
-									[
-										{
-											tags: formSmartTags,
-											label: __( 'Form input tags', 'sureforms' ),
-										},
-										{
-											tags: genericSmartTags,
-											label: __( 'Generic tags', 'sureforms' ),
-										},
-									]
-
+								tagsArray={ [
+									{
+										tags: formSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								setTargetData={ ( tag ) =>
+									setDynamicSubject( dynamicSubject + tag )
 								}
-								setTargetData={
-									( tag ) => setDynamicSubject(
-										dynamicSubject + tag
-									)
-								}
-
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-reply-to"
-								>
+								<label htmlFor="srfm-email-notification-reply-to">
 									{ __( 'Reply To', 'sureforms' ) }
 								</label>
 							</div>
@@ -201,33 +204,36 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								tagsArray={
-									[
-										{
-											tags: formEmailSmartTags,
-											label: __( 'Form input tags', 'sureforms' ),
-										},
-										{
-											tags: genericEmailSmartTags,
-											label: __( 'Generic tags', 'sureforms' ),
-										},
-									]
-
-								}
-								setTargetData={
-									( tag ) =>
-										setFormData( {
-											...formData,
-											email_reply_to: formData.email_reply_to + tag,
-										} )
+								tagsArray={ [
+									{
+										tags: formEmailSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericEmailSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								setTargetData={ ( tag ) =>
+									setFormData( {
+										...formData,
+										email_reply_to:
+											formData.email_reply_to + tag,
+									} )
 								}
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-cc"
-								>{ __( 'CC', 'sureforms' ) }</label>
+								<label htmlFor="srfm-email-notification-cc">
+									{ __( 'CC', 'sureforms' ) }
+								</label>
 							</div>
 							<input
 								id="srfm-email-notification-cc"
@@ -241,33 +247,35 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								tagsArray={
-									[
-										{
-											tags: formEmailSmartTags,
-											label: __( 'Form input tags', 'sureforms' ),
-										},
-										{
-											tags: genericEmailSmartTags,
-											label: __( 'Generic tags', 'sureforms' ),
-										},
-									]
-
-								}
-								setTargetData={
-									( tag ) =>
-										setFormData( {
-											...formData,
-											email_cc: formData.email_cc + tag,
-										} )
+								tagsArray={ [
+									{
+										tags: formEmailSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericEmailSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								setTargetData={ ( tag ) =>
+									setFormData( {
+										...formData,
+										email_cc: formData.email_cc + tag,
+									} )
 								}
 							/>
 						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
-								<label
-									htmlFor="srfm-email-notification-bcc"
-								>{ __( 'BCC', 'sureforms' ) }</label>
+								<label htmlFor="srfm-email-notification-bcc">
+									{ __( 'BCC', 'sureforms' ) }
+								</label>
 							</div>
 							<input
 								id="srfm-email-notification-bcc"
@@ -281,25 +289,27 @@ const EmailConfirmation = ( props ) => {
 								className="srfm-modal-input"
 							/>
 							<SmartTagList
-								tagsArray={
-									[
-										{
-											tags: formEmailSmartTags,
-											label: __( 'Form input tags', 'sureforms' ),
-										},
-										{
-											tags: genericEmailSmartTags,
-											label: __( 'Generic tags', 'sureforms' ),
-										},
-									]
-
-								}
-								setTargetData={
-									( tag ) =>
-										setFormData( {
-											...formData,
-											email_bcc: formData.email_bcc + tag,
-										} )
+								tagsArray={ [
+									{
+										tags: formEmailSmartTags,
+										label: __(
+											'Form input tags',
+											'sureforms'
+										),
+									},
+									{
+										tags: genericEmailSmartTags,
+										label: __(
+											'Generic tags',
+											'sureforms'
+										),
+									},
+								] }
+								setTargetData={ ( tag ) =>
+									setFormData( {
+										...formData,
+										email_bcc: formData.email_bcc + tag,
+									} )
 								}
 							/>
 						</div>
@@ -336,6 +346,15 @@ const EmailConfirmation = ( props ) => {
 						</div>
 					</div>
 				</div>
+				<button
+					onClick={ () => handleConfirmEmail( formData ) }
+					className="srfm-modal-inner-footer-button"
+					style={ {
+						alignSelf: 'flex-start',
+					} }
+				>
+					{ __( 'Save Changes', 'sureforms' ) }
+				</button>
 			</div>
 		</div>
 	);
