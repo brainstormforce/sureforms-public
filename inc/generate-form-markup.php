@@ -454,13 +454,13 @@ class Generate_Form_Markup {
 	}
 
 	public function get_form_fields() {
-		if( empty( $_GET['form_id'] ) ) {
+		if ( empty( $_GET['form_id'] ) ) {
 			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
 		}
 
-		$form_id = Helper::get_integer_value( sanitize_text_field( $_GET['form_id' ] ) );
+		$form_id = Helper::get_integer_value( sanitize_text_field( $_GET['form_id'] ) );
 
-		if( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
+		if ( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
 			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
 		}
 
@@ -474,23 +474,23 @@ class Generate_Form_Markup {
 
 		$data = [];
 
-		foreach( $blocks as $block ) {
-			if( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
-				if( ! empty( $block['attrs']['slug'] ) ) {
+		foreach ( $blocks as $block ) {
+			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
+				if ( ! empty( $block['attrs']['slug'] ) ) {
 					$data[ $block['attrs']['slug'] ] = ! empty( $block['attrs']['label'] ) ? $block['attrs']['label'] : wp_rand( 10, 1000 );
 				}
 			}
 		}
 
-		if( empty( $data ) ) {
+		if ( empty( $data ) ) {
 			wp_send_json( [ 'message' => 'No data found for this id.' ] );
 		}
 
 		$response = [
 			'integration_name' => 'SureForms',
-			'event_name' => 'sureforms_form_submitted',
-			'form_id' => $form_id,
-			'data' => $data
+			'event_name'       => 'sureforms_form_submitted',
+			'form_id'          => $form_id,
+			'data'             => $data,
 		];
 
 		wp_send_json( $response );

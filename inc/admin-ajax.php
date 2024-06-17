@@ -37,6 +37,8 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+
+		add_action( 'wp_ajax_sureforms_test_integration', [ $this, 'send_test_data_to_suretriggers' ] );
 	}
 
 	/**
@@ -136,6 +138,7 @@ class Admin_Ajax {
 				'plugin_installed_text'  => __( 'Installed', 'sureforms' ),
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => get_current_screen() ? get_current_screen()->id : '',
+				'form_id'                => get_post() ? get_post()->ID : '',
 			]
 		);
 	}
@@ -196,6 +199,125 @@ class Admin_Ajax {
 		} else {
 			return 'Installed';
 		}
+	}
+
+	public function send_test_data_to_suretriggers() {
+		if ( empty( $_POST['formId'] ) ) {
+			wp_send_json_error( [ 'message' => 'Form ID is required.' ] );
+		}
+
+		$suretriggers_data = get_option( 'suretrigger_options', [] );
+		if ( empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+			wp_send_json_error( [ 'message' => 'SureTriggers is not configured properly.' ] );
+		}
+
+		$form_id = Helper::get_integer_value( sanitize_text_field( $_POST['formId'] ) );
+
+		$form = get_post( $form_id );
+
+		$secret_key = '1007|OodR3OTaZksvUEMHf7u2JlpbSzojOOkPRgzqyRkbc3b69013'; // $suretriggers_data['secret_key'];
+		$api_url    = 'https://api-qaing.suretriggers.com/automation/embeded/create';
+		$header     = [
+			'Content-Type'  => 'application/json',
+			'Authorization' => 'Bearer ' . $secret_key,
+			'Accept'        => 'application/json',
+		];
+
+		$base_url = 'https://tested-tatiya-nd.zipwp.link'; // get_site_url();
+
+		$body = [
+			'event'                    => [
+				'label'             => 'Form Submitted',
+				'value'             => 'sureforms_form_submitted',
+				'description'       => 'Runs when a form is submitted',
+				'schedule_callback' => false,
+			],
+			'connection_base_url'      => $base_url,
+			'summery'                  => $form->post_title,
+			'integration'              => 'SureForms',
+			'integration_display_name' => 'SureForms',
+			'form_data'                => [
+				'success'   => '1',
+				'form_id'   => $form_id,
+				'emails'    => [
+					'dev-email@wpengine.local',
+				],
+				'form_name' => $form->post_title,
+				'message'   => '<p>Form submitted successfully!</p>',
+				'data'      => $this->get_form_fields( $form_id ),
+			],
+		];
+
+		if ( ! empty( $_POST['force'] ) ) {
+			$body['force_create'] = sanitize_text_field( $_POST['force'] );
+		}
+
+		$request = wp_remote_post(
+			$api_url,
+			[
+				'headers' => $header,
+				'body'    => json_encode( $body ),
+			]
+		);
+
+		if ( is_wp_error( $request ) ) {
+			wp_send_json_error( [ 'message' => 'Error while sending test data to SureTriggers.' ] );
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $request ) );
+		if ( empty( $data->data->iframe_url ) ) {
+			wp_send_json_error( [ 'message' => 'Error while sending test data to SureTriggers.' ] );
+		}
+		$iframe_url = add_query_arg(
+			[
+				'st-code'   => $secret_key,
+				'base_url'  => $base_url,
+				'reset_url' => base64_encode( $base_url ),
+			],
+			$data->data->iframe_url
+		);
+
+		wp_send_json_success(
+			[
+				'message'    => 'success',
+				'iframe_url' => $iframe_url,
+			]
+		);
+	}
+
+	public function get_form_fields( $form_id ) {
+		if ( empty( $form_id ) ) {
+			return [];
+		}
+
+		if ( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
+			return [];
+		}
+
+		$post = get_post( $form_id );
+
+		$blocks = parse_blocks( $post->post_content );
+
+		if ( empty( $blocks ) ) {
+			return [];
+		}
+
+		$data = [];
+
+		foreach ( $blocks as $block ) {
+			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
+				if ( ! empty( $block['attrs']['slug'] ) ) {
+					$data[ $block['attrs']['slug'] ] = ! empty( $block['attrs']['label'] ) ? $block['attrs']['label'] : wp_rand( 10, 1000 );
+				}
+			}
+		}
+
+		if ( empty( $data ) ) {
+			return [];
+		}
+
+		return $data;
+
 	}
 }
 

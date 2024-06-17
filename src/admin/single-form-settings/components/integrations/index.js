@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import './webhooks';
 
-const Integrations = ( { setSelectedTab } ) => {
+const Integrations = ( { setSelectedTab, setIframeUrl } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -14,7 +14,9 @@ const Integrations = ( { setSelectedTab } ) => {
 		},
 		{
 			title: __( 'Free Extension', 'sureforms' ),
-			component: <UpsellSureTriggers />,
+			component: <UpsellSureTriggers
+				{ ...{ setSelectedTab, setIframeUrl } }
+			/>,
 		},
 	];
 	return (
@@ -94,7 +96,7 @@ const EnableIntegrations = () => {
 	);
 };
 
-const UpsellSureTriggers = () => {
+const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 
@@ -140,6 +142,24 @@ const UpsellSureTriggers = () => {
 				break;
 		}
 	};
+
+	const handleSureTriggersTest = () => {
+		const formData = new window.FormData();
+		formData.append( 'action', 'sureforms_test_integration' );
+		formData.append( 'formId', srfm_admin.form_id );
+
+		apiFetch( {
+			url: srfm_admin.ajax_url,
+			method: 'POST',
+			body: formData,
+		} ).then( ( data ) => {
+			if ( data.success ) {
+				console.log( data.data );
+				setSelectedTab( 'suretriggers' );
+				setIframeUrl( data.data.iframe_url );
+			}
+		} );
+	};
 	const activatePlugin = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
@@ -156,7 +176,7 @@ const UpsellSureTriggers = () => {
 				setAction( '' );
 				window.open( plugin.redirection, '_blank' );
 				setTimeout( () => {
-					setCTA( 'Got To Dashboard' );
+					setCTA( getCTA( 'Activated' ) );
 				}, 3000 );
 			}
 		} );
@@ -172,7 +192,7 @@ const UpsellSureTriggers = () => {
 
 	const getCTA = ( status ) => {
 		if ( status === 'Activated' ) {
-			return __( 'Go to Dashboard', 'sureforms' );
+			return __( 'Integrate with SureTriggers', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -192,9 +212,15 @@ const UpsellSureTriggers = () => {
 				<p>{ __( 'SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!', 'sureforms' ) }</p>
 			</div>
 			<div className="srfm-buttons">
-				<button
+				{ /* <button
 					className="srfm-button-primary"
 					onClick={ handlePluginActionTrigger }
+				>
+					{ CTA }
+				</button> */ }
+				<button
+					className="srfm-button-primary"
+					onClick={ handleSureTriggersTest }
 				>
 					{ CTA }
 				</button>

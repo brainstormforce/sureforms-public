@@ -1,4 +1,5 @@
 import Integrations from './integrations';
+import Suretriggers from './integrations/suretriggers';
 import Compliance from './Compliance';
 import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
@@ -30,6 +31,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
+	const [ iframeUrl, setIframeUrl ] = useState( '' );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -63,7 +65,9 @@ const SingleFormSettingsPopup = ( props ) => {
 				title: __( 'Integrations', 'sureforms' ),
 				icon: integrationIcon,
 				component: <Integrations
-					setSelectedTab={ setSelectedTab } />,
+					setSelectedTab={ setSelectedTab }
+					setIframeUrl={ setIframeUrl }
+				/>,
 			},
 			{
 				id: 'form_custom_css',
@@ -72,6 +76,21 @@ const SingleFormSettingsPopup = ( props ) => {
 				component: (
 					<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
 				),
+			},
+			{
+				id: 'suretriggers',
+				parent: 'integrations',
+				title: __( 'SureTriggers', 'sureforms' ),
+				icon: {},
+				component: <Suretriggers
+					{
+						...{
+							setSelectedTab,
+							iframeUrl,
+							setIframeUrl,
+						}
+					}
+				/>,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */
