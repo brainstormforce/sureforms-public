@@ -14,5 +14,8 @@ branch_name=$1
 # Checkout the specified branch
 git checkout "$branch_name"
 
+# pull the latest version
+git pull origin "$branch_name"
+
 # Run the build command
 npm run build

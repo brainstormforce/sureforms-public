@@ -22,3 +22,14 @@ Below are the steps to update the spectra/ultimate-addon-for-gutenebrg component
 3. Copy the uagb-controls files ( except getBlocksDefaultAttributes.js ) from the Spectra to the SureForms > modules > gutenebrg > src > control
 6. Done
 
+
+=== How to update SureForms with new options in spectra/ultimate-addon-for-gutenebrg === updated on 13-06-2024
+
+- From the next-release branch of UAGB, verify the final changes that needs to be added for the feature you are adding. Start by adding changes in the attributes.js file. Try to copy the changes and paste them in the exact places.
+- We do not need to add deprecated save.js changes as we render the blocks using PHP.
+- Start by adding the new attributes in attributes.js - just the object of setting.
+- Next, add the changes in render.js & settings.js.
+- To see the changes in JavaScript, switch to Node version 12.13.0, then run `npm i` and then run `npm run dev`.
+- For the frontend, you will need to make the appropriate changes in PHP:
+modules/gutenberg/dist/blocks/nameofblock.php
+- You will need to take reference from the save.js of that block in Spectra and write the equivalent code in the PHP file.

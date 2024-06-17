@@ -9,41 +9,40 @@ import {
 	MdWarningAmber,
 	MdOutlineMail,
 	MdOutlineSecurity,
+	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
 }
 
-export const navigation = applyFilters(
-	'srfm.settings.navigation',
-	[
-		{
-			name: __( 'General', 'sureforms' ),
-			slug: 'general-settings',
-			icon: <MdSettings size={ 20 } color="#1E293B" />,
-		},
-		{
-			name: __( 'Validations', 'sureforms' ),
-			slug: 'validation-settings',
-			icon: <MdWarningAmber size={ 20 } color="#1E293B" />,
-		},
-		{
-			name: __( 'Email', 'sureforms' ),
-			slug: 'email-settings',
-			icon: <MdOutlineMail size={ 20 } color="#1E293B" />,
-		},
-		{
-			name: __( 'Security', 'sureforms' ),
-			slug: 'security-settings',
-			icon: <MdOutlineSecurity size={ 20 } color="#1E293B" />,
-		},
-		{
-			name: __( 'Integrations', 'sureforms' ),
-			slug: 'integration-settings',
-			icon: parse( svgIcons.integration ),
-		},
-	] );
+export const navigation = applyFilters( 'srfm.settings.navigation', [
+	{
+		name: __( 'General', 'sureforms' ),
+		slug: 'general-settings',
+		icon: <MdSettings size={ 20 } color="#0f172a" />,
+	},
+	{
+		name: __( 'Validations', 'sureforms' ),
+		slug: 'validation-settings',
+		icon: <MdWarningAmber size={ 20 } color="#0f172a" />,
+	},
+	{
+		name: __( 'Email', 'sureforms' ),
+		slug: 'email-settings',
+		icon: <MdOutlineMail size={ 20 } color="#0f172a" />,
+	},
+	{
+		name: __( 'Security', 'sureforms' ),
+		slug: 'security-settings',
+		icon: <MdOutlineSecurity size={ 20 } color="#0f172a" />,
+	},
+	{
+		name: __( 'Integrations', 'sureforms' ),
+		slug: 'integration-settings',
+		icon: <MdOutlineDashboardCustomize size={ 20 } color="#0f172a" />,
+	},
+] );
 
 const isProActive = srfm_admin.is_pro_active;
 
@@ -66,9 +65,10 @@ const Navigation = () => {
 								search: `?page=sureforms_form_settings&tab=${ item.slug }`,
 							} }
 							key={ item.name }
-							className={ `srfm-settings-sidebar-category ${ activatedTab.get( 'tab' ) === item.slug
-								? 'active'
-								: ''
+							className={ `srfm-settings-sidebar-category ${
+								activatedTab.get( 'tab' ) === item.slug
+									? 'active'
+									: ''
 							}` }
 						>
 							{ item.icon }
@@ -90,7 +90,7 @@ const Navigation = () => {
 								'sureforms'
 							) }
 						</div>
-						<button className="button button-primary srfm-notice-btn">
+						<button className="srfm-button-primary srfm-notice-btn">
 							{ __( 'Upgrade to Premium', 'sureforms' ) }
 						</button>
 					</div>

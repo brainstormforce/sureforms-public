@@ -649,14 +649,20 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 		 */
 		public function render_html( $attributes ) {
 
-			$block_id = '';
-			$form_id  = '';
+			$block_id        = '';
+			$form_id         = '';
+			$heading_wrapper = '';
 			if ( isset( $attributes['block_id'] ) ) {
 				$block_id = $attributes['block_id'];
 			}
 			if ( isset( $attributes['formId'] ) ) {
 				$form_id = $attributes['formId'];
 			}
+			if ( isset( $attributes['headingWrapper'] ) ) {
+				$heading_wrapper = $attributes['headingWrapper'];
+			}
+
+			$element = ! empty( $heading_wrapper ) ? $heading_wrapper : 'div';
 
 			$seperator = '';
 
@@ -706,7 +712,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 
 			ob_start();
 			?>
-				<div data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
+				<<?php echo esc_attr( $element ); ?> data-block-id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>">
 					<?php
 					if ( $attributes['headingDescToggle']
 						&& 'above-heading' === $attributes['headingDescPosition']
@@ -727,7 +733,7 @@ if ( ! class_exists( 'Advanced_Heading' ) ) {
 						echo wp_kses( $seperator, 'post' );
 					}
 					?>
-				</div>
+				</<?php echo esc_attr( $element ); ?>>
 			<?php
 			return ob_get_clean();
 		}
