@@ -1,7 +1,8 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { TextControl, TabPanel } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
+import parse from 'html-react-parser';
 
 const SecurityPage = ( {
 	loading,
@@ -51,10 +52,18 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'Add Google reCAPTCHA secret and site key here. To select it, please make setting in the individual form. Learn more',
-													'sureforms'
-												) }
+												{
+													parse(
+														sprintf(
+														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
+															__(
+																'Add Google reCAPTCHA secret and site key here. To select it, please make setting in the individual form. %1$sLearn more%2$s',
+																'sureforms'
+															),
+															'<a href="#" target="_blank" rel="noreferrer">',
+															'</a>'
+
+														) ) }
 											</p>
 											<div className="srfm-link">
 												<a
