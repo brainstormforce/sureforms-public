@@ -52,7 +52,7 @@ const SecurityPage = ( {
 											</h2>
 											<p>
 												{ __(
-													'To enable the reCAPTCHA feature on your SureForms, Please select the Security type as Google reCAPTCHA in the form settings and select the version you want to use. Add Google reCAPTCHA secret and site key here. reCAPTCHA will be added to your page on the front end.',
+													'Add Google reCAPTCHA secret and site key here. To select it, please make setting in the individual form. Learn more',
 													'sureforms'
 												) }
 											</p>
