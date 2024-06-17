@@ -220,7 +220,6 @@ const AiFormBuilder = () => {
 									) }
 								</span>
 							) }
-							{ /* <div className="srfm-ai-builder-prompt-btn-ctn"> */ }
 							<Button
 								onClick={ () =>
 									setShowFormIdeas( ! showFormIdeas )
@@ -253,7 +252,6 @@ const AiFormBuilder = () => {
 									) ) }
 								</div>
 							) }
-							{ /* </div> */ }
 						</div>
 						<hr className="srfm-ai-builder-separator" />
 						<Button
