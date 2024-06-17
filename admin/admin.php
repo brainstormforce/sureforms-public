@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
+use ZipAI\Classes\Helper as AI_Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -39,6 +40,35 @@ class Admin {
 
 		// this action is used to restrict Spectra's quick action bar on SureForms CPTS.
 		add_action( 'uag_enable_quick_action_sidebar', [ $this, 'restrict_spectra_quick_action_bar' ] );
+
+		// Add custom redirection URL for Zip AI after authentication.
+		add_filter( 'zip_ai_auth_redirection_url', [ $this, 'custom_zip_ai_auth_redirection_url' ] );
+		// Add custom redirection URL for Zip AI after authentication revoke.
+		add_filter( 'zip_ai_revoke_redirection_url', [ $this, 'custom_zip_ai_auth_revoke_redirection_url' ], 9999, 1 );
+	}
+
+	/**
+	 * Custom redirection URL for Zip AI after authentication.
+	 *
+	 * @param string $url Redirection URL.
+	 * @return string
+	 */
+	public function custom_zip_ai_auth_redirection_url( $url ) {
+		return admin_url( 'admin.php?page=add-new-form&method=ai' );
+	}
+
+	/**
+	 * Custom redirection URL for Zip AI after authentication revoke.
+	 *
+	 * @param string $url Redirection URL.
+	 * @return string
+	 */
+	public function custom_zip_ai_auth_revoke_redirection_url( $url ) {
+		// only change admin URL if the user is on the add new form page.
+		if ( isset( $_GET['page'] ) && 'add-new-form' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- $_GET['page'] does not provide nonce.
+			return admin_url( 'admin.php?page=add-new-form' );
+		}
+		return $url;
 	}
 
 	/**
@@ -440,14 +470,19 @@ class Admin {
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
 				[
-					'site_url'                     => get_site_url(),
-					'plugin_url'                   => SRFM_URL,
-					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
-					'admin_url'                    => admin_url( 'admin.php' ),
-					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                   => current_user_can( 'edit_posts' ),
-					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'site_url'                         => get_site_url(),
+					'plugin_url'                       => SRFM_URL,
+					'preview_images_url'               => SRFM_URL . 'images/template-previews/',
+					'admin_url'                        => admin_url( 'admin.php' ),
+					'new_template_picker_base_url'     => admin_url( 'post-new.php?post_type=sureforms_form' ),
+					'capability'                       => current_user_can( 'edit_posts' ),
+					'template_picker_nonce'            => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
+					'zip_ai_credit_details'            => AI_Helper::get_credit_details(),
+					'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
+					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
+					'is_authorized'                    => AI_Helper::is_authorized(),
+					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
 				]
 			);
 		}

@@ -10,6 +10,8 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use ZipAI\Classes\Helper as AI_Helper;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -36,7 +38,35 @@ class Admin_Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
+		add_action( 'wp_ajax_sureforms_zip_ai_verify_authenticity', [ $this, 'zip_ai_verify_auth' ] );
 		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+	}
+
+	/**
+	 * Ajax Request - Verify if Zip AI is authorized.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function zip_ai_verify_auth() {
+
+		// Check if the user has the required permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'messsage' => __( 'You do not have required permission to create a form.', 'sureforms' ) ] );
+		}
+
+		// verify nonce.
+		if ( ! check_ajax_referer( 'zip_ai_verify_authenticity', 'nonce', false ) ) {
+			wp_send_json_error( [ 'messsage' => __( 'Unable to verify nonce.', 'sureforms' ) ] );
+		}
+
+		// If the Zip AI Helper Class exists, return a success based on the authorization status, else return an error.
+		if ( class_exists( '\ZipAI\Classes\Helper' ) ) {
+			// Send a boolean based on whether the auth token has been added.
+			wp_send_json_success( [ 'is_authorized' => Ai_Helper::is_authorized() ] );
+		} else {
+			wp_send_json_error( [ 'messsage' => __( 'Unable to verify authenticity.', 'sureforms' ) ] );
+		}
 	}
 
 	/**
