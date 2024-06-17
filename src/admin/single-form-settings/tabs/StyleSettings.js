@@ -71,13 +71,11 @@ function StyleSettings( props ) {
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
 	function submitButtonInherit() {
-		const inheritClass = [
-			'srfm-inherit-btn-alignment',
-			'wp-block-button__link',
-		];
+		const inheritClass = [ 'srfm-btn-alignment', 'wp-block-button__link' ];
 		const customClass = [
 			'srfm-button',
 			'srfm-submit-button',
+			'srfm-btn-alignment',
 			'srfm-btn-bg-color',
 		];
 		const btnClass =

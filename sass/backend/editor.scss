@@ -320,8 +320,7 @@ body.post-type-sureforms_form {
 			background-color: var( --srfm-btn-bg-color );
 			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
 		}
-		.srfm-submit-button,
-		.srfm-inherit-btn-alignment {
+		.srfm-btn-alignment {
 			position: absolute;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
