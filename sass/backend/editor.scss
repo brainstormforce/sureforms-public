@@ -320,9 +320,9 @@ body.post-type-sureforms_form {
 			background-color: var( --srfm-btn-bg-color );
 			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
 		}
-		.srfm-submit-button {
+		.srfm-submit-button,
+		.srfm-inherit-btn-alignment {
 			position: absolute;
-			font-size: 0.8em;
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
 			right: var( --srfm-submit-alignment-backend );
 			transform: translateX( var( --srfm-submit-alignment-backend ) );
@@ -333,6 +333,10 @@ body.post-type-sureforms_form {
 				display: inline-block;
 				width: 100%;
 			}
+		}
+
+		.srfm-submit-button {
+			font-size: 0.8em;
 		}
 
 		@media ( max-width: 778px ) {
