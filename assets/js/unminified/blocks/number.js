@@ -9,18 +9,20 @@ function initializeNumberField() {
 					const formatType =
 						numberInput.getAttribute( 'format-type' );
 					let inputValue = e.target.value;
-					if ( formatType === 'none' ) {
-						return;
+					switch ( formatType ) {
+						case 'none':
+							return;
+						case 'decimal':
+							return;
+						case 'non-decimal':
+							if ( inputValue.includes( '.' ) ) {
+								inputValue = inputValue?.replace( '.', '' );
+							} else {
+								return;
+							}
+							break;
 					}
-					if ( formatType === 'non-decimal' ) {
-						inputValue = inputValue?.replace( /[^0-9]/g, '' );
-					} else {
-						inputValue = inputValue?.replace( /[^0-9.]/g, '' );
-						const dotCount = inputValue?.split( '.' ).length - 1;
-						if ( dotCount > 1 ) {
-							inputValue = inputValue?.replace( /\.+$/g, '' );
-						}
-					}
+
 					numberInput.value = inputValue;
 				} );
 			}
