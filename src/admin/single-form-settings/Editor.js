@@ -219,15 +219,19 @@ const SureformsFormSpecificSettings = ( props ) => {
 		'.srfm-submit-btn-container'
 	);
 	function addSubmitButton( elm ) {
-		const inheritClass = 'wp-block-button__link';
-		const customClass = 'srfm-button srfm-submit-button srfm-btn-bg-color';
+		const inheritClass = 'srfm-btn-alignment wp-block-button__link';
+		const customClass =
+			'srfm-button srfm-submit-button srfm-btn-alignment srfm-btn-bg-color';
 		const btnClass =
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? inheritClass
 				: customClass;
-		const btnCtnClass = sureformsKeys?._srfm_inherit_theme_button &&
-		sureformsKeys._srfm_inherit_theme_button ? 'wp-block-button' : '';
+		const btnCtnClass =
+			sureformsKeys?._srfm_inherit_theme_button &&
+			sureformsKeys._srfm_inherit_theme_button
+				? 'wp-block-button'
+				: '';
 		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
