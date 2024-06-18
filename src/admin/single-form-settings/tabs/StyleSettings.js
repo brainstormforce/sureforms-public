@@ -71,10 +71,11 @@ function StyleSettings( props ) {
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
 	function submitButtonInherit() {
-		const inheritClass = 'wp-block-button__link';
+		const inheritClass = [ 'srfm-btn-alignment', 'wp-block-button__link' ];
 		const customClass = [
 			'srfm-button',
 			'srfm-submit-button',
+			'srfm-btn-alignment',
 			'srfm-btn-bg-color',
 		];
 		const btnClass =
@@ -89,7 +90,7 @@ function StyleSettings( props ) {
 			) {
 				submitBtn.classList.remove( ...customClass );
 				submitBtnCtn.classList.add( 'wp-block-button' );
-				submitBtn.classList.add( btnClass );
+				submitBtn.classList.add( ...btnClass );
 			} else {
 				submitBtn.classList.remove( inheritClass );
 				submitBtnCtn.classList.remove( 'wp-block-button' );
