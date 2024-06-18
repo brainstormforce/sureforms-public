@@ -31,8 +31,8 @@ jobs:
             - [ ] Verify `Tested upto` is set to latest tested version of WordPress
             - [ ] Update version in `sureforms.php` in plugin description
             - [ ] Verify constant `SRFM_VER` in `sureforms.php` with latest version of SureForms
-            - [ ] Generate README.md : `grunt readme`
             - [ ] Verify changelog `date` and `content` as per SureForms standards
+            - [ ] Generate README.md : `grunt readme`
             - [ ] Generate POT file : `npm run makepot`
             ---
           body-update-action: 'suffix'
