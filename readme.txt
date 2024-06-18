@@ -2,7 +2,7 @@
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
-Tested up to: 6.5
+Tested up to: 6.5.4
 Requires PHP: 7.4
 Stable tag: 0.0.5
 License: GPLv2 or later
@@ -250,6 +250,9 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 == Changelog ==
+= 0.0.5 =
+New: Added Support for hCaptcha.
+Fix: Multiple Bug Fixes and Improvements.
 = 0.0.4 =
 New: Added support for Cloudflare Turnstile.
 Fix: Multiple bug fixes and UI enhancement.

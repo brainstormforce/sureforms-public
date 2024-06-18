@@ -23,7 +23,7 @@ define( 'SRFM_FILE', __FILE__ );
 define( 'SRFM_BASENAME', plugin_basename( SRFM_FILE ) );
 define( 'SRFM_DIR', plugin_dir_path( SRFM_FILE ) );
 define( 'SRFM_URL', plugins_url( '/', SRFM_FILE ) );
-define( 'SRFM_VER', '0.0.4' );
+define( 'SRFM_VER', '0.0.5' );
 define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
