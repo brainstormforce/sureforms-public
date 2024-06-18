@@ -275,7 +275,7 @@ function AdvancedSettings( props ) {
 
 				<p className="components-base-control__help">
 					{ __(
-						'Before selecting the security type, please, make sure you have configured the API keys ',
+						'Before selecting the security type, please make sure you have configured the API keys ',
 						'sureforms'
 					) }
 					<ExternalLink href={ srfm_admin.security_settings_url }>
