@@ -3,7 +3,7 @@
  * Page Builder.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.5
  */
 
 namespace SRFM\Inc\Page_Builders;
@@ -23,7 +23,7 @@ class Page_Builders {
 	 *
 	 * Load all Page Builders form widgets.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function __construct() {

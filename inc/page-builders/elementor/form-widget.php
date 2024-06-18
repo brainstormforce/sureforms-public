@@ -3,7 +3,7 @@
  * Elementor SureForms form widget.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.5
  */
 
 namespace SRFM\Inc\Page_Builders\Elementor;
@@ -58,7 +58,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get script depends.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<string> Script dependencies.
 	 */
 	public function get_script_depends() {
@@ -72,7 +72,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget name.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return string Widget name.
 	 */
 	public function get_name() {
@@ -82,7 +82,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget title.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return string Widget title.
 	 */
 	public function get_title() {
@@ -92,7 +92,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget icon.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return string Widget icon.
 	 */
 	public function get_icon() {
@@ -102,7 +102,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget categories. Used to determine where to display the widget in the editor.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<string> Widget categories.
 	 */
 	public function get_categories() {
@@ -112,7 +112,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Get widget keywords.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<string> Widget keywords.
 	 */
 	public function get_keywords() {
@@ -128,7 +128,7 @@ class Form_Widget extends Widget_Base {
 	 * Register form widget controls.
 	 * Adds different input fields to allow the user to change and customize the widget settings.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	protected function register_controls() {
@@ -205,7 +205,7 @@ class Form_Widget extends Widget_Base {
 	/**
 	 * Render form widget output on the frontend.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void|string
 	 */
 	protected function render() {

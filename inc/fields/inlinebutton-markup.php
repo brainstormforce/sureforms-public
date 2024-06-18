@@ -81,7 +81,7 @@ class Inlinebutton_Markup extends Base {
 	 * Security type.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.5
 	 */
 	protected $captcha_security_type;
 
@@ -89,7 +89,7 @@ class Inlinebutton_Markup extends Base {
 	 * Cloudflare Turnstile site key.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.5
 	 */
 	protected $cf_turnstile_site_key;
 
@@ -97,7 +97,7 @@ class Inlinebutton_Markup extends Base {
 	 * Cloudflare Turnstile appearance mode
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.5
 	 */
 	protected $cf_appearance_mode;
 
@@ -105,7 +105,7 @@ class Inlinebutton_Markup extends Base {
 	 * Security - hCaptcha site key.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.5
 	 */
 	protected $hcaptcha_site_key;
 

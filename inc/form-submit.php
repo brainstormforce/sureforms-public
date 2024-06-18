@@ -143,7 +143,7 @@ class Form_Submit {
 	 * @param string       $secret_key hCaptcha token.
 	 * @param string|false $response Response.
 	 * @param string|false $remote_ip Remote IP.
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<mixed>|mixed Result of the validation.
 	 */
 	public static function validate_hcaptcha_token( $secret_key, $response, $remote_ip ) {
