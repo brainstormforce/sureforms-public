@@ -335,7 +335,7 @@ class Helper {
 	 * Check if the current user has a given capability.
 	 *
 	 * @param string $capability The capability to check.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return bool Whether the current user has the given capability or role.
 	 */
 	public static function current_user_can( $capability = '' ) {
@@ -408,6 +408,93 @@ class Helper {
 		$decoded_data = preg_replace( '/\\\\u0026/', '&', self::get_string_value( $decoded_data ) );
 		$decoded_data = preg_replace( '/\\\\\\\\"/', '"', self::get_string_value( $decoded_data ) );
 		return self::get_string_value( $decoded_data );
+	}
+
+	/**
+	 * Map slugs to submission data.
+	 *
+	 * @param array<mixed> $submission_data submission_data.
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function map_slug_to_submission_data( $submission_data = [] ) {
+		$mapped_data = [];
+		foreach ( $submission_data as $key => $value ) {
+			$label                = explode( '-lbl-', $key )[1];
+			$slug                 = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$mapped_data[ $slug ] = $value;
+		}
+		return $mapped_data;
+	}
+
+	/**
+	 * Checks if current value is an array or else returns default value
+	 *
+	 * @param mixed $data Data which needs to be checked if it is an array.
+	 *
+	 * @since 0.0.3
+	 * @return array<mixed>
+	 */
+	public static function get_array_value( $data ) {
+		if ( is_array( $data ) ) {
+			return $data;
+		} elseif ( is_null( $data ) ) {
+			return [];
+		} else {
+			return (array) $data;
+		}
+	}
+
+	/**
+	 * Get forms options. Shows all the available forms in the dropdown.
+	 *
+	 * @since x.x.x
+	 * @param string $key Determines the type of data to return.
+	 * @return array<mixed>
+	 */
+	public static function get_sureforms( $key = '' ) {
+		$forms = get_posts(
+			apply_filters(
+				'srfm_get_sureforms_query_args',
+				[
+					'post_type'      => SRFM_FORMS_POST_TYPE,
+					'posts_per_page' => -1,
+					'post_status'    => 'publish',
+				]
+			)
+		);
+
+		$options = [];
+
+		foreach ( $forms as $form ) {
+			if ( $form instanceof WP_Post ) {
+				if ( 'all' === $key ) {
+					$options[ $form->ID ] = $form;
+				} elseif ( ! empty( $key ) && is_string( $key ) && isset( $form->$key ) ) {
+					$options[ $form->ID ] = $form->$key;
+				} else {
+					$options[ $form->ID ] = $form->post_title;
+				}
+			}
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Get all the forms.
+	 *
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
+	public static function get_sureforms_title_with_ids() {
+		$form_options = self::get_sureforms();
+
+		foreach ( $form_options as $key => $value ) {
+			$form_options[ $key ] = $value . ' #' . $key;
+		}
+
+		return $form_options;
 	}
 
 }

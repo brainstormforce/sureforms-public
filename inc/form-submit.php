@@ -162,36 +162,45 @@ class Form_Submit {
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
+
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_FILES ) ) {
 			add_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+
 			foreach ( $_FILES as $field => $file ) {
-				$filename  = $file['name'];
-				$temp_path = $file['tmp_name'];
-				$file_size = $file['size'];
-				$file_type = $file['type'];
+				if ( is_array( $file['name'] ) ) {
+					foreach ( $file['name'] as $key => $filename ) {
+						$temp_path  = $file['tmp_name'][ $key ];
+						$file_size  = $file['size'][ $key ];
+						$file_type  = $file['type'][ $key ];
+						$file_error = $file['error'][ $key ];
 
-				if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
-					continue;
-				}
+						if ( ! $filename && ! $temp_path && ! $file_size && ! $file_type ) {
+							$form_data[ $field ][] = '';
+							continue;
+						}
 
-				// Use wp_handle_upload instead of move_uploaded_file.
-				$uploaded_file = [
-					'name'     => $filename,
-					'type'     => $file_type,
-					'tmp_name' => $temp_path,
-					'error'    => $file['error'],
-					'size'     => $file_size,
-				];
+						$uploaded_file = [
+							'name'     => $filename,
+							'type'     => $file_type,
+							'tmp_name' => $temp_path,
+							'error'    => $file_error,
+							'size'     => $file_size,
+						];
 
-				$upload_overrides = [
-					'test_form' => false,
-				];
-				$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
-				remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
-				if ( $move_file && ! isset( $move_file['error'] ) ) {
-					$form_data[ $field ] = $move_file['url'];
+						$upload_overrides = [
+							'test_form' => false,
+						];
+						$move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
+						remove_filter( 'upload_dir', [ $this, 'change_upload_dir' ] );
+
+						if ( $move_file && ! isset( $move_file['error'] ) ) {
+							$form_data[ $field ][] = $move_file['url'];
+						} else {
+							wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
+						}
+					}
 				} else {
-					wp_send_json_error( __( 'File is not uploaded', 'sureforms' ) );
+					$form_data[ $field ][] = '';
 				}
 			}
 		}
@@ -366,7 +375,18 @@ class Form_Submit {
 
 			$field_name = htmlspecialchars( str_replace( '_', ' ', $key ) );
 
-			$submission_data[ $field_name ] = htmlspecialchars( $value );
+			// If the field is an array, encode the values. This is to add support for multi-upload field.
+			if ( is_array( $value ) ) {
+				$submission_data[ $field_name ] =
+					array_map(
+						function ( $val ) {
+							return rawurlencode( $val );
+						},
+						$value
+					);
+			} else {
+				$submission_data[ $field_name ] = htmlspecialchars( $value );
+			}
 		}
 
 		$name         = sanitize_text_field( get_the_title( intval( $id ) ) );
@@ -386,7 +406,7 @@ class Form_Submit {
 			$modified_message = [];
 			foreach ( $submission_data as $key => $value ) {
 				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$modified_message[ $only_key ] = esc_attr( $value );
+				$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
 			}
 
 			$form_submit_response = [
@@ -400,11 +420,19 @@ class Form_Submit {
 
 			do_action( 'srfm_form_submit', $form_submit_response );
 
+			/**
+			 * Hook for enabling background processes.
+			 *
+			 * @param array $form_data form data related to submission.
+			 */
+			do_action( 'srfm_after_submission_process', $form_data );
+
 			$response = [
 				'success' => true,
 				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
-					'name' => $name,
+					'name'         => $name,
+					'after_submit' => false,
 				],
 			];
 
@@ -451,11 +479,7 @@ class Form_Submit {
 
 		$post_id = wp_insert_post( $new_post );
 
-		if ( empty( $first_field_value ) && $post_id ) {
-			$post_title = __( 'Entry #', 'sureforms' ) . $post_id;
-		} else {
-			$post_title = $first_field_value;
-		}
+		$post_title = __( 'Entry #', 'sureforms' ) . $post_id;
 
 		$post_args = [
 			'ID'         => $post_id,
@@ -483,7 +507,9 @@ class Form_Submit {
 				'success' => true,
 				'message' => Generate_Form_Markup::get_confirmation_markup( $form_data, $submission_data ),
 				'data'    => [
-					'name' => $name,
+					'name'          => $name,
+					'submission_id' => $post_id,
+					'after_submit'  => true,
 				],
 			];
 
@@ -497,7 +523,7 @@ class Form_Submit {
 					if ( count( $tokens ) > 1 ) {
 						$only_key = implode( '-', array_slice( $tokens, 1 ) );
 					}
-					$modified_message[ $only_key ] = esc_attr( $value );
+					$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
 				}
 			}
 
@@ -525,8 +551,8 @@ class Form_Submit {
 	/**
 	 * Send Email.
 	 *
-	 * @param string                $id       Form ID.
-	 * @param array<string, string> $submission_data Submission data.
+	 * @param string       $id Form ID.
+	 * @param array<mixed> $submission_data Submission data.
 	 * @since 0.0.1
 	 * @return array<mixed> Array containing the response data.
 	 */

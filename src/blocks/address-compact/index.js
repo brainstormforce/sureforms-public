@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { MdOutlineLocationOn as icon } from 'react-icons/md';
+import { MdOutlineMapsHomeWork as icon } from 'react-icons/md';
 
 /**
  * Internal dependencies

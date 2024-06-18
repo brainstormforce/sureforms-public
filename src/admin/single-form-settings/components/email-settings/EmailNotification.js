@@ -7,7 +7,7 @@ import { ToggleControl } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
-const EmailNotification = ( { emailNotificationData } ) => {
+const EmailNotification = ( { emailNotificationData, toast } ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
@@ -22,6 +22,11 @@ const EmailNotification = ( { emailNotificationData } ) => {
 	const handleDelete = ( data ) => {
 		const filterData = emailNotificationData.filter( ( el ) => el.id !== data.id );
 		updateMeta( '_srfm_email_notification', filterData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email Notification deleted successfully.', 'sureforms' ),
+			{ duration: 500 }
+		);
 	};
 	const handleDuplicate = ( data ) => {
 		const duplicateData = { ...data };
@@ -30,12 +35,35 @@ const EmailNotification = ( { emailNotificationData } ) => {
 		}
 		const allData = [ ...emailNotificationData, duplicateData ];
 		updateMeta( '_srfm_email_notification', allData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email Notification duplicated successfully.', 'sureforms' ),
+			{ duration: 500 }
+		);
 	};
 	const handleUpdateEmailData = ( newData ) => {
-		const { email_body, email_to, subject } = newData;
-		if ( ! email_body || ! email_to || ! subject ) {
+		const { email_to, subject } = newData;
+		let hasError = false;
+
+		if ( ! email_to ) {
+			document.querySelector( '.srfm-modal-email-to' ).classList.add( 'required-error' );
+			hasError = true;
+		}
+
+		if ( ! subject ) {
+			document.querySelector( '.srfm-modal-subject' ).classList.add( 'required-error' );
+			hasError = true;
+		}
+
+		if ( hasError ) {
+			toast.dismiss();
+			toast.error(
+				__( 'Please fill out the required field.', 'sureforms' ),
+				{ duration: 500 }
+			);
 			return;
 		}
+
 		let currEmailData = emailNotificationData;
 		if ( ! newData.id ) {
 			const currId = emailNotificationData.length + 1;
@@ -50,6 +78,13 @@ const EmailNotification = ( { emailNotificationData } ) => {
 			} );
 		}
 		updateMeta( '_srfm_email_notification', currEmailData );
+		toast.dismiss();
+		toast.success(
+			__( 'Email Notification updated successfully.', 'sureforms' ),
+			{
+				duration: 500,
+			}
+		);
 	};
 	function updateMeta( option, value ) {
 		const option_array = {};
@@ -67,6 +102,19 @@ const EmailNotification = ( { emailNotificationData } ) => {
 			return el;
 		} );
 		updateMeta( '_srfm_email_notification', updatedData );
+
+		toast.dismiss();
+		if ( ! data.status ) {
+			toast.success(
+				__( 'Email Notification enabled successfully.', 'sureforms' ),
+				{ duration: 500 }
+			);
+		} else {
+			toast.success(
+				__( 'Email Notification disabled successfully.', 'sureforms' ),
+				{ duration: 500 }
+			);
+		}
 	};
 	const handleBackNotifation = () => {
 		setShowConfirmation( false );
@@ -89,7 +137,7 @@ const EmailNotification = ( { emailNotificationData } ) => {
 					<div className="srfm-modal-inner-box-text">
 						<h5>{ __( 'Notification', 'sureforms' ) }</h5>
 					</div>
-					<div className="srfm-modal-separator"></div>
+					<div className="srfm-modal-separator" />
 					{
 						emailNotificationData.length === 0 ? (
 							<div className="srfm-empty-data">
@@ -144,7 +192,9 @@ const EmailNotification = ( { emailNotificationData } ) => {
 																		<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
 																			{ editIcons }
 																		</button>
-																		<button onClick={ () => setIsPopup( el.id ) } className="srfm-cursor-pointer">
+																		<button onClick={ () => {
+																			setIsPopup( el.id );
+																		} } className="srfm-cursor-pointer">
 																			{ deleteIcons }
 																		</button>
 																	</td>
