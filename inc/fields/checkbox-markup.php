@@ -32,6 +32,7 @@ class Checkbox_Markup extends Base {
 		$this->slug = 'checkbox';
 		$this->help = isset( $attributes['checkboxHelpText'] ) ? $attributes['checkboxHelpText'] : '';
 		$this->set_markup_properties();
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -44,7 +45,9 @@ class Checkbox_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
+						<input class="srfm-input-common screen-reader-text srfm-input-<?php echo esc_attr( $this->slug ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>"
+						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" type="checkbox" <?php echo esc_attr( $this->checked_attr ); ?>/>
 						<label class="srfm-cbx" for="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>">
 							<span class="srfm-span-wrap">
 								<svg class="srfm-check-icon" width="12px" height="10px">
