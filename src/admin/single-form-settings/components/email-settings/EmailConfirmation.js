@@ -186,6 +186,37 @@ const EmailConfirmation = ( props ) => {
 								}
 							/>
 						</div>
+						<div className="srfm-modal-area-box">
+							<div className="srfm-modal-area-header">
+								<div className="srfm-modal-area-header-text">
+									<p>{ __( 'Email Body', 'sureforms' ) }</p>
+								</div>
+							</div>
+							<div className="srfm-editor-wrap">
+								{ formData.is_raw_format === true ? (
+									<textarea
+										onChange={ ( e ) =>
+											setFormData( {
+												...formData,
+												email_body: e.target.value,
+											} )
+										}
+										className="srfm-editor-textarea"
+									>
+										{ formData.email_body }
+									</textarea>
+								) : (
+									<Editor
+										handleContentChange={
+											handleOnChangeEmailBodyContent
+										}
+										content={ formData.email_body }
+										formData={ formData }
+										setFormData={ setFormData }
+									/>
+								) }
+							</div>
+						</div>
 						<div className="srfm-modal-input-box">
 							<div className="srfm-modal-label">
 								<label htmlFor="srfm-email-notification-reply-to">
@@ -312,37 +343,6 @@ const EmailConfirmation = ( props ) => {
 									} )
 								}
 							/>
-						</div>
-						<div className="srfm-modal-area-box">
-							<div className="srfm-modal-area-header">
-								<div className="srfm-modal-area-header-text">
-									<p>{ __( 'Email Body', 'sureforms' ) }</p>
-								</div>
-							</div>
-							<div className="srfm-editor-wrap">
-								{ formData.is_raw_format === true ? (
-									<textarea
-										onChange={ ( e ) =>
-											setFormData( {
-												...formData,
-												email_body: e.target.value,
-											} )
-										}
-										className="srfm-editor-textarea"
-									>
-										{ formData.email_body }
-									</textarea>
-								) : (
-									<Editor
-										handleContentChange={
-											handleOnChangeEmailBodyContent
-										}
-										content={ formData.email_body }
-										formData={ formData }
-										setFormData={ setFormData }
-									/>
-								) }
-							</div>
 						</div>
 					</div>
 				</div>

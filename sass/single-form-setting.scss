@@ -264,7 +264,8 @@ $req_err_color: #dc2625;
 
 							.srfm-scroll-dropdown {
 								position: absolute;
-								right: 2px;
+								right: -5px;
+								bottom: 90px;
 
 								.has-icon {
 									&:focus:not( :disabled ) {
@@ -291,6 +292,7 @@ $req_err_color: #dc2625;
 								font-size: 14px;
 								color: #64748b;
 								height: 40px;
+								width: 100%;
 								padding: 10px 8px 10px 16px;
 								align-items: center;
 								gap: 116px;
