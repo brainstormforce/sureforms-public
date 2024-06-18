@@ -167,15 +167,18 @@ class Inlinebutton_Markup extends Base {
 	public function markup() {
 		ob_start(); ?>
 		<?php if ( ! $this->is_page_break ) : ?>
+			<div class="srfm-captcha-container">
 			<?php if ( 'g-recaptcha' === $this->captcha_security_type && 'v2-checkbox' === $this->recaptcha_version ) : ?>
-				<?php echo "<div class='g-recaptcha' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
+				<?php echo "<div class='g-recaptcha' data-callback='onSuccess' recaptcha-type='" . esc_attr( $this->recaptcha_version ) . "' data-sitekey='" . esc_attr( strval( $this->google_captcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
 			<?php if ( 'cf-turnstile' === $this->captcha_security_type && $this->cf_turnstile_site_key ) : ?>
-				<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
+				<?php echo "<div id='srfm-cf-sitekey' class='cf-turnstile' data-callback='onSuccess' data-theme='" . esc_attr( strval( $this->cf_appearance_mode ) ) . "' data-sitekey='" . esc_attr( strval( $this->cf_turnstile_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
 			<?php if ( 'hcaptcha' === $this->captcha_security_type && $this->hcaptcha_site_key ) : ?>
-				<?php echo "<div id='srfm-hcaptcha-sitekey' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
+				<?php echo "<div id='srfm-hcaptcha-sitekey' data-callback='onSuccess' class='h-captcha' data-sitekey='" . esc_attr( strval( $this->hcaptcha_site_key ) ) . "'></div>"; ?>
 			<?php endif; ?>
+			<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+			</div>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" style="padding: 0 .3em; " class="<?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?> srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?> srfm-block srfm-custom-button-ctn <?php echo esc_attr( '1' === $this->btn_from_theme ? 'wp-block-button' : '' ); ?>">
 			<?php echo wp_kses_post( Helper::generate_common_form_markup( $this->form_id, 'label', '‎', '', '', false ) ); ?>
 			<?php

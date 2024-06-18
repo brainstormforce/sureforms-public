@@ -16,6 +16,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			siteKey,
 			recaptchaType,
 			afterSubmission,
+			captchaErrorElement,
+			hCaptchaDiv,
+			turnstileDiv,
 		} = extractFormAttributesAndElements( form );
 
 		if ( recaptchaType === 'v3-reCAPTCHA' ) {
@@ -42,6 +45,39 @@ document.addEventListener( 'DOMContentLoaded', function () {
 							}
 						} );
 				} );
+			} );
+		} else if (
+			'v2-checkbox' === recaptchaType ||
+			!! hCaptchaDiv ||
+			!! turnstileDiv
+		) {
+			submitBtn.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				let captchaResponse;
+				if ( 'v2-checkbox' === recaptchaType ) {
+					captchaResponse = grecaptcha.getResponse();
+				} else if ( !! hCaptchaDiv ) {
+					captchaResponse = hcaptcha.getResponse();
+				} else if ( !! turnstileDiv ) {
+					captchaResponse = turnstile.getResponse();
+				}
+				if ( 0 === captchaResponse.length ) {
+					captchaErrorElement.style.display = 'block';
+					return;
+				}
+				captchaErrorElement.style.display = 'none';
+				handleFormSubmission(
+					form,
+					formId,
+					ajaxUrl,
+					nonce,
+					loader,
+					successUrl,
+					successElement,
+					errorElement,
+					submitType,
+					afterSubmission
+				);
 			} );
 		} else {
 			form.addEventListener( 'submit', async function ( e ) {
@@ -208,6 +244,9 @@ function extractFormAttributesAndElements( form ) {
 	const gcaptchaDiv = form.querySelector( '.g-recaptcha' );
 	const siteKey = gcaptchaDiv?.getAttribute( 'data-sitekey' );
 	const recaptchaType = gcaptchaDiv?.getAttribute( 'recaptcha-type' );
+	const captchaErrorElement = form.querySelector( '#captcha-error' );
+	const hCaptchaDiv = form.querySelector( '.h-captcha' );
+	const turnstileDiv = form.querySelector( '.cf-turnstile' );
 
 	return {
 		formId,
@@ -222,6 +261,9 @@ function extractFormAttributesAndElements( form ) {
 		siteKey,
 		recaptchaType,
 		afterSubmission,
+		captchaErrorElement,
+		hCaptchaDiv,
+		turnstileDiv,
 	};
 }
 
