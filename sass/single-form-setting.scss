@@ -256,6 +256,7 @@ $req_err_color: #dc2625;
 
 						.srfm-modal-input-box {
 							display: flex;
+							flex-direction: column;
 							align-items: center;
 							gap: 10px;
 							align-self: stretch;
@@ -273,7 +274,7 @@ $req_err_color: #dc2625;
 							}
 
 							.srfm-modal-label {
-								width: 144px;
+								width: 100%;
 								color: var( --dashboard-heading, #1e293b );
 								font-size: 14px;
 								font-style: normal;
