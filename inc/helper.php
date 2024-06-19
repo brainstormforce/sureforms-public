@@ -448,7 +448,7 @@ class Helper {
 	/**
 	 * Get forms options. Shows all the available forms in the dropdown.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @param string $key Determines the type of data to return.
 	 * @return array<mixed>
 	 */
@@ -484,7 +484,7 @@ class Helper {
 	/**
 	 * Get all the forms.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<mixed>
 	 */
 	public static function get_sureforms_title_with_ids() {
