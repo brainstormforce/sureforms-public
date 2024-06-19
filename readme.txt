@@ -252,8 +252,8 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 == Changelog ==
 = 0.0.5 =
 * New: Added Support for hCaptcha.
-* New: SureForms Elementor Widget.
-* New: SureForms Bricks Element.
+* New: SureForms widget for Elementor.
+* New: SureForms element for Bricks Builder.
 * Fix: Multiple Bug Fixes and Improvements.
 = 0.0.4 =
 * New: Added support for Cloudflare Turnstile.
