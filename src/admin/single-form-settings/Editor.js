@@ -231,7 +231,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureformsKeys?._srfm_inherit_theme_button &&
 			sureformsKeys._srfm_inherit_theme_button
 				? 'wp-block-button'
-				: '';
+				: 'srfm-submit-btn-font-size';
 		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
