@@ -1174,7 +1174,7 @@ class Post_Types {
 	/**
 	 * Restrict interference of other plugins with SureForms.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	private function restrict_unwanted_insertions() {
@@ -1187,7 +1187,7 @@ class Post_Types {
 	/**
 	 * Restrict RankMatch meta boxes in edit page.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function restrict_data() {
@@ -1198,7 +1198,7 @@ class Post_Types {
 	 * Remove SureForms post type from RankMath.
 	 *
 	 * @param array<mixed> $post_types Post types.
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {

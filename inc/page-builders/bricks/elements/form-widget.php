@@ -3,7 +3,7 @@
  * Bricks SureForms form element.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.5
  */
 
 namespace SRFM\Inc\Page_Builders\Bricks\Elements;
@@ -59,7 +59,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Get element name.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return string element name.
 	 */
 	public function get_label() {
@@ -69,7 +69,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Get element keywords.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<string> element keywords.
 	 */
 	public function get_keywords() {
@@ -84,7 +84,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Set element controls.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function set_controls() {
@@ -120,7 +120,7 @@ class Form_Widget extends \Bricks\Element {
 	/**
 	 * Render element.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function render() {
