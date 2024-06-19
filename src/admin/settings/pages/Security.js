@@ -62,12 +62,11 @@ const SecurityPage = ( {
 														sprintf(
 														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
 															__(
-																'Add Google reCAPTCHA secret and site key here. To select it, please make setting in the individual form. %1$sLearn more%2$s',
+																'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
 																'sureforms'
 															),
-															'<a href="#" target="_blank" rel="noreferrer">',
+															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
 															'</a>'
-
 														) ) }
 											</p>
 											<div className="srfm-link">
@@ -326,10 +325,17 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the Turnstile feature on your SureForms, Please select the Security type as Cloudflare Turnstile in the form settings. Add Cloudflare Turnstile secret and site key here. Turnstile will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													parse(
+														sprintf(
+														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
+															__(
+																'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
+																'sureforms'
+															),
+															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
+															'</a>'
+														) ) }
 											</p>
 											<div className="srfm-link">
 												<a
@@ -482,10 +488,17 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the hCaptcha feature on your SureForms, Please select the Security type as hCaptcha in the form settings. Add the hCaptcha secret and site key here. hCaptcha will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													parse(
+														sprintf(
+														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
+															__(
+																'To enable hCaptcha, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
+																'sureforms'
+															),
+															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
+															'</a>'
+														) ) }
 											</p>
 											<div className="srfm-link">
 												<a
