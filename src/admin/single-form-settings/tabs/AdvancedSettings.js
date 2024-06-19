@@ -28,6 +28,8 @@ function AdvancedSettings( props ) {
 		useState( '' );
 	const [ showRecaptchaConflictNotice, setsShowRecaptchaConflictNotice ] =
 		useState( false );
+	const [ sureformsHCaptchaSite, setSureformsHCaptchaSite ] = useState( '' );
+	const [ sureformsHCaptchaSecret, setSureformsHCaptchaSecret ] = useState( '' );
 
 	const [ showErr, setShowErr ] = useState( false );
 
@@ -81,6 +83,8 @@ function AdvancedSettings( props ) {
 						srfm_v3_secret_key,
 						srfm_cf_turnstile_site_key,
 						srfm_cf_turnstile_secret_key,
+						srfm_hcaptcha_site_key,
+						srfm_hcaptcha_secret_key,
 					} = data.srfm_security_settings_options;
 					setSureformsV2CheckboxSite(
 						srfm_v2_checkbox_site_key || ''
@@ -104,6 +108,10 @@ function AdvancedSettings( props ) {
 					setSureformsCfTurnstileSecret(
 						srfm_cf_turnstile_secret_key || ''
 					);
+
+					// hCaptcha
+					setSureformsHCaptchaSite( srfm_hcaptcha_site_key || '' );
+					setSureformsHCaptchaSecret( srfm_hcaptcha_secret_key || '' );
 
 					// show the notice if 2 recaptcha site and secret keys are not empty.
 					const v2_checkbox =
@@ -133,7 +141,7 @@ function AdvancedSettings( props ) {
 	return (
 		<>
 			<SRFMAdvancedPanelBody
-				title={ __( 'Security Settings', 'sureforms' ) }
+				title={ __( 'Anti-Spam Settings', 'sureforms' ) }
 				initialOpen={ false }
 			>
 				<SelectControl
@@ -152,12 +160,26 @@ function AdvancedSettings( props ) {
 							value: 'cf-turnstile',
 							label: __( 'CloudFlare Turnstile', 'sureforms' ),
 						},
+						{
+							value: 'hcaptcha',
+							label: __( 'hCaptcha', 'sureforms' ),
+						},
 					] }
 					onChange={ ( value ) => {
 						if ( value === 'cf-turnstile' ) {
 							if (
 								sureformsCfTurnstileSite !== '' &&
 							sureformsCfTurnstileSecret !== ''
+							) {
+								setShowErr( false );
+								updateMeta( '_srfm_captcha_security_type', value );
+							} else {
+								setShowErr( true );
+							}
+						} else if ( value === 'hcaptcha' ) {
+							if (
+								sureformsHCaptchaSite !== '' &&
+							sureformsHCaptchaSecret !== ''
 							) {
 								setShowErr( false );
 								updateMeta( '_srfm_captcha_security_type', value );
@@ -253,7 +275,7 @@ function AdvancedSettings( props ) {
 
 				<p className="components-base-control__help">
 					{ __(
-						'Before selecting the security type. Please, make sure you have configured API keys ',
+						'Before selecting the security type, please make sure you have configured the API keys ',
 						'sureforms'
 					) }
 					<ExternalLink href={ srfm_admin.security_settings_url }>

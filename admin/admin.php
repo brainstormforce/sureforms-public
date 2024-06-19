@@ -387,7 +387,7 @@ class Admin {
 		}
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [ 'wp-i18n' ], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . '-export',
 				SRFM_SLUG . '_export',

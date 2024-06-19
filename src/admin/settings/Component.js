@@ -39,6 +39,8 @@ const Component = ( { path } ) => {
 		srfm_cf_appearance_mode: 'auto',
 		srfm_cf_turnstile_site_key: '',
 		srfm_cf_turnstile_secret_key: '',
+		srfm_hcaptcha_site_key: '',
+		srfm_hcaptcha_secret_key: '',
 	} );
 	const [ dynamicBlockOptions, setDynamicBlockOptions ] = useState( {} );
 	const [ preDynamicBlockOptions, setPreDynamicBlockOptions ] = useState(
@@ -123,6 +125,8 @@ const Component = ( { path } ) => {
 						srfm_cf_appearance_mode,
 						srfm_cf_turnstile_site_key,
 						srfm_cf_turnstile_secret_key,
+						srfm_hcaptcha_site_key,
+						srfm_hcaptcha_secret_key,
 					} = data.srfm_security_settings_options;
 					setSecurityTabOptions( {
 						srfm_v2_checkbox_site_key,
@@ -134,6 +138,8 @@ const Component = ( { path } ) => {
 						srfm_cf_appearance_mode,
 						srfm_cf_turnstile_site_key,
 						srfm_cf_turnstile_secret_key,
+						srfm_hcaptcha_site_key,
+						srfm_hcaptcha_secret_key,
 					} );
 				}
 
@@ -257,7 +263,14 @@ const Component = ( { path } ) => {
 			</Toaster>
 			<div className="srfm-page-heading">
 				<div className="srfm-page-icon">{ pageIcon }</div>
-				<span>{ pageTitle }</span>
+				<h4
+					style={ {
+						margin: '0',
+						color: '#0F172A',
+					} }
+				>
+					{ pageTitle }
+				</h4>
 			</div>
 			<div className="srfm-page-content">
 				{ 'general-settings' === path && (
@@ -289,14 +302,16 @@ const Component = ( { path } ) => {
 					/>
 				) }
 
-				{
-					'integration-settings' === path && (
-						<IntegrationPage
-							loading={ loading }
-						/>
-					)
-				}
-				{ applyFilters( 'srfm.settings.page.content', '', path, loading, toast ) }
+				{ 'integration-settings' === path && (
+					<IntegrationPage loading={ loading } />
+				) }
+				{ applyFilters(
+					'srfm.settings.page.content',
+					'',
+					path,
+					loading,
+					toast
+				) }
 			</div>
 		</>
 	);
