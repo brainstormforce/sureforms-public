@@ -32,6 +32,7 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		$this->restrict_unwanted_insertions();
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
@@ -46,7 +47,7 @@ class Post_Types {
 		add_action( 'admin_head', [ $this, 'remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
+		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
@@ -202,6 +203,7 @@ class Post_Types {
 					'edit_terms'   => 'god',
 					'manage_terms' => 'god',
 				],
+				'public'            => false,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'show_in_nav_menus' => false,
@@ -304,8 +306,10 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$bulk_actions['export'] = __( 'Export', 'sureforms' );
-		return $bulk_actions;
+		$actions['edit']   = $bulk_actions['edit'];
+		$actions['trash']  = $bulk_actions['trash'];
+		$actions['export'] = __( 'Export', 'sureforms' );
+		return $actions;
 	}
 
 	/**
@@ -733,18 +737,90 @@ class Post_Types {
 				$label = explode( '-', $label )[0];
 
 				?>
-				<tr class="">
-				<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
-						<?php if ( ! $value ) : ?>
-							<td><?php echo ''; ?></td>
-						<?php elseif ( in_array( pathinfo( $value, PATHINFO_EXTENSION ), [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true ) ) : ?>
-							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><img style="max-width:100px; height:auto;" src="<?php echo esc_url( $value ); ?>" alt="img" /></a></td>
-						<?php else : ?>
-							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_html__( 'View', 'sureforms' ); ?></a></td>
-						<?php endif; ?>
+				<tr>
+				<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
+					<?php if ( strpos( $field_name, 'srfm-upload' ) !== false ) : ?>
+						<style>
+						.file-cards-container {
+							display: flex;
+							flex-wrap: wrap;
+							gap: 10px;
+						}
+
+						.file-card {
+							border: 1px solid #ddd;
+							border-radius: 4px;
+							padding: 10px;
+							width: 100px; /* Reduced width */
+							text-align: center;
+							background: #f9f9f9;
+							font-size: 12px; /* Reduced font size for smaller cards */
+						}
+
+						.file-card-image img {
+							max-width: 80px; /* Reduced max width */
+							max-height: 80px; /* Reduced max height */
+							object-fit: cover;
+						}
+
+						.file-card-icon {
+							font-size: 24px; /* Reduced icon size */
+							margin-bottom: 5px;
+						}
+
+						.file-card-details {
+							margin-bottom: 5px;
+							font-weight: bold;
+						}
+
+						.file-card-url a {
+							color: #007bff;
+							text-decoration: none;
+							font-size: 12px; /* Reduced font size */
+						}
+
+						.file-card-url a:hover {
+							text-decoration: underline;
+						}
+						</style>
+						<td>
+							<div class="file-cards-container">
+								<?php
+								$upload_values = $value;
+								if ( ! empty( $upload_values ) && is_array( $upload_values ) ) {
+									foreach ( $upload_values as $value ) {
+											$value = Helper::get_string_value( $value );
+										if ( ! empty( $value ) ) {
+											$file_type = pathinfo( $value, PATHINFO_EXTENSION );
+											$is_image  = in_array( $file_type, [ 'gif', 'png', 'bmp', 'jpg', 'jpeg', 'svg' ], true );
+											?>
+												<div class="file-card">
+												<?php if ( $is_image ) : ?>
+														<div class="file-card-image">
+															<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>">
+																<img src="<?php echo esc_attr( urldecode( $value ) ); ?>" alt="img" />
+															</a>
+														</div>
+													<?php else : ?>
+														<div class="file-card-icon">
+															<?php echo '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16.333V4.667a1.333 1.333 0 011.333-1.333h13.334a1.333 1.333 0 011.333 1.333v11.666a1.333 1.333 0 01-1.333 1.333H5.333A1.333 1.333 0 014 16.333zm8-8h2v6h-2v-6zm-2 8h6v2H10v-2zm-6-6h4v6H4v-6zm0-4h16v2H4V6z"/></svg>'; ?>
+														</div>
+														<div class="file-card-details">
+															<span><?php echo esc_html( strtoupper( $file_type ) ); ?></span>
+														</div>
+													<?php endif; ?>
+													<div class="file-card-url">
+														<a target="_blank" href="<?php echo esc_attr( urldecode( $value ) ); ?>"><?php echo esc_html__( 'Open', 'sureforms' ); ?></a>
+													</div>
+												</div>
+											<?php
+										}
+									}
+								}
+								?>
+							</div>
+						</td>
 					<?php elseif ( strpos( $field_name, 'srfm-url' ) !== false ) : ?>
-						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<?php if ( ! $value ) : ?>
 							<td><?php echo ''; ?></td>
 						<?php else : ?>
@@ -759,7 +835,6 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><b><?php echo $label ? esc_html( Helper::decrypt( $label ) ) : ''; ?><b></td>
 						<td><?php echo wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>
@@ -871,8 +946,8 @@ class Post_Types {
 		$id   = intval( $atts['id'] );
 		$post = get_post( $id );
 
-		if ( $post ) {
-			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ) );
+		if ( ! empty( $id ) && $post ) {
+			$content = Generate_Form_Markup::get_form_markup( $id, ! filter_var( $atts['show_title'], FILTER_VALIDATE_BOOLEAN ), '', 'post', true );
 			return $content;
 		}
 
@@ -1096,4 +1171,40 @@ class Post_Types {
 		}
 	}
 
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMatch columns and filters in edit page.
+		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
+		// Restrict RankMatch metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+	}
+
+	/**
+	 * Restrict RankMatch meta boxes in edit page.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	public function restrict_data() {
+		add_filter( 'rank_math/excluded_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Remove SureForms post type from RankMath.
+	 *
+	 * @param array<mixed> $post_types Post types.
+	 * @since 0.0.5
+	 * @return array<mixed> $post_types Modified post types.
+	 */
+	public function unset_sureforms_post_type( $post_types ) {
+		if ( isset( $post_types[ SRFM_FORMS_POST_TYPE ] ) ) {
+			unset( $post_types[ SRFM_FORMS_POST_TYPE ] );
+		}
+		return $post_types;
+	}
 }

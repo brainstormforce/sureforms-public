@@ -109,7 +109,8 @@ function importForm() {
 	const importContainer = document.querySelector( '.srfm-import-wrap' );
 	const impSubmitBtn = document.querySelector( '#import-form-submit' );
 	if ( importBtn ) {
-		importBtn.addEventListener( 'click', () => {
+		importBtn.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
 			if ( importContainer ) {
 				importContainer.classList.toggle( 'srfm-show' );
 			}
@@ -124,13 +125,15 @@ function importForm() {
 }
 
 function appendImportBtn() {
-	const element = document.querySelector( '.wrap .page-title-action' );
-	if ( element ) {
+	const searchElement = document.querySelector( '#search-submit' );
+	if ( searchElement ) {
 		const newElement = document.createElement( 'button' );
-		newElement.className =
-			'button button-secondary button-large srfm-import-btn';
-		newElement.textContent = 'Import Form';
-		element.parentNode.insertBefore( newElement, element.nextSibling );
+		newElement.className = 'button button-secondary srfm-import-btn';
+		newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
+		searchElement.parentNode.insertBefore(
+			newElement,
+			searchElement.nextSibling
+		);
 	}
 }
 document.addEventListener( 'DOMContentLoaded', function () {

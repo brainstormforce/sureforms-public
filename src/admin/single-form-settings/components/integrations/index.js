@@ -138,12 +138,13 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 				break;
 
 			default:
-				window.open( plugin.redirection, '_blank' );
+				// window.open( plugin.redirection, '_blank' );
+				integrateWithSureTriggers();
 				break;
 		}
 	};
 
-	const handleSureTriggersTest = () => {
+	const integrateWithSureTriggers = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_test_integration' );
 		formData.append( 'formId', srfm_admin.form_id );
@@ -174,7 +175,8 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 			if ( data.success ) {
 				setCTA( srfm_admin.plugin_activated_text );
 				setAction( '' );
-				window.open( plugin.redirection, '_blank' );
+				// window.open( plugin.redirection, '_blank' );
+				integrateWithSureTriggers();
 				setTimeout( () => {
 					setCTA( getCTA( 'Activated' ) );
 				}, 3000 );
@@ -212,18 +214,12 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 				<p>{ __( 'SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!', 'sureforms' ) }</p>
 			</div>
 			<div className="srfm-buttons">
-				{ /* <button
+				{ <button
 					className="srfm-button-primary"
 					onClick={ handlePluginActionTrigger }
 				>
 					{ CTA }
-				</button> */ }
-				<button
-					className="srfm-button-primary"
-					onClick={ handleSureTriggersTest }
-				>
-					{ CTA }
-				</button>
+				</button> }
 			</div>
 		</div>
 	);

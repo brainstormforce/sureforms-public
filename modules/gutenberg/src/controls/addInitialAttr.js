@@ -169,6 +169,10 @@ const addInitialAttr = ( ChildComponent ) => {
 			 */
 			const REUSABLE_BLOCK_ISSUE_RESOLVED_BLOCKS = [
 				'uagb/image-gallery',
+				'srfm/separator',
+				'srfm/icon',
+				'srfm/image',
+				'srfm/advanced-heading',
 			];
 
 			if ( ! REUSABLE_BLOCK_ISSUE_RESOLVED_BLOCKS.includes( name ) ) {

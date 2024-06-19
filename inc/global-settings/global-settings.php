@@ -226,6 +226,8 @@ class Global_Settings {
 		$srfm_cf_appearance_mode      = isset( $setting_options['srfm_cf_appearance_mode'] ) ? $setting_options['srfm_cf_appearance_mode'] : 'auto';
 		$srfm_cf_turnstile_site_key   = isset( $setting_options['srfm_cf_turnstile_site_key'] ) ? $setting_options['srfm_cf_turnstile_site_key'] : '';
 		$srfm_cf_turnstile_secret_key = isset( $setting_options['srfm_cf_turnstile_secret_key'] ) ? $setting_options['srfm_cf_turnstile_secret_key'] : '';
+		$srfm_hcaptcha_site_key       = ! empty( $setting_options['srfm_hcaptcha_site_key'] ) ? $setting_options['srfm_hcaptcha_site_key'] : '';
+		$srfm_hcaptcha_secret_key     = ! empty( $setting_options['srfm_hcaptcha_secret_key'] ) ? $setting_options['srfm_hcaptcha_secret_key'] : '';
 
 		return update_option(
 			'srfm_security_settings_options',
@@ -239,6 +241,8 @@ class Global_Settings {
 				'srfm_cf_appearance_mode'      => $srfm_cf_appearance_mode,
 				'srfm_cf_turnstile_site_key'   => $srfm_cf_turnstile_site_key,
 				'srfm_cf_turnstile_secret_key' => $srfm_cf_turnstile_secret_key,
+				'srfm_hcaptcha_site_key'       => $srfm_hcaptcha_site_key,
+				'srfm_hcaptcha_secret_key'     => $srfm_hcaptcha_secret_key,
 			]
 		);
 
@@ -299,6 +303,8 @@ class Global_Settings {
 				'srfm_cf_appearance_mode'      => 'auto',
 				'srfm_cf_turnstile_site_key'   => '',
 				'srfm_cf_turnstile_secret_key' => '',
+				'srfm_hcaptcha_site_key'       => '',
+				'srfm_hcaptcha_secret_key'     => '',
 			];
 		}
 
