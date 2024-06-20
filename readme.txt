@@ -1,4 +1,4 @@
-=== SureForms – Gutenberg-powered Drag and Drop Contact Form Plugin for WordPress! ===
+=== SureForms – Drag and Drop Contact Form Plugin for WordPress! ===
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
