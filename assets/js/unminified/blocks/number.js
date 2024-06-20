@@ -11,22 +11,17 @@ function initializeNumberField() {
 					let inputValue = e.target.value;
 					switch ( formatType ) {
 						case 'none':
+						case 'decimal':
 							// step="any" allows decimal numbers eg: 1.000002, 5.5 etc
 							numberInput.setAttribute( 'step', 'any' );
-							return;
-						case 'decimal':
-							numberInput.setAttribute( 'step', 'any' );
-							return;
+							break;
 						case 'non-decimal':
 							if ( inputValue.includes( '.' ) ) {
 								inputValue = inputValue?.replace( '.', '' );
-							} else {
-								return;
+								numberInput.value = inputValue;
 							}
 							break;
 					}
-
-					numberInput.value = inputValue;
 				} );
 			}
 		} );
