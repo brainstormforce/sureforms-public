@@ -250,6 +250,27 @@ $req_err_color: #dc2625;
 						align-self: stretch;
 						background-color: #ffff;
 
+						.srfm-modal-email-advanced-fields {
+							width: 100%;
+
+							.srfm-modal-email-advanced-fields-title {
+								font-size: 16px;
+								font-weight: 600;
+								line-height: 24px;
+								text-align: left;
+								margin: 0;
+								margin-bottom: 12px;
+							}
+
+							.srfm-modal-email-advanced-fields-inner {
+								display: flex;
+								justify-content: space-between;
+								gap: 20px;
+								width: 100%;
+								margin-bottom: 20px;
+							}
+						}
+
 						.srfm-key-value-pairs {
 							width: 100%;
 						}
@@ -265,7 +286,7 @@ $req_err_color: #dc2625;
 							.srfm-scroll-dropdown {
 								position: absolute;
 								right: -5px;
-								bottom: 90px;
+								bottom: 0px;
 
 								.has-icon {
 									&:focus:not( :disabled ) {
