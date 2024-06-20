@@ -1,8 +1,7 @@
-import { __, sprintf } from '@wordpress/i18n';
-import { TextControl, TabPanel } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { TextControl, TabPanel, ExternalLink } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
-import parse from 'html-react-parser';
 
 const SecurityPage = ( {
 	loading,
@@ -58,16 +57,18 @@ const SecurityPage = ( {
 											</h2>
 											<p>
 												{
-													parse(
-														sprintf(
-														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
-															__(
-																'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
-																'sureforms'
-															),
-															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
-															'</a>'
-														) ) }
+													__(
+														'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form.',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -326,16 +327,19 @@ const SecurityPage = ( {
 											</h2>
 											<p>
 												{
-													parse(
-														sprintf(
-														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
-															__(
-																'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
-																'sureforms'
-															),
-															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
-															'</a>'
-														) ) }
+													__(
+														'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form.',
+														'sureforms'
+													)
+												}
+
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -489,16 +493,18 @@ const SecurityPage = ( {
 											</h2>
 											<p>
 												{
-													parse(
-														sprintf(
-														// translators: %1$s: first anchor tag start, %2$s: first anchor tag end,
-															__(
-																'To enable hCaptcha, please add your site key and secret key. Configure these settings within the individual form. %1$sLearn more%2$s',
-																'sureforms'
-															),
-															'<a href="#" target="_blank" rel="noreferrer" class="srfm-block-url">',
-															'</a>'
-														) ) }
+													__(
+														'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form.',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
