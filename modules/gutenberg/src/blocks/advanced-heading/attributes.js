@@ -82,6 +82,10 @@ const attributes = {
 		type: 'string',
 		default: 'h2',
 	},
+	headingWrapper: {
+		type: 'string',
+		default: 'div',
+	},
 	level: {
 		type: 'number',
 		default: 2,

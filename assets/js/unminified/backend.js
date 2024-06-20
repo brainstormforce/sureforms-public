@@ -8,7 +8,7 @@ function changeAddNewUrl() {
 	const addNewBtn = document.querySelector( '.page-title-action' );
 	if ( addNewBtn ) {
 		addNewBtn.classList.add( 'button' );
-		addNewBtn.classList.add( 'button-primary' );
+		addNewBtn.classList.add( 'button-secondary' );
 		addNewBtn.classList.add( 'button-large' );
 		addNewBtn.classList.add( 'srfm-add-new-btn' );
 		addNewBtn.setAttribute(

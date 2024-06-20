@@ -28,7 +28,7 @@ const SecurityPage = ( {
 					tabs={ [
 						{
 							name: 'srfm-captcha-tab-1',
-							title: __( 'reCaptcha', 'sureforms' ),
+							title: __( 'reCAPTCHA', 'sureforms' ),
 							className: 'srfm-captcha-tab-1',
 						},
 						{
@@ -51,7 +51,7 @@ const SecurityPage = ( {
 										<div className="srfm-sub-section-heading">
 											<h2>
 												{ __(
-													'Google reCaptcha',
+													'Google reCAPTCHA',
 													'sureforms'
 												) }
 											</h2>
@@ -85,6 +85,24 @@ const SecurityPage = ( {
 											</div>
 										</div>
 										<div className="srfm-sub-section-content">
+											<div
+												className="components-base-control srfm-components-input-control css-qy3gpb ej5x27r4"
+												style={ {
+													marginBottom: '0',
+												} }
+											>
+												<div className="components-base-control__field">
+													<label
+														className="components-base-control__label css-1v57ksj ej5x27r2"
+														htmlFor="srfm-style-2-tabs"
+													>
+														{ __(
+															'reCAPTCHA Type',
+															'sureforms'
+														) }
+													</label>
+												</div>
+											</div>
 											<TabPanel
 												className="srfm-style-2-tabs"
 												activeClass="active-tab"
@@ -111,7 +129,7 @@ const SecurityPage = ( {
 													{
 														name: 'srfm-captcha-tab-3',
 														title: __(
-															'v3 reCaptcha',
+															'v3 reCAPTCHA',
 															'sureforms'
 														),
 														className:

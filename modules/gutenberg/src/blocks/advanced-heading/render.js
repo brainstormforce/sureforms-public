@@ -12,11 +12,13 @@ const Render = ( props ) => {
 			separatorStyle,
 			separatorPosition,
 			headingDescPosition,
+			headingWrapper,
 		},
 		className,
 		deviceType,
 	} = props;
 
+	const Element = headingWrapper || 'div';
 	const separator = separatorStyle !== 'none' && (
 		<div className="uagb-separator-wrap">
 			<div className="uagb-separator"></div>
@@ -40,7 +42,7 @@ const Render = ( props ) => {
 	);
 
 	return (
-		<div
+		<Element
 			className={ uagbClassNames( [
 				className,
 				`wp-block-uagb-advanced-heading`,
@@ -57,7 +59,7 @@ const Render = ( props ) => {
 				? descText
 				: '' }
 			{ ! headingDescToggle && ! headingTitleToggle ? separator : '' }
-		</div>
+		</Element>
 	);
 };
 export default memo( Render );

@@ -4,14 +4,13 @@ import FormCustomCssPanel from './FormCustomCssPanel';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
-import parse from 'html-react-parser';
-import svgIcons from '@Image/single-form-logo.json';
 import EmailNotification from './email-settings/EmailNotification';
 import {
 	MdSecurity,
 	MdOutlineMailOutline,
 	MdOutlineCheckCircleOutline,
 	MdOutlineCode,
+	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
@@ -21,7 +20,6 @@ import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
 	const { sureformsKeys, targetTab } = props;
-	const integrationIcon = parse( svgIcons.integration );
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
@@ -61,16 +59,17 @@ const SingleFormSettingsPopup = ( props ) => {
 			{
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
-				icon: integrationIcon,
-				component: <Integrations
-					setSelectedTab={ setSelectedTab } />,
+				icon: <MdOutlineDashboardCustomize size={ 20 } />,
+				component: <Integrations setSelectedTab={ setSelectedTab } />,
 			},
 			{
 				id: 'form_custom_css',
 				title: __( 'Custom CSS', 'sureforms' ),
 				icon: <MdOutlineCode size={ 20 } />,
 				component: (
-					<FormCustomCssPanel formCustomCssData={ formCustomCssData } />
+					<FormCustomCssPanel
+						formCustomCssData={ formCustomCssData }
+					/>
 				),
 			},
 			/* can contain child tabs not linked to nav */
@@ -97,25 +96,29 @@ const SingleFormSettingsPopup = ( props ) => {
 	return (
 		<div className="srfm-setting-modal-container">
 			<div className="srfm-modal-sidebar">
-				{ tabs.map( ( tabItem, tabIndex ) => (
-					tabItem.parent === undefined && (
-						<div
-							key={ tabIndex }
-							className={ `srfm-modal-tab ${ ( tabItem.id === selectedTab || ( null !== parentTab && tabItem.id === parentTab ) )
-								? 'srfm-modal-tab-active'
-								: '' }`
-							}
-							onClick={ () => setSelectedTab( tabItem.id ) }
-						>
-							<span className="srfm-modal-tab-icon">
-								{ tabItem.icon }
-							</span>
-							<span className="srfm-modal-tab-text">
-								<p>{ tabItem.title }</p>
-							</span>
-						</div>
-					)
-				) ) }
+				{ tabs.map(
+					( tabItem, tabIndex ) =>
+						tabItem.parent === undefined && (
+							<div
+								key={ tabIndex }
+								className={ `srfm-modal-tab ${
+									tabItem.id === selectedTab ||
+									( null !== parentTab &&
+										tabItem.id === parentTab )
+										? 'srfm-modal-tab-active'
+										: ''
+								}` }
+								onClick={ () => setSelectedTab( tabItem.id ) }
+							>
+								<span className="srfm-modal-tab-icon">
+									{ tabItem.icon }
+								</span>
+								<span className="srfm-modal-tab-text">
+									<p>{ tabItem.title }</p>
+								</span>
+							</div>
+						)
+				) }
 			</div>
 			<SRFMToaster
 				containerClassName="srfm-single-form-toast-ctn"
@@ -125,9 +128,7 @@ const SingleFormSettingsPopup = ( props ) => {
 			/>
 			{ /* Modal Content */ }
 			<div className="srfm-modal-main">
-				{
-					tabs.find( ( { id } ) => id === selectedTab ).component
-				}
+				{ tabs.find( ( { id } ) => id === selectedTab ).component }
 			</div>
 		</div>
 	);
