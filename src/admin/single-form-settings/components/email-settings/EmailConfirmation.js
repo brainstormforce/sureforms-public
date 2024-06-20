@@ -217,20 +217,17 @@ const EmailConfirmation = ( props ) => {
 								) }
 							</div>
 						</div>
-						<div
-							className="srfm-modal-email-advanced-fields"
-
-						>
-							<h1
-								className="srfm-modal-email-advanced-fields-title"
-							>{ __( 'Advanced Fields', 'sureforms' ) }</h1>
-
-							<div
-								className="srfm-modal-email-advanced-fields-inner"
-							>
-								<div className="srfm-modal-input-box" style={ {
-									width: '100%',
-								} }>
+						<div className="srfm-modal-email-advanced-fields">
+							<h1 className="srfm-modal-email-advanced-fields-title">
+								{ __( 'Advanced Fields', 'sureforms' ) }
+							</h1>
+							<div className="srfm-modal-email-advanced-fields-inner">
+								<div
+									className="srfm-modal-input-box"
+									style={ {
+										width: '100%',
+									} }
+								>
 									<div className="srfm-modal-label">
 										<label htmlFor="srfm-email-notification-cc">
 											{ __( 'CC', 'sureforms' ) }
@@ -267,16 +264,18 @@ const EmailConfirmation = ( props ) => {
 										setTargetData={ ( tag ) =>
 											setFormData( {
 												...formData,
-												email_cc: formData.email_cc + tag,
+												email_cc:
+													formData.email_cc + tag,
 											} )
 										}
 									/>
 								</div>
-								<div className="srfm-modal-input-box"
-
+								<div
+									className="srfm-modal-input-box"
 									style={ {
 										width: '100%',
-									} }>
+									} }
+								>
 									<div className="srfm-modal-label">
 										<label htmlFor="srfm-email-notification-bcc">
 											{ __( 'BCC', 'sureforms' ) }
@@ -313,7 +312,8 @@ const EmailConfirmation = ( props ) => {
 										setTargetData={ ( tag ) =>
 											setFormData( {
 												...formData,
-												email_bcc: formData.email_bcc + tag,
+												email_bcc:
+													formData.email_bcc + tag,
 											} )
 										}
 									/>
@@ -357,13 +357,12 @@ const EmailConfirmation = ( props ) => {
 										setFormData( {
 											...formData,
 											email_reply_to:
-											formData.email_reply_to + tag,
+												formData.email_reply_to + tag,
 										} )
 									}
 								/>
 							</div>
 						</div>
-
 					</div>
 				</div>
 				<button
