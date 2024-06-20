@@ -11,8 +11,11 @@ function initializeNumberField() {
 					let inputValue = e.target.value;
 					switch ( formatType ) {
 						case 'none':
+							// step="any" allows decimal numbers eg: 1.000002, 5.5 etc
+							numberInput.setAttribute( 'step', 'any' );
 							return;
 						case 'decimal':
+							numberInput.setAttribute( 'step', 'any' );
 							return;
 						case 'non-decimal':
 							if ( inputValue.includes( '.' ) ) {
