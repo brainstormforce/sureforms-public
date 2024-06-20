@@ -578,5 +578,11 @@ $background_color: #f1f5f9;
 }
 
 .srfm-block-url {
+	font-size: 14px;
+	color: $primary_color;
+	text-decoration: none;
+}
+
+.srfm-block-url:hover {
 	color: $primary_color;
 }
