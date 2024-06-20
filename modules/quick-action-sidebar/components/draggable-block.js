@@ -137,6 +137,7 @@ const DraggableBlock = ( props ) => {
 						} }
 						draggable
 						onDragStart={ ( event ) => {
+							console.log( event.target.ownerDocument );
 							isDragging.current = true;
 							if ( onDraggableStart ) {
 								onDraggableStart( event );
