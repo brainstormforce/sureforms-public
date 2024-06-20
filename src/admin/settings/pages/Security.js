@@ -58,7 +58,7 @@ const SecurityPage = ( {
 											<p>
 												{
 													__(
-														'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form.',
+														'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
 														'sureforms'
 													)
 												}
@@ -328,7 +328,7 @@ const SecurityPage = ( {
 											<p>
 												{
 													__(
-														'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form.',
+														'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. ',
 														'sureforms'
 													)
 												}
@@ -494,7 +494,7 @@ const SecurityPage = ( {
 											<p>
 												{
 													__(
-														'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form.',
+														'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
 														'sureforms'
 													)
 												}
