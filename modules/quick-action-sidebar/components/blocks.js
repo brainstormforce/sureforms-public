@@ -70,6 +70,7 @@ const Blocks = ( {
 							defaultAllowedQuickSidebarBlocks,
 							updateDefaultAllowedQuickSidebarBlocks,
 							saveOptionToDatabase,
+							enableRearrange,
 						} }
 					/>
 				) ) }

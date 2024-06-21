@@ -37,6 +37,8 @@ const Sidebar = () => {
 			) {
 				setPopoverVisible( false );
 				setSorting( false );
+
+				setActiveTab( 0 );
 			}
 		};
 
@@ -169,6 +171,12 @@ const Sidebar = () => {
 														// getDefaultAllowedQuickSidebarBlocks={
 														// 	getDefaultAllowedQuickSidebarBlocks
 														// }
+														defaultAllowedQuickSidebarBlocks={
+															defaultAllowedQuickSidebarBlocks
+														}
+														saveOptionToDatabase={
+															saveOptionToDatabase
+														}
 													/>
 												) }
 												{ hovering === 'add' && (

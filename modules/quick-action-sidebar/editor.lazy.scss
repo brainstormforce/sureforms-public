@@ -6,6 +6,12 @@
 	width: 60px;
 	background: #1e1e1e;
 	color: #fff;
+	justify-content: center;
+
+	.srfm-ee-quick-access__sidebar--tabs-container {
+		position: fixed;
+		bottom: 35px;
+	}
 
 	// The sidebar inside the Quick Access area.
 	&__sidebar {
