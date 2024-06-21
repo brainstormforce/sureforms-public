@@ -4,9 +4,6 @@
 import { useState } from '@wordpress/element';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Icon } from '@wordpress/components';
-import getApiData from '@Controls/getApiData';
-import { compose } from '@wordpress/compose';
-import { withDispatch } from '@wordpress/data';
 
 function DragAndDropComponent( {
 	initialItems,
@@ -16,7 +13,9 @@ function DragAndDropComponent( {
 	const [ items, setItems ] = useState( initialItems );
 
 	const onDragEnd = ( result ) => {
-		if ( ! result.destination ) return;
+		if ( ! result.destination ) {
+			return;
+		}
 		const reorderedItems = Array.from( items );
 		const [ removed ] = reorderedItems.splice( result.source.index, 1 );
 		reorderedItems.splice( result.destination.index, 0, removed );

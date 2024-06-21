@@ -181,7 +181,7 @@ const Sidebar = () => {
 														<div className="block-title">
 															{ __(
 																'Add blocks to Quick Action Bar',
-																'ultimate-addons-for-gutenberg'
+																'sureforms'
 															) }
 														</div>
 													</Popover>
@@ -231,7 +231,7 @@ const Sidebar = () => {
 															<div className="block-title">
 																{ __(
 																	'Re-arrange block inside Quick Action Bar',
-																	'ultimate-addons-for-gutenberg'
+																	'sureforms'
 																) }
 															</div>
 														</Popover>
