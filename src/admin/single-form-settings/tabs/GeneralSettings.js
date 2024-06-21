@@ -180,6 +180,25 @@ function GeneralSettings( props ) {
 		select( editorStore ).getPermalink()
 	);
 
+	const singleSettings = [
+		{
+			id: 'form_confirmation',
+			title: __( 'Form Confirmation', 'sureforms' ),
+		},
+		{
+			id: 'email_notification',
+			title: __( 'Email Notification', 'sureforms' ),
+		},
+		{
+			id: 'compliance_settings',
+			title: __( 'Compliance Settings', 'sureforms' ),
+		},
+		{
+			id: 'integrations',
+			title: __( 'Integrations', 'sureforms' ),
+		},
+	];
+
 	return (
 		<>
 			<SRFMAdvancedPanelBody
@@ -475,11 +494,20 @@ function GeneralSettings( props ) {
 					</>
 				) }
 			</SRFMAdvancedPanelBody>
-			<FormBehaviorButton
-				settingName={ __( 'Form Behavior', 'sureforms' ) }
-				popupId="email_notification"
-				openModal={ openModal }
-			/>
+
+			{
+				singleSettings.map( ( set ) => {
+					return (
+						<SingleSettingButton
+							key={ set.id }
+							settingName={ set.title }
+							popupId={ set.id }
+							openModal={ openModal }
+						/>
+					);
+				} )
+			}
+
 			{ isOpen && (
 				<Modal
 					onRequestClose={ closeModal }
@@ -498,7 +526,7 @@ function GeneralSettings( props ) {
 	);
 }
 
-const FormBehaviorButton = ( { settingName, popupId, openModal } ) => {
+const SingleSettingButton = ( { settingName, popupId, openModal } ) => {
 	return (
 		<div className="srfm-custom-layout-panel components-panel__body">
 			<h2 className="components-panel__body-title">
