@@ -413,12 +413,12 @@ const FormConfirmSetting = ( { toast } ) => {
 														e.target.value,
 												} )
 											}
-											id="submission-type-1"
+											id="hide-form"
 											name="submission-type"
 										/>
 										<label
 											className="srfm-option-text"
-											htmlFor="submission-type-1"
+											htmlFor="hide-form"
 										>
 											{ __( 'Hide Form', 'sureforms' ) }
 										</label>
@@ -445,12 +445,12 @@ const FormConfirmSetting = ( { toast } ) => {
 														e.target.value,
 												} )
 											}
-											id="submission-type-2"
+											id="reset-form"
 											name="submission-type"
 										/>
 										<label
 											className="srfm-option-text"
-											htmlFor="submission-type-1"
+											htmlFor="reset-form"
 										>
 											{ __( 'Reset Form', 'sureforms' ) }
 										</label>
