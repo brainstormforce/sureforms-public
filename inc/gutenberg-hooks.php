@@ -138,7 +138,11 @@ class Gutenberg_Hooks {
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'SureForms', 'sureforms' ),
+				'title' => esc_html__( 'General Fields', 'sureforms' ),
+			],
+			[
+				'slug'  => 'sureforms-pro',
+				'title' => esc_html__( 'Advanced Fields', 'sureforms' ),
 			],
 		];
 
@@ -351,7 +355,7 @@ class Gutenberg_Hooks {
 	 * @param array<string>              $slugs The array of existing slugs.
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
 	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {

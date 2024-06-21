@@ -59,7 +59,7 @@ const Compliance = ( { complianceData } ) => {
 									'sureforms'
 								) }
 								help={ __(
-									'When enabled this form will never store Entries',
+									'When enabled this form will never store Entries.',
 									'sureforms'
 								) }
 								checked={
@@ -101,7 +101,7 @@ const Compliance = ( { complianceData } ) => {
 									<div>
 										<label className="components-flex-item components-flex-block components-toggle-control__label">
 											{ __(
-												'Specify how many days old entries will be deleted for this form',
+												'Set the automatic deletion period for entries in this form (in days)',
 												'sureforms'
 											) }
 										</label>
@@ -116,10 +116,19 @@ const Compliance = ( { complianceData } ) => {
 												complianceData[ 0 ]
 													.auto_delete_days
 											}
+											help={ __(
+												'Entries older than the days set will be deleted automatically.',
+												'sureforms'
+											) }
 											onChange={ ( value ) => {
+												value = parseInt( value );
+
 												if ( value < 0 ) {
 													value = 1;
 												}
+
+												value = value.toString();
+
 												handleToggle( {
 													id: 'auto_delete_days',
 													status: value,

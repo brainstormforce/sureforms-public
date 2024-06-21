@@ -60,11 +60,12 @@ class Generate_Form_Markup {
 	 * @param boolean    $show_title_current_page Boolean to show/hide form title.
 	 * @param string     $sf_classname additional class_name.
 	 * @param string     $post_type Contains post type.
+	 * @param boolean    $do_blocks Boolean to enable/disable parsing dynamic blocks.
 	 *
 	 * @return string|false
 	 * @since 0.0.1
 	 */
-	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post' ) {
+	public static function get_form_markup( $id, $show_title_current_page = true, $sf_classname = '', $post_type = 'post', $do_blocks = false ) {
 		if ( isset( $_GET['id'] ) && isset( $_GET['srfm_form_markup_nonce'] ) ) {
 			$nonce = isset( $_GET['srfm_form_markup_nonce'] ) ? sanitize_text_field( wp_unslash( $_GET['srfm_form_markup_nonce'] ) ) : '';
 			$id    = wp_verify_nonce( $nonce, 'srfm_form_markup' ) && ! empty( $_GET['srfm_form_markup_nonce'] ) ? Helper::get_integer_value( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) : '';
@@ -73,10 +74,15 @@ class Generate_Form_Markup {
 		}
 		do_action( 'srfm_localize_conditional_logic_data', $id );
 		$post = get_post( Helper::get_integer_value( $id ) );
+
+		$content = '';
+
 		if ( $post && ! empty( $post->post_content ) ) {
-			$content = apply_filters( 'the_content', $post->post_content ); //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
-		} else {
-			$content = '';
+			if ( ! empty( $do_blocks ) ) {
+				$content = do_blocks( $post->post_content );
+			} else {
+				$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- wordpress hook
+			}
 		}
 
 		$blocks            = parse_blocks( $content );
@@ -89,7 +95,7 @@ class Generate_Form_Markup {
 			$color_primary            = Helper::get_meta_value( $id, '_srfm_color1' );
 			$form_font_size           = Helper::get_meta_value( $id, '_srfm_fontsize' );
 			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
-			$is_page_break            = Helper::get_meta_value( $id, '_srfm_is_page_break' );
+			$is_page_break            = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
 			$form_confirmation        = get_post_meta( $id, '_srfm_form_confirmation' );
 			$confirmation_type        = '';
@@ -126,7 +132,7 @@ class Generate_Form_Markup {
 				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
 				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
 				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
-				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '6' ) . 'px';
+				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '4' ) . 'px';
 				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
 			} else {
 				$btn_bg_color = '';
@@ -180,16 +186,16 @@ class Generate_Form_Markup {
 
 			$primary_color = $color_primary;
 
-			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#1f2937' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#6b7280' );
+			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
+			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
-			$label_text_color_var = $label_text_color ? $label_text_color : '#1F2937';
+			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 
 			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
-			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#9CA3AF' );
+			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#94A3B8' );
 			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
 			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
 			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
@@ -272,7 +278,7 @@ class Generate_Form_Markup {
 			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
 				$title = ! empty( get_the_title( (int) $id ) ) ? get_the_title( (int) $id ) : '';
 				?>
-				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2> 
+				<h2 class="srfm-form-title"><?php echo esc_html( $title ); ?></h2>
 				<?php
 			}
 			?>
@@ -284,21 +290,18 @@ class Generate_Form_Markup {
 					<?php echo Helper::fetch_svg( 'instant-form-warning', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
 					</div>
 					<div class="srfm-wrn-text-ctn">
-						<span class="srfm-wrn-title">
-						<?php echo esc_html__( 'Please Enable Instant Form', 'sureforms' ); ?>
-						</span>
 						<span class="srfm-wrn-description">
-						<?php echo esc_html__( 'This is a preview. To view the forms in the frontend, activate the instant form from the editor settings.', 'sureforms' ); ?>
-						</span>
-						<a class="srfm-wrn-title" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
-							<?php echo esc_html__( 'Go to Settings', 'sureforms' ); ?>
+						<?php echo esc_html__( 'Enable the Instant Form in the editor from ', 'sureforms' ); ?>
+						<a class="srfm-wrn-link" href="<?php echo esc_url( admin_url( 'post.php?post=' . $id . '&action=edit' ) ); ?>">
+							<?php echo esc_html__( 'here.', 'sureforms' ); ?>
 						</a>
+						</span>
 					</div>
-				</div> 
+				</div>
 				<?php
 			}
 			?>
-				<form method="post" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
+				<form method="post" enctype="multipart/form-data" id="srfm-form-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-form <?php echo esc_attr( 'sureforms_form' === $post_type ? 'srfm-single-form ' : '' ); ?>"
 				form-id="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" after-submission="<?php echo esc_attr( $submission_action ); ?>" message-type="<?php echo esc_attr( $confirmation_type ? $confirmation_type : 'same page' ); ?>" success-url="<?php echo esc_attr( $success_url ? $success_url : '' ); ?>" ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" nonce="<?php echo esc_attr( wp_create_nonce( 'unique_validation_nonce' ) ); ?>"
 				>
 				<?php
@@ -306,21 +309,20 @@ class Generate_Form_Markup {
 					$global_setting_options = get_option( 'srfm_general_settings_options' );
 					$honeypot_spam          = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_honeypot'] ) ? $global_setting_options['srfm_honeypot'] : '';
 
-				if ( defined( 'SRFM_PRO_VER' ) ) {
-					if ( $is_page_break && 'none' !== $page_break_progress_type ) {
-						do_action( 'srfm_page_break_header', $id );
-					}
+				if ( $is_page_break && 'none' !== $page_break_progress_type ) {
+					do_action( 'srfm_page_break_header', $id );
 				}
 				?>
 
 				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" name="form-id">
 				<input type="hidden" value="" name="srfm-sender-email-field" id="srfm-sender-email">
+				<input type="hidden" value="<?php echo esc_attr( Helper::get_string_value( $is_page_break ) ); ?>" id="srfm-page-break">
 				<?php if ( $honeypot_spam ) : ?>
 					<input type="hidden" value="" name="srfm-honeypot-field">
 				<?php endif; ?>
 				<?php
 
-				if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
+				if ( $is_page_break ) {
 					do_action( 'srfm_page_break_pagination', $post, $id );
 				} else {
 					// phpcs:ignore
@@ -353,7 +355,7 @@ class Generate_Form_Markup {
 					<?php endif; ?>
 
 					<?php
-					if ( defined( 'SRFM_PRO_VER' ) && $is_page_break ) {
+					if ( $is_page_break ) {
 						do_action( 'srfm_page_break_btn', $id );
 					}
 					?>
@@ -379,9 +381,9 @@ class Generate_Form_Markup {
 							<?php
 						endif;
 						?>
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="srfm-button srfm-submit-button	<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-bg-color srfm-button srfm-submit-button ' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
-							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" 
+							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
 						<?php endif; ?>
 						>
@@ -395,7 +397,7 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
+			<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );
@@ -413,7 +415,7 @@ class Generate_Form_Markup {
 	 *
 	 * @param array<mixed> $form_data contains form data.
 	 * @param array<mixed> $submission_data contains submission data.
-	 * @since x.x.x
+	 * @since 0.0.3
 	 * @return string|false
 	 */
 	public static function get_confirmation_markup( $form_data = [], $submission_data = [] ) {

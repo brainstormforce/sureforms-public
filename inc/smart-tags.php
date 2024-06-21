@@ -440,7 +440,7 @@ class Smart_Tags {
 	 * @param string            $value tag.
 	 * @param array<mixed>|null $submission_data data from submission.
 	 * @param array<mixed>|null $form_data data from form.
-	 * @since  x.x.x
+	 * @since  0.0.3
 	 * @return mixed
 	 */
 	public static function parse_form_input( $value, $submission_data = null, $form_data = null ) {
@@ -459,10 +459,18 @@ class Smart_Tags {
 			return $replacement_data;
 		}
 		foreach ( $submission_data as $submission_item_key => $submission_item_value ) {
-			$label = explode( '-lbl-', $submission_item_key )[1];
-			$slug  = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$label      = explode( '-lbl-', $submission_item_key )[1];
+			$slug       = implode( '-', array_slice( explode( '-', $label ), 1 ) );
+			$block_type = explode( '-lbl-', $submission_item_key )[0];
 			if ( $slug === $target_slug ) {
-				$replacement_data = $submission_item_value;
+					// if $submission_item_value is an array, make a tag for each item.
+				if ( 0 === strpos( $block_type, 'srfm-upload' ) && is_array( $submission_item_value ) ) {
+					foreach ( $submission_item_value as $value ) {
+						$replacement_data .= '<a href=' . urldecode( $value ) . ' target="_blank">' . __( 'View', 'sureforms' ) . '</a><br>';
+					}
+				} else {
+					$replacement_data .= $submission_item_value;
+				}
 				break;
 			}
 		}
