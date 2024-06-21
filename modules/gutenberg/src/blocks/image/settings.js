@@ -219,6 +219,7 @@ export default function Settings( props ) {
 		captionLetterSpacingTablet,
 		captionLetterSpacingMobile,
 		captionLetterSpacingType,
+		disableLazyLoad,
 	} = attributes;
 
 	const { imageSizes } = useSelect(
@@ -490,6 +491,13 @@ export default function Settings( props ) {
 				backgroundImage={ { url } }
 				onRemoveImage={ onRemoveImage }
 				disableLabel={ true }
+			/>
+			<ToggleControl
+				label={ __( 'Disable Lazy Loading', 'sureforms' ) }
+				checked={ disableLazyLoad }
+				onChange={ () => {
+					setAttributes( { disableLazyLoad: ! disableLazyLoad } );
+				} }
 			/>
 			<MultiButtonsControl
 				setAttributes={ setAttributes }
