@@ -28,14 +28,11 @@ const PopoverModal = ( {
 		setSearchTerm( newSearchTerm );
 
 	const handleBlockClick = ( selectedBlock ) => {
-		// console.log( defaultAllowedQuickSidebarBlocks );
-
 		// You can handle the selected block here, e.g., add it to the state or perform other actions
 		const allowedBlocks = [
 			...defaultAllowedQuickSidebarBlocks,
 			selectedBlock.name,
 		];
-		// updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
 		saveOptionToDatabase( allowedBlocks );
 		// Increment uniqueId when removing a block
 		setUniqueId( ( prevUniqueId ) => prevUniqueId + 1 );

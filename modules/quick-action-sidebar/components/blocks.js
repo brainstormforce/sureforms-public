@@ -11,10 +11,8 @@ const Blocks = ( {
 	updateDefaultAllowedQuickSidebarBlocks,
 	saveOptionToDatabase,
 	enableRearrange,
-	// getDefaultAllowedQuickSidebarBlocks,
 } ) => {
 	const blocks = getBlockTypes();
-	// const { enableRearrange } = props;
 	const {
 		blockInsertionPoint,
 		getBlockRootClientId,

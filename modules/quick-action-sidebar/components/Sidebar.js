@@ -112,9 +112,6 @@ const Sidebar = () => {
 							}
 							saveOptionToDatabase={ saveOptionToDatabase }
 							enableRearrange={ isSorting }
-							// getDefaultAllowedQuickSidebarBlocks={
-							// 	getDefaultAllowedQuickSidebarBlocks
-							// }
 						/>
 					</div>
 				</div>
@@ -168,9 +165,6 @@ const Sidebar = () => {
 														updateDefaultAllowedQuickSidebarBlocks={
 															updateDefaultAllowedQuickSidebarBlocks
 														}
-														// getDefaultAllowedQuickSidebarBlocks={
-														// 	getDefaultAllowedQuickSidebarBlocks
-														// }
 														defaultAllowedQuickSidebarBlocks={
 															defaultAllowedQuickSidebarBlocks
 														}

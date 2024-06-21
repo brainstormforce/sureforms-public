@@ -6,7 +6,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Icon } from '@wordpress/components';
 import getApiData from '@Controls/getApiData';
 import { compose } from '@wordpress/compose';
-// import { STORE_NAME as storeName } from '@Store/constants';
 import { withDispatch } from '@wordpress/data';
 
 function DragAndDropComponent( {
@@ -26,8 +25,6 @@ function DragAndDropComponent( {
 		setItems( reorderedItems );
 		updateDefaultAllowedQuickSidebarBlocks( namesArray );
 	};
-
-	// saveOptionToDatabase( allowedBlocks );
 
 	return (
 		<DragDropContext onDragEnd={ onDragEnd }>
@@ -83,13 +80,3 @@ function DragAndDropComponent( {
 }
 
 export default DragAndDropComponent;
-// export default compose(
-// 	withDispatch( ( spectraQuickActionDispatch ) => {
-// 		return {
-// 			updateDefaultAllowedQuickSidebarBlocks: ( value ) =>
-// 				spectraQuickActionDispatch(
-// 					storeName
-// 				).updateDefaultAllowedQuickSidebarBlocks( value ),
-// 		};
-// 	} )
-// )( DragAndDropComponent );
