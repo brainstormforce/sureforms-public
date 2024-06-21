@@ -10,7 +10,7 @@ const EmailConfirmation = ( props ) => {
 	const backArrow = parse( svgIcons.leftArrow );
 	const [ formData, setFormData ] = useState( {
 		id: data.id || false,
-		status: data.status || false,
+		status: data.status || true,
 		is_raw_format: data.is_raw_format || false,
 		name: data.name || 'New Notification',
 		email_to: data.email_to || '',
