@@ -306,10 +306,23 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$actions['edit']   = $bulk_actions['edit'];
-		$actions['trash']  = $bulk_actions['trash'];
-		$actions['export'] = __( 'Export', 'sureforms' );
-		return $actions;
+
+		$white_listed_actions = [
+			'edit',
+			'trash',
+			'delete',
+			'untrash',
+		];
+
+		// remove all actions except white listed actions.
+		$bulk_actions = array_intersect_key( $bulk_actions, array_flip( $white_listed_actions ) );
+
+		// Add export action only if edit and trash actions are present in bulk actions.
+		if ( isset( $bulk_actions['edit'] ) && isset( $bulk_actions['trash'] ) ) {
+			$bulk_actions['export'] = __( 'Export', 'sureforms' );
+		}
+
+		return $bulk_actions;
 	}
 
 	/**
