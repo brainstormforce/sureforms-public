@@ -217,6 +217,7 @@ input:checked + .slider:before {
 	.srfm-import-btn {
 		vertical-align: baseline;
 		margin-left: 4px;
+		float: right;
 	}
 	@media screen and ( max-width: 782px ) {
 		.srfm-import-btn {

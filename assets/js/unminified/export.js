@@ -125,16 +125,15 @@ function importForm() {
 }
 
 function appendImportBtn() {
-	const searchElement = document.querySelector( '#search-submit' );
-	if ( searchElement ) {
-		const newElement = document.createElement( 'button' );
-		newElement.className = 'button button-secondary srfm-import-btn';
-		newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
-		searchElement.parentNode.insertBefore(
-			newElement,
-			searchElement.nextSibling
-		);
-	}
+	const attachmentElement = document.querySelector( '#posts-filter' );
+	const newElement = document.createElement( 'button' );
+
+	newElement.className = 'button button-secondary srfm-import-btn';
+	newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
+	attachmentElement.insertBefore(
+		newElement,
+		attachmentElement.firstChild
+	);
 }
 document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
