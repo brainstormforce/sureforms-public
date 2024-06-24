@@ -111,10 +111,10 @@ class Field_Mapping {
 			$merged_attributes = array_merge(
 				$common_attributes,
 				[
-					'label'       => $question['label'],
-					'required'    => $question['required'],
-					'placeholder' => $question['placeholder'],
-					'help'        => $question['helpText'],
+					'label'       => sanitize_text_field( $question['label'] ),
+					'required'    => filter_var( $question['required'], FILTER_VALIDATE_BOOLEAN ),
+					'placeholder' => sanitize_text_field( $question['placeholder'] ),
+					'help'        => sanitize_text_field( $question['helpText'] ),
 				]
 			);
 
@@ -132,7 +132,7 @@ class Field_Mapping {
 				case 'textarea':
 					// Check if helpText is provided.
 					if ( ! empty( $question['helpText'] ) ) {
-						$merged_attributes['textAreaHelpText'] = $question['helpText'];
+						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
 					$post_content .= '<!-- wp:srfm/textarea ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -155,7 +155,7 @@ class Field_Mapping {
 						$merged_attributes['allowedFormats'] = $question['allowedFormats'];
 					}
 					if ( ! empty( $question['fileSizeLimit'] ) ) {
-						$merged_attributes['fileSizeLimit'] = $question['fileSizeLimit'];
+						$merged_attributes['fileSizeLimit'] = filter_var( $question['fileSizeLimit'], FILTER_VALIDATE_INT );
 					}
 					$post_content .= '<!-- wp:srfm/upload ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -173,7 +173,7 @@ class Field_Mapping {
 					break;
 				case 'rating':
 					if ( ! empty( $question['helpText'] ) ) {
-						$merged_attributes['ratingBoxHelpText'] = $question['helpText'];
+						$merged_attributes['ratingBoxHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
 					$post_content .= '<!-- wp:srfm/rating ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
@@ -196,7 +196,7 @@ class Field_Mapping {
 						$merged_attributes['options'] = $question['fieldOptions'];
 					}
 					if ( ! empty( $question['singleSelection'] ) ) {
-						$merged_attributes['singleSelection'] = $question['singleSelection'];
+						$merged_attributes['singleSelection'] = filter_var( $question['singleSelection'], FILTER_VALIDATE_BOOLEAN );
 					}
 					$post_content .= '<!-- wp:srfm/multi-choice ' . wp_json_encode( $merged_attributes ) . ' /-->' . PHP_EOL;
 					break;
