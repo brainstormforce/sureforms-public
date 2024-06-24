@@ -10,7 +10,6 @@ import { getBlockTypes } from '@wordpress/blocks';
 const PopoverModal = ( {
 	closePopover,
 	defaultAllowedQuickSidebarBlocks,
-	updateDefaultAllowedQuickSidebarBlocks,
 	saveOptionToDatabase,
 } ) => {
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -33,7 +32,6 @@ const PopoverModal = ( {
 			...defaultAllowedQuickSidebarBlocks,
 			selectedBlock.name,
 		];
-		updateDefaultAllowedQuickSidebarBlocks( allowedBlocks );
 		saveOptionToDatabase( allowedBlocks );
 		// Increment uniqueId when removing a block
 		setUniqueId( ( prevUniqueId ) => prevUniqueId + 1 );
