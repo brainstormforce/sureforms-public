@@ -80,6 +80,8 @@ class Export {
 			];
 		}
 
+		// Unserialize the post metas that are serialized.
+		// This is needed because the post metas are serialized before saving.
 		foreach ( $posts as $key => $post ) {
 			$post_metas = isset( $post['post_meta'] ) && is_array( $post['post_meta'] ) ? $post['post_meta'] : [];
 			foreach ( $this->unserialized_post_metas as $meta_key ) {
@@ -151,6 +153,7 @@ class Export {
 				}
 				// Update post meta.
 				foreach ( $post_meta as $meta_key => $meta_value ) {
+					// Check if the meta key is one of the unserialized post metas then add it as is.
 					if ( in_array( $meta_key, $this->unserialized_post_metas, true ) ) {
 						add_post_meta( $post_id, $meta_key, $meta_value );
 					} else {
