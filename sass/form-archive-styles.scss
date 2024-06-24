@@ -259,3 +259,11 @@ input:checked + .slider:before {
 		}
 	}
 }
+
+.sureform-add-new-form {
+	.sureforms-add-new-form-container {
+		display: flex;
+		flex-direction: row-reverse;
+		gap: 12px;
+	}
+}

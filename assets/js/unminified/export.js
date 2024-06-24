@@ -125,15 +125,20 @@ function importForm() {
 }
 
 function appendImportBtn() {
-	const attachmentElement = document.querySelector( '#posts-filter' );
+	// checks whether current page is initial UI where no forms exists.
+	let attachmentElement = document.querySelector(
+		'.sureforms-add-new-form-container'
+	);
+
+	// Choose selector for form listing page.
+	if ( ! attachmentElement ) {
+		attachmentElement = document.querySelector( '#posts-filter' );
+	}
 	const newElement = document.createElement( 'button' );
 
 	newElement.className = 'button button-secondary srfm-import-btn';
 	newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
-	attachmentElement.insertBefore(
-		newElement,
-		attachmentElement.firstChild
-	);
+	attachmentElement.insertBefore( newElement, attachmentElement.firstChild );
 }
 document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
