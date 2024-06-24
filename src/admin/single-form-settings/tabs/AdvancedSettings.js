@@ -1,4 +1,4 @@
-import { SelectControl, PanelRow, ExternalLink } from '@wordpress/components';
+import { SelectControl, PanelRow, ExternalLink, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -6,6 +6,10 @@ import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
 import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
+import svgIcons from '@Image/single-form-logo.json';
+import parse from 'html-react-parser';
+import SingleSettingButton from '../../components/single-setting-button';
+import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 
 function AdvancedSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -32,6 +36,17 @@ function AdvancedSettings( props ) {
 	const [ sureformsHCaptchaSecret, setSureformsHCaptchaSecret ] = useState( '' );
 
 	const [ showErr, setShowErr ] = useState( false );
+
+	const [ isOpen, setOpen ] = useState( false );
+	const [ popupTab, setPopupTab ] = useState( false );
+
+	const openModal = ( e ) => {
+		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
+		setPopupTab( popupTabTarget );
+		setOpen( true );
+	};
+	const closeModal = () => setOpen( false );
+	const modalIcon = parse( svgIcons.modalLogo );
 
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -317,6 +332,25 @@ function AdvancedSettings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
+			<SingleSettingButton
+				settingName={ __( 'Custom CSS', 'sureforms' ) }
+				popupId={ 'form_custom_css' }
+				openModal={ openModal }
+			/>
+			{ isOpen && (
+				<Modal
+					onRequestClose={ closeModal }
+					title={ __( 'Form Behavior', 'sureforms' ) }
+					className="srfm-settings-modal"
+					icon={ modalIcon }
+					isFullScreen={ true }
+				>
+					<SingleFormSettingsPopup
+						sureformsKeys={ sureformsKeys }
+						targetTab={ popupTab }
+					/>
+				</Modal>
+			) }
 		</>
 	);
 }
