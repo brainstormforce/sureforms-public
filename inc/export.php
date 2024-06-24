@@ -25,6 +25,17 @@ class Export {
 	use Get_Instance;
 
 	/**
+	 * Unserialized post metas.
+	 *
+	 * @var array<string>
+	 */
+	public $unserialized_post_metas = [
+		'_srfm_conditional_logic',
+		'_srfm_email_notification',
+		'_srfm_form_confirmation',
+	];
+
+	/**
 	 * Constructor
 	 *
 	 * @since  0.0.1
@@ -68,6 +79,17 @@ class Export {
 				'post_meta' => $post_meta,
 			];
 		}
+
+		foreach ( $posts as $key => $post ) {
+			$post_metas = isset( $post['post_meta'] ) && is_array( $post['post_meta'] ) ? $post['post_meta'] : [];
+			foreach ( $this->unserialized_post_metas as $meta_key ) {
+				if ( isset( $post_metas[ $meta_key ] ) && is_array( $post_metas[ $meta_key ] ) ) {
+					$post_metas[ $meta_key ] = maybe_unserialize( $post_metas[ $meta_key ][0] );
+				}
+			}
+			$posts[ $key ]['post_meta'] = $post_metas;
+		}
+
 		wp_send_json( $posts );
 	}
 
@@ -104,22 +126,14 @@ class Export {
 			wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
 		}
 		foreach ( $data as $form_data ) {
-			$post_content = $form_data['post']['post_content'];
-			$post_title   = $form_data['post']['post_title'];
-			$post_meta    = $form_data['post_meta'];
-			$post_type    = $form_data['post']['post_type'];
+
+			// sanitize the data before saving.
+			$post_content = wp_kses_post( $form_data['post']['post_content'] );
+			$post_title   = sanitize_text_field( $form_data['post']['post_title'] );
+			$post_meta    = Helper::sanitize_recursively( 'wp_kses_post', $form_data['post_meta'] );
+			$post_type    = sanitize_text_field( $form_data['post']['post_type'] );
 
 			$post_content = addslashes( $post_content );
-
-			// Check if the post_meta has conditional logic and is an array.
-			if ( ! empty( $post_meta['_srfm_conditional_logic'] ) && is_array( $post_meta['_srfm_conditional_logic'] ) ) {
-				// Loop through the conditional logic and unserialize the value.
-				foreach ( $post_meta['_srfm_conditional_logic'] as $key => $value ) {
-					// Check if the value is serialized.
-					// if serialized then unserialize the value.
-					$post_meta['_srfm_conditional_logic'][ $key ] = maybe_unserialize( $value );
-				}
-			}
 
 			// Check if sureforms/form exists in post_content.
 			if ( 'sureforms_form' === $post_type ) {
@@ -137,7 +151,15 @@ class Export {
 				}
 				// Update post meta.
 				foreach ( $post_meta as $meta_key => $meta_value ) {
-					add_post_meta( $post_id, $meta_key, $meta_value[0] );
+					if ( in_array( $meta_key, $this->unserialized_post_metas, true ) ) {
+						add_post_meta( $post_id, $meta_key, $meta_value );
+					} else {
+						if ( is_array( $meta_value ) && isset( $meta_value[0] ) ) {
+							add_post_meta( $post_id, $meta_key, $meta_value[0] );
+						} else {
+							add_post_meta( $post_id, $meta_key, $meta_value );
+						}
+					}
 				}
 			} else {
 				http_response_code( 400 );
