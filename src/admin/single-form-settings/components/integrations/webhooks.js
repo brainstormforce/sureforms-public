@@ -4,7 +4,7 @@ import WebhookIconNew from '@Image/webhook_new.js';
 
 const UpgradeToPro = () => {
 	return (
-        <button className="srfm-button-secondary srfm-button-xs">
+		<button className="srfm-button-secondary-webhook srfm-button-xs">
 			{ __( 'Upgrade to Pro', 'sureforms' ) }
 		</button>
 	);
@@ -27,16 +27,16 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 						</div>
 					</div>
 
-                    <div className="srfm-modal-card-title">
-                        { __( 'Webhooks', 'sureforms' ) }
-                    </div>
+					<div className="srfm-modal-card-title">
+						{ __( 'Webhooks', 'sureforms' ) }
+					</div>
 
-                    <p className="srfm-modal-card-description">
-                        { __(
-                            'Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module.',
-                            'sureforms'
-                        ) }
-                    </p>
+					<p className="srfm-modal-card-description">
+						{ __(
+							'Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module.',
+							'sureforms'
+						) }
+					</p>
 				</div>
 
 				<div className="srfm-button">{ primaryButton }</div>
