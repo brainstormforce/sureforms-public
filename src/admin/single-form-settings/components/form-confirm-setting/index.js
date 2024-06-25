@@ -451,15 +451,11 @@ const FormConfirmSetting = ( { toast } ) => {
 														...data,
 														submission_action:
 														e.target.value,
-												} )
-											}
-											id="submission-type-2"
-											name="submission-type"
-										/>
-										<label
-											className="srfm-option-text"
-											htmlFor="submission-type-2"
-										>
+													} )
+												}
+												id="submission-type-2"
+												name="submission-type"
+											/>
 											{ __( 'Reset Form', 'sureforms' ) }
 										</div>
 									</label>
