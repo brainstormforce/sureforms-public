@@ -81,7 +81,7 @@ const EmailConfirmation = ( props ) => {
 				</div>
 				<div className="srfm-modal-inner-box">
 					<div className="srfm-modal-inner-box-text">
-						<h5>{ __( 'Confirmation', 'sureforms' ) }</h5>
+						<h5>{ __( 'Notification Settings', 'sureforms' ) }</h5>
 					</div>
 					<div className="srfm-modal-separator" />
 					<div className="srfm-modal-inner-box-content">
