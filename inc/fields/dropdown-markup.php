@@ -40,6 +40,7 @@ class Dropdown_Markup extends Base {
 		$this->slug             = 'dropdown';
 		$this->placeholder_html = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
 		$this->set_markup_properties();
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -57,7 +58,9 @@ class Dropdown_Markup extends Base {
 					<?php
 					if ( is_array( $this->options ) ) {
 						?>
-					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" tabindex="0" aria-hidden="true">
+					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
+					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" tabindex="0" aria-hidden="true">
 					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>

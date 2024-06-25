@@ -35,7 +35,7 @@ const IconGrid = () => (
 					icon={
 						<MdOutlineCalendarMonth size={ 24 } color="#B4B4B4" />
 					}
-					label={ __( 'Date & Time', 'sureforms' ) }
+					label={ __( 'Date & Time Picker', 'sureforms' ) }
 				/>
 				<IconBlock
 					icon={ <FaRegEyeSlash size={ 24 } color="#B4B4B4" /> }
@@ -43,7 +43,7 @@ const IconGrid = () => (
 				/>
 				<IconBlock
 					icon={ <RxSlider size={ 24 } color="#B4B4B4" /> }
-					label={ __( 'Slider', 'sureforms' ) }
+					label={ __( 'Number Slider', 'sureforms' ) }
 				/>
 			</div>
 			<div role="presentation">
@@ -73,7 +73,7 @@ const index = () => {
 		<>
 			<div className="block-editor-inserter__panel-header">
 				<h2 className="block-editor-inserter__panel-title">
-					{ __( 'Pro Fields', 'sureforms' ) }
+					{ __( 'SureForms Pro', 'sureforms' ) }
 				</h2>
 			</div>
 			<div className="srfm-upgrade-pro-btn-container">
@@ -84,7 +84,7 @@ const index = () => {
 						window.open( '/', '_blank' );
 					} }
 				>
-					{ __( 'Upgrade to unlock the Pro Fields', 'sureforms' ) }
+					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }
 				</button>
 			</div>
 			<IconGrid />

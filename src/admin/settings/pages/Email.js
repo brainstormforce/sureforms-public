@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	ToggleControl,
 	SelectControl,
-	TextareaControl,
+	TextControl,
 	Spinner,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
@@ -40,10 +40,14 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 				/>
 				{ emailTabOptions.srfm_email_summary && (
 					<>
-						<TextareaControl
-							label={ __( 'Email Send To', 'sureforms' ) }
+						<TextControl
+							label={ __( 'To', 'sureforms' ) }
+							help={ __(
+								'Comma separated values are also accepted.',
+								'sureforms'
+							) }
 							type="text"
-							className="srfm-components-input-control srfm-col-6"
+							className="srfm-components-input-control"
 							value={ emailTabOptions.srfm_email_sent_to }
 							onChange={ ( value ) =>
 								updateGlobalSettings(
@@ -56,7 +60,7 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 						<SelectControl
 							label={ __( 'Schedule Reports', 'sureforms' ) }
 							value={ emailTabOptions.srfm_schedule_report }
-							className="srfm-components-select-control srfm-col-6"
+							className="srfm-components-select-control"
 							onChange={ ( value ) =>
 								updateGlobalSettings(
 									'srfm_schedule_report',
@@ -67,12 +71,15 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 							options={ days }
 						/>
 						<button
-							className="button button-primary srfm-email-test-btn"
+							className="srfm-button-primary srfm-email-test-btn"
 							style={ {
 								backgroundColor: '#D54407',
 							} }
-							disabled={ sendingTestEmail }
 							onClick={ async () => {
+								if ( sendingTestEmail ) {
+									return;
+								}
+
 								setSendingTestEmail( true );
 								try {
 									await apiFetch( {
@@ -104,8 +111,8 @@ const EmailPage = ( { loading, emailTabOptions, updateGlobalSettings } ) => {
 							{ sendingTestEmail && (
 								<Spinner
 									style={ {
-										marginTop: '0',
-										color: '#D54407',
+										margin: '0',
+										color: '#FFFFFF',
 									} }
 								/>
 							) }
