@@ -4,7 +4,7 @@ import WebhookIconNew from '@Image/webhook_new.js';
 
 const UpgradeToPro = () => {
 	return (
-		<button className="srfm-button-secondary-webhook srfm-button-xs">
+		<button className="srfm-button-secondary srfm-button-xs">
 			{ __( 'Upgrade to Pro', 'sureforms' ) }
 		</button>
 	);
