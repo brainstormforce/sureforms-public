@@ -3,7 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import './webhooks';
-import IntegrationIcons from '@Image/integration_icons.js';
+import IntegrationIcons from '@Image/integration-icons.js';
 
 const Integrations = ( { setSelectedTab, setIframeUrl } ) => {
 	const cards = [
