@@ -3,20 +3,19 @@ import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import './webhooks';
+import IntegrationIcons from '@Image/integration_icons.js';
 
 const Integrations = ( { setSelectedTab, setIframeUrl } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
-			component: <AllIntegrations
-				setSelectedTab={ setSelectedTab }
-			/>,
+			component: <AllIntegrations setSelectedTab={ setSelectedTab } />,
 		},
 		{
-			title: __( 'Free Extension', 'sureforms' ),
-			component: <UpsellSureTriggers
-				{ ...{ setSelectedTab, setIframeUrl } }
-			/>,
+			title: __( 'Integrations via SureTriggers', 'sureforms' ),
+			component: (
+				<UpsellSureTriggers { ...{ setSelectedTab, setIframeUrl } } />
+			),
 		},
 	];
 	return (
@@ -198,7 +197,7 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
-		return __( 'Install', 'sureforms' );
+		return __( 'Install & Activate', 'sureforms' );
 	};
 
 	useEffect( () => {
@@ -207,21 +206,32 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 	}, [] );
 
 	return (
-		plugin &&
-		<div className="srfm-modal-upsell-message">
-			<div className="srfm-modal-upsell-message-content">
-				<img height="24px" src={ plugin.logo_full } alt="logo" />
-				<p>{ __( 'SureTriggers is a powerful automation platform that helps you connect all your plugins, apps, tools & automate everything!', 'sureforms' ) }</p>
+		plugin && (
+			<div className="srfm-modal-upsell-message">
+				<div className="srfm-modal-upsell-message-content">
+					<img height="24px" src={ plugin.logo_full } alt="logo" />
+					<p>
+						{ __(
+							'SureTriggers lets you connect your forms to over 600+ apps. With this integration you can automatically send form entries to your CRM, add subscribers to you email marketing platform, etc. Whatever you want SureForms and SureTriggers has you covered.',
+							'sureforms'
+						) }
+					</p>
+					<div className="srfm-buttons">
+						{
+							<button
+								className="srfm-button-primary"
+								onClick={ handlePluginActionTrigger }
+							>
+								{ CTA }
+							</button>
+						}
+					</div>
+				</div>
+				<div>
+					<IntegrationIcons />
+				</div>
 			</div>
-			<div className="srfm-buttons">
-				{ <button
-					className="srfm-button-primary"
-					onClick={ handlePluginActionTrigger }
-				>
-					{ CTA }
-				</button> }
-			</div>
-		</div>
+		)
 	);
 };
 

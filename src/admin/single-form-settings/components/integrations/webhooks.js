@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters, addFilter } from '@wordpress/hooks';
-import WebhookIcon from '@Image/webhook.js';
+import WebhookIconNew from '@Image/webhook_new.js';
 
 const UpgradeToPro = () => {
 	return (
-		<button className="srfm-button-primary"	>
+        <button className="srfm-button-secondary srfm-button-xs">
 			{ __( 'Upgrade to Pro', 'sureforms' ) }
 		</button>
 	);
@@ -18,22 +18,28 @@ const WebhooksCard = ( { setSelectedTab } ) => {
 	);
 	return (
 		<>
-			<div className="srfm-modal-card-content">
+			<div className="srfm-modal-card-content-webhook">
 				<div className="srfm-modal-card-content-inner">
-					<WebhookIcon />
-					<div>
-						<div className="srfm-modal-card-title">
-							{ __( 'Webhooks', 'sureforms' ) }
+					<div className="srfm-modal-card-wrapper">
+						<WebhookIconNew />
+						<div className="srfm-pro-badge">
+							{ __( 'Pro', 'sureforms' ) }
 						</div>
-						<p className="srfm-modal-card-description">
-							{ __( 'Broadcast your SureForms submission to any web API endpoint with the powerful webhook module.', 'sureforms' ) }
-						</p>
 					</div>
-				</div>
-				<div className="srfm-button">
-					{ primaryButton }
+
+                    <div className="srfm-modal-card-title">
+                        { __( 'Webhooks', 'sureforms' ) }
+                    </div>
+
+                    <p className="srfm-modal-card-description">
+                        { __(
+                            'Effortlessly broadcast your SureForms Submission to any web API endpoint with the advanced webhook module.',
+                            'sureforms'
+                        ) }
+                    </p>
 				</div>
 
+				<div className="srfm-button">{ primaryButton }</div>
 			</div>
 		</>
 	);
