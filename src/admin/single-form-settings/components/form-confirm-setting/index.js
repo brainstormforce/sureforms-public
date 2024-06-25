@@ -396,7 +396,7 @@ const FormConfirmSetting = ( { toast } ) => {
 								<div className="srfm-options-wrapper">
 									<label
 										className="srfm-option-label"
-										htmlFor="hide-form"
+										htmlFor="submission-type-1"
 									>
 										<div
 											className={ `srfm-option ${ data?.submission_action ===
@@ -420,7 +420,7 @@ const FormConfirmSetting = ( { toast } ) => {
 														e.target.value,
 													} )
 												}
-												id="hide-form"
+												id="submission-type-1"
 												name="submission-type"
 											/>
 
@@ -429,7 +429,7 @@ const FormConfirmSetting = ( { toast } ) => {
 									</label>
 									<label
 										className="srfm-option-label"
-										htmlFor="reset-form"
+										htmlFor="submission-type-2"
 									>
 										<div
 											className={ `srfm-option ${ data?.submission_action ===
@@ -453,7 +453,7 @@ const FormConfirmSetting = ( { toast } ) => {
 														e.target.value,
 													} )
 												}
-												id="reset-form"
+												id="submission-type-2"
 												name="submission-type"
 											/>
 
