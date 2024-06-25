@@ -36,11 +36,6 @@ const EmailConfirmation = ( props ) => {
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 
-	// Add the {all_data} smart tag at the end of the list.
-	if ( ! formSmartTags.some( ( tag ) => tag[ 0 ] === '{all_data}' ) ) {
-	  formSmartTags.push( [ '{all_data}', __( 'All Data', 'sureforms' ) ] );
-	}
-
 	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
 
 	// Remove the required error class from the input field on change
@@ -336,6 +331,7 @@ const EmailConfirmation = ( props ) => {
 										content={ formData.email_body }
 										formData={ formData }
 										setFormData={ setFormData }
+										allData={ true }
 									/>
 								) }
 							</div>

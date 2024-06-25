@@ -10,6 +10,7 @@ import { useRef } from '@wordpress/element';
 const Editor = ( {
 	handleContentChange,
 	content,
+	allData = false,
 } ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
 	const quillRef = useRef( null );
@@ -42,6 +43,10 @@ const Editor = ( {
 
 	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	let formSmartTagsAllData = {};
+	if ( allData ) {
+		formSmartTagsAllData = [ ...formSmartTags, [ '{all_data}', __( 'All Data', 'sureforms' ) ] ];
+	}
 
 	// Add inline style instead of classes.
 	Quill.register( Quill.import( 'attributors/style/align' ), true );
@@ -55,7 +60,7 @@ const Editor = ( {
 				tagsArray={
 					[
 						{
-							tags: formSmartTags,
+							tags: allData ? formSmartTagsAllData : formSmartTags,
 							label: __( 'Form input tags', 'sureforms' ),
 						},
 						{
