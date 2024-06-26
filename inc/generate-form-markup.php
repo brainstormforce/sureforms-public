@@ -415,7 +415,7 @@ class Generate_Form_Markup {
 					<div class="srfm-check-circle-icon">
 						<?php echo Helper::fetch_svg( 'check-circle', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
 					</div>
-					<h2><?php esc_attr_e( 'Thank you', 'sureforms' ); ?></h2>
+					<h2><?php esc_html_e( 'Thank you', 'sureforms' ); ?></h2>
 				</article>
 				<article class="srfm-success-box-subtxt">
 					<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
