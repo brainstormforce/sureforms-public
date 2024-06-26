@@ -35,6 +35,7 @@ const EmailConfirmation = ( props ) => {
 		? Object.entries( window.srfm_block_data.smart_tags_array_email )
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+
 	const formEmailSmartTags = window.sureforms?.formSpecificEmailSmartTags ?? [];
 
 	// Remove the required error class from the input field on change
@@ -330,6 +331,7 @@ const EmailConfirmation = ( props ) => {
 										content={ formData.email_body }
 										formData={ formData }
 										setFormData={ setFormData }
+										allData={ true }
 									/>
 								) }
 							</div>

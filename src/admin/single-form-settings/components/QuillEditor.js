@@ -10,7 +10,11 @@ import EditorToolbar, {
 	modules,
 } from './email-settings/EditorToolbar';
 
-const Editor = ( { handleContentChange, content } ) => {
+const Editor = ( {
+	handleContentChange,
+	content,
+	allData = false,
+} ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
 
 	const quillRef = useRef( null );
@@ -88,6 +92,10 @@ const Editor = ( { handleContentChange, content } ) => {
 		? Object.entries( window.srfm_block_data.smart_tags_array )
 		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	let formSmartTagsAllData = {};
+	if ( allData ) {
+		formSmartTagsAllData = [ ...formSmartTags, [ '{all_data}', __( 'All Data', 'sureforms' ) ] ];
+	}
 
 	// Add inline style instead of classes.
 	Quill.register( Quill.import( 'attributors/style/align' ), true );
@@ -98,16 +106,19 @@ const Editor = ( { handleContentChange, content } ) => {
 				icon={ dropdownIcon }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }
-				tagsArray={ [
-					{
-						tags: formSmartTags,
-						label: __( 'Form input tags', 'sureforms' ),
-					},
-					{
-						tags: genericSmartTags,
-						label: __( 'Generic tags', 'sureforms' ),
-					},
-				] }
+				tagsArray={
+					[
+						{
+							tags: allData ? formSmartTagsAllData : formSmartTags,
+							label: __( 'Form input tags', 'sureforms' ),
+						},
+						{
+							tags: genericSmartTags,
+							label: __( 'Generic tags', 'sureforms' ),
+						},
+					]
+
+				}
 				setTargetData={ insertSmartTag }
 			/>
 			<TabPanel
