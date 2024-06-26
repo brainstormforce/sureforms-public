@@ -12,7 +12,10 @@ import EditorToolbar, {
 
 const Editor = ( { handleContentChange, content } ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
+
 	const quillRef = useRef( null );
+	const textAreaRef = useRef( null );
+
 	const editorTabs = [
 		{
 			name: 'srfm-editor-visual',
@@ -26,7 +29,8 @@ const Editor = ( { handleContentChange, content } ) => {
 		},
 	];
 	const activeTabRef = useRef( 'srfm-editor-visual' );
-	const insertTextAtEnd = ( text ) => {
+
+	const visualEditorInsertText = ( text ) => {
 		const quillInstance = quillRef.current.getEditor();
 		let { index } = quillInstance.getSelection( true ); // Get the current cursor position.
 
@@ -46,9 +50,37 @@ const Editor = ( { handleContentChange, content } ) => {
 
 	const insertSmartTag = ( tag ) => {
 		if ( 'srfm-editor-visual' === activeTabRef.current ) {
-			insertTextAtEnd( tag );
+			visualEditorInsertText( tag );
 		} else {
-			handleContentChange( content + tag );
+			const textAreaInstance = textAreaRef.current;
+
+			// Get the cursor position.
+			const startPosition = textAreaInstance.selectionStart;
+			const endPosition = textAreaInstance.selectionEnd;
+
+			if ( ! startPosition && ! endPosition ) {
+				/**
+				 * If we are here, then it could mean editor is not in focus i.e. User did not click anywhere on the editor.
+				 * So, in this scenario, add the dynamic text at the end of the content.
+				 */
+				return handleContentChange( content + tag );
+			}
+
+			// Get the current text value.
+			const textValue = textAreaInstance.value;
+
+			// Insert the text at the cursor position.
+			textAreaInstance.value =
+				textValue.substring( 0, startPosition ) +
+				tag +
+				textValue.substring( endPosition );
+
+			// Update the cursor position to be after the inserted text.
+			textAreaInstance.selectionStart = textAreaInstance.selectionEnd =
+				startPosition + tag.length;
+
+			// Update the state.
+			handleContentChange( textAreaInstance.value );
 		}
 	};
 
@@ -105,6 +137,7 @@ const Editor = ( { handleContentChange, content } ) => {
 							return (
 								<textarea
 									id="srfm-editor-html"
+									ref={ textAreaRef }
 									onChange={ ( e ) =>
 										handleContentChange( e.target.value )
 									}
