@@ -1,16 +1,16 @@
-import ReactQuill, { Quill } from 'react-quill';
-import EditorToolbar, { modules, formats } from './email-settings/EditorToolbar';
-import { TabPanel } from '@wordpress/components';
 import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
-import { __ } from '@wordpress/i18n';
+import { TabPanel } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import parse from 'html-react-parser';
+import ReactQuill, { Quill } from 'react-quill';
+import EditorToolbar, {
+	formats,
+	modules,
+} from './email-settings/EditorToolbar';
 
-const Editor = ( {
-	handleContentChange,
-	content,
-} ) => {
+const Editor = ( { handleContentChange, content } ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
 	const quillRef = useRef( null );
 	const editorTabs = [
@@ -28,8 +28,20 @@ const Editor = ( {
 	const activeTabRef = useRef( 'srfm-editor-visual' );
 	const insertTextAtEnd = ( text ) => {
 		const quillInstance = quillRef.current.getEditor();
-		const length = quillInstance.getLength();
-		quillInstance.insertText( length - 1, text );
+		let { index } = quillInstance.getSelection( true ); // Get the current cursor position.
+
+		if ( ! index ) {
+			/**
+			 * If we are here, then it could mean editor is not in focus i.e. User did not click anywhere on the editor.
+			 * So, in this scenario, add the dynamic text at the end of the content.
+			 */
+			const length = quillInstance.getLength();
+			quillInstance.setSelection( length, 0 );
+
+			index = length - 1;
+		}
+
+		quillInstance.insertText( index, text );
 	};
 
 	const insertSmartTag = ( tag ) => {
@@ -40,7 +52,9 @@ const Editor = ( {
 		}
 	};
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array
+		? Object.entries( window.srfm_block_data.smart_tags_array )
+		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
 
 	// Add inline style instead of classes.
@@ -52,25 +66,21 @@ const Editor = ( {
 				icon={ dropdownIcon }
 				text={ __( 'Add Shortcode', 'sureforms' ) }
 				cssClass={ 'srfm-editor-dropdown' }
-				tagsArray={
-					[
-						{
-							tags: formSmartTags,
-							label: __( 'Form input tags', 'sureforms' ),
-						},
-						{
-							tags: genericSmartTags,
-							label: __( 'Generic tags', 'sureforms' ),
-						},
-					]
-
-				}
+				tagsArray={ [
+					{
+						tags: formSmartTags,
+						label: __( 'Form input tags', 'sureforms' ),
+					},
+					{
+						tags: genericSmartTags,
+						label: __( 'Generic tags', 'sureforms' ),
+					},
+				] }
 				setTargetData={ insertSmartTag }
-
 			/>
 			<TabPanel
 				activeClass="srfm-active-editor"
-				onSelect={ ( tabName ) => activeTabRef.current = tabName }
+				onSelect={ ( tabName ) => ( activeTabRef.current = tabName ) }
 				tabs={ editorTabs }
 				initialTabName={ activeTabRef.current }
 			>
@@ -86,9 +96,7 @@ const Editor = ( {
 										modules={ modules }
 										value={ content }
 										onChange={ ( newContent ) => {
-											handleContentChange(
-												newContent
-											);
+											handleContentChange( newContent );
 										} }
 									/>
 								</div>
@@ -102,8 +110,7 @@ const Editor = ( {
 									}
 									className="srfm-editor-textarea"
 									value={ content }
-								>
-								</textarea>
+								></textarea>
 							);
 						default:
 							return null;
