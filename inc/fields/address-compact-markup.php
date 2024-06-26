@@ -171,44 +171,63 @@ class Address_Compact_Markup extends Base {
 	 */
 	public function markup() {
 		ob_start(); ?>
-		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
-			<?php echo wp_kses_post( $this->label_markup ); ?>
-			<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" type="hidden" name="srfm-<?php echo esc_attr( $this->slug ); ?>-hidden-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"/>
-			<div class="srfm-block-wrap">
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-line-1" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-line-1" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->line_one_placeholder_attr ); ?> />
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-line-2" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-line-2" <?php echo wp_kses_post( $this->line_two_placeholder_attr ); ?> />
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-city" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-city" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->city_placeholder_attr ); ?> />
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-state" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-state" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->state_placeholder_attr ); ?> />
+				<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
+					<fieldset>	
+						<legend>
+							<?php echo wp_kses_post( $this->label_markup ); ?>
+						</legend>
+						<div class="srfm-block-wrap">
+						<input 
+						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" type="hidden"
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-hidden-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>"
+						/>
 
-				<?php
-				if ( is_array( $this->data ) ) {
-					?>
-				<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-country-wrap srfm-dropdown-common-wrap">
-					<select class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-country srfm-dropdown-common" autocomplete="country-name" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" aria-hidden="true">
-					<?php if ( $this->country_placeholder ) { ?>
-						<option class="srfm-dropdown-placeholder" value="" selected disabled hidden><?php echo esc_attr( $this->country_placeholder ); ?></option>
-					<?php } ?>
-					<?php
-					foreach ( $this->data as $country ) {
-						if ( is_array( $country ) && isset( $country['name'] ) ) {
+						<input 
+						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-line-1" type="text" 
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-line-1" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->line_one_placeholder_attr ); ?> 
+						/>
+
+						<input 
+						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-line-2" type="text" 
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-line-2" <?php echo wp_kses_post( $this->line_two_placeholder_attr ); ?> 
+						/>
+
+						<input 
+						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-city" type="text" 
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-city" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->city_placeholder_attr ); ?> />
+
+						<input 
+						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-state" type="text" 
+						name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-state" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->state_placeholder_attr ); ?> />
+
+						<?php
+						if ( is_array( $this->data ) ) {
 							?>
-						<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
+						<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-country-wrap srfm-dropdown-common-wrap">
+							<select class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-country srfm-dropdown-common" autocomplete="country-name" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" aria-hidden="true">
+							<?php if ( $this->country_placeholder ) { ?>
+							<option class="srfm-dropdown-placeholder" value="" selected disabled hidden><?php echo esc_attr( $this->country_placeholder ); ?></option>
+						<?php } ?>
 							<?php
-						}
-					}
-					?>
-					</select>
+							foreach ( $this->data as $country ) {
+								if ( is_array( $country ) && isset( $country['name'] ) ) {
+									?>
+							<option value="<?php echo esc_attr( strval( $country['name'] ) ); ?>"><?php echo esc_html( strval( $country['name'] ) ); ?></option>
+									<?php
+								}
+							}
+							?>
+							</select>
+						</div>
+							<?php } ?>
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-postal-code" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->postal_placeholder_attr ); ?> />
+					</div>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+					</fieldset>
 				</div>
-				<?php } ?>
-				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-postal-code" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->postal_placeholder_attr ); ?> />
-			</div>
-			<?php echo wp_kses_post( $this->help_markup ); ?>
-			<?php echo wp_kses_post( $this->error_msg_markup ); ?>
-		</div>
 		<?php
 
 		return ob_get_clean();
-
 	}
-
 }
