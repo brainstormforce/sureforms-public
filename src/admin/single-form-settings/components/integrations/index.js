@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import './webhooks';
 
-const Integrations = ( { setSelectedTab, setIframeUrl } ) => {
+const Integrations = ( { setSelectedTab } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -15,7 +15,7 @@ const Integrations = ( { setSelectedTab, setIframeUrl } ) => {
 		{
 			title: __( 'Free Extension', 'sureforms' ),
 			component: <UpsellSureTriggers
-				{ ...{ setSelectedTab, setIframeUrl } }
+				{ ...{ setSelectedTab } }
 			/>,
 		},
 	];
@@ -96,7 +96,7 @@ const EnableIntegrations = () => {
 	);
 };
 
-const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
+const UpsellSureTriggers = ( { setSelectedTab } ) => {
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
 
@@ -138,7 +138,6 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 				break;
 
 			default:
-				// window.open( plugin.redirection, '_blank' );
 				integrateWithSureTriggers();
 				break;
 		}
@@ -146,8 +145,9 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 
 	const integrateWithSureTriggers = () => {
 		const formData = new window.FormData();
-		formData.append( 'action', 'sureforms_test_integration' );
+		formData.append( 'action', 'sureforms_integration' );
 		formData.append( 'formId', srfm_admin.form_id );
+		formData.append( 'security', srfm_admin.suretriggers_nonce );
 
 		apiFetch( {
 			url: srfm_admin.ajax_url,
@@ -155,12 +155,14 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 			body: formData,
 		} ).then( ( data ) => {
 			if ( data.success ) {
-				console.log( data.data );
+				window.SureTriggersConfig = data.data.data;
 				setSelectedTab( 'suretriggers' );
-				setIframeUrl( data.data.iframe_url );
+			} else {
+				console.error( data.data.message );
 			}
 		} );
 	};
+
 	const activatePlugin = () => {
 		const formData = new window.FormData();
 		formData.append( 'action', 'sureforms_recommended_plugin_activate' );
@@ -175,7 +177,6 @@ const UpsellSureTriggers = ( { setSelectedTab, setIframeUrl } ) => {
 			if ( data.success ) {
 				setCTA( srfm_admin.plugin_activated_text );
 				setAction( '' );
-				// window.open( plugin.redirection, '_blank' );
 				integrateWithSureTriggers();
 				setTimeout( () => {
 					setCTA( getCTA( 'Activated' ) );
