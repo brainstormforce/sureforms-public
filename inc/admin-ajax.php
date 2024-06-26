@@ -235,6 +235,7 @@ class Admin_Ajax {
 
 		$secret_key = $suretriggers_data['secret_key'];
 		$base_url   = get_site_url();
+		$form_name  = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
 
 		$api_url = add_query_arg(
 			[
@@ -257,14 +258,20 @@ class Admin_Ajax {
 				'value'       => 'sureforms_form_submitted',
 				'description' => 'Runs when a form is submitted',
 			],
-			'summary'             => $form->post_title,
+			'summary'             => $form_name,
+			'selected_options'    => [
+				'form_id' => [
+					'value' => $form_id,
+					'label' => $form_name,
+				],
+			],
 			'integration'         => 'SureForms',
 			'sample_response'     => [
 				'form_id'   => $form_id,
 				'emails'    => [
 					'dev-email@wpengine.local',
 				],
-				'form_name' => $form->post_title,
+				'form_name' => $form_name,
 				'data'      => $this->get_form_fields( $form_id ),
 			],
 		];
