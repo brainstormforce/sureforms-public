@@ -233,6 +233,11 @@ const SureformsFormSpecificSettings = ( props ) => {
 				? 'wp-block-button'
 				: 'srfm-submit-btn-font-size';
 		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
+		// elements for submit button event listener
+		const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+		const styleTabElement = document.querySelectorAll('.srfm-inspector-tabs div')[1]; // Style Tab
+		const submitBtnStyleContainer = document.querySelector('.srfm-advance-panel-body-submit-button');
+		const submitBtnElement = submitBtnStyleContainer?.querySelector('button');
 
 		if ( elm ) {
 			if (
@@ -264,6 +269,13 @@ const SureformsFormSpecificSettings = ( props ) => {
 						placeholder={ __( 'Submit', 'sureforms' ) }
 					/>
 				);
+				button.addEventListener( 'click', () => {
+					editPostTab?.click();
+					styleTabElement?.click();
+					if ( ! submitBtnStyleContainer.classList.contains('is-opened') ) {
+						submitBtnElement?.click();
+					}
+				} );
 			}
 		}
 	}
