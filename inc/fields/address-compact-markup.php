@@ -175,7 +175,7 @@ class Address_Compact_Markup extends Base {
 					<fieldset>	
 						<legend>
 							<?php echo wp_kses_post( $this->label_markup ); ?>
-							</legend>
+						</legend>
 						<div class="srfm-block-wrap">
 						<input 
 						class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" type="hidden"
@@ -206,8 +206,8 @@ class Address_Compact_Markup extends Base {
 						<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-country-wrap srfm-dropdown-common-wrap">
 							<select class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-country srfm-dropdown-common" autocomplete="country-name" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" aria-hidden="true">
 							<?php if ( $this->country_placeholder ) { ?>
-								<option value="" selected disabled hidden><?php echo esc_attr( $this->country_placeholder ); ?></option>
-							<?php } ?>
+							<option class="srfm-dropdown-placeholder" value="" selected disabled hidden><?php echo esc_attr( $this->country_placeholder ); ?></option>
+						<?php } ?>
 							<?php
 							foreach ( $this->data as $country ) {
 								if ( is_array( $country ) && isset( $country['name'] ) ) {
@@ -219,13 +219,11 @@ class Address_Compact_Markup extends Base {
 							?>
 							</select>
 						</div>
-							<?php
-						}
-						?>
+							<?php } ?>
 						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-postal-code" autocomplete="postal-code" type="text" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-postal-code" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->postal_placeholder_attr ); ?> />
 					</div>
 					<?php echo wp_kses_post( $this->help_markup ); ?>
-					<?php echo wp_kses_post( $this->error_msg_markup ); ?>		
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
 					</fieldset>
 				</div>
 		<?php
