@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import './webhooks';
 
-const Integrations = ( { setSelectedTab } ) => {
+const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -15,7 +15,14 @@ const Integrations = ( { setSelectedTab } ) => {
 		{
 			title: __( 'Free Extension', 'sureforms' ),
 			component: <UpsellSureTriggers
-				{ ...{ setSelectedTab } }
+				{ ...{
+					setSelectedTab,
+					action,
+					setAction,
+					CTA,
+					setCTA,
+				}
+				}
 			/>,
 		},
 	];
@@ -96,10 +103,7 @@ const EnableIntegrations = () => {
 	);
 };
 
-const UpsellSureTriggers = ( { setSelectedTab } ) => {
-	const [ action, setAction ] = useState();
-	const [ CTA, setCTA ] = useState();
-
+const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } ) => {
 	const plugin = srfm_admin?.integrations?.find( ( item ) => {
 		return 'suretriggers' === item.slug;
 	} );
@@ -177,10 +181,11 @@ const UpsellSureTriggers = ( { setSelectedTab } ) => {
 			if ( data.success ) {
 				setCTA( srfm_admin.plugin_activated_text );
 				setAction( '' );
-				integrateWithSureTriggers();
 				setTimeout( () => {
+					setAction( 'sureforms_integrate_with_suretriggers' );
 					setCTA( getCTA( 'Activated' ) );
-				}, 3000 );
+					integrateWithSureTriggers();
+				}, 2000 );
 			}
 		} );
 	};
@@ -203,9 +208,15 @@ const UpsellSureTriggers = ( { setSelectedTab } ) => {
 	};
 
 	useEffect( () => {
-		setAction( getAction( plugin.status ) );
-		setCTA( getCTA( plugin.status ) );
+		if ( ! action ) {
+			setAction( getAction( plugin.status ) );
+			setCTA( getCTA( plugin.status ) );
+		}
 	}, [] );
+
+	useEffect( () => {
+		console.log( action );
+	}, [ action ] );
 
 	return (
 		plugin &&

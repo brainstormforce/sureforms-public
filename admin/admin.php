@@ -488,7 +488,7 @@ class Admin {
 		);
 
 		/**
-		 * Engueuing SureTriggers Integration script.
+		 * Enqueuing SureTriggers Integration script.
 		 * This script loads suretriggers iframe in Intergations tab.
 		 */
 		if ( SRFM_FORMS_POST_TYPE === $current_screen->post_type ) {

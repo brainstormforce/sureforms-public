@@ -242,7 +242,7 @@ class Generate_Form_Markup {
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
 					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
 					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
-					--srfm-shadow-color : <?php echo esc_html( $primary_color_var . '30' ); ?>;
+					--srfm-shadow-color : <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
 					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
