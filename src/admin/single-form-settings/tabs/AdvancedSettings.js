@@ -8,7 +8,7 @@ import SRFMTextControl from '@Components/text-control';
 import apiFetch from '@wordpress/api-fetch';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import SingleSettingButton from '../../components/single-setting-button';
+import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 
 function AdvancedSettings( props ) {
@@ -332,7 +332,7 @@ function AdvancedSettings( props ) {
 					) }
 				</p>
 			</SRFMAdvancedPanelBody>
-			<SingleSettingButton
+			<FormBehaviorPopupButton
 				settingName={ __( 'Custom CSS', 'sureforms' ) }
 				popupId={ 'form_custom_css' }
 				openModal={ openModal }

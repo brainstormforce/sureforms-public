@@ -1,4 +1,4 @@
-const SingleSettingButton = ( { settingName, popupId, openModal } ) => {
+const FormBehaviorPopupButton = ( { settingName, popupId, openModal } ) => {
 	return (
 		<div className="srfm-custom-layout-panel components-panel__body">
 			<h2 className="components-panel__body-title">
@@ -40,4 +40,4 @@ const SingleSettingButton = ( { settingName, popupId, openModal } ) => {
 	);
 };
 
-export default SingleSettingButton;
+export default FormBehaviorPopupButton;

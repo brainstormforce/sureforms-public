@@ -19,7 +19,7 @@ import Range from '@Components/range/Range.js';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
-import SingleSettingButton from '../../components/single-setting-button';
+import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -499,7 +499,7 @@ function GeneralSettings( props ) {
 			{
 				singleSettings.map( ( set ) => {
 					return (
-						<SingleSettingButton
+						<FormBehaviorPopupButton
 							key={ set.id }
 							settingName={ set.title }
 							popupId={ set.id }
