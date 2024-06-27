@@ -167,7 +167,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 											<tbody>
 												{
 													emailNotificationData && emailNotificationData.map( ( el, i ) => {
-														const top = -27 + ( i * 40 );
+														const top = -27 + ( i * 37 );
 														return (
 															<div key={ el.id } className="srfm-modal-row-body">
 																<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
