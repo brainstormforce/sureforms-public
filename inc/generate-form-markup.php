@@ -51,16 +51,6 @@ class Generate_Form_Markup {
 				'permission_callback' => '__return_true',
 			]
 		);
-
-		register_rest_route(
-			'sureforms/v1',
-			'/form-fields',
-			[
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'get_form_fields' ],
-				'permission_callback' => '__return_true',
-			]
-		);
 	}
 
 	/**
@@ -252,7 +242,7 @@ class Generate_Form_Markup {
 					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
 					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
 					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
-					--srfm-shadow-color : <?php echo esc_html( $primary_color_var . '30' ); ?>;
+					--srfm-shadow-color : <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
 					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
@@ -468,50 +458,6 @@ class Generate_Form_Markup {
 		$confirmation_message = $smart_tags->process_smart_tags( $confirmation_data['message'], $submission_data, $form_data );
 
 		return $confirmation_message;
-
-	}
-
-	public function get_form_fields() {
-		if ( empty( $_GET['form_id'] ) ) {
-			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
-		}
-
-		$form_id = Helper::get_integer_value( sanitize_text_field( $_GET['form_id'] ) );
-
-		if ( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
-			wp_send_json( [ 'message' => 'Invalid form_id.' ] );
-		}
-
-		$post = get_post( $form_id );
-
-		$blocks = parse_blocks( $post->post_content );
-
-		if ( empty( $blocks ) ) {
-			wp_send_json( [ 'message' => 'No data found for this id.' ] );
-		}
-
-		$data = [];
-
-		foreach ( $blocks as $block ) {
-			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
-				if ( ! empty( $block['attrs']['slug'] ) ) {
-					$data[ $block['attrs']['slug'] ] = ! empty( $block['attrs']['label'] ) ? $block['attrs']['label'] : wp_rand( 10, 1000 );
-				}
-			}
-		}
-
-		if ( empty( $data ) ) {
-			wp_send_json( [ 'message' => 'No data found for this id.' ] );
-		}
-
-		$response = [
-			'integration_name' => 'SureForms',
-			'event_name'       => 'sureforms_form_submitted',
-			'form_id'          => $form_id,
-			'data'             => $data,
-		];
-
-		wp_send_json( $response );
 
 	}
 }

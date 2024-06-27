@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl, TabPanel } from '@wordpress/components';
+import { TextControl, TabPanel, ExternalLink } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -56,10 +56,19 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the reCAPTCHA feature on your SureForms, Please select the Security type as Google reCAPTCHA in the form settings and select the version you want to use. Add Google reCAPTCHA secret and site key here. reCAPTCHA will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													__(
+														'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -317,10 +326,20 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the Turnstile feature on your SureForms, Please select the Security type as Cloudflare Turnstile in the form settings. Add Cloudflare Turnstile secret and site key here. Turnstile will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													__(
+														'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -473,10 +492,19 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the hCaptcha feature on your SureForms, Please select the Security type as hCaptcha in the form settings. Add the hCaptcha secret and site key here. hCaptcha will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													__(
+														'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a

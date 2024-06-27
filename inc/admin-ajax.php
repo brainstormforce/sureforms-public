@@ -36,9 +36,9 @@ class Admin_Ajax {
 	public function __construct() {
 		add_action( 'wp_ajax_sureforms_recommended_plugin_activate', [ $this, 'required_plugin_activate' ] );
 		add_action( 'wp_ajax_sureforms_recommended_plugin_install', 'wp_ajax_install_plugin' );
-		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
+		add_action( 'wp_ajax_sureforms_integration', [ $this, 'generate_data_for_suretriggers_integration' ] );
 
-		add_action( 'wp_ajax_sureforms_test_integration', [ $this, 'send_test_data_to_suretriggers' ] );
+		add_filter( SRFM_SLUG . '_admin_filter', [ $this, 'localize_script_integration' ] );
 	}
 
 	/**
@@ -139,6 +139,7 @@ class Admin_Ajax {
 				'isRTL'                  => is_rtl(),
 				'current_screen_id'      => get_current_screen() ? get_current_screen()->id : '',
 				'form_id'                => get_post() ? get_post()->ID : '',
+				'suretriggers_nonce'     => wp_create_nonce( 'suretriggers_nonce' ),
 			]
 		);
 	}
@@ -185,7 +186,7 @@ class Admin_Ajax {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param  string $plugin_init_file Plguin init file.
+	 * @param  string $plugin_init_file Plugin init file.
 	 * @return string
 	 */
 	public static function get_plugin_status( $plugin_init_file ) {
@@ -201,100 +202,109 @@ class Admin_Ajax {
 		}
 	}
 
-	public function send_test_data_to_suretriggers() {
+	/**
+	 * Generates data required for suretriggers integration
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function generate_data_for_suretriggers_integration() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'You do not have permission to access this page.' ] );
+		}
+
+		if ( ! check_ajax_referer( 'suretriggers_nonce', 'security', false ) ) {
+			wp_send_json_error( [ 'message' => 'Invalid nonce.' ] );
+		}
+
 		if ( empty( $_POST['formId'] ) ) {
 			wp_send_json_error( [ 'message' => 'Form ID is required.' ] );
 		}
 
 		$suretriggers_data = get_option( 'suretrigger_options', [] );
-		if ( empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
+		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
 			wp_send_json_error( [ 'message' => 'SureTriggers is not configured properly.' ] );
 		}
 
-		$form_id = Helper::get_integer_value( sanitize_text_field( $_POST['formId'] ) );
+		$form_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_POST['formId'] ) ) );
+		$form    = get_post( $form_id );
 
-		$form = get_post( $form_id );
+		if ( is_null( $form ) || SRFM_FORMS_POST_TYPE !== $form->post_type ) {
+			wp_send_json_error( [ 'message' => __( 'Invalid form ID.', 'sureforms' ) ] );
+		}
 
-		$secret_key = '1007|OodR3OTaZksvUEMHf7u2JlpbSzojOOkPRgzqyRkbc3b69013'; // $suretriggers_data['secret_key'];
-		$api_url    = 'https://api-qaing.suretriggers.com/automation/embeded/create';
-		$header     = [
-			'Content-Type'  => 'application/json',
-			'Authorization' => 'Bearer ' . $secret_key,
-			'Accept'        => 'application/json',
-		];
+		$secret_key = $suretriggers_data['secret_key'];
+		$base_url   = get_site_url();
+		$form_name  = ! empty( $form->post_title ) ? $form->post_title : 'SureForms id: ' . $form_id;
 
-		$base_url = 'https://tested-tatiya-nd.zipwp.link'; // get_site_url();
-
-		$body = [
-			'event'                    => [
-				'label'             => 'Form Submitted',
-				'value'             => 'sureforms_form_submitted',
-				'description'       => 'Runs when a form is submitted',
-				'schedule_callback' => false,
+		$api_url = add_query_arg(
+			[
+				'redirect_url' => 'https://qaing.suretriggers.com/embed-login',
+				'st-code'      => $secret_key,
+				'base_url'     => $base_url,
+				'reset_url'    => base64_encode( $base_url ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode, required as we need to encode base url for suretriggers.
 			],
-			'connection_base_url'      => $base_url,
-			'summery'                  => $form->post_title,
-			'integration'              => 'SureForms',
-			'integration_display_name' => 'SureForms',
-			'form_data'                => [
-				'success'   => '1',
+			'https://qaing.suretriggers.com/wp-login'
+		);
+
+		// This is the format of data required by SureTriggers for adding iframe in target id.
+		$body = [
+			'client_id'           => 'SureForms',
+			'st_embed_url'        => $api_url,
+			'embedded_identifier' => $form_id,
+			'target'              => 'suretriggers-iframe-wrapper', // div where we want SureTriggers to add iframe should have this target id.
+			'event'               => [
+				'label'       => 'Form Submitted',
+				'value'       => 'sureforms_form_submitted',
+				'description' => 'Runs when a form is submitted',
+			],
+			'summary'             => $form_name,
+			'selected_options'    => [
+				'form_id' => [
+					'value' => $form_id,
+					'label' => $form_name,
+				],
+			],
+			'integration'         => 'SureForms',
+			'sample_response'     => [
 				'form_id'   => $form_id,
 				'emails'    => [
 					'dev-email@wpengine.local',
 				],
-				'form_name' => $form->post_title,
-				'message'   => '<p>Form submitted successfully!</p>',
+				'form_name' => $form_name,
 				'data'      => $this->get_form_fields( $form_id ),
 			],
 		];
 
-		if ( ! empty( $_POST['force'] ) ) {
-			$body['force_create'] = sanitize_text_field( $_POST['force'] );
-		}
-
-		$request = wp_remote_post(
-			$api_url,
-			[
-				'headers' => $header,
-				'body'    => json_encode( $body ),
-			]
-		);
-
-		if ( is_wp_error( $request ) ) {
-			wp_send_json_error( [ 'message' => 'Error while sending test data to SureTriggers.' ] );
-		}
-
-		$data = json_decode( wp_remote_retrieve_body( $request ) );
-		if ( empty( $data->data->iframe_url ) ) {
-			wp_send_json_error( [ 'message' => 'Error while sending test data to SureTriggers.' ] );
-		}
-		$iframe_url = add_query_arg(
-			[
-				'st-code'   => $secret_key,
-				'base_url'  => $base_url,
-				'reset_url' => base64_encode( $base_url ),
-			],
-			$data->data->iframe_url
-		);
-
 		wp_send_json_success(
 			[
-				'message'    => 'success',
-				'iframe_url' => $iframe_url,
+				'message' => 'success',
+				'data'    => $body,
 			]
 		);
 	}
 
+	/**
+	 * This function populates data for particular form.
+	 *
+	 * @param  int $form_id Form ID.
+	 * @since x.x.x
+	 * @return array<mixed>
+	 */
 	public function get_form_fields( $form_id ) {
-		if ( empty( $form_id ) ) {
+		if ( empty( $form_id ) || ! is_int( $form_id ) ) {
 			return [];
 		}
 
-		if ( 0 === $form_id || SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
+		if ( SRFM_FORMS_POST_TYPE !== get_post_type( $form_id ) ) {
 			return [];
 		}
 
 		$post = get_post( $form_id );
+
+		if ( is_null( $post ) ) {
+			return [];
+		}
 
 		$blocks = parse_blocks( $post->post_content );
 
@@ -307,7 +317,7 @@ class Admin_Ajax {
 		foreach ( $blocks as $block ) {
 			if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'srfm/' ) ) {
 				if ( ! empty( $block['attrs']['slug'] ) ) {
-					$data[ $block['attrs']['slug'] ] = ! empty( $block['attrs']['label'] ) ? $block['attrs']['label'] : wp_rand( 10, 1000 );
+					$data[ $block['attrs']['slug'] ] = $this->get_sample_data( $block['blockName'] );
 				}
 			}
 		}
@@ -318,6 +328,48 @@ class Admin_Ajax {
 
 		return $data;
 
+	}
+
+	/**
+	 * Returns sample data for a block.
+	 *
+	 * @param  string $block_name Block name.
+	 * @since x.x.x
+	 * @return mixed
+	 */
+	public function get_sample_data( $block_name ) {
+		if ( empty( $block_name ) ) {
+			return 'Sample data';
+		}
+
+		$dummy_data = [
+			'srfm/input'            => 'Sample input data',
+			'srfm/email'            => 'dummy@example.com',
+			'srfm/textarea'         => 'Sample textarea data',
+			'srfm/number'           => 123,
+			'srfm/checkbox'         => 'checkbox value',
+			'srfm/gdpr'             => 'GDPR value',
+			'srfm/phone'            => '1234567890',
+			'srfm/address'          => 'Address data',
+			'srfm/address-compact'  => 'Address data',
+			'srfm/dropdown'         => 'Selected dropdown option',
+			'srfm/multi-choice'     => [ 'Option 1', 'Option 2', 'Option 3' ],
+			'srfm/radio'            => 'Selected radio option',
+			'srfm/submit'           => 'Submit',
+			'srfm/url'              => 'https://example.com',
+			'srfm/date-time-picker' => '2022-01-01 12:00:00',
+			'srfm/hidden'           => 'Hidden Value',
+			'srfm/number-slider'    => 50,
+			'srfm/password'         => 'DummyPassword123',
+			'srfm/rating'           => 4,
+			'srfm/upload'           => 'https://example.com/uploads/file.pdf',
+		];
+
+		if ( ! empty( $dummy_data[ $block_name ] ) ) {
+			return $dummy_data[ $block_name ];
+		} else {
+			return 'Sample data';
+		}
 	}
 }
 

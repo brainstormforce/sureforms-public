@@ -29,7 +29,8 @@ const SingleFormSettingsPopup = ( props ) => {
 	);
 
 	const [ parentTab, setParentTab ] = useState( null );
-	const [ iframeUrl, setIframeUrl ] = useState( '' );
+	const [ action, setAction ] = useState();
+	const [ CTA, setCTA ] = useState();
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -40,41 +41,33 @@ const SingleFormSettingsPopup = ( props ) => {
 				title: __( 'Email Notification', 'sureforms' ),
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
-					<EmailNotification
-						emailNotificationData={ emailNotificationData }
-						toast={ toast }
-					/>
+					<EmailNotification { ...{ emailNotificationData, toast } } />
 				),
 			},
 			{
 				id: 'form_confirmation',
 				title: __( 'Form Confirmation', 'sureforms' ),
 				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-				component: <FormConfirmSetting toast={ toast } />,
+				component: <FormConfirmSetting { ...{ toast } } />,
 			},
 			{
 				id: 'compliance_settings',
 				title: __( 'Compliance Settings', 'sureforms' ),
 				icon: <MdSecurity size={ 20 } />,
-				component: <Compliance complianceData={ complianceData } />,
+				component: <Compliance { ...{ complianceData } } />,
 			},
 			{
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
 				icon: <MdOutlineDashboardCustomize size={ 20 } />,
-				component: <Integrations
-					setSelectedTab={ setSelectedTab }
-					setIframeUrl={ setIframeUrl }
-				/>,
+				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA } } />,
 			},
 			{
 				id: 'form_custom_css',
 				title: __( 'Custom CSS', 'sureforms' ),
 				icon: <MdOutlineCode size={ 20 } />,
 				component: (
-					<FormCustomCssPanel
-						formCustomCssData={ formCustomCssData }
-					/>
+					<FormCustomCssPanel { ...{ formCustomCssData } } />
 				),
 			},
 			{
@@ -82,15 +75,7 @@ const SingleFormSettingsPopup = ( props ) => {
 				parent: 'integrations',
 				title: __( 'SureTriggers', 'sureforms' ),
 				icon: {},
-				component: <Suretriggers
-					{
-						...{
-							setSelectedTab,
-							iframeUrl,
-							setIframeUrl,
-						}
-					}
-				/>,
+				component: <Suretriggers { ...{ setSelectedTab } } />,
 			},
 			/* can contain child tabs not linked to nav */
 			/* add parent nav id for child tabs */

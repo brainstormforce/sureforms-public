@@ -29,4 +29,6 @@ define( 'SRFM_SLUG', 'srfm' );
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
 
+define( 'SRFM_SURETRIGGERS_INTERGATION_JS_URL', 'https://qaing.suretriggers.com/js/embed.js' );
+
 require_once 'plugin-loader.php';
