@@ -97,7 +97,7 @@ class Helper {
 	public static function get_field_type_from_key( $field_key ) {
 
 		if ( false === strpos( $field_key, '-lbl-' ) ) {
-			return;
+			return '';
 		}
 
 		return trim( explode( '-', $field_key )[1] );
@@ -107,7 +107,7 @@ class Helper {
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
-	 * @return string Returns sanitize callbacks according to the provided field type.
+	 * @return callable Returns sanitize callbacks according to the provided field type.
 	 * @since x.x.x
 	 */
 	public static function get_field_type_sanitize_function( $field_type ) {
@@ -128,8 +128,8 @@ class Helper {
 	/**
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
-	 * @param array $form_data User submitted form data.
-	 * @return array $result Sanitized form data.
+	 * @param array<mixed> $form_data User submitted form data.
+	 * @return array<mixed> $result Sanitized form data.
 	 * @since x.x.x
 	 */
 	public static function sanitize_by_field_type( $form_data ) {
