@@ -9,19 +9,19 @@ function initializeNumberField() {
 					const formatType =
 						numberInput.getAttribute( 'format-type' );
 					let inputValue = e.target.value;
-					if ( formatType === 'none' ) {
-						return;
+					switch ( formatType ) {
+						case 'none':
+						case 'decimal':
+							// step="any" allows decimal numbers eg: 1.000002, 5.5 etc
+							numberInput.setAttribute( 'step', 'any' );
+							break;
+						case 'non-decimal':
+							if ( inputValue.includes( '.' ) ) {
+								inputValue = inputValue?.replace( '.', '' );
+								numberInput.value = inputValue;
+							}
+							break;
 					}
-					if ( formatType === 'non-decimal' ) {
-						inputValue = inputValue?.replace( /[^0-9]/g, '' );
-					} else {
-						inputValue = inputValue?.replace( /[^0-9.]/g, '' );
-						const dotCount = inputValue?.split( '.' ).length - 1;
-						if ( dotCount > 1 ) {
-							inputValue = inputValue?.replace( /\.+$/g, '' );
-						}
-					}
-					numberInput.value = inputValue;
 				} );
 			}
 		} );
