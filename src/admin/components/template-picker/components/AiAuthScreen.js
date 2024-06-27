@@ -86,76 +86,91 @@ const AiAuthScreen = () => {
 		<>
 			<Header />
 			<div className="srfm-ts-main-container srfm-content-section">
-				{	isAuthorized ? <Spinner className="srfm-ts-loader" /> : <div className="srfm-ai-auth-ctn">
-					<div className="srfm-ai-auth-ctn-inner">
-						<div className="srfm-ai-auth-txt-ctn">
-							<h1 className="srfm-ai-auth-title">
-								{ __( 'Building Forms with AI', 'sureforms' ) }
-							</h1>
-							<p className="srfm-ai-auth-sub-title">
-								{ __(
-									'Here is how the AI Form Builder Works:',
-									'sureforms'
-								) }
-							</p>
-							<ol className="srfm-ai-auth-list">
-								<li>
+				{ isAuthorized ? (
+					<Spinner className="srfm-ts-loader" />
+				) : (
+					<div className="srfm-ai-auth-ctn">
+						<div className="srfm-ai-auth-ctn-inner">
+							<div className="srfm-ai-auth-txt-ctn">
+								<div className="srfm-ai-auth-header">
+									<h1 className="srfm-ai-auth-title">
+										{ __(
+											'Building Forms with AI',
+											'sureforms'
+										) }
+									</h1>
+									<p className="srfm-ai-auth-title-description">
+										{ __(
+											' SureForms, along with ZipWP offers AI form building capabilities to help you build your forms 10x faster.',
+											'sureforms'
+										) }
+									</p>
+								</div>
+								<p className="srfm-ai-auth-sub-title">
 									{ __(
-										'Create a free account on ZipWP to connect with our AI.',
+										'Here is how the AI Form Builder Works:',
 										'sureforms'
 									) }
-								</li>
-								<li>
-									{ __(
-										'Describe the form you want to create in words.',
-										'sureforms'
-									) }
-								</li>
-								<li>
-									{ __(
-										'Watch as our AI crafts your form instantly.',
-										'sureforms'
-									) }
-								</li>
-								<li>
-									{ __(
-										'Refine the form with our easy drag & drop builder.',
-										'sureforms'
-									) }
-								</li>
-								<li>{ __( 'Launch.', 'sureforms' ) }</li>
-							</ol>
-							<Button
-								onClick={ authorizeZipAI }
-								className="srfm-ai-auth-btn"
-								disabled={ disableAuthButton }
-							>
-								<span className="srfm-ai-auth-btn-txt">
-									{ __(
-										`Let's Get Started. It's Free`,
-										'sureforms'
-									) }
-								</span>
-								<MdArrowForward color="white" size={ 20 } />
-							</Button>
-							<Link
-								to={ {
-									location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-									search: `?page=add-new-form`,
-								} }
-								className="srfm-ai-auth-back-btn"
-							>
-								<MdKeyboardBackspace size={ 20 } />
-								<span className="srfm-ai-auth-back-btn-txt">
-									{ __( 'Back', 'sureforms' ) }
-								</span>
-							</Link>
-						</div>
-						<div>
-							<img src={ aiAuthPlaceholder } alt="AI Auth" />
+								</p>
+								<ol className="srfm-ai-auth-list">
+									<li>
+										{ __(
+											'Create a free account on ZipWP to connect with our AI.',
+											'sureforms'
+										) }
+									</li>
+									<li>
+										{ __(
+											'Describe the form you want to create in words.',
+											'sureforms'
+										) }
+									</li>
+									<li>
+										{ __(
+											'Watch as our AI crafts your form instantly.',
+											'sureforms'
+										) }
+									</li>
+									<li>
+										{ __(
+											'Refine the form with our easy drag & drop builder.',
+											'sureforms'
+										) }
+									</li>
+									<li>{ __( 'Launch.', 'sureforms' ) }</li>
+								</ol>
+								<Button
+									onClick={ authorizeZipAI }
+									className="srfm-ai-auth-btn"
+									disabled={ disableAuthButton }
+								>
+									<span className="srfm-ai-auth-btn-txt">
+										{ __(
+											`Let's Get Started. It's Free`,
+											'sureforms'
+										) }
+									</span>
+									<MdArrowForward color="white" size={ 20 } />
+								</Button>
+								<Link
+									to={ {
+										location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
+										search: `?page=add-new-form`,
+									} }
+									className="srfm-ai-auth-back-btn"
+								>
+									<MdKeyboardBackspace size={ 20 } />
+									<span className="srfm-ai-auth-back-btn-txt">
+										{ __( 'Back', 'sureforms' ) }
+									</span>
+								</Link>
+							</div>
+							<div>
+								<img src={ aiAuthPlaceholder } alt="AI Auth" />
+							</div>
 						</div>
 					</div>
-				</div> }
+				) }
 			</div>
 		</>
 	);
