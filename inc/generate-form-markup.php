@@ -411,15 +411,7 @@ class Generate_Form_Markup {
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
 			<div class="srfm-single-form srfm-success-box in-page">
-				<article class="srfm-success-box-header">
-					<div class="srfm-check-circle-icon">
-						<?php echo Helper::fetch_svg( 'check-circle', '' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg. ?>
-					</div>
-					<h2><?php esc_html_e( 'Thank you', 'sureforms' ); ?></h2>
-				</article>
-				<article class="srfm-success-box-subtxt">
-					<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
-				</article>
+				<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
 			</div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';

@@ -251,49 +251,50 @@
 
 	.srfm-success-box {
 		display: none;
-		text-align: center;
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
 		color: var( --srfm-body-input-color );
+		min-height: 40vh;
 		p {
 			margin: 0;
-			padding: 0;
-			width: 100%;
 		}
-		min-height: 40vh;
 
 		&.srfm-active {
 			display: flex;
 		}
-
-		.srfm-success-box-header {
-			.srfm-check-circle-icon {
-				display: block;
-				max-width: 36px;
-				width: 100%;
-				text-align: center;
-				margin: 0 auto;
-
-				svg {
-					stroke: #16a34a;
-				}
-			}
-
-			h2 {
-				font-size: 1.2em;
-				line-height: 32px;
-				font-weight: 600;
-				margin-top: 0;
-				margin-bottom: 0.2em;
-				color: var( --srfm-body-input-color );
-			}
+		div {
+			width: 100%;
 		}
 
+		@mixin default-styles {
+			text-align: center;
+			font-family: inherit;
+		}
 		.srfm-success-box-description {
 			font-size: 0.9em;
 			font-weight: 400;
 			line-height: 26px;
+			color: var( --srfm-body-input-color );
+
+			img {
+				padding-bottom: 1em;
+			}
+
+			.default-h2 {
+				@include default-styles;
+				font-size: 1.334em;
+				line-height: 32px;
+				font-weight: 600;
+				margin-top: 0;
+				margin-bottom: 0.2em;
+				padding-bottom: 0.3332em;
+			}
+			.default-p {
+				@include default-styles;
+				font-size: 18px;
+				line-height: 26px;
+			}
 		}
 	}
 }

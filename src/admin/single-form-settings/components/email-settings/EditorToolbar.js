@@ -93,6 +93,7 @@ export const QuillToolbar = () => (
 			<select className="ql-background" />
 			<button className="ql-link" />
 			<button className="ql-clean" />
+			<button className="ql-image" />
 			<button className="ql-undo">
 				<CustomUndo />
 			</button>
