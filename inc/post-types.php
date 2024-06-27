@@ -73,7 +73,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
+			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a></div>';
 		}
 
 		echo '</div>';
@@ -306,10 +306,23 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$actions['edit']   = $bulk_actions['edit'];
-		$actions['trash']  = $bulk_actions['trash'];
-		$actions['export'] = __( 'Export', 'sureforms' );
-		return $actions;
+
+		$white_listed_actions = [
+			'edit',
+			'trash',
+			'delete',
+			'untrash',
+		];
+
+		// remove all actions except white listed actions.
+		$bulk_actions = array_intersect_key( $bulk_actions, array_flip( $white_listed_actions ) );
+
+		// Add export action only if edit and trash actions are present in bulk actions.
+		if ( isset( $bulk_actions['edit'] ) && isset( $bulk_actions['trash'] ) ) {
+			$bulk_actions['export'] = __( 'Export', 'sureforms' );
+		}
+
+		return $bulk_actions;
 	}
 
 	/**

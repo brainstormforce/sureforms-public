@@ -450,7 +450,7 @@ const FormConfirmSetting = ( { toast } ) => {
 										/>
 										<label
 											className="srfm-option-text"
-											htmlFor="submission-type-1"
+											htmlFor="submission-type-2"
 										>
 											{ __( 'Reset Form', 'sureforms' ) }
 										</label>
