@@ -112,7 +112,7 @@ class Helper {
 	 */
 	public static function get_field_type_sanitize_function( $field_type ) {
 		$callbacks = apply_filters(
-			'sureforms_field_type_sanitize_functions',
+			'srfm_field_type_sanitize_functions',
 			[
 				'url'      => 'esc_url_raw',
 				'input'    => 'sanitize_text_field',
