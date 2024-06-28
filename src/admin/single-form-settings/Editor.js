@@ -597,7 +597,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							{ __( 'SureForms', 'sureforms' ) }
 						</h2>
 						<span className="block-editor-block-card__description">
-							{ __( 'Customize with SureForms.', 'sureforms' ) }
+							{ __( 'Customize with SureForms', 'sureforms' ) }
 						</span>
 					</div>
 				</div>
