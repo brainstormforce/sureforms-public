@@ -155,7 +155,8 @@ body.post-type-sureforms_form {
 		width: 100%;
 		font-family: inherit;
 		.block-editor-block-list__layout {
-			font-size: var( --srfm-font-size );
+			// font-size: var( --srfm-font-size ); will be used in the future.
+			font-size: 20px;
 		}
 	}
 
