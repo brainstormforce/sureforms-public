@@ -184,7 +184,7 @@ class Admin {
 	public function add_settings_link( $links, $file ) {
 		if ( 'sureforms/sureforms.php' === $file ) {
 			$settings_link = '<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '">' . esc_html__( 'Settings', 'sureforms' ) . '</a>';
-			array_push( $links, $settings_link );
+			array_unshift( $links, $settings_link );
 		}
 		return $links;
 	}
