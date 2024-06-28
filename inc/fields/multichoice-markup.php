@@ -90,23 +90,25 @@ class Multichoice_Markup extends Base {
 		$check_svg = Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $this->slug . '-icon' );
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
-		<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
-		<?php echo wp_kses_post( $this->label_markup ); ?>
-			<?php if ( is_array( $this->options ) ) { ?>
-				<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
-					<?php foreach ( $this->options as $i => $option ) { ?>
-						<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
-							<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
-							<div class="srfm-block-content-wrap">
-								<?php echo $check_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-								<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
-							</div>
-						</label>
+			<fieldset>
+				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
+				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
+					<?php if ( is_array( $this->options ) ) { ?>
+						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
+							<?php foreach ( $this->options as $i => $option ) { ?>
+								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
+									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
+									<div class="srfm-block-content-wrap">
+										<?php echo $check_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+										<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
+									</div>
+								</label>
+							<?php } ?>
+						</div>
 					<?php } ?>
-				</div>
-			<?php } ?>
-		<?php echo wp_kses_post( $this->help_markup ); ?>
-		<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
+				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+			</fieldset>
 		</div>
 		<?php
 		return ob_get_clean();

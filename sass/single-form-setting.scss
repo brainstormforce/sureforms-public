@@ -250,12 +250,34 @@ $req_err_color: #dc2625;
 						align-self: stretch;
 						background-color: #ffff;
 
+						.srfm-modal-email-advanced-fields {
+							width: 100%;
+
+							.srfm-modal-email-advanced-fields-title {
+								font-size: 16px;
+								font-weight: 600;
+								line-height: 24px;
+								text-align: left;
+								margin: 0;
+								margin-bottom: 12px;
+							}
+
+							.srfm-modal-email-advanced-fields-inner {
+								display: flex;
+								justify-content: space-between;
+								gap: 20px;
+								width: 100%;
+								margin-bottom: 20px;
+							}
+						}
+
 						.srfm-key-value-pairs {
 							width: 100%;
 						}
 
 						.srfm-modal-input-box {
 							display: flex;
+							flex-direction: column;
 							align-items: center;
 							gap: 10px;
 							align-self: stretch;
@@ -263,7 +285,8 @@ $req_err_color: #dc2625;
 
 							.srfm-scroll-dropdown {
 								position: absolute;
-								right: 2px;
+								right: -5px;
+								bottom: 1px;
 
 								.has-icon {
 									&:focus:not( :disabled ) {
@@ -273,7 +296,7 @@ $req_err_color: #dc2625;
 							}
 
 							.srfm-modal-label {
-								width: 144px;
+								width: 100%;
 								color: var( --dashboard-heading, #1e293b );
 								font-size: 14px;
 								font-style: normal;
@@ -290,6 +313,7 @@ $req_err_color: #dc2625;
 								font-size: 14px;
 								color: #64748b;
 								height: 40px;
+								width: 100%;
 								padding: 10px 8px 10px 16px;
 								align-items: center;
 								gap: 116px;
@@ -757,7 +781,7 @@ $req_err_color: #dc2625;
 									width: 192px;
 									transform-origin: center bottom;
 									z-index: 999;
-									left: 616px;
+									left: 636px;
 
 									p {
 										padding: 0;
@@ -822,6 +846,23 @@ $req_err_color: #dc2625;
 							}
 						}
 					}
+				}
+
+				.srfm-modal-inner-footer-button {
+					display: flex;
+					padding: 9px 13px;
+					justify-content: center;
+					align-items: center;
+					border-radius: 6px;
+					background: var( --dashboard-primary, $primary_color );
+					box-shadow: 0px 1px 2px 0px rgba( 0, 0, 0, 0.05 );
+					color: var( --dashboard-surface-secondary, #fff );
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 500;
+					line-height: 16px;
+					border: none;
+					cursor: pointer;
 				}
 			}
 
