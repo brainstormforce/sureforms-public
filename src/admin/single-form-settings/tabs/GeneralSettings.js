@@ -228,6 +228,16 @@ function GeneralSettings( props ) {
 					title={ __( 'Page Break', 'sureforms' ) }
 					initialOpen={ false }
 				>
+					<ToggleControl
+						label={ __( 'Show Labels', 'sureforms' ) }
+						checked={ sureformsKeys._srfm_page_break_toggle_label }
+						onChange={ ( value ) => {
+							updateMeta(
+								'_srfm_page_break_toggle_label',
+								value
+							);
+						} }
+					/>
 					<SRFMTextControl
 						label={ __( 'First Page Label', 'sureforms' ) }
 						value={ sureformsKeys._srfm_first_page_label }
@@ -268,18 +278,6 @@ function GeneralSettings( props ) {
 						}
 						__nextHasNoMarginBottom
 					/>
-
-					<ToggleControl
-						label={ __( 'Show Labels', 'sureforms' ) }
-						checked={ sureformsKeys._srfm_page_break_toggle_label }
-						onChange={ ( value ) => {
-							updateMeta(
-								'_srfm_page_break_toggle_label',
-								value
-							);
-						} }
-					/>
-
 					<SRFMTextControl
 						data={ {
 							value: sureformsKeys._srfm_previous_button_text,

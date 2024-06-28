@@ -35,3 +35,9 @@ if ( submitButton ) {
 		}
 	}
 }
+// eslint-disable-next-line
+function onSuccess( response ) {
+	if ( 0 !== response.length ) {
+		document.querySelector( '#captcha-error' ).style.display = 'none';
+	}
+}

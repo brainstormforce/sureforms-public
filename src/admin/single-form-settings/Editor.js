@@ -91,7 +91,7 @@ const defaultKeys = {
 	_srfm_page_break_button_text_color: '#ffffff',
 	_srfm_page_break_button_border_color: '#ffffff',
 	_srfm_page_break_button_border_width: 0,
-	_srfm_page_break_button_border_radius: 6,
+	_srfm_page_break_button_border_radius: 4,
 	_srfm_page_break_button_bg_type: 'filled',
 
 	// Advanced Tab
