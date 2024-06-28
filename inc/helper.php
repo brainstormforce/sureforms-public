@@ -116,6 +116,7 @@ class Helper {
 			[
 				'url'      => 'esc_url_raw',
 				'input'    => 'sanitize_text_field',
+				'number'   => [ __CLASS__, 'sanitize_number' ],
 				'email'    => 'sanitize_email',
 				'textarea' => 'sanitize_textarea_field',
 			]
@@ -123,6 +124,28 @@ class Helper {
 
 		return isset( $callbacks[ $field_type ] ) ? $callbacks[ $field_type ] : 'sanitize_text_field';
 
+	}
+
+	/**
+	 * Sanitizes a numeric value.
+	 *
+	 * This function checks if the input value is numeric. If it is numeric, it sanitizes
+	 * the value to ensure it's a float or integer, allowing for fractions and thousand separators.
+	 * If the value is not numeric, it sanitizes it as a text field.
+	 *
+	 * @param mixed $value The value to be sanitized.
+	 *
+	 * @return integer|float|string The sanitized value.
+	 * @since x.x.x
+	 */
+	public static function sanitize_number( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			/** @phpstan-ignore-next-line */
+			return sanitize_text_field( $value ); // If it is not numeric, then let user get some sanitized data to view.
+		}
+
+		/** @phpstan-ignore-next-line */
+		return sanitize_text_field( filter_var( $value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) );
 	}
 
 	/**
