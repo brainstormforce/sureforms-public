@@ -336,14 +336,14 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
-
+					<div class="srfm-captcha-container">
 					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
 							wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
 							?>
-							<div class='g-recaptcha'  recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
+							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
 						<?php endif; ?>
 
 						<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
@@ -373,7 +373,7 @@ class Generate_Form_Markup {
 							]
 						);
 						?>
-						<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
 						<?php
 					endif;
 
@@ -381,10 +381,12 @@ class Generate_Form_Markup {
 						// hCaptcha script.
 						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 						?>
-						<div id="srfm-hcaptcha-sitekey" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
+						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
 						<?php
 					endif;
 					?>
+					<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+					</div>
 
 					<?php
 					if ( $is_page_break ) {
