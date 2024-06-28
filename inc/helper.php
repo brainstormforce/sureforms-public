@@ -139,10 +139,10 @@ class Helper {
 				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" data-error-msg="' . $error_msg . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . esc_attr( $duplicate_msg ) . '>' . esc_html( $error_msg ) . '</div>' : '';
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
@@ -448,7 +448,7 @@ class Helper {
 	/**
 	 * Get forms options. Shows all the available forms in the dropdown.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @param string $key Determines the type of data to return.
 	 * @return array<mixed>
 	 */
@@ -484,7 +484,7 @@ class Helper {
 	/**
 	 * Get all the forms.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<mixed>
 	 */
 	public static function get_sureforms_title_with_ids() {

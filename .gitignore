@@ -38,3 +38,5 @@ assets/js/minified/*
 
 #lockfiles
 .DS_Store
+
+.dccache

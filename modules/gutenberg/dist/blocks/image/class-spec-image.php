@@ -711,6 +711,10 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 					'type'    => 'boolean',
 					'default' => false,
 				],
+				'disableLazyLoad'             => [
+					'type'    => 'boolean',
+					'default' => false,
+				],
 			];
 
 			$advaned_image_border_attr         = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'image' );
@@ -759,8 +763,8 @@ if ( ! class_exists( 'Advanced_Image' ) ) {
 			$image .= ' width="' . ( $attributes['width'] ? esc_attr( $attributes['width'] ) : esc_attr( $attributes['naturalWidth'] ) )
 				. '" height="' . ( $attributes['height'] ? esc_attr( $attributes['height'] ) : esc_attr( $attributes['naturalHeight'] ) ) . '"
                 title="' . esc_attr( $attributes['title'] ) . '"
-                loading="lazy"
-            />';
+                loading="' . ( empty( $attributes['disableLazyLoad'] ) ? 'lazy' : 'eager' ) .
+			'" />';
 
 			$figure_image = '';
 			if ( $attributes['href'] && '' !== $attributes['href'] ) {
