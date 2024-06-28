@@ -225,6 +225,16 @@ body.post-type-sureforms_form {
 	}
 
 	.edit-post-header__center {
+		// styles added to make title bar compatible if block toolbar settings are moved in the header
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		gap: 0;
+		min-width: 0;
+		max-height: 36px;
+		margin: 0 16px;
+		opacity: 1;
+
 		.srfm-header-title-input {
 			width: 100%;
 			max-width: 500px;
@@ -235,13 +245,12 @@ body.post-type-sureforms_form {
 			font-style: normal;
 			font-weight: 400;
 			padding: 11px 16px;
-			margin-top: 8px;
 			border-radius: 8px;
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
 			// need to declare height for WP6.5.
-			height: 44px;
+			height: 36px;
 
 			&:focus {
 				border-color: #0284c7;
