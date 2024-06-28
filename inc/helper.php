@@ -140,11 +140,11 @@ class Helper {
 	 */
 	public static function sanitize_number( $value ) {
 		if ( ! is_numeric( $value ) ) {
-			/** @phpstan-ignore-next-line */
+			// phpcs:ignore /** @phpstan-ignore-next-line */
 			return sanitize_text_field( $value ); // If it is not numeric, then let user get some sanitized data to view.
 		}
 
-		/** @phpstan-ignore-next-line */
+		// phpcs:ignore /** @phpstan-ignore-next-line */
 		return sanitize_text_field( filter_var( $value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) );
 	}
 
