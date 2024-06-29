@@ -170,12 +170,12 @@ There is no limit to the types of businesses and organizations that can benefit 
  * Astra
  * Spectra One
  * Blocksy
- * Bricks Builder
  * Flatsome
  * GeneratePress
  * Hestia
  * Kadence
  * Neve
+ * Bricks Builder
 
 #### SureForms is compatible with all plugins, including:
 
