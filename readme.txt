@@ -170,6 +170,7 @@ There is no limit to the types of businesses and organizations that can benefit 
  * Astra
  * Spectra One
  * Blocksy
+ * Bricks Builder
  * Flatsome
  * GeneratePress
  * Hestia
@@ -198,7 +199,6 @@ There is no limit to the types of businesses and organizations that can benefit 
 * Elementor Pro
 * Beaver Builder
 * Divi Builder
-* Bricks Builder
 * Yoast SEO
 * And many more
 
