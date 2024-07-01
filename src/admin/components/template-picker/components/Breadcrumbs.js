@@ -38,20 +38,6 @@ const Breadcrumbs = () => {
 					</span>
 				</Link>
 			) }
-			{ /* { method === 'template' && (
-				<Link
-					className="srfm-tp-breadcrumb-url"
-					to={ {
-						location: `${ srfm_admin.site_url }/wp-admin/admin.php`,
-						search: `?page=add-new-form&method=template`,
-					} }
-				>
-					<span className="srfm-header-breadcrumb">
-						{ ICONS.breadcrumb }
-						{ __( 'Select a Template', 'sureforms' ) }
-					</span>
-				</Link>
-			) } */ }
 			{ method === 'ai' && (
 				<Link
 					className="srfm-tp-breadcrumb-url"
