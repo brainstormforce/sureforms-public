@@ -157,11 +157,7 @@ class Helper {
 	public static function sanitize_by_field_type( $form_data ) {
 		$result = [];
 
-		if ( empty( $form_data ) ) {
-			return $result;
-		}
-
-		if ( ! is_array( $form_data ) ) {
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			return $result;
 		}
 
