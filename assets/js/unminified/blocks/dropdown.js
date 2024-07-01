@@ -1,5 +1,3 @@
-const { speak } = wp.a11y;
-
 function initializeDropdown() {
 	const dropDownSelector = document.querySelectorAll(
 		'.srfm-dropdown-common'
@@ -16,11 +14,11 @@ function initializeDropdown() {
 			const config = {
 				maxOptions: null,
 				onDropdownOpen() {
-					speak( placeholderText );
+					wp.a11y.speak( placeholderText );
 				},
 				onChange( value ) {
 					if ( value ) {
-						speak( value );
+						wp.a11y.speak( value );
 					}
 				},
 			};
