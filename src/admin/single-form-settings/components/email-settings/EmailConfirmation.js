@@ -61,8 +61,8 @@ const EmailConfirmation = ( props ) => {
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
-					<div className="srfm-modal-inner-heading-text">
-						<span onClick={ handleBackNotifation } className="srfm-back-btn">{ backArrow }</span>
+					<div onClick={handleBackNotifation} className="srfm-modal-inner-heading-text">
+						<span className="srfm-back-btn">{ backArrow }</span>
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</div>
 					<button

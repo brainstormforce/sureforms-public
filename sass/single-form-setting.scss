@@ -168,12 +168,19 @@ $req_err_color: #dc2625;
 					.srfm-modal-inner-heading-text {
 						display: flex;
 						align-items: center;
+						cursor: pointer;
+
+						&:hover {
+							.srfm-back-btn {
+								transform: translateX(-5px);
+							}
+						}
 
 						.srfm-back-btn {
 							height: 100%;
 							width: 24px;
-							cursor: pointer;
 							display: flex;
+							transition: transform 0.25s ease-in-out;
 						}
 
 						h4 {

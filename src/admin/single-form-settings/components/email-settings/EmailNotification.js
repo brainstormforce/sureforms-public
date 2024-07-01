@@ -61,7 +61,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 				__( 'Please fill out the required field.', 'sureforms' ),
 				{ duration: 500 }
 			);
-			return;
+			return false;
 		}
 
 		let currEmailData = emailNotificationData;
@@ -85,6 +85,8 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 				duration: 500,
 			}
 		);
+
+		return true;
 	};
 	function updateMeta( option, value ) {
 		const option_array = {};

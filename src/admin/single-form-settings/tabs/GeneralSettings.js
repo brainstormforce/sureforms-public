@@ -15,16 +15,22 @@ import {
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import parse from 'html-react-parser';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import PostURLPanel from '../components/form-permalink/Panel';
-import { FormSettingsProvider } from '../contexts';
+
+let prevMetaHash = '';
 
 function GeneralSettings( props ) {
+	const { createNotice } = useDispatch( 'core/notices' );
+
+	const { status } = useSelect( ( select ) =>
+		select( editorStore ).getCurrentPost()
+	);
+
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isPageBreak } = props;
-
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -40,8 +46,31 @@ function GeneralSettings( props ) {
 		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
 		setPopupTab( popupTabTarget );
 		setOpen( true );
+		prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
 	};
-	const closeModal = () => setOpen( false );
+	const closeModal = () => {
+		setOpen( false );
+
+		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
+			createNotice(
+				'warning',
+				sprintf(
+					__(
+						'There are few unsaved changes. Please %s this form to save them.',
+						'sureforms'
+					),
+					'publish' === status
+						? __( 'update', 'sureforms' )
+						: __( 'publish', 'sureforms' )
+				),
+				{
+					id: 'srfm-unsaved-changes-warning',
+					isDismissible: true,
+				}
+			);
+		}
+	};
+
 	const modalIcon = parse( svgIcons.modalLogo );
 
 	// if device type is desktop then
@@ -487,12 +516,10 @@ function GeneralSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<FormSettingsProvider>
-						<SingleFormSettingsPopup
-							sureformsKeys={ sureformsKeys }
-							targetTab={ popupTab }
-						/>
-					</FormSettingsProvider>
+					<SingleFormSettingsPopup
+						sureformsKeys={ sureformsKeys }
+						targetTab={ popupTab }
+					/>
 				</Modal>
 			) }
 		</>
