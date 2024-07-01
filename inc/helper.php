@@ -91,8 +91,8 @@ class Helper {
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
-	 * @return string Extracted field type.
 	 * @since x.x.x
+	 * @return string Extracted field type.
 	 */
 	public static function get_field_type_from_key( $field_key ) {
 
@@ -107,8 +107,8 @@ class Helper {
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
-	 * @return callable Returns sanitize callbacks according to the provided field type.
 	 * @since x.x.x
+	 * @return callable Returns sanitize callbacks according to the provided field type.
 	 */
 	public static function get_field_type_sanitize_function( $field_type ) {
 		$callbacks = apply_filters(
@@ -134,9 +134,8 @@ class Helper {
 	 * If the value is not numeric, it sanitizes it as a text field.
 	 *
 	 * @param mixed $value The value to be sanitized.
-	 *
-	 * @return integer|float|string The sanitized value.
 	 * @since x.x.x
+	 * @return integer|float|string The sanitized value.
 	 */
 	public static function sanitize_number( $value ) {
 		if ( ! is_numeric( $value ) ) {
@@ -151,21 +150,27 @@ class Helper {
 	/**
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
-	 * @param array<mixed> $form_data User submitted form data.
-	 * @return array<mixed> $result Sanitized form data.
+	 * @param array<mixed> $form_data $form_data User submitted form data.
 	 * @since x.x.x
+	 * @return array<mixed> $result Sanitized form data.
 	 */
 	public static function sanitize_by_field_type( $form_data ) {
 		$result = [];
 
-		if ( ! empty( $form_data ) && is_array( $form_data ) ) {
-			foreach ( $form_data as $field_key => &$value ) {
-				$field_type        = self::get_field_type_from_key( $field_key );
-				$sanitize_function = self::get_field_type_sanitize_function( $field_type );
-				$sanitized_data    = is_array( $value ) ? self::sanitize_by_field_type( $value ) : call_user_func( $sanitize_function, $value );
+		if ( empty( $form_data ) ) {
+			return $result;
+		}
 
-				$result[ $field_key ] = $sanitized_data;
-			}
+		if ( ! is_array( $form_data ) ) {
+			return $result;
+		}
+
+		foreach ( $form_data as $field_key => &$value ) {
+			$field_type        = self::get_field_type_from_key( $field_key );
+			$sanitize_function = self::get_field_type_sanitize_function( $field_type );
+			$sanitized_data    = is_array( $value ) ? self::sanitize_by_field_type( $value ) : call_user_func( $sanitize_function, $value );
+
+			$result[ $field_key ] = $sanitized_data;
 		}
 
 		return $result;
