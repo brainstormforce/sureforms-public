@@ -247,6 +247,40 @@ const ICONS = {
 			/>
 		</svg>
 	),
+	exit: (
+		<svg
+			width="20"
+			height="20"
+			viewBox="0 0 20 20"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M9.625 6.5V3.375C9.625 2.33947 8.78553 1.5 7.75 1.5L2.75 1.5C1.71447 1.5 0.875001 2.33947 0.875 3.375L0.875 14.625C0.875 15.6605 1.71447 16.5 2.75 16.5H7.75C8.78553 16.5 9.625 15.6605 9.625 14.625V11.5M12.125 11.5L14.625 9M14.625 9L12.125 6.5M14.625 9L4 9"
+				stroke="#64748B"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
+	arrowRight: (
+		<svg
+			width="14"
+			height="12"
+			viewBox="0 0 14 12"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M7.75 1L12.75 6M12.75 6L7.75 11M12.75 6H0.75"
+				stroke="white"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	),
 };
 
 export default ICONS;

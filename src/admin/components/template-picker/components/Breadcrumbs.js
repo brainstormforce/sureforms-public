@@ -38,7 +38,7 @@ const Breadcrumbs = () => {
 					</span>
 				</Link>
 			) }
-			{ method === 'template' && (
+			{ /* { method === 'template' && (
 				<Link
 					className="srfm-tp-breadcrumb-url"
 					to={ {
@@ -51,7 +51,7 @@ const Breadcrumbs = () => {
 						{ __( 'Select a Template', 'sureforms' ) }
 					</span>
 				</Link>
-			) }
+			) } */ }
 			{ method === 'ai' && (
 				<Link
 					className="srfm-tp-breadcrumb-url"
