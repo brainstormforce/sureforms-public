@@ -173,7 +173,17 @@ export default () => {
 									` }
 								>
 									{ ' ' }
-									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : ( __( 'Unlicensed', 'sureforms' ) ) }
+									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : (
+										<>
+											<a
+												css={ css`
+													text-decoration: none;	
+													color: inherit !important;
+													box-shadow: none !important;
+												` }
+												href={ `${ srfm_admin?.site_url }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings` }>{ __( 'Unlicensed', 'sureforms' ) }</a>
+										</>
+									) }
 								</article>
 							</>
 						) }
