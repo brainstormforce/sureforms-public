@@ -488,6 +488,7 @@ class Admin {
 					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
 					'is_authorized'                    => AI_Helper::is_authorized(),
 					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
+					'zip_ai_form_creation_count'       => get_option( 'zip_ai_form_creation_count', 0 ),
 				]
 			);
 		}

@@ -5,11 +5,18 @@ import { useEffect, useRef } from '@wordpress/element';
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
 	setShowRevokeConfirmation,
-	creditsLeft,
 } ) => {
 	const revokePopover = useRef( null );
-	const creditUsed = srfm_admin?.zip_ai_credit_details?.used;
-	const totalCredits = srfm_admin?.zip_ai_credit_details?.total;
+
+	let aiFormCreationCount = parseInt(
+		srfm_admin?.zip_ai_form_creation_count
+	);
+
+	const totalFormCount = srfm_admin?.is_authorized ? 25 : 5;
+
+	if ( aiFormCreationCount > totalFormCount ) {
+		aiFormCreationCount = totalFormCount;
+	}
 
 	useEffect( () => {
 		const handleClickOutside = ( event ) => {
@@ -33,34 +40,32 @@ const CreditDetailsPopup = ( {
 
 	return (
 		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
-			<div className="srfm-tp-header-credits-popover-title">
-				{ typeof creditsLeft === 'number' && ! isNaN( creditsLeft )
-					? `${ creditsLeft
-						.toString()
-						.replace( /\B(?=(\d{3})+(?!\d))/g, ',' ) }
-                            `
-					: '0' }
-				{ __( ' Credits in Your Account', 'sureforms' ) }
-				<span className="srfm-tp-header-credits-popover-description">
-					{ __(
-						'100 Credits are used for each form generated with AI.',
-						'sureforms'
-					) }
-				</span>
-			</div>
 			<div className="srfm-tp-header-credits-popover-stats-ctn">
 				<div className="srfm-tp-header-credits-popover-stats">
-					<span>{ __( 'Credits Usage ', 'sureforms' ) }</span>
-					<span>{ creditUsed + '/' + totalCredits }</span>
+					<span>{ __( 'Usage ', 'sureforms' ) }</span>
+					<span>{ aiFormCreationCount + '/' + totalFormCount }</span>
 				</div>
 				<div className="srfm-progress-bar bg-slate-200">
 					<div
 						className="progress"
 						style={ {
-							width: `${ srfm_admin.zip_ai_credit_details.percentage }%`,
+							width: `${
+								aiFormCreationCount < totalFormCount
+									? ( aiFormCreationCount / totalFormCount ) *
+									  100
+									: 100
+							}%`,
 						} }
 					/>
 				</div>
+			</div>
+			<div className="srfm-tp-header-credits-popover-title">
+				<span className="srfm-tp-header-credits-popover-description">
+					{ __(
+						'Free plan only allows 25 AI form generations. Need to create more forms with AI?',
+						'sureforms'
+					) }
+				</span>
 			</div>
 			<Button
 				className="srfm-credits-popover-more-btn"
@@ -71,17 +76,19 @@ const CreditDetailsPopup = ( {
 					);
 				} }
 			>
-				{ __( 'Get More Credits', 'sureforms' ) }
+				{ __( 'Upgrade Plan', 'sureforms' ) }
 			</Button>
-			<Button
-				className="srfm-credits-popover-revoke-btn"
-				onClick={ () => {
-					setShowRevokePopover( false );
-					setShowRevokeConfirmation( true );
-				} }
-			>
-				{ __( 'Disconnect Account', 'sureforms' ) }
-			</Button>
+			{ srfm_admin.is_authorized && (
+				<Button
+					className="srfm-credits-popover-revoke-btn"
+					onClick={ () => {
+						setShowRevokePopover( false );
+						setShowRevokeConfirmation( true );
+					} }
+				>
+					{ __( 'Disconnect Account', 'sureforms' ) }
+				</Button>
+			) }
 		</div>
 	);
 };

@@ -179,6 +179,7 @@ class AI_Form_Builder {
 			}
 			wp_send_json_error( [ 'message' => $message ] );
 		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
+			update_option( 'zip_ai_form_creation_count', get_option( 'zip_ai_form_creation_count', 0 ) + 1 );
 			// If the message was sent successfully, send it successfully.
 			wp_send_json_success( $response );
 		} else {

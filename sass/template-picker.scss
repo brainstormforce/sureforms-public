@@ -69,9 +69,9 @@ $sidebar_width: 290px;
 
 	.srfm-popup-header {
 		display: flex;
-		align-items: flex-start;
 		gap: 12px;
-		justify-content: center;
+		justify-content: flex-start;
+		width: 100%;
 
 		.srfm-popup-icon {
 			padding-top: 3px;
@@ -153,7 +153,6 @@ $sidebar_width: 290px;
 		align-items: flex-start;
 		gap: 20px;
 		width: 480px;
-		height: 270px;
 		padding: 20px;
 		background: #ffffff;
 		border-radius: 8px;
@@ -174,7 +173,7 @@ $sidebar_width: 290px;
 
 		.srfm-limit-reached-popup-content {
 			width: 432px;
-			height: 84px;
+			// height: 84px;
 			display: flex;
 			flex-direction: column;
 			gap: 12px;
@@ -410,7 +409,6 @@ $sidebar_width: 290px;
 					border: 1px solid #cbd5e1;
 					outline: none;
 					box-shadow: none;
-					resize: none;
 					overflow: hidden;
 					font-size: 20px;
 					font-weight: 400;
@@ -663,9 +661,10 @@ $sidebar_width: 290px;
 
 		.srfm-tp-header-credits-ctn {
 			display: flex;
+			gap: 24px;
 			align-items: center;
 			justify-content: space-between;
-			width: 155px;
+			width: 271px;
 
 			.srfm-tp-header-credits {
 				display: flex;
@@ -692,7 +691,7 @@ $sidebar_width: 290px;
 			.srfm-tp-header-credits-popover {
 				position: absolute;
 				top: 55px;
-				right: 71px;
+				right: 75px;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -783,6 +782,20 @@ $sidebar_width: 290px;
 
 		.srfm-tp-header-close {
 			cursor: pointer;
+		}
+
+		.srfm-ai-sub-header {
+			margin: 0;
+			padding: 0;
+			font-size: 16px;
+			font-weight: 500;
+			line-height: 20px;
+
+			.srfm-ai-sub-header-auth-url {
+				color: #ff6b00;
+				text-decoration: underline;
+				cursor: pointer;
+			}
 		}
 	}
 

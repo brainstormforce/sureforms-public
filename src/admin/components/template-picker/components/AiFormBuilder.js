@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useState } from '@wordpress/element';
-import { handleAddNewPost, getRemaingCredits } from '@Utils/Helpers';
+import { handleAddNewPost } from '@Utils/Helpers';
 import {
 	MdArrowForward,
 	MdKeyboardArrowDown,
@@ -42,6 +42,8 @@ const AiFormBuilder = () => {
 			title: 'Create a gym membership form',
 		},
 	];
+
+	const totalFormCount = srfm_admin?.is_authorized ? 25 : 5;
 
 	const handleCreateAiForm = async (
 		userCommand,
@@ -265,7 +267,10 @@ const AiFormBuilder = () => {
 									return;
 								}
 
-								if ( getRemaingCredits() <= 0 ) {
+								if (
+									srfm_admin?.zip_ai_form_creation_count >=
+									totalFormCount
+								) {
 									setShowLimitReachedPopup( true );
 									return;
 								}
