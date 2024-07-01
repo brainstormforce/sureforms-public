@@ -923,13 +923,14 @@ $req_err_color: #dc2625;
 	}
 
 	.srfm-popover-text {
-		margin-bottom: 10px;
 		text-align: center;
+		margin: 8px 10px;
 	}
 
 	.srfm-popover-btn {
 		display: flex;
-		justify-content: space-around;
+		padding: 0 10px 8px 10px;
+		gap: 8px;
 
 		.popover-btn {
 			align-items: center;
