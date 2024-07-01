@@ -1,24 +1,25 @@
-import { __ } from '@wordpress/i18n';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
-import { store as editorStore } from '@wordpress/editor';
 import SRFMAdvancedPanelBody from '@Components/advanced-panel-body';
-import SRFMTextControl from '@Components/text-control';
-import {
-	ToggleControl,
-	SelectControl,
-	Modal,
-	ExternalLink,
-} from '@wordpress/components';
-import { useDeviceType } from '@Controls/getPreviewType';
-import PostURLPanel from '../components/form-permalink/Panel';
+import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import SRFMMediaPicker from '@Components/image';
 import MultiButtonsControl from '@Components/multi-buttons-control';
-import AdvancedPopColorControl from '@Components/color-control/advanced-pop-color-control.js';
 import Range from '@Components/range/Range.js';
-import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
+import SRFMTextControl from '@Components/text-control';
+import { useDeviceType } from '@Controls/getPreviewType';
 import svgIcons from '@Image/single-form-logo.json';
+import {
+	ExternalLink,
+	Modal,
+	SelectControl,
+	ToggleControl,
+} from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import parse from 'html-react-parser';
+import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
+import PostURLPanel from '../components/form-permalink/Panel';
+import { FormSettingsProvider } from '../contexts';
 
 function GeneralSettings( props ) {
 	const { editPost } = useDispatch( editorStore );
@@ -486,10 +487,12 @@ function GeneralSettings( props ) {
 					icon={ modalIcon }
 					isFullScreen={ true }
 				>
-					<SingleFormSettingsPopup
-						sureformsKeys={ sureformsKeys }
-						targetTab={ popupTab }
-					/>
+					<FormSettingsProvider>
+						<SingleFormSettingsPopup
+							sureformsKeys={ sureformsKeys }
+							targetTab={ popupTab }
+						/>
+					</FormSettingsProvider>
 				</Modal>
 			) }
 		</>
