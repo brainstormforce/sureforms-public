@@ -353,7 +353,7 @@ class Admin_Ajax {
 			'srfm/address'          => 'Address data',
 			'srfm/address-compact'  => 'Address data',
 			'srfm/dropdown'         => 'Selected dropdown option',
-			'srfm/multi-choice'     => [ 'Option 1', 'Option 2', 'Option 3' ],
+			'srfm/multi-choice'     => 'Selected Multichoice option',
 			'srfm/radio'            => 'Selected radio option',
 			'srfm/submit'           => 'Submit',
 			'srfm/url'              => 'https://example.com',
