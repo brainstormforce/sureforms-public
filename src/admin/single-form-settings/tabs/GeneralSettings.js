@@ -41,6 +41,7 @@ function GeneralSettings( props ) {
 	const root = document.documentElement.querySelector( 'body' );
 	const [ isOpen, setOpen ] = useState( false );
 	const [ popupTab, setPopupTab ] = useState( false );
+	const [ hasValidationErrors, setHasValidationErrors ] = useState(false);
 
 	const openModal = ( e ) => {
 		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
@@ -49,6 +50,11 @@ function GeneralSettings( props ) {
 		prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
 	};
 	const closeModal = () => {
+
+		if (hasValidationErrors && !confirm(__('Your settings are not saved as you have some validation errors. Are you sure you want to close?'))) {
+			return;
+		}
+
 		setOpen( false );
 
 		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
@@ -519,6 +525,7 @@ function GeneralSettings( props ) {
 					<SingleFormSettingsPopup
 						sureformsKeys={ sureformsKeys }
 						targetTab={ popupTab }
+						setHasValidationErrors={setHasValidationErrors}
 					/>
 				</Modal>
 			) }

@@ -19,7 +19,7 @@ import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
-	const { sureformsKeys, targetTab } = props;
+	const { sureformsKeys, targetTab, setHasValidationErrors } = props;
 	const emailNotificationData = sureformsKeys._srfm_email_notification || [];
 	const complianceData = sureformsKeys._srfm_compliance || [];
 	const formCustomCssData = sureformsKeys._srfm_form_custom_css || [];
@@ -39,6 +39,7 @@ const SingleFormSettingsPopup = ( props ) => {
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
 					<EmailNotification
+						setHasValidationErrors={setHasValidationErrors}
 						emailNotificationData={ emailNotificationData }
 						toast={ toast }
 					/>
@@ -48,7 +49,7 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'form_confirmation',
 				title: __( 'Form Confirmation', 'sureforms' ),
 				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-				component: <FormConfirmSetting toast={ toast } />,
+				component: <FormConfirmSetting setHasValidationErrors={setHasValidationErrors} toast={ toast } />,
 			},
 			{
 				id: 'compliance_settings',

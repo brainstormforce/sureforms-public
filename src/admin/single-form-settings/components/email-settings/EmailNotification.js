@@ -7,7 +7,7 @@ import { ToggleControl } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
-const EmailNotification = ( { emailNotificationData, toast } ) => {
+const EmailNotification = ( { setHasValidationErrors, emailNotificationData, toast } ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
@@ -79,13 +79,6 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		}
 		updateMeta( '_srfm_email_notification', currEmailData );
 		toast.dismiss();
-		toast.success(
-			__( 'Email Notification updated successfully.', 'sureforms' ),
-			{
-				duration: 500,
-			}
-		);
-
 		return true;
 	};
 	function updateMeta( option, value ) {
@@ -94,7 +87,6 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		editPost( {
 			meta: option_array,
 		} );
-		setShowConfirmation( false );
 	}
 	const handleToggle = ( data ) => {
 		const updatedData = emailNotificationData.map( ( el ) => {
@@ -118,11 +110,12 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 			);
 		}
 	};
-	const handleBackNotifation = () => {
+	const handleBackNotification = () => {
 		setShowConfirmation( false );
+		setHasValidationErrors(false);
 	};
 	if ( showConfirmation ) {
-		return <EmailConfirmation handleConfirmEmail={ handleUpdateEmailData } handleBackNotifation={ handleBackNotifation } data={ currData } />;
+		return <EmailConfirmation setHasValidationErrors={setHasValidationErrors} handleConfirmEmail={ handleUpdateEmailData } handleBackNotification={ handleBackNotification } data={ currData } />;
 	}
 	return (
 		<div className="srfm-modal-content">
@@ -166,51 +159,52 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 													</th>
 												</tr>
 											</thead>
-											<tbody>
+											<tbody className='srfm-modal-row-body'>
 												{
 													emailNotificationData && emailNotificationData.map( ( el, i ) => {
 														const top = -22 + ( i * 40 );
 														return (
-															<div key={ el.id } className="srfm-modal-row-body">
-																<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
-																	<td className="srfm-modal-col-first">
-																		<ToggleControl
-																			checked={ el.status }
-																			onChange={ () => {
-																				handleToggle( el );
-																			} }
-																		/>
-																	</td>
-																	<td className="srfm-modal-col-second">
-																		<span>{ el.name }</span>
-																	</td>
-																	<td className="srfm-modal-col-third">
-																		<span>{ el.subject }</span>
-																	</td>
-																	<td className="srfm-modal-col-fourth">
-																		<button onClick={ () => handleDuplicate( el ) } className="srfm-cursor-pointer">
-																			{ plusIcons }
-																		</button>
-																		<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
-																			{ editIcons }
-																		</button>
-																		<button onClick={ () => {
-																			setIsPopup( el.id );
-																		} } className="srfm-cursor-pointer">
-																			{ deleteIcons }
-																		</button>
-																	</td>
-																</tr>
-																{
-																	isPopup === el.id && <div className="srfm-el-popover" style={ { top } }>
-																		<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
-																		<div className="srfm-popover-btn">
-																			<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
-																			<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
-																		</div>
-																	</div>
-																}
-															</div>
+															<tr key={ el.id } className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
+																<td className="srfm-modal-col-first">
+																	<ToggleControl
+																		checked={ el.status }
+																		onChange={ () => {
+																			handleToggle( el );
+																		} }
+																	/>
+																</td>
+																<td className="srfm-modal-col-second">
+																	<span>{ el.name }</span>
+																</td>
+																<td className="srfm-modal-col-third">
+																	<span>{ el.subject }</span>
+																</td>
+																<td className="srfm-modal-col-fourth">
+																	<button onClick={ () => handleDuplicate( el ) } className="srfm-cursor-pointer">
+																		{ plusIcons }
+																	</button>
+																	<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
+																		{ editIcons }
+																	</button>
+																	<button onClick={ () => {
+																		setIsPopup( el.id );
+																	} } className="srfm-cursor-pointer">
+																		{ deleteIcons }
+																	</button>
+
+																	{
+																		isPopup === el.id && (
+																			<div className="srfm-el-popover" style={ { top } }>
+																				<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
+																				<div className="srfm-popover-btn">
+																					<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
+																					<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
+																				</div>
+																			</div>
+																		)
+																	}
+																</td>
+															</tr>
 														);
 													} )
 												}

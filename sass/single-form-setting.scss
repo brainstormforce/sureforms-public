@@ -168,7 +168,10 @@ $req_err_color: #dc2625;
 					.srfm-modal-inner-heading-text {
 						display: flex;
 						align-items: center;
-						cursor: pointer;
+
+						&.srfm-modal-inner-heading-back-button {
+							cursor: pointer;
+						}
 
 						&:hover {
 							.srfm-back-btn {

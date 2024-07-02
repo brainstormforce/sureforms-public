@@ -1,15 +1,15 @@
-import { __ } from '@wordpress/i18n';
-import Editor from '../QuillEditor';
-import Select from 'react-select';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import {
-	Spinner,
-} from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import Select from 'react-select';
+import { useDebouncedCallback } from "use-debounce";
+import Editor from '../QuillEditor';
 
-const FormConfirmSetting = ( { toast } ) => {
+let initialData = {};
+
+const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -22,26 +22,35 @@ const FormConfirmSetting = ( { toast } ) => {
 	const [ showSuccess, setShowSuccess ] = useState( null );
 	const handleSaveChanges = () => {
 		setIsProcessing( true );
+
 		const validationStatus = validateForm();
-		setTimeout( () => {
-			setErrorMessage( validationStatus );
-			setIsProcessing( false );
-			if ( '' !== validationStatus ) {
-				return;
-			}
-			updateMeta( '_srfm_form_confirmation', [ data ] );
-			setShowSuccess( true );
+
+		setErrorMessage( validationStatus );
+		setIsProcessing( false );
+		if ( '' !== validationStatus ) {
+			setHasValidationErrors(true);
 			toast.dismiss();
-			toast.success(
-				__( 'Form Confirmation updated successfully.', 'sureforms' ),
+			toast.error(
+				validationStatus,
 				{ duration: 500 }
 			);
-		}, 500 );
+			return false;
+			return;
+		}
+		updateMeta( '_srfm_form_confirmation', [ data ] );
+		setShowSuccess( true );
+		toast.dismiss();
 	};
+
+	const debounced = useDebouncedCallback(handleSaveChanges, 500 );
+
 	useEffect( () => {
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
+
+		setHasValidationErrors(false);
+		debounced(data);
 	}, [ data ] );
 	useEffect( () => {
 		if ( true === showSuccess ) {
@@ -113,6 +122,8 @@ const FormConfirmSetting = ( { toast } ) => {
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );
+
+			initialData = formConfirmationData[ 0 ];
 		}
 	}, [] );
 	return (
@@ -124,19 +135,11 @@ const FormConfirmSetting = ( { toast } ) => {
 					</div>
 					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
 						<button
-							onClick={ handleSaveChanges }
+							onClick={() => setData(initialData)}
 							className="srfm-modal-inner-heading-button"
 							disabled={ isProcessing }
 						>
-							{ __( 'Save Changes', 'sureforms' ) }
-							{
-								isProcessing && <Spinner
-									style={ {
-										marginTop: '0',
-										color: '#D54407',
-									} }
-								/>
-							}
+							{ __( 'Reset Changes', 'sureforms' ) }
 						</button>
 					</div>
 				</div>
