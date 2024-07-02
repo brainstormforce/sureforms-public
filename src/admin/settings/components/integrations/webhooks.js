@@ -4,7 +4,11 @@ import WebhookIcon from '@Image/webhook.js';
 
 const UpgradeToPro = () => {
 	return (
-		<button className="srfm-button-secondary srfm-button-xs">
+		<button onClick={
+			() => {
+				window.open( 'https://sureforms.com/pricing' );
+			}
+		} className="srfm-button-secondary srfm-button-xs">
 			{ __( 'Upgrade to Pro', 'sureforms' ) }
 		</button>
 	);

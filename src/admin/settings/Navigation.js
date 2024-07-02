@@ -90,8 +90,12 @@ const Navigation = () => {
 								'sureforms'
 							) }
 						</div>
-						<button className="srfm-button-primary srfm-notice-btn">
-							{ __( 'Upgrade to Premium', 'sureforms' ) }
+						<button onClick={
+							() => {
+								window.open( 'https://sureforms.com/pricing' );
+							}
+						} className="srfm-button-primary srfm-notice-btn">
+							{ __( 'Upgrade to Pro', 'sureforms' ) }
 						</button>
 					</div>
 				) }
