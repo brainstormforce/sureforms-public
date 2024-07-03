@@ -54,7 +54,8 @@ function GeneralSettings( props ) {
 			hasValidationErrors &&
 			! confirm(
 				__(
-					'Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors.'
+					'Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors.',
+					'sureforms'
 				)
 			)
 		) {
@@ -67,10 +68,8 @@ function GeneralSettings( props ) {
 			createNotice(
 				'warning',
 				sprintf(
-					__(
-						'There are few unsaved changes. Please %s this form to save them.',
-						'sureforms'
-					),
+					/* translators: %s is the post status. */
+					__( 'There are few unsaved changes. Please %s this form to save them.', 'sureforms' ),
 					'publish' === status
 						? __( 'update', 'sureforms' )
 						: __( 'publish', 'sureforms' )

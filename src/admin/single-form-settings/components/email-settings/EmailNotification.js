@@ -203,8 +203,7 @@ const EmailNotification = ( {
 											{ emailNotificationData &&
 												emailNotificationData.map(
 													( el, i ) => {
-														const top =
-															-22 + i * 40;
+														const top = -22 + ( i * 40 );
 														return (
 															<tr
 																key={ el.id }
