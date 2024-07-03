@@ -1,23 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters, addFilter } from '@wordpress/hooks';
 import WebhookIcon from '@Image/webhook.js';
-
-const UpgradeToPro = () => {
-	return (
-		<button onClick={
-			() => {
-				window.open( 'https://sureforms.com/pricing' );
-			}
-		} className="srfm-button-primary"	>
-			{ __( 'Upgrade to Pro', 'sureforms' ) }
-		</button>
-	);
-};
+import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 const WebhooksCard = ( { setSelectedTab } ) => {
 	const primaryButton = applyFilters(
 		'srfm.formSettings.integrations.webhooks.button',
-		<UpgradeToPro />,
+		<UpgradeToProButton className="srfm-button-primary" />,
 		setSelectedTab
 	);
 	return (

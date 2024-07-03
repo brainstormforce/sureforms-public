@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: SureForms
- * Plugin URI: https://www.sureforms.com
+ * Plugin URI: https://sureforms.com
  * Description: A simple yet powerful way to create modern forms for your website.
  * Author: SureForms
- * Author URI: https://www.sureforms.com/
+ * Author URI: https://sureforms.com/
  * Version: 0.0.5
  * License: GPLv2 or later
  * Text Domain: sureforms

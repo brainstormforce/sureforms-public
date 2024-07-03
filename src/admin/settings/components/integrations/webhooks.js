@@ -1,18 +1,7 @@
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import WebhookIcon from '@Image/webhook.js';
-
-const UpgradeToPro = () => {
-	return (
-		<button onClick={
-			() => {
-				window.open( 'https://sureforms.com/pricing' );
-			}
-		} className="srfm-button-secondary srfm-button-xs">
-			{ __( 'Upgrade to Pro', 'sureforms' ) }
-		</button>
-	);
-};
+import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 const Webhooks = () => {
 	const showSwitch = false;
@@ -37,7 +26,7 @@ const Webhooks = () => {
 				</div>
 			</div>
 			<div className="srfm-integration-cta">
-				{ false === switchWebhook ? <UpgradeToPro /> : switchWebhook }
+				{ false === switchWebhook ? <UpgradeToProButton className="srfm-button-secondary srfm-button-xs" /> : switchWebhook }
 				<div className="srfm-pro-badge">
 					{ __( 'Pro', 'sureforms' ) }</div>
 			</div>
