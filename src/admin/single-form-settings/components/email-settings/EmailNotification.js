@@ -61,6 +61,7 @@ const EmailNotification = ( { setHasValidationErrors, emailNotificationData, toa
 				__( 'Please fill out the required field.', 'sureforms' ),
 				{ duration: 500 }
 			);
+			setHasValidationErrors(true);
 			return false;
 		}
 

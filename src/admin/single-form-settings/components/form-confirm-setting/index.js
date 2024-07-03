@@ -7,8 +7,6 @@ import Select from 'react-select';
 import { useDebouncedCallback } from "use-debounce";
 import Editor from '../QuillEditor';
 
-let initialData = {};
-
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
@@ -18,24 +16,18 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
-	const [ isProcessing, setIsProcessing ] = useState( false );
 	const [ showSuccess, setShowSuccess ] = useState( null );
+	const [ canDisplayError, setCanDisplayError ] = useState(false);
+
 	const handleSaveChanges = () => {
-		setIsProcessing( true );
 
 		const validationStatus = validateForm();
 
 		setErrorMessage( validationStatus );
-		setIsProcessing( false );
 		if ( '' !== validationStatus ) {
 			setHasValidationErrors(true);
 			toast.dismiss();
-			toast.error(
-				validationStatus,
-				{ duration: 500 }
-			);
 			return false;
-			return;
 		}
 		updateMeta( '_srfm_form_confirmation', [ data ] );
 		setShowSuccess( true );
@@ -73,7 +65,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 				try {
 					const newURL = new URL( data?.custom_url );
 					if ( newURL.protocol !== 'https:' ) {
-						validation = __( 'URL should use HTTPS', 'sureforms' );
+						validation = __( 'Suggestion: URL should use HTTPS', 'sureforms' );
 					} else if ( ! (
 						'localhost' !== newURL.hostname &&
 						newURL.hostname.includes( '.' ) &&
@@ -122,25 +114,20 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		const formConfirmationData = sureforms_keys._srfm_form_confirmation;
 		if ( formConfirmationData ) {
 			setData( formConfirmationData[ 0 ] );
-
-			initialData = formConfirmationData[ 0 ];
 		}
 	}, [] );
+
+	useEffect(() => {
+		// Do not display pre-validation message right after changing tabs or confirmation type.
+		setCanDisplayError(false);
+	}, [data?.confirmation_type]);
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
 					<div className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
-					</div>
-					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
-						<button
-							onClick={() => setData(initialData)}
-							className="srfm-modal-inner-heading-button"
-							disabled={ isProcessing }
-						>
-							{ __( 'Reset Changes', 'sureforms' ) }
-						</button>
 					</div>
 				</div>
 				<div className="srfm-modal-inner-box">
@@ -280,6 +267,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										options={ pageOptions }
 										isMulti={ false }
 										onChange={ ( e ) => {
+											setCanDisplayError(true);
 											setErrorMessage( null );
 											setData( {
 												...data,
@@ -348,16 +336,18 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								<input
 									value={ data?.custom_url }
 									className="srfm-modal-input"
-									onChange={ ( e ) =>
+									onChange={ ( e ) => {
+										setCanDisplayError(true);
 										setData( {
 											...data,
 											custom_url: e.target.value,
 										} )
 									}
+									}
 								/>
 							</div>
 						) }
-						{ errorMessage && (
+						{ canDisplayError && errorMessage && (
 							<div className="srfm-validation-error">{ errorMessage }</div>
 						) }
 						{

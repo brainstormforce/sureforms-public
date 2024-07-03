@@ -73,7 +73,13 @@ const EmailConfirmation = ( props ) => {
 
 	useEffect(() => {
 		setHasValidationErrors(false);
-		debounced(formData);
+
+		if (formData.id) {
+			/**
+			 * Only do autosave, if it is an existing data item.
+			 */
+			debounced(formData);
+		}
 	}, [formData]);
 
 	return (

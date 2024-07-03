@@ -51,7 +51,7 @@ function GeneralSettings( props ) {
 	};
 	const closeModal = () => {
 
-		if (hasValidationErrors && !confirm(__('Your settings are not saved as you have some validation errors. Are you sure you want to close?'))) {
+		if (hasValidationErrors && !confirm(__('Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors.'))) {
 			return;
 		}
 
