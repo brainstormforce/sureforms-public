@@ -39,7 +39,7 @@ const SingleFormSettingsPopup = ( props ) => {
 				icon: <MdOutlineMailOutline size={ 20 } />,
 				component: (
 					<EmailNotification
-						setHasValidationErrors={setHasValidationErrors}
+						setHasValidationErrors={ setHasValidationErrors }
 						emailNotificationData={ emailNotificationData }
 						toast={ toast }
 					/>
@@ -49,7 +49,12 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'form_confirmation',
 				title: __( 'Form Confirmation', 'sureforms' ),
 				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-				component: <FormConfirmSetting setHasValidationErrors={setHasValidationErrors} toast={ toast } />,
+				component: (
+					<FormConfirmSetting
+						setHasValidationErrors={ setHasValidationErrors }
+						toast={ toast }
+					/>
+				),
 			},
 			{
 				id: 'compliance_settings',

@@ -4,7 +4,7 @@ import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
-import { useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback } from 'use-debounce';
 import Editor from '../QuillEditor';
 
 const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
@@ -17,15 +17,14 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
 	const [ showSuccess, setShowSuccess ] = useState( null );
-	const [ canDisplayError, setCanDisplayError ] = useState(false);
+	const [ canDisplayError, setCanDisplayError ] = useState( false );
 
 	const handleSaveChanges = () => {
-
 		const validationStatus = validateForm();
 
 		setErrorMessage( validationStatus );
 		if ( '' !== validationStatus ) {
-			setHasValidationErrors(true);
+			setHasValidationErrors( true );
 			toast.dismiss();
 			return false;
 		}
@@ -34,15 +33,15 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		toast.dismiss();
 	};
 
-	const debounced = useDebouncedCallback(handleSaveChanges, 500 );
+	const debounced = useDebouncedCallback( handleSaveChanges, 500 );
 
 	useEffect( () => {
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
 
-		setHasValidationErrors(false);
-		debounced(data);
+		setHasValidationErrors( false );
+		debounced( data );
 	}, [ data ] );
 	useEffect( () => {
 		if ( true === showSuccess ) {
@@ -55,7 +54,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 
 	const validateForm = () => {
 		let validation = '';
-		if ( 'different page' === data?.confirmation_type && ! data?.page_url ) {
+		if (
+			'different page' === data?.confirmation_type &&
+			! data?.page_url
+		) {
 			validation = __( 'Please select a page.', 'sureforms' );
 		}
 		if ( 'custom url' === data?.confirmation_type ) {
@@ -65,12 +67,21 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 				try {
 					const newURL = new URL( data?.custom_url );
 					if ( newURL.protocol !== 'https:' ) {
-						validation = __( 'Suggestion: URL should use HTTPS', 'sureforms' );
-					} else if ( ! (
-						'localhost' !== newURL.hostname &&
-						newURL.hostname.includes( '.' ) &&
-						newURL.hostname.split( '.' ).pop().length > 1 ) ) {
-						validation = __( 'URL is missing Top Level Domain (TLD)', 'sureforms' );
+						validation = __(
+							'Suggestion: URL should use HTTPS',
+							'sureforms'
+						);
+					} else if (
+						! (
+							'localhost' !== newURL.hostname &&
+							newURL.hostname.includes( '.' ) &&
+							newURL.hostname.split( '.' ).pop().length > 1
+						)
+					) {
+						validation = __(
+							'URL is missing Top Level Domain (TLD)',
+							'sureforms'
+						);
 					} else {
 						validation = '';
 					}
@@ -117,10 +128,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 		}
 	}, [] );
 
-	useEffect(() => {
+	useEffect( () => {
 		// Do not display pre-validation message right after changing tabs or confirmation type.
-		setCanDisplayError(false);
-	}, [data?.confirmation_type]);
+		setCanDisplayError( false );
+	}, [ data?.confirmation_type ] );
 
 	return (
 		<div className="srfm-modal-content">
@@ -144,9 +155,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 							</div>
 							<div className="srfm-options-wrapper">
 								<div
-									className={ `srfm-option ${ data?.confirmation_type === 'same page'
-										? 'srfm-active-conf-type'
-										: ''
+									className={ `srfm-option ${
+										data?.confirmation_type === 'same page'
+											? 'srfm-active-conf-type'
+											: ''
 									}` }
 								>
 									<input
@@ -175,10 +187,11 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 									</label>
 								</div>
 								<div
-									className={ `srfm-option ${ data?.confirmation_type ===
+									className={ `srfm-option ${
+										data?.confirmation_type ===
 										'different page'
-										? 'srfm-active-conf-type'
-										: ''
+											? 'srfm-active-conf-type'
+											: ''
 									}` }
 								>
 									<input
@@ -195,8 +208,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 												confirmation_type:
 													e.target.value,
 											} );
-										}
-										}
+										} }
 										type="radio"
 										id="confirm-type-2"
 										name="confirm-type"
@@ -212,9 +224,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 									</label>
 								</div>
 								<div
-									className={ `srfm-option ${ data?.confirmation_type === 'custom url'
-										? 'srfm-active-conf-type'
-										: ''
+									className={ `srfm-option ${
+										data?.confirmation_type === 'custom url'
+											? 'srfm-active-conf-type'
+											: ''
 									}` }
 								>
 									<input
@@ -231,8 +244,7 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 												confirmation_type:
 													e.target.value,
 											} );
-										}
-										}
+										} }
 										type="radio"
 										id="confirm-type-3"
 										name="confirm-type"
@@ -254,7 +266,10 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Select Page', 'sureforms' ) }
-										<span className="srfm-validation-error"> *</span>
+										<span className="srfm-validation-error">
+											{ ' ' }
+											*
+										</span>
 									</label>
 								</div>
 								<div className="srfm-options-wrapper">
@@ -267,14 +282,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										options={ pageOptions }
 										isMulti={ false }
 										onChange={ ( e ) => {
-											setCanDisplayError(true);
+											setCanDisplayError( true );
 											setErrorMessage( null );
 											setData( {
 												...data,
 												page_url: e.value,
 											} );
-										}
-										}
+										} }
 										classNamePrefix={ 'srfm-select' }
 										menuPlacement="auto"
 										styles={ {
@@ -304,13 +318,13 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 												backgroundColor: state.isFocused
 													? '#FFEFE8'
 													: state.isSelected
-														? '#D54406'
-														: 'white', // Background color for option when focused or selected
+													? '#D54406'
+													: 'white', // Background color for option when focused or selected
 												color: state.isFocused
 													? 'black'
 													: state.isSelected
-														? 'white'
-														: 'black', // Text color for option when focused or selected
+													? 'white'
+													: 'black', // Text color for option when focused or selected
 											} ),
 										} }
 										theme={ ( theme ) => ( {
@@ -330,49 +344,52 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Custom URL', 'sureforms' ) }
-										<span className="srfm-validation-error"> *</span>
+										<span className="srfm-validation-error">
+											{ ' ' }
+											*
+										</span>
 									</label>
 								</div>
 								<input
 									value={ data?.custom_url }
 									className="srfm-modal-input"
 									onChange={ ( e ) => {
-										setCanDisplayError(true);
+										setCanDisplayError( true );
 										setData( {
 											...data,
 											custom_url: e.target.value,
-										} )
-									}
-									}
+										} );
+									} }
 								/>
 							</div>
 						) }
 						{ canDisplayError && errorMessage && (
-							<div className="srfm-validation-error">{ errorMessage }</div>
+							<div className="srfm-validation-error">
+								{ errorMessage }
+							</div>
 						) }
-						{
-							data?.confirmation_type === 'same page' && (
-								<div className="srfm-modal-area-box">
-									<div className="srfm-modal-area-header">
-										<div className="srfm-modal-area-header-text">
-											<p>
-												{ __(
-													'Confirmation Message',
-													'sureforms'
-												) }
-											</p>
-										</div>
-									</div>
-									<div className="srfm-editor-wrap">
-										<Editor
-											handleContentChange={ handleEditorChange }
-											content={ data?.message }
-										/>
+						{ data?.confirmation_type === 'same page' && (
+							<div className="srfm-modal-area-box">
+								<div className="srfm-modal-area-header">
+									<div className="srfm-modal-area-header-text">
+										<p>
+											{ __(
+												'Confirmation Message',
+												'sureforms'
+											) }
+										</p>
 									</div>
 								</div>
-
-							)
-						}
+								<div className="srfm-editor-wrap">
+									<Editor
+										handleContentChange={
+											handleEditorChange
+										}
+										content={ data?.message }
+									/>
+								</div>
+							</div>
+						) }
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">
@@ -385,10 +402,11 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								</div>
 								<div className="srfm-options-wrapper">
 									<div
-										className={ `srfm-option ${ data?.submission_action ===
+										className={ `srfm-option ${
+											data?.submission_action ===
 											'hide form'
-											? 'srfm-active-after-submit'
-											: ''
+												? 'srfm-active-after-submit'
+												: ''
 										}` }
 									>
 										<input
@@ -417,10 +435,11 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 										</label>
 									</div>
 									<div
-										className={ `srfm-option ${ data?.submission_action ===
+										className={ `srfm-option ${
+											data?.submission_action ===
 											'reset form'
-											? 'srfm-active-after-submit'
-											: ''
+												? 'srfm-active-after-submit'
+												: ''
 										}` }
 									>
 										<input
