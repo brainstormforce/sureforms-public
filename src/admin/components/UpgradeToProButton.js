@@ -1,12 +1,14 @@
 import { __ } from '@wordpress/i18n';
 
 const UpgradeToProButton = ( props ) => {
+	const handleClick = () => {
+		const url = 'https://sureforms.com/pricing';
+		window.open( url );
+	};
 	return (
-		<a href="https://sureforms.com/pricing" target="_blank" rel="noreferrer">
-			<button { ...props }>
-				{ __( 'Upgrade to Pro', 'sureforms' ) }
-			</button>
-		</a>
+		<button onClick={ handleClick } { ...props }>
+			{ __( 'Upgrade to Pro', 'sureforms' ) }
+		</button>
 	);
 };
 
