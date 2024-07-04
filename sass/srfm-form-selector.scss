@@ -52,10 +52,6 @@
 	}
 }
 
-.components-button.is-secondary:hover:not( :disabled ) {
-	box-shadow: none;
-}
-
 .srfm-form-select-dropdown {
 	position: relative;
 	color: #333;
@@ -146,6 +142,10 @@
 
 .srfm-select-form-button {
 	text-align: center;
+
+	.components-button.is-secondary:hover:not( :disabled ) {
+		box-shadow: none;
+	}
 }
 
 .srfm-iframe-container {
