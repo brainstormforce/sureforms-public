@@ -66,5 +66,4 @@ class Input_Markup extends Base {
 		<?php
 		return ob_get_clean();
 	}
-
 }

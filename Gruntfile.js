@@ -19,7 +19,8 @@ module.exports = function ( grunt ) {
 						expand: true,
 						cwd: 'sass/',
 						// excluding components folder as all its files are combined in frontend.css
-						src: [ '**/*.scss', '!blocks/default/components/**/*.scss' ],
+						// excluding utils folder as all it gets imported in multiple file wherever required.
+						src: [ '**/*.scss', '!blocks/default/components/**/*.scss', '!blocks/default/utils/**/*.scss' ],
 						dest: 'assets/css/unminified',
 						ext: '.css',
 					},
