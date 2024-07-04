@@ -13,6 +13,17 @@ export default () => {
 	const [ showNotifications, setShowNotifications ] = useState( false );
 	const [ isLicenseActive, setIsLicenseActive ] = useState( srfm_admin?.is_license_active || false );
 
+	const currentPage = new URL( window.location.href ).searchParams.get( 'page' );
+
+	const handleUnlicensedRedirection = () => {
+		if ( currentPage === 'sureforms_form_settings' ) {
+			// in future if the tab slug is not account-settings, will have to change this.
+			document.querySelector( 'a[href*="tab=account-settings"]' )?.click();
+		} else {
+			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings`;
+		}
+	};
+
 	useEffect( () => {
 		window.addEventListener( 'srfm_license_status_updated', ( event ) => {
 			if ( event?.detail ) {
@@ -175,13 +186,11 @@ export default () => {
 									{ ' ' }
 									{ isLicenseActive ? ( __( 'Licensed', 'sureforms' ) ) : (
 										<>
-											<a
+											<span
 												css={ css`
-													text-decoration: none;	
-													color: inherit !important;
-													box-shadow: none !important;
+													cursor: pointer;
 												` }
-												href={ `${ srfm_admin?.site_url }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings` }>{ __( 'Unlicensed', 'sureforms' ) }</a>
+												onClick={ handleUnlicensedRedirection }>{ __( 'Unlicensed', 'sureforms' ) }</span>
 										</>
 									) }
 								</article>
