@@ -1,0 +1,27 @@
+@import "./variables.scss";
+
+@mixin srfm-block-label-styles {
+	font-size: var( --srfm-label-font-size );
+	font-weight: var( --srfm-label-font-weight );
+	line-height: var( --srfm-label-line-height );
+	color: var( --srfm-color-input-label );
+	word-wrap: break-word;
+}
+
+@mixin srfm-input-common-styles {
+	font-size: var( --srfm-input-field-font-size );
+	// font-weight: 400;
+	padding: var( --srfm-input-field-padding );
+	line-height: var( --srfm-input-field-line-height );
+	color: var( --srfm-color-input-text );
+	border: var( --srfm-color-input-border ) solid 1px;
+	border-radius: var( --srfm-input-field-border-radius );
+	background-color: var( --srfm-color-input-background );
+	height: var( --srfm-input-height );
+	outline: 0;
+	margin: var( --srfm-input-field-margin );
+
+	&::placeholder {
+		color: var( --srfm-color-input-placeholder );
+	}
+}

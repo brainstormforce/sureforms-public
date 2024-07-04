@@ -58,7 +58,7 @@ const defaultKeys = {
 	_srfm_bg_image: '',
 	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
-	_srfm_fontsize: 20,
+	_srfm_fontsize: 16,
 	_srfm_label_color: '#111827',
 	_srfm_help_color: '#4B5563',
 	// Input Fields
@@ -294,7 +294,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-font-size',
 							value: sureformsKeys._srfm_fontsize
 								? `${ sureformsKeys._srfm_fontsize }px`
-								: '20px',
+								: '16px',
 						},
 						{
 							property: '--srfm-label-text-color',

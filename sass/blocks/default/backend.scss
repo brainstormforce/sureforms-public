@@ -1,29 +1,8 @@
+@import "./mixins.scss";
+
 .is-root-container {
 	font-size: var( --srfm-font-size );
 	margin-top: 2em;
-
-	// --srfm-primary-color : '#046bd2';
-	// --srfm-label-text-color: #1f2937;
-	// --srfm-body-input-color: #4b5563;
-	// --srfm-placeholder-color: #9ca3af;
-	// --srfm-border-color: #d0d5dd;
-	// --srfm-help-color: #6b7280;
-	// --srfm-base-background-color: #ffffff;
-	// --srfm-light-background-color : '#F9FAFB';
-	// --srfm-info-surface-color : '#3B82F6';
-	// --srfm-info-text-color : '#2563EB';
-	// --srfm-info-background-color : '#EFF6FF';
-	// --srfm-success-surface-color : '#22C55E';
-	// --srfm-success-text-color : '#16A34A';
-	// --srfm-success-background-color : '#F0FDF4';
-	// --srfm-warning-surface-color : '#FACC15';
-	// --srfm-warning-text-color : '#CA8A04';
-	// --srfm-warning-background-color :'#FEFCE8';
-	// --srfm-error-surface-color : '#EF4444';
-	// --srfm-error-text-color: #dc2626;
-	// --srfm-error-background-color : '#FEF2F2';
-	// --srfm-border-radius: 4px;
-	// --srfm-border: 1px;
 
 	.srfm-input-common {
 		width: 100%;
@@ -39,12 +18,8 @@
 	}
 
 	.srfm-block-label {
+		@include srfm-block-label-styles;
 		display: block;
-		font-size: 0.7em;
-		margin-bottom: 0.429em;
-		font-weight: 500;
-		line-height: normal;
-		color: var( --srfm-label-text-color );
 	}
 
 	.srfm-block-text,
@@ -56,21 +31,7 @@
 	}
 
 	.srfm-input-common {
-		font-size: 0.7em;
-		font-weight: 400;
-		padding: 0.72em 1.143em;
-		line-height: normal;
-		color: var( --srfm-body-input-color );
-		border: var( --srfm-border ) solid var( --srfm-border-color );
-		border-radius: var( --srfm-border-radius );
-		background-color: var( --srfm-base-background-color );
-		outline: none;
-		margin: 0;
-
-		&::placeholder {
-			font-size: 1em;
-			color: var( --srfm-placeholder-color );
-		}
+		@include srfm-input-common-styles;
 	}
 
 	.srfm-with-icon {

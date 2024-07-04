@@ -1,7 +1,12 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 
-export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
+export const InputComponent = ( {
+	attributes,
+	blockID,
+	setAttributes,
+	help,
+} ) => {
 	const { label, placeholder, required, defaultValue } = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -20,6 +25,7 @@ export const InputComponent = ( { attributes, blockID, setAttributes } ) => {
 				id={ blockID }
 				allowedFormats={ [] }
 			/>
+			{ help }
 			<div className="srfm-block-wrap">
 				<input
 					id={ `srfm-${ slug }-confirm-${ blockID }` }
