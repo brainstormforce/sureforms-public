@@ -1222,25 +1222,17 @@ class Post_Types {
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		// if ( isset( $post_types[ SRFM_FORMS_POST_TYPE ] ) ) {
-		// unset( $post_types[ SRFM_FORMS_POST_TYPE ] );
-		// }
-
-		foreach ( $post_types as $index => $post_type ) {
-			// Check if the current post type is an associative array.
-			if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
-				// Check if 'name' key matches with SureForms post type.
-				if ( SRFM_FORMS_POST_TYPE === $post_type['name'] ) {
-					unset( $post_types[ $index ] );
-				}
-			} else {
-				// Direct string comparison for non-associative arrays.
-				if ( SRFM_FORMS_POST_TYPE === $post_type ) {
-					unset( $post_types[ $index ] );
+		$filtered_post_types = array_filter(
+			$post_types,
+			function( $post_type ) {
+				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
+					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
+				} else {
+					return SRFM_FORMS_POST_TYPE !== $post_type;
 				}
 			}
-		}
+		);
 
-		return $post_types;
+		return $filtered_post_types;
 	}
 }
