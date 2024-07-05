@@ -141,7 +141,10 @@
 }
 
 .srfm-select-form-button {
-	text-align: center;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	align-items: center;
 
 	.components-button.is-secondary:hover:not( :disabled ) {
 		box-shadow: none;
