@@ -99,12 +99,14 @@ class Number_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<?php echo wp_kses_post( $this->label_markup ); ?>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap">
 					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="number" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
 					<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();
