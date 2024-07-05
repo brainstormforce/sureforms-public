@@ -33,6 +33,7 @@ class Export {
 		'_srfm_conditional_logic',
 		'_srfm_email_notification',
 		'_srfm_form_confirmation',
+		'_srfm_compliance',
 	];
 
 	/**
@@ -132,7 +133,7 @@ class Export {
 			// sanitize the data before saving.
 			$post_content = wp_kses_post( $form_data['post']['post_content'] );
 			$post_title   = sanitize_text_field( $form_data['post']['post_title'] );
-			$post_meta    = Helper::sanitize_recursively( 'wp_kses_post', $form_data['post_meta'] );
+			$post_meta    = $form_data['post_meta'];
 			$post_type    = sanitize_text_field( $form_data['post']['post_type'] );
 
 			$post_content = addslashes( $post_content );
