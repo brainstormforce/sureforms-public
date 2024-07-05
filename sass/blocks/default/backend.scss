@@ -31,7 +31,11 @@
 	}
 
 	.srfm-input-common {
-		@include srfm-input-common-styles;
+		@include srfm-input-common-styles(true);
+	}
+
+	.srfm-input-input {
+		height: var( --srfm-input-height );
 	}
 
 	.srfm-with-icon {
@@ -61,11 +65,11 @@
 
 	.srfm-description {
 		display: block;
-		font-size: 0.7em;
-		margin-top: 0.571em;
-		font-weight: 400;
-		line-height: normal;
-		color: var( --srfm-help-color );
+		@include srfm-description-styles;
+	}
+
+	.srfm-error-wrap {
+		height: var( --srfm-error-line-height );
 	}
 
 	// URL.

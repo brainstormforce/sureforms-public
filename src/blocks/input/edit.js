@@ -219,6 +219,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					attributes={ attributes }
 					help={ helpComponent }
 				/>
+				<div className="srfm-error-wrap"></div>
 
 				{ /* { help !== '' && (
 					<RichText
