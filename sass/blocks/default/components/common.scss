@@ -68,7 +68,7 @@
 
 			.srfm-input-common {
 				font-family: inherit;
-				@include srfm-input-common-styles;
+				@include srfm-input-common-styles();
 				transition: 0.3s ease-out;
 
 				&:focus {
@@ -96,10 +96,7 @@
 			}
 
 			.srfm-description {
-				font-size: var( --srfm-description-font-size );
-				font-weight: var( --srfm-description-font-weight );
-				line-height: var( --srfm-description-line-height );
-				color: var( --srfm-color-input-description );
+				@include srfm-description-styles;
 			}
 
 			.srfm-with-icon {

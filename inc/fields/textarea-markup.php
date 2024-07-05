@@ -98,6 +98,7 @@ class Textarea_Markup extends Base {
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -112,7 +113,9 @@ class Textarea_Markup extends Base {
 			<?php echo wp_kses_post( $this->label_markup ); ?>
 			<?php echo wp_kses_post( $this->help_markup ); ?>
 			<div class="srfm-block-wrap">
-				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> ><?php echo esc_html( $this->default ); ?></textarea>
+				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
+				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> ><?php echo esc_html( $this->default ); ?></textarea>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>

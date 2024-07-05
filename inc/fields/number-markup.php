@@ -87,6 +87,7 @@ class Number_Markup extends Base {
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -101,7 +102,9 @@ class Number_Markup extends Base {
 				<?php echo wp_kses_post( $this->label_markup ); ?>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 				<div class="srfm-block-wrap">
-					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="number" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
+					<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="number" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
+					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+					aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" pattern="[0-9]*" inputmode="numeric"  <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->default_value_attr . '' . $this->format_attr . '' . $this->min_value_attr . '' . $this->max_value_attr ); ?> />
 					<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 				</div>
 				<div class="srfm-error-wrap">

@@ -40,6 +40,7 @@ class Dropdown_Markup extends Base {
 		$this->slug             = 'dropdown';
 		$this->placeholder_html = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
 		$this->set_markup_properties();
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -51,22 +52,25 @@ class Dropdown_Markup extends Base {
 	public function markup() {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
-				<?php echo wp_kses_post( $this->label_markup ); ?>
-				<div class="srfm-block-wrap srfm-dropdown-common-wrap">
-				<?php
-
-				if ( is_array( $this->options ) ) {
-					?>
-				<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" tabindex="0" aria-hidden="true">
-				<option value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
-					<?php foreach ( $this->options as $option ) { ?>
-						<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+				<fieldset>
+					<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
+					<div class="srfm-block-wrap srfm-dropdown-common-wrap">
+					<?php
+					if ( is_array( $this->options ) ) {
+						?>
+					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
+						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" tabindex="0" aria-hidden="true">
+					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
+						<?php foreach ( $this->options as $option ) { ?>
+							<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+						<?php } ?>
+					</select>
 					<?php } ?>
-				</select>
-				<?php } ?>
-				</div>
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+					</div>
+					<?php echo wp_kses_post( $this->help_markup ); ?>
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</fieldset>
 			</div>
 
 		<?php
