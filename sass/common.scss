@@ -81,4 +81,11 @@
 		border: var( --srfm-page-break-btn-border );
 		background-color: var( --srfm-page-break-btn-bg-color );
 	}
+
+	fieldset, legend {
+		font-size: inherit;
+		border: none;
+		margin: 0;
+		padding: 0;
+	}
 }
