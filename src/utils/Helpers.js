@@ -8,6 +8,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
+import { cleanForSlug } from '@wordpress/url';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -23,9 +24,9 @@ export function getImageSize( sizes ) {
 export function getIdFromString( label ) {
 	return label
 		? label
-			.toLowerCase()
-			.replace( /[^a-zA-Z ]/g, '' )
-			.replace( /\s+/g, '-' )
+				.toLowerCase()
+				.replace( /[^a-zA-Z ]/g, '' )
+				.replace( /\s+/g, '-' )
 		: '';
 }
 
@@ -143,6 +144,101 @@ export const generateDropDownOptions = (
 	return data;
 };
 
+const blockSlugs = {};
+
+/**
+ * Generates unique block slug for unsaved blocks.
+ */
+export function generateUniqueBlockSlug( block, updateSlug = false ) {
+	if ( ! updateSlug ) {
+		if ( block.attributes.block_id in blockSlugs ) {
+			return generateUniqueBlockSlug( block, true );
+		}
+
+		if ( !! block?.attributes?.slug ) {
+			return block.attributes.slug;
+		}
+	}
+
+	let _slug = block.name;
+
+	if ( !! block?.attributes?.label ) {
+		_slug = block.attributes.label;
+	}
+
+	let slug = cleanForSlug( _slug );
+
+	if ( ! updateSlug ) {
+		let originalSlug = slug;
+
+		let counter = 1;
+		while ( Object.values( blockSlugs ).includes( slug ) ) {
+			slug = `${ originalSlug }-${ counter }`;
+			counter++;
+		}
+	}
+
+	blockSlugs[ block.attributes.block_id ] = slug;
+
+	return slug;
+}
+
+const pushSmartTagToArray = (
+	blocks,
+	tagsArray,
+	uniqueSlugs = [],
+	allowedBlocks = []
+) => {
+	if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+		return;
+	}
+
+	blocks.forEach( ( block ) => {
+		if (
+			undefined === block?.attributes?.slug ||
+			undefined === block?.attributes?.label ||
+			'' === block?.attributes?.slug ||
+			( 0 !== allowedBlocks.length &&
+				! allowedBlocks.includes( block?.name ) )
+		) {
+			const slug = generateUniqueBlockSlug( block );
+
+			tagsArray.push( [
+				'{form:' + slug + '}',
+				'srfm/gdpr' === block?.name
+					? __( 'GDPR Agreement', 'sureforms' )
+					: block.attributes.label,
+			] );
+			uniqueSlugs.push( slug );
+
+			return;
+		}
+
+		if (
+			Array.isArray( block?.innerBlocks ) &&
+			0 !== block?.innerBlocks.length
+		) {
+			pushSmartTagToArray(
+				block.innerBlocks,
+				tagsArray,
+				uniqueSlugs,
+				allowedBlocks
+			);
+		} else {
+			if ( uniqueSlugs.includes( block.attributes.slug ) ) {
+				return;
+			}
+			tagsArray.push( [
+				'{form:' + block.attributes.slug + '}',
+				'srfm/gdpr' === block?.name
+					? __( 'GDPR Agreement', 'sureforms' )
+					: block.attributes.label,
+			] );
+			uniqueSlugs.push( block.attributes.slug );
+		}
+	} );
+};
+
 export const setFormSpecificSmartTags = ( savedBlocks ) => {
 	const excludedBlocks = [
 		'srfm/inline-button',
@@ -158,62 +254,14 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
+	const uniqueSlugs = [];
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	const pushSmartTagToArray = (
-		blocks,
-		tagsArray,
-		uniqueSlugs = [],
-		allowedBlocks = []
-	) => {
-		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
-			return;
-		}
-
-		blocks.forEach( ( block ) => {
-			if (
-				undefined === block?.attributes?.slug ||
-				undefined === block?.attributes?.label ||
-				'' === block?.attributes?.slug ||
-				( 0 !== allowedBlocks.length &&
-					! allowedBlocks.includes( block?.name ) )
-			) {
-				return;
-			}
-
-			if (
-				Array.isArray( block?.innerBlocks ) &&
-				0 !== block?.innerBlocks.length
-			) {
-				pushSmartTagToArray(
-					block.innerBlocks,
-					tagsArray,
-					uniqueSlugs,
-					allowedBlocks
-				);
-			} else {
-				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
-					return;
-				}
-				tagsArray.push( [
-					'{form:' + block.attributes.slug + '}',
-					'srfm/gdpr' === block?.name
-						? __( 'GDPR Agreement', 'sureforms' )
-						: block.attributes.label,
-				] );
-				uniqueSlugs.push( block.attributes.slug );
-			}
-		} );
-	};
-
-	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
-	pushSmartTagToArray(
-		savedBlocks,
-		formEmailSmartTags,
-		[],
-		[ 'srfm/email' ]
-	);
+	pushSmartTagToArray( savedBlocks, formSmartTags, uniqueSlugs );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, uniqueSlugs, [
+		'srfm/email',
+	] );
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
