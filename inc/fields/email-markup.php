@@ -101,7 +101,6 @@ class Email_Markup extends Base {
 				<?php if ( true === $this->is_confirm_email ) { ?>
 					<div class="srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-confirm-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-confirm-block">
 						<?php echo wp_kses_post( $confirm_label_markup ); ?>
-						<?php echo wp_kses_post( $this->help_markup ); ?>
 						<div class="srfm-block-wrap">
 							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-confirm" type="email" name="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" id="<?php echo esc_attr( $this->unique_confirm_slug ); ?>"
 							<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
