@@ -9,7 +9,7 @@
 	}
 
 	.srfm-block-margin-top {
-		margin-top: 1.2em;
+		margin-top: var( --srfm-gap-between-blocks );
 	}
 
 	.srfm-block-wrap {
@@ -31,7 +31,7 @@
 	}
 
 	.srfm-input-common {
-		@include srfm-input-common-styles(true);
+		@include srfm-input-common-styles( true );
 	}
 
 	.srfm-input-input {
@@ -72,55 +72,22 @@
 		height: var( --srfm-error-line-height );
 	}
 
-	// URL.
-	div[data-type="srfm/url"] {
-		.srfm-protocol {
-			color: var( --srfm-label-text-color );
-			position: absolute;
-			top: 50%;
-			left: 0;
-			transform: translateY( -50% );
-			width: inherit;
-			width: 5.5em;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			border-top-left-radius: var( --srfm-border-radius );
-			border-bottom-left-radius: var( --srfm-border-radius );
-			border-right: var( --srfm-border ) solid var( --srfm-border-color );
-			padding-left: 1em;
-			padding-right: 1em;
-			font-size: 0.7em;
-		}
-
-		.srfm-input-url {
-			padding-left: 6.4375em;
-		}
-	}
-
-	// apply to normal address block
-	.srfm-address-block-container {
-		margin-top: -0.5em;
-
-		.srfm-address-block-label {
-			padding: 0 0.3em;
-			margin-top: 1em;
-		}
-
-		.srfm-address-help-txt {
-			padding: 0 0.3em;
-		}
+	.srfm-input-textarea {
+		height: unset !important;
 	}
 
 	// Address block styles.
 	.srfm-address-block-wrap {
-		padding-left: 0 !important;
-		padding-right: 0 !important;
-		margin-bottom: 0 !important;
 		.block-editor-inner-blocks {
 			.block-editor-block-list__layout {
+				gap: var( --srfm-col-gap-between-fields ) var( --srfm-row-gap-between-fields );
+				margin-top: var( --srfm-gap-above-address-fields ) !important; // Required to override the editor.scss stylings.
+
 				.block-editor-block-list__block {
-					margin-top: 0.5em !important;
+					// margin-top: 0.5em !important;
+					margin-top: 0 !important;
+					padding: 0;
+					flex: calc( 50% - var( --srfm-col-gap-between-fields ) );
 				}
 			}
 		}

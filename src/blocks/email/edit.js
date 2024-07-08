@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
@@ -17,7 +17,7 @@ import AddInitialAttr from '@Controls/addInitialAttr';
 import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
@@ -195,19 +195,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				setAttributes={ setAttributes }
 				attributes={ attributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
 		</div>
 	);
 };

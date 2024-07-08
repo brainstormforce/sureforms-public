@@ -1,5 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -9,6 +10,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 		defaultValue,
 		isConfirmEmail,
 		confirmLabel,
+		help,
 	} = attributes;
 
 	const slug = 'email';
@@ -28,6 +30,11 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 					id={ blockID }
 					allowedFormats={ [] }
 				/>
+				<HelpText
+					help={ help }
+					setAttributes={ setAttributes }
+					block_id={ blockID }
+				/>
 				<div className="srfm-block-wrap">
 					<input
 						id={ `srfm-${ slug }-${ blockID }` }
@@ -38,6 +45,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 						required={ required }
 					/>
 				</div>
+				<div className="srfm-error-wrap"></div>
 			</div>
 
 			{ isConfirmEmail && (
@@ -60,6 +68,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 							required={ required }
 						/>
 					</div>
+					<div className="srfm-error-wrap"></div>
 				</div>
 			) }
 		</>
