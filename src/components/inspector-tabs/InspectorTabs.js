@@ -195,6 +195,7 @@ const InspectorTabs = ( props ) => {
 							className={ classnames( {
 								'srfm-active': currentTab === STYLE,
 							} ) }
+							id="style-tab"
 							onClick={ () => _onTabChange( STYLE ) }
 						>
 							<svg

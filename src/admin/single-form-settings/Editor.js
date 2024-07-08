@@ -235,9 +235,18 @@ const SureformsFormSpecificSettings = ( props ) => {
 		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 		// elements for submit button event listener
 		const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
-		const styleTabElement = document.querySelectorAll('.srfm-inspector-tabs div')[1]; // Style Tab
-		const submitBtnStyleContainer = document.querySelector('.srfm-advance-panel-body-submit-button');
-		const submitBtnElement = submitBtnStyleContainer?.querySelector('button');
+		const styleTabElement = document.getElementById( 'style-tab' ); // Style Tab
+		const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
+		const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
+
+		const diplayElement = () => {
+			console.log(
+				editPostTab, 'editPost',
+				styleTabElement, 'styleTab',
+				submitBtnStyleContainer, 'submitContainer',
+				submitBtnElement, 'submitElement'
+			);
+		};
 
 		if ( elm ) {
 			if (
@@ -272,9 +281,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 				button.addEventListener( 'click', () => {
 					editPostTab?.click();
 					styleTabElement?.click();
-					if ( ! submitBtnStyleContainer.classList.contains('is-opened') ) {
+					if ( ! submitBtnStyleContainer.classList.contains( 'is-opened' ) ) {
 						submitBtnElement?.click();
 					}
+					diplayElement();
 				} );
 			}
 		}
