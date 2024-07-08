@@ -18,7 +18,7 @@ export default () => {
 	const handleUnlicensedRedirection = () => {
 		if ( currentPage === 'sureforms_form_settings' ) {
 			// in future if the tab slug is not account-settings, will have to change this.
-			document.querySelector( 'a[href*="tab=account-settings"]' )?.click();
+			document.querySelector( 'a[href*="tab=account-settings"].srfm-settings-sidebar-category' )?.click();
 		} else {
 			window.location.href = `${ srfm_admin.site_url }/wp-admin/admin.php?page=sureforms_form_settings&tab=account-settings`;
 		}
