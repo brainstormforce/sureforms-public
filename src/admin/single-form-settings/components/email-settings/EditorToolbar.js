@@ -44,6 +44,9 @@ export const modules = {
 		maxStack: 100,
 		userOnly: true,
 	},
+	clipboard: {
+		matchVisual: false,
+	},
 };
 
 // Formats objects for setting up the Quill editor
