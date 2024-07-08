@@ -530,6 +530,21 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	// add pro panel to the block inserter
 	useEffect( () => {
+		/**
+		 * For the tablist occurred with the WP-6.6.
+		 * We will replace this with better solution
+		 * in the future, when WordPress provides something built-in.
+		 */
+		const removeUnnecessaryTablist = () => {
+			const tablist = document.querySelector(
+				'.block-editor-inserter__tabs .block-editor-inserter__tablist-and-close-button'
+			);
+
+			if ( tablist ) {
+				tablist.remove();
+			}
+		};
+
 		const checkAndRenderCustomComponent = () => {
 			const targetElement = document.querySelector(
 				'.block-editor-inserter__block-list'
@@ -555,7 +570,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.MutationObserver ||
 			window.WebKitMutationObserver ||
 			window.MozMutationObserver;
-		const observer = new MutationObserver( checkAndRenderCustomComponent );
+		const observer = new MutationObserver( () => {
+			removeUnnecessaryTablist();
+			checkAndRenderCustomComponent();
+		} );
 
 		// Set up the configuration of the MutationObserver
 		const observerConfig = { childList: true, subtree: true };
