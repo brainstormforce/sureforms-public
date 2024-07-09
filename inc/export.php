@@ -141,13 +141,24 @@ class Export {
 			// Check if sureforms/form exists in post_content.
 			if ( 'sureforms_form' === $post_type ) {
 				$new_post = [
-					'post_title'   => $post_title,
-					'post_content' => $post_content,
-					'post_status'  => 'draft',
-					'post_type'    => 'sureforms_form',
+					'post_title'  => $post_title,
+					'post_status' => 'draft',
+					'post_type'   => 'sureforms_form',
 				];
 
 				$post_id = wp_insert_post( $new_post );
+
+				// Update the post content formId to the new post id.
+				$post_content = str_replace( '\"formId\":' . $form_data['post']['ID'], '\"formId\":' . $post_id, $post_content );
+
+				// update the post content.
+				wp_update_post(
+					[
+						'ID'           => $post_id,
+						'post_content' => $post_content,
+					]
+				);
+
 				if ( ! $post_id ) {
 					http_response_code( 400 );
 					wp_send_json_error( __( 'Failed to import form.', 'sureforms' ) );
