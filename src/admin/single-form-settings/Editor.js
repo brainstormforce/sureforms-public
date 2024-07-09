@@ -287,7 +287,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
 						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
 
-						if ( ! submitBtnStyleContainer.classList.contains( 'is-opened' ) ) {
+						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
 							submitBtnElement?.click();
 						}
 					}, 200 );
