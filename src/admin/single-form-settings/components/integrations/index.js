@@ -200,7 +200,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 
 	const getCTA = ( status ) => {
 		if ( status === 'Activated' ) {
-			return __( 'Integrate with SureTriggers', 'sureforms' );
+			return __( 'View Integrations', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}

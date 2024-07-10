@@ -239,12 +239,12 @@ class Admin_Ajax {
 
 		$api_url = add_query_arg(
 			[
-				'redirect_url' => 'https://qaing.suretriggers.com/embed-login',
+				'redirect_url' => SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'embed-login',
 				'st-code'      => $secret_key,
 				'base_url'     => $base_url,
 				'reset_url'    => base64_encode( $base_url ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode, required as we need to encode base url for suretriggers.
 			],
-			'https://qaing.suretriggers.com/wp-login'
+			SRFM_SURETRIGGERS_INTERGATION_BASE_URL . 'wp-login'
 		);
 
 		// This is the format of data required by SureTriggers for adding iframe in target id.
