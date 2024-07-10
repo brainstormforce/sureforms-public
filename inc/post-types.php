@@ -848,7 +848,7 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><?php echo wp_kses_post( $value ); ?></td>
+						<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>
 				<?php endforeach; ?>

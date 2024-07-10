@@ -1,4 +1,4 @@
-=== SureForms – Drag and Drop Contact Form Plugin for WordPress! ===
+=== SureForms – Drag and Drop Contact Form Plugin for WordPress [BETA] ===
 Contributors: brainstormforce
 Tags: contact form, custom form, form builder, forms, gutenberg
 Requires at least: 6.4
@@ -170,6 +170,7 @@ There is no limit to the types of businesses and organizations that can benefit 
  * Astra
  * Spectra One
  * Blocksy
+ * Bricks Builder
  * Flatsome
  * GeneratePress
  * Hestia
@@ -198,7 +199,6 @@ There is no limit to the types of businesses and organizations that can benefit 
 * Elementor Pro
 * Beaver Builder
 * Divi Builder
-* Bricks Builder
 * Yoast SEO
 * And many more
 
