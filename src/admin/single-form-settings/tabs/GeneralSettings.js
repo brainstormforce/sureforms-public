@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import parse from 'html-react-parser';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 import PostURLPanel from '../components/form-permalink/Panel';
@@ -67,13 +67,7 @@ function GeneralSettings( props ) {
 		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
 			createNotice(
 				'warning',
-				sprintf(
-					/* translators: %s is the post status. */
-					__( 'There are few unsaved changes. Please %s this form to save them.', 'sureforms' ),
-					'publish' === status
-						? __( 'update', 'sureforms' )
-						: __( 'publish', 'sureforms' )
-				),
+				__( 'There are few unsaved changes. Please save your changes to reflect the updates.', 'sureforms' ),
 				{
 					id: 'srfm-unsaved-changes-warning',
 					isDismissible: true,
