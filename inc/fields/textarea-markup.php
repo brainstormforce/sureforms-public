@@ -115,7 +115,7 @@ class Textarea_Markup extends Base {
 			<div class="srfm-block-wrap">
 				<textarea class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 				<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->placeholder_attr . '' . $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> ><?php echo esc_html( $this->default ); ?></textarea>
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->max_length_attr . '' . $this->cols_attr . '' . $this->rows_attr ); ?> ><?php echo esc_html( $this->default ); ?></textarea>
 			</div>
 			<div class="srfm-error-wrap">
 				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
