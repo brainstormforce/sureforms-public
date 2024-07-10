@@ -138,11 +138,7 @@ class Gutenberg_Hooks {
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'General Fields', 'sureforms' ),
-			],
-			[
-				'slug'  => 'sureforms-pro',
-				'title' => esc_html__( 'Advanced Fields', 'sureforms' ),
+				'title' => esc_html__( 'SureForms', 'sureforms' ),
 			],
 		];
 
@@ -354,10 +350,11 @@ class Gutenberg_Hooks {
 	 * @param array<array<array<mixed>>> $blocks The block data.
 	 * @param array<string>              $slugs The array of existing slugs.
 	 * @param bool                       $updated The array of existing slugs.
+	 * @param string                     $prefix The array of existing slugs.
 	 * @since 0.0.3
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
-	public function process_blocks( $blocks, $slugs, $updated ) {
+	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
 
 		if ( ! is_array( $blocks ) ) {
 			return [ $blocks, $slugs, $updated ];
@@ -385,12 +382,12 @@ class Gutenberg_Hooks {
 
 			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
 
-				$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block );
+				$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
 				$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
 				$updated                           = true;
 				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
-					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated );
+					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
 
 				}
 			}
@@ -401,11 +398,50 @@ class Gutenberg_Hooks {
 	/**
 	 * Generates slug based on the provided block and existing slugs.
 	 *
-	 * @param array<array<mixed>> $block The block data.
+	 * @param array<mixed>  $block The block data.
+	 * @param array<string> $slugs The array of existing slugs.
+	 * @param string        $prefix The array of existing slugs.
 	 * @since 0.0.2
 	 * @return string The generated unique block slug.
 	 */
-	public function generate_unique_block_slug( $block ) {
-		return 'field-' . $block['attrs']['block_id'];
+	public function generate_unique_block_slug( $block, $slugs, $prefix ) {
+		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
+
+		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
+			$slug = sanitize_title( $block['attrs']['label'] );
+		}
+
+		if ( ! empty( $prefix ) ) {
+			$slug = $prefix . '-' . $slug;
+		}
+
+		$slug = $this->generate_slug( $slug, $slugs );
+
+		return $slug;
+	}
+
+	/**
+	 * This function ensures that the slug is unique.
+	 * If the slug is already taken, it appends a number to the slug to make it unique.
+	 *
+	 * @param string        $slug test to be converted to slug.
+	 * @param array<string> $slugs An array of existing slugs.
+	 * @since 0.0.2
+	 * @return string The unique slug.
+	 */
+	public function generate_slug( $slug, $slugs ) {
+		$slug = sanitize_title( $slug );
+
+		if ( ! in_array( $slug, $slugs, true ) ) {
+			return $slug;
+		}
+
+		$index = 1;
+
+		while ( in_array( $slug . '-' . $index, $slugs, true ) ) {
+			$index++;
+		}
+
+		return $slug . '-' . $index;
 	}
 }

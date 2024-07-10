@@ -7,7 +7,8 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
-import { ToastBar, Toaster } from 'react-hot-toast';
+import { Toaster, ToastBar } from 'react-hot-toast';
+import { cleanForSlug } from '@wordpress/url';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -143,54 +144,79 @@ export const generateDropDownOptions = (
 	return data;
 };
 
+// Generates unique block slug for new unsaved fields.
+export function maybeGenerateUniqueBlockSlug( block, blockSlugs = {} ) {
+
+	if ( !! block?.attributes?.slug ) {
+		// Return early if is database saved field.
+		blockSlugs[ block.attributes.block_id ] = block.attributes.slug;
+		return blockSlugs[ block.attributes.block_id ];
+	}
+
+	let _slug = block.name;
+
+	if ( !! block?.attributes?.label ) {
+		_slug = block.attributes.label;
+	}
+
+	let slug = cleanForSlug( _slug );
+
+	let originalSlug = slug;
+
+	let counter = 1;
+	while ( Object.values( blockSlugs ).includes( slug ) ) {
+		slug = `${ originalSlug }-${ counter }`;
+		counter++;
+	}
+
+	blockSlugs[ block.attributes.block_id ] = slug;
+
+	return blockSlugs[ block.attributes.block_id ];
+}
+
 const pushSmartTagToArray = (
 	blocks,
-	tagsArray = [],
-	processedBlockIDs = [],
+	tagsArray,
+	uniqueSlugs = [],
 	allowedBlocks = []
 ) => {
-	// Return if blocks is an empty array
-	if ( Array.isArray( blocks ) && blocks.length === 0 ) {
+	if ( Array.isArray( blocks ) && 0 === blocks.length ) {
 		return;
 	}
 
-	blocks.forEach( ( block ) => {
-		// Skip if the block is not in the allowed blocks list when allowedBlocks is not empty
-		if (
-			allowedBlocks.length !== 0 &&
-			! allowedBlocks.includes( block?.name )
-		) {
-			return;
-		}
+	const blockSlugs = {};
 
-		// Recursively process inner blocks if they exist
-		if (
-			Array.isArray( block?.innerBlocks ) &&
-			block.innerBlocks.length > 0
-		) {
+	blocks.forEach( ( block ) => {
+
+		const isInnerBlock = Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length;
+
+		if ( isInnerBlock ) {
+			// If is inner block, process inner block recursively.
 			return pushSmartTagToArray(
 				block.innerBlocks,
 				tagsArray,
-				processedBlockIDs,
+				uniqueSlugs,
 				allowedBlocks
 			);
 		}
 
-		// Skip if the block ID has already been processed
-		if ( processedBlockIDs.includes( block.attributes.block_id ) ) {
+		const isAllowedBlock = !!allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
+
+		if ( ! isAllowedBlock ) {
 			return;
 		}
 
-		// Push the smart tag and label into the tagsArray
-		tagsArray.push( [
-			`{form:field-${ block.attributes.block_id }}`,
-			block?.name === 'srfm/gdpr'
-				? __( 'GDPR Agreement', 'sureforms' )
-				: block.attributes.label,
-		] );
+		const fieldSlug = maybeGenerateUniqueBlockSlug( block, blockSlugs );
 
-		// Add the block ID to the unique slugs array
-		processedBlockIDs.push( block.attributes.block_id );
+		if ( uniqueSlugs.includes( fieldSlug ) ) {
+			return;
+		}
+
+		const fieldTag = '{form:' + fieldSlug + '}';
+		const fieldLabel = 'srfm/gdpr' === block?.name ? __( 'GDPR Agreement', 'sureforms' ) : block.attributes.label;
+
+		tagsArray.push( [ fieldTag, fieldLabel, ] );
+		uniqueSlugs.push( fieldSlug );
 	} );
 };
 
@@ -205,29 +231,23 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
-	// Filter out the excluded blocks
 	savedBlocks = savedBlocks.filter(
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	const processedBlockIDs = [];
+	const uniqueSlugs = [];
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	// Process blocks to extract form smart tags
-	pushSmartTagToArray( savedBlocks, formSmartTags, processedBlockIDs );
-
-	// Process blocks to extract email smart tags
-	pushSmartTagToArray( savedBlocks, formEmailSmartTags, processedBlockIDs, [
+	pushSmartTagToArray( savedBlocks, formSmartTags, uniqueSlugs );
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, uniqueSlugs, [
 		'srfm/email',
 	] );
 
-	// Initialize the sureforms object if it doesn't exist
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
 
-	// Store the extracted smart tags in the sureforms object
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
