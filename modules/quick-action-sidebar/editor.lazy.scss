@@ -1,4 +1,7 @@
 // Quick acton bar Editor CSS.
+.srfm-ee-quick-access-container {
+	z-index: 999999;
+}
 .srfm-ee-quick-access {
 	// This is applied to the element directly inside the interface skeleton body.
 	display: flex;
