@@ -25,7 +25,6 @@ import ConditionalLogic from '@Components/conditional-logic';
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		fieldWidth,
-		placeholder,
 		textAreaHelpText,
 		required,
 		maxLength,
@@ -80,17 +79,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { placeholder: value } )
-								}
 							/>
 							<SRFMTextControl
 								variant="textarea"

@@ -15,8 +15,7 @@ import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
 export default ( { attributes, setAttributes } ) => {
-	const { placeholder, help, required, defaultValue, errorMsg, fieldWidth } =
-		attributes;
+	const { help, required, defaultValue, errorMsg, fieldWidth } = attributes;
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -43,18 +42,6 @@ export default ( { attributes, setAttributes } ) => {
 							}
 							__nextHasNoMarginBottom
 						/>
-						<SRFMTextControl
-							label={ __( 'Placeholder', 'sureforms' ) }
-							value={ placeholder }
-							data={ {
-								value: placeholder,
-								label: 'placeholder',
-							} }
-							onChange={ ( value ) =>
-								setAttributes( { placeholder: value } )
-							}
-						/>
-
 						<SRFMTextControl
 							label={ __( 'Default Value', 'sureforms' ) }
 							className="srfm-with-dropdown"

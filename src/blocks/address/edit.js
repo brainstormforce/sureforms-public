@@ -51,7 +51,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Address Line 1', 'sureforms' ),
 				label: 'Address Line 1',
 				fieldWidth: 50,
 			},
@@ -59,7 +58,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Address Line 2', 'sureforms' ),
 				label: 'Address Line 2',
 				fieldWidth: 50,
 			},
@@ -67,7 +65,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'City', 'sureforms' ),
 				label: 'City',
 				fieldWidth: 50,
 			},
@@ -75,7 +72,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'State', 'sureforms' ),
 				label: 'State',
 				fieldWidth: 50,
 			},
@@ -83,7 +79,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Postal Code', 'sureforms' ),
 				label: 'Postal Code',
 				fieldWidth: 50,
 			},
@@ -91,7 +86,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/dropdown',
 			{
-				placeholder: __( 'Country', 'sureforms' ),
 				label: 'Country',
 
 				options: [

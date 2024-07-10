@@ -23,7 +23,6 @@ import ConditionalLogic from '@Components/conditional-logic';
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
-		placeholder,
 		help,
 		required,
 		defaultValue,
@@ -84,17 +83,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { placeholder: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
