@@ -206,11 +206,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
-	const headerCenterContainer = document.querySelector(
-		'.edit-post-header__center'
-	);
+	const headerCenterContainer =
+		document.querySelector( '.edit-post-header__center' ) ||
+		// added support for WP 6.6.
+		document.querySelector( '.editor-header__center' );
 
 	if ( headerCenterContainer ) {
+		// remove the command bar and add our custom header title editor
+		const header = document.querySelector( '.editor-post-title__block' );
+		if ( header ) {
+			header.remove();
+		}
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
 	}

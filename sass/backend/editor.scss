@@ -233,7 +233,9 @@ body.post-type-sureforms_form {
 		margin-left: -10px;
 	}
 
-	.edit-post-header__center {
+	.edit-post-header__center,
+	// added support for WP 6.6.
+	.editor-header__center {
 		// styles added to make title bar compatible if block toolbar settings are moved in the header
 		display: flex;
 		align-items: stretch;
