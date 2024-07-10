@@ -25,10 +25,6 @@ let prevMetaHash = '';
 function GeneralSettings( props ) {
 	const { createNotice } = useDispatch( 'core/notices' );
 
-	const { status } = useSelect( ( select ) =>
-		select( editorStore ).getCurrentPost()
-	);
-
 	const { editPost } = useDispatch( editorStore );
 	const { defaultKeys, isPageBreak } = props;
 	let sureformsKeys = useSelect( ( select ) =>
