@@ -7,8 +7,7 @@
 
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
-import { Toaster, ToastBar } from 'react-hot-toast';
-import { cleanForSlug } from '@wordpress/url';
+import { ToastBar, Toaster } from 'react-hot-toast';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -24,9 +23,9 @@ export function getImageSize( sizes ) {
 export function getIdFromString( label ) {
 	return label
 		? label
-				.toLowerCase()
-				.replace( /[^a-zA-Z ]/g, '' )
-				.replace( /\s+/g, '-' )
+			.toLowerCase()
+			.replace( /[^a-zA-Z ]/g, '' )
+			.replace( /\s+/g, '-' )
 		: '';
 }
 
@@ -144,98 +143,54 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-const blockSlugs = {};
-
-/**
- * Generates unique block slug for unsaved blocks.
- */
-export function generateUniqueBlockSlug( block, updateSlug = false ) {
-	if ( ! updateSlug ) {
-		if ( block.attributes.block_id in blockSlugs ) {
-			return generateUniqueBlockSlug( block, true );
-		}
-
-		if ( !! block?.attributes?.slug ) {
-			return block.attributes.slug;
-		}
-	}
-
-	let _slug = block.name;
-
-	if ( !! block?.attributes?.label ) {
-		_slug = block.attributes.label;
-	}
-
-	let slug = cleanForSlug( _slug );
-
-	if ( ! updateSlug ) {
-		let originalSlug = slug;
-
-		let counter = 1;
-		while ( Object.values( blockSlugs ).includes( slug ) ) {
-			slug = `${ originalSlug }-${ counter }`;
-			counter++;
-		}
-	}
-
-	blockSlugs[ block.attributes.block_id ] = slug;
-
-	return slug;
-}
-
 const pushSmartTagToArray = (
 	blocks,
-	tagsArray,
-	uniqueSlugs = [],
+	tagsArray = [],
+	processedBlockIDs = [],
 	allowedBlocks = []
 ) => {
-	if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+	// Return if blocks is an empty array
+	if ( Array.isArray( blocks ) && blocks.length === 0 ) {
 		return;
 	}
 
 	blocks.forEach( ( block ) => {
+		// Skip if the block is not in the allowed blocks list when allowedBlocks is not empty
 		if (
-			undefined === block?.attributes?.slug ||
-			undefined === block?.attributes?.label ||
-			'' === block?.attributes?.slug ||
-			( 0 !== allowedBlocks.length &&
-				! allowedBlocks.includes( block?.name ) )
+			allowedBlocks.length !== 0 &&
+			! allowedBlocks.includes( block?.name )
 		) {
-			const slug = generateUniqueBlockSlug( block );
-
-			tagsArray.push( [
-				'{form:' + slug + '}',
-				'srfm/gdpr' === block?.name
-					? __( 'GDPR Agreement', 'sureforms' )
-					: block.attributes.label,
-			] );
-			uniqueSlugs.push( slug );
-
 			return;
 		}
 
+		// Recursively process inner blocks if they exist
 		if (
 			Array.isArray( block?.innerBlocks ) &&
-			0 !== block?.innerBlocks.length
+			block.innerBlocks.length > 0
 		) {
-			pushSmartTagToArray(
+			return pushSmartTagToArray(
 				block.innerBlocks,
 				tagsArray,
-				uniqueSlugs,
+				processedBlockIDs,
 				allowedBlocks
 			);
-		} else {
-			if ( uniqueSlugs.includes( block.attributes.slug ) ) {
-				return;
-			}
-			tagsArray.push( [
-				'{form:' + block.attributes.slug + '}',
-				'srfm/gdpr' === block?.name
-					? __( 'GDPR Agreement', 'sureforms' )
-					: block.attributes.label,
-			] );
-			uniqueSlugs.push( block.attributes.slug );
 		}
+
+		// Skip if the block ID has already been processed
+		if ( processedBlockIDs.includes( block.attributes.block_id ) ) {
+			return;
+		}
+
+		// Push the smart tag and label into the tagsArray
+		tagsArray.push( [
+			`{form:field-${ block.attributes.block_id }}`,
+			block?.name === 'srfm/gdpr'
+				? __( 'GDPR Agreement', 'sureforms' )
+				: block.attributes.label,
+		] );
+
+		// Add the block ID to the unique slugs array
+		processedBlockIDs.push( block.attributes.block_id );
 	} );
 };
 
@@ -250,23 +205,29 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
+	// Filter out the excluded blocks
 	savedBlocks = savedBlocks.filter(
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	const uniqueSlugs = [];
+	const processedBlockIDs = [];
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	pushSmartTagToArray( savedBlocks, formSmartTags, uniqueSlugs );
-	pushSmartTagToArray( savedBlocks, formEmailSmartTags, uniqueSlugs, [
+	// Process blocks to extract form smart tags
+	pushSmartTagToArray( savedBlocks, formSmartTags, processedBlockIDs );
+
+	// Process blocks to extract email smart tags
+	pushSmartTagToArray( savedBlocks, formEmailSmartTags, processedBlockIDs, [
 		'srfm/email',
 	] );
 
+	// Initialize the sureforms object if it doesn't exist
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
 
+	// Store the extracted smart tags in the sureforms object
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
 };
