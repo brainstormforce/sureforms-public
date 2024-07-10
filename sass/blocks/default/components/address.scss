@@ -1,7 +1,9 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-address-block {
-			margin-bottom: 0.5em !important;
+			legend {
+				margin-bottom: var( --srfm-gap-below-address-label );
+			}
 
 			.srfm-block-wrap {
 				display: flex;
