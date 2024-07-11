@@ -103,7 +103,7 @@ class Gutenberg_Hooks {
 			[
 				'methods'             => 'POST',
 				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
-				'permission_callback' => [ $this, 'permission_check' ],
+				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
 	}
