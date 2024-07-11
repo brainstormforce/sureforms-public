@@ -101,6 +101,7 @@ class Frontend_Assets {
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'srfm/', '', $block_type );
 		$script_dep_blocks = [ 'address-compact', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
+		$build_script_dep_blocks = [ 'textarea' ];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
@@ -119,7 +120,11 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 			}
 
-			if ( 'dropdown' !== $block_name ) {
+			if ( in_array( $block_name, $build_script_dep_blocks, true ) ) {
+				wp_enqueue_script( SRFM_SLUG . '-'. $block_name , SRFM_URL . '/assets/build/'. $block_name .'.js', [], SRFM_VER, true );
+			}
+
+			if ( 'dropdown' !== $block_name || ! in_array( $block_name, $build_script_dep_blocks, true ) ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 		}

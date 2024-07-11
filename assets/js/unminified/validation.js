@@ -32,7 +32,13 @@ async function getUniqueValidationData( checkData, formId, ajaxUrl, nonce ) {
 	}
 }
 
-export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
+export async function fieldValidation(
+	formId,
+	ajaxUrl,
+	nonce,
+	formContainer,
+	singleField = false
+) {
 	let validateResult = false;
 	let firstErrorInput = null;
 	let uniqueEntryData = null;
@@ -54,9 +60,13 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			nonce
 		);
 	}
-	const fieldContainers = Array.from(
-		formContainer.querySelectorAll( '.srfm-block-single' )
-	);
+	// const fieldContainers = Array.from(
+	// 	formContainer.querySelectorAll( '.srfm-block-single' )
+	// );
+
+	const fieldContainers = singleField
+		? [ formContainer ]
+		: Array.from( formContainer.querySelectorAll( '.srfm-block-single' ) );
 
 	for ( const container of fieldContainers ) {
 		let skipValidation = false;
@@ -114,8 +124,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 					.classList.remove( 'srfm-error' );
 			}
 
-			// remove the error message on change of the input
-			inputField.addEventListener( 'change', () => {
+			// remove the error message on input of the input
+			inputField.addEventListener( 'input', () => {
 				inputField
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
@@ -183,9 +193,9 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				container.classList.remove( 'srfm-error' );
 			}
 
-			// also remove the error message on change of the input
+			// also remove the error message on input of the input
 			checkedInput.forEach( ( input ) => {
-				input.addEventListener( 'change', () => {
+				input.addEventListener( 'input', () => {
 					container.classList.remove( 'srfm-error' );
 				} );
 			} );
@@ -204,8 +214,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			}
 
-			// remove the error message on change of the url input
-			urlInput.addEventListener( 'change', () => {
+			// remove the error message on input of the url input
+			urlInput.addEventListener( 'input', () => {
 				container.classList.remove( 'srfm-error' );
 			} );
 		}
@@ -224,10 +234,10 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 			}
 
-			// remove the error message on change of the phone input
+			// remove the error message on input of the phone input
 			const phoneInputs = container.querySelectorAll( 'input' );
 			phoneInputs.forEach( ( input ) => {
-				input.addEventListener( 'change', () => {
+				input.addEventListener( 'input', () => {
 					container.classList.remove( 'srfm-error' );
 				} );
 			} );
@@ -324,16 +334,16 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 						confirmParent.classList.remove( 'srfm-error' );
 					}
 
-					// remove the error message on change of the email confirm field
-					confirmInput.addEventListener( 'change', () => {
+					// remove the error message on input of the email confirm field
+					confirmInput.addEventListener( 'input', () => {
 						confirmParent.classList.remove( 'srfm-error' );
 					} );
 				}
 
-				// remove the error message on change of the email main field
+				// remove the error message on input of the email main field
 				const allInputFields =
 					parent.querySelector( '.srfm-input-email' );
-				allInputFields.addEventListener( 'change', () => {
+				allInputFields.addEventListener( 'input', () => {
 					parent.classList.remove( 'srfm-error' );
 				} );
 			}
@@ -391,7 +401,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 
 			// Add event listener to each input element to check if all inputs are filled
 			addressInput.forEach( ( input ) => {
-				input.addEventListener( 'change', checkInputs );
+				input.addEventListener( 'input', checkInputs );
 			} );
 
 			// Create a mutation observer to watch for changes in the class of selectWrap
@@ -444,7 +454,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 			}
 
 			// remove srfm-error class when file is selected
-			uploadInput.addEventListener( 'change', () => {
+			uploadInput.addEventListener( 'input', () => {
 				if ( inputField ) {
 					inputField
 						.closest( '.srfm-block' )
@@ -508,8 +518,8 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		}
 	}
 
-	if ( firstErrorInput ) {
-		firstErrorInput.focus();
-	}
+	// if ( firstErrorInput ) {
+	// 	firstErrorInput.focus();
+	// }
 	return validateResult;
 }

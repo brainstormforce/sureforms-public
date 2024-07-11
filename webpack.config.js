@@ -64,6 +64,10 @@ module.exports = {
 		),
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
+		textarea: path.resolve(
+			__dirname,
+			'assets/js/unminified/blocks/textarea.js'
+		),
 	},
 	resolve: {
 		alias: {
