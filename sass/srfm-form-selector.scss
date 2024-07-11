@@ -144,7 +144,10 @@
 	display: flex;
 	justify-content: center;
 	gap: 10px;
-	align-items: center;
+
+	.components-button.is-primary {
+		margin: 0;
+	}
 
 	.components-button.is-secondary:hover:not( :disabled ) {
 		box-shadow: none;
