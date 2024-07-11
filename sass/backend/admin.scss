@@ -198,6 +198,11 @@ $placeholder_color: #9ca3af;
 	#show-settings-link {
 		border-color: rgb( 229, 231, 235 );
 	}
+	.notice-yoast,
+	.rank-math-notice,
+	.aioseo-conflicting-plugins-notice {
+		display: none;
+	}
 }
 
 .srfm-flex {
