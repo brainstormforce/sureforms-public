@@ -8,7 +8,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { Toaster, ToastBar } from 'react-hot-toast';
-import { cleanForSlug } from '@wordpress/url';
 
 export function getImageSize( sizes ) {
 	const sizeArr = [];
@@ -144,38 +143,22 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-// Generates unique block slug for new unsaved fields.
-export function maybeGenerateUniqueBlockSlug( block, blockSlugs = {} ) {
+export async function getServerGeneratedBlockSlugs( formID, content ) {
+	const option = {
+		path: `/sureforms/v1/generate-block-slugs`,
+		method: 'POST',
+		data: {
+			formID,
+			content,
+		},
+	};
 
-	if ( !! block?.attributes?.slug ) {
-		// Return early if is database saved field.
-		blockSlugs[ block.attributes.block_id ] = block.attributes.slug;
-		return blockSlugs[ block.attributes.block_id ];
-	}
-
-	let _slug = block.name;
-
-	if ( !! block?.attributes?.label ) {
-		_slug = block.attributes.label;
-	}
-
-	let slug = cleanForSlug( _slug );
-
-	let originalSlug = slug;
-
-	let counter = 1;
-	while ( Object.values( blockSlugs ).includes( slug ) ) {
-		slug = `${ originalSlug }-${ counter }`;
-		counter++;
-	}
-
-	blockSlugs[ block.attributes.block_id ] = slug;
-
-	return blockSlugs[ block.attributes.block_id ];
+	return await apiFetch( option );
 }
 
 const pushSmartTagToArray = (
 	blocks,
+	blockSlugs,
 	tagsArray,
 	uniqueSlugs = [],
 	allowedBlocks = []
@@ -184,10 +167,7 @@ const pushSmartTagToArray = (
 		return;
 	}
 
-	const blockSlugs = {};
-
 	blocks.forEach( ( block ) => {
-
 		const isInnerBlock = Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length;
 
 		if ( isInnerBlock ) {
@@ -200,13 +180,13 @@ const pushSmartTagToArray = (
 			);
 		}
 
-		const isAllowedBlock = !!allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
+		const isAllowedBlock = !! allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
 
 		if ( ! isAllowedBlock ) {
 			return;
 		}
 
-		const fieldSlug = maybeGenerateUniqueBlockSlug( block, blockSlugs );
+		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
 		if ( uniqueSlugs.includes( fieldSlug ) ) {
 			return;
@@ -215,12 +195,16 @@ const pushSmartTagToArray = (
 		const fieldTag = '{form:' + fieldSlug + '}';
 		const fieldLabel = 'srfm/gdpr' === block?.name ? __( 'GDPR Agreement', 'sureforms' ) : block.attributes.label;
 
-		tagsArray.push( [ fieldTag, fieldLabel, ] );
+		tagsArray.push( [ fieldTag, fieldLabel ] );
 		uniqueSlugs.push( fieldSlug );
 	} );
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks ) => {
+export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
+	if ( ! Object.keys( blockSlugs )?.length ) {
+		return;
+	}
+
 	const excludedBlocks = [
 		'srfm/inline-button',
 		'srfm/hidden',
@@ -231,22 +215,29 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
-	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
-	);
-
 	const uniqueSlugs = [];
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
 
-	pushSmartTagToArray( savedBlocks, formSmartTags, uniqueSlugs );
-	pushSmartTagToArray( savedBlocks, formEmailSmartTags, uniqueSlugs, [
-		'srfm/email',
-	] );
-
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+
+	if ( ! savedBlocks?.length ) {
+		return;
+	}
+
+	savedBlocks = savedBlocks.filter(
+		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+	);
+
+	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, uniqueSlugs );
+	pushSmartTagToArray( savedBlocks, blockSlugs, formEmailSmartTags, uniqueSlugs, [
+		'srfm/email',
+	] );
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;

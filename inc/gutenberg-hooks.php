@@ -87,6 +87,83 @@ class Gutenberg_Hooks {
 		add_action( 'init', [ $this, 'register_block_patterns' ], 9 );
 		add_filter( 'allowed_block_types_all', [ $this, 'disable_forms_wrapper_block' ], 10, 2 );
 		add_action( 'save_post_sureforms_form', [ $this, 'update_field_slug' ], 10, 2 );
+		add_action( 'rest_api_init', [ $this, 'register_custom_endpoint' ] );
+	}
+
+	/**
+	 * Register custom endpoint.
+	 *
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function register_custom_endpoint() {
+		register_rest_route(
+			'sureforms/v1',
+			'/generate-block-slugs',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
+				'permission_callback' => [ $this, 'permission_check' ],
+			]
+		);
+	}
+
+	/**
+	 * Check whether a given request has permission access route.
+	 *
+	 * @since x.x.x
+	 * @param  \WP_REST_Request $request Full details about the request.
+	 * @return \WP_Error|boolean
+	 */
+	public function permissions_check( $request ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'Sorry, you cannot access this route', 'sureforms' ), [ 'status' => rest_authorization_required_code() ] );
+		}
+		return true;
+	}
+
+	/**
+	 * Generate the block slugs as per the request by parsing the post content.
+	 *
+	 * @param  \WP_REST_Request $request Full details about the request.
+	 * @since x.x.x
+	 * @return void
+	 */
+	public function generate_block_slugs_by_content( $request ) {
+		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
+
+		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
+		$slugs   = [];
+		$updated = false;
+		$params  = $request->get_params();
+
+		if ( empty( $params['formID'] ) ) {
+			wp_send_json_error(
+				[
+					'data'   => __( 'Invalid request. Form ID missing.', 'sureforms' ),
+					'status' => false,
+				]
+			);
+		}
+
+		$form    = get_post( absint( $params['formID'] ) );
+		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
+
+		if ( ! is_null( $form ) ) {
+			$this->process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
+		}
+
+		$this->process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
+
+		wp_send_json( $slugs );
 	}
 
 	/**
@@ -351,10 +428,11 @@ class Gutenberg_Hooks {
 	 * @param array<string>              $slugs The array of existing slugs.
 	 * @param bool                       $updated The array of existing slugs.
 	 * @param string                     $prefix The array of existing slugs.
+	 * @param boolean                    $skip_checking_existing_slug Skips the checking of existing slug if passed true.
 	 * @since 0.0.3
 	 * @return array{array<array<array<mixed>>>,array<string>,bool}
 	 */
-	public function process_blocks( $blocks, $slugs, $updated, $prefix = '' ) {
+	public function process_blocks( $blocks, &$slugs, &$updated, $prefix = '', $skip_checking_existing_slug = false ) {
 
 		if ( ! is_array( $blocks ) ) {
 			return [ $blocks, $slugs, $updated ];
@@ -376,15 +454,19 @@ class Gutenberg_Hooks {
 			 */
 			if ( isset( $block['attrs'] ) && ! empty( $block['attrs']['slug'] ) && ! in_array( $block['attrs']['slug'], $slugs, true ) ) {
 
-				$slugs[] = Helper::get_string_value( $block['attrs']['slug'] );
+				$slugs[ $block['attrs']['block_id'] ] = Helper::get_string_value( $block['attrs']['slug'] );
+				continue;
+			}
+
+			if ( $skip_checking_existing_slug && isset( $slugs[ $block['attrs']['block_id'] ] ) ) {
 				continue;
 			}
 
 			if ( is_array( $blocks[ $index ]['attrs'] ) ) {
 
-				$blocks[ $index ]['attrs']['slug'] = $this->generate_unique_block_slug( $block, $slugs, $prefix );
-				$slugs[]                           = $blocks[ $index ]['attrs']['slug'];
-				$updated                           = true;
+				$blocks[ $index ]['attrs']['slug']    = $this->generate_unique_block_slug( $block, $slugs, $prefix );
+				$slugs[ $block['attrs']['block_id'] ] = $blocks[ $index ]['attrs']['slug'];
+				$updated                              = true;
 				if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 
 					list( $blocks[ $index ]['innerBlocks'], $slugs, $updated ) = $this->process_blocks( $block['innerBlocks'], $slugs, $updated, $blocks[ $index ]['attrs']['slug'] );
