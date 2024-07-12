@@ -81,7 +81,9 @@ const PopoverModal = ( {
 	const addToSidebar = () => {
 		return unusedArray.map(
 			( item, index ) =>
-				item?.name?.includes( 'srfm/' ) &&
+				// include all srfm blocks and core/paragraph block
+				( item?.name?.includes( 'srfm/' ) ||
+					item?.name?.includes( 'core/paragraph' ) ) &&
 				! item.parent && (
 					<div
 						key={ index }
@@ -105,7 +107,8 @@ const PopoverModal = ( {
 	const alreadyPresentInSidebar = () => {
 		return usedArray.map(
 			( item, index ) =>
-				item?.name?.includes( 'srfm/' ) &&
+				( item?.name?.includes( 'srfm/' ) ||
+					item?.name?.includes( 'core/paragraph' ) ) &&
 				! item.parent && (
 					<div key={ index } className="srfm-block-wrap">
 						<div className="srfm-ee-quick-access__sidebar--blocks--block--icon">
@@ -136,7 +139,8 @@ const PopoverModal = ( {
 			<div className="srfm-block-container">
 				{ unusedArray.some(
 					( item ) =>
-						item?.name?.includes( 'srfm/' ) &&
+						( item?.name?.includes( 'srfm/' ) ||
+							item?.name?.includes( 'core/paragraph' ) ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -151,7 +155,8 @@ const PopoverModal = ( {
 				{ addToSidebar() }
 				{ usedArray.some(
 					( item ) =>
-						item?.name?.includes( 'srfm/' ) &&
+						( item?.name?.includes( 'srfm/' ) ||
+							item?.name?.includes( 'core/paragraph' ) ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -169,7 +174,8 @@ const PopoverModal = ( {
 				{ alreadyPresentInSidebar() }
 				{ ! unusedArray.some(
 					( item ) =>
-						item?.name?.includes( 'srfm/' ) &&
+						( item?.name?.includes( 'srfm/' ) ||
+							item?.name?.includes( 'core/paragraph' ) ) &&
 						! item.parent &&
 						item.title
 							.toLowerCase()
@@ -177,16 +183,17 @@ const PopoverModal = ( {
 				) &&
 					! usedArray.some(
 						( item ) =>
-							item?.name?.includes( 'srfm/' ) &&
+							( item?.name?.includes( 'srfm/' ) ||
+								item?.name?.includes( 'core/paragraph' ) ) &&
 							! item.parent &&
 							item.title
 								.toLowerCase()
 								.includes( searchTerm.toLowerCase() )
 					) && (
-					<div className="block-editor-inserter__no-results">
-						<p>{ __( 'No results found.', 'sureforms' ) }</p>
-					</div>
-				) }
+						<div className="block-editor-inserter__no-results">
+							<p>{ __( 'No results found.', 'sureforms' ) }</p>
+						</div>
+					) }
 			</div>
 		</Popover>
 	);
