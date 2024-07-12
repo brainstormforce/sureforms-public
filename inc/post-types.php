@@ -1191,14 +1191,21 @@ class Post_Types {
 	 * @return void
 	 */
 	private function restrict_unwanted_insertions() {
-		// Restrict RankMatch columns and filters in edit page.
+		// Restrict RankMath columns and filters in edit page.
 		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
-		// Restrict RankMatch metaboxes in edit page.
+		// Restrict RankMath metaboxes in edit page.
 		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
 	}
 
 	/**
-	 * Restrict RankMatch meta boxes in edit page.
+	 * Restrict RankMath meta boxes in edit page.
 	 *
 	 * @since 0.0.5
 	 * @return void
@@ -1208,16 +1215,24 @@ class Post_Types {
 	}
 
 	/**
-	 * Remove SureForms post type from RankMath.
+	 * Remove SureForms post type from RankMath and Yoast.
 	 *
 	 * @param array<mixed> $post_types Post types.
 	 * @since 0.0.5
 	 * @return array<mixed> $post_types Modified post types.
 	 */
 	public function unset_sureforms_post_type( $post_types ) {
-		if ( isset( $post_types[ SRFM_FORMS_POST_TYPE ] ) ) {
-			unset( $post_types[ SRFM_FORMS_POST_TYPE ] );
-		}
-		return $post_types;
+		$filtered_post_types = array_filter(
+			$post_types,
+			function( $post_type ) {
+				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
+					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
+				} else {
+					return SRFM_FORMS_POST_TYPE !== $post_type;
+				}
+			}
+		);
+
+		return $filtered_post_types;
 	}
 }
