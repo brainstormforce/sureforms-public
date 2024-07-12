@@ -483,8 +483,16 @@ class Form_Submit {
 
 			$modified_message = [];
 			foreach ( $submission_data as $key => $value ) {
-				$only_key                      = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
+				$parts = explode( '-lbl-', $key );
+				$label = '';
+
+				if ( ! empty( $parts[1] ) ) {
+					$tokens = explode( '-', $parts[1] );
+					if ( count( $tokens ) > 1 ) {
+						$label = implode( '-', array_slice( $tokens, 1 ) );
+					}
+					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
+				}
 			}
 
 			$form_submit_response = [
@@ -593,15 +601,15 @@ class Form_Submit {
 
 			$modified_message = [];
 			foreach ( $submission_data as $key => $value ) {
-				$only_key = str_replace( ':', '', ucfirst( explode( 'SF', $key )[0] ) );
-				$parts    = explode( '-lbl-', $only_key );
+				$parts = explode( '-lbl-', $key );
+				$label = '';
 
 				if ( ! empty( $parts[1] ) ) {
 					$tokens = explode( '-', $parts[1] );
 					if ( count( $tokens ) > 1 ) {
-						$only_key = implode( '-', array_slice( $tokens, 1 ) );
+						$label = implode( '-', array_slice( $tokens, 1 ) );
 					}
-					$modified_message[ $only_key ] = esc_attr( Helper::get_string_value( $value ) );
+					$modified_message[ $label ] = html_entity_decode( esc_attr( Helper::get_string_value( $value ) ) );
 				}
 			}
 
