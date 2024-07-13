@@ -120,7 +120,7 @@
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
-							color: var(--srfm-body-input-color)
+							color: var( --srfm-body-input-color );
 						}
 
 						input {
@@ -153,7 +153,7 @@
 						width: calc( 100% + 2px );
 						border: 1px solid var( --srfm-border-color );
 						border-top: none;
-						background-color: var(--srfm-base-background-color);
+						background-color: var( --srfm-base-background-color );
 					}
 				}
 
