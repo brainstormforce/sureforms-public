@@ -1,4 +1,8 @@
+@function calc_rem( $size ) {
+	@return calc( #{$size} * var( --srfm-font-size ) );
+}
 :root {
+	--srfm-font-size: 16px;
 	// Color scheme variables.
 	// This need to be made dynamic just keeping it here for testing purpose.
 	// --srfm-color-scheme-primary: #1E4ED8;
@@ -34,33 +38,33 @@
 	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
 
 	// Gaps and Spacing variables.
-	--srfm-gap-between-blocks: 1rem;
-	--srfm-col-gap-between-fields: 0.75rem;
-	--srfm-row-gap-between-fields: 0.75rem;
-	--srfm-gap-below-address-label: 0.75rem;
+	--srfm-gap-between-blocks: #{calc_rem( 1 )};
+	--srfm-col-gap-between-fields: #{calc_rem( 0.75 )};
+	--srfm-row-gap-between-fields: #{calc_rem( 0.75 )};
+	--srfm-gap-below-address-label: #{calc_rem( 0.75 )};
 
 	// Input field variables.
-	--srfm-input-height: 2.5rem;
-	--srfm-input-field-padding: 0.625rem 0.75rem;
-	--srfm-input-field-border-radius: 0.375rem;
+	--srfm-input-height: #{calc_rem( 2.5 )};
+	--srfm-input-field-padding: #{calc_rem( 0.625 ) calc_rem( 0.75 )};
+	--srfm-input-field-border-radius: #{calc_rem( 0.375 )};
 	--srfm-input-field-font-size: 0.875em;
 	--srfm-input-field-font-weight: 400;
-	--srfm-input-field-line-height: 1.125rem;
-	--srfm-input-field-margin: 0.25rem 0;
+	--srfm-input-field-line-height: #{calc_rem( 1.25 )};
+	--srfm-input-field-margin: #{calc_rem( 0.25 ) calc_rem( 0 )};
 
 	// Label variables
 	--srfm-label-font-size: 0.875em;
 	--srfm-label-font-weight: 500;
-	--srfm-label-line-height: 1.25rem;
+	--srfm-label-line-height: #{calc_rem( 1.25 )};
 
 	// Description variables.
 	--srfm-description-font-size: 0.75em;
 	--srfm-description-font-weight: 400;
-	--srfm-description-line-height: 1.125rem;
-	--srfm-description-margin-top: 0.125rem;
+	--srfm-description-line-height: #{calc_rem( 1.125 )};
+	--srfm-description-margin-top: #{calc_rem( 0.125 )};
 
 	// Error variables.
 	--srfm-error-font-size: 0.75em;
 	--srfm-error-font-weight: 500;
-	--srfm-error-line-height: 1rem;
+	--srfm-error-line-height: #{calc_rem( 1 )};
 }
