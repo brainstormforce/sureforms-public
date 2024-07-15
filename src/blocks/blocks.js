@@ -39,6 +39,12 @@ const registerBlock = [
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 	registerBlocks( registerBlock );
+	// change the category of the core paragraph block in SureForms post type.
+	wp.hooks.addFilter(
+		'blocks.registerBlockType',
+		'srfm/filter-paragraph-category',
+		changeCoreParagraphCategory
+	);
 } else {
 	registerBlocks( [ sfForm ] );
 }
@@ -161,3 +167,13 @@ wp.hooks.addFilter(
 	'srfm/with-toolbar-button',
 	withToolbarButton
 );
+
+function changeCoreParagraphCategory( settings, name ) {
+	if ( name === 'core/paragraph' ) {
+		return {
+			...settings,
+			category: 'sureforms',
+		};
+	}
+	return settings;
+}
