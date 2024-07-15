@@ -1,26 +1,26 @@
-# SureForms – Gutenberg-powered Drag and Drop Contact Form Plugin for WordPress! #
+# SureForms – Drag and Drop Contact Form Plugin for WordPress [BETA] #
 **Contributors:** [brainstormforce](https://profiles.wordpress.org/brainstormforce/)  
 **Tags:** contact form, custom form, form builder, forms, gutenberg  
 **Requires at least:** 6.4  
-**Tested up to:** 6.5.4  
+**Tested up to:** 6.6  
 **Requires PHP:** 7.4  
-**Stable tag:** 0.0.5  
+**Stable tag:** 0.0.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-**SureForms:** Transform your WordPress form-building experience with native Gutenberg integration, stunning designs, and no-code flexibility.  
+**SureForms:** Transform your WordPress form-building experience with stunning designs, ai integration, and no-code flexibility.  
 
 ## Description ##
 
-### SUREFORMS – THE BEST NO-CODE FORM BUILDER 
+### SUREFORMS – THE BEST NO-CODE FORM BUILDER
 
-#### CREATE BEAUTIFUL RESPONSIVE FORMS USING WORDPRESS BLOCK EDITOR (GUTENBERG EDITOR) WITHOUT CODING ⚡
+#### CREATE BEAUTIFUL RESPONSIVE FORMS USING WORDPRESS WITHOUT CODING ⚡
 
 ★★★★★
 
 Our mission at SureForms is to empower you to build beautiful forms without code.
 
-We're taking a fresh approach by harnessing the power of Gutenberg, WordPress's native drag-and-drop interface.
+We're taking a fresh approach by harnessing the power of WordPress's native drag-and-drop interface.
 
 Our goal is to provide our customers with a seamless and intuitive form-building experience, eliminating the need to learn a whole new interface.
 
@@ -31,11 +31,11 @@ After all, the ultimate aim of most websites is to get those forms filled out.
 
 SureForms addresses several pain points commonly experienced by website owners:
 
- - **Complex Form Building**: Form builders often have steep learning curves, convoluted interfaces, or limited customization options. SureForms aims to simplify the form-building process, providing a user-friendly interface and intuitive drag-and-drop functionality powered by Gutenberg, WordPress's native block editor.  
- - **Design Limitations**: Designers face challenges in creating visually appealing forms. Form builders require designers to spend hours trying to figure out settings and options just to get the form look right. Or write custom CSS. SureForms eliminates these limitations by providing modern and customizable form templates, allowing designers to create stunning forms that seamlessly integrate with their design vision. 
+ - **Complex Form Building**: Form builders often have steep learning curves, convoluted interfaces, or limited customization options. SureForms aims to simplify the form-building process, providing a user-friendly interface and intuitive drag-and-drop functionality using WordPress's native block editor.
+ - **Design Limitations**: Designers face challenges in creating visually appealing forms. Form builders require designers to spend hours trying to figure out settings and options just to get the form look right. Or write custom CSS. SureForms eliminates these limitations by providing modern and customizable form templates, allowing designers to create stunning forms that seamlessly integrate with their design vision.
  - **Lack of Mobile Friendliness and Accessibility**: Building forms that are mobile-friendly and accessible to all users can be a challenge. SureForms priorities mobile-first design and accessibility standards, ensuring that forms created with the plugin are responsive and inclusive, providing a positive user experience across different devices and for users with disabilities.
 
-In response to these pain points, we set out to create SureForms. Our goal is to provide a fresh and innovative form builder that leverages the power of Gutenberg, delivering a seamless and intuitive form-building experience.
+In response to these pain points, we set out to create SureForms. Our goal is to provide a fresh and innovative form builder that leverages the power of native WordPress drag-and-drop builder, delivering a seamless and intuitive form-building experience.
 
 We want to empower website makers to effortlessly create stunning, modern-looking forms right out of the box, eliminating the need for extensive customization or reliance on external styling elements.
 
@@ -50,7 +50,7 @@ With SureForms, let's revolutionize the way people create and design forms for t
 
 From installation to creating your first form, SureForms is designed to be simple and intuitive. Here is how it works:
 
-#### Step 1. Install WordPress Plugin 🔌 
+#### Step 1. Install WordPress Plugin 🔌
 
 From your WordPress dashboard, navigate to the Plugins menu and click on the “Add New” button. Search for the SureForms plugin, then click “Install Now” and “Activate”.
 
@@ -66,19 +66,19 @@ Once your form is ready, easily embed it on any page or post using the provided 
 
 SureForms is packed with features that will help you create forms fast and save time. Below are some of the top features it offers:
 
-#### Native Gutenberg Integration
+#### Native WordPress
 
-SureForms leverages the power of Gutenberg, WordPress's native block editor, as its foundation. This integration provides a seamless and intuitive form-building experience for users familiar with the WordPress ecosystem. By utilizing Gutenberg's drag-and-drop interface, SureForms eliminates the need to learn a separate form builder, saving time and simplifying the form creation process.
+SureForms leverages the power of WordPress's native block editor, as its foundation. This integration provides a seamless and intuitive form-building experience for users familiar with the WordPress ecosystem. By utilizing drag-and-drop interface, SureForms eliminates the need to learn a separate form builder, saving time and simplifying the form creation process.
 
 #### Stunning Out-of-the-Box Form Templates
 
 SureForms prioritizes aesthetics and user experience by offering modern and visually appealing form templates. Users can create stunning forms without relying on their theme or writing custom CSS. Our pre-made templates ensure that forms look amazing from the start, providing a polished and professional appearance that captivates users.
 
-#### Here are a few of the templates: 
+#### Here are a few of the templates:
 
- - Contact Form 
+ - Contact Form
  - Feedback / Survey Form
- - Event RSVP Form 
+ - Event RSVP Form
  - Job Application
  - Newsletter Form
  - Support Form
@@ -99,9 +99,9 @@ Publish forms instantly as a URL that can be easily shared across the web, via e
 
 Arrange input fields into multiple columns to create a sleek and efficient form layout. This approach enhances the form's appearance, making it appear more condensed and visually appealing, thereby reducing the likelihood of users abandoning the form. Place input fields in one to four columns to customize the layout according to your preferences.
 
-#### Input Field Blocks
+#### Input Fields
 
-**SureForms comes with 15+ fields that are available as Gutenberg blocks to build your form:**
+**SureForms comes with 15+ fields to build your form:**
 
  * Text Field
  * Email
@@ -156,7 +156,7 @@ For developers seeking advanced customization options, SureForms provides clean 
 
 Any individual or organization that wants to create forms to gather information from their users can greatly benefit from using SureForms.
 
- 1. **Website Owners**: SureForms is aimed at individuals and businesses who manage their own websites. It provides an intuitive and user-friendly interface that empowers website owners to create beautiful and functional forms without requiring technical knowledge or coding skills. 
+ 1. **Website Owners**: SureForms is aimed at individuals and businesses who manage their own websites. It provides an intuitive and user-friendly interface that empowers website owners to create beautiful and functional forms without requiring technical knowledge or coding skills.
  2. **Designers**: SureForms appeals to designers who value good design and want to create visually stunning forms. It offers customizable styling options to create forms that seamlessly integrate into the existing website design.
  3. **Developers**: SureForms understands the needs of developers and aims to provide a developer-friendly solution. Our plugin offers clean APIs, hooks for customization, and well-structured code, making it easy for developers to extend the functionality and integrate with other systems or plugins. Writing custom CSS is a breeze too.
  4. **No Code Professionals**: SureForms appeals to professionals who may not have coding skills but still require advanced form features. With capabilities such as conditional logic, multi-step forms, dynamic data handling, query parameters, and more, SureForms offers a comprehensive solution for building complex forms without the need for custom coding.
@@ -170,6 +170,7 @@ There is no limit to the types of businesses and organizations that can benefit 
  * Astra
  * Spectra One
  * Blocksy
+ * Bricks Builder
  * Flatsome
  * GeneratePress
  * Hestia
@@ -198,7 +199,6 @@ There is no limit to the types of businesses and organizations that can benefit 
 * Elementor Pro
 * Beaver Builder
 * Divi Builder
-* Bricks Builder
 * Yoast SEO
 * And many more
 
@@ -236,7 +236,7 @@ To improve the user experience, SureForms may use the following 3rd party servic
 ## Frequently Asked Questions ##
 
 ### Do I need coding skills to create forms using SureForms? ###
-No, you don’t need any coding skills to create forms with SureForms! SureForms offers a user-friendly interface and a visual block builder, allowing you to create forms by dragging and dropping the gutenberg blocks. This means that you can create forms without having to write any code or have any technical expertise. 
+No, you don’t need any coding skills to create forms with SureForms! SureForms offers a user-friendly interface and a visual block builder, allowing you to create forms by dragging and dropping the form fields. This means that you can create forms without having to write any code or have any technical expertise.
 Whether you’re a small business owner, a freelancer, or just someone who wants to create beautiful responsive forms, SureForms makes it easy to create forms without any coding skills.
 ### What are the requirements to use the SureForms? ###
 You only need to have the latest version of WordPress on your website, to begin with. SureForms is basically a plugin like any other WordPress plugin. Therefore, the latest WordPress installation along with a theme is enough to begin with.
@@ -250,8 +250,14 @@ Yes! You can certainly use SureForms on yours as well as your client’s website
 When you use the SureForms, you get a huge library of ready-to-use form templates that can be used to build your forms fast.
 
 ## Changelog ##
+### 0.0.6 ###
+* WordPress 6.6 Ready: SureForms is now fully compatible with the latest WordPress version, ensuring everything runs smoothly.
+* Added Support for Core Paragraph Block.
+* Multiple Accessibility Improvements.
 ### 0.0.5 ###
 * New: Added Support for hCaptcha.
+* New: SureForms widget for Elementor.
+* New: SureForms element for Bricks Builder.
 * Fix: Multiple Bug Fixes and Improvements.
 ### 0.0.4 ###
 * New: Added support for Cloudflare Turnstile.
