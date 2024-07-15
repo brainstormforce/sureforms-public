@@ -4,6 +4,14 @@
 	padding: 0;
 	height: 100%;
 
+	// styles for core paragraph block
+	p {
+		width: 100% !important;
+		margin: 0 !important;
+		margin-bottom: 1.2em !important;
+		padding: 0 0.3em !important;
+	}
+
 	// Astra Addon site builder compatibility.
 	div[class^="astra-advanced-hook"] {
 		display: flex;
