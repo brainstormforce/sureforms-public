@@ -81,7 +81,7 @@ const index = () => {
 					style={ {} }
 					className="srfm-upgrade-pro-btn"
 					onClick={ () => {
-						window.open( '/', '_blank' );
+						window.open( 'https://sureforms.com/pricing', '_blank' );
 					} }
 				>
 					{ __( 'Upgrade to Unlock These Fields', 'sureforms' ) }
