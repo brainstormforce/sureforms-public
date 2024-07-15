@@ -174,6 +174,7 @@ const pushSmartTagToArray = (
 			// If is inner block, process inner block recursively.
 			return pushSmartTagToArray(
 				block.innerBlocks,
+				blockSlugs,
 				tagsArray,
 				uniqueSlugs,
 				allowedBlocks

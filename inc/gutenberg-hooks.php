@@ -458,7 +458,7 @@ class Gutenberg_Hooks {
 				continue;
 			}
 
-			if ( $skip_checking_existing_slug && isset( $slugs[ $block['attrs']['block_id'] ] ) ) {
+			if ( $skip_checking_existing_slug && empty( $block['innerBlocks'] ) && isset( $slugs[ $block['attrs']['block_id'] ] ) ) {
 				continue;
 			}
 
