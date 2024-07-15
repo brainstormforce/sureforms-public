@@ -4,6 +4,14 @@
 	padding: 0;
 	height: 100%;
 
+	// styles for core paragraph block
+	p {
+		width: 100% !important;
+		margin: 0 !important;
+		margin-bottom: 1.2em !important;
+		padding: 0 0.3em !important;
+	}
+
 	// Astra Addon site builder compatibility.
 	div[class^="astra-advanced-hook"] {
 		display: flex;
@@ -120,7 +128,7 @@
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
-							color: var(--srfm-body-input-color)
+							color: var( --srfm-body-input-color );
 						}
 
 						input {
@@ -153,7 +161,7 @@
 						width: calc( 100% + 2px );
 						border: 1px solid var( --srfm-border-color );
 						border-top: none;
-						background-color: var(--srfm-base-background-color);
+						background-color: var( --srfm-base-background-color );
 					}
 				}
 
