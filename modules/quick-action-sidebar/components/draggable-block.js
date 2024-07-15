@@ -40,8 +40,6 @@ const DraggableBlock = ( props ) => {
 		let clientId = getBlockRootClientId || '';
 		let insertionPoint = blockInsertionPoint;
 
-		console.log( getSelectedBlockAllowedBlocks );
-
 		if (
 			getSelectedBlockAllowedBlocks &&
 			getSelectedBlockAllowedBlocks.includes( selectedBlock )
