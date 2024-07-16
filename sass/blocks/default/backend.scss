@@ -4,22 +4,8 @@
 	font-size: var( --srfm-font-size );
 	margin-top: 2em;
 
-	.srfm-input-common {
-		width: 100%;
-	}
-
-	.srfm-block-margin-top {
-		margin-top: var( --srfm-gap-between-blocks );
-	}
-
 	.srfm-block-wrap {
-		position: relative;
 		pointer-events: none;
-	}
-
-	.srfm-block-label {
-		@include srfm-block-label-styles;
-		display: block;
 	}
 
 	.srfm-block-text,
@@ -34,44 +20,6 @@
 		@include srfm-input-common-styles( true );
 	}
 
-	.srfm-input-input {
-		height: var( --srfm-input-height );
-	}
-
-	.srfm-with-icon {
-		.srfm-input-common {
-			padding-left: 2.4em;
-		}
-
-		.srfm-input-icon {
-			display: block;
-			position: absolute;
-			top: 50%;
-			left: 0.7em;
-			transform: translateY( -50% );
-			line-height: 0;
-
-			svg {
-				width: 0.9em;
-				height: 0.9em;
-				stroke: var( --srfm-body-input-color );
-
-				path {
-					stroke: var( --srfm-body-input-color );
-				}
-			}
-		}
-	}
-
-	.srfm-description {
-		display: block;
-		@include srfm-description-styles;
-	}
-
-	.srfm-error-wrap {
-		height: var( --srfm-error-line-height );
-	}
-
 	.srfm-input-textarea {
 		height: unset !important;
 	}
@@ -82,77 +30,16 @@
 			margin-top: var( --srfm-gap-below-address-label );
 			.block-editor-block-list__layout {
 				gap: var( --srfm-col-gap-between-fields ) var( --srfm-row-gap-between-fields );
-
+				@include srfm-address-block-layout-width;
 				.block-editor-block-list__block {
-					// margin-top: 0.5em !important;
-					margin-top: 0 !important;
+					margin: 0 !important;
 					padding: 0;
-					flex: calc( 50% - var( --srfm-col-gap-between-fields ) );
 				}
 			}
 		}
 		.block-editor-block-list__block,
 		.block-list-appender {
 			margin-top: 1em !important;
-		}
-	}
-
-	// Address compact block styles.
-	div[data-type="srfm/address-compact"] {
-		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-
-			.srfm-input-common {
-				border-radius: 0;
-				border-bottom-width: 0;
-				padding-right: 0.875em;
-				&:nth-child( 1 ) {
-					border-top-left-radius: var( --srfm-border-radius );
-					border-top-right-radius: var( --srfm-border-radius );
-				}
-				&:nth-last-child( 1 ) {
-					border-bottom-width: var( --srfm-border );
-					border-bottom-left-radius: var( --srfm-border-radius );
-					border-bottom-right-radius: var( --srfm-border-radius );
-				}
-
-				&.srfm-input-address-compact-city,
-				&.srfm-input-address-compact-state {
-					width: 50%;
-				}
-
-				&.srfm-input-address-compact-state {
-					border-left: 0;
-				}
-
-				&.srfm-input-address-compact-country {
-					-webkit-appearance: none;
-					-moz-appearance: none;
-					text-indent: 1px;
-				}
-			}
-
-			.srfm-address-compact-country-wrap {
-				position: relative;
-				width: 100%;
-
-				.srfm-input-address-compact-country {
-					border-radius: 0;
-					border-bottom: 0;
-				}
-
-				.srfm-address-compact-icon {
-					position: absolute;
-					top: 50%;
-					right: 15px;
-					transform: translateY( -50% );
-					width: 18px;
-					line-height: 0;
-					transition: 0.2s ease;
-					cursor: pointer;
-				}
-			}
 		}
 	}
 
@@ -175,43 +62,7 @@
 					border-bottom-left-radius: var( --srfm-border-radius );
 					border-bottom-right-radius: var( --srfm-border-radius );
 				}
-
-				// &.srfm-input-address-city,
-				// &.srfm-input-address-state {
-				// 	width: 50%;
-				// }
-
-				// &.srfm-input-address-state {
-				// 	border-left: 0;
-				// }
-
-				// &.srfm-input-address-country {
-				// 	-webkit-appearance: none;
-				// 	-moz-appearance: none;
-				// 	text-indent: 1px;
-				// }
 			}
-
-			// .srfm-address-country-wrap {
-			// 	position: relative;
-			// 	width: 100%;
-
-			// 	.srfm-input-address-country {
-			// 		border-radius: 0;
-			// 		border-bottom: 0;
-			// 	}
-
-			// 	.srfm-address-icon {
-			// 		position: absolute;
-			// 		top: 50%;
-			// 		right: 15px;
-			// 		transform: translateY( -50% );
-			// 		width: 18px;
-			// 		line-height: 0;
-			// 		transition: 0.2s ease;
-			// 		cursor: pointer;
-			// 	}
-			// }
 		}
 	}
 

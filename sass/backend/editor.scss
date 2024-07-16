@@ -191,12 +191,8 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
-			padding: 0 0.5rem;
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
-			// margin-top: 1.2em !important; // Had to add as various themes remove this margin.
-			margin-top: var( --srfm-gap-between-blocks ) !important; // Had to add as various themes remove this margin.
-			margin-bottom: 0 !important; // Had to add as various themes remove this margin.
 			max-width: 100%;
 		}
 	}

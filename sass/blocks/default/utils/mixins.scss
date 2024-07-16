@@ -47,3 +47,19 @@
 	color: var( --srfm-color-input-description );
 	margin-top: var( --srfm-description-margin-top );
 }
+
+// Common code for the address block for frontend and editor design.
+@mixin srfm-address-block-layout-width {
+	.srfm-block-width-100 {
+		flex: 0 1 100%;
+	}
+	.srfm-block-width-50 {
+		flex: 0 1 calc( 50% - var( --srfm-col-gap-between-fields ) / 2 );
+	}
+	.srfm-block-width-33-33 {
+		flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-col-gap-between-fields ) );
+	}
+	.srfm-block-width-25 {
+		flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-col-gap-between-fields ) );
+	}
+}
