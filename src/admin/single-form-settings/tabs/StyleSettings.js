@@ -160,7 +160,7 @@ function StyleSettings( props ) {
 		// Input border radius
 		root.style.setProperty(
 			'--srfm-border-radius',
-			sureformsKeys._srfm_input_border_radius
+			sureformsKeys._srfm_input_border_radius >= 0
 				? sureformsKeys._srfm_input_border_radius + 'px'
 				: '4px'
 		);
@@ -426,7 +426,8 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 
-				<p className="components-base-control__help" />
+				{ /* Will be impleted properly later */ }
+				{ /* <p className="components-base-control__help" />
 				<Range
 					label={ __( 'Font Size', 'sureforms' ) }
 					value={ sureformsKeys._srfm_fontsize }
@@ -441,7 +442,7 @@ function StyleSettings( props ) {
 						updateMeta( '_srfm_fontsize', value )
 					}
 					isFormSpecific={ true }
-				/>
+				/> */ }
 				{ sureformsKeys._srfm_show_labels && (
 					<>
 						<p className="components-base-control__help" />

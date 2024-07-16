@@ -74,11 +74,18 @@
 		border-radius: var( --srfm-page-break-btn-border-radius );
 		font-family: inherit;
 		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: var( --wp--custom--line-height--initial );
-		padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+		line-height: normal;
+		padding: 0.625em 1em;
 		text-decoration: none;
 		color: var( --srfm-page-break-btn-text-color );
 		border: var( --srfm-page-break-btn-border );
 		background-color: var( --srfm-page-break-btn-bg-color );
+	}
+
+	fieldset, legend {
+		font-size: inherit;
+		border: none;
+		margin: 0;
+		padding: 0;
 	}
 }
