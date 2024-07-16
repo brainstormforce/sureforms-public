@@ -2,7 +2,8 @@ import { __ } from '@wordpress/i18n';
 
 const UpgradeToProButton = ( props ) => {
 	const handleClick = () => {
-		const url = srfm_admin?.sureforms_website;
+		// eslint-disable-next-line no-undef
+		const url = srfm_admin?.sureforms_pricing_page;
 		window.open( url );
 	};
 	return (
