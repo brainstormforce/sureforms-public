@@ -1,3 +1,5 @@
+@import "../utils/mixins.scss";
+
 .srfm-form-container {
 	.srfm-form {
 		display: flex;
@@ -27,19 +29,13 @@
 		}
 
 		.srfm-block {
-			margin-bottom: 1.2em;
-			color: var( --srfm-body-input-color );
-
-			label {
-				font-size: 1em;
-			}
+			margin-bottom: var( --srfm-gap-between-blocks );
 
 			&.srfm-error {
 				.srfm-block-wrap {
 					.srfm-input-common,
 					.srfm-dropdown-common {
-						border-color: var( --srfm-error-surface-color );
-						background-color: var( --srfm-error-background-color );
+						border-color: var( --srfm-error-color-light-border );
 
 						.ts-control {
 							background-color: var( --srfm-error-background-color );
@@ -48,30 +44,12 @@
 						}
 
 						&:focus {
-							box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-error-surface-color ), 0px 0px 0px 3px var( --srfm-error-shadow-color );
-							border-color: transparent;
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-light-border-glow );
 						}
 					}
 
 					.srfm-input-common:not( .srfm-dropdown-common ) {
 						padding-right: 2.2em;
-					}
-
-					.srfm-error-icon {
-						display: block;
-						position: absolute;
-						top: 50%;
-						right: 0.7em;
-						transform: translateY( -50% );
-
-						svg {
-							width: 0.8em;
-							height: 0.8em;
-
-							path {
-								stroke: var( --srfm-error-surface-color );
-							}
-						}
 					}
 				}
 
@@ -85,56 +63,40 @@
 			}
 
 			.srfm-block-label {
-				font-size: 0.7em;
-				margin-bottom: 0.429em;
-				font-weight: 500;
-				line-height: normal;
-				color: var( --srfm-label-text-color );
-				word-wrap: break-word;
+				@include srfm-block-label-styles;
 			}
 
 			.srfm-input-common {
 				font-family: inherit;
-				font-size: 0.7em;
-				font-weight: 400;
-				padding: 0.72em 1.143em;
-				line-height: normal;
-				color: var( --srfm-body-input-color );
-				border: var( --srfm-border ) solid var( --srfm-border-color );
-				border-radius: var( --srfm-border-radius );
-				background-color: var( --srfm-base-background-color );
-				outline: none;
+				@include srfm-input-common-styles();
 				transition: 0.3s ease-out;
 
 				&:focus {
-					box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
-					border-color: transparent;
+					box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+					border-color: var( --srfm-color-input-border-hover );
 				}
 
-				&::placeholder {
-					font-size: 1em;
-					color: var( --srfm-placeholder-color );
+				&:hover {
+					border-color: var( --srfm-color-input-border-hover );
 				}
+
+				&:disabled {
+					color: var( --srfm-disabled-color );
+					background-color: var( --srfm-disabled-background-color );
+					border-color: var( --srfm-disabled-border-color );
+				}
+			}
+
+			.srfm-input-input {
+				height: var( --srfm-input-height );
 			}
 
 			.srfm-error-icon {
 				display: none;
 			}
 
-			.srfm-error-message,
 			.srfm-description {
-				font-size: 0.7em;
-				margin-top: 0.571em;
-				font-weight: 400;
-				line-height: normal;
-			}
-
-			.srfm-description {
-				color: var( --srfm-help-color );
-			}
-
-			.srfm-error-message {
-				color: var( --srfm-error-text-color );
+				@include srfm-description-styles;
 			}
 
 			.srfm-with-icon {
@@ -164,6 +126,17 @@
 			&.srfm-email-confirm-block {
 				margin-top: 1.2em;
 				margin-bottom: 0;
+			}
+
+			.srfm-error-wrap {
+				height: var( --srfm-error-line-height );
+
+				.srfm-error-message {
+					line-height: var( --srfm-error-line-height );
+					color: var( --srfm-error-color-light );
+					font-size: var( --srfm-error-font-size );
+					font-weight: var( --srfm-error-font-weight );
+				}
 			}
 		}
 

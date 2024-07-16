@@ -1,0 +1,70 @@
+@function calc_rem( $size ) {
+	@return calc( #{$size} * var( --srfm-font-size ) );
+}
+:root {
+	--srfm-font-size: 16px;
+	// Color scheme variables.
+	// This need to be made dynamic just keeping it here for testing purpose.
+	// --srfm-color-scheme-primary: #1E4ED8;
+	// --srfm-color-scheme-text-on-primary: #FFFFFF;
+	// --srfm-color-scheme-text: #000000;
+
+	// Input field color variables.
+	// --srfm-color-input-label: var( --srfm-color-scheme-text );
+	// --srfm-color-input-description: rgba( --srfm-color-scheme-text, 0.65 );
+	// --srfm-color-input-placeholder: var( --srfm-color-scheme-text );
+	// --srfm-color-input-text: var( --srfm-color-scheme-text );
+	// --srfm-color-input-prefix: rgba( var( --srfm-color-scheme-text ), 0.65 );
+	// --srfm-color-input-background: rgba( var( --srfm-color-scheme-text ), 0.02 );
+	// --srfm-color-input-background-disabled: rgba( var( --srfm-color-scheme-text ), 0.05 );
+	// --srfm-color-input-border: rgba( var( --srfm-color-scheme-text ), 0.25 );
+	// --srfm-color-input-border-disabled: rgba( var( --srfm-color-scheme-text ), 0.15 );
+	// --srfm-color-input-border-hover: rgba( var( --srfm-color-scheme-primary ), 0.65 );
+	// --srfm-color-input-border-focus-glow: rgba( var( --srfm-color-scheme-primary ), 0.15 );
+
+	// Button color variables.
+
+	// Icon color variables.
+
+	// Error color variables.
+	$srfmColorErrorLight: #dc2626 !default;
+	$srfmColorErrorDark: #f87171 !default;
+	--srfm-error-color-light: #dc2626;
+	--srfm-error-color-light-border: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-error-color-light-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
+
+	--srfm-error-color-dark: #f87171;
+	--srfm-error-color-dark-border: #{rgba( $srfmColorErrorDark, 0.65 )};
+	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
+
+	// Gaps and Spacing variables.
+	--srfm-gap-between-blocks: #{calc_rem( 1 )};
+	--srfm-col-gap-between-fields: #{calc_rem( 0.75 )};
+	--srfm-row-gap-between-fields: #{calc_rem( 0.75 )};
+	--srfm-gap-below-address-label: #{calc_rem( 0.75 )};
+
+	// Input field variables.
+	--srfm-input-height: #{calc_rem( 2.5 )};
+	--srfm-input-field-padding: #{calc_rem( 0.625 ) calc_rem( 0.75 )};
+	--srfm-input-field-border-radius: #{calc_rem( 0.375 )};
+	--srfm-input-field-font-size: 0.875em;
+	--srfm-input-field-font-weight: 400;
+	--srfm-input-field-line-height: #{calc_rem( 1.25 )};
+	--srfm-input-field-margin: #{calc_rem( 0.25 ) calc_rem( 0 )};
+
+	// Label variables
+	--srfm-label-font-size: 0.875em;
+	--srfm-label-font-weight: 500;
+	--srfm-label-line-height: #{calc_rem( 1.25 )};
+
+	// Description variables.
+	--srfm-description-font-size: 0.75em;
+	--srfm-description-font-weight: 400;
+	--srfm-description-line-height: #{calc_rem( 1.125 )};
+	--srfm-description-margin-top: #{calc_rem( 0.125 )};
+
+	// Error variables.
+	--srfm-error-font-size: 0.75em;
+	--srfm-error-font-weight: 500;
+	--srfm-error-line-height: #{calc_rem( 1 )};
+}

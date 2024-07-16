@@ -102,7 +102,7 @@ class Create_New_Form {
 			'_srfm_bg_image'                        => [ '' ],
 			'_srfm_cover_image'                     => [ '' ],
 			'_srfm_bg_color'                        => [ '#ffffff' ],
-			'_srfm_fontsize'                        => [ 20 ],
+			'_srfm_fontsize'                        => [ 16 ],
 			'_srfm_label_color'                     => [ '#111827' ],
 			'_srfm_help_color'                      => [ '#4B5563' ],
 			'_srfm_input_text_color'                => [ '#4B5563' ],
