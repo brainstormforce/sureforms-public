@@ -251,9 +251,9 @@ When you use the SureForms, you get a huge library of ready-to-use form template
 
 ## Changelog ##
 ### 0.0.6 ###
-* WordPress 6.6 Ready: SureForms is now fully compatible with the latest WordPress version, ensuring everything runs smoothly.
-* Added Support for Core Paragraph Block.
-* Multiple Accessibility Improvements.
+* New: Added Support for Core Paragraph Block.
+* Improvement: Added compatibility for WordPress 6.6.
+* Improvement: Multiple Accessibility Improvements.
 ### 0.0.5 ###
 * New: Added Support for hCaptcha.
 * New: SureForms widget for Elementor.
