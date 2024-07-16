@@ -228,7 +228,6 @@ class Generate_Form_Markup {
 			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
 			// $font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px'; -- Will be used in future.
-			// $font_size_var          = '16px'; -- Need to remove this since it won't be used later and related postmeta as well.
 			$media_query_mobile_var = '576px';
 			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
 			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
