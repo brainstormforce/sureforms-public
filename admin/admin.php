@@ -313,6 +313,7 @@ class Admin {
 			'global_settings_nonce'   => current_user_can( 'manage_options' ) ? wp_create_nonce( 'wp_rest' ) : '',
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
+			'sureforms_website'       => $this->get_sureforms_website_url(),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
@@ -521,5 +522,17 @@ class Admin {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Get SureForms Website URL.
+	 *
+	 * @since x.x.x
+	 * @return string
+	 */
+	public static function get_sureforms_website_url() {
+		$url = SRFM_WEBSITE;
+
+		return esc_url( $url );
 	}
 }

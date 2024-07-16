@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 const UpgradeToProButton = ( props ) => {
 	const handleClick = () => {
-		const url = 'https://sureforms.com/pricing';
+		const url = srfm_admin?.sureforms_website;
 		window.open( url );
 	};
 	return (

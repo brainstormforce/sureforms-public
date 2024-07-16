@@ -28,5 +28,6 @@ define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
+define( 'SRFM_WEBSITE', 'https://sureforms.com/pricing' );
 
 require_once 'plugin-loader.php';
