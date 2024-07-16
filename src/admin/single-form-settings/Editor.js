@@ -206,11 +206,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
-	const headerCenterContainer = document.querySelector(
-		'.edit-post-header__center'
-	);
+	const headerCenterContainer =
+		document.querySelector( '.edit-post-header__center' ) ||
+		// added support for WP 6.6.
+		document.querySelector( '.editor-header__center' );
 
 	if ( headerCenterContainer ) {
+		// remove the command bar and add our custom header title editor
+		const header = document.querySelector( '.editor-post-title__block' );
+		if ( header ) {
+			header.remove();
+		}
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
 	}
@@ -264,6 +270,34 @@ const SureformsFormSpecificSettings = ( props ) => {
 						placeholder={ __( 'Submit', 'sureforms' ) }
 					/>
 				);
+
+				button.addEventListener( 'click', () => {
+					// need multiple timeouts for DOM elements to find.
+					// click on form section
+					setTimeout( () => {
+						const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+
+						editPostTab?.click();
+					}, 100 );
+
+					// click on style tab
+					setTimeout( () => {
+						// elements for submit button event listener
+						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
+						styleTabElement?.click();
+					}, 150 );
+
+					// then click on submit accordion
+					setTimeout( () => {
+						// elements for submit button event listener
+						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
+						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
+
+						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
+							submitBtnElement?.click();
+						}
+					}, 200 );
+				} );
 			}
 		}
 	}
@@ -530,6 +564,21 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	// add pro panel to the block inserter
 	useEffect( () => {
+		/**
+		 * For the tablist occurred with the WP-6.6.
+		 * We will replace this with better solution
+		 * in the future, when WordPress provides something built-in.
+		 */
+		const removeUnnecessaryTablist = () => {
+			const tablist = document.querySelector(
+				'.block-editor-inserter__tabs .block-editor-inserter__tablist-and-close-button'
+			);
+
+			if ( tablist ) {
+				tablist.remove();
+			}
+		};
+
 		const checkAndRenderCustomComponent = () => {
 			const targetElement = document.querySelector(
 				'.block-editor-inserter__block-list'
@@ -555,7 +604,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.MutationObserver ||
 			window.WebKitMutationObserver ||
 			window.MozMutationObserver;
-		const observer = new MutationObserver( checkAndRenderCustomComponent );
+		const observer = new MutationObserver( () => {
+			removeUnnecessaryTablist();
+			checkAndRenderCustomComponent();
+		} );
 
 		// Set up the configuration of the MutationObserver
 		const observerConfig = { childList: true, subtree: true };
