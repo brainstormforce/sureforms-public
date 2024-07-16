@@ -1,4 +1,27 @@
-import { fieldValidation } from '../validation';
+import { fieldValidation } from './validation';
+
+/**
+ * Initialize inline field validation
+ */
+function initializeInlineFieldValidation() {
+	const blocks = [
+		'srfm-input-block',
+		'srfm-email-block',
+		'srfm-url-block',
+		'srfm-phone-block',
+		'srfm-checkbox-block',
+		'srfm-gdpr-block',
+		'srfm-number-block',
+		'srfm-dropdown-block',
+		'srfm-multi-choice-block',
+		'srfm-datepicker-block',
+		'srfm-upload-block',
+		'srfm-rating-block',
+		'srfm-textarea-block',
+	];
+
+	blocks.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
+}
 
 /**
  * Add blur listeners to all fields
@@ -16,16 +39,17 @@ function addBlurListener( containerClass, blockClass ) {
 				areaInput.querySelector( 'textarea' ) ||
 				areaInput.querySelector( 'select' );
 
+			// upload block
 			if ( containerClass === 'srfm-upload-block' ) {
 				areaField = areaInput.querySelector( 'input[type="file"]' );
 			}
 
+			// rating block
 			if ( containerClass === 'srfm-rating-block' ) {
 				areaField = areaInput.querySelectorAll( '.srfm-star-icon' );
 
 				areaField.forEach( ( field, index ) => {
 					if ( index === areaField.length - 1 ) {
-						console.log( field );
 						field.addEventListener( 'blur', async function () {
 							const formTextarea = field.closest( blockClass );
 							const form = formTextarea.closest( 'form' );
@@ -47,67 +71,6 @@ function addBlurListener( containerClass, blockClass ) {
 
 				return;
 			}
-
-			// multi choice block
-			// if ( containerClass === 'srfm-multi-choice-block' ) {
-			// 	areaField = areaInput.querySelectorAll(
-			// 		'.srfm-input-multi-choice-single'
-			// 	);
-			// 	areaField.forEach( ( field, index ) => {
-			// 		field.addEventListener( 'blur', async function () {
-			// 			// check for tab key press
-			// 			field.addEventListener(
-			// 				'keydown',
-			// 				async function ( event ) {
-			// 					console.log( event.keyCode );
-			// 					if (
-			// 						event.keyCode === 9 &&
-			// 						index === areaField.length - 1
-			// 					) {
-			// 						console.log( 'in if' );
-			// 						const formTextarea =
-			// 							field.closest( blockClass );
-			// 						const form = formTextarea.closest( 'form' );
-			// 						const formId =
-			// 							form.getAttribute( 'form-id' );
-			// 						const ajaxUrl =
-			// 							form.getAttribute( 'action' );
-			// 						const nonce = form.getAttribute( 'nonce' );
-			// 						const singleField = true;
-
-			// 						await fieldValidation(
-			// 							formId,
-			// 							ajaxUrl,
-			// 							nonce,
-			// 							formTextarea,
-			// 							singleField
-			// 						);
-			// 						return;
-			// 					}
-			// 					return;
-			// 				}
-			// 			);
-
-			// 			// blockClass = '.srfm-multi-choice-single';
-			// 			const formTextarea = field.closest( blockClass );
-			// 			const form = formTextarea.closest( 'form' );
-			// 			const formId = form.getAttribute( 'form-id' );
-			// 			const ajaxUrl = form.getAttribute( 'action' );
-			// 			const nonce = form.getAttribute( 'nonce' );
-			// 			const singleField = true;
-
-			// 			await fieldValidation(
-			// 				formId,
-			// 				ajaxUrl,
-			// 				nonce,
-			// 				formTextarea,
-			// 				singleField
-			// 			);
-			// 		} );
-			// 	} );
-
-			// 	return;
-			// }
 
 			// multi choice block
 			if ( containerClass === 'srfm-multi-choice-block' ) {
@@ -164,6 +127,8 @@ function addBlurListener( containerClass, blockClass ) {
 			}
 
 			if ( areaField && areaField !== null ) {
+				console.log( areaField );
+
 				areaField.addEventListener( 'blur', async function () {
 					console.log( areaField );
 					const formTextarea = areaField.closest( blockClass );
@@ -172,15 +137,6 @@ function addBlurListener( containerClass, blockClass ) {
 					const ajaxUrl = form.getAttribute( 'action' );
 					const nonce = form.getAttribute( 'nonce' );
 					const singleField = true;
-
-					console.log( {
-						formTextarea,
-						form,
-						formId,
-						ajaxUrl,
-						nonce,
-						singleField,
-					} );
 
 					await fieldValidation(
 						formId,
@@ -194,5 +150,10 @@ function addBlurListener( containerClass, blockClass ) {
 		}
 	}
 }
+
+document.addEventListener(
+	'DOMContentLoaded',
+	initializeInlineFieldValidation
+);
 
 export { addBlurListener };

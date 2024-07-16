@@ -1,11 +1,7 @@
-import { addBlurListener } from './utils';
-
 function initializeTextarea() {
-	// Textarea field validation
 	const textAreaContainer = Array.from(
 		document.getElementsByClassName( 'srfm-textarea-block' )
 	);
-
 	if ( textAreaContainer ) {
 		for ( const areaInput of textAreaContainer ) {
 			const areaField = areaInput.querySelector( 'textarea' );
@@ -24,32 +20,8 @@ function initializeTextarea() {
 						}
 					}
 				} );
-
-				// addBlurListener(
-				// 	'srfm-textarea-block',
-				// 	'.srfm-textarea-block'
-				// );
 			}
 		}
 	}
-
-	const blocks = [
-		'srfm-input-block',
-		'srfm-email-block',
-		'srfm-url-block',
-		'srfm-phone-block',
-		'srfm-checkbox-block',
-		'srfm-gdpr-block',
-		'srfm-number-block',
-		'srfm-dropdown-block',
-		'srfm-multi-choice-block',
-		'srfm-datepicker-block',
-		'srfm-upload-block',
-		'srfm-rating-block',
-		'srfm-textarea-block',
-	];
-
-	blocks.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
 }
-
 document.addEventListener( 'DOMContentLoaded', initializeTextarea );

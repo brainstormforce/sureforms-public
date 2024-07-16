@@ -60,9 +60,6 @@ export async function fieldValidation(
 			nonce
 		);
 	}
-	// const fieldContainers = Array.from(
-	// 	formContainer.querySelectorAll( '.srfm-block-single' )
-	// );
 
 	const fieldContainers = singleField
 		? [ formContainer ]
@@ -518,8 +515,5 @@ export async function fieldValidation(
 		}
 	}
 
-	// if ( firstErrorInput ) {
-	// 	firstErrorInput.focus();
-	// }
 	return validateResult;
 }
