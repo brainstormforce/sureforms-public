@@ -12,12 +12,12 @@ function initializeInlineFieldValidation() {
 		'srfm-checkbox-block',
 		'srfm-gdpr-block',
 		'srfm-number-block',
-		'srfm-dropdown-block',
 		'srfm-multi-choice-block',
 		'srfm-datepicker-block',
 		'srfm-upload-block',
 		'srfm-rating-block',
 		'srfm-textarea-block',
+		'srfm-dropdown-block',
 	];
 
 	blocks.forEach( ( block ) => addBlurListener( block, `.${ block }` ) );
@@ -126,9 +126,7 @@ function addBlurListener( containerClass, blockClass ) {
 				return;
 			}
 
-			if ( areaField && areaField !== null ) {
-				console.log( areaField );
-
+			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
 					console.log( areaField );
 					const formTextarea = areaField.closest( blockClass );

@@ -79,11 +79,11 @@ class Frontend_Assets {
 
 		wp_enqueue_script( SRFM_SLUG . '-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
 
-		// frontend utilities.
-		wp_enqueue_script( SRFM_SLUG . '-utils', SRFM_URL . 'assets/build/utils.js', [], SRFM_VER, true );
-
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
+
+		// frontend utilities for inline field validation.
+		wp_enqueue_script( SRFM_SLUG . '-frontend-utils', SRFM_URL . 'assets/build/utils.js', [], SRFM_VER, true );
 
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
