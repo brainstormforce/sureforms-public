@@ -18,7 +18,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	return (
 		<>
-			<div className={ `srfm-block srfm-${ slug }-block` }>
+			<div className={ `srfm-${ slug }-block` }>
 				<RichText
 					tagName="label"
 					value={ label }
@@ -49,7 +49,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 			</div>
 
 			{ isConfirmEmail && (
-				<div className={ `srfm-block srfm-${ slug }-confirm-block` }>
+				<div className={ `srfm-${ slug }-confirm-block` }>
 					<label
 						className={ `srfm-block-label${ isRequired }` }
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }

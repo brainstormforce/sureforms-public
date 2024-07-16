@@ -82,12 +82,11 @@
 	.srfm-email-block {
 		margin-bottom: var( --srfm-gap-between-blocks );
 	}
+	.srfm-email-confirm-block {
+		margin-bottom: 0; // Added to remove the bottom margin for the confirm email field.
+	}
 
 	.srfm-block {
-		&.srfm-email-confirm-block {
-			margin-bottom: 0; // Added to remove the bottom margin for the confirm email block.
-		}
-
 		.srfm-block-label {
 			display: block;
 			@include srfm-block-label-styles;
