@@ -175,6 +175,14 @@ function changeCoreParagraphCategory( settings, name ) {
 		return {
 			...settings,
 			category: 'sureforms',
+			// modify additional classnames to add a default class to target in the frontend.
+			attributes: {
+				...settings.attributes,
+				className: {
+					type: 'string',
+					default: 'srfm-custom-wp-paragraph',
+				},
+			},
 		};
 	}
 	return settings;

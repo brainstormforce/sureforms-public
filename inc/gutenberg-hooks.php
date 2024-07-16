@@ -135,10 +135,18 @@ class Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function register_block_categories( $categories ) {
+		$screen = get_current_screen();
+
+		if ( $screen && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+			$title = esc_html__( 'General Fields', 'sureforms' );
+		} else {
+			$title = esc_html__( 'SureForms', 'sureforms' );
+		}
+
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'General Fields', 'sureforms' ),
+				'title' => $title,
 			],
 			[
 				'slug'  => 'sureforms-pro',
@@ -148,6 +156,7 @@ class Gutenberg_Hooks {
 
 		return array_merge( $custom_categories, $categories );
 	}
+
 
 	/**
 	 * Register our block patterns.
