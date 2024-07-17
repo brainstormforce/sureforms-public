@@ -36,29 +36,7 @@ class Gutenberg_Hooks {
 	 * @var array<string>
 	 * @since 0.0.2
 	 */
-	protected $srfm_blocks = [
-		'srfm/input',
-		'srfm/email',
-		'srfm/textarea',
-		'srfm/number',
-		'srfm/checkbox',
-		'srfm/gdpr',
-		'srfm/phone',
-		'srfm/address',
-		'srfm/address-compact',
-		'srfm/dropdown',
-		'srfm/multi-choice',
-		'srfm/radio',
-		'srfm/submit',
-		'srfm/url',
-		// pro blocks.
-		'srfm/date-time-picker',
-		'srfm/hidden',
-		'srfm/number-slider',
-		'srfm/password',
-		'srfm/rating',
-		'srfm/upload',
-	];
+	protected $srfm_blocks = [];
 
 	use Get_Instance;
 
@@ -79,6 +57,27 @@ class Gutenberg_Hooks {
 			'event-rsvp-form',
 			'subscription-form',
 		];
+
+		// Set form blocks.
+		$this->srfm_blocks = apply_filters(
+			'srfm_blocks',
+			[
+				'srfm/input',
+				'srfm/email',
+				'srfm/textarea',
+				'srfm/number',
+				'srfm/checkbox',
+				'srfm/gdpr',
+				'srfm/phone',
+				'srfm/address',
+				'srfm/address-compact',
+				'srfm/dropdown',
+				'srfm/multi-choice',
+				'srfm/radio',
+				'srfm/submit',
+				'srfm/url',
+			]
+		);
 
 		// Initializing hooks.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'form_editor_screen_assets' ] );
