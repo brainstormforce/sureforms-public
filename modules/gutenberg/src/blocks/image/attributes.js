@@ -15,6 +15,10 @@ const attributes = {
 		type: 'string',
 		default: 'default',
 	},
+	disableLazyLoad: {
+		type: 'boolean',
+		default: false,
+	},
 	url: {
 		type: 'string',
 		default: '',

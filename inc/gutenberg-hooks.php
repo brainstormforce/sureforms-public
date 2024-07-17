@@ -196,7 +196,7 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
-
+				'core/paragraph',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -212,15 +212,28 @@ class Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function register_block_categories( $categories ) {
+		$screen = get_current_screen();
+
+		if ( $screen && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+			$title = esc_html__( 'General Fields', 'sureforms' );
+		} else {
+			$title = esc_html__( 'SureForms', 'sureforms' );
+		}
+
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'SureForms', 'sureforms' ),
+				'title' => $title,
+			],
+			[
+				'slug'  => 'sureforms-pro',
+				'title' => esc_html__( 'Advanced Fields', 'sureforms' ),
 			],
 		];
 
 		return array_merge( $custom_categories, $categories );
 	}
+
 
 	/**
 	 * Register our block patterns.
