@@ -54,20 +54,7 @@ function addBlurListener( containerClass, blockClass ) {
 				areaField.forEach( ( field, index ) => {
 					if ( index === areaField.length - 1 ) {
 						field.addEventListener( 'blur', async function () {
-							const formTextarea = field.closest( blockClass );
-							const form = formTextarea.closest( 'form' );
-							const formId = form.getAttribute( 'form-id' );
-							const ajaxUrl = form.getAttribute( 'action' );
-							const nonce = form.getAttribute( 'nonce' );
-							const singleField = true;
-
-							await fieldValidation(
-								formId,
-								ajaxUrl,
-								nonce,
-								formTextarea,
-								singleField
-							);
+							fieldValidationInit( field, blockClass );
 						} );
 					}
 				} );
@@ -80,77 +67,35 @@ function addBlurListener( containerClass, blockClass ) {
 				areaField = areaInput.querySelectorAll(
 					'.srfm-input-multi-choice-single'
 				);
-				areaField.forEach( ( field, index ) => {
+				areaField.forEach( ( field ) => {
 					field.addEventListener( 'blur', async function () {
-						const formTextarea = field.closest( blockClass );
-						const form = formTextarea.closest( 'form' );
-						const formId = form.getAttribute( 'form-id' );
-						const ajaxUrl = form.getAttribute( 'action' );
-						const nonce = form.getAttribute( 'nonce' );
-						const singleField = true;
-
-						await fieldValidation(
-							formId,
-							ajaxUrl,
-							nonce,
-							formTextarea,
-							singleField
-						);
+						fieldValidationInit( field, blockClass );
 					} );
-
-					field.addEventListener(
-						'keydown',
-						async function ( event ) {
-							if (
-								event.keyCode === 9 &&
-								index === areaField.length - 1
-							) {
-								// 9 is the keyCode for 'Tab'
-								const formTextarea =
-									field.closest( blockClass );
-								const form = formTextarea.closest( 'form' );
-								const formId = form.getAttribute( 'form-id' );
-								const ajaxUrl = form.getAttribute( 'action' );
-								const nonce = form.getAttribute( 'nonce' );
-								const singleField = true;
-
-								await fieldValidation(
-									formId,
-									ajaxUrl,
-									nonce,
-									formTextarea,
-									singleField
-								);
-							}
-						}
-					);
 				} );
 
 				return;
 			}
 
+			// for all other fields
 			if ( areaField ) {
 				areaField.addEventListener( 'blur', async function () {
-					console.log( areaField );
-					const formTextarea = areaField.closest( blockClass );
-					const form = formTextarea.closest( 'form' );
-					const formId = form.getAttribute( 'form-id' );
-					const ajaxUrl = form.getAttribute( 'action' );
-					const nonce = form.getAttribute( 'nonce' );
-					const singleField = true;
-
-					await fieldValidation(
-						formId,
-						ajaxUrl,
-						nonce,
-						formTextarea,
-						singleField
-					);
+					fieldValidationInit( areaField, blockClass );
 				} );
 			}
 		}
 	}
 }
+
+const fieldValidationInit = async ( areaField, blockClass ) => {
+	const formTextarea = areaField.closest( blockClass );
+	const form = formTextarea.closest( 'form' );
+	const formId = form.getAttribute( 'form-id' );
+	const ajaxUrl = form.getAttribute( 'action' );
+	const nonce = form.getAttribute( 'nonce' );
+	const singleField = true;
+
+	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
+};
 
 document.addEventListener(
 	'DOMContentLoaded',
