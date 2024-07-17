@@ -90,16 +90,17 @@ function addBlurListener( containerClass, blockClass ) {
 
 						// Regular expression for validating email
 						const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-						const isValidEmail = emailRegex.test(
-							emailField.value
-						);
+						let isValidEmail = false;
+						if ( emailRegex.test( emailField.value ) ) {
+							isValidEmail = true;
+						}
 
 						// Determine the relevant block (normal email or confirmation email)
 						const inputBlock = emailField.classList.contains(
 							'srfm-input-email-confirm'
 						)
 							? parentBlock.querySelector(
-									'.srfm-email-confirm-block'
+								'.srfm-email-confirm-block'
 							  )
 							: parentBlock.querySelector( '.srfm-email-block' );
 
@@ -140,11 +141,10 @@ function addBlurListener( containerClass, blockClass ) {
 									'Confirmation email is not the same';
 								parentBlock.classList.add( 'srfm-error' );
 								return;
-							} else {
-								parentBlock.classList.remove( 'srfm-error' );
-								confirmErrorContainer.textContent = '';
-								confirmErrorContainer.style.display = 'none';
 							}
+							parentBlock.classList.remove( 'srfm-error' );
+							confirmErrorContainer.textContent = '';
+							confirmErrorContainer.style.display = 'none';
 						}
 
 						// Handle general email validation
