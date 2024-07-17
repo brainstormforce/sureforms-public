@@ -26,6 +26,9 @@ function initializeInlineFieldValidation() {
 /**
  * Add blur listeners to all fields
  * That shows validation errors on blur
+ *
+ * @param {string} containerClass
+ * @param {string} blockClass
  */
 function addBlurListener( containerClass, blockClass ) {
 	const container = Array.from(

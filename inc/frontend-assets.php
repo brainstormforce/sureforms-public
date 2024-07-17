@@ -82,9 +82,6 @@ class Frontend_Assets {
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
 
-		// frontend utilities for inline field validation.
-		wp_enqueue_script( SRFM_SLUG . '-frontend-utils', SRFM_URL . 'assets/build/utils.js', [], SRFM_VER, true );
-
 		wp_localize_script(
 			SRFM_SLUG . '-form-submit',
 			SRFM_SLUG . '_submit',
@@ -104,28 +101,60 @@ class Frontend_Assets {
 	 */
 	public function enqueue_srfm_script( $block_type ) {
 		$block_name        = str_replace( 'srfm/', '', $block_type );
-		$script_dep_blocks = [ 'address-compact', 'checkbox', 'dropdown', 'multi-choice', 'number', 'textarea', 'url', 'phone' ];
+		$script_dep_blocks = [
+			'address-compact' => 0,
+			'checkbox'        => 0,
+			'dropdown'        => 0,
+			'multi-choice'    => 0,
+			'number'          => 0,
+			'textarea'        => 0,
+			'url'             => 0,
+			'phone'           => 0,
+		];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-		if ( in_array( $block_name, $script_dep_blocks, true ) ) {
-			$js_uri        = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
-			$js_vendor_uri = SRFM_URL . 'assets/js/minified/deps/';
+		// Check if block is in the array and check iif block is already enqueued.
+		if (
+			in_array( $block_name, array_keys( $script_dep_blocks ), true ) &&
+			0 === $script_dep_blocks[ $block_name ]
+		) {
+			$script_dep_blocks[ $block_name ] += 1;
+			$js_uri                            = SRFM_URL . 'assets/js/' . $dir_name . '/blocks/';
+			$js_vendor_uri                     = SRFM_URL . 'assets/js/minified/deps/';
 
-			if ( 'phone' === $block_name ) {
+			if ( 'phone' === $block_name
+			) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-input-deps", $js_vendor_uri . 'intl/intTelInput.min.js', [], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
 			}
 
-			if ( 'dropdown' === $block_name || 'address-compact' === $block_name ) {
+			if ( 'dropdown' === $block_name || 'address-compact' === $block_name
+			) {
+				// dequue utils script to avoid conflict.
+				wp_dequeue_script( SRFM_SLUG . '-frontend-utils' );
 				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
+				// frontend utils using dropdown dependency.
+				wp_enqueue_script(
+					SRFM_SLUG . '-frontend-utils',
+					SRFM_URL . 'assets/build/utils.js',
+					[
+						SRFM_SLUG . '-dropdown',
+						SRFM_SLUG . '-tom-select',
+					],
+					SRFM_VER,
+					true
+				);
 			}
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
+
+			// frontend utils using dropdown dependency.
+			wp_enqueue_script( SRFM_SLUG . '-frontend-utils', SRFM_URL . 'assets/build/utils.js', [], SRFM_VER, true );
 		}
 	}
 
