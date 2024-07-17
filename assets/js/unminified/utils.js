@@ -86,6 +86,11 @@ function addBlurListener( containerClass, blockClass ) {
 	}
 }
 
+/**
+ * Initialize field validation
+ * @param {HTMLElement} areaField
+ * @param {string} blockClass
+ */
 const fieldValidationInit = async ( areaField, blockClass ) => {
 	const formTextarea = areaField.closest( blockClass );
 	const form = formTextarea.closest( 'form' );
