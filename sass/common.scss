@@ -81,7 +81,7 @@
 	// Adding bottom margin to the form fields.
 	.srfm-block,
 	.srfm-email-block {
-		margin-bottom: var( --srfm-gap-between-blocks );
+		margin-bottom: var( --srfm-row-gap-between-blocks );
 	}
 	// Removing bottom margin for the confirm email field.
 	.srfm-email-confirm-block {
@@ -89,6 +89,7 @@
 	}
 
 	.srfm-block {
+		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 		.srfm-block-label {
 			display: block;
 			@include srfm-block-label-styles;
