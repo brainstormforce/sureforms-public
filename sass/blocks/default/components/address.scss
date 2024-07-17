@@ -6,6 +6,12 @@
 				margin-bottom: var( --srfm-gap-below-address-label );
 			}
 			.srfm-block-wrap {
+				@include srfm-address-block-styles;
+
+				.srfm-block-single {
+					@include srfm-no-margin-padding;
+				}
+
 				.srfm-input-common {
 					&:focus {
 						z-index: 99;

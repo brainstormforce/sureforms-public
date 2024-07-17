@@ -191,6 +191,7 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
+			padding: 0 0.5rem;
 			margin-left: 0 !important; // This is needed to get the field width working.
 			margin-right: 0 !important; // This is needed to get the field width working.
 			max-width: 100%;

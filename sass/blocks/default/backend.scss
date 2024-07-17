@@ -26,35 +26,24 @@
 
 	// Address block styles.
 	.srfm-address-block-wrap {
+		.srfm-block-wrap {
+			display: flex;
+			flex-wrap: wrap;
+		}
 		.block-editor-inner-blocks {
 			margin-top: var( --srfm-gap-below-address-label );
+
+			.block-editor-block-list__layout {
+				@include srfm-address-block-styles;
+
+				.block-editor-block-list__block {
+					@include srfm-no-margin-padding;
+				}
+			}
 		}
 		.block-editor-block-list__block,
 		.block-list-appender {
 			margin-top: 1em !important;
-		}
-	}
-
-	// Address
-	div[data-type="srfm/address"] {
-		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-
-			.srfm-input-common {
-				border-radius: 0;
-				border-bottom-width: 0;
-				padding-right: 0.875em;
-				&:nth-child( 1 ) {
-					border-top-left-radius: var( --srfm-border-radius );
-					border-top-right-radius: var( --srfm-border-radius );
-				}
-				&:nth-last-child( 1 ) {
-					border-bottom-width: var( --srfm-border );
-					border-bottom-left-radius: var( --srfm-border-radius );
-					border-bottom-right-radius: var( --srfm-border-radius );
-				}
-			}
 		}
 	}
 
