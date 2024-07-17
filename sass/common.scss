@@ -96,7 +96,20 @@
 			display: flex;
 			flex-wrap: wrap;
 			gap: var( --srfm-row-gap-between-fields ) var( --srfm-col-gap-between-fields );
-			@include srfm-address-block-layout-width;
+
+			// Adjusting the width according to the block width and added gap.
+			.srfm-block-width-100 {
+				flex: 0 1 100%;
+			}
+			.srfm-block-width-50 {
+				flex: 0 1 calc( 50% - var( --srfm-col-gap-between-fields ) / 2 );
+			}
+			.srfm-block-width-33-33 {
+				flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-col-gap-between-fields ) );
+			}
+			.srfm-block-width-25 {
+				flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-col-gap-between-fields ) );
+			}
 
 			.srfm-block-single,
 			.block-editor-block-list__block {
