@@ -91,7 +91,7 @@ class Helper {
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return string Extracted field type.
 	 */
 	public static function get_field_type_from_key( $field_key ) {
@@ -107,7 +107,7 @@ class Helper {
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return callable Returns sanitize callbacks according to the provided field type.
 	 */
 	public static function get_field_type_sanitize_function( $field_type ) {
@@ -134,7 +134,7 @@ class Helper {
 	 * If the value is not numeric, it sanitizes it as a text field.
 	 *
 	 * @param mixed $value The value to be sanitized.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return integer|float|string The sanitized value.
 	 */
 	public static function sanitize_number( $value ) {
@@ -151,7 +151,7 @@ class Helper {
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
 	 * @param array<mixed> $form_data $form_data User submitted form data.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return array<mixed> $result Sanitized form data.
 	 */
 	public static function sanitize_by_field_type( $form_data ) {

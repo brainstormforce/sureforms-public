@@ -422,12 +422,6 @@ $req_err_color: #dc2625;
 										}
 									}
 
-									.srfm-option-text {
-										color: var( --dashboard-heading, #1e293b );
-										font-size: 14px;
-										font-style: normal;
-										line-height: 20px;
-									}
 								}
 
 								.srfm-select-page {
@@ -440,6 +434,15 @@ $req_err_color: #dc2625;
 										box-shadow: none;
 									}
 								}
+
+								.srfm-option-label {
+									color: var( --dashboard-heading, #1e293b );
+									font-size: 14px;
+									font-style: normal;
+									line-height: 20px;
+									cursor: pointer;
+								}
+
 							}
 						}
 

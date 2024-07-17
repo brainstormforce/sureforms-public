@@ -230,10 +230,9 @@ class Generate_Form_Markup {
 			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
 			// $font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px'; -- Will be used in future.
-			$font_size_var          = '16px';
 			$media_query_mobile_var = '576px';
 			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
-			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
+			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) >= 0 ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
@@ -262,7 +261,6 @@ class Generate_Form_Markup {
 					--srfm-error-shadow-color : rgba( from <?php echo esc_html( $error_surface_var ); ?> r g b / 0.3);
 					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
 					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
-					--srfm-font-size: <?php echo esc_html( $font_size_var ); ?>;
 					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
 					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
 					--srfm-border: <?php echo esc_html( $border_var ); ?>;
