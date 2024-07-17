@@ -507,6 +507,49 @@ class Post_Types {
 			);
 		}
 
+		register_post_meta(
+			SRFM_FORMS_POST_TYPE,
+			'_srfm_forms_styling',
+			[
+				'single'        => true,
+				'type'          => 'object',
+				'auth_callback' => '__return_true',
+				'show_in_rest'  => [
+					'schema' => [
+						'type'       => 'object',
+						'properties' => [
+							'primary_color'           => [
+								'type' => 'string',
+							],
+							'text_color'              => [
+								'type' => 'string',
+							],
+							'text_color_on_primary'   => [
+								'type' => 'string',
+							],
+							'background_color'        => [
+								'type' => 'string',
+							],
+							'field_spacing'           => [
+								'type' => 'string',
+							],
+							'submit_button_alignment' => [
+								'type' => 'string',
+							],
+						],
+					],
+				],
+				'default'       => [
+					'primary_color'           => '#0C78FB',
+					'text_color'              => '#1E1E1E',
+					'text_color_on_primary'   => '#FFFFFF',
+					'background_color'        => '#FFFFFF',
+					'field_spacing'           => 'small',
+					'submit_button_alignment' => 'left',
+				],
+			]
+		);
+
 		// Email notification Metas.
 		register_post_meta(
 			'sureforms_form',

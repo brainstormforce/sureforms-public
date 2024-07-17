@@ -92,6 +92,8 @@ class Generate_Form_Markup {
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
+			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 			$color_primary            = Helper::get_meta_value( $id, '_srfm_color1' );
 			$form_font_size           = Helper::get_meta_value( $id, '_srfm_fontsize' );
 			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
@@ -189,10 +191,10 @@ class Generate_Form_Markup {
 				}
 			}
 
-			$primary_color = $color_primary;
+			$primary_color = $form_styling['primary_color'];
 
-			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
+			$label_text_color = $form_styling['text_color'];
+			$help_color_var   = $form_styling['text_color'];
 
 			// New colors.
 
