@@ -165,7 +165,7 @@ class Email_Template {
 							}
 						} else {
 							if ( is_string( $value ) ) {
-								echo wp_kses(
+								echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses(
 									$value,
 									[
 										'a' => [

@@ -3,7 +3,7 @@ import EmailConfirmation from './EmailConfirmation';
 import { useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, Popover } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
@@ -167,7 +167,6 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 											<tbody>
 												{
 													emailNotificationData && emailNotificationData.map( ( el, i ) => {
-														const top = -27 + ( i * 37 );
 														return (
 															<div key={ el.id } className="srfm-modal-row-body">
 																<tr className={ `srfm-modal-row srfm-modal-row-data ${ i % 2 !== 0 ? ' odd' : '' }` }>
@@ -192,22 +191,25 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 																		<button onClick={ () => handleEdit( el ) } className="srfm-cursor-pointer">
 																			{ editIcons }
 																		</button>
-																		<button onClick={ () => {
-																			setIsPopup( el.id );
-																		} } className="srfm-cursor-pointer">
-																			{ deleteIcons }
-																		</button>
+																		<span>
+																			<button onClick={ () => {
+																				setIsPopup( el.id );
+																			} } className="srfm-cursor-pointer">
+																				{ deleteIcons }
+																			</button>
+																			{
+																				isPopup === el.id &&
+																					<Popover placement={ 'top' } className="srfm-el-popover" offset={ 20 } noArrow={ false } onFocusOutside={ () => setIsPopup( null ) } >
+																						<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
+																						<div className="srfm-popover-btn">
+																							<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
+																							<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
+																						</div>
+																					</Popover>
+																			}
+																		</span>
 																	</td>
 																</tr>
-																{
-																	isPopup === el.id && <div className="srfm-el-popover" style={ { top } }>
-																		<p className="srfm-popover-text">{ __( 'Are you sure to delete this?', 'sureforms' ) }</p>
-																		<div className="srfm-popover-btn">
-																			<button onClick={ () => setIsPopup( null ) } className="srfm-cancel-btn popover-btn">{ __( 'Cancel', 'sureforms' ) }</button>
-																			<button onClick={ () => handleDelete( el ) } className="srfm-confirm-btn popover-btn">{ __( 'Confirm', 'sureforms' ) }</button>
-																		</div>
-																	</div>
-																}
 															</div>
 														);
 													} )
