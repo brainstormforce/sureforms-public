@@ -42,15 +42,11 @@ export const attachSidebar = () => {
 		let container = rootElement.querySelector( '.srfm-ee-quick-access' );
 
 		if ( ! container ) {
-			const parentDiv = rootElement.insertBefore(
-				document.createElement( 'div' ),
-				rootElement.firstChild
-			);
-			container = parentDiv.appendChild(
-				document.createElement( 'div' )
-			);
-			container.classList.add( 'srfm-ee-quick-access' );
+			container = document.createElement( 'div' );
+			container.classList.add( 'srfm-ee-quick-access-container' );
+			rootElement.insertBefore( container, rootElement.firstChild );
 		}
+
 		const root = createRoot( container );
 		root.render( <Sidebar /> );
 	}, 100 );
