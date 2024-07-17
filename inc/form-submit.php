@@ -209,7 +209,8 @@ class Form_Submit {
 			);
 		}
 
-		$form_data = Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
+		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
