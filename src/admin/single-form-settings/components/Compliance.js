@@ -55,7 +55,7 @@ const Compliance = ( { complianceData } ) => {
 						{ complianceData[ 0 ]?.gdpr && (
 							<ToggleControl
 								label={ __(
-									'Delete entry data after form submission',
+									'Never store entry data after form submission',
 									'sureforms'
 								) }
 								help={ __(

@@ -20,6 +20,7 @@ const DraggableBlock = ( props ) => {
 		defaultAllowedQuickSidebarBlocks,
 		updateDefaultAllowedQuickSidebarBlocks,
 		saveOptionToDatabase,
+		enableRearrange,
 	} = props;
 	const [ hovering, setHovering ] = useState( false );
 	const isDragging = useRef( false );
@@ -38,6 +39,7 @@ const DraggableBlock = ( props ) => {
 	const handleOnClick = ( e, selectedBlock ) => {
 		let clientId = getBlockRootClientId || '';
 		let insertionPoint = blockInsertionPoint;
+
 		if (
 			getSelectedBlockAllowedBlocks &&
 			getSelectedBlockAllowedBlocks.includes( selectedBlock )
@@ -128,7 +130,7 @@ const DraggableBlock = ( props ) => {
 					blocks: [ create( block.name ) ],
 				} }
 			>
-				{ ( { onDraggableStart } ) => (
+				{ ( { onDraggableStart, onDraggableEnd } ) => (
 					<div
 						className="srfm-ee-quick-access__sidebar--blocks--block"
 						key={ id }
@@ -138,11 +140,16 @@ const DraggableBlock = ( props ) => {
 						draggable
 						onDragStart={ ( event ) => {
 							isDragging.current = true;
-							if ( onDraggableStart ) {
+							if ( onDraggableStart && enableRearrange ) {
 								onDraggableStart( event );
 							}
 						} }
-						onDragEnd={ () => {} }
+						onDragEnd={ ( event ) => {
+							isDragging.current = false;
+							if ( onDraggableEnd && enableRearrange ) {
+								onDraggableEnd( event );
+							}
+						} }
 						onMouseOver={ handleMouseOver }
 						onMouseOut={ handleMouseOut }
 						onFocus={ handleMouseOver }

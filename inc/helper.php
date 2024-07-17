@@ -91,7 +91,7 @@ class Helper {
 	 * Extracts the field type from the dynamic field key ( or field slug ).
 	 *
 	 * @param string $field_key Dynamic field key.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return string Extracted field type.
 	 */
 	public static function get_field_type_from_key( $field_key ) {
@@ -107,7 +107,7 @@ class Helper {
 	 * Returns the proper sanitize callback functions according to the field type.
 	 *
 	 * @param string $field_type HTML field type.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return callable Returns sanitize callbacks according to the provided field type.
 	 */
 	public static function get_field_type_sanitize_function( $field_type ) {
@@ -134,7 +134,7 @@ class Helper {
 	 * If the value is not numeric, it sanitizes it as a text field.
 	 *
 	 * @param mixed $value The value to be sanitized.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return integer|float|string The sanitized value.
 	 */
 	public static function sanitize_number( $value ) {
@@ -151,7 +151,7 @@ class Helper {
 	 * This function sanitizes the submitted form data according to the field type.
 	 *
 	 * @param array<mixed> $form_data $form_data User submitted form data.
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return array<mixed> $result Sanitized form data.
 	 */
 	public static function sanitize_by_field_type( $form_data ) {
@@ -225,10 +225,10 @@ class Helper {
 				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
-				$markup = $help ? '<div class="srfm-description">' . esc_html( $help ) . '</div>' : '';
+				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
 				break;
 			case 'error':
-				$markup = $required || $override ? '<div class="srfm-error-message" data-error-msg="' . $error_msg . '"' . $duplicate_msg . '>' . esc_html( $error_msg ) . '</div>' : '';
+				$markup = $required || $override ? '<div class="srfm-error-message" id="srfm-error-' . esc_attr( $block_id ) . '" data-error-msg="' . esc_attr( $error_msg ) . '"' . esc_attr( $duplicate_msg ) . '>' . esc_html( $error_msg ) . '</div>' : '';
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';

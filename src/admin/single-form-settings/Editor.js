@@ -270,6 +270,34 @@ const SureformsFormSpecificSettings = ( props ) => {
 						placeholder={ __( 'Submit', 'sureforms' ) }
 					/>
 				);
+
+				button.addEventListener( 'click', () => {
+					// need multiple timeouts for DOM elements to find.
+					// click on form section
+					setTimeout( () => {
+						const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+
+						editPostTab?.click();
+					}, 100 );
+
+					// click on style tab
+					setTimeout( () => {
+						// elements for submit button event listener
+						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
+						styleTabElement?.click();
+					}, 150 );
+
+					// then click on submit accordion
+					setTimeout( () => {
+						// elements for submit button event listener
+						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
+						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
+
+						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
+							submitBtnElement?.click();
+						}
+					}, 200 );
+				} );
 			}
 		}
 	}
@@ -621,7 +649,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							{ __( 'SureForms', 'sureforms' ) }
 						</h2>
 						<span className="block-editor-block-card__description">
-							{ __( 'Customize with SureForms.', 'sureforms' ) }
+							{ __( 'Customize with SureForms', 'sureforms' ) }
 						</span>
 					</div>
 				</div>
