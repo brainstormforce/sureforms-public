@@ -78,12 +78,32 @@
 		padding: 0;
 	}
 
+	// Adding bottom margin to the form fields.
 	.srfm-block,
 	.srfm-email-block {
 		margin-bottom: var( --srfm-gap-between-blocks );
 	}
+	// Removing bottom margin for the confirm email field.
 	.srfm-email-confirm-block {
-		margin-bottom: 0; // Added to remove the bottom margin for the confirm email field.
+		margin-bottom: 0;
+	}
+
+	// Address block common stylings for frontend and editor.
+	.srfm-address-block,
+	.srfm-address-block-wrap {
+		.srfm-block-wrap,
+		.block-editor-inner-blocks .block-editor-block-list__layout {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var( --srfm-row-gap-between-fields ) var( --srfm-col-gap-between-fields );
+			@include srfm-address-block-layout-width;
+
+			.srfm-block-single,
+			.block-editor-block-list__block {
+				margin: 0 !important;
+				padding: 0;
+			}
+		}
 	}
 
 	.srfm-block {

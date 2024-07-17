@@ -28,14 +28,6 @@
 	.srfm-address-block-wrap {
 		.block-editor-inner-blocks {
 			margin-top: var( --srfm-gap-below-address-label );
-			.block-editor-block-list__layout {
-				gap: var( --srfm-col-gap-between-fields ) var( --srfm-row-gap-between-fields );
-				@include srfm-address-block-layout-width;
-				.block-editor-block-list__block {
-					margin: 0 !important;
-					padding: 0;
-				}
-			}
 		}
 		.block-editor-block-list__block,
 		.block-list-appender {

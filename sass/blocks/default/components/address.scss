@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-address-block {
@@ -5,16 +6,6 @@
 				margin-bottom: var( --srfm-gap-below-address-label );
 			}
 			.srfm-block-wrap {
-				display: flex;
-				flex-wrap: wrap;
-				gap: var( --srfm-row-gap-between-fields ) var( --srfm-col-gap-between-fields );
-
-				.srfm-block-single {
-					margin-bottom: 0;
-					padding: 0;
-					flex: calc( 50% - var( --srfm-col-gap-between-fields ) );
-				}
-
 				.srfm-input-common {
 					&:focus {
 						z-index: 99;
