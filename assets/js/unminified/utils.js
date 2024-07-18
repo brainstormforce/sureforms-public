@@ -101,7 +101,7 @@ function addBlurListener( containerClass, blockClass ) {
 							'srfm-input-email-confirm'
 						)
 							? parentBlock.querySelector(
-									'.srfm-email-confirm-block'
+								'.srfm-email-confirm-block'
 							  )
 							: parentBlock.querySelector( '.srfm-email-block' );
 
