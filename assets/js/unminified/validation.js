@@ -594,11 +594,10 @@ function addBlurListener( containerClass, blockClass ) {
 /**
  * Add blur listeners to rating fields
  * That shows validation errors on blur
- * 
+ *
  * @param {HTMLElement} areaField
  * @param {HTMLElement} areaInput
  * @param {string}      blockClass
- 
  */
 function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-star-icon' );

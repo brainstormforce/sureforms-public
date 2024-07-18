@@ -154,19 +154,20 @@ class Frontend_Assets {
 					SRFM_VER,
 					true
 				);
+
+				wp_localize_script(
+					SRFM_SLUG . '-form-submit',
+					SRFM_SLUG . '_submit',
+					[
+						'site_url' => site_url(),
+						'nonce'    => wp_create_nonce( 'wp_rest' ),
+					]
+				);
 			}
 
 			if ( 'dropdown' !== $block_name ) {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
-
-			wp_enqueue_script(
-				SRFM_SLUG . '-form-submit',
-				SRFM_URL . 'assets/build/formSubmit.js',
-				[],
-				SRFM_VER,
-				true
-			);
 		}
 	}
 
