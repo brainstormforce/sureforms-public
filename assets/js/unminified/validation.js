@@ -578,7 +578,7 @@ function addBlurListener( containerClass, blockClass ) {
 
 			// Function to validate email inputs within the email block
 			if ( containerClass === 'srfm-email-block-wrap' ) {
-				addEmailBlurListener( areaField, areaInput, blockClass );
+				addEmailBlurListener( areaInput, blockClass );
 			}
 
 			// for all other fields
@@ -591,6 +591,15 @@ function addBlurListener( containerClass, blockClass ) {
 	}
 }
 
+/**
+ * Add blur listeners to rating fields
+ * That shows validation errors on blur
+ * 
+ * @param {HTMLElement} areaField
+ * @param {HTMLElement} areaInput
+ * @param {string}      blockClass
+ 
+ */
 function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-star-icon' );
 
@@ -603,6 +612,14 @@ function addRatingBlurListener( areaField, areaInput, blockClass ) {
 	} );
 }
 
+/**
+ * Add blur listeners to multi choice fields
+ * That shows validation errors on blur
+ *
+ * @param {HTMLElement} areaField
+ * @param {HTMLElement} areaInput
+ * @param {string}      blockClass
+ */
 function addMultiChoiceBlurListener( areaField, areaInput, blockClass ) {
 	areaField = areaInput.querySelectorAll( '.srfm-input-multi-choice-single' );
 	areaField.forEach( ( field ) => {
@@ -612,7 +629,16 @@ function addMultiChoiceBlurListener( areaField, areaInput, blockClass ) {
 	} );
 }
 
-function addEmailBlurListener( areaField, areaInput, blockClass ) {
+/**
+ * Add blur listeners to email fields
+ * That shows validation errors on blur and also check if it is valid email
+ *
+ * @param {HTMLElement} areaInput
+ * @param {string}      blockClass
+ *
+ * @return {void}
+ */
+function addEmailBlurListener( areaInput, blockClass ) {
 	const emailInputs = areaInput.querySelectorAll( 'input' );
 	const parentBlock = areaInput.closest( blockClass );
 
@@ -699,10 +725,3 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 
 	await fieldValidation( formId, ajaxUrl, nonce, formTextarea, singleField );
 };
-
-// document.addEventListener(
-// 	'DOMContentLoaded',
-// 	initializeInlineFieldValidation
-// );
-
-// export { addBlurListener };
