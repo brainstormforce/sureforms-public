@@ -26,6 +26,8 @@
 	.srfm-form {
 		.srfm-checkbox-block {
 			.srfm-block-wrap {
+				margin: 4px;
+
 				* {
 					box-sizing: border-box;
 				}
@@ -46,6 +48,7 @@
 					cursor: pointer;
 					overflow: hidden;
 					transition: all 0.2s ease;
+					align-items: center;
 
 					&:not( :last-child ) {
 						margin-right: 6px;
@@ -103,6 +106,7 @@
 				}
 
 				.srfm-input-checkbox {
+					display: none;
 					position: absolute;
 
 					&:checked {
@@ -113,6 +117,11 @@
 										background: var( --srfm-primary-color );
 										border-color: var( --srfm-primary-color );
 										animation: wave-4 0.4s ease;
+										// box-shadow: 0px 0px 4px 4px #d5440778;
+										box-shadow: 0px 0px 0px 4px // 30% opacity of primary color variable
+											var( --srfm-base-background-color ) 78;
+
+										margin: 4px;
 
 										svg {
 											stroke-dashoffset: 0;
