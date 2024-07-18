@@ -22,8 +22,6 @@ const Render = ( props ) => {
 		'aria-hidden': iconAccessabilityMode === 'presentation',
 	};
 
-	console.log( 'Render -> extraProps', extraProps );
-
 	const iconSvg = icon ? icon : 'circle-check';
 	const iconHtml = renderSVG( iconSvg, setAttributes, extraProps );
 
