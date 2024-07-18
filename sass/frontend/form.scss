@@ -81,7 +81,7 @@
 			margin-top: 0.571em;
 			font-weight: 400;
 			line-height: normal;
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 
 		.uagb-block {
@@ -90,7 +90,7 @@
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 
 		.srfm-block {

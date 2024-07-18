@@ -26,7 +26,7 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 	}
 
