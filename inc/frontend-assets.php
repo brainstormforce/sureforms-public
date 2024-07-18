@@ -100,7 +100,8 @@ class Frontend_Assets {
 	 * @return void
 	 */
 	public function enqueue_srfm_script( $block_type ) {
-		$block_name        = str_replace( 'srfm/', '', $block_type );
+		$block_name = str_replace( 'srfm/', '', $block_type );
+		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
 			'address-compact' => 0,
 			'checkbox'        => 0,
@@ -115,7 +116,7 @@ class Frontend_Assets {
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
 		$dir_name    = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? 'unminified' : 'minified';
 
-		// Check if block is in the array and check iif block is already enqueued.
+		// Check if block is in the array and check if block is already enqueued.
 		if (
 			in_array( $block_name, array_keys( $script_dep_blocks ), true ) &&
 			0 === $script_dep_blocks[ $block_name ]
@@ -132,7 +133,7 @@ class Frontend_Assets {
 
 			if ( 'dropdown' === $block_name || 'address-compact' === $block_name
 			) {
-				// dequue utils script to avoid conflict.
+				// if the dropdown / address-compact block is after any other block, then we need to dequeue the utils script and enqueue it again and load it with tom-select dependency.
 				wp_dequeue_script( SRFM_SLUG . '-frontend-utils' );
 				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
