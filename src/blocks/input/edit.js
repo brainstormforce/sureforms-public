@@ -61,6 +61,21 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const helpComponent =
+		help !== '' ? (
+			<RichText
+				tagName="label"
+				value={ help }
+				onChange={ ( value ) => {
+					setAttributes( { help: decodeHtmlEntities( value ) } );
+				} }
+				className="srfm-description"
+				multiline={ false }
+				id={ block_id }
+				allowedFormats={ [] }
+			/>
+		) : null;
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -202,9 +217,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					blockID={ block_id }
 					setAttributes={ setAttributes }
 					attributes={ attributes }
+					help={ helpComponent }
 				/>
+				<div className="srfm-error-wrap"></div>
 
-				{ help !== '' && (
+				{ /* { help !== '' && (
 					<RichText
 						tagName="label"
 						value={ help }
@@ -218,7 +235,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						id={ block_id }
 						allowedFormats={ [] }
 					/>
-				) }
+				) } */ }
 			</>
 		</div>
 	);
