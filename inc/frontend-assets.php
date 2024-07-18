@@ -77,7 +77,13 @@ class Frontend_Assets {
 		// Int-tel-input CSS.
 		wp_enqueue_style( SRFM_SLUG . '-intl-tel-input', $css_vendor . 'intl/intlTelInput.min.css', [], SRFM_VER );
 
-		wp_enqueue_script( SRFM_SLUG . '-form-submit', SRFM_URL . 'assets/build/formSubmit.js', [], SRFM_VER, true );
+		wp_enqueue_script(
+			SRFM_SLUG . '-form-submit',
+			SRFM_URL . 'assets/build/formSubmit.js',
+			[],
+			SRFM_VER,
+			true
+		);
 
 		// Frontend common and validation before submit.
 		wp_enqueue_script( SRFM_SLUG . '-frontend', $js_uri . 'frontend.min.js', [], SRFM_VER, true );
@@ -133,17 +139,17 @@ class Frontend_Assets {
 
 			if ( 'dropdown' === $block_name || 'address-compact' === $block_name
 			) {
-				// if the dropdown / address-compact block is after any other block, then we need to dequeue the utils script and enqueue it again and load it with tom-select dependency.
-				wp_dequeue_script( SRFM_SLUG . '-frontend-utils' );
+				// if the dropdown / address-compact block is after any other block, then we need to dequeue the srfm-form-submit script and enqueue it again and load it with tom-select dependency.
+				wp_dequeue_script( SRFM_SLUG . '-form-submit' );
 				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );
 				wp_enqueue_script( SRFM_SLUG . '-tom-select', $js_vendor_uri . 'tom-select.min.js', [], SRFM_VER, true );
 				// frontend utils using dropdown dependency.
 				wp_enqueue_script(
-					SRFM_SLUG . '-frontend-utils',
-					SRFM_URL . 'assets/build/utils.js',
+					SRFM_SLUG . '-form-submit',
+					SRFM_URL . 'assets/build/formSubmit.js',
 					[
-						SRFM_SLUG . '-dropdown',
-						SRFM_SLUG . '-tom-select',
+						'srfm-tom-select',
+						'srfm-dropdown',
 					],
 					SRFM_VER,
 					true
@@ -154,8 +160,13 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}", $js_uri . $block_name . $file_prefix . '.js', [], SRFM_VER, true );
 			}
 
-			// frontend utils using dropdown dependency.
-			wp_enqueue_script( SRFM_SLUG . '-frontend-utils', SRFM_URL . 'assets/build/utils.js', [], SRFM_VER, true );
+			wp_enqueue_script(
+				SRFM_SLUG . '-form-submit',
+				SRFM_URL . 'assets/build/formSubmit.js',
+				[],
+				SRFM_VER,
+				true
+			);
 		}
 	}
 
