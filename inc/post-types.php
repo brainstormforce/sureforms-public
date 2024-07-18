@@ -415,61 +415,39 @@ class Post_Types {
 			'srfm_register_post_meta',
 			[
 				// General tab metas.
-				'_srfm_show_labels'               => 'boolean',
-				'_srfm_show_asterisk'             => 'boolean',
-				'_srfm_single_page_form_title'    => 'boolean',
-				'_srfm_submit_button_text'        => 'string',
-				'_srfm_instant_form'              => 'boolean',
-				'_srfm_is_inline_button'          => 'boolean',
+				'_srfm_show_labels'              => 'boolean',
+				'_srfm_show_asterisk'            => 'boolean',
+				'_srfm_single_page_form_title'   => 'boolean',
+				'_srfm_submit_button_text'       => 'string',
+				'_srfm_instant_form'             => 'boolean',
+				'_srfm_is_inline_button'         => 'boolean',
 
 				// Styling tab metas.
 				// Form Container.
-				'_srfm_form_container_width'      => 'integer',
-				'_srfm_color1'                    => 'string',
-				'_srfm_bg_type'                   => 'string',
-				'_srfm_bg_image'                  => 'string',
-				'_srfm_cover_image'               => 'string',
-				'_srfm_bg_color'                  => 'string',
-				'_srfm_fontsize'                  => 'integer',
-				'_srfm_label_color'               => 'string',
-				'_srfm_help_color'                => 'string',
-				// Input Fields.
-				'_srfm_input_text_color'          => 'string',
-				'_srfm_input_placeholder_color'   => 'string',
-				'_srfm_input_bg_color'            => 'string',
-				'_srfm_input_border_color'        => 'string',
-				'_srfm_input_shadow_color'        => 'string',
-				'_srfm_input_border_width'        => 'integer',
-				'_srfm_input_border_radius'       => 'integer',
-				// Error.
-				'_srfm_field_error_color'         => 'string',
-				'_srfm_field_error_surface_color' => 'string',
-				'_srfm_field_error_shadow_color'  => 'string',
-				'_srfm_field_error_bg_color'      => 'string',
+				'_srfm_form_container_width'     => 'integer',
+				'_srfm_bg_type'                  => 'string',
+				'_srfm_bg_image'                 => 'string',
+				'_srfm_cover_image'              => 'string',
+				'_srfm_bg_color'                 => 'string',
 				// Submit Button.
-				'_srfm_button_text_color'         => 'string',
-				'_srfm_btn_bg_type'               => 'string',
-				'_srfm_button_bg_color'           => 'string',
-				'_srfm_button_border_color'       => 'string',
-				'_srfm_button_border_width'       => 'integer',
-				'_srfm_submit_width_backend'      => 'string',
-				'_srfm_button_border_radius'      => 'integer',
-				'_srfm_submit_alignment'          => 'string',
-				'_srfm_submit_alignment_backend'  => 'string',
-				'_srfm_submit_width'              => 'string',
-				'_srfm_inherit_theme_button'      => 'boolean',
+				'_srfm_submit_width_backend'     => 'string',
+				'_srfm_button_border_radius'     => 'integer',
+				'_srfm_submit_alignment'         => 'string',
+				'_srfm_submit_alignment_backend' => 'string',
+				'_srfm_submit_width'             => 'string',
+				'_srfm_inherit_theme_button'     => 'boolean',
 				// Additional Classes.
-				'_srfm_additional_classes'        => 'string',
+				'_srfm_additional_classes'       => 'string',
 
 				// Advanced tab metas.
 				// Success Message.
-				'_srfm_submit_type'               => 'string',
-				'_srfm_thankyou_message_title'    => 'string',
-				'_srfm_thankyou_message'          => 'string',
-				'_srfm_submit_url'                => 'string',
+				'_srfm_submit_type'              => 'string',
+				'_srfm_thankyou_message_title'   => 'string',
+				'_srfm_thankyou_message'         => 'string',
+				'_srfm_submit_url'               => 'string',
 				// Security.
-				'_srfm_captcha_security_type'     => 'string',
-				'_srfm_form_recaptcha'            => 'string',
+				'_srfm_captcha_security_type'    => 'string',
+				'_srfm_form_recaptcha'           => 'string',
 			]
 		);
 
@@ -527,9 +505,6 @@ class Post_Types {
 							'text_color_on_primary'   => [
 								'type' => 'string',
 							],
-							'background_color'        => [
-								'type' => 'string',
-							],
 							'field_spacing'           => [
 								'type' => 'string',
 							],
@@ -543,7 +518,6 @@ class Post_Types {
 					'primary_color'           => '#0C78FB',
 					'text_color'              => '#1E1E1E',
 					'text_color_on_primary'   => '#FFFFFF',
-					'background_color'        => '#FFFFFF',
 					'field_spacing'           => 'small',
 					'submit_button_alignment' => 'left',
 				],

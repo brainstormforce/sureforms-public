@@ -67,8 +67,9 @@
 	.srfm-form {
 		.srfm-block-single,
 		.srfm-submit-container,
-		.uagb-block,
-		.srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button ) {
+		.uagb-block
+		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
+		{
 			padding: 0 0.5em;
 		}
 
@@ -107,7 +108,6 @@
 						width: 100%;
 						border: var( --srfm-border ) solid var( --srfm-border-color );
 						border-radius: var( --srfm-border-radius );
-						background-color: var( --srfm-base-background-color );
 						height: auto;
 						padding: 0.72em 1.143em !important;
 
@@ -161,7 +161,6 @@
 						width: calc( 100% + 2px );
 						border: 1px solid var( --srfm-border-color );
 						border-top: none;
-						background-color: var( --srfm-base-background-color );
 					}
 				}
 
