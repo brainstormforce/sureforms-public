@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { TextControl, TabPanel } from '@wordpress/components';
+import { TextControl, TabPanel, ExternalLink } from '@wordpress/components';
 
 import ContentSection from '../components/ContentSection';
 
@@ -36,6 +36,11 @@ const SecurityPage = ( {
 							title: __( 'Turnstile', 'sureforms' ),
 							className: 'srfm-captcha-tab-2',
 						},
+						{
+							name: 'srfm-captcha-tab-3',
+							title: __( 'hCaptcha', 'sureforms' ),
+							className: 'srfm-captcha-tab-3',
+						},
 					] }
 				>
 					{ ( securityTab ) => {
@@ -51,10 +56,19 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the reCAPTCHA feature on your SureForms, Please select the Security type as Google reCAPTCHA in the form settings and select the version you want to use. Add Google reCAPTCHA secret and site key here. reCAPTCHA will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													__(
+														'To enable Google reCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -312,10 +326,20 @@ const SecurityPage = ( {
 												) }
 											</h2>
 											<p>
-												{ __(
-													'To enable the Turnstile feature on your SureForms, Please select the Security type as Cloudflare Turnstile in the form settings. Add Cloudflare Turnstile secret and site key here. Turnstile will be added to your page on the front end.',
-													'sureforms'
-												) }
+												{
+													__(
+														'To enable Cloudflare Turnstile, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
 											</p>
 											<div className="srfm-link">
 												<a
@@ -451,6 +475,102 @@ const SecurityPage = ( {
 												} }
 												placeholder={ __(
 													'Enter your site key here',
+													'sureforms'
+												) }
+											/>
+										</div>
+									</>
+								);
+							case 'srfm-captcha-tab-3':
+								return (
+									<>
+										<div className="srfm-sub-section-heading">
+											<h2>
+												{ __(
+													'hCaptcha',
+													'sureforms'
+												) }
+											</h2>
+											<p>
+												{
+													__(
+														'To enable hCAPTCHA, please add your site key and secret key. Configure these settings within the individual form. ',
+														'sureforms'
+													)
+												}
+												<ExternalLink href="#" target="_blank" rel="noreferrer" className="srfm-block-url" >
+													{
+														__(
+															'Learn more', 'sureforms'
+														)
+													}
+												</ExternalLink>
+											</p>
+											<div className="srfm-link">
+												<a
+													href="https://dashboard.hcaptcha.com/overview"
+													target="_blank"
+													rel="noreferrer"
+												>
+													{ __(
+														'Get Keys',
+														'sureforms'
+													) }
+												</a>
+												<a
+													href="https://docs.hcaptcha.com/"
+													target="_blank"
+													rel="noreferrer"
+												>
+													{ __(
+														'Documentation',
+														'sureforms'
+													) }
+												</a>
+											</div>
+										</div>
+										<div className="srfm-sub-section-content">
+											<TextControl
+												label={ __(
+													'Site Key',
+													'sureforms'
+												) }
+												type="text"
+												className="srfm-components-input-control"
+												value={
+													securitytabOptions.srfm_hcaptcha_site_key
+												}
+												onChange={ ( value ) => {
+													updateGlobalSettings(
+														'srfm_hcaptcha_site_key',
+														value,
+														'security-settings'
+													);
+												} }
+												placeholder={ __(
+													'Enter your site key here',
+													'sureforms'
+												) }
+											/>
+											<TextControl
+												label={ __(
+													'Secret Key',
+													'sureforms'
+												) }
+												type="password"
+												className="srfm-components-input-control"
+												value={
+													securitytabOptions.srfm_hcaptcha_secret_key
+												}
+												onChange={ ( value ) => {
+													updateGlobalSettings(
+														'srfm_hcaptcha_secret_key',
+														value,
+														'security-settings'
+													);
+												} }
+												placeholder={ __(
+													'Enter your secret key here',
 													'sureforms'
 												) }
 											/>

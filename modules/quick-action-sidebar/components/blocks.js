@@ -4,11 +4,13 @@
 import { useSelect } from '@wordpress/data';
 import { createBlock, getBlockTypes } from '@wordpress/blocks';
 import DraggableBlock from './draggable-block';
+import DragAndDropComponent from './move-up-down';
 
 const Blocks = ( {
 	defaultAllowedQuickSidebarBlocks,
 	updateDefaultAllowedQuickSidebarBlocks,
 	saveOptionToDatabase,
+	enableRearrange,
 } ) => {
 	const blocks = getBlockTypes();
 	const {
@@ -38,25 +40,46 @@ const Blocks = ( {
 		return createBlock( name );
 	};
 
+	// Loop through each object and add id
+	srfmBlocks.forEach( ( item, index ) => {
+		item.id = `${ index + 1 }`;
+	} );
+
+	const sortedY = defaultAllowedQuickSidebarBlocks
+		.filter( ( item ) => item !== undefined && item !== null )
+		.map( ( item ) => srfmBlocks.find( ( { name } ) => name === item ) )
+		.filter( ( item ) => item !== undefined ); // Remove undefined objects
+
 	return (
 		<>
-			{ srfmBlocks.map( ( block, index ) => (
-				<DraggableBlock
-					key={ index }
-					id={ index }
-					{ ...{
-						block,
-						create,
-						blockInsertionPoint,
-						getBlockRootClientId,
-						getSelectedBlockClientId,
-						getSelectedBlockAllowedBlocks,
-						defaultAllowedQuickSidebarBlocks,
-						updateDefaultAllowedQuickSidebarBlocks,
-						saveOptionToDatabase,
-					} }
+			{ ! enableRearrange &&
+				sortedY.map( ( block, index ) => (
+					<DraggableBlock
+						key={ index }
+						id={ index }
+						{ ...{
+							block,
+							create,
+							blockInsertionPoint,
+							getBlockRootClientId,
+							getSelectedBlockClientId,
+							getSelectedBlockAllowedBlocks,
+							defaultAllowedQuickSidebarBlocks,
+							updateDefaultAllowedQuickSidebarBlocks,
+							saveOptionToDatabase,
+							enableRearrange,
+						} }
+					/>
+				) ) }
+			{ enableRearrange && (
+				<DragAndDropComponent
+					initialItems={ sortedY }
+					updateDefaultAllowedQuickSidebarBlocks={
+						updateDefaultAllowedQuickSidebarBlocks
+					}
+					saveOptionToDatabase={ saveOptionToDatabase }
 				/>
-			) ) }
+			) }
 		</>
 	);
 };

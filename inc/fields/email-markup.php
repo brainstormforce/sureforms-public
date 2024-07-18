@@ -72,6 +72,7 @@ class Email_Markup extends Base {
 		$this->set_unique_slug();
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label, true );
+		$this->set_aria_described_by();
 	}
 
 	/**
@@ -87,7 +88,9 @@ class Email_Markup extends Base {
 				<div class="srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block">
 					<?php echo wp_kses_post( $this->label_markup ); ?>
 					<div class="srfm-block-wrap">
-						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="email" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>" aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
+						<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="email" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
+						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+						aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
 						<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 					</div>
 					<?php echo wp_kses_post( $this->help_markup ); ?>
@@ -97,7 +100,9 @@ class Email_Markup extends Base {
 					<div class="srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-confirm-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-confirm-block">
 						<?php echo wp_kses_post( $confirm_label_markup ); ?>
 						<div class="srfm-block-wrap">
-							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-confirm" type="email" name="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" id="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
+							<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>-confirm" type="email" name="<?php echo esc_attr( $this->unique_confirm_slug ); ?>" id="<?php echo esc_attr( $this->unique_confirm_slug ); ?>"
+							<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
+							aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" <?php echo wp_kses_post( $this->default_value_attr . ' ' . $this->placeholder_attr ); ?> >
 							<?php echo $this->error_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 						</div>
 						<?php echo wp_kses_post( $this->help_markup ); ?>

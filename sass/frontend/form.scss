@@ -4,6 +4,14 @@
 	padding: 0;
 	height: 100%;
 
+	// styles for core paragraph block
+	.srfm-custom-wp-paragraph {
+		width: 100% !important;
+		margin: 0 !important;
+		margin-bottom: 1.2em !important;
+		padding: 0 0.3em !important;
+	}
+
 	// Astra Addon site builder compatibility.
 	div[class^="astra-advanced-hook"] {
 		display: flex;
@@ -60,13 +68,19 @@
 		.srfm-block-single,
 		.srfm-submit-container,
 		.uagb-block,
-		.g-recaptcha:not( .srfm-submit-button, .srfm-custom-button ) {
+		.srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button ) {
 			padding: 0 0.3em;
 		}
 
-		.g-recaptcha[recaptcha-type="v2-checkbox"],
-		.cf-turnstile {
+		.srfm-captcha-container {
 			margin-bottom: 1.6em;
+		}
+		.srfm-validation-error {
+			font-size: 0.7em;
+			margin-top: 0.571em;
+			font-weight: 400;
+			line-height: normal;
+			color: var( --srfm-error-text-color );
 		}
 
 		.uagb-block {
@@ -114,6 +128,7 @@
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
+							color: var( --srfm-body-input-color );
 						}
 
 						input {
@@ -146,6 +161,7 @@
 						width: calc( 100% + 2px );
 						border: 1px solid var( --srfm-border-color );
 						border-top: none;
+						background-color: var( --srfm-base-background-color );
 					}
 				}
 
@@ -262,6 +278,7 @@
 
 		&.srfm-active {
 			display: block;
+			white-space: pre-wrap;
 		}
 
 		.srfm-success-box-header {

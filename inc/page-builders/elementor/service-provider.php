@@ -3,7 +3,7 @@
  * Elementor service provider.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.5
  */
 
 namespace SRFM\Inc\Page_Builders\Elementor;
@@ -21,7 +21,7 @@ class Service_Provider {
 	 *
 	 * Load Elementor integration.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function __construct() {
@@ -37,7 +37,7 @@ class Service_Provider {
 	/**
 	 * Elementor load scripts
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function load_scripts() {
@@ -57,7 +57,7 @@ class Service_Provider {
 	 * Elementor surecart categories register
 	 *
 	 * @param object $elements_manager Elementor category manager.
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function categories_registered( $elements_manager ) {
@@ -79,7 +79,7 @@ class Service_Provider {
 	 * Elementor widget register
 	 *
 	 * @param object $widgets_manager Elementor widget manager.
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function widget( $widgets_manager ) {

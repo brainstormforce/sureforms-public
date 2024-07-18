@@ -154,6 +154,7 @@ class Generate_Form_Markup {
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
+			$srfm_hcaptcha_site_key     = '';
 
 			$google_captcha_site_key = '';
 
@@ -166,6 +167,10 @@ class Generate_Form_Markup {
 			if ( is_array( $global_setting_options ) && 'cf-turnstile' === $security_type ) {
 				$srfm_cf_turnstile_site_key = isset( $global_setting_options['srfm_cf_turnstile_site_key'] ) ? $global_setting_options['srfm_cf_turnstile_site_key'] : '';
 				$srfm_cf_appearance_mode    = isset( $global_setting_options['srfm_cf_appearance_mode'] ) ? $global_setting_options['srfm_cf_appearance_mode'] : 'auto';
+			}
+
+			if ( is_array( $global_setting_options ) && 'hcaptcha' === $security_type ) {
+				$srfm_hcaptcha_site_key = isset( $global_setting_options['srfm_hcaptcha_site_key'] ) ? $global_setting_options['srfm_hcaptcha_site_key'] : '';
 			}
 
 			if ( is_array( $global_setting_options ) && 'g-recaptcha' === $security_type ) {
@@ -222,10 +227,11 @@ class Generate_Form_Markup {
 			$error_text_var             = Helper::get_meta_value( $id, '_srfm_field_error_color', true, '#DC2626' );
 			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
 
-			$font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px';
+			// $font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px'; -- Will be used in future.
+			$font_size_var          = '20px';
 			$media_query_mobile_var = '576px';
 			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
-			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
+			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) >= 0 ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
@@ -265,14 +271,14 @@ class Generate_Form_Markup {
 					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
 					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
 					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
-				}
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
-						// echo custom css on page/post.
+					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
 						echo wp_kses_post( $custom_css );
-						endif;
+					endif;
 					?>
+				}
 			</style>
 			<?php
 			if ( 'sureforms_form' !== $current_post_type && true === $show_title_current_page ) {
@@ -331,14 +337,14 @@ class Generate_Form_Markup {
 				}
 				?>
 				<?php if ( 0 !== $block_count && ! $is_inline_button || $is_page_break ) : ?>
-
+					<div class="srfm-captcha-container">
 					<?php if ( is_string( $google_captcha_site_key ) && ! empty( $google_captcha_site_key ) && 'g-recaptcha' === $security_type ) : ?>
 
 						<?php if ( 'v2-checkbox' === $recaptcha_version ) : ?>
 							<?php
 							wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', [], SRFM_VER, true );
 							?>
-							<div class='g-recaptcha'  recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
+							<div class='g-recaptcha' data-callback="onSuccess" recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>" data-sitekey="<?php echo esc_attr( strval( $google_captcha_site_key ) ); ?>" ></div>
 						<?php endif; ?>
 
 						<?php if ( 'v2-invisible' === $recaptcha_version ) : ?>
@@ -353,6 +359,35 @@ class Generate_Form_Markup {
 						<?php endif; ?>
 
 					<?php endif; ?>
+					<?php
+
+					if ( 'cf-turnstile' === $security_type ) :
+						// Cloudflare Turnstile script.
+						wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+							SRFM_SLUG . '-cf-turnstile',
+							'https://challenges.cloudflare.com/turnstile/v0/api.js',
+							[],
+							null,
+							[
+								false,
+								'defer' => true,
+							]
+						);
+						?>
+						<div id="srfm-cf-sitekey" class="cf-turnstile" data-callback="onSuccess" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
+						<?php
+					endif;
+
+					if ( 'hcaptcha' === $security_type ) :
+						// hCaptcha script.
+						wp_enqueue_script( 'hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, [ 'strategy' => 'defer' ] ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+						?>
+						<div id="srfm-hcaptcha-sitekey" data-callback="onSuccess" class="h-captcha" data-sitekey="<?php echo esc_attr( $srfm_hcaptcha_site_key ); ?>"></div>
+						<?php
+					endif;
+					?>
+					<div class="srfm-validation-error" id="captcha-error" style="display: none;"><?php echo esc_attr__( 'Please verify that you are not a robot.', 'sureforms' ); ?></div>
+					</div>
 
 					<?php
 					if ( $is_page_break ) {
@@ -362,26 +397,7 @@ class Generate_Form_Markup {
 
 					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
 						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
-						<?php
-
-						if ( 'cf-turnstile' === $security_type ) :
-							// Cloudflare Turnstile script.
-							wp_enqueue_script( // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-								SRFM_SLUG . '-cf-turnstile',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								[],
-								null,
-								[
-									false,
-									'defer' => true,
-								]
-							);
-							?>
-							<div id="srfm-cf-sitekey" class="cf-turnstile" data-theme="<?php echo esc_attr( $srfm_cf_appearance_mode ); ?>" data-sitekey="<?php echo esc_attr( $srfm_cf_turnstile_site_key ); ?>"></div>
-							<?php
-						endif;
-						?>
-						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button ' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
+						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
 							data-sitekey="<?php echo esc_attr( $google_captcha_site_key ); ?>"
@@ -397,7 +413,7 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
+			<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );

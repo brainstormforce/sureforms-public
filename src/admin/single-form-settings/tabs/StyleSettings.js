@@ -71,10 +71,11 @@ function StyleSettings( props ) {
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
 	function submitButtonInherit() {
-		const inheritClass = 'wp-block-button__link';
+		const inheritClass = [ 'srfm-btn-alignment', 'wp-block-button__link' ];
 		const customClass = [
 			'srfm-button',
 			'srfm-submit-button',
+			'srfm-btn-alignment',
 			'srfm-btn-bg-color',
 		];
 		const btnClass =
@@ -89,7 +90,7 @@ function StyleSettings( props ) {
 			) {
 				submitBtn.classList.remove( ...customClass );
 				submitBtnCtn.classList.add( 'wp-block-button' );
-				submitBtn.classList.add( btnClass );
+				submitBtn.classList.add( ...btnClass );
 			} else {
 				submitBtn.classList.remove( inheritClass );
 				submitBtnCtn.classList.remove( 'wp-block-button' );
@@ -159,7 +160,7 @@ function StyleSettings( props ) {
 		// Input border radius
 		root.style.setProperty(
 			'--srfm-border-radius',
-			sureformsKeys._srfm_input_border_radius
+			sureformsKeys._srfm_input_border_radius >= 0
 				? sureformsKeys._srfm_input_border_radius + 'px'
 				: '4px'
 		);
@@ -425,7 +426,8 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 
-				<p className="components-base-control__help" />
+				{ /* Will be impleted properly later */ }
+				{ /* <p className="components-base-control__help" />
 				<Range
 					label={ __( 'Font Size', 'sureforms' ) }
 					value={ sureformsKeys._srfm_fontsize }
@@ -440,7 +442,7 @@ function StyleSettings( props ) {
 						updateMeta( '_srfm_fontsize', value )
 					}
 					isFormSpecific={ true }
-				/>
+				/> */ }
 				{ sureformsKeys._srfm_show_labels && (
 					<>
 						<p className="components-base-control__help" />

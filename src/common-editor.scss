@@ -526,7 +526,6 @@ label.wp-block-srfm-blockquote__via-label svg {
 // Select control text going out of screen.
 
 .srfm-inspector-tab .components-select-control .components-input-control__container .components-select-control__input {
-	text-transform: capitalize;
 	line-height: 30px;
 }
 
@@ -774,6 +773,7 @@ button.components-button.srfm-review-select-btn.is-secondary {
 .block-editor .interface-interface-skeleton__footer {
 	padding: 5px;
 	border-top: 1px solid #e9e9e9;
+	z-index: 999999;
 
 	.block-editor-block-breadcrumb {
 		li {

@@ -34,6 +34,12 @@ const SingleFormSettingsPopup = ( props ) => {
 		[
 			/*parent tabs linked to nav*/
 			{
+				id: 'form_confirmation',
+				title: __( 'Form Confirmation', 'sureforms' ),
+				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
+				component: <FormConfirmSetting toast={ toast } />,
+			},
+			{
 				id: 'email_notification',
 				title: __( 'Email Notification', 'sureforms' ),
 				icon: <MdOutlineMailOutline size={ 20 } />,
@@ -43,12 +49,6 @@ const SingleFormSettingsPopup = ( props ) => {
 						toast={ toast }
 					/>
 				),
-			},
-			{
-				id: 'form_confirmation',
-				title: __( 'Form Confirmation', 'sureforms' ),
-				icon: <MdOutlineCheckCircleOutline size={ 20 } />,
-				component: <FormConfirmSetting toast={ toast } />,
 			},
 			{
 				id: 'compliance_settings',

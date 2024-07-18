@@ -137,6 +137,57 @@ class Form_Submit {
 		return json_decode( wp_remote_retrieve_body( $response ), true );
 	}
 
+	/**
+	 * Validate hCaptcha token
+	 *
+	 * @param string       $secret_key hCaptcha token.
+	 * @param string|false $response Response.
+	 * @param string|false $remote_ip Remote IP.
+	 * @since 0.0.5
+	 * @return array<mixed>|mixed Result of the validation.
+	 */
+	public static function validate_hcaptcha_token( $secret_key, $response, $remote_ip ) {
+
+		if ( empty( $secret_key ) || ! is_string( $secret_key ) ) {
+			return [
+				'success' => false,
+				'error'   => 'hCaptcha secret key is invalid.',
+			];
+		}
+
+		if ( empty( $response ) ) {
+			return [
+				'success' => false,
+				'error'   => 'hCaptcha response is missing.',
+			];
+		}
+
+		$body = [
+			'secret'   => $secret_key,
+			'response' => $response,
+			'remoteip' => $remote_ip,
+		];
+
+		$url = 'https://api.hcaptcha.com/siteverify';
+
+		$args = [
+			'body'    => $body,
+			'timeout' => 15,
+		];
+
+		$response = wp_remote_post( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			return [
+				'success' => false,
+				'error'   => $error_message,
+			];
+		}
+
+		return json_decode( wp_remote_retrieve_body( $response ), true );
+	}
+
 
 	/**
 	 * Handle Form Submission
@@ -158,7 +209,8 @@ class Form_Submit {
 			);
 		}
 
-		$form_data = Helper::sanitize_recursively( 'sanitize_text_field', $request->get_params() );
+		$form_data = Helper::sanitize_by_field_type( $request->get_params() );
+
 		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
 			wp_send_json_error( __( 'Form data is not found.', 'sureforms' ) );
 		}
@@ -262,6 +314,32 @@ class Form_Submit {
 			if ( is_array( $turnstile_validation_result ) && isset( $turnstile_validation_result['success'] ) && false === $turnstile_validation_result['success'] ) {
 				$error_message = isset( $turnstile_validation_result['error'] ) ? $turnstile_validation_result['error'] : 'Cloudflare Turnstile validation failed.';
 				return new \WP_Error( 'cf_turnstile_error', $error_message, [ 'status' => 403 ] );
+			}
+		}
+
+		if ( 'hcaptcha' === $security_type ) {
+			$srfm_hcaptcha_secret_key = is_array( $global_setting_options ) && isset( $global_setting_options['srfm_hcaptcha_secret_key'] ) ? Helper::get_string_value( $global_setting_options['srfm_hcaptcha_secret_key'] ) : '';
+			$hcaptcha_response        = ! empty( $form_data['h-captcha-response'] ) ? $form_data['h-captcha-response'] : false;
+
+			// if gdpr is enabled then set remote ip to empty.
+			$compliance = get_post_meta( Helper::get_integer_value( $current_form_id ), '_srfm_compliance', true );
+			$gdpr       = false;
+
+			if ( is_array( $compliance ) && is_array( $compliance[0] ) ) {
+				$gdpr = ! empty( $compliance[0]['gdpr'] ) ? $compliance[0]['gdpr'] : false;
+			}
+
+			// check if ip logging is disabled in global settings then set remote ip to empty.
+			$gb_general_settings_options = get_option( 'srfm_general_settings_options' );
+			$srfm_ip_log                 = is_array( $gb_general_settings_options ) && isset( $gb_general_settings_options['srfm_ip_log'] ) ? $gb_general_settings_options['srfm_ip_log'] : '';
+
+			$remote_ip                  = ( $gdpr ) || ( ! $srfm_ip_log ) ? '' : ( isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '' );
+			$hcaptcha_validation_result = self::validate_hcaptcha_token( $srfm_hcaptcha_secret_key, $hcaptcha_response, $remote_ip );
+
+			// If the hcaptcha validation fails, return an error.
+			if ( is_array( $hcaptcha_validation_result ) && isset( $hcaptcha_validation_result['success'] ) && false === $hcaptcha_validation_result['success'] ) {
+				$error_message = isset( $hcaptcha_validation_result['error'] ) ? $hcaptcha_validation_result['error'] : 'hCaptcha validation failed.';
+				return new \WP_Error( 'hcaptcha_error', $error_message, [ 'status' => 403 ] );
 			}
 		}
 

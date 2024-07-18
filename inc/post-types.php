@@ -32,6 +32,7 @@ class Post_Types {
 	 * @since  0.0.1
 	 */
 	public function __construct() {
+		$this->restrict_unwanted_insertions();
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_filter( 'manage_sureforms_form_posts_columns', [ $this, 'custom_form_columns' ] );
@@ -46,7 +47,7 @@ class Post_Types {
 		add_action( 'admin_head', [ $this, 'remove_entries_publishing_actions' ] );
 		add_filter( 'post_row_actions', [ $this, 'modify_entries_list_row_actions' ], 10, 2 );
 		add_filter( 'post_updated_messages', [ $this, 'entries_updated_message' ] );
-		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ] );
+		add_filter( 'bulk_actions-edit-sureforms_form', [ $this, 'register_modify_bulk_actions' ], 99 );
 		add_action( 'admin_notices', [ $this, 'import_form_popup' ] );
 		add_action( 'admin_bar_menu', [ $this, 'remove_admin_bar_menu_item' ], 80, 1 );
 		add_action( 'template_redirect', [ $this, 'srfm_instant_form_redirect' ] );}
@@ -72,7 +73,7 @@ class Post_Types {
 		echo '<img src="' . esc_url( SRFM_URL . '/images/' . $image . '.svg' ) . '">';
 
 		if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
-			echo '<a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-primary">' . esc_html( $button_text ) . '</div></a>';
+			echo '<div class="sureforms-add-new-form-container"><a class="sf-add-new-form-button" href="' . esc_url( $button_url ) . '"><div class="button-secondary">' . esc_html( $button_text ) . '</div></a></div>';
 		}
 
 		echo '</div>';
@@ -305,7 +306,22 @@ class Post_Types {
 	 * @return array<mixed> $bulk_actions Modified action links.
 	 */
 	public function register_modify_bulk_actions( $bulk_actions ) {
-		$bulk_actions['export'] = __( 'Export', 'sureforms' );
+
+		$white_listed_actions = [
+			'edit',
+			'trash',
+			'delete',
+			'untrash',
+		];
+
+		// remove all actions except white listed actions.
+		$bulk_actions = array_intersect_key( $bulk_actions, array_flip( $white_listed_actions ) );
+
+		// Add export action only if edit and trash actions are present in bulk actions.
+		if ( isset( $bulk_actions['edit'] ) && isset( $bulk_actions['trash'] ) ) {
+			$bulk_actions['export'] = __( 'Export', 'sureforms' );
+		}
+
 		return $bulk_actions;
 	}
 
@@ -832,7 +848,7 @@ class Post_Types {
 							<td><a target="_blank" href="<?php echo esc_url( $value ); ?>"><?php echo esc_url( $value ); ?></a></td>
 						<?php endif; ?>
 					<?php else : ?>
-						<td><?php echo wp_kses_post( $value ); ?></td>
+						<td><?php echo false !== strpos( $value, PHP_EOL ) ? wp_kses_post( wpautop( $value ) ) : wp_kses_post( $value ); ?></td>
 					<?php endif; ?>
 				</tr>
 				<?php endforeach; ?>
@@ -1168,4 +1184,55 @@ class Post_Types {
 		}
 	}
 
+	/**
+	 * Restrict interference of other plugins with SureForms.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	private function restrict_unwanted_insertions() {
+		// Restrict RankMath columns and filters in edit page.
+		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
+		// Restrict RankMath metaboxes in edit page.
+		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
+
+		// Restrict Yoast columns.
+		add_filter( 'wpseo_accessible_post_types', [ $this, 'unset_sureforms_post_type' ] );
+		add_filter( 'wpseo_metabox_prio', '__return_false' );
+
+		// Restrict AIOSEO columns.
+		add_filter( 'aioseo_public_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Restrict RankMath meta boxes in edit page.
+	 *
+	 * @since 0.0.5
+	 * @return void
+	 */
+	public function restrict_data() {
+		add_filter( 'rank_math/excluded_post_types', [ $this, 'unset_sureforms_post_type' ] );
+	}
+
+	/**
+	 * Remove SureForms post type from RankMath and Yoast.
+	 *
+	 * @param array<mixed> $post_types Post types.
+	 * @since 0.0.5
+	 * @return array<mixed> $post_types Modified post types.
+	 */
+	public function unset_sureforms_post_type( $post_types ) {
+		$filtered_post_types = array_filter(
+			$post_types,
+			function( $post_type ) {
+				if ( is_array( $post_type ) && isset( $post_type['name'] ) ) {
+					return SRFM_FORMS_POST_TYPE !== $post_type['name'];
+				} else {
+					return SRFM_FORMS_POST_TYPE !== $post_type;
+				}
+			}
+		);
+
+		return $filtered_post_types;
+	}
 }

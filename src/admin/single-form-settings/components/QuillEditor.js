@@ -1,18 +1,25 @@
-import ReactQuill, { Quill } from 'react-quill';
-import EditorToolbar, { modules, formats } from './email-settings/EditorToolbar';
-import { TabPanel } from '@wordpress/components';
 import SmartTagList from '@Components/misc/SmartTagList';
 import svgIcons from '@Image/single-form-logo.json';
-import parse from 'html-react-parser';
-import { __ } from '@wordpress/i18n';
+import { TabPanel } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import parse from 'html-react-parser';
+import ReactQuill, { Quill } from 'react-quill';
+import EditorToolbar, {
+	formats,
+	modules,
+} from './email-settings/EditorToolbar';
 
 const Editor = ( {
 	handleContentChange,
 	content,
+	allData = false,
 } ) => {
 	const dropdownIcon = parse( svgIcons.downArrow );
+
 	const quillRef = useRef( null );
+	const textAreaRef = useRef( null );
+
 	const editorTabs = [
 		{
 			name: 'srfm-editor-visual',
@@ -26,22 +33,69 @@ const Editor = ( {
 		},
 	];
 	const activeTabRef = useRef( 'srfm-editor-visual' );
-	const insertTextAtEnd = ( text ) => {
+
+	const visualEditorInsertText = ( text ) => {
 		const quillInstance = quillRef.current.getEditor();
-		const length = quillInstance.getLength();
-		quillInstance.insertText( length - 1, text );
+		let { index } = quillInstance.getSelection( true ); // Get the current cursor position.
+
+		if ( ! index ) {
+			/**
+			 * If we are here, then it could mean editor is not in focus i.e. User did not click anywhere on the editor.
+			 * So, in this scenario, add the dynamic text at the end of the content.
+			 */
+			const length = quillInstance.getLength();
+			quillInstance.setSelection( length, 0 );
+
+			index = length - 1;
+		}
+
+		quillInstance.insertText( index, text );
 	};
 
 	const insertSmartTag = ( tag ) => {
 		if ( 'srfm-editor-visual' === activeTabRef.current ) {
-			insertTextAtEnd( tag );
+			visualEditorInsertText( tag );
 		} else {
-			handleContentChange( content + tag );
+			const textAreaInstance = textAreaRef.current;
+
+			// Get the cursor position.
+			const startPosition = textAreaInstance.selectionStart;
+			const endPosition = textAreaInstance.selectionEnd;
+
+			if ( ! startPosition && ! endPosition ) {
+				/**
+				 * If we are here, then it could mean editor is not in focus i.e. User did not click anywhere on the editor.
+				 * So, in this scenario, add the dynamic text at the end of the content.
+				 */
+				return handleContentChange( content + tag );
+			}
+
+			// Get the current text value.
+			const textValue = textAreaInstance.value;
+
+			// Insert the text at the cursor position.
+			textAreaInstance.value =
+				textValue.substring( 0, startPosition ) +
+				tag +
+				textValue.substring( endPosition );
+
+			// Update the cursor position to be after the inserted text.
+			textAreaInstance.selectionStart = textAreaInstance.selectionEnd =
+				startPosition + tag.length;
+
+			// Update the state.
+			handleContentChange( textAreaInstance.value );
 		}
 	};
 
-	const genericSmartTags = window.srfm_block_data?.smart_tags_array ? Object.entries( window.srfm_block_data.smart_tags_array ) : [];
+	const genericSmartTags = window.srfm_block_data?.smart_tags_array
+		? Object.entries( window.srfm_block_data.smart_tags_array )
+		: [];
 	const formSmartTags = window.sureforms?.formSpecificSmartTags ?? [];
+	let formSmartTagsAllData = {};
+	if ( allData ) {
+		formSmartTagsAllData = [ ...formSmartTags, [ '{all_data}', __( 'All Data', 'sureforms' ) ] ];
+	}
 
 	// Add inline style instead of classes.
 	Quill.register( Quill.import( 'attributors/style/align' ), true );
@@ -55,7 +109,7 @@ const Editor = ( {
 				tagsArray={
 					[
 						{
-							tags: formSmartTags,
+							tags: allData ? formSmartTagsAllData : formSmartTags,
 							label: __( 'Form input tags', 'sureforms' ),
 						},
 						{
@@ -66,11 +120,10 @@ const Editor = ( {
 
 				}
 				setTargetData={ insertSmartTag }
-
 			/>
 			<TabPanel
 				activeClass="srfm-active-editor"
-				onSelect={ ( tabName ) => activeTabRef.current = tabName }
+				onSelect={ ( tabName ) => ( activeTabRef.current = tabName ) }
 				tabs={ editorTabs }
 				initialTabName={ activeTabRef.current }
 			>
@@ -86,9 +139,7 @@ const Editor = ( {
 										modules={ modules }
 										value={ content }
 										onChange={ ( newContent ) => {
-											handleContentChange(
-												newContent
-											);
+											handleContentChange( newContent );
 										} }
 									/>
 								</div>
@@ -97,13 +148,13 @@ const Editor = ( {
 							return (
 								<textarea
 									id="srfm-editor-html"
+									ref={ textAreaRef }
 									onChange={ ( e ) =>
 										handleContentChange( e.target.value )
 									}
 									className="srfm-editor-textarea"
 									value={ content }
-								>
-								</textarea>
+								></textarea>
 							);
 						default:
 							return null;

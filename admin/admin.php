@@ -183,8 +183,13 @@ class Admin {
 	 */
 	public function add_settings_link( $links, $file ) {
 		if ( 'sureforms/sureforms.php' === $file ) {
-			$settings_link = '<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '">' . esc_html__( 'Settings', 'sureforms' ) . '</a>';
-			array_push( $links, $settings_link );
+			$plugin_links = apply_filters(
+				'sureforms_plugin_action_links',
+				[
+					'sureforms_settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=sureforms_form_settings&tab=general-settings' ) ) . '">' . esc_html__( 'Settings', 'sureforms' ) . '</a>',
+				]
+			);
+			$links        = array_merge( $plugin_links, $links );
 		}
 		return $links;
 	}
@@ -387,7 +392,7 @@ class Admin {
 		}
 		if ( 'edit-' . SRFM_FORMS_POST_TYPE === $current_screen->id ) {
 			wp_enqueue_script( SRFM_SLUG . '-form-archive', $js_uri . 'form-archive' . $file_prefix . '.js', [], SRFM_VER, true );
-			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [], SRFM_VER, true );
+			wp_enqueue_script( SRFM_SLUG . '-export', $js_uri . 'export' . $file_prefix . '.js', [ 'wp-i18n' ], SRFM_VER, true );
 			wp_localize_script(
 				SRFM_SLUG . '-export',
 				SRFM_SLUG . '_export',

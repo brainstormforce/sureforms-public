@@ -3,7 +3,7 @@
  * Bricks SureForms service provider.
  *
  * @package sureforms.
- * @since x.x.x
+ * @since 0.0.5
  */
 
 namespace SRFM\Inc\Page_Builders\Bricks;
@@ -30,7 +30,7 @@ class Service_Provider {
 	/**
 	 * Register SureForms widget.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return void
 	 */
 	public function widget() {
@@ -48,7 +48,7 @@ class Service_Provider {
 	 * Filter to add translatable string to the builder.
 	 *
 	 * @param array<string> $i18n Array of translatable strings.
-	 * @since x.x.x
+	 * @since 0.0.5
 	 * @return array<string> $i18n
 	 */
 	public function bricks_translatable_strings( $i18n ) {

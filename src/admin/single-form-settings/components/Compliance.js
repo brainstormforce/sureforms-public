@@ -44,7 +44,7 @@ const Compliance = ( { complianceData } ) => {
 								'When enabled this form will not store User IP, Browser Name and the Device Name in the Entries.',
 								'sureforms'
 							) }
-							checked={ complianceData[ 0 ].gdpr }
+							checked={ complianceData[ 0 ]?.gdpr }
 							onChange={ ( value ) =>
 								handleToggle( {
 									id: 'gdpr',
@@ -52,10 +52,10 @@ const Compliance = ( { complianceData } ) => {
 								} )
 							}
 						/>
-						{ complianceData[ 0 ].gdpr && (
+						{ complianceData[ 0 ]?.gdpr && (
 							<ToggleControl
 								label={ __(
-									'Delete entry data after form submission',
+									'Never store entry data after form submission',
 									'sureforms'
 								) }
 								help={ __(
@@ -63,7 +63,7 @@ const Compliance = ( { complianceData } ) => {
 									'sureforms'
 								) }
 								checked={
-									complianceData[ 0 ].do_not_store_entries
+									complianceData[ 0 ]?.do_not_store_entries
 								}
 								onChange={ ( value ) =>
 									handleToggle( {
@@ -73,8 +73,8 @@ const Compliance = ( { complianceData } ) => {
 								}
 							/>
 						) }
-						{ ! complianceData[ 0 ].do_not_store_entries &&
-							complianceData[ 0 ].gdpr && (
+						{ ! complianceData[ 0 ]?.do_not_store_entries &&
+							complianceData[ 0 ]?.gdpr && (
 							<>
 								<ToggleControl
 									label={ __(
@@ -87,7 +87,7 @@ const Compliance = ( { complianceData } ) => {
 									) }
 									checked={
 										complianceData[ 0 ]
-											.auto_delete_entries
+											?.auto_delete_entries
 									}
 									onChange={ ( value ) =>
 										handleToggle( {
@@ -97,7 +97,7 @@ const Compliance = ( { complianceData } ) => {
 									}
 								/>
 								{ complianceData[ 0 ]
-									.auto_delete_entries && (
+									?.auto_delete_entries && (
 									<div>
 										<label className="components-flex-item components-flex-block components-toggle-control__label">
 											{ __(
@@ -114,7 +114,7 @@ const Compliance = ( { complianceData } ) => {
 											} }
 											value={
 												complianceData[ 0 ]
-													.auto_delete_days
+													?.auto_delete_days
 											}
 											help={ __(
 												'Entries older than the days set will be deleted automatically.',

@@ -109,7 +109,8 @@ function importForm() {
 	const importContainer = document.querySelector( '.srfm-import-wrap' );
 	const impSubmitBtn = document.querySelector( '#import-form-submit' );
 	if ( importBtn ) {
-		importBtn.addEventListener( 'click', () => {
+		importBtn.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
 			if ( importContainer ) {
 				importContainer.classList.toggle( 'srfm-show' );
 			}
@@ -124,14 +125,20 @@ function importForm() {
 }
 
 function appendImportBtn() {
-	const element = document.querySelector( '.wrap .page-title-action' );
-	if ( element ) {
-		const newElement = document.createElement( 'button' );
-		newElement.className =
-			'button button-secondary button-large srfm-import-btn';
-		newElement.textContent = 'Import Form';
-		element.parentNode.insertBefore( newElement, element.nextSibling );
+	// checks whether current page is initial UI where no forms exists.
+	let attachmentElement = document.querySelector(
+		'.sureforms-add-new-form-container'
+	);
+
+	// Choose selector for form listing page.
+	if ( ! attachmentElement ) {
+		attachmentElement = document.querySelector( '#posts-filter' );
 	}
+	const newElement = document.createElement( 'button' );
+
+	newElement.className = 'button button-secondary srfm-import-btn';
+	newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
+	attachmentElement.insertBefore( newElement, attachmentElement.firstChild );
 }
 document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
