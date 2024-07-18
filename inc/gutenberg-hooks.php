@@ -73,8 +73,6 @@ class Gutenberg_Hooks {
 				'srfm/address-compact',
 				'srfm/dropdown',
 				'srfm/multi-choice',
-				'srfm/radio',
-				'srfm/submit',
 				'srfm/url',
 			]
 		);
@@ -110,8 +108,6 @@ class Gutenberg_Hooks {
 				'srfm/address-compact',
 				'srfm/dropdown',
 				'srfm/multi-choice',
-				'srfm/radio',
-				'srfm/submit',
 				'srfm/url',
 				'srfm/separator',
 				'srfm/icon',
