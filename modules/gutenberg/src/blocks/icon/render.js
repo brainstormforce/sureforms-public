@@ -15,12 +15,14 @@ const Render = ( props ) => {
 	} = attributes;
 
 	const extraProps = {
-		role: iconAccessabilityMode === 'svg' ? 'graphics-symbol' : 'image',
 		...( iconAccessabilityMode !== 'presentation' && {
+			role: iconAccessabilityMode === 'svg' ? 'graphics-symbol' : 'image',
 			'aria-label': iconAccessabilityDesc,
 		} ),
 		'aria-hidden': iconAccessabilityMode === 'presentation',
 	};
+
+	console.log( 'Render -> extraProps', extraProps );
 
 	const iconSvg = icon ? icon : 'circle-check';
 	const iconHtml = renderSVG( iconSvg, setAttributes, extraProps );
