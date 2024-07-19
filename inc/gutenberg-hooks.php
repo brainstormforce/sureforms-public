@@ -45,7 +45,6 @@ class Gutenberg_Hooks {
 		'srfm/gdpr',
 		'srfm/phone',
 		'srfm/address',
-		'srfm/address-compact',
 		'srfm/dropdown',
 		'srfm/multi-choice',
 		'srfm/radio',
@@ -108,7 +107,6 @@ class Gutenberg_Hooks {
 				'srfm/gdpr',
 				'srfm/phone',
 				'srfm/address',
-				'srfm/address-compact',
 				'srfm/dropdown',
 				'srfm/multi-choice',
 				'srfm/radio',
@@ -119,7 +117,7 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
-
+				'core/paragraph',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
@@ -135,10 +133,18 @@ class Gutenberg_Hooks {
 	 * @since 0.0.1
 	 */
 	public function register_block_categories( $categories ) {
+		$screen = get_current_screen();
+
+		if ( $screen && SRFM_FORMS_POST_TYPE === $screen->post_type ) {
+			$title = esc_html__( 'General Fields', 'sureforms' );
+		} else {
+			$title = esc_html__( 'SureForms', 'sureforms' );
+		}
+
 		$custom_categories = [
 			[
 				'slug'  => 'sureforms',
-				'title' => esc_html__( 'General Fields', 'sureforms' ),
+				'title' => $title,
 			],
 			[
 				'slug'  => 'sureforms-pro',
@@ -148,6 +154,7 @@ class Gutenberg_Hooks {
 
 		return array_merge( $custom_categories, $categories );
 	}
+
 
 	/**
 	 * Register our block patterns.
@@ -280,18 +287,17 @@ class Gutenberg_Hooks {
 			apply_filters(
 				'srfm_block_preview_images',
 				[
-					'input_preview'           => SRFM_URL . 'images/field-previews/input.svg',
-					'email_preview'           => SRFM_URL . 'images/field-previews/email.svg',
-					'url_preview'             => SRFM_URL . 'images/field-previews/url.svg',
-					'textarea_preview'        => SRFM_URL . 'images/field-previews/textarea.svg',
-					'multi_choice_preview'    => SRFM_URL . 'images/field-previews/multi-choice.svg',
-					'checkbox_preview'        => SRFM_URL . 'images/field-previews/checkbox.svg',
-					'number_preview'          => SRFM_URL . 'images/field-previews/number.svg',
-					'phone_preview'           => SRFM_URL . 'images/field-previews/phone.svg',
-					'dropdown_preview'        => SRFM_URL . 'images/field-previews/dropdown.svg',
-					'address_preview'         => SRFM_URL . 'images/field-previews/address.svg',
-					'address_compact_preview' => SRFM_URL . 'images/field-previews/address-compact.svg',
-					'sureforms_preview'       => SRFM_URL . 'images/field-previews/sureforms.svg',
+					'input_preview'        => SRFM_URL . 'images/field-previews/input.svg',
+					'email_preview'        => SRFM_URL . 'images/field-previews/email.svg',
+					'url_preview'          => SRFM_URL . 'images/field-previews/url.svg',
+					'textarea_preview'     => SRFM_URL . 'images/field-previews/textarea.svg',
+					'multi_choice_preview' => SRFM_URL . 'images/field-previews/multi-choice.svg',
+					'checkbox_preview'     => SRFM_URL . 'images/field-previews/checkbox.svg',
+					'number_preview'       => SRFM_URL . 'images/field-previews/number.svg',
+					'phone_preview'        => SRFM_URL . 'images/field-previews/phone.svg',
+					'dropdown_preview'     => SRFM_URL . 'images/field-previews/dropdown.svg',
+					'address_preview'      => SRFM_URL . 'images/field-previews/address.svg',
+					'sureforms_preview'    => SRFM_URL . 'images/field-previews/sureforms.svg',
 				]
 			)
 		);

@@ -160,7 +160,7 @@ function StyleSettings( props ) {
 		// Input border radius
 		root.style.setProperty(
 			'--srfm-border-radius',
-			sureformsKeys._srfm_input_border_radius
+			sureformsKeys._srfm_input_border_radius >= 0
 				? sureformsKeys._srfm_input_border_radius + 'px'
 				: '4px'
 		);

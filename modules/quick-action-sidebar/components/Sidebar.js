@@ -74,7 +74,6 @@ const Sidebar = () => {
 	};
 	// Function to enable re-arrange
 	const enableRearrange = () => {
-		console.log( 'enableRearrange' );
 		setSorting( true );
 	};
 

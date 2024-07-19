@@ -9,7 +9,6 @@ import * as multiChoice from '@Blocks/multi-choice';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
-import * as addressCompact from '@Blocks/address-compact';
 import * as url from '@Blocks/url';
 import * as inlineButton from '@Blocks/inline-button';
 import { registerBlocks } from '@Blocks/register-block';
@@ -35,12 +34,17 @@ const registerBlock = [
 	phone,
 	select,
 	address,
-	addressCompact,
 	inlineButton,
 ];
 
 if ( 'sureforms_form' === srfm_block_data?.current_screen?.id ) {
 	registerBlocks( registerBlock );
+	// change the category of the core paragraph block in SureForms post type.
+	wp.hooks.addFilter(
+		'blocks.registerBlockType',
+		'srfm/filter-paragraph-category',
+		changeCoreParagraphCategory
+	);
 } else {
 	registerBlocks( [ sfForm ] );
 }
@@ -163,3 +167,21 @@ wp.hooks.addFilter(
 	'srfm/with-toolbar-button',
 	withToolbarButton
 );
+
+function changeCoreParagraphCategory( settings, name ) {
+	if ( name === 'core/paragraph' ) {
+		return {
+			...settings,
+			category: 'sureforms',
+			// modify additional classnames to add a default class to target in the frontend.
+			attributes: {
+				...settings.attributes,
+				className: {
+					type: 'string',
+					default: 'srfm-custom-wp-paragraph',
+				},
+			},
+		};
+	}
+	return settings;
+}
