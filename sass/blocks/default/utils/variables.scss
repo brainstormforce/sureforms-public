@@ -43,6 +43,16 @@
 	--srfm-row-gap-between-fields: #{calc_rem( 0.75 )};
 	--srfm-gap-below-address-label: #{calc_rem( 0.75 )};
 
+	// Dropdown Variables.
+	--srfm-dropdown-font-size: 0.875em;
+	--srfm-dropdown-font-weight: 400;
+	--srfm-dropdown-gap-between-input-menu: #{calc_rem( 0.25 )};
+	--srfm-dropdown-badge-gap: #{calc_rem( 0.375 )};
+	--srfm-dropdown-badge-padding: #{calc_rem( 0.125 ) calc_rem( 0.375 )};
+	--srfm-dropdown-menu-padding: #{calc_rem( 0.375 )};
+	--srfm-dropdown-menu-icon-gap: #{calc_rem( 0.5 )};
+	--srfm-dropdown-option-padding: #{calc_rem( 0.5 ) calc_rem( 0.75 )};
+
 	// Input field variables.
 	--srfm-input-height: #{calc_rem( 2.5 )};
 	--srfm-input-field-padding: #{calc_rem( 0.625 ) calc_rem( 0.75 )};

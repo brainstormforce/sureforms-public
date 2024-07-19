@@ -1,0 +1,139 @@
+.srfm-form-container {
+	.srfm-form {
+		.srfm-block {
+			.srfm-dropdown-common-wrap {
+				display: inline-block;
+				width: 100%;
+				.srfm-dropdown-common {
+					border-radius: var( --srfm-input-field-border-radius ) !important;
+					transition: 0.3s ease-out;
+					
+					// Add the glow and border color to the dropdown when it is focused.
+					&.input-active {
+						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+						border-color: transparent;
+						.ts-control {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+						// Hide the caret color if the dropdown is focused and max options are selected.
+						// &.full.has-items {
+						&.full {
+							caret-color: transparent;
+						}
+					}
+
+					// Common styles for single and multi selection.
+					.item {
+						display: flex;
+						align-items: center;
+						gap: var( --srfm-dropdown-badge-gap );
+					}
+
+					// In case of multiple selection, display the selected options as badges.
+					&.multi .item {
+						border-radius: 4px;
+						margin: 0;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						background-color: #1e1e1e0d;
+						padding: var( --srfm-dropdown-badge-padding ) !important;
+
+						svg {
+							width: 12px;
+							height: 12px;
+						}
+
+						.remove {
+							color: red;
+							border: none;
+							padding: 0;
+							margin-left: 0;
+							&:hover {
+								background: initial; // Added to remove the hover effect.
+							}
+						}
+					}
+
+					.ts-control {
+						@include srfm-input-common-styles();
+						@include srfm-dropdown-arrow;
+						height: auto;
+						transition: 0.3s ease-out;
+						gap: var( --srfm-dropdown-badge-gap );
+						min-height: var( --srfm-input-height );
+						padding: var(--srfm-input-field-padding)!important;
+
+						&:hover {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+
+						input {
+							line-height: normal;
+							font-size: inherit;
+							height: auto;
+							width: auto;
+							min-width: auto;
+
+							&::placeholder {
+								color: var( --srfm-placeholder-color );
+								opacity: 1;
+								font-size: 1em;
+							}
+
+							&:placeholder-shown {
+								text-overflow: ellipsis;
+							}
+						}
+					}
+
+					// Dropdown menu stylings.
+					.ts-dropdown {
+						padding: var( --srfm-dropdown-menu-padding );
+						margin-top: var( --srfm-dropdown-gap-between-input-menu );
+						border-radius: var( --srfm-input-field-border-radius );
+						font-size: var( --srfm-dropdown-font-size );
+						font-weight: var( --srfm-dropdown-font-weight );
+						.option {
+							display: flex;
+							align-items: center;
+							border-radius: 4px;
+							gap: var( --srfm-dropdown-menu-icon-gap );
+							padding: var( --srfm-dropdown-option-padding );
+							&.active {
+								background-color: #1E1E1E1A;
+							}
+							&.selected {
+								background-color: #1E1E1E0D;
+								// Display the check mark for selection options.
+								&::after {
+									content: "";
+									width: 0.52em;
+									height: 0.76em;
+									border: 1.25px solid #1E1E1EA6;
+									border-top: none;
+									border-left: none;
+									transform: rotate( 45deg );
+									margin-left: auto;
+								}
+							}
+							svg {
+								height: 16px;
+								width: 16px;
+							}
+						}
+					}
+				}
+
+				select {
+					display: block;
+					padding: 10px 16px 10px 16px !important;
+					width: 100%;
+					font-size: 0.7em;
+					color: #778899;
+					line-height: normal;
+				}
+			}
+		}
+	}
+}

@@ -24,6 +24,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
+import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { fieldWidth, label, block_id, formId, preview, help, className } =
@@ -166,21 +167,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					template={ addressTemplate }
 					allowedBlocks={ allowedBlocks }
 				/>
-				{ help && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) => {
-							setAttributes( {
-								help: decodeHtmlEntities( value ),
-							} );
-						} }
-						className="srfm-description srfm-address-help-txt"
-						multiline={ false }
-						id={ blockID }
-						allowedFormats={ [] }
-					/>
-				) }
+				<HelpText
+					help={ help }
+					setAttributes={ setAttributes }
+					block_id={ blockID }
+				/>
 			</div>
 		</div>
 	);

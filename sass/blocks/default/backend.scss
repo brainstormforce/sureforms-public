@@ -426,19 +426,7 @@
 				width: 100%;
 			}
 
-			&::after {
-				content: "";
-				position: absolute;
-				width: 0.5em;
-				height: 0.5em;
-				font-size: 0.7em;
-				border: 1px solid var( --srfm-body-input-color );
-				border-left: 0;
-				border-top: 0;
-				transform: rotate( 45deg );
-				right: 1em;
-				top: 1em;
-			}
+			@include srfm-dropdown-arrow;
 		}
 	}
 }
