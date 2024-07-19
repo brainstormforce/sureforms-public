@@ -109,14 +109,13 @@ class Frontend_Assets {
 		$block_name = str_replace( 'srfm/', '', $block_type );
 		// associative array to keep the count of block that requires scripts to work.
 		$script_dep_blocks = [
-			'address-compact' => 0,
-			'checkbox'        => 0,
-			'dropdown'        => 0,
-			'multi-choice'    => 0,
-			'number'          => 0,
-			'textarea'        => 0,
-			'url'             => 0,
-			'phone'           => 0,
+			'checkbox'     => 0,
+			'dropdown'     => 0,
+			'multi-choice' => 0,
+			'number'       => 0,
+			'textarea'     => 0,
+			'url'          => 0,
+			'phone'        => 0,
 		];
 
 		$file_prefix = defined( 'SRFM_DEBUG' ) && SRFM_DEBUG ? '' : '.min';
@@ -137,8 +136,7 @@ class Frontend_Assets {
 				wp_enqueue_script( SRFM_SLUG . "-{$block_name}-intl-utils-deps", $js_vendor_uri . 'intl/intTelUtils.min.js', [], SRFM_VER, true );
 			}
 
-			if ( 'dropdown' === $block_name || 'address-compact' === $block_name
-			) {
+			if ( 'dropdown' === $block_name ) {
 				// if the dropdown / address-compact block is after any other block, then we need to dequeue the srfm-form-submit script and enqueue it again and load it with tom-select dependency.
 				wp_dequeue_script( SRFM_SLUG . '-form-submit' );
 				wp_enqueue_script( SRFM_SLUG . '-dropdown', $js_uri . 'dropdown' . $file_prefix . '.js', [ 'wp-a11y' ], SRFM_VER, true );

@@ -64,7 +64,6 @@ module.exports = {
 		),
 		dashboard: path.resolve( __dirname, 'src/admin/dashboard/index.js' ),
 		blocks: path.resolve( __dirname, 'src/blocks/blocks.js' ),
-		// utils: path.resolve( __dirname, 'assets/js/unminified/utils.js' ),
 	},
 	resolve: {
 		alias: {
