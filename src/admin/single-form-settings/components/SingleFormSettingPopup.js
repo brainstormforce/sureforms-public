@@ -93,9 +93,13 @@ const SingleFormSettingsPopup = ( props ) => {
 		}
 
 		if ( ! Object.keys( blockSlugs ).length ) {
+			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
 			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
 				.then( ( response ) => {
-					setBlockSlugs( response );
+					if ( true !== response?.success ) {
+						return console.error( 'Unable to fetch saved blocks: ', response?.data );
+					}
+					setBlockSlugs( response.data );
 				} ).catch( ( err ) => {
 					console.error( 'Unable to fetch saved blocks: ', err );
 				} );

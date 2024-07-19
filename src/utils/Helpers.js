@@ -193,6 +193,11 @@ const pushSmartTagToArray = (
 			return;
 		}
 
+		/**
+		 * Compose field tag and label.
+		 * We are treating "srfm/gdpr" separately for the field label because
+		 * GDPR block's label can be a long text, which will create issue to the users for the tags.
+		 */
 		const fieldTag = '{form:' + fieldSlug + '}';
 		const fieldLabel = 'srfm/gdpr' === block?.name ? __( 'GDPR Agreement', 'sureforms' ) : block.attributes.label;
 

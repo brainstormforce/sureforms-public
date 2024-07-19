@@ -91,43 +91,26 @@ class Rest_Api {
 		$nonce = Helper::get_string_value( $request->get_header( 'X-WP-Nonce' ) );
 
 		if ( ! wp_verify_nonce( sanitize_text_field( $nonce ), 'wp_rest' ) ) {
-			wp_send_json_error(
-				[
-					'data'   => __( 'Nonce verification failed.', 'sureforms' ),
-					'status' => false,
-				]
-			);
+			wp_send_json_error( __( 'Nonce verification failed.', 'sureforms' ) );
 		}
 
 		$slugs   = [];
 		$updated = false;
 		$params  = $request->get_params();
 
-		/**
-		 * Gutenberg_Hooks class instance.
-		 *
-		 * @var \SRFM\Inc\Gutenberg_Hooks
-		 */
-		$gutenberg_hooks = Gutenberg_Hooks::get_instance();
-
 		if ( empty( $params['formID'] ) ) {
-			wp_send_json_error(
-				[
-					'data'   => __( 'Invalid request. Form ID missing.', 'sureforms' ),
-					'status' => false,
-				]
-			);
+			wp_send_json_error( __( 'Invalid request. Form ID missing.', 'sureforms' ) );
 		}
 
 		$form    = get_post( absint( $params['formID'] ) );
 		$content = ! empty( $params['content'] ) ? wp_kses_post( $params['content'] ) : '';
 
 		if ( ! is_null( $form ) ) {
-			$gutenberg_hooks->process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
+			Gutenberg_Hooks::process_blocks( parse_blocks( $form->post_content ), $slugs, $updated );
 		}
 
-		$gutenberg_hooks->process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
+		Gutenberg_Hooks::process_blocks( parse_blocks( $content ), $slugs, $updated, '', true );
 
-		wp_send_json( $slugs );
+		wp_send_json_success( $slugs );
 	}
 }
