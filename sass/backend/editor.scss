@@ -289,7 +289,8 @@ body.post-type-sureforms_form {
 		width: 100%;
 	}
 
-	// Hide block inserter in wordpress 6.5.
+	// Hide block inserter below wordpress version 6.6.
+	// This default appender is not available from 6.6.
 	.srfm-form-container {
 		> div:last-child.block-list-appender.wp-block {
 			display: none;
