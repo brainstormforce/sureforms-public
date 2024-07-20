@@ -63,12 +63,17 @@
 		cursor: pointer;
 	}
 
+
+
 	.srfm-custom-button-ctn {
-		position: relative;
-		height: auto;
+		height: 100%;
+		display: flex;
+		align-items: flex-end;
 		.srfm-button{
-			position: absolute;
-			bottom: 22px;
+			margin-bottom: 22px;
+		}
+		&.srfm-block{
+			height: auto;
 		}
 	}
 
