@@ -63,6 +63,15 @@
 		cursor: pointer;
 	}
 
+	.srfm-custom-button-ctn {
+		position: relative;
+		height: auto;
+		.srfm-button{
+			position: absolute;
+			bottom: 22px;
+		}
+	}
+
 	// .srfm-btn-bg-color {
 	// 	border-radius: var( --srfm-btn-border-radius );
 	// 	font-family: inherit;
