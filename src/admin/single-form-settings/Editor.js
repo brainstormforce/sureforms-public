@@ -31,6 +31,7 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
+// import { BlockInserterWrapper } from './BlockInserter.js';
 
 const { select, dispatch } = wp.data;
 
@@ -238,6 +239,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureformsKeys._srfm_inherit_theme_button
 				? 'wp-block-button'
 				: 'srfm-submit-btn-font-size';
+				// <div class="srfm-custom-appender"></div>
 		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
@@ -255,6 +257,16 @@ const SureformsFormSpecificSettings = ( props ) => {
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
+				// // Add appender in the srfm-custom-appender div.
+				// const getAppnederDiv = document.querySelector(
+				// 	'.srfm-custom-appender'
+				// );
+
+				// if ( getAppnederDiv ) {
+				// 	const root = createRoot( getAppnederDiv );
+				// 	// root.render( <BlockInserterWrapper /> );
+				// }
 
 				createRoot( button ).render(
 					<RichText
