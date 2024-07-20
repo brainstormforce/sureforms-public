@@ -131,9 +131,7 @@
 
 			.uagb-image-heading {
 				color: #fff;
-				transition:
-					transform 0.35s,
-					opacity 0.35s ease-in-out;
+				transition: transform 0.35s, opacity 0.35s ease-in-out;
 				transform: translate3d( 0, 24px, 0 );
 			}
 
@@ -144,9 +142,7 @@
 				border-top-style: solid;
 				margin-bottom: 10px;
 				opacity: 0;
-				transition:
-					transform 0.4s,
-					opacity 0.4s ease-in-out;
+				transition: transform 0.4s, opacity 0.4s ease-in-out;
 				transform: translate3d( 0, 30px, 0 );
 			}
 
@@ -154,9 +150,7 @@
 				opacity: 0;
 				overflow: visible;
 				color: #fff;
-				transition:
-					transform 0.45s,
-					opacity 0.45s ease-in-out;
+				transition: transform 0.45s, opacity 0.45s ease-in-out;
 				transform: translate3d( 0, 35px, 0 );
 			}
 

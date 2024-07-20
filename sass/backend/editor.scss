@@ -290,7 +290,7 @@ body.post-type-sureforms_form {
 	}
 
 	// Hide block inserter in wordpress 6.5.
-	.srfm-form-container{
+	.srfm-form-container {
 		> div:last-child.block-list-appender.wp-block {
 			display: none;
 		}
