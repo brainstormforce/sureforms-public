@@ -289,6 +289,13 @@ body.post-type-sureforms_form {
 		width: 100%;
 	}
 
+	// Hide block inserter in wordpress 6.5.
+	.srfm-form-container{
+		> div:last-child.block-list-appender.wp-block {
+			display: none;
+		}
+	}
+
 	// Add submit button below the Block Appended.
 	.srfm-custom-block-inserter {
 		width: 100%;
