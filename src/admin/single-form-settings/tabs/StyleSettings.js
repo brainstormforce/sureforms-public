@@ -204,6 +204,15 @@ function StyleSettings( props ) {
 		} );
 	}
 
+	/**
+	 * Update the form styling options on user input
+	 * and update the meta values in the database.
+	 *
+	 * @param {string} option
+	 * @param {string} value
+	 * @return {void}
+	 * @since x.x.x
+	 */
 	function updateFormStyling( option, value ) {
 		if ( option === 'primary_color' ) {
 			root.style.setProperty(

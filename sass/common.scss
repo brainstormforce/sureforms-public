@@ -63,16 +63,14 @@
 		cursor: pointer;
 	}
 
-
-
 	.srfm-custom-button-ctn {
 		height: 100%;
 		display: flex;
 		align-items: flex-end;
-		.srfm-button{
+		.srfm-button {
 			margin-bottom: 22px;
 		}
-		&.srfm-block{
+		&.srfm-block {
 			height: auto;
 		}
 	}

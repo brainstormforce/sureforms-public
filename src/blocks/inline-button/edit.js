@@ -44,8 +44,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	return (
 		<div
-		className={ 'srfm-custom-button-ctn' + ( className ? ` ${className}` : '' ) }
-
+			className={
+				'srfm-custom-button-ctn' +
+				( className ? ` ${ className }` : '' )
+			}
 		>
 			<InspectorControls>
 				<InspectorTabs
