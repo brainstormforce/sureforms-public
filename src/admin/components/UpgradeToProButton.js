@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
+// Renders a button that links to the upgrade page for SureForms Pro.
 const UpgradeToProButton = ( props ) => {
 	const handleClick = () => {
-		// eslint-disable-next-line no-undef
-		const url = srfm_admin?.sureforms_pricing_page;
+		const url = srfm_admin?.sureforms_pricing_page || 'https://sureforms.com/pricing/';
 		window.open( url );
 	};
 	return (
