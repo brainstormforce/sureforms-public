@@ -232,6 +232,12 @@ class Generate_Form_Markup {
 			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
 			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) >= 0 ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
+
+			// Dropdown colors.
+			$delete_badge_light = '#DC2626';
+			$delete_badge_dark = '#F87171';
+			$select_dropdown_background_light = '#FFFFFF';
+			$select_dropdown_background_dark = '#1E1E1E';
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
@@ -285,6 +291,20 @@ class Generate_Form_Markup {
 					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
 					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
+
+					/* Dropdown Variables */
+					--srfm-dropdown-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
+					--srfm-dropdown-option-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
+					--srfm-dropdown-option-background-selected: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
+					--srfm-dropdown-option-selected-icon: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
+					--srfm-dropdown-option-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
+					--srfm-dropdown-option-selected-text: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-dropdown-badge-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
+					--srfm-dropdown-badge-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
+					--srfm-dropdown-badge-delete-icon-light: rgba( from <?php echo esc_html( $delete_badge_light ); ?> r g b / 0.65 );
+					--srfm-dropdown-badge-delete-icon-dark: rgba( from <?php echo esc_html( $delete_badge_dark ); ?> r g b / 0.65 );
+					--srfm-dropdown-menu-background-light: <?php echo esc_html( $select_dropdown_background_light ); ?>;
+					--srfm-dropdown-menu-background-dark: <?php echo esc_html( $select_dropdown_background_dark ); ?>;
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.
