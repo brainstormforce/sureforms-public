@@ -1,5 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
@@ -9,6 +10,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 		defaultValue,
 		isConfirmEmail,
 		confirmLabel,
+		help,
 	} = attributes;
 
 	const slug = 'email';
@@ -16,7 +18,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 	const isRequired = required ? ' srfm-required' : '';
 	return (
 		<>
-			<div className={ `srfm-block srfm-${ slug }-block` }>
+			<div className={ `srfm-${ slug }-block` }>
 				<RichText
 					tagName="label"
 					value={ label }
@@ -28,6 +30,11 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 					id={ blockID }
 					allowedFormats={ [] }
 				/>
+				<HelpText
+					help={ help }
+					setAttributes={ setAttributes }
+					block_id={ blockID }
+				/>
 				<div className="srfm-block-wrap">
 					<input
 						id={ `srfm-${ slug }-${ blockID }` }
@@ -38,12 +45,11 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 						required={ required }
 					/>
 				</div>
+				<div className="srfm-error-wrap"></div>
 			</div>
 
 			{ isConfirmEmail && (
-				<div
-					className={ `srfm-block srfm-block-margin-top  srfm-${ slug }-confirm-block` }
-				>
+				<div className={ `srfm-${ slug }-confirm-block` }>
 					<label
 						className={ `srfm-block-label${ isRequired }` }
 						htmlFor={ `srfm-${ slug }-confirm-${ blockID }` }
@@ -60,6 +66,7 @@ export const EmailComponent = ( { attributes, blockID, setAttributes } ) => {
 							required={ required }
 						/>
 					</div>
+					<div className="srfm-error-wrap"></div>
 				</div>
 			) }
 		</>

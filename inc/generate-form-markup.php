@@ -236,6 +236,7 @@ class Generate_Form_Markup {
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
+				/* Need to check and remove the input variables related to the Style Tab. */
 				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-label-text-color : <?php echo esc_html( $label_text_color_var ); ?>;
