@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: SureForms
- * Plugin URI: https://www.brainstormforce.com
+ * Plugin URI: https://sureforms.com
  * Description: A simple yet powerful way to create modern forms for your website.
  * Author: SureForms
- * Author URI: https://brainstormforce.com/
+ * Author URI: https://sureforms.com/
  * Version: 0.0.6
  * License: GPLv2 or later
  * Text Domain: sureforms
@@ -28,5 +28,6 @@ define( 'SRFM_SLUG', 'srfm' );
 // ------ ADDITIONAL CONSTANTS ------- //
 define( 'SRFM_FORMS_POST_TYPE', 'sureforms_form' );
 define( 'SRFM_ENTRIES_POST_TYPE', 'sureforms_entry' );
+define( 'SRFM_WEBSITE', 'https://sureforms.com/' );
 
 require_once 'plugin-loader.php';
