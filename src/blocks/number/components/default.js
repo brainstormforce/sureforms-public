@@ -1,5 +1,6 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const NumberComponent = ( {
 	attributes,
@@ -15,6 +16,7 @@ export const NumberComponent = ( {
 		minValue,
 		maxValue,
 		formatType,
+		help,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -32,6 +34,11 @@ export const NumberComponent = ( {
 				multiline={ false }
 				id={ blockID }
 				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
 				<input

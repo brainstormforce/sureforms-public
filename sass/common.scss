@@ -1,4 +1,4 @@
-@import "./blocks/default/utils/variables.scss";
+@import "./blocks/default/utils/mixins.scss";
 
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
@@ -28,10 +28,6 @@
 		@media ( max-width: 576px ) {
 			width: 100%;
 		}
-	}
-
-	.srfm-block-label {
-		display: block;
 	}
 
 	.srfm-input-common {
@@ -117,5 +113,36 @@
 		border: none;
 		margin: 0;
 		padding: 0;
+	}
+
+	// Add top margin to confirm email field.
+	.srfm-email-confirm-block {
+		margin-top: var( --srfm-row-gap-between-blocks );
+	}
+
+	.srfm-block {
+		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
+		margin-bottom: var( --srfm-row-gap-between-blocks );
+		.srfm-block-label {
+			display: block;
+			@include srfm-block-label-styles;
+		}
+
+		.srfm-block-wrap {
+			position: relative;
+		}
+
+		.srfm-description {
+			display: block;
+			@include srfm-description-styles;
+		}
+
+		.srfm-error-wrap {
+			height: var( --srfm-error-line-height );
+		}
+
+		.srfm-input-input {
+			height: var( --srfm-input-height );
+		}
 	}
 }
