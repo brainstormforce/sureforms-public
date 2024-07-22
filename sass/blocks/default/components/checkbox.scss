@@ -1,41 +1,19 @@
-@-moz-keyframes wave-4 {
-	50% {
-		transform: scale( 0.9 );
-	}
-}
-
-@-webkit-keyframes wave-4 {
-	50% {
-		transform: scale( 0.9 );
-	}
-}
-
-@-o-keyframes wave-4 {
-	50% {
-		transform: scale( 0.9 );
-	}
-}
-
-@keyframes wave-4 {
-	50% {
-		transform: scale( 0.9 );
-	}
-}
-
 .srfm-form-container {
 	.srfm-form {
 		.srfm-checkbox-block {
-			.srfm-block-wrap {
-				margin: 4px;
+			.srfm-description {
+				margin-left: 24px;
+			}
 
+			.srfm-block-wrap {
 				* {
 					box-sizing: border-box;
 				}
 
-				.srfm-block-text {
-					font-size: 0.7em;
-					color: var( --srfm-label-text-color );
-				}
+				// .srfm-block-text {
+				// 	font-size: 0.7em;
+				// 	color: var( --srfm-label-text-color );
+				// }
 
 				.srfm-block-url {
 					color: var( --srfm-primary-color );
@@ -43,12 +21,13 @@
 
 				.srfm-cbx {
 					display: flex;
+					gap: 8px;
+					align-items: flex-start;
 					-webkit-user-select: none;
 					user-select: none;
 					cursor: pointer;
 					overflow: hidden;
-					transition: all 0.2s ease;
-					align-items: center;
+					transition: 0.3s ease-out;
 
 					&:not( :last-child ) {
 						margin-right: 6px;
@@ -64,21 +43,21 @@
 						transform: translate3d( 0, 0, 0 );
 
 						&:first-child {
-							position: relative;
-							width: 18px;
-							height: 18px;
+							position: absolute;
+							width: 16px;
+							height: 16px;
 							border-radius: 4px;
 							transform: scale( 1 );
 							border: 1px solid var( --srfm-border-color );
 							background-color: var( --srfm-base-background-color );
-							transition: all 0.2s ease;
+							transition: 0.3s ease-out;
 
 							svg {
 								position: absolute;
-								top: 3px;
+								top: 2px;
 								left: 2px;
 								fill: none;
-								width: 12px;
+								width: 10px;
 								height: 10px;
 								stroke: #fff;
 								stroke-width: 2;
@@ -86,14 +65,14 @@
 								stroke-linejoin: round;
 								stroke-dasharray: 16px;
 								stroke-dashoffset: 16px;
-								transition: all 0.3s ease;
-								transition-delay: 0.1s;
+								transition: 0.3s ease-out;
 								transform: translate3d( 0, 0, 0 );
 							}
 						}
 
 						&:last-child {
-							padding-left: 8px;
+							position: relative;
+							left: 24px;
 							line-height: 18px;
 							max-width: calc( 100% - 26px );
 							word-wrap: break-word;
@@ -116,13 +95,7 @@
 									&:first-child:not( .srfm-required ) {
 										background: var( --srfm-primary-color );
 										border-color: var( --srfm-primary-color );
-										animation: wave-4 0.4s ease;
-										// box-shadow: 0px 0px 4px 4px #d5440778;
-										box-shadow: 0px 0px 0px 4px // 30% opacity of primary color variable
-											var( --srfm-base-background-color ) 78;
-
-										margin: 4px;
-
+										box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow ); // margin: 4px;
 										svg {
 											stroke-dashoffset: 0;
 										}
