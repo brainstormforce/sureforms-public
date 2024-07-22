@@ -78,6 +78,7 @@
 							height: auto;
 							width: auto;
 							min-width: auto;
+							padding-right: 8px !important; // Quick fix for the gap between input and arrow, might need to be revised later.
 
 							// Will come to this later.
 							&::placeholder {

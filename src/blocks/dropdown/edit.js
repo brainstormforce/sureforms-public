@@ -43,6 +43,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		formId,
 		preview,
 		className,
+		multiSelect,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -108,6 +109,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								checked={ required }
 								onChange={ ( checked ) =>
 									setAttributes( { required: checked } )
+								}
+							/>
+							<ToggleControl
+								label={ __(
+									'Enable Multiple Selections',
+									'sureforms'
+								) }
+								checked={ multiSelect }
+								onChange={ ( checked ) =>
+									setAttributes( { multiSelect: checked } )
 								}
 							/>
 							{ required && (
