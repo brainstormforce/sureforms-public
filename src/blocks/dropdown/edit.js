@@ -41,7 +41,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		block_id,
 		errorMsg,
 		formId,
-		placeholder,
 		preview,
 		className,
 	} = attributes;
@@ -103,17 +102,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								value={ placeholder }
-								onChange={ ( value ) => {
-									setAttributes( { placeholder: value } );
-								} }
 							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }

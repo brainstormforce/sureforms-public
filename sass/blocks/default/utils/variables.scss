@@ -38,7 +38,10 @@
 	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
 
 	// Gaps and Spacing variables.
-	--srfm-gap-between-blocks: #{calc_rem( 1 )};
+	--srfm-row-gap-between-blocks: #{calc_rem( 1 )};
+	--srfm-col-gap-between-blocks: #{calc_rem( 0.5 )};
+
+	// Address block gap and spacing variables.
 	--srfm-col-gap-between-fields: #{calc_rem( 0.75 )};
 	--srfm-row-gap-between-fields: #{calc_rem( 0.75 )};
 	--srfm-gap-below-address-label: #{calc_rem( 0.75 )};
