@@ -93,6 +93,7 @@ class Multichoice_Markup extends Base {
 			<fieldset>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
 						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
@@ -106,8 +107,7 @@ class Multichoice_Markup extends Base {
 							<?php } ?>
 						</div>
 					<?php } ?>
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
 			</fieldset>
 		</div>
 		<?php
