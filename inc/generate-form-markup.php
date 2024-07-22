@@ -234,10 +234,10 @@ class Generate_Form_Markup {
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 
 			// Dropdown colors.
-			$delete_badge_light = '#DC2626';
-			$delete_badge_dark = '#F87171';
+			$delete_badge_light               = '#DC2626';
+			$delete_badge_dark                = '#F87171';
 			$select_dropdown_background_light = '#FFFFFF';
-			$select_dropdown_background_dark = '#1E1E1E';
+			$select_dropdown_background_dark  = '#1E1E1E';
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
