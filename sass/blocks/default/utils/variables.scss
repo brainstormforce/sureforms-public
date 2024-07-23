@@ -46,12 +46,12 @@
 	// Dropdown Variables.
 	--srfm-dropdown-font-size: 0.875em;
 	--srfm-dropdown-font-weight: 400;
-	--srfm-dropdown-gap-between-input-menu: #{calc_rem( 0.25 )};
-	--srfm-dropdown-badge-gap: #{calc_rem( 0.375 )};
-	--srfm-dropdown-badge-padding: #{calc_rem( 0.125 ) calc_rem( 0.375 )};
-	--srfm-dropdown-menu-padding: #{calc_rem( 0.375 )};
-	--srfm-dropdown-menu-icon-gap: #{calc_rem( 0.5 )};
-	--srfm-dropdown-option-padding: #{calc_rem( 0.5 ) calc_rem( 0.75 )};
+	--srfm-dropdown-gap-between-input-menu: 4px;
+	--srfm-dropdown-badge-gap: 6px;
+	--srfm-dropdown-badge-padding: 2px 6px;
+	--srfm-dropdown-menu-padding: 6px;
+	--srfm-dropdown-menu-icon-gap: 8px;
+	--srfm-dropdown-option-padding: 8px 12px;
 
 	// Input field variables.
 	--srfm-input-height: 40px;
