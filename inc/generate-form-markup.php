@@ -306,6 +306,7 @@ class Generate_Form_Markup {
 					--srfm-dropdown-badge-delete-icon-dark: rgba( from <?php echo esc_html( $delete_badge_dark ); ?> r g b / 0.65 );
 					--srfm-dropdown-menu-background-light: <?php echo esc_html( $select_dropdown_background_light ); ?>;
 					--srfm-dropdown-menu-background-dark: <?php echo esc_html( $select_dropdown_background_dark ); ?>;
+					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.
