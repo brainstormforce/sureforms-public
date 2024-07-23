@@ -1,6 +1,3 @@
-@function calc_rem( $size ) {
-	@return calc( #{$size} * var( --srfm-font-size ) );
-}
 :root {
 	--srfm-font-size: 16px;
 	// Color scheme variables.
@@ -38,36 +35,36 @@
 	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
 
 	// Gaps and Spacing variables.
-	--srfm-row-gap-between-blocks: #{calc_rem( 1 )};
-	--srfm-col-gap-between-blocks: #{calc_rem( 0.5 )};
+	--srfm-row-gap-between-blocks: 16px;
+	--srfm-col-gap-between-blocks: 8px;
 
 	// Address block gap and spacing variables.
-	--srfm-col-gap-between-fields: #{calc_rem( 0.75 )};
-	--srfm-row-gap-between-fields: #{calc_rem( 0.75 )};
-	--srfm-gap-below-address-label: #{calc_rem( 0.75 )};
+	--srfm-col-gap-between-fields: 12px;
+	--srfm-row-gap-between-fields: 12px;
+	--srfm-gap-below-address-label: 12px;
 
 	// Input field variables.
-	--srfm-input-height: #{calc_rem( 2.5 )};
-	--srfm-input-field-padding: #{calc_rem( 0.625 ) calc_rem( 0.75 )};
-	--srfm-input-field-border-radius: #{calc_rem( 0.375 )};
-	--srfm-input-field-font-size: 0.875em;
+	--srfm-input-height: 40px;
+	--srfm-input-field-padding: 10px 12px;
+	--srfm-input-field-border-radius: 6px;
+	--srfm-input-field-font-size: 14px;
 	--srfm-input-field-font-weight: 400;
-	--srfm-input-field-line-height: #{calc_rem( 1.25 )};
-	--srfm-input-field-margin: #{calc_rem( 0.25 ) calc_rem( 0 )};
+	--srfm-input-field-line-height: 20px;
+	--srfm-input-field-margin: 4px 0;
 
 	// Label variables
-	--srfm-label-font-size: 0.875em;
+	--srfm-label-font-size: 14px;
 	--srfm-label-font-weight: 500;
-	--srfm-label-line-height: #{calc_rem( 1.25 )};
+	--srfm-label-line-height: 20px;
 
 	// Description variables.
-	--srfm-description-font-size: 0.75em;
+	--srfm-description-font-size: 12px;
 	--srfm-description-font-weight: 400;
-	--srfm-description-line-height: #{calc_rem( 1.125 )};
-	--srfm-description-margin-top: #{calc_rem( 0.125 )};
+	--srfm-description-line-height: 18px;
+	--srfm-description-margin-top: 2px;
 
 	// Error variables.
-	--srfm-error-font-size: 0.75em;
+	--srfm-error-font-size: 12px;
 	--srfm-error-font-weight: 500;
-	--srfm-error-line-height: #{calc_rem( 1 )};
+	--srfm-error-line-height: 16px;
 }
