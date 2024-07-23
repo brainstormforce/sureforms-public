@@ -76,6 +76,7 @@
 		border: none;
 		margin: 0;
 		padding: 0;
+		line-height: 0; // Added for dropdown field, maintian spacing between input and error message.
 	}
 
 	// Add top margin to confirm email field.
