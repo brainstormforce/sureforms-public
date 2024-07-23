@@ -36,6 +36,14 @@ class Dropdown_Markup extends Base {
 	protected $multi_select_attr;
 
 	/**
+	 * Stores the search attribute value.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $search_attr;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -48,6 +56,7 @@ class Dropdown_Markup extends Base {
 		$this->slug              = 'dropdown';
 		$this->placeholder_html  = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
 		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
+		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -73,7 +82,7 @@ class Dropdown_Markup extends Base {
 						?>
 					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" tabindex="0" aria-hidden="true">
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
 					<option value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>

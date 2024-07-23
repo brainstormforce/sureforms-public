@@ -13,6 +13,12 @@ function initializeDropdown() {
 					plugins: [ 'remove_button' ], // Adding remove button to the selected options.
 				};
 			}
+			if ( element.getAttribute( 'data-searchable' ) === 'false' ) {
+				additionalConfig = {
+					...additionalConfig,
+					controlInput: null, // Disabling search option for dropdown.
+				};
+			}
 			const config = {
 				maxOptions: null,
 				onChange( value ) {
