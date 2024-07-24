@@ -644,7 +644,7 @@ const fieldValidationInit = async ( areaField, blockClass ) => {
 	const formTextarea = areaField.closest( blockClass );
 	const form = formTextarea.closest( 'form' );
 	const formId = form.getAttribute( 'form-id' );
-	const ajaxUrl = form.getAttribute( 'action' );
+	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
 	const singleField = true;
 
