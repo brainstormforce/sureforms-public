@@ -139,11 +139,10 @@
 
 				select {
 					display: block;
-					padding: 10px 16px 10px 16px !important;
+					padding: var( --srfm-input-field-padding );
+					margin: var( --srfm-input-field-margin );
 					width: 100%;
 					font-size: 0.7em;
-					color: #778899;
-					line-height: normal;
 				}
 			}
 		}
