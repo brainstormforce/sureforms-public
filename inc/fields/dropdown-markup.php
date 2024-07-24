@@ -20,14 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Dropdown_Markup extends Base {
 
 	/**
-	 * Stores the placeholder text of a select option, defaults to 'Select option' if no placeholder is provided.
-	 *
-	 * @var string
-	 * @since 0.0.2
-	 */
-	protected $placeholder_html;
-
-	/**
 	 * Stores the multi select attribute value.
 	 *
 	 * @var string
@@ -54,7 +46,6 @@ class Dropdown_Markup extends Base {
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
 		$this->slug              = 'dropdown';
-		$this->placeholder_html  = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
 		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
 		$this->set_markup_properties();
@@ -83,7 +74,7 @@ class Dropdown_Markup extends Base {
 					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
-					<option value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
+					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html__( 'Select an option', 'sureforms' ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>
 						<?php } ?>

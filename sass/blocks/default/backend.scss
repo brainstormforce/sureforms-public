@@ -225,7 +225,7 @@
 				width: 100%;
 			}
 
-			@include srfm-dropdown-arrow;
+			@include srfm-dropdown-arrow( true );
 		}
 	}
 }

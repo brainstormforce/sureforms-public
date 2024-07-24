@@ -21,6 +21,7 @@ function initializeDropdown() {
 			}
 			const config = {
 				maxOptions: null,
+				hidePlaceholder: true, // Hide the placeholder text after an option is selected.
 				onChange( value ) {
 					// In case of multi-select dropdown, the value will be an array.
 					if ( Array.isArray( value ) ) {
@@ -45,6 +46,21 @@ function initializeDropdown() {
 				...additionalConfig,
 			};
 			new TomSelect( element, config );
+
+			// Add placeholder to the dropdown when Search is disabled.
+			if ( config.controlInput === null ) {
+				const dropdownWrapper = element
+					.closest( '.srfm-dropdown-block' )
+					.querySelector( '.ts-control' );
+				const placeholderText = element
+					.closest( '.srfm-dropdown-block' )
+					.querySelector( '.srfm-dropdown-placeholder' );
+				const placeholderElement = document.createElement( 'span' );
+				placeholderElement.classList.add( 'ts-control-placeholder' );
+				placeholderElement.textContent = placeholderText.textContent;
+				dropdownWrapper.prepend( placeholderElement );
+			}
+
 			// Disable the select element to submit selected options through hidden input field.
 			element.disabled = true;
 		}

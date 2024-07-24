@@ -307,6 +307,7 @@ class Generate_Form_Markup {
 					--srfm-dropdown-menu-background-light: <?php echo esc_html( $select_dropdown_background_light ); ?>;
 					--srfm-dropdown-menu-background-dark: <?php echo esc_html( $select_dropdown_background_dark ); ?>;
 					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
+					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.
