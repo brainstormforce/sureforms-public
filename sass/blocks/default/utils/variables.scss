@@ -58,6 +58,10 @@
 	--srfm-dropdown-multiselect-padding: 8px var( --srfm-dropdown-padding-right-icon ) 8px 8px;
 	--srfm-dropdown-multiselect-font-size: 12px;
 	--srfm-dropdown-multiselect-line-height: 16px;
+	--srfm-dropdown-badge-delete-icon-light: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-dropdown-badge-delete-icon-dark: #{rgba( $srfmColorErrorDark, 0.65 )};
+	--srfm-dropdown-menu-background-light: #ffffff;
+	--srfm-dropdown-menu-background-dark: #1e1e1e;
 
 	// Input field variables.
 	--srfm-input-height: 40px;
