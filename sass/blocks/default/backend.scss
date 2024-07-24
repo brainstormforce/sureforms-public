@@ -166,7 +166,7 @@
 								&:first-child:not( .srfm-required ) {
 									background: var( --srfm-primary-color );
 									border-color: var( --srfm-primary-color );
-									box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow ); // margin: 4px;
+									box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 									svg {
 										stroke-dashoffset: 0;
 									}

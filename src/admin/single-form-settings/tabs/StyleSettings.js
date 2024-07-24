@@ -178,6 +178,12 @@ function StyleSettings( props ) {
 			'--srfm-primary-color',
 			sureformsKeys._srfm_color1 ? sureformsKeys._srfm_color1 : '#0284C7'
 		);
+		root.style.setProperty(
+			'--srfm-color-input-border-focus-glow',
+			sureformsKeys._srfm_color1
+				? `rgba( from ${ sureformsKeys._srfm_color1 } r g b / 0.15 )`
+				: '#FAE4DC'
+		);
 		// Label color
 		root.style.setProperty(
 			'--srfm-label-text-color',
