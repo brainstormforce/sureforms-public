@@ -9,7 +9,6 @@ import * as multiChoice from '@Blocks/multi-choice';
 import * as phone from '@Blocks/phone';
 import * as select from '@Blocks/dropdown';
 import * as address from '@Blocks/address';
-import * as addressCompact from '@Blocks/address-compact';
 import * as url from '@Blocks/url';
 import * as inlineButton from '@Blocks/inline-button';
 import { registerBlocks } from '@Blocks/register-block';
@@ -35,7 +34,6 @@ const registerBlock = [
 	phone,
 	select,
 	address,
-	addressCompact,
 	inlineButton,
 ];
 

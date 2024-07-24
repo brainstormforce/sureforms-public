@@ -11,6 +11,7 @@ import {
 	MdOutlineSecurity,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
+import UpgradeToProButton from '@Admin/components/UpgradeToProButton';
 
 function useQuery() {
 	return new URLSearchParams( useLocation().search );
@@ -90,9 +91,7 @@ const Navigation = () => {
 								'sureforms'
 							) }
 						</div>
-						<button className="srfm-button-primary srfm-notice-btn">
-							{ __( 'Upgrade to Premium', 'sureforms' ) }
-						</button>
+						<UpgradeToProButton className="srfm-button-primary srfm-notice-btn" />
 					</div>
 				) }
 			</div>
