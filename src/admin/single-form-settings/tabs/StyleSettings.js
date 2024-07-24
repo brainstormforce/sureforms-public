@@ -122,39 +122,57 @@ function StyleSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-color-input-label',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			sureformsKeys._srfm_help_color
+				? sureformsKeys._srfm_help_color
+				: defaultHelpColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-placeholder',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			sureformsKeys._srfm_help_color
+				? sureformsKeys._srfm_help_color
+				: defaultHelpColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-text',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			sureformsKeys._srfm_help_color
+				? sureformsKeys._srfm_help_color
+				: defaultHelpColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-description',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-prefix',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.02)` : `rgba( from ${ defaultHelpColor } r g b / 0.02)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.02)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.02)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background-disabled',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.05)` : `rgba( from ${ defaultHelpColor } r g b / 0.05)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.05)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.05)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.25)` : `rgba( from ${ defaultHelpColor } r g b / 0.25)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.25)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.25)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border-disabled',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.15)` : `rgba( from ${ defaultHelpColor } r g b / 0.15)`
+			sureformsKeys._srfm_help_color
+				? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.15)`
+				: `rgba( from ${ defaultHelpColor } r g b / 0.15)`
 		);
 		root.style.setProperty(
 			'--srfm-primary-color',
@@ -333,27 +351,39 @@ function StyleSettings( props ) {
 			);
 			root.style.setProperty(
 				'--srfm-color-input-description',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-prefix',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background',
-				value ? `rgba( from ${ value } r g b / 0.02)` : `rgba( from ${ defaultHelpColor } r g b / 0.02)`
+				value
+					? `rgba( from ${ value } r g b / 0.02)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.02)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background-disabled',
-				value ? `rgba( from ${ value } r g b / 0.05)` : `rgba( from ${ defaultHelpColor } r g b / 0.05)`
+				value
+					? `rgba( from ${ value } r g b / 0.05)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.05)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border',
-				value ? `rgba( from ${ value } r g b / 0.25)` : `rgba( from ${ defaultHelpColor } r g b / 0.25)`
+				value
+					? `rgba( from ${ value } r g b / 0.25)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.25)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border-disabled',
-				value ? `rgba( from ${ value } r g b / 0.15)` : `rgba( from ${ defaultHelpColor } r g b / 0.15)`
+				value
+					? `rgba( from ${ value } r g b / 0.15)`
+					: `rgba( from ${ defaultHelpColor } r g b / 0.15)`
 			);
 		}
 

@@ -15,8 +15,11 @@ export const CheckboxComponent = ( {
 		setSelected( isChecked );
 	}, [ isChecked ] );
 
+	let inputClassname = 'srfm-input-checkbox';
+
 	if ( blockType === 'gdpr' ) {
 		isRequired = 'srfm-required';
+		inputClassname = 'srfm-input-gdpr';
 	}
 
 	return (
@@ -24,20 +27,35 @@ export const CheckboxComponent = ( {
 			<input
 				type="checkbox"
 				checked={ selected }
-				required={ required }
-				onClick={ () => setSelected( ! selected ) }
-				className=""
+				className={ `srfm-input-common screen-reader-text srfm-input-checkbox ${ inputClassname }` }
 			/>
-			<RichText
-				tagName="label"
-				value={ label }
-				onChange={ ( value ) => {
-					setAttributes( { label: decodeHtmlEntities( value ) } );
-				} }
-				className={ `srfm-block-text srfm-span-wrap ${ isRequired }` }
-				multiline={ false }
-				id={ blockID }
-			/>
+			<label
+				className="srfm-cbx"
+				htmlFor={ `srfm-checkbox-${ blockID }` }
+			>
+				<span className="srfm-span-wrap">
+					<svg className="srfm-check-icon" width="12px" height="10px">
+						<svg class="srfm-inline-svg" viewBox="0 0 12 10">
+							<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+						</svg>
+					</svg>
+				</span>
+				<span
+					className={ `srfm-span-wrap srfm-block-label ${ isRequired }` }
+				>
+					<RichText
+						tagName="label"
+						value={ label }
+						onChange={ ( value ) => {
+							setAttributes( {
+								label: decodeHtmlEntities( value ),
+							} );
+						} }
+						multiline={ false }
+						id={ blockID }
+					/>
+				</span>
+			</label>
 		</div>
 	);
 };

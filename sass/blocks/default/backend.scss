@@ -1,4 +1,5 @@
 @import "./utils/mixins.scss";
+@import "./utils/variables.scss";
 
 .is-root-container {
 	font-size: var( --srfm-font-size );
@@ -70,6 +71,120 @@
 
 	.srfm-error-wrap {
 		height: var( --srfm-error-line-height );
+	}
+
+	// checkbox and gdpr
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-description {
+			margin-left: 24px;
+		}
+
+		.srfm-block-wrap {
+			* {
+				box-sizing: border-box;
+			}
+
+			.srfm-block-url {
+				color: var( --srfm-primary-color );
+			}
+
+			.srfm-cbx {
+				display: flex;
+				gap: 8px;
+				align-items: flex-start;
+				-webkit-user-select: none;
+				user-select: none;
+				cursor: pointer;
+				overflow: hidden;
+				transition: 0.3s ease-out;
+
+				&:not( :last-child ) {
+					margin-right: 6px;
+				}
+
+				.srfm-block-text {
+					flex: 1;
+				}
+
+				.srfm-span-wrap {
+					float: left;
+					vertical-align: middle;
+					transform: translate3d( 0, 0, 0 );
+
+					&:first-child {
+						position: absolute;
+						width: 16px;
+						height: 16px;
+						border-radius: 4px;
+						transform: scale( 1 );
+						border: 1px solid var( --srfm-border-color );
+						background-color: var( --srfm-base-background-color );
+						transition: 0.3s ease-out;
+
+						svg {
+							position: absolute;
+							top: 2px;
+							left: 2px;
+							fill: none;
+							width: 10px;
+							height: 10px;
+							stroke: #fff;
+							stroke-width: 2;
+							stroke-linecap: round;
+							stroke-linejoin: round;
+							stroke-dasharray: 16px;
+							stroke-dashoffset: 16px;
+							transition: 0.3s ease-out;
+							transform: translate3d( 0, 0, 0 );
+						}
+					}
+
+					&:last-child {
+						position: relative;
+						left: 24px;
+						line-height: 18px;
+						max-width: calc( 100% - 26px );
+						word-wrap: break-word;
+					}
+				}
+
+				@media screen and ( max-width: 640px ) {
+					width: 100%;
+				}
+			}
+
+			.srfm-input-checkbox,
+			.srfm-input-gdpr {
+				display: none;
+				position: absolute;
+
+				&:checked {
+					+ {
+						.srfm-cbx {
+							span {
+								&:first-child:not( .srfm-required ) {
+									background: var( --srfm-primary-color );
+									border-color: var( --srfm-primary-color );
+									box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow ); // margin: 4px;
+									svg {
+										stroke-dashoffset: 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.srfm-inline-svg {
+				position: absolute;
+				width: 0;
+				height: 0;
+				pointer-events: none;
+				user-select: none;
+			}
+		}
 	}
 
 	// URL.
