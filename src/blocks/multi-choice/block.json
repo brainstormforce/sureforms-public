@@ -29,6 +29,9 @@
 		"singleSelection": {
 			"type": "boolean"
 		},
+    "verticalLayout": {
+			"type": "boolean"
+		},
 		"options": {
 			"type": "array",
 			"default": [

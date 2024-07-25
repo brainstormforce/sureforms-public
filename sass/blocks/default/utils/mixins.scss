@@ -104,6 +104,23 @@
 			}
 		}
 	}
+
+	&.srfm-vertical-layout{
+		.srfm-block-content-wrap {
+			padding: 16px;
+			height: 100%;
+
+			.srfm-icon {
+				position: absolute !important;
+				top: 4px !important;
+				right: 4px !important;
+			}
+
+			p {
+				text-align: center;
+			}
+		}
+	}
 }
 
 @mixin srfm-multi-choice-single-styles {
@@ -139,9 +156,9 @@
 @mixin srfm-multi-choice-icon-styles {
 	float: right;
 	position: relative;
-	width: 1em;
-	height: 1em;
-	top: 0.18em;
+	width: 16px;
+	height: 16px;
+	top: 1px;
 
 	svg {
 		position: absolute;

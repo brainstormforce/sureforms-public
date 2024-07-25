@@ -44,6 +44,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		errorMsg,
 		formId,
 		preview,
+		verticalLayout,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
@@ -154,6 +155,13 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									} }
 								/>
 							) }
+							<ToggleControl
+								label={ __( 'Vertical Layout', 'sureforms' ) }
+								checked={ verticalLayout }
+								onChange={ ( checked ) =>
+									setAttributes( { verticalLayout: checked } )
+								}
+							/>
 							<ToggleControl
 								label={ __(
 									'Allow Only Single Selection',

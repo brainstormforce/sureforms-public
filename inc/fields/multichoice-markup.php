@@ -70,6 +70,14 @@ class Multichoice_Markup extends Base {
 	protected $name_attr;
 
 	/**
+	 * Flag indicating if the layout is vertical.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $vertical_layout;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -82,6 +90,7 @@ class Multichoice_Markup extends Base {
 		$this->slug              = 'multi-choice';
 		$this->single_selection  = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 		$this->choice_width      = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
+		$this->vertical_layout   = isset( $attributes['verticalLayout'] ) ? $attributes['verticalLayout'] : false;
 		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
 		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
 		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
@@ -105,7 +114,7 @@ class Multichoice_Markup extends Base {
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
-						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
+						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo( $this->vertical_layout ? 'srfm-vertical-layout' : '' ); ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
