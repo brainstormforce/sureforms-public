@@ -3,40 +3,10 @@
 	.srfm-form {
 		.srfm-multi-choice-block {
 			.srfm-block-wrap {
-				display: flex;
-				flex-wrap: wrap;
-				margin: 0 -4px;
-
-				@media ( min-width: 431px ) {
-					&.srfm-choice-width-100 {
-						.srfm-multi-choice-single {
-							width: 100%;
-						}
-					}
-
-					&.srfm-choice-width-50 {
-						.srfm-multi-choice-single {
-							width: 50%;
-						}
-					}
-
-					&.srfm-choice-width-33-33 {
-						.srfm-multi-choice-single {
-							width: 33%;
-						}
-					}
-
-					&.srfm-choice-width-25 {
-						.srfm-multi-choice-single {
-							width: 25%;
-						}
-					}
-				}
+				@include srfm-multi-choice-wrap-styles;
 
 				.srfm-multi-choice-single {
-					padding: 4px;
-					cursor: pointer;
-					margin: 0;
+					@include srfm-multi-choice-single-styles;
 
 					input {
 						position: absolute;
@@ -60,7 +30,7 @@
 							}
 
 							.srfm-multi-choice-icon-unchecked {
-								display:none;
+								display: none;
 								svg {
 									opacity: 0;
 								}
@@ -74,16 +44,11 @@
 					}
 
 					.srfm-block-content-wrap {
-						position: relative;
-						@include srfm-input-common-styles();
-						margin: 0px;
-						min-height: var( --srfm-input-height );
-						height: auto;
-						transition: 0.3s ease-out;
+						@include srfm-multi-choice-block-content-wrap-styles();
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
-							background-color: var( --srfm-color-input-background-hover);
+							background-color: var( --srfm-color-input-background-hover );
 						}
 
 						&:disabled {
@@ -94,42 +59,14 @@
 
 						.srfm-multi-choice-icon,
 						.srfm-multi-choice-icon-unchecked {
-							float: right;
-							position: relative;
-							width: 1em;
-							height: 1em;
-							top: 0.18em;
-							border-radius: 100%;
-							border: 1px solid var( --srfm-border-color );
-							border-radius: 100%;
-							line-height: 1.5em;
-
-							svg {
-								position: absolute;
-								top: 0;
-								width: 1em;
-								height: 1em;
-								path {
-									stroke: var( --srfm-color-input-placeholder );
-									stroke-opacity: 0.7
-								}
-							}
+							@include srfm-multi-choice-icon-styles;
 						}
 
-						.srfm-multi-choice-icon{
+						.srfm-multi-choice-icon {
 							display: none;
 							svg {
 								opacity: 0;
 							}
-						}
-
-						p {
-							font-size: 1em;
-							line-height: normal;
-							width: calc( 100% - 1em );
-							margin-top: 0;
-							margin-bottom: 0;
-							word-break: break-word;
 						}
 					}
 

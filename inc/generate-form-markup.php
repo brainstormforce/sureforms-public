@@ -210,6 +210,7 @@ class Generate_Form_Markup {
 					--srfm-color-input-background-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-color-input-border: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
+					--srfm-color-multi-choice-svg: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.7 );
 					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
 					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
