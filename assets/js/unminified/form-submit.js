@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
-import { fieldValidation } from './validation';
+import { fieldValidation, initializeInlineFieldValidation } from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
+	initializeInlineFieldValidation();
+
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
 		const {
