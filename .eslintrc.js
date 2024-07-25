@@ -34,7 +34,6 @@ module.exports = {
 		srfm_block_data: true,
 		srfm_fields_preview: true,
 		confirm: true,
-		jQuery: true,
 		elementor: true,
 		ajaxurl: true,
 		formSubmitData: true,

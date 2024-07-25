@@ -29,7 +29,7 @@ Below are the steps to update the spectra/ultimate-addon-for-gutenebrg component
 - We do not need to add deprecated save.js changes as we render the blocks using PHP.
 - Start by adding the new attributes in attributes.js - just the object of setting.
 - Next, add the changes in render.js & settings.js.
-- To see the changes in JavaScript, switch to Node version 12.13.0, then run `npm i` and then run `npm run dev`.
+- To see the changes in JavaScript, switch to Node version 14.15.0, then run `npm i` and then run `npm run start`.
 - For the frontend, you will need to make the appropriate changes in PHP:
 modules/gutenberg/dist/blocks/nameofblock.php
 - You will need to take reference from the save.js of that block in Spectra and write the equivalent code in the PHP file.
