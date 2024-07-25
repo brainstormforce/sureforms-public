@@ -74,16 +74,14 @@
 }
 
 @mixin srfm-dropdown-arrow {
-	&::after {
-		content: "";
-		position: absolute;
-		width: 0.5em;
-		height: 0.5em;
-		border: 1.25px solid var( --srfm-body-input-color );
-		border-left: 0;
-		border-top: 0;
-		right: 1em;
-		top: 50%;
-		transform: translateY( -70% ) rotate( 45deg );
-	}
+	content: "";
+	position: absolute;
+	width: 0.5em;
+	height: 0.5em;
+	border: 1.25px solid var( --srfm-body-input-color );
+	border-left: 0;
+	border-top: 0;
+	right: 1em;
+	top: 50%;
+	transform: translateY( -70% ) rotate( 45deg );
 }
