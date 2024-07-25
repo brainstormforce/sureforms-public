@@ -24,7 +24,6 @@ import ConditionalLogic from '@Components/conditional-logic';
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const {
 		fieldWidth,
-		placeholder,
 		help,
 		required,
 		block_id,
@@ -61,6 +60,21 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	const helpComponent =
+		help !== '' ? (
+			<RichText
+				tagName="label"
+				value={ help }
+				onChange={ ( value ) => {
+					setAttributes( { help: decodeHtmlEntities( value ) } );
+				} }
+				className="srfm-description"
+				multiline={ false }
+				id={ block_id }
+				allowedFormats={ [] }
+			/>
+		) : null;
+
 	return (
 		<div className={ className }>
 			<InspectorControls>
@@ -83,17 +97,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { placeholder: value } )
-								}
 							/>
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
@@ -202,9 +205,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					blockID={ block_id }
 					setAttributes={ setAttributes }
 					attributes={ attributes }
+					help={ helpComponent }
 				/>
+				<div className="srfm-error-wrap"></div>
 
-				{ help !== '' && (
+				{ /* { help !== '' && (
 					<RichText
 						tagName="label"
 						value={ help }
@@ -218,7 +223,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 						id={ block_id }
 						allowedFormats={ [] }
 					/>
-				) }
+				) } */ }
 			</>
 		</div>
 	);

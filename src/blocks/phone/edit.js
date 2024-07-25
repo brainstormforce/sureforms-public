@@ -25,7 +25,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		required,
 		fieldWidth,
 		help,
-		placeholder,
 		block_id,
 		isUnique,
 		duplicateMsg,
@@ -87,17 +86,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									} )
 								}
 								__nextHasNoMarginBottom
-							/>
-							<SRFMTextControl
-								label={ __( 'Placeholder', 'sureforms' ) }
-								value={ placeholder }
-								data={ {
-									value: placeholder,
-									label: 'placeholder',
-								} }
-								onChange={ ( value ) =>
-									setAttributes( { placeholder: value } )
-								}
 							/>
 							<ToggleControl
 								label={ __( 'Required', 'sureforms' ) }
