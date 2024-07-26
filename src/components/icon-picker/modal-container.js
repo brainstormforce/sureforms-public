@@ -1,9 +1,9 @@
 import { Modal, Tooltip } from '@wordpress/components';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import renderSVG from './helper/renderIcon';
+import renderSVG from './renderIcon';
 import { __ } from '@wordpress/i18n';
 import { Grid } from 'react-virtualized';
-import { uagbClassNames } from './helper/Helpers';
+import { uagbClassNames } from '@Utils/Helpers';
 
 import chunk from './chunks';
 import HeaderContainer from './header-container';

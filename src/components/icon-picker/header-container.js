@@ -1,4 +1,4 @@
-import renderSVG from './helper/renderIcon';
+import renderSVG from './renderIcon';
 import { __ } from '@wordpress/i18n';
 const HeaderContainer = ( props ) => {
 	const {

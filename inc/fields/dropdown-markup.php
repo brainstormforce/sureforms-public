@@ -8,6 +8,9 @@
 
 namespace SRFM\Inc\Fields;
 
+require_once SRFM_DIR . '\modules\gutenberg\classes\class-spec-gb-helper.php';
+use Spec_Gb_Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -76,7 +79,11 @@ class Dropdown_Markup extends Base {
 				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
 					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html__( 'Select an option', 'sureforms' ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
-							<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo esc_html( $option['icon'] ); ?>"><?php echo esc_html( $option['label'] ); ?></option>
+							<?php
+							$test             = Spec_Gb_Helper::render_svg_html( $option['icon'], true );
+								$escaped_test = htmlspecialchars( $test, ENT_QUOTES, 'UTF-8' );
+							?>
+							<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo esc_attr( $escaped_test ); ?>"><?php echo esc_html( $option['label'] ); ?></option>
 						<?php } ?>
 					</select>
 					<?php } ?>
@@ -86,10 +93,7 @@ class Dropdown_Markup extends Base {
 					</div>
 				</fieldset>
 			</div>
-
 		<?php
 		return ob_get_clean();
-
 	}
-
 }

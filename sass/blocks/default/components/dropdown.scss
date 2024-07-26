@@ -26,6 +26,12 @@
 						align-items: center;
 						gap: var( --srfm-dropdown-badge-icon-gap );
 						height: auto;
+
+						// Display SVG for selected option.
+						svg {
+							width: 10px;
+							height: 10px;
+						}
 					}
 
 					// Vertically center align the option for single selection.

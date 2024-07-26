@@ -33,10 +33,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"icon": {
-			"type": "string",
-			"default": "circle-check"
-		},
 		"options": {
 			"type": "array",
 			"default": [ 

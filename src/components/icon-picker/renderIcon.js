@@ -5,7 +5,7 @@
  * @return {Array} The inline CSS class.
  */
 
-import parseSVG from './parseIcon';
+import parseSVG from '@Controls/parseIcon';
 function renderSVG( svg, setAttributes = false ) {
 	svg = parseSVG( svg );
 	let fontAwesome;
@@ -90,5 +90,5 @@ function renderSVG( svg, setAttributes = false ) {
 		</svg>
 	);
 }
-window.renderSVG = renderSVG;
+
 export default renderSVG;

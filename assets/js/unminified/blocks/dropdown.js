@@ -45,13 +45,17 @@ function initializeDropdown() {
 				},
 				...additionalConfig,
 				render: {
-					option: function (data, escape) {
-						return `<div>${ data.icon } ${ escape( data.text ) }</div>`;
+					option ( data, escape ) {
+						return `<div>${ data.icon } ${ escape(
+							data.text
+						) }</div>`;
 					},
-					item: function (item, escape) {
-						return `<div>${ item.icon } ${ escape( item.text ) }</div>`;
-					}
-				}
+					item ( item, escape ) {
+						return `<div>${ item.icon } ${ escape(
+							item.text
+						) }</div>`;
+					},
+				},
 			};
 			new TomSelect( element, config );
 

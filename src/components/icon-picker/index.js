@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from '@wordpress/element';
 import styles from './editor.lazy.scss';
-import renderSVG from './helper/renderIcon';
+import renderSVG from './renderIcon';
 import { __ } from '@wordpress/i18n';
 import ModalContainer from './modal-container';
 import SRFMHelpText from '@Components/help-text';
