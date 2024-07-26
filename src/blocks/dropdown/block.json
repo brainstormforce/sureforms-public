@@ -33,9 +33,16 @@
 			"type": "boolean",
 			"default": false
 		},
+		"icon": {
+			"type": "string",
+			"default": "circle-check"
+		},
 		"options": {
-			"default": [ "Option 1", "Option 2" ],
-			"type": "array"
+			"type": "array",
+			"default": [ 
+				{ "label": "Option 1", "icon": "circle-check" },
+				{ "label": "Option 2", "icon": "circle-check" }
+			 ]
 		},
 		"fieldWidth": {
 			"type": "number",

@@ -31,6 +31,8 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import UAGIconPicker from '../../../modules/gutenberg/src/components/icon-picker/index.js';
+// import UAGIconPicker from '@Components/icon-picker';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -47,22 +49,29 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		searchable,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ newOption, setNewOption ] = useState( '' );
+	const [ newOption, setNewOption ] = useState( { label: '', icon: 'circle-check' } );
 
 	function editOption( value, i ) {
+		const updatedOptions = [ ...options ];
 		if ( value === '' ) {
 			handleDelete( i );
 			return;
+		} else {
+			updatedOptions[ i ] = { ...updatedOptions[ i ], value };
+			setAttributes( { options: updatedOptions } );
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
-		setAttributes( { options: updatedOptions } );
 	}
 
 	function handleDelete( i ) {
 		const newOptions = [ ...options ];
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
+	}
+
+	function updateIcon(icon, i) {
+		const updatedOptions = [...options];
+		updatedOptions[i] = { ...updatedOptions[i], icon };
+		setAttributes({ options: updatedOptions });
 	}
 
 	useEffect( () => {
@@ -185,6 +194,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 													>
 														{ options.map(
 															( option, i ) => (
+																console.log(option),
 																<Draggable
 																	key={ i }
 																	draggableId={
@@ -233,10 +243,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.label
 																						}
 																						data={ {
-																							value: option,
+																							value: option.label,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -258,6 +268,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							)
 																						}
 																					/>
+																					<div className='srfm-icon-picker'>
+																						<UAGIconPicker
+																							label={ __( '', 'sureforms' ) }
+																							value={ option.icon }
+																							onChange={ ( value ) => updateIcon( value, i ) }
+																						/>
+																					</div>
 																				</>
 																			</div>
 																		</div>
@@ -279,23 +296,23 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										'Add New Option',
 										'sureforms'
 									) }
-									value={ newOption }
+									value={ newOption.label }
 									onChange={ ( value ) =>
-										setNewOption( value )
+										setNewOption( { ...newOption, label: value } )
 									}
 								/>
 								<Button
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption && newOption ) {
+										if ( newOption.label ) {
 											setAttributes( {
 												options: [
 													...options,
 													newOption,
 												],
 											} );
-											setNewOption( '' );
+											setNewOption( { label: '', icon: 'circle-check' } );
 										} else {
 											// TODO: May be add a tooltip here
 										}

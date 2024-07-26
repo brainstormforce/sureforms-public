@@ -1,4 +1,30 @@
 body.post-type-sureforms_form {
+	.srfm-icon-picker {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		// height: 36px;
+		width: 36px;
+
+		.uag-control-label {
+			display: none;
+		}
+		.uag-ip-remove-icon {
+			top: 2px !important;
+			right: 2px !important;
+			svg {
+				height: 8px !important;
+				width: 8px !important;
+			}
+		}
+
+		.uag-ip-placeholder-wrap {
+			min-height: 36px !important;
+		}
+		.uag-ip-actions {
+			display: none !important;
+		}
+	}
 	overflow-y: hidden;
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
