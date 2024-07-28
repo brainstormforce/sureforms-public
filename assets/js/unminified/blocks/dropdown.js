@@ -43,6 +43,13 @@ function initializeDropdown() {
 						);
 					}
 				},
+				// Handle the input state when an item is added or removed.
+				onItemAdd() {
+					handleInputState( element );
+				},
+				onItemRemove() {
+					handleInputState( element );
+				},
 				...additionalConfig,
 				render: {
 					option ( data, escape ) {
@@ -77,5 +84,22 @@ function initializeDropdown() {
 			element.disabled = true;
 		}
 	} );
+}
+
+// If the dropdown has max options selected, disable the input field.
+function handleInputState( element ) {
+	const tsControl = element
+		.closest( '.srfm-dropdown-block' )
+		.querySelector( '.ts-control' );
+	const tsControlParent = tsControl?.parentElement;
+	const tsControlInput = tsControl?.querySelector( 'input' );
+
+	if ( tsControlInput ) {
+		if ( tsControlParent.classList.contains( 'full' ) ) {
+			tsControlInput.setAttribute( 'readonly', '' );
+		} else {
+			tsControlInput.removeAttribute( 'readonly' );
+		}
+	}
 }
 document.addEventListener( 'DOMContentLoaded', initializeDropdown );
