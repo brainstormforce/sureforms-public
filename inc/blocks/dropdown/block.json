@@ -36,8 +36,8 @@
 		"options": {
 			"type": "array",
 			"default": [ 
-				{ "label": "Option 1", "icon": "circle-check" },
-				{ "label": "Option 2", "icon": "circle-check" }
+				{ "label": "Option 1", "icon": "" },
+				{ "label": "Option 2", "icon": "" }
 			 ]
 		},
 		"fieldWidth": {

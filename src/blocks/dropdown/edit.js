@@ -72,7 +72,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	function updateIcon( icon, i ) {
 		const updatedOptions = [ ...options ];
 		updatedOptions[ i ].icon = icon;
-		// updatedOptions[i] = { ...updatedOptions[i], icon };
 		setAttributes( { options: updatedOptions } );
 	}
 

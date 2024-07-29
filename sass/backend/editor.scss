@@ -24,6 +24,13 @@ body.post-type-sureforms_form {
 
 		.uag-ip-placeholder-wrap {
 			min-height: 36px !important;
+
+			// Match selected icon size with delete icon.
+			.uag-ip-selected-icon-value svg {
+				height: 20px;
+				width: 20px;
+				fill: var( --srfm-dropdown-icon-color );
+			}
 		}
 		.uag-ip-actions {
 			display: none !important;
