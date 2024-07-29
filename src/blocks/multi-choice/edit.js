@@ -31,6 +31,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import MultiButtonsControl from '@Components/multi-buttons-control';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -45,6 +46,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		formId,
 		preview,
 		verticalLayout,
+		optionType,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
@@ -210,6 +212,25 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
+										<MultiButtonsControl
+											setAttributes={ setAttributes }
+											label={ __( 'Option Type', 'sureforms' ) }
+											data={ {
+												value: optionType,
+												label: 'optionType',
+											} }
+											options={ [
+												{
+													value: 'icon',
+													label: __( 'Icon', 'sureforms' ),
+												},
+												{
+													value: 'image',
+													label: __( 'Image', 'sureforms' ),
+												},
+											] }
+											showIcons={ false }
+										/>
 										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',

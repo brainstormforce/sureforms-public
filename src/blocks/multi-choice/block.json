@@ -72,6 +72,10 @@
 		"isConditionalLogic":{
 			"type":"boolean",
 			"default":false
-		}
+		},
+    "optionType": {
+      "type": "string",
+      "default": "icon"
+    }
 	}
 }
