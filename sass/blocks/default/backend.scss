@@ -225,7 +225,7 @@
 			}
 
 			&::after {
-				@include srfm-dropdown-arrow;
+				@include srfm-dropdown-arrow( true );
 			}
 		}
 	}

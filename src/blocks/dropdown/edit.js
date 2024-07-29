@@ -44,6 +44,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		preview,
 		className,
 		multiSelect,
+		searchable,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -119,6 +120,13 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								checked={ multiSelect }
 								onChange={ ( checked ) =>
 									setAttributes( { multiSelect: checked } )
+								}
+							/>
+							<ToggleControl
+								label={ __( 'Enable Search', 'sureforms' ) }
+								checked={ searchable }
+								onChange={ ( checked ) =>
+									setAttributes( { searchable: checked } )
 								}
 							/>
 							{ required && (

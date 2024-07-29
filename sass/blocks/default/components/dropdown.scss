@@ -8,11 +8,10 @@
 					border-radius: var( --srfm-input-field-border-radius ) !important;
 					transition: 0.3s ease-out;
 
-					// Add the glow and border color to the dropdown when it is focused.
 					&.input-active {
-						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-						border-color: transparent;
+						// Add the glow and border color to the dropdown when it is focused.
 						.ts-control {
+							box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 							border-color: var( --srfm-color-input-border-hover );
 						}
 						// Hide the caret color if the dropdown is focused and max options are selected.
@@ -25,35 +24,53 @@
 					.item {
 						display: flex;
 						align-items: center;
-						gap: var( --srfm-dropdown-badge-gap );
+						gap: var( --srfm-dropdown-badge-icon-gap );
+						height: auto;
 					}
 
+					// Vertically center align the option for single selection.
+					&.single {
+						.item {
+							position: relative;
+							top: 50%;
+							transform: translateY( -50% );
+						}
+					}
 					// In case of multiple selection, display the selected options as badges.
-					&.multi .item {
-						border-radius: 4px;
-						margin: 0;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-						background-color: var( --srfm-dropdown-badge-background );
-						padding: var( --srfm-dropdown-badge-padding ) !important;
-
-						&:hover {
-							background-color: var( --srfm-dropdown-badge-background-hover );
+					&.multi {
+						&.has-items .ts-control {
+							height: auto;
+							font-size: var( --srfm-dropdown-multiselect-font-size );
+							padding: var( --srfm-dropdown-multiselect-padding ) !important; // Override the default padding.
+							line-height: var( --srfm-dropdown-multiselect-line-height );
 						}
+						.item {
+							border-radius: 4px;
+							margin: 0;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							background-color: var( --srfm-dropdown-badge-background );
+							padding: var( --srfm-dropdown-badge-padding ) !important;
 
-						svg {
-							width: 12px;
-							height: 12px;
-						}
-
-						.remove {
-							color: var( --srfm-dropdown-badge-delete-icon-light );
-							border: none;
-							padding: 0;
-							margin-left: 0;
 							&:hover {
-								background: initial; // Added to remove the hover effect.
+								background-color: var( --srfm-dropdown-badge-background-hover );
+							}
+
+							svg {
+								width: 12px;
+								height: 12px;
+							}
+
+							.remove {
+								background-color: var( --srfm-dropdown-badge-delete-icon-light );
+								mask: url( "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNOSAzTDMgOSIgc3Ryb2tlPSIjREMyNjI2IiBzdHJva2Utb3BhY2l0eT0iMC42NSIgc3Ryb2tlLXdpZHRoPSIxLjI1Ig0KICAgICAgICBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+DQogICAgPHBhdGggZD0iTTMgM0w5IDkiIHN0cm9rZT0iI0RDMjYyNiIgc3Ryb2tlLW9wYWNpdHk9IjAuNjUiIHN0cm9rZS13aWR0aD0iMS4yNSINCiAgICAgICAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPg0KPC9zdmc+ICAgIA==" );
+								border: none;
+								padding: 0;
+								margin-left: 0;
+								height: 12px;
+								width: 12px;
+								text-indent: -9999px; // Hide the text.
 							}
 						}
 					}
@@ -65,6 +82,7 @@
 						gap: var( --srfm-dropdown-badge-gap );
 						min-height: var( --srfm-input-height );
 						padding: var( --srfm-input-field-padding ) !important;
+						align-items: center;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
@@ -72,7 +90,7 @@
 						}
 
 						&::after {
-							@include srfm-dropdown-arrow;
+							@include srfm-dropdown-arrow();
 						}
 
 						input {
@@ -85,7 +103,7 @@
 
 							// Will come to this later.
 							&::placeholder {
-								color: var( --srfm-color-input-placeholder );
+								color: var( --srfm-dropdown-placeholder-color );
 								opacity: 1;
 								font-size: 1em;
 							}
@@ -93,6 +111,10 @@
 							&:placeholder-shown {
 								text-overflow: ellipsis;
 							}
+						}
+
+						.ts-control-placeholder {
+							color: var( --srfm-dropdown-placeholder-color );
 						}
 					}
 
@@ -110,7 +132,7 @@
 							display: flex;
 							align-items: center;
 							border-radius: 4px;
-							gap: var( --srfm-dropdown-menu-icon-gap );
+							// gap: var( --srfm-dropdown-menu-icon-gap ); // Will be used while working with the icon picker.
 							padding: var( --srfm-dropdown-option-padding );
 							&.active {
 								background-color: var( --srfm-dropdown-option-background-hover );
@@ -138,6 +160,20 @@
 								height: 16px;
 								width: 16px;
 							}
+						}
+					}
+
+					// Below is for the dropdown with Search disabled.
+					// If the dropdown has selected options, hide placeholder.
+					&.has-items {
+						.ts-control-placeholder {
+							display: none !important;
+						}
+					}
+					// If the dropdown has no selected options, display placeholder.
+					&:not( .has-items ) {
+						.ts-control-placeholder {
+							display: block !important;
 						}
 					}
 				}
