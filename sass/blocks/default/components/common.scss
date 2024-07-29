@@ -40,13 +40,15 @@
 			&.srfm-valid-email-error {
 				.srfm-block-wrap {
 					.srfm-input-common,
-					.srfm-dropdown-common {
+					.ts-wrapper {
 						border-color: var( --srfm-error-color-light-border );
 
+						&.input-active {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-light-border-glow );
+							border-color: transparent;
+						}
 						.ts-control {
-							background-color: var( --srfm-error-background-color );
-							border-color: var( --srfm-error-surface-color );
-							color: var( --srfm-body-input-color );
+							border-color: var( --srfm-error-color-light-border ) !important;
 						}
 
 						&:focus {
@@ -72,11 +74,9 @@
 					box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 					border-color: var( --srfm-color-input-border-hover );
 				}
-
 				&:hover {
 					border-color: var( --srfm-color-input-border-hover );
 				}
-
 				&:disabled {
 					color: var( --srfm-disabled-color );
 					background-color: var( --srfm-disabled-background-color );

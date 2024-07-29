@@ -1,0 +1,155 @@
+.srfm-form-container {
+	.srfm-form {
+		.srfm-block {
+			.srfm-dropdown-common-wrap {
+				display: inline-block;
+				width: 100%;
+				.srfm-dropdown-common {
+					border-radius: var( --srfm-input-field-border-radius ) !important;
+					transition: 0.3s ease-out;
+
+					// Add the glow and border color to the dropdown when it is focused.
+					&.input-active {
+						box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+						border-color: transparent;
+						.ts-control {
+							border-color: var( --srfm-color-input-border-hover );
+						}
+						// Hide the caret color if the dropdown is focused and max options are selected.
+						&.full {
+							caret-color: transparent;
+						}
+					}
+
+					// Common styles for single and multi selection.
+					.item {
+						display: flex;
+						align-items: center;
+						gap: var( --srfm-dropdown-badge-gap );
+					}
+
+					// In case of multiple selection, display the selected options as badges.
+					&.multi .item {
+						border-radius: 4px;
+						margin: 0;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						background-color: var( --srfm-dropdown-badge-background );
+						padding: var( --srfm-dropdown-badge-padding ) !important;
+
+						&:hover {
+							background-color: var( --srfm-dropdown-badge-background-hover );
+						}
+
+						svg {
+							width: 12px;
+							height: 12px;
+						}
+
+						.remove {
+							color: var( --srfm-dropdown-badge-delete-icon-light );
+							border: none;
+							padding: 0;
+							margin-left: 0;
+							&:hover {
+								background: initial; // Added to remove the hover effect.
+							}
+						}
+					}
+
+					.ts-control {
+						@include srfm-input-common-styles();
+						height: auto;
+						transition: 0.3s ease-out;
+						gap: var( --srfm-dropdown-badge-gap );
+						min-height: var( --srfm-input-height );
+						padding: var( --srfm-input-field-padding ) !important;
+
+						&:hover {
+							border-color: var( --srfm-color-input-border-hover );
+							background: var( --srfm-dropdown-input-background-hover );
+						}
+
+						&::after {
+							@include srfm-dropdown-arrow;
+						}
+
+						input {
+							line-height: normal;
+							font-size: inherit;
+							height: auto;
+							width: auto;
+							min-width: auto;
+							padding-right: 8px !important; // Quick fix for the gap between input and arrow, might need to be revised later.
+
+							// Will come to this later.
+							&::placeholder {
+								color: var( --srfm-color-input-placeholder );
+								opacity: 1;
+								font-size: 1em;
+							}
+
+							&:placeholder-shown {
+								text-overflow: ellipsis;
+							}
+						}
+					}
+
+					// Dropdown menu stylings.
+					.ts-dropdown {
+						color: var( --srfm-dropdown-option-text-color );
+						background: var( --srfm-dropdown-menu-background-light );
+						padding: var( --srfm-dropdown-menu-padding );
+						margin-top: var( --srfm-dropdown-gap-between-input-menu );
+						border-radius: var( --srfm-input-field-border-radius );
+						font-size: var( --srfm-dropdown-font-size );
+						font-weight: var( --srfm-dropdown-font-weight );
+						border-color: var( --srfm-dropdown-menu-border-color );
+						.option {
+							display: flex;
+							align-items: center;
+							border-radius: 4px;
+							gap: var( --srfm-dropdown-menu-icon-gap );
+							padding: var( --srfm-dropdown-option-padding );
+							&.active {
+								background-color: var( --srfm-dropdown-option-background-hover );
+							}
+							&.selected {
+								background-color: var( --srfm-dropdown-option-background-selected );
+								// Display the check mark for selection options.
+								&::after {
+									content: "";
+									width: 0.52em;
+									height: 0.76em;
+									border: 1.25px solid var( --srfm-dropdown-option-selected-icon );
+									border-top: none;
+									border-left: none;
+									transform: rotate( 45deg );
+									margin-left: auto;
+								}
+							}
+							// Change text color on hover and when option is selected.
+							&.selected,
+							&.active {
+								color: var( --srfm-dropdown-option-selected-text );
+							}
+							svg {
+								height: 16px;
+								width: 16px;
+							}
+						}
+					}
+				}
+
+				select {
+					display: block;
+					padding: var( --srfm-input-field-padding );
+					margin: var( --srfm-input-field-margin );
+					width: 100%;
+					font-size: 0.7em;
+				}
+			}
+		}
+	}
+}

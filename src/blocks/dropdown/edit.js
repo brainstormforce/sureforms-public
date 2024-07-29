@@ -9,7 +9,7 @@ import {
 	Icon,
 	TextControl,
 } from '@wordpress/components';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import SRFMTextControl from '@Components/text-control';
 
@@ -18,7 +18,7 @@ import InspectorTabs from '@Components/inspector-tabs/InspectorTabs.js';
 import InspectorTab, {
 	SRFMTabs,
 } from '@Components/inspector-tabs/InspectorTab.js';
-import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
+import { useErrMessage } from '@Blocks/util';
 
 /**
  * Component Dependencies
@@ -43,6 +43,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		formId,
 		preview,
 		className,
+		multiSelect,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
@@ -108,6 +109,16 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 								checked={ required }
 								onChange={ ( checked ) =>
 									setAttributes( { required: checked } )
+								}
+							/>
+							<ToggleControl
+								label={ __(
+									'Enable Multiple Selections',
+									'sureforms'
+								) }
+								checked={ multiSelect }
+								onChange={ ( checked ) =>
+									setAttributes( { multiSelect: checked } )
 								}
 							/>
 							{ required && (
@@ -312,19 +323,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				blockID={ block_id }
 				setAttributes={ setAttributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };
