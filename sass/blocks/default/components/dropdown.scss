@@ -60,7 +60,6 @@
 
 					.ts-control {
 						@include srfm-input-common-styles();
-						height: auto;
 						transition: 0.3s ease-out;
 						gap: var( --srfm-dropdown-badge-gap );
 						min-height: var( --srfm-input-height );
