@@ -40,8 +40,8 @@
 
 						&:first-child {
 							position: absolute;
-							width: 16px;
-							height: 16px;
+							width: var( --srfm-check-ctn-width );
+							height: var( --srfm-check-ctn-height );
 							border-radius: 4px;
 							transform: scale( 1 );
 							border: 1px solid var( --srfm-border-color );
@@ -50,11 +50,11 @@
 
 							svg {
 								position: absolute;
-								top: 2px;
-								left: 2px;
+								top: var( --srfm-check-svg-top );
+								left: var( --srfm-check-svg-left );
 								fill: none;
-								width: 10px;
-								height: 10px;
+								width: var( --srfm-check-svg-width );
+								height: var( --srfm-check-svg-height );
 								stroke: #fff;
 								stroke-width: 2;
 								stroke-linecap: round;

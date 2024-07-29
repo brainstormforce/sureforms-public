@@ -66,7 +66,9 @@ class GDPR_Markup extends Base {
 					</svg>
 				</div>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();
