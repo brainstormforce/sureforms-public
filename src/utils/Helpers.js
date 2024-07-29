@@ -189,6 +189,11 @@ const pushSmartTagToArray = (
 
 		const fieldSlug = blockSlugs[ block.attributes.block_id ];
 
+		if ( 'undefined' === typeof fieldSlug ) {
+			// If we are here, then field is invalid and we don't need to process it.
+			return;
+		}
+
 		if ( uniqueSlugs.includes( fieldSlug ) ) {
 			return;
 		}
