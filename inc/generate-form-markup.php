@@ -236,6 +236,7 @@ class Generate_Form_Markup {
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
+				/* Need to check and remove the input variables related to the Style Tab. */
 				<?php echo esc_html( $container_id ); ?> {
 					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-label-text-color : <?php echo esc_html( $label_text_color_var ); ?>;
@@ -427,7 +428,9 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
+			<div class="srfm-single-form srfm-success-box in-page">
+				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
+			</div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );

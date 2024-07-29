@@ -29,9 +29,15 @@
 		}
 
 		.srfm-block {
-			margin-bottom: var( --srfm-gap-between-blocks );
+			margin-bottom: 1.2em;
+			color: var( --srfm-body-input-color );
 
-			&.srfm-error {
+			label {
+				font-size: 1em;
+			}
+
+			&.srfm-error,
+			&.srfm-valid-email-error {
 				.srfm-block-wrap {
 					.srfm-input-common,
 					.srfm-dropdown-common {
@@ -57,15 +63,6 @@
 					display: block;
 				}
 			}
-
-			.srfm-block-wrap {
-				position: relative;
-			}
-
-			.srfm-block-label {
-				@include srfm-block-label-styles;
-			}
-
 			.srfm-input-common {
 				font-family: inherit;
 				@include srfm-input-common-styles();
@@ -87,50 +84,11 @@
 				}
 			}
 
-			.srfm-input-input {
-				height: var( --srfm-input-height );
-			}
-
 			.srfm-error-icon {
 				display: none;
 			}
 
-			.srfm-description {
-				@include srfm-description-styles;
-			}
-
-			.srfm-with-icon {
-				.srfm-input-common {
-					padding-left: 2.4em;
-				}
-
-				.srfm-input-icon {
-					display: block;
-					position: absolute;
-					top: 50%;
-					left: 0.7em;
-					transform: translateY( -50% );
-					line-height: 0;
-
-					svg {
-						width: 0.9em;
-						height: 0.9em;
-
-						path {
-							stroke: var( --srfm-body-input-color );
-						}
-					}
-				}
-			}
-
-			&.srfm-email-confirm-block {
-				margin-top: 1.2em;
-				margin-bottom: 0;
-			}
-
 			.srfm-error-wrap {
-				height: var( --srfm-error-line-height );
-
 				.srfm-error-message {
 					line-height: var( --srfm-error-line-height );
 					color: var( --srfm-error-color-light );

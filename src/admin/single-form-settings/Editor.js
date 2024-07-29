@@ -338,6 +338,7 @@ const SureformsFormSpecificSettings = ( props ) => {
 							property: '--srfm-help-color',
 							value: sureformsKeys._srfm_help_color || '#4B5563',
 						},
+						// The input variables need to be removed since we won't be needing them.
 						// Input
 						{
 							property: '--srfm-body-input-color',
