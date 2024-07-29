@@ -77,7 +77,7 @@
 
 					.ts-control {
 						@include srfm-input-common-styles();
-						@include srfm-dropdown-arrow();
+						height: auto;
 						transition: 0.3s ease-out;
 						gap: var( --srfm-dropdown-badge-gap );
 						min-height: var( --srfm-input-height );
@@ -87,6 +87,10 @@
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
 							background: var( --srfm-dropdown-input-background-hover );
+						}
+
+						&::after {
+							@include srfm-dropdown-arrow();
 						}
 
 						input {
