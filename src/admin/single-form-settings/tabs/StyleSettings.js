@@ -184,6 +184,14 @@ function StyleSettings( props ) {
 				? `rgba( from ${ sureformsKeys._srfm_color1 } r g b / 0.15 )`
 				: '#FAE4DC'
 		);
+		// checkbox and gdpr
+		root.style.setProperty( '--srfm-check-ctn-width', '16px' );
+		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
+		root.style.setProperty( '--srfm-check-svg-top', '2px' );
+		root.style.setProperty( '--srfm-check-svg-left', '2px' );
+		root.style.setProperty( '--srfm-check-svg-width', '10px' );
+		root.style.setProperty( '--srfm-check-svg-height', '10px' );
+
 		// Label color
 		root.style.setProperty(
 			'--srfm-label-text-color',

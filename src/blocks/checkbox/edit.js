@@ -131,7 +131,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div className="srfm-block-single srfm-block srfm-checkbox-block">
+			<div className="srfm-checkbox-block">
 				<CheckboxComponent
 					blockID={ block_id }
 					setAttributes={ setAttributes }
