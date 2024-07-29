@@ -3,9 +3,10 @@ import IntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import { useEffect, useState } from '@wordpress/element';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
-	const { label, placeholder, required, autoCountry } = attributes;
+	const { label, placeholder, required, autoCountry, help } = attributes;
 	const [ country, setCountry ] = useState( '' );
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -33,6 +34,11 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 				multiline={ false }
 				id={ blockID }
 				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
 			/>
 			<div className="srfm-block-wrap">
 				<IntlTelInput

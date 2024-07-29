@@ -174,19 +174,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 				handleChange={ handleChange }
 				setAttributes={ setAttributes }
 			/>
-			{ help !== '' && (
-				<RichText
-					tagName="label"
-					value={ help }
-					onChange={ ( value ) => {
-						setAttributes( { help: decodeHtmlEntities( value ) } );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
-				/>
-			) }
+			<div className="srfm-error-wrap"></div>
 		</div>
 	);
 };

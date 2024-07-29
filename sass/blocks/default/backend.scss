@@ -189,7 +189,14 @@
 	}
 
 	// Phone.
-	div[data-type="srfm/phone"] {
+	.srfm-phone-block-wrap {
+		// Adding styles to srfm-block-wrap because the library styles are overriding the input styles.
+		.srfm-block-wrap {
+			margin: var( --srfm-input-field-margin ) !important;
+		}
+		.iti-flag {
+			clip-path: circle();
+		}
 		.flag-container {
 			.arrow {
 				&:after {

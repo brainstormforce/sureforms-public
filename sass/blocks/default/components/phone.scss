@@ -1,10 +1,16 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-phone-block {
+			.srfm-block-wrap {
+				margin: var( --srfm-input-field-margin ) !important;
+			}
 			.iti {
 				width: 100%;
 
 				.iti__flag-container {
+					.iti__flag {
+						clip-path: circle();
+					}
 					.iti__arrow {
 						border-top-color: var( --srfm-body-input-color );
 
