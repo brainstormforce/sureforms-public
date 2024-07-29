@@ -157,20 +157,20 @@ export async function getServerGeneratedBlockSlugs( formID, content ) {
 }
 
 // Creates excerpt.
-export function trimTextToWords(text, wordLimit, ending = '...') {
-    // Split the text into words
-    const words = text.split(/\s+/);
+export function trimTextToWords( text, wordLimit, ending = '...' ) {
+	// Split the text into words
+	const words = text.split( /\s+/ );
 
-    // If the text has fewer words than the limit, return it as is
-    if (words.length <= wordLimit) {
-        return text;
-    }
+	// If the text has fewer words than the limit, return it as is
+	if ( words.length <= wordLimit ) {
+		return text;
+	}
 
-    // Slice the array to the limit and join it back into a string
-    const trimmedWords = words.slice(0, wordLimit).join(' ');
+	// Slice the array to the limit and join it back into a string
+	const trimmedWords = words.slice( 0, wordLimit ).join( ' ' );
 
-    // Append the ending if there are more words than the limit
-    return trimmedWords + ending;
+	// Append the ending if there are more words than the limit
+	return trimmedWords + ending;
 }
 
 const pushSmartTagToArray = (
@@ -223,7 +223,7 @@ const pushSmartTagToArray = (
 
 		if ( 'srfm/gdpr' === block?.name ) {
 			// If we have GDPR field, lets add a GDPR prefix to make it clear to the users.
-			fieldLabel = `[GDPR] ${fieldLabel}`;
+			fieldLabel = `[GDPR] ${ fieldLabel }`;
 		}
 
 		tagsArray.push( [ fieldTag, fieldLabel ] );
