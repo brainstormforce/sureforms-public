@@ -156,6 +156,23 @@ export async function getServerGeneratedBlockSlugs( formID, content ) {
 	return await apiFetch( option );
 }
 
+// Creates excerpt.
+export function trimTextToWords(text, wordLimit, ending = '...') {
+    // Split the text into words
+    const words = text.split(/\s+/);
+
+    // If the text has fewer words than the limit, return it as is
+    if (words.length <= wordLimit) {
+        return text;
+    }
+
+    // Slice the array to the limit and join it back into a string
+    const trimmedWords = words.slice(0, wordLimit).join(' ');
+
+    // Append the ending if there are more words than the limit
+    return trimmedWords + ending;
+}
+
 const pushSmartTagToArray = (
 	blocks,
 	blockSlugs,
@@ -200,11 +217,14 @@ const pushSmartTagToArray = (
 
 		/**
 		 * Compose field tag and label.
-		 * We are treating "srfm/gdpr" separately for the field label because
-		 * GDPR block's label can be a long text, which will create issue to the users for the tags.
 		 */
 		const fieldTag = '{form:' + fieldSlug + '}';
-		const fieldLabel = 'srfm/gdpr' === block?.name ? __( 'GDPR Agreement', 'sureforms' ) : block.attributes.label;
+		let fieldLabel = trimTextToWords( block.attributes.label, 5 ); // Limit the label to 5 words, maximum. It does not affect the slug.
+
+		if ( 'srfm/gdpr' === block?.name ) {
+			// If we have GDPR field, lets add a GDPR prefix to make it clear to the users.
+			fieldLabel = `[GDPR] ${fieldLabel}`;
+		}
 
 		tagsArray.push( [ fieldTag, fieldLabel ] );
 		uniqueSlugs.push( fieldSlug );

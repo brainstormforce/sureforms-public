@@ -143,7 +143,8 @@ class Gutenberg_Hooks {
 		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
 
 		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
-			$slug = sanitize_title( $block['attrs']['label'] );
+			// Using "wp_trim_words" for long labels.
+			$slug = sanitize_title( wp_trim_words( $block['attrs']['label'], 5 ) );
 		}
 
 		if ( ! empty( $prefix ) ) {
