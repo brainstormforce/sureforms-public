@@ -207,13 +207,26 @@ function GeneralSettings( props ) {
 				initialOpen={ true }
 			>
 				<ToggleControl
+					label={ __( 'Use Labels as Placeholders', 'sureforms' ) }
+					checked={ sureformsKeys._srfm_use_label_as_placeholder }
+					onChange={ ( value ) => {
+						updateMeta( '_srfm_use_label_as_placeholder', value );
+					} }
+				/>
+				<p className="components-base-control__help">
+					{ __(
+						'Above setting will only take effect once you are on the live page, and not while you\'re editing.',
+						'sureforms'
+					) }
+				</p>
+				{ ! sureformsKeys?._srfm_use_label_as_placeholder && <ToggleControl
 					label={ __( 'Show Labels', 'sureforms' ) }
 					checked={ sureformsKeys._srfm_show_labels }
 					onChange={ ( value ) => {
 						updateMeta( '_srfm_show_labels', value );
 					} }
-				/>
-				{ sureformsKeys._srfm_show_labels && (
+				/> }
+				{ ( sureformsKeys?._srfm_use_label_as_placeholder || sureformsKeys._srfm_show_labels ) && (
 					<ToggleControl
 						label={ __( 'Show Asterisk', 'sureforms' ) }
 						checked={ sureformsKeys._srfm_show_asterisk }
