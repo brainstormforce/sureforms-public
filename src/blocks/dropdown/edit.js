@@ -218,7 +218,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																						'flex',
 																					alignItems:
 																						'center',
-																					gap: '10px',
+																					gap: '8px',
 																				} }
 																			>
 																				<>
@@ -260,14 +260,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																					/>
 																				</div>
 																				<>
-																					<Button
-																						icon="trash"
-																						onClick={ () =>
-																							handleDelete(
-																								i
-																							)
-																						}
-																					/>
 																					<div className="srfm-icon-picker">
 																						<UAGIconPicker
 																							label={ __(
@@ -287,6 +279,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							}
 																						/>
 																					</div>
+																					<Button
+																						icon="trash"
+																						onClick={ () =>
+																							handleDelete(
+																								i
+																							)
+																						}
+																					/>
 																				</>
 																			</div>
 																		</div>

@@ -1,15 +1,11 @@
 body.post-type-sureforms_form {
 	.srfm-icon-picker {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
-		// height: 36px;
-		width: 36px;
+		// To align with the option text input field.
+		height: 34px;
 
 		.uag-custom-ip {
 			margin: 0;
 		}
-
 		.uag-control-label {
 			display: none;
 		}
@@ -21,15 +17,23 @@ body.post-type-sureforms_form {
 				width: 8px !important;
 			}
 		}
-
 		.uag-ip-placeholder-wrap {
-			min-height: 36px !important;
+			// Container size 32x32 px.
+			width: 32px;
+			min-height: 32px !important;
+
+			&:hover {
+				background-color: #f8fafc;
+			}
+
+			.uag-ip-remove-icon svg {
+				background-color: var( --srfm-error-color-light );
+			}
 
 			// Match selected icon size with delete icon.
 			.uag-ip-selected-icon-value svg {
 				height: 20px;
 				width: 20px;
-				fill: var( --srfm-dropdown-icon-color );
 			}
 		}
 		.uag-ip-actions {
