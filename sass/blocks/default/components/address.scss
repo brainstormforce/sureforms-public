@@ -1,3 +1,4 @@
+@import "../utils/mixins.scss";
 .srfm-form-container {
 	.srfm-form {
 		.srfm-address-block {
@@ -5,25 +6,10 @@
 				margin-bottom: var( --srfm-gap-below-address-label );
 			}
 			.srfm-block-wrap {
-				display: flex;
-				flex-wrap: wrap;
-				gap: var( --srfm-row-gap-between-fields ) var( --srfm-col-gap-between-fields );
+				@include srfm-address-block-styles;
 
 				.srfm-block-single {
-					margin-bottom: 0;
-					padding: 0;
-				}
-				.srfm-block-width-100 {
-					flex: 0 1 100%;
-				}
-				.srfm-block-width-50 {
-					flex: 0 1 calc( 50% - var( --srfm-col-gap-between-fields ) / 2 );
-				}
-				.srfm-block-width-33-33 {
-					flex: 0 1 calc( 33.33% - ( 2 / 3 ) * var( --srfm-col-gap-between-fields ) );
-				}
-				.srfm-block-width-25 {
-					flex: 0 1 calc( 25% - ( 3 / 4 ) * var( --srfm-col-gap-between-fields ) );
+					@include srfm-no-margin-padding;
 				}
 
 				.srfm-input-common {

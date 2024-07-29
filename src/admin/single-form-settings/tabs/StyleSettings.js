@@ -633,6 +633,7 @@ function StyleSettings( props ) {
 					isFormSpecific={ true }
 				/>
 			</SRFMAdvancedPanelBody>
+			{ /* Need to remove the below Input Panel and related variables and code. */ }
 			<SRFMAdvancedPanelBody
 				title={ __( 'Input', 'sureforms' ) }
 				initialOpen={ false }
