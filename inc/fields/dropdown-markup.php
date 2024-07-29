@@ -28,6 +28,14 @@ class Dropdown_Markup extends Base {
 	protected $placeholder_html;
 
 	/**
+	 * Stores the multi select attribute value.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $multi_select_attr;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -37,8 +45,9 @@ class Dropdown_Markup extends Base {
 		$this->set_properties( $attributes );
 		$this->set_input_label( __( 'Dropdown', 'sureforms' ) );
 		$this->set_error_msg( $attributes, 'srfm_dropdown_block_required_text' );
-		$this->slug             = 'dropdown';
-		$this->placeholder_html = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
+		$this->slug              = 'dropdown';
+		$this->placeholder_html  = $this->placeholder ? $this->placeholder : __( 'Select option', 'sureforms' );
+		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 	}
@@ -53,6 +62,7 @@ class Dropdown_Markup extends Base {
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 				<fieldset>
+					<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 					<legend>
 						<?php echo wp_kses_post( $this->label_markup ); ?>
 						<?php echo wp_kses_post( $this->help_markup ); ?>
@@ -63,7 +73,7 @@ class Dropdown_Markup extends Base {
 						?>
 					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" tabindex="0" aria-hidden="true">
+				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" tabindex="0" aria-hidden="true">
 					<option value="" disabled selected><?php echo esc_html( $this->placeholder_html ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<option value="<?php echo esc_html( $option ); ?>"><?php echo esc_html( $option ); ?></option>

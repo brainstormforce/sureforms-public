@@ -25,6 +25,10 @@
 		"required": {
 			"type": "boolean"
 		},
+		"multiSelect": {
+			"type": "boolean",
+			"default": false
+		},
 		"options": {
 			"default": [ "Option 1", "Option 2" ],
 			"type": "array"
