@@ -80,11 +80,15 @@ class Dropdown_Markup extends Base {
 					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html__( 'Select an option', 'sureforms' ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<?php
-							$test             = Spec_Gb_Helper::render_svg_html( $option['icon'], true );
-								$escaped_test = htmlspecialchars( $test, ENT_QUOTES, 'UTF-8' );
-							?>
-							<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo esc_attr( $escaped_test ); ?>"><?php echo esc_html( $option['label'] ); ?></option>
-						<?php } ?>
+							if ( isset( $option['label'] ) && isset( $option['icon'] ) ) {
+								$icon_svg         = Spec_Gb_Helper::render_svg_html( $option['icon'], true );
+								$escaped_icon_svg = htmlspecialchars( (string) $icon_svg, ENT_QUOTES, 'UTF-8' );
+								?>
+							<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo esc_attr( $escaped_icon_svg ); ?>"><?php echo esc_html( $option['label'] ); ?></option>
+								<?php
+							}
+						}
+						?>
 					</select>
 					<?php } ?>
 					</div>
