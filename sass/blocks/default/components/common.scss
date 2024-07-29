@@ -82,6 +82,10 @@
 					background-color: var( --srfm-disabled-background-color );
 					border-color: var( --srfm-disabled-border-color );
 				}
+				// Placeholder color for input fields.
+				&::placeholder {
+					color: var( --srfm-dropdown-placeholder-color );
+				}
 			}
 
 			.srfm-error-icon {
