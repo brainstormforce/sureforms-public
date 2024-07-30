@@ -13,10 +13,10 @@ import {
 	MdOutlineCode,
 	MdOutlineDashboardCustomize,
 } from 'react-icons/md';
-import { useSelect } from '@wordpress/data';
+import { select } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import FormConfirmSetting from './form-confirm-setting';
-import { setFormSpecificSmartTags, SRFMToaster } from '@Utils/Helpers';
+import { setFormSpecificSmartTags, SRFMToaster, getServerGeneratedBlockSlugs } from '@Utils/Helpers';
 import toast from 'react-hot-toast';
 
 const SingleFormSettingsPopup = ( props ) => {
@@ -31,6 +31,8 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ parentTab, setParentTab ] = useState( null );
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
+
+	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
 	const tabs = applyFilters(
 		'srfm.formSettings.tabs',
@@ -83,11 +85,9 @@ const SingleFormSettingsPopup = ( props ) => {
 		setSelectedTab
 	);
 
-	const savedBlocks = useSelect( ( select ) =>
-		select( editorStore ).getBlocks()
-	);
+	const { getBlocks, getCurrentPostId, getEditedPostContent } = select( editorStore );
 
-	setFormSpecificSmartTags( savedBlocks );
+	setFormSpecificSmartTags( getBlocks(), blockSlugs );
 
 	useEffect( () => {
 		const activeTabObject = tabs.find( ( tab ) => tab.id === selectedTab );
@@ -95,6 +95,19 @@ const SingleFormSettingsPopup = ( props ) => {
 			setParentTab( activeTabObject.parent );
 		} else {
 			setParentTab( null );
+		}
+
+		if ( ! Object.keys( blockSlugs ).length ) {
+			// Process the blocks using fetch one time per Modal open ( Or if data is not set already in blockSlugs state. )
+			getServerGeneratedBlockSlugs( getCurrentPostId(), getEditedPostContent() )
+				.then( ( response ) => {
+					if ( true !== response?.success ) {
+						return console.error( 'Unable to fetch saved blocks: ', response?.data );
+					}
+					setBlockSlugs( response.data );
+				} ).catch( ( err ) => {
+					console.error( 'Unable to fetch saved blocks: ', err );
+				} );
 		}
 	}, [ selectedTab ] );
 
