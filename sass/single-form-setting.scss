@@ -158,7 +158,7 @@ $req_err_color: #dc2625;
 				gap: 24px;
 				width: 100%;
 				max-width: 800px;
-                font-family: 'Inter';
+				font-family: "Inter";
 
 				.srfm-modal-inner-heading {
 					display: flex;
@@ -572,22 +572,22 @@ $req_err_color: #dc2625;
 							width: 100%;
 							justify-content: space-between;
 							align-items: center;
-                            
+
 							.srfm-modal-upsell-message-content {
-                                display: flex;
+								display: flex;
 								flex-direction: column;
 								align-items: flex-start;
-                                padding-right: 8px;
+								padding-right: 8px;
 
-                                img {
-                                    margin-bottom: 16px;
-                                }
+								img {
+									margin-bottom: 16px;
+								}
 
 								p {
-                                    font-size: 14px;
-                                    line-height: 20px;
-                                    font-weight: 400;
-                                    margin-bottom: 24px;
+									font-size: 14px;
+									line-height: 20px;
+									font-weight: 400;
+									margin-bottom: 24px;
 								}
 							}
 						}
