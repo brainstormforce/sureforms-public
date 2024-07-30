@@ -322,10 +322,6 @@ body.post-type-sureforms_form {
 		}
 	}
 
-	.srfm-submit-btn-font-size {
-		font-size: var( --srfm-font-size );
-	}
-
 	.srfm-submit-btn-container {
 		position: relative;
 		max-width: calc( 620px - 0em );
@@ -333,15 +329,17 @@ body.post-type-sureforms_form {
 		margin: 1.2em auto 6em auto;
 
 		.srfm-btn-bg-color {
-			border-radius: var( --srfm-btn-border-radius );
 			font-family: inherit;
-			font-weight: var( --wp--custom--font-weight--medium );
-			line-height: normal;
-			padding: 0.625em 1em;
 			text-decoration: none;
-			color: var( --srfm-btn-text-color );
-			background-color: var( --srfm-btn-bg-color );
-			border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+			border: 0px;
+			padding: var( --srfm-btn-padding ) !important;
+			font-size: var( --srfm-btn-font-size ) !important;
+			font-weight: var( --srfm-btn-font-weight ) !important;
+			line-height: var( --srfm-btn-line-height ) !important;
+			border-radius: var( --srfm-btn-border-radius ) !important;
+			background: var( --srfm-color-scheme-primary ) !important;
+			color: var( --srfm-color-scheme-text-on-primary ) !important;
+			border: 1px solid var( --srfm-color-scheme-primary ) !important;
 		}
 		.srfm-btn-alignment {
 			position: absolute;
@@ -357,10 +355,6 @@ body.post-type-sureforms_form {
 			}
 		}
 
-		.srfm-submit-button {
-			font-size: 0.8em;
-		}
-
 		@media ( max-width: 778px ) {
 			max-width: calc( 620px - 0.6em );
 		}
@@ -374,7 +368,7 @@ body.post-type-sureforms_form {
 
 	// SureForms Custom Button Styles.
 	.srfm-inline-submit-button {
-		// padding: calc( 0.667em + 2px ) calc( 1.333em + 2px );
+		margin-top: 4px;
 	}
 
 	.editor-post-publish-panel__content {

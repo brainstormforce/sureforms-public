@@ -414,6 +414,23 @@ class Base {
 	}
 
 	/**
+	 * This function creates placeholder markup from label
+	 * works when user selects option 'Use labels as placeholder'
+	 *
+	 * @param string $input_label label of block where functionality is required.
+	 * @since x.x.x
+	 * @return void
+	 */
+	protected function set_label_as_placeholder( $input_label = '' ) {
+		$this->placeholder_attr = '';
+		$placeholder            = Helper::generate_common_form_markup( $this->form_id, 'placeholder', $this->label, $this->slug, $this->block_id . $input_label, boolval( $this->required ) );
+		if ( ! empty( $placeholder ) ) {
+			$this->label_markup     = '';
+			$this->placeholder_attr = ' placeholder="' . $placeholder . '" ';
+		}
+	}
+
+	/**
 	 * Setter for the aria-describedby attribute.
 	 *
 	 * @since 0.0.6

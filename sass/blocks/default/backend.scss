@@ -12,7 +12,7 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 	}
 
@@ -65,7 +65,6 @@
 				margin: 0;
 				border: 1px solid var( --srfm-border-color );
 				box-shadow: none;
-				background-color: var( --srfm-base-background-color );
 			}
 
 			.srfm-block-text {
@@ -140,7 +139,6 @@
 					align-items: flex-start;
 					font-size: 0.7em;
 					padding: 0.72em 1.143em 0.72em 0.72em;
-					background-color: var( --srfm-base-background-color );
 					border: var( --srfm-border ) solid var( --srfm-border-color );
 					border-radius: var( --srfm-border-radius );
 					width: auto;
@@ -238,5 +236,11 @@
 				top: 1em;
 			}
 		}
+	}
+}
+
+.editor-styles-wrapper {
+	&::before {
+		background-color: red;
 	}
 }
