@@ -32,6 +32,8 @@ const GeneralSettings = ( props ) => {
 		link,
 		target,
 		disableLink,
+		iconAccessabilityMode,
+		iconAccessabilityDesc,
 	} = attributes;
 
 	return (
@@ -45,6 +47,48 @@ const GeneralSettings = ( props ) => {
 					value={ icon }
 					onChange={ ( value ) => setAttributes( { icon: value } ) }
 				/>
+
+				<MultiButtonsControl
+					setAttributes={ setAttributes }
+					label={ __( 'Accessibility Mode', 'sureforms' ) }
+					data={ {
+						value: iconAccessabilityMode,
+						label: 'iconAccessabilityMode',
+					} }
+					options={ [
+						{
+							value: 'svg',
+							label: __( 'SVG', 'sureforms' ),
+						},
+						{
+							value: 'image',
+							label: __( 'Image', 'sureforms' ),
+						},
+						{
+							value: 'presentation',
+							label: __( 'Decorative', 'sureforms' ),
+						},
+					] }
+				/>
+
+				{ iconAccessabilityMode !== 'presentation' && (
+					<>
+						<UAGTextControl
+							label={ __( 'Accessibility Label', 'sureforms' ) }
+							data={ {
+								value: iconAccessabilityDesc,
+								label: 'iconAccessabilityDesc',
+							} }
+							value={ iconAccessabilityDesc }
+							setAttributes={ setAttributes }
+							onChange={ ( value ) =>
+								setAttributes( {
+									iconAccessabilityDesc: value,
+								} )
+							}
+						/>
+					</>
+				) }
 				<ResponsiveSlider
 					label={ __( 'Size', 'sureforms' ) }
 					data={ {

@@ -416,6 +416,16 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 					'type'    => 'string',
 					'default' => 'outset',
 				],
+				'iconAccessabilityMode'            =>
+				[
+					'type'    => 'string',
+					'default' => 'svg',
+				],
+				'iconAccessabilityDesc'            =>
+				[
+					'type'    => 'string',
+					'default' => '',
+				],
 			];
 
 			$icon_border_attr = Spec_Gb_Helper::get_instance()->generate_php_border_attribute( 'icon' );
@@ -448,12 +458,26 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 				$block_id = $attributes['block_id'];
 			}
 
-			$icon         = isset( $attributes['icon'] ) && $attributes['icon'] ? $attributes['icon'] : '';
+			$icon         = isset( $attributes['icon'] ) && $attributes['icon'] ? $attributes['icon'] : 'circle-check';
 			$link         = isset( $attributes['link'] ) && $attributes['link'] ? $attributes['link'] : '';
 			$target       = isset( $attributes['target'] ) && $attributes['target'] ? $attributes['target'] : '';
 			$disable_link = isset( $attributes['disableLink'] ) && $attributes['disableLink'] ? $attributes['disableLink'] : '';
 			$hash         = '#';
-			$icon_html    = '';
+			ob_start();
+			$icon_html = Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' );
+			$icon_html = ob_get_clean();
+
+			if ( $icon_html ) {
+				$role_attr        = ( 'image' === $attributes['iconAccessabilityMode'] ) ? ' role="img"' : ( ( 'svg' === $attributes['iconAccessabilityMode'] ) ? ' role="graphics-symbol"' : '' );
+				$aria_hidden_attr = ( 'presentation' === $attributes['iconAccessabilityMode'] ) ? 'true' : 'false';
+				$aria_label_attr  = ( 'presentation' !== $attributes['iconAccessabilityMode'] ) ? ' aria-label="' . esc_attr( $attributes['iconAccessabilityDesc'] ) . '"' : '';
+
+				$icon_html = preg_replace(
+					'/<svg(.*?)>/',
+					'<svg$1' . $role_attr . ' aria-hidden="' . $aria_hidden_attr . '"' . $aria_label_attr . '>',
+					$icon_html
+				);
+			}
 
 			$target_val = $target ? '_blank' : '_self';
 			$link_url   = $disable_link ? $link : '#';
@@ -485,7 +509,9 @@ if ( ! class_exists( 'Spec_Icon' ) ) {
 						?>
 						<a rel="noopener noreferrer" href="<?php echo esc_url( $href ); ?>" target="<?php echo esc_attr( $target_val ); ?>" >
 					<?php } ?>
-						<?php Spec_Gb_Helper::render_svg_html( $icon ? $icon : 'circle-check' ); ?>
+						<?php
+							echo $icon_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						?>
 					<?php if ( $link_condition ) { ?>
 						</a>
 					<?php } ?>
