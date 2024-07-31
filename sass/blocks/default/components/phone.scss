@@ -8,21 +8,86 @@
 				width: 100%;
 
 				.iti__flag-container {
+					// padding: var( --srfm-flag-section-padding ) !important;
+					// display: flex;
+					// align-items: flex-end;
+					// width: 100%;
+					.iti__country-list {
+						display: block;
+						opacity: 1;
+						top: 100%;
+						width: 310px;
+						font-size: var( --srfm-dropdown-font-size );
+						font-weight: var( --srfm-dropdown-font-weight );
+						padding: var( --srfm-dropdown-menu-padding );
+						margin-top: var( --srfm-dropdown-gap-between-input-menu );
+						border-color: var( --srfm-dropdown-menu-border-color );
+						border-radius: var( --srfm-input-field-border-radius );
+						border: var( --srfm-color-input-border ) solid 1px;
+						line-height: var( --srfm-input-field-line-height );
+						transform: translateY( 0 );
+						transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
+
+						&.iti__hide {
+							display: block;
+							transform: translateY( 1em );
+							opacity: 0;
+							visibility: hidden;
+						}
+						.iti__country {
+							padding: var( --srfm-dropdown-option-padding );
+							gap: var( --srfm-gap-between-icon-text );
+							border-radius: var( --srfm-input-field-border-radius );
+
+							.iti__country-name {
+								color: var( --srfm-dropdown-option-text-color );
+								white-space: nowrap;
+								overflow: hidden;
+								text-overflow: ellipsis;
+							}
+							.iti__dial-code {
+								color: var( --srfm-color-input-text );
+								font-weight: 600;
+							}
+
+							.iti__flag-box,
+							.iti__country-name {
+								margin-right: 0; // Removing default margin.
+							}
+
+							&.iti__highlight {
+								background-color: var( --srfm-dropdown-option-background-hover );
+							}
+
+							&.iti__active {
+								background-color: var( --srfm-dropdown-option-background-selected );
+								&::after {
+									@include srfm-check-mark;
+								}
+							}
+						}
+					}
+					.iti__selected-flag {
+						background-color: inherit !important;
+						padding-top: 10px;
+						padding-bottom: 10px;
+						// height: var( --srfm-input-height );
+					}
 					.iti__flag {
 						clip-path: circle();
 					}
+					.iti__selected-dial-code {
+						font-size: var( --srfm-input-field-font-size );
+						margin-left: 4px !important;
+						color: var( --srfm-input-text-prefix-color );
+					}
 					.iti__arrow {
-						border-top-color: var( --srfm-body-input-color );
-
-						&.iti__arrow--up {
-							border-bottom-color: var( --srfm-body-input-color );
-						}
+						display: none;
 					}
 				}
-
-				.srfm-input-phone {
-					padding-left: 4em;
-				}
+			}
+			.srfm-input-phone {
+				padding-bottom: 12px;
 			}
 		}
 	}

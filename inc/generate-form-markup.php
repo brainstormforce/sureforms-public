@@ -286,6 +286,13 @@ class Generate_Form_Markup {
 					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
 					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
+					
+					/* Same as dropdown variables, will be adjusted after merging. */
+					--srfm-dropdown-option-background-selected: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
+					--srfm-dropdown-option-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
+					--srfm-dropdown-option-selected-icon: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
+					--srfm-dropdown-option-text-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.80 );
+					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.

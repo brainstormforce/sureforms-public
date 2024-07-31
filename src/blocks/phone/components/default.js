@@ -49,6 +49,7 @@ export const PhoneComponent = ( { setAttributes, attributes, blockID } ) => {
 					autoPlaceholder={ false }
 					pattern="[0-9]{10}"
 					defaultCountry={ autoCountry ? country : 'us' }
+					separateDialCode={ true }
 				/>
 			</div>
 		</>

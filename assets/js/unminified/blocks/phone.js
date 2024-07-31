@@ -8,6 +8,7 @@ function initializePhoneField() {
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
 			autoPlaceholder: false,
+			separateDialCode: true,
 		};
 
 		if ( isAutoCountry === 'true' ) {
