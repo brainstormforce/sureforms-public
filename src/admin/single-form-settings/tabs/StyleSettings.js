@@ -340,7 +340,7 @@ function StyleSettings( props ) {
 		<>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form Container', 'sureforms' ) }
-				initialOpen={ false }
+				initialOpen={ true }
 			>
 				<AdvancedPopColorControl
 					label={ __( 'Primary Color', 'sureforms' ) }

@@ -15,7 +15,7 @@ export const MultiChoiceComponent = ( {
 	deleteOption,
 	setAttributes,
 } ) => {
-	const { label, required, options, choiceWidth, help, singleSelection } =
+	const { label, required, options, choiceWidth, help, singleSelection, verticalLayout } =
 		attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -42,7 +42,7 @@ export const MultiChoiceComponent = ( {
 							index
 						)
 					}
-					type="textarea"
+					type="text"
 					value={ option.optionTitle }
 				/>
 				<Button
@@ -60,7 +60,7 @@ export const MultiChoiceComponent = ( {
 			: parse( svgIcons[ 'square-unchecked' ] );
 		return (
 			<div
-				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }` }
+				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${ verticalLayout ? ' srfm-vertical-layout' : '' }` }
 			>
 				{ options.map( ( option, key ) => {
 					return (

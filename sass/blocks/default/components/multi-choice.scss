@@ -74,6 +74,7 @@
 						width: 100%;
 					}
 				}
+				@include srfm-multi-choice-vertical-layout( );
 			}
 		}
 	}
