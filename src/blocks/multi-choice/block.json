@@ -36,7 +36,8 @@
 			"type": "array",
 			"default": [
 				{
-					"optionTitle": "Option 1"
+					"optionTitle": "Option 1",
+					"icon": ""
 				}
 			]
 		},
