@@ -52,8 +52,11 @@ class Dropdown_Markup extends Base {
 		$this->slug              = 'dropdown';
 		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
+		$this->placeholder       = $this->label ? $this->label : __( 'Select an option', 'sureforms' );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
+		$this->set_label_as_placeholder( $this->input_label );
+
 	}
 
 	/**
@@ -78,7 +81,7 @@ class Dropdown_Markup extends Base {
 					<select class="srfm-dropdown-common srfm-<?php echo esc_attr( $this->slug ); ?>-input"
 						<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
 				aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" data-multiple="<?php echo esc_attr( $this->multi_select_attr ); ?>" data-searchable="<?php echo esc_attr( $this->search_attr ); ?>" tabindex="0" aria-hidden="true">
-					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html__( 'Select an option', 'sureforms' ); ?></option>
+					<option class="srfm-dropdown-placeholder" value="" disabled selected><?php echo esc_html( $this->placeholder ); ?></option>
 						<?php foreach ( $this->options as $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( isset( $option['icon'] ) ? $option['icon'] : '', true );

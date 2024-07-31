@@ -2,6 +2,9 @@ import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import parse from 'html-react-parser';
+import svgIcons from '@Svg/svgs.json';
+import HelpText from '@Components/misc/HelpText';
 
 export const MultiChoiceComponent = ( {
 	attributes,
@@ -12,7 +15,8 @@ export const MultiChoiceComponent = ( {
 	deleteOption,
 	setAttributes,
 } ) => {
-	const { label, required, options, choiceWidth } = attributes;
+	const { label, required, options, choiceWidth, help, singleSelection, verticalLayout } =
+		attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
 	const defaultChoiceWidth = '100';
@@ -51,9 +55,12 @@ export const MultiChoiceComponent = ( {
 	} );
 
 	const OriginalView = () => {
+		const selectionSvg = singleSelection
+			? parse( svgIcons[ 'circle-unchecked' ] )
+			: parse( svgIcons[ 'square-unchecked' ] );
 		return (
 			<div
-				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }` }
+				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${ verticalLayout ? ' srfm-vertical-layout' : '' }` }
 			>
 				{ options.map( ( option, key ) => {
 					return (
@@ -61,7 +68,9 @@ export const MultiChoiceComponent = ( {
 							<div className="srfm-block-content-wrap">
 								<span
 									className={ `srfm-icon srfm-${ slug }-icon` }
-								></span>
+								>
+									{ selectionSvg }
+								</span>
 								<p>{ option.optionTitle }</p>
 							</div>
 						</label>
@@ -83,6 +92,11 @@ export const MultiChoiceComponent = ( {
 				multiline={ false }
 				id={ blockID }
 				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
 			/>
 			{ isSelected && (
 				<>

@@ -304,7 +304,7 @@ $req_err_color: #dc2625;
 								line-height: 20px;
 
 								.srfm-required {
-									color: var( --srfm-error-text-color );
+									color: var( --srfm-error-color-light );
 								}
 							}
 
@@ -483,7 +483,7 @@ $req_err_color: #dc2625;
 									}
 
 									.srfm-required-body {
-										color: var( --srfm-error-text-color );
+										color: var( --srfm-error-color-light );
 									}
 								}
 
@@ -789,10 +789,10 @@ $req_err_color: #dc2625;
 			}
 
 			.srfm-validation-error {
-				color: var( --srfm-error-text-color );
+				color: var( --srfm-error-color-light );
 			}
 			.srfm-validation-error {
-				color: var( --srfm-error-text-color );
+				color: var( --srfm-error-color-light );
 			}
 		}
 

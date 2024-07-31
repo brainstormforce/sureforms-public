@@ -67,8 +67,9 @@
 	.srfm-form {
 		.srfm-block-single,
 		.srfm-submit-container,
-		.uagb-block,
-		.srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button ) {
+		.uagb-block
+		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
+		{
 			padding: 0 0.5em;
 		}
 
@@ -80,7 +81,7 @@
 			margin-top: 0.571em;
 			font-weight: 400;
 			line-height: normal;
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 
 		.uagb-block {
@@ -89,7 +90,7 @@
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color-light );
 		}
 
 		.srfm-block {
@@ -157,44 +158,47 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		color: var( --srfm-body-input-color );
+		min-height: 40vh;
 		p {
 			margin: 0;
-			padding: 0;
-			width: 100%;
 		}
-		min-height: 40vh;
 
 		&.srfm-active {
-			display: block;
+			display: flex;
 			white-space: pre-wrap;
 		}
-
-		.srfm-success-box-header {
-			.srfm-check-circle-icon {
-				display: block;
-				width: 2em;
-				text-align: center;
-				margin: 0 auto;
-
-				svg {
-					stroke: var( --srfm-primary-color );
-				}
-			}
-
-			h2 {
-				font-size: 1.5em;
-				font-weight: 500;
-				color: var( --srfm-primary-color );
-				margin-top: 0;
-				margin-bottom: 0.2em;
-			}
+		div {
+			width: 100%;
 		}
 
+		@mixin default-styles {
+			text-align: center;
+			font-family: inherit;
+		}
 		.srfm-success-box-description {
-			font-size: 0.8em;
+			font-size: 0.9em;
+			font-weight: 400;
+			line-height: 26px;
+			color: var( --srfm-body-input-color );
 
-			p {
-				margin: 0;
+			img {
+				padding-bottom: 1em;
+			}
+
+			.default-h2 {
+				@include default-styles;
+				font-size: 1.334em;
+				line-height: 32px;
+				font-weight: 600;
+				margin-top: 0;
+				margin-bottom: 0.2em;
+				padding-bottom: 0.3332em;
+			}
+			.default-p {
+				@include default-styles;
+				font-size: 18px;
+				line-height: 26px;
 			}
 		}
 	}
