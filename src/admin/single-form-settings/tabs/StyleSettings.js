@@ -102,7 +102,7 @@ function StyleSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-color-input-placeholder',
-			formStyling?.text_color || defaultTextColor
+			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.5)` : `rgba( from ${ defaultTextColor } r g b / 0.5)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-text',
@@ -131,6 +131,10 @@ function StyleSettings( props ) {
 		root.style.setProperty(
 			'--srfm-color-input-border-disabled',
 			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.15)` : `rgba( from ${ defaultTextColor } r g b / 0.15)`
+		);
+		root.style.setProperty(
+			'--srfm-color-multi-choice-svg',
+			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.7)` : `rgba( from ${ defaultTextColor } r g b / 0.7)`
 		);
 
 		// Button

@@ -86,44 +86,15 @@
 		}
 
 		.srfm-block-wrap {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -0.3em;
-			row-gap: 0.6em;
-
-			@media ( min-width: 431px ) {
-				&.srfm-choice-width-100 {
-					.srfm-multi-choice-single {
-						width: 100%;
-					}
-				}
-
-				&.srfm-choice-width-50 {
-					.srfm-multi-choice-single {
-						width: 50%;
-					}
-				}
-
-				&.srfm-choice-width-33-33 {
-					.srfm-multi-choice-single {
-						width: 33%;
-					}
-				}
-
-				&.srfm-choice-width-25 {
-					.srfm-multi-choice-single {
-						width: 25%;
-					}
-				}
-			}
+			@include srfm-multi-choice-wrap-styles;
 
 			.srfm-multi-choice-single {
-				padding: 0 0.3em;
-				cursor: pointer;
-				margin: 0;
+				@include srfm-multi-choice-single-styles;
 
 				.srfm-input-common {
 					width: calc( 100% - 3em );
+					margin: 0 !important;
+					height: auto !important;
 				}
 
 				.components-button {
@@ -133,45 +104,11 @@
 				}
 
 				.srfm-block-content-wrap {
-					position: relative;
-					display: flex;
-					flex-wrap: wrap;
-					align-items: flex-start;
-					font-size: 0.7em;
-					padding: 0.72em 1.143em 0.72em 0.72em;
-					border: var( --srfm-border ) solid var( --srfm-border-color );
-					border-radius: var( --srfm-border-radius );
+					@include srfm-multi-choice-block-content-wrap-styles( true );
 					width: auto;
-					height: 100%;
 
 					.srfm-multi-choice-icon {
-						position: relative;
-						width: 1em;
-						height: 1em;
-						top: 0.18em;
-						border-radius: 100%;
-						border: 1px solid var( --srfm-border-color );
-						border-radius: 100%;
-						line-height: 1.5em;
-
-						svg {
-							position: absolute;
-							top: 0;
-							width: 1em;
-							height: 1em;
-							opacity: 0;
-						}
-					}
-
-					p {
-						font-size: 1em;
-						line-height: normal;
-						padding-left: 0.575em;
-						width: calc( 100% - 1em );
-						color: var( --srfm-body-input-color );
-						margin-top: 0;
-						margin-bottom: 0;
-						word-break: break-word;
+						@include srfm-multi-choice-icon-styles;
 					}
 				}
 

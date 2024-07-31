@@ -202,15 +202,18 @@ class Generate_Form_Markup {
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-placeholder: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-color-input-placeholder: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.5 );
 					--srfm-color-input-text: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-prefix: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.02 );
+					--srfm-color-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-color-input-background-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-color-input-border: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
+					--srfm-color-multi-choice-svg: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.7 );
 					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
+					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
 					--srfm-btn-color-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.9 );
 					--srfm-btn-color-disabled: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.25 );
 					<?php
