@@ -31,13 +31,13 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
+import { BlockInserterWrapper } from './Inserter.js';
 
 const { select, dispatch } = wp.data;
 
 const defaultKeys = {
 	// General Tab
-	_srfm_show_labels: true,
-	_srfm_show_asterisk: true,
+	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
@@ -217,7 +217,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureformsKeys._srfm_inherit_theme_button
 				? 'wp-block-button'
 				: 'srfm-submit-btn-font-size';
-		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
+
+		const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -228,12 +229,26 @@ const SureformsFormSpecificSettings = ( props ) => {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 
 				// If the normal button is present, add RichText to the button.
-				const buttonContainer = elm.nextElementSibling;
+				const elementParent = elm.parentElement;
+
+				const buttonContainer = elementParent.querySelector(
+					'.srfm-submit-btn-container'
+				);
+
 				const button = buttonContainer.querySelector(
 					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
+				// Add block inserter in the srfm-custom-block-inserter div.
+				const getBlockInserterDiv = elementParent.querySelector(
+					'.srfm-custom-block-inserter'
+				);
+
+				if ( getBlockInserterDiv ) {
+					createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
+				}
 
 				createRoot( button ).render(
 					<RichText
