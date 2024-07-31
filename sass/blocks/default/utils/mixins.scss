@@ -104,10 +104,17 @@
 			}
 		}
 	}
+}
 
+@mixin srfm-multi-choice-vertical-layout( $important: false ) {
 	&.srfm-vertical-layout{
 		.srfm-block-content-wrap {
-			padding: 16px;
+			@if $important {
+				padding: 16px !important;
+
+			} @else {
+				padding: 16px;
+			}
 			height: 100%;
 
 			.srfm-icon {
