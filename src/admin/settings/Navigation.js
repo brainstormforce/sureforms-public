@@ -33,7 +33,7 @@ export const navigation = applyFilters( 'srfm.settings.navigation', [
 		icon: <MdOutlineMail size={ 20 } color="#0f172a" />,
 	},
 	{
-		name: __( 'Security', 'sureforms' ),
+		name: __( 'Spam Protection', 'sureforms' ),
 		slug: 'security-settings',
 		icon: <MdOutlineSecurity size={ 20 } color="#0f172a" />,
 	},

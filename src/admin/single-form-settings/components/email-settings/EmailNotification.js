@@ -3,7 +3,7 @@ import EmailConfirmation from './EmailConfirmation';
 import { useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl } from '@wordpress/components';
+import { ToggleControl, Popover } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
@@ -154,56 +154,35 @@ const EmailNotification = ( {
 						<h5>{ __( 'Notification', 'sureforms' ) }</h5>
 					</div>
 					<div className="srfm-modal-separator" />
-					{ emailNotificationData.length === 0 ? (
-						<div className="srfm-empty-data">
-							<p>{ __( 'No data', 'sureforms' ) }</p>
-						</div>
-					) : (
-						<div className="srfm-modal-inner-box-table">
-							<div className="srfm-modal-table-wrapper">
-								<div className="srfm-responsive-table">
-									<table>
-										<thead>
-											<tr className="srfm-modal-row">
-												<th className="srfm-modal-col-first">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Status',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-second">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Name',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-third">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Subject',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-fourth">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Action',
-															'sureforms'
-														) }
-													</p>
-												</th>
-											</tr>
-										</thead>
-										<tbody className="srfm-modal-row-body">
-											{ emailNotificationData &&
-												emailNotificationData.map(
-													( el, i ) => {
-														const top = -22 + ( i * 40 );
+					{
+						emailNotificationData.length === 0 ? (
+							<div className="srfm-empty-data">
+								<p>{ __( 'No data', 'sureforms' ) }</p>
+							</div>
+						) : (
+							<div className="srfm-modal-inner-box-table">
+								<div className="srfm-modal-table-wrapper">
+									<div className="srfm-responsive-table">
+										<table>
+											<thead>
+												<tr className="srfm-modal-row">
+													<th className="srfm-modal-col-first">
+														<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
+													</th>
+													<th className="srfm-modal-col-second">
+														<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
+													</th>
+													<th className="srfm-modal-col-third">
+														<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
+													</th>
+													<th className="srfm-modal-col-fourth">
+														<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{
+													emailNotificationData && emailNotificationData.map( ( el, i ) => {
 														return (
 															<tr
 																key={ el.id }

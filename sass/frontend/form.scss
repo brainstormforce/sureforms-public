@@ -4,6 +4,14 @@
 	padding: 0;
 	height: 100%;
 
+	// styles for core paragraph block
+	.srfm-custom-wp-paragraph {
+		width: 100% !important;
+		margin: 0 !important;
+		margin-bottom: 1.2em !important;
+		padding: 0 0.3em !important;
+	}
+
 	// Astra Addon site builder compatibility.
 	div[class^="astra-advanced-hook"] {
 		display: flex;
@@ -120,6 +128,7 @@
 							overflow: hidden;
 							text-overflow: ellipsis;
 							white-space: nowrap;
+							color: var( --srfm-body-input-color );
 						}
 
 						input {
@@ -152,6 +161,7 @@
 						width: calc( 100% + 2px );
 						border: 1px solid var( --srfm-border-color );
 						border-top: none;
+						background-color: var( --srfm-base-background-color );
 					}
 				}
 
@@ -259,43 +269,47 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		color: var( --srfm-body-input-color );
+		min-height: 40vh;
 		p {
 			margin: 0;
-			padding: 0;
-			width: 100%;
 		}
-		min-height: 40vh;
 
 		&.srfm-active {
-			display: block;
+			display: flex;
+			white-space: pre-wrap;
+		}
+		div {
+			width: 100%;
 		}
 
-		.srfm-success-box-header {
-			.srfm-check-circle-icon {
-				display: block;
-				width: 2em;
-				text-align: center;
-				margin: 0 auto;
+		@mixin default-styles {
+			text-align: center;
+			font-family: inherit;
+		}
+		.srfm-success-box-description {
+			font-size: 0.9em;
+			font-weight: 400;
+			line-height: 26px;
+			color: var( --srfm-body-input-color );
 
-				svg {
-					stroke: var( --srfm-primary-color );
-				}
+			img {
+				padding-bottom: 1em;
 			}
 
-			h2 {
-				font-size: 1.5em;
-				font-weight: 500;
-				color: var( --srfm-primary-color );
+			.default-h2 {
+				@include default-styles;
+				font-size: 1.334em;
+				line-height: 32px;
+				font-weight: 600;
 				margin-top: 0;
 				margin-bottom: 0.2em;
+				padding-bottom: 0.3332em;
 			}
-		}
-
-		.srfm-success-box-description {
-			font-size: 0.8em;
-
-			p {
-				margin: 0;
+			.default-p {
+				@include default-styles;
+				font-size: 18px;
+				line-height: 26px;
 			}
 		}
 	}

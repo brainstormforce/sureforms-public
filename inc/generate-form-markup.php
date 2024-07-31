@@ -231,7 +231,7 @@ class Generate_Form_Markup {
 			$font_size_var          = '20px';
 			$media_query_mobile_var = '576px';
 			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
-			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
+			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) >= 0 ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
 			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
@@ -413,7 +413,9 @@ class Generate_Form_Markup {
 				<?php endif; ?>
 				<p id="srfm-error-message" class="srfm-error-message" hidden="true"><?php echo esc_html__( 'There was an error trying to submit your form. Please try again.', 'sureforms' ); ?></p>
 			</form>
-			<div id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>"  class="srfm-single-form srfm-success-box in-page"></div>
+			<div class="srfm-single-form srfm-success-box in-page">
+				<div aria-live="polite" aria-atomic="true" role="alert" id="srfm-success-message-page-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?>" class="srfm-success-box-description"></div>
+			</div>
 			<?php
 			$page_url  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 			$path      = Helper::get_string_value( wp_parse_url( $page_url, PHP_URL_PATH ) );

@@ -154,111 +154,113 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 								</label>
 							</div>
 							<div className="srfm-options-wrapper">
-								<div
-									className={ `srfm-option ${
-										data?.confirmation_type === 'same page'
+								<label
+									className="srfm-option-label"
+									htmlFor="confirm-type-1"
+								>
+									<div
+										className={ `srfm-option ${ data?.confirmation_type === 'same page'
 											? 'srfm-active-conf-type'
 											: ''
-									}` }
-								>
-									<input
-										className="srfm-option-input"
-										value="same page"
-										checked={
-											data?.confirmation_type ===
-											'same page'
-										}
-										onChange={ ( e ) =>
-											setData( {
-												...data,
-												confirmation_type:
-													e.target.value,
-											} )
-										}
-										type="radio"
-										id="confirm-type-1"
-										name="confirm-type"
-									/>
-									<label
-										className="srfm-option-text"
-										htmlFor="confirm-type-1"
+										}` }
 									>
+										<input
+											className="srfm-option-input"
+											value="same page"
+											checked={
+												data?.confirmation_type ===
+											'same page'
+											}
+											onChange={ ( e ) =>
+												setData( {
+													...data,
+													confirmation_type:
+													e.target.value,
+												} )
+											}
+											type="radio"
+											id="confirm-type-1"
+											name="confirm-type"
+										/>
+
 										{ __( 'Success Message', 'sureforms' ) }
-									</label>
-								</div>
-								<div
-									className={ `srfm-option ${
-										data?.confirmation_type ===
+									</div>
+								</label>
+								<label
+									className="srfm-option-label"
+									htmlFor="confirm-type-2"
+								>
+									<div
+										className={ `srfm-option ${ data?.confirmation_type ===
 										'different page'
 											? 'srfm-active-conf-type'
 											: ''
-									}` }
-								>
-									<input
-										className="srfm-option-input"
-										value="different page"
-										checked={
-											data?.confirmation_type ===
-											'different page'
-										}
-										onChange={ ( e ) => {
-											setErrorMessage( null );
-											setData( {
-												...data,
-												confirmation_type:
-													e.target.value,
-											} );
-										} }
-										type="radio"
-										id="confirm-type-2"
-										name="confirm-type"
-									/>
-									<label
-										className="srfm-option-text"
-										htmlFor="confirm-type-2"
+										}` }
 									>
+										<input
+											className="srfm-option-input"
+											value="different page"
+											checked={
+												data?.confirmation_type ===
+											'different page'
+											}
+											onChange={ ( e ) => {
+												setErrorMessage( null );
+												setData( {
+													...data,
+													confirmation_type:
+													e.target.value,
+												} );
+											}
+											}
+											type="radio"
+											id="confirm-type-2"
+											name="confirm-type"
+										/>
+
 										{ __(
 											'Redirect to Page',
 											'sureforms'
 										) }
-									</label>
-								</div>
-								<div
-									className={ `srfm-option ${
-										data?.confirmation_type === 'custom url'
+									</div>
+								</label>
+								<label
+									className="srfm-option-label"
+									htmlFor="confirm-type-3"
+								>
+									<div
+										className={ `srfm-option ${ data?.confirmation_type === 'custom url'
 											? 'srfm-active-conf-type'
 											: ''
-									}` }
-								>
-									<input
-										className="srfm-option-input"
-										value="custom url"
-										checked={
-											data?.confirmation_type ===
-											'custom url'
-										}
-										onChange={ ( e ) => {
-											setErrorMessage( null );
-											setData( {
-												...data,
-												confirmation_type:
-													e.target.value,
-											} );
-										} }
-										type="radio"
-										id="confirm-type-3"
-										name="confirm-type"
-									/>
-									<label
-										className="srfm-option-text"
-										htmlFor="confirm-type-3"
+										}` }
 									>
+										<input
+											className="srfm-option-input"
+											value="custom url"
+											checked={
+												data?.confirmation_type ===
+											'custom url'
+											}
+											onChange={ ( e ) => {
+												setErrorMessage( null );
+												setData( {
+													...data,
+													confirmation_type:
+													e.target.value,
+												} );
+											}
+											}
+											type="radio"
+											id="confirm-type-3"
+											name="confirm-type"
+										/>
+
 										{ __(
 											'Redirect to Custom URL',
 											'sureforms'
 										) }
-									</label>
-								</div>
+									</div>
+								</label>
 							</div>
 						</div>
 						{ data?.confirmation_type === 'different page' && (
@@ -401,72 +403,71 @@ const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 									</label>
 								</div>
 								<div className="srfm-options-wrapper">
-									<div
-										className={ `srfm-option ${
-											data?.submission_action ===
+									<label
+										className="srfm-option-label"
+										htmlFor="submission-type-1"
+									>
+										<div
+											className={ `srfm-option ${ data?.submission_action ===
 											'hide form'
 												? 'srfm-active-after-submit'
 												: ''
-										}` }
-									>
-										<input
-											className="srfm-option-input"
-											type="radio"
-											value="hide form"
-											checked={
-												data?.submission_action ===
-												'hide form'
-											}
-											onChange={ ( e ) =>
-												setData( {
-													...data,
-													submission_action:
-														e.target.value,
-												} )
-											}
-											id="submission-type-1"
-											name="submission-type"
-										/>
-										<label
-											className="srfm-option-text"
-											htmlFor="submission-type-1"
+											}` }
 										>
+											<input
+												className="srfm-option-input"
+												type="radio"
+												value="hide form"
+												checked={
+													data?.submission_action ===
+												'hide form'
+												}
+												onChange={ ( e ) =>
+													setData( {
+														...data,
+														submission_action:
+														e.target.value,
+													} )
+												}
+												id="submission-type-1"
+												name="submission-type"
+											/>
+
 											{ __( 'Hide Form', 'sureforms' ) }
-										</label>
-									</div>
-									<div
-										className={ `srfm-option ${
-											data?.submission_action ===
+										</div>
+									</label>
+									<label
+										className="srfm-option-label"
+										htmlFor="submission-type-2"
+									>
+										<div
+											className={ `srfm-option ${ data?.submission_action ===
 											'reset form'
 												? 'srfm-active-after-submit'
 												: ''
-										}` }
-									>
-										<input
-											className="srfm-option-input"
-											type="radio"
-											value="reset form"
-											checked={
-												data?.submission_action ===
-												'reset form'
-											}
-											onChange={ ( e ) =>
-												setData( {
-													...data,
-													submission_action:
-														e.target.value,
-												} )
-											}
-											id="submission-type-2"
-											name="submission-type"
-										/>
-										<label
-											className="srfm-option-text"
-											htmlFor="submission-type-2"
+											}` }
 										>
+											<input
+												className="srfm-option-input"
+												type="radio"
+												value="reset form"
+												checked={
+													data?.submission_action ===
+												'reset form'
+												}
+												onChange={ ( e ) =>
+													setData( {
+														...data,
+														submission_action:
+														e.target.value,
+													} )
+												}
+												id="submission-type-2"
+												name="submission-type"
+											/>
 											{ __( 'Reset Form', 'sureforms' ) }
-										</label>
-									</div>
+										</div>
+									</label>
 								</div>
 							</div>
 						) }

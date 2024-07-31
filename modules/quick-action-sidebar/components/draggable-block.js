@@ -38,6 +38,7 @@ const DraggableBlock = ( props ) => {
 	const handleOnClick = ( e, selectedBlock ) => {
 		let clientId = getBlockRootClientId || '';
 		let insertionPoint = blockInsertionPoint;
+
 		if (
 			getSelectedBlockAllowedBlocks &&
 			getSelectedBlockAllowedBlocks.includes( selectedBlock )
@@ -118,17 +119,21 @@ const DraggableBlock = ( props ) => {
 		</Popover>
 	);
 
+	const separatedArray = block.name.split( '/' );
+	const slug = separatedArray[ 0 ];
+	const blockName = separatedArray[ 1 ];
+
 	return (
-		<>
+		<div id={ `draggable-box__${ slug }--${ blockName }` }>
 			<Draggable
-				elementId="draggable-panel"
+				elementId={ `draggable-box__${ slug }--${ blockName }` }
 				__experimentalTransferDataType="wp-blocks"
 				transferData={ {
 					type: 'inserter',
 					blocks: [ create( block.name ) ],
 				} }
 			>
-				{ ( { onDraggableStart } ) => (
+				{ ( { onDraggableStart, onDraggableEnd } ) => (
 					<div
 						className="srfm-ee-quick-access__sidebar--blocks--block"
 						key={ id }
@@ -142,7 +147,12 @@ const DraggableBlock = ( props ) => {
 								onDraggableStart( event );
 							}
 						} }
-						onDragEnd={ () => {} }
+						onDragEnd={ ( event ) => {
+							isDragging.current = false;
+							if ( onDraggableEnd ) {
+								onDraggableEnd( event );
+							}
+						} }
 						onMouseOver={ handleMouseOver }
 						onMouseOut={ handleMouseOut }
 						onFocus={ handleMouseOver }
@@ -161,7 +171,7 @@ const DraggableBlock = ( props ) => {
 					</div>
 				) }
 			</Draggable>
-		</>
+		</div>
 	);
 };
 
