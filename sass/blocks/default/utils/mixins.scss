@@ -111,11 +111,12 @@
 		.srfm-block-content-wrap {
 			@if $important {
 				padding: 16px !important;
-
+				height: 100% !important;
 			} @else {
 				padding: 16px;
+				height: 100%;
 			}
-			height: 100%;
+
 
 			.srfm-icon {
 				position: absolute !important;
