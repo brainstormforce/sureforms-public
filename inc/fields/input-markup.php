@@ -44,6 +44,7 @@ class Input_Markup extends Base {
 		$this->set_field_name( $this->unique_slug );
 		$this->set_markup_properties( $this->input_label );
 		$this->set_aria_described_by();
+		$this->set_label_as_placeholder( $this->input_label );
 	}
 
 	/**
@@ -60,7 +61,7 @@ class Input_Markup extends Base {
 				<div class="srfm-block-wrap">
 				<input class="srfm-input-common srfm-input-<?php echo esc_attr( $this->slug ); ?>" type="text" name="<?php echo esc_attr( $this->field_name ); ?>" id="<?php echo esc_attr( $this->unique_slug ); ?>"
 					<?php echo ! empty( $this->aria_described_by ) ? "aria-describedby='" . esc_attr( trim( $this->aria_described_by ) ) . "'" : ''; ?>
-					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" />
+					aria-required="<?php echo esc_attr( strval( $this->aria_require_attr ) ); ?>" data-unique="<?php echo esc_attr( $this->aria_unique ); ?>" maxlength="<?php echo esc_attr( $this->max_text_length ); ?>" value="<?php echo esc_attr( $this->default ); ?>" <?php echo wp_kses_post( $this->placeholder_attr ); ?> />
 				</div>
 				<div class="srfm-error-wrap">
 					<?php echo wp_kses_post( $this->duplicate_msg_markup ); ?>

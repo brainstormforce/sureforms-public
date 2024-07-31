@@ -54,12 +54,28 @@ class Multichoice_Markup extends Base {
 	protected $type_attr;
 
 	/**
+	 * SVG type for the input field.
+	 *
+	 * @var string
+	 * @since x.x.x
+	 */
+	protected $svg_type;
+
+	/**
 	 * HTML attribute string for the name attribute of the input field.
 	 *
 	 * @var string
 	 * @since 0.0.2
 	 */
 	protected $name_attr;
+
+	/**
+	 * Flag indicating if the layout is vertical.
+	 *
+	 * @var bool
+	 * @since x.x.x
+	 */
+	protected $vertical_layout;
 
 	/**
 	 * Initialize the properties based on block attributes.
@@ -74,7 +90,9 @@ class Multichoice_Markup extends Base {
 		$this->slug              = 'multi-choice';
 		$this->single_selection  = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 		$this->choice_width      = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
+		$this->vertical_layout   = isset( $attributes['verticalLayout'] ) ? $attributes['verticalLayout'] : false;
 		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
+		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
 		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
 		$this->choice_width_attr = $this->choice_width ? 'srfm-choice-width-' . str_replace( '.', '-', $this->choice_width ) : '';
 		$this->set_markup_properties();
@@ -87,27 +105,28 @@ class Multichoice_Markup extends Base {
 	 * @return string|boolean
 	 */
 	public function markup() {
-		$check_svg = Helper::fetch_svg( 'check-circle-solid', 'srfm-' . $this->slug . '-icon' );
+		$check_svg     = Helper::fetch_svg( $this->svg_type . '-checked', 'srfm-' . $this->slug . '-icon' );
+		$unchecked_svg = Helper::fetch_svg( $this->svg_type . '-unchecked', 'srfm-' . $this->slug . '-icon-unchecked' );
 		ob_start(); ?>
 		<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->type_attr ); ?>-mode srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo wp_kses_post( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
 			<fieldset>
 				<input class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-hidden" aria-required="<?php echo esc_attr( $this->aria_require_attr ); ?>" name="srfm-input-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?><?php echo esc_attr( $this->field_name ); ?>" type="hidden" value=""/>
 				<legend><?php echo wp_kses_post( $this->label_markup ); ?></legend>
+				<?php echo wp_kses_post( $this->help_markup ); ?>
 					<?php if ( is_array( $this->options ) ) { ?>
-						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?>">
+						<div class="srfm-block-wrap <?php echo esc_attr( $this->choice_width_attr ); ?> <?php echo( $this->vertical_layout ? 'srfm-vertical-layout' : '' ); ?>">
 							<?php foreach ( $this->options as $i => $option ) { ?>
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
 									<div class="srfm-block-content-wrap">
-										<?php echo $check_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
+										<?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 										<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
 									</div>
 								</label>
 							<?php } ?>
 						</div>
 					<?php } ?>
-				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap"><?php echo wp_kses_post( $this->error_msg_markup ); ?></div>
 			</fieldset>
 		</div>
 		<?php
