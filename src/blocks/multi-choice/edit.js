@@ -50,28 +50,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const [ newOption, setNewOption ] = useState( options );
 	const blockProps = useBlockProps();
 
-	const addOption = () => {
-		const newOptions = {
-			optionTitle:
-				__( 'Option ', 'sureforms' ) + `${ options.length + 1 }`,
-		};
-
-		setAttributes( {
-			options: [ ...options, newOptions ],
-		} );
-	};
-
-	const changeOption = ( e, index ) => {
-		const newEditOptions = options.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
-				item = { ...item, ...e };
-			}
-			return item;
-		} );
-
-		setAttributes( { options: newEditOptions } );
-	};
-
 	const deleteOption = ( index ) => {
 		const deleteOptions = options.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
@@ -375,9 +353,6 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 				blockID={ block_id }
 				attributes={ attributes }
 				isSelected={ isSelected }
-				addOption={ addOption }
-				deleteOption={ deleteOption }
-				changeOption={ changeOption }
 				setAttributes={ setAttributes }
 			/>
 			<div className="srfm-error-wrap"></div>
