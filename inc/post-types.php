@@ -416,8 +416,7 @@ class Post_Types {
 			'srfm_register_post_meta',
 			[
 				// General tab metas.
-				'_srfm_show_labels'              => 'boolean',
-				'_srfm_show_asterisk'            => 'boolean',
+				'_srfm_use_label_as_placeholder' => 'boolean',
 				'_srfm_single_page_form_title'   => 'boolean',
 				'_srfm_submit_button_text'       => 'string',
 				'_srfm_instant_form'             => 'boolean',

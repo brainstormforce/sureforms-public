@@ -36,8 +36,7 @@ const { select, dispatch } = wp.data;
 
 const defaultKeys = {
 	// General Tab
-	_srfm_show_labels: true,
-	_srfm_show_asterisk: true,
+	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
