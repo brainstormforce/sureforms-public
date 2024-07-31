@@ -10,6 +10,7 @@ namespace SRFM\Inc\Fields;
 
 require SRFM_DIR . 'modules/gutenberg/classes/class-spec-gb-helper.php';
 use Spec_Gb_Helper;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -81,7 +82,7 @@ class Dropdown_Markup extends Base {
 						<?php foreach ( $this->options as $option ) { ?>
 							<?php
 								$icon_svg         = Spec_Gb_Helper::render_svg_html( isset( $option['icon'] ) ? $option['icon'] : '', true );
-								$escaped_icon_svg = htmlspecialchars( (string) $icon_svg, ENT_QUOTES, 'UTF-8' );
+								$escaped_icon_svg = htmlspecialchars( Helper::get_string_value( $icon_svg ), ENT_QUOTES, 'UTF-8' );
 							?>
 								<option value="<?php echo esc_html( $option['label'] ); ?>" data-icon="<?php echo ! empty( $escaped_icon_svg ) ? esc_attr( $escaped_icon_svg ) : ''; ?>"><?php echo esc_html( $option['label'] ); ?></option>
 								<?php
