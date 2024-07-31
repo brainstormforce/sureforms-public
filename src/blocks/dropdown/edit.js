@@ -50,26 +50,30 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( '' );
 
+	const changeOption = ( value, index ) => {
+		const updatedOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: updatedOptions } );
+	};
+
 	function editOption( value, i ) {
 		if ( value === '' ) {
 			handleDelete( i );
 			return;
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].label = value;
-		setAttributes( { options: updatedOptions } );
+
+		changeOption( { label: value }, i );
 	}
 
 	function handleDelete( i ) {
 		const newOptions = [ ...options ];
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
-	}
-
-	function updateIcon( icon, i ) {
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].icon = icon;
-		setAttributes( { options: updatedOptions } );
 	}
 
 	useEffect( () => {
@@ -268,8 +272,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							onChange={ (
 																								value
 																							) =>
-																								updateIcon(
-																									value,
+																								changeOption(
+																									{ icon: value },
 																									i
 																								)
 																							}
