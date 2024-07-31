@@ -3,7 +3,7 @@ import EmailConfirmation from './EmailConfirmation';
 import { useState } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { useDispatch } from '@wordpress/data';
-import { ToggleControl, Popover } from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
@@ -183,6 +183,7 @@ const EmailNotification = ( {
 											<tbody>
 												{
 													emailNotificationData && emailNotificationData.map( ( el, i ) => {
+														const top = -22 + ( i * 40 );
 														return (
 															<tr
 																key={ el.id }
@@ -303,50 +304,51 @@ const EmailNotification = ( {
 																</td>
 															</tr>
 														);
-													}
-												) }
-										</tbody>
-										<tfoot>
-											<tr className="srfm-modal-row">
-												<th className="srfm-modal-col-first">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Status',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-second">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Name',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-third">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Subject',
-															'sureforms'
-														) }
-													</p>
-												</th>
-												<th className="srfm-modal-col-fourth">
-													<p className="srfm-modal-col-text">
-														{ __(
-															'Action',
-															'sureforms'
-														) }
-													</p>
-												</th>
-											</tr>
-										</tfoot>
-									</table>
+													} )
+												}
+											</tbody>
+											<tfoot>
+												<tr className="srfm-modal-row">
+													<th className="srfm-modal-col-first">
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Status',
+																'sureforms'
+															) }
+														</p>
+													</th>
+													<th className="srfm-modal-col-second">
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Name',
+																'sureforms'
+															) }
+														</p>
+													</th>
+													<th className="srfm-modal-col-third">
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Subject',
+																'sureforms'
+															) }
+														</p>
+													</th>
+													<th className="srfm-modal-col-fourth">
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Action',
+																'sureforms'
+															) }
+														</p>
+													</th>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
 								</div>
 							</div>
-						</div>
-					) }
+						)
+					}
 				</div>
 			</div>
 		</div>
