@@ -188,46 +188,6 @@
 		}
 	}
 
-	// URL.
-	div[data-type="srfm/url"] {
-		.srfm-protocol {
-			color: var( --srfm-label-text-color );
-			position: absolute;
-			top: 50%;
-			left: 0;
-			transform: translateY( -50% );
-			width: inherit;
-			width: 5.5em;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			border-top-left-radius: var( --srfm-border-radius );
-			border-bottom-left-radius: var( --srfm-border-radius );
-			border-right: var( --srfm-border ) solid var( --srfm-border-color );
-			padding-left: 1em;
-			padding-right: 1em;
-			font-size: 0.7em;
-		}
-
-		.srfm-input-url {
-			padding-left: 6.4375em;
-		}
-	}
-
-	// apply to normal address block
-	.srfm-address-block-container {
-		margin-top: -0.5em;
-
-		.srfm-address-block-label {
-			padding: 0 0.3em;
-			margin-top: 1em;
-		}
-
-		.srfm-address-help-txt {
-			padding: 0 0.3em;
-		}
-	}
-
 	.srfm-input-textarea {
 		height: unset !important;
 	}
