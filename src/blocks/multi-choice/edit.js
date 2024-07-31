@@ -32,6 +32,7 @@ import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
+import UAGIconPicker from '@Components/icon-picker';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -91,9 +92,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			deleteOption( i );
 			return;
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].optionTitle = value;
-		setAttributes( { options: updatedOptions } );
+
+		changeOption( { optionTitle: value }, i );
 	}
 
 	useEffect( () => {
@@ -214,7 +214,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 									>
 										<MultiButtonsControl
 											setAttributes={ setAttributes }
-											label={ __( 'Option Type', 'sureforms' ) }
+											label={ __(
+												'Option Type',
+												'sureforms'
+											) }
 											data={ {
 												value: optionType,
 												label: 'optionType',
@@ -222,11 +225,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											options={ [
 												{
 													value: 'icon',
-													label: __( 'Icon', 'sureforms' ),
+													label: __(
+														'Icon',
+														'sureforms'
+													),
 												},
 												{
 													value: 'image',
-													label: __( 'Image', 'sureforms' ),
+													label: __(
+														'Image',
+														'sureforms'
+													),
 												},
 											] }
 											showIcons={ false }
@@ -313,6 +322,26 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					/>
 																				</div>
 																				<>
+																					<div className="srfm-icon-picker">
+																						<UAGIconPicker
+																							label={
+																								''
+																							}
+																							value={
+																								option.icon
+																							}
+																							onChange={ (
+																								value
+																							) =>
+																								changeOption(
+																									{
+																										icon: value,
+																									},
+																									i
+																								)
+																							}
+																						/>
+																					</div>
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -358,7 +387,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														optionTitle:
+															newOption.optionTitle,
+													},
 												],
 											} );
 											setNewOption( { optionTitle: '' } );
