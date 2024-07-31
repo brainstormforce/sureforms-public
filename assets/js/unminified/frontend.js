@@ -42,134 +42,129 @@ function onSuccess( response ) {
 	}
 }
 
-
 /**
  * IIFE so that we don't pollute the global variables.
  */
-(function () {
-
-	function getComputedBackgroundColor(element) {
-		const style = window.getComputedStyle(element);
+( function () {
+	function getComputedBackgroundColor( element ) {
+		const style = window.getComputedStyle( element );
 		return style.backgroundColor || 'transparent';
 	}
 
-	function rgbToLuminance(r, g, b) {
+	function rgbToLuminance( r, g, b ) {
 		// Convert RGB to the range of [0, 1]
-		const [R, G, B] = [r, g, b].map(value => {
+		const [ R, G, B ] = [ r, g, b ].map( ( value ) => {
 			value /= 255;
-			return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
-		});
+			return value <= 0.03928 ? value / 12.92 : Math.pow( ( value + 0.055 ) / 1.055, 2.4 );
+		} );
 		// Calculate luminance
-		return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+		return ( 0.2126 * R ) + ( 0.7152 * G ) + ( 0.0722 * B );
 	}
 
-	function getColorLuminance(color) {
+	function getColorLuminance( color ) {
 		// Parse color in different formats
 		let r, g, b;
-		if (color.startsWith('rgb')) {
-			[r, g, b] = color.match(/\d+/g).map(Number);
-		} else if (color.startsWith('#')) {
+		if ( color.startsWith( 'rgb' ) ) {
+			[ r, g, b ] = color.match( /\d+/g ).map( Number );
+		} else if ( color.startsWith( '#' ) ) {
 			// Convert hex to RGB
-			const hex = color.slice(1);
-			if (hex.length === 6) {
-				[r, g, b] = [0, 2, 4].map(start => parseInt(hex.substr(start, 2), 16));
-			} else if (hex.length === 3) {
-				[r, g, b] = hex.split('').map(char => parseInt(char + char, 16));
+			const hex = color.slice( 1 );
+			if ( hex.length === 6 ) {
+				[ r, g, b ] = [ 0, 2, 4 ].map( ( start ) => parseInt( hex.substr( start, 2 ), 16 ) );
+			} else if ( hex.length === 3 ) {
+				[ r, g, b ] = hex.split( '' ).map( ( char ) => parseInt( char + char, 16 ) );
 			}
 		} else {
 			// Handle other color formats or fall back to default
 			return 0.5; // Neutral gray for unknown formats
 		}
 
-		return rgbToLuminance(r, g, b);
+		return rgbToLuminance( r, g, b );
 	}
 
-	function isColorDark(luminance) {
+	function isColorDark( luminance ) {
 		return luminance < 0.5; // Threshold for darkness
 	}
 
-	function getPrimaryBackgroundColor(element) {
+	function getPrimaryBackgroundColor( element ) {
 		// Get the primary background color
-		let color = getComputedBackgroundColor(element);
-		let parentColor = getComputedBackgroundColor(element.parentElement);
+		let color = getComputedBackgroundColor( element );
+		let parentColor = getComputedBackgroundColor( element.parentElement );
 
 		let mayBeIsTransparent = ( 'rgba(0, 0, 0, 0)' === color ) && ( color === parentColor );
 
-		while ( ( color === 'transparent' || mayBeIsTransparent ) && element !== document.documentElement) {
+		while ( ( color === 'transparent' || mayBeIsTransparent ) && element !== document.documentElement ) {
 			/**
 			 * If we are here, then it can mean that the current element is probably transparent.
 			 * So lets climb-up the DOM tree, until we find the valid background color.
 			 */
 			element = element.parentElement;
-			color = getComputedBackgroundColor(element);
+			color = getComputedBackgroundColor( element );
 
-			parentColor = getComputedBackgroundColor(element.parentElement);
+			parentColor = getComputedBackgroundColor( element.parentElement );
 			mayBeIsTransparent = ( 'rgba(0, 0, 0, 0)' === color ) && ( color === parentColor );
 
 			color = mayBeIsTransparent ? 'transparent' : parentColor;
 		}
 
 		// Get luminance of the color
-		const luminance = getColorLuminance(color);
+		const luminance = getColorLuminance( color );
 
 		// Check if the color is dark or light
-		const isDark = isColorDark(luminance);
+		const isDark = isColorDark( luminance );
 
 		return {
-			color: color,
-			isDark: isDark,
+			color,
+			isDark,
 		};
 	}
 
-	function normalizeCSSVariablesForDarkBackground(element) {
+	function normalizeCSSVariablesForDarkBackground( element ) {
+		const form = element.querySelector( 'form' );
 
-		const form = element.querySelector('form');
-
-		if (!form) {
+		if ( ! form ) {
 			// Probably invalid form.
 			return;
 		}
 
-		const { isDark } = getPrimaryBackgroundColor(element);
+		const { isDark } = getPrimaryBackgroundColor( element );
 
-		if (!isDark) {
+		if ( ! isDark ) {
 			return;
 		}
 
 		// Add a class in the form container, so that it can be used by other developers as well.
-		element.classList.add('srfm-has-dark-bg');
+		element.classList.add( 'srfm-has-dark-bg' );
 
 		/**
 		 * Lets calculate the form's label color and other elements such as dropdown, and calendar.
 		 */
-		const labelColor = window.getComputedStyle(element).getPropertyValue('--srfm-color-input-label');
+		const labelColor = window.getComputedStyle( element ).getPropertyValue( '--srfm-color-input-label' );
 
-		const labelLuminance = getColorLuminance(labelColor);
+		const labelLuminance = getColorLuminance( labelColor );
 
-		if ( ! isColorDark(labelLuminance) ) {
+		if ( ! isColorDark( labelLuminance ) ) {
 			const cssVariablesAndColors = {
-				"--srfm-color-input-label-inverse": "#181818",
-			}
+				'--srfm-color-input-label-inverse': '#181818',
+			};
 
-			const cssElements = []
+			const cssElements = [];
 
-			Object.keys(cssVariablesAndColors).map((cssVariable) => {
-				cssElements.push(`${cssVariable}: ${cssVariablesAndColors[cssVariable]};`);
-			});
+			Object.keys( cssVariablesAndColors ).forEach( ( cssVariable ) => {
+				cssElements.push( `${ cssVariable }: ${ cssVariablesAndColors[ cssVariable ] };` );
+			} );
 
-			const styles = `.srfm-form-container-${ form.getAttribute( 'form-id' ) } { ${cssElements.join(' ')} }`;
+			const styles = `.srfm-form-container-${ form.getAttribute( 'form-id' ) } { ${ cssElements.join( ' ' ) } }`;
 
-			element.querySelector('style').innerHTML += styles;
+			element.querySelector( 'style' ).innerHTML += styles;
 		}
 	}
 
-	window.addEventListener("load", function () {
+	window.addEventListener( 'load', function () {
+		const formContainers = document.querySelectorAll( '.srfm-form-container' );
 
-		const formContainers = document.querySelectorAll('.srfm-form-container');
-
-		formContainers.forEach((formContainer) => {
-			normalizeCSSVariablesForDarkBackground(formContainer);
-		});
-	});
-
-})();
+		formContainers.forEach( ( formContainer ) => {
+			normalizeCSSVariablesForDarkBackground( formContainer );
+		} );
+	} );
+}() );
