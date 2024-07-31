@@ -34,8 +34,11 @@
 			"default": false
 		},
 		"options": {
-			"default": [ "Option 1", "Option 2" ],
-			"type": "array"
+			"type": "array",
+			"default": [ 
+				{ "label": "Option 1", "icon": "" },
+				{ "label": "Option 2", "icon": "" }
+			 ]
 		},
 		"fieldWidth": {
 			"type": "number",

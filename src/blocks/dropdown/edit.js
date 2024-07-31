@@ -31,6 +31,7 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import UAGIconPicker from '@Components/icon-picker';
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const {
@@ -55,7 +56,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			return;
 		}
 		const updatedOptions = [ ...options ];
-		updatedOptions[ i ] = value;
+		updatedOptions[ i ].label = value;
 		setAttributes( { options: updatedOptions } );
 	}
 
@@ -63,6 +64,12 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		const newOptions = [ ...options ];
 		newOptions.splice( i, 1 );
 		setAttributes( { options: newOptions } );
+	}
+
+	function updateIcon( icon, i ) {
+		const updatedOptions = [ ...options ];
+		updatedOptions[ i ].icon = icon;
+		setAttributes( { options: updatedOptions } );
 	}
 
 	useEffect( () => {
@@ -208,7 +215,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																						'flex',
 																					alignItems:
 																						'center',
-																					gap: '10px',
+																					gap: '8px',
 																				} }
 																			>
 																				<>
@@ -233,10 +240,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																							i
 																						}
 																						value={
-																							option
+																							option.label
 																						}
 																						data={ {
-																							value: option,
+																							value: option.label,
 																							label: 'option',
 																						} }
 																						onChange={ (
@@ -250,6 +257,24 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																					/>
 																				</div>
 																				<>
+																					<div className="srfm-icon-picker">
+																						<UAGIconPicker
+																							label={
+																								''
+																							}
+																							value={
+																								option.icon
+																							}
+																							onChange={ (
+																								value
+																							) =>
+																								updateIcon(
+																									value,
+																									i
+																								)
+																							}
+																						/>
+																					</div>
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -288,11 +313,14 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption && newOption ) {
+										if ( newOption ) {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														label: newOption,
+														icon: '',
+													},
 												],
 											} );
 											setNewOption( '' );

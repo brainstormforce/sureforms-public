@@ -10,7 +10,6 @@ function initializeDropdown() {
 				additionalConfig = {
 					maxItems: null, // Enabling multi selection for dropdown.
 					hideSelected: false, // Allowing selected options to be visible in the dropdown menu.
-					plugins: [ 'remove_button' ], // Adding remove button to the selected options.
 				};
 			}
 			if ( element.getAttribute( 'data-searchable' ) === 'false' ) {
@@ -22,6 +21,7 @@ function initializeDropdown() {
 			const config = {
 				maxOptions: null,
 				hidePlaceholder: true, // Hide the placeholder text after an option is selected.
+				plugins: [ 'remove_button', 'clear_button' ], // Adding remove button to the selected options and clear button for the dropdown.
 				onChange( value ) {
 					// In case of multi-select dropdown, the value will be an array.
 					if ( Array.isArray( value ) ) {
@@ -51,6 +51,18 @@ function initializeDropdown() {
 					handleInputState( element );
 				},
 				...additionalConfig,
+				render: {
+					option( data, escape ) {
+						return `<div>${ data.icon } ${ escape(
+							data.text
+						) }</div>`;
+					},
+					item( item, escape ) {
+						return `<div>${ item.icon } ${ escape(
+							item.text
+						) }</div>`;
+					},
+				},
 			};
 			new TomSelect( element, config );
 

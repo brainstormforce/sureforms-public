@@ -298,6 +298,8 @@ class Generate_Form_Markup {
 					--srfm-dropdown-badge-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
 					--srfm-dropdown-menu-border-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
 					--srfm-dropdown-placeholder-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.50 );
+					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
+					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.

@@ -26,6 +26,25 @@
 						align-items: center;
 						gap: var( --srfm-dropdown-badge-icon-gap );
 						height: auto;
+						color: var( --srfm-dropdown-option-selected-text );
+
+						/*
+						* Display SVG for selected option in both single and multi selection dropdown.
+						* No variable required since the size is fixed.
+						*/
+						svg {
+							width: 12px;
+							height: 12px;
+							fill: var( --srfm-dropdown-icon-color );
+							stroke: var( --srfm-dropdown-icon-color );
+						}
+					}
+
+					.clear-button {
+						font-size: 16px; // Set clear button size.
+						right: var( --srfm-dropdown-padding-right-icon );
+						padding: 0;
+						margin: 0;
 					}
 
 					// Vertically center align the option for single selection.
@@ -34,6 +53,11 @@
 							position: relative;
 							top: 50%;
 							transform: translateY( -50% );
+
+							// Hide the remove icon for individual option in single selection dropdown.
+							.remove {
+								display: none;
+							}
 						}
 					}
 					// In case of multiple selection, display the selected options as badges.
@@ -57,11 +81,6 @@
 								background-color: var( --srfm-dropdown-badge-background-hover );
 							}
 
-							svg {
-								width: 12px;
-								height: 12px;
-							}
-
 							.remove {
 								background-color: var( --srfm-dropdown-badge-delete-icon-light );
 								mask: url( "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICA8cGF0aCBkPSJNOSAzTDMgOSIgc3Ryb2tlPSIjREMyNjI2IiBzdHJva2Utb3BhY2l0eT0iMC42NSIgc3Ryb2tlLXdpZHRoPSIxLjI1Ig0KICAgICAgICBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIC8+DQogICAgPHBhdGggZD0iTTMgM0w5IDkiIHN0cm9rZT0iI0RDMjYyNiIgc3Ryb2tlLW9wYWNpdHk9IjAuNjUiIHN0cm9rZS13aWR0aD0iMS4yNSINCiAgICAgICAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiAvPg0KPC9zdmc+ICAgIA==" );
@@ -81,6 +100,7 @@
 						gap: var( --srfm-dropdown-badge-gap );
 						min-height: var( --srfm-input-height );
 						padding: var( --srfm-input-field-padding ) !important;
+						padding-right: var( --srfm-dropdown-padding-right-icon ) !important; // Override the default right padding to include the spacing before dropdown arrow.
 						align-items: center;
 
 						&:hover {
@@ -158,6 +178,9 @@
 							svg {
 								height: 16px;
 								width: 16px;
+								margin-right: 8px;
+								fill: var( --srfm-dropdown-icon-color );
+								stroke: var( --srfm-dropdown-icon-color );
 							}
 						}
 					}
