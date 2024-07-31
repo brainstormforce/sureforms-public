@@ -48,10 +48,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 		searchable,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
-	const [ newOption, setNewOption ] = useState( {
-		label: '',
-		icon: 'circle-check',
-	} );
+	const [ newOption, setNewOption ] = useState( '' );
 
 	function editOption( value, i ) {
 		if ( value === '' ) {
@@ -262,10 +259,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																				<>
 																					<div className="srfm-icon-picker">
 																						<UAGIconPicker
-																							label={ __(
-																								'',
-																								'sureforms'
-																							) }
+																							label={
+																								''
+																							}
 																							value={
 																								option.icon
 																							}
@@ -308,26 +304,26 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 										'Add New Option',
 										'sureforms'
 									) }
-									value={ newOption.label }
+									value={ newOption }
 									onChange={ ( value ) =>
-										setNewOption( { label: value } )
+										setNewOption( value )
 									}
 								/>
 								<Button
 									className="sureform-add-option-button"
 									variant="secondary"
 									onClick={ () => {
-										if ( newOption.label ) {
+										if ( newOption ) {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														label: newOption,
+														icon: '',
+													},
 												],
 											} );
-											setNewOption( {
-												label: '',
-												icon: 'circle-check',
-											} );
+											setNewOption( '' );
 										} else {
 											// TODO: May be add a tooltip here
 										}
