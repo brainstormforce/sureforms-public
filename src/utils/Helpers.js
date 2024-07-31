@@ -170,7 +170,8 @@ export function trimTextToWords( text, wordLimit, ending = '...' ) {
 	const trimmedWords = words.slice( 0, wordLimit ).join( ' ' );
 
 	// Append the ending if there are more words than the limit
-	return trimmedWords + ending;
+
+	return words.slice( 0, wordLimit ).join( ' ' ) + ending;
 }
 
 const pushSmartTagToArray = (
