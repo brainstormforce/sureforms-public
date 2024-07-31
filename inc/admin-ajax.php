@@ -344,7 +344,7 @@ class Admin_Ajax {
 
 		$dummy_data = [
 			'srfm/input'            => 'Sample input data',
-			'srfm/email'            => 'dummy@example.com',
+			'srfm/email'            => 'noreply@sureforms.com',
 			'srfm/textarea'         => 'Sample textarea data',
 			'srfm/number'           => 123,
 			'srfm/checkbox'         => 'checkbox value',
