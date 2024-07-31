@@ -166,11 +166,7 @@ export function trimTextToWords( text, wordLimit, ending = '...' ) {
 		return text;
 	}
 
-	// Slice the array to the limit and join it back into a string
-	const trimmedWords = words.slice( 0, wordLimit ).join( ' ' );
-
-	// Append the ending if there are more words than the limit
-
+	// Slice the array to the limit and join it back into a string and append the ending if there are more words than the limit
 	return words.slice( 0, wordLimit ).join( ' ' ) + ending;
 }
 
