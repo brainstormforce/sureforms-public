@@ -44,6 +44,9 @@ export const modules = {
 		maxStack: 100,
 		userOnly: true,
 	},
+	clipboard: {
+		matchVisual: false,
+	},
 };
 
 // Formats objects for setting up the Quill editor
@@ -93,6 +96,7 @@ export const QuillToolbar = () => (
 			<select className="ql-background" />
 			<button className="ql-link" />
 			<button className="ql-clean" />
+			<button className="ql-image" />
 			<button className="ql-undo">
 				<CustomUndo />
 			</button>
