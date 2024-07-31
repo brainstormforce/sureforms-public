@@ -123,11 +123,6 @@ const DraggableBlock = ( props ) => {
 	const slug = separatedArray[ 0 ];
 	const blockName = separatedArray[ 1 ];
 
-	console.log( {
-		slug,
-		blockName,
-	} );
-
 	return (
 		<div id={ `draggable-box__${ slug }--${ blockName }` }>
 			<Draggable
