@@ -92,8 +92,8 @@ class Generate_Form_Markup {
 
 		ob_start();
 		if ( '' !== $id && 0 !== $block_count ) {
-			$color_primary            = Helper::get_meta_value( $id, '_srfm_color1' );
-			$form_font_size           = Helper::get_meta_value( $id, '_srfm_fontsize' );
+			$form_styling             = get_post_meta( $id, '_srfm_forms_styling', true );
+			$form_styling             = ! empty( $form_styling ) && is_array( $form_styling ) ? $form_styling : [];
 			$classname                = Helper::get_meta_value( $id, '_srfm_additional_classes' );
 			$is_page_break            = defined( 'SRFM_PRO_VER' ) && Helper::get_meta_value( $id, '_srfm_is_page_break' );
 			$page_break_progress_type = Helper::get_meta_value( $id, '_srfm_page_break_progress_indicator' );
@@ -116,28 +116,15 @@ class Generate_Form_Markup {
 			}
 
 			// Submit button.
-			$button_text          = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
-			$button_alignment     = Helper::get_meta_value( $id, '_srfm_submit_alignment' );
-			$btn_from_theme       = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
-			$btn_text_color       = Helper::get_meta_value( $id, '_srfm_button_text_color', true, '#000000' );
-			$btn_bg_type          = Helper::get_meta_value( $id, '_srfm_btn_bg_type' );
-			$instant_form         = Helper::get_meta_value( $id, '_srfm_instant_form' );
-			$is_inline_button     = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
-			$security_type        = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
-			$form_custom_css_meta = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
-			$custom_css           = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
+			$button_text             = Helper::get_meta_value( $id, '_srfm_submit_button_text' );
+			$submit_button_alignment = $form_styling['submit_button_alignment'];
+			$btn_from_theme          = Helper::get_meta_value( $id, '_srfm_inherit_theme_button' );
+			$instant_form            = Helper::get_meta_value( $id, '_srfm_instant_form' );
+			$is_inline_button        = Helper::get_meta_value( $id, '_srfm_is_inline_button' );
+			$security_type           = Helper::get_meta_value( $id, '_srfm_captcha_security_type' );
+			$form_custom_css_meta    = Helper::get_meta_value( $id, '_srfm_form_custom_css' );
+			$custom_css              = ! empty( $form_custom_css_meta ) && is_string( $form_custom_css_meta ) ? $form_custom_css_meta : '';
 
-			$btn_border_radius = '6px';
-			if ( 'filled' === $btn_bg_type ) {
-				$btn_bg_color      = Helper::get_meta_value( $id, '_srfm_button_bg_color', true, '#D54407' );
-				$btn_border_color  = Helper::get_meta_value( $id, '_srfm_button_border_color', true, '#000000' );
-				$btn_border_width  = Helper::get_meta_value( $id, '_srfm_button_border_width', true, '0px' );
-				$btn_border_radius = Helper::get_meta_value( $id, '_srfm_button_border_radius', true, '4' ) . 'px';
-				$btn_border        = $btn_border_width . 'px solid ' . $btn_border_color;
-			} else {
-				$btn_bg_color = '';
-				$btn_border   = 'none';
-			}
 			$bg_type = Helper::get_meta_value( $id, '_srfm_bg_type', true, 'image' );
 
 			if ( 'image' === $bg_type ) {
@@ -150,7 +137,7 @@ class Generate_Form_Markup {
 				$bg_color         = $background_color ? $background_color : '';
 			}
 
-			$full                       = 'justify' === $button_alignment ? true : false;
+			$full                       = 'justify' === $submit_button_alignment ? true : false;
 			$recaptcha_version          = 'g-recaptcha' === $security_type ? Helper::get_meta_value( $id, '_srfm_form_recaptcha' ) : '';
 			$srfm_cf_appearance_mode    = '';
 			$srfm_cf_turnstile_site_key = '';
@@ -189,87 +176,25 @@ class Generate_Form_Markup {
 				}
 			}
 
-			$primary_color = $color_primary;
-
-			$label_text_color = Helper::get_meta_value( $id, '_srfm_label_color', true, '#111827' );
-			$help_color_var   = Helper::get_meta_value( $id, '_srfm_help_color', true, '#4B5563' );
+			$primary_color    = $form_styling['primary_color'];
+			$help_color_var   = $form_styling['text_color'];
+			$label_text_color = $form_styling['text_color_on_primary'];
+			$field_spacing    = $form_styling['field_spacing'];
 
 			// New colors.
 
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
-
-			$body_input_color_var  = Helper::get_meta_value( $id, '_srfm_input_text_color', true, '#4B5563' );
-			$placeholder_color_var = Helper::get_meta_value( $id, '_srfm_input_placeholder_color', true, '#94A3B8' );
-			$border_color_var      = Helper::get_meta_value( $id, '_srfm_input_border_color', true, '#D0D5DD' );
-			$shadow_color_var      = Helper::get_meta_value( $id, '_srfm_input_shadow_color', true, '#D0D5DD' );
-			$base_background_var   = Helper::get_meta_value( $id, '_srfm_input_bg_color', true, '#FFFFFF' );
-			$light_background_var  = '#F9FAFB';
-
-			// Info colors.
-			$info_surface_var          = '#3B82F6';
-			$info_text_var             = '#2563EB';
-			$info_background_color_var = '#EFF6FF';
-
-			// Success colors.
-			$success_surface_var          = '#10B981';
-			$success_text_var             = '#16A34A';
-			$success_background_color_var = '#F0FDF4';
-
-			// Warning colors.
-			$warning_surface_var          = '#FACC15';
-			$warning_text_var             = '#CA8A04';
-			$warning_background_color_var = '#FEFCE8';
-
-			// Error colors.
-			$error_surface_var          = Helper::get_meta_value( $id, '_srfm_field_error_surface_color', true, '#EF4444' );
-			$error_shadow_var           = Helper::get_meta_value( $id, '_srfm_field_error_shadow_color', true, '#FEE4E2' );
-			$error_text_var             = Helper::get_meta_value( $id, '_srfm_field_error_color', true, '#DC2626' );
-			$error_background_color_var = Helper::get_meta_value( $id, '_srfm_field_error_bg_color', true, '#FEF2F2' );
-
-			// $font_size_var          = $form_font_size ? $form_font_size . 'px' : '20px'; -- Will be used in future.
-			$media_query_mobile_var = '576px';
-			$border_var             = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_width', true ) ) . 'px' : '1px';
-			$border_radius_var      = get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) >= 0 ? Helper::get_string_value( get_post_meta( Helper::get_integer_value( $id ), '_srfm_input_border_radius', true ) ) . 'px' : '4px';
-			$container_id           = '.srfm-form-container-' . Helper::get_string_value( $id );
+			$container_id         = '.srfm-form-container-' . Helper::get_string_value( $id );
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
 			<style>
 				/* Need to check and remove the input variables related to the Style Tab. */
 				<?php echo esc_html( $container_id ); ?> {
-					--srfm-primary-color : <?php echo esc_html( $primary_color_var ); ?>;
-					--srfm-label-text-color : <?php echo esc_html( $label_text_color_var ); ?>;
-					--srfm-body-input-color : <?php echo esc_html( $body_input_color_var ); ?>;
-					--srfm-placeholder-color : <?php echo esc_html( $placeholder_color_var ); ?>;
-					--srfm-border-color : <?php echo esc_html( $border_color_var ); ?>;
-					--srfm-shadow-color : rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.3);
-					--srfm-help-color : <?php echo esc_html( $help_color_var ); ?>;
-					--srfm-base-background-color : <?php echo esc_html( $base_background_var ); ?>;
-					--srfm-light-background-color : <?php echo esc_html( $light_background_var ); ?>;
-					--srfm-info-surface-color : <?php echo esc_html( $info_surface_var ); ?>;
-					--srfm-info-text-color : <?php echo esc_html( $info_text_var ); ?>;
-					--srfm-info-background-color : <?php echo esc_html( $info_background_color_var ); ?>;
-					--srfm-success-surface-color : <?php echo esc_html( $success_surface_var ); ?>;
-					--srfm-success-text-color : <?php echo esc_html( $success_text_var ); ?>;
-					--srfm-success-background-color : <?php echo esc_html( $success_background_color_var ); ?>;
-					--srfm-warning-surface-color : <?php echo esc_html( $warning_surface_var ); ?>;
-					--srfm-warning-text-color : <?php echo esc_html( $warning_text_var ); ?>;
-					--srfm-warning-background-color : <?php echo esc_html( $warning_background_color_var ); ?>;
-					--srfm-error-surface-color : <?php echo esc_html( $error_surface_var ); ?>;
-					--srfm-error-shadow-color : rgba( from <?php echo esc_html( $error_surface_var ); ?> r g b / 0.3);
-					--srfm-error-text-color : <?php echo esc_html( $error_text_var ); ?>;
-					--srfm-error-background-color : <?php echo esc_html( $error_background_color_var ); ?>;
-					--srfm-mobile-media-query: <?php echo esc_html( $media_query_mobile_var ); ?>;
-					--srfm-border-radius: <?php echo esc_html( $border_radius_var ); ?>;
-					--srfm-border: <?php echo esc_html( $border_var ); ?>;
-					--srfm-bg-image: <?php echo $bg_image ? esc_html( $bg_image ) : ''; ?>;
+					/*
+					--srfm-bg-image: <?php echo $bg_image ? esc_html( $bg_image ) : ''; ?>; */
 					--srfm-bg-color: <?php echo $bg_color ? esc_html( $bg_color ) : ''; ?>;
-					font-size: var(--srfm-font-size );
-					--srfm-btn-text-color: <?php echo esc_html( $btn_text_color ); ?>;
-					--srfm-btn-bg-color: <?php echo esc_html( $btn_bg_color ); ?>;
-					--srfm-btn-border: <?php echo esc_html( $btn_border ); ?>;
-					--srfm-btn-border-radius: <?php echo esc_html( $btn_border_radius ); ?>;
 					/* New test variables */
 					--srfm-color-scheme-primary: <?php echo esc_html( $primary_color_var ); ?>;
 					--srfm-color-scheme-text-on-primary: <?php echo esc_html( $label_text_color_var ); ?>;
@@ -277,15 +202,20 @@ class Generate_Form_Markup {
 
 					--srfm-color-input-label: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-description: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
-					--srfm-color-input-placeholder: <?php echo esc_html( $help_color_var ); ?>;
+					--srfm-color-input-placeholder: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.5 );
 					--srfm-color-input-text: <?php echo esc_html( $help_color_var ); ?>;
 					--srfm-color-input-prefix: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-background: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.02 );
+					--srfm-color-input-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-color-input-background-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-color-input-border: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					--srfm-color-input-border-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.15 );
+					--srfm-color-multi-choice-svg: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.7 );
 					--srfm-color-input-border-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.65 );
 					--srfm-color-input-border-focus-glow: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.15 );
+					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
+					--srfm-btn-color-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.9 );
+					--srfm-btn-color-disabled: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.25 );
 					<?php
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.
@@ -410,8 +340,8 @@ class Generate_Form_Markup {
 					}
 					?>
 
-					<div class="srfm-submit-container <?php echo '#0284c7' !== $color_primary ? 'srfm-frontend-inputs-holder' : ''; ?> <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
-						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $button_alignment ? $button_alignment : 'left' ); ?>" class="wp-block-button">
+					<div class="srfm-submit-container <?php echo esc_attr( $is_page_break ? 'hide' : '' ); ?>">
+						<div style="width: <?php echo esc_attr( $full ? '100%;' : ';' ); ?> text-align: <?php echo esc_attr( $submit_button_alignment ? $submit_button_alignment : 'left' ); ?>" class="wp-block-button">
 						<button style="width:<?php echo esc_attr( $full ? '100%;' : '' ); ?>" id="srfm-submit-btn"class="<?php echo esc_attr( '1' === $btn_from_theme ? 'wp-block-button__link' : 'srfm-btn-frontend srfm-button srfm-submit-button' ); ?><?php echo 'v3-reCAPTCHA' === $recaptcha_version ? ' g-recaptcha' : ''; ?>"
 						<?php if ( 'v3-reCAPTCHA' === $recaptcha_version ) : ?>
 							recaptcha-type="<?php echo esc_attr( $recaptcha_version ); ?>"
