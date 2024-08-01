@@ -32,6 +32,7 @@ use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 use SRFM\Inc\Lib\Connect_Zip_AI;
 use SRFM\Inc\Background_Process;
 use SRFM\Inc\Page_Builders\Page_Builders;
+use SRFM\Inc\Rest_Api;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -144,6 +145,7 @@ class Plugin_Loader {
 		Connect_Zip_AI::get_instance();
 		Background_Process::get_instance();
 		Page_Builders::get_instance();
+		Rest_Api::get_instance();
 
 		/**
 		 * The code that runs during plugin activation
