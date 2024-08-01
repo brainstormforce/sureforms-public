@@ -4,7 +4,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 export const NumberComponent = ( {
 	attributes,
 	blockID,
-	handleInput,
+	formatNumber,
 	setAttributes,
 } ) => {
 	const {
@@ -12,9 +12,9 @@ export const NumberComponent = ( {
 		placeholder,
 		required,
 		defaultValue,
+		formatType,
 		minValue,
 		maxValue,
-		formatType,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -37,9 +37,9 @@ export const NumberComponent = ( {
 				<input
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					id={ `srfm-${ slug }-${ blockID }` }
-					type={ formatType === 'none' ? 'number' : 'text' }
-					value={ defaultValue }
-					onChange={ handleInput }
+					type={ 'text' }
+					defaultValue={ defaultValue }
+					readOnly={true}
 					placeholder={ placeholder }
 					required={ required }
 					min={ minValue }

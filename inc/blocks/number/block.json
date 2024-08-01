@@ -57,7 +57,7 @@
 		},
 		"formatType": {
 			"type": "string",
-			"default": "none"
+			"default": "us-style"
 		},
 		"formId": {
 			"type": "number",

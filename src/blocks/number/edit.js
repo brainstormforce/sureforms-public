@@ -41,27 +41,35 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
 
-	const handleInput = ( e ) => {
-		let inputValue = e.target.value;
-		if ( formatType === 'none' ) {
-			inputValue = inputValue.replace( /[^-.\d]/g, '' );
-		} else if ( formatType === 'non-decimal' ) {
-			inputValue = inputValue.replace( /[^0-9]/g, '' );
-		} else {
-			inputValue = inputValue.replace( /[^0-9.]/g, '' );
-			const dotCount = inputValue.split( '.' ).length - 1;
-			if ( dotCount > 1 ) {
-				inputValue = inputValue.replace( /\.+$/g, '' );
-			}
+	const formatNumber = ( number, formatType ) => {
+
+		if ( ! number ) {
+			return '';
 		}
-		setAttributes( { defaultValue: inputValue } );
-	};
+
+		let formattedNumber = '';
+
+		if ( 'eu-style' === formatType ) {
+			// EU style number format.
+			formattedNumber = new Intl.NumberFormat( 'de-DE', { style: "decimal", maximumFractionDigits: 2 } ).format( number.replace( /\./g, '' ) );
+		}
+
+		// US style number format. Default.
+		formattedNumber = new Intl.NumberFormat( 'en-US', { style: "decimal", maximumFractionDigits: 2 } ).format( number.replace( /,/g, '' ) );
+
+		if ( 'NaN' === formattedNumber ) {
+			// Bail, if NaN.
+			return '';
+		}
+
+		return formattedNumber;
+	}
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
-	}, [ formId, setAttributes, currentFormId ] );
+	}, [ formId, currentFormId ] );
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -108,7 +116,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									setAttributes( { placeholder: newValue } )
 								}
 							/>
-							<SRFMNumberControl
+							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
 								data={ {
@@ -118,7 +126,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								value={ defaultValue }
 								onChange={ ( value ) =>
 									setAttributes( {
-										defaultValue: value,
+										defaultValue: formatNumber( value, formatType ),
 									} )
 								}
 								showControlHeader={ false }
@@ -207,16 +215,12 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								setAttributes={ setAttributes }
 								options={ [
 									{
-										label: 'None',
-										value: 'none',
+										label: __( 'US Style (Eg: 9,999.99)' ),
+										value: 'us-style',
 									},
 									{
-										label: 'Decimal (Ex:256.45)',
-										value: 'decimal',
-									},
-									{
-										label: 'Non Decimal (Ex:258)',
-										value: 'non-decimal',
+										label: __( 'EU Style (Eg: 9.999,99)' ),
+										value: 'eu-style',
 									},
 								] }
 							/>
@@ -244,7 +248,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 			<NumberComponent
 				attributes={ attributes }
 				blockID={ block_id }
-				handleInput={ handleInput }
+				formatNumber={ formatNumber }
 				setAttributes={ setAttributes }
 			/>
 			{ help !== '' && (
