@@ -93,7 +93,14 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			return;
 		}
 
-		changeOption( { optionTitle: value }, i );
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( i === thisIndex ) {
+				item = { ...item, ...{ optionTitle: value } };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
 	}
 
 	useEffect( () => {
