@@ -3,130 +3,27 @@
 		.srfm-checkbox-block,
 		.srfm-gdpr-block {
 			.srfm-description {
-				margin-left: 24px;
+				margin-left: var( --srfm-checkbox-description-margin-left ); // Variable-based margin
 			}
 
-			.srfm-block-wrap {
-				* {
-					box-sizing: border-box;
-				}
+			.srfm-input-checkbox,
+			.srfm-input-gdpr {
+				z-index: -1 !important;
 
-				.srfm-block-url {
-					color: var( --srfm-color-scheme-primary );
-				}
-
-				.srfm-cbx {
-					display: flex;
-					gap: 8px;
-					align-items: center;
-					-webkit-user-select: none;
-					user-select: none;
-					cursor: pointer;
-					overflow: hidden;
-					transition: 0.3s ease-out;
-
-					&:not( :last-child ) {
-						margin-right: 6px;
-					}
-
-					.srfm-block-text {
-						flex: 1;
-					}
-
-					.srfm-span-wrap {
-						float: left;
-						vertical-align: middle;
-						transform: translate3d( 0, 0, 0 );
-
-						&:first-child {
-							position: absolute;
-							width: var( --srfm-check-ctn-width );
-							height: var( --srfm-check-ctn-height );
-							border-radius: 4px;
-							transform: scale( 1 );
-							border: 1px solid var( --srfm-color-input-border );
-							background-color: var( --srfm-color-input-background );
-							transition: 0.3s ease-out;
-
-							svg {
-								position: absolute;
-								top: var( --srfm-check-svg-top );
-								left: var( --srfm-check-svg-left );
-								fill: none;
-								width: var( --srfm-check-svg-width );
-								height: var( --srfm-check-svg-height );
-								stroke: #fff;
-								stroke-width: 2;
-								stroke-linecap: round;
-								stroke-linejoin: round;
-								stroke-dasharray: 16px;
-								stroke-dashoffset: 16px;
-								transition: 0.3s ease-out;
-								transform: translate3d( 0, 0, 0 );
-							}
-						}
-
-						&:last-child {
-							position: relative;
-							left: 24px;
-							line-height: 18px;
-							max-width: calc( 100% - 26px );
-							word-wrap: break-word;
-						}
-					}
-
-					@media screen and ( max-width: 640px ) {
-						width: 100%;
-					}
-				}
-
-				.srfm-input-checkbox,
-				.srfm-input-gdpr {
-					// added z-index to fix the focus issue in the checkbox wrap.
-					// If we do not add z-index, the focus and accessibility will not work properly.
-					z-index: -1 !important;
-
-					&:focus {
-						+ {
-							.srfm-cbx {
-								span {
-									&:first-child:not( .srfm-required ) {
-										border-color: var( --srfm-color-scheme-primary );
-										box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
-										svg {
-											stroke-dashoffset: 0;
-										}
+				&:focus {
+					+ {
+						.srfm-cbx {
+							span {
+								&:first-child:not( .srfm-required ) {
+									border-color: var( --srfm-color-scheme-primary );
+									box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
+									svg {
+										stroke-dashoffset: 0;
 									}
 								}
 							}
 						}
 					}
-
-					position: absolute;
-
-					&:checked {
-						+ {
-							.srfm-cbx {
-								span {
-									&:first-child:not( .srfm-required ) {
-										background: var( --srfm-color-scheme-primary );
-										border-color: var( --srfm-color-scheme-primary );
-										svg {
-											stroke-dashoffset: 0;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				.srfm-inline-svg {
-					position: absolute;
-					width: 0;
-					height: 0;
-					pointer-events: none;
-					user-select: none;
 				}
 			}
 		}

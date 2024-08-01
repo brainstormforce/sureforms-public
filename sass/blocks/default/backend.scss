@@ -49,124 +49,28 @@
 		}
 	}
 
-	.srfm-description {
-		display: block;
-		@include srfm-description-styles;
-	}
-
 	.srfm-error-wrap {
 		height: var( --srfm-error-line-height );
 	}
 
 	// checkbox and gdpr
-	.srfm-checkbox-block,
-	.srfm-gdpr-block {
-		.srfm-description {
-			margin-left: 24px;
-		}
+	.srfm-input-checkbox,
+	.srfm-input-gdpr {
+		display: none; // Different display property
 
-		.srfm-block-wrap {
-			* {
-				box-sizing: border-box;
-			}
-
-			.srfm-block-url {
-				color: var( --srfm-color-scheme-primary );
-			}
-
-			.srfm-cbx {
-				display: flex;
-				gap: 8px;
-				align-items: center;
-				-webkit-user-select: none;
-				user-select: none;
-				cursor: pointer;
-				overflow: hidden;
-				transition: 0.3s ease-out;
-
-				&:not( :last-child ) {
-					margin-right: 6px;
-				}
-
-				.srfm-block-text {
-					flex: 1;
-				}
-
-				.srfm-span-wrap {
-					float: left;
-					vertical-align: middle;
-					transform: translate3d( 0, 0, 0 );
-
-					&:first-child {
-						position: absolute;
-						width: var( --srfm-check-ctn-width );
-						height: var( --srfm-check-ctn-height );
-						border-radius: 4px;
-						transform: scale( 1 );
-						border: 1px solid var( --srfm-color-input-border );
-						background-color: var( --srfm-color-input-background );
-						transition: 0.3s ease-out;
-
-						svg {
-							position: absolute;
-							top: var( --srfm-check-svg-top );
-							left: var( --srfm-check-svg-left );
-							fill: none;
-							width: var( --srfm-check-svg-width );
-							height: var( --srfm-check-svg-height );
-							stroke: #fff;
-							stroke-width: 2;
-							stroke-linecap: round;
-							stroke-linejoin: round;
-							stroke-dasharray: 16px;
-							stroke-dashoffset: 16px;
-							transition: 0.3s ease-out;
-							transform: translate3d( 0, 0, 0 );
-						}
-					}
-
-					&:last-child {
-						position: relative;
-						left: 24px;
-						line-height: 18px;
-						max-width: calc( 100% - 26px );
-						word-wrap: break-word;
-					}
-				}
-
-				@media screen and ( max-width: 640px ) {
-					width: 100%;
-				}
-			}
-
-			.srfm-input-checkbox,
-			.srfm-input-gdpr {
-				display: none;
-				position: absolute;
-
-				&:checked {
-					+ {
-						.srfm-cbx {
-							span {
-								&:first-child:not( .srfm-required ) {
-									background: var( --srfm-color-scheme-primary );
-									border-color: var( --srfm-color-scheme-primary );
-									svg {
-										stroke-dashoffset: 0;
-									}
-								}
+		&:checked {
+			+ {
+				.srfm-cbx {
+					span {
+						&:first-child:not( .srfm-required ) {
+							background: var( --srfm-color-scheme-primary );
+							border-color: var( --srfm-color-scheme-primary );
+							svg {
+								stroke-dashoffset: 0;
 							}
 						}
 					}
 				}
-			}
-
-			.srfm-inline-svg {
-				position: absolute;
-				width: 0;
-				height: 0;
-				pointer-events: none;
-				user-select: none;
 			}
 		}
 	}
