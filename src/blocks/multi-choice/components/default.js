@@ -5,6 +5,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import HelpText from '@Components/misc/HelpText';
+import renderSVG from '@Components/icon-picker/renderIcon.js';
 
 export const MultiChoiceComponent = ( {
 	attributes,
@@ -15,8 +16,15 @@ export const MultiChoiceComponent = ( {
 	deleteOption,
 	setAttributes,
 } ) => {
-	const { label, required, options, choiceWidth, help, singleSelection, verticalLayout } =
-		attributes;
+	const {
+		label,
+		required,
+		options,
+		choiceWidth,
+		help,
+		singleSelection,
+		verticalLayout,
+	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
 	const defaultChoiceWidth = '100';
@@ -60,9 +68,12 @@ export const MultiChoiceComponent = ( {
 			: parse( svgIcons[ 'square-unchecked' ] );
 		return (
 			<div
-				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${ verticalLayout ? ' srfm-vertical-layout' : '' }` }
+				className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }${
+					verticalLayout ? ' srfm-vertical-layout' : ''
+				}` }
 			>
 				{ options.map( ( option, key ) => {
+					console.log( option );
 					return (
 						<label key={ key } className="srfm-multi-choice-single">
 							<div className="srfm-block-content-wrap">
@@ -71,7 +82,15 @@ export const MultiChoiceComponent = ( {
 								>
 									{ selectionSvg }
 								</span>
-								<p>{ option.optionTitle }</p>
+								<div className="srfm-option-container">
+									{ option.icon && (
+										<span className="srfm-option-icon-image">
+											{ ' ' }
+											{ renderSVG( option.icon ) }{ ' ' }
+										</span>
+									) }
+									<p>{ option.optionTitle }</p>
+								</div>
 							</div>
 						</label>
 					);
