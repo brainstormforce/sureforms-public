@@ -74,8 +74,10 @@
 		}
 
 		.srfm-captcha-container {
+			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
 			margin-bottom: 1.6em;
 		}
+		
 		.srfm-validation-error {
 			font-size: 0.7em;
 			margin-top: 0.571em;
