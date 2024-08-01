@@ -202,8 +202,7 @@
 			padding: var( --srfm-flag-section-padding ) !important;
 			.selected-flag {
 				display: flex !important;
-				width: auto;
-				justify-content: flex-start;
+				width: auto !important;
 				background-color: inherit !important;
 				.selected-dial-code {
 					font-size: var( --srfm-input-field-font-size );
