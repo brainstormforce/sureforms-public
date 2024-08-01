@@ -1,27 +1,5 @@
 :root {
 	--srfm-font-size: 16px;
-	// Color scheme variables.
-	// This need to be made dynamic just keeping it here for testing purpose.
-	// --srfm-color-scheme-primary: #1E4ED8;
-	// --srfm-color-scheme-text-on-primary: #FFFFFF;
-	// --srfm-color-scheme-text: #000000;
-
-	// Input field color variables.
-	// --srfm-color-input-label: var( --srfm-color-scheme-text );
-	// --srfm-color-input-description: rgba( --srfm-color-scheme-text, 0.65 );
-	// --srfm-color-input-placeholder: var( --srfm-color-scheme-text );
-	// --srfm-color-input-text: var( --srfm-color-scheme-text );
-	// --srfm-color-input-prefix: rgba( var( --srfm-color-scheme-text ), 0.65 );
-	// --srfm-color-input-background: rgba( var( --srfm-color-scheme-text ), 0.02 );
-	// --srfm-color-input-background-disabled: rgba( var( --srfm-color-scheme-text ), 0.05 );
-	// --srfm-color-input-border: rgba( var( --srfm-color-scheme-text ), 0.25 );
-	// --srfm-color-input-border-disabled: rgba( var( --srfm-color-scheme-text ), 0.15 );
-	// --srfm-color-input-border-hover: rgba( var( --srfm-color-scheme-primary ), 0.65 );
-	// --srfm-color-input-border-focus-glow: rgba( var( --srfm-color-scheme-primary ), 0.15 );
-
-	// Button color variables.
-
-	// Icon color variables.
 
 	// Error color variables.
 	$srfmColorErrorLight: #dc2626 !default;
@@ -76,4 +54,11 @@
 	--srfm-error-font-size: 12px;
 	--srfm-error-font-weight: 500;
 	--srfm-error-line-height: 16px;
+
+	// Button variables.
+	--srfm-btn-border-radius: 6px;
+	--srfm-btn-padding: 8px 14px;
+	--srfm-btn-font-size: 14px;
+	--srfm-btn-font-weight: 500;
+	--srfm-btn-line-height: 20px;
 }

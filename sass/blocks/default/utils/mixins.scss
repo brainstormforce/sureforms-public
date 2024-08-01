@@ -83,3 +83,108 @@
 	transform: rotate( 45deg );
 	margin-left: auto;
 }
+
+// These mixins are used in Multi Select scss.
+@mixin srfm-multi-choice-wrap-styles {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -4px;
+
+	@media ( min-width: 431px ) {
+		&.srfm-choice-width-100 {
+			.srfm-multi-choice-single {
+				width: 100%;
+			}
+		}
+
+		&.srfm-choice-width-50 {
+			.srfm-multi-choice-single {
+				width: 50%;
+			}
+		}
+
+		&.srfm-choice-width-33-33 {
+			.srfm-multi-choice-single {
+				width: 33%;
+			}
+		}
+
+		&.srfm-choice-width-25 {
+			.srfm-multi-choice-single {
+				width: 25%;
+			}
+		}
+	}
+}
+
+@mixin srfm-multi-choice-vertical-layout( $important: false ) {
+	&.srfm-vertical-layout{
+		.srfm-block-content-wrap {
+			@if $important {
+				padding: 16px !important;
+				height: 100% !important;
+			} @else {
+				padding: 16px;
+				height: 100%;
+			}
+
+
+			.srfm-icon {
+				position: absolute !important;
+				top: 4px !important;
+				right: 4px !important;
+			}
+
+			p {
+				text-align: center;
+			}
+		}
+	}
+}
+
+@mixin srfm-multi-choice-single-styles {
+	padding: 4px;
+	cursor: pointer;
+	margin: 0;
+}
+
+@mixin srfm-multi-choice-block-content-wrap-styles( $important: false ) {
+	position: relative;
+	@if $important {
+		@include srfm-input-common-styles( true );
+		margin: 0 !important;
+		min-height: var( --srfm-input-height );
+		height: auto !important;
+	} @else {
+		@include srfm-input-common-styles();
+		margin: 0;
+		min-height: var( --srfm-input-height );
+		height: auto;
+	}
+
+	p {
+		font-size: 1em;
+		line-height: normal;
+		width: calc( 100% - 1em );
+		margin-top: 0;
+		margin-bottom: 0;
+		word-break: break-word;
+	}
+}
+
+@mixin srfm-multi-choice-icon-styles {
+	float: right;
+	position: relative;
+	width: 16px;
+	height: 16px;
+	top: 1px;
+
+	svg {
+		position: absolute;
+		top: 0;
+		path {
+			stroke: var( --srfm-color-multi-choice-svg );
+			stroke-opacity: 0.7;
+		}
+	}
+}

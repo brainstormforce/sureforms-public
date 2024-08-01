@@ -35,8 +35,29 @@
 		max-width: 100%;
 	}
 
+	.srfm-button {
+		padding: var( --srfm-btn-padding ) !important;
+		font-size: var( --srfm-btn-font-size ) !important;
+		font-weight: var( --srfm-btn-font-weight ) !important;
+		line-height: var( --srfm-btn-line-height ) !important;
+		border-radius: var( --srfm-btn-border-radius ) !important;
+		background: var( --srfm-color-scheme-primary ) !important;
+		color: var( --srfm-color-scheme-text-on-primary ) !important;
+		border: 1px solid var( --srfm-color-scheme-primary ) !important;
+
+		&:hover {
+			background: var( --srfm-btn-color-hover ) !important;
+		}
+	}
+
+	.srfm-custom-button-ctn {
+		.srfm-button {
+			margin-top: 4px;
+		}
+	}
+
 	.srfm-submit-button {
-		font-size: 0.8em;
+		// font-size: 0.8em;
 		cursor: pointer;
 	}
 	.srfm-pre-btn,
@@ -44,31 +65,54 @@
 		cursor: pointer;
 	}
 
-	// Editor & Frontend stylings for the Submit, Inline and Page Break Buttons.
-	.srfm-btn-bg-color,
-	.srfm-btn-frontend,
-	.srfm-page-break-btn-bg-color {
-		border-radius: var( --srfm-btn-border-radius );
-		font-family: inherit;
-		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: normal;
-		padding: 0.625em 1em;
-		text-decoration: none;
-		color: var( --srfm-btn-text-color );
-		background-color: var( --srfm-btn-bg-color );
-		border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+	.srfm-custom-button-ctn {
+		height: 100%;
+		display: flex;
+		align-items: flex-end;
+		.srfm-button {
+			margin-bottom: 20px;
+			padding: 9px 0px !important;
+		}
+		&.srfm-block {
+			height: auto;
+		}
 	}
 
-	.srfm-btn-frontend {
-		border: var( --srfm-btn-border );
-	}
+	// .srfm-btn-bg-color {
+	// 	border-radius: var( --srfm-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-btn-text-color );
+	// 	background-color: var( --srfm-btn-bg-color );
+	// 	border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+	// }
 
-	.srfm-page-break-btn-bg-color {
-		border-radius: var( --srfm-page-break-btn-border-radius );
-		color: var( --srfm-page-break-btn-text-color );
-		border: var( --srfm-page-break-btn-border );
-		background-color: var( --srfm-page-break-btn-bg-color );
-	}
+	// .srfm-btn-frontend {
+	// 	border-radius: var( --srfm-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-btn-text-color );
+	// 	background-color: var( --srfm-btn-bg-color );
+	// 	border: var( --srfm-btn-border );
+	// }
+
+	// .srfm-page-break-btn-bg-color {
+	// 	border-radius: var( --srfm-page-break-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-page-break-btn-text-color );
+	// 	border: var( --srfm-page-break-btn-border );
+	// 	background-color: var( --srfm-page-break-btn-bg-color );
+	// }
 
 	fieldset,
 	legend {
