@@ -216,13 +216,13 @@ class Helper {
 	public static function generate_common_form_markup( $form_id, $type, $label = '', $slug = '', $block_id = '', $required = false, $help = '', $error_msg = '', $is_unique = false, $duplicate_msg = '', $override = false ) {
 		$duplicate_msg = $duplicate_msg ? ' data-unique-msg="' . $duplicate_msg . '"' : '';
 
-		$markup         = '';
-		$show_labels    = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_labels', true ) ) : true;
-		$show_asterisks = get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ? self::get_string_value( get_post_meta( self::get_integer_value( $form_id ), '_srfm_show_asterisk', true ) ) : true;
+		$markup                     = '';
+		$show_labels_as_placeholder = get_post_meta( self::get_integer_value( $form_id ), '_srfm_use_label_as_placeholder', true );
+		$show_labels_as_placeholder = $show_labels_as_placeholder ? self::get_string_value( $show_labels_as_placeholder ) : false;
 
 		switch ( $type ) {
 			case 'label':
-				$markup = $label && '1' === $show_labels ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required && '1' === $show_asterisks ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
+				$markup = $label ? '<label for="srfm-' . $slug . '-' . esc_attr( $block_id ) . '" class="srfm-block-label">' . htmlspecialchars_decode( esc_html( $label ) ) . ( $required ? '<span class="srfm-required"> *</span>' : '' ) . '</label>' : '';
 				break;
 			case 'help':
 				$markup = $help ? '<div class="srfm-description" id="srfm-description-' . esc_attr( $block_id ) . '">' . esc_html( $help ) . '</div>' : '';
@@ -232,6 +232,9 @@ class Helper {
 				break;
 			case 'is_unique':
 				$markup = $is_unique ? '<div class="srfm-error">' . esc_html( $duplicate_msg ) . '</div>' : '';
+				break;
+			case 'placeholder':
+				$markup = $label && '1' === $show_labels_as_placeholder ? $label . ( $required ? ' *' : '' ) : '';
 				break;
 			default:
 				$markup = '';

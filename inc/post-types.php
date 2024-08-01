@@ -410,13 +410,13 @@ class Post_Types {
 	 * @since 0.0.1
 	 */
 	public function register_post_metas() {
+		$check_icon = 'data:image/svg+xml;base64,' . base64_encode( strval( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/check-icon.svg' ) ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 
 		$metas = apply_filters(
 			'srfm_register_post_meta',
 			[
 				// General tab metas.
-				'_srfm_show_labels'              => 'boolean',
-				'_srfm_show_asterisk'            => 'boolean',
+				'_srfm_use_label_as_placeholder' => 'boolean',
 				'_srfm_single_page_form_title'   => 'boolean',
 				'_srfm_submit_button_text'       => 'string',
 				'_srfm_instant_form'             => 'boolean',
@@ -676,7 +676,7 @@ class Post_Types {
 						'confirmation_type' => 'same page',
 						'page_url'          => '',
 						'custom_url'        => '',
-						'message'           => '<p>Form submitted successfully!</p>',
+						'message'           => '<p class="default-p"><img src="' . esc_attr( $check_icon ) . '"></img></p><h2 class="default-h2">Thank you</h2><p class="default-p">We have received your email. You\'ll hear from us as soon as possible.</p><p class="default-p">Please be sure to whitelist our {admin_email} email address to ensure our replies reach your inbox safely.</p>',
 						'submission_action' => 'hide form',
 					],
 				],

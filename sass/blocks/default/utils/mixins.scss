@@ -104,11 +104,19 @@
 			}
 		}
 	}
+}
 
-	&.srfm-vertical-layout {
+@mixin srfm-multi-choice-vertical-layout( $important: false ) {
+	&.srfm-vertical-layout{
 		.srfm-block-content-wrap {
-			padding: 16px;
-			height: 100%;
+			@if $important {
+				padding: 16px !important;
+				height: 100% !important;
+			} @else {
+				padding: 16px;
+				height: 100%;
+			}
+
 
 			.srfm-icon {
 				position: absolute !important;
