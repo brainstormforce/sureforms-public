@@ -216,7 +216,7 @@ class Generate_Form_Markup {
 					--srfm-color-input-selected: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.1 );
 					--srfm-btn-color-hover: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.9 );
 					--srfm-btn-color-disabled: rgba( from <?php echo esc_html( $primary_color_var ); ?> r g b / 0.25 );
-					
+
 					/* Same as dropdown variables, will be adjusted after merging. */
 					--srfm-dropdown-option-background-selected: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.05 );
 					--srfm-dropdown-option-background-hover: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.10 );
