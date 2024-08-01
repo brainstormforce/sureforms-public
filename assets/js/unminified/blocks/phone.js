@@ -36,7 +36,6 @@ function initializePhoneField() {
 				? phoneNumber?.value.trim()
 				: '';
 			const parentBlock = phoneNumber.closest( '.srfm-block' );
-			const hiddenInput = element.querySelector( 'input[type="hidden"]' );
 
 			if ( phoneNumberValue && ! iti.isValidNumber() ) {
 				parentBlock.classList.add( 'srfm-phone-error' );
@@ -45,7 +44,7 @@ function initializePhoneField() {
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );
-				hiddenInput.value = iti.getNumber();
+				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
 
