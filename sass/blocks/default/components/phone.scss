@@ -8,10 +8,6 @@
 				width: 100%;
 
 				.iti__flag-container {
-					// padding: var( --srfm-flag-section-padding ) !important;
-					// display: flex;
-					// align-items: flex-end;
-					// width: 100%;
 					.iti__country-list {
 						display: block;
 						opacity: 1;
@@ -71,15 +67,12 @@
 						background-color: inherit !important;
 						padding-top: 10px;
 						padding-bottom: 10px;
-						// height: var( --srfm-input-height );
-					}
-					.iti__flag {
-						clip-path: circle();
+						gap: 4px; // Fixed gap between the flag and the country code.
 					}
 					.iti__selected-dial-code {
 						font-size: var( --srfm-input-field-font-size );
-						margin-left: 4px !important;
-						color: var( --srfm-input-text-prefix-color );
+						margin-left: 0; // Removed library default margin.
+						color: var( --srfm-color-input-prefix );
 					}
 					.iti__arrow {
 						display: none;

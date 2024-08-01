@@ -195,14 +195,14 @@
 			margin: var( --srfm-input-field-margin ) !important;
 		}
 		.iti-flag {
-			margin-right: 4px;
-			clip-path: circle();
+			margin-right: 4px; // Fixed gap between the flag and the country code.
 		}
 		.flag-container {
 			width: auto !important;
 			padding: var( --srfm-flag-section-padding ) !important;
 			.selected-flag {
 				display: flex !important;
+				width: auto;
 				justify-content: flex-start;
 				background-color: inherit !important;
 				.selected-dial-code {
