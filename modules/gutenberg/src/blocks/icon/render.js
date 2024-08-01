@@ -7,12 +7,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 const Render = ( props ) => {
 	const { attributes, setAttributes, deviceType } = props;
-	const {
-		icon,
-		block_id,
-		iconAccessabilityMode,
-		iconAccessabilityDesc,
-	} = attributes;
+	const { icon, block_id, iconAccessabilityMode, iconAccessabilityDesc } =
+		attributes;
 
 	const extraProps = {
 		...( iconAccessabilityMode !== 'presentation' && {
