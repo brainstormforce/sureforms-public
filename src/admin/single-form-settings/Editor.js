@@ -31,6 +31,7 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
+import { BlockInserterWrapper } from './Inserter.js';
 
 const { select, dispatch } = wp.data;
 
@@ -206,11 +207,17 @@ const SureformsFormSpecificSettings = ( props ) => {
 	}, [ blockCount ] );
 
 	// Render the Components in the center of the Header
-	const headerCenterContainer = document.querySelector(
-		'.edit-post-header__center'
-	);
+	const headerCenterContainer =
+		document.querySelector( '.edit-post-header__center' ) ||
+		// added support for WP 6.6.
+		document.querySelector( '.editor-header__center' );
 
 	if ( headerCenterContainer ) {
+		// remove the command bar and add our custom header title editor
+		const header = document.querySelector( '.editor-post-title__block' );
+		if ( header ) {
+			header.remove();
+		}
 		const root = createRoot( headerCenterContainer );
 		root.render( <SRFMEditorHeader /> );
 	}
@@ -232,7 +239,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureformsKeys._srfm_inherit_theme_button
 				? 'wp-block-button'
 				: 'srfm-submit-btn-font-size';
-		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
+
+		const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -243,12 +251,26 @@ const SureformsFormSpecificSettings = ( props ) => {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 
 				// If the normal button is present, add RichText to the button.
-				const buttonContainer = elm.nextElementSibling;
+				const elementParent = elm.parentElement;
+
+				const buttonContainer = elementParent.querySelector(
+					'.srfm-submit-btn-container'
+				);
+
 				const button = buttonContainer.querySelector(
 					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
+				// Add block inserter in the srfm-custom-block-inserter div.
+				const getBlockInserterDiv = elementParent.querySelector(
+					'.srfm-custom-block-inserter'
+				);
+
+				if ( getBlockInserterDiv ) {
+					createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
+				}
 
 				createRoot( button ).render(
 					<RichText
@@ -264,6 +286,34 @@ const SureformsFormSpecificSettings = ( props ) => {
 						placeholder={ __( 'Submit', 'sureforms' ) }
 					/>
 				);
+
+				button.addEventListener( 'click', () => {
+					// need multiple timeouts for DOM elements to find.
+					// click on form section
+					setTimeout( () => {
+						const editPostTab = document.getElementById( 'tabs-0-edit-post/document' );
+
+						editPostTab?.click();
+					}, 100 );
+
+					// click on style tab
+					setTimeout( () => {
+						// elements for submit button event listener
+						const styleTabElement = document.querySelectorAll( '.srfm-inspector-tabs div' )[ 1 ]; // Style Tab
+						styleTabElement?.click();
+					}, 150 );
+
+					// then click on submit accordion
+					setTimeout( () => {
+						// elements for submit button event listener
+						const submitBtnStyleContainer = document.querySelector( '.srfm-advance-panel-body-submit-button' );
+						const submitBtnElement = submitBtnStyleContainer?.querySelector( 'button' );
+
+						if ( ! submitBtnStyleContainer?.classList?.contains( 'is-opened' ) ) {
+							submitBtnElement?.click();
+						}
+					}, 200 );
+				} );
 			}
 		}
 	}
@@ -530,6 +580,21 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	// add pro panel to the block inserter
 	useEffect( () => {
+		/**
+		 * For the tablist occurred with the WP-6.6.
+		 * We will replace this with better solution
+		 * in the future, when WordPress provides something built-in.
+		 */
+		const removeUnnecessaryTablist = () => {
+			const tablist = document.querySelector(
+				'.block-editor-inserter__tabs .block-editor-inserter__tablist-and-close-button'
+			);
+
+			if ( tablist ) {
+				tablist.remove();
+			}
+		};
+
 		const checkAndRenderCustomComponent = () => {
 			const targetElement = document.querySelector(
 				'.block-editor-inserter__block-list'
@@ -555,7 +620,10 @@ const SureformsFormSpecificSettings = ( props ) => {
 			window.MutationObserver ||
 			window.WebKitMutationObserver ||
 			window.MozMutationObserver;
-		const observer = new MutationObserver( checkAndRenderCustomComponent );
+		const observer = new MutationObserver( () => {
+			removeUnnecessaryTablist();
+			checkAndRenderCustomComponent();
+		} );
 
 		// Set up the configuration of the MutationObserver
 		const observerConfig = { childList: true, subtree: true };

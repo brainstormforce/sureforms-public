@@ -3,11 +3,12 @@ $bg_white: #fff;
 $bg_color_3: #f3e8ff;
 $border: #e5e7eb;
 $border_2: #dce0e6;
-$box_shadow: #0d131e1a;
+$box_shadow: #00000014;
 $box_shadow_2: #00000033;
 $box_shadow_3: #0000000d;
-$heading_color: #1e293b;
-$desc_color: #475569;
+$heading_color: #030712;
+$title_color: #0f172a;
+$desc_color: #64748b;
 $text_color: #6b21a8;
 $text_color_2: #50575e;
 $text_color_3: #4b5563;
@@ -591,6 +592,25 @@ $sidebar_width: 290px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		margin-top: 1em;
+
+		.srfm-tp-btn {
+			padding: 8px 16px 8px 16px;
+			border-radius: 6px;
+			height: 40px;
+			width: 100%;
+			justify-content: center;
+			font-weight: 600;
+			gap: 8px;
+			line-height: 20px;
+			&:hover,
+			&:focus {
+				box-shadow: none;
+			}
+		}
+		.srfm-buttons.srfm-tp-btn {
+			color: inherit;
+		}
 	}
 
 	.srfm-common-btn {
@@ -806,6 +826,22 @@ $sidebar_width: 290px;
 		justify-content: center;
 		padding: 50px 1.25em;
 
+		.srfm-tp-sp-heading-container,
+		.srfm-exit-link-container {
+			display: flex;
+			justify-content: center;
+		}
+		.srfm-exit-link-content {
+			display: flex;
+			align-items: center;
+			margin-top: 2.5em;
+			font-size: 1em;
+			font-weight: 400;
+			line-height: 1.5em;
+			color: $desc_color;
+			cursor: pointer;
+			gap: 8px;
+		}
 		.srfm-tp-sp-heading {
 			font-size: 1.875em;
 			font-weight: 600;
@@ -813,23 +849,31 @@ $sidebar_width: 290px;
 			text-align: center;
 			margin-top: 0;
 			margin-bottom: 1.33em;
+			line-height: 1.2em;
+			width: 50%;
 		}
 
 		.srfm-tp-sp-methods {
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-between;
+			justify-content: center;
 			max-width: 768px;
-			gap: 24px;
+			gap: 32px;
 
 			.srfm-single-card {
 				position: relative;
-				width: calc( 33.33% - 24px );
-				box-shadow: 0px 1px 2px 0px $box_shadow;
-				border: 1px solid $border_2;
+				width: calc( 50% - 18px );
+				box-shadow: 0px 12px 24px -4px $box_shadow;
 				background-color: $bg_white;
-				border-radius: 8px;
+				border-radius: 12px;
 				transition: 0.3s;
+				.srfm-btn-arrow {
+					display: flex;
+					align-items: center;
+					svg {
+						margin: 0 !important;
+					}
+				}
 
 				.srfm-tp-cs-badge {
 					position: absolute;
@@ -845,31 +889,26 @@ $sidebar_width: 290px;
 				}
 
 				.srfm-tp-starting-point-card {
-					padding: 2em 1.5em 2.75em 1.5em;
+					padding: 2.5em 2em 2em 2em;
 
 					svg {
 						margin-bottom: 2em;
 					}
 
 					.srfm-tp-sp-title {
-						font-size: 1.125em;
+						font-size: 1.25em;
 						font-weight: 600;
-						color: $heading_color;
+						color: $title_color;
 						margin-top: 0;
 						margin-bottom: 0.625em;
+						line-height: 1.4em;
 					}
 
 					.srfm-tp-sp-description {
 						font-size: 0.875em;
 						color: $desc_color;
 						margin-bottom: 0;
-					}
-				}
-
-				&:hover {
-					@media ( min-width: 781px ) {
-						box-shadow: 0px 1px 2px 0px $box_shadow;
-						box-shadow: 0px 16px 48px -8px $box_shadow_2;
+						padding-bottom: 1.143em;
 					}
 				}
 

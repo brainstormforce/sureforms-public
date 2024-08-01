@@ -34,7 +34,8 @@
 				font-size: 1em;
 			}
 
-			&.srfm-error {
+			&.srfm-error,
+			&.srfm-valid-email-error {
 				.srfm-block-wrap {
 					.srfm-input-common,
 					.srfm-dropdown-common {

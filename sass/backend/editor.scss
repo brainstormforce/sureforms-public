@@ -8,6 +8,10 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	.block-editor-inserter__tablist-and-close-button {
+		display: none;
+	}
+
 	.srfm-instant-form-settings-separator {
 		width: 100%;
 		height: 1px;
@@ -24,7 +28,8 @@ body.post-type-sureforms_form {
 		margin: 25px ( -16px );
 	}
 
-	.edit-post-sidebar__panel {
+	.edit-post-sidebar__panel,
+	.editor-sidebar__panel {
 		margin-top: 1px;
 	}
 
@@ -82,8 +87,10 @@ body.post-type-sureforms_form {
 	}
 
 	// Styling for the sidebar - WP6.5.
-	div[id="edit-post:document"].edit-post-sidebar {
-		> .edit-post-sidebar__panel {
+	div[id="edit-post:document"].edit-post-sidebar,
+	div[id="edit-post:document"].editor-sidebar {
+		> .edit-post-sidebar__panel,
+		.editor-sidebar__panel {
 			.components-panel__body.is-opened {
 				padding: 0 !important; // This is needed to override the padding added by WordPress.
 				width: 100%;
@@ -104,7 +111,8 @@ body.post-type-sureforms_form {
 				}
 			}
 
-			.edit-post-post-status {
+			.edit-post-post-status,
+			.editor-post-summary {
 				display: none;
 			}
 		}
@@ -225,7 +233,19 @@ body.post-type-sureforms_form {
 		margin-left: -10px;
 	}
 
-	.edit-post-header__center {
+	.edit-post-header__center,
+	// added support for WP 6.6.
+	.editor-header__center {
+		// styles added to make title bar compatible if block toolbar settings are moved in the header
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		gap: 0;
+		min-width: 0;
+		max-height: 36px;
+		margin: 0 16px;
+		opacity: 1;
+
 		.srfm-header-title-input {
 			width: 100%;
 			max-width: 500px;
@@ -236,13 +256,12 @@ body.post-type-sureforms_form {
 			font-style: normal;
 			font-weight: 400;
 			padding: 11px 16px;
-			margin-top: 8px;
 			border-radius: 8px;
 			border: 1px solid #ddd;
 			background: rgb( 249, 250, 251 );
 			box-shadow: none;
 			// need to declare height for WP6.5.
-			height: 44px;
+			height: 36px;
 
 			&:focus {
 				border-color: #0284c7;
@@ -270,35 +289,46 @@ body.post-type-sureforms_form {
 		width: 100%;
 	}
 
-	// Plus button, Block appended.
+	// Hide block inserter below wordpress version 6.6.
+	// This default appender is not available from 6.6.
+	.srfm-form-container {
+		> div:last-child.block-list-appender.wp-block {
+			display: none;
+		}
+	}
 
 	// Add submit button below the Block Appended.
-	// Target all the block-list-appender class except the one inside the address block.
-	.block-list-appender:not( .srfm-address-block-wrap .block-list-appender ) {
+	.srfm-custom-block-inserter {
 		width: 100%;
-		padding: 0 0.3em;
+		max-width: calc( 620px - 0em );
+		margin: 1.2em auto;
+		.components-dropdown.block-editor-inserter {
+			width: 100%;
 
-		.block-editor-button-block-appender.components-button.components-button {
-			box-shadow: none;
-			border: 1px dashed #959595;
-			padding: 24px;
-			background-color: #fff;
-			transition: 0.3s;
-
-			svg {
-				width: 30px;
-				height: 30px;
-				color: white;
-				background-color: #555d66;
-				border-radius: 100%;
+			button.srfm-custom-block-inserter-button {
+				box-shadow: none;
+				border: 1px dashed #959595;
+				padding: 24px;
+				background-color: #fff;
 				transition: 0.3s;
-			}
-
-			&:hover {
-				border-color: #1e1e1e;
 
 				svg {
-					background-color: #1e1e1e;
+					width: 30px;
+					height: 30px;
+					background-color: #555d66;
+					border-radius: 100%;
+					transition: 0.3s;
+					path {
+						fill: white;
+					}
+				}
+
+				&:hover {
+					border-color: #1e1e1e;
+
+					svg {
+						background-color: #1e1e1e;
+					}
 				}
 			}
 		}
@@ -378,12 +408,19 @@ body.post-type-sureforms_form {
 		box-shadow: none;
 	}
 
-	.edit-post-sidebar__panel .block-editor-block-card svg {
-		fill: #d54407;
-		color: #d54407;
+	.edit-post-sidebar__panel,
+	.editor-sidebar__panel {
+		.block-editor-block-card svg {
+			fill: #d54407;
+			color: #d54407;
+		}
 	}
 
 	.wpforms-edit-post-education-notice {
 		display: none;
+	}
+	// Override style coming from astra theme.
+	.sureform-add-option-button {
+		box-shadow: 0 0 0 1px var( --wp-components-color-accent, var( --wp-admin-theme-color, #3858e9 ) ) !important;
 	}
 }

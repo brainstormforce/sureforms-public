@@ -20,7 +20,6 @@ const DraggableBlock = ( props ) => {
 		defaultAllowedQuickSidebarBlocks,
 		updateDefaultAllowedQuickSidebarBlocks,
 		saveOptionToDatabase,
-		enableRearrange,
 	} = props;
 	const [ hovering, setHovering ] = useState( false );
 	const isDragging = useRef( false );
@@ -39,8 +38,6 @@ const DraggableBlock = ( props ) => {
 	const handleOnClick = ( e, selectedBlock ) => {
 		let clientId = getBlockRootClientId || '';
 		let insertionPoint = blockInsertionPoint;
-
-		console.log( getSelectedBlockAllowedBlocks );
 
 		if (
 			getSelectedBlockAllowedBlocks &&
@@ -122,10 +119,14 @@ const DraggableBlock = ( props ) => {
 		</Popover>
 	);
 
+	const separatedArray = block.name.split( '/' );
+	const slug = separatedArray[ 0 ];
+	const blockName = separatedArray[ 1 ];
+
 	return (
-		<>
+		<div id={ `draggable-box__${ slug }--${ blockName }` }>
 			<Draggable
-				elementId="draggable-panel"
+				elementId={ `draggable-box__${ slug }--${ blockName }` }
 				__experimentalTransferDataType="wp-blocks"
 				transferData={ {
 					type: 'inserter',
@@ -142,13 +143,13 @@ const DraggableBlock = ( props ) => {
 						draggable
 						onDragStart={ ( event ) => {
 							isDragging.current = true;
-							if ( onDraggableStart && enableRearrange ) {
+							if ( onDraggableStart ) {
 								onDraggableStart( event );
 							}
 						} }
 						onDragEnd={ ( event ) => {
 							isDragging.current = false;
-							if ( onDraggableEnd && enableRearrange ) {
+							if ( onDraggableEnd ) {
 								onDraggableEnd( event );
 							}
 						} }
@@ -170,7 +171,7 @@ const DraggableBlock = ( props ) => {
 					</div>
 				) }
 			</Draggable>
-		</>
+		</div>
 	);
 };
 

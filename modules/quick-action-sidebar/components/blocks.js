@@ -45,11 +45,10 @@ const Blocks = ( {
 		item.id = `${ index + 1 }`;
 	} );
 
-	const sortedY = defaultAllowedQuickSidebarBlocks.map( ( item ) =>
-		blocks.find( ( { name } ) => name === item )
-	);
-
-	console.log( { enableRearrange } );
+	const sortedY = defaultAllowedQuickSidebarBlocks
+		.filter( ( item ) => item !== undefined && item !== null )
+		.map( ( item ) => srfmBlocks.find( ( { name } ) => name === item ) )
+		.filter( ( item ) => item !== undefined ); // Remove undefined objects
 
 	return (
 		<>
@@ -68,7 +67,6 @@ const Blocks = ( {
 							defaultAllowedQuickSidebarBlocks,
 							updateDefaultAllowedQuickSidebarBlocks,
 							saveOptionToDatabase,
-							enableRearrange,
 						} }
 					/>
 				) ) }
