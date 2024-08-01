@@ -1,11 +1,12 @@
 body.post-type-sureforms_form {
-	.srfm-icon-picker {
-		// To align with the option text input field.
-		height: 34px;
-
-		.uag-custom-ip {
-			margin: 0;
+	// Added to align the icon picker component with the option text field.
+	.srfm-size-type-field-tabs {
+		// Astra theme adds a top padding which distorts the layout.
+		.components-base-control__field {
+			padding-top: 0 !important;
 		}
+	}
+	.srfm-icon-picker {
 		.uag-control-label {
 			display: none;
 		}
