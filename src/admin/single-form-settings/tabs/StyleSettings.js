@@ -158,6 +158,10 @@ function StyleSettings( props ) {
 			'--srfm-checkbox-description-margin-left',
 			'24px'
 		);
+		root.style.setProperty(
+			'--srfm-checkbox-input-border-radius',
+			'4px'
+		);
 		root.style.setProperty( '--srfm-check-ctn-width', '16px' );
 		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
 		root.style.setProperty( '--srfm-check-svg-top', '2px' );

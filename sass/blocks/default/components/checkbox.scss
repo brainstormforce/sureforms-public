@@ -8,6 +8,7 @@
 
 			.srfm-input-checkbox,
 			.srfm-input-gdpr {
+				// added to fix the accessibility tab and box-shadow issue
 				z-index: -1 !important;
 
 				&:focus {
@@ -20,6 +21,18 @@
 									svg {
 										stroke-dashoffset: 0;
 									}
+								}
+							}
+						}
+					}
+				}
+
+				&:hover {
+					+ {
+						.srfm-cbx {
+							span {
+								&:first-child:not( .srfm-required ) {
+									border-color: var( --srfm-color-input-border-hover );
 								}
 							}
 						}
