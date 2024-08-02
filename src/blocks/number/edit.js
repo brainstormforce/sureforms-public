@@ -22,6 +22,31 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage, decodeHtmlEntities } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
+const formatNumber = ( number, formatType ) => {
+	if ( ! number ) {
+		return '';
+	}
+
+	let formattedNumber = '';
+
+	if ( 'eu-style' === formatType ) {
+		const normalizeNumber = parseFloat( number.replace( /\./g, '' ).replace( ',', '.' ) );
+
+		// EU style number format.
+		formattedNumber = new Intl.NumberFormat( 'de-DE', { style: 'decimal', maximumFractionDigits: 2 } ).format( normalizeNumber );
+	} else {
+		// US style number format. Default.
+		formattedNumber = new Intl.NumberFormat( 'en-US', { style: 'decimal', maximumFractionDigits: 2 } ).format( parseFloat( number.replace( /,/g, '' ) ) );
+	}
+
+	if ( 'NaN' === formattedNumber ) {
+		// Bail, if NaN.
+		return '';
+	}
+
+	return formattedNumber;
+};
+
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
@@ -40,30 +65,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
-
-	const formatNumber = ( number, formatType ) => {
-
-		if ( ! number ) {
-			return '';
-		}
-
-		let formattedNumber = '';
-
-		if ( 'eu-style' === formatType ) {
-			// EU style number format.
-			formattedNumber = new Intl.NumberFormat( 'de-DE', { style: "decimal", maximumFractionDigits: 2 } ).format( number.replace( /\./g, '' ) );
-		}
-
-		// US style number format. Default.
-		formattedNumber = new Intl.NumberFormat( 'en-US', { style: "decimal", maximumFractionDigits: 2 } ).format( number.replace( /,/g, '' ) );
-
-		if ( 'NaN' === formattedNumber ) {
-			// Bail, if NaN.
-			return '';
-		}
-
-		return formattedNumber;
-	}
 
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
@@ -115,6 +116,29 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								onChange={ ( newValue ) =>
 									setAttributes( { placeholder: newValue } )
 								}
+							/>
+							<SRFMSelectControl
+								label={ __( 'Number Format', 'sureforms' ) }
+								data={ {
+									value: formatType,
+									label: 'formatType',
+								} }
+								setAttributes={ ( value ) => {
+									setAttributes( value );
+									setAttributes( {
+										defaultValue: '',
+									} );
+								} }
+								options={ [
+									{
+										label: __( 'US Style (Eg: 9,999.99)', 'sureforms' ),
+										value: 'us-style',
+									},
+									{
+										label: __( 'EU Style (Eg: 9.999,99)', 'sureforms' ),
+										value: 'eu-style',
+									},
+								] }
 							/>
 							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
@@ -206,24 +230,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									'sureforms'
 								) }
 							</p>
-							<SRFMSelectControl
-								label={ __( 'Number Format', 'sureforms' ) }
-								data={ {
-									value: formatType,
-									label: 'formatType',
-								} }
-								setAttributes={ setAttributes }
-								options={ [
-									{
-										label: __( 'US Style (Eg: 9,999.99)' ),
-										value: 'us-style',
-									},
-									{
-										label: __( 'EU Style (Eg: 9.999,99)' ),
-										value: 'eu-style',
-									},
-								] }
-							/>
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }

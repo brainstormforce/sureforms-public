@@ -4,7 +4,6 @@ import { decodeHtmlEntities } from '@Blocks/util';
 export const NumberComponent = ( {
 	attributes,
 	blockID,
-	formatNumber,
 	setAttributes,
 } ) => {
 	const {
@@ -12,7 +11,6 @@ export const NumberComponent = ( {
 		placeholder,
 		required,
 		defaultValue,
-		formatType,
 		minValue,
 		maxValue,
 	} = attributes;
@@ -39,7 +37,7 @@ export const NumberComponent = ( {
 					id={ `srfm-${ slug }-${ blockID }` }
 					type={ 'text' }
 					defaultValue={ defaultValue }
-					readOnly={true}
+					readOnly={ true }
 					placeholder={ placeholder }
 					required={ required }
 					min={ minValue }
