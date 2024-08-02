@@ -68,6 +68,12 @@
 						padding-top: 10px;
 						padding-bottom: 10px;
 						gap: 4px; // Fixed gap between the flag and the country code.
+
+						&:focus-visible {
+							outline: none;
+							border: var( --srfm-color-scheme-primary ) solid 1px;
+							border-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+						}
 					}
 					.iti__selected-dial-code {
 						font-size: var( --srfm-input-field-font-size );
@@ -78,9 +84,6 @@
 						display: none;
 					}
 				}
-			}
-			.srfm-input-phone {
-				padding-bottom: 12px;
 			}
 		}
 	}

@@ -120,7 +120,7 @@
 			.srfm-multi-choice-add-option-wrapper {
 				width: 100%;
 				margin-top: 4px;
-				margin-left:4px;
+				margin-left: 4px;
 			}
 
 			@include srfm-multi-choice-vertical-layout( true );
@@ -146,7 +146,7 @@
 				.selected-dial-code {
 					font-size: var( --srfm-input-field-font-size );
 					padding-left: 0;
-					color: var( --srfm-input-text-prefix-color );
+					color: var( --srfm-color-input-prefix );
 				}
 			}
 			.arrow {
