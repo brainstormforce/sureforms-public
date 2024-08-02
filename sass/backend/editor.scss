@@ -42,6 +42,41 @@ body.post-type-sureforms_form {
 			display: none !important;
 		}
 	}
+
+	.srfm-media-picker {
+		div {
+			margin: 0;
+		}
+		.srfm-media-control__wrapper {
+			width: 32px;
+			height: 32px;
+			flex-direction: row;
+			justify-content: flex-start;
+			.srfm-media-control__footer {
+				background-color: transparent;
+				.srfm-control-label {
+					background-color: transparent;
+					color: transparent;
+				}
+			}
+			.srfm-media-control__clickable--close {
+				padding: 0;
+				top: 2px;
+				right: 2px;
+				.srfm-media-control__button--close {
+					height: 8px;
+					width: 8px;
+					svg {
+						background-color: var( --srfm-error-color-light );
+						padding: 2.4px;
+						path {
+							fill: #ffffff;
+						}
+					}
+				}
+			}
+		}
+	}
 	.edit-post-sidebar > .components-panel > .components-panel__body {
 		display: none;
 

@@ -33,6 +33,7 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
 import MultiButtonsControl from '@Components/multi-buttons-control';
 import UAGIconPicker from '@Components/icon-picker';
+import SRFMMediaPicker from '@Components/image';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -63,6 +64,17 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		} );
 
 		setAttributes( { deleteOptions } );
+	};
+
+	const changeOption = ( option, index ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...option };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
 	};
 
 	function editOption( value, i ) {
@@ -97,6 +109,29 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		const fieldName = srfm_fields_preview.multi_choice_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	const onSelectImage = ( media, index ) => {
+		const url = media?.sizes?.thumbnail?.url
+			? media?.sizes?.thumbnail?.url
+			: media?.url
+				? media.url
+				: '';
+		changeOption( { image: url }, index );
+		// if ( ! media || ! media.url ) {
+		// 	setAttributes( { [ backgroundImage.label ]: null } );
+		// 	return;
+		// }
+
+		// if ( ! media.type || 'image' !== media.type ) {
+		// 	return;
+		// }
+
+		// setAttributes( { [ backgroundImage.label ]: media } );
+	};
+
+	const onRemoveImage = ( index ) => {
+		changeOption( { image: '' }, index );
+	};
 
 	return (
 		<div { ...blockProps }>
@@ -307,26 +342,55 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					/>
 																				</div>
 																				<>
-																					<div className="srfm-icon-picker">
-																						<UAGIconPicker
-																							label={
-																								''
-																							}
-																							value={
-																								option.icon
-																							}
-																							onChange={ (
-																								value
-																							) =>
-																								changeOption(
-																									{
-																										icon: value,
-																									},
-																									i
-																								)
-																							}
-																						/>
-																					</div>
+																					{ optionType ===
+																						'icon' && (
+																						<div className="srfm-icon-picker">
+																							<UAGIconPicker
+																								label={
+																									''
+																								}
+																								value={
+																									option.icon
+																								}
+																								onChange={ (
+																									value
+																								) =>
+																									changeOption(
+																										{
+																											icon: value,
+																										},
+																										i
+																									)
+																								}
+																							/>
+																						</div>
+																					) }
+																					{ optionType ===
+																						'image' && (
+																						<div className="srfm-media-picker">
+																							<SRFMMediaPicker
+																								onSelectImage={ (
+																									e
+																								) => {
+																									onSelectImage(
+																										e,
+																										i
+																									);
+																								} }
+																								backgroundImage={
+																									option.image
+																								}
+																								onRemoveImage={ () => {
+																									onRemoveImage(
+																										i
+																									);
+																								} }
+																								disableLabel={
+																									true
+																								}
+																							/>
+																						</div>
+																					) }
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -411,9 +475,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<MultiChoiceComponent
 				blockID={ block_id }
-				attributes={ attributes }
-				isSelected={ isSelected }
-				setAttributes={ setAttributes }
+				{ ...{ attributes, isSelected, setAttributes, optionType } }
 			/>
 			<div className="srfm-error-wrap"></div>
 		</div>

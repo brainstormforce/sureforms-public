@@ -7,6 +7,7 @@
 
 				.srfm-multi-choice-single {
 					@include srfm-multi-choice-single-styles;
+					transition: 0.3s ease-out;
 
 					input {
 						position: absolute;
@@ -45,6 +46,7 @@
 
 					.srfm-block-content-wrap {
 						@include srfm-multi-choice-block-content-wrap-styles();
+						transition: 0.3s ease-out;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );

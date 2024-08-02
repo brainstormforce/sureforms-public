@@ -18,6 +18,7 @@ export const MultiChoiceComponent = ( {
 		help,
 		singleSelection,
 		verticalLayout,
+		optionType,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -50,10 +51,19 @@ export const MultiChoiceComponent = ( {
 									{ selectionSvg }
 								</span>
 								<div className="srfm-option-container">
-									{ option.icon && (
-										<span className="srfm-option-icon-image">
+									{ optionType === 'icon' && option.icon && (
+										<span className="srfm-option-icon">
 											{ ' ' }
 											{ renderSVG( option.icon ) }{ ' ' }
+										</span>
+									) }
+									{ optionType === 'image' &&
+										option.image && (
+										<span className="srfm-option-image">
+											<img
+												src={ option.image }
+												alt={ option.optionTitle }
+											/>
 										</span>
 									) }
 									<p>{ option.optionTitle }</p>
