@@ -48,8 +48,12 @@ const EmailNotification = ( {
 		);
 	};
 	const handleUpdateEmailData = ( newData ) => {
-		const { email_to, subject } = newData;
+		let { email_to, subject } = newData;
 		let hasError = false;
+
+		// Trim off the empty blank white spaces for validation.
+		email_to = email_to.trim();
+		subject = subject.trim();
 
 		if ( ! email_to ) {
 			document
