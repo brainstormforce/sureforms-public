@@ -289,35 +289,46 @@ body.post-type-sureforms_form {
 		width: 100%;
 	}
 
-	// Plus button, Block appended.
+	// Hide block inserter below wordpress version 6.6.
+	// This default appender is not available from 6.6.
+	.srfm-form-container {
+		> div:last-child.block-list-appender.wp-block {
+			display: none;
+		}
+	}
 
 	// Add submit button below the Block Appended.
-	// Target all the block-list-appender class except the one inside the address block.
-	.block-list-appender:not( .srfm-address-block-wrap .block-list-appender ) {
+	.srfm-custom-block-inserter {
 		width: 100%;
-		padding: 0 0.3em;
+		max-width: calc( 620px - 0em );
+		margin: 1.2em auto;
+		.components-dropdown.block-editor-inserter {
+			width: 100%;
 
-		.block-editor-button-block-appender.components-button.components-button {
-			box-shadow: none;
-			border: 1px dashed #959595;
-			padding: 24px;
-			background-color: #fff;
-			transition: 0.3s;
-
-			svg {
-				width: 30px;
-				height: 30px;
-				color: white;
-				background-color: #555d66;
-				border-radius: 100%;
+			button.srfm-custom-block-inserter-button {
+				box-shadow: none;
+				border: 1px dashed #959595;
+				padding: 24px;
+				background-color: #fff;
 				transition: 0.3s;
-			}
-
-			&:hover {
-				border-color: #1e1e1e;
 
 				svg {
-					background-color: #1e1e1e;
+					width: 30px;
+					height: 30px;
+					background-color: #555d66;
+					border-radius: 100%;
+					transition: 0.3s;
+					path {
+						fill: white;
+					}
+				}
+
+				&:hover {
+					border-color: #1e1e1e;
+
+					svg {
+						background-color: #1e1e1e;
+					}
 				}
 			}
 		}
