@@ -69,7 +69,7 @@ const MultiMediaSelector = ( props ) => {
 			hideLabelFromVision={ disableLabel }
 		>
 			<div className="srfm-media-control__wrapper">
-				{ mediaGallery && mediaGallery[ 0 ]?.url && (
+				{ mediaGallery[ 0 ]?.url && (
 					<div
 						className={
 							'srfm-media-control__icon srfm-media-control__icon--stroke'

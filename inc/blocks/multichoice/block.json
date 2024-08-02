@@ -37,7 +37,8 @@
 			"default": [
 				{
 					"optionTitle": "Option 1",
-					"icon": ""
+					"icon": "",
+          "image": ""
 				}
 			]
 		},

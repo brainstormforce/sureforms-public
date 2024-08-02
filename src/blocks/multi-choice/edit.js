@@ -110,6 +110,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
 
+	// This function adds url of media chosen by user to an option.
 	const onSelectImage = ( media, index ) => {
 		const url = media?.sizes?.thumbnail?.url
 			? media?.sizes?.thumbnail?.url
@@ -117,18 +118,9 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 				? media.url
 				: '';
 		changeOption( { image: url }, index );
-		// if ( ! media || ! media.url ) {
-		// 	setAttributes( { [ backgroundImage.label ]: null } );
-		// 	return;
-		// }
-
-		// if ( ! media.type || 'image' !== media.type ) {
-		// 	return;
-		// }
-
-		// setAttributes( { [ backgroundImage.label ]: media } );
 	};
 
+	// Removes chose image from and option.
 	const onRemoveImage = ( index ) => {
 		changeOption( { image: '' }, index );
 	};
