@@ -394,15 +394,6 @@ const EmailConfirmation = ( props ) => {
 						</div>
 					</div>
 				</div>
-				<button
-					onClick={ () => handleConfirmEmail( formData ) }
-					className="srfm-modal-inner-footer-button"
-					style={ {
-						alignSelf: 'flex-start',
-					} }
-				>
-					{ __( 'Save Changes', 'sureforms' ) }
-				</button>
 			</div>
 		</div>
 	);
