@@ -131,6 +131,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
+		<div className="srfm-checkbox-block">
 			<CheckboxComponent
 				blockID={ block_id }
 				setAttributes={ setAttributes }
@@ -152,6 +153,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					allowedFormats={ [] }
 				/>
 			) }
+		</div>
 		</div>
 	);
 };

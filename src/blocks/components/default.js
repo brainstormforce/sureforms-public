@@ -23,7 +23,6 @@ export const CheckboxComponent = ( {
 	}
 
 	return (
-		<div className={ `srfm-${ blockType }-block` }>
 			<div className="srfm-block-wrap">
 				<input
 					type="checkbox"
@@ -65,6 +64,5 @@ export const CheckboxComponent = ( {
 					</span>
 				</label>
 			</div>
-		</div>
 	);
 };

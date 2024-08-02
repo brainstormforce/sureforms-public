@@ -157,7 +157,7 @@
 	.srfm-checkbox-block,
 	.srfm-gdpr-block {
 		.srfm-description {
-			margin-left: 24px; // This is overridden in checkbox.scss with a variable
+			margin-left: var( --srfm-checkbox-description-margin-left );
 		}
 
 		.srfm-error-message {
