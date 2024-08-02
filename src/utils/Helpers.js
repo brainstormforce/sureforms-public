@@ -194,7 +194,7 @@ const pushSmartTagToArray = (
 				allowedBlocks
 			);
 		}
-debugger;
+
 		const isAllowedBlock = !! allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
 
 		if ( ! isAllowedBlock ) {
