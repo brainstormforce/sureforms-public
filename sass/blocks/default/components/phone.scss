@@ -8,6 +8,8 @@
 				width: 100%;
 
 				.iti__flag-container {
+					// Setting the line height to normal aligns the country code with the phone number regardless of the browser.
+					line-height: normal;
 					.iti__country-list {
 						display: block;
 						opacity: 1;
