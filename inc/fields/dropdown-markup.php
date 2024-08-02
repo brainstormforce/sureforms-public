@@ -52,10 +52,10 @@ class Dropdown_Markup extends Base {
 		$this->slug              = 'dropdown';
 		$this->multi_select_attr = ! empty( $attributes['multiSelect'] ) ? 'true' : 'false';
 		$this->search_attr       = ! empty( $attributes['searchable'] ) ? 'true' : 'false';
-		$this->placeholder       = $this->label ? $this->label : __( 'Select an option', 'sureforms' );
 		$this->set_markup_properties();
 		$this->set_aria_described_by();
 		$this->set_label_as_placeholder( $this->input_label );
+		$this->placeholder = ! empty( $this->placeholder_attr ) ? $this->label : __( 'Select an option', 'sureforms' );
 
 	}
 

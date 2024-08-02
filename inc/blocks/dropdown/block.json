@@ -62,7 +62,7 @@
 		},
 		"placeholder": {
 			"type": "string",
-			"default": "Select Option"
+			"default": "Select an option"
 		},
 		"isConditionalLogic":{
 			"type":"boolean",
