@@ -123,6 +123,8 @@ class AI_Form_Builder {
 		// if pro is active then add pro field types.
 		if ( defined( 'SRFM_PRO_VER' ) ) {
 			$field_types .= ', hidden, rating, upload, date-time, number-slider, page-break';
+		} else{
+			$field_types .= 'and make sure fields like hidden, rating, upload, date-time, number-slider fields should not be included STRICTLY in the response';
 		}
 
 		// Finally add the system message to the start of the array.
@@ -156,15 +158,14 @@ class AI_Form_Builder {
 		}
 
 		// send the request to the open ai server.
-		$endpoint = 'chat/completions';
 		$data     = [
 			'model'    => 'gpt-3.5-turbo',
+			'source'   => 'openai',
 			'messages' => $messages,
-			'type'     => 'form-builder',
 		];
 
 		// Get the response from the endpoint.
-		$response = AI_Helper::get_credit_server_response( $endpoint, $data );
+		$response = $this->get_credit_server_response( $data );
 
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
@@ -186,6 +187,67 @@ class AI_Form_Builder {
 			// If you've reached here, then something has definitely gone amuck. Abandon ship.
 			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
 		}//end if
+	}
+
+		/**
+	 * Get the Zip AI Response from the Zip Credit Server.
+	 *
+	 * @param string $endpoint The endpoint to get the response from.
+	 * @param array  $body The data to be passed as the request body, if any.
+	 * @param array  $extra_args Extra arguments to be passed to the request, if any.
+	 * @since 1.0.0
+	 * @return array The Zip AI Response.
+	 */
+	public static function get_credit_server_response( $body = [], $extra_args = [] ) {
+
+		// Set the API URL.
+		$api_url  = "https://credits.startertemplates.com/sureforms/chat/completions";
+		$api_args = array(
+			'headers' => array(
+				'X-Token' => base64_encode( 'https://abcd.com' ),
+				'Content-Type' => 'application/json'
+			),
+			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
+		);
+
+		// If the data array was passed, add it to the args.
+		if ( ! empty( $body ) && is_array( $body ) ) {
+			$api_args['body'] = $body;
+		}
+
+		// If there are any extra arguments, then we can overwrite the required arguments.
+		if ( ! empty( $extra_args ) && is_array( $extra_args ) ) {
+			$api_args = array_merge(
+				$api_args,
+				$extra_args
+			);
+		}
+
+		// Get the response from the endpoint.
+		$response = wp_remote_post(
+			$api_url,
+			$api_args
+		);
+
+		// If the response was an error, or not a 200 status code, then abandon ship.
+		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return array(
+				'error' => __( 'The Zip AI Middleware is not responding.', 'zip-ai' ),
+			);
+		}
+
+		// Get the response body.
+		$response_body = wp_remote_retrieve_body( $response );
+
+		// If the response body is not a JSON, then abandon ship.
+		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
+			return array(
+				'error' => __( 'The Zip AI Middleware encountered an error.', 'zip-ai' ),
+			);
+		}
+
+		// Return the response body.
+		return json_decode( $response_body, true );
 	}
 
 	/**
