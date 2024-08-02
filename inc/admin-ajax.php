@@ -268,7 +268,7 @@ class Admin_Ajax {
 			'integration'         => 'SureForms',
 			'sample_response'     => [
 				'form_id'   => $form_id,
-				'emails'    => [
+				'to_emails' => [
 					'dev-email@wpengine.local',
 				],
 				'form_name' => $form_name,
