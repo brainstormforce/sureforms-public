@@ -1,4 +1,7 @@
 // Quick acton bar Editor CSS.
+.srfm-ee-quick-access-container {
+	z-index: 999999;
+}
 .srfm-ee-quick-access {
 	// This is applied to the element directly inside the interface skeleton body.
 	display: flex;
@@ -11,6 +14,10 @@
 	.srfm-ee-quick-access__sidebar--tabs-container {
 		position: fixed;
 		bottom: 35px;
+	}
+
+	.srfm-ee-quick-access__sidebar--blocks .srfm-ee-quick-access__sidebar--blocks--block--icon {
+		fill: #fff;
 	}
 
 	// The sidebar inside the Quick Access area.

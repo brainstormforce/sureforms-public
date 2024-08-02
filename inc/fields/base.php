@@ -293,7 +293,7 @@ class Base {
 	 * Stores attribute for aria-describedby.
 	 *
 	 * @var string
-	 * @since x.x.x
+	 * @since 0.0.6
 	 */
 	protected $aria_described_by;
 
@@ -416,7 +416,7 @@ class Base {
 	/**
 	 * Setter for the aria-describedby attribute.
 	 *
-	 * @since x.x.x
+	 * @since 0.0.6
 	 * @return void
 	 */
 	protected function set_aria_described_by() {

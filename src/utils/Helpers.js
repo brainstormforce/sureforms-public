@@ -143,7 +143,81 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks ) => {
+export async function getServerGeneratedBlockSlugs( formID, content ) {
+	const option = {
+		path: `/sureforms/v1/generate-block-slugs`,
+		method: 'POST',
+		data: {
+			formID,
+			content,
+		},
+	};
+
+	return await apiFetch( option );
+}
+
+const pushSmartTagToArray = (
+	blocks,
+	blockSlugs,
+	tagsArray,
+	uniqueSlugs = [],
+	allowedBlocks = []
+) => {
+	if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+		return;
+	}
+
+	blocks.forEach( ( block ) => {
+		const isInnerBlock =
+			Array.isArray( block?.innerBlocks ) &&
+			0 !== block?.innerBlocks.length;
+
+		if ( isInnerBlock ) {
+			// If is inner block, process inner block recursively.
+			return pushSmartTagToArray(
+				block.innerBlocks,
+				blockSlugs,
+				tagsArray,
+				uniqueSlugs,
+				allowedBlocks
+			);
+		}
+
+		const isAllowedBlock = !! allowedBlocks.length
+			? allowedBlocks.includes( block?.name )
+			: true;
+
+		if ( ! isAllowedBlock ) {
+			return;
+		}
+
+		const fieldSlug = blockSlugs[ block.attributes.block_id ];
+
+		if ( uniqueSlugs.includes( fieldSlug ) ) {
+			return;
+		}
+
+		/**
+		 * Compose field tag and label.
+		 * We are treating "srfm/gdpr" separately for the field label because
+		 * GDPR block's label can be a long text, which will create issue to the users for the tags.
+		 */
+		const fieldTag = '{form:' + fieldSlug + '}';
+		const fieldLabel =
+			'srfm/gdpr' === block?.name
+				? __( 'GDPR Agreement', 'sureforms' )
+				: block.attributes.label;
+
+		tagsArray.push( [ fieldTag, fieldLabel ] );
+		uniqueSlugs.push( fieldSlug );
+	} );
+};
+
+export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
+	if ( ! Object.keys( blockSlugs )?.length ) {
+		return;
+	}
+
 	const excludedBlocks = [
 		'srfm/inline-button',
 		'srfm/hidden',
@@ -154,70 +228,33 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
-	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
-	);
-
+	const uniqueSlugs = [];
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
-
-	const pushSmartTagToArray = (
-		blocks,
-		tagsArray,
-		uniqueSlugs = [],
-		allowedBlocks = []
-	) => {
-		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
-			return;
-		}
-
-		blocks.forEach( ( block ) => {
-			if (
-				undefined === block?.attributes?.slug ||
-				undefined === block?.attributes?.label ||
-				'' === block?.attributes?.slug ||
-				( 0 !== allowedBlocks.length &&
-					! allowedBlocks.includes( block?.name ) )
-			) {
-				return;
-			}
-
-			if (
-				Array.isArray( block?.innerBlocks ) &&
-				0 !== block?.innerBlocks.length
-			) {
-				pushSmartTagToArray(
-					block.innerBlocks,
-					tagsArray,
-					uniqueSlugs,
-					allowedBlocks
-				);
-			} else {
-				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
-					return;
-				}
-				tagsArray.push( [
-					'{form:' + block.attributes.slug + '}',
-					'srfm/gdpr' === block?.name
-						? __( 'GDPR Agreement', 'sureforms' )
-						: block.attributes.label,
-				] );
-				uniqueSlugs.push( block.attributes.slug );
-			}
-		} );
-	};
-
-	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
-	pushSmartTagToArray(
-		savedBlocks,
-		formEmailSmartTags,
-		[],
-		[ 'srfm/email' ]
-	);
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+
+	if ( ! savedBlocks?.length ) {
+		return;
+	}
+
+	savedBlocks = savedBlocks.filter(
+		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+	);
+
+	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, uniqueSlugs );
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formEmailSmartTags,
+		uniqueSlugs,
+		[ 'srfm/email' ]
+	);
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;

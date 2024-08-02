@@ -88,6 +88,92 @@ class Helper {
 	}
 
 	/**
+	 * Extracts the field type from the dynamic field key ( or field slug ).
+	 *
+	 * @param string $field_key Dynamic field key.
+	 * @since 0.0.6
+	 * @return string Extracted field type.
+	 */
+	public static function get_field_type_from_key( $field_key ) {
+
+		if ( false === strpos( $field_key, '-lbl-' ) ) {
+			return '';
+		}
+
+		return trim( explode( '-', $field_key )[1] );
+	}
+
+	/**
+	 * Returns the proper sanitize callback functions according to the field type.
+	 *
+	 * @param string $field_type HTML field type.
+	 * @since 0.0.6
+	 * @return callable Returns sanitize callbacks according to the provided field type.
+	 */
+	public static function get_field_type_sanitize_function( $field_type ) {
+		$callbacks = apply_filters(
+			'srfm_field_type_sanitize_functions',
+			[
+				'url'      => 'esc_url_raw',
+				'input'    => 'sanitize_text_field',
+				'number'   => [ __CLASS__, 'sanitize_number' ],
+				'email'    => 'sanitize_email',
+				'textarea' => 'sanitize_textarea_field',
+			]
+		);
+
+		return isset( $callbacks[ $field_type ] ) ? $callbacks[ $field_type ] : 'sanitize_text_field';
+
+	}
+
+	/**
+	 * Sanitizes a numeric value.
+	 *
+	 * This function checks if the input value is numeric. If it is numeric, it sanitizes
+	 * the value to ensure it's a float or integer, allowing for fractions and thousand separators.
+	 * If the value is not numeric, it sanitizes it as a text field.
+	 *
+	 * @param mixed $value The value to be sanitized.
+	 * @since 0.0.6
+	 * @return integer|float|string The sanitized value.
+	 */
+	public static function sanitize_number( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			// phpcs:ignore /** @phpstan-ignore-next-line */
+			return sanitize_text_field( $value ); // If it is not numeric, then let user get some sanitized data to view.
+		}
+
+		// phpcs:ignore /** @phpstan-ignore-next-line */
+		return sanitize_text_field( filter_var( $value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) );
+	}
+
+	/**
+	 * This function sanitizes the submitted form data according to the field type.
+	 *
+	 * @param array<mixed> $form_data $form_data User submitted form data.
+	 * @since 0.0.6
+	 * @return array<mixed> $result Sanitized form data.
+	 */
+	public static function sanitize_by_field_type( $form_data ) {
+		$result = [];
+
+		if ( empty( $form_data ) || ! is_array( $form_data ) ) {
+			return $result;
+		}
+
+		foreach ( $form_data as $field_key => &$value ) {
+			$field_type        = self::get_field_type_from_key( $field_key );
+			$sanitize_function = self::get_field_type_sanitize_function( $field_type );
+			$sanitized_data    = is_array( $value ) ? self::sanitize_by_field_type( $value ) : call_user_func( $sanitize_function, $value );
+
+			$result[ $field_key ] = $sanitized_data;
+		}
+
+		return $result;
+
+	}
+
+	/**
 	 * This function performs array_map for multi dimensional array
 	 *
 	 * @param string       $function function name to be applied on each element on array.
@@ -263,21 +349,20 @@ class Helper {
 		$common_err_msg = self::get_common_err_msg();
 
 		$default_values = [
-			'srfm_url_block_required_text'             => $common_err_msg['required'],
-			'srfm_input_block_required_text'           => $common_err_msg['required'],
-			'srfm_input_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_address_block_required_text'         => $common_err_msg['required'],
-			'srfm_address_compact_block_required_text' => $common_err_msg['required'],
-			'srfm_phone_block_required_text'           => $common_err_msg['required'],
-			'srfm_phone_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_number_block_required_text'          => $common_err_msg['required'],
-			'srfm_textarea_block_required_text'        => $common_err_msg['required'],
-			'srfm_multi_choice_block_required_text'    => $common_err_msg['required'],
-			'srfm_checkbox_block_required_text'        => $common_err_msg['required'],
-			'srfm_gdpr_block_required_text'            => $common_err_msg['required'],
-			'srfm_email_block_required_text'           => $common_err_msg['required'],
-			'srfm_email_block_unique_text'             => $common_err_msg['unique'],
-			'srfm_dropdown_block_required_text'        => $common_err_msg['required'],
+			'srfm_url_block_required_text'          => $common_err_msg['required'],
+			'srfm_input_block_required_text'        => $common_err_msg['required'],
+			'srfm_input_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_address_block_required_text'      => $common_err_msg['required'],
+			'srfm_phone_block_required_text'        => $common_err_msg['required'],
+			'srfm_phone_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_number_block_required_text'       => $common_err_msg['required'],
+			'srfm_textarea_block_required_text'     => $common_err_msg['required'],
+			'srfm_multi_choice_block_required_text' => $common_err_msg['required'],
+			'srfm_checkbox_block_required_text'     => $common_err_msg['required'],
+			'srfm_gdpr_block_required_text'         => $common_err_msg['required'],
+			'srfm_email_block_required_text'        => $common_err_msg['required'],
+			'srfm_email_block_unique_text'          => $common_err_msg['unique'],
+			'srfm_dropdown_block_required_text'     => $common_err_msg['required'],
 		];
 
 		return apply_filters( 'srfm_default_dynamic_block_option', $default_values, $common_err_msg );
