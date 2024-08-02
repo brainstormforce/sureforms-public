@@ -74,7 +74,9 @@
 						&:focus-visible {
 							outline: none;
 							border: var( --srfm-color-scheme-primary ) solid 1px;
-							border-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+							// The border radius is reduced by 1px to eliminate any gaps remaining from the input element border.
+							border-top-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
+							border-bottom-left-radius: calc( var( --srfm-input-field-border-radius ) - 1px );
 						}
 					}
 					.iti__selected-dial-code {
