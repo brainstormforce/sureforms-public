@@ -8,6 +8,7 @@
 
 namespace SRFM\Inc\Fields;
 
+use Spec_Gb_Helper;
 use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -78,6 +79,14 @@ class Multichoice_Markup extends Base {
 	protected $vertical_layout;
 
 	/**
+	 * Contains value if the option contains icon / image
+	 *
+	 * @var mixed
+	 * @since x.x.x
+	 */
+	protected $option_type;
+
+	/**
 	 * Initialize the properties based on block attributes.
 	 *
 	 * @param array<mixed> $attributes Block attributes.
@@ -91,6 +100,7 @@ class Multichoice_Markup extends Base {
 		$this->single_selection  = isset( $attributes['singleSelection'] ) ? $attributes['singleSelection'] : false;
 		$this->choice_width      = isset( $attributes['choiceWidth'] ) ? $attributes['choiceWidth'] : '';
 		$this->vertical_layout   = isset( $attributes['verticalLayout'] ) ? $attributes['verticalLayout'] : false;
+		$this->option_type       = ! empty( $attributes['optionType'] ) && in_array( $attributes['optionType'], [ 'icon', 'image' ], true ) ? $attributes['optionType'] : 'icon';
 		$this->type_attr         = $this->single_selection ? 'radio' : 'checkbox';
 		$this->svg_type          = $this->single_selection ? 'circle' : 'square';
 		$this->name_attr         = $this->single_selection ? 'name="srfm-input-' . esc_attr( $this->slug ) . '-' . esc_attr( $this->block_id ) . '"' : '';
@@ -120,7 +130,18 @@ class Multichoice_Markup extends Base {
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
 									<div class="srfm-block-content-wrap">
 										<?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
-										<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
+										<div class="srfm-option-container">
+											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>
+											<span class="srfm-option-icon">
+												<?php Spec_Gb_Helper::render_svg_html( $option['icon'] ); ?>
+											</span>
+											<?php } elseif ( 'image' === $this->option_type && ! empty( $option['image'] ) ) { ?>
+											<span class="srfm-option-image">
+												<img src="<?php echo esc_url( $option['image'] ); ?>"/>
+											</span>
+											<?php } ?>
+											<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
+										</div>
 									</div>
 								</label>
 							<?php } ?>

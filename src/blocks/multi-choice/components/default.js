@@ -3,6 +3,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import HelpText from '@Components/misc/HelpText';
+import renderSVG from '@Components/icon-picker/renderIcon.js';
 
 export const MultiChoiceComponent = ( {
 	attributes,
@@ -17,6 +18,7 @@ export const MultiChoiceComponent = ( {
 		help,
 		singleSelection,
 		verticalLayout,
+		optionType,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -47,7 +49,24 @@ export const MultiChoiceComponent = ( {
 								>
 									{ selectionSvg }
 								</span>
-								<p>{ option.optionTitle }</p>
+								<div className="srfm-option-container">
+									{ optionType === 'icon' && option.icon && (
+										<span className="srfm-option-icon">
+											{ ' ' }
+											{ renderSVG( option.icon ) }{ ' ' }
+										</span>
+									) }
+									{ optionType === 'image' &&
+										option.image && (
+										<span className="srfm-option-image">
+											<img
+												src={ option.image }
+												alt={ option.optionTitle }
+											/>
+										</span>
+									) }
+									<p>{ option.optionTitle }</p>
+								</div>
 							</div>
 						</label>
 					);

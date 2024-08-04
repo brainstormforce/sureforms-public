@@ -31,6 +31,9 @@ import { compose } from '@wordpress/compose';
 import widthOptions from '../width-options.json';
 import { FieldsPreview } from '../FieldsPreview.jsx';
 import ConditionalLogic from '@Components/conditional-logic';
+import MultiButtonsControl from '@Components/multi-buttons-control';
+import UAGIconPicker from '@Components/icon-picker';
+import SRFMMediaPicker from '@Components/image';
 
 const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 	const {
@@ -45,6 +48,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		formId,
 		preview,
 		verticalLayout,
+		optionType,
 	} = attributes;
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ newOption, setNewOption ] = useState( options );
@@ -62,14 +66,31 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		setAttributes( { deleteOptions } );
 	};
 
+	const changeOption = ( option, index ) => {
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...option };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
+	};
+
 	function editOption( value, i ) {
 		if ( value === '' ) {
 			deleteOption( i );
 			return;
 		}
-		const updatedOptions = [ ...options ];
-		updatedOptions[ i ].optionTitle = value;
-		setAttributes( { options: updatedOptions } );
+
+		const newEditOptions = options.map( ( item, thisIndex ) => {
+			if ( i === thisIndex ) {
+				item = { ...item, ...{ optionTitle: value } };
+			}
+			return item;
+		} );
+
+		setAttributes( { options: newEditOptions } );
 	}
 
 	useEffect( () => {
@@ -88,6 +109,21 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		const fieldName = srfm_fields_preview.multi_choice_preview;
 		return <FieldsPreview fieldName={ fieldName } />;
 	}
+
+	// This function adds url of media chosen by user to an option.
+	const onSelectImage = ( media, index ) => {
+		const url = media?.sizes?.thumbnail?.url
+			? media?.sizes?.thumbnail?.url
+			: media?.url
+				? media.url
+				: '';
+		changeOption( { image: url }, index );
+	};
+
+	// Removes chose image from and option.
+	const onRemoveImage = ( index ) => {
+		changeOption( { image: '' }, index );
+	};
 
 	return (
 		<div { ...blockProps }>
@@ -188,6 +224,34 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											}
 										} }
 									>
+										<MultiButtonsControl
+											setAttributes={ setAttributes }
+											label={ __(
+												'Option Type',
+												'sureforms'
+											) }
+											data={ {
+												value: optionType,
+												label: 'optionType',
+											} }
+											options={ [
+												{
+													value: 'icon',
+													label: __(
+														'Icon',
+														'sureforms'
+													),
+												},
+												{
+													value: 'image',
+													label: __(
+														'Image',
+														'sureforms'
+													),
+												},
+											] }
+											showIcons={ false }
+										/>
 										<span className="srfm-control-label srfm-control__header">
 											{ __(
 												'Edit Options',
@@ -270,6 +334,55 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																					/>
 																				</div>
 																				<>
+																					{ optionType ===
+																						'icon' && (
+																						<div className="srfm-icon-picker">
+																							<UAGIconPicker
+																								label={
+																									''
+																								}
+																								value={
+																									option.icon
+																								}
+																								onChange={ (
+																									value
+																								) =>
+																									changeOption(
+																										{
+																											icon: value,
+																										},
+																										i
+																									)
+																								}
+																							/>
+																						</div>
+																					) }
+																					{ optionType ===
+																						'image' && (
+																						<div className="srfm-media-picker">
+																							<SRFMMediaPicker
+																								onSelectImage={ (
+																									e
+																								) => {
+																									onSelectImage(
+																										e,
+																										i
+																									);
+																								} }
+																								backgroundImage={
+																									option.image
+																								}
+																								onRemoveImage={ () => {
+																									onRemoveImage(
+																										i
+																									);
+																								} }
+																								disableLabel={
+																									true
+																								}
+																							/>
+																						</div>
+																					) }
 																					<Button
 																						icon="trash"
 																						onClick={ () =>
@@ -315,7 +428,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 											setAttributes( {
 												options: [
 													...options,
-													newOption,
+													{
+														optionTitle:
+															newOption.optionTitle,
+													},
 												],
 											} );
 											setNewOption( { optionTitle: '' } );
@@ -351,9 +467,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 			</InspectorControls>
 			<MultiChoiceComponent
 				blockID={ block_id }
-				attributes={ attributes }
-				isSelected={ isSelected }
-				setAttributes={ setAttributes }
+				{ ...{ attributes, isSelected, setAttributes, optionType } }
 			/>
 			<div className="srfm-error-wrap"></div>
 		</div>
