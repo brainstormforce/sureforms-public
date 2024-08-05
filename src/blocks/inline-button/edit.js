@@ -44,9 +44,10 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 	return (
 		<div
-			className={ `${
-				is_inherit_from_theme ? 'wp-block-button' : ''
-			} ${ className }` }
+			className={
+				'srfm-custom-button-ctn' +
+				( className ? ` ${ className }` : '' )
+			}
 		>
 			<InspectorControls>
 				<InspectorTabs

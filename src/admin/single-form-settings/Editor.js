@@ -31,13 +31,13 @@ import {
 import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
+import { BlockInserterWrapper } from './Inserter.js';
 
 const { select, dispatch } = wp.data;
 
 const defaultKeys = {
 	// General Tab
-	_srfm_show_labels: true,
-	_srfm_show_asterisk: true,
+	_srfm_use_label_as_placeholder: false,
 	_srfm_single_page_form_title: true,
 	_srfm_instant_form: false,
 	_srfm_is_inline_button: false,
@@ -53,33 +53,12 @@ const defaultKeys = {
 	// Style Tab
 	// Form Container
 	_srfm_form_container_width: 650,
-	_srfm_color1: '#D54407',
 	_srfm_bg_type: 'image',
 	_srfm_bg_image: '',
 	_srfm_cover_image: '',
 	_srfm_bg_color: '#ffffff',
-	_srfm_fontsize: 16,
-	_srfm_label_color: '#111827',
-	_srfm_help_color: '#4B5563',
-	// Input Fields
-	_srfm_input_text_color: '#4B5563',
-	_srfm_input_placeholder_color: '#94A3B8',
-	_srfm_input_bg_color: '#ffffff',
-	_srfm_input_border_color: '#D0D5DD',
-	_srfm_input_border_width: 1,
-	_srfm_input_border_radius: 4,
-	// Error
-	_srfm_field_error_color: '#DC2626',
-	_srfm_field_error_surface_color: '#EF4444',
-	_srfm_field_error_bg_color: '#FEF2F2',
 	// Submit Button
 	_srfm_inherit_theme_button: false,
-	_srfm_button_text_color: '#ffffff',
-	_srfm_btn_bg_type: 'filled',
-	_srfm_button_bg_color: '#D54407',
-	_srfm_button_border_color: '#ffffff',
-	_srfm_button_border_width: 0,
-	_srfm_button_border_radius: 4,
 	_srfm_submit_alignment: 'left',
 	_srfm_submit_width: '',
 	_srfm_submit_alignment_backend: '100%',
@@ -238,7 +217,8 @@ const SureformsFormSpecificSettings = ( props ) => {
 			sureformsKeys._srfm_inherit_theme_button
 				? 'wp-block-button'
 				: 'srfm-submit-btn-font-size';
-		const appendHtml = `<div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
+
+		const appendHtml = `<div class="srfm-custom-block-inserter"></div><div class="srfm-submit-btn-container ${ btnCtnClass }"><button class="srfm-submit-richtext ${ btnClass }"></button></div>`;
 
 		if ( elm ) {
 			if (
@@ -249,12 +229,26 @@ const SureformsFormSpecificSettings = ( props ) => {
 				elm.insertAdjacentHTML( 'afterend', appendHtml );
 
 				// If the normal button is present, add RichText to the button.
-				const buttonContainer = elm.nextElementSibling;
+				const elementParent = elm.parentElement;
+
+				const buttonContainer = elementParent.querySelector(
+					'.srfm-submit-btn-container'
+				);
+
 				const button = buttonContainer.querySelector(
 					'.srfm-submit-richtext'
 				);
 
 				const submitBtnText = sureformsKeys._srfm_submit_button_text;
+
+				// Add block inserter in the srfm-custom-block-inserter div.
+				const getBlockInserterDiv = elementParent.querySelector(
+					'.srfm-custom-block-inserter'
+				);
+
+				if ( getBlockInserterDiv ) {
+					createRoot( getBlockInserterDiv ).render( <BlockInserterWrapper /> );
+				}
 
 				createRoot( button ).render(
 					<RichText
@@ -304,233 +298,32 @@ const SureformsFormSpecificSettings = ( props ) => {
 
 	useEffect( () => {
 		setTimeout( () => {
-			const handleIframeStyle = ( iframeBody ) => {
-				if ( iframeBody ) {
-					const styleProperties = [
-						// Form Container
-						{
-							property: '--srfm-primary-color',
-							value: sureformsKeys._srfm_color1 || '#D54407',
-						},
-						{
-							property: '--srfm-bg-image',
-							value: sureformsKeys._srfm_bg_image
-								? `url(${ sureformsKeys._srfm_bg_image })`
-								: '',
-						},
-						{
-							property: '--srfm-bg-color',
-							value: sureformsKeys._srfm_bg_color
-								? sureformsKeys._srfm_bg_color
-								: '',
-						},
-						{
-							property: '--srfm-font-size',
-							value: sureformsKeys._srfm_fontsize
-								? `${ sureformsKeys._srfm_fontsize }px`
-								: '16px',
-						},
-						{
-							property: '--srfm-label-text-color',
-							value: sureformsKeys._srfm_label_color || '#111827',
-						},
-						{
-							property: '--srfm-help-color',
-							value: sureformsKeys._srfm_help_color || '#4B5563',
-						},
-						// The input variables need to be removed since we won't be needing them.
-						// Input
-						{
-							property: '--srfm-body-input-color',
-							value:
-								sureformsKeys._srfm_input_text_color ||
-								'#4B5563',
-						},
+			const elm = document.querySelector(
+				'.block-editor-block-list__layout'
+			);
 
-						{
-							property: '--srfm-placeholder-color',
-							value:
-								sureformsKeys._srfm_input_placeholder_color ||
-								'#94A3B8',
-						},
-						{
-							property: '--srfm-base-background-color',
-							value:
-								sureformsKeys._srfm_input_bg_color || '#ffffff',
-						},
-						{
-							property: '--srfm-border-color',
-							value:
-								sureformsKeys._srfm_input_border_color ||
-								'#D0D5DD',
-						},
-						{
-							property: '--srfm-border',
-							value:
-								sureformsKeys._srfm_input_border_width + 'px' ||
-								'1px',
-						},
-						{
-							property: '--srfm-border-radius',
-							value:
-								sureformsKeys._srfm_input_border_radius +
-									'px' || '4px',
-						},
-						// Error
-						{
-							property: '--srfm-error-text-color',
-							value: sureformsKeys._srfm_field_error_color
-								? `${ sureformsKeys._srfm_field_error_color }`
-								: '#DC2626',
-						},
-						{
-							property: '--srfm-field-error-surface-color',
-							value:
-								sureformsKeys._srfm_field_error_surface_color ||
-								'#EF4444',
-						},
-						{
-							property: '--srfm-field-error-bg-color',
-							value:
-								sureformsKeys._srfm_field_error_bg_color ||
-								'#FEF2F2',
-						},
-						// Submit Button
-						{
-							property: '--srfm-btn-text-color',
-							value:
-								sureformsKeys._srfm_button_text_color ||
-								'#ffffff',
-						},
-						{
-							property: '--srfm-btn-bg-color',
-							value:
-								sureformsKeys._srfm_button_bg_color ||
-								'#D54407',
-						},
-						{
-							property: '--srfm-btn-border-color',
-							value:
-								sureformsKeys._srfm_button_border_color ||
-								'#ffffff',
-						},
-						{
-							property: '--srfm-btn-border-width',
-							value:
-								sureformsKeys._srfm_button_border_width +
-									'px' || '0px',
-						},
-						{
-							property: '--srfm-btn-border-radius',
-							value:
-								sureformsKeys._srfm_button_border_radius +
-									'px' || '4px',
-						},
-						{
-							property: '--srfm-submit-alignment-backend',
-							value: sureformsKeys._srfm_submit_alignment_backend
-								? `${ sureformsKeys._srfm_submit_alignment_backend }`
-								: '100%',
-						},
-						{
-							property: '--srfm-submit-width-backend',
-							value: sureformsKeys._srfm_submit_width_backend
-								? `${ sureformsKeys._srfm_submit_width_backend }`
-								: 'max-content',
-						},
-
-						{
-							property: '--srfm-submit-alignment',
-							value: sureformsKeys._srfm_submit_alignment
-								? `${ sureformsKeys._srfm_submit_alignment }`
-								: 'left',
-						},
-						{
-							property: '--srfm-submit-width',
-							value: sureformsKeys._srfm_submit_width
-								? `${ sureformsKeys._srfm_submit_width }`
-								: '',
-						},
-						{
-							property: '--srfm-submit-button-text',
-							value: sureformsKeys._srfm_submit_button_text
-								? `"${ sureformsKeys._srfm_submit_button_text }"`
-								: 'SUBMIT',
-						},
-					];
-
-					styleProperties.forEach( ( prop ) => {
-						iframeBody.style.setProperty(
-							prop.property,
-							prop.value
-						);
-					} );
-
-					const elm = iframeBody.querySelector(
-						'.block-editor-block-list__layout'
-					);
-
-					const submitBtnContainerIframe = iframeBody.querySelector(
-						'.srfm-submit-btn-container'
-					);
-
-					if ( ! submitBtnContainerIframe ) {
-						addSubmitButton( elm );
-					}
-
-					// Add the styling class when the device type is changed
-					const iframeRootContainer =
-						iframeBody?.querySelector( '.is-root-container' );
-					iframeRootContainer?.classList.add( 'srfm-form-container' );
-				}
-			};
-
-			const tabletPreview =
-				document.getElementsByClassName( 'is-tablet-preview' );
-			const mobilePreview =
-				document.getElementsByClassName( 'is-mobile-preview' );
-			if ( tabletPreview.length !== 0 || mobilePreview.length !== 0 ) {
-				const preview = tabletPreview[ 0 ] || mobilePreview[ 0 ];
-				if ( preview ) {
-					const iframe = preview.querySelector( 'iframe' );
-					const iframeDocument =
-						iframe?.contentWindow.document ||
-						iframe?.contentDocument;
-					const iframeBody = iframeDocument
-						?.querySelector( 'html' )
-						?.querySelector( 'body' );
-
-					handleIframeStyle( iframeBody );
-				}
-			} else {
-				const elm = document.querySelector(
-					'.block-editor-block-list__layout'
+			// If Custom Button is present, remove the default button.
+			if ( isInlineButtonBlockPresent ) {
+				const submitBtn = document.querySelectorAll(
+					'.srfm-submit-btn-container'
 				);
-
-				// If Custom Button is present, remove the default button.
-				if ( isInlineButtonBlockPresent ) {
-					const submitBtn = document.querySelectorAll(
-						'.srfm-submit-btn-container'
-					);
-					if ( submitBtn.length > 0 ) {
-						submitBtn[ 0 ].remove();
-					}
+				if ( submitBtn.length > 0 ) {
+					submitBtn[ 0 ].remove();
 				}
+			}
 
-				// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
-				if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
-					addSubmitButton( elm );
-					const submitBtn = document.querySelectorAll(
-						'.srfm-submit-btn-container'
-					);
-					if ( submitBtn.length > 1 ) {
-						submitBtn[ 1 ].remove();
-					}
+			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
+			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
+				addSubmitButton( elm );
+				const submitBtn = document.querySelectorAll(
+					'.srfm-submit-btn-container'
+				);
+				if ( submitBtn.length > 1 ) {
+					submitBtn[ 1 ].remove();
 				}
 			}
 		}, 200 );
 	}, [
-		deviceType,
 		sureformsKeys,
 		codeEditor,
 		blockCount,
