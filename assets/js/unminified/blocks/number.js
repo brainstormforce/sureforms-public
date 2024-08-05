@@ -4,15 +4,16 @@ function SRFMFormatNumber( number, formatType ) {
 	}
 
 	let formattedNumber = '';
+	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
 	if ( 'eu-style' === formatType ) {
 		const normalizeNumber = parseFloat( number.replace( /\./g, '' ).replace( ',', '.' ) );
 
 		// EU style number format.
-		formattedNumber = new Intl.NumberFormat( 'de-DE', { style: 'decimal', maximumFractionDigits: 2 } ).format( normalizeNumber );
+		formattedNumber = new Intl.NumberFormat( 'de-DE', formatOptions ).format( normalizeNumber );
 	} else {
 		// US style number format. Default.
-		formattedNumber = new Intl.NumberFormat( 'en-US', { style: 'decimal', maximumFractionDigits: 2 } ).format( parseFloat( number.replace( /,/g, '' ) ) );
+		formattedNumber = new Intl.NumberFormat( 'en-US', formatOptions ).format( parseFloat( number.replace( /,/g, '' ) ) );
 	}
 
 	if ( 'NaN' === formattedNumber ) {
@@ -30,6 +31,13 @@ function initializeNumberField() {
 		numberElement.forEach( ( element ) => {
 			const numberInput = element.querySelector( 'input' );
 			if ( numberInput ) {
+				// Things we want to reflect on real time: "input".
+				numberInput.addEventListener( 'input', ( e ) => {
+					// Convert all to empty strings except: Numbers, Dots, Commas.
+					numberInput.value = e.target.value.replace( /[^0-9,.]+/g, '' );
+				} );
+
+				// Things we want to process after user changes the focus, to save performance: "change".
 				numberInput.addEventListener( 'change', ( e ) => {
 					numberInput.value = SRFMFormatNumber( e.target.value, numberInput.getAttribute( 'format-type' ) );
 				} );

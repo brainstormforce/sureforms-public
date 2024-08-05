@@ -27,16 +27,25 @@ const formatNumber = ( number, formatType ) => {
 		return '';
 	}
 
+	// Convert all to empty strings except: Numbers, Dots, Commas.
+	number = number.replace( /[^0-9,.]+/g, '' );
+
+	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
+		// It means, user has just started decimal point. Eg: "2." or "2,"
+		return number;
+	}
+
 	let formattedNumber = '';
+	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
 
 	if ( 'eu-style' === formatType ) {
 		const normalizeNumber = parseFloat( number.replace( /\./g, '' ).replace( ',', '.' ) );
 
 		// EU style number format.
-		formattedNumber = new Intl.NumberFormat( 'de-DE', { style: 'decimal', maximumFractionDigits: 2 } ).format( normalizeNumber );
+		formattedNumber = new Intl.NumberFormat( 'de-DE', formatOptions ).format( normalizeNumber );
 	} else {
 		// US style number format. Default.
-		formattedNumber = new Intl.NumberFormat( 'en-US', { style: 'decimal', maximumFractionDigits: 2 } ).format( parseFloat( number.replace( /,/g, '' ) ) );
+		formattedNumber = new Intl.NumberFormat( 'en-US', formatOptions ).format( parseFloat( number.replace( /,/g, '' ) ) );
 	}
 
 	if ( 'NaN' === formattedNumber ) {
@@ -148,11 +157,11 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									label: 'defaultValue',
 								} }
 								value={ defaultValue }
-								onChange={ ( value ) =>
+								setAttributes={ ( value ) => {
 									setAttributes( {
-										defaultValue: formatNumber( value, formatType ),
-									} )
-								}
+										defaultValue: formatNumber( value.defaultValue, formatType ),
+									} );
+								} }
 								showControlHeader={ false }
 							/>
 							<ToggleControl

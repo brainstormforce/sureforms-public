@@ -23,7 +23,7 @@
 			"type": "string"
 		},
 		"defaultValue": {
-			"type": "number"
+			"type": "string"
 		},
 		"minValue": {
 			"type": "number"

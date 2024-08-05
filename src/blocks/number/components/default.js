@@ -37,6 +37,7 @@ export const NumberComponent = ( {
 					id={ `srfm-${ slug }-${ blockID }` }
 					type={ 'text' }
 					defaultValue={ defaultValue }
+					value={ defaultValue }
 					readOnly={ true }
 					placeholder={ placeholder }
 					required={ required }
