@@ -143,7 +143,96 @@ export const generateDropDownOptions = (
 	return data;
 };
 
-export const setFormSpecificSmartTags = ( savedBlocks ) => {
+export async function getServerGeneratedBlockSlugs( formID, content ) {
+	const option = {
+		path: `/sureforms/v1/generate-block-slugs`,
+		method: 'POST',
+		data: {
+			formID,
+			content,
+		},
+	};
+
+	return await apiFetch( option );
+}
+
+// Creates excerpt.
+export function trimTextToWords( text, wordLimit, ending = '...' ) {
+	// Split the text into words
+	const words = text.split( /\s+/ );
+
+	// If the text has fewer words than the limit, return it as is
+	if ( words.length <= wordLimit ) {
+		return text;
+	}
+
+	// Slice the array to the limit and join it back into a string and append the ending if there are more words than the limit
+	return words.slice( 0, wordLimit ).join( ' ' ) + ending;
+}
+
+const pushSmartTagToArray = (
+	blocks,
+	blockSlugs,
+	tagsArray,
+	uniqueSlugs = [],
+	allowedBlocks = []
+) => {
+	if ( Array.isArray( blocks ) && 0 === blocks.length ) {
+		return;
+	}
+
+	blocks.forEach( ( block ) => {
+		const isInnerBlock = Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length;
+
+		if ( isInnerBlock ) {
+			// If is inner block, process inner block recursively.
+			return pushSmartTagToArray(
+				block.innerBlocks,
+				blockSlugs,
+				tagsArray,
+				uniqueSlugs,
+				allowedBlocks
+			);
+		}
+
+		const isAllowedBlock = !! allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
+
+		if ( ! isAllowedBlock ) {
+			return;
+		}
+
+		const fieldSlug = blockSlugs[ block.attributes.block_id ];
+
+		if ( 'undefined' === typeof fieldSlug ) {
+			// If we are here, then field is invalid and we don't need to process it.
+			return;
+		}
+
+		if ( uniqueSlugs.includes( fieldSlug ) ) {
+			return;
+		}
+
+		/**
+		 * Compose field tag and label.
+		 */
+		const fieldTag = '{form:' + fieldSlug + '}';
+		let fieldLabel = trimTextToWords( block.attributes.label, 5 ); // Limit the label to 5 words, maximum. It does not affect the slug.
+
+		if ( 'srfm/gdpr' === block?.name ) {
+			// If we have GDPR field, lets add a GDPR prefix to make it clear to the users.
+			fieldLabel = `[GDPR] ${ fieldLabel }`;
+		}
+
+		tagsArray.push( [ fieldTag, fieldLabel ] );
+		uniqueSlugs.push( fieldSlug );
+	} );
+};
+
+export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
+	if ( ! Object.keys( blockSlugs )?.length ) {
+		return;
+	}
+
 	const excludedBlocks = [
 		'srfm/inline-button',
 		'srfm/hidden',
@@ -154,70 +243,30 @@ export const setFormSpecificSmartTags = ( savedBlocks ) => {
 		'srfm/icon',
 	];
 
-	savedBlocks = savedBlocks.filter(
-		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
-	);
-
 	const formSmartTags = [];
 	const formEmailSmartTags = [];
-
-	const pushSmartTagToArray = (
-		blocks,
-		tagsArray,
-		uniqueSlugs = [],
-		allowedBlocks = []
-	) => {
-		if ( Array.isArray( blocks ) && 0 === blocks.length ) {
-			return;
-		}
-
-		blocks.forEach( ( block ) => {
-			if (
-				undefined === block?.attributes?.slug ||
-				undefined === block?.attributes?.label ||
-				'' === block?.attributes?.slug ||
-				( 0 !== allowedBlocks.length &&
-					! allowedBlocks.includes( block?.name ) )
-			) {
-				return;
-			}
-
-			if (
-				Array.isArray( block?.innerBlocks ) &&
-				0 !== block?.innerBlocks.length
-			) {
-				pushSmartTagToArray(
-					block.innerBlocks,
-					tagsArray,
-					uniqueSlugs,
-					allowedBlocks
-				);
-			} else {
-				if ( uniqueSlugs.includes( block.attributes.slug ) ) {
-					return;
-				}
-				tagsArray.push( [
-					'{form:' + block.attributes.slug + '}',
-					'srfm/gdpr' === block?.name
-						? __( 'GDPR Agreement', 'sureforms' )
-						: block.attributes.label,
-				] );
-				uniqueSlugs.push( block.attributes.slug );
-			}
-		} );
-	};
-
-	pushSmartTagToArray( savedBlocks, formSmartTags, [] );
-	pushSmartTagToArray(
-		savedBlocks,
-		formEmailSmartTags,
-		[],
-		[ 'srfm/email' ]
-	);
+	const formSmartTagsUniqueSlugs = [];
+	const formEmailSmartTagsUniqueSlugs = [];
 
 	if ( typeof window.sureforms === 'undefined' ) {
 		window.sureforms = {};
 	}
+
+	window.sureforms.formSpecificSmartTags = formSmartTags;
+	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
+
+	if ( ! savedBlocks?.length ) {
+		return;
+	}
+
+	savedBlocks = savedBlocks.filter(
+		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
+	);
+
+	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, formSmartTagsUniqueSlugs );
+	pushSmartTagToArray( savedBlocks, blockSlugs, formEmailSmartTags, formEmailSmartTagsUniqueSlugs, [
+		'srfm/email',
+	] );
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
