@@ -80,7 +80,7 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get the SureFormsWP Token from the SureForms AI Settings.
+	 * Get the SureForms Token from the SureForms AI Settings.
 	 *
 	 * @since x.x.x
 	 * @return void
@@ -114,10 +114,10 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get a response from the SureFormsWP API server.
+	 * Get a response from the SureForms API server.
 	 *
 	 * @since x.x.x
-	 * @return array<mixed>|mixed The SureFormsWP API Response.
+	 * @return array<mixed>|mixed The SureForms API Response.
 	 */
 	public static function get_usage_response() {
 		// Set the API URL.
