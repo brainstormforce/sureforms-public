@@ -24,12 +24,12 @@ class AI_Helper {
 	use Get_Instance;
 
 	/**
-	 * Get the Zip AI Response from the Zip Credit Server.
+	 * Get the SureForms AI Response from the SureForms Credit Server.
 	 *
 	 * @param array<mixed> $body The data to be passed as the request body, if any.
 	 * @param array<mixed> $extra_args Extra arguments to be passed to the request, if any.
 	 * @since x.x.x
-	 * @return array<array<array<array<mixed>>>|string>|mixed The Zip AI Response.
+	 * @return array<array<array<array<mixed>>>|string>|mixed The SureForms AI Response.
 	 */
 	public static function get_chat_completions_response( $body = [], $extra_args = [] ) {
 		// Set the API URL.
@@ -61,7 +61,7 @@ class AI_Helper {
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [
-				'error' => __( 'The Zip AI Middleware is not responding.', 'sureforms' ),
+				'error' => __( 'The SureForms AI Middleware is not responding.', 'sureforms' ),
 			];
 		}
 
@@ -71,7 +71,7 @@ class AI_Helper {
 		// If the response body is not a JSON, then abandon ship.
 		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
 			return [
-				'error' => __( 'The Zip AI Middleware encountered an error.', 'sureforms' ),
+				'error' => __( 'The SureForms AI Middleware encountered an error.', 'sureforms' ),
 			];
 		}
 
@@ -80,7 +80,7 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get the ZipWP Token from the Zip AI Settings.
+	 * Get the SureFormsWP Token from the SureForms AI Settings.
 	 *
 	 * @since x.x.x
 	 * @return void
@@ -114,10 +114,10 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get a response from the ZipWP API server.
+	 * Get a response from the SureFormsWP API server.
 	 *
 	 * @since x.x.x
-	 * @return array<mixed>|mixed The ZipWP API Response.
+	 * @return array<mixed>|mixed The SureFormsWP API Response.
 	 */
 	public static function get_usage_response() {
 		// Set the API URL.
@@ -131,14 +131,14 @@ class AI_Helper {
 					'X-Token'      => 'aHR0cHM6Ly93d3cudGhlc2F1cnVzLmNvbQ==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
 					'Content-Type' => 'application/json',
 				],
-				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the ZipWP API response
+				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
 			]
 		);
 
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [
-				'error' => __( 'The ZipWP API server is not responding.', 'sureforms' ),
+				'error' => __( 'The SureForms API server is not responding.', 'sureforms' ),
 			];
 		}
 
@@ -148,7 +148,7 @@ class AI_Helper {
 		// If the response body is not a JSON, then abandon ship.
 		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
 			return [
-				'error' => __( 'The ZipWP API server encountered an error.', 'sureforms' ),
+				'error' => __( 'The SureForms API server encountered an error.', 'sureforms' ),
 			];
 		}
 

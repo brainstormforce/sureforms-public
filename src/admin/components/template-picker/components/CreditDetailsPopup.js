@@ -70,7 +70,7 @@ const CreditDetailsPopup = ( {
 				className="srfm-credits-popover-more-btn"
 				onClick={ () => {
 					window.open(
-						'https://app.zipwp.com/credits-pricing',
+						srfm_admin?.sureforms_pricing_page || 'https://sureforms.com/pricing/',
 						'_blank'
 					);
 				} }
