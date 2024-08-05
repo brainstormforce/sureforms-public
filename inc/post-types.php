@@ -1192,8 +1192,6 @@ class Post_Types {
 	 * @return void
 	 */
 	private function restrict_unwanted_insertions() {
-		// Restrict RankMath columns and filters in edit page.
-		add_filter( 'rank_math/metabox/add_seo_metabox', '__return_false' );
 		// Restrict RankMath metaboxes in edit page.
 		add_action( 'cmb2_admin_init', [ $this, 'restrict_data' ] );
 
