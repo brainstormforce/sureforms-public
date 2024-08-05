@@ -1,15 +1,13 @@
-import { __ } from '@wordpress/i18n';
-import Editor from '../QuillEditor';
-import Select from 'react-select';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import {
-	Spinner,
-} from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import Select from 'react-select';
+import { useDebouncedCallback } from 'use-debounce';
+import Editor from '../QuillEditor';
 
-const FormConfirmSetting = ( { toast } ) => {
+const FormConfirmSetting = ( { toast, setHasValidationErrors } ) => {
 	const sureforms_keys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
@@ -18,30 +16,32 @@ const FormConfirmSetting = ( { toast } ) => {
 	const [ data, setData ] = useState( {} );
 	const [ pageOptions, setPageOptions ] = useState( [] );
 	const [ errorMessage, setErrorMessage ] = useState( null );
-	const [ isProcessing, setIsProcessing ] = useState( false );
 	const [ showSuccess, setShowSuccess ] = useState( null );
+	const [ canDisplayError, setCanDisplayError ] = useState( false );
+
 	const handleSaveChanges = () => {
-		setIsProcessing( true );
 		const validationStatus = validateForm();
-		setTimeout( () => {
-			setErrorMessage( validationStatus );
-			setIsProcessing( false );
-			if ( '' !== validationStatus ) {
-				return;
-			}
-			updateMeta( '_srfm_form_confirmation', [ data ] );
-			setShowSuccess( true );
+
+		setErrorMessage( validationStatus );
+		if ( '' !== validationStatus ) {
+			setHasValidationErrors( true );
 			toast.dismiss();
-			toast.success(
-				__( 'Form Confirmation updated successfully.', 'sureforms' ),
-				{ duration: 500 }
-			);
-		}, 500 );
+			return false;
+		}
+		updateMeta( '_srfm_form_confirmation', [ data ] );
+		setShowSuccess( true );
+		toast.dismiss();
 	};
+
+	const debounced = useDebouncedCallback( handleSaveChanges, 500 );
+
 	useEffect( () => {
 		if ( null !== errorMessage ) {
 			setErrorMessage( validateForm() );
 		}
+
+		setHasValidationErrors( false );
+		debounced( data );
 	}, [ data ] );
 	useEffect( () => {
 		if ( true === showSuccess ) {
@@ -54,7 +54,10 @@ const FormConfirmSetting = ( { toast } ) => {
 
 	const validateForm = () => {
 		let validation = '';
-		if ( 'different page' === data?.confirmation_type && ! data?.page_url ) {
+		if (
+			'different page' === data?.confirmation_type &&
+			! data?.page_url
+		) {
 			validation = __( 'Please select a page.', 'sureforms' );
 		}
 		if ( 'custom url' === data?.confirmation_type ) {
@@ -64,12 +67,21 @@ const FormConfirmSetting = ( { toast } ) => {
 				try {
 					const newURL = new URL( data?.custom_url );
 					if ( newURL.protocol !== 'https:' ) {
-						validation = __( 'URL should use HTTPS', 'sureforms' );
-					} else if ( ! (
-						'localhost' !== newURL.hostname &&
-						newURL.hostname.includes( '.' ) &&
-						newURL.hostname.split( '.' ).pop().length > 1 ) ) {
-						validation = __( 'URL is missing Top Level Domain (TLD)', 'sureforms' );
+						validation = __(
+							'Suggestion: URL should use HTTPS',
+							'sureforms'
+						);
+					} else if (
+						! (
+							'localhost' !== newURL.hostname &&
+							newURL.hostname.includes( '.' ) &&
+							newURL.hostname.split( '.' ).pop().length > 1
+						)
+					) {
+						validation = __(
+							'URL is missing Top Level Domain (TLD)',
+							'sureforms'
+						);
 					} else {
 						validation = '';
 					}
@@ -115,29 +127,18 @@ const FormConfirmSetting = ( { toast } ) => {
 			setData( formConfirmationData[ 0 ] );
 		}
 	}, [] );
+
+	useEffect( () => {
+		// Do not display pre-validation message right after changing tabs or confirmation type.
+		setCanDisplayError( false );
+	}, [ data?.confirmation_type ] );
+
 	return (
 		<div className="srfm-modal-content">
 			<div className="srfm-modal-inner-content">
 				<div className="srfm-modal-inner-heading">
 					<div className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Form Confirmation', 'sureforms' ) }</h4>
-					</div>
-					<div className="srfm-flex srfm-flex-row srfm-gap-xs srfm-items-center">
-						<button
-							onClick={ handleSaveChanges }
-							className="srfm-modal-inner-heading-button"
-							disabled={ isProcessing }
-						>
-							{ __( 'Save Changes', 'sureforms' ) }
-							{
-								isProcessing && <Spinner
-									style={ {
-										marginTop: '0',
-										color: '#D54407',
-									} }
-								/>
-							}
-						</button>
 					</div>
 				</div>
 				<div className="srfm-modal-inner-box">
@@ -267,7 +268,10 @@ const FormConfirmSetting = ( { toast } ) => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Select Page', 'sureforms' ) }
-										<span className="srfm-validation-error"> *</span>
+										<span className="srfm-validation-error">
+											{ ' ' }
+											*
+										</span>
 									</label>
 								</div>
 								<div className="srfm-options-wrapper">
@@ -280,13 +284,13 @@ const FormConfirmSetting = ( { toast } ) => {
 										options={ pageOptions }
 										isMulti={ false }
 										onChange={ ( e ) => {
+											setCanDisplayError( true );
 											setErrorMessage( null );
 											setData( {
 												...data,
 												page_url: e.value,
 											} );
-										}
-										}
+										} }
 										classNamePrefix={ 'srfm-select' }
 										menuPlacement="auto"
 										styles={ {
@@ -342,47 +346,52 @@ const FormConfirmSetting = ( { toast } ) => {
 								<div className="srfm-modal-label">
 									<label>
 										{ __( 'Custom URL', 'sureforms' ) }
-										<span className="srfm-validation-error"> *</span>
+										<span className="srfm-validation-error">
+											{ ' ' }
+											*
+										</span>
 									</label>
 								</div>
 								<input
 									value={ data?.custom_url }
 									className="srfm-modal-input"
-									onChange={ ( e ) =>
+									onChange={ ( e ) => {
+										setCanDisplayError( true );
 										setData( {
 											...data,
 											custom_url: e.target.value,
-										} )
-									}
+										} );
+									} }
 								/>
 							</div>
 						) }
-						{ errorMessage && (
-							<div className="srfm-validation-error">{ errorMessage }</div>
+						{ canDisplayError && errorMessage && (
+							<div className="srfm-validation-error">
+								{ errorMessage }
+							</div>
 						) }
-						{
-							data?.confirmation_type === 'same page' && (
-								<div className="srfm-modal-area-box">
-									<div className="srfm-modal-area-header">
-										<div className="srfm-modal-area-header-text">
-											<p>
-												{ __(
-													'Confirmation Message',
-													'sureforms'
-												) }
-											</p>
-										</div>
-									</div>
-									<div className="srfm-editor-wrap">
-										<Editor
-											handleContentChange={ handleEditorChange }
-											content={ data?.message }
-										/>
+						{ data?.confirmation_type === 'same page' && (
+							<div className="srfm-modal-area-box">
+								<div className="srfm-modal-area-header">
+									<div className="srfm-modal-area-header-text">
+										<p>
+											{ __(
+												'Confirmation Message',
+												'sureforms'
+											) }
+										</p>
 									</div>
 								</div>
-
-							)
-						}
+								<div className="srfm-editor-wrap">
+									<Editor
+										handleContentChange={
+											handleEditorChange
+										}
+										content={ data?.message }
+									/>
+								</div>
+							</div>
+						) }
 						{ data?.confirmation_type === 'same page' && (
 							<div className="srfm-modal-option-box">
 								<div className="srfm-modal-label">

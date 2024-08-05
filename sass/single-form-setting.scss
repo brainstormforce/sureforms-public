@@ -170,11 +170,21 @@ $req_err_color: #dc2625;
 						display: flex;
 						align-items: center;
 
+						&.srfm-modal-inner-heading-back-button {
+							cursor: pointer;
+						}
+
+						&:hover {
+							.srfm-back-btn {
+								transform: translateX(-5px);
+							}
+						}
+
 						.srfm-back-btn {
 							height: 100%;
 							width: 24px;
-							cursor: pointer;
 							display: flex;
+							transition: transform 0.25s ease-in-out;
 						}
 
 						h4 {

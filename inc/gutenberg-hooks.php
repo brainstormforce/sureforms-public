@@ -142,7 +142,8 @@ class Gutenberg_Hooks {
 		$slug = is_string( $block['blockName'] ) ? $block['blockName'] : '';
 
 		if ( ! empty( $block['attrs']['label'] ) && is_string( $block['attrs']['label'] ) ) {
-			$slug = sanitize_title( $block['attrs']['label'] );
+			// Using "wp_trim_words" for long labels.
+			$slug = sanitize_title( wp_trim_words( $block['attrs']['label'], 5 ) );
 		}
 
 		if ( ! empty( $prefix ) ) {
@@ -235,7 +236,6 @@ class Gutenberg_Hooks {
 				'srfm/image',
 				'srfm/advanced-heading',
 				'srfm/inline-button',
-				'core/paragraph',
 			];
 			// Apply a filter to the $allow_block_types types array.
 			$allow_block_types = apply_filters( 'srfm_allowed_block_types', $allow_block_types, $editor_context );
