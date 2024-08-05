@@ -8,6 +8,7 @@
 namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -77,7 +78,28 @@ class Rest_Api {
 				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
+			'generate-form' => [
+				'methods'             => 'POST',
+				'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
+				'args'                => [
+					'use_system_message' => [
+						'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
+					],
+				],
+			],
 		];
+	}
+
+	/**
+	 * Checks whether the value is boolean or not.
+	 *
+	 * @param mixed $value value to be checked.
+	 * @since x.x.x
+	 * @return boolean
+	 */
+	public function sanitize_boolean_field( $value ) {
+		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**
