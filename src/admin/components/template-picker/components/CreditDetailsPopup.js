@@ -7,8 +7,8 @@ const CreditDetailsPopup = ( {
 } ) => {
 	const revokePopover = useRef( null );
 
-	const formCreationleft = srfm_admin?.zip_ai_credit_details?.remaining ?? 10;
-	const totalFormCount = srfm_admin?.zip_ai_credit_details?.limit ?? 10;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 10;
+	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit ?? 10;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
 
 	useEffect( () => {

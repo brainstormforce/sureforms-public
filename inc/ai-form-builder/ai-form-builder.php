@@ -99,6 +99,11 @@ class AI_Form_Builder {
 		// Get the response from the endpoint.
 		$response = AI_Helper::get_chat_completions_response( $data );
 
+		// check if response is an array if not then send error.
+		if ( ! is_array( $response ) ) {
+			wp_send_json_error( [ 'message' => __( 'The SureForms AI Middleware encountered an error.', 'sureforms' ) ] );
+		}
+
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
 			$message = '';

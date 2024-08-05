@@ -8,9 +8,9 @@
  * @package sureforms
  */
 
- namespace SRFM\Inc\AI_Form_Builder;
+namespace SRFM\Inc\AI_Form_Builder;
 
- use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Traits\Get_Instance;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,10 +26,10 @@ class AI_Helper {
 	/**
 	 * Get the Zip AI Response from the Zip Credit Server.
 	 *
-	 * @param array $body The data to be passed as the request body, if any.
-	 * @param array $extra_args Extra arguments to be passed to the request, if any.
+	 * @param array<mixed> $body The data to be passed as the request body, if any.
+	 * @param array<mixed> $extra_args Extra arguments to be passed to the request, if any.
 	 * @since x.x.x
-	 * @return array The Zip AI Response.
+	 * @return array<array<array<array<mixed>>>|string>|mixed The Zip AI Response.
 	 */
 	public static function get_chat_completions_response( $body = [], $extra_args = [] ) {
 		// Set the API URL.
@@ -45,7 +45,7 @@ class AI_Helper {
 
 		// If the data array was passed, add it to the args.
 		if ( ! empty( $body ) && is_array( $body ) ) {
-			$api_args['body'] = json_encode( $body );
+			$api_args['body'] = wp_json_encode( $body );
 		}
 
 		// If there are any extra arguments, then we can overwrite the required arguments.
@@ -83,12 +83,18 @@ class AI_Helper {
 	 * Get the ZipWP Token from the Zip AI Settings.
 	 *
 	 * @since x.x.x
+	 * @return void
 	 */
 	public static function update_current_usage_details() {
 		$current_usage_details = [];
 
 		// Get the response from the endpoint.
 		$response = self::get_usage_response();
+
+		// check if response is an array if not then send error.
+		if ( ! is_array( $response ) ) {
+			return;
+		}
 
 		// If the response is not an error, then use it - else create an error response array.
 		if ( empty( $response['error'] ) && is_array( $response ) ) {
@@ -111,7 +117,7 @@ class AI_Helper {
 	 * Get a response from the ZipWP API server.
 	 *
 	 * @since x.x.x
-	 * @return array The ZipWP API Response.
+	 * @return array<mixed>|mixed The ZipWP API Response.
 	 */
 	public static function get_usage_response() {
 		// Set the API URL.

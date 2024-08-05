@@ -477,19 +477,15 @@ class Admin {
 				SRFM_SLUG . '-template-picker',
 				SRFM_SLUG . '_admin',
 				[
-					'site_url'                         => get_site_url(),
-					'plugin_url'                       => SRFM_URL,
-					'preview_images_url'               => SRFM_URL . 'images/template-previews/',
-					'admin_url'                        => admin_url( 'admin.php' ),
-					'new_template_picker_base_url'     => admin_url( 'post-new.php?post_type=sureforms_form' ),
-					'capability'                       => current_user_can( 'edit_posts' ),
-					'template_picker_nonce'            => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
-					'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
-					'zip_ai_credit_details'            => get_option( 'srfm_ai_current_usage_details' ),
-					// 'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
-					// 'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
-					// 'is_authorized'                    => AI_Helper::is_authorized(),
-					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
+					'site_url'                     => get_site_url(),
+					'plugin_url'                   => SRFM_URL,
+					'preview_images_url'           => SRFM_URL . 'images/template-previews/',
+					'admin_url'                    => admin_url( 'admin.php' ),
+					'new_template_picker_base_url' => admin_url( 'post-new.php?post_type=sureforms_form' ),
+					'capability'                   => current_user_can( 'edit_posts' ),
+					'template_picker_nonce'        => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
+					'is_pro_active'                => defined( 'SRFM_PRO_VER' ),
+					'srfm_ai_usage_details'        => get_option( 'srfm_ai_current_usage_details' ),
 				]
 			);
 		}

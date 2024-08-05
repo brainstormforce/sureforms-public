@@ -136,8 +136,6 @@ const AiFormBuilder = () => {
 		userPrompt.value = prompt;
 	};
 
-	console.log( srfm_admin.zip_ai_credit_details );
-
 	if ( isBuildingForm ) {
 		return (
 			<>
@@ -268,7 +266,7 @@ const AiFormBuilder = () => {
 								}
 
 								if (
-									srfm_admin?.zip_ai_credit_details?.remaining === 0
+									srfm_admin?.srfm_ai_usage_details?.remaining === 0
 								) {
 									setShowLimitReachedPopup( true );
 									return;

@@ -21,47 +21,6 @@ class Field_Mapping {
 	use Get_Instance;
 
 	/**
-	 * The namespace for the Rest Routes.
-	 *
-	 * @since x.x.x
-	 * @var string
-	 */
-	private $namespace = 'sureforms/v1';
-
-	/**
-	 * Constructor of this class.
-	 *
-	 * @since x.x.x
-	 * @return void
-	 */
-	// public function __construct() {
-	// add_action( 'rest_api_init', [ $this, 'register_route' ] );
-	// }
-
-	/**
-	 * Register All Routes.
-	 *
-	 * @hooked - rest_api_init
-	 * @since x.x.x
-	 * @return void
-	 */
-	// public function register_route() {
-	// register_rest_route(
-	// $this->namespace,
-	// '/map-fields',
-	// [
-	// [
-	// 'methods'             => \WP_REST_Server::CREATABLE,
-	// 'callback'            => [ $this, 'generate_gutenberg_fields_from_questions' ],
-	// 'permission_callback' => function () {
-	// return current_user_can( 'edit_posts' );
-	// },
-	// ],
-	// ]
-	// );
-	// }
-
-	/**
 	 * Generate Gutenberg Fields from AI data.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
@@ -131,13 +90,13 @@ class Field_Mapping {
 				case 'gdpr':
 				case 'multi-choice':
 					// Handle specific attributes for certain fields.
-					if ( $question['fieldType'] === 'textarea' && ! empty( $question['helpText'] ) ) {
+					if ( 'textarea' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['textAreaHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					if ( $question['fieldType'] === 'dropdown' && ! empty( $question['fieldOptions'] ) ) {
+					if ( 'dropdown' === $question['fieldType'] && ! empty( $question['fieldOptions'] ) ) {
 						$merged_attributes['options'] = $question['fieldOptions'];
 					}
-					if ( $question['fieldType'] === 'multi-choice' ) {
+					if ( 'multi-choice' === $question['fieldType'] ) {
 						if ( ! empty( $question['fieldOptions'] ) ) {
 							$merged_attributes['options'] = $question['fieldOptions'];
 						}
@@ -160,7 +119,7 @@ class Field_Mapping {
 						break;
 					}
 					// Handle specific attributes for certain pro fields.
-					if ( $question['fieldType'] === 'upload' ) {
+					if ( 'upload' === $question['fieldType'] ) {
 						if ( ! empty( $question['allowedFormats'] ) ) {
 							$merged_attributes['allowedFormats'] = $question['allowedFormats'];
 						}
@@ -168,10 +127,10 @@ class Field_Mapping {
 							$merged_attributes['fileSizeLimit'] = filter_var( $question['fileSizeLimit'], FILTER_VALIDATE_INT );
 						}
 					}
-					if ( $question['fieldType'] === 'rating' && ! empty( $question['helpText'] ) ) {
+					if ( 'rating' === $question['fieldType'] && ! empty( $question['helpText'] ) ) {
 						$merged_attributes['ratingBoxHelpText'] = sanitize_text_field( $question['helpText'] );
 					}
-					if ( $question['fieldType'] === 'phone' ) {
+					if ( 'phone' === $question['fieldType'] ) {
 						$merged_attributes['autoCountry'] = true;
 					}
 
