@@ -897,8 +897,14 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 			$selectors = [
 				'.wp-block-uagb-separator' => array_merge(
 					[
-						'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-						'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
+						'margin-top'     => Spec_Gb_Helper::get_css_value( $attr['blockTopMargin'], $attr['blockMarginUnit'] ),
+						'margin-right'   => Spec_Gb_Helper::get_css_value( $attr['blockRightMargin'], $attr['blockMarginUnit'] ),
+						'margin-bottom'  => Spec_Gb_Helper::get_css_value( $attr['blockBottomMargin'], $attr['blockMarginUnit'] ),
+						'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMargin'], $attr['blockMarginUnit'] ),
+						'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['blockTopPadding'], $attr['blockPaddingUnit'] ),
+						'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPadding'], $attr['blockPaddingUnit'] ),
+						'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPadding'], $attr['blockPaddingUnit'] ),
+						'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPadding'], $attr['blockPaddingUnit'] ),
 						'text-align'     => $attr['separatorAlign'],
 					]
 				),

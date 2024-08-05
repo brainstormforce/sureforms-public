@@ -1,4 +1,17 @@
-Components & Control Last Updated: 04-04-2022
+**5th Aug, 2024 Update:**
+### Note: If you are having trouble with npm package dependencies and this is your first time running npm install in this folder then follow below steps:
+
+* Clear `node_modules` folder and `package-lock.json` file if exists.
+* **[Recommended]** Have volta installed in your system. See: https://volta.sh/
+* Run these below commands step-by-step:
+	1. `npm install --legacy-peer-deps`,
+	2. `npm install --force`,
+	3. `npm install`,
+	4. `npm run build`
+* On 4th step, if it builds successfully, then you can start your dev work with `npm start` command.
+* If that didn't work then try to find a better solution and update here. ( Please ).
+
+## Components & Control Last Updated: 04-04-2022
 
 === How to update the spectra/ultimate-addon-for-gutenebrg components and controls in SureForms  ===
 
