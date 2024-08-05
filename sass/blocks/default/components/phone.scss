@@ -1,9 +1,6 @@
 .srfm-form-container {
 	.srfm-form {
 		.srfm-phone-block {
-			.srfm-block-wrap {
-				margin: var( --srfm-input-field-margin ) !important;
-			}
 			.iti {
 				width: 100%;
 
@@ -87,6 +84,10 @@
 						display: none;
 					}
 				}
+			}
+			// Adding important attribute to override the library margin.
+			.srfm-input-phone {
+				margin: var( --srfm-input-field-margin ) !important;
 			}
 		}
 	}
