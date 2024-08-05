@@ -43,8 +43,6 @@ const AiFormBuilder = () => {
 		},
 	];
 
-	const totalFormCount = srfm_admin?.is_authorized ? 25 : 5;
-
 	const handleCreateAiForm = async (
 		userCommand,
 		previousMessages,
@@ -137,6 +135,8 @@ const AiFormBuilder = () => {
 		const userPrompt = document.querySelector( 'textarea' );
 		userPrompt.value = prompt;
 	};
+
+	console.log( srfm_admin.zip_ai_credit_details );
 
 	if ( isBuildingForm ) {
 		return (
@@ -268,8 +268,7 @@ const AiFormBuilder = () => {
 								}
 
 								if (
-									srfm_admin?.zip_ai_form_creation_count >=
-									totalFormCount
+									srfm_admin?.zip_ai_credit_details?.remaining === 0
 								) {
 									setShowLimitReachedPopup( true );
 									return;

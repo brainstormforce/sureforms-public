@@ -8,7 +8,8 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
-use ZipAI\Classes\Helper as AI_Helper;
+use SRFM\Inc\AI_Form_Builder\AI_Helper;
+use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -484,12 +485,11 @@ class Admin {
 					'capability'                       => current_user_can( 'edit_posts' ),
 					'template_picker_nonce'            => current_user_can( 'edit_posts' ) ? wp_create_nonce( 'wp_rest' ) : '',
 					'is_pro_active'                    => defined( 'SRFM_PRO_VER' ),
-					'zip_ai_credit_details'            => AI_Helper::get_credit_details(),
-					'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
-					'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
-					'is_authorized'                    => AI_Helper::is_authorized(),
+					'zip_ai_credit_details'            => get_option( 'srfm_ai_current_usage_details' ),
+					// 'zip_ai_auth_middleware'           => AI_Helper::get_auth_middleware_url( [ 'plugin' => 'sureforms' ] ),
+					// 'zip_ai_auth_revoke_url'           => Ai_Helper::get_auth_revoke_url(),
+					// 'is_authorized'                    => AI_Helper::is_authorized(),
 					'zip_ai_verify_authenticity_nonce' => wp_create_nonce( 'zip_ai_verify_authenticity' ),
-					'zip_ai_form_creation_count'       => get_option( 'zip_ai_form_creation_count', 0 ),
 				]
 			);
 		}

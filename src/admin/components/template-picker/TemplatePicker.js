@@ -23,9 +23,7 @@ const TemplatePicker = () => {
 		switch ( method ) {
 			case 'ai':
 				return (
-					<>
-						<AiFormBuilder />
-					</>
+					<AiFormBuilder />
 				);
 
 			default:

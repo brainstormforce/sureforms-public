@@ -21,15 +21,7 @@ class AI_Form_Builder {
 	use Get_Instance;
 
 	/**
-	 * Instance of this class.
-	 *
-	 * @since x.x.x
-	 * @var object Class object.
-	 */
-	private static $instance;
-
-	/**
-	 * Fetches ai data from the middleware server - this will be merged with the get_credit_server_response() function.
+	 * Fetches ai data from the middleware server
 	 *
 	 * @param \WP_REST_Request $request request object.
 	 * @since x.x.x
@@ -59,13 +51,13 @@ class AI_Form_Builder {
 			array_unshift( $messages, $current_message );
 		}
 
-		$field_types = 'input, email, url, textarea,  multi-choice, checkbox, gdpr, number, phone, dropdown, address, address-compact';
+		$field_types = 'input, email, url, textarea,  multi-choice, checkbox, gdpr, number, phone, dropdown, address';
 
 		// if pro is active then add pro field types.
 		if ( defined( 'SRFM_PRO_VER' ) ) {
-			$field_types .= ', hidden, rating, upload, date-time, number-slider, page-break';
-		} else{
-			$field_types .= 'and make sure fields like hidden, rating, upload, date-time, number-slider fields should not be included STRICTLY in the response';
+			$field_types .= ', hidden, rating, upload, date-time-picker, number-slider, page-break';
+		} else {
+			$field_types .= 'and make sure fields like hidden, rating, upload, date-time-picker, number-slider fields should not be included STRICTLY in the response';
 		}
 
 		// Finally add the system message to the start of the array.
@@ -99,14 +91,13 @@ class AI_Form_Builder {
 		}
 
 		// send the request to the open ai server.
-		$data     = [
-			// 'model'    => 'gpt-3.5-turbo',
+		$data = [
 			'source'   => 'openai',
 			'messages' => $messages,
 		];
 
 		// Get the response from the endpoint.
-		$response = $this->get_credit_server_response( $data );
+		$response = AI_Helper::get_chat_completions_response( $data );
 
 		if ( ! empty( $response['error'] ) ) {
 			// If the response has an error, handle it and report it back.
@@ -121,7 +112,6 @@ class AI_Form_Builder {
 			}
 			wp_send_json_error( [ 'message' => $message ] );
 		} elseif ( is_array( $response['choices'] ) && ! empty( $response['choices'][0]['message']['content'] ) ) {
-			update_option( 'zip_ai_form_creation_count', get_option( 'zip_ai_form_creation_count', 0 ) + 1 );
 			// If the message was sent successfully, send it successfully.
 			wp_send_json_success( $response );
 		} else {
@@ -129,62 +119,6 @@ class AI_Form_Builder {
 			wp_send_json_error( [ 'message' => __( 'Something went wrong', 'sureforms' ) ] );
 		}//end if
 	}
-
-		/**
-	 * Get the Zip AI Response from the Zip Credit Server.
-	 *
-	 * @param string $endpoint The endpoint to get the response from.
-	 * @param array  $body The data to be passed as the request body, if any.
-	 * @param array  $extra_args Extra arguments to be passed to the request, if any.
-	 * @since 1.0.0
-	 * @return array The Zip AI Response.
-	 */
-	public static function get_credit_server_response( $body = [], $extra_args = [] ) {
-		// Set the API URL.
-		$api_url  = "https://credits.startertemplates.com/sureforms/chat/completions";
-		$api_args = array(
-			'headers' => array(
-				'X-Token' => 'aHR0cHM6Ly9kZXZlbG9wZXIuc3VyZWNhcnQuY29tLw==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
-				'Content-Type' => 'application/json',
-			),
-			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for open ai responses
-		);
-	
-		// If the data array was passed, add it to the args.
-		if ( ! empty( $body ) && is_array( $body ) ) {
-			$api_args['body'] = json_encode( $body );
-			// $api_args['body'] = $body;
-		}
-	
-		// If there are any extra arguments, then we can overwrite the required arguments.
-		if ( ! empty( $extra_args ) && is_array( $extra_args ) ) {
-			$api_args = array_merge( $api_args, $extra_args );
-		}
-	
-		// Get the response from the endpoint.
-		$response = wp_remote_post( $api_url, $api_args );
-	
-		// If the response was an error, or not a 200 status code, then abandon ship.
-		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return array(
-				'error' => __( 'The Zip AI Middleware is not responding.', 'zip-ai' ),
-			);
-		}
-	
-		// Get the response body.
-		$response_body = wp_remote_retrieve_body( $response );
-	
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return array(
-				'error' => __( 'The Zip AI Middleware encountered an error.', 'zip-ai' ),
-			);
-		}
-	
-		// Return the response body.
-		return json_decode( $response_body, true );
-	}
-	
 
 	/**
 	 * This function converts the code received from scs to a readable error message.
@@ -196,102 +130,10 @@ class AI_Form_Builder {
 	 */
 	private function custom_message( $code ) {
 		$message_array = [
-			'no_auth'              => __( 'Invalid auth token.', 'sureforms' ),
-			'insufficient_credits' => __( 'You have no credits left.', 'sureforms' ),
+			'insufficient_credits' => __( 'You have no forms left.', 'sureforms' ),
 		];
 
 		return isset( $message_array[ $code ] ) ? $message_array[ $code ] : '';
 	}
 
-	/**
-	 * Get the ZipWP Token from the Zip AI Settings.
-	 *
-	 * @since 1.1.2
-	 * @return string The ZipWP Token.
-	 */
-   public static function get_current_plan_details() {
-	   $current_plan_details = [];
-
-	   // Get the response from the endpoint.
-	   $response = self::get_zipwp_api_response( 'plan/current-plan' );
-
-	   // If the response is not an error, then use it - else create an error response array.
-	   if ( empty( $response['error'] ) && is_array( $response ) ) {
-		   $current_plan_details = $response;
-		   if ( empty( $current_plan_details['status'] ) ) {
-			   $current_plan_details['status'] = 'ok';
-		   }
-	   } else {
-		   $current_plan_details['status'] = 'error';
-		   if ( ! empty( $response['error'] ) ) {
-			   $current_plan_details['error'] = $response['error'];
-		   }
-	   }
-
-	   return $current_plan_details;
-   }
-
-	/**
-	 * Get a response from the ZipWP API server.
-	 *
-	 * @param string $endpoint The endpoint to get the response from.
-	 * @since 1.1.2
-	 * @return array The ZipWP API Response.
-	 */
-	public static function get_zipwp_api_response( $endpoint ) {
-		// If the endpoint is not a string, then abandon ship.
-		if ( ! is_string( $endpoint ) ) {
-			return array(
-				'error' => __( 'The ZipWP Endpoint was not declared', 'zip-ai' ),
-			);
-		}
-
-		// Get the ZipWP Token from the Zip AI Settings.
-		$zipwp_token = self::get_decrypted_zipwp_token();
-
-		// If the ZipWP Token is not set, then abandon ship.
-		if ( empty( $zipwp_token ) || ! is_string( $zipwp_token ) ) {
-			return array(
-				'error' => __( 'The ZipWP Token is not set.', 'zip-ai' ),
-			);
-		}
-
-		// Set the API URL.
-		$api_url = ZIP_AI_ZIPWP_API . $endpoint;
-
-		// Get the response from the endpoint.
-		$response = wp_remote_get(
-			$api_url,
-			array(
-				'headers'   => array(
-					'X-Token'       => 'aHR0cHM6Ly9kZXZlbG9wZXIuc3VyZWNhcnQuY29tLw==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
-					'Content-Type'  => 'application/json',
-					'Accept'        => 'application/json',
-					'Authorization' => 'Bearer ' . $zipwp_token,
-				),
-				'sslverify' => false,
-				'timeout'   => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the ZipWP API response
-			)
-		);
-
-		// If the response was an error, or not a 200 status code, then abandon ship.
-		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return array(
-				'error' => __( 'The ZipWP API server is not responding.', 'zip-ai' ),
-			);
-		}
-
-		// Get the response body.
-		$response_body = wp_remote_retrieve_body( $response );
-
-		// If the response body is not a JSON, then abandon ship.
-		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
-			return array(
-				'error' => __( 'The ZipWP API server encountered an error.', 'zip-ai' ),
-			);
-		}
-
-		// Return the response body.
-		return json_decode( $response_body, true );
-	}
 }

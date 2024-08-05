@@ -4,19 +4,12 @@ import { useEffect, useRef } from '@wordpress/element';
 
 const CreditDetailsPopup = ( {
 	setShowRevokePopover,
-	setShowRevokeConfirmation,
 } ) => {
 	const revokePopover = useRef( null );
 
-	let aiFormCreationCount = parseInt(
-		srfm_admin?.zip_ai_form_creation_count
-	);
-
-	const totalFormCount = srfm_admin?.is_authorized ? 25 : 5;
-
-	if ( aiFormCreationCount > totalFormCount ) {
-		aiFormCreationCount = totalFormCount;
-	}
+	const formCreationleft = srfm_admin?.zip_ai_credit_details?.remaining ?? 10;
+	const totalFormCount = srfm_admin?.zip_ai_credit_details?.limit ?? 10;
+	const aiFormCreationCount = totalFormCount - formCreationleft;
 
 	useEffect( () => {
 		const handleClickOutside = ( event ) => {
@@ -44,6 +37,7 @@ const CreditDetailsPopup = ( {
 				<div className="srfm-tp-header-credits-popover-stats">
 					<span>{ __( 'Usage ', 'sureforms' ) }</span>
 					<span>{ aiFormCreationCount + '/' + totalFormCount }</span>
+
 				</div>
 				<div className="srfm-progress-bar bg-slate-200">
 					<div
@@ -61,9 +55,14 @@ const CreditDetailsPopup = ( {
 			</div>
 			<div className="srfm-tp-header-credits-popover-title">
 				<span className="srfm-tp-header-credits-popover-description">
-					{ __(
-						'Free plan only allows 25 AI form generations. Need to create more forms with AI?',
-						'sureforms'
+
+					{ wp.i18n.sprintf(
+						/* translators: %s: number of AI form generations left */
+						__(
+							'Free plan only allows %d AI form generations. Need to create more forms with AI?',
+							'sureforms'
+						),
+						totalFormCount ?? 10
 					) }
 				</span>
 			</div>
@@ -78,17 +77,6 @@ const CreditDetailsPopup = ( {
 			>
 				{ __( 'Upgrade Plan', 'sureforms' ) }
 			</Button>
-			{ srfm_admin.is_authorized && (
-				<Button
-					className="srfm-credits-popover-revoke-btn"
-					onClick={ () => {
-						setShowRevokePopover( false );
-						setShowRevokeConfirmation( true );
-					} }
-				>
-					{ __( 'Disconnect Account', 'sureforms' ) }
-				</Button>
-			) }
 		</div>
 	);
 };

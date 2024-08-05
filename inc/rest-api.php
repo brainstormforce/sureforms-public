@@ -9,6 +9,7 @@ namespace SRFM\Inc;
 
 use SRFM\Inc\Traits\Get_Instance;
 use SRFM\Inc\AI_Form_Builder\AI_Form_Builder;
+use SRFM\Inc\AI_Form_Builder\Field_Mapping;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -78,7 +79,7 @@ class Rest_Api {
 				'callback'            => [ $this, 'generate_block_slugs_by_content' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
-			'generate-form' => [
+			'generate-form'        => [
 				'methods'             => 'POST',
 				'callback'            => [ AI_Form_Builder::get_instance(), 'generate_ai_form' ],
 				'permission_callback' => [ $this, 'can_edit_posts' ],
@@ -87,6 +88,11 @@ class Rest_Api {
 						'sanitize_callback' => [ $this, 'sanitize_boolean_field' ],
 					],
 				],
+			],
+			'map-fields'           => [
+				'methods'             => 'POST',
+				'callback'            => [ Field_Mapping::get_instance(), 'generate_gutenberg_fields_from_questions' ],
+				'permission_callback' => [ $this, 'can_edit_posts' ],
 			],
 		];
 	}

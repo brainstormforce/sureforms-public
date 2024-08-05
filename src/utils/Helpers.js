@@ -168,7 +168,9 @@ const pushSmartTagToArray = (
 	}
 
 	blocks.forEach( ( block ) => {
-		const isInnerBlock = Array.isArray( block?.innerBlocks ) && 0 !== block?.innerBlocks.length;
+		const isInnerBlock =
+			Array.isArray( block?.innerBlocks ) &&
+			0 !== block?.innerBlocks.length;
 
 		if ( isInnerBlock ) {
 			// If is inner block, process inner block recursively.
@@ -181,7 +183,9 @@ const pushSmartTagToArray = (
 			);
 		}
 
-		const isAllowedBlock = !! allowedBlocks.length ? allowedBlocks.includes( block?.name ) : true;
+		const isAllowedBlock = !! allowedBlocks.length
+			? allowedBlocks.includes( block?.name )
+			: true;
 
 		if ( ! isAllowedBlock ) {
 			return;
@@ -199,7 +203,10 @@ const pushSmartTagToArray = (
 		 * GDPR block's label can be a long text, which will create issue to the users for the tags.
 		 */
 		const fieldTag = '{form:' + fieldSlug + '}';
-		const fieldLabel = 'srfm/gdpr' === block?.name ? __( 'GDPR Agreement', 'sureforms' ) : block.attributes.label;
+		const fieldLabel =
+			'srfm/gdpr' === block?.name
+				? __( 'GDPR Agreement', 'sureforms' )
+				: block.attributes.label;
 
 		tagsArray.push( [ fieldTag, fieldLabel ] );
 		uniqueSlugs.push( fieldSlug );
@@ -241,9 +248,13 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 	);
 
 	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, uniqueSlugs );
-	pushSmartTagToArray( savedBlocks, blockSlugs, formEmailSmartTags, uniqueSlugs, [
-		'srfm/email',
-	] );
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formEmailSmartTags,
+		uniqueSlugs,
+		[ 'srfm/email' ]
+	);
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;
@@ -293,13 +304,6 @@ export const formatNumber = ( num ) => {
 	return num < 1000
 		? num.toString()
 		: formattedNum + suffix + ( num % magnitude > 0 ? '+' : '' );
-};
-
-export const getRemaingCredits = () => {
-	return (
-		parseInt( srfm_admin.zip_ai_credit_details?.total ) -
-		parseInt( srfm_admin.zip_ai_credit_details?.used )
-	);
 };
 
 export const SRFMToaster = ( {
