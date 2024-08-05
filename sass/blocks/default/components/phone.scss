@@ -23,8 +23,7 @@
 						border-radius: var( --srfm-input-field-border-radius );
 						border: var( --srfm-color-input-border ) solid 1px;
 						line-height: var( --srfm-input-field-line-height );
-						transform: translateY( 0 );
-						transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
+						transition: 0.2s ease-out;
 
 						&.iti__hide {
 							display: block;
