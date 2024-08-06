@@ -47,6 +47,7 @@
 						height: 16px;
 						text-indent: -9999px; // Hide the text.
 						right: var( --srfm-dropdown-padding-right-icon );
+						visibility: hidden;
 					}
 
 					// Vertically center align the option for single selection.
@@ -185,6 +186,9 @@
 					&.has-items {
 						.ts-control-placeholder {
 							display: none !important;
+						}
+						.clear-button {
+							visibility: visible;
 						}
 					}
 					// If the dropdown has no selected options, display placeholder.
