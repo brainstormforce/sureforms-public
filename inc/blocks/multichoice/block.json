@@ -36,7 +36,9 @@
 			"type": "array",
 			"default": [
 				{
-					"optionTitle": "Option 1"
+					"optionTitle": "Option 1",
+					"icon": "",
+          "image": ""
 				}
 			]
 		},
@@ -76,6 +78,10 @@
     "slug":{
 			"type":"string",
 			"default":""
-		}
+		},
+    "optionType": {
+      "type": "string",
+      "default": "icon"
+    }
 	}
 }

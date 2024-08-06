@@ -12,7 +12,7 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-color-light );
+			color: var( --srfm-error-color );
 		}
 	}
 
@@ -150,13 +150,29 @@
 	}
 
 	// Phone.
-	div[data-type="srfm/phone"] {
+	.srfm-phone-block-wrap {
+		// Adding margin to srfm-block-wrap because the library styles are overriding the input styles.
+		.srfm-block-wrap {
+			margin: var( --srfm-input-field-margin ) !important;
+		}
+		.iti-flag {
+			margin-right: 4px; // Fixed gap between the flag and the country code.
+		}
 		.flag-container {
-			.arrow {
-				&:after {
-					background-color: transparent;
-					color: var( --srfm-body-input-color );
+			width: auto !important;
+			padding: var( --srfm-flag-section-padding ) !important;
+			.selected-flag {
+				display: flex !important;
+				width: auto !important;
+				background-color: inherit !important;
+				.selected-dial-code {
+					font-size: var( --srfm-input-field-font-size );
+					padding-left: 0;
+					color: var( --srfm-color-input-prefix );
 				}
+			}
+			.arrow {
+				display: none;
 			}
 		}
 	}
@@ -166,7 +182,7 @@
 		.srfm-dropdown-common-wrap {
 			position: relative;
 			width: 100%;
-			color: var( --srfm-placeholder-color );
+			color: var( --srfm-color-input-placeholder );
 
 			input[type="text"] {
 				padding-right: 2em;
@@ -186,17 +202,7 @@
 			}
 
 			&::after {
-				content: "";
-				position: absolute;
-				width: 0.5em;
-				height: 0.5em;
-				font-size: 0.7em;
-				border: 1px solid var( --srfm-body-input-color );
-				border-left: 0;
-				border-top: 0;
-				transform: rotate( 45deg );
-				right: 1em;
-				top: 1em;
+				@include srfm-dropdown-arrow( true );
 			}
 		}
 	}

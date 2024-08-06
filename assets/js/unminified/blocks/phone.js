@@ -5,9 +5,12 @@ function initializePhoneField() {
 		const phoneNumber = element.querySelector( '.srfm-input-phone' );
 		const errorMessage = element.querySelector( '.srfm-error-message' );
 		const isAutoCountry = phoneNumber.getAttribute( 'auto-country' );
+		const phoneFieldName = phoneNumber.getAttribute( 'name' );
 		const itlOptions = {
 			utilsScript: '../scripts/int-tel-input/utils.js',
-			autoPlaceholder: false,
+			autoPlaceholder: 'off',
+			separateDialCode: true,
+			hiddenInput: phoneFieldName,
 		};
 
 		if ( isAutoCountry === 'true' ) {
@@ -41,6 +44,7 @@ function initializePhoneField() {
 			} else {
 				parentBlock.classList.remove( 'srfm-phone-error' );
 				parentBlock.classList.remove( 'srfm-error' );
+				iti.hiddenInput.value = iti.getNumber();
 			}
 		};
 

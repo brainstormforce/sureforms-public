@@ -7,6 +7,7 @@
 
 				.srfm-multi-choice-single {
 					@include srfm-multi-choice-single-styles;
+					transition: 0.2s ease-out;
 
 					input {
 						position: absolute;
@@ -16,9 +17,9 @@
 							box-shadow: none;
 							border-color: var( --srfm-color-input-border-hover );
 							background: var( --srfm-color-input-selected );
-
 							.srfm-multi-choice-icon {
-								display: block;
+								opacity: 1;
+								width: var( --srfm-multi-choice-horizontal-svg-size );
 								border-color: transparent;
 								svg {
 									opacity: 1;
@@ -30,7 +31,8 @@
 							}
 
 							.srfm-multi-choice-icon-unchecked {
-								display: none;
+								opacity: 0;
+								width: 0;
 								svg {
 									opacity: 0;
 								}
@@ -45,6 +47,7 @@
 
 					.srfm-block-content-wrap {
 						@include srfm-multi-choice-block-content-wrap-styles();
+						transition: 0.2s ease-out;
 
 						&:hover {
 							border-color: var( --srfm-color-input-border-hover );
@@ -60,10 +63,15 @@
 						.srfm-multi-choice-icon,
 						.srfm-multi-choice-icon-unchecked {
 							@include srfm-multi-choice-icon-styles;
+							svg {
+								transition: opacity 0.2s ease-out;
+								transform: translate3d( 0, 0, 0 );
+							}
 						}
 
 						.srfm-multi-choice-icon {
-							display: none;
+							opacity: 0;
+							width: 0;
 							svg {
 								opacity: 0;
 							}

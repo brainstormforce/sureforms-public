@@ -439,6 +439,52 @@ export async function fieldValidation(
 					.classList.remove( 'srfm-error' );
 			}
 		}
+
+		// Dropdown Field
+		if ( container.classList.contains( 'srfm-dropdown-block' ) ) {
+			const dropdownInputs = container.querySelectorAll(
+				'.srfm-input-dropdown-hidden'
+			);
+			// Create a mutation observer to watch for changes in the value of the hidden input.
+			const MutationObserver =
+				window.MutationObserver ||
+				window.WebKitMutationObserver ||
+				window.MozMutationObserver;
+
+			dropdownInputs.forEach( ( dropdownInput ) => {
+				const dropdownRequired =
+					dropdownInput.getAttribute( 'aria-required' );
+				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
+					dropdownInput
+						.closest( '.srfm-block' )
+						.classList.add( 'srfm-error' );
+					validateResult = true;
+				} else {
+					dropdownInput
+						.closest( '.srfm-block' )
+						.classList.remove( 'srfm-error' );
+				}
+
+				// Observe changes in the hidden input's value.
+				const dropdownObserver = new MutationObserver( () => {
+					if ( dropdownInput.value ) {
+						dropdownInput
+							.closest( '.srfm-block' )
+							.classList.remove( 'srfm-error' );
+					} else if ( dropdownRequired === 'true' ) {
+						dropdownInput
+							.closest( '.srfm-block' )
+							.classList.add( 'srfm-error' );
+					}
+				} );
+
+				// Configure the observer to watch for changes in attributes.
+				dropdownObserver.observe( dropdownInput, {
+					attributes: true,
+					attributeFilter: [ 'value' ],
+				} );
+			} );
+		}
 	}
 
 	return validateResult;

@@ -1,18 +1,13 @@
-import { Button } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 import parse from 'html-react-parser';
 import svgIcons from '@Svg/svgs.json';
 import HelpText from '@Components/misc/HelpText';
+import renderSVG from '@Components/icon-picker/renderIcon.js';
 
 export const MultiChoiceComponent = ( {
 	attributes,
 	blockID,
-	isSelected,
-	addOption,
-	changeOption,
-	deleteOption,
 	setAttributes,
 } ) => {
 	const {
@@ -23,6 +18,7 @@ export const MultiChoiceComponent = ( {
 		help,
 		singleSelection,
 		verticalLayout,
+		optionType,
 	} = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'multi-choice';
@@ -34,34 +30,7 @@ export const MultiChoiceComponent = ( {
 		? choiceWidthString.replace( '.', '-' )
 		: defaultChoiceWidth;
 
-	const editView = options.map( ( option, index ) => {
-		return (
-			<div key={ index } className={ `srfm-multi-choice-single` }>
-				<label htmlFor={ option.optionTitle }></label>
-				<input
-					className="srfm-input-common"
-					aria-label={ option.optionTitle }
-					onChange={ ( e ) =>
-						changeOption(
-							{
-								optionTitle: e.target.value,
-							},
-							index
-						)
-					}
-					type="text"
-					value={ option.optionTitle }
-				/>
-				<Button
-					icon="trash"
-					label="Remove"
-					onClick={ () => deleteOption( index ) }
-				/>
-			</div>
-		);
-	} );
-
-	const OriginalView = () => {
+	const View = () => {
 		const selectionSvg = singleSelection
 			? parse( svgIcons[ 'circle-unchecked' ] )
 			: parse( svgIcons[ 'square-unchecked' ] );
@@ -80,7 +49,24 @@ export const MultiChoiceComponent = ( {
 								>
 									{ selectionSvg }
 								</span>
-								<p>{ option.optionTitle }</p>
+								<div className="srfm-option-container">
+									{ optionType === 'icon' && option.icon && (
+										<span className="srfm-option-icon">
+											{ ' ' }
+											{ renderSVG( option.icon ) }{ ' ' }
+										</span>
+									) }
+									{ optionType === 'image' &&
+										option.image && (
+										<span className="srfm-option-image">
+											<img
+												src={ option.image }
+												alt={ option.optionTitle }
+											/>
+										</span>
+									) }
+									<p>{ option.optionTitle }</p>
+								</div>
 							</div>
 						</label>
 					);
@@ -107,22 +93,7 @@ export const MultiChoiceComponent = ( {
 				setAttributes={ setAttributes }
 				block_id={ blockID }
 			/>
-			{ isSelected && (
-				<>
-					<div
-						className={ `srfm-block-wrap srfm-choice-width-${ choiceWidthClass }` }
-					>
-						{ editView }
-						<div className={ `srfm-${ slug }-add-option-wrapper` }>
-							<Button isPrimary onClick={ addOption }>
-								{ __( ' + Add Option ', 'sureforms' ) }
-							</Button>
-						</div>
-					</div>
-				</>
-			) }
-
-			{ ! isSelected && <OriginalView /> }
+			<View />
 		</>
 	);
 };
