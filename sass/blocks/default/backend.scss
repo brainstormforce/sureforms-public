@@ -12,7 +12,7 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-color-light );
+			color: var( --srfm-error-color );
 		}
 	}
 
