@@ -315,11 +315,21 @@ const SureformsFormSpecificSettings = ( props ) => {
 			// If Custom Button is not present, add the default button. Remove the default button if there are more than one.
 			if ( ! submitBtnContainer && ! isInlineButtonBlockPresent ) {
 				addSubmitButton( elm );
+
+				// remove duplicated submit button from the view after inline button is removed
 				const submitBtn = document.querySelectorAll(
 					'.srfm-submit-btn-container'
 				);
 				if ( submitBtn.length > 1 ) {
 					submitBtn[ 1 ].remove();
+				}
+
+				// remove duplicated inserter from the view after inline button is removed
+				const appender = document.querySelectorAll(
+					'.srfm-custom-block-inserter'
+				);
+				if ( appender.length > 1 ) {
+					appender[ 1 ].remove();
 				}
 			}
 		}, 200 );
