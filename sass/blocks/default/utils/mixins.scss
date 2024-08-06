@@ -84,6 +84,17 @@
 		transform: translateY( -60% );
 	}
 }
+@mixin srfm-check-mark {
+	content: "";
+	width: 7.33px;
+	height: 10.67px;
+	border: 1.25px solid var( --srfm-dropdown-option-selected-icon );
+	border-top: none;
+	border-left: none;
+	transform: rotate( 45deg );
+	margin-left: auto;
+}
+
 // These mixins are used in Multi Select scss.
 @mixin srfm-multi-choice-wrap-styles {
 	display: flex;
