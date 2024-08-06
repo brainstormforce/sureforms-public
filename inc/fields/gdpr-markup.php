@@ -56,7 +56,7 @@ class GDPR_Markup extends Base {
 								<use xlink:href="#srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-check"></use>
 							</svg>
 						</span>
-						<span class="srfm-block-text srfm-span-wrap"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
+						<span class="srfm-span-wrap srfm-block-label"><?php echo wp_kses( $this->label, $this->allowed_tags ); ?>
 							<span class="srfm-required"> *</span></span>
 					</label>
 					<svg class="srfm-inline-svg">
@@ -66,7 +66,9 @@ class GDPR_Markup extends Base {
 					</svg>
 				</div>
 				<?php echo wp_kses_post( $this->help_markup ); ?>
-				<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				<div class="srfm-error-wrap">
+					<?php echo wp_kses_post( $this->error_msg_markup ); ?>
+				</div>
 			</div>
 		<?php
 		return ob_get_clean();

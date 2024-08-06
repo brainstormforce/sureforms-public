@@ -20,6 +20,28 @@
 		@include srfm-input-common-styles( true );
 	}
 
+	// checkbox and gdpr
+	.srfm-input-checkbox,
+	.srfm-input-gdpr {
+		display: none; // Different display property
+
+		&:checked {
+			+ {
+				.srfm-cbx {
+					span {
+						&:first-child:not( .srfm-required ) {
+							background: var( --srfm-color-scheme-primary );
+							border-color: var( --srfm-color-scheme-primary );
+							svg {
+								stroke-dashoffset: 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	.srfm-input-textarea {
 		height: unset !important;
 	}
@@ -63,7 +85,7 @@
 		.srfm-block-wrap {
 			input {
 				margin: 0;
-				border: 1px solid var( --srfm-border-color );
+				border: 1px solid var( --srfm-color-input-border );
 				box-shadow: none;
 			}
 
