@@ -160,7 +160,7 @@
 		.srfm-dropdown-common-wrap {
 			position: relative;
 			width: 100%;
-			color: var( --srfm-placeholder-color );
+			color: var( --srfm-color-input-placeholder );
 
 			input[type="text"] {
 				padding-right: 2em;
@@ -180,17 +180,7 @@
 			}
 
 			&::after {
-				content: "";
-				position: absolute;
-				width: 0.5em;
-				height: 0.5em;
-				font-size: 0.7em;
-				border: 1px solid var( --srfm-body-input-color );
-				border-left: 0;
-				border-top: 0;
-				transform: rotate( 45deg );
-				right: 1em;
-				top: 1em;
+				@include srfm-dropdown-arrow( true );
 			}
 		}
 	}

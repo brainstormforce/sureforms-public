@@ -73,6 +73,17 @@
 	padding: 0 !important;
 }
 
+@mixin srfm-dropdown-arrow( $backend: false ) {
+	content: url( "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik00IDZMOCAxMEwxMiA2IiBzdHJva2U9IiMxRTFFMUUiIHN0cm9rZS1vcGFjaXR5PSIwLjY1IiBzdHJva2Utd2lkdGg9IjEuMjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPg0KPC9zdmc+DQo=" );
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	right: 1em;
+	@if ( $backend ) {
+		top: 50%;
+		transform: translateY( -60% );
+	}
+}
 @mixin srfm-check-mark {
 	content: "";
 	width: 7.33px;

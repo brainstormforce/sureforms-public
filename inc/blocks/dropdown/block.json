@@ -25,9 +25,20 @@
 		"required": {
 			"type": "boolean"
 		},
+		"multiSelect": {
+			"type": "boolean",
+			"default": false
+		},
+		"searchable": {
+			"type": "boolean",
+			"default": false
+		},
 		"options": {
-			"default": [ "Option 1", "Option 2" ],
-			"type": "array"
+			"type": "array",
+			"default": [ 
+				{ "label": "Option 1", "icon": "" },
+				{ "label": "Option 2", "icon": "" }
+			 ]
 		},
 		"fieldWidth": {
 			"type": "number",
@@ -51,7 +62,7 @@
 		},
 		"placeholder": {
 			"type": "string",
-			"default": "Select Option"
+			"default": "Select an option"
 		},
 		"isConditionalLogic":{
 			"type":"boolean",

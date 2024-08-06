@@ -96,118 +96,27 @@
 		}
 
 		.srfm-block {
-			.srfm-dropdown-common-wrap {
-				display: inline-block;
-				width: 100%;
-
-				.srfm-dropdown-common {
-					border-radius: var( --srfm-border-radius );
-
-					.ts-control {
-						font-size: 0.7em;
-						position: relative;
-						line-height: normal;
-						width: 100%;
-						border: var( --srfm-border ) solid var( --srfm-border-color );
-						border-radius: var( --srfm-border-radius );
-						height: auto;
-						padding: 0.72em 1.143em !important;
-
-						&::after {
-							content: "";
-							position: absolute;
-							width: 0.5em;
-							height: 0.5em;
-							border: 1px solid var( --srfm-body-input-color );
-							border-left: 0;
-							border-top: 0;
-							transform: rotate( 45deg );
-							right: 1em;
-							top: 1em;
-						}
-
-						.item {
-							overflow: hidden;
-							text-overflow: ellipsis;
-							white-space: nowrap;
-							color: var( --srfm-body-input-color );
-						}
-
-						input {
-							line-height: normal;
-							font-size: inherit;
-							height: auto;
-							width: auto;
-							min-width: auto;
-
-							&::placeholder {
-								color: var( --srfm-placeholder-color );
-								opacity: 1;
-								font-size: 1em;
-								/* Firefox */
-							}
-
-							&:placeholder-shown {
-								text-overflow: ellipsis;
-							}
-						}
-					}
-
-					.ts-dropdown {
-						margin-top: 3px;
-						color: inherit;
-						font-family: inherit;
-						font-size: inherit;
-						line-height: inherit;
-						left: -1px;
-						width: calc( 100% + 2px );
-						border: 1px solid var( --srfm-border-color );
-						border-top: none;
-					}
-				}
-
-				select {
+			&.srfm-phone-block {
+				.iti__country-list {
 					display: block;
-					padding: 10px 16px 10px 16px !important;
-					width: 100%;
-					font-size: 0.7em;
-					color: #778899;
-					line-height: normal;
-				}
-			}
+					border: var( --srfm-border ) solid var( --srfm-border-color );
+					border-radius: var( --srfm-border-radius );
+					transform: translateY( 0 );
+					opacity: 1;
+					transition: 0.2s cubic-bezier( 0.5, 0, 0, 1.25 ), opacity 0.15s ease-out;
+					font-size: 0.8em;
 
-			.srfm-dropdown-common-wrap:not( .srfm-address-compact-country-wrap ) {
-				.srfm-dropdown-common {
-					.ts-dropdown {
-						font-size: 0.7em;
+					&.iti__hide {
+						display: block;
+						transform: translateY( 1em );
+						opacity: 0;
+						visibility: hidden;
 					}
 				}
 			}
 
 			.srfm-error-message {
 				display: none;
-			}
-		}
-
-		.srfm-block:not( .srfm-error ) {
-			.srfm-dropdown-common-wrap {
-				.srfm-dropdown-common {
-					&.input-active {
-						box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
-						border-color: transparent;
-					}
-				}
-			}
-		}
-
-		.srfm-block.srfm-error {
-			.srfm-dropdown-common-wrap {
-				.srfm-dropdown-common {
-					&.input-active {
-						box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-error-surface-color ), 0px 0px 0px 3px var( --srfm-error-shadow-color );
-						border-color: transparent;
-					}
-				}
 			}
 		}
 
