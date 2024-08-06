@@ -36,7 +36,9 @@
 			"type": "array",
 			"default": [
 				{
-					"optionTitle": "Option 1"
+					"optionTitle": "Option 1",
+					"icon": "",
+          "image": ""
 				}
 			]
 		},
@@ -72,6 +74,10 @@
 		"isConditionalLogic":{
 			"type":"boolean",
 			"default":false
-		}
+		},
+    "optionType": {
+      "type": "string",
+      "default": "icon"
+    }
 	}
 }

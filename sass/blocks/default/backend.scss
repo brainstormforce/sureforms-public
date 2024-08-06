@@ -12,7 +12,7 @@
 	.srfm-block-label {
 		&.srfm-required::after {
 			content: " *";
-			color: var( --srfm-error-color-light );
+			color: var( --srfm-error-color );
 		}
 	}
 
@@ -120,7 +120,7 @@
 			.srfm-multi-choice-add-option-wrapper {
 				width: 100%;
 				margin-top: 4px;
-				margin-left:4px;
+				margin-left: 4px;
 			}
 
 			@include srfm-multi-choice-vertical-layout( true );

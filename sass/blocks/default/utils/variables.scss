@@ -3,14 +3,9 @@
 
 	// Error color variables.
 	$srfmColorErrorLight: #dc2626 !default;
-	$srfmColorErrorDark: #f87171 !default;
-	--srfm-error-color-light: #dc2626;
-	--srfm-error-color-light-border: #{rgba( $srfmColorErrorLight, 0.65 )};
-	--srfm-error-color-light-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
-
-	--srfm-error-color-dark: #f87171;
-	--srfm-error-color-dark-border: #{rgba( $srfmColorErrorDark, 0.65 )};
-	--srfm-error-color-dark-border-glow: #{rgba( $srfmColorErrorDark, 0.15 )};
+	--srfm-error-color: #dc2626;
+	--srfm-error-color-border: #{rgba( $srfmColorErrorLight, 0.65 )};
+	--srfm-error-color-border-glow: #{rgba( $srfmColorErrorLight, 0.15 )};
 
 	// Gaps and Spacing variables.
 	--srfm-row-gap-between-blocks: 16px;
@@ -72,4 +67,16 @@
 	--srfm-btn-font-size: 14px;
 	--srfm-btn-font-weight: 500;
 	--srfm-btn-line-height: 20px;
+
+	// Multi Choice variables.
+	--srfm-multi-choice-horizontal-padding: 16px;
+	--srfm-multi-choice-vertical-padding: 16px;
+
+	--srfm-multi-choice-internal-option-gap: 8px;
+
+	--srfm-multi-choice-horizontal-svg-size: 16px;
+	--srfm-multi-choice-vertical-svg-size: 32px;
+
+	--srfm-multi-choice-horizontal-image-size: 20px;
+	--srfm-multi-choice-vertical-image-size: 100px;
 }
