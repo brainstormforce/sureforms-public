@@ -457,9 +457,14 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 		if ( container.classList.contains( 'srfm-number-block' ) ) {
 			const min = inputField.getAttribute( 'min' );
 			const max = inputField.getAttribute( 'max' );
+			const formatType = inputField.getAttribute( 'format-type' );
+
 			if ( inputValue ) {
+				// Normalize the number value as per the format type.
+				const normalizedInputValue = 'eu-style' === formatType ? parseFloat( inputValue.replace( /\./g, '' ).replace( ',', '.' ) ) : parseFloat( inputValue.replace( /,/g, '' ) );
+
 				if ( min ) {
-					if ( min !== '' && Number( inputValue ) < Number( min ) ) {
+					if ( min !== '' && Number( normalizedInputValue ) < Number( min ) ) {
 						inputField
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
@@ -474,7 +479,7 @@ export async function fieldValidation( formId, ajaxUrl, nonce, formContainer ) {
 				}
 
 				if ( max ) {
-					if ( max !== '' && Number( inputValue ) > Number( max ) ) {
+					if ( max !== '' && Number( normalizedInputValue ) > Number( max ) ) {
 						inputField
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
