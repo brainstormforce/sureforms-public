@@ -1,11 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import './webhooks';
 import IntegrationIcons from '@Image/integration-icons.js';
 
-const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA } ) => {
+const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } ) => {
 	const cards = [
 		{
 			title: __( 'All Integrations', 'sureforms' ),
@@ -20,6 +20,8 @@ const Integrations = ( { setSelectedTab, action, setAction, CTA, setCTA } ) => {
 					setAction,
 					CTA,
 					setCTA,
+					pluginConnected,
+					setPluginConnected,
 				}
 				}
 			/>,
@@ -102,10 +104,12 @@ const EnableIntegrations = () => {
 	);
 };
 
-const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } ) => {
+const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } ) => {
 	const plugin = srfm_admin?.integrations?.find( ( item ) => {
 		return 'suretriggers' === item.slug;
 	} );
+
+	const [ btnDisabled, setBtnDisabled ] = useState( false );
 
 	const handlePluginActionTrigger = () => {
 		const formData = new window.FormData();
@@ -156,12 +160,61 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 			url: srfm_admin.ajax_url,
 			method: 'POST',
 			body: formData,
-		} ).then( ( data ) => {
-			if ( data.success ) {
-				window.SureTriggersConfig = data.data.data;
+		} ).then( ( response ) => {
+			if ( response.success ) {
+				window.SureTriggersConfig = response.data.data;
 				setSelectedTab( 'suretriggers' );
 			} else {
-				console.error( data.data.message );
+				if ( response.data.code ) {
+					if ( 'invalid_secret_key' === response.data.code ) {
+						const windowDimension = {
+							width: 800,
+							height: 720,
+						};
+						const positioning = {
+							left: ( screen.width - windowDimension.width ) / 2,
+							top: ( screen.height - windowDimension.height ) / 2,
+						};
+						const sureTriggersAuthenticationWindow = window.open( srfm_admin.integrations[ 0 ].redirection, '', `width=${ windowDimension.width },height=${ windowDimension.height },top=${ positioning.top },left=${ positioning.left },scrollbars=0` );
+
+						let iterations = 0;
+
+						const suretriggersAuthInterval = setInterval( () => {
+							setBtnDisabled( true );
+							setCTA( __( 'Connecting…', 'sureforms' ) );
+							apiFetch( {
+								url: srfm_admin.ajax_url,
+								method: 'POST',
+								body: formData,
+							} ).then( ( authResponse ) => {
+								if ( authResponse.success ) {
+									window.SureTriggersConfig = authResponse.data.data;
+									sureTriggersAuthenticationWindow.close();
+									clearInterval( suretriggersAuthInterval );
+									setPluginConnected( true );
+									setSelectedTab( 'suretriggers' );
+									setCTA( getCTA( 'Activated' ) );
+								} else {
+									iterations++;
+								}
+							} );
+
+							/**
+							 * Giving 2 minutes of time for authentication process.
+							 * If user closes the window auth validation loop stops.
+							 */
+							if ( iterations >= 240 || sureTriggersAuthenticationWindow.closed ) {
+								if ( ! sureTriggersAuthenticationWindow.closed ) {
+									sureTriggersAuthenticationWindow.close();
+								}
+								clearInterval( suretriggersAuthInterval );
+								setCTA( getCTA( 'Activated' ) );
+								setBtnDisabled( false );
+							}
+						}, 500 );
+					}
+				}
+				console.error( response.data.message );
 			}
 		} );
 	};
@@ -183,7 +236,9 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 				setTimeout( () => {
 					setAction( 'sureforms_integrate_with_suretriggers' );
 					setCTA( getCTA( 'Activated' ) );
-					integrateWithSureTriggers();
+					if ( pluginConnected ) {
+						integrateWithSureTriggers();
+					}
 				}, 2000 );
 			}
 		} );
@@ -199,7 +254,10 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 
 	const getCTA = ( status ) => {
 		if ( status === 'Activated' ) {
-			return __( 'View Integrations', 'sureforms' );
+			if ( pluginConnected || plugin.connected ) {
+				return __( 'View Integrations', 'sureforms' );
+			}
+			return __( 'Connect with SureTrigger', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
@@ -207,15 +265,17 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 	};
 
 	useEffect( () => {
+		if ( null === pluginConnected ) {
+			setPluginConnected( plugin.connected );
+		}
+
 		if ( ! action ) {
 			setAction( getAction( plugin.status ) );
 			setCTA( getCTA( plugin.status ) );
+		} else if ( pluginConnected || plugin.connected ) {
+			setCTA( __( 'View Integrations', 'sureforms' ) );
 		}
 	}, [] );
-
-	useEffect( () => {
-		console.log( action );
-	}, [ action ] );
 
 	return (
 		plugin && (
@@ -233,6 +293,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA } 
 							<button
 								className="srfm-button-primary"
 								onClick={ handlePluginActionTrigger }
+								disabled={ btnDisabled }
 							>
 								{ CTA }
 							</button>
