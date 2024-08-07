@@ -22,9 +22,44 @@ import { FieldsPreview } from '../FieldsPreview.jsx';
 import { useErrMessage } from '@Blocks/util';
 import ConditionalLogic from '@Components/conditional-logic';
 
+const formatNumber = ( number, formatType ) => {
+	if ( ! number ) {
+		return '';
+	}
+
+	// Convert all to empty strings except: Numbers, Dots, Commas.
+	number = number.replace( /[^0-9,.]+/g, '' );
+
+	if ( number.endsWith( '.' ) || number.endsWith( ',' ) ) {
+		// It means, user has just started decimal point. Eg: "2." or "2,"
+		return number;
+	}
+
+	let formattedNumber = '';
+	const formatOptions = { style: 'decimal', maximumFractionDigits: 20 };
+
+	if ( 'eu-style' === formatType ) {
+		const normalizeNumber = parseFloat( number.replace( /\./g, '' ).replace( ',', '.' ) );
+
+		// EU style number format.
+		formattedNumber = new Intl.NumberFormat( 'de-DE', formatOptions ).format( normalizeNumber );
+	} else {
+		// US style number format. Default.
+		formattedNumber = new Intl.NumberFormat( 'en-US', formatOptions ).format( parseFloat( number.replace( /,/g, '' ) ) );
+	}
+
+	if ( 'NaN' === formattedNumber ) {
+		// Bail, if NaN.
+		return '';
+	}
+
+	return formattedNumber;
+};
+
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
+		placeholder,
 		help,
 		required,
 		block_id,
@@ -40,27 +75,11 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const currentFormId = useGetCurrentFormId( clientId );
 	const [ error, setError ] = useState( false );
 
-	const handleInput = ( e ) => {
-		let inputValue = e.target.value;
-		if ( formatType === 'none' ) {
-			inputValue = inputValue.replace( /[^-.\d]/g, '' );
-		} else if ( formatType === 'non-decimal' ) {
-			inputValue = inputValue.replace( /[^0-9]/g, '' );
-		} else {
-			inputValue = inputValue.replace( /[^0-9.]/g, '' );
-			const dotCount = inputValue.split( '.' ).length - 1;
-			if ( dotCount > 1 ) {
-				inputValue = inputValue.replace( /\.+$/g, '' );
-			}
-		}
-		setAttributes( { defaultValue: inputValue } );
-	};
-
 	useEffect( () => {
 		if ( formId !== currentFormId ) {
 			setAttributes( { formId: currentFormId } );
 		}
-	}, [ formId, setAttributes, currentFormId ] );
+	}, [ formId, currentFormId ] );
 
 	const {
 		currentMessage: currentErrorMsg,
@@ -96,7 +115,41 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 								}
 								__nextHasNoMarginBottom
 							/>
-							<SRFMNumberControl
+							<SRFMTextControl
+								label={ __( 'Placeholder', 'sureforms' ) }
+								value={ placeholder }
+								data={ {
+									value: placeholder,
+									label: 'placeholder',
+								} }
+								onChange={ ( newValue ) =>
+									setAttributes( { placeholder: newValue } )
+								}
+							/>
+							<SRFMSelectControl
+								label={ __( 'Number Format', 'sureforms' ) }
+								data={ {
+									value: formatType,
+									label: 'formatType',
+								} }
+								setAttributes={ ( value ) => {
+									setAttributes( value );
+									setAttributes( {
+										defaultValue: '',
+									} );
+								} }
+								options={ [
+									{
+										label: __( 'US Style (Eg: 9,999.99)', 'sureforms' ),
+										value: 'us-style',
+									},
+									{
+										label: __( 'EU Style (Eg: 9.999,99)', 'sureforms' ),
+										value: 'eu-style',
+									},
+								] }
+							/>
+							<SRFMTextControl
 								label={ __( 'Default Value', 'sureforms' ) }
 								displayUnit={ false }
 								data={ {
@@ -104,11 +157,11 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									label: 'defaultValue',
 								} }
 								value={ defaultValue }
-								onChange={ ( value ) =>
+								setAttributes={ ( value ) => {
 									setAttributes( {
-										defaultValue: value,
-									} )
-								}
+										defaultValue: formatNumber( value.defaultValue, formatType ),
+									} );
+								} }
 								showControlHeader={ false }
 							/>
 							<ToggleControl
@@ -186,28 +239,6 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 									'sureforms'
 								) }
 							</p>
-							<SRFMSelectControl
-								label={ __( 'Number Format', 'sureforms' ) }
-								data={ {
-									value: formatType,
-									label: 'formatType',
-								} }
-								setAttributes={ setAttributes }
-								options={ [
-									{
-										label: 'None',
-										value: 'none',
-									},
-									{
-										label: 'Decimal (Ex:256.45)',
-										value: 'decimal',
-									},
-									{
-										label: 'Non Decimal (Ex:258)',
-										value: 'non-decimal',
-									},
-								] }
-							/>
 							<SRFMTextControl
 								label={ __( 'Help Text', 'sureforms' ) }
 								value={ help }
@@ -232,7 +263,7 @@ const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 			<NumberComponent
 				attributes={ attributes }
 				blockID={ block_id }
-				handleInput={ handleInput }
+				formatNumber={ formatNumber }
 				setAttributes={ setAttributes }
 			/>
 			<div className="srfm-error-wrap"></div>

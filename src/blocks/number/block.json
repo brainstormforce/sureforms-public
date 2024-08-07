@@ -23,7 +23,7 @@
 			"type": "string"
 		},
 		"defaultValue": {
-			"type": "number"
+			"type": "string"
 		},
 		"minValue": {
 			"type": "number"
@@ -57,7 +57,7 @@
 		},
 		"formatType": {
 			"type": "string",
-			"default": "none"
+			"default": "us-style"
 		},
 		"formId": {
 			"type": "number",
