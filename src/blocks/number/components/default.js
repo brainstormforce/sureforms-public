@@ -14,6 +14,7 @@ export const NumberComponent = ( {
 		defaultValue,
 		minValue,
 		maxValue,
+		help,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';

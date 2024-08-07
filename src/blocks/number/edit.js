@@ -59,6 +59,7 @@ const formatNumber = ( number, formatType ) => {
 const SureformInput = ( { attributes, setAttributes, clientId } ) => {
 	const {
 		fieldWidth,
+		placeholder,
 		help,
 		required,
 		block_id,
