@@ -32,6 +32,7 @@ import { useDeviceType } from '@Controls/getPreviewType';
 
 import ProPanel from './components/pro-panel/index.js';
 import { BlockInserterWrapper } from './Inserter.js';
+import InstantForm from './InstantForm.js';
 
 const { select, dispatch } = wp.data;
 
@@ -559,4 +560,5 @@ const forcePanel = () => {
 
 wp.domReady( () => {
 	forcePanel();
+	InstantForm();
 } );
