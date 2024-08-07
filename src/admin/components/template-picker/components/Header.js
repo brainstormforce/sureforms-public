@@ -28,7 +28,7 @@ const Header = () => {
 		}
 	}, [ method ] );
 
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 10;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining;
 
 	return (
 		<div
@@ -37,9 +37,7 @@ const Header = () => {
 		>
 			<div
 				className="srfm-tp-header"
-				style={ {
-					zIndex: '9999999',
-				} }
+
 			>
 				<div className="srfm-tp-header-items">
 					{ /** Logo & Breadcrumbs */ }
@@ -91,7 +89,8 @@ const Header = () => {
 									'/wp-admin/admin.php?page=sureforms_menu';
 							} }
 						>
-							<div style={ { height: '24px' } }>
+							<div 						className="srfm-tp-header-close-icon"
+							>
 								{ ICONS.close }
 							</div>
 						</div>
@@ -104,7 +103,9 @@ const Header = () => {
 								'/wp-admin/admin.php?page=sureforms_menu';
 						} }
 					>
-						<div style={ { height: '24px' } }>{ ICONS.close }</div>
+						<div
+							className="srfm-tp-header-close-icon"
+						>{ ICONS.close }</div>
 					</div>
 				) }
 			</div>

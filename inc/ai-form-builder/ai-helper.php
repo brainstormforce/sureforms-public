@@ -56,8 +56,6 @@ class AI_Helper {
 		// Get the response from the endpoint.
 		$response = wp_remote_post( $api_url, $api_args );
 
-		self::update_current_usage_details();
-
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [
@@ -80,12 +78,12 @@ class AI_Helper {
 	}
 
 	/**
-	 * Get the ZipWP Token from the Zip AI Settings.
+	 * Get the SureForms Token from the Zip AI Settings.
 	 *
 	 * @since x.x.x
-	 * @return void
+	 * @return array<mixed>|void The SureForms Token.
 	 */
-	public static function update_current_usage_details() {
+	public static function get_current_usage_details() {
 		$current_usage_details = [];
 
 		// Get the response from the endpoint.
@@ -109,15 +107,15 @@ class AI_Helper {
 			}
 		}
 
-		update_option( 'srfm_ai_current_usage_details', $current_usage_details );
+		return $current_usage_details;
 
 	}
 
 	/**
-	 * Get a response from the ZipWP API server.
+	 * Get a response from the SureForms API server.
 	 *
 	 * @since x.x.x
-	 * @return array<mixed>|mixed The ZipWP API Response.
+	 * @return array<mixed>|mixed The SureForms API Response.
 	 */
 	public static function get_usage_response() {
 		// Set the API URL.
@@ -128,17 +126,17 @@ class AI_Helper {
 			$api_url,
 			[
 				'headers' => [
-					'X-Token'      => 'aHR0cHM6Ly93d3cudGhlc2F1cnVzLmNvbQ==', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
+					'X-Token'      => 'aHR0cHM6Ly93d3cuZnJlZS5vcmc=', // For now, this is a dummy token. Once we go live, we will replace this with the actual token. That will be user's SureCart license or base64 encoded site URL.
 					'Content-Type' => 'application/json',
 				],
-				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the ZipWP API response
+				'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- 30 seconds is required sometime for the SureForms API response
 			]
 		);
 
 		// If the response was an error, or not a 200 status code, then abandon ship.
 		if ( is_wp_error( $response ) || empty( $response['response'] ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [
-				'error' => __( 'The ZipWP API server is not responding.', 'sureforms' ),
+				'error' => __( 'The SureForms API server is not responding.', 'sureforms' ),
 			];
 		}
 
@@ -148,7 +146,7 @@ class AI_Helper {
 		// If the response body is not a JSON, then abandon ship.
 		if ( empty( $response_body ) || ! json_decode( $response_body ) ) {
 			return [
-				'error' => __( 'The ZipWP API server encountered an error.', 'sureforms' ),
+				'error' => __( 'The SureForms API server encountered an error.', 'sureforms' ),
 			];
 		}
 

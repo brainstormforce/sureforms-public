@@ -647,7 +647,7 @@ $sidebar_width: 290px;
 			padding: 20px 1.25em;
 			border-bottom: 1px solid $border;
 			background: $bg_white;
-			z-index: 9;
+			z-index: 9999999;
 
 			.srfm-tp-main-title {
 				display: flex;
@@ -805,6 +805,10 @@ $sidebar_width: 290px;
 
 			.srfm-tp-header-close {
 				cursor: pointer;
+
+				.srfm-tp-header-close-icon {
+					height: 24px;
+				}
 			}
 
 			.srfm-ai-sub-header {

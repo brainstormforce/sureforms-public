@@ -7,8 +7,8 @@ const CreditDetailsPopup = ( {
 } ) => {
 	const revokePopover = useRef( null );
 
-	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining ?? 10;
-	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit ?? 10;
+	const formCreationleft = srfm_admin?.srfm_ai_usage_details?.remaining;
+	const totalFormCount = srfm_admin?.srfm_ai_usage_details?.limit;
 	const aiFormCreationCount = totalFormCount - formCreationleft;
 
 	useEffect( () => {
@@ -31,8 +31,15 @@ const CreditDetailsPopup = ( {
 		};
 	}, [ revokePopover ] );
 
+	const date = new Date( srfm_admin?.srfm_ai_usage_details?.resetAt * 1000 );
+
+	const localTime = date.toLocaleString();
+
 	return (
 		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
+			<div>Will reset at: {
+				localTime
+			}</div>
 			<div className="srfm-tp-header-credits-popover-stats-ctn">
 				<div className="srfm-tp-header-credits-popover-stats">
 					<span>{ __( 'Usage ', 'sureforms' ) }</span>
@@ -62,7 +69,7 @@ const CreditDetailsPopup = ( {
 							'Free plan only allows %d AI form generations. Need to create more forms with AI?',
 							'sureforms'
 						),
-						totalFormCount ?? 10
+						totalFormCount
 					) }
 				</span>
 			</div>
