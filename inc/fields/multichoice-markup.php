@@ -129,7 +129,6 @@ class Multichoice_Markup extends Base {
 								<label class="srfm-<?php echo esc_attr( $this->slug ); ?>-single">
 									<input type="<?php echo esc_attr( $this->type_attr ); ?>" id="srfm-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id . '-' . $i ); ?>" class="srfm-input-<?php echo esc_attr( $this->slug ); ?>-single" <?php echo wp_kses_post( $this->name_attr ); ?>/>
 									<div class="srfm-block-content-wrap">
-										<?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?>
 										<div class="srfm-option-container">
 											<?php if ( 'icon' === $this->option_type && ! empty( $option['icon'] ) ) { ?>
 											<span class="srfm-option-icon">
@@ -142,6 +141,7 @@ class Multichoice_Markup extends Base {
 											<?php } ?>
 											<p><?php echo isset( $option['optionTitle'] ) ? esc_html( $option['optionTitle'] ) : ''; ?></p>
 										</div>
+										<div class="srfm-icon-container"><?php echo $check_svg . $unchecked_svg; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignored to render svg ?></div>
 									</div>
 								</label>
 							<?php } ?>

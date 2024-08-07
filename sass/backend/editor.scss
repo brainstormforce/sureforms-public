@@ -28,7 +28,7 @@ body.post-type-sureforms_form {
 			}
 
 			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
+				background-color: var( --srfm-error-color );
 			}
 
 			// Match selected icon size with delete icon.
@@ -71,7 +71,7 @@ body.post-type-sureforms_form {
 			}
 
 			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
+				background-color: var( --srfm-error-color );
 			}
 
 			// Match selected icon size with delete icon.
@@ -109,7 +109,7 @@ body.post-type-sureforms_form {
 					height: 8px;
 					width: 8px;
 					svg {
-						background-color: var( --srfm-error-color-light );
+						background-color: var( --srfm-error-color );
 						padding: 2.4px;
 						path {
 							fill: #ffffff;

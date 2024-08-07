@@ -44,11 +44,6 @@ export const MultiChoiceComponent = ( {
 					return (
 						<label key={ key } className="srfm-multi-choice-single">
 							<div className="srfm-block-content-wrap">
-								<span
-									className={ `srfm-icon srfm-${ slug }-icon` }
-								>
-									{ selectionSvg }
-								</span>
 								<div className="srfm-option-container">
 									{ optionType === 'icon' && option.icon && (
 										<span className="srfm-option-icon">
@@ -66,6 +61,13 @@ export const MultiChoiceComponent = ( {
 										</span>
 									) }
 									<p>{ option.optionTitle }</p>
+								</div>
+								<div className="srfm-icon-container">
+									<span
+										className={ `srfm-icon srfm-${ slug }-icon` }
+									>
+										{ selectionSvg }
+									</span>
 								</div>
 							</div>
 						</label>

@@ -2,11 +2,7 @@ import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
 import HelpText from '@Components/misc/HelpText';
 
-export const NumberComponent = ( {
-	attributes,
-	blockID,
-	setAttributes,
-} ) => {
+export const NumberComponent = ( { attributes, blockID, setAttributes } ) => {
 	const {
 		label,
 		placeholder,

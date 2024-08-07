@@ -87,10 +87,12 @@ function onSuccess( response ) {
 		// Convert RGB to the range of [0, 1]
 		const [ R, G, B ] = [ r, g, b ].map( ( value ) => {
 			value /= 255;
-			return value <= 0.03928 ? value / 12.92 : Math.pow( ( value + 0.055 ) / 1.055, 2.4 );
+			return value <= 0.03928
+				? value / 12.92
+				: Math.pow( ( value + 0.055 ) / 1.055, 2.4 );
 		} );
 		// Calculate luminance
-		return ( 0.2126 * R ) + ( 0.7152 * G ) + ( 0.0722 * B );
+		return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 	}
 
 	/**
@@ -116,9 +118,13 @@ function onSuccess( response ) {
 			// Convert hex to RGB
 			const hex = color.slice( 1 );
 			if ( hex.length === 6 ) {
-				[ r, g, b ] = [ 0, 2, 4 ].map( ( start ) => parseInt( hex.substr( start, 2 ), 16 ) );
+				[ r, g, b ] = [ 0, 2, 4 ].map( ( start ) =>
+					parseInt( hex.substr( start, 2 ), 16 )
+				);
 			} else if ( hex.length === 3 ) {
-				[ r, g, b ] = hex.split( '' ).map( ( char ) => parseInt( char + char, 16 ) );
+				[ r, g, b ] = hex
+					.split( '' )
+					.map( ( char ) => parseInt( char + char, 16 ) );
 			}
 		} else {
 			// Handle other color formats or fall back to default
@@ -165,9 +171,13 @@ function onSuccess( response ) {
 		let color = getComputedBackgroundColor( element );
 		let parentColor = getComputedBackgroundColor( element.parentElement );
 
-		let mayBeIsTransparent = ( 'rgba(0, 0, 0, 0)' === color ) && ( color === parentColor );
+		let mayBeIsTransparent =
+			'rgba(0, 0, 0, 0)' === color && color === parentColor;
 
-		while ( ( color === 'transparent' || mayBeIsTransparent ) && element !== document.documentElement ) {
+		while (
+			( color === 'transparent' || mayBeIsTransparent ) &&
+			element !== document.documentElement
+		) {
 			/**
 			 * If we are here, then it can mean that the current element is probably transparent.
 			 * So lets climb-up the DOM tree, until we find the valid background color.
@@ -176,7 +186,8 @@ function onSuccess( response ) {
 			color = getComputedBackgroundColor( element );
 
 			parentColor = getComputedBackgroundColor( element.parentElement );
-			mayBeIsTransparent = ( 'rgba(0, 0, 0, 0)' === color ) && ( color === parentColor );
+			mayBeIsTransparent =
+				'rgba(0, 0, 0, 0)' === color && color === parentColor;
 
 			color = mayBeIsTransparent ? 'transparent' : parentColor;
 		}
@@ -227,7 +238,9 @@ function onSuccess( response ) {
 		/**
 		 * Lets calculate the form's label color and other elements such as dropdown, and calendar.
 		 */
-		const labelColor = window.getComputedStyle( element ).getPropertyValue( '--srfm-color-input-label' );
+		const labelColor = window
+			.getComputedStyle( element )
+			.getPropertyValue( '--srfm-color-input-label' );
 
 		const labelLuminance = getColorLuminance( labelColor );
 
@@ -239,17 +252,23 @@ function onSuccess( response ) {
 			const cssElements = [];
 
 			Object.keys( cssVariablesAndColors ).forEach( ( cssVariable ) => {
-				cssElements.push( `${ cssVariable }: ${ cssVariablesAndColors[ cssVariable ] };` );
+				cssElements.push(
+					`${ cssVariable }: ${ cssVariablesAndColors[ cssVariable ] };`
+				);
 			} );
 
-			const styles = `.srfm-form-container-${ form.getAttribute( 'form-id' ) } { ${ cssElements.join( ' ' ) } }`;
+			const styles = `.srfm-form-container-${ form.getAttribute(
+				'form-id'
+			) } { ${ cssElements.join( ' ' ) } }`;
 
 			element.querySelector( 'style' ).innerHTML += styles;
 		}
 	}
 
 	window.addEventListener( 'load', function () {
-		const formContainers = document.querySelectorAll( '.srfm-form-container' );
+		const formContainers = document.querySelectorAll(
+			'.srfm-form-container'
+		);
 
 		formContainers.forEach( ( formContainer ) => {
 			normalizeCSSVariablesForDarkBackground( formContainer );

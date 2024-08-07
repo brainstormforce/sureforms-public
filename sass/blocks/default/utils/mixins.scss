@@ -131,18 +131,13 @@
 @mixin srfm-multi-choice-vertical-layout( $important: false ) {
 	&.srfm-vertical-layout {
 		.srfm-block-content-wrap {
+			position: relative;
 			@if $important {
 				padding: var( --srfm-multi-choice-vertical-padding ) !important;
 				height: 100% !important;
 			} @else {
 				padding: var( --srfm-multi-choice-vertical-padding );
 				height: 100%;
-			}
-
-			.srfm-icon {
-				position: absolute !important;
-				top: 4px !important;
-				right: 4px !important;
 			}
 
 			p {
@@ -161,13 +156,20 @@
 					}
 				}
 				.srfm-option-image {
+					min-width: var( --srfm-multi-choice-vertical-image-size );
+					width: var( --srfm-multi-choice-vertical-image-size );
+					height: var( --srfm-multi-choice-vertical-image-size );
+					margin-top: 12px;
 					img {
-						width: var( --srfm-multi-choice-vertical-image-size );
-						height: var( --srfm-multi-choice-vertical-image-size );
-						margin-top: 12px;
 						border-radius: 4px;
 					}
 				}
+			}
+
+			.srfm-icon-container {
+				position: absolute;
+				top: 4px;
+				right: 4px;
 			}
 		}
 	}
@@ -180,7 +182,10 @@
 }
 
 @mixin srfm-multi-choice-block-content-wrap-styles( $important: false ) {
-	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var( --srfm-multi-choice-internal-option-gap );
 	@if $important {
 		@include srfm-input-common-styles( true );
 		margin: 0 !important;
@@ -196,14 +201,15 @@
 	p {
 		font-size: 1em;
 		line-height: normal;
-		width: calc( 100% - 1em );
 		margin-top: 0;
 		margin-bottom: 0;
 		word-break: break-word;
+		flex: 1;
 	}
 
 	.srfm-option-container {
 		display: flex;
+		flex:1;
 		gap: var( --srfm-multi-choice-internal-option-gap );
 		align-items: center;
 		.srfm-option-icon {
@@ -217,10 +223,14 @@
 			}
 		}
 		.srfm-option-image {
+			display: flex;
+			min-width: var( --srfm-multi-choice-horizontal-image-size );
+			width: var( --srfm-multi-choice-horizontal-image-size );
+			height: var( --srfm-multi-choice-horizontal-image-size );
 			img {
-				width: var( --srfm-multi-choice-horizontal-image-size );
-				height: var( --srfm-multi-choice-horizontal-image-size );
-				object-fit: cover;
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
 				border-radius: 2px;
 			}
 		}
@@ -228,15 +238,17 @@
 }
 
 @mixin srfm-multi-choice-icon-styles {
-	float: right;
-	position: relative;
-	width: 16px;
-	height: 16px;
-	top: 1px;
+	// float: right;
+	// position: relative;
+	// width: 16px;
+	// height: 16px;
+	// top: 1px;
+	display: flex;
+	align-items: center;
 
 	svg {
-		position: absolute;
-		top: 0;
+		// position: absolute;
+		// top: 0;
 		path {
 			stroke: var( --srfm-color-multi-choice-svg );
 			stroke-opacity: 0.7;
