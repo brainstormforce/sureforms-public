@@ -1,6 +1,14 @@
 @import "../utils/mixins.scss";
 
 .srfm-form-container {
+
+	&.srfm-has-dark-bg {
+		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
+		--srfm-error-color: #f87171;
+		--srfm-error-color-border: rgba( from var( --srfm-error-color ) r g b / 0.65 );
+		--srfm-error-color-border-glow: rgba( from var( --srfm-error-color ) r g b / 0.15 );
+	}
+
 	.srfm-form {
 		display: flex;
 		flex-wrap: wrap;
@@ -34,17 +42,19 @@
 			&.srfm-valid-email-error {
 				.srfm-block-wrap {
 					.srfm-input-common,
-					.srfm-dropdown-common {
-						border-color: var( --srfm-error-color-light-border );
+					.ts-wrapper {
+						border-color: var( --srfm-error-color-border );
 
+						&.input-active {
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-light-border-glow );
+							border-color: transparent;
+						}
 						.ts-control {
-							background-color: var( --srfm-error-background-color );
-							border-color: var( --srfm-error-surface-color );
-							color: var( --srfm-body-input-color );
+							border-color: var( --srfm-error-color-light-border ) !important;
 						}
 
 						&:focus {
-							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-light-border-glow );
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
 						}
 					}
 
@@ -60,21 +70,23 @@
 			.srfm-input-common {
 				font-family: inherit;
 				@include srfm-input-common-styles();
-				transition: 0.3s ease-out;
+				transition: 0.2s ease-out;
 
 				&:focus {
 					box-shadow: 0px 0px 0px 3px var( --srfm-color-input-border-focus-glow );
 					border-color: var( --srfm-color-input-border-hover );
 				}
-
 				&:hover {
 					border-color: var( --srfm-color-input-border-hover );
 				}
-
 				&:disabled {
 					color: var( --srfm-disabled-color );
 					background-color: var( --srfm-disabled-background-color );
 					border-color: var( --srfm-disabled-border-color );
+				}
+				// Placeholder color for input fields.
+				&::placeholder {
+					color: var( --srfm-dropdown-placeholder-color );
 				}
 			}
 
@@ -85,7 +97,7 @@
 			.srfm-error-wrap {
 				.srfm-error-message {
 					line-height: var( --srfm-error-line-height );
-					color: var( --srfm-error-color-light );
+					color: var( --srfm-error-color );
 					font-size: var( --srfm-error-font-size );
 					font-weight: var( --srfm-error-font-weight );
 				}

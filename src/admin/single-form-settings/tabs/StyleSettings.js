@@ -39,9 +39,7 @@ function StyleSettings( props ) {
 			setSubmitBtnCtn(
 				document.querySelector( '.srfm-submit-btn-container' )
 			);
-			setSubmitBtn(
-				document.querySelector( '.srfm-submit-richtext' )
-			);
+			setSubmitBtn( document.querySelector( '.srfm-submit-richtext' ) );
 			submitButtonInherit();
 		}, 1000 );
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
@@ -83,7 +81,9 @@ function StyleSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-btn-color-hover',
-			formStyling?.primary_color ? `rgba( from ${ formStyling.primary_color } r g b / 0.9)` : `rgba( from #0C78FB r g b / 0.9)`
+			formStyling?.primary_color
+				? `rgba( from ${ formStyling.primary_color } r g b / 0.9)`
+				: `rgba( from #0C78FB r g b / 0.9)`
 		);
 		root.style.setProperty(
 			'--srfm-color-scheme-text-on-primary',
@@ -102,7 +102,9 @@ function StyleSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-color-input-placeholder',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.5)` : `rgba( from ${ defaultTextColor } r g b / 0.5)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.5)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.5)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-text',
@@ -110,31 +112,68 @@ function StyleSettings( props ) {
 		);
 		root.style.setProperty(
 			'--srfm-color-input-description',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.65)` : `rgba( from ${ defaultTextColor } r g b / 0.65)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-prefix',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.65)` : `rgba( from ${ defaultTextColor } r g b / 0.65)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.02)` : `rgba( from ${ defaultTextColor } r g b / 0.02)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.02)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.02)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background-disabled',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.05)` : `rgba( from ${ defaultTextColor } r g b / 0.05)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.05)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.05)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.25)` : `rgba( from ${ defaultTextColor } r g b / 0.25)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.25)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.25)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border-disabled',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.15)` : `rgba( from ${ defaultTextColor } r g b / 0.15)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.15)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.15)`
 		);
 		root.style.setProperty(
+			'--srfm-color-input-border-focus-glow',
+			formStyling.primary_color
+				? `rgba( from ${ formStyling.primary_color } r g b / 0.15 )`
+				: '#FAE4DC'
+		);
+
+		// checkbox and gdpr - for small, medium and large checkbox sizes
+		root.style.setProperty(
+			'--srfm-checkbox-description-margin-left',
+			'24px'
+		);
+		root.style.setProperty(
+			'--srfm-checkbox-input-border-radius',
+			'4px'
+		);
+		root.style.setProperty( '--srfm-check-ctn-width', '16px' );
+		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
+		root.style.setProperty( '--srfm-check-svg-top', '2px' );
+		root.style.setProperty( '--srfm-check-svg-left', '2px' );
+		root.style.setProperty( '--srfm-check-svg-width', '10px' );
+		root.style.setProperty( '--srfm-check-svg-height', '10px' );
+
+		root.style.setProperty(
 			'--srfm-color-multi-choice-svg',
-			formStyling?.text_color ? `rgba( from ${ formStyling.text_color } r g b / 0.7)` : `rgba( from ${ defaultTextColor } r g b / 0.7)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.7)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.7)`
 		);
 
 		// Button
@@ -226,7 +265,9 @@ function StyleSettings( props ) {
 
 			root.style.setProperty(
 				'--srfm-btn-color-hover',
-				value ? `rgba( from ${ value } r g b / 0.9)` : `rgba( from #0C78FB r g b / 0.9)`
+				value
+					? `rgba( from ${ value } r g b / 0.9)`
+					: `rgba( from #0C78FB r g b / 0.9)`
 			);
 		}
 
@@ -251,27 +292,39 @@ function StyleSettings( props ) {
 			);
 			root.style.setProperty(
 				'--srfm-color-input-description',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultTextColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-prefix',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultTextColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background',
-				value ? `rgba( from ${ value } r g b / 0.02)` : `rgba( from ${ defaultTextColor } r g b / 0.02)`
+				value
+					? `rgba( from ${ value } r g b / 0.02)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.02)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background-disabled',
-				value ? `rgba( from ${ value } r g b / 0.05)` : `rgba( from ${ defaultTextColor } r g b / 0.05)`
+				value
+					? `rgba( from ${ value } r g b / 0.05)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.05)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border',
-				value ? `rgba( from ${ value } r g b / 0.25)` : `rgba( from ${ defaultTextColor } r g b / 0.25)`
+				value
+					? `rgba( from ${ value } r g b / 0.25)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.25)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border-disabled',
-				value ? `rgba( from ${ value } r g b / 0.15)` : `rgba( from ${ defaultTextColor } r g b / 0.15)`
+				value
+					? `rgba( from ${ value } r g b / 0.15)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.15)`
 			);
 		}
 
@@ -283,10 +336,7 @@ function StyleSettings( props ) {
 		}
 
 		if ( option === 'field_spacing' ) {
-			root.style.setProperty(
-				'--srfm-field-spacing',
-				value || 'small'
-			);
+			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
 		}
 
 		if ( option === 'submit_button_alignment' ) {
@@ -332,7 +382,9 @@ function StyleSettings( props ) {
 		}
 
 		editPost( {
-			meta: { _srfm_forms_styling: { ...formStyling, [ option ]: value } },
+			meta: {
+				_srfm_forms_styling: { ...formStyling, [ option ]: value },
+			},
 		} );
 	}
 
@@ -382,8 +434,13 @@ function StyleSettings( props ) {
 						label: 'text_color_on_primary',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== formStyling?.text_color_on_primary ) {
-							updateFormStyling( 'text_color_on_primary', colorValue );
+						if (
+							colorValue !== formStyling?.text_color_on_primary
+						) {
+							updateFormStyling(
+								'text_color_on_primary',
+								colorValue
+							);
 						}
 					} }
 					value={ formStyling?.text_color_on_primary }
@@ -419,7 +476,10 @@ function StyleSettings( props ) {
 					<>
 						<p className="components-base-control__help" />
 						<MultiButtonsControl
-							label={ __( 'Submit Button Alignment', 'sureforms' ) }
+							label={ __(
+								'Submit Button Alignment',
+								'sureforms'
+							) }
 							data={ {
 								value: formStyling?.submit_button_alignment,
 								label: 'submit_button_alignment',
@@ -462,7 +522,10 @@ function StyleSettings( props ) {
 							] }
 							showIcons={ true }
 							onChange={ ( value ) => {
-								updateFormStyling( 'submit_button_alignment', value || 'left' );
+								updateFormStyling(
+									'submit_button_alignment',
+									value || 'left'
+								);
 								if ( 'justify' === value ) {
 									updateMeta( '_srfm_submit_width', '100%' );
 									updateMeta(
