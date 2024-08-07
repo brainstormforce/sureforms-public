@@ -5,7 +5,6 @@ import HelpText from '@Components/misc/HelpText';
 export const NumberComponent = ( {
 	attributes,
 	blockID,
-	handleInput,
 	setAttributes,
 } ) => {
 	const {
@@ -15,8 +14,6 @@ export const NumberComponent = ( {
 		defaultValue,
 		minValue,
 		maxValue,
-		formatType,
-		help,
 	} = attributes;
 
 	const isRequired = required ? ' srfm-required' : '';
@@ -44,9 +41,10 @@ export const NumberComponent = ( {
 				<input
 					className={ `srfm-input-common srfm-input-${ slug }` }
 					id={ `srfm-${ slug }-${ blockID }` }
-					type={ formatType === 'none' ? 'number' : 'text' }
+					type={ 'text' }
+					defaultValue={ defaultValue }
 					value={ defaultValue }
-					onChange={ handleInput }
+					readOnly={ true }
 					placeholder={ placeholder }
 					required={ required }
 					min={ minValue }
