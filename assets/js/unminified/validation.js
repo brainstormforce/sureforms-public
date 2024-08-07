@@ -390,9 +390,14 @@ export async function fieldValidation(
 		if ( container.classList.contains( 'srfm-number-block' ) ) {
 			const min = inputField.getAttribute( 'min' );
 			const max = inputField.getAttribute( 'max' );
+			const formatType = inputField.getAttribute( 'format-type' );
+
 			if ( inputValue ) {
+				// Normalize the number value as per the format type.
+				const normalizedInputValue = 'eu-style' === formatType ? parseFloat( inputValue.replace( /\./g, '' ).replace( ',', '.' ) ) : parseFloat( inputValue.replace( /,/g, '' ) );
+
 				if ( min ) {
-					if ( min !== '' && Number( inputValue ) < Number( min ) ) {
+					if ( min !== '' && Number( normalizedInputValue ) < Number( min ) ) {
 						inputField
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
@@ -407,7 +412,7 @@ export async function fieldValidation(
 				}
 
 				if ( max ) {
-					if ( max !== '' && Number( inputValue ) > Number( max ) ) {
+					if ( max !== '' && Number( normalizedInputValue ) > Number( max ) ) {
 						inputField
 							.closest( '.srfm-block' )
 							.classList.add( 'srfm-error' );
@@ -438,6 +443,52 @@ export async function fieldValidation(
 					.closest( '.srfm-block' )
 					.classList.remove( 'srfm-error' );
 			}
+		}
+
+		// Dropdown Field
+		if ( container.classList.contains( 'srfm-dropdown-block' ) ) {
+			const dropdownInputs = container.querySelectorAll(
+				'.srfm-input-dropdown-hidden'
+			);
+			// Create a mutation observer to watch for changes in the value of the hidden input.
+			const MutationObserver =
+				window.MutationObserver ||
+				window.WebKitMutationObserver ||
+				window.MozMutationObserver;
+
+			dropdownInputs.forEach( ( dropdownInput ) => {
+				const dropdownRequired =
+					dropdownInput.getAttribute( 'aria-required' );
+				if ( dropdownRequired === 'true' && ! dropdownInput.value ) {
+					dropdownInput
+						.closest( '.srfm-block' )
+						.classList.add( 'srfm-error' );
+					validateResult = true;
+				} else {
+					dropdownInput
+						.closest( '.srfm-block' )
+						.classList.remove( 'srfm-error' );
+				}
+
+				// Observe changes in the hidden input's value.
+				const dropdownObserver = new MutationObserver( () => {
+					if ( dropdownInput.value ) {
+						dropdownInput
+							.closest( '.srfm-block' )
+							.classList.remove( 'srfm-error' );
+					} else if ( dropdownRequired === 'true' ) {
+						dropdownInput
+							.closest( '.srfm-block' )
+							.classList.add( 'srfm-error' );
+					}
+				} );
+
+				// Configure the observer to watch for changes in attributes.
+				dropdownObserver.observe( dropdownInput, {
+					attributes: true,
+					attributeFilter: [ 'value' ],
+				} );
+			} );
 		}
 	}
 

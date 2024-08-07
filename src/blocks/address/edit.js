@@ -90,7 +90,7 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 
 				options: [
 					...countries.map( ( country ) => {
-						return country.name;
+						return { label: country.name, icon: '' };
 					} ),
 				],
 				fieldWidth: 50,

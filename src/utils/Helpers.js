@@ -318,3 +318,7 @@ export const SRFMToaster = ( {
 		</Toaster>
 	);
 };
+
+// Using for the icon picker component.
+export const uagbClassNames = ( classes ) =>
+	classes.filter( Boolean ).join( ' ' );

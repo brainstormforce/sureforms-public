@@ -215,7 +215,7 @@ function GeneralSettings( props ) {
 				/>
 				<p className="components-base-control__help">
 					{ __(
-						'Above setting will place the labels inside the fields as placeholders (where possible). This setting will only take effect once you are on the live page, and not while you\'re editing the form.',
+						'Above setting will place the labels inside the fields as placeholders (where possible). This setting takes effect only on the live page, not in the editor preview.',
 						'sureforms'
 					) }
 				</p>
