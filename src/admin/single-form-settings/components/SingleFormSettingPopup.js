@@ -31,6 +31,7 @@ const SingleFormSettingsPopup = ( props ) => {
 	const [ parentTab, setParentTab ] = useState( null );
 	const [ action, setAction ] = useState();
 	const [ CTA, setCTA ] = useState();
+	const [ pluginConnected, setPluginConnected ] = useState( null );
 
 	const [ blockSlugs, setBlockSlugs ] = useState( {} );
 
@@ -67,7 +68,7 @@ const SingleFormSettingsPopup = ( props ) => {
 				id: 'integrations',
 				title: __( 'Integrations', 'sureforms' ),
 				icon: <MdOutlineDashboardCustomize size={ 20 } />,
-				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA } } />,
+				component: <Integrations { ...{ setSelectedTab, action, setAction, CTA, setCTA, pluginConnected, setPluginConnected } } />,
 			},
 			{
 				id: 'form_custom_css',

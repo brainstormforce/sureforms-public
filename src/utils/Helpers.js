@@ -267,10 +267,19 @@ export const setFormSpecificSmartTags = ( savedBlocks, blockSlugs ) => {
 		( savedBlock ) => ! excludedBlocks.includes( savedBlock?.name )
 	);
 
-	pushSmartTagToArray( savedBlocks, blockSlugs, formSmartTags, formSmartTagsUniqueSlugs );
-	pushSmartTagToArray( savedBlocks, blockSlugs, formEmailSmartTags, formEmailSmartTagsUniqueSlugs, [
-		'srfm/email',
-	] );
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formSmartTags,
+		formSmartTagsUniqueSlugs
+	);
+	pushSmartTagToArray(
+		savedBlocks,
+		blockSlugs,
+		formEmailSmartTags,
+		formEmailSmartTagsUniqueSlugs,
+		[ 'srfm/email' ]
+	);
 
 	window.sureforms.formSpecificSmartTags = formSmartTags;
 	window.sureforms.formSpecificEmailSmartTags = formEmailSmartTags;

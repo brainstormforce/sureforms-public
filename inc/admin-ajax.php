@@ -151,8 +151,9 @@ class Admin_Ajax {
 	 * @return array<mixed>
 	 */
 	public function sureforms_get_integration() {
-		$sc_api_token         = get_option( 'sc_api_token', '' );
-		$surecart_redirection = empty( $sc_api_token ) ? 'sc-getting-started' : 'sc-dashboard';
+		$sc_api_token          = get_option( 'sc_api_token', '' );
+		$suretriggers_data     = get_option( 'suretrigger_options', [] );
+		$suretrigger_connected = ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) ? false : true;
 
 		return apply_filters(
 			'srfm_integrated_plugins',
@@ -167,6 +168,7 @@ class Admin_Ajax {
 					'redirection' => admin_url( 'admin.php?page=suretriggers' ),
 					'logo'        => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers.svg' ) : '' ),
 					'logo_full'   => self::encode_svg( is_string( file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) ) ? file_get_contents( plugin_dir_path( SRFM_FILE ) . 'images/suretriggers_full.svg' ) : '' ),
+					'connected'   => $suretrigger_connected,
 				],
 			]
 		);
@@ -223,7 +225,12 @@ class Admin_Ajax {
 
 		$suretriggers_data = get_option( 'suretrigger_options', [] );
 		if ( ! is_array( $suretriggers_data ) || empty( $suretriggers_data['secret_key'] ) || ! is_string( $suretriggers_data['secret_key'] ) ) {
-			wp_send_json_error( [ 'message' => 'SureTriggers is not configured properly.' ] );
+			wp_send_json_error(
+				[
+					'code'    => 'invalid_secret_key',
+					'message' => 'SureTriggers is not configured properly.',
+				]
+			);
 		}
 
 		$form_id = Helper::get_integer_value( sanitize_text_field( wp_unslash( $_POST['formId'] ) ) );
