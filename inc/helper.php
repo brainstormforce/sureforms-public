@@ -615,7 +615,8 @@ class Helper {
 				'--srfm-dropdown-multiselect-font-size'   => '12px',
 				'--srfm-dropdown-multiselect-line-height' => '16px',
 				'--srfm-dropdown-padding-right'           => '12px',
-				'--srfm-dropdown-padding-right-icon'      => 'calc( var( --srfm-dropdown-padding-right ) + 12px + 8px )',
+				// initial padding and from 20px - 12px for dropdown arrow width and 8px for gap before dropdown arrow.
+				'--srfm-dropdown-padding-right-icon'      => 'calc( var( --srfm-dropdown-padding-right ) + 20px )',
 				'--srfm-dropdown-multiselect-padding'     => '8px var( --srfm-dropdown-padding-right-icon ) 8px 8px',
 				// Input Field Variables.
 				'--srfm-input-height'                     => '40px',
