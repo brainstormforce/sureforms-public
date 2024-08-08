@@ -235,7 +235,7 @@ class Generate_Form_Markup {
 					<?php
 					// Echo the CSS variables for the form according to the field spacing selected.
 					foreach ( $selected_size as $variable => $value ) {
-						echo esc_html( $variable ) . ': ' . esc_html( $value ) . ';';
+						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
 					}
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.

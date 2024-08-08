@@ -588,12 +588,12 @@ class Helper {
 	/**
 	 * Get the CSS variables based on different field spacing sizes.
 	 *
-	 * @param string|bool $field_spacing The field spacing size or boolean false to return complete sizes array.
+	 * @param string|null $field_spacing The field spacing size or boolean false to return complete sizes array.
 	 *
 	 * @since x.x.x
-	 * @return array<string>
+	 * @return array<string|mixed>
 	 */
-	public static function get_css_vars( $field_spacing = false ) {
+	public static function get_css_vars( $field_spacing = null ) {
 		/**
 		* $sizes - Field Spacing Sizes Variables.
 		* The array contains the CSS variables for different field spacing sizes.
@@ -726,7 +726,7 @@ class Helper {
 		}
 
 		$selected_size = $sizes['small'];
-		if ( isset( $field_spacing ) && 'small' !== $field_spacing && isset( $sizes[ $field_spacing ] ) ) {
+		if ( 'small' !== $field_spacing && isset( $sizes[ $field_spacing ] ) ) {
 			$selected_size = array_merge( $selected_size, $sizes[ $field_spacing ] );
 		}
 
