@@ -241,17 +241,10 @@
 }
 
 @mixin srfm-multi-choice-icon-styles {
-	// float: right;
-	// position: relative;
-	// width: 16px;
-	// height: 16px;
-	// top: 1px;
 	display: flex;
 	align-items: center;
 
 	svg {
-		// position: absolute;
-		// top: 0;
 		path {
 			stroke: var( --srfm-color-multi-choice-svg );
 			stroke-opacity: 0.7;
