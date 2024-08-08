@@ -46,15 +46,15 @@ const attributes = {
 	},
 	separatorBorderHeight: {
 		type: 'number',
-		default: 3,
+		default: 1,
 	},
 	separatorBorderHeightMobile: {
 		type: 'number',
-		default: 3,
+		default: 1,
 	},
 	separatorBorderHeightTablet: {
 		type: 'number',
-		default: 3,
+		default: 1,
 	},
 	separatorBorderHeightUnit: {
 		type: 'string',
