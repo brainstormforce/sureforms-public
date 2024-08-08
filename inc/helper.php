@@ -628,6 +628,7 @@ class Helper {
 				'--srfm-check-ctn-height'                 => '16px',
 				'--srfm-check-svg-width'                  => '10px',
 				'--srfm-check-svg-height'                 => '10px',
+				'--srfm-check-gap'                        => '8px',
 				// Phone Number field variables.
 				'--srfm-flag-section-padding'             => '10px 0 10px 12px',
 				'--srfm-gap-between-icon-text'            => '8px',
@@ -701,6 +702,7 @@ class Helper {
 				'--srfm-check-ctn-height'                 => '20px',
 				'--srfm-check-svg-width'                  => '14px',
 				'--srfm-check-svg-height'                 => '14px',
+				'--srfm-check-gap'                        => '10px',
 				// Label Variables.
 				'--srfm-label-font-size'                  => '18px',
 				'--srfm-label-line-height'                => '28px',
