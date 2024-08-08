@@ -28,7 +28,7 @@ body.post-type-sureforms_form {
 			}
 
 			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
+				background-color: var( --srfm-error-color );
 			}
 
 			// Match selected icon size with delete icon.
@@ -45,7 +45,11 @@ body.post-type-sureforms_form {
 
 	.srfm-icon-picker {
 		// To align with the option text input field.
-		height: 34px;
+		height: 32px;
+		margin-bottom: 8px;
+		div {
+			margin: 0;
+		}
 
 		.uag-custom-ip {
 			margin: 0;
@@ -71,7 +75,7 @@ body.post-type-sureforms_form {
 			}
 
 			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
+				background-color: var( --srfm-error-color );
 			}
 
 			// Match selected icon size with delete icon.
@@ -88,6 +92,10 @@ body.post-type-sureforms_form {
 	.srfm-media-picker {
 		div {
 			margin: 0;
+		}
+
+		.components-base-control__field {
+			padding: 0;
 		}
 		.srfm-media-control__wrapper {
 			width: 32px;
@@ -109,7 +117,7 @@ body.post-type-sureforms_form {
 					height: 8px;
 					width: 8px;
 					svg {
-						background-color: var( --srfm-error-color-light );
+						background-color: var( --srfm-error-color );
 						padding: 2.4px;
 						path {
 							fill: #ffffff;
