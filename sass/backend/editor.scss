@@ -318,10 +318,12 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
+			&:not(.wp-block-srfm-separator) {
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+				margin-top: 0 !important; // Had to add as various themes distort the layout.
+			}
 			padding: 0 0.5rem;
-			margin-left: 0 !important; // This is needed to get the field width working.
-			margin-right: 0 !important; // This is needed to get the field width working.
-			margin-top: 0 !important; // Had to add as various themes distort the layout.
 			max-width: 100%;
 		}
 	}
