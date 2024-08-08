@@ -225,7 +225,8 @@
 
 					&:last-child {
 						position: relative;
-						max-width: calc( 100% - 26px );
+						// Changing from 26px to 30px to fix the width issue untill I get more clarity regarding this.
+						max-width: calc( 100% - 30px );
 					}
 				}
 
