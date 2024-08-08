@@ -31,15 +31,8 @@ const CreditDetailsPopup = ( {
 		};
 	}, [ revokePopover ] );
 
-	const date = new Date( srfm_admin?.srfm_ai_usage_details?.resetAt * 1000 );
-
-	const localTime = date.toLocaleString();
-
 	return (
 		<div className="srfm-tp-header-credits-popover" ref={ revokePopover }>
-			<div>Will reset at: {
-				localTime
-			}</div>
 			<div className="srfm-tp-header-credits-popover-stats-ctn">
 				<div className="srfm-tp-header-credits-popover-stats">
 					<span>{ __( 'Usage ', 'sureforms' ) }</span>
