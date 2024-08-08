@@ -257,7 +257,7 @@ const UpsellSureTriggers = ( { setSelectedTab, action, setAction, CTA, setCTA, p
 			if ( pluginConnected || plugin.connected ) {
 				return __( 'View Integrations', 'sureforms' );
 			}
-			return __( 'Connect with SureTrigger', 'sureforms' );
+			return __( 'Connect with SureTriggers', 'sureforms' );
 		} else if ( status === 'Installed' ) {
 			return __( 'Activate', 'sureforms' );
 		}
