@@ -7,7 +7,6 @@ import {
 	SelectControl,
 	Button,
 	Icon,
-	TextControl,
 } from '@wordpress/components';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect } from '@wordpress/element';
@@ -115,8 +114,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		const url = media?.sizes?.thumbnail?.url
 			? media?.sizes?.thumbnail?.url
 			: media?.url
-				? media.url
-				: '';
+			? media.url
+			: '';
 		changeOption( { image: url }, index );
 	};
 
@@ -407,7 +406,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 								) }
 							</div>
 							<div className="sureform-add-option-container">
-								<TextControl
+								<SRFMTextControl
+									showHeaderControls={ false }
 									label={ __(
 										'Add New Option',
 										'sureforms'

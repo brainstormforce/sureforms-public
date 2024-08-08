@@ -165,83 +165,83 @@ const ResponsiveBorder = ( props ) => {
 			{ 'default' !== borderStyle &&
 				'none' !== borderStyle &&
 				showWidth !== false && (
-				<SpacingControl
-					label={ borderWidthLabel }
-					valueTop={ {
-						value: attributes[ prefix + 'BorderTopWidth' ],
-						label: prefix + 'BorderTopWidth',
-					} }
-					valueRight={ {
-						value: attributes[ prefix + 'BorderRightWidth' ],
-						label: prefix + 'BorderRightWidth',
-					} }
-					valueBottom={ {
-						value: attributes[ prefix + 'BorderBottomWidth' ],
-						label: prefix + 'BorderBottomWidth',
-					} }
-					valueLeft={ {
-						value: attributes[ prefix + 'BorderLeftWidth' ],
-						label: prefix + 'BorderLeftWidth',
-					} }
-					valueTopTablet={ {
-						value: attributes[
-							prefix + 'BorderTopWidthTablet'
-						],
-						label: prefix + 'BorderTopWidthTablet',
-					} }
-					valueRightTablet={ {
-						value: attributes[
-							prefix + 'BorderRightWidthTablet'
-						],
-						label: prefix + 'BorderRightWidthTablet',
-					} }
-					valueBottomTablet={ {
-						value: attributes[
-							prefix + 'BorderBottomWidthTablet'
-						],
-						label: prefix + 'BorderBottomWidthTablet',
-					} }
-					valueLeftTablet={ {
-						value: attributes[
-							prefix + 'BorderLeftWidthTablet'
-						],
-						label: prefix + 'BorderLeftWidthTablet',
-					} }
-					valueTopMobile={ {
-						value: attributes[
-							prefix + 'BorderTopWidthMobile'
-						],
-						label: prefix + 'BorderTopWidthMobile',
-					} }
-					valueRightMobile={ {
-						value: attributes[
-							prefix + 'BorderRightWidthMobile'
-						],
-						label: prefix + 'BorderRightWidthMobile',
-					} }
-					valueBottomMobile={ {
-						value: attributes[
-							prefix + 'BorderBottomWidthMobile'
-						],
-						label: prefix + 'BorderBottomWidthMobile',
-					} }
-					valueLeftMobile={ {
-						value: attributes[
-							prefix + 'BorderLeftWidthMobile'
-						],
-						label: prefix + 'BorderLeftWidthMobile',
-					} }
-					disableUnits={ true }
-					deviceType={ deviceType }
-					attributes={ attributes }
-					setAttributes={ setAttributes }
-					link={ {
-						value: attributes[ prefix + 'BorderLink' ],
-						label: prefix + 'BorderLink',
-					} }
-					min={ 0 }
-				/>
-			) }
+					<SpacingControl
+						label={ borderWidthLabel }
+						valueTop={ {
+							value: attributes[ prefix + 'BorderTopWidth' ],
+							label: prefix + 'BorderTopWidth',
+						} }
+						valueRight={ {
+							value: attributes[ prefix + 'BorderRightWidth' ],
+							label: prefix + 'BorderRightWidth',
+						} }
+						valueBottom={ {
+							value: attributes[ prefix + 'BorderBottomWidth' ],
+							label: prefix + 'BorderBottomWidth',
+						} }
+						valueLeft={ {
+							value: attributes[ prefix + 'BorderLeftWidth' ],
+							label: prefix + 'BorderLeftWidth',
+						} }
+						valueTopTablet={ {
+							value: attributes[
+								prefix + 'BorderTopWidthTablet'
+							],
+							label: prefix + 'BorderTopWidthTablet',
+						} }
+						valueRightTablet={ {
+							value: attributes[
+								prefix + 'BorderRightWidthTablet'
+							],
+							label: prefix + 'BorderRightWidthTablet',
+						} }
+						valueBottomTablet={ {
+							value: attributes[
+								prefix + 'BorderBottomWidthTablet'
+							],
+							label: prefix + 'BorderBottomWidthTablet',
+						} }
+						valueLeftTablet={ {
+							value: attributes[
+								prefix + 'BorderLeftWidthTablet'
+							],
+							label: prefix + 'BorderLeftWidthTablet',
+						} }
+						valueTopMobile={ {
+							value: attributes[
+								prefix + 'BorderTopWidthMobile'
+							],
+							label: prefix + 'BorderTopWidthMobile',
+						} }
+						valueRightMobile={ {
+							value: attributes[
+								prefix + 'BorderRightWidthMobile'
+							],
+							label: prefix + 'BorderRightWidthMobile',
+						} }
+						valueBottomMobile={ {
+							value: attributes[
+								prefix + 'BorderBottomWidthMobile'
+							],
+							label: prefix + 'BorderBottomWidthMobile',
+						} }
+						valueLeftMobile={ {
+							value: attributes[
+								prefix + 'BorderLeftWidthMobile'
+							],
+							label: prefix + 'BorderLeftWidthMobile',
+						} }
+						disableUnits={ true }
+						deviceType={ deviceType }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						link={ {
+							value: attributes[ prefix + 'BorderLink' ],
+							label: prefix + 'BorderLink',
+						} }
+						min={ 0 }
+					/>
+				) }
 			{ 'default' !== borderStyle && (
 				<SpacingControl
 					label={ borderRadiusLabel }

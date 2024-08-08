@@ -49,11 +49,11 @@ const SRFMNumberControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? wp.hooks.applyFilters(
-				'srfm.registerTextExtender',
-				'',
-				selectedBlock?.name,
-				props.name,
-				props.dynamicContentType
+					'srfm.registerTextExtender',
+					'',
+					selectedBlock?.name,
+					props.name,
+					props.dynamicContentType
 			  )
 			: null;
 

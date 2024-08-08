@@ -33,8 +33,8 @@ const RendererDesc = ( props ) => {
 	const propsOnSplit = ( value ) =>
 		value
 			? createBlock( 'srfm/advanced-heading', {
-				...attributes,
-				headingDesc: value,
+					...attributes,
+					headingDesc: value,
 			  } )
 			: createBlock( 'core/paragraph' );
 

@@ -42,7 +42,7 @@ const UAGReset = ( props ) => {
 							attributeName
 						]?.default
 							? allBlocksAttributes[ selectedBlockName ][
-								attributeName
+									attributeName
 							  ]?.default
 							: '';
 					defaultValues = {

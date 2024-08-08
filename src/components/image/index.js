@@ -70,19 +70,19 @@ const SRFMMediaPicker = ( props ) => {
 	const registerImageExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'srfm.registerImageExtender',
-			'',
-			selectedBlock?.name,
-			onSelectImage
+				'srfm.registerImageExtender',
+				'',
+				selectedBlock?.name,
+				onSelectImage
 		  );
 	const registerImageLinkExtender = disableDynamicContent
 		? null
 		: applyFilters(
-			'srfm.registerImageLinkExtender',
-			'',
-			selectedBlock?.name,
-			'bgImageLink',
-			'url'
+				'srfm.registerImageLinkExtender',
+				'',
+				selectedBlock?.name,
+				'bgImageLink',
+				'url'
 		  );
 
 	const isShowImageUploader = () => {

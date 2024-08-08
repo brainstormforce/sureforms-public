@@ -46,11 +46,11 @@ const SRFMTextControl = ( props ) => {
 	const registerTextExtender =
 		props.enableDynamicContent && props.name
 			? applyFilters(
-				'srfm.registerTextExtender',
-				'',
-				selectedBlock?.name,
-				props.name,
-				props.dynamicContentType
+					'srfm.registerTextExtender',
+					'',
+					selectedBlock?.name,
+					props.name,
+					props.dynamicContentType
 			  )
 			: null;
 
@@ -204,14 +204,14 @@ const SRFMTextControl = ( props ) => {
 					) }
 					{ isEnableDynamicContent() &&
 						props?.variant === 'inline' && (
-						<div className="components-base-control">
-							<div className="components-base-control__field">
-								<label className="components-base-control__label">
-									{ props.label }
-								</label>
+							<div className="components-base-control">
+								<div className="components-base-control__field">
+									<label className="components-base-control__label">
+										{ props.label }
+									</label>
+								</div>
 							</div>
-						</div>
-					) }
+						) }
 					{ registerTextExtender }
 				</div>
 

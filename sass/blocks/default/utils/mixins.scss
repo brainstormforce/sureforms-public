@@ -200,7 +200,7 @@
 
 	p {
 		font-size: 1em;
-		line-height: normal;
+		line-height: var( --srfm-input-field-line-height );
 		margin-top: 0;
 		margin-bottom: 0;
 		word-break: break-word;
@@ -209,14 +209,17 @@
 
 	.srfm-option-container {
 		display: flex;
-		flex:1;
+		flex: 1;
 		gap: var( --srfm-multi-choice-internal-option-gap );
 		align-items: center;
 		.srfm-option-icon {
 			display: flex;
+			min-width: var( --srfm-multi-choice-horizontal-svg-size );
+			width: var( --srfm-multi-choice-horizontal-svg-size );
+			height: var( --srfm-multi-choice-horizontal-svg-size );
 			svg {
-				width: var( --srfm-multi-choice-horizontal-svg-size );
-				height: var( --srfm-multi-choice-horizontal-svg-size );
+				width: 100%;
+				height: 100%;
 				path {
 					fill: var( --srfm-color-input-label );
 				}

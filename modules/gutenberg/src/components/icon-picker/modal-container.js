@@ -93,8 +93,8 @@ const ModalContainer = ( props ) => {
 				defaultIconsWithKeys[ icons ]?.label
 					? -1 !==
 					  defaultIconsWithKeys[ icons ].label
-					  	.toLowerCase()
-					  	.indexOf( inputValue )
+							.toLowerCase()
+							.indexOf( inputValue )
 					: false;
 
 			const resultIcons = [ ...iconListByCategory ].filter( filterIcons );
@@ -258,8 +258,8 @@ const ModalContainer = ( props ) => {
 					onClick={
 						'' !== insertIcon
 							? () => {
-								onChange( insertIcon );
-								closeModal();
+									onChange( insertIcon );
+									closeModal();
 							  }
 							: null
 					}

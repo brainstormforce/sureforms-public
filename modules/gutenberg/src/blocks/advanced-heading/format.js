@@ -15,26 +15,26 @@ function HighlightFormat( { isActive, onChange, value } ) {
 		<BlockControls>
 			{ selectedBlock &&
 				selectedBlock.name === 'srfm/advanced-heading' && (
-				<ToolbarGroup
-					className="uag-highlight-toolbar"
-					label="Options"
-				>
-					<Tooltip text={ __( 'Highlight Text', 'sureforms' ) }>
-						<Button
-							isPrimary={ isActive }
-							onClick={ () => {
-								onChange(
-									toggleFormat( value, {
-										type: FORMAT_TYPE,
-									} )
-								);
-							} }
-						>
-							<span className="dashicons  dashicons-admin-customizer"></span>
-						</Button>
-					</Tooltip>
-				</ToolbarGroup>
-			) }
+					<ToolbarGroup
+						className="uag-highlight-toolbar"
+						label="Options"
+					>
+						<Tooltip text={ __( 'Highlight Text', 'sureforms' ) }>
+							<Button
+								isPrimary={ isActive }
+								onClick={ () => {
+									onChange(
+										toggleFormat( value, {
+											type: FORMAT_TYPE,
+										} )
+									);
+								} }
+							>
+								<span className="dashicons  dashicons-admin-customizer"></span>
+							</Button>
+						</Tooltip>
+					</ToolbarGroup>
+				) }
 		</BlockControls>
 	);
 }

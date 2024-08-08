@@ -92,7 +92,10 @@ function onSuccess( response ) {
 				: Math.pow( ( value + 0.055 ) / 1.055, 2.4 );
 		} );
 		// Calculate luminance
-		return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+		const red = 0.2126 * R;
+		const green = 0.7152 * G;
+		const blue = 0.0722 * B;
+		return red + green + blue;
 	}
 
 	/**
@@ -274,4 +277,4 @@ function onSuccess( response ) {
 			normalizeCSSVariablesForDarkBackground( formContainer );
 		} );
 	} );
-}() );
+} )();

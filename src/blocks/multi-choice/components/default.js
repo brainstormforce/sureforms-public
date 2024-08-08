@@ -53,13 +53,13 @@ export const MultiChoiceComponent = ( {
 									) }
 									{ optionType === 'image' &&
 										option.image && (
-										<span className="srfm-option-image">
-											<img
-												src={ option.image }
-												alt={ option.optionTitle }
-											/>
-										</span>
-									) }
+											<span className="srfm-option-image">
+												<img
+													src={ option.image }
+													alt={ option.optionTitle }
+												/>
+											</span>
+										) }
 									<p>{ option.optionTitle }</p>
 								</div>
 								<div className="srfm-icon-container">

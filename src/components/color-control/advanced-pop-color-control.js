@@ -164,9 +164,9 @@ const AdvancedPopColorControl = ( props ) => {
 		);
 		const parsedColor = result
 			? {
-				r: parseInt( result[ 1 ], 16 ),
-				g: parseInt( result[ 2 ], 16 ),
-				b: parseInt( result[ 3 ], 16 ),
+					r: parseInt( result[ 1 ], 16 ),
+					g: parseInt( result[ 2 ], 16 ),
+					b: parseInt( result[ 3 ], 16 ),
 			  }
 			: null;
 		if ( parsedColor ) {
@@ -289,12 +289,12 @@ const AdvancedPopColorControl = ( props ) => {
 									) }
 									{ colorValue &&
 										colorValue.startsWith( 'palette' ) && (
-										<span className="color-indicator-icon">
-											{
-												<Dashicon icon="admin-site" />
-											}
-										</span>
-									) }
+											<span className="color-indicator-icon">
+												{
+													<Dashicon icon="admin-site" />
+												}
+											</span>
+										) }
 								</Button>
 							</Tooltip>
 						) }
@@ -315,12 +315,12 @@ const AdvancedPopColorControl = ( props ) => {
 									) }
 									{ colorValue &&
 										colorValue.startsWith( 'palette' ) && (
-										<span className="color-indicator-icon">
-											{
-												<Dashicon icon="admin-site" />
-											}
-										</span>
-									) }
+											<span className="color-indicator-icon">
+												{
+													<Dashicon icon="admin-site" />
+												}
+											</span>
+										) }
 								</Button>
 							</Tooltip>
 						) }
