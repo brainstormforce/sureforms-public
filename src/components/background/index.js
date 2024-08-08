@@ -393,64 +393,64 @@ const Background = ( props ) => {
 								/>
 								{ 'custom' === backgroundSize.value &&
 									backgroundCustomSize && (
-										<ResponsiveSlider
-											label={ __( 'Width', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: backgroundCustomSize
-														.desktop.value,
-													label: backgroundCustomSize
-														.desktop.label,
-												},
-												tablet: {
-													value: backgroundCustomSize
-														.tablet.value,
-													label: backgroundCustomSize
-														.tablet.label,
-												},
-												mobile: {
-													value: backgroundCustomSize
-														.mobile.value,
-													label: backgroundCustomSize
-														.mobile.label,
-												},
-											} }
-											min={ 0 }
-											limitMax={ {
-												px: 1600,
-												'%': 100,
-												em: 574,
-											} }
-											unit={ {
-												value: backgroundCustomSizeType.value,
-												label: backgroundCustomSizeType.label,
-											} }
-											units={ [
-												{
-													name: __(
-														'PX',
-														'sureforms'
-													),
-													unitValue: 'px',
-												},
-												{
-													name: __(
-														'%',
-														'sureforms'
-													),
-													unitValue: '%',
-												},
-												{
-													name: __(
-														'EM',
-														'sureforms'
-													),
-													unitValue: 'em',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									) }
+									<ResponsiveSlider
+										label={ __( 'Width', 'sureforms' ) }
+										data={ {
+											desktop: {
+												value: backgroundCustomSize
+													.desktop.value,
+												label: backgroundCustomSize
+													.desktop.label,
+											},
+											tablet: {
+												value: backgroundCustomSize
+													.tablet.value,
+												label: backgroundCustomSize
+													.tablet.label,
+											},
+											mobile: {
+												value: backgroundCustomSize
+													.mobile.value,
+												label: backgroundCustomSize
+													.mobile.label,
+											},
+										} }
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundCustomSizeType.value,
+											label: backgroundCustomSizeType.label,
+										} }
+										units={ [
+											{
+												name: __(
+													'PX',
+													'sureforms'
+												),
+												unitValue: 'px',
+											},
+											{
+												name: __(
+													'%',
+													'sureforms'
+												),
+												unitValue: '%',
+											},
+											{
+												name: __(
+													'EM',
+													'sureforms'
+												),
+												unitValue: 'em',
+											},
+										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
 							</div>
 						</>
 					) }
@@ -759,45 +759,45 @@ const Background = ( props ) => {
 								{ 'custom' ===
 									backgroundSize[ deviceType ].value &&
 									backgroundCustomSize && (
-										<ResponsiveSlider
-											label={ __( 'Width', 'sureforms' ) }
-											data={ backgroundCustomSize }
-											min={ 0 }
-											limitMax={ {
-												px: 1600,
-												'%': 100,
-												em: 574,
-											} }
-											unit={ {
-												value: backgroundCustomSizeType.value,
-												label: backgroundCustomSizeType.label,
-											} }
-											units={ [
-												{
-													name: __(
-														'PX',
-														'sureforms'
-													),
-													unitValue: 'px',
-												},
-												{
-													name: __(
-														'%',
-														'sureforms'
-													),
-													unitValue: '%',
-												},
-												{
-													name: __(
-														'EM',
-														'sureforms'
-													),
-													unitValue: 'em',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									) }
+									<ResponsiveSlider
+										label={ __( 'Width', 'sureforms' ) }
+										data={ backgroundCustomSize }
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundCustomSizeType.value,
+											label: backgroundCustomSizeType.label,
+										} }
+										units={ [
+											{
+												name: __(
+													'PX',
+													'sureforms'
+												),
+												unitValue: 'px',
+											},
+											{
+												name: __(
+													'%',
+													'sureforms'
+												),
+												unitValue: '%',
+											},
+											{
+												name: __(
+													'EM',
+													'sureforms'
+												),
+												unitValue: 'em',
+											},
+										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
 							</div>
 						</>
 					) }
@@ -806,72 +806,72 @@ const Background = ( props ) => {
 						( ( imageResponsive && setImage ) ||
 							( ! imageResponsive &&
 								backgroundImage?.value ) ) && (
-							<>
-								<div className="srfm-background-image-overlay-type">
-									<MultiButtonsControl
-										setAttributes={ setAttributes }
+						<>
+							<div className="srfm-background-image-overlay-type">
+								<MultiButtonsControl
+									setAttributes={ setAttributes }
+									label={ __(
+										'Overlay Type',
+										'sureforms'
+									) }
+									data={ {
+										value: overlayType.value,
+										label: overlayType.label,
+									} }
+									className="srfm-multi-button-alignment-control"
+									options={ overlayOptions }
+									showIcons={ false }
+								/>
+							</div>
+							{ 'color' === overlayType.value && (
+								<div className="srfm-background-image-overlay-color">
+									<AdvancedPopColorControl
 										label={ __(
-											'Overlay Type',
+											'Image Overlay Color',
 											'sureforms'
 										) }
+										colorValue={
+											backgroundImageColor.value
+										}
 										data={ {
-											value: overlayType.value,
-											label: overlayType.label,
+											value: backgroundImageColor.value,
+											label: backgroundImageColor.label,
 										} }
-										className="srfm-multi-button-alignment-control"
-										options={ overlayOptions }
-										showIcons={ false }
+										setAttributes={ setAttributes }
 									/>
 								</div>
-								{ 'color' === overlayType.value && (
-									<div className="srfm-background-image-overlay-color">
-										<AdvancedPopColorControl
-											label={ __(
-												'Image Overlay Color',
-												'sureforms'
-											) }
-											colorValue={
-												backgroundImageColor.value
-											}
-											data={ {
-												value: backgroundImageColor.value,
-												label: backgroundImageColor.label,
-											} }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-								) }
-								{ 'gradient' === overlayType.value && (
-									<div className="srfm-background-image-overlay-gradient">
-										<GradientSettings
-											backgroundGradient={
-												props.backgroundGradient
-											}
-											setAttributes={ setAttributes }
-											gradientType={ props.gradientType }
-											backgroundGradientColor2={
-												props.backgroundGradientColor2
-											}
-											backgroundGradientColor1={
-												props.backgroundGradientColor1
-											}
-											backgroundGradientType={
-												props.backgroundGradientType
-											}
-											backgroundGradientLocation1={
-												props.backgroundGradientLocation1
-											}
-											backgroundGradientLocation2={
-												props.backgroundGradientLocation2
-											}
-											backgroundGradientAngle={
-												props.backgroundGradientAngle
-											}
-										/>
-									</div>
-								) }
-							</>
-						) }
+							) }
+							{ 'gradient' === overlayType.value && (
+								<div className="srfm-background-image-overlay-gradient">
+									<GradientSettings
+										backgroundGradient={
+											props.backgroundGradient
+										}
+										setAttributes={ setAttributes }
+										gradientType={ props.gradientType }
+										backgroundGradientColor2={
+											props.backgroundGradientColor2
+										}
+										backgroundGradientColor1={
+											props.backgroundGradientColor1
+										}
+										backgroundGradientType={
+											props.backgroundGradientType
+										}
+										backgroundGradientLocation1={
+											props.backgroundGradientLocation1
+										}
+										backgroundGradientLocation2={
+											props.backgroundGradientLocation2
+										}
+										backgroundGradientAngle={
+											props.backgroundGradientAngle
+										}
+									/>
+								</div>
+							) }
+						</>
+					) }
 				</div>
 			) }
 			{ gradientOverlay.value && 'gradient' === backgroundType.value && (
@@ -914,90 +914,90 @@ const Background = ( props ) => {
 			{ 'video' === backgroundType.value &&
 				backgroundVideo.value &&
 				backgroundVideoType.value && (
-					<div className="srfm-background-video-overlay">
-						{ overlayType &&
+				<div className="srfm-background-video-overlay">
+					{ overlayType &&
 							backgroundVideo &&
 							backgroundVideo.value && (
-								<>
-									<div className="srfm-background-image-overlay-type">
-										<MultiButtonsControl
-											setAttributes={ setAttributes }
-											label={ __(
-												'Overlay Type',
-												'sureforms'
-											) }
-											data={ {
-												value: overlayType.value,
-												label: overlayType.label,
-											} }
-											className="srfm-multi-button-alignment-control"
-											options={ overlayOptions }
-											showIcons={ false }
-										/>
-									</div>
-									{ 'color' === overlayType.value && (
-										<div className="srfm-background-image-overlay-color">
-											<AdvancedPopColorControl
-												label={ __(
-													'Image Overlay Color',
-													'sureforms'
-												) }
-												colorValue={
-													backgroundVideoColor.value
-												}
-												data={ {
-													value: backgroundVideoColor.value,
-													label: backgroundVideoColor.label,
-												} }
-												setAttributes={ setAttributes }
-												onOpacityChange={
-													onOpacityChange
-												}
-												backgroundVideoOpacity={ {
-													value: backgroundVideoOpacity.value,
-													label: backgroundVideoOpacity.label,
-												} }
-											/>
-										</div>
+						<>
+							<div className="srfm-background-image-overlay-type">
+								<MultiButtonsControl
+									setAttributes={ setAttributes }
+									label={ __(
+										'Overlay Type',
+										'sureforms'
 									) }
-									{ gradientOverlay.value &&
-										'gradient' === overlayType.value && (
-											<div className="srfm-background-image-overlay-gradient">
-												<GradientSettings
-													backgroundGradient={
-														props.backgroundGradient
-													}
-													setAttributes={
-														setAttributes
-													}
-													gradientType={
-														props.gradientType
-													}
-													backgroundGradientColor2={
-														props.backgroundGradientColor2
-													}
-													backgroundGradientColor1={
-														props.backgroundGradientColor1
-													}
-													backgroundGradientType={
-														props.backgroundGradientType
-													}
-													backgroundGradientLocation1={
-														props.backgroundGradientLocation1
-													}
-													backgroundGradientLocation2={
-														props.backgroundGradientLocation2
-													}
-													backgroundGradientAngle={
-														props.backgroundGradientAngle
-													}
-												/>
-											</div>
+									data={ {
+										value: overlayType.value,
+										label: overlayType.label,
+									} }
+									className="srfm-multi-button-alignment-control"
+									options={ overlayOptions }
+									showIcons={ false }
+								/>
+							</div>
+							{ 'color' === overlayType.value && (
+								<div className="srfm-background-image-overlay-color">
+									<AdvancedPopColorControl
+										label={ __(
+											'Image Overlay Color',
+											'sureforms'
 										) }
-								</>
+										colorValue={
+											backgroundVideoColor.value
+										}
+										data={ {
+											value: backgroundVideoColor.value,
+											label: backgroundVideoColor.label,
+										} }
+										setAttributes={ setAttributes }
+										onOpacityChange={
+											onOpacityChange
+										}
+										backgroundVideoOpacity={ {
+											value: backgroundVideoOpacity.value,
+											label: backgroundVideoOpacity.label,
+										} }
+									/>
+								</div>
 							) }
-					</div>
-				) }
+							{ gradientOverlay.value &&
+										'gradient' === overlayType.value && (
+								<div className="srfm-background-image-overlay-gradient">
+									<GradientSettings
+										backgroundGradient={
+											props.backgroundGradient
+										}
+										setAttributes={
+											setAttributes
+										}
+										gradientType={
+											props.gradientType
+										}
+										backgroundGradientColor2={
+											props.backgroundGradientColor2
+										}
+										backgroundGradientColor1={
+											props.backgroundGradientColor1
+										}
+										backgroundGradientType={
+											props.backgroundGradientType
+										}
+										backgroundGradientLocation1={
+											props.backgroundGradientLocation1
+										}
+										backgroundGradientLocation2={
+											props.backgroundGradientLocation2
+										}
+										backgroundGradientAngle={
+											props.backgroundGradientAngle
+										}
+									/>
+								</div>
+							) }
+						</>
+					) }
+				</div>
+			) }
 		</>
 	);
 

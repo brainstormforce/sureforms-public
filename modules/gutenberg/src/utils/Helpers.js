@@ -44,9 +44,9 @@ export const uagbClassNames = ( classes ) =>
 export function getIdFromString( label ) {
 	return label
 		? label
-				.toLowerCase()
-				.replace( /[^a-zA-Z ]/g, '' )
-				.replace( /\s+/g, '-' )
+			.toLowerCase()
+			.replace( /[^a-zA-Z ]/g, '' )
+			.replace( /\s+/g, '-' )
 		: '';
 }
 

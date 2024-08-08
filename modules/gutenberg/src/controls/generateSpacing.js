@@ -12,19 +12,19 @@ export default function generateSpacing(
 		? ! Number.isNaN( bottom )
 			? ! Number.isNaN( left )
 				? `${ generateCSSUnit( top, unit ) } ${ generateCSSUnit(
-						right,
-						unit
-				  ) } ${ generateCSSUnit( bottom, unit ) } ${ generateCSSUnit(
-						left,
-						unit
-				  ) }`
-				: `${ generateCSSUnit( top, unit ) } ${ generateCSSUnit(
-						right,
-						unit
-				  ) } ${ generateCSSUnit( bottom, unit ) }`
-			: `${ generateCSSUnit( top, unit ) } ${ generateCSSUnit(
 					right,
 					unit
+				  ) } ${ generateCSSUnit( bottom, unit ) } ${ generateCSSUnit(
+					left,
+					unit
+				  ) }`
+				: `${ generateCSSUnit( top, unit ) } ${ generateCSSUnit(
+					right,
+					unit
+				  ) } ${ generateCSSUnit( bottom, unit ) }`
+			: `${ generateCSSUnit( top, unit ) } ${ generateCSSUnit(
+				right,
+				unit
 			  ) }`
 		: generateCSSUnit( top, unit );
 }
