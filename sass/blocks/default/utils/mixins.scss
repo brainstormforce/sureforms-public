@@ -142,6 +142,8 @@
 
 			p {
 				text-align: center;
+				display: flex;
+				align-items: center;
 			}
 
 			.srfm-option-container {
@@ -150,10 +152,9 @@
 				justify-content: center;
 				height: 100%;
 				.srfm-option-icon {
-					svg {
-						width: var( --srfm-multi-choice-vertical-svg-size );
-						height: var( --srfm-multi-choice-vertical-svg-size );
-					}
+					min-width: var( --srfm-multi-choice-vertical-svg-size );
+					width: var( --srfm-multi-choice-vertical-svg-size );
+					height: var( --srfm-multi-choice-vertical-svg-size );
 				}
 				.srfm-option-image {
 					min-width: var( --srfm-multi-choice-vertical-image-size );
