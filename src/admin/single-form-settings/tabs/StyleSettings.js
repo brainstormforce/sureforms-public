@@ -32,6 +32,12 @@ function StyleSettings( props ) {
 	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
+	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
+
+	// Apply the sizings when field spacing changes.
+	useEffect( () => {
+		applyFieldSpacing( fieldSpacing );
+	}, [ fieldSpacing ] );
 
 	// if device type is desktop then change the submit button
 	useEffect( () => {
@@ -246,6 +252,27 @@ function StyleSettings( props ) {
 		editPost( {
 			meta: option_array,
 		} );
+	}
+
+	/**
+	 * Applies the specified field spacing to the form by setting the corresponding CSS variables.
+	 *
+	 * This function merges the base sizes defined for 'small' spacing with the
+	 * override sizes for the specified spacing (if any), and applies the resulting
+	 * CSS variables to the root element.
+	 *
+	 * @param {string} sizingValue - The selected field spacing size ('small', 'medium', 'large').
+	 * @return {void}
+	 * @since x.x.x
+	 */
+	function applyFieldSpacing( sizingValue ) {
+		const baseSize = srfm_admin?.field_spacing_vars?.small;
+		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
+		const finalSize = { ...baseSize, ...overrideSize };
+
+		for ( const [ key, value ] of Object.entries( finalSize ) ) {
+			root.style.setProperty( key, value );
+		}
 	}
 
 	/**
@@ -471,6 +498,7 @@ function StyleSettings( props ) {
 					showIcons={ false }
 					onChange={ ( value ) => {
 						updateFormStyling( 'field_spacing', value );
+						setFieldSpacing( value );
 					} }
 				/>
 				{ ! isInlineButtonBlockPresent && (

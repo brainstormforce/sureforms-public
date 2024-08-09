@@ -176,11 +176,11 @@
 
 			.srfm-cbx {
 				display: flex;
-				gap: 8px;
+				gap: var( --srfm-check-gap );
+				align-items: center;
 				-webkit-user-select: none;
 				user-select: none;
 				cursor: pointer;
-				overflow: hidden;
 				transition: 0.2s ease-out;
 
 				.srfm-block-text {
@@ -194,7 +194,6 @@
 
 					&:first-child {
 						margin-top: var( --srfm-checkbox-margin-top-frontend );
-						position: absolute;
 						width: var( --srfm-check-ctn-width );
 						height: var( --srfm-check-ctn-height );
 						border-radius: var( --srfm-checkbox-input-border-radius );
@@ -224,8 +223,8 @@
 
 					&:last-child {
 						position: relative;
-						left: 24px;
-						max-width: calc( 100% - 26px );
+						// Changing from 26px to 30px to fix the width issue untill I get more clarity regarding this.
+						max-width: calc( 100% - 30px );
 					}
 				}
 
