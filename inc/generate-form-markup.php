@@ -186,6 +186,8 @@ class Generate_Form_Markup {
 			$primary_color_var    = $primary_color ? $primary_color : '#046bd2';
 			$label_text_color_var = $label_text_color ? $label_text_color : '#111827';
 			$container_id         = '.srfm-form-container-' . Helper::get_string_value( $id );
+
+			$selected_size = Helper::get_css_vars( $field_spacing );
 			?>
 
 			<div class="srfm-form-container srfm-form-container-<?php echo esc_attr( Helper::get_string_value( $id ) ); ?> <?php echo esc_attr( $sf_classname ); ?> <?php echo esc_attr( $classname ); ?>">
@@ -231,6 +233,10 @@ class Generate_Form_Markup {
 					--srfm-dropdown-icon-color: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.65 );
 					--srfm-dropdown-icon-disabled: rgba( from <?php echo esc_html( $help_color_var ); ?> r g b / 0.25 );
 					<?php
+					// Echo the CSS variables for the form according to the field spacing selected.
+					foreach ( $selected_size as $variable => $value ) {
+						echo esc_html( Helper::get_string_value( $variable ) ) . ': ' . esc_html( Helper::get_string_value( $value ) ) . ';';
+					}
 					do_action( 'srfm_form_css_variables', $id );
 					// echo custom css on page/post.
 					if ( 'sureforms_form' !== $current_post_type ) :
