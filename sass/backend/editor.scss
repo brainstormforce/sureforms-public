@@ -46,12 +46,12 @@ body.post-type-sureforms_form {
 	// Adding multi choice repeater styles.
 	.srfm-option-outer-wrapper {
 		&:first-child {
-			.srfm-option-inner-wrapper {
+			> div {
 				padding-top: 0;
 			}
 		}
 
-		.srfm-option-inner-wrapper {
+		> div {
 			display: flex;
 			align-items: center;
 			gap: 10px;
