@@ -193,7 +193,7 @@
 					transform: translate3d( 0, 0, 0 );
 
 					&:first-child {
-						margin-top: var(--srfm-checkbox-margin-top-frontend);
+						margin-top: var( --srfm-checkbox-margin-top-frontend );
 						position: absolute;
 						width: var( --srfm-check-ctn-width );
 						height: var( --srfm-check-ctn-height );
