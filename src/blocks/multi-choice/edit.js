@@ -284,19 +284,10 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																				ref={
 																					param.innerRef
 																				}
+																				className='srfm-option-outer-wrapper'
 																				{ ...param.draggableProps }
-																				className='srfm-option-wrap-point-11'
 																			>
-																				<div
-																					style={ {
-																						display:
-																							'flex',
-																						alignItems:
-																							'center',
-																						gap: '10px',
-																					} }
-																					className='srfm-option-wrap-point-12'
-																				>
+																				<div className='srfm-option-inner-wrapper'>
 																					<>
 																						<Icon
 																							icon={
@@ -305,13 +296,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																							{ ...param.dragHandleProps }
 																						/>
 																					</>
-																					<div
-																						style={ {
-																							marginBottom:
-																								'0',
-																						} }
-																						className='srfm-option-wrap-point-13'
-																					>
+																					<div className='srfm-option-input-wrapper'>
 																						<SRFMTextControl
 																							showHeaderControls={
 																								false
@@ -388,11 +373,7 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 																						) }
 																						<Button
 																							icon="trash"
-																							onClick={ () =>
-																								deleteOption(
-																									i
-																								)
-																							}
+																							onClick={ () => deleteOption( i ) }
 																						/>
 																					</>
 																				</div>

@@ -46,7 +46,6 @@ body.post-type-sureforms_form {
 	.srfm-icon-picker {
 		// To align with the option text input field.
 		height: 32px;
-		margin-bottom: 8px;
 		div {
 			margin: 0;
 		}
@@ -89,6 +88,25 @@ body.post-type-sureforms_form {
 		}
 	}
 
+	// Adding multi choice repeater styles.
+	.srfm-option-outer-wrapper{
+		&:first-child{
+			.srfm-option-inner-wrapper{
+				padding-top: 0;
+			}
+		}
+
+		.srfm-option-inner-wrapper{
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 4px 0;
+			.components-base-control{
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+
 	.srfm-media-picker {
 		div {
 			margin: 0;
@@ -103,11 +121,7 @@ body.post-type-sureforms_form {
 			flex-direction: row;
 			justify-content: flex-start;
 			.srfm-media-control__footer {
-				background-color: transparent;
-				.srfm-control-label {
-					background-color: transparent;
-					color: transparent;
-				}
+				display: none;
 			}
 			.srfm-media-control__clickable--close {
 				padding: 0;
