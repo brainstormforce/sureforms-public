@@ -12,6 +12,7 @@ import FormBehaviorPopupButton from '../../components/FormBehaviorPopupButton';
 import SingleFormSettingsPopup from '../components/SingleFormSettingPopup';
 
 function AdvancedSettings( props ) {
+	const [ hasValidationErrors, setHasValidationErrors ] = useState( false );
 	const { editPost } = useDispatch( editorStore );
 
 	const { defaultKeys } = props;
@@ -45,7 +46,32 @@ function AdvancedSettings( props ) {
 		setPopupTab( popupTabTarget );
 		setOpen( true );
 	};
-	const closeModal = () => setOpen( false );
+	const closeModal = () => {
+		if (
+			hasValidationErrors &&
+			! confirm(
+				__(
+					'Are you sure you want to close? Your unsaved changes will be lost as you have some validation errors.',
+					'sureforms'
+				)
+			)
+		) {
+			return;
+		}
+
+		setOpen( false );
+
+		if ( btoa( JSON.stringify( sureformsKeys ) ) !== prevMetaHash ) {
+			createNotice(
+				'warning',
+				__( 'There are few unsaved changes. Please save your changes to reflect the updates.', 'sureforms' ),
+				{
+					id: 'srfm-unsaved-changes-warning',
+					isDismissible: true,
+				}
+			);
+		}
+	};
 	const modalIcon = parse( svgIcons.modalLogo );
 
 	let sureformsKeys = useSelect( ( select ) =>
@@ -348,6 +374,7 @@ function AdvancedSettings( props ) {
 					<SingleFormSettingsPopup
 						sureformsKeys={ sureformsKeys }
 						targetTab={ popupTab }
+						setHasValidationErrors={ setHasValidationErrors }
 					/>
 				</Modal>
 			) }
