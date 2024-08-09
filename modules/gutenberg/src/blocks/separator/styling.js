@@ -305,16 +305,40 @@ function styling( attributes, clientId, name, deviceType ) {
 			fill: elementColor,
 		},
 		'.wp-block-srfm-separator': {
-			'margin-top': generateCSSUnit( blockTopMargin, blockMarginUnit || 'px' ),
-			'margin-right': generateCSSUnit( blockRightMargin, blockMarginUnit || 'px' ),
-			'margin-bottom': generateCSSUnit( blockBottomMargin, blockMarginUnit || 'px' ),
-			'margin-left': generateCSSUnit( blockLeftMargin, blockMarginUnit || 'px' ),
+			'margin-top': generateCSSUnit(
+				blockTopMargin,
+				blockMarginUnit || 'px'
+			),
+			'margin-right': generateCSSUnit(
+				blockRightMargin,
+				blockMarginUnit || 'px'
+			),
+			'margin-bottom': generateCSSUnit(
+				blockBottomMargin,
+				blockMarginUnit || 'px'
+			),
+			'margin-left': generateCSSUnit(
+				blockLeftMargin,
+				blockMarginUnit || 'px'
+			),
 		},
 		'.wp-block-uagb-separator': {
-			'padding-top': generateCSSUnit( blockTopPadding, blockPaddingUnit || 'px' ),
-			'padding-right': generateCSSUnit( blockRightPadding, blockPaddingUnit || 'px' ),
-			'padding-bottom': generateCSSUnit( blockBottomPadding, blockPaddingUnit || 'px' ),
-			'padding-left': generateCSSUnit( blockLeftPadding, blockPaddingUnit || 'px' ),
+			'padding-top': generateCSSUnit(
+				blockTopPadding,
+				blockPaddingUnit || 'px'
+			),
+			'padding-right': generateCSSUnit(
+				blockRightPadding,
+				blockPaddingUnit || 'px'
+			),
+			'padding-bottom': generateCSSUnit(
+				blockBottomPadding,
+				blockPaddingUnit || 'px'
+			),
+			'padding-left': generateCSSUnit(
+				blockLeftPadding,
+				blockPaddingUnit || 'px'
+			),
 		},
 	};
 
@@ -466,16 +490,40 @@ function styling( attributes, clientId, name, deviceType ) {
 			fill: elementColor,
 		},
 		'.wp-block-srfm-separator': {
-			'margin-top': generateCSSUnit( blockTopMarginTablet, blockMarginUnitTablet || 'px' ),
-			'margin-right': generateCSSUnit( blockRightMarginTablet, blockMarginUnitTablet || 'px' ),
-			'margin-bottom': generateCSSUnit( blockBottomMarginTablet, blockMarginUnitTablet || 'px' ),
-			'margin-left': generateCSSUnit( blockLeftMarginTablet, blockMarginUnitTablet || 'px' ),
+			'margin-top': generateCSSUnit(
+				blockTopMarginTablet,
+				blockMarginUnitTablet || 'px'
+			),
+			'margin-right': generateCSSUnit(
+				blockRightMarginTablet,
+				blockMarginUnitTablet || 'px'
+			),
+			'margin-bottom': generateCSSUnit(
+				blockBottomMarginTablet,
+				blockMarginUnitTablet || 'px'
+			),
+			'margin-left': generateCSSUnit(
+				blockLeftMarginTablet,
+				blockMarginUnitTablet || 'px'
+			),
 		},
 		'.wp-block-uagb-separator': {
-			'padding-top': generateCSSUnit( blockTopPaddingTablet, blockPaddingUnitTablet || 'px' ),
-			'padding-right': generateCSSUnit( blockRightPaddingTablet, blockPaddingUnitTablet || 'px' ),
-			'padding-bottom': generateCSSUnit( blockBottomPaddingTablet, blockPaddingUnitTablet || 'px' ),
-			'padding-left': generateCSSUnit( blockLeftPaddingTablet, blockPaddingUnitTablet || 'px' ),
+			'padding-top': generateCSSUnit(
+				blockTopPaddingTablet,
+				blockPaddingUnitTablet || 'px'
+			),
+			'padding-right': generateCSSUnit(
+				blockRightPaddingTablet,
+				blockPaddingUnitTablet || 'px'
+			),
+			'padding-bottom': generateCSSUnit(
+				blockBottomPaddingTablet,
+				blockPaddingUnitTablet || 'px'
+			),
+			'padding-left': generateCSSUnit(
+				blockLeftPaddingTablet,
+				blockPaddingUnitTablet || 'px'
+			),
 			'text-align': separatorAlignTablet,
 		},
 	};
@@ -627,16 +675,40 @@ function styling( attributes, clientId, name, deviceType ) {
 			fill: elementColor,
 		},
 		'.wp-block-srfm-separator': {
-			'margin-top': generateCSSUnit( blockTopMarginMobile, blockMarginUnitMobile || 'px' ),
-			'margin-right': generateCSSUnit( blockRightMarginMobile, blockMarginUnitMobile || 'px' ),
-			'margin-bottom': generateCSSUnit( blockBottomMarginMobile, blockMarginUnitMobile || 'px' ),
-			'margin-left': generateCSSUnit( blockLeftMarginMobile, blockMarginUnitMobile || 'px' ),
+			'margin-top': generateCSSUnit(
+				blockTopMarginMobile,
+				blockMarginUnitMobile || 'px'
+			),
+			'margin-right': generateCSSUnit(
+				blockRightMarginMobile,
+				blockMarginUnitMobile || 'px'
+			),
+			'margin-bottom': generateCSSUnit(
+				blockBottomMarginMobile,
+				blockMarginUnitMobile || 'px'
+			),
+			'margin-left': generateCSSUnit(
+				blockLeftMarginMobile,
+				blockMarginUnitMobile || 'px'
+			),
 		},
 		'.wp-block-uagb-separator': {
-			'padding-top': generateCSSUnit( blockTopPaddingMobile, blockPaddingUnitMobile || 'px' ),
-			'padding-right': generateCSSUnit( blockRightPaddingMobile, blockPaddingUnitMobile || 'px' ),
-			'padding-bottom': generateCSSUnit( blockBottomPaddingMobile, blockPaddingUnitMobile || 'px' ),
-			'padding-left': generateCSSUnit( blockLeftPaddingMobile, blockPaddingUnitMobile || 'px' ),
+			'padding-top': generateCSSUnit(
+				blockTopPaddingMobile,
+				blockPaddingUnitMobile || 'px'
+			),
+			'padding-right': generateCSSUnit(
+				blockRightPaddingMobile,
+				blockPaddingUnitMobile || 'px'
+			),
+			'padding-bottom': generateCSSUnit(
+				blockBottomPaddingMobile,
+				blockPaddingUnitMobile || 'px'
+			),
+			'padding-left': generateCSSUnit(
+				blockLeftPaddingMobile,
+				blockPaddingUnitMobile || 'px'
+			),
 		},
 	};
 

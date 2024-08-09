@@ -668,7 +668,10 @@ const Settings = ( props ) => {
 
 	const spacingStylePanel = () => {
 		return (
-			<UAGAdvancedPanelBody title={ __( 'Spacing', 'sureforms' ) } initialOpen={ false }>
+			<UAGAdvancedPanelBody
+				title={ __( 'Spacing', 'sureforms' ) }
+				initialOpen={ false }
+			>
 				<SpacingControl
 					label={ __( 'Padding', 'sureforms' ) }
 					valueTop={ {
