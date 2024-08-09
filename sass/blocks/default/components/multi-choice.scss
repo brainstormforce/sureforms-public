@@ -60,20 +60,23 @@
 							border-color: var( --srfm-disabled-border-color );
 						}
 
-						.srfm-multi-choice-icon,
-						.srfm-multi-choice-icon-unchecked {
-							@include srfm-multi-choice-icon-styles;
-							svg {
-								transition: opacity 0.2s ease-out;
-								transform: translate3d( 0, 0, 0 );
+						.srfm-icon-container {
+							display: flex;
+							.srfm-multi-choice-icon,
+							.srfm-multi-choice-icon-unchecked {
+								@include srfm-multi-choice-icon-styles;
+								svg {
+									transition: opacity 0.2s ease-out;
+									transform: translate3d( 0, 0, 0 );
+								}
 							}
-						}
 
-						.srfm-multi-choice-icon {
-							opacity: 0;
-							width: 0;
-							svg {
+							.srfm-multi-choice-icon {
 								opacity: 0;
+								width: 0;
+								svg {
+									opacity: 0;
+								}
 							}
 						}
 					}
