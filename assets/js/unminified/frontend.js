@@ -250,9 +250,9 @@ function onSuccess( response ) {
 
 	/**
 	 * Sets the dropdown menu background color based on the text color retrieved.
-	 * 
+	 *
 	 * @param {HTMLElement} element - The container element which includes the form.
-	 * @returns {void} This function does not return a value. It modifies the DOM by updating the dropdown menu background color based on the text color.
+	 * @return {void} This function does not return a value. It modifies the DOM by updating the dropdown menu background color based on the text color.
 	 */
 	function setDropdownMenuBackground( element ) {
 		/**
@@ -261,7 +261,7 @@ function onSuccess( response ) {
 		const textColor = window.getComputedStyle( element ).getPropertyValue( '--srfm-color-input-text' );
 		const isTextDark = isColorDark( getColorLuminance( textColor ) );
 		if ( ! isTextDark ) {
-			document.documentElement.style.setProperty('--srfm-dropdown-menu-background', '#2e2e2e');
+			document.documentElement.style.setProperty( '--srfm-dropdown-menu-background', '#2e2e2e' );
 		}
 	}
 

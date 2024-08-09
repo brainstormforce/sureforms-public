@@ -74,7 +74,8 @@
 }
 
 @mixin srfm-dropdown-arrow {
-	background-image: url( "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik00IDZMOCAxMEwxMiA2IiBzdHJva2U9IiMxRTFFMUUiIHN0cm9rZS1vcGFjaXR5PSIwLjY1IiBzdHJva2Utd2lkdGg9IjEuMjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPg0KPC9zdmc+DQo=" );
+	// Need to check for a way to use alias from webpack instead of using the path.
+	background-image: url( "../../../../../svg/dark-dropdown-arrow.svg" );
 	background-position: right 12px center;
 	background-repeat: no-repeat;
 	background-size: 16px 16px;
