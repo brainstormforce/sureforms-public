@@ -1,0 +1,96 @@
+.srfm-instant-form-root {
+	.srfm-instant-form-button {
+		cursor: pointer;
+		color: #475467;
+		background: transparent;
+		border: 1px solid #D1D5DB;
+		border-radius: 4px;
+		padding: 10px 16px 10px 16px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		&:hover {
+			color: #1e1e1e;
+		}
+
+		.srfm-instant-form-status {
+			background: #EAB308;
+			width: 8px;
+			height: 8px;
+			border-radius: 10px;
+		}
+
+		span {
+			font-weight: 600;
+			font-size: 14px;
+			line-height: 20px;
+		}
+	}
+}
+
+.srfm-instant-form-popover {
+	margin-top: 5px;
+	background-color: #ffffff;
+	border: 1px solid #E5E7EB;
+	border-radius: 4px;
+	box-shadow: 0px 4px 6px -2px #0000000D;
+
+	.srfm-instant-form-settings-container {
+		padding: 16px;
+		width: 302px;
+
+		.srfm-instant-form-settings-group {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+
+			.srfm-instant-form-settings {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+
+				&.srfm-instant-form-settings-inline {
+					flex-direction: row;
+					justify-content: space-between;
+				}
+
+				.components-toggle-control {
+					margin: 0;
+					padding: 0;
+				}
+
+				.srfm-responsive-common-button {
+					margin: 0;
+				}
+
+				input,
+				.components-input-control__backdrop {
+					background: #fff;
+					border: 1px solid #d1d5db;
+					padding: 8px;
+					border-radius: 4px;
+					font-weight: 400;
+					font-size: 12px;
+					line-height: 16px;
+				}
+			}
+
+			label,
+			.components-base-control .srfm-control-label {
+				color: #50575E;
+				font-weight: 500 !important;
+				font-size: 13px !important;
+				line-height: 16px !important;
+			}
+		}
+	}
+
+	.srfm-instant-form-settings-separator {
+		height: 1px;
+		width: 100%;
+		border: 1px solid #E4E4E7;
+		margin: 20px 0;
+	}
+}
+}
