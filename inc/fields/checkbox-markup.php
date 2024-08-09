@@ -43,7 +43,7 @@ class Checkbox_Markup extends Base {
 	 */
 	public function markup() {
 
-		$label_random_id = 'srfm-' . wp_rand();
+		$label_random_id = 'srfm-' . $this->slug . '-' . wp_rand();
 
 		ob_start(); ?>
 			<div data-block-id="<?php echo esc_attr( $this->block_id ); ?>" class="srfm-block-single srfm-block srfm-<?php echo esc_attr( $this->slug ); ?>-block srf-<?php echo esc_attr( $this->slug ); ?>-<?php echo esc_attr( $this->block_id ); ?>-block<?php echo esc_attr( $this->block_width ); ?><?php echo esc_attr( $this->class_name ); ?> <?php echo esc_attr( $this->conditional_class ); ?>">
