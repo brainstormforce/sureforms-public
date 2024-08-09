@@ -24,6 +24,7 @@ import { decodeHtmlEntities } from '@Blocks/util';
 
 import countries from './countries.json';
 import ConditionalLogic from '@Components/conditional-logic';
+import HelpText from '@Components/misc/HelpText';
 
 const Edit = ( { clientId, attributes, setAttributes } ) => {
 	const { fieldWidth, label, block_id, formId, preview, help, className } =
@@ -50,7 +51,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Address Line 1', 'sureforms' ),
 				label: 'Address Line 1',
 				fieldWidth: 50,
 			},
@@ -58,7 +58,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Address Line 2', 'sureforms' ),
 				label: 'Address Line 2',
 				fieldWidth: 50,
 			},
@@ -66,7 +65,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'City', 'sureforms' ),
 				label: 'City',
 				fieldWidth: 50,
 			},
@@ -74,7 +72,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'State', 'sureforms' ),
 				label: 'State',
 				fieldWidth: 50,
 			},
@@ -82,7 +79,6 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/input',
 			{
-				placeholder: __( 'Postal Code', 'sureforms' ),
 				label: 'Postal Code',
 				fieldWidth: 50,
 			},
@@ -90,12 +86,11 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 		[
 			'srfm/dropdown',
 			{
-				placeholder: __( 'Country', 'sureforms' ),
 				label: 'Country',
 
 				options: [
 					...countries.map( ( country ) => {
-						return country.name;
+						return { label: country.name, icon: '' };
 					} ),
 				],
 				fieldWidth: 50,
@@ -148,40 +143,28 @@ const Edit = ( { clientId, attributes, setAttributes } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<div className="srfm-address-block-container">
-				<RichText
-					tagName="label"
-					value={ label }
-					onChange={ ( value ) => {
-						setAttributes( {
-							label: decodeHtmlEntities( value ),
-						} );
-					} }
-					className={ `srfm-block-label srfm-address-block-label` }
-					multiline={ false }
-					id={ blockID }
-					allowedFormats={ [] }
-				/>
-				<InnerBlocks
-					template={ addressTemplate }
-					allowedBlocks={ allowedBlocks }
-				/>
-				{ help && (
-					<RichText
-						tagName="label"
-						value={ help }
-						onChange={ ( value ) => {
-							setAttributes( {
-								help: decodeHtmlEntities( value ),
-							} );
-						} }
-						className="srfm-description srfm-address-help-txt"
-						multiline={ false }
-						id={ blockID }
-						allowedFormats={ [] }
-					/>
-				) }
-			</div>
+			<RichText
+				tagName="label"
+				value={ label }
+				onChange={ ( value ) => {
+					setAttributes( {
+						label: decodeHtmlEntities( value ),
+					} );
+				} }
+				className={ `srfm-block-label` }
+				multiline={ false }
+				id={ blockID }
+				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
+			/>
+			<InnerBlocks
+				template={ addressTemplate }
+				allowedBlocks={ allowedBlocks }
+			/>
 		</div>
 	);
 };

@@ -131,27 +131,30 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					</InspectorTab>
 				</InspectorTabs>
 			</InspectorControls>
-			<CheckboxComponent
-				blockID={ block_id }
-				setAttributes={ setAttributes }
-				attributes={ attributes }
-				blockType="checkbox"
-			/>
-			{ checkboxHelpText !== '' && (
-				<RichText
-					tagName="label"
-					value={ checkboxHelpText }
-					onChange={ ( value ) => {
-						setAttributes( {
-							checkboxHelpText: decodeHtmlEntities( value ),
-						} );
-					} }
-					className="srfm-description"
-					multiline={ false }
-					id={ block_id }
-					allowedFormats={ [] }
+			<div className="srfm-checkbox-block">
+				<CheckboxComponent
+					blockID={ block_id }
+					setAttributes={ setAttributes }
+					attributes={ attributes }
+					blockType="checkbox"
 				/>
-			) }
+				<div className="srfm-error-wrap"></div>
+				{ checkboxHelpText !== '' && (
+					<RichText
+						tagName="label"
+						value={ checkboxHelpText }
+						onChange={ ( value ) => {
+							setAttributes( {
+								checkboxHelpText: decodeHtmlEntities( value ),
+							} );
+						} }
+						className="srfm-description"
+						multiline={ false }
+						id={ block_id }
+						allowedFormats={ [] }
+					/>
+				) }
+			</div>
 		</div>
 	);
 };

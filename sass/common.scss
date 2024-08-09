@@ -1,3 +1,5 @@
+@import "./blocks/default/utils/mixins.scss";
+
 .block-editor-page.post-type-sureforms_form .is-root-container,
 .srfm-form-container {
 	* {
@@ -28,17 +30,34 @@
 		}
 	}
 
-	.srfm-block-label {
-		display: block;
-	}
-
 	.srfm-input-common {
 		width: 100%;
 		max-width: 100%;
 	}
 
+	.srfm-button {
+		padding: var( --srfm-btn-padding ) !important;
+		font-size: var( --srfm-btn-font-size ) !important;
+		font-weight: var( --srfm-btn-font-weight ) !important;
+		line-height: var( --srfm-btn-line-height ) !important;
+		border-radius: var( --srfm-btn-border-radius ) !important;
+		background: var( --srfm-color-scheme-primary ) !important;
+		color: var( --srfm-color-scheme-text-on-primary ) !important;
+		border: 1px solid var( --srfm-color-scheme-primary ) !important;
+
+		&:hover {
+			background: var( --srfm-btn-color-hover ) !important;
+		}
+	}
+
+	.srfm-custom-button-ctn {
+		.srfm-button {
+			margin-top: 4px;
+		}
+	}
+
 	.srfm-submit-button {
-		font-size: 0.8em;
+		// font-size: 0.8em;
 		cursor: pointer;
 	}
 	.srfm-pre-btn,
@@ -46,41 +65,54 @@
 		cursor: pointer;
 	}
 
-	.srfm-btn-bg-color {
-		border-radius: var( --srfm-btn-border-radius );
-		font-family: inherit;
-		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: normal;
-		padding: 0.625em 1em;
-		text-decoration: none;
-		color: var( --srfm-btn-text-color );
-		background-color: var( --srfm-btn-bg-color );
-		border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+	.srfm-custom-button-ctn {
+		height: 100%;
+		display: flex;
+		align-items: flex-end;
+		.srfm-button {
+			margin-bottom: 20px;
+			padding: 9px 0px !important;
+		}
+		&.srfm-block {
+			height: auto;
+		}
 	}
 
-	.srfm-btn-frontend {
-		border-radius: var( --srfm-btn-border-radius );
-		font-family: inherit;
-		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: normal;
-		padding: 0.625em 1em;
-		text-decoration: none;
-		color: var( --srfm-btn-text-color );
-		background-color: var( --srfm-btn-bg-color );
-		border: var( --srfm-btn-border );
-	}
+	// .srfm-btn-bg-color {
+	// 	border-radius: var( --srfm-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-btn-text-color );
+	// 	background-color: var( --srfm-btn-bg-color );
+	// 	border: var( --srfm-btn-border-width ) solid var( --srfm-btn-border-color );
+	// }
 
-	.srfm-page-break-btn-bg-color {
-		border-radius: var( --srfm-page-break-btn-border-radius );
-		font-family: inherit;
-		font-weight: var( --wp--custom--font-weight--medium );
-		line-height: normal;
-		padding: 0.625em 1em;
-		text-decoration: none;
-		color: var( --srfm-page-break-btn-text-color );
-		border: var( --srfm-page-break-btn-border );
-		background-color: var( --srfm-page-break-btn-bg-color );
-	}
+	// .srfm-btn-frontend {
+	// 	border-radius: var( --srfm-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-btn-text-color );
+	// 	background-color: var( --srfm-btn-bg-color );
+	// 	border: var( --srfm-btn-border );
+	// }
+
+	// .srfm-page-break-btn-bg-color {
+	// 	border-radius: var( --srfm-page-break-btn-border-radius );
+	// 	font-family: inherit;
+	// 	font-weight: var( --wp--custom--font-weight--medium );
+	// 	line-height: normal;
+	// 	padding: 0.625em 1em;
+	// 	text-decoration: none;
+	// 	color: var( --srfm-page-break-btn-text-color );
+	// 	border: var( --srfm-page-break-btn-border );
+	// 	background-color: var( --srfm-page-break-btn-bg-color );
+	// }
 
 	fieldset,
 	legend {
@@ -88,5 +120,149 @@
 		border: none;
 		margin: 0;
 		padding: 0;
+		line-height: 0; // Added for dropdown field, maintian spacing between input and error message.
+	}
+
+	// Add top margin to confirm email field.
+	.srfm-email-confirm-block {
+		margin-top: var( --srfm-row-gap-between-blocks );
+	}
+
+	.srfm-block {
+		padding: 0 var( --srfm-col-gap-between-blocks ) !important;
+		margin-bottom: var( --srfm-row-gap-between-blocks );
+		.srfm-block-label {
+			display: block;
+			@include srfm-block-label-styles;
+		}
+
+		.srfm-block-wrap {
+			position: relative;
+		}
+
+		.srfm-description {
+			display: block;
+			@include srfm-description-styles;
+		}
+
+		.srfm-error-wrap {
+			height: var( --srfm-error-line-height );
+		}
+
+		.srfm-input-input {
+			height: var( --srfm-input-height );
+		}
+	}
+
+	//checkbox and gdpr common styles
+	.srfm-checkbox-block,
+	.srfm-gdpr-block {
+		.srfm-description {
+			margin-left: var( --srfm-checkbox-description-margin-left );
+		}
+
+		.srfm-error-message {
+			padding-top: 4px;
+		}
+
+		.srfm-block-wrap {
+			* {
+				box-sizing: border-box;
+			}
+
+			.srfm-block-url {
+				color: var( --srfm-color-scheme-primary );
+			}
+
+			.srfm-cbx {
+				display: flex;
+				gap: var( --srfm-check-gap );
+				align-items: center;
+				-webkit-user-select: none;
+				user-select: none;
+				cursor: pointer;
+				transition: 0.2s ease-out;
+
+				&:not( :last-child ) {
+					// margin-right: 6px;
+				}
+
+				.srfm-block-text {
+					flex: 1;
+				}
+
+				.srfm-span-wrap {
+					float: left;
+					vertical-align: middle;
+					transform: translate3d( 0, 0, 0 );
+
+					&:first-child {
+						width: var( --srfm-check-ctn-width );
+						height: var( --srfm-check-ctn-height );
+						border-radius: var( --srfm-checkbox-input-border-radius );
+						transform: scale( 1 );
+						border: 1px solid var( --srfm-color-input-border );
+						background-color: var( --srfm-color-input-background );
+						transition: 0.2s ease-out;
+
+						svg {
+							position: absolute;
+							top: var( --srfm-check-svg-top );
+							left: var( --srfm-check-svg-left );
+							fill: none;
+							width: var( --srfm-check-svg-width );
+							height: var( --srfm-check-svg-height );
+							stroke: #fff;
+							stroke-width: 2;
+							stroke-linecap: round;
+							stroke-linejoin: round;
+							stroke-dasharray: 16px;
+							stroke-dashoffset: 16px;
+							transition: 0.2s ease-out;
+							transform: translate3d( 0, 0, 0 );
+						}
+					}
+
+					&:last-child {
+						position: relative;
+						// Changing from 26px to 30px to fix the width issue untill I get more clarity regarding this.
+						max-width: calc( 100% - 30px );
+					}
+				}
+
+				@media screen and ( max-width: 640px ) {
+					width: 100%;
+				}
+			}
+
+			.srfm-input-checkbox,
+			.srfm-input-gdpr {
+				position: absolute;
+
+				&:checked {
+					+ {
+						.srfm-cbx {
+							span {
+								&:first-child:not( .srfm-required ) {
+									background: var( --srfm-color-scheme-primary );
+									border-color: var( --srfm-color-scheme-primary );
+									svg {
+										stroke-dashoffset: 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.srfm-inline-svg {
+				position: absolute;
+				width: 0;
+				height: 0;
+				pointer-events: none;
+				user-select: none;
+			}
+		}
 	}
 }

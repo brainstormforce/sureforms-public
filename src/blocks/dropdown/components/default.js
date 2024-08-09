@@ -1,8 +1,9 @@
 import { RichText } from '@wordpress/block-editor';
 import { decodeHtmlEntities } from '@Blocks/util';
+import HelpText from '@Components/misc/HelpText';
 
 export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
-	const { required, label, placeholder } = attributes;
+	const { required, label, placeholder, help } = attributes;
 	const isRequired = required ? ' srfm-required' : '';
 	const slug = 'dropdown';
 
@@ -18,6 +19,11 @@ export const DropdownComponent = ( { attributes, setAttributes, blockID } ) => {
 				multiline={ false }
 				id={ `srfm-listbox-label ${ blockID }` }
 				allowedFormats={ [] }
+			/>
+			<HelpText
+				help={ help }
+				setAttributes={ setAttributes }
+				block_id={ blockID }
 			/>
 			<div className={ `srfm-block-wrap srfm-dropdown-common-wrap` }>
 				<input

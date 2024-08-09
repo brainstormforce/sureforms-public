@@ -67,20 +67,23 @@
 	.srfm-form {
 		.srfm-block-single,
 		.srfm-submit-container,
-		.uagb-block,
-		.srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button ) {
+		.uagb-block
+		// .srfm-captcha-container:not( .srfm-submit-button, .srfm-custom-button )
+		{
 			padding: 0 0.5em;
 		}
 
 		.srfm-captcha-container {
-			margin-bottom: 1.6em;
+			padding: 0 var( --srfm-col-gap-between-blocks ) !important;
+			margin-bottom: var( --srfm-row-gap-between-blocks );
 		}
+
 		.srfm-validation-error {
 			font-size: 0.7em;
 			margin-top: 0.571em;
 			font-weight: 400;
 			line-height: normal;
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color );
 		}
 
 		.uagb-block {
@@ -89,100 +92,10 @@
 		}
 
 		.srfm-required {
-			color: var( --srfm-error-text-color );
+			color: var( --srfm-error-color );
 		}
 
 		.srfm-block {
-			.srfm-dropdown-common-wrap {
-				display: inline-block;
-				width: 100%;
-
-				.srfm-dropdown-common {
-					border-radius: var( --srfm-border-radius );
-
-					.ts-control {
-						font-size: 0.7em;
-						position: relative;
-						line-height: normal;
-						width: 100%;
-						border: var( --srfm-border ) solid var( --srfm-border-color );
-						border-radius: var( --srfm-border-radius );
-						background-color: var( --srfm-base-background-color );
-						height: auto;
-						padding: 0.72em 1.143em !important;
-
-						&::after {
-							content: "";
-							position: absolute;
-							width: 0.5em;
-							height: 0.5em;
-							border: 1px solid var( --srfm-body-input-color );
-							border-left: 0;
-							border-top: 0;
-							transform: rotate( 45deg );
-							right: 1em;
-							top: 1em;
-						}
-
-						.item {
-							overflow: hidden;
-							text-overflow: ellipsis;
-							white-space: nowrap;
-							color: var( --srfm-body-input-color );
-						}
-
-						input {
-							line-height: normal;
-							font-size: inherit;
-							height: auto;
-							width: auto;
-							min-width: auto;
-
-							&::placeholder {
-								color: var( --srfm-placeholder-color );
-								opacity: 1;
-								font-size: 1em;
-								/* Firefox */
-							}
-
-							&:placeholder-shown {
-								text-overflow: ellipsis;
-							}
-						}
-					}
-
-					.ts-dropdown {
-						margin-top: 3px;
-						color: inherit;
-						font-family: inherit;
-						font-size: inherit;
-						line-height: inherit;
-						left: -1px;
-						width: calc( 100% + 2px );
-						border: 1px solid var( --srfm-border-color );
-						border-top: none;
-						background-color: var( --srfm-base-background-color );
-					}
-				}
-
-				select {
-					display: block;
-					padding: 10px 16px 10px 16px !important;
-					width: 100%;
-					font-size: 0.7em;
-					color: #778899;
-					line-height: normal;
-				}
-			}
-
-			.srfm-dropdown-common-wrap:not( .srfm-address-compact-country-wrap ) {
-				.srfm-dropdown-common {
-					.ts-dropdown {
-						font-size: 0.7em;
-					}
-				}
-			}
-
 			&.srfm-phone-block {
 				.iti__country-list {
 					display: block;
@@ -204,28 +117,6 @@
 
 			.srfm-error-message {
 				display: none;
-			}
-		}
-
-		.srfm-block:not( .srfm-error ) {
-			.srfm-dropdown-common-wrap {
-				.srfm-dropdown-common {
-					&.input-active {
-						box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-primary-color ), 0px 0px 0px 3px var( --srfm-shadow-color );
-						border-color: transparent;
-					}
-				}
-			}
-		}
-
-		.srfm-block.srfm-error {
-			.srfm-dropdown-common-wrap {
-				.srfm-dropdown-common {
-					&.input-active {
-						box-shadow: 0px 0px 0px var( --srfm-border ) var( --srfm-error-surface-color ), 0px 0px 0px 3px var( --srfm-error-shadow-color );
-						border-color: transparent;
-					}
-				}
 			}
 		}
 
@@ -269,44 +160,47 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		color: var( --srfm-body-input-color );
+		min-height: 40vh;
 		p {
 			margin: 0;
-			padding: 0;
-			width: 100%;
 		}
-		min-height: 40vh;
 
 		&.srfm-active {
-			display: block;
+			display: flex;
 			white-space: pre-wrap;
 		}
-
-		.srfm-success-box-header {
-			.srfm-check-circle-icon {
-				display: block;
-				width: 2em;
-				text-align: center;
-				margin: 0 auto;
-
-				svg {
-					stroke: var( --srfm-primary-color );
-				}
-			}
-
-			h2 {
-				font-size: 1.5em;
-				font-weight: 500;
-				color: var( --srfm-primary-color );
-				margin-top: 0;
-				margin-bottom: 0.2em;
-			}
+		div {
+			width: 100%;
 		}
 
+		@mixin default-styles {
+			text-align: center;
+			font-family: inherit;
+		}
 		.srfm-success-box-description {
-			font-size: 0.8em;
+			font-size: 0.9em;
+			font-weight: 400;
+			line-height: 26px;
+			color: var( --srfm-body-input-color );
 
-			p {
-				margin: 0;
+			img {
+				padding-bottom: 1em;
+			}
+
+			.default-h2 {
+				@include default-styles;
+				font-size: 1.334em;
+				line-height: 32px;
+				font-weight: 600;
+				margin-top: 0;
+				margin-bottom: 0.2em;
+				padding-bottom: 0.3332em;
+			}
+			.default-p {
+				@include default-styles;
+				font-size: 18px;
+				line-height: 26px;
 			}
 		}
 	}

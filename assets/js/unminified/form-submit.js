@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
-import { fieldValidation } from './validation';
+import { fieldValidation, initializeInlineFieldValidation } from './validation';
 document.addEventListener( 'DOMContentLoaded', function () {
+	initializeInlineFieldValidation();
+
 	const forms = Array.from( document.querySelectorAll( '.srfm-form' ) );
 	for ( const form of forms ) {
 		const {
@@ -10,6 +12,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			ajaxUrl,
 			nonce,
 			loader,
+			successContainer,
 			successElement,
 			errorElement,
 			submitBtn,
@@ -37,6 +40,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 									nonce,
 									loader,
 									successUrl,
+									successContainer,
 									successElement,
 									errorElement,
 									submitType,
@@ -89,6 +93,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					nonce,
 					loader,
 					successUrl,
+					successContainer,
 					successElement,
 					errorElement,
 					submitType,
@@ -150,7 +155,13 @@ async function afterSubmit( formStatus ) {
 		} );
 }
 
-function showSuccessMessage( element, message, form, afterSubmission ) {
+function showSuccessMessage(
+	container,
+	element,
+	message,
+	form,
+	afterSubmission
+) {
 	if ( afterSubmission === 'hide form' ) {
 		form.style.opacity = 1;
 		form.style.display = 'none';
@@ -161,7 +172,7 @@ function showSuccessMessage( element, message, form, afterSubmission ) {
 		form.reset();
 	}
 	element.innerHTML = message;
-	element.classList.add( 'srfm-active' );
+	container.classList.add( 'srfm-active' );
 }
 
 function redirectToUrl( url ) {
@@ -180,6 +191,7 @@ async function handleFormSubmission(
 	nonce,
 	loader,
 	successUrl,
+	successContainer,
 	successElement,
 	errorElement,
 	submitType,
@@ -204,6 +216,7 @@ async function handleFormSubmission(
 		if ( formStatus?.success ) {
 			if ( submitType === 'same page' ) {
 				showSuccessMessage(
+					successContainer,
 					successElement,
 					formStatus?.message ?? '',
 					form,
@@ -235,8 +248,11 @@ function extractFormAttributesAndElements( form ) {
 	const ajaxUrl = form.getAttribute( 'ajaxurl' );
 	const nonce = form.getAttribute( 'nonce' );
 	const loader = form.querySelector( '.srfm-loader' );
-	const successElement = form.parentElement.querySelector(
+	const successContainer = form.parentElement.querySelector(
 		'.srfm-single-form.srfm-success-box'
+	);
+	const successElement = successContainer?.querySelector(
+		'.srfm-success-box-description'
 	);
 	const errorElement = form.querySelector( '.srfm-error-message' );
 	const submitBtn = form.querySelector( '#srfm-submit-btn' );
@@ -255,6 +271,7 @@ function extractFormAttributesAndElements( form ) {
 		ajaxUrl,
 		nonce,
 		loader,
+		successContainer,
 		successElement,
 		errorElement,
 		submitBtn,
@@ -279,6 +296,7 @@ function onloadCallback() {
 			ajaxUrl,
 			nonce,
 			loader,
+			successContainer,
 			successElement,
 			errorElement,
 			submitBtn,
@@ -298,6 +316,7 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
+						successContainer,
 						successElement,
 						errorElement,
 						submitType,
@@ -317,6 +336,7 @@ function onloadCallback() {
 						nonce,
 						loader,
 						successUrl,
+						successContainer,
 						successElement,
 						errorElement,
 						submitType,

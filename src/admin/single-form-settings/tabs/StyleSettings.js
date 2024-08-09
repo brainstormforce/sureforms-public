@@ -23,6 +23,7 @@ function StyleSettings( props ) {
 	let sureformsKeys = useSelect( ( select ) =>
 		select( editorStore ).getEditedPostAttribute( 'meta' )
 	);
+	const formStyling = sureformsKeys?._srfm_forms_styling || {};
 	const root = document.documentElement.querySelector( 'body' );
 	const deviceType = useDeviceType();
 	const [ submitBtn, setSubmitBtn ] = useState(
@@ -31,42 +32,21 @@ function StyleSettings( props ) {
 	const [ submitBtnCtn, setSubmitBtnCtn ] = useState(
 		document.querySelector( '.srfm-submit-btn-container' )
 	);
+	const [ fieldSpacing, setFieldSpacing ] = useState( formStyling?.field_spacing || 'small' );
+
+	// Apply the sizings when field spacing changes.
+	useEffect( () => {
+		applyFieldSpacing( fieldSpacing );
+	}, [ fieldSpacing ] );
 
 	// if device type is desktop then change the submit button
 	useEffect( () => {
 		setTimeout( () => {
-			const tabletPreview =
-				document.getElementsByClassName( 'is-tablet-preview' );
-			const mobilePreview =
-				document.getElementsByClassName( 'is-mobile-preview' );
-			if ( tabletPreview.length !== 0 || mobilePreview.length !== 0 ) {
-				const preview = tabletPreview[ 0 ] || mobilePreview[ 0 ];
-				if ( preview ) {
-					const iframe = preview.querySelector( 'iframe' );
-					const iframeDocument =
-						iframe?.contentWindow.document ||
-						iframe?.contentDocument;
-					const iframeBody = iframeDocument
-						?.querySelector( 'html' )
-						?.querySelector( 'body' );
-
-					setSubmitBtn(
-						iframeBody.querySelector( '.srfm-submit-richtext' )
-					);
-					setSubmitBtnCtn(
-						iframeBody.querySelector( '.srfm-submit-btn-container' )
-					);
-					submitButtonInherit();
-				}
-			} else {
-				setSubmitBtnCtn(
-					document.querySelector( '.srfm-submit-btn-container' )
-				);
-				setSubmitBtn(
-					document.querySelector( '.srfm-submit-richtext' )
-				);
-				submitButtonInherit();
-			}
+			setSubmitBtnCtn(
+				document.querySelector( '.srfm-submit-btn-container' )
+			);
+			setSubmitBtn( document.querySelector( '.srfm-submit-richtext' ) );
+			submitButtonInherit();
 		}, 1000 );
 	}, [ deviceType, submitBtn, sureformsKeys._srfm_inherit_theme_button ] );
 
@@ -101,175 +81,123 @@ function StyleSettings( props ) {
 
 	if ( sureformsKeys ) {
 		// Form Container
-		// Primary color
 		root.style.setProperty(
 			'--srfm-color-scheme-primary',
-			sureformsKeys._srfm_color1 ? sureformsKeys._srfm_color1 : '#D54407'
+			formStyling?.primary_color || '#0C78FB'
+		);
+		root.style.setProperty(
+			'--srfm-btn-color-hover',
+			formStyling?.primary_color
+				? `rgba( from ${ formStyling.primary_color } r g b / 0.9)`
+				: `rgba( from #0C78FB r g b / 0.9)`
 		);
 		root.style.setProperty(
 			'--srfm-color-scheme-text-on-primary',
-			sureformsKeys._srfm_label_color
-				? sureformsKeys._srfm_label_color
-				: '#111827'
+			formStyling?.text_color_on_primary || '#FFFFFF'
 		);
-		const defaultHelpColor = '#4B5563';
+
+		const defaultTextColor = '#1E1E1E';
 
 		root.style.setProperty(
 			'--srfm-color-scheme-text',
-			sureformsKeys._srfm_help_color
-				? sureformsKeys._srfm_help_color
-				: defaultHelpColor
+			formStyling?.text_color || defaultTextColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-label',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			formStyling?.text_color || defaultTextColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-placeholder',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.5)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.5)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-text',
-			sureformsKeys._srfm_help_color ? sureformsKeys._srfm_help_color : defaultHelpColor
+			formStyling?.text_color || defaultTextColor
 		);
 		root.style.setProperty(
 			'--srfm-color-input-description',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-prefix',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.65)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.02)` : `rgba( from ${ defaultHelpColor } r g b / 0.02)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.02)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.02)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-background-disabled',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.05)` : `rgba( from ${ defaultHelpColor } r g b / 0.05)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.05)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.05)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.25)` : `rgba( from ${ defaultHelpColor } r g b / 0.25)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.25)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.25)`
 		);
 		root.style.setProperty(
 			'--srfm-color-input-border-disabled',
-			sureformsKeys._srfm_help_color ? `rgba( from ${ sureformsKeys._srfm_help_color } r g b / 0.15)` : `rgba( from ${ defaultHelpColor } r g b / 0.15)`
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.15)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.15)`
 		);
 		root.style.setProperty(
-			'--srfm-primary-color',
-			sureformsKeys._srfm_color1 ? sureformsKeys._srfm_color1 : '#0284C7'
-		);
-		// Label color
-		root.style.setProperty(
-			'--srfm-label-text-color',
-			sureformsKeys._srfm_label_color
-				? sureformsKeys._srfm_label_color
-				: 'none'
-		);
-		// Help text color
-		root.style.setProperty(
-			'--srfm-help-color',
-			sureformsKeys._srfm_help_color
-				? sureformsKeys._srfm_help_color
-				: '#4B5563'
+			'--srfm-color-input-border-focus-glow',
+			formStyling.primary_color
+				? `rgba( from ${ formStyling.primary_color } r g b / 0.15 )`
+				: '#FAE4DC'
 		);
 
-		// Input
-		// Input text color
+		// checkbox and gdpr - for small, medium and large checkbox sizes
 		root.style.setProperty(
-			'--srfm-body-input-color',
-			sureformsKeys._srfm_input_text_color
-				? sureformsKeys._srfm_input_text_color
-				: '#4B5563'
+			'--srfm-checkbox-description-margin-left',
+			'24px'
 		);
-		// Input placeholder color
 		root.style.setProperty(
-			'--srfm-placeholder-color',
-			sureformsKeys._srfm_input_placeholder_color
-				? sureformsKeys._srfm_input_placeholder_color
-				: '#94A3B8'
+			'--srfm-checkbox-input-border-radius',
+			'4px'
 		);
-		// Input background color
-		root.style.setProperty(
-			'--srfm-base-background-color',
-			sureformsKeys._srfm_input_bg_color
-				? sureformsKeys._srfm_input_bg_color
-				: '#ffffff'
-		);
-		// Input border color
-		root.style.setProperty(
-			'--srfm-border-color',
-			sureformsKeys._srfm_input_border_color
-				? sureformsKeys._srfm_input_border_color
-				: '#D0D5DD'
-		);
-		// Input border width
-		root.style.setProperty(
-			'--srfm-border',
-			sureformsKeys._srfm_input_border_width
-				? sureformsKeys._srfm_input_border_width + 'px'
-				: '1px'
-		);
-		// Input border radius
-		root.style.setProperty(
-			'--srfm-border-radius',
-			sureformsKeys._srfm_input_border_radius >= 0
-				? sureformsKeys._srfm_input_border_radius + 'px'
-				: '4px'
-		);
+		root.style.setProperty( '--srfm-check-ctn-width', '16px' );
+		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
+		root.style.setProperty( '--srfm-check-svg-top', '2px' );
+		root.style.setProperty( '--srfm-check-svg-left', '2px' );
+		root.style.setProperty( '--srfm-check-svg-width', '10px' );
+		root.style.setProperty( '--srfm-check-svg-height', '10px' );
 
-		// Error
-		// Error color & asterisk color
 		root.style.setProperty(
-			'--srfm-error-text-color',
-			sureformsKeys._srfm_field_error_color
-				? sureformsKeys._srfm_field_error_color
-				: '#dc2626'
+			'--srfm-color-multi-choice-svg',
+			formStyling?.text_color
+				? `rgba( from ${ formStyling.text_color } r g b / 0.7)`
+				: `rgba( from ${ defaultTextColor } r g b / 0.7)`
 		);
 
 		// Button
 		// Button text color
 		root.style.setProperty(
 			'--srfm-btn-text-color',
-			sureformsKeys._srfm_button_text_color
-				? sureformsKeys._srfm_button_text_color
-				: '#000000'
-		);
-		// Button bg Color
-		root.style.setProperty(
-			'--srfm-btn-bg-color',
-			sureformsKeys._srfm_button_bg_color
-				? sureformsKeys._srfm_button_bg_color
-				: ''
+			formStyling?.text_color_on_primary || '#FFFFFF'
 		);
 		// btn border color
 		root.style.setProperty(
 			'--srfm-btn-border-color',
-			sureformsKeys._srfm_button_border_color
-				? sureformsKeys._srfm_button_border_color
-				: '#000000'
+			formStyling?.primary_color || '#0C78FB'
 		);
-		// btn border width
-		root.style.setProperty(
-			'--srfm-btn-border-width',
-			sureformsKeys._srfm_button_border_width
-				? sureformsKeys._srfm_button_border_width + 'px'
-				: '0px'
-		);
-		// btn border radius
-		root.style.setProperty(
-			'--srfm-btn-border-radius',
-			sureformsKeys._srfm_button_border_radius
-				? sureformsKeys._srfm_button_border_radius + 'px'
-				: '4px'
-		);
+
 		// Button alignment
 		root.style.setProperty(
 			'--srfm-submit-alignment',
-			sureformsKeys._srfm_submit_alignment
-				? sureformsKeys._srfm_submit_alignment
-				: 'none'
+			formStyling?.submit_button_alignment || 'left'
 		);
 		root.style.setProperty(
 			'--srfm-submit-width',
@@ -300,138 +228,148 @@ function StyleSettings( props ) {
 		const value_id = 0;
 		const key_id = '';
 
-		if ( option === '_srfm_color1' ) {
+		// Button
+		if ( option === '_srfm_button_border_width' ) {
+			root.style.setProperty(
+				'--srfm-btn-border-width',
+				value ? value + 'px' : '0px'
+			);
+		}
+		if ( option === '_srfm_button_border_color' ) {
+			root.style.setProperty(
+				'--srfm-btn-border-color',
+				value ? value : '#000000'
+			);
+		}
+
+		const option_array = {};
+
+		if ( key_id ) {
+			option_array[ key_id ] = value_id;
+		}
+		option_array[ option ] = value;
+		editPost( {
+			meta: option_array,
+		} );
+	}
+
+	/**
+	 * Applies the specified field spacing to the form by setting the corresponding CSS variables.
+	 *
+	 * This function merges the base sizes defined for 'small' spacing with the
+	 * override sizes for the specified spacing (if any), and applies the resulting
+	 * CSS variables to the root element.
+	 *
+	 * @param {string} sizingValue - The selected field spacing size ('small', 'medium', 'large').
+	 * @return {void}
+	 * @since x.x.x
+	 */
+	function applyFieldSpacing( sizingValue ) {
+		const baseSize = srfm_admin?.field_spacing_vars?.small;
+		const overrideSize = srfm_admin?.field_spacing_vars[ sizingValue ] || {};
+		const finalSize = { ...baseSize, ...overrideSize };
+
+		for ( const [ key, value ] of Object.entries( finalSize ) ) {
+			root.style.setProperty( key, value );
+		}
+	}
+
+	/**
+	 * Update the form styling options on user input
+	 * and update the meta values in the database.
+	 *
+	 * @param {string} option
+	 * @param {string} value
+	 * @return {void}
+	 * @since x.x.x
+	 */
+	function updateFormStyling( option, value ) {
+		if ( option === 'primary_color' ) {
 			root.style.setProperty(
 				'--srfm-color-scheme-primary',
-				value ? value : '#D54407'
+				value || '#0C78FB'
 			);
-		}
-		if ( option === '_srfm_label_color' ) {
+
 			root.style.setProperty(
-				'--srfm-color-scheme-text-on-primary',
-				value ? value : '#111827'
+				'--srfm-btn-color-hover',
+				value
+					? `rgba( from ${ value } r g b / 0.9)`
+					: `rgba( from #0C78FB r g b / 0.9)`
 			);
 		}
-		if ( option === '_srfm_help_color' ) {
-			const defaultHelpColor = '#4B5563';
+
+		if ( option === 'text_color' ) {
+			const defaultTextColor = '#1E1E1E';
 
 			root.style.setProperty(
 				'--srfm-color-scheme-text',
-				value ? value : defaultHelpColor
+				value ? value : defaultTextColor
 			);
 			root.style.setProperty(
 				'--srfm-color-input-label',
-				value ? value : defaultHelpColor
+				value ? value : defaultTextColor
 			);
 			root.style.setProperty(
 				'--srfm-color-input-placeholder',
-				value ? value : defaultHelpColor
+				value ? value : defaultTextColor
 			);
 			root.style.setProperty(
 				'--srfm-color-input-text',
-				value ? value : defaultHelpColor
+				value ? value : defaultTextColor
 			);
 			root.style.setProperty(
 				'--srfm-color-input-description',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-prefix',
-				value ? `rgba( from ${ value } r g b / 0.65)` : `rgba( from ${ defaultHelpColor } r g b / 0.65)`
+				value
+					? `rgba( from ${ value } r g b / 0.65)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.65)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background',
-				value ? `rgba( from ${ value } r g b / 0.02)` : `rgba( from ${ defaultHelpColor } r g b / 0.02)`
+				value
+					? `rgba( from ${ value } r g b / 0.02)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.02)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-background-disabled',
-				value ? `rgba( from ${ value } r g b / 0.05)` : `rgba( from ${ defaultHelpColor } r g b / 0.05)`
+				value
+					? `rgba( from ${ value } r g b / 0.05)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.05)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border',
-				value ? `rgba( from ${ value } r g b / 0.25)` : `rgba( from ${ defaultHelpColor } r g b / 0.25)`
+				value
+					? `rgba( from ${ value } r g b / 0.25)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.25)`
 			);
 			root.style.setProperty(
 				'--srfm-color-input-border-disabled',
-				value ? `rgba( from ${ value } r g b / 0.15)` : `rgba( from ${ defaultHelpColor } r g b / 0.15)`
+				value
+					? `rgba( from ${ value } r g b / 0.15)`
+					: `rgba( from ${ defaultTextColor } r g b / 0.15)`
 			);
 		}
 
-		if ( option === '_srfm_color1' ) {
+		if ( option === 'text_color_on_primary' ) {
 			root.style.setProperty(
-				'--srfm-primary-color',
-				value ? value : '#0284C7'
-			);
-		}
-		if ( option === '_srfm_fontsize' ) {
-			root.style.setProperty(
-				'--srfm_fontsize',
-				value ? value + 'px' : 'none'
-			);
-		}
-		if ( option === '_srfm_label_color' ) {
-			root.style.setProperty(
-				'--srfm-label-text-color',
-				value ? value : '#0284C7'
-			);
-		}
-		if ( option === '_srfm_help_color' ) {
-			root.style.setProperty(
-				'--srfm-help-color',
-				value ? value : '#4B5563'
+				'--srfm-color-scheme-text-on-primary',
+				value || '#FFFFFF'
 			);
 		}
 
-		// Input
-		if ( option === '_srfm_input_text_color' ) {
-			root.style.setProperty(
-				'--srfm-body-input-color',
-				value ? value : '#4b5563'
-			);
-		}
-		if ( option === '_srfm_input_placeholder_color' ) {
-			root.style.setProperty(
-				'--srfm-placeholder-color',
-				value ? value : '#94A3B8'
-			);
-		}
-		if ( option === '_srfm_input_bg_color' ) {
-			root.style.setProperty(
-				'--srfm-base-background-color',
-				value ? value : '#ffffff'
-			);
-		}
-		if ( option === '_srfm_input_border_color' ) {
-			root.style.setProperty(
-				'--srfm-border-color',
-				value ? value : '#D0D5DD'
-			);
-		}
-		if ( option === '_srfm_input_border_width' ) {
-			root.style.setProperty(
-				'--srfm-border',
-				value ? value + 'px' : '1px'
-			);
-		}
-		if ( option === '_srfm_input_border_radius' ) {
-			root.style.setProperty(
-				'--srfm-border-radius',
-				value ? value + 'px' : '4px'
-			);
+		if ( option === 'field_spacing' ) {
+			root.style.setProperty( '--srfm-field-spacing', value || 'small' );
 		}
 
-		// Error color & asterisk color
-		if ( option === '_srfm_field_error_color' ) {
-			root.style.setProperty(
-				'--srfm-error-text-color',
-				value ? value : '#dc2626'
-			);
-		}
-
-		if ( option === '_srfm_submit_alignment' ) {
+		if ( option === 'submit_button_alignment' ) {
 			root.style.setProperty(
 				'--srfm-submit-alignment',
-				value ? value : 'left'
+				value || 'left'
 			);
 			root.style.setProperty(
 				'--srfm-submit-width-backend',
@@ -470,48 +408,10 @@ function StyleSettings( props ) {
 			}
 		}
 
-		// Button
-		if ( option === '_srfm_button_text_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-text-color',
-				value ? value : '#000000'
-			);
-		}
-		// Will be used later
-		// if ( option === '_srfm_btn_bg_type' ) {
-		// 	if ( value === 'transparent' ) {
-		// 		submitBtn.classList.add( 'srfm-btn-bg-transparent' );
-		// 	} else {
-		// 		submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
-		// 		submitBtn.classList.add( 'srfm-btn-bg-color' );
-		// 	}
-		// }
-		if ( option === '_srfm_button_bg_color' ) {
-			submitBtn.classList.add( 'srfm-btn-bg-color' );
-			submitBtn.classList.remove( 'srfm-btn-bg-transparent' );
-			root.style.setProperty( '--srfm-btn-bg-color', value ? value : '' );
-		}
-		if ( option === '_srfm_button_border_width' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-width',
-				value ? value + 'px' : '0px'
-			);
-		}
-		if ( option === '_srfm_button_border_color' ) {
-			root.style.setProperty(
-				'--srfm-btn-border-color',
-				value ? value : '#000000'
-			);
-		}
-
-		const option_array = {};
-
-		if ( key_id ) {
-			option_array[ key_id ] = value_id;
-		}
-		option_array[ option ] = value;
 		editPost( {
-			meta: option_array,
+			meta: {
+				_srfm_forms_styling: { ...formStyling, [ option ]: value },
+			},
 		} );
 	}
 
@@ -519,414 +419,98 @@ function StyleSettings( props ) {
 		<>
 			<SRFMAdvancedPanelBody
 				title={ __( 'Form Container', 'sureforms' ) }
-				initialOpen={ false }
+				initialOpen={ true }
 			>
 				<AdvancedPopColorControl
 					label={ __( 'Primary Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_color1 }
+					colorValue={ formStyling?.primary_color }
 					data={ {
-						value: sureformsKeys._srfm_color1,
-						label: '_srfm_color1',
+						value: formStyling?.primary_color,
+						label: 'primary_color',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureformsKeys._srfm_color1 ) {
-							updateMeta( '_srfm_color1', colorValue );
+						if ( colorValue !== formStyling?.primary_color ) {
+							updateFormStyling( 'primary_color', colorValue );
 						}
 					} }
-					value={ sureformsKeys._srfm_color1 }
-					isFormSpecific={ true }
-				/>
-
-				{ /* Will be impleted properly later */ }
-				{ /* <p className="components-base-control__help" />
-				<Range
-					label={ __( 'Font Size', 'sureforms' ) }
-					value={ sureformsKeys._srfm_fontsize }
-					min={ 16 }
-					max={ 24 }
-					displayUnit={ false }
-					data={ {
-						value: sureformsKeys._srfm_fontsize,
-						label: '_srfm_fontsize',
-					} }
-					onChange={ ( value ) =>
-						updateMeta( '_srfm_fontsize', value )
-					}
-					isFormSpecific={ true }
-				/> */ }
-				{ sureformsKeys._srfm_show_labels && (
-					<>
-						<p className="components-base-control__help" />
-						<AdvancedPopColorControl
-							label={ __( 'Label Color', 'sureforms' ) }
-							colorValue={ sureformsKeys._srfm_label_color }
-							data={ {
-								value: sureformsKeys._srfm_label_color,
-								label: '_srfm_label_color',
-							} }
-							onColorChange={ ( colorValue ) => {
-								if (
-									colorValue !==
-									sureformsKeys._srfm_label_color
-								) {
-									updateMeta(
-										'_srfm_label_color',
-										colorValue
-									);
-								}
-							} }
-							value={ sureformsKeys._srfm_label_color }
-							isFormSpecific={ true }
-						/>{ ' ' }
-					</>
-				) }
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Help Text Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_help_color }
-					data={ {
-						value: sureformsKeys._srfm_help_color,
-						label: '_srfm_help_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if ( colorValue !== sureformsKeys._srfm_help_color ) {
-							updateMeta( '_srfm_help_color', colorValue );
-						}
-					} }
-					value={ sureformsKeys._srfm_help_color }
-					isFormSpecific={ true }
-				/>
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Input', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<AdvancedPopColorControl
-					label={ __( 'Input Text Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_input_text_color }
-					data={ {
-						value: sureformsKeys._srfm_input_text_color,
-						label: '_srfm_input_text_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== sureformsKeys._srfm_input_text_color
-						) {
-							updateMeta( '_srfm_input_text_color', colorValue );
-						}
-					} }
-					value={ sureformsKeys._srfm_input_text_color }
+					value={ formStyling?.primary_color }
 					isFormSpecific={ true }
 				/>
 				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Placeholder Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_input_placeholder_color }
-					data={ {
-						value: sureformsKeys._srfm_input_placeholder_color,
-						label: '_srfm_input_placeholder_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !==
-							sureformsKeys._srfm_input_placeholder_color
-						) {
-							updateMeta(
-								'_srfm_input_placeholder_color',
-								colorValue
-							);
-						}
-					} }
-					value={ sureformsKeys._srfm_input_placeholder_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Field Background Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_input_bg_color }
-					data={ {
-						value: sureformsKeys._srfm_input_bg_color,
-						label: '_srfm_input_bg_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== sureformsKeys._srfm_input_bg_color
-						) {
-							updateMeta( '_srfm_input_bg_color', colorValue );
-						}
-					} }
-					value={ sureformsKeys._srfm_input_bg_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<AdvancedPopColorControl
-					label={ __( 'Border Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_input_border_color }
-					data={ {
-						value: sureformsKeys._srfm_input_border_color,
-						label: '_srfm_input_border_color',
-					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !==
-							sureformsKeys._srfm_input_border_color
-						) {
-							updateMeta(
-								'_srfm_input_border_color',
-								colorValue
-							);
-						}
-					} }
-					value={ sureformsKeys._srfm_input_border_color }
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<Range
-					label={ __( 'Border Width', 'sureforms' ) }
-					value={ sureformsKeys._srfm_input_border_width }
-					min={ 1 }
-					max={ 10 }
-					displayUnit={ false }
-					data={ {
-						value: sureformsKeys._srfm_input_border_width,
-						label: '_srfm_input_border_width',
-					} }
-					onChange={ ( value ) =>
-						updateMeta( '_srfm_input_border_width', value )
-					}
-					isFormSpecific={ true }
-				/>
-				<p className="components-base-control__help" />
-				<Range
-					label={ __( 'Border Radius', 'sureforms' ) }
-					value={ sureformsKeys._srfm_input_border_radius }
-					min={ 0 }
-					max={ 100 }
-					displayUnit={ false }
-					data={ {
-						value: sureformsKeys._srfm_input_border_radius,
-						label: '_srfm_input_border_radius',
-					} }
-					onChange={ ( value ) =>
-						updateMeta( '_srfm_input_border_radius', value )
-					}
-					isFormSpecific={ true }
-				/>
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Error Message', 'sureforms' ) }
-				initialOpen={ false }
-			>
 				<AdvancedPopColorControl
 					label={ __( 'Text Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_field_error_color }
+					colorValue={ formStyling?.text_color }
 					data={ {
-						value: sureformsKeys._srfm_field_error_color,
-						label: '_srfm_field_error_color',
+						value: formStyling?.text_color,
+						label: 'text_color',
 					} }
 					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !== sureformsKeys._srfm_field_error_color
-						) {
-							updateMeta( '_srfm_field_error_color', colorValue );
+						if ( colorValue !== formStyling?.text_color ) {
+							updateFormStyling( 'text_color', colorValue );
 						}
 					} }
-					value={ sureformsKeys._srfm_field_error_color }
+					value={ formStyling?.text_color }
 					isFormSpecific={ true }
 				/>
+				<p className="components-base-control__help" />
 				<AdvancedPopColorControl
-					label={ __( 'Surface Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_field_error_surface_color }
+					label={ __( 'Text Color on Primary', 'sureforms' ) }
+					colorValue={ formStyling?.text_color_on_primary }
 					data={ {
-						value: sureformsKeys._srfm_field_error_surface_color,
-						label: '_srfm_field_error_surface_color',
+						value: formStyling?.text_color_on_primary,
+						label: 'text_color_on_primary',
 					} }
 					onColorChange={ ( colorValue ) => {
 						if (
-							colorValue !==
-							sureformsKeys._srfm_field_error_surface_color
+							colorValue !== formStyling?.text_color_on_primary
 						) {
-							updateMeta(
-								'_srfm_field_error_surface_color',
+							updateFormStyling(
+								'text_color_on_primary',
 								colorValue
 							);
 						}
 					} }
-					value={ sureformsKeys._srfm_field_error_surface_color }
+					value={ formStyling?.text_color_on_primary }
 					isFormSpecific={ true }
 				/>
-				<AdvancedPopColorControl
-					label={ __( 'Background Color', 'sureforms' ) }
-					colorValue={ sureformsKeys._srfm_field_error_bg_color }
+				<p className="components-base-control__help" />
+				<MultiButtonsControl
+					label={ __( 'Field Spacing', 'sureforms' ) }
 					data={ {
-						value: sureformsKeys._srfm_field_error_bg_color,
-						label: '_srfm_field_error_bg_color',
+						value: formStyling?.field_spacing || 'small',
+						label: 'field_spacing',
 					} }
-					onColorChange={ ( colorValue ) => {
-						if (
-							colorValue !==
-							sureformsKeys._srfm_field_error_bg_color
-						) {
-							updateMeta(
-								'_srfm_field_error_bg_color',
-								colorValue
-							);
-						}
-					} }
-					value={ sureformsKeys._srfm_field_error_bg_color }
-					isFormSpecific={ true }
-					disableBottomSeparator={ true }
-				/>
-			</SRFMAdvancedPanelBody>
-			<SRFMAdvancedPanelBody
-				title={ __( 'Submit Button', 'sureforms' ) }
-				initialOpen={ false }
-			>
-				<ToggleControl
-					label={ __( 'Inherit From Theme', 'sureforms' ) }
-					checked={ sureformsKeys._srfm_inherit_theme_button }
+					options={ [
+						{
+							value: 'small',
+							label: __( 'Small', 'sureforms' ),
+						},
+						{
+							value: 'medium',
+							label: __( 'Medium', 'sureforms' ),
+						},
+						{
+							value: 'large',
+							label: __( 'Large', 'sureforms' ),
+						},
+					] }
+					showIcons={ false }
 					onChange={ ( value ) => {
-						updateMeta( '_srfm_inherit_theme_button', value );
+						updateFormStyling( 'field_spacing', value );
+						setFieldSpacing( value );
 					} }
 				/>
-				{ ! sureformsKeys._srfm_inherit_theme_button && (
-					<>
-						<AdvancedPopColorControl
-							label={ __( 'Text Color', 'sureforms' ) }
-							colorValue={ sureformsKeys._srfm_button_text_color }
-							data={ {
-								value: sureformsKeys._srfm_button_text_color,
-								label: '_srfm_button_text_color',
-							} }
-							onColorChange={ ( colorValue ) => {
-								if (
-									colorValue !==
-									sureformsKeys._srfm_button_text_color
-								) {
-									updateMeta(
-										'_srfm_button_text_color',
-										colorValue
-									);
-								}
-							} }
-							value={ sureformsKeys._srfm_button_text_color }
-							isFormSpecific={ true }
-						/>
-						{ sureformsKeys._srfm_btn_bg_type === 'filled' && (
-							<>
-								<p className="components-base-control__help" />
-								<AdvancedPopColorControl
-									label={ __(
-										'Background Color',
-										'sureforms'
-									) }
-									colorValue={
-										sureformsKeys._srfm_button_bg_color
-									}
-									data={ {
-										value: sureformsKeys._srfm_button_bg_color,
-										label: '_srfm_button_bg_color',
-									} }
-									onColorChange={ ( colorValue ) => {
-										if (
-											colorValue !==
-											sureformsKeys._srfm_button_bg_color
-										) {
-											updateMeta(
-												'_srfm_button_bg_color',
-												colorValue
-											);
-										}
-									} }
-									value={
-										sureformsKeys._srfm_button_bg_color
-									}
-									isFormSpecific={ true }
-								/>
-							</>
-						) }
-						{ sureformsKeys._srfm_btn_bg_type === 'filled' && (
-							<>
-								<p className="components-base-control__help" />
-								<AdvancedPopColorControl
-									label={ __( 'Border Color', 'sureforms' ) }
-									colorValue={
-										sureformsKeys._srfm_button_border_color
-									}
-									data={ {
-										value: sureformsKeys._srfm_button_border_color,
-										label: '_srfm_button_border_color',
-									} }
-									onColorChange={ ( colorValue ) => {
-										if (
-											colorValue !==
-											sureformsKeys._srfm_button_border_color
-										) {
-											updateMeta(
-												'_srfm_button_border_color',
-												colorValue
-											);
-										}
-									} }
-									value={
-										sureformsKeys._srfm_button_border_color
-									}
-									isFormSpecific={ true }
-								/>
-								<p className="components-base-control__help" />
-								<Range
-									label={ __( 'Border Width', 'sureforms' ) }
-									value={
-										sureformsKeys._srfm_button_border_width
-									}
-									min={ 0 }
-									max={ 10 }
-									displayUnit={ false }
-									data={ {
-										value: sureformsKeys._srfm_button_border_width,
-										label: '_srfm_button_border_width',
-									} }
-									onChange={ ( value ) =>
-										updateMeta(
-											'_srfm_button_border_width',
-											value
-										)
-									}
-									isFormSpecific={ true }
-								/>
-								<p className="components-base-control__help" />
-								<Range
-									label={ __( 'Border Radius', 'sureforms' ) }
-									value={
-										sureformsKeys._srfm_button_border_radius
-									}
-									min={ 1 }
-									max={ 100 }
-									displayUnit={ false }
-									data={ {
-										value: sureformsKeys._srfm_button_border_radius,
-										label: '_srfm_button_border_radius',
-									} }
-									onChange={ ( value ) =>
-										updateMeta(
-											'_srfm_button_border_radius',
-											value
-										)
-									}
-									isFormSpecific={ true }
-								/>
-							</>
-						) }{ ' ' }
-					</>
-				) }
 				{ ! isInlineButtonBlockPresent && (
 					<>
 						<p className="components-base-control__help" />
 						<MultiButtonsControl
-							label={ __( 'Button Alignment', 'sureforms' ) }
+							label={ __(
+								'Submit Button Alignment',
+								'sureforms'
+							) }
 							data={ {
-								value: sureformsKeys._srfm_submit_alignment,
-								label: '_srfm_submit_alignment',
+								value: formStyling?.submit_button_alignment,
+								label: 'submit_button_alignment',
 							} }
 							options={ [
 								{
@@ -966,30 +550,17 @@ function StyleSettings( props ) {
 							] }
 							showIcons={ true }
 							onChange={ ( value ) => {
-								if (
-									sureformsKeys._srfm_submit_alignment ===
-									value
-								) {
-									updateMeta(
-										'_srfm_submit_alignment',
-										'left'
-									);
-									updateMeta( '_srfm_submit_width', '' );
-								} else if ( 'justify' === value ) {
-									updateMeta(
-										'_srfm_submit_alignment',
-										value
-									);
+								updateFormStyling(
+									'submit_button_alignment',
+									value || 'left'
+								);
+								if ( 'justify' === value ) {
 									updateMeta( '_srfm_submit_width', '100%' );
 									updateMeta(
 										'_srfm_submit_width_backend',
 										'auto'
 									);
 								} else {
-									updateMeta(
-										'_srfm_submit_alignment',
-										value
-									);
 									updateMeta( '_srfm_submit_width', '' );
 								}
 							} }
