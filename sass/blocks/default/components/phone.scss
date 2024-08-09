@@ -7,6 +7,7 @@
 				.iti__flag-container {
 					// Setting the line height to normal aligns the country code with the phone number regardless of the browser.
 					line-height: normal;
+					margin: var( --srfm-input-field-margin );
 					.iti__country-list {
 						display: block;
 						opacity: 1;
@@ -82,6 +83,7 @@
 			// Adding important attribute to override the library margin.
 			.srfm-input-phone {
 				margin: var( --srfm-input-field-margin ) !important;
+				padding-right: var( --srfm-dropdown-padding-right );
 			}
 		}
 	}

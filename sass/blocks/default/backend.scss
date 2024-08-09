@@ -199,10 +199,7 @@
 
 			.srfm-input-common {
 				width: 100%;
-			}
-
-			&::after {
-				@include srfm-dropdown-arrow( true );
+				@include srfm-dropdown-arrow;
 			}
 		}
 	}

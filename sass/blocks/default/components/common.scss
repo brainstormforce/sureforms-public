@@ -1,7 +1,6 @@
 @import "../utils/mixins.scss";
 
 .srfm-form-container {
-
 	&.srfm-has-dark-bg {
 		// We are treating these colors as static here because it will be the fixed color as suggested in Figma.
 		--srfm-error-color: #f87171;
@@ -37,7 +36,6 @@
 		}
 
 		.srfm-block {
-
 			&.srfm-error,
 			&.srfm-valid-email-error {
 				.srfm-block-wrap {

@@ -273,7 +273,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																								value
 																							) =>
 																								changeOption(
-																									{ icon: value },
+																									{
+																										icon: value,
+																									},
 																									i
 																								)
 																							}
