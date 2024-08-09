@@ -292,7 +292,13 @@ function onSuccess( response ) {
 
 		formContainers.forEach( ( formContainer ) => {
 			normalizeCSSVariablesForDarkBackground( formContainer );
-			setDropdownMenuBackground( formContainer );
+			/**
+			 * If the form contains dropdown or phone fields, then we need to set the dropdown menu background color.
+			 * In future, we will have to modify the check incase any pro fields require the same implementation.
+			 */
+			if ( formContainer.querySelector( '.srfm-dropdown-block' ) || formContainer.querySelector( '.srfm-phone-block' ) ) {
+				setDropdownMenuBackground( formContainer );
+			}
 		} );
 	} );
 }() );
