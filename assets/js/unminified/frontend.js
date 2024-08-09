@@ -276,12 +276,12 @@ function onSuccess( response ) {
 	 */
 	function setDropdownMenuBackground( element ) {
 		/**
-		 * Calculate the form's text color and check if it is dark or light.
+		 * Retrieve the form's text color and check if it is dark.
 		 */
 		const textColor = window.getComputedStyle( element ).getPropertyValue( '--srfm-color-input-text' );
 		const isTextDark = isColorDark( getColorLuminance( textColor ) );
 		if ( ! isTextDark ) {
-			document.documentElement.style.setProperty( '--srfm-dropdown-menu-background', '#2e2e2e' );
+			element.querySelector( 'form' ).style.setProperty( '--srfm-dropdown-menu-background', '#2e2e2e' );
 		}
 	}
 
