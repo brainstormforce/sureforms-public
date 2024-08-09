@@ -15,6 +15,9 @@ function AdvancedSettings( props ) {
 	const [ hasValidationErrors, setHasValidationErrors ] = useState( false );
 	const { editPost } = useDispatch( editorStore );
 
+	let prevMetaHash = '';
+	const { createNotice } = useDispatch( 'core/notices' );
+
 	const { defaultKeys } = props;
 
 	const [ sureformsV2CheckboxSite, setSureformsV2CheckboxSite ] =
@@ -45,6 +48,7 @@ function AdvancedSettings( props ) {
 		const popupTabTarget = e.currentTarget.getAttribute( 'data-popup' );
 		setPopupTab( popupTabTarget );
 		setOpen( true );
+		prevMetaHash = btoa( JSON.stringify( sureformsKeys ) );
 	};
 	const closeModal = () => {
 		if (
