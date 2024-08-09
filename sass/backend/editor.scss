@@ -28,7 +28,7 @@ body.post-type-sureforms_form {
 			}
 
 			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
+				background-color: var( --srfm-error-color );
 			}
 
 			// Match selected icon size with delete icon.
@@ -43,51 +43,13 @@ body.post-type-sureforms_form {
 	}
 	overflow-y: hidden;
 
-	.srfm-icon-picker {
-		// To align with the option text input field.
-		height: 34px;
-
-		.uag-custom-ip {
-			margin: 0;
-		}
-		.uag-control-label {
-			display: none;
-		}
-		.uag-ip-remove-icon {
-			top: 2px !important;
-			right: 2px !important;
-			svg {
-				height: 8px !important;
-				width: 8px !important;
-			}
-		}
-		.uag-ip-placeholder-wrap {
-			// Container size 32x32 px.
-			width: 32px;
-			min-height: 32px !important;
-
-			&:hover {
-				background-color: #f8fafc;
-			}
-
-			.uag-ip-remove-icon svg {
-				background-color: var( --srfm-error-color-light );
-			}
-
-			// Match selected icon size with delete icon.
-			.uag-ip-selected-icon-value svg {
-				height: 20px;
-				width: 20px;
-			}
-		}
-		.uag-ip-actions {
-			display: none !important;
-		}
-	}
-
 	.srfm-media-picker {
 		div {
 			margin: 0;
+		}
+
+		.components-base-control__field {
+			padding: 0;
 		}
 		.srfm-media-control__wrapper {
 			width: 32px;
@@ -109,7 +71,7 @@ body.post-type-sureforms_form {
 					height: 8px;
 					width: 8px;
 					svg {
-						background-color: var( --srfm-error-color-light );
+						background-color: var( --srfm-error-color );
 						padding: 2.4px;
 						path {
 							fill: #ffffff;
@@ -318,10 +280,12 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
+			&:not(.wp-block-srfm-separator) {
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+				margin-top: 0 !important; // Had to add as various themes distort the layout.
+			}
 			padding: 0 0.5rem;
-			margin-left: 0 !important; // This is needed to get the field width working.
-			margin-right: 0 !important; // This is needed to get the field width working.
-			margin-top: 0 !important; // Had to add as various themes distort the layout.
 			max-width: 100%;
 		}
 	}
