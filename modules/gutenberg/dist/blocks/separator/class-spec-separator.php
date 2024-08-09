@@ -433,15 +433,17 @@ if ( ! class_exists( 'Spec_Separator' ) ) {
 			ob_start();
 			?>
 			<div class = "<?php echo esc_attr( implode( ' ', $main_classes ) ); ?>" style="--my-background-image: <?php echo esc_attr( $svg_pattern ); ?>;" >
-				<div class="wp-block-uagb-separator__inner">
-					<div class="wp-block-uagb-separator-element">
-						<?php
-						if ( 'icon' === $element_type ) {
-							Spec_Gb_Helper::render_svg_html( $separator_icon );
-						} elseif ( 'text' === $element_type ) {
-							echo wp_kses_post( $custom_tag );
-						}
-						?>
+				<div class="wp-block-uagb-separator-wrapper">
+					<div class="wp-block-uagb-separator__inner">
+						<div class="wp-block-uagb-separator-element">
+							<?php
+							if ( 'icon' === $element_type ) {
+								Spec_Gb_Helper::render_svg_html( $separator_icon );
+							} elseif ( 'text' === $element_type ) {
+								echo wp_kses_post( $custom_tag );
+							}
+							?>
+						</div>
 					</div>
 				</div>
 			</div>

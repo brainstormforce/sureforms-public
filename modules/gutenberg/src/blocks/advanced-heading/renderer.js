@@ -32,8 +32,8 @@ const Renderer = ( props ) => {
 	const propsOnSplit = ( value ) =>
 		value
 			? createBlock( 'srfm/advanced-heading', {
-					...attributes,
-					headingTitle: value,
+				...attributes,
+				headingTitle: value,
 			  } )
 			: createBlock( 'core/paragraph' );
 

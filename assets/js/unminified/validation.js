@@ -397,9 +397,9 @@ export async function fieldValidation(
 				const normalizedInputValue =
 					'eu-style' === formatType
 						? parseFloat(
-								inputValue
-									.replace( /\./g, '' )
-									.replace( ',', '.' )
+							inputValue
+								.replace( /\./g, '' )
+								.replace( ',', '.' )
 						  )
 						: parseFloat( inputValue.replace( /,/g, '' ) );
 

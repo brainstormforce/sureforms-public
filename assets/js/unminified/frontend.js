@@ -277,4 +277,4 @@ function onSuccess( response ) {
 			normalizeCSSVariablesForDarkBackground( formContainer );
 		} );
 	} );
-} )();
+}() );

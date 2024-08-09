@@ -354,105 +354,542 @@ const Background = ( props ) => {
 					) }
 					{ ! imageOverlayResponsive &&
 						backgroundOverlayImage.value && (
-							<>
-								<div className="uag-background-image-position">
-									<SelectControl
+						<>
+							<div className="uag-background-image-position">
+								<SelectControl
+									label={ __(
+										'Image Position',
+										'sureforms'
+									) }
+									value={
+										backgroundOverlayPosition.value
+									}
+									onChange={ ( value ) =>
+										setAttributes( {
+											[ backgroundOverlayPosition.label ]:
+													value,
+										} )
+									}
+									options={ [
+										{
+											value: 'left top',
+											label: __(
+												'Top Left',
+												'sureforms'
+											),
+										},
+										{
+											value: 'center top',
+											label: __(
+												'Top Center',
+												'sureforms'
+											),
+										},
+										{
+											value: 'right top',
+											label: __(
+												'Top Right',
+												'sureforms'
+											),
+										},
+										{
+											value: 'center top',
+											label: __(
+												'Center Top',
+												'sureforms'
+											),
+										},
+										{
+											value: 'center center',
+											label: __(
+												'Center Center',
+												'sureforms'
+											),
+										},
+										{
+											value: 'center bottom',
+											label: __(
+												'Center Bottom',
+												'sureforms'
+											),
+										},
+										{
+											value: 'left bottom',
+											label: __(
+												'Bottom Left',
+												'sureforms'
+											),
+										},
+										{
+											value: 'center bottom',
+											label: __(
+												'Bottom Center',
+												'sureforms'
+											),
+										},
+										{
+											value: 'right bottom',
+											label: __(
+												'Bottom Right',
+												'sureforms'
+											),
+										},
+									] }
+								/>
+							</div>
+							<div className="uag-background-image-attachment">
+								<SelectControl
+									label={ __(
+										'Attachment',
+										'sureforms'
+									) }
+									value={
+										backgroundOverlayAttachment.value
+									}
+									onChange={ ( value ) =>
+										setAttributes( {
+											[ backgroundOverlayAttachment.label ]:
+													value,
+										} )
+									}
+									options={ [
+										{
+											value: 'fixed',
+											label: __(
+												'Fixed',
+												'sureforms'
+											),
+										},
+										{
+											value: 'scroll',
+											label: __(
+												'Scroll',
+												'sureforms'
+											),
+										},
+									] }
+								/>
+							</div>
+							<div className="uag-background-blend-mode">
+								<SelectControl
+									label={ __(
+										'Blend Mode',
+										'sureforms'
+									) }
+									value={ overlayBlendMode.value }
+									onChange={ ( value ) =>
+										setAttributes( {
+											[ overlayBlendMode.label ]:
+													value,
+										} )
+									}
+									options={ [
+										{
+											value: 'normal',
+											label: __(
+												'Normal',
+												'sureforms'
+											),
+										},
+										{
+											value: 'multiply',
+											label: __(
+												'Multiply',
+												'sureforms'
+											),
+										},
+										{
+											value: 'screen',
+											label: __(
+												'Screen',
+												'sureforms'
+											),
+										},
+										{
+											value: 'overlay',
+											label: __(
+												'Overlay',
+												'sureforms'
+											),
+										},
+										{
+											value: 'darken',
+											label: __(
+												'Darken',
+												'sureforms'
+											),
+										},
+										{
+											value: 'lighten',
+											label: __(
+												'Lighten',
+												'sureforms'
+											),
+										},
+										{
+											value: 'color-dodge',
+											label: __(
+												'Color Dodge',
+												'sureforms'
+											),
+										},
+										{
+											value: 'saturation',
+											label: __(
+												'Saturation',
+												'sureforms'
+											),
+										},
+										{
+											value: 'color',
+											label: __(
+												'Color',
+												'sureforms'
+											),
+										},
+									] }
+								/>
+							</div>
+							<div className="uag-background-image-repeat">
+								<SelectControl
+									label={ __( 'Repeat', 'sureforms' ) }
+									value={ backgroundOverlayRepeat.value }
+									onChange={ ( value ) =>
+										setAttributes( {
+											[ backgroundOverlayRepeat.label ]:
+													value,
+										} )
+									}
+									options={ [
+										{
+											value: 'no-repeat',
+											label: __(
+												'No Repeat',
+												'sureforms'
+											),
+										},
+										{
+											value: 'repeat',
+											label: __(
+												'Repeat',
+												'sureforms'
+											),
+										},
+										{
+											value: 'repeat-x',
+											label: __(
+												'Repeat-x',
+												'sureforms'
+											),
+										},
+										{
+											value: 'repeat-y',
+											label: __(
+												'Repeat-y',
+												'sureforms'
+											),
+										},
+									] }
+								/>
+							</div>
+							<div className="uag-background-image-size">
+								<SelectControl
+									label={ __( 'Size', 'sureforms' ) }
+									value={ backgroundOverlaySize.value }
+									onChange={ ( value ) =>
+										setAttributes( {
+											[ backgroundOverlaySize.label ]:
+													value,
+										} )
+									}
+									options={ bgSizeOptions }
+								/>
+								{ 'custom' ===
+										backgroundOverlaySize.value &&
+										backgroundOverlayCustomSize && (
+									<ResponsiveSlider
 										label={ __(
-											'Image Position',
+											'Width',
 											'sureforms'
 										) }
-										value={
-											backgroundOverlayPosition.value
-										}
-										onChange={ ( value ) =>
-											setAttributes( {
-												[ backgroundOverlayPosition.label ]:
-													value,
-											} )
-										}
-										options={ [
+										data={ {
+											desktop: {
+												value: backgroundOverlayCustomSize
+													.desktop.value,
+												label: backgroundOverlayCustomSize
+													.desktop.label,
+											},
+											tablet: {
+												value: backgroundOverlayCustomSize
+													.tablet.value,
+												label: backgroundOverlayCustomSize
+													.tablet.label,
+											},
+											mobile: {
+												value: backgroundOverlayCustomSize
+													.mobile.value,
+												label: backgroundOverlayCustomSize
+													.mobile.label,
+											},
+										} }
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundOverlayCustomSizeType.value,
+											label: backgroundOverlayCustomSizeType.label,
+										} }
+										units={ [
 											{
-												value: 'left top',
-												label: __(
-													'Top Left',
+												name: __(
+													'PX',
 													'sureforms'
 												),
+												unitValue: 'px',
 											},
 											{
-												value: 'center top',
-												label: __(
-													'Top Center',
+												name: __(
+													'%',
 													'sureforms'
 												),
+												unitValue: '%',
 											},
 											{
-												value: 'right top',
-												label: __(
-													'Top Right',
+												name: __(
+													'EM',
 													'sureforms'
 												),
-											},
-											{
-												value: 'center top',
-												label: __(
-													'Center Top',
-													'sureforms'
-												),
-											},
-											{
-												value: 'center center',
-												label: __(
-													'Center Center',
-													'sureforms'
-												),
-											},
-											{
-												value: 'center bottom',
-												label: __(
-													'Center Bottom',
-													'sureforms'
-												),
-											},
-											{
-												value: 'left bottom',
-												label: __(
-													'Bottom Left',
-													'sureforms'
-												),
-											},
-											{
-												value: 'center bottom',
-												label: __(
-													'Bottom Center',
-													'sureforms'
-												),
-											},
-											{
-												value: 'right bottom',
-												label: __(
-													'Bottom Right',
-													'sureforms'
-												),
+												unitValue: 'em',
 											},
 										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
+							</div>
+						</>
+					) }
+					{ imageOverlayResponsive && backgroundOverlayImage && (
+						<ResponsiveUAGImage
+							backgroundImage={ backgroundOverlayImage }
+							setAttributes={ setAttributes }
+						/>
+					) }
+					{ imageOverlayResponsive &&
+						backgroundOverlayImage &&
+						setOverlayImage && (
+						<>
+							<div className="uag-background-image-position">
+								<MultiButtonsControl
+									setAttributes={ setAttributes }
+									label={ __(
+										'Image Position',
+										'sureforms'
+									) }
+									data={ {
+										value: customOverlayPosition.value,
+										label: customOverlayPosition.label,
+									} }
+									options={ [
+										{
+											value: 'default',
+											label: __(
+												'Default',
+												'sureforms'
+											),
+										},
+										{
+											value: 'custom',
+											label: __(
+												'Custom',
+												'sureforms'
+											),
+										},
+									] }
+								/>
+							</div>
+							{ 'custom' !== customOverlayPosition.value && (
+								<div className="uag-background-image-position">
+									<ResponsiveUAGFocalPointPicker
+										backgroundPosition={
+											backgroundOverlayPosition
+										}
+										setAttributes={ setAttributes }
+										backgroundImage={
+											backgroundOverlayImage
+										}
 									/>
 								</div>
-								<div className="uag-background-image-attachment">
-									<SelectControl
-										label={ __(
-											'Attachment',
-											'sureforms'
-										) }
-										value={
-											backgroundOverlayAttachment.value
-										}
-										onChange={ ( value ) =>
-											setAttributes( {
-												[ backgroundOverlayAttachment.label ]:
-													value,
-											} )
-										}
-										options={ [
+							) }
+							{ 'custom' === customOverlayPosition.value && (
+								<>
+									<div className="uag-background-image-position">
+										<ResponsiveSlider
+											label={ __(
+												'X Position',
+												'sureforms'
+											) }
+											data={ {
+												desktop: {
+													value: xPositionOverlayDesktop.value,
+													label: 'xPositionOverlayDesktop',
+													unit: {
+														value: xPositionOverlayType.value,
+														label: 'xPositionOverlayType',
+													},
+												},
+												tablet: {
+													value: xPositionOverlayTablet.value,
+													label: 'xPositionOverlayTablet',
+													unit: {
+														value: xPositionOverlayTypeTablet.value,
+														label: 'xPositionOverlayTypeTablet',
+													},
+												},
+												mobile: {
+													value: xPositionOverlayMobile.value,
+													label: 'xPositionOverlayMobile',
+													unit: {
+														value: xPositionOverlayTypeMobile.value,
+														label: 'xPositionOverlayTypeMobile',
+													},
+												},
+											} }
+											limitMin={ {
+												px: -800,
+												'%': -100,
+												em: -100,
+												vw: -100,
+											} }
+											limitMax={ {
+												px: 800,
+												'%': 100,
+												em: 100,
+												vw: 100,
+											} }
+											units={ [
+												{
+													name: __(
+														'PX',
+														'sureforms'
+													),
+													unitValue: 'px',
+												},
+												{
+													name: __(
+														'%',
+														'sureforms'
+													),
+													unitValue: '%',
+												},
+												{
+													name: __(
+														'EM',
+														'sureforms'
+													),
+													unitValue: 'em',
+												},
+												{
+													name: __(
+														'VW',
+														'sureforms'
+													),
+													unitValue: 'vw',
+												},
+											] }
+											setAttributes={ setAttributes }
+										/>
+									</div>
+									<div className="uag-background-image-position">
+										<ResponsiveSlider
+											label={ __(
+												'Y Position',
+												'sureforms'
+											) }
+											data={ {
+												desktop: {
+													value: yPositionOverlayDesktop.value,
+													label: 'yPositionOverlayDesktop',
+													unit: {
+														value: yPositionOverlayType.value,
+														label: 'yPositionOverlayType',
+													},
+												},
+												tablet: {
+													value: yPositionOverlayTablet.value,
+													label: 'yPositionOverlayTablet',
+													unit: {
+														value: yPositionOverlayTypeTablet.value,
+														label: 'yPositionOverlayTypeTablet',
+													},
+												},
+												mobile: {
+													value: yPositionOverlayMobile.value,
+													label: 'yPositionOverlayMobile',
+													unit: {
+														value: yPositionOverlayTypeMobile.value,
+														label: 'yPositionOverlayTypeMobile',
+													},
+												},
+											} }
+											limitMin={ {
+												px: -800,
+												'%': -100,
+												em: -100,
+												vh: -100,
+											} }
+											limitMax={ {
+												px: 800,
+												'%': 100,
+												em: 100,
+												vh: 100,
+											} }
+											units={ [
+												{
+													name: __(
+														'PX',
+														'sureforms'
+													),
+													unitValue: 'px',
+												},
+												{
+													name: __(
+														'%',
+														'sureforms'
+													),
+													unitValue: '%',
+												},
+												{
+													name: __(
+														'EM',
+														'sureforms'
+													),
+													unitValue: 'em',
+												},
+												{
+													name: __(
+														'VH',
+														'sureforms'
+													),
+													unitValue: 'vh',
+												},
+											] }
+											setAttributes={ setAttributes }
+										/>
+									</div>
+								</>
+							) }
+							<div className="uag-background-image-attachment">
+								<ResponsiveSelectControl
+									label={ __(
+										'Attachment',
+										'sureforms'
+									) }
+									data={ backgroundOverlayAttachment }
+									options={ {
+										desktop: [
 											{
 												value: 'fixed',
 												label: __(
@@ -467,23 +904,20 @@ const Background = ( props ) => {
 													'sureforms'
 												),
 											},
-										] }
-									/>
-								</div>
-								<div className="uag-background-blend-mode">
-									<SelectControl
-										label={ __(
-											'Blend Mode',
-											'sureforms'
-										) }
-										value={ overlayBlendMode.value }
-										onChange={ ( value ) =>
-											setAttributes( {
-												[ overlayBlendMode.label ]:
-													value,
-											} )
-										}
-										options={ [
+										],
+									} }
+									setAttributes={ setAttributes }
+								/>
+							</div>
+							<div className="uag-background-blend-mode">
+								<ResponsiveSelectControl
+									label={ __(
+										'Blend Mode',
+										'sureforms'
+									) }
+									data={ overlayBlendMode }
+									options={ {
+										desktop: [
 											{
 												value: 'normal',
 												label: __(
@@ -547,20 +981,17 @@ const Background = ( props ) => {
 													'sureforms'
 												),
 											},
-										] }
-									/>
-								</div>
-								<div className="uag-background-image-repeat">
-									<SelectControl
-										label={ __( 'Repeat', 'sureforms' ) }
-										value={ backgroundOverlayRepeat.value }
-										onChange={ ( value ) =>
-											setAttributes( {
-												[ backgroundOverlayRepeat.label ]:
-													value,
-											} )
-										}
-										options={ [
+										],
+									} }
+									setAttributes={ setAttributes }
+								/>
+							</div>
+							<div className="uag-background-image-repeat">
+								<ResponsiveSelectControl
+									label={ __( 'Repeat', 'sureforms' ) }
+									data={ backgroundOverlayRepeat }
+									options={ {
+										desktop: [
 											{
 												value: 'no-repeat',
 												label: __(
@@ -589,114 +1020,35 @@ const Background = ( props ) => {
 													'sureforms'
 												),
 											},
-										] }
-									/>
-								</div>
-								<div className="uag-background-image-size">
-									<SelectControl
-										label={ __( 'Size', 'sureforms' ) }
-										value={ backgroundOverlaySize.value }
-										onChange={ ( value ) =>
-											setAttributes( {
-												[ backgroundOverlaySize.label ]:
-													value,
-											} )
-										}
-										options={ bgSizeOptions }
-									/>
-									{ 'custom' ===
-										backgroundOverlaySize.value &&
-										backgroundOverlayCustomSize && (
-											<ResponsiveSlider
-												label={ __(
-													'Width',
-													'sureforms'
-												) }
-												data={ {
-													desktop: {
-														value: backgroundOverlayCustomSize
-															.desktop.value,
-														label: backgroundOverlayCustomSize
-															.desktop.label,
-													},
-													tablet: {
-														value: backgroundOverlayCustomSize
-															.tablet.value,
-														label: backgroundOverlayCustomSize
-															.tablet.label,
-													},
-													mobile: {
-														value: backgroundOverlayCustomSize
-															.mobile.value,
-														label: backgroundOverlayCustomSize
-															.mobile.label,
-													},
-												} }
-												min={ 0 }
-												limitMax={ {
-													px: 1600,
-													'%': 100,
-													em: 574,
-												} }
-												unit={ {
-													value: backgroundOverlayCustomSizeType.value,
-													label: backgroundOverlayCustomSizeType.label,
-												} }
-												units={ [
-													{
-														name: __(
-															'PX',
-															'sureforms'
-														),
-														unitValue: 'px',
-													},
-													{
-														name: __(
-															'%',
-															'sureforms'
-														),
-														unitValue: '%',
-													},
-													{
-														name: __(
-															'EM',
-															'sureforms'
-														),
-														unitValue: 'em',
-													},
-												] }
-												setAttributes={ setAttributes }
-											/>
-										) }
-								</div>
-							</>
-						) }
-					{ imageOverlayResponsive && backgroundOverlayImage && (
-						<ResponsiveUAGImage
-							backgroundImage={ backgroundOverlayImage }
-							setAttributes={ setAttributes }
-						/>
-					) }
-					{ imageOverlayResponsive &&
-						backgroundOverlayImage &&
-						setOverlayImage && (
-							<>
-								<div className="uag-background-image-position">
-									<MultiButtonsControl
-										setAttributes={ setAttributes }
-										label={ __(
-											'Image Position',
-											'sureforms'
-										) }
-										data={ {
-											value: customOverlayPosition.value,
-											label: customOverlayPosition.label,
-										} }
-										options={ [
+										],
+									} }
+									setAttributes={ setAttributes }
+								/>
+							</div>
+							<div className="uag-background-image-size">
+								<ResponsiveSelectControl
+									label={ __( 'Size', 'sureforms' ) }
+									data={ backgroundOverlaySize }
+									options={ {
+										desktop: [
 											{
-												value: 'default',
+												value: 'auto',
 												label: __(
-													'Default',
+													'Auto',
+													'sureforms'
+												),
+											},
+											{
+												value: 'cover',
+												label: __(
+													'Cover',
+													'sureforms'
+												),
+											},
+											{
+												value: 'contain',
+												label: __(
+													'Contain',
 													'sureforms'
 												),
 											},
@@ -707,413 +1059,61 @@ const Background = ( props ) => {
 													'sureforms'
 												),
 											},
-										] }
-									/>
-								</div>
-								{ 'custom' !== customOverlayPosition.value && (
-									<div className="uag-background-image-position">
-										<ResponsiveUAGFocalPointPicker
-											backgroundPosition={
-												backgroundOverlayPosition
-											}
-											setAttributes={ setAttributes }
-											backgroundImage={
-												backgroundOverlayImage
-											}
-										/>
-									</div>
-								) }
-								{ 'custom' === customOverlayPosition.value && (
-									<>
-										<div className="uag-background-image-position">
-											<ResponsiveSlider
-												label={ __(
-													'X Position',
-													'sureforms'
-												) }
-												data={ {
-													desktop: {
-														value: xPositionOverlayDesktop.value,
-														label: 'xPositionOverlayDesktop',
-														unit: {
-															value: xPositionOverlayType.value,
-															label: 'xPositionOverlayType',
-														},
-													},
-													tablet: {
-														value: xPositionOverlayTablet.value,
-														label: 'xPositionOverlayTablet',
-														unit: {
-															value: xPositionOverlayTypeTablet.value,
-															label: 'xPositionOverlayTypeTablet',
-														},
-													},
-													mobile: {
-														value: xPositionOverlayMobile.value,
-														label: 'xPositionOverlayMobile',
-														unit: {
-															value: xPositionOverlayTypeMobile.value,
-															label: 'xPositionOverlayTypeMobile',
-														},
-													},
-												} }
-												limitMin={ {
-													px: -800,
-													'%': -100,
-													em: -100,
-													vw: -100,
-												} }
-												limitMax={ {
-													px: 800,
-													'%': 100,
-													em: 100,
-													vw: 100,
-												} }
-												units={ [
-													{
-														name: __(
-															'PX',
-															'sureforms'
-														),
-														unitValue: 'px',
-													},
-													{
-														name: __(
-															'%',
-															'sureforms'
-														),
-														unitValue: '%',
-													},
-													{
-														name: __(
-															'EM',
-															'sureforms'
-														),
-														unitValue: 'em',
-													},
-													{
-														name: __(
-															'VW',
-															'sureforms'
-														),
-														unitValue: 'vw',
-													},
-												] }
-												setAttributes={ setAttributes }
-											/>
-										</div>
-										<div className="uag-background-image-position">
-											<ResponsiveSlider
-												label={ __(
-													'Y Position',
-													'sureforms'
-												) }
-												data={ {
-													desktop: {
-														value: yPositionOverlayDesktop.value,
-														label: 'yPositionOverlayDesktop',
-														unit: {
-															value: yPositionOverlayType.value,
-															label: 'yPositionOverlayType',
-														},
-													},
-													tablet: {
-														value: yPositionOverlayTablet.value,
-														label: 'yPositionOverlayTablet',
-														unit: {
-															value: yPositionOverlayTypeTablet.value,
-															label: 'yPositionOverlayTypeTablet',
-														},
-													},
-													mobile: {
-														value: yPositionOverlayMobile.value,
-														label: 'yPositionOverlayMobile',
-														unit: {
-															value: yPositionOverlayTypeMobile.value,
-															label: 'yPositionOverlayTypeMobile',
-														},
-													},
-												} }
-												limitMin={ {
-													px: -800,
-													'%': -100,
-													em: -100,
-													vh: -100,
-												} }
-												limitMax={ {
-													px: 800,
-													'%': 100,
-													em: 100,
-													vh: 100,
-												} }
-												units={ [
-													{
-														name: __(
-															'PX',
-															'sureforms'
-														),
-														unitValue: 'px',
-													},
-													{
-														name: __(
-															'%',
-															'sureforms'
-														),
-														unitValue: '%',
-													},
-													{
-														name: __(
-															'EM',
-															'sureforms'
-														),
-														unitValue: 'em',
-													},
-													{
-														name: __(
-															'VH',
-															'sureforms'
-														),
-														unitValue: 'vh',
-													},
-												] }
-												setAttributes={ setAttributes }
-											/>
-										</div>
-									</>
-								) }
-								<div className="uag-background-image-attachment">
-									<ResponsiveSelectControl
-										label={ __(
-											'Attachment',
-											'sureforms'
-										) }
-										data={ backgroundOverlayAttachment }
-										options={ {
-											desktop: [
-												{
-													value: 'fixed',
-													label: __(
-														'Fixed',
-														'sureforms'
-													),
-												},
-												{
-													value: 'scroll',
-													label: __(
-														'Scroll',
-														'sureforms'
-													),
-												},
-											],
-										} }
-										setAttributes={ setAttributes }
-									/>
-								</div>
-								<div className="uag-background-blend-mode">
-									<ResponsiveSelectControl
-										label={ __(
-											'Blend Mode',
-											'sureforms'
-										) }
-										data={ overlayBlendMode }
-										options={ {
-											desktop: [
-												{
-													value: 'normal',
-													label: __(
-														'Normal',
-														'sureforms'
-													),
-												},
-												{
-													value: 'multiply',
-													label: __(
-														'Multiply',
-														'sureforms'
-													),
-												},
-												{
-													value: 'screen',
-													label: __(
-														'Screen',
-														'sureforms'
-													),
-												},
-												{
-													value: 'overlay',
-													label: __(
-														'Overlay',
-														'sureforms'
-													),
-												},
-												{
-													value: 'darken',
-													label: __(
-														'Darken',
-														'sureforms'
-													),
-												},
-												{
-													value: 'lighten',
-													label: __(
-														'Lighten',
-														'sureforms'
-													),
-												},
-												{
-													value: 'color-dodge',
-													label: __(
-														'Color Dodge',
-														'sureforms'
-													),
-												},
-												{
-													value: 'saturation',
-													label: __(
-														'Saturation',
-														'sureforms'
-													),
-												},
-												{
-													value: 'color',
-													label: __(
-														'Color',
-														'sureforms'
-													),
-												},
-											],
-										} }
-										setAttributes={ setAttributes }
-									/>
-								</div>
-								<div className="uag-background-image-repeat">
-									<ResponsiveSelectControl
-										label={ __( 'Repeat', 'sureforms' ) }
-										data={ backgroundOverlayRepeat }
-										options={ {
-											desktop: [
-												{
-													value: 'no-repeat',
-													label: __(
-														'No Repeat',
-														'sureforms'
-													),
-												},
-												{
-													value: 'repeat',
-													label: __(
-														'Repeat',
-														'sureforms'
-													),
-												},
-												{
-													value: 'repeat-x',
-													label: __(
-														'Repeat-x',
-														'sureforms'
-													),
-												},
-												{
-													value: 'repeat-y',
-													label: __(
-														'Repeat-y',
-														'sureforms'
-													),
-												},
-											],
-										} }
-										setAttributes={ setAttributes }
-									/>
-								</div>
-								<div className="uag-background-image-size">
-									<ResponsiveSelectControl
-										label={ __( 'Size', 'sureforms' ) }
-										data={ backgroundOverlaySize }
-										options={ {
-											desktop: [
-												{
-													value: 'auto',
-													label: __(
-														'Auto',
-														'sureforms'
-													),
-												},
-												{
-													value: 'cover',
-													label: __(
-														'Cover',
-														'sureforms'
-													),
-												},
-												{
-													value: 'contain',
-													label: __(
-														'Contain',
-														'sureforms'
-													),
-												},
-												{
-													value: 'custom',
-													label: __(
-														'Custom',
-														'sureforms'
-													),
-												},
-											],
-										} }
-										setAttributes={ setAttributes }
-									/>
-									{ 'custom' ===
+										],
+									} }
+									setAttributes={ setAttributes }
+								/>
+								{ 'custom' ===
 										backgroundOverlaySize[ deviceType ]
 											.value &&
 										backgroundOverlayCustomSize && (
-											<ResponsiveSlider
-												label={ __(
-													'Width',
-													'sureforms'
-												) }
-												data={
-													backgroundOverlayCustomSize
-												}
-												min={ 0 }
-												limitMax={ {
-													px: 1600,
-													'%': 100,
-													em: 574,
-												} }
-												unit={ {
-													value: backgroundOverlayCustomSizeType.value,
-													label: backgroundOverlayCustomSizeType.label,
-												} }
-												units={ [
-													{
-														name: __(
-															'PX',
-															'sureforms'
-														),
-														unitValue: 'px',
-													},
-													{
-														name: __(
-															'%',
-															'sureforms'
-														),
-														unitValue: '%',
-													},
-													{
-														name: __(
-															'EM',
-															'sureforms'
-														),
-														unitValue: 'em',
-													},
-												] }
-												setAttributes={ setAttributes }
-											/>
+									<ResponsiveSlider
+										label={ __(
+											'Width',
+											'sureforms'
 										) }
-								</div>
-							</>
-						) }
+										data={
+											backgroundOverlayCustomSize
+										}
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundOverlayCustomSizeType.value,
+											label: backgroundOverlayCustomSizeType.label,
+										} }
+										units={ [
+											{
+												name: __(
+													'PX',
+													'sureforms'
+												),
+												unitValue: 'px',
+											},
+											{
+												name: __(
+													'%',
+													'sureforms'
+												),
+												unitValue: '%',
+											},
+											{
+												name: __(
+													'EM',
+													'sureforms'
+												),
+												unitValue: 'em',
+											},
+										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
+							</div>
+						</>
+					) }
 					{ renderOverlayControls() }
 				</div>
 			</>
@@ -1163,147 +1163,147 @@ const Background = ( props ) => {
 				{ backgroundType.value === 'image' &&
 					( ( imageResponsive && setImage ) ||
 						( ! imageResponsive && backgroundImage?.value ) ) && (
-						<>
-							{ buttonControl() }
-							{ 'color' === overlayType.value && (
-								<>
-									<div className="uag-background-image-overlay-color">
-										<AdvancedPopColorControl
-											label={ __(
-												'Image Overlay Color',
-												'sureforms'
-											) }
-											colorValue={
-												backgroundImageColor.value
-											}
-											data={ {
-												value: backgroundImageColor.value,
-												label: backgroundImageColor.label,
-											} }
-											setAttributes={ setAttributes }
-										/>
-									</div>
-									{ renderOverlayControls() }
-								</>
-							) }
-							{ 'gradient' === overlayType.value && (
-								<>
-									<div className="uag-background-image-overlay-gradient">
-										<GradientSettings
-											backgroundGradient={
-												props.backgroundOverlayGradient
-											}
-											setAttributes={ setAttributes }
-											gradientType={ props.gradientType }
-											backgroundGradientColor2={
-												props.backgroundGradientColor2
-											}
-											backgroundGradientColor1={
-												props.backgroundGradientColor1
-											}
-											backgroundGradientType={
-												props.backgroundGradientType
-											}
-											backgroundGradientLocation1={
-												props.backgroundGradientLocation1
-											}
-											backgroundGradientLocation2={
-												props.backgroundGradientLocation2
-											}
-											backgroundGradientAngle={
-												props.backgroundGradientAngle
-											}
-										/>
-									</div>
-									{ renderOverlayControls() }
-								</>
-							) }
-							{ 'image' === overlayType.value &&
+					<>
+						{ buttonControl() }
+						{ 'color' === overlayType.value && (
+							<>
+								<div className="uag-background-image-overlay-color">
+									<AdvancedPopColorControl
+										label={ __(
+											'Image Overlay Color',
+											'sureforms'
+										) }
+										colorValue={
+											backgroundImageColor.value
+										}
+										data={ {
+											value: backgroundImageColor.value,
+											label: backgroundImageColor.label,
+										} }
+										setAttributes={ setAttributes }
+									/>
+								</div>
+								{ renderOverlayControls() }
+							</>
+						) }
+						{ 'gradient' === overlayType.value && (
+							<>
+								<div className="uag-background-image-overlay-gradient">
+									<GradientSettings
+										backgroundGradient={
+											props.backgroundOverlayGradient
+										}
+										setAttributes={ setAttributes }
+										gradientType={ props.gradientType }
+										backgroundGradientColor2={
+											props.backgroundGradientColor2
+										}
+										backgroundGradientColor1={
+											props.backgroundGradientColor1
+										}
+										backgroundGradientType={
+											props.backgroundGradientType
+										}
+										backgroundGradientLocation1={
+											props.backgroundGradientLocation1
+										}
+										backgroundGradientLocation2={
+											props.backgroundGradientLocation2
+										}
+										backgroundGradientAngle={
+											props.backgroundGradientAngle
+										}
+									/>
+								</div>
+								{ renderOverlayControls() }
+							</>
+						) }
+						{ 'image' === overlayType.value &&
 								renderOverlayImageControls() }
-						</>
-					) }
+					</>
+				) }
 				{ backgroundType.value === 'video' &&
 					'video' === backgroundType.value &&
 					backgroundVideo.value &&
 					backgroundVideoType.value && (
-						<div className="uag-background-video-overlay">
-							{ overlayType &&
+					<div className="uag-background-video-overlay">
+						{ overlayType &&
 								backgroundVideo &&
 								backgroundVideo.value && (
+							<>
+								{ buttonControl() }
+								{ 'color' === overlayType.value && (
 									<>
-										{ buttonControl() }
-										{ 'color' === overlayType.value && (
-											<>
-												<div className="uag-background-image-overlay-color">
-													<AdvancedPopColorControl
-														label={ __(
-															'Image Overlay Color',
-															'sureforms'
-														) }
-														colorValue={
-															backgroundVideoColor.value
-														}
-														data={ {
-															value: backgroundVideoColor.value,
-															label: backgroundVideoColor.label,
-														} }
-														setAttributes={
-															setAttributes
-														}
-														onOpacityChange={
-															onOpacityChange
-														}
-														backgroundVideoOpacity={ {
-															value: backgroundVideoOpacity.value,
-															label: backgroundVideoOpacity.label,
-														} }
-													/>
-												</div>
-												{ renderOverlayControls() }
-											</>
-										) }
-										{ gradientOverlay.value &&
-											'gradient' ===
-												overlayType.value && (
-												<>
-													<div className="uag-background-image-overlay-gradient">
-														<GradientSettings
-															backgroundGradient={
-																props.backgroundOverlayGradient
-															}
-															setAttributes={
-																setAttributes
-															}
-															gradientType={
-																props.gradientType
-															}
-															backgroundGradientColor2={
-																props.backgroundGradientColor2
-															}
-															backgroundGradientColor1={
-																props.backgroundGradientColor1
-															}
-															backgroundGradientType={
-																props.backgroundGradientType
-															}
-															backgroundGradientLocation1={
-																props.backgroundGradientLocation1
-															}
-															backgroundGradientLocation2={
-																props.backgroundGradientLocation2
-															}
-															backgroundGradientAngle={
-																props.backgroundGradientAngle
-															}
-														/>
-													</div>
-													{ renderOverlayControls() }
-												</>
-											) }
+										<div className="uag-background-image-overlay-color">
+											<AdvancedPopColorControl
+												label={ __(
+													'Image Overlay Color',
+													'sureforms'
+												) }
+												colorValue={
+													backgroundVideoColor.value
+												}
+												data={ {
+													value: backgroundVideoColor.value,
+													label: backgroundVideoColor.label,
+												} }
+												setAttributes={
+													setAttributes
+												}
+												onOpacityChange={
+													onOpacityChange
+												}
+												backgroundVideoOpacity={ {
+													value: backgroundVideoOpacity.value,
+													label: backgroundVideoOpacity.label,
+												} }
+											/>
+										</div>
+										{ renderOverlayControls() }
 									</>
 								) }
-						</div>
-					) }
+								{ gradientOverlay.value &&
+											'gradient' ===
+												overlayType.value && (
+									<>
+										<div className="uag-background-image-overlay-gradient">
+											<GradientSettings
+												backgroundGradient={
+													props.backgroundOverlayGradient
+												}
+												setAttributes={
+													setAttributes
+												}
+												gradientType={
+													props.gradientType
+												}
+												backgroundGradientColor2={
+													props.backgroundGradientColor2
+												}
+												backgroundGradientColor1={
+													props.backgroundGradientColor1
+												}
+												backgroundGradientType={
+													props.backgroundGradientType
+												}
+												backgroundGradientLocation1={
+													props.backgroundGradientLocation1
+												}
+												backgroundGradientLocation2={
+													props.backgroundGradientLocation2
+												}
+												backgroundGradientAngle={
+													props.backgroundGradientAngle
+												}
+											/>
+										</div>
+										{ renderOverlayControls() }
+									</>
+								) }
+							</>
+						) }
+					</div>
+				) }
 			</>
 		);
 	};
@@ -1501,64 +1501,64 @@ const Background = ( props ) => {
 								/>
 								{ 'custom' === backgroundSize.value &&
 									backgroundCustomSize && (
-										<ResponsiveSlider
-											label={ __( 'Width', 'sureforms' ) }
-											data={ {
-												desktop: {
-													value: backgroundCustomSize
-														.desktop.value,
-													label: backgroundCustomSize
-														.desktop.label,
-												},
-												tablet: {
-													value: backgroundCustomSize
-														.tablet.value,
-													label: backgroundCustomSize
-														.tablet.label,
-												},
-												mobile: {
-													value: backgroundCustomSize
-														.mobile.value,
-													label: backgroundCustomSize
-														.mobile.label,
-												},
-											} }
-											min={ 0 }
-											limitMax={ {
-												px: 1600,
-												'%': 100,
-												em: 574,
-											} }
-											unit={ {
-												value: backgroundCustomSizeType.value,
-												label: backgroundCustomSizeType.label,
-											} }
-											units={ [
-												{
-													name: __(
-														'PX',
-														'sureforms'
-													),
-													unitValue: 'px',
-												},
-												{
-													name: __(
-														'%',
-														'sureforms'
-													),
-													unitValue: '%',
-												},
-												{
-													name: __(
-														'EM',
-														'sureforms'
-													),
-													unitValue: 'em',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									) }
+									<ResponsiveSlider
+										label={ __( 'Width', 'sureforms' ) }
+										data={ {
+											desktop: {
+												value: backgroundCustomSize
+													.desktop.value,
+												label: backgroundCustomSize
+													.desktop.label,
+											},
+											tablet: {
+												value: backgroundCustomSize
+													.tablet.value,
+												label: backgroundCustomSize
+													.tablet.label,
+											},
+											mobile: {
+												value: backgroundCustomSize
+													.mobile.value,
+												label: backgroundCustomSize
+													.mobile.label,
+											},
+										} }
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundCustomSizeType.value,
+											label: backgroundCustomSizeType.label,
+										} }
+										units={ [
+											{
+												name: __(
+													'PX',
+													'sureforms'
+												),
+												unitValue: 'px',
+											},
+											{
+												name: __(
+													'%',
+													'sureforms'
+												),
+												unitValue: '%',
+											},
+											{
+												name: __(
+													'EM',
+													'sureforms'
+												),
+												unitValue: 'em',
+											},
+										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
 							</div>
 						</>
 					) }
@@ -1867,45 +1867,45 @@ const Background = ( props ) => {
 								{ 'custom' ===
 									backgroundSize[ deviceType ].value &&
 									backgroundCustomSize && (
-										<ResponsiveSlider
-											label={ __( 'Width', 'sureforms' ) }
-											data={ backgroundCustomSize }
-											min={ 0 }
-											limitMax={ {
-												px: 1600,
-												'%': 100,
-												em: 574,
-											} }
-											unit={ {
-												value: backgroundCustomSizeType.value,
-												label: backgroundCustomSizeType.label,
-											} }
-											units={ [
-												{
-													name: __(
-														'PX',
-														'sureforms'
-													),
-													unitValue: 'px',
-												},
-												{
-													name: __(
-														'%',
-														'sureforms'
-													),
-													unitValue: '%',
-												},
-												{
-													name: __(
-														'EM',
-														'sureforms'
-													),
-													unitValue: 'em',
-												},
-											] }
-											setAttributes={ setAttributes }
-										/>
-									) }
+									<ResponsiveSlider
+										label={ __( 'Width', 'sureforms' ) }
+										data={ backgroundCustomSize }
+										min={ 0 }
+										limitMax={ {
+											px: 1600,
+											'%': 100,
+											em: 574,
+										} }
+										unit={ {
+											value: backgroundCustomSizeType.value,
+											label: backgroundCustomSizeType.label,
+										} }
+										units={ [
+											{
+												name: __(
+													'PX',
+													'sureforms'
+												),
+												unitValue: 'px',
+											},
+											{
+												name: __(
+													'%',
+													'sureforms'
+												),
+												unitValue: '%',
+											},
+											{
+												name: __(
+													'EM',
+													'sureforms'
+												),
+												unitValue: 'em',
+											},
+										] }
+										setAttributes={ setAttributes }
+									/>
+								) }
 							</div>
 						</>
 					) }
@@ -1915,80 +1915,80 @@ const Background = ( props ) => {
 						( ( imageResponsive && setImage ) ||
 							( ! imageResponsive &&
 								backgroundImage?.value ) ) && (
-							<>
-								<div className="uag-background-image-overlay-type">
-									<MultiButtonsControl
-										setAttributes={ setAttributes }
-										label={ __(
-											'Overlay Type',
-											'sureforms'
-										) }
-										data={ {
-											value: overlayType.value,
-											label: overlayType.label,
-										} }
-										className="uagb-multi-button-alignment-control"
-										options={ overlayOptions }
-										showIcons={ false }
-									/>
-								</div>
-								{ 'color' === overlayType.value && (
-									<>
-										<div className="uag-background-image-overlay-color">
-											<AdvancedPopColorControl
-												label={ __(
-													'Image Overlay Color',
-													'sureforms'
-												) }
-												colorValue={
-													backgroundImageColor.value
-												}
-												data={ {
-													value: backgroundImageColor.value,
-													label: backgroundImageColor.label,
-												} }
-												setAttributes={ setAttributes }
-											/>
-										</div>
-										{ renderOverlayControls() }
-									</>
-								) }
-								{ 'gradient' === overlayType.value && (
-									<>
-										<div className="uag-background-image-overlay-gradient">
-											<GradientSettings
-												backgroundGradient={
-													props.backgroundGradient
-												}
-												setAttributes={ setAttributes }
-												gradientType={
-													props.gradientType
-												}
-												backgroundGradientColor2={
-													props.backgroundGradientColor2
-												}
-												backgroundGradientColor1={
-													props.backgroundGradientColor1
-												}
-												backgroundGradientType={
-													props.backgroundGradientType
-												}
-												backgroundGradientLocation1={
-													props.backgroundGradientLocation1
-												}
-												backgroundGradientLocation2={
-													props.backgroundGradientLocation2
-												}
-												backgroundGradientAngle={
-													props.backgroundGradientAngle
-												}
-											/>
-										</div>
-										{ renderOverlayControls() }
-									</>
-								) }
-							</>
-						) }
+						<>
+							<div className="uag-background-image-overlay-type">
+								<MultiButtonsControl
+									setAttributes={ setAttributes }
+									label={ __(
+										'Overlay Type',
+										'sureforms'
+									) }
+									data={ {
+										value: overlayType.value,
+										label: overlayType.label,
+									} }
+									className="uagb-multi-button-alignment-control"
+									options={ overlayOptions }
+									showIcons={ false }
+								/>
+							</div>
+							{ 'color' === overlayType.value && (
+								<>
+									<div className="uag-background-image-overlay-color">
+										<AdvancedPopColorControl
+											label={ __(
+												'Image Overlay Color',
+												'sureforms'
+											) }
+											colorValue={
+												backgroundImageColor.value
+											}
+											data={ {
+												value: backgroundImageColor.value,
+												label: backgroundImageColor.label,
+											} }
+											setAttributes={ setAttributes }
+										/>
+									</div>
+									{ renderOverlayControls() }
+								</>
+							) }
+							{ 'gradient' === overlayType.value && (
+								<>
+									<div className="uag-background-image-overlay-gradient">
+										<GradientSettings
+											backgroundGradient={
+												props.backgroundGradient
+											}
+											setAttributes={ setAttributes }
+											gradientType={
+												props.gradientType
+											}
+											backgroundGradientColor2={
+												props.backgroundGradientColor2
+											}
+											backgroundGradientColor1={
+												props.backgroundGradientColor1
+											}
+											backgroundGradientType={
+												props.backgroundGradientType
+											}
+											backgroundGradientLocation1={
+												props.backgroundGradientLocation1
+											}
+											backgroundGradientLocation2={
+												props.backgroundGradientLocation2
+											}
+											backgroundGradientAngle={
+												props.backgroundGradientAngle
+											}
+										/>
+									</div>
+									{ renderOverlayControls() }
+								</>
+							) }
+						</>
+					) }
 				</div>
 			) }
 			{ gradientOverlay.value && 'gradient' === backgroundType.value && (

@@ -114,8 +114,8 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 		const url = media?.sizes?.thumbnail?.url
 			? media?.sizes?.thumbnail?.url
 			: media?.url
-			? media.url
-			: '';
+				? media.url
+				: '';
 		changeOption( { image: url }, index );
 	};
 
