@@ -7,7 +7,11 @@ import { ToggleControl, Popover } from '@wordpress/components';
 import svgIcons from '@Image/single-form-logo.json';
 import parse from 'html-react-parser';
 
-const EmailNotification = ( { emailNotificationData, toast } ) => {
+const EmailNotification = ( {
+	setHasValidationErrors,
+	emailNotificationData,
+	toast,
+} ) => {
 	const [ showConfirmation, setShowConfirmation ] = useState( false );
 	const [ currData, setCurrData ] = useState( [] );
 	const [ isPopup, setIsPopup ] = useState( null );
@@ -20,7 +24,9 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		setCurrData( data );
 	};
 	const handleDelete = ( data ) => {
-		const filterData = emailNotificationData.filter( ( el ) => el.id !== data.id );
+		const filterData = emailNotificationData.filter(
+			( el ) => el.id !== data.id
+		);
 		updateMeta( '_srfm_email_notification', filterData );
 		toast.dismiss();
 		toast.success(
@@ -42,16 +48,24 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		);
 	};
 	const handleUpdateEmailData = ( newData ) => {
-		const { email_to, subject } = newData;
+		let { email_to, subject } = newData;
 		let hasError = false;
 
+		// Trim off the empty blank white spaces for validation.
+		email_to = email_to.trim();
+		subject = subject.trim();
+
 		if ( ! email_to ) {
-			document.querySelector( '.srfm-modal-email-to' ).classList.add( 'required-error' );
+			document
+				.querySelector( '.srfm-modal-email-to' )
+				.classList.add( 'required-error' );
 			hasError = true;
 		}
 
 		if ( ! subject ) {
-			document.querySelector( '.srfm-modal-subject' ).classList.add( 'required-error' );
+			document
+				.querySelector( '.srfm-modal-subject' )
+				.classList.add( 'required-error' );
 			hasError = true;
 		}
 
@@ -61,7 +75,8 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 				__( 'Please fill out the required field.', 'sureforms' ),
 				{ duration: 500 }
 			);
-			return;
+			setHasValidationErrors( true );
+			return false;
 		}
 
 		let currEmailData = emailNotificationData;
@@ -79,12 +94,7 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		}
 		updateMeta( '_srfm_email_notification', currEmailData );
 		toast.dismiss();
-		toast.success(
-			__( 'Email Notification updated successfully.', 'sureforms' ),
-			{
-				duration: 500,
-			}
-		);
+		return true;
 	};
 	function updateMeta( option, value ) {
 		const option_array = {};
@@ -92,7 +102,6 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 		editPost( {
 			meta: option_array,
 		} );
-		setShowConfirmation( false );
 	}
 	const handleToggle = ( data ) => {
 		const updatedData = emailNotificationData.map( ( el ) => {
@@ -116,11 +125,19 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 			);
 		}
 	};
-	const handleBackNotifation = () => {
+	const handleBackNotification = () => {
 		setShowConfirmation( false );
+		setHasValidationErrors( false );
 	};
 	if ( showConfirmation ) {
-		return <EmailConfirmation handleConfirmEmail={ handleUpdateEmailData } handleBackNotifation={ handleBackNotifation } data={ currData } />;
+		return (
+			<EmailConfirmation
+				setHasValidationErrors={ setHasValidationErrors }
+				handleConfirmEmail={ handleUpdateEmailData }
+				handleBackNotification={ handleBackNotification }
+				data={ currData }
+			/>
+		);
 	}
 	return (
 		<div className="srfm-modal-content">
@@ -129,7 +146,10 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 					<span className="srfm-modal-inner-heading-text">
 						<h4>{ __( 'Email Notification', 'sureforms' ) }</h4>
 					</span>
-					<button onClick={ handleEdit } className="srfm-modal-inner-heading-button">
+					<button
+						onClick={ handleEdit }
+						className="srfm-modal-inner-heading-button"
+					>
 						{ __( 'Add Notification', 'sureforms' ) }
 					</button>
 				</div>
@@ -218,16 +238,36 @@ const EmailNotification = ( { emailNotificationData, toast } ) => {
 											<tfoot>
 												<tr className="srfm-modal-row">
 													<th className="srfm-modal-col-first">
-														<p className="srfm-modal-col-text">{ __( 'Status', 'sureforms' ) }</p>
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Status',
+																'sureforms'
+															) }
+														</p>
 													</th>
 													<th className="srfm-modal-col-second">
-														<p className="srfm-modal-col-text">{ __( 'Name', 'sureforms' ) }</p>
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Name',
+																'sureforms'
+															) }
+														</p>
 													</th>
 													<th className="srfm-modal-col-third">
-														<p className="srfm-modal-col-text">{ __( 'Subject', 'sureforms' ) }</p>
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Subject',
+																'sureforms'
+															) }
+														</p>
 													</th>
 													<th className="srfm-modal-col-fourth">
-														<p className="srfm-modal-col-text">{ __( 'Action', 'sureforms' ) }</p>
+														<p className="srfm-modal-col-text">
+															{ __(
+																'Action',
+																'sureforms'
+															) }
+														</p>
 													</th>
 												</tr>
 											</tfoot>

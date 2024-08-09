@@ -895,13 +895,17 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 			}
 
 			$selectors = [
-				'.wp-block-uagb-separator' => array_merge(
-					[
-						'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-						'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['separatorHeight'], $attr['separatorHeightType'] ),
-						'text-align'     => $attr['separatorAlign'],
-					]
-				),
+				'.wp-block-uagb-separator.uagb-block .wp-block-uagb-separator-wrapper' => [
+					'margin-top'     => Spec_Gb_Helper::get_css_value( $attr['blockTopMargin'], $attr['blockMarginUnit'] ),
+					'margin-right'   => Spec_Gb_Helper::get_css_value( $attr['blockRightMargin'], $attr['blockMarginUnit'] ),
+					'margin-bottom'  => Spec_Gb_Helper::get_css_value( $attr['blockBottomMargin'], $attr['blockMarginUnit'] ),
+					'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMargin'], $attr['blockMarginUnit'] ),
+					'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['blockTopPadding'], $attr['blockPaddingUnit'] ),
+					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPadding'], $attr['blockPaddingUnit'] ),
+					'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPadding'], $attr['blockPaddingUnit'] ),
+					'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPadding'], $attr['blockPaddingUnit'] ),
+					'text-align'     => $attr['separatorAlign'],
+				],
 				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => [
 					'font-family'     => $attr['elementTextFontFamily'],
 					'font-style'      => $attr['elementTextFontStyle'],
@@ -983,13 +987,17 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 				}
 			}
 			$t_selectors = [
-				'.wp-block-uagb-separator' => array_merge(
-					[
-						'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
-						'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['separatorHeightTablet'], $attr['separatorHeightType'] ),
-						'text-align'     => $attr['separatorAlignTablet'],
-					]
-				),
+				'.wp-block-uagb-separator.uagb-block .wp-block-uagb-separator-wrapper' => [
+					'margin-top'     => Spec_Gb_Helper::get_css_value( $attr['blockTopMarginTablet'], $attr['blockMarginUnit'] ),
+					'margin-right'   => Spec_Gb_Helper::get_css_value( $attr['blockRightMarginTablet'], $attr['blockMarginUnit'] ),
+					'margin-bottom'  => Spec_Gb_Helper::get_css_value( $attr['blockBottomMarginTablet'], $attr['blockMarginUnit'] ),
+					'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginTablet'], $attr['blockMarginUnit'] ),
+					'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['blockTopPaddingTablet'], $attr['blockPaddingUnit'] ),
+					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingTablet'], $attr['blockPaddingUnit'] ),
+					'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingTablet'], $attr['blockPaddingUnit'] ),
+					'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingTablet'], $attr['blockPaddingUnit'] ),
+					'text-align'     => $attr['separatorAlign'],
+				],
 				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => [
 					'font-family'     => $attr['elementTextFontFamily'],
 					'font-style'      => $attr['elementTextFontStyle'],
@@ -1073,13 +1081,17 @@ if ( ! class_exists( 'Spec_Block_Helper' ) ) {
 				}
 			}
 			$m_selectors = [
-				'.wp-block-uagb-separator' => array_merge(
-					[
-						'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
-						'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['separatorHeightMobile'], $attr['separatorHeightType'] ),
-						'text-align'     => $attr['separatorAlignMobile'],
-					]
-				),
+				'.wp-block-uagb-separator.uagb-block .wp-block-uagb-separator-wrapper' => [
+					'margin-top'     => Spec_Gb_Helper::get_css_value( $attr['blockTopMarginMobile'], $attr['blockMarginUnit'] ),
+					'margin-right'   => Spec_Gb_Helper::get_css_value( $attr['blockRightMarginMobile'], $attr['blockMarginUnit'] ),
+					'margin-bottom'  => Spec_Gb_Helper::get_css_value( $attr['blockBottomMarginMobile'], $attr['blockMarginUnit'] ),
+					'margin-left'    => Spec_Gb_Helper::get_css_value( $attr['blockLeftMarginMobile'], $attr['blockMarginUnit'] ),
+					'padding-top'    => Spec_Gb_Helper::get_css_value( $attr['blockTopPaddingMobile'], $attr['blockPaddingUnit'] ),
+					'padding-right'  => Spec_Gb_Helper::get_css_value( $attr['blockRightPaddingMobile'], $attr['blockPaddingUnit'] ),
+					'padding-bottom' => Spec_Gb_Helper::get_css_value( $attr['blockBottomPaddingMobile'], $attr['blockPaddingUnit'] ),
+					'padding-left'   => Spec_Gb_Helper::get_css_value( $attr['blockLeftPaddingMobile'], $attr['blockPaddingUnit'] ),
+					'text-align'     => $attr['separatorAlign'],
+				],
 				'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag' => [
 					'font-family'     => $attr['elementTextFontFamily'],
 					'font-style'      => $attr['elementTextFontStyle'],

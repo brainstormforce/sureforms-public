@@ -44,11 +44,11 @@
 						border-color: var( --srfm-error-color-border );
 
 						&.input-active {
-							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-light-border-glow );
+							box-shadow: 0px 0px 0px 3px var( --srfm-error-color-border-glow );
 							border-color: transparent;
 						}
 						.ts-control {
-							border-color: var( --srfm-error-color-light-border ) !important;
+							border-color: var( --srfm-error-color-border ) !important;
 						}
 
 						&:focus {

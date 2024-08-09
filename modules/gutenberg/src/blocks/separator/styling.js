@@ -46,10 +46,6 @@ function styling( attributes, clientId, name, deviceType ) {
 		separatorWidthMobile,
 		separatorWidthType,
 		separatorBorderHeight,
-		separatorHeight,
-		separatorHeightMobile,
-		separatorHeightTablet,
-		separatorHeightType,
 		separatorBorderHeightMobile,
 		separatorBorderHeightTablet,
 		separatorBorderHeightUnit,
@@ -86,6 +82,39 @@ function styling( attributes, clientId, name, deviceType ) {
 		elementIconWidthTablet,
 		elementIconWidthMobile,
 		elementIconWidthType,
+
+		// padding
+		blockTopPadding,
+		blockRightPadding,
+		blockLeftPadding,
+		blockBottomPadding,
+		blockTopPaddingTablet,
+		blockRightPaddingTablet,
+		blockLeftPaddingTablet,
+		blockBottomPaddingTablet,
+		blockTopPaddingMobile,
+		blockRightPaddingMobile,
+		blockLeftPaddingMobile,
+		blockBottomPaddingMobile,
+		blockPaddingUnit,
+		blockPaddingUnitTablet,
+		blockPaddingUnitMobile,
+		// margin
+		blockTopMargin,
+		blockRightMargin,
+		blockLeftMargin,
+		blockBottomMargin,
+		blockTopMarginTablet,
+		blockRightMarginTablet,
+		blockLeftMarginTablet,
+		blockBottomMarginTablet,
+		blockTopMarginMobile,
+		blockRightMarginMobile,
+		blockLeftMarginMobile,
+		blockBottomMarginMobile,
+		blockMarginUnit,
+		blockMarginUnitTablet,
+		blockMarginUnitMobile,
 	} = attributes;
 
 	// Responsive Slider
@@ -237,17 +266,6 @@ function styling( attributes, clientId, name, deviceType ) {
 	}
 
 	const selectors = {
-		'.wp-block-uagb-separator': {
-			'padding-top': generateCSSUnit(
-				separatorHeight,
-				separatorHeightType
-			),
-			'padding-bottom': generateCSSUnit(
-				separatorHeight,
-				separatorHeightType
-			),
-			'text-align': separatorAlign,
-		},
 		...borderStyle,
 		...iconSpacingStyle,
 		'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag':
@@ -285,6 +303,18 @@ function styling( attributes, clientId, name, deviceType ) {
 			),
 			color: elementColor,
 			fill: elementColor,
+		},
+		'.wp-block-srfm-separator': {
+			'margin-top': generateCSSUnit( blockTopMargin, blockMarginUnit || 'px' ),
+			'margin-right': generateCSSUnit( blockRightMargin, blockMarginUnit || 'px' ),
+			'margin-bottom': generateCSSUnit( blockBottomMargin, blockMarginUnit || 'px' ),
+			'margin-left': generateCSSUnit( blockLeftMargin, blockMarginUnit || 'px' ),
+		},
+		'.wp-block-uagb-separator': {
+			'padding-top': generateCSSUnit( blockTopPadding, blockPaddingUnit || 'px' ),
+			'padding-right': generateCSSUnit( blockRightPadding, blockPaddingUnit || 'px' ),
+			'padding-bottom': generateCSSUnit( blockBottomPadding, blockPaddingUnit || 'px' ),
+			'padding-left': generateCSSUnit( blockLeftPadding, blockPaddingUnit || 'px' ),
 		},
 	};
 
@@ -391,17 +421,6 @@ function styling( attributes, clientId, name, deviceType ) {
 	}
 
 	const tablet_selectors = {
-		'.wp-block-uagb-separator': {
-			'padding-bottom': generateCSSUnit(
-				separatorHeightTablet,
-				separatorHeightType
-			),
-			'padding-top': generateCSSUnit(
-				separatorHeightTablet,
-				separatorHeightType
-			),
-			'text-align': separatorAlignTablet,
-		},
 		...borderStyleTablet,
 		...iconSpacingStyleTablet,
 		'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag':
@@ -445,6 +464,19 @@ function styling( attributes, clientId, name, deviceType ) {
 			),
 			color: elementColor,
 			fill: elementColor,
+		},
+		'.wp-block-srfm-separator': {
+			'margin-top': generateCSSUnit( blockTopMarginTablet, blockMarginUnitTablet || 'px' ),
+			'margin-right': generateCSSUnit( blockRightMarginTablet, blockMarginUnitTablet || 'px' ),
+			'margin-bottom': generateCSSUnit( blockBottomMarginTablet, blockMarginUnitTablet || 'px' ),
+			'margin-left': generateCSSUnit( blockLeftMarginTablet, blockMarginUnitTablet || 'px' ),
+		},
+		'.wp-block-uagb-separator': {
+			'padding-top': generateCSSUnit( blockTopPaddingTablet, blockPaddingUnitTablet || 'px' ),
+			'padding-right': generateCSSUnit( blockRightPaddingTablet, blockPaddingUnitTablet || 'px' ),
+			'padding-bottom': generateCSSUnit( blockBottomPaddingTablet, blockPaddingUnitTablet || 'px' ),
+			'padding-left': generateCSSUnit( blockLeftPaddingTablet, blockPaddingUnitTablet || 'px' ),
+			'text-align': separatorAlignTablet,
 		},
 	};
 
@@ -550,17 +582,6 @@ function styling( attributes, clientId, name, deviceType ) {
 		}
 	}
 	const mobile_selectors = {
-		'.wp-block-uagb-separator': {
-			'padding-bottom': generateCSSUnit(
-				separatorHeightMobile,
-				separatorHeightType
-			),
-			'padding-top': generateCSSUnit(
-				separatorHeightMobile,
-				separatorHeightType
-			),
-			'text-align': separatorAlignMobile,
-		},
 		...borderStyleMobile,
 		...iconSpacingStyleMobile,
 		'.wp-block-uagb-separator--text .wp-block-uagb-separator-element .uagb-html-tag':
@@ -604,6 +625,18 @@ function styling( attributes, clientId, name, deviceType ) {
 			),
 			color: elementColor,
 			fill: elementColor,
+		},
+		'.wp-block-srfm-separator': {
+			'margin-top': generateCSSUnit( blockTopMarginMobile, blockMarginUnitMobile || 'px' ),
+			'margin-right': generateCSSUnit( blockRightMarginMobile, blockMarginUnitMobile || 'px' ),
+			'margin-bottom': generateCSSUnit( blockBottomMarginMobile, blockMarginUnitMobile || 'px' ),
+			'margin-left': generateCSSUnit( blockLeftMarginMobile, blockMarginUnitMobile || 'px' ),
+		},
+		'.wp-block-uagb-separator': {
+			'padding-top': generateCSSUnit( blockTopPaddingMobile, blockPaddingUnitMobile || 'px' ),
+			'padding-right': generateCSSUnit( blockRightPaddingMobile, blockPaddingUnitMobile || 'px' ),
+			'padding-bottom': generateCSSUnit( blockBottomPaddingMobile, blockPaddingUnitMobile || 'px' ),
+			'padding-left': generateCSSUnit( blockLeftPaddingMobile, blockPaddingUnitMobile || 'px' ),
 		},
 	};
 
