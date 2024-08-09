@@ -267,121 +267,123 @@ const Edit = ( { attributes, setAttributes, isSelected, clientId } ) => {
 														{ ...provided.droppableProps }
 													>
 														{ options.map(
-															( option, i ) => {
-																return (
-																	<Draggable
-																		key={ i }
-																		draggableId={
-																			'draggable-' +
-																			i
-																		}
-																		index={ i }
-																	>
-																		{ (
-																			param
-																		) => (
-																			<div
-																				ref={
-																					param.innerRef
-																				}
-																				className='srfm-option-outer-wrapper'
-																				{ ...param.draggableProps }
-																			>
-																				<div className='srfm-option-inner-wrapper'>
-																					<>
-																						<Icon
-																							icon={
-																								'move'
-																							}
-																							{ ...param.dragHandleProps }
-																						/>
-																					</>
-																					<div className='srfm-option-input-wrapper'>
-																						<SRFMTextControl
-																							showHeaderControls={
-																								false
-																							}
-																							key={
+															( option, i ) => (
+																<Draggable
+																	key={ i }
+																	draggableId={
+																		'draggable-' +
+																		i
+																	}
+																	index={ i }
+																>
+																	{ (
+																		param
+																	) => (
+																		<div
+																			ref={
+																				param.innerRef
+																			}
+																			className="srfm-option-outer-wrapper"
+																			{ ...param.draggableProps }
+																		>
+																			<div className="srfm-option-inner-wrapper">
+																				<>
+																					<Icon
+																						icon={
+																							'move'
+																						}
+																						{ ...param.dragHandleProps }
+																					/>
+																				</>
+																				<div className="srfm-option-input-wrapper">
+																					<SRFMTextControl
+																						showHeaderControls={
+																							false
+																						}
+																						key={
+																							i
+																						}
+																						value={
+																							option.optionTitle
+																						}
+																						data={ {
+																							value: option.optionTitle,
+																							label: 'option',
+																						} }
+																						onChange={ (
+																							value
+																						) =>
+																							editOption(
+																								value,
 																								i
-																							}
-																							value={
-																								option.optionTitle
-																							}
-																							data={ {
-																								value: option.optionTitle,
-																								label: 'option',
-																							} }
-																							onChange={ (
-																								value
-																							) =>
-																								editOption(
-																									value,
-																									i
-																								)
-																							}
-																						/>
-																					</div>
-																					<>
-																						{ optionType ===
-																							'icon' && (
-																							<div className="srfm-icon-picker">
-																								<UAGIconPicker
-																									label={
-																										''
-																									}
-																									value={
-																										option.icon
-																									}
-																									onChange={ (
-																										value
-																									) =>
-																										changeOption(
-																											{
-																												icon: value,
-																											},
-																											i
-																										)
-																									}
-																								/>
-																							</div>
-																						) }
-																						{ optionType ===
-																							'image' && (
-																							<div className="srfm-media-picker">
-																								<SRFMMediaPicker
-																									onSelectImage={ (
-																										e
-																									) => {
-																										onSelectImage(
-																											e,
-																											i
-																										);
-																									} }
-																									backgroundImage={
-																										option.image
-																									}
-																									onRemoveImage={ () => {
-																										onRemoveImage(
-																											i
-																										);
-																									} }
-																									disableLabel={
-																										true
-																									}
-																								/>
-																							</div>
-																						) }
-																						<Button
-																							icon="trash"
-																							onClick={ () => deleteOption( i ) }
-																						/>
-																					</>
+																							)
+																						}
+																					/>
 																				</div>
+																				<>
+																					{ optionType ===
+																						'icon' && (
+																						<div className="srfm-icon-picker">
+																							<UAGIconPicker
+																								label={
+																									''
+																								}
+																								value={
+																									option.icon
+																								}
+																								onChange={ (
+																									value
+																								) =>
+																									changeOption(
+																										{
+																											icon: value,
+																										},
+																										i
+																									)
+																								}
+																							/>
+																						</div>
+																					) }
+																					{ optionType ===
+																						'image' && (
+																						<div className="srfm-media-picker">
+																							<SRFMMediaPicker
+																								onSelectImage={ (
+																									e
+																								) => {
+																									onSelectImage(
+																										e,
+																										i
+																									);
+																								} }
+																								backgroundImage={
+																									option.image
+																								}
+																								onRemoveImage={ () => {
+																									onRemoveImage(
+																										i
+																									);
+																								} }
+																								disableLabel={
+																									true
+																								}
+																							/>
+																						</div>
+																					) }
+																					<Button
+																						icon="trash"
+																						onClick={ () =>
+																							deleteOption(
+																								i
+																							)
+																						}
+																					/>
+																				</>
 																			</div>
-																		) }
-																	</Draggable>
-																)
-															}
+																		</div>
+																	) }
+																</Draggable>
+															)
 														) }
 														{ provided.placeholder }
 													</div>

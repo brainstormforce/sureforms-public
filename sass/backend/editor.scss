@@ -44,19 +44,19 @@ body.post-type-sureforms_form {
 	overflow-y: hidden;
 
 	// Adding multi choice repeater styles.
-	.srfm-option-outer-wrapper{
-		&:first-child{
-			.srfm-option-inner-wrapper{
+	.srfm-option-outer-wrapper {
+		&:first-child {
+			.srfm-option-inner-wrapper {
 				padding-top: 0;
 			}
 		}
 
-		.srfm-option-inner-wrapper{
+		.srfm-option-inner-wrapper {
 			display: flex;
 			align-items: center;
 			gap: 10px;
 			padding: 4px 0;
-			.components-base-control{
+			.components-base-control {
 				margin-bottom: 0 !important;
 			}
 		}
@@ -293,10 +293,10 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
-			&:not(.wp-block-srfm-separator) {	
-				margin-left: 0 !important; // This is needed to get the field width working.	
-				margin-right: 0 !important; // This is needed to get the field width working.	
-				margin-top: 0 !important; // Had to add as various themes distort the layout.	
+			&:not( .wp-block-srfm-separator ) {
+				margin-left: 0 !important; // This is needed to get the field width working.
+				margin-right: 0 !important; // This is needed to get the field width working.
+				margin-top: 0 !important; // Had to add as various themes distort the layout.
 			}
 			padding: 0 0.5rem;
 			max-width: 100%;

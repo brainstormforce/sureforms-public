@@ -211,10 +211,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																			ref={
 																				param.innerRef
 																			}
-																			className='srfm-option-outer-wrapper'
+																			className="srfm-option-outer-wrapper"
 																			{ ...param.draggableProps }
 																		>
-																			<div className='srfm-option-inner-wrapper'>
+																			<div className="srfm-option-inner-wrapper">
 																				<>
 																					<Icon
 																						icon={
@@ -223,7 +223,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 																						{ ...param.dragHandleProps }
 																					/>
 																				</>
-																				<div className='srfm-option-input-wrapper'>
+																				<div className="srfm-option-input-wrapper">
 																					<SRFMTextControl
 																						showHeaderControls={
 																							false
