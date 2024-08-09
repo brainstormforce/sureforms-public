@@ -138,6 +138,7 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 					attributes={ attributes }
 					blockType="checkbox"
 				/>
+				<div className="srfm-error-wrap"></div>
 				{ checkboxHelpText !== '' && (
 					<RichText
 						tagName="label"
