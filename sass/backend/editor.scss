@@ -73,13 +73,24 @@ body.post-type-sureforms_form {
 		.srfm-media-control__wrapper {
 			width: 32px;
 			height: 32px;
+			flex-direction: row;
 			.srfm-media-control__footer {
-				display: none;
+				background-color: transparent;
+				height: 32px;
+				width: 32px;
+				overflow: hidden;
+				position: relative;
+				z-index: 9;
+				.srfm-control-label{
+					background-color: transparent;
+					color: transparent;
+				}
 			}
 			.srfm-media-control__clickable--close {
 				padding: 0;
 				top: 2px;
 				right: 2px;
+				z-index: 10;
 				.srfm-media-control__button--close {
 					height: 8px;
 					width: 8px;
