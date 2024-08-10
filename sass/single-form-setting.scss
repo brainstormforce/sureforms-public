@@ -962,8 +962,11 @@ $req_err_color: #dc2625;
 	}
 }
 
-.components-modal__screen-overlay:has( .srfm-settings-modal ) {
-	z-index: 0 !important;
+// added to show the CSS Editor hints above the form settings modal.
+.block-editor-page.post-type-sureforms_form {
+	.CodeMirror-hints{
+		z-index: 999999;
+	}
 }
 
 .srfm-el-popover {
