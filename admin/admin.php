@@ -8,6 +8,7 @@
 namespace SRFM\Admin;
 
 use SRFM\Inc\Traits\Get_Instance;
+use SRFM\Inc\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -314,6 +315,7 @@ class Admin {
 			'is_pro_active'           => defined( 'SRFM_PRO_VER' ),
 			'pro_plugin_version'      => defined( 'SRFM_PRO_VER' ) ? SRFM_PRO_VER : '',
 			'sureforms_pricing_page'  => $this->get_sureforms_website_url( 'pricing' ),
+			'field_spacing_vars'      => Helper::get_css_vars(),
 		];
 
 		if ( class_exists( 'SRFM_PRO\Admin\Licensing' ) ) {
