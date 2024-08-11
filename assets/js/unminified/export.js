@@ -132,7 +132,9 @@ function appendImportBtn() {
 
 	// Choose selector for form listing page.
 	if ( ! attachmentElement ) {
-		attachmentElement = document.querySelector( '#posts-filter .search-box' );
+		attachmentElement = document.querySelector(
+			'#posts-filter .search-box'
+		);
 	}
 	const newElement = document.createElement( 'button' );
 

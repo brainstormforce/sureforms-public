@@ -50,12 +50,6 @@
 		}
 	}
 
-	.srfm-custom-button-ctn {
-		.srfm-button {
-			margin-top: 4px;
-		}
-	}
-
 	.srfm-submit-button {
 		// font-size: 0.8em;
 		cursor: pointer;
@@ -68,9 +62,11 @@
 	.srfm-custom-button-ctn {
 		height: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: flex-end;
+		justify-content: flex-end;
 		.srfm-button {
-			margin-bottom: 20px;
+			margin: var( --srfm-input-field-margin );
 			padding: 9px 0px !important;
 		}
 		&.srfm-block {
