@@ -280,7 +280,7 @@ body.post-type-sureforms_form {
 
 		.block-editor-block-list__block,
 		.block-list-appender {
-			&:not(.wp-block-srfm-separator) {
+			&:not( .wp-block-srfm-separator ) {
 				margin-left: 0 !important; // This is needed to get the field width working.
 				margin-right: 0 !important; // This is needed to get the field width working.
 				margin-top: 0 !important; // Had to add as various themes distort the layout.
