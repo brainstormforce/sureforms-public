@@ -172,8 +172,7 @@ function StyleSettings( props ) {
 		root.style.setProperty( '--srfm-check-ctn-height', '16px' );
 		root.style.setProperty( '--srfm-check-svg-top', '2px' );
 		root.style.setProperty( '--srfm-check-svg-left', '2px' );
-		root.style.setProperty( '--srfm-check-svg-width', '10px' );
-		root.style.setProperty( '--srfm-check-svg-height', '10px' );
+		root.style.setProperty( '--srfm-check-svg-size', '10px' );
 		root.style.setProperty( '--srfm-checkbox-margin-top-editor', '3px' );
 
 		root.style.setProperty(
