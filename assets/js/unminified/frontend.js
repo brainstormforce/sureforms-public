@@ -250,6 +250,7 @@ function onSuccess( response ) {
 		if ( ! isColorDark( labelLuminance ) ) {
 			const cssVariablesAndColors = {
 				'--srfm-color-input-label-inverse': '#181818',
+				'--srfm-dropdown-menu-background': '#2e2e2e',
 			};
 
 			const cssElements = [];
@@ -268,23 +269,6 @@ function onSuccess( response ) {
 		}
 	}
 
-	/**
-	 * Sets the dropdown menu background color based on the text color retrieved.
-	 *
-	 * @param {HTMLElement} element - The container element which includes the form.
-	 * @return {void} This function does not return a value. It modifies the DOM by updating the dropdown menu background color based on the text color.
-	 */
-	function setDropdownMenuBackground( element ) {
-		/**
-		 * Retrieve the form's text color and check if it is dark.
-		 */
-		const textColor = window.getComputedStyle( element ).getPropertyValue( '--srfm-color-input-text' );
-		const isTextDark = isColorDark( getColorLuminance( textColor ) );
-		if ( ! isTextDark ) {
-			element.querySelector( 'form' ).style.setProperty( '--srfm-dropdown-menu-background', '#2e2e2e' );
-		}
-	}
-
 	window.addEventListener( 'load', function () {
 		const formContainers = document.querySelectorAll(
 			'.srfm-form-container'
@@ -292,13 +276,6 @@ function onSuccess( response ) {
 
 		formContainers.forEach( ( formContainer ) => {
 			normalizeCSSVariablesForDarkBackground( formContainer );
-			/**
-			 * If the form contains dropdown or phone fields, then we need to set the dropdown menu background color.
-			 * In future, we will have to modify the check incase any pro fields require the same implementation.
-			 */
-			if ( formContainer.querySelector( '.srfm-dropdown-block' ) || formContainer.querySelector( '.srfm-phone-block' ) ) {
-				setDropdownMenuBackground( formContainer );
-			}
 		} );
 	} );
 }() );
