@@ -132,13 +132,15 @@ function appendImportBtn() {
 
 	// Choose selector for form listing page.
 	if ( ! attachmentElement ) {
-		attachmentElement = document.querySelector( '#posts-filter' );
+		attachmentElement = document.querySelector(
+			'#posts-filter .search-box'
+		);
 	}
 	const newElement = document.createElement( 'button' );
 
 	newElement.className = 'button button-secondary srfm-import-btn';
 	newElement.textContent = wp.i18n.__( 'Import Form', 'sureforms' );
-	attachmentElement.insertBefore( newElement, attachmentElement.firstChild );
+	attachmentElement.append( newElement );
 }
 document.addEventListener( 'DOMContentLoaded', function () {
 	appendImportBtn();
